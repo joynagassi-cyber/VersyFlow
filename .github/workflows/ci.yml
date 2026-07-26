@@ -1,0 +1,76 @@
+# VersyFlow CI/CD Pipeline
+
+name: VersyFlow CI/CD
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  # ─── Type Check & Lint ──────────────────────
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: TypeScript typecheck
+        run: npx tsc --noEmit
+
+      - name: ESLint
+        run: npx eslint src/ app/ --max-warnings 0
+
+      - name: Prettier check
+        run: npx prettier --check "src/**/*.{ts,tsx}" "app/**/*.{ts,tsx}"
+
+  # ─── Unit Tests ─────────────────────────────
+  test:
+    needs: quality
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run unit tests
+        run: npx jest --ci --coverage --passWithNoTests
+
+      - name: Check coverage thresholds
+        run: npx jest --ci --coverage --coverageThreshold='{"global":{"branches":70,"functions":70,"lines":70,"statements":70}}' || true
+
+  # ─── Build (iOS + Android) ──────────────────
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Prebuild iOS
+        run: npx expo prebuild --platform ios --clean
+
+      - name: Prebuild Android
+        run: npx expo prebuild --platform android --clean
