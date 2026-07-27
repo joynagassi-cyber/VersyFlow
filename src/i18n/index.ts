@@ -2,7 +2,7 @@
  * i18n Barrel Export
  */
 
-export { I18nService } from './i18n-service';
+export { I18nService } from '../services/i18n-service';
 export { SUPPORTED_LANGUAGES, DEFAULT_LANGUAGE, FALLBACK_LANGUAGE, isRTL } from './config';
 export type { Language } from './config';
 

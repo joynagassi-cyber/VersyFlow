@@ -3,7 +3,7 @@
  * See docs/08-ui-screens.md (HomeScreen, Explore, Progress, Settings)
  */
 
-import { Tabs } from 'expo-router';
+import { Tabs, View } from 'expo-router';
 import { StyleSheet } from 'react-native';
 
 export default function TabLayout() {
