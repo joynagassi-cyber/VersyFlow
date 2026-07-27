@@ -1,0 +1,41 @@
+# Dependencies
+node_modules/
+
+# Testing
+/coverage/
+
+# Production
+/build/
+/dist/
+
+# Environments
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+.excel/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Expo
+.expo/
+*.log
+
+# VS Code
+.settings/
+
+# Build output
+out/
+dist/
+
+# MMKV cache
+.mmstore/
