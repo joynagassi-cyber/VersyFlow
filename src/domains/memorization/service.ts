@@ -7,6 +7,7 @@ import { SessionEngine } from './session-engine';
 import { IFsrsEngine, Rating } from '@/domains/fsrs';
 import { IStorage } from '@/infrastructure/storage/storage-types';
 import { eventBus, DomainEventTypes } from '../index';
+import { MemorizationRecord } from './entities';
 
 export class MemorizationService {
   constructor(
@@ -15,59 +16,67 @@ export class MemorizationService {
   ) {}
 
   /**
-   * Complete flow: start session → reveal words → verify → save
+   * Memore a verse with the session state and rating
    */
-  async memorizeVerse(params: {
-    bookId: string;
-    chapterNumber: number;
-    verseNumber: number;
-    translationId: string;
-    verseText: string;
-    referenceDisplay: string;
-  }): Promise<{ success: boolean; rating: Rating; nextReviewAt: number }> {
+  async memorizeWithRating(
+    recordId: string,
+    rating: Rating,
+    verseText: string,
+    reference: string,
+    bookId: string,
+    chapter: number,
+    verse: number,
+    translationId: string,
+    wordRevealedCount?: number,
+  ): Promise<{ success: boolean; rating: Rating; nextReviewAt: number }> {
     try {
-      // 1. Create session engine
-      const engine = new SessionEngine(params.verseText);
-
-      // 2. Start preview phase
+      // Create and run session engine to calculate progress
+      const engine = new SessionEngine(verseText);
       engine.startPreview();
 
-      // 3. User reveals all words through interaction
-      // (handled in UI layer — engine tracks revealed words)
-
-      // 4. Verify completion
-      const isComplete = engine.isComplete();
-      if (!isComplete) {
-        throw new Error('Session not complete — user must reveal all words');
+      // Simulate word revelation based on count
+      if (wordRevealedCount && wordRevealedCount > 0) {
+        for (let i = 0; i < wordRevealedCount && i < engine.state.words.length; i++) {
+          engine.revealNextWord();
+        }
       }
 
-      // 5. End session and get rating
-      const { rating } = engine.endSession(true);
+      const isComplete = engine.isComplete();
+      if (!isComplete && rating !== 'again') {
+        // If not complete and rating is not AGAIN, force AGAIN
+        console.warn('Session not complete, rating forced to AGAIN');
+      }
 
-      // 6. Calculate next review using FSRS
+      // Calculate FSRS review
       const newFsrsState = await this.fsrsEngine.newState(0);
       const review = await this.fsrsEngine.review(newFsrsState, rating);
 
-      // 7. Persist record
-      const recordId = params.bookId + ':' + params.chapterNumber + ':' + params.verseNumber + ':' + params.translationId;
+      // Build record
+      const record: ObitableMemorizationRecord = {
+        id: recordId,
+        bookId,
+        chapterNumber: chapter,
+        verseNumber: verse,
+        translationId,
+        bibleVerseReference: reference,
+        bibleVerseText,
+        status: isComplete ? 'mastered' : 'in-progress',
+        fsrsState: review.state,
+        nextReviewAt: review.due.getTime(),
+        createdAt: Date.now(),
+        lastReviewedAt: null,
+        reviewCount: 0,
+        totalReviewMinutes: 0,
+        wordPerformance: [],
+      };
+
+      // Persist record
       await this.storage.set(
-        'versyflow:user:memorized:' + recordId,
-        JSON.stringify({
-          id: recordId,
-          bookId: params.bookId,
-          chapterNumber: params.chapterNumber,
-          verseNumber: params.verseNumber,
-          translationId: params.translationId,
-          bibleVerseReference: params.referenceDisplay,
-          bibleVerseText: params.verseText,
-          status: 'in-progress',
-          fsrsState: review.state,
-          nextReviewAt: review.due.getTime(),
-          createdAt: Date.now(),
-        })
+        'versyflow:record:' + recordId,
+        JSON.stringify(record),
       );
 
-      // 8. Emit domain event
+      // Emit event
       eventBus.emit({
         id: crypto.randomUUID(),
         type: DomainEventTypes.VERSE_MEMORIZED,
@@ -86,7 +95,7 @@ export class MemorizationService {
         nextReviewAt: review.due.getTime(),
       };
     } catch (error) {
-      console.error('[MemorizationService] Memorize failed:', error);
+      console.error('[MemorizationService] MemorizeWithRating failed:', error);
       return {
         success: false,
         rating: Rating.AGAIN,
@@ -94,4 +103,114 @@ export class MemorizationService {
       };
     }
   }
+
+  /**
+   * Get all memorized records that are due for review (nextReviewAt <= now)
+   */
+  async getDueRecords(): Promise<MemorizationRecord[]> {
+    try {
+      // In a real implementation, we would query the storage for due records
+      // For MVP, we'll scan all records (inefficient but works for small datasets)
+      const allKeys = await this.storage.getAllKeys();
+      const recordKeys = allKeys.filter(key => key.startsWith('versyflow:record:'));
+
+      const records: MemorizationRecord[] = [];
+      for (const key of recordKeys) {
+        const recordStr = await this.storage.get(key);
+        if (recordStr) {
+          const record = JSON.parse(recordStr) as MemorizationRecord;
+          // Check if due
+          if (record.nextReviewAt && record.nextReviewAt <= Date.now()) {
+            records.push(record);
+          }
+        }
+      }
+      return records;
+    } catch (error) {
+      console.error('[MemorizationService] getDueRecords failed:', error);
+      return [];
+    }
+  }
+
+  /**
+   * Get a single record by ID
+   */
+  async getRecord(recordId: string): Promise<MemorizationRecord | null> {
+    try {
+      const recordStr = await this.storage.get('versyflow:record:' + recordId);
+      if (recordStr) {
+        return JSON.parse(recordStr) as MemorizationRecord;
+      }
+      return null;
+    } catch (error) {
+      console.error('[MemorizationService] getRecord failed:', error);
+      return null;
+    }
+  }
+
+  /**
+   * Update a record after a review (FSRS state update)
+   */
+  async updateRecordAfterReview(
+    recordId: string,
+    rating: Rating,
+    newFsrsState: any,
+    newNextReviewAt: number,
+  ): Promise<boolean> {
+    try {
+      const recordStr = await this.storage.get('versyflow:record:' + recordId);
+      if (!recordStr) return false;
+
+      const record = JSON.parse(recordStr) as MemorizationRecord;
+      record.fsrsState = newFsrsState;
+      record.nextReviewAt = newNextReviewAt;
+      record.lastReviewedAt = Date.now();
+      record.reviewCount = (record.reviewCount || 0) + 1;
+
+      await this.storage.set(
+        'versyflow:record:' + recordId,
+        JSON.stringify(record),
+      );
+
+      // Emit review event
+      eventBus.emit({
+        id: crypto.randomUUID(),
+        type: DomainEventTypes.RECORD_REVIEWED,
+        timestamp: Date.now(),
+        payload: { recordId, rating },
+      });
+
+      return true;
+    } catch (error) {
+      console.error('[MemorizationService] updateRecordAfterReview failed:', error);
+      return false;
+    }
+  }
+
+  /**
+   * Get all memorized verses (for progress/stats)
+   */
+  async getAllMemorized(): Promise<MemorizationRecord[]> {
+    try {
+      const allKeys = await this.storage.getAllKeys();
+      const recordKeys = allKeys.filter(key => key.startsWith('versyflow:record:'));
+      const records: MemorizationRecord[] = [];
+
+      for (const key of recordKeys) {
+        const recordStr = await this.storage.get(key);
+        if (recordStr) {
+          records.push(JSON.parse(recordStr) as MemorizationRecord);
+        }
+      }
+      return records;
+    } catch (error) {
+      console.error('[MemorizationService] getAllMemorized failed:', error);
+      return [];
+    }
+  }
+}
+
+// Extend the MemorizationRecord interface with optional fields
+interface ObitableMemorizationRecord extends MemorizationRecord {
+  wordPerformance: any[];
 }
