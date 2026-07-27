@@ -14,15 +14,29 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useSettingsStore } from '@/store/settings-store';
 import { useI18n } from '@/hooks/useI18n';
+import { useMemorizationSession } from '@/hooks/useMemorizationSession';
+import { WordChip } from '@/components/bible/WordChip';
 
 export default function MemorizationSessionScreen() {
   const router = useRouter();
-  const { language, t } = useI18n();
-  const { setLanguage } = useSettingsStore();
+  const { t } = useI18n();
 
-  // Données du verset (pour le MVP - données mockées)
+  // Hook pour la session de méméorisation
+  const {
+    sessionState,
+    isLoaded,
+    startSession,
+    startRevealing,
+    revealNextWord,
+    revealWordAt,
+    verifyAnswer,
+    completeSession,
+    resetSession,
+    abandonSession,
+  } = useMemorizationSession();
+
+  // Le verset à mémoriser (données mockées - dans une app réelle, cela viendrait de la navigation)
   const verseData = {
     bookId: 'joh',
     chapter: 3,
@@ -31,156 +45,175 @@ export default function MemorizationSessionScreen() {
     text: 'Car Dieu a tellement aimé le monde qu\'il a donné son Fils unique, afin que quiconque croit en lui ne périsse pas, mais qu\'il ait la vie éternelle.',
   };
 
-  // État de la session
-  const [phase, setPhase] = useState<'idle' | 'preview' | 'revealing' | 'confirmed'>('idle');
-  const [revealedWords, setRevealedWords] = useState<number[]>([]);
-  const [timeLeft, setTimeLeft] = useState(10); // secondes pour le preview
-  const [words, setWords] = useState<string[]>([]);
-
-  // Initialiser les mots du verset au montage
+  // Démarrer la session automatiquement au montage
   useEffect(() => {
-    const wordList = verseData.text.split(/\s+/).filter(w => w.length > 0);
-    setWords(wordList);
-  }, []);
-
-  // Compte à rebours pour le preview
-  useEffect(() => {
-    if (phase === 'preview' && timeLeft > 0) {
-      const timer = setTimeout(() => setTimeLeft(t => timeLeft - 1), 1000);
-      return () => clearTimeout(timer);
-    } else if (phase === 'preview' && timeLeft === 0) {
-      // Passage à la révélation automatique
-      setPhase('revealing');
+    if (isLoaded && !sessionState) {
+      startSession(verseData.bookId, verseData.chapter, verseData.verse, verseData.text);
     }
-  }, [phase, timeLeft]);
+  }, [isLoaded, sessionState, startSession]);
 
-  // Démarrer la session
-  const startSession = () => {
-    setPhase('preview');
-    setTimeLeft(10);
-    setRevealedWords([]);
-  };
+  // Si la session n'est pas chargée, afficher un écran de chargement
+  if (!isLoaded) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={styles.loading}>
+          <ActivityIndicator size="large" color="#E91E8C" />
+          <Text style={styles.loadingText}>Chargement de la session...</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
 
-  // Révéler le mot suivant
-  const revealNextWord = () => {
-    if (phase !== 'revealing') return;
-
-    const nextIndex = revealedWords.length;
-    if (nextIndex < words.length) {
-      setRevealedWords([...revealedWords, nextIndex]);
-    }
-  };
-
-  // Révéler un mot spécifique
-  const revealWordAt = (index: number) => {
-    if (phase !== 'revealing' || revealedWords.includes(index)) return;
-    setRevealedWords([...revealedWords, index]);
-  };
-
-    // Confirmer la session (toutes les paroles sont révelées)
-  const confirmSession = () => {
-    if (revealedWords.length < words.length) return;
-    setPhase('confirmed');
-  };
-
-  // Abandonner la session
-  const abandonSession = () => {
-    alert('Session abandonnée.');
-    router.back();
-  };
-
-  // Mot à afficher (masqué ou visible)
-  const getWordDisplay = (index: number) => {
-    if (phase === 'idle') return '?';
-    if (revealedWords.includes(index)) {
-      return words[index];
-    }
-    // Pendant le preview, tous les mots sont masqués
-    return '*'.repeat(words[index].length);
-  };
-
-  if (phase === 'idle') {
+  // Si aucune session active, proposer de démarrer
+  if (!sessionState) {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.center}>
-          <Text style={styles.title}>{t('session.memoTitle')}</Text>
-          <Text style={styles.subtitle}>{t('session.previewMessage', { verseText: verseData.text })}</Text>
-          <TouchableOpacity style={styles.startButton} onPress={startSession}>
-            <Text style={styles.startButtonText}>{t('session.beginSession')}</Text>
+          <Text style={styles.title}>Mémorisation de verset</Text>
+          <Text style={styles.subtitle}>Appuyez sur "Commencer" pour débuter la session</Text>
+          <TouchableOpacity style={styles.startButton} onPress={() => startSession(verseData.bookId, verseData.chapter, verseData.verse, verseData.text)}>
+            <Text style={styles.startButtonText}>Commencer la session</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>
     );
   }
 
-  return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.content}>
-        {/* Header de la phase */}
-        <View style={styles.phaseHeader}>
-          <Text style={styles.phaseTitle}>
-            {phase === 'preview' ? t('session.previewMode') : t('session.revealMode')}
-          </Text>
-          {phase === 'preview' && (
-            <View style={styles.timer}>
-              <Text style={styles.timerText}>{timeLeft}s</Text>
-            </View>
-          )}
-        </View>
-
-        {/* Texte du verset avec masquage progressif */}
-        <View style={styles.verseCard}>
-          <Text style={styles.verseReference}>{verseData.reference}</Text>
-          <View style={styles.wordContainer}>
-            {words.map((word, index) => (
-              <TouchableOpacity
-                key={index}
-                style={[
-                  styles.wordChip,
-                  phase === 'preview' && styles.wordChipMasked,
-                  revealedWords.includes(index) && styles.wordChipRevealed,
-                ]}
-                onPress={() => revealWordAt(index)}
-                disabled={phase !== 'revealing'}
-              >
-                <Text style={[
-                  styles.wordText,
-                  phase === 'preview' && styles.wordTextMasked,
-                  revealedWords.includes(index) && styles.wordTextRevealed,
-                ]}>
-                  {getWordDisplay(index)}
-                </Text>
-              </TouchableOpacity>
-            ))}
+  // Phase de preview (le verset complet est affiché masqué)
+  if (sessionState.phase === 'preview') {
+    return (
+      <SafeAreaView style={styles.container}>
+        <ScrollView contentContainerStyle={styles.content}>
+          <View style={styles.header}>
+            <Text style={styles.phaseTitle}>{t('session.previewMode')}</Text>
           </View>
-        </View>
 
-        {/* Contrôles */}
-        <View style={styles.controls}>
-          {phase === 'preview' && (
-            <TouchableOpacity style={styles.cancelButton} onPress={abandonSession}>
-              <Text style={styles.cancelText}>{t('session.abandon')}</Text>
+          <View style={styles.verseCard}>
+            <Text style={styles.verseReference}>{sessionState.reference || verseData.reference}</Text>
+            <View style={styles.verseText}>
+              {/* Le texte complet est affiché, mais chaque mot sera masqué si on active la révélation */}
+              <Text style={styles.verseContent}>{sessionState.verseText}</Text>
+            </View>
+          </View>
+
+          <View style={styles.controls}>
+            <TouchableOpacity style={styles.startButton} onPress={startRevealing}>
+              <Text style={styles.startButtonText}>{t('session.startReveal')}</Text>
             </TouchableOpacity>
-          )}
+            <TouchableOpacity style={styles.abortButton} onPress={abandonSession}>
+              <Text style={styles.abortText}>{t('session.abandon')}</Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+      </SafeAreaView>
+    );
+  }
 
-          {phase === 'revealing' && (
-            <>
-              <TouchableOpacity style={styles.actionButton} onPress={revealNextWord}>
-                <Text style={styles.actionButtonText}>{t('session.nextWord')}</Text>
-              </TouchableOpacity>
+  // Phase de révélation (les mots se dévoilent un par un)
+  if (sessionState.phase === 'revealing') {
+    return (
+      <SafeAreaView style={styles.container}>
+        <ScrollView contentContainerStyle={styles.content}>
+          <View style={styles.header}>
+            <Text style={styles.phaseTitle}>{t('session.revealMode')}</Text>
+            <Text style={styles.progress}>
+              {sessionState.wordsRevealed}/{sessionState.words.length} mots révélés
+            </Text>
+          </View>
+
+          <View style={styles.verseCard}>
+            <Text style={styles.verseReference}>{sessionState.reference || verseData.reference}</Text>
+            <View style={styles.wordContainer}>
+              {sessionState.words.map((word, index) => {
+                const isRevealed = sessionState.revealedWords.has(index);
+                return (
+                  <TouchableOpacity
+                    key={index}
+                    style={styles.wordWrapper}
+                    onPress={() => revealWordAt(index)}
+                    disabled={isRevealed}
+                  >
+                    <WordChip
+                      word={word}
+                      revealed={isRevealed}
+                      onPress={() => revealWordAt(index)}
+                      style={styles.wordChip}
+                    />
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+          </View>
+
+          <View style={styles.controls}>
+            <TouchableOpacity style={styles.actionButton} onPress={revealNextWord}>
+              <Text style={styles.actionButtonText}>{t('session.nextWord')}</Text>
+            </TouchableOpacity>
+
+            {/* Bouton de confirmation quand tous les mots sont révélés */}
+            {sessionState.wordsRevealed >= sessionState.words.length && (
               <TouchableOpacity
                 style={styles.confirmButton}
-                onPress={confirmSession}
-                disabled={revealedWords.length < words.length}
+                onPress={() => completeSession(sessionState.rating || 'good')}
               >
-                <Text style={styles.confirmButtonText}>
-                  {revealedWords.length >= words.length ? t('session.complete') : t('session.continue')}
-                </Text>
+                <Text style={styles.confirmButtonText}>{t('session.confirm')}</Text>
               </TouchableOpacity>
-            </>}
-          )}
+            )}
+          </View>
+        </ScrollView>
+      </SafeAreaView>
+    );
+  }
+
+  // Phase confirmée (l'utilisateur a vu le résultat)
+  if (sessionState.phase === 'confirmed') {
+    return (
+      <SafeAreaView style={styles.container}>
+        <ScrollView contentContainerStyle={styles.content}>
+          <View style={styles.resultHeader}>
+            <Text style={styles.resultIcon}>{sessionState.rating === 'easy' ? '🎉' : sessionState.rating === 'good' ? '👍' : '📚'}</Text>
+            <Text style={styles.resultTitle}>Session terminée</Text>
+            <Text style={styles.resultSubtitle}>
+              Rating: {t(`session.rating.${sessionState.rating}`)}
+            </Text>
+          </View>
+
+          <View style={styles.verseCard}>
+            <Text style={styles.verseReference}>{sessionState.reference || verseData.reference}</Text>
+            <Text style={styles.verseContent}>{sessionState.verseText}</Text>
+          </View>
+
+          <View style={styles.actions}>
+            <TouchableOpacity style={styles.buttonPrimary} onPress={() => router.back()}>
+              <Text style={styles.buttonText}>Terminer</Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+      </SafeAreaView>
+    );
+  }
+
+  // État d'abandon
+  if (sessionState.phase === 'abandoned') {
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={styles.center}>
+          <Text style={styles.title}>Session abandonnée</Text>
+          <Text style={styles.subtitle}>Le verset sera réintégré dans la file d'attente de révision</Text>
+          <TouchableOpacity style={styles.startButton} onPress={router.back}>
+            <Text style={styles.startButtonText}>Retour</Text>
+          </TouchableOpacity>
         </View>
-      </ScrollView>
+      </SafeAreaView>
+    );
+  }
+
+  // État par défaut (should not happen)
+  return (
+    <SafeAreaView style={styles.container}>
+      <View style={styles.center}>
+        <ActivityIndicator size="large" color="#E91E8C" />
+      </View>
     </SafeAreaView>
   );
 }
@@ -189,6 +222,16 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFF0F6',
+  },
+  loading: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    marginTop: 16,
+    fontSize: 16,
+    color: '#666',
   },
   center: {
     flex: 1,
@@ -208,42 +251,22 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 32,
   },
-  startButton: {
-    backgroundColor: '#E91E8C',
-    borderRadius: 26,
-    paddingVertical: 16,
-    paddingHorizontal: 40,
-  },
-  startButtonText: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#FFFFFF',
-  },
   content: {
     padding: 16,
     paddingBottom: 24,
   },
-  phaseHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+  header: {
     marginBottom: 24,
   },
   phaseTitle: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: '600',
     color: '#2D2D2D',
+    marginBottom: 8,
   },
-  timer: {
-    backgroundColor: '#E91E8C',
-    borderRadius: 20,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-  },
-  timerText: {
-    fontSize: 20,
-    fontWeight: '800',
-    color: '#FFFFFF',
+  progress: {
+    fontSize: 14,
+    color: '#A0A0A0',
   },
   verseCard: {
     backgroundColor: '#FFFFFF',
@@ -258,49 +281,51 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     fontWeight: '600',
   },
+  verseText: {
+    marginBottom: 16,
+  },
+  verseContent: {
+    fontSize: 16,
+    color: '#2D2D2D',
+    lineHeight: 24,
+    textAlign: 'justify',
+  },
   wordContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 8,
+    gap: 6,
+    marginBottom: 16,
   },
-  wordChip: {
-    backgroundColor: '#F5F5F5',
-    borderRadius: 8,
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    marginVertical: 4,
-  },
-  wordChipMasked: {
-    backgroundColor: '#E0E0E0',
-  },
-  wordChipRevealed: {
-    backgroundColor: '#E91E8C',
-  },
-  wordText: {
-    fontSize: 16,
-    color: '#2D2D2D',
-  },
-  wordTextMasked: {
-    color: '#BDBDBD',
-  },
-  wordTextRevealed: {
-    color: '#FFFFFF',
-    fontWeight: '600',
+  wordWrapper: {
+    margin: 2,
   },
   controls: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 16,
+    marginBottom: 24,
   },
-  cancelButton: {
+  startButton: {
+    backgroundColor: '#E91E8C',
+    borderRadius: 26,
+    paddingVertical: 14,
+    paddingHorizontal: 32,
+    alignItems: 'center',
+  },
+  startButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#FFFFFF',
+  },
+  abortButton: {
     backgroundColor: '#FFFFFF',
     borderColor: '#A0A0A0',
     borderWidth: 2,
     borderRadius: 26,
-    paddingVertical: 12,
-    paddingHorizontal: 24,
+    paddingVertical: 14,
+    paddingHorizontal: 32,
+    alignItems: 'center',
   },
-  cancelText: {
+  abortText: {
     fontSize: 16,
     color: '#A0A0A0',
     fontWeight: '600',
@@ -326,6 +351,39 @@ const styles = StyleSheet.create({
   },
   confirmButtonText: {
     fontSize: 16,
+    fontWeight: '600',
+    color: '#FFFFFF',
+  },
+  resultHeader: {
+    alignItems: 'center',
+    marginBottom: 24,
+  },
+  resultIcon: {
+    fontSize: 48,
+    marginBottom: 16,
+  },
+  resultTitle: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: '#2D2D2D',
+    marginBottom: 8,
+  },
+  resultSubtitle: {
+    fontSize: 16,
+    color: '#A0A0A0',
+  },
+  actions: {
+    marginTop: 24,
+  },
+  buttonPrimary: {
+    backgroundColor: '#E91E8C',
+    borderRadius: 26,
+    paddingVertical: 16,
+    paddingHorizontal: 40,
+    alignItems: 'center',
+  },
+  buttonText: {
+    fontSize: 18,
     fontWeight: '600',
     color: '#FFFFFF',
   },
