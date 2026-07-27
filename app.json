@@ -1,0 +1,32 @@
+{
+  "expo": {
+    "name": "VersyFlow",
+    "slug": "versyflow",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "icon": "./assets/icons/app-icon.svg",
+    "splash": {
+      "image": "./assets/splash/splash.svg",
+      "resizeMode": "contain",
+      "backgroundColor": "#FFF0F6"
+    },
+    "presenter": {
+      "url": "https://expo.dev/@joynagassi/versyflow"
+    },
+    "updates": {
+      "enabled": false
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/icons/adaptive-foreground.svg",
+        "backgroundImage": "./assets/icons/adaptive-background.svg"
+      }
+    }
+  }
+}
