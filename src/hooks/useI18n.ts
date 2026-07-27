@@ -35,7 +35,7 @@ export type I18nHook = {
   tFor: (key: string, language: string) => string;
   /** Changer la langue courante */
   setLanguage: (language: string) => void;
-  **Obtenir la langue courante comme objet */
+  /** Obtenir la langue courante comme objet */
   getLanguageInfo: () => LanguageInfo | undefined;
   /** Vérifier si la langue est RTL */
   isRTL: () => boolean;

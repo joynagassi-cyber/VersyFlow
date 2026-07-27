@@ -22,7 +22,6 @@
     "strictFunctionTypes": true,
     "strictBindCallApply": true,
     "strictPropertyInitialization": true,
-    "strictArrayElementAccess": true,
 
     "paths": {
       "@/*": ["./src/*"],

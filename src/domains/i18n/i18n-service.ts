@@ -12,7 +12,6 @@
 
 import { SUPPORTED_LANGUAGES, DEFAULT_LANGUAGE, FALLBACK_LANGUAGE, isRTL } from './config';
 import { readFileSync, join, existsSync } from 'fs';
-import { platform } from 'react-native';
 
 // Chemin vers les fichiers de traductions
 const LOCALES_DIR = join(__dirname, '..', '..', 'i18n', 'locales');

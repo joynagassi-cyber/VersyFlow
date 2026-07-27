@@ -107,7 +107,7 @@ export default function HomeScreen() {
       </View>
 
       {/* Actions rapides */}
-      <View stylestyles.quickActions}>
+      <View style={styles.quickActions}>
         <TouchableOpacity
           style={styles.quickAction}
           onPress={() => router.push('/explore')}
@@ -315,4 +315,4 @@ const shadow = {
     shadowRadius: 4,
     elevation: 1,
   },
-});
+};

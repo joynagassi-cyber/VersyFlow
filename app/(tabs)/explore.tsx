@@ -81,13 +81,13 @@ export default function ExploreScreen() {
               <Text style={styles.bookName}>{item.name.fr}</Text>
               <Text style={styles.bookMeta}>{item.chapterCount} chapitres</Text>
             </View>
-            <Text style={styles.bookArrow">›</Text>
+            <Text style={styles.bookArrow}>›</Text>
           </TouchableOpacity>
         )}
         ListEmptyItem={null}
       />
 
-      <Text style={styles.sectionTitle">Nouvel Testament</Text>
+      <Text style={styles.sectionTitle}>Nouvel Testament</Text>
       <FlatList
         data={books.filter(b => b.testament === 'new')}
         keyExtractor={(item) => item.id}
@@ -100,7 +100,7 @@ export default function ExploreScreen() {
               <Text style={styles.bookName}>{item.name.fr}</Text>
               <Text style={styles.bookMeta}>{item.chapterCount} chapitres</Text>
             </View>
-            <Text style={styles.bookArrow">›</Text>
+            <Text style={styles.bookArrow}>›</Text>
           </TouchableOpacity>
         )}
       />

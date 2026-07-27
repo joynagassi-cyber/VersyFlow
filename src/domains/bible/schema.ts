@@ -50,7 +50,7 @@ export const BibleTranslationSchema = z.object({
   language: z.string().length(2).description('Code langue ISO 639-1'),
   style: z.enum(['classique', 'moderne', 'paraphrase']).description('Style de la traduction'),
   publicDomain: z.boolean().description('Statut du domaine public'),
-  author: z.string().min(1().description('Nom du traducteur'),
+  author: z.string().min(1).description('Nom du traducteur'),
   books: z.array(BibleBookSchema).nonempty().description('Tableau des 66 livres'),
 });
 

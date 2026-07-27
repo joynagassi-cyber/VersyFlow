@@ -100,14 +100,14 @@ export default function ProgressScreen() {
               style={styles.goalButton}
               onPress={() => setDailyGoal(d => Math.max(1, d - 1))}
             >
-              <Text style={styles.goalButtonText}-</Text>
+              <Text style={styles.goalButtonText}>-</Text>
             </TouchableOpacity>
             <Text style={styles.goalValue}>{dailyGoal}</Text>
             <TouchableOpacity
               style={styles.goalButton}
               onPress={() => setDailyGoal(d => d + 1)}
             >
-              <Text style={styles.goalButtonText}+</Text>
+              <Text style={styles.goalButtonText}>+</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -143,11 +143,11 @@ export default function ProgressScreen() {
               <Text style={styles.detailValue}>{newVerses}</Text>
             </View>
             <View style={styles.detailItem}>
-              <Text style={styles.detailLabel">En cours</Text>
+              <Text style={styles.detailLabel}>En cours</Text>
               <Text style={styles.detailValue}>{inProgress}</Text>
             </View>
             <View style={styles.detailItem}>
-              <Text style={styles.detailLabel">À réviser</Text>
+              <Text style={styles.detailLabel}>À réviser</Text>
               <Text style={styles.detailValue}>{Math.max(0, dailyGoal - Math.floor(Math.random() * 5))}</Text>
             </View>
           </View>
@@ -165,7 +165,7 @@ export default function ProgressScreen() {
             style={[styles.actionButton, styles.secondaryButton]}
             onPress={() => router.push('/review/queue')}
           >
-            <Text style={styles.actionButtonTextRévisions du jour</Text>
+            <Text style={styles.actionButtonText}>Révisions du jour</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -368,11 +368,6 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#FFFFFF',
   },
-  actionButtonTextSecondary: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#E91E8C',
-  },
 });
 
 const shadow = {
@@ -390,4 +385,4 @@ const shadow = {
     shadowRadius: 4,
     elevation: 1,
   },
-});
+};
