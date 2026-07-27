@@ -1,14 +1,28 @@
-# Dependencies
+# Node modules
 node_modules/
+.npm/
+yarn-error.log
+yarn-debug.log
+
+# Build output
+/dist/
+/build/
+/standalone
+/exponent-preview-output
+/exponent-updater-cache
+/expo-uploads/
+/.expo/
 
 # Testing
-/coverage/
+/coverage
 
-# Production
-/build/
-/dist/
+# Log files
+*.log
+npm-debug.log
+yarn-debug.log
+yarn-error.log
 
-# Environments
+# Environment variables
 .env
 .env.local
 .env.development
@@ -16,26 +30,47 @@ node_modules/
 .env.production
 
 # IDE
-.idea/
 .vscode/
+.idea/
 *.swp
 *.swo
-.excel/
+*.DS_Store
+Thumbs.db
+
+# Coverage
+/coverage
+
+# Local settings
+.local/
+
+# Output of any command with "yarn" or "npm" as the first word.
+*trace*.log
+*yarn*.log
 
 # OS
 .DS_Store
 Thumbs.db
 
-# Expo
-.expo/
-*.log
+# Expo config
+app.json
+app.backup
 
-# VS Code
+# VSCode settings
 .settings/
 
-# Build output
-out/
-dist/
+# Prettier cache
+.prettiercache
 
-# MMKV cache
-.mmstore/
+# Database
+*.mdb
+*.accdb
+
+# VS Code
+.vscode/
+
+# Expo
+.expo-shared/
+
+# Node
+npm-debug.log
+yarn-error.log
