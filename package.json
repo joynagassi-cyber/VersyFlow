@@ -13,7 +13,12 @@
     "lint": "eslint . --ext .ts,.tsx",
     "test": "jest",
     "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage"
+    "test:coverage": "jest --coverage",
+    "workflow": "node scripts/workflow.js",
+    "sprint": "node scripts/workflow.js sprint",
+    "task": "node scripts/workflow.js task",
+    "monitor": "node scripts/workflow.js monitor",
+    "release": "node scripts/workflow.js release"
   },
   "dependencies": {
     "expo": "~52.0.0",
