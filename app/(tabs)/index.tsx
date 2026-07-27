@@ -101,7 +101,7 @@ export default function HomeScreen() {
         <Text style={styles.verseReference}>
           {todayVerse.bookName} {todayVerse.chapter}:{todayVerse.verse}
         </Text>
-        <Text style={styles.verseText} numberOfLines={4} ellipsisTail={true}>
+        <Text style={styles.verseText} numberOfLines={4} ellipsizeMode="tail">
           {todayVerse.text}
         </Text>
       </View>

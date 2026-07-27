@@ -1,58 +1,53 @@
 /**
- * World Chip — Interactive word chip for memorization session
- * See docs/06-design-system.md (WordChip) + docs/08-ui-screens.md §6
+ * WordChip — Interactive word display component for memorization sessions
+ * Shows individual words with reveal/hide states
  */
 
-import { StyleSheet, Text, TouchableOpacity, Animated } from 'react-native';
-import { colors, radius, spacing } from '@/tokens';
+import { ReactNode } from 'react';
+import { TouchableOpacity, Text, StyleSheet } from 'react-native';
 
-interface WordChipProps {
+export interface WordChipProps {
   word: string;
   revealed: boolean;
   onPress?: () => void;
+  style?: object;
 }
 
-export function WordChip({ word, revealed, onPress }: WordChipProps) {
+export function WordChip({ word, revealed, onPress, style }: WordChipProps) {
   return (
     <TouchableOpacity
-      style={[styles.chip, revealed ? styles.revealed : styles.hidden]}
+      style={[styles.chip, revealed && styles.chipRevealed, style]}
       onPress={onPress}
-      disabled={!onPress}
-      activeOpacity={0.7}
+      disabled={!onPress && !revealed}
     >
-      {revealed ? (
-        <Text style={styles.revealedText}>{word}</Text>
-      ) : (
-        <Text style={styles.placeholderText}>&nbsp;</Text>
-      )}
+      <Text style={[styles.wordText, revealed && styles.wordTextRevealed]}>
+        {revealed ? word : ' '.repeat(word.length)}
+      </Text>
     </TouchableOpacity>
   );
 }
 
 const styles = StyleSheet.create({
   chip: {
+    backgroundColor: '#E0E0E0',
+    borderRadius: 8,
     paddingVertical: 8,
     paddingHorizontal: 12,
-    borderRadius: radius.sm,
-    marginHorizontal: 3,
     marginVertical: 4,
-    minHeight: 36,
-    justifyContent: 'center',
+    marginHorizontal: 2,
+    minWidth: 40,
     alignItems: 'center',
   },
-  hidden: {
-    backgroundColor: '#E8E8E8',
+  chipRevealed: {
+    backgroundColor: '#E91E8C',
   },
-  revealed: {
-    backgroundColor: colors.primary[400],
+  wordText: {
+    fontSize: 16,
+    color: '#2D2D2D',
+    fontFamily: 'monospace',
   },
-  revealedText: {
+  wordTextRevealed: {
     color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: '500',
-  },
-  placeholderText: {
-    fontSize: 16,
-    opacity: 0,
+    fontWeight: '600',
   },
 });
