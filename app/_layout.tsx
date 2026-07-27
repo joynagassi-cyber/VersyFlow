@@ -13,10 +13,9 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { I18nService } from '@/i18n';
 
 export default function RootLayout() {
-  // Initialize i18n on app start
+  // Initialize i18n on app start with default language
   useEffect(() => {
     const i18n = I18nService.getInstance();
-    // Will be set from UserSettings once storage is connected
     i18n.setLanguage('fr');
   }, []);
 
@@ -60,3 +59,4 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFF0F6', // primary-50 background
   },
 });
+
