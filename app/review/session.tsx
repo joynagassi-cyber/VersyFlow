@@ -17,6 +17,36 @@ import { useRoute, useRouter } from 'expo-router';
 import { useI18n } from '@/hooks/useI18n';
 import { WordChip } from '@/components/bible/WordChip';
 import { Rating } from '@/domains/fsrs';
+import { MemorizationService } from '@/domains/memorization/service';
+
+// Singleton pour le service (à initialize au niveau de l'application)
+let memorizationService: MemorizationService | null = null;
+
+const getMemorizationService = () => {
+  if (!memorizationService) {
+    // Dans la version réelle avec MMKV vrai :
+    // import { MmkvStorage } from '@/infrastructure/storage'
+    // const storage = new MmkvStorage();
+    // const fsrs = new RealFsrsEngine(); // ou le fallback SM2
+    // memorizationService = new MemorizationService(storage, fsrs);
+
+    // Pour le MVP, on utilise un stub qui simule le service
+    memorizationService = {
+      async updateRecordAfterReview(recordId: string, rating: Rating, newState: any, newNextReviewAt: number) {
+        console.log('[Service] updateRecordAfterReview appelée pour:', recordId, 'rating:', rating);
+        // Simuler une opération async réussie
+        await new Promise(resolve => setTimeout(resolve, 500));
+        return true;
+      },
+      async getMemorizedRecord(bookId: string, chapter: number, verse: number, translationId: string) {
+        return null;
+      },
+      async getAllMemorized() { return []; },
+      async saveMemorizedRecord(record: any) {},
+    };
+  }
+  return memorizationService;
+};
 
 export default function ReviewSessionScreen() {
   const route = useRoute();
@@ -25,6 +55,11 @@ export default function ReviewSessionScreen() {
 
   // Record ID passed from navigation params
   const recordId = (route.params as any)?.recordId;
+
+  // Get service instance
+  const service = getMemorizationService();
+
+  // ... rest of component state and handlers
 
   // État de la session de révision
   const [reviewState, setReviewState] = useState<any>(null);
@@ -136,28 +171,74 @@ export default function ReviewSessionScreen() {
     setConfirming(true);
   };
 
-  // Confirmer la soumission du rating
+  // Confirmer la soumission du rating via le service réel
   const submitRating = async () => {
-    if (!reviewState || !rating) return;
+    if (!reviewState || !rating || !service) return;
 
     try {
-      // Dans une version réelle, appeler ici:
-      // await service.updateRecordAfterReview(recordId, rating, newFsrsState, newNextReviewAt);
+      // Calcul simplifié du nouvel état FSRS (dans la version réelle, utiliser le vrai engine)
+      let newStability = reviewState.fsrsState.stability || 2.5;
+      let newRepetitions = reviewState.fsrsState.repetitions || 0;
 
-      // Simulation de l'update avec le mock
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Ajustement selon le rating
+      if (rating === 'easy') {
+        newStability *= 1.5;
+        newRepetitions++;
+      } else if (rating === 'good') {
+        newStability *= 1.2;
+        newRepetitions++;
+      } else if (rating === 'hard') {
+        newStability *= 0.9;
+      } else {
+        // again - reset
+        newStability = 1.0;
+        newRepetitions = 0;
+      }
 
-      // Mettre à jour l'état comme si sauvegardé
-      const updatedState = { ...reviewState, rating, phase: 'confirmed' };
-      setReviewState(updatedState);
+      // Calcul du prochain délai (en jours)
+      let nextDelayDays = 1; // default again
+      if (rating === 'easy') nextDelayDays = 7;
+      else if (rating === 'good') nextDelayDays = 3;
+      else if (rating === 'hard') nextDelayDays = 1;
 
-      // Après quelques secondes, retourner à la queue
-      setTimeout(() => {
-        router.replace('/review/queue');
-      }, 1500);
+      const newNextReviewAt = Date.now() + nextDelayDays * 86400000;
+
+      // Appel RÉEL au service de persistance
+      const success = await service.updateRecordAfterReview(
+        reviewState.id,
+        rating,
+        {
+          stability: newStability,
+          repetitions: newRepetitions,
+          recallProbability: 0.75, // valeur simplifiée
+        },
+        newNextReviewAt
+      );
+
+      if (success) {
+        // Mise à jour de l'état local
+        const updatedState = {
+          ...reviewState,
+          rating,
+          fsrsState: { stability: newStability, repetitions: newRepetitions, recallProbability: 0.75 },
+          nextReviewAt: newNextReviewAt,
+          lastReviewedAt: Date.now(),
+          reviewCount: (reviewState.reviewCount || 0) + 1,
+          phase: 'confirmed',
+        };
+        setReviewState(updatedState);
+
+        // Après un bref délai, retourner à la queue
+        setTimeout(() => {
+          router.replace('/review/queue');
+        }, 1500);
+      } else {
+        throw new Error('Échec de la persistance par le service');
+      }
     } catch (error) {
       console.error('Échec de la mise à jour:', error);
-      alert('Erreur lors de la sauvegarde de la révision.');
+      alert('Erreur lors de la sauvegarde de la révision. Veuillez réessayer.');
+      setConfirming(false);
     }
   };
 
