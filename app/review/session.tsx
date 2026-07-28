@@ -1,5 +1,5 @@
 /**
- * Review Session Screen — Interactive review interface with FSRS rating
+ * Review Session Screen — Interactive review with FSRS rating
  * See docs/08-ui-screens.md §13
  */
 
@@ -15,43 +15,39 @@ import {
 } from 'react-native';
 import { useRoute, useRouter } from 'expo-router';
 import { useI18n } from '@/hooks/useI18n';
-import { MemorizationService } from '@/domains/memorization/service';
+import { WordChip } from '@/components/bible/WordChip';
 import { Rating } from '@/domains/fsrs';
-
-// Singleton pour le service (à initialize au niveau de l'application)
-let memorizationService: MemorizationService | null = null;
-
-const getService = () => {
-  if (!memorizationService) {
-    // Le service réel serait initialisé avec le stockage et le moteur FSRS
-    // Pour l'instant, un stub pour le MVP
-    memorizationService = {
-      async updateRecordAfterReview() {
-        return true;
-      },
-    };
-  }
-  return memorizationService;
-};
 
 export default function ReviewSessionScreen() {
   const route = useRoute();
   const router = useRouter();
   const { t } = useI18n();
 
-  const recordId = route.params?.recordId as string;
+  // Record ID passed from navigation params
+  const recordId = (route.params as any)?.recordId;
 
-  // État de la session de review
+  // État de la session de révision
   const [reviewState, setReviewState] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [currentStep, setCurrentStep] = useState<'preview' | 'reveal' | 'rating' | 'confirm'>('preview');
+  const [isRevealing, setIsRevealing] = useState(false);
+  const [revealedWords, setRevealedWords] = useState<number[]>([]);
+  const [rating, setRating] = useState<Rating | null>(null);
+  const [confirming, setConfirming] = useState(false);
 
   // Charger le record au montage
   useEffect(() => {
-    const loadRecord = async () => {
+    if (!recordId) {
+      router.replace('/review/queue');
+      return;
+    }
+
+    const loadReview = async () => {
       try {
-        // Dans une application réelle, ceci appellerait memorizationService.getRecord(recordId)
-        // Ici, on utilise des données mockées
+        // Dans une vraie implémentation, on appellerait le service réel
+        // Pour le MVP, on utilise des données mockées basées sur l'ID
+        await new Promise(resolve => setTimeout(resolve, 500));
+
+        // Données mockées (à remplacer par un appel vrai au service)
         const mockRecord = {
           id: recordId,
           bookId: 'joh',
@@ -60,17 +56,15 @@ export default function ReviewSessionScreen() {
           translationId: 'lsg',
           bibleVerseReference: 'Jean 3:16',
           bibleVerseText: 'Car Dieu a tellement aimé le monde qu\'il a donné son Fils unique, afin que quiconque croit en lui ne périsse pas, mais qu\'il ait la vie éternelle.',
-          status: 'in-progress',
           fsrsState: { stability: 2.5, repetitions: 1, recallProbability: 0.75 },
-          nextReviewAt: Date.now(),
-          createdAt: Date.now() - 86400000,
-          lastReviewedAt: null,
-          reviewCount: 1,
-          totalReviewMinutes: 5,
-          wordPerformance: [],
+          nextReviewAt: Date.now(), // Doit être <= maintenant pour être dans la file
         };
 
-        setReviewState(mockRecord);
+        setReviewState({
+          ...mockRecord,
+          words: mockRecord.bibleVerseText.split(/\s+/).filter(w => w.length > 0),
+          revealedWords: new Set<number>(),
+        });
       } catch (error) {
         console.error('Erreur lors du chargement du record:', error);
       } finally {
@@ -78,8 +72,8 @@ export default function ReviewSessionScreen() {
       }
     };
 
-    loadRecord();
-  }, [recordId]);
+    loadReview();
+  }, [recordId, router]);
 
   if (loading) {
     return (
@@ -96,7 +90,7 @@ export default function ReviewSessionScreen() {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.error}>
-          <Text style={styles.errorTitle}>Impossible de charger le verset</Text>
+          <Text style={styles.errorTitle}>Impossible de charger ce verset</Text>
           <TouchableOpacity style={styles.button} onPress={() => router.back()}>
             <Text style={styles.buttonText}>Retour</Text>
           </TouchableOpacity>
@@ -105,128 +99,220 @@ export default function ReviewSessionScreen() {
     );
   }
 
-  // Étape 1: Preview - l'utilisateur voit le verset entier
-  if (currentStep === 'preview') {
+  // Révéler le mot suivant
+  const revealNextWord = () => {
+    const words = reviewState.words;
+    const currentRevealed = new Set(revealedWords);
+
+    // Trouver le premier mot non révélé
+    let nextIndex = -1;
+    for (let i = 0; i < words.length; i++) {
+      if (!currentRevealed.has(i)) {
+        nextIndex = i;
+        break;
+      }
+    }
+
+    if (nextIndex !== -1) {
+      currentRevealed.add(nextIndex);
+      setRevealedWords(Array.from(currentRevealed));
+    }
+  };
+
+  // Révéler un mot spécifique
+  const revealWordAt = (index: number) => {
+    if (revealedWords.includes(index)) return;
+    setRevealedWords([...revealedWords, index]);
+  };
+
+  // Passer en mode révélation
+  const startRevealing = () => {
+    setIsRevealing(true);
+  };
+
+  // Bouton de rating pour la révision
+  const handleRating = (selected: Rating) => {
+    setRating(selected);
+    setConfirming(true);
+  };
+
+  // Confirmer la soumission du rating
+  const submitRating = async () => {
+    if (!reviewState || !rating) return;
+
+    try {
+      // Dans une version réelle, appeler ici:
+      // await service.updateRecordAfterReview(recordId, rating, newFsrsState, newNextReviewAt);
+
+      // Simulation de l'update avec le mock
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      // Mettre à jour l'état comme si sauvegardé
+      const updatedState = { ...reviewState, rating, phase: 'confirmed' };
+      setReviewState(updatedState);
+
+      // Après quelques secondes, retourner à la queue
+      setTimeout(() => {
+        router.replace('/review/queue');
+      }, 1500);
+    } catch (error) {
+      console.error('Échec de la mise à jour:', error);
+      alert('Erreur lors de la sauvegarde de la révision.');
+    }
+  };
+
+  if (!isRevealing && reviewState) {
+    // Phase d'affichage initial - utilisateur doit choisir de révèler les mots
     return (
       <SafeAreaView style={styles.container}>
         <ScrollView contentContainerStyle={styles.content}>
-          <View style={styles.card}>
-            <View style={styles.header}>
-              <Text style={styles.reference}>{reviewState.bibleVerseReference}</Text>
-            </View>
+          <View style={styles.header}>
+            <Text style={styles.phaseTitle}>Révision</Text>
+          </View>
+
+          <View style={styles.verseCard}>
+            <Text style={styles.verseReference}>{reviewState.bibleVerseReference}</Text>
             <View style={styles.verseText}>
               <Text style={styles.verseContent}>{reviewState.bibleVerseText}</Text>
             </View>
-            <TouchableOpacity
-              style={styles.startButton}
-              onPress={() => setCurrentStep('reveal')}
-            >
-              <Text style={styles.startButtonText}>{t('review.startReview')}</Text>
-            </TouchableOpacity>
           </View>
-        </ScrollView>
-      </SafeAreaView>
-    );
-  }
 
-  // Étape 2: Révélation - le verset est masqué (simulé pour le MVP)
-  if (currentStep === 'reveal') {
-    // Dans la version réelle, on masquerait progressivement les mots
-    // Ici, on passe directement à l'étape de rating pour simplifier
-    return (
-      <SafeAreaView style={styles.container}>
-        <ScrollView contentContainerStyle={styles.content}>
-          <View style={styles.card}>
-            <View style={styles.header}>
-              <Text style={styles.reference}>{reviewState.bibleVerseReference}</Text>
-            </View>
-            <View style={styles.verseText}>
-              <Text style={styles.verseContentMasked}>
-                {' '.repeat(reviewState.bibleVerseText.length)}
-              </Text>
-            </View>
-            <Text style={styles.revealHint}>
-              {t('review.revealHint')}
+          <View style={styles.instructions}>
+            <Text style={styles.instructionText}>
+              {t('review.readCarefully')}
             </Text>
-            <TouchableOpacity
-              style={styles.nextButton}
-              onPress={() => setCurrentStep('rating')}
-            >
-              <Text style={styles.nextButtonText}>{t('review.continue')}</Text>
-            </TouchableOpacity>
           </View>
+
+          <TouchableOpacity style={styles.startButton} onPress={startRevealing}>
+            <Text style={styles.startButtonText}>{t('review.startReviewAction')}</Text>
+          </TouchableOpacity>
         </ScrollView>
       </SafeAreaView>
     );
   }
 
-  // Étape 3: Rating - l'utilisateur donne son auto-évaluation
-  if (currentStep === 'rating') {
+  if (isRevealing && reviewState) {
+    // Phase de révélation des mots
     return (
       <SafeAreaView style={styles.container}>
         <ScrollView contentContainerStyle={styles.content}>
-          <View style={styles.card}>
-            <View style={styles.header}>
-              <Text style={styles.reference}>{reviewState.bibleVerseReference}</Text>
-            </View>
-            <Text style={styles.ratingQuestion}>
-              {t('review.howEasyWasIt')}
+          <View style={styles.header}>
+            <Text style={styles.phaseTitle}>Rappel</Text>
+            <Text style={styles.progress}>
+              {revealedWords.length}/{reviewState.words.length} mot{revealedWords.length > 1 ? 's' : ''} révélé(s)
             </Text>
-            <View style={styles.ratingButtons}>
-              <TouchableOpacity
-                style={[styles.ratingButton, styles.ratingAgain]}
-                onPress={() => handleRating('again')}
-              >
-                <Text style={styles.ratingButtonText}>{t('review.again')}</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.ratingButton, styles.ratingHard]}
-                onPress={() => handleRating('hard')}
-              >
-                <Text style={styles.ratingButtonText}>{t('review.hard')}</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.ratingButton, styles.ratingGood]}
-                onPress={() => handleRating('good')}
-              >
-                <Text style={styles.ratingButtonText}>{t('review.good')}</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.ratingButton, styles.ratingEasy]}
-                onPress={() => handleRating('easy')}
-              >
-                <Text style={styles.ratingButtonText}>{t('review.easy')}</Text>
-              </TouchableOpacity>
+          </View>
+
+          <View style={styles.verseCard}>
+            <Text style={styles.verseReference}>{reviewState.bibleVerseReference}</Text>
+            <View style={styles.wordContainer}>
+              {reviewState.words.map((word, index) => {
+                const isRevealed = revealedWords.includes(index);
+                return (
+                  <TouchableOpacity
+                    key={index}
+                    style={styles.wordWrapper}
+                    onPress={() => revealWordAt(index)}
+                    disabled={isRevealed}
+                  >
+                    <WordChip
+                      word={word}
+                      revealed={isRevealed}
+                      onPress={() => revealWordAt(index)}
+                      style={styles.wordChip}
+                    />
+                  </TouchableOpacity>
+                );
+              })}
             </View>
           </View>
+
+          <View style={styles.controls}>
+            <TouchableOpacity style={styles.actionButton} onPress={revealNextWord}>
+              <Text style={styles.actionButtonText}>{t('review.nextWordBtn')}</Text>
+            </TouchableOpacity>
+
+            {/* Bouton de confirmation quand tous les mots sont révélés */}
+            {revealedWords.length >= reviewState.words.length && (
+              <TouchableOpacity
+                style={styles.confirmButton}
+                onPress={() => setConfirming(true)}
+                disabled={confirming}
+              >
+                <Text style={styles.confirmButtonText}>
+                  {confirming ? 'En cours...' : t('review.continueBtn')}
+                </Text>
+              </TouchableOpacity>
+            )}
+          </View>
         </ScrollView>
+
+        {/* Modal de sélection de rating */}
+        {confirming && (
+          <View style={styles.ratingModalOverlay}>
+            <View style={styles.ratingModal}>
+              <Text style={styles.ratingModalTitle}>Comment vous souveniez-vous ce verset ?</Text>
+              <View style={styles.ratingButtons}>
+                <TouchableOpacity
+                  style={[styles.ratingButton, styles.ratingAgain]}
+                  onPress={() => handleRating('again')}
+                >
+                  <Text style={styles.ratingButtonText}>{t('review.again')}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.ratingButton, styles.ratingHard]}
+                  onPress={() => handleRating('hard')}
+                >
+                  <Text style={styles.ratingButtonText}>{t('review.hard')}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.ratingButton, styles.ratingGood]}
+                  onPress={() => handleRating('good')}
+                >
+                  <Text style={styles.ratingButtonText}>{t('review.good')}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.ratingButton, styles.ratingEasy]}
+                  onPress={() => handleRating('easy')}
+                >
+                  <Text style={styles.ratingButtonText}>{t('review.easy')}</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        )}
       </SafeAreaView>
     );
   }
 
-  // Étape 4: Confirm - résumé de la session
-  if (currentStep === 'confirm') {
+  // Phase confirmée — afficher le résultat
+  if (reviewState?.phase === 'confirmed' || confirming && rating) {
     return (
       <SafeAreaView style={styles.container}>
         <ScrollView contentContainerStyle={styles.content}>
-          <View style={styles.card}>
-            <View style={styles.resultHeader}>
-              <Text style={styles.resultIcon}>📚</Text>
-              <Text style={styles.resultTitle}>Révision terminée</Text>
-            </View>
-            <View style={styles.resultInfo}>
-              <Text style={styles.resultLabel}>Verset</Text>
-              <Text style={styles.resultValue}>{reviewState.bibleVerseReference}</Text>
-            </View>
-            <View style={styles.resultInfo}>
-              <Text style={styles.resultLabel}>Rating</Text>
-              <Text style={styles.resultValue}>{t(`review.rating.${userSelectedRating}`)}</Text>
-            </View>
-            <TouchableOpacity
-              style={styles.finishButton}
-              onPress={() => router.replace('/review/queue')}
-            >
-              <Text style={styles.finishButtonText}>{t('review.finish')}</Text>
+          <View style={styles.resultHeader}>
+            <Text style={styles.resultIcon}>✓</Text>
+            <Text style={styles.resultTitle}>Révision terminée</Text>
+            <Text style={styles.resultSubtitle}>
+              Rating: {t(`review.rating.${rating}`)}
+            </Text>
+          </View>
+
+          <View style={styles.verseCard}>
+            <Text style={styles.verseReference}>{reviewState.bibleVerseReference}</Text>
+            <Text style={styles.verseContent}>{reviewState.bibleVerseText}</Text>
+          </View>
+
+          <View style={styles.infoCard}>
+            <Text style={styles.infoLabel}>Prochain rappel</Text>
+            <Text style={styles.infoValue}>
+              Dans {(rating === 'easy' ? 7 : rating === 'good' ? 3 : rating === 'hard' ? 1 : 1)} jour{s}
+            </Text>
+          </View>
+
+          <View style={styles.actions}>
+            <TouchableOpacity style={styles.finishButton} onPress={() => router.replace('/review/queue')}>
+              <Text style={styles.finishButtonText}>Terminer</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>
@@ -234,16 +320,15 @@ export default function ReviewSessionScreen() {
     );
   }
 
-  return null;
+  // Cas par défaut
+  return (
+    <SafeAreaView style={styles.container}>
+      <View style={styles.center}>
+        <ActivityIndicator size="large" color="#E91E8C" />
+      </View>
+    </SafeAreaView>
+  );
 }
-
-let userSelectedRating: Rating | null = null;
-
-const handleRating = (rating: Rating) => {
-  userSelectedRating = rating;
-  setCurrentStep('confirm');
-  // Dans la version réelle, on appellerait memorizationService.updateRecordAfterReview()
-};
 
 const styles = StyleSheet.create({
   container: {
@@ -260,10 +345,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#666',
   },
-  content: {
-    padding: 16,
-    paddingBottom: 24,
-  },
   error: {
     flex: 1,
     justifyContent: 'center',
@@ -276,36 +357,78 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginBottom: 16,
   },
-  card: {
+  button: {
+    backgroundColor: '#E91E8C',
+    borderRadius: 26,
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+  },
+  buttonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#FFFFFF',
+  },
+  content: {
+    padding: 16,
+    paddingBottom: 24,
+  },
+  header: {
+    marginBottom: 24,
+  },
+  phaseTitle: {
+    fontSize: 20,
+    fontWeight: '600',
+    color: '#2D2D2D',
+  },
+  progress: {
+    fontSize: 14,
+    color: '#A0A0A0',
+    marginTop: 8,
+  },
+  verseCard: {
     backgroundColor: '#FFFFFF',
     borderRadius: 16,
     padding: 24,
+    marginBottom: 24,
     ...shadow.md,
   },
-  header: {
+  verseReference: {
+    fontSize: 14,
+    color: '#A0A0A0',
     marginBottom: 16,
-  },
-  reference: {
-    fontSize: 16,
     fontWeight: '600',
-    color: '#E91E8C',
   },
   verseText: {
-    marginBottom: 24,
-    padding: 16,
-    backgroundColor: '#F9F9F9',
-    borderRadius: 8,
+    marginBottom: 16,
   },
   verseContent: {
     fontSize: 16,
-    lineHeight: 24,
     color: '#2D2D2D',
-  },
-  verseContentMasked: {
-    fontSize: 16,
     lineHeight: 24,
-    color: '#BDBDBD',
-    fontFamily: 'monospace',
+    textAlign: 'justify',
+  },
+  instructions: {
+    marginBottom: 24,
+  },
+  instructionText: {
+    fontSize: 14,
+    color: '#666',
+    textAlign: 'center',
+    fontStyle: 'italic',
+  },
+  wordContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 6,
+    marginBottom: 16,
+  },
+  wordWrapper: {
+    margin: 2,
+  },
+  controls: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 24,
   },
   startButton: {
     backgroundColor: '#E91E8C',
@@ -319,31 +442,102 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#FFFFFF',
   },
-  nextButton: {
+  actionButton: {
+    backgroundColor: '#FFFFFF',
+    borderColor: '#E91E8C',
+    borderWidth: 2,
+    borderRadius: 26,
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+  },
+  actionButtonText: {
+    fontSize: 16,
+    color: '#E91E8C',
+    fontWeight: '600',
+  },
+  confirmButton: {
     backgroundColor: '#E91E8C',
     borderRadius: 26,
-    paddingVertical: 14,
-    paddingHorizontal: 32,
-    alignItems: 'center',
-    marginTop: 16,
+    paddingVertical: 12,
+    paddingHorizontal: 24,
   },
-  nextButtonText: {
+  confirmButtonText: {
     fontSize: 16,
     fontWeight: '600',
     color: '#FFFFFF',
   },
-  revealHint: {
-    fontSize: 14,
-    color: '#666',
-    textAlign: 'center',
+  resultHeader: {
+    alignItems: 'center',
     marginBottom: 24,
   },
-  ratingQuestion: {
+  resultIcon: {
+    fontSize: 48,
+    marginBottom: 16,
+  },
+  resultTitle: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: '#2D2D2D',
+    marginBottom: 8,
+  },
+  resultSubtitle: {
+    fontSize: 16,
+    color: '#A0A0A0',
+  },
+  infoCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 24,
+    alignItems: 'center',
+  },
+  infoLabel: {
+    fontSize: 14,
+    color: '#666',
+    marginBottom: 4,
+  },
+  infoValue: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#E91E8C',
+  },
+  actions: {
+    marginTop: 24,
+  },
+  finishButton: {
+    backgroundColor: '#E91E8C',
+    borderRadius: 26,
+    paddingVertical: 16,
+    alignItems: 'center',
+  },
+  finishButtonText: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#FFFFFF',
+  },
+  ratingModalOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  ratingModal: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    padding: 24,
+    width: '85%',
+    maxWidth: 400,
+  },
+  ratingModalTitle: {
     fontSize: 18,
     fontWeight: '600',
     color: '#2D2D2D',
-    textAlign: 'center',
     marginBottom: 24,
+    textAlign: 'center',
   },
   ratingButtons: {
     flexDirection: 'row',
@@ -372,58 +566,6 @@ const styles = StyleSheet.create({
   ratingButtonText: {
     color: '#FFFFFF',
     fontWeight: '600',
-  },
-  resultHeader: {
-    alignItems: 'center',
-    marginBottom: 24,
-  },
-  resultIcon: {
-    fontSize: 48,
-    marginBottom: 8,
-  },
-  resultTitle: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: '#2D2D2D',
-  },
-  resultInfo: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F5F5F5',
-  },
-  resultLabel: {
-    fontSize: 14,
-    color: '#666',
-  },
-  resultValue: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#2D2D2D',
-  },
-  finishButton: {
-    backgroundColor: '#E91E8C',
-    borderRadius: 26,
-    paddingVertical: 14,
-    alignItems: 'center',
-  },
-  finishButtonText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#FFFFFF',
-  },
-  button: {
-    backgroundColor: '#E91E8C',
-    borderRadius: 26,
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    marginTop: 16,
-  },
-  buttonText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#FFFFFF',
   },
 });
 
