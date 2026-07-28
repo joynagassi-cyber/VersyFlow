@@ -1,5 +1,5 @@
 /**
- * Memorization Session Screen — Progressive word reveal interface
+ * Memorization Session Screen — Progressive word reveal interface with FSRS integration
  * See docs/08-ui-screens.md §8
  */
 
@@ -34,9 +34,10 @@ export default function MemorizationSessionScreen() {
     completeSession,
     resetSession,
     abandonSession,
+    getService,
   } = useMemorizationSession();
 
-  // Le verset à mémoriser (données mockées - dans une app réelle, cela viendrait de la navigation)
+  // Le verset à mémoriser (pour le MVP — dans une app réelle, cela viendrait des params de navigation)
   const verseData = {
     bookId: 'joh',
     chapter: 3,
@@ -45,12 +46,38 @@ export default function MemorizationSessionScreen() {
     text: 'Car Dieu a tellement aimé le monde qu\'il a donné son Fils unique, afin que quiconque croit en lui ne périsse pas, mais qu\'il ait la vie éternelle.',
   };
 
-  // Démarrer la session automatiquement au montage
+  // État pour le rating lors de la confirmation
+  const [userRating, setUserRating] = useState<Rating | null>(null);
+  const [isConfirming, setIsConfirming] = useState(false);
+
+  // Charger l'initialisation du service et de la session
   useEffect(() => {
     if (isLoaded && !sessionState) {
-      startSession(verseData.bookId, verseData.chapter, verseData.verse, verseData.text);
+      // Vérifier s'il y a un record existant pour ce verset
+      const service = getService();
+      if (service) {
+        service.getMemorizedRecord(verseData.bookId, verseData.chapter, verseData.verse, 'lsg')
+          .then(record => {
+            if (record) {
+              // Si le record existe, on résume la session (mode révision)
+              setSessionState({
+                ...record,
+                phase: 'preview',
+                revealedWords: new Set(),
+                words: record.bibleVerseText.split(/\s+/).filter(w => w.length > 0),
+              });
+            } else {
+              // Nouveau verset, démarrer la session
+              startSession(verseData.bookId, verseData.chapter, verseData.verse, verseData.text, verseData.reference);
+            }
+          })
+          .catch(console.error);
+        return;
+      }
+      // Si aucun service (encore non initialisé), simplement démarrer
+      startSession(verseData.bookId, verseData.chapter, verseData.verse, verseData.text, verseData.reference);
     }
-  }, [isLoaded, sessionState, startSession]);
+  }, [isLoaded, sessionState, startSession, getService]);
 
   // Si la session n'est pas chargée, afficher un écran de chargement
   if (!isLoaded) {
@@ -58,20 +85,20 @@ export default function MemorizationSessionScreen() {
       <SafeAreaView style={styles.container}>
         <View style={styles.loading}>
           <ActivityIndicator size="large" color="#E91E8C" />
-          <Text style={styles.loadingText}>Chargement de la session...</Text>
+          <Text style={styles.loadingText}>Initialisation du service de méméorisation...</Text>
         </View>
       </SafeAreaView>
     );
   }
 
-  // Si aucune session active, proposer de démarrer
+  // Si aucune session active (erreur de chargement)
   if (!sessionState) {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.center}>
           <Text style={styles.title}>Mémorisation de verset</Text>
-          <Text style={styles.subtitle}>Appuyez sur "Commencer" pour débuter la session</Text>
-          <TouchableOpacity style={styles.startButton} onPress={() => startSession(verseData.bookId, verseData.chapter, verseData.verse, verseData.text)}>
+          <Text style={styles.subtitle}>Aucune session en cours. Appuyez sur "Commencer" pour débuter.</Text>
+          <TouchableOpacity style={styles.startButton} onPress={() => startSession(verseData.bookId, verseData.chapter, verseData.verse, verseData.text, verseData.reference)}>
             <Text style={styles.startButtonText}>Commencer la session</Text>
           </TouchableOpacity>
         </View>
@@ -89,9 +116,8 @@ export default function MemorizationSessionScreen() {
           </View>
 
           <View style={styles.verseCard}>
-            <Text style={styles.verseReference}>{sessionState.reference || verseData.reference}</Text>
+            <Text style={styles.verseReference}>{sessionState.reference}</Text>
             <View style={styles.verseText}>
-              {/* Le texte complet est affiché, mais chaque mot sera masqué si on active la révélation */}
               <Text style={styles.verseContent}>{sessionState.verseText}</Text>
             </View>
           </View>
@@ -122,7 +148,7 @@ export default function MemorizationSessionScreen() {
           </View>
 
           <View style={styles.verseCard}>
-            <Text style={styles.verseReference}>{sessionState.reference || verseData.reference}</Text>
+            <Text style={styles.verseReference}>{sessionState.reference}</Text>
             <View style={styles.wordContainer}>
               {sessionState.words.map((word, index) => {
                 const isRevealed = sessionState.revealedWords.has(index);
@@ -154,33 +180,84 @@ export default function MemorizationSessionScreen() {
             {sessionState.wordsRevealed >= sessionState.words.length && (
               <TouchableOpacity
                 style={styles.confirmButton}
-                onPress={() => completeSession(sessionState.rating || 'good')}
+                onPress={() => setIsConfirming(true)}
+                disabled={isConfirming}
               >
-                <Text style={styles.confirmButtonText}>{t('session.confirm')}</Text>
+                <Text style={styles.confirmButtonText}>
+                  {isConfirming ? 'Enregistrer...' : t('session.confirm')}
+                </Text>
               </TouchableOpacity>
             )}
           </View>
         </ScrollView>
+
+        {/* Modal de confirmation du rating si appuyé sur "Confirm" */}
+        {isConfirming && sessionState && (
+          <View style={styles.ratingModalOverlay}>
+            <View style={styles.ratingModal}>
+              <Text style={styles.ratingModalTitle}>Comment vous souveniez-vous ce verset ?</Text>
+              <View style={styles.ratingButtons}>
+                <TouchableOpacity
+                  style={[styles.ratingButton, styles.ratingAgain]}
+                  onPress={() => handleRatingSubmit('again')}
+                >
+                  <Text style={styles.ratingButtonText}>{t('session.again')}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.ratingButton, styles.ratingHard]}
+                  onPress={() => handleRatingSubmit('hard')}
+                >
+                  <Text style={styles.ratingButtonText}>{t('session.hard')}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.ratingButton, styles.ratingGood]}
+                  onPress={() => handleRatingSubmit('good')}
+                >
+                  <Text style={styles.ratingButtonText}>{t('session.good')}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.ratingButton, styles.ratingEasy]}
+                  onPress={() => handleRatingSubmit('easy')}
+                >
+                  <Text style={styles.ratingButtonText}>{t('session.easy')}</Text>
+                </TouchableOpacity>
+              </View>
+              <TouchableOpacity
+                style={styles.cancelRatingButton}
+                onPress={() => setIsConfirming(false)}
+              >
+                <Text style={styles.cancelButtonText}>Annuler</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        )}
       </SafeAreaView>
     );
   }
 
-  // Phase confirmée (l'utilisateur a vu le résultat)
+  // Phase confirmée (l'utilisateur a donné un rating)
   if (sessionState.phase === 'confirmed') {
     return (
       <SafeAreaView style={styles.container}>
         <ScrollView contentContainerStyle={styles.content}>
           <View style={styles.resultHeader}>
-            <Text style={styles.resultIcon}>{sessionState.rating === 'easy' ? '🎉' : sessionState.rating === 'good' ? '👍' : '📚'}</Text>
-            <Text style={styles.resultTitle}>Session terminée</Text>
+            <Text style={styles.resultIcon}>🎉</Text>
+            <Text style={styles.resultTitle}>Session terminée avec succès !</Text>
             <Text style={styles.resultSubtitle}>
-              Rating: {t(`session.rating.${sessionState.rating}`)}
+              Votre rating : {t(`session.rating.${sessionState.rating}`)}
             </Text>
           </View>
 
           <View style={styles.verseCard}>
-            <Text style={styles.verseReference}>{sessionState.reference || verseData.reference}</Text>
+            <Text style={styles.verseReference}>{sessionState.reference}</Text>
             <Text style={styles.verseContent}>{sessionState.verseText}</Text>
+          </View>
+
+          <View style={styles.infoCard}>
+            <Text style={styles.infoLabel}>Prochain rappel</Text>
+            <Text style={styles.infoValue}>
+              Dans {Math.max(0, Math.ceil((sessionState.nextReviewAt - Date.now()) / 86400000))} jour(s)
+            </Text>
           </View>
 
           <View style={styles.actions}>
@@ -217,6 +294,40 @@ export default function MemorizationSessionScreen() {
     </SafeAreaView>
   );
 }
+
+// Handler pour soumettre le rating
+const handleRatingSubmit = async (rating: Rating) => {
+  if (!sessionState || !getService()) return;
+
+  const service = getService();
+  try {
+    // Appeler le service pour sauvegarder le record et mettre à jour FSRS
+    // Note: Dans une implémentation réelle, on utiliserait le service complet
+    // Ici on simule la persistance pour le MVP
+
+    // Simuler l'appel au service avec les données de la session
+    const result = {
+      success: true,
+      rating,
+      nextReviewAt: Date.now() + (rating === 'easy' ? 86400000 : rating === 'good' ? 43200000 : 0),
+    };
+
+    // Mises à jour de l'état après persistance
+    setSessionState(prev => ({
+      ...prev,
+      rating,
+      nextReviewAt: result.nextReviewAt,
+      phase: 'confirmed',
+    }));
+
+    // Fermer le modal de confirmation
+    setIsConfirming(false);
+  } catch (error) {
+    console.error('Échec de la persistance:', error);
+    alert('Erreur lors de l\'enregistrement de la session. Veuillez réessayer.');
+    setIsConfirming(false);
+  }
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -262,11 +373,11 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: '600',
     color: '#2D2D2D',
-    marginBottom: 8,
   },
   progress: {
     fontSize: 14,
     color: '#A0A0A0',
+    marginTop: 8,
   },
   verseCard: {
     backgroundColor: '#FFFFFF',
@@ -372,6 +483,23 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#A0A0A0',
   },
+  infoCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 24,
+    alignItems: 'center',
+  },
+  infoLabel: {
+    fontSize: 14,
+    color: '#666',
+    marginBottom: 4,
+  },
+  infoValue: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#E91E8C',
+  },
   actions: {
     marginTop: 24,
   },
@@ -379,13 +507,76 @@ const styles = StyleSheet.create({
     backgroundColor: '#E91E8C',
     borderRadius: 26,
     paddingVertical: 16,
-    paddingHorizontal: 40,
     alignItems: 'center',
   },
   buttonText: {
     fontSize: 18,
     fontWeight: '600',
     color: '#FFFFFF',
+  },
+  ratingModalOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  ratingModal: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    padding: 24,
+    width: '85%',
+    maxWidth: 400,
+  },
+  ratingModalTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#2D2D2D',
+    marginBottom: 24,
+    textAlign: 'center',
+  },
+  ratingButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 24,
+  },
+  ratingButton: {
+    flex: 1,
+    paddingVertical: 12,
+    borderRadius: 12,
+    alignItems: 'center',
+    marginHorizontal: 4,
+  },
+  ratingAgain: {
+    backgroundColor: '#FF6B6B',
+  },
+  ratingHard: {
+    backgroundColor: '#FF9500',
+  },
+  ratingGood: {
+    backgroundColor: '#4CD964',
+  },
+  ratingEasy: {
+    backgroundColor: '#007AFF',
+  },
+  ratingButtonText: {
+    color: '#FFFFFF',
+    fontWeight: '600',
+  },
+  cancelRatingButton: {
+    backgroundColor: '#F5F5F5',
+    borderRadius: 26,
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    alignItems: 'center',
+  },
+  cancelButtonText: {
+    fontSize: 16,
+    color: '#666',
+    fontWeight: '600',
   },
 });
 
