@@ -4,10 +4,8 @@
     "slug": "versyflow",
     "version": "0.1.0",
     "orientation": "portrait",
-    "icon": "./assets/icons/app-icon.svg",
+    "icon": "./assets/icons/versyflow_logo_app.png",
     "splash": {
-      "image": "./assets/splash/splash.svg",
-      "resizeMode": "contain",
       "backgroundColor": "#FFF0F6"
     },
     "presenter": {
@@ -24,8 +22,8 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/icons/adaptive-foreground.svg",
-        "backgroundImage": "./assets/icons/adaptive-background.svg"
+        "foregroundImage": "./assets/icons/versyflow_logo_app.png",
+        "backgroundImage": "./assets/icons/versyflow_logo_app.png"
       }
     }
   }
