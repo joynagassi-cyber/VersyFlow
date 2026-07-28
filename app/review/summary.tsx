@@ -48,7 +48,7 @@ export default function ReviewSummaryScreen() {
             <Text style={styles.statLabel}>{t('review.mastered')}</Text>
           </View>
           <View style={styles.statCard}>
-            <Text style={styles.statNumber}{stats.inProgress}</Text>
+            <Text style={styles.statNumber}>{stats.inProgress}</Text>
             <Text style={styles.statLabel}>{t('review.inProgress')}</Text>
           </View>
         </View>
@@ -62,7 +62,7 @@ export default function ReviewSummaryScreen() {
             </View>
             <Text style={styles.chartPercent}>{stats.retentionRate}%</Text>
           </View>
-          <Text style={chartSubtitle}>{t('review.retentionDescription')}</Text>
+          <Text style={styles.chartSubtitle}>{t('review.retentionDescription')}</Text>
         </View>
 
         {/* Statistiques détaillées */}
@@ -73,11 +73,11 @@ export default function ReviewSummaryScreen() {
             <Text style={styles.detailValue}>{stats.todayReviews}</Text>
           </View>
           <View style={styles.detailItem}>
-            <Text style={styles.detailLabelVerses memorisés</Text>
+            <Text style={styles.detailLabel}>Verses memorisés</Text>
             <Text style={styles.detailValue}>{stats.mastered}</Text>
           </View>
           <View style={styles.detailItem}>
-            <Text style={styles.detailLabelEn cours</Text>
+            <Text style={styles.detailLabel}>En cours</Text>
             <Text style={styles.detailValue}>{stats.inProgress}</Text>
           </View>
         </View>
