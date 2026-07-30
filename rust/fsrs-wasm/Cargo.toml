@@ -1,0 +1,10 @@
+[package]
+name = "fsrs-wasm"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+fsrs = "2.2"
+wasm-bindgen = "0.2"
+js-sys = "0.3"
+serde = { version = "1.0", features = ["derive"] }

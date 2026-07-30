@@ -4,7 +4,9 @@
  */
 
 import { SessionState, SessionPhase, VerificationResult, DEFAULT_MVP_STRATEGY, ExerciseStrategy, MaskingConfig, getMaskingConfigForStability } from './entities';
-import { Rating } from '../fsrs';
+import { ComparisonEngine } from './comparison-engine';
+import { Rating } from '@/domains/fsrs';
+import { WordFailureTracker } from '@/services/word-failure-tracker';
 
 /**
  * SessionEngine: manages the complete lifecycle of a memorization session.
@@ -14,6 +16,7 @@ export class SessionEngine {
   private state: SessionState;
   private strategy: ExerciseStrategy;
   private maskingConfig: MaskingConfig;
+  private wordFailureTracker: WordFailureTracker;
 
   constructor(verseText: string, initialStrategy?: ExerciseStrategy) {
     this.state = {
@@ -33,6 +36,18 @@ export class SessionEngine {
       preservedWords: [],
       maskingOrder: 'progressive',
     };
+    this.wordFailureTracker = new WordFailureTracker();
+  }
+
+  /**
+   * Change the exercise strategy during a session
+   */
+  setStrategy(strategy: ExerciseStrategy): void {
+    this.strategy = strategy;
+    // Reset state when changing strategy
+    this.state.revealedWordIndices.clear();
+    this.state.wordsRevealed = 0;
+    this.state.phase = 'preview';
   }
 
   /**
@@ -92,70 +107,142 @@ export class SessionEngine {
   }
 
   /**
-   * VERIFY answer — compare user input against expected verse
-   * Returns structured verification result
+   * REVEAL SENTENCE — reveal by sentence segments (for phrase-by-phrase reading)
+   * Groups words into sentences based on punctuation
    */
-  verifyAnswer(userInput: string): VerificationResult {
-    const expected = this.state.verseText.toLowerCase().trim();
-    const provided = userInput.toLowerCase().trim();
+  revealNextSentence(): void {
+    if (this.state.phase !== 'preview' && this.state.phase !== 'revealing') {
+      throw new Error(`SessionEngine: Cannot reveal sentences from state ${this.state.phase}`);
+    }
 
-    // Simple word-by-word comparison
-    const expectedWords = expected.split(/\s+/);
-    const providedWords = provided.split(/\s+/);
+    this.state.phase = 'revealing';
 
-    const result: VerificationResult = {
-      score: 0,
-      correctWords: [],
-      missingWords: [],
-      extraWords: [],
-      substitutedWords: [],
-      characterDiffs: [],
-      strongPortions: [],
-      fragilePortions: [],
-    };
+    // Simple sentence detection (split on .!?)
+    const sentenceEnds: number[] = [];
+    for (let i = 0; i < this.state.verseText.length; i++) {
+      const char = this.state.verseText[i];
+      if (char === '.' || char === '!' || char === '?') {
+        // Find the next word boundary after this punctuation
+        let j = i + 1;
+        while (j < this.state.verseText.length && this.state.verseText[j] === ' ') {
+          j++;
+        }
+        sentenceEnds.push(j - 1); // Position before the next word
+      }
+    }
 
-    // Calculate similarity using edit distance approximation
-    let matches = 0;
-    const maxLen = Math.max(expectedWords.length, providedWords.length);
+    // Find the next unrevealed sentence segment
+    let nextEnd = -1;
+    for (const end of sentenceEnds) {
+      // Check if all words up to this point are revealed
+      const wordsUpToEnd = this.getWordsUpToPosition(end);
+      if (wordsUpToEnd.every(wIndex => !this.state.revealedWordIndices.has(wIndex))) {
+        nextEnd = end;
+        break;
+      }
+    }
 
-    for (let i = 0; i < Math.min(expectedWords.length, providedWords.length); i++) {
-      if (expectedWords[i] === providedWords[i]) {
-        matches++;
-        result.correctWords.push(expectedWords[i]);
-      } else {
-        result.substitutedWords.push({
-          expected: expectedWords[i],
-          got: providedWords[i],
-        });
-
-        // Check if word is present elsewhere (transposition detection)
-        if (providedWords.includes(expectedWords[i])) {
-          result.extraWords.push(providedWords[i]); // Will be corrected below
+    if (nextEnd !== -1) {
+      // Reveal all words in this sentence segment
+      const wordsUpToNextEnd = this.getWordsUpToPosition(nextEnd);
+      for (const wordIndex of wordsUpToNextEnd) {
+        if (!this.state.revealedWordIndices.has(wordIndex)) {
+          this.state.revealedWordIndices.add(wordIndex);
+          this.state.wordsRevealed++;
         }
       }
+    } else {
+      // Fallback: reveal one word at a time
+      this.revealNextWord();
+    }
+  }
+
+  /**
+   * Helper: Get word indices up to a given character position in the verse text
+   */
+  private getWordsUpToPosition(pos: number): number[] {
+    const words: number[] = [];
+    let wordStart = 0;
+    let charPos = 0;
+
+    for (let i = 0; i < this.state.verseText.length && charPos <= pos; i++) {
+      const char = this.state.verseText[i];
+      if (char === ' ') {
+        // End of a word
+        if (i > wordStart && i <= pos + 1) {
+          // Find the word index in the words array
+          const wordText = this.state.verseText.slice(wordStart, i);
+          const wordIndex = this.state.words.findIndex(w => w === wordText && w.length > 0);
+          if (wordIndex !== -1 && !words.includes(wordIndex)) {
+            words.push(wordIndex);
+          }
+        }
+        wordStart = i + 1;
+      }
+      charPos++;
     }
 
-    // Handle extra words in provided text
-    for (const pw of providedWords) {
-      if (!expectedWords.includes(pw) && !result.correctWords.includes(pw)) {
-        result.extraWords.push(pw);
+    // Add the last word if we haven't reached the end
+    if (wordStart < this.state.verseText.length && charPos <= pos) {
+      const wordText = this.state.verseText.slice(wordStart);
+      const wordIndex = this.state.words.findIndex(w => w === wordText && w.length > 0);
+      if (wordIndex !== -1 && !words.includes(wordIndex)) {
+        words.push(wordIndex);
       }
     }
 
-    // Handle missing words
-    for (const ew of expectedWords) {
-      if (!providedWords.includes(ew) && !result.correctWords.includes(ew)) {
-        result.missingWords.push(ew);
+    return words;
+  }
+
+  /**
+   * REVEAL RANDOM — reveal words in random order (for random masking strategy)
+   */
+  revealNextRandomWord(): void {
+    if (this.state.phase !== 'preview' && this.state.phase !== 'revealing') {
+      throw new Error(`SessionEngine: Cannot reveal random words from state ${this.state.phase}`);
+    }
+
+    this.state.phase = 'revealing';
+
+    // Find all unrevealed words
+    const unrevealedIndices: number[] = [];
+    for (let i = 0; i < this.state.totalWords; i++) {
+      if (!this.state.revealedWordIndices.has(i)) {
+        unrevealedIndices.push(i);
       }
     }
 
-    // Overall similarity score
-    result.score = maxLen > 0 ? matches / maxLen : 0;
+    if (unrevealedIndices.length > 0) {
+      // Pick a random unrevealed word
+      const randomIndex = unrevealedIndices[Math.floor(Math.random() * unrevealedIndices.length)];
+      this.state.revealedWordIndices.add(randomIndex);
+      this.state.wordsRevealed++;
+    }
+  }
 
-    // Segment into portions for strong/fragile analysis
-    this.analyzePortions(expectedWords, result);
+  /**
+   * REVEAL BY DIFFICULTY — reveal hardest words first (for smart masking)
+   * Uses failure frequency from wordPerformance data (if available)
+   */
+  revealNextDifficultyWord(): void {
+    if (this.state.phase !== 'preview' && this.state.phase !== 'revealing') {
+      throw new Error(`SessionEngine: Cannot reveal by difficulty from state ${this.state.phase}`);
+    }
 
-    return result;
+    this.state.phase = 'revealing';
+
+    // For MVP, fall back to progressive reveal
+    // In a full implementation, this would use failure frequency from historical data
+    this.revealNextWord();
+  }
+
+  /**
+   * VERIFY answer — compare user input against expected verse
+   * Returns structured verification result using ComparisonEngine
+   */
+  verifyAnswer(userInput: string): VerificationResult {
+    const comparisonEngine = new ComparisonEngine();
+    return comparisonEngine.compare(userInput, this.state.verseText);
   }
 
   /**
@@ -213,40 +300,44 @@ export class SessionEngine {
     this.state.wordsRevealed = 0;
     this.state.phase = 'preview';
     this.state.startedAt = Date.now();
+    this.wordFailureTracker.clear();
   }
 
-  private analyzePortions(words: string[], result: VerificationResult): void {
-    // Group consecutive correct/incorrect words into portions
-    let currentStart = 0;
-    let currentCorrect = 0;
-
-    for (let i = 0; i < words.length; i++) {
-      const isCorrect = result.correctWords.includes(words[i]);
-
-      if (isCorrect) {
-        currentCorrect++;
-      }
-
-      if (!isCorrect || i === words.length - 1) {
-        // End of a portion segment
-        const accuracy = currentCorrect / (i - currentStart + 1 || 1);
-        if (accuracy >= 0.8) {
-          result.strongPortions.push({
-            start: currentStart,
-            end: i,
-            accuracy,
-          });
-        } else if (accuracy < 0.5) {
-          result.fragilePortions.push({
-            start: currentStart,
-            end: i,
-            accuracy,
-          });
-        }
-
-        currentStart = i + 1;
-        currentCorrect = 0;
+  /**
+   * Record word failures based on verification result
+   * Call this after verifyAnswer() to analyze missed words
+   */
+  recordWordFailures(verification: VerificationResult, now: number): void {
+    // Track missing words as failures
+    for (const word of verification.missingWords) {
+      // Find the position of this word in the verse
+      const wordIndex = this.state.words.findIndex(w => w.toLowerCase() === word.toLowerCase());
+      if (wordIndex !== -1) {
+        this.wordFailureTracker.recordFailure(word, wordIndex, now);
       }
     }
+
+    // Track substituted words as failures
+    for (const sub of verification.substitutedWords) {
+      // Find the expected word position
+      const wordIndex = this.state.words.findIndex(w => w.toLowerCase() === sub.expected.toLowerCase());
+      if (wordIndex !== -1) {
+        this.wordFailureTracker.recordFailure(sub.expected, wordIndex, now);
+      }
+    }
+  }
+
+  /**
+   * Get the most forgotten words for this session
+   */
+  getMostForgottenWords(count: number = 3): Array<{ word: string; failCount: number; lastFailedAt: number; position: number }> {
+    return this.wordFailureTracker.getMostForgottenWords(count);
+  }
+
+  /**
+   * Check if a word is frequently forgotten
+   */
+  isWordForgotten(word: string, threshold: number = 2): boolean {
+    return this.wordFailureTracker.getFailureRate(word) >= threshold;
   }
 }

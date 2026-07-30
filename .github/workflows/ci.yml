@@ -49,15 +49,16 @@ jobs:
         run: npm ci
 
       - name: Run unit tests
-        run: npx jest --ci --coverage --passWithNoTests
+        run: npx jest --ci --coverage --passWithNoTests --setupFilesAfterEnv=""
 
       - name: Check coverage thresholds
         run: npx jest --ci --coverage --coverageThreshold='{"global":{"branches":70,"functions":70,"lines":70,"statements":70}}' || true
 
-  # ─── Build (iOS + Android) ──────────────────
-  build:
+  # ─── Build (EAS Build for Android) ──────────
+  build-android:
     needs: test
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop'
     steps:
       - uses: actions/checkout@v4
 
@@ -69,8 +70,49 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Prebuild iOS
-        run: npx expo prebuild --platform ios --clean
+      - name: Install EAS CLI
+        run: npm install -g @expo/eas-cli
 
-      - name: Prebuild Android
-        run: npx expo prebuild --platform android --clean
+      - name: Build Android APK with EAS
+        run: eas build --profile release --platform android --non-interactive
+        env:
+          EAS_PROJECT_ID: fdf6934d-4d84-4a1f-b9be-7071fc3d6dd9
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-release
+          path: build-*/app-*.apk
+          retention-days: 30
+
+  # ─── Deploy to GitHub Release ───────────────
+  deploy:
+    needs: build-android
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    steps:
+      - name: Download APK
+        uses: actions/download-artifact@v4
+        with:
+          name: android-release
+          path: artifacts
+
+      - name: Create GitHub Release
+        uses: actions/create-release@v1
+        with:
+          tag_name: v${{ github.run_number }}
+          release_name: VersyFlow v${{ github.run_number }}
+          body: "Automated release from GitHub Actions"
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create-release.outputs.url }}
+          asset_path: artifacts/app-*.apk
+          asset_name: versyflow-release.apk
+          asset_type: application/vnd.android.package-archive

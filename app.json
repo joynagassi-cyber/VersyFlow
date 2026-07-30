@@ -24,7 +24,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/icons/versyflow_logo_app.png",
         "backgroundImage": "./assets/icons/versyflow_logo_app.png"
-      }
+      },
+      "package": "com.anonymous.versyflow"
     }
   }
 }

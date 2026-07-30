@@ -1,0 +1,82 @@
+{
+  "name": "versyflow",
+  "version": "0.1.0",
+  "description": "VersyFlow — Application de mémorisation de versets bibliques",
+  "main": "node_modules/expo/AppRegistry",
+  "license": "MIT",
+  "tools": ["expo-cli"],
+  "scripts": {
+    "start": "expo start",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint . --ext .ts,.tsx",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "workflow": "node scripts/workflow.js",
+    "sprint": "node scripts/workflow.js sprint",
+    "task": "node scripts/workflow.js task",
+    "monitor": "node scripts/workflow.js monitor",
+    "release": "node scripts/workflow.js release"
+  },
+  "dependencies": {
+    "expo": "~52.0.0",
+    "expo-constants": "~16.0.1",
+    "expo-font": "~12.0.0",
+    "expo-router": "~4.0.0",
+    "expo-status-bar": "~2.0.0",
+    "expo-localization": "~15.0.0",
+    "expo-haptics": "~13.0.0",
+    "expo-async-storage": "~15.0.0",
+    "react-native-reanimated": "~3.3.0",
+    "@shopify/flash-list": "^1.7.1",
+    "react": "18.3.1",
+    "react-native": "0.76.0",
+    "zustand": "^5.0.0",
+    "react-i18next": "^15.0.0",
+    "i18next": "^24.0.0",
+    "zod": "^3.22.0",
+  "@insforge/sdk": "1.5.1"
+  },
+  "devDependencies": {
+    "@babel/preset-typescript": "^7.26.0",
+    "@types/react": "^18.3.0",
+    "@types/react-native": "^0.72.0",
+    "@types/node": "^20.0.0",
+    "typescript": "5.6.2",
+    "eslint": "^8.56.0",
+    "prettier": "^3.2.5",
+    "husky": "^9.0.6",
+    "lint-staged": "^15.2.0",
+    "jest": "^29.7.0",
+    "jest-expo": "^52.0.0",
+    "@typescript-eslint/parser": "^7.0.0",
+    "@typescript-eslint/eslint-plugin": "^7.0.0"
+  },
+  "expo": {
+    "name": "VersyFlow",
+    "slug": "versyflow",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "icon": "./assets/app-icon.png",
+    "presenter": {
+      "url": "https://expo.dev/@joe/versyflow"
+    },
+    "updates": {
+      "enabled": false
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon-foreground.png",
+        "backgroundImage": "./assets/adaptive-icon-background.png"
+      }
+    }
+  }
+}

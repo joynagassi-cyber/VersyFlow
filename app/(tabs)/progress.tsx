@@ -1,6 +1,6 @@
 /**
- * Progress Tab — Dashboard with stats and streak
- * Features: StatsGrid, WeeklyChart, StreakBadge
+ * Progress Tab — Dashboard with real progress statistics
+ * Connects to ProgressService for live data
  * See docs/08-ui-screens.md §10
  */
 
@@ -9,164 +9,151 @@ import {
   View,
   Text,
   StyleSheet,
-  SafeAreaView,
   ScrollView,
-  TouchableOpacity,
+  SafeAreaView,
+  ActivityIndicator,
 } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useI18n } from '@/hooks/useI18n';
+import { MemorizationService } from '@/domains/memorization/service';
+import { IFsrsEngine, Sm2FallbackEngine } from '@/domains/fsrs';
+import { MmkvStorage } from '@/infrastructure/storage';
+import { ProgressService, ProgressStats } from '@/services/progress-service';
 
-// Données de mock pour le dashboard
-const WEEKLY_DATA = [
-  { day: 'Lun', value: 3 },
-  { day: 'Mar', value: 5 },
-  { day: 'Mer', value: 2 },
-  { day: 'Jeu', value: 7 },
-  { day: 'Ven', value: 4 },
-  { day: 'Sam', value: 1 },
-  { day: 'Dim', value: 6 },
-];
+// Singleton pour le service
+let memorizationService: MemorizationService | null = null;
+
+const getMemorizationService = () => {
+  if (!memorizationService) {
+    const storage = new MmkvStorage();
+    const fsrs = new Sm2FallbackEngine();
+    memorizationService = new MemorizationService(storage, fsrs);
+  }
+  return memorizationService;
+};
 
 export default function ProgressScreen() {
-  const router = useRouter();
-  const [streak, setStreak] = useState(3);
-  const [dailyGoal, setDailyGoal] = useState(5);
+  const { t } = useI18n();
+  const [stats, setStats] = useState<ProgressStats | null>(null);
+  const [loading, setLoading] = useState(true);
 
+  // Charger les stats au montage
   useEffect(() => {
-    // Charger les données de progression en temps réel
-    const interval = setInterval(() => {
-      // Simulation de mise à jour en temps réel
-      setStreak(prev => Math.max(0, prev + (Math.random() > 0.7 ? 1 : -1)));
-    }, 3000);
-
-    return () => clearInterval(interval);
+    loadStats();
   }, []);
 
-  const totalVerses = 124;
-  const mastered = 47;
-  const inProgress = 32;
-  const newVerses = 45;
+  const loadStats = async () => {
+    try {
+      const service = getMemorizationService();
+      const progressService = new ProgressService(service, new Sm2FallbackEngine());
+      const statsData = await progressService.getStats();
+      setStats(statsData);
+    } catch (error) {
+      console.error('Error loading progress stats:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  const percentage = Math.round((mastered / totalVerses) * 100);
+  if (loading) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={styles.center}>
+          <ActivityIndicator size="large" color="#E91E8C" />
+          <Text style={styles.loadingText}>Chargement des statistiques...</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
+  if (!stats) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={styles.empty}>
+          <Text style={styles.emptyIcon}>📊</Text>
+          <Text style={styles.emptyTitle}>Aucune progression enregistrée</Text>
+          <Text style={styles.emptySubtitle}>
+            Commencez à mémoriser des versets pour voir vos statistiques ici
+          </Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.content}>
-        {/* Header avec la streak */}
-        <View style={styles.streakCard}>
-          <View style={styles.streakHeader}>
-            <Text style={styles.streakTitle}>Feu d'objectif 🔥</Text>
-            <TouchableOpacity onPress={() => router.push('/settings')}>
-              <Text style={styles.streakSettings}>Paramètres</Text>
-            </TouchableOpacity>
-          </View>
-          <View style={styles.streakMain}>
-            <Text style={styles.streakNumber}>{streak}</Text>
-            <Text style={styles.streakLabel}>jour(s) de suite</Text>
-          </View>
-          <View style={styles.streakProgress}>
-            <View
-              style={[
-                styles.streakProgressFill,
-                { width: `${Math.min(streak * 10, 100)}%` },
-              ]}
-            />
-          </View>
-        </View>
-
-        {/* Statistiques principales */}
+        {/* Stats Grid 2x2 */}
         <View style={styles.statsGrid}>
           <View style={styles.statCard}>
-            <Text style={styles.statNumber}>{totalVerses}</Text>
-            <Text style={styles.statLabel}>Mémorisés</Text>
+            <Text style={styles.statLabel}>{t('progress.totalVerses')}</Text>
+            <Text style={styles.statValue}>{stats.totalVerses}</Text>
           </View>
           <View style={styles.statCard}>
-            <Text style={styles.statNumber}>{mastered}</Text>
-            <Text style={styles.statLabel}>Maîtrisés</Text>
+            <Text style={styles.statLabel}>{t('progress.mastered')}</Text>
+            <Text style={styles.statValue}>{stats.masteredVerses}</Text>
           </View>
           <View style={styles.statCard}>
-            <Text style={styles.statNumber}>{percentage}%</Text>
-            <Text style={styles.statLabel}>Taux</Text>
+            <Text style={styles.statLabel}>{t('progress.streak')}</Text>
+            <Text style={styles.statValue}>{stats.streakCount}</Text>
+          </View>
+          <View style={styles.statCard}>
+            <Text style={styles.statLabel}>{t('progress.due')}</Text>
+            <Text style={styles.statValue}>{stats.dueForReview}</Text>
           </View>
         </View>
 
-        {/* Objectif quotidien */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Objectif quotidien</Text>
-          <View style={styles.goalCard}>
-            <Text style={styles.goalText}>
-              Révisez {dailyGoal} verset(s) aujourd'hui
+        {/* Weekly Trend */}
+        <View style={styles.trendCard}>
+          <Text style={styles.trendTitle}>Tendance hebdomadaire</Text>
+          <View style={styles.trendRow}>
+            <View style={styles.trendItem}>
+              <Text style={styles.trendLabel}>Cette semaine</Text>
+              <Text style={styles.trendValue}>{stats.weeklyTrend.thisWeek}</Text>
+            </View>
+            <View style={styles.trendSeparator}></View>
+            <View style={styles.trendItem}>
+              <Text style={styles.trendLabel}>Semaine dernière</Text>
+              <Text style={styles.trendValue}>{stats.weeklyTrend.lastWeek}</Text>
+            </View>
+          </View>
+          <View style={styles.changeIndicator}>
+            <Text
+              style={[
+                styles.changeText,
+                stats.weeklyTrend.changePercentage >= 0 ? styles.changePositive : styles.changeNegative,
+              ]}
+            >
+              {stats.weeklyTrend.changePercentage >= 0 ? '↑' : '↓'}
+              {Math.abs(stats.weeklyTrend.changePercentage)}%
             </Text>
-            <TouchableOpacity
-              style={styles.goalButton}
-              onPress={() => setDailyGoal(d => Math.max(1, d - 1))}
-            >
-              <Text style={styles.goalButtonText}>-</Text>
-            </TouchableOpacity>
-            <Text style={styles.goalValue}>{dailyGoal}</Text>
-            <TouchableOpacity
-              style={styles.goalButton}
-              onPress={() => setDailyGoal(d => d + 1)}
-            >
-              <Text style={styles.goalButtonText}>+</Text>
-            </TouchableOpacity>
+            <Text style={styles.changeLabel}>
+              vs semaine précédente
+            </Text>
           </View>
         </View>
 
-        {/* Graphique hebdomadaire */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Révisions cette semaine</Text>
-          <View style={styles.weeklyChart}>
-            {WEEKLY_DATA.map((item, index) => (
-              <View key={index} style={styles.weeklyBarContainer}>
-                <View style={styles.weeklyDayLabel}>
-                  <Text style={styles.dayText}>{item.day}</Text>
-                </View>
-                <View style={styles.weeklyBar}>
-                  <View
-                    style={[
-                      styles.weeklyBarFill,
-                      { height: `${item.value * 15}px`, backgroundColor: '#E91E8C' },
-                    ]}
-                  />
-                </View>
-              </View>
-            ))}
+        {/* Streak Info */}
+        {stats.streakCount > 0 && (
+          <View style={styles.streakCard}>
+            <View style={styles.streakHeader}>
+              <Text style={styles.streakTitle}>Série consecutive</Text>
+              <TouchableOpacity>
+                <Text style={styles.streakEmoji}>🔥</Text>
+              </TouchableOpacity>
+            </View>
+            <Text style={styles.streakText}>
+              Serie de {stats.streakCount} jour(s)
+            </Text>
           </View>
-        </View>
+        )}
 
-        {/* Statistiques détaillées */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Détail des versets</Text>
-          <View style={styles.detailList}>
-            <View style={styles.detailItem}>
-              <Text style={styles.detailLabel}>Nouveaux</Text>
-              <Text style={styles.detailValue}>{newVerses}</Text>
-            </View>
-            <View style={styles.detailItem}>
-              <Text style={styles.detailLabel}>En cours</Text>
-              <Text style={styles.detailValue}>{inProgress}</Text>
-            </View>
-            <View style={styles.detailItem}>
-              <Text style={styles.detailLabel}>À réviser</Text>
-              <Text style={styles.detailValue}>{Math.max(0, dailyGoal - Math.floor(Math.random() * 5))}</Text>
-            </View>
+        {/* Session Metrics */}
+        <View style={styles.metricsCard}>
+          <Text style={styles.metricsTitle}>Métriques de session</Text>
+          <View style={styles.metricRow}>
+            <Text style={styles.metricLabel}>Temps moyen par session</Text>
+            <Text style={styles.metricValue}>{stats.avgSessionDurationMin.toFixed(1)} min</Text>
           </View>
-        </View>
-
-        {/* Actions rapides */}
-        <View style={styles.actions}>
-          <TouchableOpacity
-            style={styles.actionButton}
-            onPress={() => router.push('/memorization/session')}
-          >
-            <Text style={styles.actionButtonText}>Commencer une session</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.actionButton, styles.secondaryButton]}
-            onPress={() => router.push('/review/queue')}
-          >
-            <Text style={styles.actionButtonText}>Révisions du jour</Text>
-          </TouchableOpacity>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -182,207 +169,170 @@ const styles = StyleSheet.create({
     padding: 16,
     paddingBottom: 24,
   },
-  streakCard: {
-    backgroundColor: '#E91E8C',
-    borderRadius: 16,
-    padding: 20,
+  center: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    marginTop: 16,
+    fontSize: 16,
+    color: '#666',
+  },
+  empty: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 24,
+  },
+  emptyIcon: {
+    fontSize: 64,
     marginBottom: 16,
-    ...shadow.md,
+  },
+  emptyTitle: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: '#2D2D2D',
+    marginBottom: 8,
+  },
+  emptySubtitle: {
+    fontSize: 14,
+    color: '#A0A0A0',
+    textAlign: 'center',
+    marginBottom: 24,
+  },
+  statsGrid: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 24,
+  },
+  statCard: {
+    flex: 0.48,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    padding: 16,
+    alignItems: 'center',
+  },
+  statLabel: {
+    fontSize: 12,
+    color: '#888',
+    marginBottom: 8,
+    textTransform: 'uppercase',
+  },
+  statValue: {
+    fontSize: 32,
+    fontWeight: '700',
+    color: '#E91E8C',
+  },
+  trendCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 16,
+  },
+  trendTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#2D2D2D',
+    marginBottom: 16,
+  },
+  trendRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 16,
+  },
+  trendItem: {
+    alignItems: 'center',
+    flex: 1,
+  },
+  trendSeparator: {
+    width: 1,
+    height: 40,
+    backgroundColor: '#F0F0F0',
+    marginHorizontal: 8,
+  },
+  trendLabel: {
+    fontSize: 12,
+    color: '#888',
+    marginBottom: 4,
+  },
+  trendValue: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: '#2D2D2D',
+  },
+  changeIndicator: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 12,
+  },
+  changeText: {
+    fontSize: 18,
+    fontWeight: '700',
+    marginRight: 4,
+  },
+  changePositive: {
+    color: '#4CD964',
+  },
+  changeNegative: {
+    color: '#FF6B6B',
+  },
+  changeLabel: {
+    fontSize: 12,
+    color: '#888',
+  },
+  streakCard: {
+    backgroundColor: '#FFE4EE',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 16,
+    alignItems: 'center',
   },
   streakHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 16,
+    marginBottom: 8,
   },
   streakTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#FFFFFF',
+    color: '#2D2D2D',
   },
-  streakSettings: {
-    fontSize: 14,
-    color: 'rgba(255,255,255,0.8)',
+  streakEmoji: {
+    fontSize: 24,
   },
-  streakMain: {
-    alignItems: 'center',
-    marginBottom: 12,
+  streakText: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#E91E8C',
+    textAlign: 'center',
   },
-  streakNumber: {
-    fontSize: 48,
-    fontWeight: '800',
-    color: '#FFFFFF',
-  },
-  streakLabel: {
-    fontSize: 14,
-    color: 'rgba(255,255,255,0.9)',
-    marginTop: 4,
-  },
-  streakProgress: {
-    height: 6,
-    backgroundColor: 'rgba(255,255,255,0.2)',
-    borderRadius: 3,
-    overflow: 'hidden',
-  },
-  streakProgressFill: {
-    height: '100%',
+  metricsCard: {
     backgroundColor: '#FFFFFF',
-  },
-  statsGrid: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    borderRadius: 12,
+    padding: 16,
     marginBottom: 16,
   },
-  statCard: {
-    flex: 1,
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    padding: 16,
-    alignItems: 'center',
-    marginHorizontal: 4,
-    ...shadow.sm,
-  },
-  statNumber: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: '#E91E8C',
-  },
-  statLabel: {
-    fontSize: 12,
-    color: '#A0A0A0',
-    marginTop: 4,
-  },
-  section: {
-    marginBottom: 20,
-  },
-  sectionTitle: {
+  metricsTitle: {
     fontSize: 16,
     fontWeight: '600',
     color: '#2D2D2D',
     marginBottom: 12,
   },
-  goalCard: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    padding: 16,
+  metricRow: {
     flexDirection: 'row',
-    alignItems: 'center',
     justifyContent: 'space-between',
-    ...shadow.sm,
-  },
-  goalText: {
-    flex: 1,
-    fontSize: 14,
-    color: '#2D2D2D',
-  },
-  goalButton: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: '#F5F5F5',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  goalButtonText: {
-    fontSize: 20,
-    color: '#E91E8C',
-    fontWeight: '600',
-  },
-  goalValue: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: '#E91E8C',
-    marginHorizontal: 12,
-  },
-  weeklyChart: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    padding: 16,
-    ...shadow.sm,
-  },
-  weeklyBarContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
     marginBottom: 8,
   },
-  weeklyDayLabel: {
-    width: 40,
-  },
-  dayText: {
-    fontSize: 12,
-    color: '#6E6E6E',
-  },
-  weeklyBar: {
-    flex: 1,
-    height: 20,
-    backgroundColor: '#F5F5F5',
-    borderRadius: 10,
-    overflow: 'hidden',
-  },
-  weeklyBarFill: {
-    height: '100%',
-    borderRadius: 10,
-  },
-  detailList: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    padding: 16,
-    ...shadow.sm,
-  },
-  detailItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingVertical: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F5F5F5',
-  },
-  detailItemLast: {
-    borderBottomWidth: 0,
-  },
-  detailLabel: {
+  metricLabel: {
     fontSize: 14,
-    color: '#6E6E6E',
+    color: '#666',
   },
-  detailValue: {
+  metricValue: {
     fontSize: 14,
     fontWeight: '600',
     color: '#2D2D2D',
   },
-  actions: {
-    marginTop: 20,
-  },
-  actionButton: {
-    backgroundColor: '#E91E8C',
-    borderRadius: 26,
-    paddingVertical: 16,
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  secondaryButton: {
-    backgroundColor: '#FFFFFF',
-    borderWidth: 2,
-    borderColor: '#E91E8C',
-  },
-  actionButtonText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#FFFFFF',
-  },
 });
-
-const shadow = {
-  sm: {
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.03,
-    shadowRadius: 2,
-    elevation: 1,
-  },
-  md: {
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
-    elevation: 1,
-  },
-};

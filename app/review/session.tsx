@@ -13,60 +13,57 @@ import {
   SafeAreaView,
   ActivityIndicator,
 } from 'react-native';
-import { useRoute, useRouter } from 'expo-router';
+import { useRouter } from 'expo-router';
 import { useI18n } from '@/hooks/useI18n';
 import { WordChip } from '@/components/bible/WordChip';
-import { Rating } from '@/domains/fsrs';
+import { Rating as FsrsRating } from '@/domains/fsrs';
 import { MemorizationService } from '@/domains/memorization/service';
+import { IFsrsEngine, Sm2FallbackEngine } from '@/domains/fsrs';
+import { MmkvStorage } from '@/infrastructure/storage';
+import { getFsrsEngine } from '@/services/fsrs-factory';
+import { ProgressService } from '@/services/progress-service';
 
 // Singleton pour le service (à initialize au niveau de l'application)
 let memorizationService: MemorizationService | null = null;
+let fsrsEngine: IFsrsEngine | null = null;
+let progressService: any | null = null;
 
 const getMemorizationService = () => {
   if (!memorizationService) {
-    // Dans la version réelle avec MMKV vrai :
-    // import { MmkvStorage } from '@/infrastructure/storage'
-    // const storage = new MmkvStorage();
-    // const fsrs = new RealFsrsEngine(); // ou le fallback SM2
-    // memorizationService = new MemorizationService(storage, fsrs);
-
-    // Pour le MVP, on utilise un stub qui simule le service
-    memorizationService = {
-      async updateRecordAfterReview(recordId: string, rating: Rating, newState: any, newNextReviewAt: number) {
-        console.log('[Service] updateRecordAfterReview appelée pour:', recordId, 'rating:', rating);
-        // Simuler une opération async réussie
-        await new Promise(resolve => setTimeout(resolve, 500));
-        return true;
-      },
-      async getMemorizedRecord(bookId: string, chapter: number, verse: number, translationId: string) {
-        return null;
-      },
-      async getAllMemorized() { return []; },
-      async saveMemorizedRecord(record: any) {},
-    };
+    if (!fsrsEngine) {
+      fsrsEngine = getFsrsEngine(); // Use factory - tries WASM first, falls back to SM-2
+    }
+    memorizationService = new MemorizationService(new MmkvStorage(), fsrsEngine);
   }
   return memorizationService;
 };
 
+const getProgressService = () => {
+  if (!progressService) {
+    const ms = getMemorizationService();
+    const fe = fsrsEngine || getFsrsEngine();
+    progressService = new ProgressService(ms, fe);
+  }
+  return progressService;
+};
+
 export default function ReviewSessionScreen() {
-  const route = useRoute();
   const router = useRouter();
   const { t } = useI18n();
 
-  // Record ID passed from navigation params
-  const recordId = (route.params as any)?.recordId;
+  // Record ID passed from navigation query params
+  const routeParams = ((router as any).route?.query || {});
+  const recordId = (routeParams as any)?.recordId;
 
   // Get service instance
   const service = getMemorizationService();
-
-  // ... rest of component state and handlers
 
   // État de la session de révision
   const [reviewState, setReviewState] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [isRevealing, setIsRevealing] = useState(false);
   const [revealedWords, setRevealedWords] = useState<number[]>([]);
-  const [rating, setRating] = useState<Rating | null>(null);
+  const [rating, setRating] = useState<FsrsRating | null>(null);
   const [confirming, setConfirming] = useState(false);
 
   // Charger le record au montage
@@ -78,26 +75,27 @@ export default function ReviewSessionScreen() {
 
     const loadReview = async () => {
       try {
-        // Dans une vraie implémentation, on appellerait le service réel
-        // Pour le MVP, on utilise des données mockées basées sur l'ID
-        await new Promise(resolve => setTimeout(resolve, 500));
+        // Charger le record depuis le service
+        // Dans la version réelle, l'ID contient bookId, chapter, verse, translationId
+        // Pour l'exemple, on extrait ces valeurs de l'ID format: bookId:chapter:verse:translationId
+        const parts = recordId.split(':');
+        if (parts.length !== 4) {
+          throw new Error('Format d\'ID invalide');
+        }
 
-        // Données mockées (à remplacer par un appel vrai au service)
-        const mockRecord = {
-          id: recordId,
-          bookId: 'joh',
-          chapterNumber: 3,
-          verseNumber: 16,
-          translationId: 'lsg',
-          bibleVerseReference: 'Jean 3:16',
-          bibleVerseText: 'Car Dieu a tellement aimé le monde qu\'il a donné son Fils unique, afin que quiconque croit en lui ne périsse pas, mais qu\'il ait la vie éternelle.',
-          fsrsState: { stability: 2.5, repetitions: 1, recallProbability: 0.75 },
-          nextReviewAt: Date.now(), // Doit être <= maintenant pour être dans la file
-        };
+        const [bookId, chapterNumber, verseNumber, translationId] = parts;
+        const chapter = parseInt(chapterNumber, 10);
+        const verse = parseInt(verseNumber, 10);
+
+        const record = await service.getMemorizedRecord(bookId, chapter, verse, translationId);
+
+        if (!record) {
+          throw new Error('Record non trouvé');
+        }
 
         setReviewState({
-          ...mockRecord,
-          words: mockRecord.bibleVerseText.split(/\s+/).filter(w => w.length > 0),
+          ...record,
+          words: record.bibleVerseText.split(/\s+/).filter(w => w.length > 0),
           revealedWords: new Set<number>(),
         });
       } catch (error) {
@@ -108,7 +106,7 @@ export default function ReviewSessionScreen() {
     };
 
     loadReview();
-  }, [recordId, router]);
+  }, [recordId, router, service]);
 
   if (loading) {
     return (
@@ -166,7 +164,7 @@ export default function ReviewSessionScreen() {
   };
 
   // Bouton de rating pour la révision
-  const handleRating = (selected: Rating) => {
+  const handleRating = (selected: FsrsRating) => {
     setRating(selected);
     setConfirming(true);
   };
@@ -176,57 +174,43 @@ export default function ReviewSessionScreen() {
     if (!reviewState || !rating || !service) return;
 
     try {
-      // Calcul simplifié du nouvel état FSRS (dans la version réelle, utiliser le vrai engine)
-      let newStability = reviewState.fsrsState.stability || 2.5;
-      let newRepetitions = reviewState.fsrsState.repetitions || 0;
+      // Capture l'état avant la mise à jour
+      const stabilityBefore = reviewState.fsrsState.stability;
+      const difficultyBefore = reviewState.fsrsState.difficulty;
+      const actualInterval = reviewState.fsrsState.lastInterval || null;
+      const predictedInterval = reviewState.fsrsState.nextInterval || 0;
 
-      // Ajustement selon le rating
-      if (rating === 'easy') {
-        newStability *= 1.5;
-        newRepetitions++;
-      } else if (rating === 'good') {
-        newStability *= 1.2;
-        newRepetitions++;
-      } else if (rating === 'hard') {
-        newStability *= 0.9;
-      } else {
-        // again - reset
-        newStability = 1.0;
-        newRepetitions = 0;
-      }
-
-      // Calcul du prochain délai (en jours)
-      let nextDelayDays = 1; // default again
-      if (rating === 'easy') nextDelayDays = 7;
-      else if (rating === 'good') nextDelayDays = 3;
-      else if (rating === 'hard') nextDelayDays = 1;
-
-      const newNextReviewAt = Date.now() + nextDelayDays * 86400000;
-
-      // Appel RÉEL au service de persistance
+      // Appel RÉEL au service de persistance avec toutes les données de logging
       const success = await service.updateRecordAfterReview(
         reviewState.id,
         rating,
         {
-          stability: newStability,
-          repetitions: newRepetitions,
-          recallProbability: 0.75, // valeur simplifiée
+          stability: stabilityBefore,
+          difficulty: difficultyBefore,
+          recallProbability: 0.75,
+          lastInterval: actualInterval,
+          nextInterval: predictedInterval,
+          elapsedDays: reviewState.fsrsState.elapsedDays || 0,
+          repetitions: reviewState.fsrsState.repetitions + 1,
+          requestedRetention: reviewState.fsrsState.requestedRetention || 0.9,
         },
-        newNextReviewAt
+        reviewState.nextReviewAt,
+        [],
+        stabilityBefore,
+        difficultyBefore,
+        predictedInterval,
+        actualInterval,
       );
 
       if (success) {
-        // Mise à jour de l'état local
-        const updatedState = {
-          ...reviewState,
-          rating,
-          fsrsState: { stability: newStability, repetitions: newRepetitions, recallProbability: 0.75 },
-          nextReviewAt: newNextReviewAt,
-          lastReviewedAt: Date.now(),
-          reviewCount: (reviewState.reviewCount || 0) + 1,
-          phase: 'confirmed',
-        };
-        setReviewState(updatedState);
+        // Update progress metrics - check milestones and streak
+        const ps = getProgressService();
+        if (ps) {
+          // Check for milestones (first verse, 10 verses, etc.)
+          ps.checkAndEmitMilestones();
+          // Increment streak if there's activity today
+          ps.incrementStreak();
+        }
 
         // Après un bref délai, retourner à la queue
         setTimeout(() => {
@@ -287,7 +271,7 @@ export default function ReviewSessionScreen() {
           <View style={styles.verseCard}>
             <Text style={styles.verseReference}>{reviewState.bibleVerseReference}</Text>
             <View style={styles.wordContainer}>
-              {reviewState.words.map((word, index) => {
+              {reviewState.words.map((word: string, index: number) => {
                 const isRevealed = revealedWords.includes(index);
                 return (
                   <TouchableOpacity
@@ -300,7 +284,6 @@ export default function ReviewSessionScreen() {
                       word={word}
                       revealed={isRevealed}
                       onPress={() => revealWordAt(index)}
-                      style={styles.wordChip}
                     />
                   </TouchableOpacity>
                 );
@@ -336,25 +319,25 @@ export default function ReviewSessionScreen() {
               <View style={styles.ratingButtons}>
                 <TouchableOpacity
                   style={[styles.ratingButton, styles.ratingAgain]}
-                  onPress={() => handleRating('again')}
+                  onPress={() => handleRating(FsrsRating.AGAIN)}
                 >
                   <Text style={styles.ratingButtonText}>{t('review.again')}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={[styles.ratingButton, styles.ratingHard]}
-                  onPress={() => handleRating('hard')}
+                  onPress={() => handleRating(FsrsRating.HARD)}
                 >
                   <Text style={styles.ratingButtonText}>{t('review.hard')}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={[styles.ratingButton, styles.ratingGood]}
-                  onPress={() => handleRating('good')}
+                  onPress={() => handleRating(FsrsRating.GOOD)}
                 >
                   <Text style={styles.ratingButtonText}>{t('review.good')}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={[styles.ratingButton, styles.ratingEasy]}
-                  onPress={() => handleRating('easy')}
+                  onPress={() => handleRating(FsrsRating.EASY)}
                 >
                   <Text style={styles.ratingButtonText}>{t('review.easy')}</Text>
                 </TouchableOpacity>
@@ -368,6 +351,10 @@ export default function ReviewSessionScreen() {
 
   // Phase confirmée — afficher le résultat
   if (reviewState?.phase === 'confirmed' || confirming && rating) {
+    const ratingText = rating === FsrsRating.AGAIN ? 'again' : rating === FsrsRating.HARD ? 'hard' : rating === FsrsRating.GOOD ? 'good' : 'easy';
+    const days = rating === FsrsRating.EASY ? 7 : rating === FsrsRating.GOOD ? 3 : rating === FsrsRating.HARD ? 1 : 1;
+    const dayPlural = days > 1 ? 's' : '';
+
     return (
       <SafeAreaView style={styles.container}>
         <ScrollView contentContainerStyle={styles.content}>
@@ -375,7 +362,7 @@ export default function ReviewSessionScreen() {
             <Text style={styles.resultIcon}>✓</Text>
             <Text style={styles.resultTitle}>Révision terminée</Text>
             <Text style={styles.resultSubtitle}>
-              Rating: {t(`review.rating.${rating}`)}
+              Rating: {t(`review.rating.${ratingText}`)}
             </Text>
           </View>
 
@@ -387,7 +374,7 @@ export default function ReviewSessionScreen() {
           <View style={styles.infoCard}>
             <Text style={styles.infoLabel}>Prochain rappel</Text>
             <Text style={styles.infoValue}>
-              Dans {(rating === 'easy' ? 7 : rating === 'good' ? 3 : rating === 'hard' ? 1 : 1)} jour{s}
+              Dans {days} jour{dayPlural}
             </Text>
           </View>
 
