@@ -3,7 +3,7 @@
  * See docs/MEMORY_ENGINE_SPEC.md for complete memory engine specification
  */
 
-import { Rating, FsrsState } from '@/domains/fsrs';
+import { FsrsState } from '@/domains/fsrs';
 
 // ====================
 // Memorization Record
@@ -303,6 +303,9 @@ export interface SessionState {
 export interface VerificationResult {
   /** Overall similarity score (0-1, higher = better) */
   score: number;
+
+  /** Total number of words in the expected verse */
+  wordCount: number;
 
   /** Words that were correctly recalled */
   correctWords: string[];

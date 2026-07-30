@@ -18,15 +18,16 @@ import { useI18n } from '@/hooks/useI18n';
 import { MemorizationService } from '@/domains/memorization/service';
 import { IFsrsEngine, Sm2FallbackEngine } from '@/domains/fsrs';
 import { MmkvStorage } from '@/infrastructure/storage';
+import { getFsrsEngine } from '@/services/fsrs-factory';
 
 // Singleton pour le service (à initialize au niveau de l'application)
 let memorizationService: MemorizationService | null = null;
-let fsrsEngine: Sm2FallbackEngine | null = null;
+let fsrsEngine: IFsrsEngine | null = null;
 
 const getMemorizationService = () => {
   if (!memorizationService) {
     if (!fsrsEngine) {
-      fsrsEngine = new Sm2FallbackEngine();
+      fsrsEngine = getFsrsEngine(); // Use factory to get WASM or fallback
     }
     memorizationService = new MemorizationService(new MmkvStorage(), fsrsEngine);
   }
@@ -112,6 +113,13 @@ export default function ReviewQueueScreen() {
               <Text style={styles.dueText}>
                 {t('review.dueSoon', { days: Math.ceil((item.nextReviewAt - Date.now()) / 86400000) })}
               </Text>
+              {/* Button to view revision history */}
+              <TouchableOpacity
+                style={styles.historyButton}
+                onPress={() => router.push({ pathname: '/review/history', params: { recordId: item.id } })}
+              >
+                <Text style={styles.historyButtonText}>Historique</Text>
+              </TouchableOpacity>
             </View>
           </TouchableOpacity>
         )}

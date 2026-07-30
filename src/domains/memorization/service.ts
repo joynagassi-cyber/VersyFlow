@@ -4,10 +4,20 @@
  */
 
 import { SessionEngine } from './session-engine';
-import { IFsrsEngine, Rating } from '@/domains/fsrs';
+import { IFsrsEngine, Rating as FsrsRating } from '@/domains/fsrs';
 import { IStorage } from '@/infrastructure/storage/storage-types';
 import { eventBus, DomainEventTypes } from '../index';
-import { MemorizationRecord } from './entities';
+import { MemorizationRecord, ReviewLogEntry, WordPerformance, WordPerformanceSnapshot } from './entities';
+
+// Mapping from FSRS Rating enum to string representation for logging
+const fsrsRatingToString = (rating: FsrsRating): 'again' | 'hard' | 'good' | 'easy' => {
+  switch (rating) {
+    case FsrsRating.AGAIN: return 'again';
+    case FsrsRating.HARD: return 'hard';
+    case FsrsRating.GOOD: return 'good';
+    case FsrsRating.EASY: return 'easy';
+  }
+};
 
 export class MemorizationService {
   constructor(
@@ -22,6 +32,80 @@ export class MemorizationService {
     const recordId = `${record.bookId}:${record.chapterNumber}:${record.verseNumber}:${record.translationId}`;
     const fullRecord: MemorizationRecord = { id: recordId, ...record };
     await this.storage.set('versyflow:record:' + recordId, JSON.stringify(fullRecord));
+  }
+
+  /**
+   * Save a review log entry for a memorization record
+   */
+  async saveReviewLog(logEntry: Omit<ReviewLogEntry, 'id'>): Promise<void> {
+    const logId = crypto.randomUUID();
+    const fullLog: ReviewLogEntry = { id: logId, ...logEntry };
+
+    // Store as individual entries with key pattern: versyflow:reviewlog:{recordId}:{timestamp}
+    const recordKey = `versyflow:reviewlog:${fullLog.memorizationRecordId}:${fullLog.answeredAt}`;
+    await this.storage.set(recordKey, JSON.stringify(fullLog));
+
+    // Also store in an array for easy retrieval - use atomic update pattern
+    const arrayKey = `versyflow:reviewlogs:${fullLog.memorizationRecordId}`;
+
+    // Read-modify-write with retry to handle race conditions
+    const MAX_RETRIES = 3;
+    let retries = 0;
+
+    while (retries < MAX_RETRIES) {
+      try {
+        const existingLogsStr = await this.storage.get(arrayKey);
+        const existingLogs = existingLogsStr ? JSON.parse(existingLogsStr) as ReviewLogEntry[] : [];
+
+        // Check if this log already exists (prevent duplicates)
+        const exists = existingLogs.some(log => log.id === fullLog.id);
+        if (!exists) {
+          existingLogs.push(fullLog);
+        }
+
+        await this.storage.set(arrayKey, JSON.stringify(existingLogs));
+        return; // Success
+
+      } catch (error) {
+        retries++;
+        if (retries >= MAX_RETRIES) {
+          // Re-throw on last retry
+          console.error('[MemorizationService] saveReviewLog failed after multiple attempts:', error);
+          throw error;
+        }
+        // Brief pause before retry
+        await new Promise(resolve => setTimeout(resolve, 100 * retries));
+      }
+    }
+  }
+
+  /**
+   * Get all review logs for a memorization record
+   */
+  async getReviewLogsForRecord(recordId: string): Promise<ReviewLogEntry[]> {
+    const arrayKey = `versyflow:reviewlogs:${recordId}`;
+    const logsStr = await this.storage.get(arrayKey);
+    if (logsStr) {
+      return JSON.parse(logsStr) as ReviewLogEntry[];
+    }
+    return [];
+  }
+
+  /**
+   * Get all review logs across all records (for analytics/history view)
+   */
+  async getAllReviewLogs(): Promise<ReviewLogEntry[]> {
+    const allKeys = await this.storage.getAllKeys();
+    const logKeys = allKeys.filter(key => key.startsWith('versyflow:reviewlog:'));
+
+    const logs: ReviewLogEntry[] = [];
+    for (const key of logKeys) {
+      const str = await this.storage.get(key);
+      if (str) logs.push(JSON.parse(str) as ReviewLogEntry);
+    }
+
+    // Sort by timestamp (answeredAt) descending
+    return logs.sort((a, b) => b.answeredAt - a.answeredAt);
   }
 
   /**
@@ -62,20 +146,31 @@ export class MemorizationService {
   }
 
   /**
-   * Update a record after a review (FSRS state update)
+   * Update a record after a review (FSRS state update) AND save review log
    */
   async updateRecordAfterReview(
     recordId: string,
-    rating: Rating,
-    newFsrsState: any,
+    rating: FsrsRating,
+    newFsrsState: FsrsState,
     newNextReviewAt: number,
-    wordPerformance?: any[],
+    wordPerformance?: WordPerformance[],
+    stabilityBefore?: number,
+    difficultyBefore?: number,
+    predictedInterval?: number,
+    actualInterval?: number | null,
   ): Promise<boolean> {
     try {
       const recordStr = await this.storage.get('versyflow:record:' + recordId);
       if (!recordStr) return false;
 
       const record = JSON.parse(recordStr) as MemorizationRecord;
+
+      // Capture state before update
+      const stabilityBeforeValue = stabilityBefore ?? record.fsrsState.stability;
+      const difficultyBeforeValue = difficultyBefore ?? record.fsrsState.difficulty;
+      const actualIntervalValue = actualInterval !== undefined ? actualInterval : (record.fsrsState.lastInterval ?? null);
+      const predictedIntervalValue = predictedInterval !== undefined ? predictedInterval : record.fsrsState.nextInterval ?? 0;
+
       record.fsrsState = newFsrsState;
       record.nextReviewAt = newNextReviewAt;
       record.lastReviewedAt = Date.now();
@@ -86,6 +181,22 @@ export class MemorizationService {
         'versyflow:record:' + recordId,
         JSON.stringify(record),
       );
+
+      // Create and save review log entry - convert Rating enum to string for logging
+      const reviewLog: Omit<ReviewLogEntry, 'id'> = {
+        memorizationRecordId: recordId,
+        answeredAt: Date.now(),
+        rating: fsrsRatingToString(rating),
+        actualInterval: actualIntervalValue,
+        predictedInterval: predictedIntervalValue,
+        stabilityBefore: stabilityBeforeValue,
+        stabilityAfter: newFsrsState.stability,
+        difficultyBefore: difficultyBeforeValue,
+        difficultyAfter: newFsrsState.difficulty,
+        // Convert WordPerformance to WordPerformanceSnapshot (empty array for MVP)
+        wordPerformance: (wordPerformance as any) || [],
+      };
+      await this.saveReviewLog(reviewLog);
 
       // Emit review event
       eventBus.emit({
@@ -112,7 +223,7 @@ export class MemorizationService {
     translationId: string;
     verseText: string;
     referenceDisplay: string;
-  }): Promise<{ success: boolean; rating: Rating; nextReviewAt: number }> {
+  }): Promise<{ success: boolean; rating: FsrsRating; nextReviewAt: number }> {
     try {
       // Create session engine
       const engine = new SessionEngine(params.verseText);
@@ -152,6 +263,8 @@ export class MemorizationService {
         reviewCount: 0,
         totalReviewMinutes: 0,
         wordPerformance: [],
+        favorite: false,
+        tags: [],
       });
 
       // Emit domain event
@@ -177,7 +290,7 @@ export class MemorizationService {
       console.error('[MemorizationService] Memorize failed:', error);
       return {
         success: false,
-        rating: Rating.AGAIN,
+        rating: FsrsRating.AGAIN,
         nextReviewAt: Date.now(),
       };
     }

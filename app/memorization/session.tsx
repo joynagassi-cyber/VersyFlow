@@ -1,5 +1,5 @@
 /**
- * Memorization Session Screen — Progressive word reveal interface with FSRS integration
+ * Memorization Session Screen — Interactive word reveal with strategy selection
  * See docs/08-ui-screens.md §8
  */
 
@@ -15,14 +15,30 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useI18n } from '@/hooks/useI18n';
-import { useMemorizationSession } from '@/hooks/useMemorizationSession';
 import { WordChip } from '@/components/bible/WordChip';
+import { DEFAULT_MVP_STRATEGY, ExerciseStrategy } from '@/domains/memorization/entities';
+import { MemorizationService } from '@/domains/memorization/service';
+import { IFsrsEngine, Sm2FallbackEngine } from '@/domains/fsrs';
+import { MmkvStorage } from '@/infrastructure/storage';
+import { useMemorizationSession } from '@/hooks/useMemorizationSession';
+
+// Singleton pour le service (à initialize au niveau de l'application)
+let memorizationService: MemorizationService | null = null;
+let fsrsEngine: Sm2FallbackEngine | null = null;
+
+const getMemorizationService = () => {
+  if (!memorizationService) {
+    if (!fsrsEngine) {
+      fsrsEngine = new Sm2FallbackEngine();
+    }
+    memorizationService = new MemorizationService(new MmkvStorage(), fsrsEngine);
+  }
+  return memorizationService;
+};
 
 export default function MemorizationSessionScreen() {
   const router = useRouter();
   const { t } = useI18n();
-
-  // Hook pour la session de méméorisation
   const {
     sessionState,
     isLoaded,
@@ -35,6 +51,7 @@ export default function MemorizationSessionScreen() {
     resetSession,
     abandonSession,
     getService,
+    setStrategy, // NEW: access to setStrategy
   } = useMemorizationSession();
 
   // Le verset à mémoriser (pour le MVP — dans une app réelle, cela viendrait des params de navigation)
@@ -47,19 +64,18 @@ export default function MemorizationSessionScreen() {
   };
 
   // État pour le rating lors de la confirmation
-  const [userRating, setUserRating] = useState<Rating | null>(null);
+  const [userRating, setUserRating] = useState<any>(null);
   const [isConfirming, setIsConfirming] = useState(false);
+  const [currentStrategy, setCurrentStrategy] = useState<ExerciseStrategy>(DEFAULT_MVP_STRATEGY);
 
   // Charger l'initialisation du service et de la session
   useEffect(() => {
     if (isLoaded && !sessionState) {
-      // Vérifier s'il y a un record existant pour ce verset
       const service = getService();
       if (service) {
         service.getMemorizedRecord(verseData.bookId, verseData.chapter, verseData.verse, 'lsg')
           .then(record => {
             if (record) {
-              // Si le record existe, on résume la session (mode révision)
               setSessionState({
                 ...record,
                 phase: 'preview',
@@ -67,17 +83,15 @@ export default function MemorizationSessionScreen() {
                 words: record.bibleVerseText.split(/\s+/).filter(w => w.length > 0),
               });
             } else {
-              // Nouveau verset, démarrer la session
               startSession(verseData.bookId, verseData.chapter, verseData.verse, verseData.text, verseData.reference);
             }
           })
           .catch(console.error);
         return;
       }
-      // Si aucun service (encore non initialisé), simplement démarrer
       startSession(verseData.bookId, verseData.chapter, verseData.verse, verseData.text, verseData.reference);
     }
-  }, [isLoaded, sessionState, startSession, getService]);
+  }, [isLoaded, sessionState, startSession, getService, setStrategy]);
 
   // Si la session n'est pas chargée, afficher un écran de chargement
   if (!isLoaded) {
@@ -85,7 +99,7 @@ export default function MemorizationSessionScreen() {
       <SafeAreaView style={styles.container}>
         <View style={styles.loading}>
           <ActivityIndicator size="large" color="#E91E8C" />
-          <Text style={styles.loadingText}>Initialisation du service de méméorisation...</Text>
+          <Text style={styles.loadingText}>Initialisation du service de mémorisation...</Text>
         </View>
       </SafeAreaView>
     );
@@ -98,304 +112,234 @@ export default function MemorizationSessionScreen() {
         <View style={styles.center}>
           <Text style={styles.title}>Mémorisation de verset</Text>
           <Text style={styles.subtitle}>Aucune session en cours. Appuyez sur "Commencer" pour débuter.</Text>
-          <TouchableOpacity style={styles.startButton} onPress={() => startSession(verseData.bookId, verseData.chapter, verseData.verse, verseData.text, verseData.reference)}>
-            <Text style={styles.startButtonText}>Commencer la session</Text>
-          </TouchableOpacity>
         </View>
       </SafeAreaView>
     );
   }
 
-  // Phase de preview (le verset complet est affiché masqué)
-  if (sessionState.phase === 'preview') {
-    return (
-      <SafeAreaView style={styles.container}>
-        <ScrollView contentContainerStyle={styles.content}>
-          <View style={styles.header}>
-            <Text style={styles.phaseTitle}>{t('session.previewMode')}</Text>
-          </View>
+  // Change strategy button press handler
+  const handleStrategyChange = (strategy: ExerciseStrategy) => {
+    setCurrentStrategy(strategy);
+    // Apply strategy to the underlying session engine
+    setStrategy(strategy);
+    // Reset revealed state when changing strategy
+    resetSession();
+  };
 
-          <View style={styles.verseCard}>
-            <Text style={styles.verseReference}>{sessionState.reference}</Text>
-            <View style={styles.verseText}>
-              <Text style={styles.verseContent}>{sessionState.verseText}</Text>
-            </View>
-          </View>
-
-          <View style={styles.controls}>
-            <TouchableOpacity style={styles.startButton} onPress={startRevealing}>
-              <Text style={styles.startButtonText}>{t('session.startReveal')}</Text>
+  return (
+    <SafeAreaView style={styles.container}>
+      <ScrollView contentContainerStyle={styles.content}>
+        {/* Header with strategy selection */}
+        <View style={styles.header}>
+          <Text style={styles.title}>{sessionState.reference}</Text>
+          <View style={styles.strategyButtons}>
+            <TouchableOpacity
+              style={[styles.strategyButton, currentStrategy === 'progressive-masking' && styles.strategyButtonActive]}
+              onPress={() => handleStrategyChange('progressive-masking')}
+            >
+              <Text style={styles.strategyButtonText}>{t('strategy.progressive')}</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.abortButton} onPress={abandonSession}>
-              <Text style={styles.abortText}>{t('session.abandon')}</Text>
+            <TouchableOpacity
+              style={[styles.strategyButton, currentStrategy === 'incremental-reveal' && styles.strategyButtonActive]}
+              onPress={() => handleStrategyChange('incremental-reveal')}
+            >
+              <Text style={styles.strategyButtonText}>{t('strategy.reveal')}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.strategyButton, currentStrategy === 'active-recall' && styles.strategyButtonActive]}
+              onPress={() => handleStrategyChange('active-recall')}
+            >
+              <Text style={styles.strategyButtonText}>{t('strategy.active')}</Text>
             </TouchableOpacity>
           </View>
-        </ScrollView>
-      </SafeAreaView>
-    );
-  }
+        </View>
 
-  // Phase de révélation (les mots se dévoilent un par un)
-  if (sessionState.phase === 'revealing') {
-    return (
-      <SafeAreaView style={styles.container}>
-        <ScrollView contentContainerStyle={styles.content}>
-          <View style={styles.header}>
-            <Text style={styles.phaseTitle}>{t('session.revealMode')}</Text>
-            <Text style={styles.progress}>
-              {sessionState.wordsRevealed}/{sessionState.words.length} mots révélés
-            </Text>
-          </View>
+        {/* Instruction text based on strategy */}
+        <View style={styles.instructionCard}>
+          <Text style={styles.instructionTitle}>
+            {t(`strategy.instructions.${currentStrategy}`)}
+          </Text>
+          <Text style={styles.instructionText}>
+            {t(`strategy.hint.${currentStrategy}`)}
+          </Text>
+        </View>
 
-          <View style={styles.verseCard}>
-            <Text style={styles.verseReference}>{sessionState.reference}</Text>
-            <View style={styles.wordContainer}>
-              {sessionState.words.map((word, index) => {
-                const isRevealed = sessionState.revealedWords.has(index);
-                return (
-                  <TouchableOpacity
-                    key={index}
-                    style={styles.wordWrapper}
-                    onPress={() => revealWordAt(index)}
-                    disabled={isRevealed}
-                  >
-                    <WordChip
-                      word={word}
-                      revealed={isRevealed}
-                      onPress={() => revealWordAt(index)}
-                      style={styles.wordChip}
-                    />
-                  </TouchableOpacity>
-                );
-              })}
-            </View>
-          </View>
+        {/* Verse display */}
+        <View style={styles.verseCard}>
+          <Text style={styles.verseText}>{sessionState.verseText}</Text>
+        </View>
 
-          <View style={styles.controls}>
-            <TouchableOpacity style={styles.actionButton} onPress={revealNextWord}>
-              <Text style={styles.actionButtonText}>{t('session.nextWord')}</Text>
-            </TouchableOpacity>
-
-            {/* Bouton de confirmation quand tous les mots sont révélés */}
-            {sessionState.wordsRevealed >= sessionState.words.length && (
+        {/* Word reveal area */}
+        <View style={styles.wordContainer}>
+          {sessionState.words.map((word: string, index: number) => {
+            const isRevealed = sessionState.revealedWords.has(index);
+            return (
               <TouchableOpacity
-                style={styles.confirmButton}
-                onPress={() => setIsConfirming(true)}
-                disabled={isConfirming}
+                key={index}
+                style={styles.wordWrapper}
+                onPress={() => revealWordAt(index)}
+                disabled={isRevealed}
               >
-                <Text style={styles.confirmButtonText}>
-                  {isConfirming ? 'Enregistrer...' : t('session.confirm')}
-                </Text>
+                <WordChip
+                  word={isRevealed ? word : '•••'}
+                  revealed={isRevealed}
+                  onPress={() => revealWordAt(index)}
+                />
               </TouchableOpacity>
-            )}
-          </View>
-        </ScrollView>
+            );
+          })}
+        </View>
 
-        {/* Modal de confirmation du rating si appuyé sur "Confirm" */}
-        {isConfirming && sessionState && (
+        {/* Controls */}
+        <View style={styles.controls}>
+          <TouchableOpacity
+            style={styles.revealButton}
+            onPress={() => revealNextWord()}
+          >
+            <Text style={styles.revealButtonText}>{t('actions.nextWord')}</Text>
+          </TouchableOpacity>
+
+          {/* Complete button when all words revealed */}
+          {sessionState.revealedWords.size === sessionState.words.length && (
+            <TouchableOpacity
+              style={styles.completeButton}
+              onPress={() => setIsConfirming(true)}
+            >
+              <Text style={styles.completeButtonText}>{t('actions.complete')}</Text>
+            </TouchableOpacity>
+          )}
+        </View>
+
+        {/* Rating confirmation modal */}
+        {isConfirming && (
           <View style={styles.ratingModalOverlay}>
             <View style={styles.ratingModal}>
-              <Text style={styles.ratingModalTitle}>Comment vous souveniez-vous ce verset ?</Text>
+              <Text style={styles.ratingModalTitle}>{t('rating.title')}</Text>
               <View style={styles.ratingButtons}>
                 <TouchableOpacity
                   style={[styles.ratingButton, styles.ratingAgain]}
-                  onPress={() => handleRatingSubmit('again')}
+                  onPress={() => setUserRating('again')}
                 >
-                  <Text style={styles.ratingButtonText}>{t('session.again')}</Text>
+                  <Text style={styles.ratingButtonText}>{t('rating.again')}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={[styles.ratingButton, styles.ratingHard]}
-                  onPress={() => handleRatingSubmit('hard')}
+                  onPress={() => setUserRating('hard')}
                 >
-                  <Text style={styles.ratingButtonText}>{t('session.hard')}</Text>
+                  <Text style={styles.ratingButtonText}>{t('rating.hard')}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={[styles.ratingButton, styles.ratingGood]}
-                  onPress={() => handleRatingSubmit('good')}
+                  onPress={() => setUserRating('good')}
                 >
-                  <Text style={styles.ratingButtonText}>{t('session.good')}</Text>
+                  <Text style={styles.ratingButtonText}>{t('rating.good')}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={[styles.ratingButton, styles.ratingEasy]}
-                  onPress={() => handleRatingSubmit('easy')}
+                  onPress={() => setUserRating('easy')}
                 >
-                  <Text style={styles.ratingButtonText}>{t('session.easy')}</Text>
+                  <Text style={styles.ratingButtonText}>{t('rating.easy')}</Text>
                 </TouchableOpacity>
               </View>
-              <TouchableOpacity
-                style={styles.cancelRatingButton}
-                onPress={() => setIsConfirming(false)}
-              >
-                <Text style={styles.cancelButtonText}>Annuler</Text>
-              </TouchableOpacity>
             </View>
           </View>
         )}
-      </SafeAreaView>
-    );
-  }
 
-  // Phase confirmée (l'utilisateur a donné un rating)
-  if (sessionState.phase === 'confirmed') {
-    return (
-      <SafeAreaView style={styles.container}>
-        <ScrollView contentContainerStyle={styles.content}>
-          <View style={styles.resultHeader}>
-            <Text style={styles.resultIcon}>🎉</Text>
-            <Text style={styles.resultTitle}>Session terminée avec succès !</Text>
-            <Text style={styles.resultSubtitle}>
-              Votre rating : {t(`session.rating.${sessionState.rating}`)}
-            </Text>
-          </View>
-
-          <View style={styles.verseCard}>
-            <Text style={styles.verseReference}>{sessionState.reference}</Text>
-            <Text style={styles.verseContent}>{sessionState.verseText}</Text>
-          </View>
-
-          <View style={styles.infoCard}>
-            <Text style={styles.infoLabel}>Prochain rappel</Text>
-            <Text style={styles.infoValue}>
-              Dans {Math.max(0, Math.ceil((sessionState.nextReviewAt - Date.now()) / 86400000))} jour(s)
-            </Text>
-          </View>
-
-          <View style={styles.actions}>
-            <TouchableOpacity style={styles.buttonPrimary} onPress={() => router.back()}>
-              <Text style={styles.buttonText}>Terminer</Text>
-            </TouchableOpacity>
-          </View>
-        </ScrollView>
-      </SafeAreaView>
-    );
-  }
-
-  // État d'abandon
-  if (sessionState.phase === 'abandoned') {
-    return (
-      <SafeAreaView style={styles.container}>
-        <View style={styles.center}>
-          <Text style={styles.title}>Session abandonnée</Text>
-          <Text style={styles.subtitle}>Le verset sera réintégré dans la file d'attente de révision</Text>
-          <TouchableOpacity style={styles.startButton} onPress={router.back}>
-            <Text style={styles.startButtonText}>Retour</Text>
+        {/* Action buttons at bottom */}
+        <View style={styles.footerActions}>
+          <TouchableOpacity style={styles.secondaryButton} onPress={resetSession}>
+            <Text style={styles.secondaryButtonText}>{t('actions.reset')}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.secondaryButton} onPress={abandonSession}>
+            <Text style={styles.secondaryButtonText}>{t('actions.abandon')}</Text>
           </TouchableOpacity>
         </View>
-      </SafeAreaView>
-    );
-  }
-
-  // État par défaut (should not happen)
-  return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.center}>
-        <ActivityIndicator size="large" color="#E91E8C" />
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
-
-// Handler pour soumettre le rating
-const handleRatingSubmit = async (rating: Rating) => {
-  if (!sessionState || !getService()) return;
-
-  const service = getService();
-  try {
-    // Appeler le service pour sauvegarder le record et mettre à jour FSRS
-    // Note: Dans une implémentation réelle, on utiliserait le service complet
-    // Ici on simule la persistance pour le MVP
-
-    // Simuler l'appel au service avec les données de la session
-    const result = {
-      success: true,
-      rating,
-      nextReviewAt: Date.now() + (rating === 'easy' ? 86400000 : rating === 'good' ? 43200000 : 0),
-    };
-
-    // Mises à jour de l'état après persistance
-    setSessionState(prev => ({
-      ...prev,
-      rating,
-      nextReviewAt: result.nextReviewAt,
-      phase: 'confirmed',
-    }));
-
-    // Fermer le modal de confirmation
-    setIsConfirming(false);
-  } catch (error) {
-    console.error('Échec de la persistance:', error);
-    alert('Erreur lors de l\'enregistrement de la session. Veuillez réessayer.');
-    setIsConfirming(false);
-  }
-};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFF0F6',
   },
-  loading: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  loadingText: {
-    marginTop: 16,
-    fontSize: 16,
-    color: '#666',
-  },
-  center: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 24,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: '700',
-    color: '#2D2D2D',
-    marginBottom: 16,
-  },
-  subtitle: {
-    fontSize: 16,
-    color: '#6E6E6E',
-    textAlign: 'center',
-    marginBottom: 32,
-  },
   content: {
     padding: 16,
     paddingBottom: 24,
   },
   header: {
-    marginBottom: 24,
+    marginBottom: 16,
   },
-  phaseTitle: {
-    fontSize: 20,
-    fontWeight: '600',
+  title: {
+    fontSize: 24,
+    fontWeight: '700',
     color: '#2D2D2D',
+    marginBottom: 8,
   },
-  progress: {
+  strategyButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  strategyButton: {
+    flex: 1,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#E91E8C',
+    alignItems: 'center',
+  },
+  strategyButtonActive: {
+    backgroundColor: '#E91E8C',
+  },
+  strategyButtonText: {
+    color: '#2D2D2D',
+    fontWeight: '600',
+  },
+  strategyButtonTextActive: {
+    color: '#FFFFFF',
+  },
+  instructionCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 16,
+    shadow: {
+      color: '#000',
+      offsetX: 0,
+      offsetY: 2,
+      opacity: 0.1,
+      radius: 4,
+    },
+  },
+  instructionTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#E91E8C',
+    marginBottom: 4,
+  },
+  instructionText: {
     fontSize: 14,
-    color: '#A0A0A0',
-    marginTop: 8,
+    color: '#666',
   },
   verseCard: {
     backgroundColor: '#FFFFFF',
     borderRadius: 16,
     padding: 24,
-    marginBottom: 24,
-    ...shadow.md,
-  },
-  verseReference: {
-    fontSize: 14,
-    color: '#A0A0A0',
     marginBottom: 16,
-    fontWeight: '600',
+    shadow: {
+      color: '#000',
+      offsetX: 0,
+      offsetY: 2,
+      opacity: 0.1,
+      radius: 4,
+    },
   },
   verseText: {
-    marginBottom: 16,
-  },
-  verseContent: {
     fontSize: 16,
     color: '#2D2D2D',
     lineHeight: 24,
@@ -404,7 +348,7 @@ const styles = StyleSheet.create({
   wordContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 6,
+    gap: 8,
     marginBottom: 16,
   },
   wordWrapper: {
@@ -413,106 +357,34 @@ const styles = StyleSheet.create({
   controls: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 24,
-  },
-  startButton: {
-    backgroundColor: '#E91E8C',
-    borderRadius: 26,
-    paddingVertical: 14,
-    paddingHorizontal: 32,
-    alignItems: 'center',
-  },
-  startButtonText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#FFFFFF',
-  },
-  abortButton: {
-    backgroundColor: '#FFFFFF',
-    borderColor: '#A0A0A0',
-    borderWidth: 2,
-    borderRadius: 26,
-    paddingVertical: 14,
-    paddingHorizontal: 32,
-    alignItems: 'center',
-  },
-  abortText: {
-    fontSize: 16,
-    color: '#A0A0A0',
-    fontWeight: '600',
-  },
-  actionButton: {
-    backgroundColor: '#FFFFFF',
-    borderColor: '#E91E8C',
-    borderWidth: 2,
-    borderRadius: 26,
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-  },
-  actionButtonText: {
-    fontSize: 16,
-    color: '#E91E8C',
-    fontWeight: '600',
-  },
-  confirmButton: {
-    backgroundColor: '#E91E8C',
-    borderRadius: 26,
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-  },
-  confirmButtonText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#FFFFFF',
-  },
-  resultHeader: {
-    alignItems: 'center',
-    marginBottom: 24,
-  },
-  resultIcon: {
-    fontSize: 48,
     marginBottom: 16,
   },
-  resultTitle: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: '#2D2D2D',
-    marginBottom: 8,
-  },
-  resultSubtitle: {
-    fontSize: 16,
-    color: '#A0A0A0',
-  },
-  infoCard: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 24,
-    alignItems: 'center',
-  },
-  infoLabel: {
-    fontSize: 14,
-    color: '#666',
-    marginBottom: 4,
-  },
-  infoValue: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: '#E91E8C',
-  },
-  actions: {
-    marginTop: 24,
-  },
-  buttonPrimary: {
+  revealButton: {
+    flex: 1,
     backgroundColor: '#E91E8C',
     borderRadius: 26,
-    paddingVertical: 16,
+    paddingVertical: 12,
+    paddingHorizontal: 24,
     alignItems: 'center',
   },
-  buttonText: {
-    fontSize: 18,
-    fontWeight: '600',
+  revealButtonText: {
     color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  completeButton: {
+    flex: 1,
+    backgroundColor: '#4CD964',
+    borderRadius: 26,
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    alignItems: 'center',
+    marginLeft: 8,
+  },
+  completeButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '600',
   },
   ratingModalOverlay: {
     position: 'absolute',
@@ -523,6 +395,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.5)',
     justifyContent: 'center',
     alignItems: 'center',
+    zIndex: 100,
   },
   ratingModal: {
     backgroundColor: '#FFFFFF',
@@ -530,6 +403,13 @@ const styles = StyleSheet.create({
     padding: 24,
     width: '85%',
     maxWidth: 400,
+    shadow: {
+      color: '#000',
+      offsetX: 0,
+      offsetY: 4,
+      opacity: 0.2,
+      radius: 8,
+    },
   },
   ratingModalTitle: {
     fontSize: 18,
@@ -541,7 +421,7 @@ const styles = StyleSheet.create({
   ratingButtons: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 24,
+    marginBottom: 16,
   },
   ratingButton: {
     flex: 1,
@@ -566,26 +446,51 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontWeight: '600',
   },
-  cancelRatingButton: {
-    backgroundColor: '#F5F5F5',
+  footerActions: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 16,
+  },
+  secondaryButton: {
+    flex: 1,
+    backgroundColor: '#FFFFFF',
     borderRadius: 26,
     paddingVertical: 12,
     paddingHorizontal: 24,
+    borderWidth: 1,
+    borderColor: '#E91E8C',
     alignItems: 'center',
   },
-  cancelButtonText: {
+  secondaryButtonText: {
+    color: '#E91E8C',
     fontSize: 16,
-    color: '#666',
     fontWeight: '600',
   },
-});
-
-const shadow = {
-  md: {
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
-    elevation: 1,
+  loading: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-};
+  loadingText: {
+    marginTop: 16,
+    fontSize: 16,
+    color: '#666',
+  },
+  center: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 24,
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: '600',
+    color: '#2D2D2D',
+    marginBottom: 8,
+  },
+  subtitle: {
+    fontSize: 14,
+    color: '#666',
+    textAlign: 'center',
+  },
+});

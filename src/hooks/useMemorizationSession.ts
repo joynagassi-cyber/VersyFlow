@@ -7,12 +7,15 @@ import { useState, useCallback, useEffect, useRef } from 'react';
 import { IFsrsEngine, Rating, FsrsState } from '@/domains/fsrs';
 import { MmkvStorage } from '@/infrastructure/storage';
 import { MemorizationService } from '@/domains/memorization/service';
+import { ExerciseStrategy, DEFAULT_MVP_STRATEGY } from '@/domains/memorization/entities';
 import { BibleRepository } from '@/domains/bible/repository';
 import { useSettingsStore } from '@/store/settings-store';
+import { SessionEngine } from '@/domains/memorization/session-engine';
 
 // Singleton pour le service de méméorisation
 let memorizationService: MemorizationService | null = null;
 let fsrsEngine: IFsrsEngine | null = null;
+let sessionEngine: SessionEngine | null = null;
 
 /**
  * Initialise le moteur FSRS (fallback SM-2 pour MVP)
@@ -78,6 +81,9 @@ export function useMemorizationSession() {
       throw new Error('Service de méméorisation non initialisé');
     }
 
+    // Créer l'engine de session avec la stratégie par défaut
+    sessionEngine = new SessionEngine(text, DEFAULT_MVP_STRATEGY);
+
     // Préparer l'état de la session
     const words = text.split(/\s+/).filter(w => w.length > 0);
     const session = {
@@ -90,6 +96,7 @@ export function useMemorizationSession() {
       translationId: 'lsg', // default pour le MVP
       words,
       revealedWords: new Set<number>(),
+      wordsRevealed: 0,
       startTime: Date.now(),
       isComplete: false,
       rating: null as Rating | null,
@@ -162,8 +169,14 @@ export function useMemorizationSession() {
    */
   const verifyAnswer = useCallback((userInput: string) => {
     if (!sessionState) return null;
-    // Implémentation simplifiée - à étendre pour le MVP
-    return { similarity: 0.5, correctWords: [], missingWords: [] };
+    // Utiliser le SessionEngine pour comparer la réponse
+    const session = new SessionEngine(sessionState.verseText, DEFAULT_MVP_STRATEGY);
+    session.startPreview();
+    // Révéler tous les mots pour que le moteur considère que la session est prête
+    sessionState.revealedWords.forEach(index => {
+      session.revealWordAt(index);
+    });
+    return session.verifyAnswer(userInput);
   }, [sessionState]);
 
   /**
@@ -221,6 +234,15 @@ export function useMemorizationSession() {
    */
   const getService = useCallback(() => memorizationService, []);
 
+  /**
+   * Change l'exercice策略 pendant la session
+   */
+  const setStrategy = useCallback((strategy: ExerciseStrategy) => {
+    if (!sessionEngine) return;
+    sessionEngine.setStrategy(strategy);
+    resetSession();
+  }, [resetSession, sessionEngine]);
+
   return {
     sessionState,
     isLoaded,
@@ -233,5 +255,6 @@ export function useMemorizationSession() {
     resetSession,
     abandonSession,
     getService,
+    setStrategy,
   };
 }

@@ -11,6 +11,9 @@ export type { BibleBook, ParsedReference } from './bible';
 export { Rating, DEFAULT_FSRS_STATE, RATING_LABELS } from './fsrs';
 export type { FsrsState, FsrsReview, IFsrsEngine } from './fsrs';
 
+// Progress Domain
+export { calculateMasteryLevel, isMastered, MasteryLevel } from './progress';
+
 // Domain Events (Shared)
 export { eventBus, DomainEventTypes } from '.';
 export type { DomainEvent } from '.';

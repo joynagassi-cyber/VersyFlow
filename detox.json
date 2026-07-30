@@ -1,0 +1,64 @@
+{
+  "reactNative": {
+    "bundle": {
+      "entryFile": "index",
+      "platform": "android",
+      "release": false,
+      "ios": {
+        "entryFile": "index",
+        "bundleName": "app",
+        "iosBuildDir": "build/Debug-universal"
+      },
+      "android": {
+        "bundleName": "app",
+        "androidBuildDir": "android/app/build/outputs/bundle/release",
+        "androidAssetsSubdirectory": "assets"
+      }
+    },
+    "devices": {
+      "pixel3": {
+        "type": "android",
+        "device": {
+          "avd": "Pixel_3_API_30",
+          "sdcardSize": "2048M",
+          "orientation": "landscape"
+        },
+        "capabilities": {
+          "system.avdName": "Pixel_3_API_30"
+        }
+      },
+      "iphoneX": {
+        "type": "ios",
+        "device": {
+          "id": "simulatorId",
+          "platform": "iOS",
+          "platformVersion": "14.0"
+        },
+        "capabilities": {
+          "system.ios.device": "iPhone X"
+        }
+      }
+    },
+    "tests": {
+      "*.test.js": {
+        "testMatch": "<rootDir>/**/*.test.js",
+        "maxInstances": 5,
+        "testRunner": "jest-circus",
+        "config": {
+          "testEnvironment": "node",
+          "resetBeforeTest": true,
+          "setupFilesAfterEnv": ["<rootDir>/setup.js"]
+        }
+      }
+    },
+    "hooks": {
+      "beforeAll": [
+        "jest-circus/runner",
+        "require('./setup.js')"
+      ],
+      "afterAll": [
+        "jest-circus/teardown"
+      ]
+    }
+  }
+}
