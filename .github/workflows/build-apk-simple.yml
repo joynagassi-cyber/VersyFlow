@@ -18,8 +18,8 @@ jobs:
         node-version: '20'
         cache: 'npm'
 
-    - name: Install
-      run: npm ci
+    - name: Install dependencies
+      run: npm install  # Utilise install pour éviter les problèmes de synchronisation du lock file
 
     - name: Setup Java
       uses: actions/setup-java@v4
