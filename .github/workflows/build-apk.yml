@@ -6,6 +6,14 @@ on:
   pull_request:
     branches: [ "main" ]
   workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version de l\'application (ex: 1.0.0)'
+        required: false
+      build_type:
+        description: 'Type de build (debug/release)'
+        required: true
+        default: 'release'
 
 jobs:
   build:
@@ -41,21 +49,36 @@ jobs:
     - name: Accept licenses
       run: yes | sdkmanager --licenses
 
-    - name: Configure signing
+    - name: Configure signing (production)
+      if: inputs.build_type == 'release'
       run: |
-        echo "RELEASE_STORE_FILE=../keystore/release.keystore" > android/gradle.properties
-        echo "RELEASE_STORE_PASSWORD=${{ secrets.KEYSTORE_PASSWORD }}" >> android/gradle.properties
-        echo "RELEASE_KEY_ALIAS=${{ secrets.KEY_ALIAS }}" >> android/gradle.properties
-        echo "RELEASE_KEY_PASSWORD=${{ secrets.KEY_PASSWORD }}" >> android/gradle.properties
+        mkdir -p android/app
+        cat > android/gradle.properties << EOF
+        RELEASE_STORE_FILE=../keystore/release.keystore
+        RELEASE_STORE_PASSWORD=${{ secrets.KEYSTORE_PASSWORD }}
+        RELEASE_KEY_ALIAS=${{ secrets.KEY_ALIAS }}
+        RELEASE_KEY_PASSWORD=${{ secrets.KEY_PASSWORD }}
+        EOF
 
-    - name: Build Release APK
+    - name: Configure signing (debug)
+      if: inputs.build_type == 'debug'
+      run: |
+        mkdir -p android/app
+        echo "android.buildTypes.debug.signingConfig = signingConfigs.debug" >> android/app/build.gradle
+
+    - name: Build APK
       run: |
         cd android
-        ./gradlew assembleRelease
+        if [ "${{ github.event.inputs.build_type }}" = "release" ]; then
+          ./gradlew assembleRelease
+        else
+          ./gradlew assembleDebug
+        fi
         cd ..
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
-        name: versyflow-apk
-        path: android/app/build/outputs/apk/release/app-release.apk
+        name: versyflow-${{ github.event.inputs.build_type }}
+        path: android/app/build/outputs/apk/**/*.apk
+        retention-days: 30

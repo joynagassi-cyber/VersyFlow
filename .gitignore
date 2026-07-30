@@ -74,6 +74,13 @@ app.backup
 # Node
 npm-debug.log
 yarn-error.log
+
+# Android Keystore (ne jamais pusher)
+keystore/
+*.jks
+*.keystore
+*.keystore.bak
+
 # InsForge & AI agent skills
 .insforge
 .agent
