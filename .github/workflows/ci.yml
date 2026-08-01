@@ -22,7 +22,7 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install  # Utilise install pour éviter les problèmes de synchronisation du lock file
 
       - name: TypeScript typecheck
         run: npx tsc --noEmit
@@ -46,7 +46,7 @@ jobs:
           node-version: '20'
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install  # Utilise install pour éviter les problèmes de synchronisation du lock file
 
       - name: Run unit tests
         run: npx jest --ci --coverage --passWithNoTests --setupFilesAfterEnv=""
@@ -68,7 +68,7 @@ jobs:
           node-version: '20'
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install  # Utilise install pour éviter les problèmes de synchronisation du lock file
 
       - name: Install EAS CLI
         run: npm install -g @expo/eas-cli

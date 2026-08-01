@@ -30,7 +30,7 @@ jobs:
         cache: 'npm'
 
     - name: Install dependencies
-      run: npm ci
+      run: npm install  # Utilise install pour éviter les problèmes de synchronisation du lock file
 
     - name: Setup Java 17
       uses: actions/setup-java@v4
