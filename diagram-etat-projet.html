@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VersyFlow - État du Projet & Build Production</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            padding: 40px;
+            color: #fff;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+            background: linear-gradient(90deg, #ff6b9d, #c44dff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .subtitle {
+            text-align: center;
+            color: #888;
+            margin-bottom: 40px;
+            font-size: 1.1em;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+        .status-done { background: #22c55e; color: #000; }
+        .status-pending { background: #f59e0b; color: #000; }
+        .status-blocked { background: #ef4444; color: #fff; }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        .card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
+            padding: 24px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .card h2 {
+            font-size: 1.3em;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .card h2 .icon {
+            font-size: 1.5em;
+        }
+
+        .flow {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .flow-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 12px;
+            border-left: 3px solid;
+        }
+        .flow-item.done { border-left-color: #22c55e; }
+        .flow-item.pending { border-left-color: #f59e0b; }
+        .flow-item.blocked { border-left-color: #ef4444; }
+        .flow-item .step {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9em;
+            flex-shrink: 0;
+        }
+        .flow-item.done .step { background: #22c55e; color: #000; }
+        .flow-item.pending .step { background: #f59e0b; color: #000; }
+        .flow-item.blocked .step { background: #ef4444; color: #fff; }
+        .flow-item .info { flex: 1; }
+        .flow-item .info h3 { font-size: 1em; margin-bottom: 4px; }
+        .flow-item .info p { font-size: 0.85em; color: #888; }
+
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .tech-tag {
+            padding: 6px 14px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 20px;
+            font-size: 0.85em;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #22c55e, #16a34a);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .architecture {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .arch-layer {
+            background: rgba(255,255,255,0.03);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+        .arch-layer h3 {
+            font-size: 0.9em;
+            color: #888;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .arch-item {
+            padding: 8px 12px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 8px;
+            margin-bottom: 8px;
+            font-size: 0.9em;
+        }
+
+        .remaining {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .remaining h3 {
+            color: #ef4444;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .remaining-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .remaining-item:last-child { border-bottom: none; }
+        .remaining-item .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #ef4444;
+            flex-shrink: 0;
+        }
+
+        .complete {
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .complete h3 {
+            color: #22c55e;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        .stat-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+        .stat-card .number {
+            font-size: 2.5em;
+            font-weight: bold;
+            background: linear-gradient(90deg, #ff6b9d, #c44dff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .stat-card .label {
+            color: #888;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📱 VersyFlow <span class="status-badge status-pending">Build en cours</span></h1>
+        <p class="subtitle">Application de mémorisation de versets bibliques — État actuel & Roadmap Production</p>
+
+        <div class="stats">
+            <div class="stat-card">
+                <div class="number">20</div>
+                <div class="label">Écrans</div>
+            </div>
+            <div class="stat-card">
+                <div class="number">15+</div>
+                <div class="label">Domaines</div>
+            </div>
+            <div class="stat-card">
+                <div class="number">75%</div>
+                <div class="label">Complété</div>
+            </div>
+            <div class="stat-card">
+                <div class="number">5</div>
+                <div class="label">Bloquants</div>
+            </div>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-fill" style="width: 75%"></div>
+        </div>
+
+        <div class="grid">
+            <!-- Architecture -->
+            <div class="card">
+                <h2><span class="icon">🏗️</span> Architecture Technique</h2>
+                <div class="architecture">
+                    <div class="arch-layer">
+                        <h3>🎨 UI Layer</h3>
+                        <div class="arch-item">Expo Router</div>
+                        <div class="arch-item">React Navigation</div>
+                        <div class="arch-item">FlashList</div>
+                    </div>
+                    <div class="arch-layer">
+                        <h3>⚙️ Domain Layer</h3>
+                        <div class="arch-item">Bible Service</div>
+                        <div class="arch-item">FSRS Engine (WASM)</div>
+                        <div class="arch-item">Memorization</div>
+                        <div class="arch-item">i18n / Multilingue</div>
+                    </div>
+                    <div class="arch-layer">
+                        <h3>🔐 Infrastructure</h3>
+                        <div class="arch-item">InsForge Auth</div>
+                        <div class="arch-item">Zustand Store</div>
+                        <div class="arch-item">SQLite/AsyncStorage</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Auth Flow -->
+            <div class="card">
+                <h2><span class="icon">🔑</span> Flux d'Authentification</h2>
+                <div class="flow">
+                    <div class="flow-item done">
+                        <div class="step">1</div>
+                        <div class="info">
+                            <h3>Connexion / Inscription</h3>
+                            <p>Écran login/signup avec InsForge SDK</p>
+                        </div>
+                        <span class="status-badge status-done">✅</span>
+                    </div>
+                    <div class="flow-item done">
+                        <div class="step">2</div>
+                        <div class="info">
+                            <h3>Vérification Email</h3>
+                            <p>Écran verify.tsx</p>
+                        </div>
+                        <span class="status-badge status-done">✅</span>
+                    </div>
+                    <div class="flow-item done">
+                        <div class="step">3</div>
+                        <div class="info">
+                            <h3>Session Active</h3>
+                            <p>Token InsForge stocké localement</p>
+                        </div>
+                        <span class="status-badge status-done">✅</span>
+                    </div>
+                    <div class="flow-item pending">
+                        <div class="step">4</div>
+                        <div class="info">
+                            <h3>Onboarding</h3>
+                            <p>Language → Translation → Welcome</p>
+                        </div>
+                        <span class="status-badge status-pending">🔄</span>
+                    </div>
+                </div>
+                <div class="tech-stack">
+                    <span class="tech-tag">@insforge/sdk</span>
+                    <span class="tech-tag">JWT Tokens</span>
+                    <span class="tech-tag">localStorage</span>
+                </div>
+            </div>
+
+            <!-- Features -->
+            <div class="card">
+                <h2><span class="icon">✨</span> Fonctionnalités</h2>
+                <div class="flow">
+                    <div class="flow-item done">
+                        <div class="step">✓</div>
+                        <div class="info">
+                            <h3>Navigation Biblique</h3>
+                            <p>Livres → Chapitres → Versets</p>
+                        </div>
+                        <span class="status-badge status-done">Prêt</span>
+                    </div>
+                    <div class="flow-item done">
+                        <div class="step">✓</div>
+                        <div class="info">
+                            <h3>Session de Mémorisation</h3>
+                            <p>Moteur FSRS + révélation mots</p>
+                        </div>
+                        <span class="status-badge status-done">Prêt</span>
+                    </div>
+                    <div class="flow-item done">
+                        <div class="step">✓</div>
+                        <div class="info">
+                            <h3>Review Queue</h3>
+                            <p>Verset à réviser + historique</p>
+                        </div>
+                        <span class="status-badge status-done">Prêt</span>
+                    </div>
+                    <div class="flow-item done">
+                        <div class="step">✓</div>
+                        <div class="info">
+                            <h3>Progress Dashboard</h3>
+                            <p>Suivi de progression</p>
+                        </div>
+                        <span class="status-badge status-done">Prêt</span>
+                    </div>
+                    <div class="flow-item pending">
+                        <div class="step">!</div>
+                        <div class="info">
+                            <h3>Synchronisation Cloud</h3>
+                            <p>InsForge sync (en cours)</p>
+                        </div>
+                        <span class="status-badge status-pending">En cours</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Build Checklist -->
+            <div class="card">
+                <h2><span class="icon">📦</span> Checklist Build Production</h2>
+                <div class="flow">
+                    <div class="flow-item done">
+                        <div class="step">1</div>
+                        <div class="info">
+                            <h3>Configuration Expo</h3>
+                            <p>app.json + package.json synchronisés</p>
+                        </div>
+                        <span class="status-badge status-done">✅</span>
+                    </div>
+                    <div class="flow-item done">
+                        <div class="step">2</div>
+                        <div class="info">
+                            <h3>Authentication reconnectée</h3>
+                            <p>InsForge SDK configuré</p>
+                        </div>
+                        <span class="status-badge status-done">✅</span>
+                    </div>
+                    <div class="flow-item pending">
+                        <div class="step">3</div>
+                        <div class="info">
+                            <h3>Keystore Production</h3>
+                            <p>Générer release.keystore (local uniquement)</p>
+                        </div>
+                        <span class="status-badge status-pending">⏳</span>
+                    </div>
+                    <div class="flow-item pending">
+                        <div class="step">4</div>
+                        <div class="info">
+                            <h3>Secrets GitHub</h3>
+                            <p>KEYSTORE_PASSWORD, KEY_ALIAS, KEY_PASSWORD</p>
+                        </div>
+                        <span class="status-badge status-pending">⏳</span>
+                    </div>
+                    <div class="flow-item pending">
+                        <div class="step">5</div>
+                        <div class="info">
+                            <h3>Build GitHub Actions</h3>
+                            <p>Workflow .github/workflows/build-apk-simple.yml</p>
+                        </div>
+                        <span class="status-badge status-pending">⏳</span>
+                    </div>
+                    <div class="flow-item blocked">
+                        <div class="step">6</div>
+                        <div class="info">
+                            <h3>SDK Android installé</h3>
+                            <p>ANDROID_HOME + build-tools 35.0.0</p>
+                        </div>
+                        <span class="status-badge status-blocked">❌</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ce qui reste à faire -->
+        <div class="card">
+            <h2><span class="icon">🚀</span> Ce qui reste pour le Build Final</h2>
+
+            <div class="remaining">
+                <h3>⛔ Bloquants</h3>
+                <div class="remaining-item">
+                    <div class="dot"></div>
+                    <div><strong>Installer Android SDK</strong> — ANDROID_HOME pointant vers le SDK complet (build-tools 35.0.0, platform android-34, ndk 26.1.10909125)</div>
+                </div>
+                <div class="remaining-item">
+                    <div class="dot"></div>
+                    <div><strong>Générer le keystore de production</strong> — Keytool avec alias "versyflow-release-key" (à garder local, jamais pushé)</div>
+                </div>
+                <div class="remaining-item">
+                    <div class="dot"></div>
+                    <div><strong>Configurer les secrets GitHub</strong> — Ajouter KEYSTORE_PASSWORD, KEY_ALIAS, KEY_PASSWORD dans les secrets du repository</div>
+                </div>
+            </div>
+
+            <div class="complete">
+                <h3>✅ Terminé</h3>
+                <div class="remaining-item">
+                    <div class="dot" style="background: #22c55e;"></div>
+                    <div><strong>Authentification InsForge reconnectée</strong> — Retour à la version SDK originale (createClient)</div>
+                </div>
+                <div class="remaining-item">
+                    <div class="dot" style="background: #22c55e;"></div>
+                    <div><strong>Metro Bundler opérationnel</strong> — Sur Node 22, port 8081, application fonctionnelle</div>
+                </div>
+                <div class="remaining-item">
+                    <div class="dot" style="background: #22c55e;"></div>
+                    <div><strong>Workflow GitHub Actions</strong> — Build APK debug automatique sur push</div>
+                </div>
+                <div class="remaining-item">
+                    <div class="dot" style="background: #22c55e;"></div>
+                    <div><strong>28 skills installés</strong> — react-native, e2e-testing, debugging-toolkit, etc.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Prochaines étapes -->
+        <div class="card" style="margin-top: 30px;">
+            <h2><span class="icon">📋</span> Prochaines Étapes Recommandées</h2>
+            <div class="flow">
+                <div class="flow-item pending">
+                    <div class="step" style="background: #f59e0b;">1</div>
+                    <div class="info">
+                        <h3>Installer le SDK Android</h3>
+                        <p>Depuis Android Studio ou cmdline-tools + sdkmanager</p>
+                    </div>
+                </div>
+                <div class="flow-item pending">
+                    <div class="step" style="background: #f59e0b;">2</div>
+                    <div class="info">
+                        <h3>Générer le keystore de production</h3>
+                        <p>keytool -genkey -v -keystore keystore/release.keystore</p>
+                    </div>
+                </div>
+                <div class="flow-item pending">
+                    <div class="step" style="background: #f59e0b;">3</div>
+                    <div class="info">
+                        <h3>Configurer les secrets GitHub</h3>
+                        <p>Settings → Secrets and variables → Actions</p>
+                    </div>
+                </div>
+                <div class="flow-item pending">
+                    <div class="step" style="background: #f59e0b;">4</div>
+                    <div class="info">
+                        <h3>Tester le build GitHub Actions</h3>
+                        <p>Actions → Build APK Debug Rapid → Run workflow</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
