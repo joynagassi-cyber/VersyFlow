@@ -1,3 +1,5 @@
+import { createClient } from '@insforge/sdk';
+
 export interface UserProfile {
   userId: string;
   display_name?: string;
@@ -5,79 +7,41 @@ export interface UserProfile {
 }
 
 export class InsForgeAuthService {
-  private token: string | null = null;
-  private user: UserProfile | null = null;
+  private client: any;
 
   constructor() {
-    // Version locale simplifiée - pas de dépendances externes requises
-    // Pour tester sans configuration复杂ée
-    const storedToken = localStorage.getItem('versyflow_token');
-    if (storedToken) {
-      this.token = storedToken;
-      const storedUser = localStorage.getItem('versyflow_user');
-      if (storedUser) {
-        this.user = JSON.parse(storedUser);
-      }
-    }
+    const INSFORGE_URL = process.env.EXPO_PUBLIC_INSFORGE_URL || 'https://wypi8tgf.eu-central.insforge.app';
+    const INSFORGE_ANON_KEY = process.env.EXPO_PUBLIC_INSFORGE_ANON_KEY || 'anon_5db10acfd8d50598afafe6d574dfd647edd9fba32514816c7f4c00346651a7c6';
+
+    this.client = createClient({
+      baseUrl: INSFORGE_URL,
+      anonKey: INSFORGE_ANON_KEY,
+    });
   }
 
-  async signUp(email: string, password: string): Promise<string> {
-    this.token = `simple_token_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-    this.user = {
-      userId: 'user_' + Date.now(),
-      display_name: email.split('@')[0],
-      default_translation: 'fr'
-    };
-    this.saveToStorage();
-    return this.token;
+  async signUp(email: string, password: string) {
+    return this.client.auth.signUp({ email, password });
   }
 
-  async signIn(email: string, password: string): Promise<string> {
-    this.token = `simple_token_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-    this.user = {
-      userId: 'user_' + Date.now(),
-      display_name: email.split('@')[0],
-      default_translation: 'fr'
-    };
-    this.saveToStorage();
-    return this.token;
+  async signIn(email: string, password: string) {
+    return this.client.auth.signInWithPassword({ email, password });
   }
 
-  async signOut(): Promise<void> {
-    this.token = null;
-    this.user = null;
-    localStorage.removeItem('versyflow_token');
-    localStorage.removeItem('versyflow_user');
+  async signOut() {
+    return this.client.auth.signOut();
   }
 
-  async getCurrentUser(): Promise<UserProfile | null> {
-    return this.user;
+  async getCurrentUser() {
+    const session = await this.client.auth.getSession();
+    return session?.user;
   }
 
-  async getUserEmail(): Promise<string | null> {
+  async getUserEmail() {
     const user = await this.getCurrentUser();
-    return user ? (user.display_name + '@example.com') : null;
+    return user?.email || null;
   }
 
-  async updateUserProfile(userId: string, data: { display_name?: string, default_translation?: string }): Promise<void> {
-    if (this.user) {
-      this.user = { ...this.user, ...data };
-      this.saveToStorage();
-    }
-  }
-
-  private saveToStorage(): void {
-    if (this.token && this.user) {
-      localStorage.setItem('versyflow_token', this.token);
-      localStorage.setItem('versyflow_user', JSON.stringify(this.user));
-    }
-  }
-
-  getToken(): string | null {
-    return this.token;
-  }
-
-  isLoggedIn(): boolean {
-    return this.token !== null;
+  async updateUserProfile(userId: string, data: { display_name?: string, default_translation?: string }) {
+    await this.client.auth.updateUser(userId, data);
   }
 }
