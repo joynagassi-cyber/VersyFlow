@@ -6,11 +6,7 @@
 import { FamilyInvitation, InvitationStatus } from './entities';
 import { IFamilyInvitationRepository } from './repository';
 import { IFamilyRepository } from '@/domains/family/repository';
-
-// Lightweight event emitter to avoid circular dependencies
-const eventBus = {
-  emit: (_event: any) => {},
-};
+import { eventBus, DomainEventTypes } from '@/domains';
 
 export class FamilyInvitationService {
   private static readonly DEFAULT_EXPIRY_DAYS = 7;
@@ -43,7 +39,7 @@ export class FamilyInvitationService {
 
     eventBus.emit({
       id: crypto.randomUUID(),
-      type: 'family.invitation.created',
+      type: DomainEventTypes.FAMILY_INVITATION_CREATED,
       timestamp: now,
       payload: { familyId, token: invitation.token, expiresAt: invitation.expiresAt },
     });
@@ -79,7 +75,7 @@ export class FamilyInvitationService {
     if (used) {
       eventBus.emit({
         id: crypto.randomUUID(),
-        type: 'family.invitation.used',
+        type: DomainEventTypes.FAMILY_INVITATION_USED,
         timestamp: Date.now(),
         payload: { invitationId },
       });
@@ -97,7 +93,7 @@ export class FamilyInvitationService {
     if (revoked) {
       eventBus.emit({
         id: crypto.randomUUID(),
-        type: 'family.invitation.revoked',
+        type: DomainEventTypes.FAMILY_INVITATION_REVOKED,
         timestamp: Date.now(),
         payload: { invitationId },
       });

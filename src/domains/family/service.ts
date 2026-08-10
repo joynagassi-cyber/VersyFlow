@@ -5,11 +5,7 @@
 
 import { Family, FamilyMembership, FamilyRole, MembershipStatus } from './entities';
 import { IFamilyRepository } from './repository';
-
-// Simple event emitter to avoid circular dependencies
-const eventBus = {
-  emit: (_event: any) => {},
-};
+import { eventBus, DomainEventTypes } from '@/domains';
 
 export class FamilyService {
   constructor(private repository: IFamilyRepository) {}
@@ -29,7 +25,7 @@ export class FamilyService {
 
     eventBus.emit({
       id: crypto.randomUUID(),
-      type: 'family.created',
+      type: DomainEventTypes.FAMILY_CREATED,
       timestamp: now,
       payload: { familyId: family.id, ownerId },
     });
@@ -61,7 +57,7 @@ export class FamilyService {
 
     eventBus.emit({
       id: crypto.randomUUID(),
-      type: 'family.member_added',
+      type: DomainEventTypes.FAMILY_MEMBER_INVITED,
       timestamp: now,
       payload: { familyId, accountId, role },
     });
@@ -81,7 +77,7 @@ export class FamilyService {
     if (removed) {
       eventBus.emit({
         id: crypto.randomUUID(),
-        type: 'family.member_removed',
+        type: DomainEventTypes.FAMILY_MEMBER_REMOVED,
         timestamp: Date.now(),
         payload: { familyId, accountId },
       });
@@ -100,7 +96,7 @@ export class FamilyService {
     if (deleted) {
       eventBus.emit({
         id: crypto.randomUUID(),
-        type: 'family.deleted',
+        type: DomainEventTypes.FAMILY_MEMBER_LEFT,
         timestamp: Date.now(),
         payload: { familyId },
       });
