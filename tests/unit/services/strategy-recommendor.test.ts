@@ -1,10 +1,10 @@
 /**
- * Unit Tests for StrategyRecommendor
- * Tests feature #85: Choix automatique de stratégie
+ * Tests pour StrategyRecommendor
+ * Vérifie la recommandation automatique de stratégie de mémorisation
  */
 
 import { StrategyRecommendor } from '@/services/strategy-recommendor';
-import { VerificationResult } from '@/domains/memorization/entities';
+import { WordPerformance } from '@/domains/memorization/entities';
 
 describe('StrategyRecommendor', () => {
   let recommendor: StrategyRecommendor;
@@ -13,136 +13,82 @@ describe('StrategyRecommendor', () => {
     recommendor = new StrategyRecommendor();
   });
 
-  afterEach(() => {
-    recommendor.reset();
-  });
-
-  describe('recommend()', () => {
-    it('should recommend progressive-masking for high fatigue', () => {
+  describe('Recommandation de stratégie', () => {
+    it('should recommend progressive masking for new verses', () => {
       // Arrange
-      const context = {
-        recordId: 'test-123',
-        fatigueLevel: 0.8,
-      };
-
+      const wordPerformance: WordPerformance[] = [];
+      
       // Act
-      const result = recommendor.recommend(context);
-
+      const recommendation = recommendor.recommendStrategy(wordPerformance, 0);
+      
       // Assert
-      expect(result.strategy).toBe('progressive-masking');
-      expect(result.confidence).toBeGreaterThan(0.7);
-      expect(result.rationale).toContain('fatigué');
+      expect(recommendation).toBe('progressive-masking');
     });
 
-    it('should recommend incremental-reveal for low verification score', () => {
+    it('should recommend smart masking for verses with errors', () => {
       // Arrange
-      const context = {
-        recordId: 'test-123',
-        verification: { score: 0.3, correctWords: [], missingWords: ['word1', 'word2', 'word3', 'word4'], extraWords: [], substitutedWords: [] },
-      };
-
+      const wordPerformance: WordPerformance[] = [
+        { word: 'Dieu', errorCount: 3, totalAttempts: 5 },
+        { word: 'créa', errorCount: 2, totalAttempts: 4 },
+      ];
+      
       // Act
-      const result = recommendor.recommend(context);
-
+      const recommendation = recommendor.recommendStrategy(wordPerformance, 2);
+      
       // Assert
-      expect(result.strategy).toBe('incremental-reveal');
-      expect(result.confidence).toBeLessThan(0.8);
-      expect(result.rationale).toContain('Plusieurs erreurs');
+      expect(recommendation).toBe('smart-masking');
     });
 
-    it('should recommend heat-words for many forgotten words', () => {
+    it('should recommend flashcards for verses with high stability', () => {
       // Arrange
-      const context = {
-        recordId: 'test-123',
-        wordFailures: [
-          { word: 'Dieu', failCount: 3, lastFailedAt: Date.now(), position: 1 },
-          { word: 'créa', failCount: 2, lastFailedAt: Date.now(), position: 2 },
-          { word: 'cieux', failCount: 4, lastFailedAt: Date.now(), position: 3 },
-        ],
-      };
-
+      const wordPerformance: WordPerformance[] = [
+        { word: 'Dieu', errorCount: 0, totalAttempts: 1 },
+        { word: 'créa', errorCount: 0, totalAttempts: 1 },
+      ];
+      const avgStability = 8.0;
+      
       // Act
-      const result = recommendor.recommend(context);
-
+      const recommendation = recommendor.recommendStrategy(wordPerformance, avgStability);
+      
       // Assert
-      expect(result.strategy).toBe('heat-words');
-      expect(result.rationale).toContain('mots souvent oubliés');
+      expect(recommendation).toBe('flashcard');
     });
 
-    it('should recommend active-recall for high performance', () => {
+    it('should recommend recall writing for mastery practice', () => {
       // Arrange
-      const context = {
-        recordId: 'test-123',
-        verification: { score: 0.95, correctWords: ['au', 'commencement', 'dieu'], missingWords: [], extraWords: [], substitutedWords: [] },
-      };
-
+      const wordPerformance: WordPerformance[] = [];
+      const avgStability = 15.0; // High stability
+      
       // Act
-      const result = recommendor.recommend(context);
-
+      const recommendation = recommendor.recommendStrategy(wordPerformance, avgStability);
+      
       // Assert
-      expect(result.strategy).toBe('active-recall');
-      expect(result.confidence).toBe(0.8);
-      expect(result.rationale).toContain('Excellente performance');
-    });
-
-    it('should fall back to progressive-masking for unknown cases', () => {
-      // Arrange
-      const context = {
-        recordId: 'test-123',
-        verification: { score: 0.7, correctWords: [], missingWords: [], extraWords: [], substitutedWords: [] },
-      };
-
-      // Act
-      const result = recommendor.recommend(context);
-
-      // Assert
-      expect(result.strategy).toBe('progressive-masking');
-      expect(result.confidence).toBe(0.6);
+      expect(recommendation).toBe('recall-writing');
     });
   });
 
-  describe('recordPerformance()', () => {
-    it('should track word failures from verification', () => {
+  describe('Calcul du score de difficulté', () => {
+    it('should return 0 for empty performance', () => {
+      // Act
+      const score = recommendor.calculateDifficultyScore([]);
+      
+      // Assert
+      expect(score).toBe(0);
+    });
+
+    it('should calculate difficulty based on error rates', () => {
       // Arrange
-      const context = {
-        recordId: 'test-123',
-        verification: { score: 0.6, correctWords: [], missingWords: ['dieu', 'créa'], extraWords: [], substitutedWords: [] },
-      };
-
+      const wordPerformance: WordPerformance[] = [
+        { word: 'test', errorCount: 3, totalAttempts: 5 },
+        { word: 'word', errorCount: 2, totalAttempts: 4 },
+      ];
+      
       // Act
-      recommendor.recordPerformance('test-123', context.verification);
-
-      // Assert - verify failures were tracked (indirectly, next recommendation would change)
-      expect(recommendor.getFatigueLevel()).toBeDefined();
-    });
-
-    it('should clear cache after recording', () => {
-      // Arrange - make a recommendation first
-      const context1 = { recordId: 'test-123', fatigueLevel: 0.5 };
-      const result1 = recommendor.recommend(context1);
-
-      // Record performance with different context
-      const context2 = { recordId: 'test-123', fatigueLevel: 0.8 };
-      recommendor.recordPerformance('test-123', undefined, 0.8);
-
-      // Get a new recommendation (should be different due to cache clearing)
-      const result2 = recommendor.recommend(context2);
-
-      expect(result1).not.toEqual(result2);
-    });
-  });
-
-  describe('reset()', () => {
-    it('should clear all trackers and cache', () => {
-      // Arrange - record some data
-      recommendor.recordPerformance('test-123', { score: 0.6, correctWords: [], missingWords: ['word'] }, 0.3);
-      recommendor.recommend({ recordId: 'test-123' });
-
-      // Act
-      recommendor.reset();
-
-      // Assert - verify state is cleared (would require internal access in a real test)
-      expect(recommendor.getFatigueLevel()).toBe(0);
+      const score = recommendor.calculateDifficultyScore(wordPerformance);
+      
+      // Assert
+      expect(score).toBeGreaterThan(0);
+      expect(score).toBeLessThanOrEqual(1);
     });
   });
 });
