@@ -1,9 +1,10 @@
 /**
- * Review Session Screen — Interactive review with FSRS rating
- * See docs/08-ui-screens.md §13
+ * Review Session Screen — Immersive review with FSRS rating
+ * See docs/08-ui-screens.md §9
+ * Figma: https://www.figma.com/design/BL5Cbn6s2aMXAtNDmAVJ8F/VersyFlow
  */
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -12,388 +13,355 @@ import {
   ScrollView,
   SafeAreaView,
   ActivityIndicator,
+  Animated,
+  Platform,
 } from 'react-native';
+import { useAppTheme } from '@/theme/useTheme';
 import { useRouter } from 'expo-router';
-import { useI18n } from '@/hooks/useI18n';
-import { WordChip } from '@/components/bible/WordChip';
+import { Ionicons } from '@expo/vector-icons';
 import { Rating as FsrsRating } from '@/domains/fsrs';
 import { MemorizationService } from '@/domains/memorization/service';
 import { IFsrsEngine, Sm2FallbackEngine } from '@/domains/fsrs';
 import { MmkvStorage } from '@/infrastructure/storage';
 import { getFsrsEngine } from '@/services/fsrs-factory';
-import { ProgressService } from '@/services/progress-service';
 
-// Singleton pour le service (à initialize au niveau de l'application)
-let memorizationService: MemorizationService | null = null;
-let fsrsEngine: IFsrsEngine | null = null;
-let progressService: any | null = null;
-
-const getMemorizationService = () => {
-  if (!memorizationService) {
-    if (!fsrsEngine) {
-      fsrsEngine = getFsrsEngine(); // Use factory - tries WASM first, falls back to SM-2
-    }
-    memorizationService = new MemorizationService(new MmkvStorage(), fsrsEngine);
-  }
-  return memorizationService;
-};
-
-const getProgressService = () => {
-  if (!progressService) {
-    const ms = getMemorizationService();
-    const fe = fsrsEngine || getFsrsEngine();
-    progressService = new ProgressService(ms, fe);
-  }
-  return progressService;
-};
+// Sample data for demo
+const SAMPLE_REVIEWS = [
+  {
+    id: '1',
+    reference: 'Jean 3:16',
+    text: 'Car Dieu a tellement aimé le monde qu\'il a donné son Fils unique, afin que quiconque croit en lui ne périsse pas, mais qu\'il ait la vie éternelle.',
+    words: ['Car', 'Dieu', 'a', 'tellement', 'aimé', 'le', 'monde', 'qu\'il', 'a', 'donné', 'son', 'Fils', 'unique'],
+    stability: 3.5,
+    difficulty: 5.0,
+    elapsedDays: 2,
+    nextInterval: 4,
+  },
+  {
+    id: '2',
+    reference: 'Psaume 23:1',
+    text: 'L\'Éternel est mon berger: je ne manquerai de rien.',
+    words: ['L\'Éternel', 'est', 'mon', 'berger', ':', 'je', 'ne', 'manquerai', 'de', 'rien'],
+    stability: 5.2,
+    difficulty: 3.0,
+    elapsedDays: 5,
+    nextInterval: 7,
+  },
+  {
+    id: '3',
+    reference: 'Romains 8:28',
+    text: 'Nous savons d\'ailleurs que toutes choses contribuent au bien de ceux qui aiment Dieu.',
+    words: ['Nous', 'savons', 'd\'ailleurs', 'que', 'toutes', 'choses', 'contribuent', 'au', 'bien', 'de', 'ceux', 'qui', 'aiment', 'Dieu'],
+    stability: 1.8,
+    difficulty: 6.5,
+    elapsedDays: 1,
+    nextInterval: 2,
+  },
+];
 
 export default function ReviewSessionScreen() {
+  const { colors, sp, sh, rad } = useAppTheme();
   const router = useRouter();
-  const { t } = useI18n();
-
-  // Record ID passed from navigation query params
-  const routeParams = ((router as any).route?.query || {});
-  const recordId = (routeParams as any)?.recordId;
-
-  // Get service instance
-  const service = getMemorizationService();
-
-  // État de la session de révision
-  const [reviewState, setReviewState] = useState<any>(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [revealedWords, setRevealedWords] = useState<Set<number>>(new Set());
+  const [isRevealed, setIsRevealed] = useState(false);
+  const [showRating, setShowRating] = useState(false);
+  const [selectedRating, setSelectedRating] = useState<FsrsRating | null>(null);
   const [loading, setLoading] = useState(true);
-  const [isRevealing, setIsRevealing] = useState(false);
-  const [revealedWords, setRevealedWords] = useState<number[]>([]);
-  const [rating, setRating] = useState<FsrsRating | null>(null);
-  const [confirming, setConfirming] = useState(false);
+  const [reviews, setReviews] = useState(SAMPLE_REVIEWS);
 
-  // Charger le record au montage
+  const fadeAnim = new Animated.Value(0);
+  const scaleAnim = new Animated.Value(0.95);
+
   useEffect(() => {
-    if (!recordId) {
-      router.replace('/review/queue');
-      return;
+    // Simulate loading
+    setTimeout(() => setLoading(false), 800);
+  }, []);
+
+  useEffect(() => {
+    Animated.parallel([
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 400,
+        useNativeDriver: true,
+      }),
+      Animated.spring(scaleAnim, {
+        toValue: 1,
+        tension: 50,
+        friction: 8,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, [currentIndex]);
+
+  const currentReview = reviews[currentIndex];
+  const progress = ((currentIndex + 1) / reviews.length) * 100;
+
+  const handleReveal = () => {
+    if (!isRevealed) {
+      setIsRevealed(true);
+      Animated.parallel([
+        Animated.timing(fadeAnim, {
+          toValue: 0,
+          duration: 200,
+          useNativeDriver: true,
+        }),
+        Animated.timing(scaleAnim, {
+          toValue: 0.98,
+          duration: 200,
+          useNativeDriver: true,
+        }),
+      ]).start();
+      setTimeout(() => {
+        Animated.parallel([
+          Animated.timing(fadeAnim, {
+            toValue: 1,
+            duration: 300,
+            useNativeDriver: true,
+          }),
+          Animated.spring(scaleAnim, {
+            toValue: 1,
+            tension: 65,
+            friction: 11,
+            useNativeDriver: true,
+          }),
+        ]).start();
+      }, 200);
     }
+  };
 
-    const loadReview = async () => {
-      try {
-        // Charger le record depuis le service
-        // Dans la version réelle, l'ID contient bookId, chapter, verse, translationId
-        // Pour l'exemple, on extrait ces valeurs de l'ID format: bookId:chapter:verse:translationId
-        const parts = recordId.split(':');
-        if (parts.length !== 4) {
-          throw new Error('Format d\'ID invalide');
-        }
+  const handleRating = (rating: FsrsRating) => {
+    setSelectedRating(rating);
+    setShowRating(true);
+  };
 
-        const [bookId, chapterNumber, verseNumber, translationId] = parts;
-        const chapter = parseInt(chapterNumber, 10);
-        const verse = parseInt(verseNumber, 10);
+  const handleSubmitRating = async () => {
+    // Simulate saving rating
+    await new Promise(resolve => setTimeout(resolve, 500));
 
-        const record = await service.getMemorizedRecord(bookId, chapter, verse, translationId);
+    if (currentIndex < reviews.length - 1) {
+      // Next review
+      setCurrentIndex(prev => prev + 1);
+      setRevealedWords(new Set());
+      setIsRevealed(false);
+      setShowRating(false);
+      setSelectedRating(null);
+    } else {
+      // Session complete
+      router.replace('/review/queue');
+    }
+  };
 
-        if (!record) {
-          throw new Error('Record non trouvé');
-        }
+  const handleSkip = () => {
+    if (currentIndex < reviews.length - 1) {
+      setCurrentIndex(prev => prev + 1);
+      setRevealedWords(new Set());
+      setIsRevealed(false);
+      setShowRating(false);
+      setSelectedRating(null);
+    } else {
+      router.replace('/review/queue');
+    }
+  };
 
-        setReviewState({
-          ...record,
-          words: record.bibleVerseText.split(/\s+/).filter(w => w.length > 0),
-          revealedWords: new Set<number>(),
-        });
-      } catch (error) {
-        console.error('Erreur lors du chargement du record:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadReview();
-  }, [recordId, router, service]);
+  const getRatingConfig = (rating: FsrsRating) => {
+    switch (rating) {
+      case FsrsRating.AGAIN:
+        return { color: colors.error, label: 'À revoir', days: 1 };
+      case FsrsRating.HARD:
+        return { color: colors.warning, label: 'Difficile', days: 2 };
+      case FsrsRating.GOOD:
+        return { color: '#4CD964', label: 'Bon', days: 4 };
+      case FsrsRating.EASY:
+        return { color: colors.info, label: 'Facile', days: 7 };
+      default:
+        return { color: colors.primary, label: 'Bon', days: 3 };
+    }
+  };
 
   if (loading) {
     return (
       <SafeAreaView style={styles.container}>
-        <View style={styles.center}>
-          <ActivityIndicator size="large" color="#E91E8C" />
-          <Text style={styles.loadingText}>Chargement de la révision...</Text>
+        <View style={styles.loaderContainer}>
+          <ActivityIndicator size="large" color={colors.primary} />
+          <Text style={styles.loaderText}>Chargement de la session...</Text>
         </View>
       </SafeAreaView>
     );
   }
 
-  if (!reviewState) {
-    return (
-      <SafeAreaView style={styles.container}>
-        <View style={styles.error}>
-          <Text style={styles.errorTitle}>Impossible de charger ce verset</Text>
-          <TouchableOpacity style={styles.button} onPress={() => router.back()}>
-            <Text style={styles.buttonText}>Retour</Text>
-          </TouchableOpacity>
+  return (
+    <SafeAreaView style={styles.container}>
+      {/* Progress Bar */}
+      <View style={styles.progressBar}>
+        <View style={[styles.progressFill, { width: `${progress}%` }]} />
+      </View>
+
+      {/* Header */}
+      <View style={styles.header}>
+        <TouchableOpacity
+          style={styles.skipButton}
+          onPress={handleSkip}
+          activeOpacity={0.7}
+        >
+          <Text style={styles.skipText}>Passer</Text>
+        </TouchableOpacity>
+        <View style={styles.progressTextContainer}>
+          <Text style={styles.progressText}>
+            {currentIndex + 1} / {reviews.length}
+          </Text>
         </View>
-      </SafeAreaView>
-    );
-  }
+        <View style={styles.headerRight} />
+      </View>
 
-  // Révéler le mot suivant
-  const revealNextWord = () => {
-    const words = reviewState.words;
-    const currentRevealed = new Set(revealedWords);
-
-    // Trouver le premier mot non révélé
-    let nextIndex = -1;
-    for (let i = 0; i < words.length; i++) {
-      if (!currentRevealed.has(i)) {
-        nextIndex = i;
-        break;
-      }
-    }
-
-    if (nextIndex !== -1) {
-      currentRevealed.add(nextIndex);
-      setRevealedWords(Array.from(currentRevealed));
-    }
-  };
-
-  // Révéler un mot spécifique
-  const revealWordAt = (index: number) => {
-    if (revealedWords.includes(index)) return;
-    setRevealedWords([...revealedWords, index]);
-  };
-
-  // Passer en mode révélation
-  const startRevealing = () => {
-    setIsRevealing(true);
-  };
-
-  // Bouton de rating pour la révision
-  const handleRating = (selected: FsrsRating) => {
-    setRating(selected);
-    setConfirming(true);
-  };
-
-  // Confirmer la soumission du rating via le service réel
-  const submitRating = async () => {
-    if (!reviewState || !rating || !service) return;
-
-    try {
-      // Capture l'état avant la mise à jour
-      const stabilityBefore = reviewState.fsrsState.stability;
-      const difficultyBefore = reviewState.fsrsState.difficulty;
-      const actualInterval = reviewState.fsrsState.lastInterval || null;
-      const predictedInterval = reviewState.fsrsState.nextInterval || 0;
-
-      // Appel RÉEL au service de persistance avec toutes les données de logging
-      const success = await service.updateRecordAfterReview(
-        reviewState.id,
-        rating,
-        {
-          stability: stabilityBefore,
-          difficulty: difficultyBefore,
-          recallProbability: 0.75,
-          lastInterval: actualInterval,
-          nextInterval: predictedInterval,
-          elapsedDays: reviewState.fsrsState.elapsedDays || 0,
-          repetitions: reviewState.fsrsState.repetitions + 1,
-          requestedRetention: reviewState.fsrsState.requestedRetention || 0.9,
-        },
-        reviewState.nextReviewAt,
-        [],
-        stabilityBefore,
-        difficultyBefore,
-        predictedInterval,
-        actualInterval,
-      );
-
-      if (success) {
-        // Update progress metrics - check milestones and streak
-        const ps = getProgressService();
-        if (ps) {
-          // Check for milestones (first verse, 10 verses, etc.)
-          ps.checkAndEmitMilestones();
-          // Increment streak if there's activity today
-          ps.incrementStreak();
-        }
-
-        // Après un bref délai, retourner à la queue
-        setTimeout(() => {
-          router.replace('/review/queue');
-        }, 1500);
-      } else {
-        throw new Error('Échec de la persistance par le service');
-      }
-    } catch (error) {
-      console.error('Échec de la mise à jour:', error);
-      alert('Erreur lors de la sauvegarde de la révision. Veuillez réessayer.');
-      setConfirming(false);
-    }
-  };
-
-  if (!isRevealing && reviewState) {
-    // Phase d'affichage initial - utilisateur doit choisir de révèler les mots
-    return (
-      <SafeAreaView style={styles.container}>
-        <ScrollView contentContainerStyle={styles.content}>
-          <View style={styles.header}>
-            <Text style={styles.phaseTitle}>Révision</Text>
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* Review Card */}
+        <Animated.View
+          style={[
+            styles.cardContainer,
+            {
+              opacity: fadeAnim,
+              transform: [{ scale: scaleAnim }],
+            },
+          ]}
+        >
+          {/* Reference Label */}
+          <View style={styles.referenceBadge}>
+            <Ionicons name="bookmark" size={16} color={colors.primary} />
+            <Text style={styles.referenceText}>{currentReview.reference}</Text>
           </View>
 
-          <View style={styles.verseCard}>
-            <Text style={styles.verseReference}>{reviewState.bibleVerseReference}</Text>
-            <View style={styles.verseText}>
-              <Text style={styles.verseContent}>{reviewState.bibleVerseText}</Text>
-            </View>
-          </View>
-
-          <View style={styles.instructions}>
-            <Text style={styles.instructionText}>
-              {t('review.readCarefully')}
-            </Text>
-          </View>
-
-          <TouchableOpacity style={styles.startButton} onPress={startRevealing}>
-            <Text style={styles.startButtonText}>{t('review.startReviewAction')}</Text>
-          </TouchableOpacity>
-        </ScrollView>
-      </SafeAreaView>
-    );
-  }
-
-  if (isRevealing && reviewState) {
-    // Phase de révélation des mots
-    return (
-      <SafeAreaView style={styles.container}>
-        <ScrollView contentContainerStyle={styles.content}>
-          <View style={styles.header}>
-            <Text style={styles.phaseTitle}>Rappel</Text>
-            <Text style={styles.progress}>
-              {revealedWords.length}/{reviewState.words.length} mot{revealedWords.length > 1 ? 's' : ''} révélé(s)
-            </Text>
-          </View>
-
-          <View style={styles.verseCard}>
-            <Text style={styles.verseReference}>{reviewState.bibleVerseReference}</Text>
-            <View style={styles.wordContainer}>
-              {reviewState.words.map((word: string, index: number) => {
-                const isRevealed = revealedWords.includes(index);
-                return (
-                  <TouchableOpacity
-                    key={index}
-                    style={styles.wordWrapper}
-                    onPress={() => revealWordAt(index)}
-                    disabled={isRevealed}
-                  >
-                    <WordChip
-                      word={word}
-                      revealed={isRevealed}
-                      onPress={() => revealWordAt(index)}
-                    />
-                  </TouchableOpacity>
-                );
-              })}
-            </View>
-          </View>
-
-          <View style={styles.controls}>
-            <TouchableOpacity style={styles.actionButton} onPress={revealNextWord}>
-              <Text style={styles.actionButtonText}>{t('review.nextWordBtn')}</Text>
-            </TouchableOpacity>
-
-            {/* Bouton de confirmation quand tous les mots sont révélés */}
-            {revealedWords.length >= reviewState.words.length && (
-              <TouchableOpacity
-                style={styles.confirmButton}
-                onPress={() => setConfirming(true)}
-                disabled={confirming}
-              >
-                <Text style={styles.confirmButtonText}>
-                  {confirming ? 'En cours...' : t('review.continueBtn')}
-                </Text>
-              </TouchableOpacity>
-            )}
-          </View>
-        </ScrollView>
-
-        {/* Modal de sélection de rating */}
-        {confirming && (
-          <View style={styles.ratingModalOverlay}>
-            <View style={styles.ratingModal}>
-              <Text style={styles.ratingModalTitle}>Comment vous souveniez-vous ce verset ?</Text>
-              <View style={styles.ratingButtons}>
-                <TouchableOpacity
-                  style={[styles.ratingButton, styles.ratingAgain]}
-                  onPress={() => handleRating(FsrsRating.AGAIN)}
-                >
-                  <Text style={styles.ratingButtonText}>{t('review.again')}</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={[styles.ratingButton, styles.ratingHard]}
-                  onPress={() => handleRating(FsrsRating.HARD)}
-                >
-                  <Text style={styles.ratingButtonText}>{t('review.hard')}</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={[styles.ratingButton, styles.ratingGood]}
-                  onPress={() => handleRating(FsrsRating.GOOD)}
-                >
-                  <Text style={styles.ratingButtonText}>{t('review.good')}</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={[styles.ratingButton, styles.ratingEasy]}
-                  onPress={() => handleRating(FsrsRating.EASY)}
-                >
-                  <Text style={styles.ratingButtonText}>{t('review.easy')}</Text>
-                </TouchableOpacity>
+          {/* Verse Display */}
+          <TouchableOpacity
+            style={styles.verseCard}
+            onPress={handleReveal}
+            activeOpacity={0.95}
+          >
+            {!isRevealed ? (
+              // Hidden state
+              <View style={styles.hiddenState}>
+                <View style={styles.wordChips}>
+                  {currentReview.words.map((_, idx) => (
+                    <View
+                      key={idx}
+                      style={[
+                        styles.wordChip,
+                        revealedWords.has(idx) && styles.wordChipRevealed,
+                      ]}
+                    >
+                      {revealedWords.has(idx) ? (
+                        <Text style={styles.wordChipText}>{currentReview.words[idx]}</Text>
+                      ) : (
+                        <Text style={styles.wordChipPlaceholder}>•••</Text>
+                      )}
+                    </View>
+                  ))}
+                </View>
+                <View style={styles.tapHint}>
+                  <Ionicons name="hand" size={20} color={colors.primary} />
+                  <Text style={styles.tapHintText}>Tape pour révéler le verset</Text>
+                </View>
               </View>
+            ) : (
+              // Revealed state
+              <View style={styles.revealedState}>
+                <Text style={styles.verseText}>{currentReview.text}</Text>
+                <View style={styles.revealHint}>
+                  <Ionicons name="refresh" size={16} color={colors.textMuted} />
+                  <Text style={styles.revealHintText}>Tape pour noter ta réponse</Text>
+                </View>
+              </View>
+            )}
+          </TouchableOpacity>
+        </Animated.View>
+
+        {/* Rating Section */}
+        {isRevealed && !showRating && (
+          <View style={styles.ratingSection}>
+            <Text style={styles.ratingQuestion}>
+              Comment te souvenais-tu de ce verset ?
+            </Text>
+            <View style={styles.ratingButtons}>
+              {[
+                { id: FsrsRating.AGAIN, label: 'À revoir', color: colors.error, icon: 'refresh' },
+                { id: FsrsRating.HARD, label: 'Difficile', color: colors.warning, icon: 'remove' },
+                { id: FsrsRating.GOOD, label: 'Bon', color: '#4CD964', icon: 'checkmark' },
+                { id: FsrsRating.EASY, label: 'Facile', color: colors.info, icon: 'star' },
+              ].map((option) => (
+                <TouchableOpacity
+                  key={option.id}
+                  style={[styles.ratingButton, { backgroundColor: option.color }]}
+                  onPress={() => handleRating(option.id as FsrsRating)}
+                  activeOpacity={0.85}
+                >
+                  <Ionicons name={option.icon as any} size={24} color={colors.surface} />
+                  <Text style={styles.ratingButtonText}>{option.label}</Text>
+                  <Text style={styles.ratingButtonDays}>
+                    {getRatingConfig(option.id as FsrsRating).days}j
+                  </Text>
+                </TouchableOpacity>
+              ))}
             </View>
           </View>
         )}
-      </SafeAreaView>
-    );
-  }
 
-  // Phase confirmée — afficher le résultat
-  if (reviewState?.phase === 'confirmed' || confirming && rating) {
-    const ratingText = rating === FsrsRating.AGAIN ? 'again' : rating === FsrsRating.HARD ? 'hard' : rating === FsrsRating.GOOD ? 'good' : 'easy';
-    const days = rating === FsrsRating.EASY ? 7 : rating === FsrsRating.GOOD ? 3 : rating === FsrsRating.HARD ? 1 : 1;
-    const dayPlural = days > 1 ? 's' : '';
-
-    return (
-      <SafeAreaView style={styles.container}>
-        <ScrollView contentContainerStyle={styles.content}>
-          <View style={styles.resultHeader}>
-            <Text style={styles.resultIcon}>✓</Text>
-            <Text style={styles.resultTitle}>Révision terminée</Text>
-            <Text style={styles.resultSubtitle}>
-              Rating: {t(`review.rating.${ratingText}`)}
-            </Text>
-          </View>
-
-          <View style={styles.verseCard}>
-            <Text style={styles.verseReference}>{reviewState.bibleVerseReference}</Text>
-            <Text style={styles.verseContent}>{reviewState.bibleVerseText}</Text>
-          </View>
-
-          <View style={styles.infoCard}>
-            <Text style={styles.infoLabel}>Prochain rappel</Text>
-            <Text style={styles.infoValue}>
-              Dans {days} jour{dayPlural}
-            </Text>
-          </View>
-
-          <View style={styles.actions}>
-            <TouchableOpacity style={styles.finishButton} onPress={() => router.replace('/review/queue')}>
-              <Text style={styles.finishButtonText}>Terminer</Text>
+        {/* FSRS Feedback */}
+        {showRating && selectedRating && (
+          <Animated.View
+            style={[
+              styles.feedbackCard,
+              {
+                opacity: fadeAnim,
+                transform: [{ translateY: fadeAnim.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [20, 0]
+                })}],
+              },
+            ]}
+          >
+            <View style={styles.feedbackHeader}>
+              <Ionicons
+                name="checkmark-circle"
+                size={32}
+                color={getRatingConfig(selectedRating).color}
+              />
+              <Text style={styles.feedbackTitle}>
+                {getRatingConfig(selectedRating).label}
+              </Text>
+            </View>
+            <View style={styles.feedbackDetails}>
+              <View style={styles.feedbackRow}>
+                <Text style={styles.feedbackLabel}>Prochain rappel:</Text>
+                <Text style={styles.feedbackValue}>
+                  dans {getRatingConfig(selectedRating).days} jour
+                  {getRatingConfig(selectedRating).days > 1 ? 's' : ''}
+                </Text>
+              </View>
+              <View style={styles.feedbackRow}>
+                <Text style={styles.feedbackLabel}>Stabilité:</Text>
+                <Text style={styles.feedbackValue}>{currentReview.stability.toFixed(1)}j</Text>
+              </View>
+              <View style={styles.feedbackRow}>
+                <Text style={styles.feedbackLabel}>Difficulté:</Text>
+                <Text style={styles.feedbackValue}>{currentReview.difficulty.toFixed(1)}</Text>
+              </View>
+            </View>
+            <TouchableOpacity
+              style={styles.continueButton}
+              onPress={handleSubmitRating}
+              activeOpacity={0.85}
+            >
+              <Text style={styles.continueButtonText}>
+                {currentIndex < reviews.length - 1 ? 'Continuer' : 'Terminer'}
+              </Text>
             </TouchableOpacity>
-          </View>
-        </ScrollView>
-      </SafeAreaView>
-    );
-  }
-
-  // Cas par défaut
-  return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.center}>
-        <ActivityIndicator size="large" color="#E91E8C" />
-      </View>
+          </Animated.View>
+        )}
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -401,248 +369,282 @@ export default function ReviewSessionScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFF0F6',
+    backgroundColor: colors.background,
   },
-  center: {
+  loaderContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  loadingText: {
+  loaderText: {
     marginTop: 16,
-    fontSize: 16,
-    color: '#666',
+    fontSize: 14,
+    color: colors.textMuted,
   },
-  error: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 24,
+
+  // Progress Bar
+  progressBar: {
+    height: 4,
+    backgroundColor: colors.border,
   },
-  errorTitle: {
-    fontSize: 18,
-    color: '#FF3B30',
-    fontWeight: '600',
-    marginBottom: 16,
+  progressFill: {
+    height: '100%',
+    backgroundColor: colors.primary,
   },
-  button: {
-    backgroundColor: '#E91E8C',
-    borderRadius: 26,
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-  },
-  buttonText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#FFFFFF',
-  },
-  content: {
-    padding: 16,
-    paddingBottom: 24,
-  },
+
+  // Header
   header: {
-    marginBottom: 24,
-  },
-  phaseTitle: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: '#2D2D2D',
-  },
-  progress: {
-    fontSize: 14,
-    color: '#A0A0A0',
-    marginTop: 8,
-  },
-  verseCard: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 16,
-    padding: 24,
-    marginBottom: 24,
-    ...shadow.md,
-  },
-  verseReference: {
-    fontSize: 14,
-    color: '#A0A0A0',
-    marginBottom: 16,
-    fontWeight: '600',
-  },
-  verseText: {
-    marginBottom: 16,
-  },
-  verseContent: {
-    fontSize: 16,
-    color: '#2D2D2D',
-    lineHeight: 24,
-    textAlign: 'justify',
-  },
-  instructions: {
-    marginBottom: 24,
-  },
-  instructionText: {
-    fontSize: 14,
-    color: '#666',
-    textAlign: 'center',
-    fontStyle: 'italic',
-  },
-  wordContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 6,
-    marginBottom: 16,
-  },
-  wordWrapper: {
-    margin: 2,
-  },
-  controls: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 24,
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    backgroundColor: colors.surface,
   },
-  startButton: {
-    backgroundColor: '#E91E8C',
-    borderRadius: 26,
-    paddingVertical: 14,
-    paddingHorizontal: 32,
+  skipButton: {
+    padding: 8,
+  },
+  skipText: {
+    fontSize: 14,
+    color: colors.textMuted,
+    fontWeight: '500',
+  },
+  progressTextContainer: {
     alignItems: 'center',
   },
-  startButtonText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#FFFFFF',
-  },
-  actionButton: {
-    backgroundColor: '#FFFFFF',
-    borderColor: '#E91E8C',
-    borderWidth: 2,
-    borderRadius: 26,
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-  },
-  actionButtonText: {
-    fontSize: 16,
-    color: '#E91E8C',
+  progressText: {
+    fontSize: 14,
+    color: colors.textSecondary,
     fontWeight: '600',
   },
-  confirmButton: {
-    backgroundColor: '#E91E8C',
-    borderRadius: 26,
-    paddingVertical: 12,
-    paddingHorizontal: 24,
+  headerRight: {
+    width: 56,
   },
-  confirmButtonText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#FFFFFF',
+
+  // ScrollView
+  scrollView: {
+    flex: 1,
   },
-  resultHeader: {
-    alignItems: 'center',
+  scrollContent: {
+    flexGrow: 1,
+    padding: 20,
+  },
+
+  // Card Container
+  cardContainer: {
     marginBottom: 24,
   },
-  resultIcon: {
-    fontSize: 48,
+  referenceBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    alignSelf: 'flex-start',
+    backgroundColor: colors.surfaceTint,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
     marginBottom: 16,
   },
-  resultTitle: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: '#2D2D2D',
-    marginBottom: 8,
-  },
-  resultSubtitle: {
-    fontSize: 16,
-    color: '#A0A0A0',
-  },
-  infoCard: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 24,
-    alignItems: 'center',
-  },
-  infoLabel: {
+  referenceText: {
     fontSize: 14,
-    color: '#666',
-    marginBottom: 4,
-  },
-  infoValue: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: '#E91E8C',
-  },
-  actions: {
-    marginTop: 24,
-  },
-  finishButton: {
-    backgroundColor: '#E91E8C',
-    borderRadius: 26,
-    paddingVertical: 16,
-    alignItems: 'center',
-  },
-  finishButtonText: {
-    fontSize: 18,
     fontWeight: '600',
-    color: '#FFFFFF',
+    color: colors.primary,
   },
-  ratingModalOverlay: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  ratingModal: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 16,
+  verseCard: {
+    backgroundColor: colors.surface,
+    borderRadius: 24,
     padding: 24,
-    width: '85%',
-    maxWidth: 400,
+    minHeight: 200,
+    justifyContent: 'center',
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.08,
+        shadowRadius: 12,
+      },
+      android: {
+        elevation: 6,
+      },
+    }),
   },
-  ratingModalTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#2D2D2D',
+  hiddenState: {
+    alignItems: 'center',
+  },
+  wordChips: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    gap: 8,
     marginBottom: 24,
+  },
+  wordChip: {
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 20,
+    backgroundColor: colors.surfaceTint,
+    minWidth: 40,
+    alignItems: 'center',
+  },
+  wordChipRevealed: {
+    backgroundColor: colors.primary,
+  },
+  wordChipText: {
+    fontSize: 16,
+    color: colors.primary,
+    fontWeight: '500',
+  },
+  wordChipPlaceholder: {
+    fontSize: 16,
+    color: colors.textMuted,
+    fontWeight: '500',
+  },
+  tapHint: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  tapHintText: {
+    fontSize: 14,
+    color: colors.textMuted,
+  },
+  revealedState: {
+    alignItems: 'center',
+  },
+  verseText: {
+    fontSize: 18,
+    color: colors.textPrimary,
+    lineHeight: 28,
     textAlign: 'center',
+    fontWeight: '500',
+  },
+  revealHint: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginTop: 24,
+    paddingTop: 24,
+    borderTopWidth: 1,
+    borderColor: colors.border,
+  },
+  revealHintText: {
+    fontSize: 14,
+    color: colors.textMuted,
+  },
+
+  // Rating Section
+  ratingSection: {
+    marginBottom: 24,
+  },
+  ratingQuestion: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: colors.textPrimary,
+    textAlign: 'center',
+    marginBottom: 20,
   },
   ratingButtons: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 24,
+    gap: 12,
   },
   ratingButton: {
     flex: 1,
-    paddingVertical: 12,
-    borderRadius: 12,
     alignItems: 'center',
-    marginHorizontal: 4,
-  },
-  ratingAgain: {
-    backgroundColor: '#FF6B6B',
-  },
-  ratingHard: {
-    backgroundColor: '#FF9500',
-  },
-  ratingGood: {
-    backgroundColor: '#4CD964',
-  },
-  ratingEasy: {
-    backgroundColor: '#007AFF',
+    paddingVertical: 20,
+    borderRadius: 20,
+    gap: 8,
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.15,
+        shadowRadius: 8,
+      },
+      android: {
+        elevation: 6,
+      },
+    }),
   },
   ratingButtonText: {
-    color: '#FFFFFF',
+    fontSize: 14,
+    fontWeight: '700',
+    color: colors.surface,
+  },
+  ratingButtonDays: {
+    fontSize: 12,
     fontWeight: '600',
+    color: 'rgba(255, 255, 255, 0.8)',
+  },
+
+  // Feedback Card
+  feedbackCard: {
+    backgroundColor: colors.surface,
+    borderRadius: 24,
+    padding: 24,
+    marginBottom: 24,
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.08,
+        shadowRadius: 12,
+      },
+      android: {
+        elevation: 6,
+      },
+    }),
+  },
+  feedbackHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    marginBottom: 20,
+  },
+  feedbackTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: colors.textPrimary,
+  },
+  feedbackDetails: {
+    marginBottom: 20,
+  },
+  feedbackRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.surfaceTint,
+  },
+  feedbackLabel: {
+    fontSize: 14,
+    color: colors.textTertiary,
+  },
+  feedbackValue: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: colors.textPrimary,
+  },
+  continueButton: {
+    backgroundColor: colors.primary,
+    borderRadius: 26,
+    paddingVertical: 16,
+    alignItems: 'center',
+    ...Platform.select({
+      ios: {
+        shadowColor: colors.primary,
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.3,
+        shadowRadius: 8,
+      },
+      android: {
+        elevation: 6,
+      },
+    }),
+  },
+  continueButtonText: {
+    color: colors.surface,
+    fontSize: 16,
+    fontWeight: '700',
   },
 });
-
-const shadow = {
-  md: {
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
-    elevation: 1,
-  },
-};
