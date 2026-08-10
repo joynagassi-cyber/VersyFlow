@@ -2,6 +2,7 @@
  * Services Layer — Progress Calculation
  * Calculates streaks, retention, milestones, and analytics
  * See docs/25-retrieval-analytics-spec.md
+ * Phase 8: Profile-scoped (FAM-INT-002)
  */
 
 import { IFsrsEngine, Rating } from '@/domains/fsrs';
@@ -49,6 +50,7 @@ export class ProgressService {
     private memorizationService: MemorizationService,
     private fsrsEngine: IFsrsEngine,
     private telemetryService?: TelemetryService, // Optional telemetry
+    private profileId: string = 'default',
   ) {}
 
   /**
@@ -110,7 +112,7 @@ export class ProgressService {
    */
   async calculateStreak(): Promise<number> {
     try {
-      const records = await this.memorizationService.getAllMemorized();
+      const records = await this.memorizationService.getAllMemorized(this.profileId);
       if (records.length === 0) return 0;
 
       // Get all review timestamps
@@ -118,7 +120,7 @@ export class ProgressService {
       for (const record of records) {
         if (record.lastReviewedAt) reviewTimes.push(record.lastReviewedAt);
         // Also check review logs if available
-        const logs = await this.memorizationService.getReviewLogsForRecord(record.id);
+        const logs = await this.memorizationService.getReviewLogsForRecord(record.id, this.profileId);
         for (const log of logs) {
           reviewTimes.push(log.answeredAt);
         }
@@ -161,7 +163,7 @@ export class ProgressService {
    */
   async checkAndEmitMilestones(): Promise<Milestone[]> {
     const milestones: Milestone[] = [];
-    const records = await this.memorizationService.getAllMemorized();
+    const records = await this.memorizationService.getAllMemorized(this.profileId);
 
     const totalMemorized = records.length;
     const masteredCount = records.filter(r => r.status === 'mastered').length;
@@ -244,7 +246,7 @@ export class ProgressService {
    */
   async getWeeklyTrend(): Promise<{ thisWeek: number; lastWeek: number; changePercentage: number }> {
     try {
-      const records = await this.memorizationService.getAllMemorized();
+      const records = await this.memorizationService.getAllMemorized(this.profileId);
 
       // Calculate timestamps for this week and last week
       const today = new Date();
@@ -286,7 +288,7 @@ export class ProgressService {
    */
   async calculateAverageRetention(): Promise<number> {
     try {
-      const records = await this.memorizationService.getAllMemorized();
+      const records = await this.memorizationService.getAllMemorized(this.profileId);
       if (records.length === 0) return 0;
 
       let totalRetention = 0;
@@ -328,7 +330,7 @@ export class ProgressService {
    */
   async detectLapse(recordId: string): Promise<boolean> {
     try {
-      const logs = await this.memorizationService.getReviewLogsForRecord(recordId);
+      const logs = await this.memorizationService.getReviewLogsForRecord(recordId, this.profileId);
       if (logs.length < 5) return false;
 
       const recentStabilities = logs.slice(-5).map(log => log.stabilityAfter);
@@ -352,7 +354,7 @@ export class ProgressService {
    */
   async getMostForgottenWords(recordId: string): Promise<string[]> {
     try {
-      const logs = await this.memorizationService.getReviewLogsForRecord(recordId);
+      const logs = await this.memorizationService.getReviewLogsForRecord(recordId, this.profileId);
       const wordFailures: Record<string, number> = {};
 
       for (const log of logs) {
@@ -376,7 +378,7 @@ export class ProgressService {
    */
   async getFragilePortions(recordId: string): Promise<Array<{ start: number; end: number }>> {
     try {
-      const logs = await this.memorizationService.getReviewLogsForRecord(recordId);
+      const logs = await this.memorizationService.getReviewLogsForRecord(recordId, this.profileId);
       // In a full implementation, analyze strongPortions/fragilePortions from VerificationResult
       return [];
     } catch (error) {
@@ -389,7 +391,7 @@ export class ProgressService {
    * Get all progress stats for dashboard display
    */
   async getStats(): Promise<ProgressStats> {
-    const records = await this.memorizationService.getAllMemorized();
+    const records = await this.memorizationService.getAllMemorized(this.profileId);
     const totalVerses = records.length;
     const masteredVerses = records.filter(r => r.status === 'mastered').length;
     const inProgressVerses = totalVerses - masteredVerses;

@@ -59,6 +59,21 @@ export const DomainEventTypes = {
   SEGMENT_COMPLETED: 'memorization.segment_completed',
   TARGET_REVIEWED: 'review.target_completed',
   PASSAGE_REVIEWED: 'review.passage_completed',
+
+  // Family
+  FAMILY_CREATED: 'family.created',
+  FAMILY_MEMBER_INVITED: 'family.member_invited',
+  FAMILY_INVITATION_CREATED: 'family.invitation_created',
+  FAMILY_INVITATION_ACCEPTED: 'family.invitation_accepted',
+  FAMILY_INVITATION_USED: 'family.invitation_used',
+  FAMILY_INVITATION_EXPIRED: 'family.invitation_expired',
+  FAMILY_INVITATION_REVOKED: 'family.invitation_revoked',
+  FAMILY_MEMBER_JOINED: 'family.member_joined',
+  FAMILY_MEMBER_REMOVED: 'family.member_removed',
+  FAMILY_MEMBER_LEFT: 'family.member_left',
+
+  // Family Progress
+  FAMILY_PROGRESS_SHARED: 'family.progress_shared',
 } as const;
 
 /**
