@@ -44,6 +44,9 @@ export interface MemorizationRecord {
   /** Unique ID: bookId:chapter:verse:translationId hashed (legacy) or targetId (new) */
   id: string;
 
+  /** Learner Profile ID — scoping memorization data per profile */
+  learnerProfileId: string;
+
   /** Book identifier (gen, exo, joh...) */
   bookId: string;
 

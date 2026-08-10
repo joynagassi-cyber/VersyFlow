@@ -2,13 +2,14 @@
  * ReviewQueueService — Intelligent prioritization for review queue
  * Combines FSRS predictions with user behavior patterns
  * Implements feature #84: Prioritisation intelligente
+ * Phase 8: Profile-scoped (FAM-INT-001)
  */
 
 import { IFsrsEngine } from '@/domains/fsrs';
-import { MemorizationService } from '@/domains/memorization/service';
-import { MemorizationReview } from '@/domains/memorization/entities';
+import { MemorizationService, MemorizationRecord } from '@/domains/memorization';
 import { FatigueDetector } from '@/services/fatigue-detector';
 import { StrategyRecommendor } from '@/services/strategy-recommendor';
+import { ExerciseStrategy } from '@/domains/memorization/entities';
 
 /**
  * Priority rule for a review item
@@ -32,6 +33,7 @@ interface QueueItem extends MemorizationRecord {
 
 /**
  * ReviewQueueService — Computes priority order for review queue
+ * Profile-scoped: all operations filtered by learnerProfileId
  */
 export class ReviewQueueService {
   private fatigueDetector = new FatigueDetector();
@@ -41,6 +43,7 @@ export class ReviewQueueService {
   constructor(
     private memorizationService: MemorizationService,
     private fsrsEngine: IFsrsEngine,
+    private profileId: string = 'default',
   ) {
     this.ruleSet = this.defaultRules();
   }
@@ -75,8 +78,8 @@ export class ReviewQueueService {
    * Get prioritized review items
    */
   async getPrioritizedQueue(): Promise<QueueItem[]> {
-    // Get due records
-    const records = await this.memorizationService.getDueRecords();
+    // Get due records scoped to profile
+    const records = await this.memorizationService.getDueRecords(this.profileId);
 
     // Calculate fatigue level
     const fatigueLevel = this.fatigueDetector.getFatigueLevel();
@@ -141,7 +144,7 @@ export class ReviewQueueService {
     delayed: number;
     fatigueLevel: number;
   }> {
-    const records = await this.memorizationService.getDueRecords();
+    const records = await this.memorizationService.getDueRecords(this.profileId);
     const fatigueLevel = this.fatigueDetector.getFatigueLevel();
 
     const highPriority = records.filter(r => this.calculatePriorityScore(r, fatigueLevel) > 0.5).length;

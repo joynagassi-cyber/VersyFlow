@@ -549,7 +549,8 @@
 | 5. Active Learner | 2 | ✅ 2 | Tâche 3.2 |
 | 6. Family | 2 | ✅ 2 | Tâche 2.1, 2.2 |
 | 7. Invitation | 2 | ✅ 2 | Tâche 6.1 |
-| 8. Passage Memorization | 14 | ⏳ 14 | Tâche 3.1, 8.1 |
+| 8. Passage Memorization | 14 | ✅ 14 | Tâche 3.1, 8.1 |
+| 9. Intégration Moteurs | 3 | ✅ 3 | Tâche 3.1 |
 | 9. Intégration Moteurs | 3 | ⏳ 3 | Tâche 3.1 |
 | 10. UI & Navigation | 3 | ⏳ 3 | Tâches 5.2, 6.2, 7.1, 7.2 |
 | 11. Permissions & Privacy | 2 | ⏳ 2 | Tâche 6.1, 4.1 |
