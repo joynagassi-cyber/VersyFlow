@@ -1,9 +1,10 @@
 /**
  * Session Engine — Deterministic workflow for memorization sessions
  * See MEMORY_ENGINE_SPEC.md §3
+ * Extension passage: revealNextVerse() pour navigation verset par verset
  */
 
-import { SessionState, SessionPhase, VerificationResult, DEFAULT_MVP_STRATEGY, ExerciseStrategy, MaskingConfig, getMaskingConfigForStability } from './entities';
+import { SessionState, SessionPhase, VerificationResult, DEFAULT_MVP_STRATEGY, ExerciseStrategy, MaskingConfig, getMaskingConfigForStability, MemorizationTargetType } from './entities';
 import { ComparisonEngine } from './comparison-engine';
 import { Rating } from '@/domains/fsrs';
 import { WordFailureTracker } from '@/services/word-failure-tracker';
@@ -11,12 +12,17 @@ import { WordFailureTracker } from '@/services/word-failure-tracker';
 /**
  * SessionEngine: manages the complete lifecycle of a memorization session.
  * Pure domain logic — zero UI dependencies.
+ * Extended for passage support: revealNextVerse() navigates verse by verse.
  */
 export class SessionEngine {
   private state: SessionState;
   private strategy: ExerciseStrategy;
   private maskingConfig: MaskingConfig;
   private wordFailureTracker: WordFailureTracker;
+  private targetId?: string;
+  private targetType?: MemorizationTargetType;
+  private currentVerseIndex: number = 0;
+  private passageTexts?: string[];
 
   constructor(verseText: string, initialStrategy?: ExerciseStrategy) {
     this.state = {
@@ -37,6 +43,76 @@ export class SessionEngine {
       maskingOrder: 'progressive',
     };
     this.wordFailureTracker = new WordFailureTracker();
+  }
+
+  /**
+   * Initialize for passage mode — sets up verse-by-verse navigation
+   */
+  initPassage(verseTexts: string[], targetId?: string, targetType?: MemorizationTargetType): void {
+    this.passageTexts = verseTexts;
+    this.targetId = targetId;
+    this.targetType = targetType;
+    this.currentVerseIndex = 0;
+    // Start with first verse
+    this.state.verseText = verseTexts[0];
+    this.state.words = verseTexts[0].split(/\s+/).filter(w => w.length > 0);
+    this.state.totalWords = this.state.words.length;
+    this.state.revealedWordIndices = new Set();
+    this.state.wordsRevealed = 0;
+  }
+
+  /**
+   * REVEAL NEXT VERSE — navigate to the next verse in a passage
+   * Resets word reveal state for the new verse
+   */
+  revealNextVerse(): boolean {
+    if (!this.passageTexts || this.passageTexts.length <= 1) {
+      // Not a passage or single verse — fall back to single word reveal
+      this.revealNextWord();
+      return false;
+    }
+
+    if (this.state.phase !== 'preview' && this.state.phase !== 'revealing') {
+      throw new Error(`SessionEngine: Cannot reveal next verse from state ${this.state.phase}`);
+    }
+
+    this.state.phase = 'revealing';
+
+    // Move to next verse
+    if (this.currentVerseIndex < this.passageTexts.length - 1) {
+      this.currentVerseIndex++;
+      this.state.verseText = this.passageTexts[this.currentVerseIndex];
+      this.state.words = this.state.verseText.split(/\s+/).filter(w => w.length > 0);
+      this.state.totalWords = this.state.words.length;
+      this.state.revealedWordIndices = new Set();
+      this.state.wordsRevealed = 0;
+      return true; // Successfully moved to next verse
+    }
+
+    return false; // Already at last verse
+  }
+
+  /**
+   * REVEAL PREVIOUS VERSE — navigate to the previous verse in a passage
+   */
+  revealPrevVerse(): boolean {
+    if (!this.passageTexts || this.passageTexts.length <= 1) {
+      this.revealNextWord();
+      return false;
+    }
+
+    if (this.currentVerseIndex > 0) {
+      this.currentVerseIndex--;
+      this.state.verseText = this.passageTexts[this.currentVerseIndex];
+      this.state.words = this.state.verseText.split(/\s+/).filter(w => w.length > 0);
+      this.state.totalWords = this.state.words.length;
+      this.state.revealedWordIndices = new Set();
+      this.state.wordsRevealed = 0;
+      this.state.phase = 'preview';
+      return true;
+    }
+
+    return false;
   }
 
   /**
@@ -339,5 +415,51 @@ export class SessionEngine {
    */
   isWordForgotten(word: string, threshold: number = 2): boolean {
     return this.wordFailureTracker.getFailureRate(word) >= threshold;
+  }
+
+  // ====================
+  // Passage-specific getters and state access
+  // ====================
+
+  /**
+   * Get current verse index (0-based) within the passage
+   */
+  getCurrentVerseIndex(): number {
+    return this.currentVerseIndex;
+  }
+
+  /**
+   * Get total number of verses in the passage
+   */
+  getTotalVerses(): number {
+    return this.passageTexts?.length ?? 1;
+  }
+
+  /**
+   * Check if this session is for a passage
+   */
+  isPassage(): boolean {
+    return this.targetType === 'passage';
+  }
+
+  /**
+   * Get the target ID if this is a passage target
+   */
+  getTargetId(): string | undefined {
+    return this.targetId;
+  }
+
+  /**
+   * Get the target type
+   */
+  getTargetType(): MemorizationTargetType | undefined {
+    return this.targetType;
+  }
+
+  /**
+   * Get full current state for hook access
+   */
+  getState(): SessionState {
+    return this.state;
   }
 }
