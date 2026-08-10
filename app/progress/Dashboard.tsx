@@ -12,6 +12,7 @@ import {
   ScrollView,
   SafeAreaView,
 } from 'react-native';
+import { useAppTheme } from '@/theme/useTheme';
 import { useI18n } from '@/hooks/useI18n';
 import { MemorizationService } from '@/domains/memorization/service';
 import { IFsrsEngine, Sm2FallbackEngine } from '@/domains/fsrs';
@@ -31,6 +32,7 @@ const getMemorizationService = () => {
 };
 
 export default function ProgressDashboardScreen() {
+  const { colors, sp, sh, rad } = useAppTheme();
   const { t } = useI18n();
   const [stats, setStats] = useState<ProgressStats | null>(null);
   const [loading, setLoading] = useState(true);
@@ -160,7 +162,7 @@ export default function ProgressDashboardScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFF0F6',
+    backgroundColor: colors.surfaceTint,
   },
   content: {
     padding: 16,
@@ -189,12 +191,12 @@ const styles = StyleSheet.create({
   emptyTitle: {
     fontSize: 24,
     fontWeight: '700',
-    color: '#2D2D2D',
+    color: colors.textPrimary,
     marginBottom: 8,
   },
   emptySubtitle: {
     fontSize: 14,
-    color: '#A0A0A0',
+    color: colors.textMuted,
     textAlign: 'center',
     marginBottom: 24,
   },
@@ -205,7 +207,7 @@ const styles = StyleSheet.create({
   },
   statCard: {
     flex: 0.48,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.surface,
     borderRadius: 12,
     padding: 16,
     alignItems: 'center',
@@ -226,10 +228,10 @@ const styles = StyleSheet.create({
   statValue: {
     fontSize: 32,
     fontWeight: '700',
-    color: '#E91E8C',
+    color: colors.primary,
   },
   trendCard: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.surface,
     borderRadius: 12,
     padding: 16,
     marginBottom: 16,
@@ -244,7 +246,7 @@ const styles = StyleSheet.create({
   trendTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#2D2D2D',
+    color: colors.textPrimary,
     marginBottom: 16,
   },
   trendRow: {
@@ -270,7 +272,7 @@ const styles = StyleSheet.create({
   trendValue: {
     fontSize: 24,
     fontWeight: '700',
-    color: '#2D2D2D',
+    color: colors.textPrimary,
   },
   changeIndicator: {
     flexDirection: 'row',
@@ -287,14 +289,14 @@ const styles = StyleSheet.create({
     color: '#4CD964',
   },
   changeNegative: {
-    color: '#FF6B6B',
+    color: colors.error,
   },
   changeLabel: {
     fontSize: 12,
     color: '#888',
   },
   streakCard: {
-    backgroundColor: '#FFE4EE',
+    backgroundColor: colors.border,
     borderRadius: 12,
     padding: 16,
     marginBottom: 16,
@@ -309,7 +311,7 @@ const styles = StyleSheet.create({
   streakTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#2D2D2D',
+    color: colors.textPrimary,
   },
   streakEmoji: {
     fontSize: 24,
@@ -317,11 +319,11 @@ const styles = StyleSheet.create({
   streakText: {
     fontSize: 20,
     fontWeight: '700',
-    color: '#E91E8C',
+    color: colors.primary,
     textAlign: 'center',
   },
   metricsCard: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.surface,
     borderRadius: 12,
     padding: 16,
     marginBottom: 16,
@@ -329,7 +331,7 @@ const styles = StyleSheet.create({
   metricsTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#2D2D2D',
+    color: colors.textPrimary,
     marginBottom: 12,
   },
   metricRow: {
@@ -344,6 +346,6 @@ const styles = StyleSheet.create({
   metricValue: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#2D2D2D',
+    color: colors.textPrimary,
   },
 });
