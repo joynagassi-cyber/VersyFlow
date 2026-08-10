@@ -68,7 +68,7 @@ export class StrategyRecommendor {
       return {
         strategy: 'incremental-reveal',
         confidence: Math.min(0.8, 1 - verification.score),
-        rationale: 'Plusieurs erreurs détectées — révélation incrémentale pour guider l'utilisateur',
+        rationale: 'Plusieurs erreurs détectées — révélation incrémentale pour guider l\'utilisateur',
       };
     }
 

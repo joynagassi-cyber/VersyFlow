@@ -10,8 +10,12 @@ export class InsForgeAuthService {
   private client: any;
 
   constructor() {
-    const INSFORGE_URL = process.env.EXPO_PUBLIC_INSFORGE_URL || 'https://wypi8tgf.eu-central.insforge.app';
-    const INSFORGE_ANON_KEY = process.env.EXPO_PUBLIC_INSFORGE_ANON_KEY || 'anon_5db10acfd8d50598afafe6d574dfd647edd9fba32514816c7f4c00346651a7c6';
+    // Expo/React Native uses process.env for environment variables
+    // NOTE: For Expo, use EXPO_PUBLIC_ prefix for client-side env vars
+    const INSFORGE_URL = process.env.EXPO_PUBLIC_INSFORGE_URL || process.env.INSFORGE_URL
+      || 'https://wypi8tgf.eu-central.insforge.app';
+    const INSFORGE_ANON_KEY = process.env.EXPO_PUBLIC_INSFORGE_ANON_KEY || process.env.INSFORGE_ANON_KEY
+      || 'anon_5db10acfd8d50598afafe6d574dfd647edd9fba32514816c7f4c00346651a7c6';
 
     this.client = createClient({
       baseUrl: INSFORGE_URL,
