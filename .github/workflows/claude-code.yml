@@ -1,0 +1,128 @@
+# Claude Code Action - Déplacé vers agnes-ai-review.yml
+# Utilise .github/workflows/agnes-ai-review.yml pour une solution gratuite
+
+on:
+  issue_comment:
+    types: [created]
+  pull_request:
+    types: [opened, edited, synchronize]
+  pull_request_review_comment:
+    types: [created]
+  workflow_dispatch:
+    inputs:
+      instructions:
+        description: 'Instructions pour Claude Code'
+        required: true
+        default: 'Review the code and suggest improvements'
+      pr_number:
+        description: 'PR Number (optional, required for PR review)'
+        required: false
+      comment_id:
+        description: 'Comment ID (optional, for comment-based runs)'
+        required: false
+
+jobs:
+  claude-code:
+    name: Claude Code
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
+      id-token: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Claude Code
+        run: npm install -g @anthropic-ai/claude-code
+
+      - name: Run Claude Code
+        id: claude
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          INPUT_INSTRUCTIONS: ${{ github.event.inputs.instructions || 'Review the code and suggest improvements' }}
+          INPUT_PR_NUMBER: ${{ github.event.inputs.pr_number || '' }}
+          INPUT_COMMENT_ID: ${{ github.event.inputs.comment_id || '' }}
+        run: |
+          # Determine the mode based on trigger
+          if [ -n "${{ github.event.issue.number }}" ]; then
+            # Issue comment trigger
+            gh issue view ${{ github.event.issue.number }} --repo ${{ github.repository }} > issue.md
+            claude --dangerously-skip-permissions -p "Review this issue and provide suggestions: $(cat issue.md)" > claude-output.txt
+          elif [ -n "${{ github.event.pull_request.number }}" ]; then
+            # PR review trigger
+            PR_NUMBER=${{ github.event.pull_request.number }}
+            gh pr view $PR_NUMBER --repo ${{ github.repository }} > pr.md
+            gh pr diff $PR_NUMBER --repo ${{ github.repository }} > pr-diff.patch
+            claude --dangerously-skip-permissions -p "Review this PR and provide feedback: $(cat pr.md)" > claude-output.txt
+          elif [ -n "${{ github.event.comment.id }}" ]; then
+            # Comment trigger
+            COMMENT=$(gh api repos/${{ github.repository }}/issues/comments/${{ github.event.comment.id }} --jq .body)
+            claude --dangerously-skip-permissions -p "$COMMENT" > claude-output.txt
+          else
+            # Manual dispatch or default
+            claude --dangerously-skip-permissions -p "${INPUT_INSTRUCTIONS}" > claude-output.txt
+          fi
+
+          # Upload output as artifact
+          echo "output=$(base64 claude-output.txt)" >> $GITHUB_OUTPUT
+
+      - name: Post Comment
+        if: github.event_name == 'issue_comment' || github.event_name == 'pull_request_review_comment'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const output = Buffer.from('${{ steps.claude.outputs.output }}', 'base64').toString('utf8');
+            const commentBody = `## Claude Code Review\n\n${output || 'Claude Code completed its task.'}`;
+
+            if (context.eventName === 'issue_comment') {
+              await github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: commentBody
+              });
+            } else if (context.eventName === 'pull_request_review_comment') {
+              await github.rest.pulls.createReviewComment({
+                pull_request_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: commentBody
+              });
+            }
+
+      - name: Add PR Review
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const output = Buffer.from('${{ steps.claude.outputs.output }}', 'base64').toString('utf8');
+            const reviewBody = `## Claude Code Review\n\n${output || 'Claude Code completed its task.'}`;
+
+            await github.rest.pulls.createReview({
+              pull_request_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: reviewBody,
+              event: 'COMMENT'
+            });
+
+      - name: Upload artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: claude-code-output
+          path: claude-output.txt
+          retention-days: 7
