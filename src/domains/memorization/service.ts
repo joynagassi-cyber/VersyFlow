@@ -7,7 +7,7 @@ import { SessionEngine } from './session-engine';
 import { IFsrsEngine, Rating as FsrsRating } from '@/domains/fsrs';
 import { IStorage } from '@/infrastructure/storage/storage-types';
 import { eventBus, DomainEventTypes } from '../index';
-import { MemorizationRecord, ReviewLogEntry, WordPerformance, WordPerformanceSnapshot } from './entities';
+import { MemorizationRecord, ReviewLogEntry, WordPerformance, WordPerformanceSnapshot, MemorizationTarget, MemorizationTargetType, ContentReference } from './entities';
 
 // Mapping from FSRS Rating enum to string representation for logging
 const fsrsRatingToString = (rating: FsrsRating): 'again' | 'hard' | 'good' | 'easy' => {
@@ -294,5 +294,100 @@ export class MemorizationService {
         nextReviewAt: Date.now(),
       };
     }
+  }
+
+  /**
+   * Memorize a target (single verse or passage)
+   * Main entry point for the new target-oriented architecture
+   */
+  async memorizeTarget(target: MemorizationTarget, verseText: string, verseTexts?: string[]): Promise<{ success: boolean; rating: FsrsRating; nextReviewAt: number; recordId: string }> {
+    try {
+      // Create session engine with the target text
+      const engine = new SessionEngine(verseText);
+      engine.startPreview();
+
+      // Assume full session completion for service layer
+      const isComplete = engine.isComplete();
+      if (!isComplete) {
+        throw new Error('Session not complete — user must reveal all words');
+      }
+
+      const { rating } = engine.endSession(true);
+
+      // Calculate FSRS state
+      const newFsrsState = await this.fsrsEngine.newState(0);
+      const review = await this.fsrsEngine.review(newFsrsState, rating);
+
+      // Build the record
+      const isPassage = target.type === 'passage';
+      const recordId = this.generateTargetId(target);
+      const record: Omit<MemorizationRecord, 'id'> = {
+        bookId: target.reference.bookId,
+        chapterNumber: target.reference.chapter,
+        verseNumber: target.reference.startVerse,
+        endVerse: target.reference.endVerse,
+        translationId: target.reference.translationId,
+        bibleVerseReference: target.displayReference,
+        bibleVerseText: verseText,
+        verseTexts,
+        status: isComplete ? 'mastered' : 'in-progress',
+        fsrsState: review.state,
+        nextReviewAt: review.due.getTime(),
+        createdAt: Date.now(),
+        lastReviewedAt: null,
+        reviewCount: 0,
+        totalReviewMinutes: 0,
+        wordPerformance: [],
+        favorite: false,
+        tags: [],
+        targetId: recordId,
+        targetType: target.type,
+      };
+
+      await this.saveMemorizedRecord(record);
+
+      // Emit target event
+      eventBus.emit({
+        id: crypto.randomUUID(),
+        type: DomainEventTypes.TARGET_MEMORIZED,
+        timestamp: Date.now(),
+        payload: {
+          targetId: recordId,
+          targetType: target.type,
+          rating,
+          stability: review.state.stability,
+          nextReviewAt: review.due.getTime(),
+          verseCount: isPassage ? (target.reference.endVerse! - target.reference.startVerse! + 1) : 1,
+        },
+      });
+
+      return {
+        success: true,
+        rating,
+        nextReviewAt: review.due.getTime(),
+        recordId,
+      };
+    } catch (error) {
+      console.error('[MemorizationService] memorizeTarget failed:', error);
+      return {
+        success: false,
+        rating: FsrsRating.AGAIN,
+        nextReviewAt: Date.now(),
+        recordId: '',
+      };
+    }
+  }
+
+  /**
+   * Generate a stable target ID from a MemorizationTarget
+   * For single verse: uses composite key (backward compat)
+   * For passage: generates UUID
+   */
+  private generateTargetId(target: MemorizationTarget): string {
+    if (target.type === 'single-verse') {
+      return `${target.reference.bookId}:${target.reference.chapter}:${target.reference.startVerse}:${target.reference.translationId}`;
+    }
+    // For passages, use a UUID (stored in target.id)
+    return target.id;
   }
 }

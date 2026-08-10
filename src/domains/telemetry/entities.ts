@@ -221,8 +221,64 @@ export type TelemetryEvent =
   | ReviewCompletedTelemetry
   | MemorySessionStartedTelemetry
   | MemorySessionCompletedTelemetry
+  | PassageStartedTelemetry
+  | PassageSegmentCompletedTelemetry
   | ErrorOccurredTelemetry
   | FeatureAccessedTelemetry;
+
+/**
+ * Telemetry Event payload for passage start
+ */
+export interface PassageStartedTelemetry {
+  eventType: 'passage.started';
+  timestamp: number;
+  sessionId: string;
+  userId?: string;
+  payload: {
+    /** Target ID for the passage */
+    targetId: string;
+    /** Display reference (e.g. "Jean 3:16-18") */
+    displayReference: string;
+    /** Number of verses in the passage */
+    passageLength: number;
+    /** Exercise strategy */
+    exerciseType: ExerciseStrategy;
+    /** Book/chapter/verse context */
+    context: {
+      bookId: string;
+      chapterNumber: number;
+      startVerse: number;
+      endVerse: number;
+      translationId: string;
+    };
+  };
+}
+
+/**
+ * Telemetry Event payload for passage segment (verse) completion
+ */
+export interface PassageSegmentCompletedTelemetry {
+  eventType: 'passage.segment.completed';
+  timestamp: number;
+  sessionId: string;
+  userId?: string;
+  payload: {
+    /** Target ID for the passage */
+    targetId: string;
+    /** Verse number just completed */
+    verseNumber: number;
+    /** Index within passage (0-based) */
+    segmentIndex: number;
+    /** Total verses in passage */
+    totalSegments: number;
+    /** Words revealed in this segment */
+    wordsRevealed: number;
+    /** Total words in this segment */
+    totalWords: number;
+    /** Duration for this segment in ms */
+    segmentDurationMs: number;
+  };
+}
 
 /**
  * Local storage entry for offline telemetry
