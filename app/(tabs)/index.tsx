@@ -1,6 +1,6 @@
 /**
  * Home Tab — Main screen after onboarding
- * Features: Review reminders, Streak, Quick actions, Today's verse
+ * Features: Review reminders, Streak, Quick actions, Today's verse, Family badge
  * See docs/08-ui-screens.md §4
  * Figma: https://www.figma.com/design/BL5Cbn6s2aMXAtNDmAVJ8F/VersyFlow
  */
@@ -20,14 +20,20 @@ import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { ReferenceSearchInput } from '@/components/bible/ReferenceSearchInput';
 import { useAppTheme } from '@/theme/useTheme';
+import { useActiveProfile } from '@/hooks/useActiveProfile';
+import { useFamilyStore } from '@/store/family-store';
 
 export default function HomeScreen() {
   const router = useRouter();
   const { colors, sp, sh, rad } = useAppTheme();
+  const { activeProfile } = useActiveProfile();
+  const { families, activeFamilyId } = useFamilyStore();
   const [todayVerse, setTodayVerse] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [streak, setStreak] = useState(7);
   const [reviewsDue, setReviewsDue] = useState(5);
+
+  const activeFamily = families.find(f => f.id === activeFamilyId) || null;
 
   useEffect(() => {
     const loadData = async () => {
@@ -37,7 +43,7 @@ export default function HomeScreen() {
           bookName: 'Psaumes',
           chapter: 23,
           verse: 1,
-          text: 'L\'Éternel est mon berger: je ne manquerai de rien.',
+          text: "L'Éternel est mon berger: je ne manquerai de rien.",
         });
         setStreak(Math.floor(Math.random() * 14) + 1);
         setReviewsDue(Math.floor(Math.random() * 10));
@@ -76,6 +82,13 @@ export default function HomeScreen() {
                 month: 'long'
               })}
             </Text>
+            {/* Family badge */}
+            {activeFamily && (
+              <View style={[styles.familyBadge, { backgroundColor: activeFamily.color + '20', marginTop: sp.sm }]}>
+                <Ionicons name={activeFamily.icon as any} size={14} color={activeFamily.color} />
+                <Text style={[styles.familyBadgeText, { color: activeFamily.color }]}>{activeFamily.name}</Text>
+              </View>
+            )}
           </View>
           <TouchableOpacity
             style={styles.profileButton}
@@ -165,8 +178,10 @@ export default function HomeScreen() {
           {[
             { icon: 'book', label: 'Explorer', desc: 'La Bible', color: colors.primary, bg: colors.iconBgRose, action: () => router.push('/bible/explorer') },
             { icon: 'learn', label: 'Mémoriser', desc: 'Nouveau verset', color: colors.textSecondary, bg: colors.iconBgPurple, action: () => router.push('/memorization/session') },
+            { icon: 'text', label: 'Passage', desc: 'Multi-versets', color: colors.info, bg: colors.iconBgBlue, action: () => router.push('/bible/chapter') },
             { icon: 'sync', label: 'Réviser', desc: 'FSRS', color: colors.success, bg: colors.iconBgGreen, action: () => router.push('/review/queue') },
-            { icon: 'analytics', label: 'Progression', desc: 'Statistiques', color: colors.info, bg: colors.iconBgBlue, action: () => router.push('/analytics/dashboard') },
+            { icon: 'analytics', label: 'Progression', desc: 'Statistiques', color: colors.primary, bg: colors.iconBgRose, action: () => router.push('/analytics/dashboard') },
+            { icon: 'people', label: 'Famille', desc: 'Partager', color: colors.warning, bg: colors.iconBgOrange, action: () => router.push('/family/home') },
           ].map((item, idx) => (
             <TouchableOpacity
               key={idx}
@@ -185,7 +200,7 @@ export default function HomeScreen() {
           ))}
         </View>
 
-        {/* Today's verse */}
+        {/* Today's verse - enhanced card */}
         <Text style={[styles.sectionTitle, { color: colors.textPrimary, paddingHorizontal: sp.lg }]}>
           Verset du jour
         </Text>
@@ -209,15 +224,26 @@ export default function HomeScreen() {
               <Ionicons name="star" size={16} color={colors.primary} />
               <Text style={[styles.verseBadgeText, { color: colors.primary }]}>Aujourd'hui</Text>
             </View>
-            <TouchableOpacity
-              style={[styles.memorizeButton, { backgroundColor: colors.primary }]}
-              onPress={(e) => {
-                e.stopPropagation();
-                router.push('/memorization/session');
-              }}
-            >
-              <Text style={styles.memorizeButtonText}>Mémoriser</Text>
-            </TouchableOpacity>
+            <View style={styles.verseActions}>
+              <TouchableOpacity
+                style={[styles.memorizeButton, { backgroundColor: colors.primary }]}
+                onPress={(e) => {
+                  e.stopPropagation();
+                  router.push('/memorization/session');
+                }}
+              >
+                <Text style={styles.memorizeButtonText}>Mémoriser</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.passageButton, { backgroundColor: colors.surfaceTint, marginLeft: sp.sm }]}
+                onPress={(e) => {
+                  e.stopPropagation();
+                  router.push('/bible/chapter');
+                }}
+              >
+                <Ionicons name="text" size={16} color={colors.primary} />
+              </TouchableOpacity>
+            </View>
           </View>
           <Text style={[styles.verseReference, { color: colors.textPrimary }]}>
             {todayVerse.bookName} {todayVerse.chapter}:{todayVerse.verse}
@@ -225,6 +251,11 @@ export default function HomeScreen() {
           <Text style={[styles.verseText, { color: colors.textSecondary }]} numberOfLines={3}>
             {todayVerse.text}
           </Text>
+          {/* Verse progress indicator */}
+          <View style={styles.verseProgress}>
+            <View style={[styles.progressFill, { backgroundColor: colors.primary, width: '60%' }]} />
+            <Text style={[styles.progressText, { color: colors.textMuted, marginLeft: sp.sm }]}>60% mémorisé</Text>
+          </View>
         </TouchableOpacity>
 
         {/* Recent verses */}
@@ -239,7 +270,8 @@ export default function HomeScreen() {
         >
           {[
             { ref: 'Jean 3:16', text: 'Car Dieu a tant aimé le monde...', status: 'mastered' },
-            { ref: 'Psaume 23:1', text: 'L\'Éternel est mon berger...', status: 'mastered' },
+            { ref: 'Psaume 23:1', text: "L'Éternel est mon berger...", status: 'mastered' },
+            { ref: 'Jean 3:16-18', text: 'Passage complet...', status: 'in-progress', isPassage: true },
             { ref: 'Romains 8:28', text: 'Nous savons d\'ailleurs que...', status: 'in-progress' },
             { ref: 'Philippiens 4:13', text: 'Je puis tout par celui...', status: 'new' },
           ].map((verse, idx) => (
@@ -248,15 +280,24 @@ export default function HomeScreen() {
               style={[
                 styles.recentVerseCard,
                 { backgroundColor: colors.surface, borderRadius: rad.xl, ...sh.sm },
+                verse.isPassage && styles.passageCard,
               ]}
               onPress={() => router.push('/bible/verse')}
             >
-              <View
-                style={[
-                  styles.verseStatusDot,
-                  { backgroundColor: verse.status === 'mastered' ? colors.success : verse.status === 'in-progress' ? colors.primary : colors.textMuted }
-                ]}
-              />
+              <View style={styles.recentVerseHeader}>
+                <View
+                  style={[
+                    styles.verseStatusDot,
+                    { backgroundColor: verse.status === 'mastered' ? colors.success : verse.status === 'in-progress' ? colors.primary : colors.textMuted }
+                  ]}
+                />
+                {verse.isPassage && (
+                  <View style={[styles.passageTag, { backgroundColor: colors.primary + '15' }]}>
+                    <Ionicons name="text" size={10} color={colors.primary} />
+                    <Text style={[styles.passageTagText, { color: colors.primary }]}>Passage</Text>
+                  </View>
+                )}
+              </View>
               <Text style={[styles.recentVerseRef, { color: colors.textPrimary }]}>{verse.ref}</Text>
               <Text style={[styles.recentVerseText, { color: colors.textSecondary }]} numberOfLines={2}>{verse.text}</Text>
             </TouchableOpacity>
@@ -304,6 +345,20 @@ const styles = StyleSheet.create({
     marginTop: 4,
     textTransform: 'capitalize',
   },
+  familyBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
+    marginTop: 8,
+    alignSelf: 'flex-start',
+  },
+  familyBadgeText: {
+    fontSize: 12,
+    fontWeight: '600',
+  },
   profileButton: {
     marginLeft: 12,
   },
@@ -313,9 +368,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     borderRadius: 16,
-    padding: sp.lg,
-    marginHorizontal: sp.lg,
-    marginBottom: sp.md,
+    padding: 16,
+    marginHorizontal: 16,
+    marginBottom: 16,
   },
   reviewIcon: {
     width: 48,
@@ -326,12 +381,12 @@ const styles = StyleSheet.create({
   },
   reviewContent: {
     flex: 1,
-    marginLeft: sp.md,
+    marginLeft: 16,
   },
   reviewTitle: {
     fontSize: 16,
     fontWeight: '700',
-    color: colors.surface,
+    color: '#fff',
   },
   reviewSubtitle: {
     fontSize: 13,
@@ -356,7 +411,7 @@ const styles = StyleSheet.create({
     borderRadius: 28,
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: sp.md,
+    marginRight: 16,
   },
   streakCount: {
     fontSize: 32,
@@ -368,8 +423,8 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   streakButton: {
-    paddingHorizontal: sp.lg,
-    paddingVertical: sp.sm,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
     borderRadius: 20,
   },
   streakButtonText: {
@@ -381,101 +436,142 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: '700',
-    marginBottom: sp.md,
+    marginBottom: 16,
   },
 
   // Quick actions grid
   quickActionsGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    marginBottom: sp.xl,
-    gap: sp.md,
+    marginBottom: 32,
+    gap: 16,
   },
   quickActionCard: {
-    width: '48%',
-    padding: sp.lg,
+    width: '31%',
+    padding: 16,
     alignItems: 'center',
   },
   quickActionIcon: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
+    width: 48,
+    height: 48,
+    borderRadius: 24,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: sp.sm,
+    marginBottom: 8,
   },
   quickActionLabel: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '700',
     textAlign: 'center',
   },
   quickActionDesc: {
-    fontSize: 13,
-    marginTop: 4,
+    fontSize: 11,
+    marginTop: 2,
     textAlign: 'center',
   },
 
   // Verse card
   verseCard: {
-    marginBottom: sp.xl,
+    marginBottom: 32,
   },
   verseHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: sp.sm,
+    marginBottom: 12,
   },
   verseBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: sp.md,
-    paddingVertical: sp.sm,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
     borderRadius: 20,
     gap: 6,
   },
-  verseBadgeText: {
-    fontSize: 12,
-    fontWeight: '600',
+  verseActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   memorizeButton: {
-    paddingHorizontal: sp.lg,
-    paddingVertical: sp.sm,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
     borderRadius: 20,
+  },
+  passageButton: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   memorizeButtonText: {
     fontSize: 13,
     fontWeight: '600',
-    color: colors.surface,
+    color: '#fff',
   },
   verseReference: {
     fontSize: 18,
     fontWeight: '700',
-    marginBottom: sp.sm,
+    marginBottom: 8,
   },
   verseText: {
     fontSize: 16,
     lineHeight: 24,
+    marginBottom: 16,
+  },
+  verseProgress: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  progressFill: {
+    height: 4,
+    borderRadius: 2,
+    flex: 1,
+  },
+  progressText: {
+    fontSize: 12,
   },
 
   // Recent verses
   recentScroll: {
-    marginBottom: sp.xl,
+    marginBottom: 32,
   },
   recentVerseCard: {
-    width: 200,
-    padding: sp.md,
-    marginRight: sp.md,
+    width: 160,
+    padding: 16,
+    marginRight: 16,
+  },
+  passageCard: {
+    borderWidth: 1,
+    borderColor: '#E91E8C',
+  },
+  recentVerseHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    marginBottom: 8,
   },
   verseStatusDot: {
     width: 8,
     height: 8,
     borderRadius: 4,
-    marginBottom: sp.sm,
+  },
+  passageTag: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 8,
+  },
+  passageTagText: {
+    fontSize: 10,
+    fontWeight: '600',
   },
   recentVerseRef: {
     fontSize: 14,
     fontWeight: '700',
-    marginBottom: sp.sm,
+    marginBottom: 8,
   },
   recentVerseText: {
     fontSize: 13,
