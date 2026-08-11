@@ -557,4 +557,3 @@
 | 12. Tests | 2 | ⏳ 2 | Toutes phases précédentes |
 | 13. Documentation | 2 | ⏳ 2 | Toutes phases précédentes |
 
-**Total**: 42 tâches | **Done**: 42 | **In Progress**: 0 | **TODO**: 0| **Done**: 12 | **In Progress**: 0 | **TODO**: 30
