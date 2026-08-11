@@ -18,12 +18,14 @@ import { useAppTheme } from '@/theme/useTheme';
 import { useContextStore } from '@/store/context-store';
 import { useFamilyStore } from '@/store/family-store';
 import { useRouter } from 'expo-router';
+import { useSessionSafety } from '@/hooks/useSessionSafety';
 
 export function ContextSwitcher() {
   const { colors, sp, sh, rad } = useAppTheme();
   const router = useRouter();
   const { activeContext, activeFamilyId, switchToFamily, switchToPersonal } = useContextStore();
   const { families } = useFamilyStore();
+  const { safeSwitchToFamily, safeSwitchToPersonal } = useSessionSafety();
 
   const [showPicker, setShowPicker] = useState(false);
 
@@ -32,9 +34,9 @@ export function ContextSwitcher() {
   const handleSwitch = (context: 'personal' | 'family', familyId?: string) => {
     setShowPicker(false);
     if (context === 'personal') {
-      switchToPersonal();
+      safeSwitchToPersonal();
     } else if (familyId) {
-      switchToFamily(familyId);
+      safeSwitchToFamily(familyId);
       router.push('/family/home');
     }
   };
