@@ -1,4 +1,8 @@
-import { useState, useEffect } from 'react';
+/**
+ * Verify Screen — Email verification
+ */
+
+import { useState } from 'react';
 import {
   View,
   Text,
@@ -9,10 +13,11 @@ import {
   SafeAreaView,
   Alert,
 } from 'react-native';
+import { useAppTheme } from '@/theme/useTheme';
 import { useRouter } from 'expo-router';
-import { InsForgeAuthService } from '@/auth';
 
 export default function VerifyScreen() {
+  const { colors, sp, sh, rad } = useAppTheme();
   const router = useRouter();
   const [code, setCode] = useState('');
   const [loading, setLoading] = useState(false);
@@ -20,13 +25,7 @@ export default function VerifyScreen() {
   const [success, setSuccess] = useState(false);
   const [sent, setSent] = useState(false);
 
-  const auth = new InsForgeAuthService();
-
-  // Simuler l'envoi d'un code de vérification - dans une application réelle,
-  // cela appellerait l'API pour renvoyer un code par e-mail
   const handleSendCode = async () => {
-    // Sur les plateformes réelles, on vérifie d'abord l'e-mail
-    // Ici, on simule l'envoi du code
     if (!code) {
       Alert.alert('Erreur', 'Entrez votre adresse e-mail');
       return;
@@ -36,10 +35,8 @@ export default function VerifyScreen() {
     setError(null);
 
     try {
-      // Simulation d'appel API - dans la vraie application, on appellera
-      // auth.sendVerificationCode(email)
+      // Simulation d'envoi
       await new Promise(resolve => setTimeout(resolve, 1000));
-
       setSent(true);
       Alert.alert('Code envoyé', `Un code de vérification a été envoyé à ${code}\n(code test: 123456)`);
       setLoading(false);
@@ -60,18 +57,15 @@ export default function VerifyScreen() {
     setError(null);
 
     try {
-      // Simulation de vérification du code - dans la vraie application,
-      // on appellera auth.verifyVerificationCode(email, code)
       await new Promise(resolve => setTimeout(resolve, 1000));
 
-      // Le code test "123456" fonctionne
       if (code !== '123456') {
         throw new Error('Code de vérification invalide');
       }
 
       setSuccess(true);
       setTimeout(() => {
-        router.push('/(tabs)');
+        router.replace('/(tabs)');
       }, 1500);
     } catch (err: any) {
       setError(err?.message || 'Code de vérification invalide');
@@ -89,7 +83,7 @@ export default function VerifyScreen() {
             <Text style={styles.successMessage}>
               Vous êtes maintenant connecté à votre compte.
             </Text>
-            <ActivityIndicator color="#E91E8C" size="large" />
+            <ActivityIndicator color={colors.primary} size="large" />
           </View>
         ) : (
           <>
@@ -122,7 +116,7 @@ export default function VerifyScreen() {
                   disabled={loading}
                 >
                   {loading ? (
-                    <ActivityIndicator color="#FFFFFF" size="small" />
+                    <ActivityIndicator color={colors.surface} size="small" />
                   ) : (
                     <Text style={styles.buttonText}>Envoyer le code</Text>
                   )}
@@ -146,7 +140,7 @@ export default function VerifyScreen() {
                   disabled={loading}
                 >
                   {loading ? (
-                    <ActivityIndicator color="#FFFFFF" size="small" />
+                    <ActivityIndicator color={colors.surface} size="small" />
                   ) : (
                     <Text style={styles.buttonText}>Vérifier</Text>
                   )}
@@ -173,7 +167,7 @@ export default function VerifyScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFF0F6',
+    backgroundColor: colors.surfaceTint,
     padding: 16,
   },
   formContainer: {
@@ -183,34 +177,34 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: '700',
-    color: '#2D2D2D',
+    color: colors.textPrimary,
     marginBottom: 8,
     textAlign: 'center',
   },
   subtitle: {
     fontSize: 16,
-    color: '#6E6E6E',
+    color: colors.textTertiary,
     marginBottom: 32,
     textAlign: 'center',
   },
   input: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.surface,
     borderRadius: 12,
     padding: 16,
     marginBottom: 16,
     borderWidth: 1,
-    borderColor: '#FFE4EE',
+    borderColor: colors.border,
     fontSize: 16,
   },
   button: {
-    backgroundColor: '#E91E8C',
+    backgroundColor: colors.primary,
     borderRadius: 12,
     padding: 16,
     marginBottom: 16,
     alignItems: 'center',
   },
   buttonText: {
-    color: '#FFFFFF',
+    color: colors.surface,
     fontSize: 16,
     fontWeight: '600',
   },
@@ -218,7 +212,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   linkText: {
-    color: '#E91E8C',
+    color: colors.primary,
     fontSize: 14,
   },
   errorContainer: {
@@ -242,12 +236,12 @@ const styles = StyleSheet.create({
   successTitle: {
     fontSize: 24,
     fontWeight: '700',
-    color: '#2D2D2D',
+    color: colors.textPrimary,
     marginBottom: 16,
   },
   successMessage: {
     fontSize: 16,
-    color: '#6E6E6E',
+    color: colors.textTertiary,
     textAlign: 'center',
     marginBottom: 24,
     paddingHorizontal: 24,

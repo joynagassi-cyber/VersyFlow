@@ -112,6 +112,20 @@ export class TelemetryService {
   }
 
   /**
+   * Record a passage start event (Phase 8.7)
+   */
+  recordPassageStarted(payload: Record<string, unknown>): void {
+    this.record('passage.started', payload);
+  }
+
+  /**
+   * Record a passage segment (verse) completion event (Phase 8.7)
+   */
+  recordPassageSegmentCompleted(payload: Record<string, unknown>): void {
+    this.record('passage.segment.completed', payload);
+  }
+
+  /**
    * Record an error occurrence
    */
   recordError(payload: Record<string, unknown>): void {

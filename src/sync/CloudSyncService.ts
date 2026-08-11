@@ -10,42 +10,41 @@ import { MemorizationRecord, ReviewLogEntry, WordPerformance, FsrsState } from '
 import { MmkvStorage } from '@/infrastructure/storage';
 import { createClient } from '@insforge/sdk';
 import { logger } from '@/infrastructure/logging/logger';
+import NetInfo from '@react-native-community/netinfo';
 
 // Cloud data structures matching the local entities
 interface CloudMemorizationRecord {
   id: string;
-  bookId: string;
-  chapterNumber: number;
-  verseNumber: number;
-  translationId: string;
-  bibleVerseReference: string;
-  bibleVerseText: string;
+  user_id: string;
+  bookid: string;
+  chapternumber: number;
+  versenumber: number;
+  translationid: string;
+  bibleversereference: string;
+  bibleversetext: string;
   status: 'new' | 'in-progress' | 'mastered';
-  fsrsState: FsrsState;
+  fsrsstate: FsrsState;
   favorite: boolean;
   tags: string[];
-  createdAt: number;
-  lastReviewedAt: number | null;
-  nextReviewAt: number | null;
-  reviewCount: number;
-  totalReviewMinutes: number;
-  wordPerformance: WordPerformance[];
-  updatedAt: number; // Sync metadata
+  createdat: number;
+  lastreviewedat: number | null;
+  nextreviewat: number | null;
+  reviewcount: number;
+  totalreviewminutes: number;
+  wordperformance: WordPerformance[];
+  created_at: number; // Sync metadata
+  updated_at: number; // Sync metadata
 }
 
 interface CloudReviewLogEntry {
   id: string;
-  memorizationRecordId: string;
-  answeredAt: number;
-  rating: 'again' | 'hard' | 'good' | 'easy';
-  actualInterval: number | null;
-  predictedInterval: number;
-  stabilityBefore: number;
-  stabilityAfter: number;
-  difficultyBefore: number;
-  difficultyAfter: number;
-  wordPerformance: any[]; // WordPerformanceSnapshot[]
-  updatedAt: number; // Sync metadata
+  user_id: string;
+  recordid: string;
+  reviewedat: number;
+  rating: number;
+  nextreviewat: number | null;
+  createdat: number;
+  updated_at: number; // Sync metadata
 }
 
 export class CloudSyncService {
@@ -62,7 +61,7 @@ export class CloudSyncService {
 
     // Initialize InsForge client from environment variables
     this.client = createClient({
-      baseUrl: process.env.INFORGE_URL || 'https://your-insforge-app.url',
+      baseUrl: process.env.INFORGE_URL || 'https://wypi8tgf.eu-central.insforge.app',
       anonKey: process.env.INFORGE_ANON_KEY,
     });
 
@@ -71,30 +70,39 @@ export class CloudSyncService {
   }
 
   private setupConnectivityListeners(): void {
-    // Check network status on load
-    this.updateConnectionStatus();
+    // Use React Native NetInfo for connectivity detection
+    const unsubscribe = NetInfo.addEventListener((state: any) => {
+      const isConnected = state.isConnected && state.isInternetReachable !== false;
+      this.isConnected = isConnected;
 
-    // Listen for network status changes (if available)
-    if (window) {
-      window.addEventListener('online', () => {
-        this.isConnected = true;
+      if (isConnected) {
         logger.info('CloudSyncService: Network connection restored');
         this.processSyncQueue();
         if (this.autoSync) {
           this.syncOnce();
         }
-      });
-
-      window.addEventListener('offline', () => {
-        this.isConnected = false;
+      } else {
         logger.warn('CloudSyncService: Network connection lost');
-        // Queue sync operations for later
-      });
+      }
+    });
+
+    // Store unsubscribe function for cleanup
+    this._cleanupConnectivity = unsubscribe;
+  }
+
+  // Cleanup on destroy
+  destroy(): void {
+    if (this._cleanupConnectivity) {
+      this._cleanupConnectivity();
     }
   }
 
+  private _cleanupConnectivity: (() => void) | null = null;
+
   private updateConnectionStatus(): void {
-    this.isConnected = !!navigator && navigator.onLine;
+    NetInfo.getState().then((state) => {
+      this.isConnected = state.isConnected && state.isInternetReachable !== false;
+    });
   }
 
   /**
@@ -132,7 +140,6 @@ export class CloudSyncService {
         return;
       }
 
-      // Get cloud records for comparison
       const cloudRecords = await this.fetchAllCloudRecords();
       const cloudMap = new Map<string, CloudMemorizationRecord>(
         cloudRecords.map(r => [r.id, r])
@@ -142,11 +149,11 @@ export class CloudSyncService {
       const recordsToUpsert: CloudMemorizationRecord[] = [];
       for (const localRecord of localRecords) {
         const cloudRecord = cloudMap.get(localRecord.id);
-        // Use last-write-wins based on updatedAt timestamp
+        // Use last-write-wins based on updated_at timestamp
         const recordToSave: CloudMemorizationRecord = {
           ...localRecord,
-          updatedAt: Date.now(),
-          ...(cloudRecord && cloudRecord.updatedAt > localRecord.updatedAt ? cloudRecord : {}),
+          updated_at: Date.now(),
+          ...(cloudRecord && cloudRecord.updated_at > (localRecord.createdat || 0) ? cloudRecord : {}),
         };
         recordsToUpsert.push(recordToSave);
       }
@@ -193,13 +200,13 @@ export class CloudSyncService {
         if (!cloudLog) {
           logsToUpsert.push({
             ...localLog,
-            updatedAt: Date.now(),
+            updated_at: Date.now(),
           });
-        } else if (cloudLog.updatedAt < localLog.updatedAt) {
+        } else if (cloudLog.updated_at < localLog.createdat) {
           // Update with local version if newer
           logsToUpsert.push({
             ...localLog,
-            updatedAt: Date.now(),
+            updated_at: Date.now(),
           });
         }
       }
@@ -284,7 +291,6 @@ export class CloudSyncService {
   private async fetchAllCloudRecords(): Promise<CloudMemorizationRecord[]> {
     try {
       const { data, error } = await this.client.database
-        .schema('public') // Adjust schema if needed
         .from<CloudMemorizationRecord>('memorization_records')
         .select('*')
         .order('updated_at', { ascending: false });
@@ -304,7 +310,6 @@ export class CloudSyncService {
   private async fetchAllCloudLogs(): Promise<CloudReviewLogEntry[]> {
     try {
       const { data, error } = await this.client.database
-        .schema('public')
         .from<CloudReviewLogEntry>('review_logs')
         .select('*')
         .order('updated_at', { ascending: false });
@@ -329,7 +334,6 @@ export class CloudSyncService {
       // In production, consider batch upsert
       for (const record of records) {
         const { error } = await this.client.database
-          .schema('public')
           .from<CloudMemorizationRecord>('memorization_records')
           .upsert([record], {
             onConflict: 'id', // Conflict on record ID
@@ -352,7 +356,6 @@ export class CloudSyncService {
     try {
       for (const log of logs) {
         const { error } = await this.client.database
-          .schema('public')
           .from<CloudReviewLogEntry>('review_logs')
           .upsert([log], {
             onConflict: 'id', // Conflict on log ID
@@ -380,9 +383,9 @@ export class CloudSyncService {
       const localRecord = localMap.get(cloudRecord.id);
 
       // If cloud record is newer than local, merge
-      if (!localRecord || cloudRecord.updatedAt > (localRecord.createdAt || 0)) {
+      if (!localRecord || cloudRecord.updated_at > (localRecord.createdat || 0)) {
         // Convert cloud record to local format
-        const { updatedAt, ...recordWithoutCloudMeta } = cloudRecord;
+        const { updated_at, ...recordWithoutCloudMeta } = cloudRecord;
         const recordToSave: MemorizationRecord = {
           ...recordWithoutCloudMeta,
         };

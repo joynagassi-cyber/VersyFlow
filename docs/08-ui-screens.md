@@ -339,4 +339,72 @@ SettingsScreen (grouped list view, iOS-style grouped tables)
 
 ---
 
+## 12. Écran: Introduction FSRS (FSRSIntroductionScreen)
+
+**Parcours**: Onboarding — Étape 3 (finale avant accueil)
+**Navigation**: TranslationPicker → FSRSIntroduction → Home
+**Figma**: https://www.figma.com/design/BL5Cbn6s2aMXAtNDmAVJ8F/VersyFlow?node-id=7-50
+
+### Structure hiérarchique
+```
+FSRSIntroductionScreen (scrollable, safeArea)
+├── Hero Section (centered, padding 24)
+│   ├── Icon (brain, 33x36px, color: #E91E8C)
+│   ├── TitleText "La science de la mémorisation" — h1, bold, #1c1b1b
+│   └── DescriptionText (2 lignes max, #594048, lineHeight 24)
+├── Visual Graph Section
+│   └── GraphCard (white, rounded-24, height 280px, shadow)
+│       ├── YAxisLabels (100%, 50%, 0%) — left aligned
+│       ├── GridLines (3 horizontal dividers, opacity 0.3)
+│       ├── GraphPlaceholder (SVG retention curve)
+│       ├── XAxisLabels (Jour 1, Jour 7, Mois 1)
+│       └── LegendOverlay (top-right, glassmorphism)
+│           ├── LegendItem: "Rétention Optimale" (solid pink line)
+│           └── LegendItem: "Oubli Naturel" (dashed gray line)
+├── Benefits List Section (gap 16px)
+│   ├── BenefitCard 1: "Rythme optimal" (icon: timer, bg: #ffd9e4)
+│   │   ├── IconCircle (48px, #ffd9e4 background)
+│   │   ├── Title "Rythme optimal" — bold, #1c1b1b
+│   │   └── Description (2 lignes max, #594048)
+│   ├── BenefitCard 2: "Moins de révisions" (icon: checkmark-done, bg: #eadce2)
+│   │   ├── IconCircle (48px, #eadce2 background)
+│   │   ├── Title "Moins de révisions" — bold, #1c1b1b
+│   │   └── Description (3 lignes max, #594048)
+│   └── BenefitCard 3: "Scientifiquement prouvé" (icon: flask, bg: #008733)
+│       ├── IconCircle (48px, #008733 background, white icon)
+│       ├── Title "Scientifiquement prouvé" — bold, #1c1b1b
+│       └── Description (2 lignes max, #594048)
+└── Bottom Action Bar (fixed, glassmorphism)
+    └── StartButton (pink gradient, pill shape, "Commencer à mémoriser →")
+```
+
+### Interactions
+- Tap "Commencer à mémoriser" → completeOnboarding() + navigate to /(tabs)/index
+- Back button from LanguagePicker → returns to LanguagePicker
+- Scrollable content (ScrollView with contentContainerStyle)
+
+### États
+- `onboardingCompleted`: boolean (set to true after button press)
+- `bibleTranslation`: string (persisted from previous step)
+- `uiLanguage`: string (persisted from previous step)
+
+### Design Tokens
+| Token | Value |
+|-------|-------|
+| Background | `#fcf9f8` |
+| Primary | `#E91E8C` |
+| Text Primary | `#1c1b1b` |
+| Text Secondary | `#594048` |
+| Card BG | `#FFFFFF` |
+| Icon BG 1 | `#ffd9e4` |
+| Icon BG 2 | `#eadce2` |
+| Icon BG 3 | `#008733` |
+
+### Note d'implémentation
+- Le graph SVG peut être implémenté avec `react-native-svg` ou une image
+- Glassmorphism: `backdropFilter: 'blur(7.5px)'` (iOS) + `backgroundColor: 'rgba(255,255,255,0.8)'`
+- Shadow native: utiliser `Platform.select()` pour iOS/Android
+
+---
+
 *Document approuvé. Transmis à l'Agent E (Architecture) pour spécification technique.*

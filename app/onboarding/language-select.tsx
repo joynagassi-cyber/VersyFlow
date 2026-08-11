@@ -12,11 +12,13 @@ import {
   ScrollView,
   StyleSheet,
 } from 'react-native';
+import { useAppTheme } from '@/theme/useTheme';
 import { useRouter } from 'expo-router';
 import { SUPPORTED_LANGUAGES } from '@/domains/i18n/config';
 import { useSettingsStore } from '@/store/settings-store';
 
 export default function LanguagePickerScreen() {
+  const { colors, sp, sh, rad } = useAppTheme();
   const router = useRouter();
   const { setUiLanguage, uiLanguage } = useSettingsStore();
 
@@ -63,13 +65,13 @@ export default function LanguagePickerScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFF0F6',
+    backgroundColor: colors.surfaceTint,
     padding: 16,
   },
   title: {
     fontSize: 24,
     fontWeight: '600',
-    color: '#2D2D2D',
+    color: colors.textPrimary,
     marginBottom: 24,
   },
   scrollArea: {
@@ -77,15 +79,15 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   card: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.surface,
     borderRadius: 12,
     padding: 16,
     marginBottom: 8,
     ...shadow.md,
   },
   cardSelected: {
-    backgroundColor: '#FFF0F6',
-    borderColor: '#E91E8C',
+    backgroundColor: colors.surfaceTint,
+    borderColor: colors.primary,
     borderWidth: 2,
   },
   langInfo: {
@@ -96,24 +98,24 @@ const styles = StyleSheet.create({
   nativeName: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#2D2D2D',
+    color: colors.textPrimary,
   },
   displayName: {
     fontSize: 14,
-    color: '#A0A0A0',
+    color: colors.textMuted,
     marginTop: 4,
   },
   rtlBadge: {
     fontSize: 11,
-    color: '#E91E8C',
+    color: colors.primary,
     marginTop: 4,
-    backgroundColor: '#FFE4EE',
+    backgroundColor: colors.border,
     paddingHorizontal: 8,
     paddingVertical: 2,
     borderRadius: 4,
   },
   continueButton: {
-    backgroundColor: '#E91E8C',
+    backgroundColor: colors.primary,
     borderRadius: 26,
     paddingVertical: 14,
     alignItems: 'center',
@@ -122,7 +124,7 @@ const styles = StyleSheet.create({
   continueText: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#FFFFFF',
+    color: colors.surface,
   },
 });
 
