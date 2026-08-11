@@ -390,7 +390,7 @@
   - [ ] Design System conforme
   - [ ] Validation formulaire
 - **Tests**: E2E `tests/e2e/profile-flow.test.ts` (mis à jour)
-- **Statut**: ⏳ TODO
+- **Statut**: ✅ DONE
 
 ### Tâche 10.2 — Écrans Family
 - **ID**: FAM-UI-003
@@ -408,7 +408,7 @@
   - [ ] InviteFamilyMemberScreen: QR + code + share
   - [ ] JoinFamilyScreen: saisie code + validation
 - **Tests**: E2E `tests/e2e/collections-achievements-flow.test.ts` (mis à jour)
-- **Statut**: ⏳ TODO
+- **Statut**: ✅ DONE
 
 ### Tâche 10.3 — Navigation
 - **ID**: FAM-NAV-001
@@ -424,7 +424,7 @@
   - [ ] Route `/family/home` existe
   - [ ] Routes existantes inchangées
 - **Tests**: `tests/api/navigation-api.test.ts` (mis à jour)
-- **Statut**: ⏳ TODO
+- **Statut**: ✅ DONE
 
 ---
 

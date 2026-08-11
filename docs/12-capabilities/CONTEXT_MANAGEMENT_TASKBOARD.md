@@ -39,9 +39,9 @@
 
 | ID | Tâche | Dépendances | Statut |
 |----|-------|-------------|--------|
-| FAM-CTX-001 | Créer context-store.ts (AppContext, PersonalContext, FamilyContext) | FAM-EVT-002 | ⏳ TODO |
-| FAM-CTX-002 | Persist lastActiveContext, lastActiveFamilyId | FAM-CTX-001 | ⏳ TODO |
-| FAM-CTX-003 | Adapter boot.tsx pour activation contexte | FAM-CTX-002 | ⏳ TODO |
+| FAM-CTX-001 | Créer context-store.ts (AppContext, PersonalContext, FamilyContext) | FAM-EVT-002 | ✅ DONE |
+| FAM-CTX-002 | Persist lastActiveContext, lastActiveFamilyId | FAM-CTX-001 | ✅ DONE |
+| FAM-CTX-003 | Adapter boot.tsx pour activation contexte | FAM-CTX-002 | ✅ DONE |
 
 ---
 
@@ -49,8 +49,8 @@
 
 | ID | Tâche | Dépendances | Statut |
 |----|-------|-------------|--------|
-| FAM-CS-001 | Context Switcher component (header ou Plus menu) | FAM-CTX-003 | ⏳ TODO |
-| FAM-CS-002 | Afficher contexte actif: "PERSONNEL" ou "FAMILLE — Nom" | FAM-CS-001 | ⏳ TODO |
+| FAM-CS-001 | Context Switcher component (header ou Plus menu) | FAM-CTX-003 | ✅ DONE |
+| FAM-CS-002 | Afficher contexte actif: "PERSONNEL" ou "FAMILLE — Nom" | FAM-CS-001 | ✅ DONE |
 
 ---
 
@@ -58,11 +58,11 @@
 
 | ID | Tâche | Dépendances | Statut |
 |----|-------|-------------|--------|
-| FAM-NAV-001 | Ajouter routes family/* au Stack root | FAM-CS-002 | ⏳ TODO |
-| FAM-NAV-002 | Écran Family Members | FAM-NAV-001 | ⏳ TODO |
-| FAM-NAV-003 | Écran Family Invite (QR + code) | FAM-NAV-001 | ⏳ TODO |
-| FAM-NAV-004 | Écran Family Join (saisie code) | FAM-NAV-001 | ⏳ TODO |
-| FAM-NAV-005 | Écran Profile Edit | FAM-NAV-001 | ⏳ TODO |
+| FAM-NAV-001 | Ajouter routes family/* au Stack root | FAM-CS-002 | ✅ DONE |
+| FAM-NAV-002 | Écran Family Members | FAM-NAV-001 | ✅ DONE |
+| FAM-NAV-003 | Écran Family Invite (QR + code) | FAM-NAV-001 | ✅ DONE |
+| FAM-NAV-004 | Écran Family Join (saisie code) | FAM-NAV-001 | ✅ DONE |
+| FAM-NAV-005 | Écran Profile Edit | FAM-NAV-001 | ✅ DONE |
 
 ---
 
@@ -70,8 +70,8 @@
 
 | ID | Tâche | Dépendances | Statut |
 |----|-------|-------------|--------|
-| FAM-LR-001 | Learner switcher dans header Family | FAM-NAV-005 | ⏳ TODO |
-| FAM-LR-002 | Isolation learning data par learner | FAM-LR-001 | ⏳ TODO |
+| FAM-LR-001 | Learner switcher dans header Family | FAM-NAV-005 | ✅ DONE |
+| FAM-LR-002 | Isolation learning data par learner | FAM-LR-001 | ✅ DONE |
 
 ---
 
@@ -79,8 +79,8 @@
 
 | ID | Tâche | Dépendances | Statut |
 |----|-------|-------------|--------|
-| FAM-SS-001 | Vérifier session active avant context switch | FAM-CTX-001 | ⏳ TODO |
-| FAM-SS-002 | Confirmation dialog si session en cours | FAM-SS-001 | ⏳ TODO |
+| FAM-SS-001 | Vérifier session active avant context switch | FAM-CTX-001 | ✅ DONE |
+| FAM-SS-002 | Confirmation dialog si session en cours | FAM-SS-001 | ✅ DONE |
 
 ---
 
@@ -88,10 +88,10 @@
 
 | ID | Tâche | Dépendances | Statut |
 |----|-------|-------------|--------|
-| FAM-TEST-001 | Tests unitaires Context Store | FAM-CTX-003 | ⏳ TODO |
-| FAM-TEST-002 | Tests isolation données (Personal vs Family) | FAM-LR-002 | ⏳ TODO |
+| FAM-TEST-001 | Tests unitaires Context Store | FAM-CTX-003 | ✅ DONE |
+| FAM-TEST-002 | Tests isolation données (Personal vs Family) | FAM-LR-002 | ✅ DONE |
 | FAM-TEST-003 | Tests E2E context switch + navigation | FAM-NAV-005 | ⏳ TODO |
-| FAM-TEST-004 | Tests régression Personal Mode | Toutes | ⏳ TODO |
+| FAM-TEST-004 | Tests régression Personal Mode | Toutes | ✅ DONE |
 
 ---
 
