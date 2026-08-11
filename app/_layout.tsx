@@ -67,7 +67,15 @@ export default function RootLayout() {
           <Stack.Screen name="notifications" options={{ presentation: 'modal' }} />
 
           {/* Profile */}
+          <Stack.Screen name="profile/select" options={{ presentation: 'modal' }} />
           <Stack.Screen name="profile" options={{ presentation: 'modal' }} />
+
+          {/* Family */}
+          <Stack.Screen name="family/home" options={{ presentation: 'modal' }} />
+          <Stack.Screen name="family/members" options={{ presentation: 'modal' }} />
+          <Stack.Screen name="family/invite" options={{ presentation: 'modal' }} />
+          <Stack.Screen name="family/join" options={{ presentation: 'modal' }} />
+          <Stack.Screen name="family/create" options={{ presentation: 'modal' }} />
 
           {/* Settings */}
           <Stack.Screen name="settings" options={{ presentation: 'modal' }} />
