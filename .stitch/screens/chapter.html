@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VersyFlow — Chapitre</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #fcf9f8; color: #2D2D2D; }
+    .screen { max-width: 430px; margin: 0 auto; min-height: 100vh; background: #fcf9f8; }
+    .header { padding: 16px; background: #fff; border-bottom: 1px solid #FFE4EE; display: flex; align-items: center; gap: 16px; }
+    .back-btn { padding: 8px; margin-left: -8px; color: #E91E8C; font-size: 16px; }
+    .title { font-size: 20px; font-weight: 700; color: #2D2D2D; flex: 1; text-align: center; }
+    .select-btn { padding: 8px; margin-right: -8px; color: #E91E8C; font-size: 14px; font-weight: 600; }
+    .verse { margin: 12px 16px; background: #fff; border-radius: 12px; padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+    .verse-number { font-size: 14px; font-weight: 700; color: #E91E8C; margin-bottom: 8px; }
+    .verse-text { font-size: 16px; line-height: 26px; color: #2D2D2D; margin-bottom: 12px; }
+    .verse-actions { display: flex; gap: 8px; }
+    .btn { flex: 1; padding: 10px; border-radius: 8px; font-size: 14px; font-weight: 600; text-align: center; }
+    .btn-primary { background: #E91E8C; color: #fff; }
+    .btn-secondary { background: #fff; color: #E91E8C; border: 1px solid #E91E8C; }
+    .verse.selected { background: #FFF0F6; border: 1px solid #E91E8C; }
+    .banner { margin: 12px 16px; background: #FFF0F6; padding: 12px 16px; border-radius: 12px; text-align: center; }
+    .banner p { font-size: 14px; color: #594048; }
+    .banner .memorize { margin-top: 8px; background: #E91E8C; color: #fff; padding: 8px 20px; border-radius: 20px; font-size: 14px; font-weight: 600; display: inline-block; }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <div class="header">
+      <div class="back-btn">← Retour</div>
+      <div class="title">Jean 3</div>
+      <div class="select-btn">Sélectionner</div>
+    </div>
+    
+    <div class="verse selected">
+      <div class="verse-number">16</div>
+      <div class="verse-text">Car Dieu a tant aimé le monde qu'il a donné son Fils unique, afin que quiconque croit en lui ne périsse point, mais qu'il ait la vie éternelle.</div>
+      <div class="verse-actions">
+        <div class="btn btn-primary">Mémoriser</div>
+      </div>
+    </div>
+    
+    <div class="verse selected">
+      <div class="verse-number">17</div>
+      <div class="verse-text">Car Dieu n'a点 envoyés son Fils dans le monde pour qu'il juge le monde, mais afin que le monde soit sauvé par lui.</div>
+      <div class="verse-actions">
+        <div class="btn btn-primary">Mémoriser</div>
+      </div>
+    </div>
+    
+    <div class="verse">
+      <div class="verse-number">18</div>
+      <div class="verse-text">Celui qui croit en lui n'est point jugé; mais celui qui ne croit point est déjà jugé, parce qu'il n'a点 point cru au nom de l'unique Fils de Dieu.</div>
+      <div class="verse-actions">
+        <div class="btn btn-primary">Mémoriser</div>
+      </div>
+    </div>
+    
+    <div class="banner">
+      <p>3 versets sélectionnés — Jean 3:16-18</p>
+      <div class="memorize">Mémoriser le passage</div>
+    </div>
+  </div>
+</body>
+</html>

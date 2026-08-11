@@ -64,6 +64,23 @@ export class FatigueDetector {
   }
 
   /**
+   * Check if a break should be recommended based on fatigue level
+   */
+  shouldRecommendBreak(fatigueLevel: number): boolean {
+    return fatigueLevel > 0.7;
+  }
+
+  /**
+   * Calculate fatigue level from review metrics
+   */
+  calculateFatigueLevel(todayReviews: number, recentErrorRate: number, sessionDuration: number): number {
+    const reviewFactor = Math.min(1, todayReviews / 50);
+    const errorFactor = recentErrorRate;
+    const durationFactor = Math.min(1, sessionDuration / 120);
+    return (reviewFactor * 0.3 + errorFactor * 0.4 + durationFactor * 0.3);
+  }
+
+  /**
    * Get the current fatigue level (0-1)
    */
   getFatigueLevel(): number {

@@ -205,7 +205,8 @@ class BibleRepository {
 }
 
 // Exporter l'instance unique
-export const BibleRepository = BibleRepository.getInstance();
+const _bibleRepositoryInstance = BibleRepository.getInstance();
+export { _bibleRepositoryInstance as BibleRepository };
 
 // Charger la Bible automatiquement à l'import
 // (On charge au démarrage de l'application, pas à l'import pour éviter les side effects)

@@ -14,8 +14,8 @@ import { z } from 'zod';
 // ============================================
 
 export const BibleVerseSchema = z.object({
-  number: z.number().int().positive().description('Numéro du verset (1-based)'),
-  text: z.string().min(1).description('Texte du verset'),
+  number: z.number().int().positive(),
+  text: z.string().min(1),
 });
 
 // ============================================
@@ -23,8 +23,8 @@ export const BibleVerseSchema = z.object({
 // ============================================
 
 export const BibleChapterSchema = z.object({
-  number: z.number().int().positive().description('Numéro du chapitre (1-based)'),
-  verses: z.array(BibleVerseSchema).nonempty().description('Tableau des versets'),
+  number: z.number().int().positive(),
+  verses: z.array(BibleVerseSchema).nonempty(),
 });
 
 // ============================================
@@ -32,11 +32,11 @@ export const BibleChapterSchema = z.object({
 // ============================================
 
 export const BibleBookSchema = z.object({
-  id: z.string().min(2).max(8).description('Code standard du livre (ex: "gen", "exo")'),
-  name: z.record(z.string()).description('Noms localisés du livre pour toutes les langues'),
-  testament: z.enum(['old', 'new']).description('Testament : "old" ou "new"'),
-  chapterCount: z.number().int().positive().description('Nombre total de chapitres'),
-  chapters: z.array(BibleChapterSchema).nonempty().description('Tableau des chapitres'),
+  id: z.string().min(2).max(8),
+  name: z.record(z.string()),
+  testament: z.enum(['old', 'new']),
+  chapterCount: z.number().int().positive(),
+  chapters: z.array(BibleChapterSchema).nonempty(),
 });
 
 // ============================================
@@ -44,14 +44,14 @@ export const BibleBookSchema = z.object({
 // ============================================
 
 export const BibleTranslationSchema = z.object({
-  id: z.string().min(2).max(10).description('Identifiant de la traduction (ex: "lsg")'),
-  name: z.string().min(1).description('Nom complet de la traduction'),
-  year: z.number().int().positive().description('Année de publication'),
-  language: z.string().length(2).description('Code langue ISO 639-1'),
-  style: z.enum(['classique', 'moderne', 'paraphrase']).description('Style de la traduction'),
-  publicDomain: z.boolean().description('Statut du domaine public'),
-  author: z.string().min(1).description('Nom du traducteur'),
-  books: z.array(BibleBookSchema).nonempty().description('Tableau des 66 livres'),
+  id: z.string().min(2).max(10),
+  name: z.string().min(1),
+  year: z.number().int().positive(),
+  language: z.string().length(2),
+  style: z.enum(['classique', 'moderne', 'paraphrase']),
+  publicDomain: z.boolean(),
+  author: z.string().min(1),
+  books: z.array(BibleBookSchema).nonempty(),
 });
 
 // Type dérivé des schemas
