@@ -50,8 +50,6 @@ class MmkvStorage implements IStorage {
 
   async getAllKeys(): Promise<string[]> {
     try {
-      // Assumption: expo-async-storage getAllKeys exists
-      // Si ce n'est pas le cas, implementez une tracking separate des keys
       return await this.storage.getAllKeys?.() || [];
     } catch (error) {
       console.error('[MMKV/AsyncStorage] GetAllKeys failed:', error);
@@ -65,6 +63,33 @@ class MmkvStorage implements IStorage {
     } catch (error) {
       console.error('[MMKV/AsyncStorage] Clear failed:', error);
     }
+  }
+
+  /**
+   * Generate a namespaced storage key for a specific learner profile.
+   * Format: versyflow:{profileId}:{originalKey}
+   */
+  static prefixedKey(profileId: string, key: string): string {
+    return `versyflow:${profileId}:${key}`;
+  }
+
+  /**
+   * Check if a key belongs to a specific profile.
+   */
+  static isProfileKey(key: string, profileId: string): boolean {
+    return key.startsWith(`versyflow:${profileId}:`);
+  }
+
+  /**
+   * Extract profile ID from a namespaced key.
+   * Returns null if the key is not namespaced.
+   */
+  static extractProfileId(key: string): string | null {
+    const prefix = 'versyflow:';
+    if (!key.startsWith(prefix)) return null;
+    const rest = key.slice(prefix.length);
+    const parts = rest.split(':');
+    return parts.length > 1 ? parts[0] : null;
   }
 }
 

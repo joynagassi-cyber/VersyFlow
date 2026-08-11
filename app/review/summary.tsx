@@ -5,10 +5,12 @@
 
 import { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, SafeAreaView } from 'react-native';
+import { useAppTheme } from '@/theme/useTheme';
 import { useRouter } from 'expo-router';
 import { useI18n } from '@/hooks/useI18n';
 
 export default function ReviewSummaryScreen() {
+  const { colors, sp, sh, rad } = useAppTheme();
   const router = useRouter();
   const { t } = useI18n();
 
@@ -99,14 +101,14 @@ export default function ReviewSummaryScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFF0F6',
+    backgroundColor: colors.surfaceTint,
   },
   content: {
     padding: 16,
     paddingBottom: 24,
   },
   streakCard: {
-    backgroundColor: '#E91E8C',
+    backgroundColor: colors.primary,
     borderRadius: 16,
     padding: 24,
     marginBottom: 24,
@@ -120,7 +122,7 @@ const styles = StyleSheet.create({
   streakNumber: {
     fontSize: 48,
     fontWeight: '800',
-    color: '#FFFFFF',
+    color: colors.surface,
   },
   streakLabel: {
     fontSize: 14,
@@ -134,7 +136,7 @@ const styles = StyleSheet.create({
   },
   statCard: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.surface,
     borderRadius: 12,
     padding: 16,
     alignItems: 'center',
@@ -144,15 +146,15 @@ const styles = StyleSheet.create({
   statNumber: {
     fontSize: 24,
     fontWeight: '700',
-    color: '#E91E8C',
+    color: colors.primary,
   },
   statLabel: {
     fontSize: 12,
-    color: '#A0A0A0',
+    color: colors.textMuted,
     marginTop: 4,
   },
   chartCard: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.surface,
     borderRadius: 12,
     padding: 16,
     marginBottom: 24,
@@ -161,7 +163,7 @@ const styles = StyleSheet.create({
   chartTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#2D2D2D',
+    color: colors.textPrimary,
     marginBottom: 16,
   },
   chart: {
@@ -172,28 +174,28 @@ const styles = StyleSheet.create({
   chartBar: {
     flex: 1,
     height: 24,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: colors.surfaceElevated,
     borderRadius: 12,
     overflow: 'hidden',
   },
   chartFill: {
     height: '100%',
-    backgroundColor: '#E91E8C',
+    backgroundColor: colors.primary,
     borderRadius: 12,
   },
   chartPercent: {
     fontSize: 18,
     fontWeight: '700',
-    color: '#E91E8C',
+    color: colors.primary,
     marginLeft: 12,
   },
   chartSubtitle: {
     fontSize: 12,
-    color: '#A0A0A0',
+    color: colors.textMuted,
     textAlign: 'center',
   },
   detailsSection: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.surface,
     borderRadius: 12,
     padding: 16,
     marginBottom: 24,
@@ -201,7 +203,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#2D2D2D',
+    color: colors.textPrimary,
     marginBottom: 12,
   },
   detailItem: {
@@ -209,7 +211,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingVertical: 12,
     borderBottomWidth: 1,
-    borderBottomColor: '#F5F5F5',
+    borderBottomColor: colors.surfaceElevated,
   },
   detailItemLast: {
     borderBottomWidth: 0,
@@ -221,21 +223,21 @@ const styles = StyleSheet.create({
   detailValue: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#2D2D2D',
+    color: colors.textPrimary,
   },
   actions: {
     marginTop: 24,
   },
   buttonPrimary: {
-    backgroundColor: '#E91E8C',
+    backgroundColor: colors.primary,
     borderRadius: 26,
     paddingVertical: 16,
     marginBottom: 12,
     alignItems: 'center',
   },
   buttonSecondary: {
-    backgroundColor: '#FFFFFF',
-    borderColor: '#E91E8C',
+    backgroundColor: colors.surface,
+    borderColor: colors.primary,
     borderWidth: 2,
     borderRadius: 26,
     paddingVertical: 16,
@@ -244,12 +246,12 @@ const styles = StyleSheet.create({
   buttonText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#FFFFFF',
+    color: colors.surface,
   },
   buttonTextBack: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#E91E8C',
+    color: colors.primary,
   },
 });
 

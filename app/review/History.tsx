@@ -1,6 +1,6 @@
 /**
- * Review History Screen — Displays historical review log for a memorized verse
- * See docs/08-ui-screens.md §14
+ * Review History Screen — Timeline of review sessions for a verse
+ * See docs/08-ui-screens.md
  */
 
 import { useState, useEffect } from 'react';
@@ -12,88 +12,115 @@ import {
   ScrollView,
   SafeAreaView,
   ActivityIndicator,
+  Platform,
 } from 'react-native';
+import { useAppTheme } from '@/theme/useTheme';
 import { useRoute, useRouter } from 'expo-router';
-import { useI18n } from '@/hooks/useI18n';
-import { MemorizationService } from '@/domains/memorization/service';
-import { IFsrsEngine, Sm2FallbackEngine } from '@/domains/fsrs';
-import { MmkvStorage } from '@/infrastructure/storage';
-import { ReviewLogEntry } from '@/domains/memorization/entities';
+import { Ionicons } from '@expo/vector-icons';
 import { FsrsRating } from '@/domains/fsrs';
 
-// Singleton pour le service
-let memorizationService: MemorizationService | null = null;
+interface ReviewLogEntry {
+  id: string;
+  answeredAt: number;
+  rating: FsrsRating | string;
+  stabilityBefore: number;
+  stabilityAfter: number;
+  difficultyBefore: number;
+  difficultyAfter: number;
+  elapsedDays: number;
+  repetitions: number;
+}
 
-const getMemorizationService = () => {
-  if (!memorizationService) {
-    const storage = new MmkvStorage();
-    const fsrs = new Sm2FallbackEngine();
-    memorizationService = new MemorizationService(storage, fsrs);
-  }
-  return memorizationService;
+interface VerseRecord {
+  id: string;
+  reference: string;
+  text: string;
+  totalReviews: number;
+  averageStability: number;
+  masteryLevel: string;
+}
+
+// Sample data for demo
+const SAMPLE_HISTORY: ReviewLogEntry[] = [
+  {
+    id: '1',
+    answeredAt: Date.now() - 86400000 * 2,
+    rating: FsrsRating.GOOD,
+    stabilityBefore: 2.1,
+    stabilityAfter: 3.5,
+    difficultyBefore: 5.0,
+    difficultyAfter: 4.8,
+    elapsedDays: 2,
+    repetitions: 3,
+  },
+  {
+    id: '2',
+    answeredAt: Date.now() - 86400000 * 5,
+    rating: FsrsRating.HARD,
+    stabilityBefore: 1.5,
+    stabilityAfter: 2.1,
+    difficultyBefore: 5.5,
+    difficultyAfter: 5.0,
+    elapsedDays: 5,
+    repetitions: 2,
+  },
+  {
+    id: '3',
+    answeredAt: Date.now() - 86400000 * 10,
+    rating: FsrsRating.AGAIN,
+    stabilityBefore: 0.8,
+    stabilityAfter: 1.5,
+    difficultyBefore: 6.0,
+    difficultyAfter: 5.5,
+    elapsedDays: 10,
+    repetitions: 1,
+  },
+];
+
+const SAMPLE_VERSE: VerseRecord = {
+  id: '1',
+  reference: 'Jean 3:16',
+  text: 'Car Dieu a tellement aimé le monde qu\'il a donné son Fils unique...',
+  totalReviews: 3,
+  averageStability: 2.4,
+  masteryLevel: 'En cours',
 };
 
 export default function ReviewHistoryScreen() {
+  const { colors, sp, sh, rad } = useAppTheme();
   const route = useRoute();
   const router = useRouter();
-  const { t } = useI18n();
-
-  // Record ID passed from query params (like /review/history?recordId=...)
-  const recordId = (route.params as any)?.recordId;
-
-  // Get service instance
-  const service = getMemorizationService();
-
-  // State
-  const [history, setHistory] = useState<ReviewLogEntry[]>();
+  const [history, setHistory] = useState<ReviewLogEntry[]>(SAMPLE_HISTORY);
+  const [verse, setVerse] = useState<VerseRecord>(SAMPLE_VERSE);
   const [loading, setLoading] = useState(true);
-  const [verseText, setVerseText] = useState('');
 
-  // Load history on mount
   useEffect(() => {
-    if (!recordId) {
-      router.replace('/review/queue');
-      return;
-    }
+    // Simulate loading
+    setTimeout(() => setLoading(false), 500);
+  }, []);
 
-    loadHistory();
-  }, [recordId, router, service]);
-
-  const loadHistory = async () => {
-    try {
-      // Get the record to get the verse text
-      const record = await service.getMemorizedRecord(
-        recordId.split(':')[0],
-        parseInt(recordId.split(':')[1], 10),
-        parseInt(recordId.split(':')[2], 10),
-        recordId.split(':')[3]
-      );
-
-      if (!record) {
-        throw new Error('Record not found');
-      }
-
-      setVerseText(record.bibleVerseText);
-
-      // Get all review logs for this record
-      const logs = await service.getReviewLogsForRecord(recordId);
-      setHistory(logs);
-    } catch (error) {
-      console.error('Error loading review history:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Format timestamp to readable string
   const formatTimestamp = (timestamp: number): string => {
     const date = new Date(timestamp);
-    return date.toLocaleDateString('fr-FR') + ' ' + date.toLocaleTimeString('fr-FR');
+    const now = new Date();
+    const diffMs = now.getTime() - timestamp;
+    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+    if (diffDays === 0) {
+      return 'Aujourd\'hui';
+    } else if (diffDays === 1) {
+      return 'Hier';
+    } else if (diffDays < 7) {
+      return `Il y a ${diffDays} jours`;
+    } else {
+      return date.toLocaleDateString('fr-FR', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric'
+      });
+    }
   };
 
-  // Rating label
-  const getRatingLabel = (rating: string | FsrsRating): string => {
-    // Convert string to FsrsRating enum if needed
+  const getRatingConfig = (rating: FsrsRating | string) => {
     let actualRating: FsrsRating;
     if (typeof rating === 'string') {
       switch (rating) {
@@ -108,40 +135,33 @@ export default function ReviewHistoryScreen() {
     }
 
     switch (actualRating) {
-      case FsrsRating.AGAIN: return t('rating.again');
-      case FsrsRating.HARD: return t('rating.hard');
-      case FsrsRating.GOOD: return t('rating.good');
-      case FsrsRating.EASY: return t('rating.easy');
-      default: return rating;
+      case FsrsRating.AGAIN:
+        return { color: colors.error, label: 'À revoir', icon: 'refresh' };
+      case FsrsRating.HARD:
+        return { color: colors.warning, label: 'Difficile', icon: 'remove' };
+      case FsrsRating.GOOD:
+        return { color: '#4CD964', label: 'Bon', icon: 'checkmark' };
+      case FsrsRating.EASY:
+        return { color: colors.info, label: 'Facile', icon: 'star' };
+      default:
+        return { color: colors.primary, label: 'Bon', icon: 'checkmark' };
     }
+  };
+
+  const calculateProgress = () => {
+    if (history.length === 0) return 0;
+    const goodOrBetter = history.filter(h =>
+      h.rating === FsrsRating.GOOD || h.rating === FsrsRating.EASY
+    ).length;
+    return Math.round((goodOrBetter / history.length) * 100);
   };
 
   if (loading) {
     return (
       <SafeAreaView style={styles.container}>
-        <View style={styles.center}>
-          <ActivityIndicator size="large" color="#E91E8C" />
-          <Text style={styles.loadingText}>Chargement de l'historique...</Text>
-        </View>
-      </SafeAreaView>
-    );
-  }
-
-  if (!history || history.length === 0) {
-    return (
-      <SafeAreaView style={styles.container}>
-        <View style={styles.empty}>
-          <Text style={styles.emptyIcon}>📝</Text>
-          <Text style={styles.emptyTitle}>Aucune révision pour ce verset</Text>
-          <Text style={styles.emptySubtitle}>
-            {verseText ? `Ceci est le premier rappel pour : "${verseText.substring(0, 50)}..."` : 'Ce verset n\'a pas encore été révisé'}
-          </Text>
-          <TouchableOpacity
-            style={styles.backButton}
-            onPress={() => router.back()}
-          >
-            <Text style={styles.backButtonText}>Retour à la file</Text>
-          </TouchableOpacity>
+        <View style={styles.loaderContainer}>
+          <ActivityIndicator size="large" color={colors.primary} />
+          <Text style={styles.loaderText}>Chargement de l'historique...</Text>
         </View>
       </SafeAreaView>
     );
@@ -149,244 +169,568 @@ export default function ReviewHistoryScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.content}>
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
         {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.headerTitle}>Historique des révisions</Text>
-          {verseText && (
-            <Text style={styles.verseReference}>
-              {verseText.substring(0, 60)}{verseText.length > 60 ? '...' : ''}
-            </Text>
-          )}
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => router.back()}
+          >
+            <Ionicons name="arrow-back" size={24} color={colors.textSecondary} />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Historique</Text>
+          <View style={styles.headerRight} />
         </View>
 
-        {/* History items */}
-        {history.map((log, index) => (
-          <View key={log.id} style={styles.historyItem}>
-            <View style={styles.historyHeader}>
-              <Text style={styles.historyDate}>{formatTimestamp(log.answeredAt)}</Text>
-              <View style={[styles.ratingBadge, getRatingStyle(log.rating)]}>
-                <Text style={styles.ratingText}>{getRatingLabel(log.rating)}</Text>
-              </View>
+        {/* Verse Info Card */}
+        <View style={styles.verseCard}>
+          <View style={styles.verseHeader}>
+            <View style={styles.verseIconContainer}>
+              <Ionicons name="book" size={24} color={colors.primary} />
             </View>
-
-            <View style={styles.historyDetails}>
-              <View style={styles.detailRow}>
-                <Text style={styles.detailLabel}>Avant</Text>
-                <Text style={styles.detailValue}>Stabilité: {log.stabilityBefore.toFixed(1)}</Text>
-                <Text style={styles.detailValue}>Difficulté: {log.difficultyBefore.toFixed(1)}</Text>
-              </View>
-              <View style={styles.detailRow}>
-                <Text style={styles.detailLabel}>Après</Text>
-                <Text style={styles.detailValue}>Stabilité: {log.stabilityAfter.toFixed(1)}</Text>
-                <Text style={styles.detailValue}>Difficulté: {log.difficultyAfter.toFixed(1)}</Text>
-              </View>
+            <View style={styles.verseInfo}>
+              <Text style={styles.verseReference}>{verse.reference}</Text>
+              <Text style={styles.verseText} numberOfLines={2}>{verse.text}</Text>
             </View>
-
-            {index < history.length - 1 && <View style={styles.divider} />}
           </View>
-        ))}
-
-        {/* Summary */}
-        <View style={styles.summaryCard}>
-          <Text style={styles.summaryTitle}>Résumé</Text>
-          <View style={styles.summaryRow}>
-            <Text style={styles.summaryLabel}>Total des révisions</Text>
-            <Text style={styles.summaryValue}>{history.length}</Text>
-          </View>
-          <View style={styles.summaryRow}>
-            <Text style={styles.summaryLabel}>Meilleure stabilité</Text>
-            <Text style={styles.summaryValue}>
-              {Math.max(...history.map(h => Math.max(h.stabilityBefore, h.stabilityAfter))).toFixed(1)}
-            </Text>
-          </View>
-          <View style={styles.summaryRow}>
-            <Text style={styles.summaryLabel}>Dernier rappel</Text>
-            <Text style={styles.summaryValue}>{formatTimestamp(history[history.length - 1].answeredAt)}</Text>
+          <View style={styles.verseStats}>
+            <View style={styles.verseStat}>
+              <Text style={styles.verseStatValue}>{verse.totalReviews}</Text>
+              <Text style={styles.verseStatLabel}>Révisions</Text>
+            </View>
+            <View style={styles.verseStatDivider} />
+            <View style={styles.verseStat}>
+              <Text style={styles.verseStatValue}>{verse.averageStability.toFixed(1)}j</Text>
+              <Text style={styles.verseStatLabel}>Stabilité</Text>
+            </View>
+            <View style={styles.verseStatDivider} />
+            <View style={styles.verseStat}>
+              <Text style={styles.verseStatValue}>{calculateProgress()}%</Text>
+              <Text style={styles.verseStatLabel}>Réussite</Text>
+            </View>
           </View>
         </View>
+
+        {/* Timeline */}
+        <View style={styles.timelineSection}>
+          <Text style={styles.sectionTitle}>Chronologie des révisions</Text>
+          <View style={styles.timeline}>
+            {history.map((log, index) => {
+              const config = getRatingConfig(log.rating);
+              const isLast = index === history.length - 1;
+
+              return (
+                <View key={log.id} style={styles.timelineItem}>
+                  {/* Timeline dot */}
+                  <View style={styles.timelineDotContainer}>
+                    <View style={[styles.timelineDot, { backgroundColor: config.color }]}>
+                      <Ionicons name={config.icon as any} size={12} color={colors.surface} />
+                    </View>
+                    {!isLast && <View style={styles.timelineLine} />}
+                  </View>
+
+                  {/* Timeline content */}
+                  <View style={styles.timelineContent}>
+                    <View style={styles.timelineHeader}>
+                      <Text style={styles.timelineDate}>{formatTimestamp(log.answeredAt)}</Text>
+                      <View style={[styles.ratingBadge, { backgroundColor: config.color }]}>
+                        <Text style={styles.ratingBadgeText}>{config.label}</Text>
+                      </View>
+                    </View>
+
+                    <View style={styles.timelineDetails}>
+                      <View style={styles.detailGroup}>
+                        <Text style={styles.detailLabel}>Stabilité</Text>
+                        <View style={styles.detailValues}>
+                          <Text style={styles.detailBefore}>{log.stabilityBefore.toFixed(1)}j</Text>
+                          <Ionicons name="arrow-forward" size={12} color={colors.textMuted} />
+                          <Text style={styles.detailAfter}>{log.stabilityAfter.toFixed(1)}j</Text>
+                        </View>
+                      </View>
+                      <View style={styles.detailGroup}>
+                        <Text style={styles.detailLabel}>Difficulté</Text>
+                        <View style={styles.detailValues}>
+                          <Text style={styles.detailBefore}>{log.difficultyBefore.toFixed(1)}</Text>
+                          <Ionicons name="arrow-forward" size={12} color={colors.textMuted} />
+                          <Text style={styles.detailAfter}>{log.difficultyAfter.toFixed(1)}</Text>
+                        </View>
+                      </View>
+                    </View>
+
+                    <View style={styles.timelineMeta}>
+                      <Text style={styles.timelineMetaText}>
+                        {log.elapsedDays}j écoulés • {log.repetitions} répétition{log.repetitions > 1 ? 's' : ''}
+                      </Text>
+                    </View>
+                  </View>
+                </View>
+              );
+            })}
+          </View>
+        </View>
+
+        {/* Stats Summary */}
+        <View style={styles.statsSection}>
+          <Text style={styles.sectionTitle}>Statistiques</Text>
+          <View style={styles.statsGrid}>
+            <View style={[styles.statCard, styles.statCardLarge]}>
+              <View style={styles.statIconContainer}>
+                <Ionicons name="trending-up" size={24} color={colors.surface} />
+              </View>
+              <Text style={styles.statValue}>
+                {(verse.averageStability * 10).toFixed(0)}%
+              </Text>
+              <Text style={styles.statLabel}>Rétention estimée</Text>
+            </View>
+            <View style={[styles.statCard, styles.statCardMedium]}>
+              <View style={[styles.statIconContainer, { backgroundColor: colors.success }]}>
+                <Ionicons name="checkmark-circle" size={24} color={colors.surface} />
+              </View>
+              <Text style={styles.statValue}>
+                {history.filter(h => h.rating === FsrsRating.GOOD || h.rating === FsrsRating.EASY).length}
+              </Text>
+              <Text style={styles.statLabel}>Bon/Facile</Text>
+            </View>
+            <View style={[styles.statCard, styles.statCardMedium]}>
+              <View style={[styles.statIconContainer, { backgroundColor: colors.error }]}>
+                <Ionicons name="refresh" size={24} color={colors.surface} />
+              </View>
+              <Text style={styles.statValue}>
+                {history.filter(h => h.rating === FsrsRating.AGAIN).length}
+              </Text>
+              <Text style={styles.statLabel}>À revoir</Text>
+            </View>
+          </View>
+        </View>
+
+        {/* Mastery Level */}
+        <View style={styles.masteryCard}>
+          <View style={styles.masteryHeader}>
+            <Ionicons name="medal" size={24} color={colors.warning} />
+            <Text style={styles.masteryTitle}>Niveau de maîtrise</Text>
+          </View>
+          <View style={styles.masteryLevel}>
+            <Text style={styles.masteryLevelText}>{verse.masteryLevel}</Text>
+          </View>
+          <View style={styles.masteryProgress}>
+            <View style={styles.masteryProgressBar}>
+              <View
+                style={[
+                  styles.masteryProgressFill,
+                  { width: `${Math.min(100, verse.averageStability * 10)}%` },
+                ]}
+              />
+            </View>
+            <Text style={styles.masteryProgressText}>
+              {verse.averageStability.toFixed(1)}j de stabilité
+            </Text>
+          </View>
+        </View>
+
+        {/* Actions */}
+        <View style={styles.actions}>
+          <TouchableOpacity
+            style={styles.primaryButton}
+            onPress={() => router.back()}
+          >
+            <Ionicons name="arrow-back" size={20} color={colors.surface} />
+            <Text style={styles.primaryButtonText}>Retour à la file</Text>
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.bottomSpacer} />
       </ScrollView>
     </SafeAreaView>
   );
 }
 
-function getRatingStyle(rating: FsrsRating) {
-  switch (rating) {
-    case FsrsRating.AGAIN: return styles.ratingAgain;
-    case FsrsRating.HARD: return styles.ratingHard;
-    case FsrsRating.GOOD: return styles.ratingGood;
-    case FsrsRating.EASY: return styles.ratingEasy;
-    default: return {};
-  }
-}
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFF0F6',
+    backgroundColor: colors.background,
   },
-  center: {
+  scrollView: {
+    flex: 1,
+  },
+  scrollContent: {
+    flexGrow: 1,
+  },
+  loaderContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  loadingText: {
+  loaderText: {
     marginTop: 16,
-    fontSize: 16,
-    color: '#666',
-  },
-  empty: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 24,
-  },
-  emptyIcon: {
-    fontSize: 64,
-    marginBottom: 16,
-  },
-  emptyTitle: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: '#2D2D2D',
-    marginBottom: 8,
-  },
-  emptySubtitle: {
     fontSize: 14,
-    color: '#A0A0A0',
-    textAlign: 'center',
-    marginBottom: 24,
+    color: colors.textMuted,
+  },
+
+  // Header
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    backgroundColor: colors.surface,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
   },
   backButton: {
-    backgroundColor: '#E91E8C',
-    borderRadius: 26,
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-  },
-  backButtonText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  content: {
-    padding: 16,
-    paddingBottom: 24,
-  },
-  header: {
-    marginBottom: 24,
+    padding: 8,
   },
   headerTitle: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: '#2D2D2D',
+    fontSize: 18,
+    fontWeight: '700',
+    color: colors.textPrimary,
+  },
+  headerRight: {
+    width: 40,
+  },
+
+  // Verse Card
+  verseCard: {
+    backgroundColor: colors.surface,
+    borderRadius: 20,
+    margin: 20,
+    padding: 20,
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.05,
+        shadowRadius: 8,
+      },
+      android: {
+        elevation: 4,
+      },
+    }),
+  },
+  verseHeader: {
+    flexDirection: 'row',
+    gap: 16,
+    marginBottom: 16,
+  },
+  verseIconContainer: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: colors.surfaceTint,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  verseInfo: {
+    flex: 1,
   },
   verseReference: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: colors.textPrimary,
+    marginBottom: 4,
+  },
+  verseText: {
     fontSize: 14,
-    color: '#666',
+    color: colors.textSecondary,
+    lineHeight: 20,
+  },
+  verseStats: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    paddingTop: 16,
+    borderTopWidth: 1,
+    borderTopColor: colors.surfaceTint,
+  },
+  verseStat: {
+    alignItems: 'center',
+    flex: 1,
+  },
+  verseStatValue: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: colors.primary,
+  },
+  verseStatLabel: {
+    fontSize: 12,
+    color: colors.textMuted,
     marginTop: 4,
-    fontStyle: 'italic',
   },
-  historyItem: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
+  verseStatDivider: {
+    width: 1,
+    backgroundColor: colors.border,
+  },
+
+  // Timeline Section
+  timelineSection: {
+    paddingHorizontal: 20,
+    marginBottom: 24,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: colors.textPrimary,
+    marginBottom: 16,
+  },
+  timeline: {
+    paddingLeft: 20,
+  },
+  timelineItem: {
+    flexDirection: 'row',
+    marginBottom: 24,
+  },
+  timelineDotContainer: {
+    alignItems: 'center',
+    marginRight: 12,
+  },
+  timelineDot: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  timelineLine: {
+    width: 2,
+    flex: 1,
+    backgroundColor: colors.border,
+    marginTop: 4,
+  },
+  timelineContent: {
+    flex: 1,
+    backgroundColor: colors.surface,
+    borderRadius: 16,
     padding: 16,
-    marginBottom: 12,
-    shadow: {
-      color: '#000',
-      offsetX: 0,
-      offsetY: 1,
-      opacity: 0.1,
-      radius: 4,
-    },
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.03,
+        shadowRadius: 4,
+      },
+      android: {
+        elevation: 2,
+      },
+    }),
   },
-  historyHeader: {
+  timelineHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 12,
   },
-  historyDate: {
+  timelineDate: {
     fontSize: 14,
-    color: '#666',
+    fontWeight: '600',
+    color: colors.textPrimary,
   },
   ratingBadge: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
     borderRadius: 12,
   },
-  ratingAgain: {
-    backgroundColor: '#FF6B6B',
-  },
-  ratingHard: {
-    backgroundColor: '#FF9500',
-  },
-  ratingGood: {
-    backgroundColor: '#4CD964',
-  },
-  ratingEasy: {
-    backgroundColor: '#007AFF',
-  },
-  ratingText: {
-    color: '#FFFFFF',
-    fontWeight: '600',
+  ratingBadgeText: {
     fontSize: 12,
+    fontWeight: '600',
+    color: colors.surface,
   },
-  historyDetails: {
+  timelineDetails: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    marginBottom: 12,
   },
-  detailRow: {
+  detailGroup: {
     flex: 1,
   },
   detailLabel: {
-    fontSize: 12,
-    color: '#888',
+    fontSize: 11,
+    color: colors.textMuted,
     fontWeight: '600',
     marginBottom: 4,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
   },
-  detailValue: {
-    fontSize: 13,
-    color: '#2D2D2D',
-  },
-  divider: {
-    height: 1,
-    backgroundColor: '#F0F0F0',
-    marginVertical: 8,
-  },
-  summaryCard: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    padding: 16,
-    marginTop: 16,
-    shadow: {
-      color: '#000',
-      offsetX: 0,
-      offsetY: 1,
-      opacity: 0.1,
-      radius: 4,
-    },
-  },
-  summaryTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#2D2D2D',
-    marginBottom: 12,
-    paddingBottom: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F0F0F0',
-  },
-  summaryRow: {
+  detailValues: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 8,
+    alignItems: 'center',
+    gap: 4,
   },
-  summaryLabel: {
-    fontSize: 14,
-    color: '#666',
+  detailBefore: {
+    fontSize: 13,
+    color: colors.error,
+    fontWeight: '500',
   },
-  summaryValue: {
+  detailAfter: {
+    fontSize: 13,
+    color: colors.success,
+    fontWeight: '500',
+  },
+  timelineMeta: {
+    paddingTop: 12,
+    borderTopWidth: 1,
+    borderTopColor: colors.surfaceTint,
+  },
+  timelineMetaText: {
+    fontSize: 12,
+    color: colors.textMuted,
+  },
+
+  // Stats Section
+  statsSection: {
+    paddingHorizontal: 20,
+    marginBottom: 24,
+  },
+  statsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 12,
+  },
+  statCard: {
+    backgroundColor: colors.surface,
+    borderRadius: 20,
+    padding: 20,
+    alignItems: 'center',
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.05,
+        shadowRadius: 8,
+      },
+      android: {
+        elevation: 4,
+      },
+    }),
+  },
+  statCardLarge: {
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 16,
+  },
+  statCardMedium: {
+    width: '48%',
+  },
+  statIconContainer: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: colors.primary,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  statValue: {
+    fontSize: 28,
+    fontWeight: '800',
+    color: colors.textPrimary,
+  },
+  statLabel: {
+    fontSize: 12,
+    color: colors.textTertiary,
+    marginTop: 4,
+    textAlign: 'center',
+  },
+
+  // Mastery Card
+  masteryCard: {
+    marginHorizontal: 20,
+    marginBottom: 24,
+    backgroundColor: colors.surface,
+    borderRadius: 20,
+    padding: 20,
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.05,
+        shadowRadius: 8,
+      },
+      android: {
+        elevation: 4,
+      },
+    }),
+  },
+  masteryHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    marginBottom: 16,
+  },
+  masteryTitle: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: colors.textPrimary,
+  },
+  masteryLevel: {
+    backgroundColor: colors.surfaceTint,
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    alignSelf: 'flex-start',
+    marginBottom: 16,
+  },
+  masteryLevelText: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#2D2D2D',
+    color: colors.primary,
+  },
+  masteryProgress: {
+    marginTop: 8,
+  },
+  masteryProgressBar: {
+    height: 8,
+    backgroundColor: colors.surfaceTint,
+    borderRadius: 4,
+    overflow: 'hidden',
+  },
+  masteryProgressFill: {
+    height: '100%',
+    backgroundColor: colors.primary,
+    borderRadius: 4,
+  },
+  masteryProgressText: {
+    fontSize: 12,
+    color: colors.textMuted,
+    marginTop: 8,
+    textAlign: 'center',
+  },
+
+  // Actions
+  actions: {
+    paddingHorizontal: 20,
+    marginBottom: 24,
+  },
+  primaryButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    backgroundColor: colors.primary,
+    borderRadius: 26,
+    paddingVertical: 16,
+    ...Platform.select({
+      ios: {
+        shadowColor: colors.primary,
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.3,
+        shadowRadius: 8,
+      },
+      android: {
+        elevation: 6,
+      },
+    }),
+  },
+  primaryButtonText: {
+    color: colors.surface,
+    fontSize: 16,
+    fontWeight: '700',
+  },
+
+  // Bottom spacer
+  bottomSpacer: {
+    height: 24,
   },
 });

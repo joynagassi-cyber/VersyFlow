@@ -7,7 +7,7 @@ import { SessionEngine } from './session-engine';
 import { IFsrsEngine, Rating as FsrsRating } from '@/domains/fsrs';
 import { IStorage } from '@/infrastructure/storage/storage-types';
 import { eventBus, DomainEventTypes } from '../index';
-import { MemorizationRecord, ReviewLogEntry, WordPerformance, WordPerformanceSnapshot } from './entities';
+import { MemorizationRecord, ReviewLogEntry, WordPerformance, WordPerformanceSnapshot, MemorizationTarget, MemorizationTargetType, ContentReference } from './entities';
 
 // Mapping from FSRS Rating enum to string representation for logging
 const fsrsRatingToString = (rating: FsrsRating): 'again' | 'hard' | 'good' | 'easy' => {
@@ -26,27 +26,34 @@ export class MemorizationService {
   ) {}
 
   /**
-   * Save a memorized record to storage
+   * Generate storage key prefix for a learner profile
    */
-  async saveMemorizedRecord(record: Omit<MemorizationRecord, 'id'>): Promise<void> {
-    const recordId = `${record.bookId}:${record.chapterNumber}:${record.verseNumber}:${record.translationId}`;
-    const fullRecord: MemorizationRecord = { id: recordId, ...record };
-    await this.storage.set('versyflow:record:' + recordId, JSON.stringify(fullRecord));
+  private profileKeyPrefix(profileId: string): string {
+    return `versyflow:${profileId}:`;
   }
 
   /**
-   * Save a review log entry for a memorization record
+   * Save a memorized record to storage (profile-scoped)
    */
-  async saveReviewLog(logEntry: Omit<ReviewLogEntry, 'id'>): Promise<void> {
-    const logId = crypto.randomUUID();
-    const fullLog: ReviewLogEntry = { id: logId, ...logEntry };
+  async saveMemorizedRecord(record: Omit<MemorizationRecord, 'id'>, profileId: string): Promise<void> {
+    const recordId = `${record.bookId}:${record.chapterNumber}:${record.verseNumber}:${record.translationId}`;
+    const fullRecord: MemorizationRecord = { id: recordId, learnerProfileId: profileId, ...record };
+    await this.storage.set(this.profileKeyPrefix(profileId) + 'record:' + recordId, JSON.stringify(fullRecord));
+  }
 
-    // Store as individual entries with key pattern: versyflow:reviewlog:{recordId}:{timestamp}
-    const recordKey = `versyflow:reviewlog:${fullLog.memorizationRecordId}:${fullLog.answeredAt}`;
+  /**
+   * Save a review log entry for a memorization record (profile-scoped)
+   */
+  async saveReviewLog(logEntry: Omit<ReviewLogEntry, 'id'>, profileId: string): Promise<void> {
+    const logId = crypto.randomUUID();
+    const fullLog: ReviewLogEntry = { id: logId, learnerProfileId: profileId, ...logEntry };
+
+    // Store as individual entries with key pattern: versyflow:{profileId}:reviewlog:{recordId}:{timestamp}
+    const recordKey = this.profileKeyPrefix(profileId) + 'reviewlog:' + fullLog.memorizationRecordId + ':' + fullLog.answeredAt;
     await this.storage.set(recordKey, JSON.stringify(fullLog));
 
     // Also store in an array for easy retrieval - use atomic update pattern
-    const arrayKey = `versyflow:reviewlogs:${fullLog.memorizationRecordId}`;
+    const arrayKey = this.profileKeyPrefix(profileId) + 'reviewlogs:' + fullLog.memorizationRecordId;
 
     // Read-modify-write with retry to handle race conditions
     const MAX_RETRIES = 3;
@@ -80,10 +87,10 @@ export class MemorizationService {
   }
 
   /**
-   * Get all review logs for a memorization record
+   * Get all review logs for a memorization record (profile-scoped)
    */
-  async getReviewLogsForRecord(recordId: string): Promise<ReviewLogEntry[]> {
-    const arrayKey = `versyflow:reviewlogs:${recordId}`;
+  async getReviewLogsForRecord(recordId: string, profileId: string): Promise<ReviewLogEntry[]> {
+    const arrayKey = this.profileKeyPrefix(profileId) + 'reviewlogs:' + recordId;
     const logsStr = await this.storage.get(arrayKey);
     if (logsStr) {
       return JSON.parse(logsStr) as ReviewLogEntry[];
@@ -92,11 +99,12 @@ export class MemorizationService {
   }
 
   /**
-   * Get all review logs across all records (for analytics/history view)
+   * Get all review logs across all records for a profile (profile-scoped)
    */
-  async getAllReviewLogs(): Promise<ReviewLogEntry[]> {
+  async getAllReviewLogs(profileId: string): Promise<ReviewLogEntry[]> {
     const allKeys = await this.storage.getAllKeys();
-    const logKeys = allKeys.filter(key => key.startsWith('versyflow:reviewlog:'));
+    const prefix = this.profileKeyPrefix(profileId);
+    const logKeys = allKeys.filter(key => key.startsWith(prefix + 'reviewlog:'));
 
     const logs: ReviewLogEntry[] = [];
     for (const key of logKeys) {
@@ -109,20 +117,21 @@ export class MemorizationService {
   }
 
   /**
-   * Get a memorized record by its composite key (bookId, chapter, verse, translationId)
+   * Get a memorized record by its composite key (profile-scoped)
    */
-  async getMemorizedRecord(bookId: string, chapter: number, verse: number, translationId: string): Promise<MemorizationRecord | null> {
+  async getMemorizedRecord(bookId: string, chapter: number, verse: number, translationId: string, profileId: string): Promise<MemorizationRecord | null> {
     const recordId = `${bookId}:${chapter}:${verse}:${translationId}`;
-    const recordStr = await this.storage.get('versyflow:record:' + recordId);
+    const recordStr = await this.storage.get(this.profileKeyPrefix(profileId) + 'record:' + recordId);
     return recordStr ? JSON.parse(recordStr) as MemorizationRecord : null;
   }
 
   /**
-   * Get all memorized records from storage
+   * Get all memorized records for a profile (profile-scoped)
    */
-  async getAllMemorized(): Promise<MemorizationRecord[]> {
+  async getAllMemorized(profileId: string): Promise<MemorizationRecord[]> {
     const allKeys = await this.storage.getAllKeys();
-    const recordKeys = allKeys.filter(key => key.startsWith('versyflow:record:'));
+    const prefix = this.profileKeyPrefix(profileId);
+    const recordKeys = allKeys.filter(key => key.startsWith(prefix + 'record:'));
     const records: MemorizationRecord[] = [];
     for (const key of recordKeys) {
       const str = await this.storage.get(key);
@@ -132,11 +141,11 @@ export class MemorizationService {
   }
 
   /**
-   * Get all memorized records that are due for review (nextReviewAt <= now)
+   * Get all memorized records that are due for review (profile-scoped)
    */
-  async getDueRecords(): Promise<MemorizationRecord[]> {
+  async getDueRecords(profileId: string): Promise<MemorizationRecord[]> {
     try {
-      const all = await this.getAllMemorized();
+      const all = await this.getAllMemorized(profileId);
       const now = Date.now();
       return all.filter(r => r.nextReviewAt && r.nextReviewAt <= now && r.status !== 'mastered');
     } catch (error) {
@@ -158,9 +167,11 @@ export class MemorizationService {
     difficultyBefore?: number,
     predictedInterval?: number,
     actualInterval?: number | null,
+    profileId?: string,
   ): Promise<boolean> {
     try {
-      const recordStr = await this.storage.get('versyflow:record:' + recordId);
+      const effectiveProfileId = profileId || record.id.split(':')[0];
+      const recordStr = await this.storage.get(this.profileKeyPrefix(effectiveProfileId) + 'record:' + recordId);
       if (!recordStr) return false;
 
       const record = JSON.parse(recordStr) as MemorizationRecord;
@@ -178,7 +189,7 @@ export class MemorizationService {
       if (wordPerformance) record.wordPerformance = wordPerformance;
 
       await this.storage.set(
-        'versyflow:record:' + recordId,
+        this.profileKeyPrefix(effectiveProfileId) + 'record:' + recordId,
         JSON.stringify(record),
       );
 
@@ -196,7 +207,7 @@ export class MemorizationService {
         // Convert WordPerformance to WordPerformanceSnapshot (empty array for MVP)
         wordPerformance: (wordPerformance as any) || [],
       };
-      await this.saveReviewLog(reviewLog);
+      await this.saveReviewLog(reviewLog, profileId || effectiveProfileId);
 
       // Emit review event
       eventBus.emit({
@@ -223,6 +234,7 @@ export class MemorizationService {
     translationId: string;
     verseText: string;
     referenceDisplay: string;
+    profileId: string;
   }): Promise<{ success: boolean; rating: FsrsRating; nextReviewAt: number }> {
     try {
       // Create session engine
@@ -265,7 +277,7 @@ export class MemorizationService {
         wordPerformance: [],
         favorite: false,
         tags: [],
-      });
+      }, params.profileId);
 
       // Emit domain event
       const recordId = params.bookId + ':' + params.chapterNumber + ':' + params.verseNumber + ':' + params.translationId;
@@ -294,5 +306,100 @@ export class MemorizationService {
         nextReviewAt: Date.now(),
       };
     }
+  }
+
+  /**
+   * Memorize a target (single verse or passage)
+   * Main entry point for the new target-oriented architecture
+   */
+  async memorizeTarget(target: MemorizationTarget, verseText: string, verseTexts?: string[], profileId?: string): Promise<{ success: boolean; rating: FsrsRating; nextReviewAt: number; recordId: string }> {
+    try {
+      // Create session engine with the target text
+      const engine = new SessionEngine(verseText);
+      engine.startPreview();
+
+      // Assume full session completion for service layer
+      const isComplete = engine.isComplete();
+      if (!isComplete) {
+        throw new Error('Session not complete — user must reveal all words');
+      }
+
+      const { rating } = engine.endSession(true);
+
+      // Calculate FSRS state
+      const newFsrsState = await this.fsrsEngine.newState(0);
+      const review = await this.fsrsEngine.review(newFsrsState, rating);
+
+      // Build the record
+      const isPassage = target.type === 'passage';
+      const recordId = this.generateTargetId(target);
+      const record: Omit<MemorizationRecord, 'id'> = {
+        bookId: target.reference.bookId,
+        chapterNumber: target.reference.chapter,
+        verseNumber: target.reference.startVerse,
+        endVerse: target.reference.endVerse,
+        translationId: target.reference.translationId,
+        bibleVerseReference: target.displayReference,
+        bibleVerseText: verseText,
+        verseTexts,
+        status: isComplete ? 'mastered' : 'in-progress',
+        fsrsState: review.state,
+        nextReviewAt: review.due.getTime(),
+        createdAt: Date.now(),
+        lastReviewedAt: null,
+        reviewCount: 0,
+        totalReviewMinutes: 0,
+        wordPerformance: [],
+        favorite: false,
+        tags: [],
+        targetId: recordId,
+        targetType: target.type,
+      };
+
+      await this.saveMemorizedRecord(record, profileId || 'default');
+
+      // Emit target event
+      eventBus.emit({
+        id: crypto.randomUUID(),
+        type: DomainEventTypes.TARGET_MEMORIZED,
+        timestamp: Date.now(),
+        payload: {
+          targetId: recordId,
+          targetType: target.type,
+          rating,
+          stability: review.state.stability,
+          nextReviewAt: review.due.getTime(),
+          verseCount: isPassage ? (target.reference.endVerse! - target.reference.startVerse! + 1) : 1,
+        },
+      });
+
+      return {
+        success: true,
+        rating,
+        nextReviewAt: review.due.getTime(),
+        recordId,
+      };
+    } catch (error) {
+      console.error('[MemorizationService] memorizeTarget failed:', error);
+      return {
+        success: false,
+        rating: FsrsRating.AGAIN,
+        nextReviewAt: Date.now(),
+        recordId: '',
+      };
+    }
+  }
+
+  /**
+   * Generate a stable target ID from a MemorizationTarget
+   * For single verse: uses composite key (backward compat)
+   * For passage: generates UUID
+   */
+  private generateTargetId(target: MemorizationTarget): string {
+    if (target.type === 'single-verse') {
+      return `${target.reference.bookId}:${target.reference.chapter}:${target.reference.startVerse}:${target.reference.translationId}`;
+    }
+    // For passages, use a UUID (stored in target.id)
+    return target.id;
   }
 }

@@ -11,6 +11,7 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from 'react-native';
+import { useAppTheme } from '@/theme/useTheme';
 import { useRouter } from 'expo-router';
 import { useSettingsStore } from '@/store/settings-store';
 
@@ -20,6 +21,7 @@ const TRANSLATIONS = [
 ];
 
 export default function TranslationPickerScreen() {
+  const { colors, sp, sh, rad } = useAppTheme();
   const router = useRouter();
   const { setBibleTranslation, bibleTranslation } = useSettingsStore();
 
@@ -38,9 +40,8 @@ export default function TranslationPickerScreen() {
           ]}
           onPress={() => {
             setBibleTranslation(trans.id);
-            // Mark onboarding as completed and go home
-            useSettingsStore.getState().completeOnboarding();
-            router.replace('/(tabs)/index');
+            // Go to FSRS introduction before completing onboarding
+            router.push('/onboarding/fsrs-introduction');
           }}
         >
           <View style={styles.transInfo}>
@@ -68,25 +69,25 @@ export default function TranslationPickerScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFF0F6',
+    backgroundColor: colors.surfaceTint,
     padding: 16,
   },
   title: {
     fontSize: 24,
     fontWeight: '600',
-    color: '#2D2D2D',
+    color: colors.textPrimary,
     marginBottom: 24,
   },
   card: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.surface,
     borderRadius: 12,
     padding: 20,
     marginBottom: 16,
     ...shadow.md,
   },
   cardSelected: {
-    backgroundColor: '#FFF0F6',
-    borderColor: '#E91E8C',
+    backgroundColor: colors.surfaceTint,
+    borderColor: colors.primary,
     borderWidth: 2,
   },
   transInfo: {
@@ -97,24 +98,24 @@ const styles = StyleSheet.create({
   transName: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#2D2D2D',
+    color: colors.textPrimary,
   },
   transMeta: {
     fontSize: 14,
-    color: '#A0A0A0',
+    color: colors.textMuted,
     marginTop: 4,
   },
   defaultBadge: {
     fontSize: 12,
-    color: '#E91E8C',
+    color: colors.primary,
     marginTop: 8,
-    backgroundColor: '#FFE4EE',
+    backgroundColor: colors.border,
     paddingHorizontal: 12,
     paddingVertical: 4,
     borderRadius: 12,
   },
   continueButton: {
-    backgroundColor: '#E91E8C',
+    backgroundColor: colors.primary,
     borderRadius: 26,
     paddingVertical: 14,
     alignItems: 'center',
@@ -123,7 +124,7 @@ const styles = StyleSheet.create({
   continueText: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#FFFFFF',
+    color: colors.surface,
   },
 });
 

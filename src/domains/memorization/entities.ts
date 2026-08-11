@@ -6,11 +6,46 @@
 import { FsrsState } from '@/domains/fsrs';
 
 // ====================
+// Content Reference
+// ====================
+/**
+ * Stable reference to biblical content.
+ * Represents a range of verses (single verse or passage).
+ */
+export interface ContentReference {
+  bookId: string;
+  chapter: number;
+  startVerse: number;
+  endVerse?: number; // undefined for single verse
+  translationId: string;
+}
+
+/**
+ * Type of memorization target
+ */
+export type MemorizationTargetType = 'single-verse' | 'passage';
+
+/**
+ * MemorizationTarget — What the user wants to memorize
+ * Single verse is a special case of passage (startVerse === endVerse)
+ */
+export interface MemorizationTarget {
+  id: string; // targetId (UUID or hash)
+  type: MemorizationTargetType;
+  reference: ContentReference;
+  displayReference: string; // "Jean 3:16" or "Jean 3:16-18"
+  createdAt: number;
+}
+
+// ====================
 // Memorization Record
 // ====================
 export interface MemorizationRecord {
-  /** Unique ID: bookId:chapter:verse:translationId hashed */
+  /** Unique ID: bookId:chapter:verse:translationId hashed (legacy) or targetId (new) */
   id: string;
+
+  /** Learner Profile ID — scoping memorization data per profile */
+  learnerProfileId: string;
 
   /** Book identifier (gen, exo, joh...) */
   bookId: string;
@@ -18,17 +53,23 @@ export interface MemorizationRecord {
   /** Chapter number */
   chapterNumber: number;
 
-  /** Verse number */
+  /** Verse number (start for passage) */
   verseNumber: number;
+
+  /** End verse for passage (undefined for single verse) */
+  endVerse?: number;
 
   /** Translation ID (lsg, kjv, niv...) */
   translationId: string;
 
-  /** Cached display reference ("Jean 3:16") */
+  /** Cached display reference ("Jean 3:16" or "Jean 3:16-18") */
   bibleVerseReference: string;
 
-  /** Cached verse text from selected translation */
+  /** Cached verse text from selected translation (single verse text or concatenated passage) */
   bibleVerseText: string;
+
+  /** Texts of each verse in the passage (for multi-verse passages) */
+  verseTexts?: string[];
 
   /** Current memorization status */
   status: MemorizationStatus;
@@ -59,6 +100,12 @@ export interface MemorizationRecord {
 
   /** Word-by-word engagement data */
   wordPerformance: WordPerformance[];
+
+  /** Target ID (new field, for backward compat: same as id) */
+  targetId?: string;
+
+  /** Target type (new field) */
+  targetType?: MemorizationTargetType;
 }
 
 // ====================

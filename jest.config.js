@@ -4,7 +4,7 @@
  */
 
 export default {
-  preset: 'jest-expo',
+  // preset: 'jest-expo', // Disabled for node tests - use babel-jest instead
   // setupFilesAfterEnv: ['@testing-library/jest-native/extend-expect'],
   transformIgnorePatterns: [
     'node_modules/(?!((jest-)?react-native|@react-native(-community)?)|' +

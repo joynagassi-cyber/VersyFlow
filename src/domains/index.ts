@@ -15,5 +15,4 @@ export type { FsrsState, FsrsReview, IFsrsEngine } from './fsrs';
 export { calculateMasteryLevel, isMastered, MasteryLevel } from './progress';
 
 // Domain Events (Shared)
-export { eventBus, DomainEventTypes } from '.';
-export type { DomainEvent } from '.';
+export { DomainEventTypes, eventBus, DomainEvent } from './events';

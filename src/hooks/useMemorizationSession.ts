@@ -1,13 +1,14 @@
 /**
  * Hook pour gérer les sessions de méméorisation
  * Fournit le contrôle de la session et l'intégration avec le moteur FSRS
+ * Extension passage: startSessionForTarget() pour support MemorizationTarget
  */
 
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { IFsrsEngine, Rating, FsrsState } from '@/domains/fsrs';
 import { MmkvStorage } from '@/infrastructure/storage';
 import { MemorizationService } from '@/domains/memorization/service';
-import { ExerciseStrategy, DEFAULT_MVP_STRATEGY } from '@/domains/memorization/entities';
+import { ExerciseStrategy, DEFAULT_MVP_STRATEGY, MemorizationTarget, MemorizationTargetType } from '@/domains/memorization/entities';
 import { BibleRepository } from '@/domains/bible/repository';
 import { useSettingsStore } from '@/store/settings-store';
 import { SessionEngine } from '@/domains/memorization/session-engine';
@@ -60,6 +61,7 @@ const initializeService = () => {
 /**
  * Hook personnalisé pour la gestion de session de méméorisation
  * Fournit les méthodes pour démarrer, avancer et terminer une session
+ * Supporte single-verse et passage (multiple versets)
  */
 export function useMemorizationSession() {
   const [sessionState, setSessionState] = useState<any>(null);
@@ -75,6 +77,7 @@ export function useMemorizationSession() {
 
   /**
    * Démarre une nouvelle session de méméorisation pour un verset spécifique
+   * Signature legacy: startSession(bookId, chapter, verse, text, reference)
    */
   const startSession = useCallback((bookId: string, chapter: number, verse: number, text: string, reference: string) => {
     if (!memorizationService) {
@@ -87,7 +90,7 @@ export function useMemorizationSession() {
     // Préparer l'état de la session
     const words = text.split(/\s+/).filter(w => w.length > 0);
     const session = {
-      phase: 'preview',
+      phase: 'preview' as const,
       verseText: text,
       reference,
       bookId,
@@ -101,6 +104,50 @@ export function useMemorizationSession() {
       isComplete: false,
       rating: null as Rating | null,
       nextReviewAt: 0,
+      targetId: undefined,
+      targetType: 'single-verse' as MemorizationTargetType,
+      currentVerseIndex: 0,
+      totalVerses: 1,
+    };
+
+    setSessionState(session);
+    return session;
+  }, []);
+
+  /**
+   * Démarre une session pour un passage (target-based)
+   * Méthode principale pour la Phase 8.4
+   * Accepte un MemorizationTarget et les textes de tous les versets du passage
+   */
+  const startSessionForTarget = useCallback((target: MemorizationTarget, verseTexts: string[]) => {
+    if (!memorizationService) {
+      throw new Error('Service de méméorisation non initialisé');
+    }
+
+    const engine = new SessionEngine(verseTexts[0], DEFAULT_MVP_STRATEGY);
+    engine.initPassage(verseTexts, target.id, target.type);
+    sessionEngine = engine;
+
+    const firstVerseWords = verseTexts[0].split(/\s+/).filter(w => w.length > 0);
+    const session = {
+      phase: 'preview' as const,
+      verseText: verseTexts[0],
+      reference: target.displayReference,
+      bookId: target.reference.bookId,
+      chapter: target.reference.chapter,
+      verse: target.reference.startVerse,
+      translationId: target.reference.translationId,
+      words: firstVerseWords,
+      revealedWords: new Set<number>(),
+      wordsRevealed: 0,
+      startTime: Date.now(),
+      isComplete: false,
+      rating: null as Rating | null,
+      nextReviewAt: 0,
+      targetId: target.id,
+      targetType: target.type,
+      currentVerseIndex: 0,
+      totalVerses: verseTexts.length,
     };
 
     setSessionState(session);
@@ -163,6 +210,55 @@ export function useMemorizationSession() {
       }));
     }
   }, [sessionState]);
+
+  /**
+   * Passe au verset suivant dans un passage
+   * Retourne true si un verset suivant existe
+   */
+  const revealNextVerse = useCallback(() => {
+    if (!sessionEngine || !sessionState) return false;
+
+    const moved = sessionEngine.revealNextVerse();
+    if (moved) {
+      const engine = sessionEngine;
+      setSessionState(prev => ({
+        ...prev,
+        verseText: engine.getState().verseText,
+        words: engine.getState().words,
+        revealedWords: new Set<number>(),
+        wordsRevealed: 0,
+        currentVerseIndex: engine.getCurrentVerseIndex(),
+        totalVerses: engine.getTotalVerses(),
+        phase: 'preview' as const,
+      }));
+      return true;
+    }
+    return false;
+  }, [sessionEngine, sessionState]);
+
+  /**
+   * Revient au verset précédent dans un passage
+   */
+  const revealPrevVerse = useCallback(() => {
+    if (!sessionEngine || !sessionState) return false;
+
+    const moved = sessionEngine.revealPrevVerse();
+    if (moved) {
+      const engine = sessionEngine;
+      setSessionState(prev => ({
+        ...prev,
+        verseText: engine.getState().verseText,
+        words: engine.getState().words,
+        revealedWords: new Set<number>(),
+        wordsRevealed: 0,
+        currentVerseIndex: engine.getCurrentVerseIndex(),
+        totalVerses: engine.getTotalVerses(),
+        phase: 'preview' as const,
+      }));
+      return true;
+    }
+    return false;
+  }, [sessionEngine, sessionState]);
 
   /**
    * Vérifie la réponse de l'utilisateur (mode saisie de texte)
@@ -235,7 +331,7 @@ export function useMemorizationSession() {
   const getService = useCallback(() => memorizationService, []);
 
   /**
-   * Change l'exercice策略 pendant la session
+   * Change l'exercice stratégie pendant la session
    */
   const setStrategy = useCallback((strategy: ExerciseStrategy) => {
     if (!sessionEngine) return;
@@ -247,9 +343,12 @@ export function useMemorizationSession() {
     sessionState,
     isLoaded,
     startSession,
+    startSessionForTarget,
     startRevealing,
     revealNextWord,
     revealWordAt,
+    revealNextVerse,
+    revealPrevVerse,
     verifyAnswer,
     completeSession,
     resetSession,

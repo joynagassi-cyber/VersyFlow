@@ -4,9 +4,11 @@
  */
 
 import { StyleSheet, View, Text, TouchableOpacity, ScrollView } from 'react-native';
+import { useAppTheme } from '@/theme/useTheme';
 import { useRouter } from 'expo-router';
 
 export default function WelcomeScreen() {
+  const { colors, sp, sh, rad } = useAppTheme();
   const router = useRouter();
 
   return (
@@ -22,7 +24,7 @@ export default function WelcomeScreen() {
       <View style={styles.actionRow}>
         <TouchableOpacity
           style={styles.skipButton}
-          onPress={() => router.replace('/(tabs)/index')}
+          onPress={() => router.replace('/(tabs)')}
         >
           <Text style={styles.skipText}>Passer</Text>
         </TouchableOpacity>
@@ -41,7 +43,7 @@ export default function WelcomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFF0F6',
+    backgroundColor: colors.surfaceTint,
   },
   content: {
     flexGrow: 1,
@@ -52,16 +54,16 @@ const styles = StyleSheet.create({
   logo: {
     fontSize: 40,
     fontWeight: '800',
-    color: '#E91E8C',
+    color: colors.primary,
     marginBottom: 8,
   },
   tagline: {
     fontSize: 16,
-    color: '#6E6E6E',
+    color: colors.textTertiary,
     marginBottom: 48,
   },
   carousel: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.surface,
     borderRadius: 16,
     padding: 32,
     marginBottom: 64,
@@ -71,12 +73,12 @@ const styles = StyleSheet.create({
   slideTitle: {
     fontSize: 20,
     fontWeight: '600',
-    color: '#2D2D2D',
+    color: colors.textPrimary,
     textAlign: 'center',
   },
   slideDesc: {
     fontSize: 14,
-    color: '#A0A0A0',
+    color: colors.textMuted,
     textAlign: 'center',
     marginTop: 8,
   },
@@ -93,11 +95,11 @@ const styles = StyleSheet.create({
   },
   skipText: {
     fontSize: 16,
-    color: '#A0A0A0',
+    color: colors.textMuted,
   },
   startButton: {
     flex: 2,
-    backgroundColor: '#E91E8C',
+    backgroundColor: colors.primary,
     borderRadius: 26,
     paddingVertical: 14,
     alignItems: 'center',
@@ -105,7 +107,7 @@ const styles = StyleSheet.create({
   startButtonText: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#FFFFFF',
+    color: colors.surface,
   },
 });
 
