@@ -80,7 +80,7 @@ export default function FamilyJoinScreen() {
             placeholder="FAM-XXXXXX"
             placeholderTextColor={colors.textMuted}
             autoCapitalize="characters"
-            maxLength: {8}
+            maxLength={8}
           />
         </View>
 
