@@ -7,8 +7,10 @@
 
 import { IFsrsEngine } from '@/domains/fsrs';
 import { MemorizationService, MemorizationRecord } from '@/domains/memorization';
+import { IFatigueDetector } from '@/domains/memorization/fatigue-detector';
+import { IStrategyRecommendor } from '@/domains/memorization/strategy-recommendor';
 import { FatigueDetector } from '@/services/fatigue-detector';
-import { StrategyRecommendor } from '@/services/strategy-recommendor';
+import { StrategyRecommendor } from '@/services/strategy-recommender';
 import { ExerciseStrategy } from '@/domains/memorization/entities';
 
 /**
@@ -36,15 +38,19 @@ interface QueueItem extends MemorizationRecord {
  * Profile-scoped: all operations filtered by learnerProfileId
  */
 export class ReviewQueueService {
-  private fatigueDetector = new FatigueDetector();
-  private recommendor = new StrategyRecommendor();
+  private fatigueDetector: IFatigueDetector;
+  private recommendor: IStrategyRecommendor;
   private ruleSet: PriorityRule[] = [];
 
   constructor(
     private memorizationService: MemorizationService,
     private fsrsEngine: IFsrsEngine,
     private profileId: string = 'default',
+    fatigueDetector?: IFatigueDetector,
+    recommendor?: IStrategyRecommendor,
   ) {
+    this.fatigueDetector = fatigueDetector ?? new FatigueDetector();
+    this.recommendor = recommendor ?? new StrategyRecommendor();
     this.ruleSet = this.defaultRules();
   }
 
@@ -91,7 +97,7 @@ export class ReviewQueueService {
       const priorityScore = this.calculatePriorityScore(record, fatigueLevel);
 
       // Get recommended strategy based on current state
-      const recommendation = this.recommendor.recommend(record.id, undefined, fatigueLevel);
+      const recommendation = this.recommendor.recommend({ recordId: record.id, fatigueLevel });
 
       queueItems.push({
         ...record,
@@ -169,8 +175,19 @@ export class ReviewQueueService {
 
   /**
    * Set fatigue level manually (for testing)
+   * Replaces the detector with a stub that returns the given level
    */
   setFatigueLevel(level: number): void {
-    // In a real implementation, this would inject a pre-calculated value
+    this.fatigueDetector = {
+      getFatigueLevel: () => level,
+      recordSlowResponse: () => {},
+      recordManyErrors: () => {},
+      recordAbandonment: () => {},
+      isFatigued: () => level > 0.5,
+      shouldRecommendBreak: () => level > 0.7,
+      calculateFatigueLevel: () => level,
+      getRecommendedAction: () => null,
+      clear: () => {},
+    };
   }
 }
