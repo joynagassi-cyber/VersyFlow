@@ -3,28 +3,21 @@
  * Implements feature #85: Choix automatique de stratégie
  */
 
-import { ExerciseStrategy } from '@/domains/memorization/entities';
+import { ExerciseStrategy, VerificationResult } from '@/domains/memorization/entities';
+import { IFatigueDetector } from '@/domains/memorization/fatigue-detector';
 import { FatigueDetector } from '@/services/fatigue-detector';
+import { IStrategyRecommendor, Recommendation, RecommendationContext } from '@/domains/memorization/strategy-recommendor';
 import { WordFailureTracker } from '@/services/word-failure-tracker';
-import { VerificationResult } from '@/domains/memorization/entities';
 
-export interface Recommendation {
-  strategy: ExerciseStrategy;
-  confidence: number; // 0-1
-  rationale: string;
-}
-
-export interface RecommendationContext {
-  recordId: string;
-  verification?: VerificationResult;
-  fatigueLevel?: number;
-  wordFailures?: Array<{ word: string; failCount: number }>;
-}
-
-export class StrategyRecommendor {
-  private fatigueDetector = new FatigueDetector();
-  private wordFailureTracker = new WordFailureTracker();
+export class StrategyRecommendor implements IStrategyRecommendor {
+  private fatigueDetector: IFatigueDetector;
+  private wordFailureTracker: WordFailureTracker;
   private cache = new Map<string, Recommendation>();
+
+  constructor(fatigueDetector?: IFatigueDetector) {
+    this.fatigueDetector = fatigueDetector ?? new FatigueDetector();
+    this.wordFailureTracker = new WordFailureTracker();
+  }
 
   /**
    * Recommend the best strategy for the current user state
@@ -41,7 +34,9 @@ export class StrategyRecommendor {
   }
 
   private computeRecommendation(context: RecommendationContext): Recommendation {
-    const fatigueLevel = context.fatigueLevel || this.fatigueDetector.getFatigueLevel();
+    const fatigueLevel = context.fatigueLevel !== undefined
+      ? context.fatigueLevel
+      : this.fatigueDetector.getFatigueLevel();
     const verification = context.verification || { score: 0.5, correctWords: [], missingWords: [], extraWords: [], substitutedWords: [] };
     const wordFailures = context.wordFailures || [];
 

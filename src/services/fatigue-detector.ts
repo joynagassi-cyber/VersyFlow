@@ -3,13 +3,15 @@
  * Helps adjust difficulty or suggest breaks
  */
 
+import { IFatigueDetector } from '@/domains/memorization/fatigue-detector';
+
 interface FatigueSignal {
   type: 'slow_response' | 'many_errors' | 'rapid_tapping' | 'abandonment';
   severity: number; // 0-1
   timestamp: number;
 }
 
-export class FatigueDetector {
+export class FatigueDetector implements IFatigueDetector {
   private signals: FatigueSignal[] = [];
   private readonly MAX_SIGNALS = 50;
 
