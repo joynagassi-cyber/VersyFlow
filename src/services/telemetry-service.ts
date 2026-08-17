@@ -1,245 +1,74 @@
 /**
  * Telemetry Service — Collects anonymized learning data (MVP version)
  * Implements CAP-007: Telemetry capability
- * Simple queue-based implementation for storing events locally
+ *
+ * Deep module: small interface (6 methods) → large implementation
+ * Queue-based persistence, fire-and-forget, non-blocking for critical paths
  */
 
-import { IFsrsEngine } from '@/domains/fsrs';
-import { MemorizationService } from '@/domains/memorization/service';
 import { IStorage } from '@/infrastructure/storage/storage-types';
-import { eventBus } from '@/domains';
+import { TelemetryEventType, TelemetryQueueItem, TelemetrySummary, ITelemetry } from '@/domains/telemetry/it telemetry';
+
+/** Maximum queue size before dropping oldest events */
+const MAX_QUEUE_SIZE = 1000;
+
+/** Retention period in days */
+const RETENTION_DAYS = 730;
 
 /**
- * TelemetryEvent — Generic telemetry event structure
+ * TelemetryService — Orchestrates anonymized data collection for AI coaching
+ * All data is anonymized and never contains PII
  */
-interface TelemetryEventBase {
-  eventType: string;
-  timestamp: number;
-  sessionId: string;
-  userId?: string;
-}
-
-/**
- * Simple telemetry event (any payload)
- */
-interface TelemetryEvent extends TelemetryEventBase {
-  payload: Record<string, unknown>;
-}
-
-/**
- * Queue item for persistence
- */
-interface TelemetryQueueItem {
-  id: string;
-  event: TelemetryEvent;
-  queuedAt: number;
-}
-
-/**
- * TelemetryService — Orchestrates data collection for future AI coaching
- * All data is anonymized and never contains PII (Personally Identifiable Information)
- */
-export class TelemetryService {
-  private readonly MAX_QUEUE_SIZE = 1000;
-  private readonly RETENTION_DAYS = 730; // 2 years
+export class TelemetryService implements ITelemetry {
   private queue: TelemetryQueueItem[] = [];
   private sessionId: string;
   private userId?: string;
 
-  constructor(
-    private storage: IStorage,
-    private memorizationService: MemorizationService,
-    private fsrsEngine: IFsrsEngine,
-  ) {
+  constructor(private storage: IStorage) {
     this.sessionId = this.generateSessionId();
     this.loadQueue();
   }
 
   /**
-   * Generate a random session ID (anonymous, not linked to user)
+   * Record a telemetry event — single entry point for all event types
    */
-  private generateSessionId(): string {
-    return 'sess_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now();
-  }
+  record(eventType: TelemetryEventType, payload: Record<string, unknown>): void {
+    if (this.queue.length >= MAX_QUEUE_SIZE) return;
 
-  /**
-   * Set an optional anonymous user ID for cross-session tracking
-   */
-  setUserId(userId: string): void {
-    this.userId = userId;
-  }
-
-  /**
-   * Record a generic telemetry event
-   */
-  record(eventType: string, payload: Record<string, unknown>): void {
-    const event: TelemetryEvent = {
-      eventType,
-      timestamp: Date.now(),
-      sessionId: this.sessionId,
-      userId: this.userId,
-      payload,
-    };
-    this.enqueue(event);
-  }
-
-  /**
-   * Record an exercise completion event
-   */
-  recordExerciseCompleted(payload: Record<string, unknown>): void {
-    this.record('exercise.completed', payload);
-  }
-
-  /**
-   * Record an exercise abandonment event
-   */
-  recordExerciseAbandoned(payload: Record<string, unknown>): void {
-    this.record('exercise.abandoned', payload);
-  }
-
-  /**
-   * Record a review completion event
-   */
-  recordReviewCompleted(payload: Record<string, unknown>): void {
-    this.record('review.completed', payload);
-  }
-
-  /**
-   * Record a memory session completion event
-   */
-  recordMemorySessionCompleted(payload: Record<string, unknown>): void {
-    this.record('memory.session.completed', payload);
-  }
-
-  /**
-   * Record a passage start event (Phase 8.7)
-   */
-  recordPassageStarted(payload: Record<string, unknown>): void {
-    this.record('passage.started', payload);
-  }
-
-  /**
-   * Record a passage segment (verse) completion event (Phase 8.7)
-   */
-  recordPassageSegmentCompleted(payload: Record<string, unknown>): void {
-    this.record('passage.segment.completed', payload);
-  }
-
-  /**
-   * Record an error occurrence
-   */
-  recordError(payload: Record<string, unknown>): void {
-    this.record('error.occurred', payload);
-  }
-
-  /**
-   * Record a feature access event
-   */
-  recordFeatureAccessed(payload: Record<string, unknown>): void {
-    this.record('feature.accessed', payload);
-  }
-
-  /**
-   * Enqueue a telemetry event for local storage
-   */
-  private enqueue(event: TelemetryEvent): void {
-    // Skip if queue is full (safety cap)
-    if (this.queue.length >= this.MAX_QUEUE_SIZE) {
-      return;
-    }
-
-    const queueItem: TelemetryQueueItem = {
+    this.queue.push({
       id: crypto.randomUUID(),
-      event,
+      event: {
+        eventType,
+        timestamp: Date.now(),
+        sessionId: this.sessionId,
+        userId: this.userId,
+        payload,
+      },
       queuedAt: Date.now(),
-    };
+      sent: false,
+    });
 
-    this.queue.push(queueItem);
+    // Fire and forget — non-blocking for critical paths
     this.saveQueue();
   }
 
   /**
-   * Save the telemetry queue to persistent storage
-   */
-  private saveQueue(): void {
-    try {
-      const queueKey = 'versyflow:telemetry:queue';
-      // Fire and forget - don't await in constructor or critical paths
-      this.storage.set(queueKey, JSON.stringify(this.queue)).catch(() => {});
-    } catch (error) {
-      console.error('[TelemetryService] Failed to save queue:', error);
-    }
-  }
-
-  /**
-   * Load the telemetry queue from persistent storage
-   * Fire and forget - constructor cannot be async
-   */
-  private loadQueue(): void {
-    try {
-      const queueKey = 'versyflow:telemetry:queue';
-      // Fire and forget
-      this.storage.get(queueKey).then(str => {
-        if (str) {
-          this.queue = JSON.parse(str) as TelemetryQueueItem[];
-        }
-      }).catch(() => {
-        // Silently fail
-      });
-    } catch (error) {
-      console.error('[TelemetryService] Failed to load queue:', error);
-      this.queue = [];
-    }
-  }
-
-  /**
-   * Send all queued events to the server (placeholder for future implementation)
-   * In MVP, this is a no-op (events are stored locally for now)
+   * Flush queued events to remote storage
+   * In MVP: trims old events and persists locally
    */
   async flush(): Promise<void> {
     const now = Date.now();
-    this.queue = this.queue.filter(item => {
-      // Remove old events after retention period
-      const age = now - item.queuedAt;
-      const isTooOld = age > this.RETENTION_DAYS * 86400000;
-      return !isTooOld;
-    });
-    this.saveQueue();
+    this.queue = this.queue.filter(item => now - item.queuedAt <= RETENTION_DAYS * 86400000);
+    await this.saveQueue();
   }
 
   /**
-   * Get all queued events (for debugging/testing)
+   * Get aggregated summary for analytics dashboards
    */
-  getQueue(): TelemetryQueueItem[] {
-    return [...this.queue];
-  }
-
-  /**
-   * Clear the telemetry queue (for reset progress action)
-   */
-  clearQueue(): void {
-    this.queue = [];
-    try {
-      this.storage.delete('versyflow:telemetry:queue').catch(() => {});
-    } catch (error) {
-      console.error('[TelemetryService] Failed to clear queue:', error);
-    }
-  }
-
-  /**
-   * Generate a summary of collected data (for analytics dashboard)
-   */
-  generateSummary(): {
-    totalEvents: number;
-    eventsByType: Record<string, number>;
-    lastActivity: number | null;
-    queueSize: number;
-  } {
+  getSummary(): TelemetrySummary {
     const eventsByType: Record<string, number> = {};
-
     for (const item of this.queue) {
-      const eventType = item.event.eventType;
-      eventsByType[eventType] = (eventsByType[eventType] || 0) + 1;
+      eventsByType[item.event.eventType] = (eventsByType[item.event.eventType] || 0) + 1;
     }
 
     const lastActivity = this.queue.length > 0
@@ -252,5 +81,59 @@ export class TelemetryService {
       lastActivity,
       queueSize: this.queue.length,
     };
+  }
+
+  /**
+   * Clear all queued events
+   */
+  clear(): void {
+    this.queue = [];
+    try {
+      this.storage.delete('versyflow:telemetry:queue').catch(() => {});
+    } catch {
+      // Ignore — telemetry is non-critical
+    }
+  }
+
+  /**
+   * Get current queue (for debugging/testing)
+   */
+  getQueue(): TelemetryQueueItem[] {
+    return [...this.queue];
+  }
+
+  /**
+   * Set anonymous user ID
+   */
+  setUserId(userId: string): void {
+    this.userId = userId;
+  }
+
+  // ==================== Private ====================
+
+  private generateSessionId(): string {
+    return 'sess_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now();
+  }
+
+  private saveQueue(): void {
+    try {
+      this.storage.set('versyflow:telemetry:queue', JSON.stringify(this.queue)).catch(() => {});
+    } catch {
+      // Silently fail
+    }
+  }
+
+  private loadQueue(): void {
+    try {
+      this.storage.get('versyflow:telemetry:queue').then(str => {
+        if (str) {
+          this.queue = JSON.parse(str) as TelemetryQueueItem[];
+        }
+      }).catch(() => {
+        this.queue = [];
+      });
+    } catch {
+      this.queue = [];
+    }
   }
 }

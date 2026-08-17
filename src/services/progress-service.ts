@@ -10,6 +10,7 @@ import { MemorizationService } from '@/domains/memorization/service';
 import { MemorizationRecord, ReviewLogEntry, MasteryLevel } from '@/domains/memorization/entities';
 import { eventBus, DomainEventTypes } from '@/domains';
 import { TelemetryService } from './telemetry-service';
+import { ITelemetry } from '@/domains/telemetry/it telemetry';
 
 export interface ProgressStats {
   /** Total number of memorized verses */
@@ -49,7 +50,7 @@ export class ProgressService {
   constructor(
     private memorizationService: MemorizationService,
     private fsrsEngine: IFsrsEngine,
-    private telemetryService?: TelemetryService, // Optional telemetry
+    private telemetryService?: ITelemetry, // Optional telemetry
     private profileId: string = 'default',
   ) {}
 
@@ -58,7 +59,7 @@ export class ProgressService {
    */
   private recordExerciseCompleted(payload: Record<string, unknown>): void {
     if (this.telemetryService) {
-      this.telemetryService.recordExerciseCompleted(payload);
+      this.telemetryService.record("exercise.completed", payload);
     }
   }
 
@@ -67,7 +68,7 @@ export class ProgressService {
    */
   private recordExerciseAbandoned(payload: Record<string, unknown>): void {
     if (this.telemetryService) {
-      this.telemetryService.recordExerciseAbandoned(payload);
+      this.telemetryService.record("exercise.abandoned", payload);
     }
   }
 
@@ -76,7 +77,7 @@ export class ProgressService {
    */
   private recordReviewCompleted(payload: Record<string, unknown>): void {
     if (this.telemetryService) {
-      this.telemetryService.recordReviewCompleted(payload);
+      this.telemetryService.record("review.completed", payload);
     }
   }
 
@@ -85,7 +86,7 @@ export class ProgressService {
    */
   private recordMemorySessionCompleted(payload: Record<string, unknown>): void {
     if (this.telemetryService) {
-      this.telemetryService.recordMemorySessionCompleted(payload);
+      this.telemetryService.record("memory.session.completed", payload);
     }
   }
 
@@ -94,7 +95,7 @@ export class ProgressService {
    */
   private recordError(payload: Record<string, unknown>): void {
     if (this.telemetryService) {
-      this.telemetryService.recordError(payload);
+      this.telemetryService.record("error.occurred", payload);
     }
   }
 
@@ -103,7 +104,7 @@ export class ProgressService {
    */
   private recordFeatureAccessed(payload: Record<string, unknown>): void {
     if (this.telemetryService) {
-      this.telemetryService.recordFeatureAccessed(payload);
+      this.telemetryService.record("feature.accessed", payload);
     }
   }
 
@@ -459,6 +460,3 @@ export class ProgressService {
     }
   }
 }
-
-// Export for use in services and UI
-export type { ProgressStats, Milestone };
