@@ -36,7 +36,7 @@ export class CloudMemorizationService {
     const recordId = `${record.bookId}:${record.chapterNumber}:${record.verseNumber}:${record.translationId}`;
     const fullRecord: MemorizationRecord = { id: recordId, ...record, updatedAt: Date.now() };
     await this.storageAdapter.saveRecord(fullRecord);
-    if (this.syncService.autoSync && this.syncService.isConnected) {
+    if (this.syncService.autoSyncEnabled && this.syncService.connected) {
       await this.syncService.syncRecordsToCloud();
     }
   }
@@ -91,7 +91,7 @@ export class CloudMemorizationService {
       };
       await this.storageAdapter.saveReviewLog({ id: crypto.randomUUID(), ...reviewLog });
 
-      if (this.syncService.autoSync && this.syncService.isConnected) {
+      if (this.syncService.autoSyncEnabled && this.syncService.connected) {
         await this.syncService.syncLogsToCloud();
       }
       return true;
@@ -116,7 +116,7 @@ export class CloudMemorizationService {
 
   async saveReviewLog(logEntry: Omit<ReviewLogEntry, 'id'>): Promise<void> {
     await this.storageAdapter.saveReviewLog({ id: crypto.randomUUID(), ...logEntry });
-    if (this.syncService.autoSync && this.syncService.isConnected) {
+    if (this.syncService.autoSyncEnabled && this.syncService.connected) {
       await this.syncService.syncLogsToCloud();
     }
   }
