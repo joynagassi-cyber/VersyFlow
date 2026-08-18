@@ -30,7 +30,9 @@ export const useAnalyticsCapability = create<AnalyticsState>((set, get) => ({
         stats: {
           totalVerses: 0,
           masteredVerses: 0,
+          inProgressVerses: 0,
           streakCount: 0,
+          longestStreak: 0,
           dueForReview: 0,
           weeklyTrend: { thisWeek: 0, lastWeek: 0, changePercentage: 0 },
           avgSessionDurationMin: 0,
