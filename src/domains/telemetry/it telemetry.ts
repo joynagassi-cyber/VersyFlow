@@ -5,9 +5,10 @@
  * Small interface: 6 methods. All events flow through a single record() method.
  */
 
-import { TelemetryQueueItem } from './entities';
+import { TelemetryQueueItem, EventType } from './entities';
 import { TelemetrySummary } from './entities';
 
+// Reuse EventType from entities for compatibility
 export type TelemetryEventType =
   | 'exercise.completed'
   | 'exercise.abandoned'
@@ -24,7 +25,7 @@ export interface ITelemetry {
   /**
    * Record a telemetry event — single entry point for all event types
    */
-  record(eventType: TelemetryEventType, payload: Record<string, unknown>): void;
+  record(eventType: EventType, payload: Record<string, unknown>): void;
 
   /**
    * Flush queued events (async, may be no-op in MVP)
@@ -51,3 +52,6 @@ export interface ITelemetry {
    */
   setUserId(userId: string): void;
 }
+
+// Re-exports for convenience
+export type { TelemetryQueueItem, TelemetrySummary } from './entities';
