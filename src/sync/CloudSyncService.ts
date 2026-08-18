@@ -6,7 +6,8 @@
  * It supports both automatic and manual sync modes.
  */
 
-import { MemorizationRecord, ReviewLogEntry, WordPerformance, FsrsState } from '@/domains/memorization/entities';
+import { MemorizationRecord, ReviewLogEntry, WordPerformance } from '@/domains/memorization/entities';
+import { FsrsState } from '@/domains/fsrs';
 import { IStorage } from '@/infrastructure/storage/storage-types';
 import { createClient } from '@insforge/sdk';
 import { logger } from '@/infrastructure/logging/logger';
