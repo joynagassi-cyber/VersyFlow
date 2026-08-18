@@ -7,7 +7,7 @@
  */
 
 import { MemorizationRecord, ReviewLogEntry, WordPerformance, FsrsState } from '@/domains/memorization/entities';
-import { MmkvStorage } from '@/infrastructure/storage';
+import { IStorage } from '@/infrastructure/storage/storage-types';
 import { createClient } from '@insforge/sdk';
 import { logger } from '@/infrastructure/logging/logger';
 import NetInfo from '@react-native-community/netinfo';
@@ -49,15 +49,18 @@ interface CloudReviewLogEntry {
 
 export class CloudSyncService {
   private client: any;
-  private storage: MmkvStorage;
+  private storage: IStorage;
   private autoSync: boolean = true;
   private syncQueue: { type: 'records' | 'logs'; operation: 'upload' | 'download' }[] = [];
   private isConnected: boolean = false;
   private connectRetryTimer: number | null = null;
 
-  constructor(autoSync = true) {
+  constructor(
+    storage: IStorage,
+    autoSync = true,
+  ) {
+    this.storage = storage;
     this.autoSync = autoSync;
-    this.storage = new MmkvStorage();
 
     // Initialize InsForge client from environment variables
     this.client = createClient({
