@@ -7,7 +7,8 @@
  */
 
 import { IStorage } from '@/infrastructure/storage/storage-types';
-import { TelemetryEventType, TelemetryQueueItem, TelemetrySummary, ITelemetry } from '@/domains/telemetry/it telemetry';
+import { TelemetryQueueItem, TelemetrySummary } from '@/domains/telemetry/entities';
+import { ITelemetry } from '@/domains/telemetry/it telemetry';
 
 /** Maximum queue size before dropping oldest events */
 const MAX_QUEUE_SIZE = 1000;
@@ -32,7 +33,7 @@ export class TelemetryService implements ITelemetry {
   /**
    * Record a telemetry event — single entry point for all event types
    */
-  record(eventType: TelemetryEventType, payload: Record<string, unknown>): void {
+  record(eventType: string, payload: Record<string, unknown>): void {
     if (this.queue.length >= MAX_QUEUE_SIZE) return;
 
     this.queue.push({
@@ -43,7 +44,7 @@ export class TelemetryService implements ITelemetry {
         sessionId: this.sessionId,
         userId: this.userId,
         payload,
-      },
+      } as any,
       queuedAt: Date.now(),
       sent: false,
     });
