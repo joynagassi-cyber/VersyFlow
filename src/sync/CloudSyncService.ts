@@ -53,6 +53,12 @@ export class CloudSyncService {
   private autoSync: boolean = true;
   private syncQueue: { type: 'records' | 'logs'; operation: 'upload' | 'download' }[] = [];
   private isConnected: boolean = false;
+
+  /** Expose connection state for consumers */
+  get connected(): boolean { return this.isConnected; }
+
+  /** Expose auto-sync state for consumers */
+  get autoSyncEnabled(): boolean { return this.autoSync; }
   private connectRetryTimer: number | null = null;
 
   constructor(
