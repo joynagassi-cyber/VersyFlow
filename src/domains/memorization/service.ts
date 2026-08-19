@@ -4,26 +4,23 @@
  */
 
 import { SessionEngine } from './session-engine';
+import { MemorizationStorageAdapter } from './storage-adapter';
+import { fsrsRatingToString } from './entities';
 import { IFsrsEngine, Rating as FsrsRating } from '@/domains/fsrs';
 import { IStorage } from '@/infrastructure/storage/storage-types';
 import { eventBus, DomainEventTypes } from '../index';
-import { MemorizationRecord, ReviewLogEntry, WordPerformance, WordPerformanceSnapshot, MemorizationTarget, MemorizationTargetType, ContentReference } from './entities';
-
-// Mapping from FSRS Rating enum to string representation for logging
-const fsrsRatingToString = (rating: FsrsRating): 'again' | 'hard' | 'good' | 'easy' => {
-  switch (rating) {
-    case FsrsRating.AGAIN: return 'again';
-    case FsrsRating.HARD: return 'hard';
-    case FsrsRating.GOOD: return 'good';
-    case FsrsRating.EASY: return 'easy';
-  }
-};
+import { MemorizationRecord, ReviewLogEntry, WordPerformance, MemorizationTarget, MemorizationTargetType, ContentReference } from './entities';
 
 export class MemorizationService {
+  private storageAdapter: MemorizationStorageAdapter;
+
   constructor(
-    private storage: IStorage,
+    storage: IStorage,
     private fsrsEngine: IFsrsEngine,
-  ) {}
+    private profileId: string = 'default',
+  ) {
+    this.storageAdapter = new MemorizationStorageAdapter(storage, `versyflow:${profileId}:`);
+  }
 
   /**
    * Generate storage key prefix for a learner profile
@@ -35,123 +32,57 @@ export class MemorizationService {
   /**
    * Save a memorized record to storage (profile-scoped)
    */
-  async saveMemorizedRecord(record: Omit<MemorizationRecord, 'id'>, profileId: string): Promise<void> {
+  async saveMemorizedRecord(record: Omit<MemorizationRecord, 'id'>, profileId?: string): Promise<void> {
+    const effectiveId = profileId || this.profileId;
     const recordId = `${record.bookId}:${record.chapterNumber}:${record.verseNumber}:${record.translationId}`;
-    const fullRecord: MemorizationRecord = { id: recordId, learnerProfileId: profileId, ...record };
-    await this.storage.set(this.profileKeyPrefix(profileId) + 'record:' + recordId, JSON.stringify(fullRecord));
+    const fullRecord: MemorizationRecord = { id: recordId, learnerProfileId: effectiveId, ...record };
+    await this.storageAdapter.saveRecord(fullRecord);
   }
 
   /**
    * Save a review log entry for a memorization record (profile-scoped)
    */
-  async saveReviewLog(logEntry: Omit<ReviewLogEntry, 'id'>, profileId: string): Promise<void> {
+  async saveReviewLog(logEntry: Omit<ReviewLogEntry, 'id'>, profileId?: string): Promise<void> {
+    const effectiveId = profileId || this.profileId;
     const logId = crypto.randomUUID();
-    const fullLog: ReviewLogEntry = { id: logId, learnerProfileId: profileId, ...logEntry };
-
-    // Store as individual entries with key pattern: versyflow:{profileId}:reviewlog:{recordId}:{timestamp}
-    const recordKey = this.profileKeyPrefix(profileId) + 'reviewlog:' + fullLog.memorizationRecordId + ':' + fullLog.answeredAt;
-    await this.storage.set(recordKey, JSON.stringify(fullLog));
-
-    // Also store in an array for easy retrieval - use atomic update pattern
-    const arrayKey = this.profileKeyPrefix(profileId) + 'reviewlogs:' + fullLog.memorizationRecordId;
-
-    // Read-modify-write with retry to handle race conditions
-    const MAX_RETRIES = 3;
-    let retries = 0;
-
-    while (retries < MAX_RETRIES) {
-      try {
-        const existingLogsStr = await this.storage.get(arrayKey);
-        const existingLogs = existingLogsStr ? JSON.parse(existingLogsStr) as ReviewLogEntry[] : [];
-
-        // Check if this log already exists (prevent duplicates)
-        const exists = existingLogs.some(log => log.id === fullLog.id);
-        if (!exists) {
-          existingLogs.push(fullLog);
-        }
-
-        await this.storage.set(arrayKey, JSON.stringify(existingLogs));
-        return; // Success
-
-      } catch (error) {
-        retries++;
-        if (retries >= MAX_RETRIES) {
-          // Re-throw on last retry
-          console.error('[MemorizationService] saveReviewLog failed after multiple attempts:', error);
-          throw error;
-        }
-        // Brief pause before retry
-        await new Promise(resolve => setTimeout(resolve, 100 * retries));
-      }
-    }
+    const fullLog: ReviewLogEntry = { id: logId, learnerProfileId: effectiveId, ...logEntry };
+    await this.storageAdapter.saveReviewLog(fullLog);
   }
 
   /**
    * Get all review logs for a memorization record (profile-scoped)
    */
-  async getReviewLogsForRecord(recordId: string, profileId: string): Promise<ReviewLogEntry[]> {
-    const arrayKey = this.profileKeyPrefix(profileId) + 'reviewlogs:' + recordId;
-    const logsStr = await this.storage.get(arrayKey);
-    if (logsStr) {
-      return JSON.parse(logsStr) as ReviewLogEntry[];
-    }
-    return [];
+  async getReviewLogsForRecord(recordId: string, profileId?: string): Promise<ReviewLogEntry[]> {
+    return this.storageAdapter.getReviewLogs(recordId);
   }
 
   /**
    * Get all review logs across all records for a profile (profile-scoped)
    */
-  async getAllReviewLogs(profileId: string): Promise<ReviewLogEntry[]> {
-    const allKeys = await this.storage.getAllKeys();
-    const prefix = this.profileKeyPrefix(profileId);
-    const logKeys = allKeys.filter(key => key.startsWith(prefix + 'reviewlog:'));
-
-    const logs: ReviewLogEntry[] = [];
-    for (const key of logKeys) {
-      const str = await this.storage.get(key);
-      if (str) logs.push(JSON.parse(str) as ReviewLogEntry);
-    }
-
-    // Sort by timestamp (answeredAt) descending
-    return logs.sort((a, b) => b.answeredAt - a.answeredAt);
+  async getAllReviewLogs(profileId?: string): Promise<ReviewLogEntry[]> {
+    return this.storageAdapter.getAllReviewLogs();
   }
 
   /**
    * Get a memorized record by its composite key (profile-scoped)
    */
-  async getMemorizedRecord(bookId: string, chapter: number, verse: number, translationId: string, profileId: string): Promise<MemorizationRecord | null> {
+  async getMemorizedRecord(bookId: string, chapter: number, verse: number, translationId: string, profileId?: string): Promise<MemorizationRecord | null> {
     const recordId = `${bookId}:${chapter}:${verse}:${translationId}`;
-    const recordStr = await this.storage.get(this.profileKeyPrefix(profileId) + 'record:' + recordId);
-    return recordStr ? JSON.parse(recordStr) as MemorizationRecord : null;
+    return this.storageAdapter.getRecord(recordId);
   }
 
   /**
    * Get all memorized records for a profile (profile-scoped)
    */
-  async getAllMemorized(profileId: string): Promise<MemorizationRecord[]> {
-    const allKeys = await this.storage.getAllKeys();
-    const prefix = this.profileKeyPrefix(profileId);
-    const recordKeys = allKeys.filter(key => key.startsWith(prefix + 'record:'));
-    const records: MemorizationRecord[] = [];
-    for (const key of recordKeys) {
-      const str = await this.storage.get(key);
-      if (str) records.push(JSON.parse(str) as MemorizationRecord);
-    }
-    return records;
+  async getAllMemorized(profileId?: string): Promise<MemorizationRecord[]> {
+    return this.storageAdapter.getAllRecords();
   }
 
   /**
    * Get all memorized records that are due for review (profile-scoped)
    */
-  async getDueRecords(profileId: string): Promise<MemorizationRecord[]> {
-    try {
-      const all = await this.getAllMemorized(profileId);
-      const now = Date.now();
-      return all.filter(r => r.nextReviewAt && r.nextReviewAt <= now && r.status !== 'mastered');
-    } catch (error) {
-      console.error('[MemorizationService] getDueRecords failed:', error);
-      return [];
-    }
+  async getDueRecords(profileId?: string): Promise<MemorizationRecord[]> {
+    return this.storageAdapter.getDueRecords();
   }
 
   /**
@@ -170,11 +101,11 @@ export class MemorizationService {
     profileId?: string,
   ): Promise<boolean> {
     try {
-      const effectiveProfileId = profileId || record.id.split(':')[0];
-      const recordStr = await this.storage.get(this.profileKeyPrefix(effectiveProfileId) + 'record:' + recordId);
+      const effectiveProfileId = profileId || this.profileId;
+      const recordStr = await this.storageAdapter.getRecord(recordId);
       if (!recordStr) return false;
 
-      const record = JSON.parse(recordStr) as MemorizationRecord;
+      const record = recordStr;
 
       // Capture state before update
       const stabilityBeforeValue = stabilityBefore ?? record.fsrsState.stability;
@@ -188,12 +119,9 @@ export class MemorizationService {
       record.reviewCount = (record.reviewCount || 0) + 1;
       if (wordPerformance) record.wordPerformance = wordPerformance;
 
-      await this.storage.set(
-        this.profileKeyPrefix(effectiveProfileId) + 'record:' + recordId,
-        JSON.stringify(record),
-      );
+      await this.storageAdapter.saveRecord(record);
 
-      // Create and save review log entry - convert Rating enum to string for logging
+      // Create and save review log entry
       const reviewLog: Omit<ReviewLogEntry, 'id'> = {
         memorizationRecordId: recordId,
         answeredAt: Date.now(),
@@ -204,10 +132,9 @@ export class MemorizationService {
         stabilityAfter: newFsrsState.stability,
         difficultyBefore: difficultyBeforeValue,
         difficultyAfter: newFsrsState.difficulty,
-        // Convert WordPerformance to WordPerformanceSnapshot (empty array for MVP)
         wordPerformance: (wordPerformance as any) || [],
       };
-      await this.saveReviewLog(reviewLog, profileId || effectiveProfileId);
+      await this.saveReviewLog(reviewLog, effectiveProfileId);
 
       // Emit review event
       eventBus.emit({
@@ -237,29 +164,15 @@ export class MemorizationService {
     profileId: string;
   }): Promise<{ success: boolean; rating: FsrsRating; nextReviewAt: number }> {
     try {
-      // Create session engine
       const engine = new SessionEngine(params.verseText);
-
-      // Start preview phase
       engine.startPreview();
-
-      // In UI, user would reveal words through interaction
-      // Here we assume all words are revealed (for full session completion)
-
-      // Verify completion
       const isComplete = engine.isComplete();
-      if (!isComplete) {
-        throw new Error('Session not complete — user must reveal all words');
-      }
+      if (!isComplete) throw new Error('Session not complete — user must reveal all words');
 
-      // End session and get rating (default to GOOD if complete)
       const { rating } = engine.endSession(true);
-
-      // Calculate next review using FSRS
       const newFsrsState = await this.fsrsEngine.newState(0);
       const review = await this.fsrsEngine.review(newFsrsState, rating);
 
-      // Save the memorized record using the new persistence method
       await this.saveMemorizedRecord({
         bookId: params.bookId,
         chapterNumber: params.chapterNumber,
@@ -279,32 +192,18 @@ export class MemorizationService {
         tags: [],
       }, params.profileId);
 
-      // Emit domain event
-      const recordId = params.bookId + ':' + params.chapterNumber + ':' + params.verseNumber + ':' + params.translationId;
+      const recordId = `${params.bookId}:${params.chapterNumber}:${params.verseNumber}:${params.translationId}`;
       eventBus.emit({
         id: crypto.randomUUID(),
         type: DomainEventTypes.VERSE_MEMORIZED,
         timestamp: Date.now(),
-        payload: {
-          recordId,
-          rating,
-          stability: review.state.stability,
-          nextReviewAt: review.due.getTime(),
-        },
+        payload: { recordId, rating, stability: review.state.stability, nextReviewAt: review.due.getTime() },
       });
 
-      return {
-        success: true,
-        rating,
-        nextReviewAt: review.due.getTime(),
-      };
+      return { success: true, rating, nextReviewAt: review.due.getTime() };
     } catch (error) {
       console.error('[MemorizationService] Memorize failed:', error);
-      return {
-        success: false,
-        rating: FsrsRating.AGAIN,
-        nextReviewAt: Date.now(),
-      };
+      return { success: false, rating: FsrsRating.AGAIN, nextReviewAt: Date.now() };
     }
   }
 
@@ -314,23 +213,15 @@ export class MemorizationService {
    */
   async memorizeTarget(target: MemorizationTarget, verseText: string, verseTexts?: string[], profileId?: string): Promise<{ success: boolean; rating: FsrsRating; nextReviewAt: number; recordId: string }> {
     try {
-      // Create session engine with the target text
       const engine = new SessionEngine(verseText);
       engine.startPreview();
-
-      // Assume full session completion for service layer
       const isComplete = engine.isComplete();
-      if (!isComplete) {
-        throw new Error('Session not complete — user must reveal all words');
-      }
+      if (!isComplete) throw new Error('Session not complete — user must reveal all words');
 
       const { rating } = engine.endSession(true);
-
-      // Calculate FSRS state
       const newFsrsState = await this.fsrsEngine.newState(0);
       const review = await this.fsrsEngine.review(newFsrsState, rating);
 
-      // Build the record
       const isPassage = target.type === 'passage';
       const recordId = this.generateTargetId(target);
       const record: Omit<MemorizationRecord, 'id'> = {
@@ -356,9 +247,8 @@ export class MemorizationService {
         targetType: target.type,
       };
 
-      await this.saveMemorizedRecord(record, profileId || 'default');
+      await this.saveMemorizedRecord(record, profileId);
 
-      // Emit target event
       eventBus.emit({
         id: crypto.randomUUID(),
         type: DomainEventTypes.TARGET_MEMORIZED,
@@ -373,33 +263,20 @@ export class MemorizationService {
         },
       });
 
-      return {
-        success: true,
-        rating,
-        nextReviewAt: review.due.getTime(),
-        recordId,
-      };
+      return { success: true, rating, nextReviewAt: review.due.getTime(), recordId };
     } catch (error) {
       console.error('[MemorizationService] memorizeTarget failed:', error);
-      return {
-        success: false,
-        rating: FsrsRating.AGAIN,
-        nextReviewAt: Date.now(),
-        recordId: '',
-      };
+      return { success: false, rating: FsrsRating.AGAIN, nextReviewAt: Date.now(), recordId: '' };
     }
   }
 
   /**
    * Generate a stable target ID from a MemorizationTarget
-   * For single verse: uses composite key (backward compat)
-   * For passage: generates UUID
    */
   private generateTargetId(target: MemorizationTarget): string {
     if (target.type === 'single-verse') {
       return `${target.reference.bookId}:${target.reference.chapter}:${target.reference.startVerse}:${target.reference.translationId}`;
     }
-    // For passages, use a UUID (stored in target.id)
     return target.id;
   }
 }

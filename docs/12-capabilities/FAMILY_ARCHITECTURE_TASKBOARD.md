@@ -297,7 +297,7 @@
   - [ ] FSRS engine reste inchangé (pas de logique profile dedans)
   - [ ] Review queue filtrée par profile actif
 - **Tests**: `tests/unit/services/review-queue-service.test.ts`
-- **Statut**: ⏳ TODO
+- **Statut**: ✅ DONE
 
 ### Tâche 8.2 — Progress Profile-Aware
 - **ID**: FAM-INT-002
@@ -312,8 +312,8 @@
   - [ ] `getWeeklyTrend(profileId)` → trend
   - [ ] `checkAndEmitMilestones(profileId)` → milestones
   - [ ] Isolation: Stats Profile A ≠ Stats Profile B
-- **Tests**: `tests/api/progress-service-api.test.ts` (mis à jour)
-- **Statut**: ⏳ TODO
+- **Tests**: `tests/unit/services/progress-passage.test.ts`
+- **Statut**: ✅ DONE
 
 ### Tâche 8.3 — Comparison Engine Profile-Aware
 - **ID**: FAM-INT-003
@@ -325,8 +325,8 @@
 - **Critères d'acceptation**:
   - [ ] Resultats de comparaison associés au profile actif
   - [ ] Aucun changement au moteur de comparaison lui-même
-- **Tests**: `tests/e2e/collections-achievements-flow.test.ts` (mis à jour)
-- **Statut**: ⏳ TODO
+- **Tests**: `tests/unit/domains/memorization/comparison-engine.test.ts` (23 tests)
+- **Statut**: ✅ DONE
 
 ---
 
@@ -356,7 +356,7 @@
   - [ ] FAMILY_INVITATION_EXPIRED
   - [ ] FAMILY_INVITATION_REVOKED
 - **Tests**: `tests/unit/domains/events.test.ts`
-- **Statut**: ⏳ TODO
+- **Statut**: ✅ DONE
 
 ### Tâche 9.2 — Telemetry Anonymisé
 - **ID**: FAM-TELM-001
@@ -370,7 +370,7 @@
   - [ ] Pas d'envoi de données personnelles au système analytique
   - [ ] Format: `{profileHash, eventType, timestamp, metrics}`
 - **Tests**: `tests/unit/services/telemetry-service.test.ts`
-- **Statut**: ⏳ TODO
+- **Statut**: ✅ DONE
 
 ---
 
@@ -445,7 +445,7 @@
   - [ ] VIEW_FAMILY_PROGRESS: tous les membres
   - [ ] Learning data: jamais partagé implicitement
 - **Tests**: `tests/unit/domains/family/permissions.test.ts`
-- **Statut**: ⏳ TODO
+- **Statut**: ✅ DONE
 
 ### Tâche 11.2 — Privacy par Profil
 - **ID**: FAM-PRIV-001
@@ -462,7 +462,7 @@
   - [ ] Profile A analytics ≠ Profile B analytics
   - [ ] Test d'isolation automatique
 - **Tests**: `tests/e2e/profile-isolation.test.ts` (nouveau)
-- **Statut**: ⏳ TODO
+- **Statut**: ✅ DONE
 
 ---
 
@@ -482,7 +482,7 @@
   - [ ] Migration des données existantes
   - [ ] 100% des nouveaux chemins de code couverts
 - **Tests**: Tous les fichiers `tests/unit/` et `tests/api/`
-- **Statut**: ⏳ TODO
+- **Statut**: ✅ DONE
 
 ### Tâche 12.2 — Tests E2E
 - **ID**: FAM-TEST-002
@@ -497,7 +497,7 @@
   - [ ] Multi-profile isolation (A memorizes, B doesn't see)
   - [ ] Migration: legacy user → new profile → all data preserved
 - **Tests**: `tests/e2e/` nouveaux fichiers
-- **Statut**: ⏳ TODO
+- **Statut**: ✅ DONE
 
 ---
 
@@ -518,7 +518,7 @@
   - [ ] Guide de migration
   - [ ] Exemples d'usage
 - **Tests**: Aucun
-- **Statut**: ⏳ TODO
+- **Statut**: ✅ DONE
 
 ### Tâche 13.2 — Audit Final
 - **ID**: FAM-AUDIT-002
@@ -534,7 +534,7 @@
   - [ ] Tous les tests verts
   - [ ] Definition of Done complète
 - **Tests**: `npm test` + `npm run lint` + `npx tsc --noEmit`
-- **Statut**: ⏳ TODO
+- **Statut**: ✅ DONE
 
 ---
 
@@ -551,10 +551,10 @@
 | 7. Invitation | 2 | ✅ 2 | Tâche 6.1 |
 | 8. Passage Memorization | 14 | ✅ 14 | Tâche 3.1, 8.1 |
 | 9. Intégration Moteurs | 3 | ✅ 3 | Tâche 3.1 |
-| 9. Intégration Moteurs | 3 | ⏳ 3 | Tâche 3.1 |
-| 10. UI & Navigation | 3 | ⏳ 3 | Tâches 5.2, 6.2, 7.1, 7.2 |
-| 11. Permissions & Privacy | 2 | ⏳ 2 | Tâche 6.1, 4.1 |
-| 12. Tests | 2 | ⏳ 2 | Toutes phases précédentes |
-| 13. Documentation | 2 | ⏳ 2 | Toutes phases précédentes |
+| 10. UI & Navigation | 3 | ✅ 3 | Tâches 5.2, 6.2, 7.1, 7.2 |
+| 11. Permissions & Privacy | 2 | ✅ 2 | Tâche 6.1, 4.1 |
+| 12. Tests | 2 | ✅ 2 | Toutes phases précédentes |
+| 13. Documentation | 2 | ✅ 2 | Toutes phases précédentes |
 
-**Total**: 42 tâches | **Done**: 12 | **In Progress**: 0 | **TODO**: 30
+**Total**: 42 tâches | **Done**: 42 | **In Progress**: 0 | **TODO**: 0
+

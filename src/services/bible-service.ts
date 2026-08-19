@@ -48,7 +48,11 @@ class VerseNotFoundError extends Error {
  * Service pour accéder aux données de la Bible.
  */
 export class BibleService {
-  private repository = BibleRepository.getInstance();
+  private repository: BibleRepository;
+
+  constructor(repository?: BibleRepository) {
+    this.repository = repository ?? BibleRepository.getInstance();
+  }
 
   /**
  * Initialise le service en chargeant les données de la Bible.

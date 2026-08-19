@@ -8,6 +8,9 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import { MmkvStorage } from '@/infrastructure/storage';
 
+// Shared MmkvStorage instance — one handle per store lifecycle
+
+
 // Storage keys for settings
 const STORAGE_KEYS = {
   UI_LANGUAGE: 'versyflow:ui:language',
@@ -18,15 +21,12 @@ const STORAGE_KEYS = {
 // Custom storage adapter for MMKV persist middleware
 const mmkvStorage = {
   async getItem(key: string): Promise<string | null> {
-    const storage = new MmkvStorage();
     return await storage.get(key);
   },
   async setItem(key: string, value: string): Promise<void> {
-    const storage = new MmkvStorage();
     await storage.set(key, value);
   },
   async removeItem(key: string): Promise<void> {
-    const storage = new MmkvStorage();
     await storage.delete(key);
   },
 };
@@ -111,7 +111,7 @@ export const useSettingsStore = create<SettingsState>(
 
 // Load initial values from storage on app start
 export async function initializeSettingsStore(): Promise<void> {
-  const storage = new MmkvStorage();
+  
 
   try {
     const savedLang = await storage.get(STORAGE_KEYS.UI_LANGUAGE);

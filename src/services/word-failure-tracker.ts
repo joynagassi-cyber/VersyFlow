@@ -3,16 +3,16 @@
  * Helps identify which words the user consistently forgets
  */
 
-import { WordPerformance, WordPerformanceSnapshot } from '@/domains/memorization/entities';
+import { IWordFailureTracker } from '@/domains/memorization/tracker';
 
-interface WordFailure {
+export interface WordFailure {
   word: string;
   failCount: number;
   lastFailedAt: number;
   position: number; // Position in the verse
 }
 
-export class WordFailureTracker {
+export class WordFailureTracker implements IWordFailureTracker {
   private failures: Map<string, WordFailure> = new Map(); // word -> failure record
 
   /**

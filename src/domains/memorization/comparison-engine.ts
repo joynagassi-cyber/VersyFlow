@@ -75,8 +75,12 @@ export class ComparisonEngine {
   }
 
   /**
-   * Align expected vs provided words using simplified approach
-   * Detects: matches, missing words, extra words, substitutions, and transpositions
+   * Align expected vs provided words using position-based matching
+   * - "correct": expected[i] === provided[i] (case-insensitive match)
+   * - "missing": expected word not found at expected position, and not in provided
+   * - "substituted": expected[i] !== provided[i] but word exists elsewhere in provided
+   * - "extra": provided word not found in expected at all
+   * - "transpositions": adjacent words swapped
    */
   private alignWords(expected: string[], provided: string[]): WordAlignment {
     const alignment: WordAlignment = {
@@ -87,42 +91,50 @@ export class ComparisonEngine {
       transpositions: [],
     };
 
-    const expectedSet = new Set(expected);
-    const providedSet = new Set(provided);
+    const expectedLower = expected.map(w => w.toLowerCase());
+    const providedLower = provided.map(w => w.toLowerCase());
+    const providedSet = new Set(providedLower);
+    const expectedSet = new Set(expectedLower);
 
-    // First pass: detect direct matches and classify mismatches
-    for (let i = 0; i < expected.length; i++) {
-      if (i < provided.length && expected[i] === provided[i]) {
-        // Direct match
-        alignment.correct.push({ position: i, word: expected[i] });
-      } else if (!providedSet.has(expected[i])) {
-        // Word is missing from user input
-        alignment.missing.push({ position: i, word: expected[i] });
-      } else {
-        // Potential substitution
-        // Check if it's a transposition (swapped adjacent words)
-        if (
-          i > 0 &&
-          i - 1 < provided.length &&
-          provided[i - 1] === expected[i] &&
-          provided[i] === expected[i - 1]
-        ) {
-          alignment.transpositions.push({ first: i - 1, second: i });
-        } else {
-          // Substitution
-          const providedWord = provided[i];
-          alignment.substituted.push({
-            position: i,
-            expected: expected[i],
-            got: providedWord || '',
-          });
-        }
+    // Detect transpositions (adjacent swapped words)
+    for (let i = 0; i < Math.min(expectedLower.length, providedLower.length) - 1; i++) {
+      if (
+        expectedLower[i] === providedLower[i + 1] &&
+        expectedLower[i + 1] === providedLower[i]
+      ) {
+        alignment.transpositions.push({ first: i, second: i + 1 });
       }
     }
 
-    // Handle extra words in provided text (beyond expected length)
-    for (let i = Math.min(expected.length, provided.length); i < provided.length; i++) {
-      alignment.extra.push({ position: i, word: provided[i] });
+    // Positional alignment
+    for (let i = 0; i < expectedLower.length; i++) {
+      const expWord = expectedLower[i];
+      const provWord = i < providedLower.length ? providedLower[i] : null;
+
+      if (i < providedLower.length && expWord === provWord) {
+        // Direct positional match
+        alignment.correct.push({ position: i, word: expected[i] });
+      } else if (!providedSet.has(expWord)) {
+        // Word not in provided at all → missing
+        alignment.missing.push({ position: i, word: expected[i] });
+      } else if (i < providedLower.length) {
+        // Word exists elsewhere in provided but not at this position → substitution
+        alignment.substituted.push({
+          position: i,
+          expected: expected[i],
+          got: provided[i] || '',
+        });
+      } else {
+        // No corresponding position in provided
+        alignment.missing.push({ position: i, word: expected[i] });
+      }
+    }
+
+    // Extra words: in provided but not in expected
+    for (let i = 0; i < providedLower.length; i++) {
+      if (!expectedSet.has(providedLower[i])) {
+        alignment.extra.push({ position: i, word: provided[i] });
+      }
     }
 
     return alignment;

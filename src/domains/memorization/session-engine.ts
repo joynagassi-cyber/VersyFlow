@@ -6,8 +6,9 @@
 
 import { SessionState, SessionPhase, VerificationResult, DEFAULT_MVP_STRATEGY, ExerciseStrategy, MaskingConfig, getMaskingConfigForStability, MemorizationTargetType } from './entities';
 import { ComparisonEngine } from './comparison-engine';
-import { Rating } from '@/domains/fsrs';
+import { IWordFailureTracker } from './tracker';
 import { WordFailureTracker } from '@/services/word-failure-tracker';
+import { Rating } from '@/domains/fsrs';
 
 /**
  * SessionEngine: manages the complete lifecycle of a memorization session.
@@ -18,13 +19,17 @@ export class SessionEngine {
   private state: SessionState;
   private strategy: ExerciseStrategy;
   private maskingConfig: MaskingConfig;
-  private wordFailureTracker: WordFailureTracker;
+  private wordFailureTracker: IWordFailureTracker;
   private targetId?: string;
   private targetType?: MemorizationTargetType;
   private currentVerseIndex: number = 0;
   private passageTexts?: string[];
 
-  constructor(verseText: string, initialStrategy?: ExerciseStrategy) {
+  constructor(
+    verseText: string,
+    initialStrategy?: ExerciseStrategy,
+    wordFailureTracker?: IWordFailureTracker,
+  ) {
     this.state = {
       phase: 'idle',
       verseText,
@@ -42,7 +47,7 @@ export class SessionEngine {
       preservedWords: [],
       maskingOrder: 'progressive',
     };
-    this.wordFailureTracker = new WordFailureTracker();
+    this.wordFailureTracker = wordFailureTracker ?? new WordFailureTracker();
   }
 
   /**
