@@ -6,8 +6,9 @@
  * It supports both automatic and manual sync modes.
  */
 
-import { MemorizationRecord, ReviewLogEntry, WordPerformance, FsrsState } from '@/domains/memorization/entities';
-import { MmkvStorage } from '@/infrastructure/storage';
+import { MemorizationRecord, ReviewLogEntry, WordPerformance } from '@/domains/memorization/entities';
+import { FsrsState } from '@/domains/fsrs';
+import { IStorage } from '@/infrastructure/storage/storage-types';
 import { createClient } from '@insforge/sdk';
 import { logger } from '@/infrastructure/logging/logger';
 import NetInfo from '@react-native-community/netinfo';
@@ -49,15 +50,24 @@ interface CloudReviewLogEntry {
 
 export class CloudSyncService {
   private client: any;
-  private storage: MmkvStorage;
+  private storage: IStorage;
   private autoSync: boolean = true;
   private syncQueue: { type: 'records' | 'logs'; operation: 'upload' | 'download' }[] = [];
   private isConnected: boolean = false;
+
+  /** Expose connection state for consumers */
+  get connected(): boolean { return this.isConnected; }
+
+  /** Expose auto-sync state for consumers */
+  get autoSyncEnabled(): boolean { return this.autoSync; }
   private connectRetryTimer: number | null = null;
 
-  constructor(autoSync = true) {
+  constructor(
+    storage: IStorage,
+    autoSync = true,
+  ) {
+    this.storage = storage;
     this.autoSync = autoSync;
-    this.storage = new MmkvStorage();
 
     // Initialize InsForge client from environment variables
     this.client = createClient({

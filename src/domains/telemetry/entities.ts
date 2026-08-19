@@ -289,3 +289,13 @@ export interface TelemetryQueueItem {
   queuedAt: number;
   sent: boolean;
 }
+
+/**
+ * Aggregated telemetry summary for analytics dashboards
+ */
+export interface TelemetrySummary {
+  totalEvents: number;
+  eventsByType: Record<string, number>;
+  lastActivity: number | null;
+  queueSize: number;
+}

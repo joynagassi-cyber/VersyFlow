@@ -4,7 +4,8 @@
 
 export {
   SessionEngine,
-} from './session-engine';
+  MemorizationService,
+} from './service';
 export {
   DEFAULT_MVP_STRATEGY,
   MEMORIZATION_STATUS_ORDER,
@@ -33,5 +34,10 @@ export type {
   WordPerformance,
   WordPerformanceSnapshot,
 } from './entities';
+export type { IWordFailureTracker } from './tracker';
+export type { WordFailure } from '@/services/word-failure-tracker';
+export type { MemorizationStorageAdapter } from './storage-adapter';
+export type { IFatigueDetector } from './fatigue-detector';
+export type { IStrategyRecommendor, Recommendation, RecommendationContext } from './strategy-recommendor';
 export { IFsrsEngine, Rating } from '../fsrs/engine';
 export type { IFsrsEngine } from '../fsrs/engine';

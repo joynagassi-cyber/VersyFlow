@@ -2,76 +2,46 @@
  * Hook pour gérer les sessions de méméorisation
  * Fournit le contrôle de la session et l'intégration avec le moteur FSRS
  * Extension passage: startSessionForTarget() pour support MemorizationTarget
+ *
+ * Dépendances injectées via `deps` paramètre (defaults: MmkvStorage + fsrs-factory).
+ * Testable en injectant des mocks: useMemorizationSession({ storage: mockStorage, fsrsEngine: mockFsrs })
  */
 
 import { useState, useCallback, useEffect, useRef } from 'react';
-import { IFsrsEngine, Rating, FsrsState } from '@/domains/fsrs';
-import { MmkvStorage } from '@/infrastructure/storage';
+import { IFsrsEngine, Rating } from '@/domains/fsrs';
+import { getFsrsEngine } from '@/services/fsrs-factory';
+import { IStorage } from '@/infrastructure/storage/storage-types';
 import { MemorizationService } from '@/domains/memorization/service';
 import { ExerciseStrategy, DEFAULT_MVP_STRATEGY, MemorizationTarget, MemorizationTargetType } from '@/domains/memorization/entities';
-import { BibleRepository } from '@/domains/bible/repository';
 import { useSettingsStore } from '@/store/settings-store';
 import { SessionEngine } from '@/domains/memorization/session-engine';
 
-// Singleton pour le service de méméorisation
-let memorizationService: MemorizationService | null = null;
-let fsrsEngine: IFsrsEngine | null = null;
-let sessionEngine: SessionEngine | null = null;
-
 /**
- * Initialise le moteur FSRS (fallback SM-2 pour MVP)
+ * Dépendances injectables pour le hook
  */
-const initFsrsEngine = (): IFsrsEngine => {
-  if (!fsrsEngine) {
-    // Pour le MVP, utilise le fallback SM-2 (pas de WASM requis)
-    fsrsEngine = {
-      async newState(repetitions: number) {
-        return { state: { stability: 2.5, repetitions, recallProbability: 0.7 }, due: new Date() };
-      },
-      async review(state: any, rating: Rating) {
-        // Simplification: augmentation simple de stabilité selon le rating
-        let multiplier = 1;
-        if (rating === 'easy') multiplier = 1.5;
-        else if (rating === 'good') multiplier = 1.2;
-        else if (rating === 'hard') multiplier = 0.9;
-        else multiplier = 0.5; // again
-
-        return {
-          state: { ...state, stability: state.stability * multiplier },
-          due: new Date(Date.now() + 86400000), // 1 day par défaut
-        };
-      },
-    };
-  }
-  return fsrsEngine;
-};
-
-/**
- * Initialise le service de méméorisation avec stockage et moteur FSRS
- */
-const initializeService = () => {
-  if (!memorizationService) {
-    const storage = new MmkvStorage();
-    const engine = initFsrsEngine();
-    memorizationService = new MemorizationService(storage, engine);
-  }
-  return memorizationService;
-};
+export interface MemorizationSessionDeps {
+  storage?: IStorage;
+  fsrsEngine?: IFsrsEngine;
+}
 
 /**
  * Hook personnalisé pour la gestion de session de méméorisation
  * Fournit les méthodes pour démarrer, avancer et terminer une session
  * Supporte single-verse et passage (multiple versets)
  */
-export function useMemorizationSession() {
+export function useMemorizationSession(deps?: MemorizationSessionDeps) {
   const [sessionState, setSessionState] = useState<any>(null);
   const [isLoaded, setIsLoaded] = useState(false);
+
+  // useRef pour le service et le session engine — lié au cycle de vie du hook, pas singleton module-level
   const serviceRef = useRef<MemorizationService | null>(null);
+  const sessionEngineRef = useRef<SessionEngine | null>(null);
 
   // Initialiser le service au montage
   useEffect(() => {
-    const service = initializeService();
-    serviceRef.current = service;
+    const storage = deps?.storage;
+    const fsrsEngine = deps?.fsrsEngine ?? getFsrsEngine();
+    serviceRef.current = new MemorizationService(storage!, fsrsEngine);
     setIsLoaded(true);
   }, []);
 
@@ -80,14 +50,9 @@ export function useMemorizationSession() {
    * Signature legacy: startSession(bookId, chapter, verse, text, reference)
    */
   const startSession = useCallback((bookId: string, chapter: number, verse: number, text: string, reference: string) => {
-    if (!memorizationService) {
-      throw new Error('Service de méméorisation non initialisé');
-    }
+    const engine = new SessionEngine(text, DEFAULT_MVP_STRATEGY);
+    sessionEngineRef.current = engine;
 
-    // Créer l'engine de session avec la stratégie par défaut
-    sessionEngine = new SessionEngine(text, DEFAULT_MVP_STRATEGY);
-
-    // Préparer l'état de la session
     const words = text.split(/\s+/).filter(w => w.length > 0);
     const session = {
       phase: 'preview' as const,
@@ -120,13 +85,9 @@ export function useMemorizationSession() {
    * Accepte un MemorizationTarget et les textes de tous les versets du passage
    */
   const startSessionForTarget = useCallback((target: MemorizationTarget, verseTexts: string[]) => {
-    if (!memorizationService) {
-      throw new Error('Service de méméorisation non initialisé');
-    }
-
     const engine = new SessionEngine(verseTexts[0], DEFAULT_MVP_STRATEGY);
     engine.initPassage(verseTexts, target.id, target.type);
-    sessionEngine = engine;
+    sessionEngineRef.current = engine;
 
     const firstVerseWords = verseTexts[0].split(/\s+/).filter(w => w.length > 0);
     const session = {
@@ -159,7 +120,7 @@ export function useMemorizationSession() {
    */
   const startRevealing = useCallback(() => {
     if (sessionState && sessionState.phase === 'preview') {
-      setSessionState(prev => ({ ...prev, phase: 'revealing' }));
+      setSessionState((prev: any) => ({ ...prev, phase: 'revealing' }));
     }
   }, [sessionState]);
 
@@ -183,7 +144,7 @@ export function useMemorizationSession() {
 
     if (nextIndex !== -1) {
       revealed.add(nextIndex);
-      setSessionState(prev => ({
+      setSessionState((prev: any) => ({
         ...prev,
         revealedWords: revealed,
         wordsRevealed: revealed.size,
@@ -203,7 +164,7 @@ export function useMemorizationSession() {
     const revealed = new Set(sessionState.revealedWords);
     if (!revealed.has(index)) {
       revealed.add(index);
-      setSessionState(prev => ({
+      setSessionState((prev: any) => ({
         ...prev,
         revealedWords: revealed,
         wordsRevealed: revealed.size,
@@ -216,12 +177,12 @@ export function useMemorizationSession() {
    * Retourne true si un verset suivant existe
    */
   const revealNextVerse = useCallback(() => {
-    if (!sessionEngine || !sessionState) return false;
+    const engine = sessionEngineRef.current;
+    if (!engine || !sessionState) return false;
 
-    const moved = sessionEngine.revealNextVerse();
+    const moved = engine.revealNextVerse();
     if (moved) {
-      const engine = sessionEngine;
-      setSessionState(prev => ({
+      setSessionState((prev: any) => ({
         ...prev,
         verseText: engine.getState().verseText,
         words: engine.getState().words,
@@ -234,18 +195,18 @@ export function useMemorizationSession() {
       return true;
     }
     return false;
-  }, [sessionEngine, sessionState]);
+  }, [sessionState]);
 
   /**
    * Revient au verset précédent dans un passage
    */
   const revealPrevVerse = useCallback(() => {
-    if (!sessionEngine || !sessionState) return false;
+    const engine = sessionEngineRef.current;
+    if (!engine || !sessionState) return false;
 
-    const moved = sessionEngine.revealPrevVerse();
+    const moved = engine.revealPrevVerse();
     if (moved) {
-      const engine = sessionEngine;
-      setSessionState(prev => ({
+      setSessionState((prev: any) => ({
         ...prev,
         verseText: engine.getState().verseText,
         words: engine.getState().words,
@@ -258,35 +219,39 @@ export function useMemorizationSession() {
       return true;
     }
     return false;
-  }, [sessionEngine, sessionState]);
+  }, [sessionState]);
 
   /**
    * Vérifie la réponse de l'utilisateur (mode saisie de texte)
+   * Réutilise le sessionEngine existant pour la comparaison
    */
   const verifyAnswer = useCallback((userInput: string) => {
     if (!sessionState) return null;
-    // Utiliser le SessionEngine pour comparer la réponse
-    const session = new SessionEngine(sessionState.verseText, DEFAULT_MVP_STRATEGY);
-    session.startPreview();
-    // Révéler tous les mots pour que le moteur considère que la session est prête
-    sessionState.revealedWords.forEach(index => {
-      session.revealWordAt(index);
+
+    const engine = sessionEngineRef.current;
+    if (!engine) return null;
+
+    // Restaurer le state de révélation dans l'engine existant
+    engine.startPreview();
+    Array.from(sessionState.revealedWords as Set<number>).forEach((index: number) => {
+      engine.revealWordAt(index);
     });
-    return session.verifyAnswer(userInput);
+
+    return engine.verifyAnswer(userInput);
   }, [sessionState]);
 
   /**
    * Termine la session et enregistre le rating dans le service
    */
   const completeSession = useCallback(async (rating: Rating) => {
-    if (!sessionState || !memorizationService) return null;
+    const service = serviceRef.current;
+    if (!sessionState || !service) return null;
 
-    const service = memorizationService;
     const isComplete = sessionState.revealedWords.size >= sessionState.words.length;
 
-    if (!isComplete && rating !== 'again') {
+    if (!isComplete && rating !== Rating.AGAIN) {
       console.warn('Session pas complète, rating forcé à AGAIN');
-      rating = 'again';
+      rating = Rating.AGAIN;
     }
 
     // Dans une version complète, appellerait service.memorizeVerse()
@@ -299,8 +264,7 @@ export function useMemorizationSession() {
     };
 
     setSessionState(completedState);
-
-    return { ...completedState, service };
+    return completedState;
   }, [sessionState]);
 
   /**
@@ -308,7 +272,7 @@ export function useMemorizationSession() {
    */
   const resetSession = useCallback(() => {
     if (!sessionState) return;
-    setSessionState(prev => ({
+    setSessionState((prev: any) => ({
       ...prev,
       phase: 'preview',
       revealedWords: new Set<number>(),
@@ -322,22 +286,18 @@ export function useMemorizationSession() {
    * Abandonne la session
    */
   const abandonSession = useCallback(() => {
-    setSessionState(prev => ({ ...prev, phase: 'abandoned' }));
+    setSessionState((prev: any) => ({ ...prev, phase: 'abandoned' }));
   }, []);
-
-  /**
-   * Récupère l'instance du service (pour accès direct si nécessaire)
-   */
-  const getService = useCallback(() => memorizationService, []);
 
   /**
    * Change l'exercice stratégie pendant la session
    */
   const setStrategy = useCallback((strategy: ExerciseStrategy) => {
-    if (!sessionEngine) return;
-    sessionEngine.setStrategy(strategy);
+    const engine = sessionEngineRef.current;
+    if (!engine) return;
+    engine.setStrategy(strategy);
     resetSession();
-  }, [resetSession, sessionEngine]);
+  }, [resetSession]);
 
   return {
     sessionState,
@@ -353,7 +313,6 @@ export function useMemorizationSession() {
     completeSession,
     resetSession,
     abandonSession,
-    getService,
     setStrategy,
   };
 }

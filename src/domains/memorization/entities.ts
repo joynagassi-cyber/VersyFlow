@@ -3,7 +3,19 @@
  * See docs/MEMORY_ENGINE_SPEC.md for complete memory engine specification
  */
 
-import { FsrsState } from '@/domains/fsrs';
+import { FsrsState, Rating } from '@/domains/fsrs';
+
+/**
+ * Map FSRS Rating enum to string representation for logging/storage
+ */
+export function fsrsRatingToString(rating: Rating): 'again' | 'hard' | 'good' | 'easy' {
+  switch (rating) {
+    case Rating.AGAIN: return 'again';
+    case Rating.HARD: return 'hard';
+    case Rating.GOOD: return 'good';
+    case Rating.EASY: return 'easy';
+  }
+}
 
 // ====================
 // Content Reference

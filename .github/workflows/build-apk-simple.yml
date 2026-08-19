@@ -27,10 +27,13 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
+<<<<<<< HEAD
     - name: Setup Android
+=======
+    - name: Install Android SDK
+>>>>>>> feat/passage-memorization-phase-8
       uses: actions/setup-android@v4
       with:
-        cmdline-tools-version: latest
         platforms: android-34
         build-tools: 35.0.0
 

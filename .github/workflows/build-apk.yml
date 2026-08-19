@@ -41,7 +41,6 @@ jobs:
     - name: Install Android SDK
       uses: actions/setup-android@v4
       with:
-        cmdline-tools-version: latest
         platforms: android-34
         build-tools: 35.0.0
         ndk: '26.1.10909125'

@@ -3,13 +3,15 @@
  * Helps adjust difficulty or suggest breaks
  */
 
+import { IFatigueDetector } from '@/domains/memorization/fatigue-detector';
+
 interface FatigueSignal {
   type: 'slow_response' | 'many_errors' | 'rapid_tapping' | 'abandonment';
   severity: number; // 0-1
   timestamp: number;
 }
 
-export class FatigueDetector {
+export class FatigueDetector implements IFatigueDetector {
   private signals: FatigueSignal[] = [];
   private readonly MAX_SIGNALS = 50;
 
@@ -61,6 +63,23 @@ export class FatigueDetector {
 
     const avgSeverity = recentSignals.reduce((sum, s) => sum + s.severity, 0) / recentSignals.length;
     return avgSeverity >= fatigueThreshold;
+  }
+
+  /**
+   * Check if a break should be recommended based on fatigue level
+   */
+  shouldRecommendBreak(fatigueLevel: number): boolean {
+    return fatigueLevel > 0.7;
+  }
+
+  /**
+   * Calculate fatigue level from review metrics
+   */
+  calculateFatigueLevel(todayReviews: number, recentErrorRate: number, sessionDuration: number): number {
+    const reviewFactor = Math.min(1, todayReviews / 50);
+    const errorFactor = recentErrorRate;
+    const durationFactor = Math.min(1, sessionDuration / 120);
+    return (reviewFactor * 0.3 + errorFactor * 0.4 + durationFactor * 0.3);
   }
 
   /**
