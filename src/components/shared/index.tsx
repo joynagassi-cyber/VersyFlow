@@ -17,6 +17,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useAppTheme } from '@/theme/useTheme';
+import { colors } from '@/tokens';
 
 // ─── Screen Wrapper ──────────────────────────────────────────────────────────
 

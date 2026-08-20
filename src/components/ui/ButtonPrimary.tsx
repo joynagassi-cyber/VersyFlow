@@ -37,7 +37,7 @@ export function ButtonPrimary({ title, onPress, disabled = false, loading = fals
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: colors.primary[400],
+    backgroundColor: colors.primary,
     borderRadius: radius.full,
     paddingVertical: 14,
     paddingHorizontal: 24,

@@ -4,14 +4,14 @@
 
 import { SUPPORTED_LANGUAGES, DEFAULT_LANGUAGE, isRTL } from './config';
 
-import { fr } from '../../../i18n/locales/fr';
-import { en } from '../../../i18n/locales/en';
-import { ar } from '../../../i18n/locales/ar';
-import { de } from '../../../i18n/locales/de';
-import { zh } from '../../../i18n/locales/zh';
+import { fr } from '@/i18n/locales/fr';
+import { en } from '@/i18n/locales/en';
+import { ar } from '@/i18n/locales/ar';
+import { de } from '@/i18n/locales/de';
+import { zh } from '@/i18n/locales/zh';
 
 class TranslationRegistry {
-  private static instance;
+  private static instance: TranslationRegistry;
   private translations = { fr, en, ar, de, zh };
   private loaded = true;
 
@@ -30,7 +30,7 @@ class TranslationRegistry {
 
   get(key, language) {
     if (!this.loaded) this.load();
-    if (this.translations[language]?.[key]) return this.translations[language][key];
+    if (this.translations[language]?.[key]) return translations[language]?.[key] || key;
     if (this.translations.en?.[key]) return this.translations.en[key];
     if (this.translations.fr?.[key]) return this.translations.fr[key];
     return key;
@@ -46,7 +46,7 @@ class TranslationRegistry {
 }
 
 export class I18nService {
-  private static instance;
+  private static instance: TranslationRegistry;
   private currentLanguage = DEFAULT_LANGUAGE;
   private translationRegistry = TranslationRegistry.getInstance();
 

@@ -7,7 +7,7 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import { Family, FamilyMembership } from '@/domains/family';
 
-interface FamilyState {
+export interface FamilyState {
   activeFamilyId: string | null;
   families: Family[];
   memberships: FamilyMembership[];

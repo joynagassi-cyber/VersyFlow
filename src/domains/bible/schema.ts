@@ -74,7 +74,7 @@ export type BibleVerse = z.infer<typeof BibleVerseSchema>;
 export function validateBibleData(data: unknown): BibleTranslation {
   const result = BibleTranslationSchema.safeParse(data);
   if (!result.success) {
-    const errors = result.errors.map(e => `${e.path.join('.')}: ${e.message}`).join('; ');
+    const errors = result.error.issues.map((e: any) => `${e.path.join('.')}: ${e.message}`).join('; ');
     throw new Error(`Validation Bible échouée: ${errors}`);
   }
   return result.data;
@@ -86,7 +86,7 @@ export function validateBibleData(data: unknown): BibleTranslation {
 export function validateBookData(data: unknown): BibleBook {
   const result = BibleBookSchema.safeParse(data);
   if (!result.success) {
-    throw new Error(`Validation livre échouée: ${result.errors.map(e => e.message).join(', ')}`);
+    throw new Error(`Validation livre échouée: ${result.error.issues.map((e: any) => e.message).join(', ')}`);
   }
   return result.data;
 }

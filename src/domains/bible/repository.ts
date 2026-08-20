@@ -13,7 +13,8 @@ import { readFileSync } from 'fs';
 import { join } from 'path';
 
 import { BibleTranslationSchema, validateBibleData } from './schema';
-import { BibleBook, BibleChapter, BibleVerse } from './entities';
+import { BibleBook } from './entities';
+import { BibleChapter, BibleVerse, BibleTranslation } from './schema';
 
 // Chemin relatif vers le fichier LSG.json
 const LSG_FILE_PATH = join(__dirname, '../../../../../data/bible/lsg.json');
@@ -24,7 +25,7 @@ const LSG_FILE_PATH = join(__dirname, '../../../../../data/bible/lsg.json');
  */
 class BibleRepository {
   private static instance: BibleRepository;
-  private books: BibleTranslation['books'] | null = null;
+  private books: any | null = null;
   private bookMap: Record<string, BibleBook> = {};
   private loaded = false;
 
@@ -71,7 +72,7 @@ class BibleRepository {
  */
   private buildBookMap(): void {
     this.bookMap = {};
-    this.books?.forEach(book => {
+    (this.books as any)?.forEach((book: any) => {
       this.bookMap[book.id] = book;
     });
   }
@@ -109,7 +110,7 @@ class BibleRepository {
       return null;
     }
 
-    const chapter = book.chapters.find(c => c.number === chapterNumber);
+    const chapter = (book as any).chapters?.find((c: any) => c.number === chapterNumber);
     return chapter || null;
   }
 
@@ -131,7 +132,7 @@ class BibleRepository {
  */
   public getChapterVerses(bookId: string, chapterNumber: number): BibleVerse[] {
     const chapter = this.getChapter(bookId, chapterNumber);
-    return chapter ? [...chapter.verses] : [];
+    return chapter ? [...(chapter as any).verses] : [];
   }
 
   /**
@@ -147,7 +148,7 @@ class BibleRepository {
   public chapterExists(bookId: string, chapterNumber: number): boolean {
     const book = this.bookMap[bookId];
     if (!book) return false;
-    return book.chapters.some(c => c.number === chapterNumber);
+    return (book as any).chapters?.some((c: any) => c.number === chapterNumber) || false;
   }
 
   /**
@@ -156,7 +157,7 @@ class BibleRepository {
   public verseExists(bookId: string, chapterNumber: number, verseNumber: number): boolean {
     const chapter = this.getChapter(bookId, chapterNumber);
     if (!chapter) return false;
-    return chapter.verses.some(v => v.number === verseNumber);
+    return (chapter as any).verses?.some((v: any) => v.number === verseNumber) || false;
   }
 
   /**
@@ -170,15 +171,15 @@ class BibleRepository {
  * Obtient le nombre total de chapitres dans la Bible.
  */
   public getChapterCount(): number {
-    return this.books?.reduce((sum, book) => sum + book.chapters.length, 0) || 0;
+    return (this.books as any)?.reduce((sum: number, book: any) => sum + book.chapters.length, 0) || 0;
   }
 
   /**
  * Obtient le nombre total de versets dans la Bible.
  */
   public getVerseCount(): number {
-    return this.books?.reduce((sum, book) =>
-      sum + book.chapters.reduce((chapterSum, chapter) => chapterSum + chapter.verses.length, 0),
+    return (this.books as any)?.reduce((sum: number, book: any) =>
+      sum + (book as any).chapters.reduce((chapterSum: number, chapter: any) => chapterSum + chapter.verses.length, 0),
     0) || 0;
   }
 
@@ -186,21 +187,21 @@ class BibleRepository {
  * Récupère tous les livres du Vieil Testament.
  */
   getOldTestamentBooks(): BibleBook[] {
-    return this.books?.filter(b => b.testament === 'old') || [];
+    return (this.books as any)?.filter((b: any) => b.testament === 'old') || [];
   }
 
   /**
  * Récupère tous les livres du Nouvel Testament.
  */
   getNewTestamentBooks(): BibleBook[] {
-    return this.books?.filter(b => b.testament === 'new') || [];
+    return (this.books as any)?.filter((b: any) => b.testament === 'new') || [];
   }
 
   /**
  * Récupère tous les livres d'un testament donné.
  */
   getBooksByTestament(testament: 'old' | 'new'): BibleBook[] {
-    return this.books?.filter(b => b.testament === testament) || [];
+    return (this.books as any)?.filter((b: any) => b.testament === testament) || [];
   }
 }
 

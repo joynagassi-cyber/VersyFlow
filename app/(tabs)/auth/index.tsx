@@ -10,7 +10,6 @@ import {
   StyleSheet,
 } from 'react-native';
 import { useAppTheme } from '@/theme/useTheme';
-import { useRouter } from 'expo-router';
 
 interface Props {
   onLogin: () => void;
@@ -19,6 +18,7 @@ interface Props {
 }
 
 export default function AuthGate({ onLogin, onSignup, onSkip }: Props) {
+  const { colors } = useAppTheme();
   const [mounted, setMounted] = useState(false);
 
   useState(() => {
@@ -26,6 +26,71 @@ export default function AuthGate({ onLogin, onSignup, onSkip }: Props) {
   });
 
   if (!mounted) return null;
+
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.surfaceTint,
+      padding: 24,
+      justifyContent: 'center',
+    },
+    title: {
+      fontSize: 28,
+      fontWeight: '700',
+      color: colors.textPrimary,
+      textAlign: 'center',
+      marginBottom: 12,
+    },
+    subtitle: {
+      fontSize: 16,
+      color: colors.textTertiary,
+      textAlign: 'center',
+      marginBottom: 48,
+      lineHeight: 24,
+    },
+    buttonPrimary: {
+      backgroundColor: colors.primary,
+      borderRadius: 26,
+      paddingVertical: 16,
+      marginBottom: 12,
+      alignItems: 'center',
+    },
+    buttonTextPrimary: {
+      fontSize: 16,
+      fontWeight: '600',
+      color: colors.surface,
+    },
+    buttonSecondary: {
+      backgroundColor: colors.surface,
+      borderRadius: 26,
+      paddingVertical: 16,
+      borderWidth: 2,
+      borderColor: colors.primary,
+      marginBottom: 12,
+      alignItems: 'center',
+    },
+    buttonTextSecondary: {
+      fontSize: 16,
+      fontWeight: '600',
+      color: colors.primary,
+    },
+    buttonGhost: {
+      paddingVertical: 12,
+      alignItems: 'center',
+    },
+    buttonTextGhost: {
+      fontSize: 14,
+      color: colors.textMuted,
+      textDecorationLine: 'underline',
+    },
+    note: {
+      fontSize: 12,
+      color: colors.textMuted,
+      textAlign: 'center',
+      marginTop: 32,
+      lineHeight: 18,
+    },
+  });
 
   return (
     <View style={styles.container}>
@@ -52,68 +117,3 @@ export default function AuthGate({ onLogin, onSignup, onSkip }: Props) {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.surfaceTint,
-    padding: 24,
-    justifyContent: 'center',
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: '700',
-    color: colors.textPrimary,
-    textAlign: 'center',
-    marginBottom: 12,
-  },
-  subtitle: {
-    fontSize: 16,
-    color: colors.textTertiary,
-    textAlign: 'center',
-    marginBottom: 48,
-    lineHeight: 24,
-  },
-  buttonPrimary: {
-    backgroundColor: colors.primary,
-    borderRadius: 26,
-    paddingVertical: 16,
-    marginBottom: 12,
-    alignItems: 'center',
-  },
-  buttonTextPrimary: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: colors.surface,
-  },
-  buttonSecondary: {
-    backgroundColor: colors.surface,
-    borderRadius: 26,
-    paddingVertical: 16,
-    borderWidth: 2,
-    borderColor: colors.primary,
-    marginBottom: 12,
-    alignItems: 'center',
-  },
-  buttonTextSecondary: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: colors.primary,
-  },
-  buttonGhost: {
-    paddingVertical: 12,
-    alignItems: 'center',
-  },
-  buttonTextGhost: {
-    fontSize: 14,
-    color: colors.textMuted,
-    textDecorationLine: 'underline',
-  },
-  note: {
-    fontSize: 12,
-    color: colors.textMuted,
-    textAlign: 'center',
-    marginTop: 32,
-    lineHeight: 18,
-  },
-});
