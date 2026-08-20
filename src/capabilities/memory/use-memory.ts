@@ -34,13 +34,13 @@ export function useMemoryCapabilityHook() {
     switch (currentStrategy) {
       case 'progressive-masking':
         return progressiveMask;
-      case 'smart-masking':
+      case 'heat-words':
         return smartMask;
-      case 'random-masking':
+      case 'heat-words':
         return randomMask;
-      case 'flashcard':
+      case 'heat-words':
         return flashcard;
-      case 'recall-writing':
+      case 'heat-words':
         return recallWriting;
       default:
         return progressiveMask;

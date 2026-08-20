@@ -79,6 +79,50 @@ export const Colors = {
   iconBgIndigo: '#E8EAF6',
 } as const;
 
+// Backward-compatible properties
+const typographySizes: Record<string, number> = {
+  displayLarge: 32,
+  displayLargeMobile: 28,
+  headlineMedium: 24,
+  headlineSmall: 20,
+  titleLarge: 18,
+  titleMedium: 16,
+  titleSmall: 14,
+  bodyLarge: 16,
+  bodyMedium: 14,
+  bodySmall: 12,
+  labelLarge: 14,
+  labelMedium: 12,
+  labelSmall: 11,
+  buttonText: 16,
+  bibleText: 20,
+};
+
+const typographyWeights: Record<string, string> = {
+  displayLarge: '700',
+  displayLargeMobile: '700',
+  headlineMedium: '700',
+  headlineSmall: '600',
+  titleLarge: '700',
+  titleMedium: '600',
+  titleSmall: '600',
+  bodyLarge: '400',
+  bodyMedium: '400',
+  bodySmall: '400',
+  labelLarge: '600',
+  labelMedium: '600',
+  labelSmall: '500',
+  buttonText: '600',
+  bibleText: '400',
+};
+
+const typographyFamilies = {
+  primary: Platform.OS === 'ios' ? 'SF Pro Text' : 'Roboto',
+  heading: Platform.OS === 'ios' ? 'SF Pro Display' : 'Roboto',
+  mono: 'Courier New',
+  bible: 'Source Serif 4',
+};
+
 // ─── Dark Mode Token Map ────────────────────────────────────────────────────
 
 export const ColorsDark = {
@@ -155,6 +199,10 @@ export const ColorsDark = {
 // ─── Typography Scale ────────────────────────────────────────────────────────
 
 export const Typography = {
+  // backward compat
+  sizes: typographySizes,
+  weights: typographyWeights,
+  families: typographyFamilies,
   // Display
   displayLarge: { fontSize: 32, fontWeight: '700' as const, lineHeight: 40 },
   displayLargeMobile: { fontSize: 28, fontWeight: '700' as const, lineHeight: 36 },

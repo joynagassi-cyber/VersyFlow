@@ -4,7 +4,7 @@
  */
 
 import { useState, useCallback } from 'react';
-import { useMemoryCapability } from './store';
+import { useMemoryCapability } from '../store';
 
 export function useProgressiveMask() {
   const { sessionState, updateSession } = useMemoryCapability();

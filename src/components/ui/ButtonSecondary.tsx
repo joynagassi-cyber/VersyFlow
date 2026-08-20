@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: 'transparent',
     borderWidth: 2,
-    borderColor: colors.primary[400],
+    borderColor: colors.primary,
     borderRadius: radius.full,
     paddingVertical: 12,
     paddingHorizontal: 24,
@@ -38,10 +38,10 @@ const styles = StyleSheet.create({
   },
   disabled: {
     opacity: 0.5,
-    borderColor: colors.neutral[300],
+    borderColor: colors.border,
   },
   text: {
-    color: colors.primary[400],
+    color: colors.primary,
     fontSize: 16,
     fontWeight: '600',
   },

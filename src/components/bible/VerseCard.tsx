@@ -39,6 +39,16 @@ export function VerseCard({ reference, text, status, onPress }: VerseCardProps) 
   );
 }
 
+const shadow = {
+  sm: {
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 1,
+  },
+};
+
 const styles = StyleSheet.create({
   card: {
     flexDirection: 'row',
@@ -77,12 +87,4 @@ const styles = StyleSheet.create({
   },
 });
 
-const shadow = {
-  sm: {
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 1,
-  },
-};
+

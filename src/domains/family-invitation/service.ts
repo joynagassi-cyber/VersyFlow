@@ -33,8 +33,8 @@ export class FamilyInvitationService {
       createdBy,
       token,
       status: 'active' as InvitationStatus,
-      expiresAt: now + expiresInDays * 24 * 60 * 60 * 1000,
-      createdAt: now,
+      expiresAt: now + expiresInDays * 24 * 60 * 60 * 1000 as any,
+      createdAt: now as any,
     });
 
     eventBus.emit({

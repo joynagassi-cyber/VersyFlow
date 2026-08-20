@@ -9,7 +9,7 @@ export type { ParsedReference } from './parser';
 
 // Validation schema
 export { BibleTranslationSchema, BibleBookSchema, BibleChapterSchema, BibleVerseSchema, validateBibleData, validateBookData } from './schema';
-export type { BibleTranslation, BibleBook, BibleChapter, BibleVerse } from './schema';
+export type { BibleTranslation, BibleChapter, BibleVerse } from './schema';
 
 // Repository
 export { BibleRepository } from './repository';

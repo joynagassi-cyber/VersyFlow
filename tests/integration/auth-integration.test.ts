@@ -1,3 +1,15 @@
+// Mock @insforge/sdk to avoid ESM shared-schemas resolution issues
+jest.mock('@insforge/sdk', () => ({
+  createClient: jest.fn(() => ({
+    auth: {
+      getUser: jest.fn(),
+      signIn: jest.fn(),
+      signUp: jest.fn(),
+      signOut: jest.fn(),
+    },
+  })),
+}));
+
 // tests/integration/auth-integration.test.ts
 import { InsForgeAuthService } from '@/auth/InsForgeAuthService';
 

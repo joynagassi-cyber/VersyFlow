@@ -20,6 +20,16 @@ export function StatCard({ value, label, icon }: StatCardProps) {
   );
 }
 
+const shadow = {
+  sm: {
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 1,
+  },
+};
+
 const styles = StyleSheet.create({
   card: {
     flex: 1,
@@ -32,7 +42,7 @@ const styles = StyleSheet.create({
   value: {
     fontSize: 32,
     fontWeight: '700',
-    color: colors.primary[400],
+    color: colors.primary,
     fontFamily: typography.families.heading,
   },
   label: {
@@ -42,12 +52,4 @@ const styles = StyleSheet.create({
   },
 });
 
-const shadow = {
-  sm: {
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 1,
-  },
-};
+

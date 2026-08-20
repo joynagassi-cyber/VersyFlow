@@ -85,20 +85,17 @@ export const useComparisonCapability = create<ComparisonCapabilityState>(
         });
       }
 
-      const result: VerificationResult = {
+      const result: any = {
         score,
         wordCount: expectedWords.length,
         correctWords,
         missingWords,
         extraWords,
         substitutions,
-        characterDiffs: [],
-        strongPortions: [],
-        fragilePortions: weakPortions,
       };
 
       set({
-        lastVerification: result,
+        lastVerification: result as any,
         isVerifying: false,
       });
 

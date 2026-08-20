@@ -60,6 +60,12 @@
       ],
       "@/types/*": [
         "src/types/*"
+      ],
+      "@/app": [
+        "app"
+      ],
+      "@/app/*": [
+        "app/*"
       ]
     },
     "jsxFactory": "React.createElement",
