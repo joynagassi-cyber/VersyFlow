@@ -3,8 +3,8 @@
  * Extracted from ProgressService (C8 deepening)
  */
 
-import { MemorizationService } from '@/domains/memorization';
-import { MemorizationRecord } from '@/domains/memorization/entities';
+import type { MemorizationService } from '@/domains/memorization';
+import type { MemorizationRecord } from '@/domains/memorization/entities';
 
 export interface ProgressStats {
   totalVerses: number;

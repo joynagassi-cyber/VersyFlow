@@ -4,9 +4,9 @@
  */
 
 import { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, SafeAreaView } from '@/components/ui/Primitives';
 import { useAppTheme } from '@/theme/useTheme';
-import { useRouter } from 'expo-router';
+import { useRouter } from '@/hooks/useIonicNavigation';
 import { useI18n } from '@/hooks/useI18n';
 
 export default function ReviewSummaryScreen() {

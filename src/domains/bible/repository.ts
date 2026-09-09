@@ -9,15 +9,13 @@
  * See: docs/11-bible-domain.md, docs/21-bible-data-spec.md
  */
 
-import { readFileSync } from 'fs';
-import { join } from 'path';
-
 import { BibleTranslationSchema, validateBibleData } from './schema';
-import { BibleBook } from './entities';
-import { BibleChapter, BibleVerse, BibleTranslation } from './schema';
+import type { BibleBook } from './entities';
+import type { BibleChapter, BibleVerse} from './schema';
+import { BibleTranslation } from './schema';
 
 // Chemin relatif vers le fichier LSG.json
-const LSG_FILE_PATH = join(__dirname, '../../../../../data/bible/lsg.json');
+const LSG_FILE_PATH = '/data/bible/lsg.json';
 
 /**
  * Cache des données de Bible pour éviter de re-lire le fichier à chaque appel.
@@ -72,7 +70,7 @@ class BibleRepository {
  */
   private buildBookMap(): void {
     this.bookMap = {};
-    (this.books as any)?.forEach((book: any) => {
+    (this.books)?.forEach((book: any) => {
       this.bookMap[book.id] = book;
     });
   }
@@ -171,15 +169,15 @@ class BibleRepository {
  * Obtient le nombre total de chapitres dans la Bible.
  */
   public getChapterCount(): number {
-    return (this.books as any)?.reduce((sum: number, book: any) => sum + book.chapters.length, 0) || 0;
+    return (this.books)?.reduce((sum: number, book: any) => sum + book.chapters.length, 0) || 0;
   }
 
   /**
  * Obtient le nombre total de versets dans la Bible.
  */
   public getVerseCount(): number {
-    return (this.books as any)?.reduce((sum: number, book: any) =>
-      sum + (book as any).chapters.reduce((chapterSum: number, chapter: any) => chapterSum + chapter.verses.length, 0),
+    return (this.books)?.reduce((sum: number, book: any) =>
+      sum + (book).chapters.reduce((chapterSum: number, chapter: any) => chapterSum + chapter.verses.length, 0),
     0) || 0;
   }
 
@@ -187,21 +185,21 @@ class BibleRepository {
  * Récupère tous les livres du Vieil Testament.
  */
   getOldTestamentBooks(): BibleBook[] {
-    return (this.books as any)?.filter((b: any) => b.testament === 'old') || [];
+    return (this.books)?.filter((b: any) => b.testament === 'old') || [];
   }
 
   /**
  * Récupère tous les livres du Nouvel Testament.
  */
   getNewTestamentBooks(): BibleBook[] {
-    return (this.books as any)?.filter((b: any) => b.testament === 'new') || [];
+    return (this.books)?.filter((b: any) => b.testament === 'new') || [];
   }
 
   /**
  * Récupère tous les livres d'un testament donné.
  */
   getBooksByTestament(testament: 'old' | 'new'): BibleBook[] {
-    return (this.books as any)?.filter((b: any) => b.testament === testament) || [];
+    return (this.books)?.filter((b: any) => b.testament === testament) || [];
   }
 }
 

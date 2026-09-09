@@ -8,7 +8,7 @@ import {
   Text,
   TouchableOpacity,
   StyleSheet,
-} from 'react-native';
+} from '@/components/ui/Primitives';
 import { useAppTheme } from '@/theme/useTheme';
 
 interface Props {

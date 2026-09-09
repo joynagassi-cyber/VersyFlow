@@ -5,7 +5,7 @@
  * Allows injection of mock or alternative implementations for testing.
  */
 
-import { WordFailure } from '@/services/word-failure-tracker';
+import type { WordFailure } from '@/services/word-failure-tracker';
 
 export interface IWordFailureTracker {
   /**

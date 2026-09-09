@@ -11,9 +11,9 @@ import {
   TouchableOpacity,
   ScrollView,
   StyleSheet,
-} from 'react-native';
+} from '@/components/ui/Primitives';
 import { useAppTheme } from '@/theme/useTheme';
-import { useRouter } from 'expo-router';
+import { useRouter } from '@/hooks/useIonicNavigation';
 import { SUPPORTED_LANGUAGES } from '@/domains/i18n/config';
 import { useSettingsStore } from '@/store/settings-store';
 

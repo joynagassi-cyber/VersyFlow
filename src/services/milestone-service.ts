@@ -4,8 +4,8 @@
  */
 
 import { eventBus, DomainEventTypes } from '@/domains';
-import { MemorizationService } from '@/domains/memorization';
-import { ITelemetry } from '@/domains/telemetry/it telemetry';
+import type { MemorizationService } from '@/domains/memorization';
+import type { ITelemetry } from '@/domains/telemetry/it telemetry';
 
 export interface Milestone {
   type: 'first_verse' | 'ten_verses' | 'fifty_verses' | 'mastered_first';

@@ -3,10 +3,11 @@
  * Implements feature #85: Choix automatique de stratégie
  */
 
-import { ExerciseStrategy, VerificationResult } from '@/domains/memorization/entities';
-import { IFatigueDetector } from '@/domains/memorization/fatigue-detector';
+import type { VerificationResult } from '@/domains/memorization/entities';
+import { ExerciseStrategy } from '@/domains/memorization/entities';
+import type { IFatigueDetector } from '@/domains/memorization/fatigue-detector';
 import { FatigueDetector } from '@/services/fatigue-detector';
-import { IStrategyRecommendor, Recommendation, RecommendationContext } from '@/domains/memorization/strategy-recommendor';
+import type { IStrategyRecommendor, Recommendation, RecommendationContext } from '@/domains/memorization/strategy-recommendor';
 import { WordFailureTracker } from '@/services/word-failure-tracker';
 
 export class StrategyRecommendor implements IStrategyRecommendor {

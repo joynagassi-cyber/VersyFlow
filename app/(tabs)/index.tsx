@@ -15,9 +15,10 @@ import {
   SafeAreaView,
   ActivityIndicator,
   Platform,
-} from 'react-native';
-import { useRouter } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
+} from '@/components/ui/Primitives';
+import { useRouter } from '@/hooks/useIonicNavigation';
+import { IonIcon } from '@ionic/react'
+import * as Ionicons from 'ionicons/icons';
 import { ReferenceSearchInput } from '@/components/bible/ReferenceSearchInput';
 import { useAppTheme } from '@/theme/useTheme';
 import { useActiveProfile } from '@/hooks/useActiveProfile';

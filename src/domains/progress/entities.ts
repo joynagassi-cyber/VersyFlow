@@ -3,7 +3,7 @@
  * See docs/25-retrieval-analytics-spec.md
  */
 
-import { MemorizationRecord } from '../memorization/entities';
+import type { MemorizationRecord } from '../memorization/entities';
 
 /**
  * Mastery Level computed from FSRS state

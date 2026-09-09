@@ -3,7 +3,7 @@
  */
 
 import { create } from 'zustand';
-import { ProgressStats } from '@/services/progress-service';
+import type { ProgressStats } from '@/services/progress-service';
 
 export interface AnalyticsState {
   stats: ProgressStats | null;

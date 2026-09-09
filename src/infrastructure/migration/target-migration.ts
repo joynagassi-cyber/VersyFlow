@@ -5,8 +5,8 @@
  * Migration is idempotent and backward-compatible.
  */
 
-import { MemorizationRecord } from '@/domains/memorization/entities';
-import { MmkvStorage } from '@/infrastructure/storage';
+import type { MemorizationRecord } from '@/domains/memorization/entities';
+import type { MmkvStorage } from '@/infrastructure/storage';
 
 export interface TargetMigrationResult {
   recordsMigrated: number;

@@ -6,12 +6,12 @@
  * It supports both automatic and manual sync modes.
  */
 
-import { MemorizationRecord, ReviewLogEntry, WordPerformance } from '@/domains/memorization/entities';
-import { FsrsState } from '@/domains/fsrs';
-import { IStorage } from '@/infrastructure/storage/storage-types';
+import type { MemorizationRecord, ReviewLogEntry, WordPerformance } from '@/domains/memorization/entities';
+import type { FsrsState } from '@/domains/fsrs';
+import type { IStorage } from '@/infrastructure/storage/storage-types';
 import { createClient } from '@insforge/sdk';
 import { logger } from '@/infrastructure/logging/logger';
-import NetInfo from '@react-native-community/netinfo';
+import { Network } from '@capacitor/network';
 
 // Cloud data structures matching the local entities
 interface CloudMemorizationRecord {
@@ -81,7 +81,7 @@ export class CloudSyncService {
 
   private setupConnectivityListeners(): void {
     // Use React Native NetInfo for connectivity detection
-    const unsubscribe = NetInfo.addEventListener((state: any) => {
+    const unsubscribe = Network.addListener((state: any) => {
       const isConnected = state.isConnected && state.isInternetReachable !== false;
       this.isConnected = isConnected;
 
@@ -110,7 +110,7 @@ export class CloudSyncService {
   private _cleanupConnectivity: (() => void) | null = null;
 
   private updateConnectionStatus(): void {
-    NetInfo.getState().then((state) => {
+    Network.getStatus().then((state) => {
       this.isConnected = state.isConnected && state.isInternetReachable !== false;
     });
   }

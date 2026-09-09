@@ -4,7 +4,7 @@
  * See docs/09-architecture.md (Adapter Pattern)
  */
 
-import { IStorage } from './storage-types';
+import type { IStorage } from './storage-types';
 
 class AsyncStorageAdapter implements IStorage {
   private storage: any;

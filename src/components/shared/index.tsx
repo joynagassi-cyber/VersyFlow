@@ -14,8 +14,9 @@ import {
   type ViewStyle,
   type TextStyle,
   type StyleProp,
-} from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+} from '@/components/ui/Primitives';
+import { IonIcon } from '@ionic/react'
+import * as Ionicons from 'ionicons/icons';
 import { useAppTheme } from '@/theme/useTheme';
 import { colors } from '@/tokens';
 

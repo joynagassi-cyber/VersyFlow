@@ -2,7 +2,7 @@
  * Tab Navigation — Bottom tabs component
  */
 
-import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity } from '@/components/ui/Primitives';
 
 interface TabNavigationProps {
   tabs: Array<{ key: string; label: string; icon?: string }>;

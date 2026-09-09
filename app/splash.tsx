@@ -4,7 +4,7 @@
  */
 
 import { useEffect } from 'react';
-import { View, Text, StyleSheet, Animated, Easing } from 'react-native';
+import { View, Text, StyleSheet, Animated, Easing } from '@/components/ui/Primitives';
 import { useAppTheme } from '@/theme/useTheme';
 
 interface Props {

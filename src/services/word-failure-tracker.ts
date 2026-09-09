@@ -3,7 +3,7 @@
  * Helps identify which words the user consistently forgets
  */
 
-import { IWordFailureTracker } from '@/domains/memorization/tracker';
+import type { IWordFailureTracker } from '@/domains/memorization/tracker';
 
 export interface WordFailure {
   word: string;

@@ -5,7 +5,7 @@
  * (StrategyRecommendor). Permet l'injection de stubs pour les tests.
  */
 
-import { ExerciseStrategy } from './entities';
+import type { ExerciseStrategy } from './entities';
 
 export interface Recommendation {
   strategy: ExerciseStrategy;

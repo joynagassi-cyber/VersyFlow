@@ -2,7 +2,7 @@
  * Primitive Text — Reusable text component with token-based styles
  */
 
-import { Text as RNText, StyleSheet } from 'react-native';
+import { Text as RNText, StyleSheet } from '@/components/ui/Primitives';
 import { typography } from '@/tokens';
 
 type TextSize = keyof typeof typography.sizes;

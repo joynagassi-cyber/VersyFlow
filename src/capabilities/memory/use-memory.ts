@@ -4,7 +4,7 @@
 
 import { useState, useCallback } from 'react';
 import { useMemoryCapability } from './store';
-import { ExerciseStrategy } from '@/domains/memorization/entities';
+import type { ExerciseStrategy } from '@/domains/memorization/entities';
 import { useProgressiveMask } from './strategies/progressive-mask';
 import { useSmartMask } from './strategies/smart-mask';
 import { useRandomMask } from './strategies/random-mask';

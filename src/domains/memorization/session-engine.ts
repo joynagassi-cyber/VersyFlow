@@ -4,9 +4,10 @@
  * Extension passage: revealNextVerse() pour navigation verset par verset
  */
 
-import { SessionState, SessionPhase, VerificationResult, DEFAULT_MVP_STRATEGY, ExerciseStrategy, MaskingConfig, getMaskingConfigForStability, MemorizationTargetType } from './entities';
+import type { SessionState, VerificationResult, ExerciseStrategy, MaskingConfig, MemorizationTargetType } from './entities';
+import { SessionPhase, DEFAULT_MVP_STRATEGY, getMaskingConfigForStability } from './entities';
 import { ComparisonEngine } from './comparison-engine';
-import { IWordFailureTracker } from './tracker';
+import type { IWordFailureTracker } from './tracker';
 import { WordFailureTracker } from '@/services/word-failure-tracker';
 import { Rating } from '@/domains/fsrs';
 

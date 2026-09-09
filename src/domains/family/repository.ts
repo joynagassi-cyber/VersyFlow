@@ -5,7 +5,7 @@
  * Implemented by infrastructure layer; never imported from infrastructure.
  */
 
-import { Family, FamilyMembership } from './entities';
+import type { Family, FamilyMembership } from './entities';
 
 export interface IFamilyRepository {
   /** Retrieve a family by its unique ID */

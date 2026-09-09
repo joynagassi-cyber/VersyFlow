@@ -2,7 +2,7 @@
  * Empty State — Displayed when no content available
  */
 
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View, Text } from '@/components/ui/Primitives';
 
 interface EmptyStateProps {
   icon: string;

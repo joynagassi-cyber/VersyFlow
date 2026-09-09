@@ -4,7 +4,8 @@
  * See docs/13-fsrs-domain.md section "Fallback SM-2 en JS"
  */
 
-import { IFsrsEngine, FsrsState, FsrsReview, Rating, DEFAULT_FSRS_STATE } from '.';
+import type { IFsrsEngine, FsrsState, FsrsReview} from '.';
+import { Rating, DEFAULT_FSRS_STATE } from '.';
 
 export class Sm2FallbackEngine implements IFsrsEngine {
   newState(): Promise<FsrsState> {
@@ -21,7 +22,7 @@ export class Sm2FallbackEngine implements IFsrsEngine {
     const currentInterval = state.lastInterval || 1;
 
     // Update difficulty: harder ratings increase difficulty
-    let newDifficulty = Math.max(0, Math.min(10,
+    const newDifficulty = Math.max(0, Math.min(10,
       currentDifficulty - 1.3 + (4 - rating) * 0.5
     ));
 

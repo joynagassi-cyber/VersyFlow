@@ -5,8 +5,8 @@
  * Small interface: 6 methods. All events flow through a single record() method.
  */
 
-import { TelemetryQueueItem, EventType } from './entities';
-import { TelemetrySummary } from './entities';
+import type { TelemetryQueueItem, EventType } from './entities';
+import type { TelemetrySummary } from './entities';
 
 // Reuse EventType from entities for compatibility
 export type TelemetryEventType =

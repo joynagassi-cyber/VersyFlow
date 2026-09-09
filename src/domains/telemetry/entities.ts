@@ -3,8 +3,8 @@
  * See docs/12-capabilities/TELEMETRY_SCHEMA.md
  */
 
-import { FsrsState } from '@/domains/fsrs';
-import { Rating } from '@/domains/fsrs';
+import type { FsrsState } from '@/domains/fsrs';
+import type { Rating } from '@/domains/fsrs';
 
 /**
  * Exercise strategy used during the session

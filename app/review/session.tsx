@@ -15,10 +15,11 @@ import {
   ActivityIndicator,
   Animated,
   Platform,
-} from 'react-native';
+} from '@/components/ui/Primitives';
 import { useAppTheme } from '@/theme/useTheme';
-import { useRouter } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from '@/hooks/useIonicNavigation';
+import { IonIcon } from '@ionic/react'
+import * as Ionicons from 'ionicons/icons';
 import { Rating as FsrsRating } from '@/domains/fsrs';
 import { MemorizationService } from '@/domains/memorization/service';
 import { IFsrsEngine, Sm2FallbackEngine } from '@/domains/fsrs';
@@ -295,13 +296,13 @@ export default function ReviewSessionScreen() {
                 <TouchableOpacity
                   key={option.id}
                   style={[styles.ratingButton, { backgroundColor: option.color }]}
-                  onPress={() => handleRating(option.id as FsrsRating)}
+                  onPress={() => handleRating(option.id)}
                   activeOpacity={0.85}
                 >
                   <Ionicons name={option.icon as any} size={24} color={colors.surface} />
                   <Text style={styles.ratingButtonText}>{option.label}</Text>
                   <Text style={styles.ratingButtonDays}>
-                    {getRatingConfig(option.id as FsrsRating).days}j
+                    {getRatingConfig(option.id).days}j
                   </Text>
                 </TouchableOpacity>
               ))}

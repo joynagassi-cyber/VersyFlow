@@ -11,11 +11,11 @@ import {
   StyleSheet,
   SafeAreaView,
   ActivityIndicator,
-} from 'react-native';
+} from '@/components/ui/Primitives';
 import { useAppTheme } from '@/theme/useTheme';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from '@/hooks/useIonicNavigation';
 import { BibleRepository } from '@/domains/bible/repository';
-import { BibleBook } from '@/domains/bible/schema';
+import type { BibleBook } from '@/domains/bible/schema';
 
 export default function BookScreen() {
   const { colors, sp, sh, rad } = useAppTheme();

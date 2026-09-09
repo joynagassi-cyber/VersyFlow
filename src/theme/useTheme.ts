@@ -4,7 +4,7 @@
  */
 
 import { useMemo } from 'react';
-import { useColorScheme } from 'react-native';
+import { useColorScheme } from './useColorScheme';
 import {
   Colors,
   ColorsDark,

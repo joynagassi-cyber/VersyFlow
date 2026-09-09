@@ -11,8 +11,9 @@ import {
   TouchableOpacity,
   Modal,
   ScrollView,
-} from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+} from '@/components/ui/Primitives';
+import { IonIcon } from '@ionic/react'
+import * as Ionicons from 'ionicons/icons';
 import { useAppTheme } from '@/theme/useTheme';
 import { useContextStore } from '@/store/context-store';
 import { useProfileStore } from '@/store/profile-store';

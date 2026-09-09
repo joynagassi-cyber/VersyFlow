@@ -10,9 +10,9 @@ import {
   StyleSheet,
   SafeAreaView,
   Linking,
-} from 'react-native';
+} from '@/components/ui/Primitives';
 import { useAppTheme } from '@/theme/useTheme';
-import { useRouter } from 'expo-router';
+import { useRouter } from '@/hooks/useIonicNavigation';
 
 const VERSION = '0.1.0';
 

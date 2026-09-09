@@ -12,13 +12,14 @@ import {
   ScrollView,
   SafeAreaView,
   ActivityIndicator,
-} from 'react-native';
+} from '@/components/ui/Primitives';
 import { useAppTheme } from '@/theme/useTheme';
 import { useI18n } from '@/hooks/useI18n';
 import { MemorizationService } from '@/domains/memorization/service';
 import { IFsrsEngine, Sm2FallbackEngine } from '@/domains/fsrs';
 import { MmkvStorage } from '@/infrastructure/storage';
-import { ProgressService, ProgressStats } from '@/services/progress-service';
+import type { ProgressStats } from '@/services/progress-service';
+import { ProgressService } from '@/services/progress-service';
 
 // Singleton pour le service
 let memorizationService: MemorizationService | null = null;

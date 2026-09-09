@@ -15,7 +15,7 @@ interface WordAlignment {
  * See docs/22-comparison-engine-spec.md
  */
 
-import { VerificationResult } from './entities';
+import type { VerificationResult } from './entities';
 
 /**
  * ComparisonEngine — Pure domain logic for text comparison

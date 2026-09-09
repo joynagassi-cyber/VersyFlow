@@ -13,9 +13,9 @@ import {
   ScrollView,
   SafeAreaView,
   Alert,
-} from 'react-native';
+} from '@/components/ui/Primitives';
 import { useAppTheme } from '@/theme/useTheme';
-import { useRouter } from 'expo-router';
+import { useRouter } from '@/hooks/useIonicNavigation';
 import { useAuthStore } from '@/store/auth-store';
 import { useSettingsStore } from '@/store/settings-store';
 

@@ -12,12 +12,12 @@ import {
   StyleSheet,
   SafeAreaView,
   ActivityIndicator,
-} from 'react-native';
+} from '@/components/ui/Primitives';
 import { useAppTheme } from '@/theme/useTheme';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from '@/hooks/useIonicNavigation';
 import { BibleRepository } from '@/domains/bible/repository';
-import { BibleVerse } from '@/domains/bible/schema';
-import { ContentReference, MemorizationTarget } from '@/domains/memorization/entities';
+import type { BibleVerse } from '@/domains/bible/schema';
+import type { ContentReference, MemorizationTarget } from '@/domains/memorization/entities';
 
 export default function ChapterScreen() {
   const { colors, sp, sh, rad } = useAppTheme();

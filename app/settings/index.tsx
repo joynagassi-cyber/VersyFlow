@@ -11,9 +11,10 @@ import {
   SafeAreaView,
   StyleSheet,
   Platform,
-} from 'react-native';
-import { useRouter } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
+} from '@/components/ui/Primitives';
+import { useRouter } from '@/hooks/useIonicNavigation';
+import { IonIcon } from '@ionic/react'
+import * as Ionicons from 'ionicons/icons';
 import { useAuthStore } from '@/store/auth-store';
 import { useAppTheme } from '@/theme/useTheme';
 
@@ -124,7 +125,7 @@ export default function SettingsScreen() {
                   onPress={item.action}
                 >
                   <View style={styles.itemLeft}>
-                    <Ionicons name={item.icon as any} size={20} color={colors.textMuted} />
+                    <Ionicons name={item.icon} size={20} color={colors.textMuted} />
                     <Text style={[styles.itemText, { color: colors.textPrimary }]}>{item.label}</Text>
                   </View>
                   <Ionicons name="chevron-forward" size={16} color={colors.textMuted} />

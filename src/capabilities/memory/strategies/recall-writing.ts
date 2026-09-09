@@ -34,7 +34,7 @@ export function useRecallWriting() {
     const providedWords = provided.split(/\s+/);
 
     let correctWords = 0;
-    let substitutions: Array<{ expected: string; got: string }> = [];
+    const substitutions: Array<{ expected: string; got: string }> = [];
 
     const maxLen = Math.max(expectedWords.length, providedWords.length);
     for (let i = 0; i < maxLen; i++) {

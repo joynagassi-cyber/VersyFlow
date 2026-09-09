@@ -10,7 +10,6 @@ import { MmkvStorage } from '@/infrastructure/storage';
 
 // Shared MmkvStorage instance — one handle per store lifecycle
 
-
 // Storage keys for settings
 const STORAGE_KEYS = {
   UI_LANGUAGE: 'versyflow:ui:language',
@@ -111,7 +110,6 @@ export const useSettingsStore = create<SettingsState>(
 
 // Load initial values from storage on app start
 export async function initializeSettingsStore(): Promise<void> {
-  
 
   try {
     const savedLang = await storage.get(STORAGE_KEYS.UI_LANGUAGE);

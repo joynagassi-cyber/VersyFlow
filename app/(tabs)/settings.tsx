@@ -15,10 +15,11 @@ import {
   Modal,
   Platform,
   Alert,
-} from 'react-native';
+} from '@/components/ui/Primitives';
 import { useAppTheme } from '@/theme/useTheme';
-import { useRouter } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from '@/hooks/useIonicNavigation';
+import { IonIcon } from '@ionic/react'
+import * as Ionicons from 'ionicons/icons';
 import { I18nService } from '@/domains/i18n/i18n-service';
 import { SUPPORTED_LANGUAGES } from '@/domains/i18n/config';
 import { useAuthStore } from '@/store/auth-store';

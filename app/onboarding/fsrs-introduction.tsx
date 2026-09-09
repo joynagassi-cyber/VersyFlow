@@ -6,10 +6,11 @@
  * with a visual graph and key benefits.
  */
 
-import { StyleSheet, View, Text, TouchableOpacity, ScrollView, Platform } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, ScrollView, Platform } from '@/components/ui/Primitives';
 import { useAppTheme } from '@/theme/useTheme';
-import { useRouter } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from '@/hooks/useIonicNavigation';
+import { IonIcon } from '@ionic/react'
+import * as Ionicons from 'ionicons/icons';
 import { useSettingsStore } from '@/store/settings-store';
 
 export default function FSRSIntroductionScreen() {

@@ -10,9 +10,9 @@ import {
   StyleSheet,
   ScrollView,
   SafeAreaView,
-} from 'react-native';
+} from '@/components/ui/Primitives';
 import { useAppTheme } from '@/theme/useTheme';
-import { useRouter } from 'expo-router';
+import { useRouter } from '@/hooks/useIonicNavigation';
 import { useAICoachCapability } from '@/capabilities/ai-coach/store';
 import { AIRecommendation } from '@/capabilities';
 

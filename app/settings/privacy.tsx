@@ -10,9 +10,9 @@ import {
   StyleSheet,
   SafeAreaView,
   Switch,
-} from 'react-native';
+} from '@/components/ui/Primitives';
 import { useAppTheme } from '@/theme/useTheme';
-import { useRouter } from 'expo-router';
+import { useRouter } from '@/hooks/useIonicNavigation';
 
 export default function PrivacyScreen() {
   const { colors, sp, sh, rad } = useAppTheme();

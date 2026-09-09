@@ -6,10 +6,12 @@
 import { SessionEngine } from './session-engine';
 import { MemorizationStorageAdapter } from './storage-adapter';
 import { fsrsRatingToString } from './entities';
-import { IFsrsEngine, Rating as FsrsRating } from '@/domains/fsrs';
-import { IStorage } from '@/infrastructure/storage/storage-types';
+import type { IFsrsEngine} from '@/domains/fsrs';
+import { Rating as FsrsRating } from '@/domains/fsrs';
+import type { IStorage } from '@/infrastructure/storage/storage-types';
 import { eventBus, DomainEventTypes } from '../index';
-import { MemorizationRecord, ReviewLogEntry, WordPerformance, MemorizationTarget, MemorizationTargetType, ContentReference } from './entities';
+import type { MemorizationRecord, ReviewLogEntry, WordPerformance, MemorizationTarget} from './entities';
+import { MemorizationTargetType, ContentReference } from './entities';
 
 export class MemorizationService {
   private storageAdapter: MemorizationStorageAdapter;
@@ -259,7 +261,7 @@ export class MemorizationService {
           rating,
           stability: review.state.stability,
           nextReviewAt: review.due.getTime(),
-          verseCount: isPassage ? (target.reference.endVerse! - target.reference.startVerse! + 1) : 1,
+          verseCount: isPassage ? (target.reference.endVerse! - target.reference.startVerse + 1) : 1,
         },
       });
 

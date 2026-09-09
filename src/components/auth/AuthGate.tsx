@@ -9,7 +9,7 @@
  */
 
 import { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet } from '@/components/ui/Primitives';
 
 interface Props {
   isAuthenticated: boolean;

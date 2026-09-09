@@ -14,11 +14,11 @@ import {
   ActivityIndicator,
   SafeAreaView,
   TextInput,
-} from 'react-native';
+} from '@/components/ui/Primitives';
 import { useAppTheme } from '@/theme/useTheme';
-import { useRouter } from 'expo-router';
+import { useRouter } from '@/hooks/useIonicNavigation';
 import { BibleRepository } from '@/domains/bible/repository';
-import { BibleBook } from '@/domains/bible/schema';
+import type { BibleBook } from '@/domains/bible/schema';
 
 export default function ExploreScreen() {
   const { colors, sp, sh, rad } = useAppTheme();

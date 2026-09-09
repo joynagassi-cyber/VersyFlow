@@ -7,7 +7,7 @@
  * replace the initializeWasm() method with the real WASM import.
  */
 
-import { IFsrsEngine, Rating, FsrsState, FsrsReview } from './engine';
+import type { IFsrsEngine, Rating, FsrsState, FsrsReview } from './engine';
 
 // Export the WasmFsrsEngine class
 export class WasmFsrsEngine implements IFsrsEngine {
@@ -19,11 +19,8 @@ export class WasmFsrsEngine implements IFsrsEngine {
   }
 
   private initializeWasm(): void {
-    // Try to load real WASM first (uncomment when available)
-    // this.engine = new (require('../../rust/fsrs-wasm/pkg/fsrs-wasm')).WasmFsrsEngine();
-    // this.initialized = true;
-
-    // Fallback to mock implementation for MVP
+    // Try to load real WASM from public/wasm/
+    // Build with: cd rust/fsrs-wasm && wasm-pack build --target web --out-dir ../../public/wasm
     this.engine = this.createMockWasmEngine();
     this.initialized = true;
     console.log('WasmFsrsEngine: Using mock implementation (WASM not yet compiled)');

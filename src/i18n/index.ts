@@ -7,5 +7,5 @@ export { SUPPORTED_LANGUAGES, DEFAULT_LANGUAGE, FALLBACK_LANGUAGE, isRTL } from 
 export type { Language } from './config';
 
 // Locale exports (placeholder — full translations in .json files)
-export { fr } from './locales/fr.json';
-export { en } from './locales/en.json';
+export { fr } from './locales/fr';
+export { en } from './locales/en';

@@ -3,7 +3,7 @@
  * Helps adjust difficulty or suggest breaks
  */
 
-import { IFatigueDetector } from '@/domains/memorization/fatigue-detector';
+import type { IFatigueDetector } from '@/domains/memorization/fatigue-detector';
 
 interface FatigueSignal {
   type: 'slow_response' | 'many_errors' | 'rapid_tapping' | 'abandonment';

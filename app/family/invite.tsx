@@ -11,9 +11,10 @@ import {
   TouchableOpacity,
   SafeAreaView,
   Alert,
-} from 'react-native';
-import { useRouter } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
+} from '@/components/ui/Primitives';
+import { useRouter } from '@/hooks/useIonicNavigation';
+import { IonIcon } from '@ionic/react'
+import * as Ionicons from 'ionicons/icons';
 import { useAppTheme } from '@/theme/useTheme';
 import { useFamilyStore } from '@/store/family-store';
 
@@ -31,7 +32,7 @@ export default function FamilyInviteScreen() {
   };
 
   const handleShare = () => {
-    Alert.alert('Partager', 'Fonctionnalité à implémenter avec expo-sharing');
+    Alert.alert('Partager', 'Fonctionnalité à implémenter un service de partage');
   };
 
   if (!family) {

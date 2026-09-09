@@ -10,11 +10,11 @@ import {
   ScrollView,
   SafeAreaView,
   TouchableOpacity,
-} from 'react-native';
+} from '@/components/ui/Primitives';
 import { useAppTheme } from '@/theme/useTheme';
-import { useRouter } from 'expo-router';
+import { useRouter } from '@/hooks/useIonicNavigation';
 import { useComparisonCapability } from '@/capabilities/comparison/store';
-import { MemorizationRecord } from '@/domains/memorization/entities';
+import type { MemorizationRecord } from '@/domains/memorization/entities';
 
 interface Props {
   record: MemorizationRecord;

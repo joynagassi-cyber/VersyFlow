@@ -11,7 +11,8 @@
  */
 
 import { BibleRepository } from '@/domains/bible/repository';
-import { BibleBook, BibleTranslation, BibleVerse } from '@/domains/bible/schema';
+import type { BibleBook, BibleVerse } from '@/domains/bible/schema';
+import { BibleTranslation } from '@/domains/bible/schema';
 import { parseReference, resolveBookId, BOOK_ALIASES } from '@/domains/bible';
 
 /**

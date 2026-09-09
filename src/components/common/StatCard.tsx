@@ -2,7 +2,7 @@
  * Stat Card — Display a single statistic
  */
 
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View, Text } from '@/components/ui/Primitives';
 import { colors, spacing, typography } from '@/tokens';
 
 interface StatCardProps {
@@ -51,5 +51,4 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
 });
-
 

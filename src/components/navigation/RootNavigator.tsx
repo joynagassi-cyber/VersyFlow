@@ -4,7 +4,7 @@
  */
 
 import { useState, useEffect } from 'react';
-import { Stack } from 'expo-router';
+
 import { useAuthStore } from '@/store/auth-store';
 import { useSettingsStore } from '@/store/settings-store';
 import SplashScreen from '@/app/splash';

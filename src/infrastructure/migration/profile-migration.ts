@@ -5,7 +5,7 @@
  * profile-namespaced keys. Creates a default profile for existing users.
  */
 
-import { LearnerProfile } from '@/domains/learner-profile';
+import type { LearnerProfile } from '@/domains/learner-profile';
 import { MmkvStorage } from '@/infrastructure/storage';
 
 export interface MigrationResult {

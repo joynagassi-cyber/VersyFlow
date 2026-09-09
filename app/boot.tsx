@@ -4,8 +4,8 @@
  */
 
 import { useEffect, useState } from 'react';
-import { View, ActivityIndicator, StyleSheet } from 'react-native';
-import { useRouter } from 'expo-router';
+import { View, ActivityIndicator, StyleSheet } from '@/components/ui/Primitives';
+import { useRouter } from '@/hooks/useIonicNavigation';
 import { useAppTheme } from '@/theme/useTheme';
 import { useSettingsStore } from '@/store/settings-store';
 import { useProfileStore } from '@/store/profile-store';

@@ -4,7 +4,7 @@
  */
 
 import React, { createContext, useContext } from 'react';
-import { useColorScheme } from 'react-native';
+import { useColorScheme } from '@/components/ui/Primitives';
 import { Colors, ColorsDark, getThemeColors, type ThemeMode } from './tokens';
 
 interface ThemeContextType {

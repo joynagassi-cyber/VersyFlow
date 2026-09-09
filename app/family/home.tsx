@@ -12,9 +12,10 @@ import {
   ScrollView,
   SafeAreaView,
   Platform,
-} from 'react-native';
-import { useRouter } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
+} from '@/components/ui/Primitives';
+import { useRouter } from '@/hooks/useIonicNavigation';
+import { IonIcon } from '@ionic/react'
+import * as Ionicons from 'ionicons/icons';
 import { useAppTheme } from '@/theme/useTheme';
 import { useFamilyStore } from '@/store/family-store';
 import { useActiveProfile } from '@/hooks/useActiveProfile';

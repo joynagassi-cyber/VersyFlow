@@ -2,8 +2,8 @@
  * Not Found — 404 Fallback Screen
  */
 
-import { Link, Stack } from 'expo-router';
-import { StyleSheet, View, Text } from 'react-native';
+import { Link } from 'react-router-dom';
+import { StyleSheet, View, Text } from '@/components/ui/Primitives';
 import { useAppTheme } from '@/theme/useTheme';
 
 export default function NotFoundScreen() {

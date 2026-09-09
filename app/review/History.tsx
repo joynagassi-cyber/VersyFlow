@@ -13,10 +13,11 @@ import {
   SafeAreaView,
   ActivityIndicator,
   Platform,
-} from 'react-native';
+} from '@/components/ui/Primitives';
 import { useAppTheme } from '@/theme/useTheme';
-import { useRoute, useRouter } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
+import { useRoute, useRouter } from '@/hooks/useIonicNavigation';
+import { IonIcon } from '@ionic/react'
+import * as Ionicons from 'ionicons/icons';
 import { FsrsRating } from '@/domains/fsrs';
 
 interface ReviewLogEntry {

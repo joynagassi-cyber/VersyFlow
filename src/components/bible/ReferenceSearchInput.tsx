@@ -20,7 +20,7 @@ import {
   Text,
   StyleSheet,
   Keyboard,
-} from 'react-native';
+} from '@/components/ui/Primitives';
 import { resolveBookId } from '@/domains/bible';
 
 export interface ReferenceSearchInputProps {

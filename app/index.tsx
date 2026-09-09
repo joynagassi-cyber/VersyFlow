@@ -4,7 +4,7 @@
  */
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'expo-router';
+import { useRouter } from '@/hooks/useIonicNavigation';
 import { useAuthStore } from '@/store/auth-store';
 import { useSettingsStore } from '@/store/settings-store';
 import SplashScreen from '@/app/splash';

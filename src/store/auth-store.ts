@@ -1,3 +1,4 @@
+import { capacitorStorage } from '@/infrastructure/storage';
 /**
  * Auth Store — User Authentication State Management
  * Handles login, signup, logout, and session persistence
@@ -5,7 +6,8 @@
 
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import { InsForgeAuthService, UserProfile, AuthError } from '@/auth';
+import type { UserProfile} from '@/auth';
+import { SupabaseAuthService, AuthError } from '@/auth';
 
 interface AuthState {
   user: UserProfile | null;
@@ -24,7 +26,7 @@ interface AuthState {
 }
 
 // Auth service singleton
-const authService = new InsForgeAuthService();
+const authService = new SupabaseAuthService();
 
 export const useAuthStore = create<AuthState>()(
   persist(
@@ -112,16 +114,16 @@ export const useAuthStore = create<AuthState>()(
       name: 'versyflow-auth-storage',
       storage: createJSONStorage(() => ({
         getItem: async (key: string) => {
-          const { default: AsyncStorage } = await import('@react-native-async-storage/async-storage');
+          const { default: AsyncStorage } = Promise.resolve({ getItem: (k: string) => capacitorStorage.get(k), setItem: (k: string, v: string) => capacitorStorage.set(k, v), removeItem: (k: string) => capacitorStorage.delete(k) });
           const value = await AsyncStorage.getItem(key);
           return value ? JSON.parse(value) : null;
         },
         setItem: async (key: string, value: string) => {
-          const { default: AsyncStorage } = await import('@react-native-async-storage/async-storage');
+          const { default: AsyncStorage } = Promise.resolve({ getItem: (k: string) => capacitorStorage.get(k), setItem: (k: string, v: string) => capacitorStorage.set(k, v), removeItem: (k: string) => capacitorStorage.delete(k) });
           await AsyncStorage.setItem(key, value);
         },
         removeItem: async (key: string) => {
-          const { default: AsyncStorage } = await import('@react-native-async-storage/async-storage');
+          const { default: AsyncStorage } = Promise.resolve({ getItem: (k: string) => capacitorStorage.get(k), setItem: (k: string, v: string) => capacitorStorage.set(k, v), removeItem: (k: string) => capacitorStorage.delete(k) });
           await AsyncStorage.removeItem(key);
         },
       })),

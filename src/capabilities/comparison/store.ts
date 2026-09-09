@@ -3,7 +3,7 @@
  */
 
 import { create } from 'zustand';
-import { VerificationResult } from '@/domains/memorization/entities';
+import type { VerificationResult } from '@/domains/memorization/entities';
 
 export interface ComparisonCapabilityState {
   lastVerification: VerificationResult | null;
@@ -95,7 +95,7 @@ export const useComparisonCapability = create<ComparisonCapabilityState>(
       };
 
       set({
-        lastVerification: result as any,
+        lastVerification: result,
         isVerifying: false,
       });
 

@@ -3,8 +3,8 @@
  * Business logic for profile CRUD and selection
  */
 
-import { LearnerProfile, ProfileStatus } from './entities';
-import { ILearnerProfileRepository } from './repository';
+import type { LearnerProfile, ProfileStatus } from './entities';
+import type { ILearnerProfileRepository } from './repository';
 import { eventBus, DomainEventTypes } from '@/domains';
 
 export class LearnerProfileService {

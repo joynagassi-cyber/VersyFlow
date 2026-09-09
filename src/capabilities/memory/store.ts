@@ -4,7 +4,7 @@
  */
 
 import { create } from 'zustand';
-import { ExerciseStrategy, SessionState } from '@/domains/memorization/entities';
+import type { ExerciseStrategy, SessionState } from '@/domains/memorization/entities';
 
 export interface MemoryCapabilityState {
   currentStrategy: ExerciseStrategy;

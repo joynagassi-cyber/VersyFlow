@@ -12,12 +12,13 @@ import {
   Modal,
   ScrollView,
   Platform,
-} from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+} from '@/components/ui/Primitives';
+import { IonIcon } from '@ionic/react'
+import * as Ionicons from 'ionicons/icons';
 import { useAppTheme } from '@/theme/useTheme';
 import { useContextStore } from '@/store/context-store';
 import { useFamilyStore } from '@/store/family-store';
-import { useRouter } from 'expo-router';
+import { useRouter } from '@/hooks/useIonicNavigation';
 import { useSessionSafety } from '@/hooks/useSessionSafety';
 
 export function ContextSwitcher() {

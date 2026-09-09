@@ -8,7 +8,7 @@
 
 import { WasmFsrsEngine } from '@/domains/fsrs/wasm-engine';
 import { Sm2FallbackEngine } from '@/domains/fsrs/fallback-engine';
-import { IFsrsEngine } from '@/domains/fsrs/engine';
+import type { IFsrsEngine } from '@/domains/fsrs/engine';
 
 let _engine: IFsrsEngine | null = null;
 let _wasmLoaded = false;

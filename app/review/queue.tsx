@@ -15,13 +15,15 @@ import {
   ActivityIndicator,
   ScrollView,
   Platform,
-} from 'react-native';
+} from '@/components/ui/Primitives';
 import { useAppTheme } from '@/theme/useTheme';
-import { useRouter } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from '@/hooks/useIonicNavigation';
+import { IonIcon } from '@ionic/react'
+import * as Ionicons from 'ionicons/icons';
 import { useI18n } from '@/hooks/useI18n';
 import { MemorizationService } from '@/domains/memorization/service';
-import { IFsrsEngine, Sm2FallbackEngine } from '@/domains/fsrs';
+import type { IFsrsEngine} from '@/domains/fsrs';
+import { Sm2FallbackEngine } from '@/domains/fsrs';
 import { MmkvStorage } from '@/infrastructure/storage';
 import { getFsrsEngine } from '@/services/fsrs-factory';
 

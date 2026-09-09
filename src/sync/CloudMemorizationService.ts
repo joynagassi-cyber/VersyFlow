@@ -7,14 +7,15 @@
 
 import { MemorizationStorageAdapter } from '@/domains/memorization/storage-adapter';
 import { fsrsRatingToString } from '@/domains/memorization/entities';
-import { CloudSyncService } from './CloudSyncService';
-import {
+import type { CloudSyncService } from './CloudSyncService';
+import type {
   MemorizationRecord,
   ReviewLogEntry,
   WordPerformance,
 } from '@/domains/memorization/entities';
-import { IFsrsEngine, Rating } from '@/domains/fsrs';
-import { IStorage } from '@/infrastructure/storage/storage-types';
+import type { IFsrsEngine} from '@/domains/fsrs';
+import { Rating } from '@/domains/fsrs';
+import type { IStorage } from '@/infrastructure/storage/storage-types';
 import { MmkvStorage } from '@/infrastructure/storage';
 
 export class CloudMemorizationService {

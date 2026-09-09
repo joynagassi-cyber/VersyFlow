@@ -5,13 +5,13 @@
  * Phase 8: Profile-scoped (FAM-INT-001)
  */
 
-import { IFsrsEngine } from '@/domains/fsrs';
-import { MemorizationService, MemorizationRecord } from '@/domains/memorization';
-import { IFatigueDetector } from '@/domains/memorization/fatigue-detector';
-import { IStrategyRecommendor } from '@/domains/memorization/strategy-recommendor';
+import type { IFsrsEngine } from '@/domains/fsrs';
+import type { MemorizationService, MemorizationRecord } from '@/domains/memorization';
+import type { IFatigueDetector } from '@/domains/memorization/fatigue-detector';
+import type { IStrategyRecommendor } from '@/domains/memorization/strategy-recommendor';
 import { FatigueDetector } from '@/services/fatigue-detector';
 import { StrategyRecommendor } from '@/services/strategy-recommender';
-import { ExerciseStrategy } from '@/domains/memorization/entities';
+import type { ExerciseStrategy } from '@/domains/memorization/entities';
 
 /**
  * Priority rule for a review item

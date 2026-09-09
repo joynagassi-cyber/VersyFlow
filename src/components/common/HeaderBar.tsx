@@ -2,7 +2,7 @@
  * Header Bar — Standard screen header
  */
 
-import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity } from '@/components/ui/Primitives';
 
 interface HeaderBarProps {
   title: string;

@@ -14,10 +14,11 @@ import {
   ActivityIndicator,
   TouchableOpacity,
   Platform,
-} from 'react-native';
+} from '@/components/ui/Primitives';
 import { useAppTheme } from '@/theme/useTheme';
-import { useRouter } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from '@/hooks/useIonicNavigation';
+import { IonIcon } from '@ionic/react'
+import * as Ionicons from 'ionicons/icons';
 import { useAnalyticsCapability } from '@/capabilities/analytics/store';
 import { useI18n } from '@/hooks/useI18n';
 

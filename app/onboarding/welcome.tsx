@@ -3,9 +3,9 @@
  * See docs/08-ui-screens.md §1
  */
 
-import { StyleSheet, View, Text, TouchableOpacity, ScrollView } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, ScrollView } from '@/components/ui/Primitives';
 import { useAppTheme } from '@/theme/useTheme';
-import { useRouter } from 'expo-router';
+import { useRouter } from '@/hooks/useIonicNavigation';
 
 export default function WelcomeScreen() {
   const { colors, sp, sh, rad } = useAppTheme();

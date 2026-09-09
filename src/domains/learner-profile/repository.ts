@@ -6,7 +6,7 @@
  * See: docs/30-domain-rulebook.md (Règle D-ENT-2)
  */
 
-import { LearnerProfile } from './entities';
+import type { LearnerProfile } from './entities';
 
 export interface ILearnerProfileRepository {
   /** Retrieve a profile by its unique ID */

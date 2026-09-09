@@ -3,8 +3,8 @@
  * See docs/06-design-system.md (ButtonPrimary) + docs/07-design-tokens.md
  */
 
-import { StyleSheet, Text, TouchableOpacity } from 'react-native';
-import { ActivityIndicator } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity } from '@/components/ui/Primitives';
+import { ActivityIndicator } from '@/components/ui/Primitives';
 import { colors, radius, spacing } from '@/tokens';
 
 interface ButtonPrimaryProps {

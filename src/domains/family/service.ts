@@ -3,8 +3,8 @@
  * Business logic for family CRUD and member management
  */
 
-import { Family, FamilyMembership, FamilyRole, MembershipStatus } from './entities';
-import { IFamilyRepository } from './repository';
+import type { Family, FamilyMembership, FamilyRole, MembershipStatus } from './entities';
+import type { IFamilyRepository } from './repository';
 import { eventBus, DomainEventTypes } from '@/domains';
 
 export class FamilyService {

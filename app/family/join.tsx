@@ -12,9 +12,10 @@ import {
   TextInput,
   SafeAreaView,
   Alert,
-} from 'react-native';
-import { useRouter } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
+} from '@/components/ui/Primitives';
+import { useRouter } from '@/hooks/useIonicNavigation';
+import { IonIcon } from '@ionic/react'
+import * as Ionicons from 'ionicons/icons';
 import { useAppTheme } from '@/theme/useTheme';
 
 export default function FamilyJoinScreen() {
@@ -37,7 +38,7 @@ export default function FamilyJoinScreen() {
   };
 
   const handleScan = () => {
-    Alert.alert('Scanner', 'Fonctionnalité QR Code à implémenter avec expo-camera');
+    Alert.alert('Scanner', 'Fonctionnalité QR Code à implémenter la caméra');
   };
 
   return (

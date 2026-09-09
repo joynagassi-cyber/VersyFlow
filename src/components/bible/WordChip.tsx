@@ -4,7 +4,7 @@
  */
 
 import { ReactNode } from 'react';
-import { TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { TouchableOpacity, Text, StyleSheet } from '@/components/ui/Primitives';
 
 export interface WordChipProps {
   word: string;

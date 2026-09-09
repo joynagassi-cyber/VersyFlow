@@ -5,7 +5,7 @@
 
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import { LearnerProfile } from '@/domains/learner-profile';
+import type { LearnerProfile } from '@/domains/learner-profile';
 
 interface ProfileState {
   activeProfileId: string | null;

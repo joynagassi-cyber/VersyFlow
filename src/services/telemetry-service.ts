@@ -6,9 +6,9 @@
  * Queue-based persistence, fire-and-forget, non-blocking for critical paths
  */
 
-import { IStorage } from '@/infrastructure/storage/storage-types';
-import { TelemetryQueueItem, TelemetrySummary } from '@/domains/telemetry/entities';
-import { ITelemetry } from '@/domains/telemetry/it telemetry';
+import type { IStorage } from '@/infrastructure/storage/storage-types';
+import type { TelemetryQueueItem, TelemetrySummary } from '@/domains/telemetry/entities';
+import type { ITelemetry } from '@/domains/telemetry/it telemetry';
 
 /** Maximum queue size before dropping oldest events */
 const MAX_QUEUE_SIZE = 1000;

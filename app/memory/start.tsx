@@ -10,10 +10,10 @@ import {
   StyleSheet,
   ScrollView,
   SafeAreaView,
-} from 'react-native';
+} from '@/components/ui/Primitives';
 import { useAppTheme } from '@/theme/useTheme';
-import { useRouter } from 'expo-router';
-import { ExerciseStrategy } from '@/domains/memorization/entities';
+import { useRouter } from '@/hooks/useIonicNavigation';
+import type { ExerciseStrategy } from '@/domains/memorization/entities';
 
 interface Props {
   verseData: {

@@ -2,7 +2,7 @@
  * Primitive Button — Secondary Action
  */
 
-import { StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity } from '@/components/ui/Primitives';
 import { colors, radius, spacing } from '@/tokens';
 
 interface ButtonSecondaryProps {

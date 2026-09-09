@@ -8,11 +8,13 @@
  */
 
 import { useState, useCallback, useEffect, useRef } from 'react';
-import { IFsrsEngine, Rating } from '@/domains/fsrs';
+import type { IFsrsEngine} from '@/domains/fsrs';
+import { Rating } from '@/domains/fsrs';
 import { getFsrsEngine } from '@/services/fsrs-factory';
-import { IStorage } from '@/infrastructure/storage/storage-types';
+import type { IStorage } from '@/infrastructure/storage/storage-types';
 import { MemorizationService } from '@/domains/memorization/service';
-import { ExerciseStrategy, DEFAULT_MVP_STRATEGY, MemorizationTarget, MemorizationTargetType } from '@/domains/memorization/entities';
+import type { ExerciseStrategy, MemorizationTarget, MemorizationTargetType } from '@/domains/memorization/entities';
+import { DEFAULT_MVP_STRATEGY } from '@/domains/memorization/entities';
 import { useSettingsStore } from '@/store/settings-store';
 import { SessionEngine } from '@/domains/memorization/session-engine';
 

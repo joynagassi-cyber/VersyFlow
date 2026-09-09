@@ -7,8 +7,8 @@
  * The MemorizationService passes a keyPrefix (profile-scoped) or empty prefix (cloud).
  */
 
-import { IStorage } from '@/infrastructure/storage/storage-types';
-import { MemorizationRecord, ReviewLogEntry } from './entities';
+import type { IStorage } from '@/infrastructure/storage/storage-types';
+import type { MemorizationRecord, ReviewLogEntry } from './entities';
 
 /** Maximum retry count for read-modify-write operations */
 const MAX_RETRY_ATTEMPTS = 3;

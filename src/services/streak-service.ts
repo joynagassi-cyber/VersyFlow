@@ -4,7 +4,7 @@
  */
 
 import { eventBus, DomainEventTypes } from '@/domains';
-import { MemorizationService } from '@/domains/memorization';
+import type { MemorizationService } from '@/domains/memorization';
 
 export class StreakService {
   constructor(

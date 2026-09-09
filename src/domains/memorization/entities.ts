@@ -3,7 +3,8 @@
  * See docs/MEMORY_ENGINE_SPEC.md for complete memory engine specification
  */
 
-import { FsrsState, Rating } from '@/domains/fsrs';
+import type { FsrsState} from '@/domains/fsrs';
+import { Rating } from '@/domains/fsrs';
 
 /**
  * Map FSRS Rating enum to string representation for logging/storage

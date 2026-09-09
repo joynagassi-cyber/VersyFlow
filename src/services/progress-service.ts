@@ -4,13 +4,15 @@
  * See docs/25-retrieval-analytics-spec.md
  */
 
-import { MemorizationService } from '@/domains/memorization/service';
-import { MemorizationRecord } from '@/domains/memorization/entities';
-import { IFsrsEngine } from '@/domains/fsrs';
-import { ITelemetry } from '@/domains/telemetry/it telemetry';
+import type { MemorizationService } from '@/domains/memorization/service';
+import type { MemorizationRecord } from '@/domains/memorization/entities';
+import type { IFsrsEngine } from '@/domains/fsrs';
+import type { ITelemetry } from '@/domains/telemetry/it telemetry';
 import { StreakService } from './streak-service';
-import { MilestoneService, Milestone } from './milestone-service';
-import { StatsCalculator, ProgressStats } from './stats-calculator';
+import type { Milestone } from './milestone-service';
+import { MilestoneService } from './milestone-service';
+import type { ProgressStats } from './stats-calculator';
+import { StatsCalculator } from './stats-calculator';
 
 export type { ProgressStats, Milestone } from './stats-calculator';
 export type { Milestone as MilestoneType } from './milestone-service';

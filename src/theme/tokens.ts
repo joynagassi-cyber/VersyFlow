@@ -4,7 +4,7 @@
  * Do NOT hardcode colors in components — always use these tokens
  */
 
-import { Platform } from 'react-native';
+import { Platform } from '@/components/ui/Primitives';
 
 // ─── Color Palette ───────────────────────────────────────────────────────────
 

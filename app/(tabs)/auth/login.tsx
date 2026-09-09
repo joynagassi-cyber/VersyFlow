@@ -12,10 +12,10 @@ import {
   ActivityIndicator,
   SafeAreaView,
   Alert,
-} from 'react-native';
+} from '@/components/ui/Primitives';
 import { useAppTheme } from '@/theme/useTheme';
-import { useRouter } from 'expo-router';
-import { InsForgeAuthService } from '@/auth';
+import { useRouter } from '@/hooks/useIonicNavigation';
+import { SupabaseAuthService } from '@/auth';
 
 interface Props {
   onSkip?: () => void;
@@ -29,7 +29,7 @@ export default function LoginScreen({ onSkip }: Props) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const auth = new InsForgeAuthService();
+  const auth = new SupabaseAuthService();
 
   const handleLogin = async () => {
     if (!email || !password) {

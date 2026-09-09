@@ -3,7 +3,7 @@
  * See docs/06-design-system.md (CardVerse)
  */
 
-import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity } from '@/components/ui/Primitives';
 
 type VerseStatus = 'new' | 'in-progress' | 'mastered';
 
@@ -86,5 +86,4 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
 });
-
 

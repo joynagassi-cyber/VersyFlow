@@ -1,89 +1,68 @@
 {
   "name": "versyflow",
   "version": "0.1.0",
-  "description": "VersyFlow — Application de mémorisation de versets bibliques",
-  "main": "app/index.tsx",
+  "description": "VersyFlow â€” Application de mÃ©morisation de versets bibliques",
   "license": "MIT",
-  "tools": [
-    "expo-cli"
-  ],
   "scripts": {
-    "start": "expo start",
-    "android": "expo run:android",
-    "ios": "expo run:ios",
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --ext .ts,.tsx",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage",
-    "workflow": "node scripts/workflow.js",
-    "sprint": "node scripts/workflow.js sprint",
-    "task": "node scripts/workflow.js task",
-    "monitor": "node scripts/workflow.js monitor",
-    "release": "node scripts/workflow.js release"
+    "test": "vitest run",
+    "cap:add:android": "capacitor add android",
+    "cap:add:ios": "capacitor add ios",
+    "cap:sync": "capacitor sync",
+    "cap:open:android": "capacitor open android",
+    "cap:open:ios": "capacitor open ios",
+    "cap:run:android": "capacitor run android",
+    "cap:run:ios": "capacitor run ios",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
-    "@expo/metro-runtime": "^5.0.0",
-    "@insforge/sdk": "1.5.1",
+    "@capacitor/app": "^6.0.0",
+    "@capacitor/core": "^6.2.0",
+    "@capacitor/haptics": "^6.0.0",
+    "@capacitor/keyboard": "^6.0.0",
+    "@capacitor/network": "^6.0.0",
+    "@capacitor/splash-screen": "^6.0.0",
+    "@capacitor/status-bar": "^6.0.0",
+    "@ionic/react": "^7.0.0",
+    "@ionic/react-router": "^7.0.0",
     "@shopify/flash-list": "^1.7.1",
-    "expo": "~54.0.0",
-    "expo-async-storage": "^0.0.0",
-    "expo-constants": "~17.0.8",
-    "expo-font": "~13.0.0",
-    "expo-haptics": "~14.0.1",
-    "expo-localization": "~15.0.2",
-    "expo-router": "~5.0.0",
-    "expo-status-bar": "~2.0.0",
+    "@supabase/supabase-js": "^2.116.0",
+    "history": "^5.3.0",
     "i18next": "^24.0.0",
+    "ionicons": "^7.0.0",
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "react-i18next": "^15.0.0",
-    "react-native": "0.76.0",
-    "react-native-reanimated": "~3.3.0",
-    "react-native-safe-area-context": "^5.8.0",
-    "react-native-web": "^0.19.13",
+    "react-router-dom": "^6.28.0",
     "zod": "^3.22.0",
     "zustand": "^5.0.0"
   },
   "devDependencies": {
-    "@babel/preset-typescript": "^7.26.0",
+    "@capacitor/cli": "^6.2.0",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.3",
     "@types/node": "^20.0.0",
     "@types/react": "^18.3.0",
-    "@types/react-native": "^0.72.0",
+    "@types/react-router-dom": "^5.3.3",
     "@typescript-eslint/eslint-plugin": "^7.0.0",
     "@typescript-eslint/parser": "^7.0.0",
+    "@vitejs/plugin-react": "^4.3.0",
+    "@vitest/coverage-v8": "^3.2.7",
+    "@vitest/ui": "^3.2.7",
     "eslint": "^8.56.0",
     "eslint-plugin-import": "^2.32.0",
     "husky": "^9.0.6",
     "jest": "^29.7.0",
-    "jest-expo": "^54.0.0",
+    "jsdom": "^25.0.1",
     "lint-staged": "^15.2.0",
     "prettier": "^3.2.5",
-    "typescript": "5.6.2"
-  },
-  "expo": {
-    "name": "VersyFlow",
-    "slug": "versyflow",
-    "version": "0.1.0",
-    "orientation": "portrait",
-    "icon": "./assets/app-icon.png",
-    "presenter": {
-      "url": "https://expo.dev/@joe/versyflow"
-    },
-    "updates": {
-      "enabled": false
-    },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
-    "ios": {
-      "supportsTablet": true
-    },
-    "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon-foreground.png",
-        "backgroundImage": "./assets/adaptive-icon-background.png"
-      }
-    }
+    "typescript": "5.6.2",
+    "vite": "^6.0.0",
+    "vitest": "^3.2.7"
   }
 }
