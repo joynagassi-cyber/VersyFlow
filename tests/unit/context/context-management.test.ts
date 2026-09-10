@@ -3,22 +3,28 @@
  * Tests session safety and context switching
  */
 
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { useSessionSafety } from '@/hooks/useSessionSafety';
 import { useContextStore } from '@/store/context-store';
+import { useMemoryCapability } from '@/capabilities/memory/store';
 
-// Mock the hooks
-jest.mock('@/capabilities/memory/store', () => ({
-  useMemoryCapability: jest.fn(() => ({
+// Mock the memory capability store
+vi.mock('@/capabilities/memory/store', () => ({
+  useMemoryCapability: vi.fn(() => ({
     sessionState: null,
   })),
 }));
 
 describe('Context Management', () => {
+  beforeEach(() => {
+    // Reset mocks before each test
+    vi.clearAllMocks();
+  });
+
   describe('useSessionSafety', () => {
     it('should detect no active session when sessionState is null', () => {
       // Mock sessionState is null
-      const { useMemoryCapability } = require('@/capabilities/memory/store');
-      useMemoryCapability.mockReturnValue({ sessionState: null });
+      vi.mocked(useMemoryCapability).mockReturnValue({ sessionState: null });
 
       // In a real test, we would render the hook
       // For now, we verify the logic directly
@@ -69,7 +75,6 @@ describe('Context Management', () => {
 
   describe('Context Store', () => {
     it('should default to personal context', () => {
-      const { useContextStore } = require('@/store/context-store');
       const initialState = useContextStore.getState();
 
       expect(initialState.activeContext).toBe('personal');
@@ -78,7 +83,6 @@ describe('Context Management', () => {
     });
 
     it('should switch to family context', () => {
-      const { useContextStore } = require('@/store/context-store');
       const { switchToFamily } = useContextStore.getState();
 
       // This would need a proper test setup with zustand
@@ -87,7 +91,6 @@ describe('Context Management', () => {
     });
 
     it('should switch to personal context', () => {
-      const { useContextStore } = require('@/store/context-store');
       const { switchToPersonal } = useContextStore.getState();
 
       expect(typeof switchToPersonal).toBe('function');
@@ -95,7 +98,6 @@ describe('Context Management', () => {
 
     it('should have session safety methods', () => {
       // Verify the context store has the needed methods
-      const { useContextStore } = require('@/store/context-store');
       const state = useContextStore.getState();
 
       expect(state.setContext).toBeDefined();

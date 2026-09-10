@@ -7,7 +7,7 @@
  */
 
 import type { IStorage } from '@/infrastructure/storage/storage-types';
-import type { TelemetryQueueItem, TelemetrySummary } from '@/domains/telemetry/entities';
+import type { TelemetryEvent, TelemetryQueueItem, TelemetrySummary } from '@/domains/telemetry/entities';
 import type { ITelemetry } from '@/domains/telemetry/it telemetry';
 
 /** Maximum queue size before dropping oldest events */
@@ -44,7 +44,7 @@ export class TelemetryService implements ITelemetry {
         sessionId: this.sessionId,
         userId: this.userId,
         payload,
-      } as any,
+      } as TelemetryEvent,
       queuedAt: Date.now(),
       sent: false,
     });

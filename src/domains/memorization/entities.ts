@@ -193,6 +193,12 @@ export interface WordPerformance {
 
   /** Word itself (for debugging/display) */
   word: string;
+
+  /** Total attempts (correct + failed) — legacy field for recommendStrategy API */
+  totalAttempts?: number;
+
+  /** Error count (alias for failedRecalls) — legacy field for recommendStrategy API */
+  errorCount?: number;
 }
 
 // ====================
@@ -211,6 +217,9 @@ export type ExerciseStrategy =
   | 'overlearning'            // V1: continue after mastery threshold
   | 'heat-words'              // V1: highlight words frequently missed
   | 'memory-fingerprint'      // V1: personalized pattern of words always forgotten
+  | 'smart-masking'           // Strategy recommendation: targeted masking for error-prone verses
+  | 'flashcard'               // Strategy recommendation: flashcard mode for high stability
+  | 'recall-writing';         // Strategy recommendation: recall-writing for mastery practice
 
 /** Default strategy for MVP */
 export const DEFAULT_MVP_STRATEGY: ExerciseStrategy = 'progressive-masking';

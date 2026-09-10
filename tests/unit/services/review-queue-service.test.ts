@@ -5,20 +5,20 @@
 
 import { ReviewQueueService } from '@/services/review-queue-service';
 import { MemorizationService } from '@/domains/memorization/service';
-import { MmkvStorage } from '@/infrastructure/storage';
-import { Sm2FallbackEngine } from '@/domains/fsrs';
+import { LocalStorageAdapter } from '@/infrastructure/storage';
+import { TsFsrsEngine } from '@/domains/fsrs';
 
 describe('ReviewQueueService', () => {
   let service: ReviewQueueService;
-  let storage: MmkvStorage;
+  let storage: LocalStorageAdapter;
   let memorizationService: MemorizationService;
-  let fsrsEngine: Sm2FallbackEngine;
+  let fsrsEngine: TsFsrsEngine;
 
   beforeEach(() => {
-    storage = new MmkvStorage();
-    fsrsEngine = new Sm2FallbackEngine();
-    memorizationService = new MemorizationService(storage, fsrsEngine);
-    service = new ReviewQueueService(memorizationService, fsrsEngine);
+    storage = new LocalStorageAdapter();
+    fsrsEngine = new TsFsrsEngine();
+    memorizationService = new MemorizationService(storage, fsrsEngine, 'default');
+    service = new ReviewQueueService(memorizationService, fsrsEngine, 'default');
   });
 
   afterEach(async () => {
@@ -65,7 +65,7 @@ describe('ReviewQueueService', () => {
         favorite: false,
       };
 
-      await memorizationService.saveRecord(record);
+      await memorizationService.saveMemorizedRecord(record);
       
       // Act
       const queue = await service.getPrioritizedQueue();
@@ -106,7 +106,7 @@ describe('ReviewQueueService', () => {
         favorite: false,
       };
 
-      await memorizationService.saveRecord(record);
+      await memorizationService.saveMemorizedRecord(record);
       
       // Act
       const queue = await service.getPrioritizedQueue();

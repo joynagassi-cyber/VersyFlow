@@ -8,8 +8,240 @@ import type { SessionState, VerificationResult, ExerciseStrategy, MaskingConfig,
 import { SessionPhase, DEFAULT_MVP_STRATEGY, getMaskingConfigForStability } from './entities';
 import { ComparisonEngine } from './comparison-engine';
 import type { IWordFailureTracker } from './tracker';
-import { WordFailureTracker } from '@/services/word-failure-tracker';
 import { Rating } from '@/domains/fsrs';
+import type { ILocalBibleRepository, BibleVerseData } from '@/domains/bible';
+import type { IFsrsEngine, FsrsState, FsrsReview } from '@/domains/fsrs';
+import type { MemorizationRecord } from './entities';
+
+// =====================================================================
+// PassageMemorizationEngine types
+// =====================================================================
+
+/** Verse data snapshot loaded during session start */
+export interface VerseData {
+  bookId: string;
+  chapter: number;
+  verse: number;
+  text: string;
+  translationId: string;
+}
+
+/** Parameters for starting a passage memorization session */
+export interface PassageTargetParams {
+  bookId: string;
+  chapter: number;
+  verseStart: number;
+  verseEnd: number;
+  translationId: string;
+  /** Identifier of the learner profile (for record scoping) */
+  learnerProfileId: string;
+}
+
+/** Optional records to initialize the engine with (preserves translation history) */
+export interface PassageStartOptions {
+  /** Pre-existing records keyed by (bookId:chapter:verse:translationId) */
+  initialRecords?: MemorizationRecord[];
+}
+
+/** Interface for the passage-level session engine */
+export interface IMemorizationSessionEngine {
+  /** Start a passage session by loading all verses from the bible repo */
+  startPassage(params: PassageTargetParams, options?: PassageStartOptions): Promise<void>;
+  /** Move to next verse; returns false if already at last verse */
+  nextVerse(): boolean;
+  /** Move to previous verse; returns false if already at first verse */
+  prevVerse(): boolean;
+  /** Rate the current verse with FSRS. Returns the built MemorizationRecord (null on guard). */
+  rateCurrentVerse(rating: Rating): Promise<MemorizationRecord | null>;
+  /** Get data for the currently displayed verse */
+  getCurrentVerseData(): VerseData | null;
+  /** Get overall passage progress in [0, 1] */
+  getProgress(): number;
+  /** Check if all verses have been rated */
+  isComplete(): boolean;
+  /** Abandon the session without saving */
+  abandon(): void;
+  /** Total number of verses in the passage */
+  getTotalVerses(): number;
+}
+
+/**
+ * MemorizationSessionEngine — passage-level orchestrator.
+ * Loads verses from ILocalBibleRepository, calls IFsrsEngine for scheduling,
+ * and builds MemorizationRecord objects for persistence.
+ * Pure domain logic — zero UI dependencies.
+ */
+export class MemorizationSessionEngine implements IMemorizationSessionEngine {
+  private verses: VerseData[] = [];
+  private currentIndex: number = 0;
+  private phase: 'idle' | 'preview' | 'rated' = 'idle';
+  private completedCount: number = 0;
+  private passageParams: PassageTargetParams | null = null;
+  private records: MemorizationRecord[] = [];
+  private abandoned: boolean = false;
+
+  constructor(
+    private readonly bibleRepo: ILocalBibleRepository,
+    private readonly fsrsEngine: IFsrsEngine,
+  ) {}
+
+  // ---- startPassage ----
+
+  async startPassage(params: PassageTargetParams, options?: PassageStartOptions): Promise<void> {
+    const { bookId, chapter, verseStart, verseEnd, translationId, learnerProfileId } = params;
+
+    if (verseEnd < verseStart) {
+      throw new Error(`Passage range invalid: endVerse(${verseEnd}) < startVerse(${verseStart})`);
+    }
+
+    const loaded: VerseData[] = [];
+    for (let v = verseStart; v <= verseEnd; v++) {
+      const raw = await this.bibleRepo.getVerse(translationId, bookId, chapter, v);
+      if (!raw) {
+        throw new Error(`Verse ${v} not found in ${bookId}:${chapter} (${translationId})`);
+      }
+      loaded.push({
+        bookId,
+        chapter,
+        verse: v,
+        text: raw.text,
+        translationId,
+      });
+    }
+
+    this.verses = loaded;
+    this.currentIndex = 0;
+    this.phase = 'preview';
+    this.completedCount = 0;
+    this.records = options?.initialRecords ?? [];
+    this.abandoned = false;
+    this.passageParams = { bookId, chapter, verseStart, verseEnd, translationId, learnerProfileId };
+  }
+
+  // ---- navigation ----
+
+  nextVerse(): boolean {
+    if (this.verses.length <= 1 || this.currentIndex >= this.verses.length - 1) return false;
+    this.currentIndex++;
+    this.phase = 'preview';
+    return true;
+  }
+
+  prevVerse(): boolean {
+    if (this.currentIndex <= 0) return false;
+    this.currentIndex--;
+    this.phase = 'preview';
+    return true;
+  }
+
+  // ---- rating / scoring ----
+
+  async rateCurrentVerse(rating: Rating): Promise<MemorizationRecord | null> {
+    if (this.verses.length === 0 || this.phase === 'idle' || this.abandoned) return null;
+    if (!this.passageParams) return null;
+
+    const verse = this.verses[this.currentIndex];
+    const recordKey = `${verse.bookId}:${verse.chapter}:${verse.verse}:${verse.translationId}`;
+
+    // Load existing state if present, else new
+    const existingRecord = this.records.find(r => r.id === recordKey);
+    let priorState: FsrsState;
+    if (existingRecord) {
+      priorState = existingRecord.fsrsState;
+    } else {
+      priorState = await this.fsrsEngine.newState(0);
+    }
+
+    const review = await this.fsrsEngine.review(priorState, rating);
+
+    const newRecord: MemorizationRecord = {
+      id: recordKey,
+      learnerProfileId: this.passageParams.learnerProfileId,
+      bookId: verse.bookId,
+      chapterNumber: verse.chapter,
+      verseNumber: verse.verse,
+      endVerse: this.passageParams.verseEnd,
+      translationId: verse.translationId,
+      bibleVerseReference: this.buildReference(verse),
+      bibleVerseText: verse.text,
+      verseTexts: this.verses.map(v => v.text),
+      status: 'new',
+      fsrsState: review.state,
+      favorite: false,
+      tags: [],
+      createdAt: Date.now(),
+      lastReviewedAt: Date.now(),
+      nextReviewAt: review.due.getTime(),
+      reviewCount: existingRecord ? (existingRecord.reviewCount + 1) : 1,
+      totalReviewMinutes: 0,
+      wordPerformance: [],
+      targetId: recordKey,
+      targetType: 'passage',
+    };
+
+    this.records.push(newRecord);
+    this.completedCount++;
+    this.phase = 'rated';
+    return newRecord;
+  }
+
+  // ---- getters ----
+
+  getCurrentVerseData(): VerseData | null {
+    if (this.verses.length === 0) return null;
+    return this.verses[this.currentIndex];
+  }
+
+  getProgress(): number {
+    const total = this.verses.length;
+    if (total === 0) return 0;
+    return this.completedCount / total;
+  }
+
+  isComplete(): boolean {
+    return this.completedCount >= this.verses.length && this.verses.length > 0;
+  }
+
+  getTotalVerses(): number {
+    return this.verses.length;
+  }
+
+  getCurrentVerseIndex(): number {
+    return this.currentIndex;
+  }
+
+  getPhase(): 'idle' | 'preview' | 'rated' {
+    return this.phase;
+  }
+
+  getRecords(): MemorizationRecord[] {
+    return this.records;
+  }
+
+  // ---- abandon ----
+
+  abandon(): void {
+    this.abandoned = true;
+    this.phase = 'idle';
+    this.records = [];
+    this.completedCount = 0;
+  }
+
+  // ---- helpers ----
+
+  private buildReference(verse: VerseData): string {
+    if (!this.passageParams) return `${verse.verse}`;
+    if (this.passageParams.verseStart === this.passageParams.verseEnd) {
+      return `${verse.verse}`;
+    }
+    // Return only the individual verse number for each record
+    return `${verse.verse}`;
+  }
+}
+
+// =====================================================================
+// Legacy SessionEngine (word-by-word progressive reveal)
+// =====================================================================
 
 /**
  * SessionEngine: manages the complete lifecycle of a memorization session.
@@ -48,7 +280,7 @@ export class SessionEngine {
       preservedWords: [],
       maskingOrder: 'progressive',
     };
-    this.wordFailureTracker = wordFailureTracker ?? new WordFailureTracker();
+    this.wordFailureTracker = wordFailureTracker;
   }
 
   /**
@@ -59,7 +291,6 @@ export class SessionEngine {
     this.targetId = targetId;
     this.targetType = targetType;
     this.currentVerseIndex = 0;
-    // Start with first verse
     this.state.verseText = verseTexts[0];
     this.state.words = verseTexts[0].split(/\s+/).filter(w => w.length > 0);
     this.state.totalWords = this.state.words.length;
@@ -73,7 +304,6 @@ export class SessionEngine {
    */
   revealNextVerse(): boolean {
     if (!this.passageTexts || this.passageTexts.length <= 1) {
-      // Not a passage or single verse — fall back to single word reveal
       this.revealNextWord();
       return false;
     }
@@ -84,7 +314,6 @@ export class SessionEngine {
 
     this.state.phase = 'revealing';
 
-    // Move to next verse
     if (this.currentVerseIndex < this.passageTexts.length - 1) {
       this.currentVerseIndex++;
       this.state.verseText = this.passageTexts[this.currentVerseIndex];
@@ -92,10 +321,10 @@ export class SessionEngine {
       this.state.totalWords = this.state.words.length;
       this.state.revealedWordIndices = new Set();
       this.state.wordsRevealed = 0;
-      return true; // Successfully moved to next verse
+      return true;
     }
 
-    return false; // Already at last verse
+    return false;
   }
 
   /**
@@ -126,7 +355,6 @@ export class SessionEngine {
    */
   setStrategy(strategy: ExerciseStrategy): void {
     this.strategy = strategy;
-    // Reset state when changing strategy
     this.state.revealedWordIndices.clear();
     this.state.wordsRevealed = 0;
     this.state.phase = 'preview';
@@ -160,7 +388,6 @@ export class SessionEngine {
 
     this.state.phase = 'revealing';
 
-    // Find next unrevealed word index
     for (let i = 0; i < this.state.totalWords; i++) {
       if (!this.state.revealedWordIndices.has(i)) {
         this.state.revealedWordIndices.add(i);
@@ -189,8 +416,7 @@ export class SessionEngine {
   }
 
   /**
-   * REVEAL SENTENCE — reveal by sentence segments (for phrase-by-phrase reading)
-   * Groups words into sentences based on punctuation
+   * REVEAL SENTENCE — reveal by sentence segments
    */
   revealNextSentence(): void {
     if (this.state.phase !== 'preview' && this.state.phase !== 'revealing') {
@@ -199,24 +425,20 @@ export class SessionEngine {
 
     this.state.phase = 'revealing';
 
-    // Simple sentence detection (split on .!?)
     const sentenceEnds: number[] = [];
     for (let i = 0; i < this.state.verseText.length; i++) {
       const char = this.state.verseText[i];
       if (char === '.' || char === '!' || char === '?') {
-        // Find the next word boundary after this punctuation
         let j = i + 1;
         while (j < this.state.verseText.length && this.state.verseText[j] === ' ') {
           j++;
         }
-        sentenceEnds.push(j - 1); // Position before the next word
+        sentenceEnds.push(j - 1);
       }
     }
 
-    // Find the next unrevealed sentence segment
     let nextEnd = -1;
     for (const end of sentenceEnds) {
-      // Check if all words up to this point are revealed
       const wordsUpToEnd = this.getWordsUpToPosition(end);
       if (wordsUpToEnd.every(wIndex => !this.state.revealedWordIndices.has(wIndex))) {
         nextEnd = end;
@@ -225,7 +447,6 @@ export class SessionEngine {
     }
 
     if (nextEnd !== -1) {
-      // Reveal all words in this sentence segment
       const wordsUpToNextEnd = this.getWordsUpToPosition(nextEnd);
       for (const wordIndex of wordsUpToNextEnd) {
         if (!this.state.revealedWordIndices.has(wordIndex)) {
@@ -234,14 +455,10 @@ export class SessionEngine {
         }
       }
     } else {
-      // Fallback: reveal one word at a time
       this.revealNextWord();
     }
   }
 
-  /**
-   * Helper: Get word indices up to a given character position in the verse text
-   */
   private getWordsUpToPosition(pos: number): number[] {
     const words: number[] = [];
     let wordStart = 0;
@@ -250,9 +467,7 @@ export class SessionEngine {
     for (let i = 0; i < this.state.verseText.length && charPos <= pos; i++) {
       const char = this.state.verseText[i];
       if (char === ' ') {
-        // End of a word
         if (i > wordStart && i <= pos + 1) {
-          // Find the word index in the words array
           const wordText = this.state.verseText.slice(wordStart, i);
           const wordIndex = this.state.words.findIndex(w => w === wordText && w.length > 0);
           if (wordIndex !== -1 && !words.includes(wordIndex)) {
@@ -264,7 +479,6 @@ export class SessionEngine {
       charPos++;
     }
 
-    // Add the last word if we haven't reached the end
     if (wordStart < this.state.verseText.length && charPos <= pos) {
       const wordText = this.state.verseText.slice(wordStart);
       const wordIndex = this.state.words.findIndex(w => w === wordText && w.length > 0);
@@ -277,7 +491,7 @@ export class SessionEngine {
   }
 
   /**
-   * REVEAL RANDOM — reveal words in random order (for random masking strategy)
+   * REVEAL RANDOM — reveal words in random order
    */
   revealNextRandomWord(): void {
     if (this.state.phase !== 'preview' && this.state.phase !== 'revealing') {
@@ -286,7 +500,6 @@ export class SessionEngine {
 
     this.state.phase = 'revealing';
 
-    // Find all unrevealed words
     const unrevealedIndices: number[] = [];
     for (let i = 0; i < this.state.totalWords; i++) {
       if (!this.state.revealedWordIndices.has(i)) {
@@ -295,7 +508,6 @@ export class SessionEngine {
     }
 
     if (unrevealedIndices.length > 0) {
-      // Pick a random unrevealed word
       const randomIndex = unrevealedIndices[Math.floor(Math.random() * unrevealedIndices.length)];
       this.state.revealedWordIndices.add(randomIndex);
       this.state.wordsRevealed++;
@@ -303,8 +515,7 @@ export class SessionEngine {
   }
 
   /**
-   * REVEAL BY DIFFICULTY — reveal hardest words first (for smart masking)
-   * Uses failure frequency from wordPerformance data (if available)
+   * REVEAL BY DIFFICULTY
    */
   revealNextDifficultyWord(): void {
     if (this.state.phase !== 'preview' && this.state.phase !== 'revealing') {
@@ -312,15 +523,11 @@ export class SessionEngine {
     }
 
     this.state.phase = 'revealing';
-
-    // For MVP, fall back to progressive reveal
-    // In a full implementation, this would use failure frequency from historical data
     this.revealNextWord();
   }
 
   /**
-   * VERIFY answer — compare user input against expected verse
-   * Returns structured verification result using ComparisonEngine
+   * VERIFY answer
    */
   verifyAnswer(userInput: string): VerificationResult {
     const comparisonEngine = new ComparisonEngine();
@@ -345,14 +552,12 @@ export class SessionEngine {
 
   /**
    * END session and calculate final rating
-   * Returns the Rating enum value based on user completion
    */
   endSession(complete: boolean): { rating: Rating; progress: number } {
     const progress = this.getProgress();
     let rating: Rating;
 
     if (!complete) {
-      // Abandoned or incomplete
       rating = Rating.AGAIN;
       this.state.phase = 'abandoned';
     } else if (progress >= 0.9) {
@@ -370,41 +575,35 @@ export class SessionEngine {
     }
 
     this.state.durationSeconds = Math.round((Date.now() - this.state.startedAt) / 1000);
-
     return { rating, progress };
   }
 
   /**
-   * Reset session for retry (user tapped "Besoin de plus de temps")
+   * Reset session for retry
    */
   resetSession(): void {
     this.state.revealedWordIndices.clear();
     this.state.wordsRevealed = 0;
     this.state.phase = 'preview';
     this.state.startedAt = Date.now();
-    this.wordFailureTracker.clear();
+    this.wordFailureTracker?.clear();
   }
 
   /**
    * Record word failures based on verification result
-   * Call this after verifyAnswer() to analyze missed words
    */
   recordWordFailures(verification: VerificationResult, now: number): void {
-    // Track missing words as failures
     for (const word of verification.missingWords) {
-      // Find the position of this word in the verse
       const wordIndex = this.state.words.findIndex(w => w.toLowerCase() === word.toLowerCase());
       if (wordIndex !== -1) {
-        this.wordFailureTracker.recordFailure(word, wordIndex, now);
+        this.wordFailureTracker?.recordFailure(word, wordIndex, now);
       }
     }
 
-    // Track substituted words as failures
     for (const sub of verification.substitutedWords) {
-      // Find the expected word position
       const wordIndex = this.state.words.findIndex(w => w.toLowerCase() === sub.expected.toLowerCase());
       if (wordIndex !== -1) {
-        this.wordFailureTracker.recordFailure(sub.expected, wordIndex, now);
+        this.wordFailureTracker?.recordFailure(sub.expected, wordIndex, now);
       }
     }
   }
@@ -413,58 +612,40 @@ export class SessionEngine {
    * Get the most forgotten words for this session
    */
   getMostForgottenWords(count: number = 3): Array<{ word: string; failCount: number; lastFailedAt: number; position: number }> {
-    return this.wordFailureTracker.getMostForgottenWords(count);
+    return this.wordFailureTracker?.getMostForgottenWords(count) ?? [];
   }
 
   /**
    * Check if a word is frequently forgotten
    */
   isWordForgotten(word: string, threshold: number = 2): boolean {
-    return this.wordFailureTracker.getFailureRate(word) >= threshold;
+    return (this.wordFailureTracker?.getFailureRate(word) ?? 0) >= threshold;
   }
 
   // ====================
-  // Passage-specific getters and state access
+  // Passage-specific getters
   // ====================
 
-  /**
-   * Get current verse index (0-based) within the passage
-   */
   getCurrentVerseIndex(): number {
     return this.currentVerseIndex;
   }
 
-  /**
-   * Get total number of verses in the passage
-   */
   getTotalVerses(): number {
     return this.passageTexts?.length ?? 1;
   }
 
-  /**
-   * Check if this session is for a passage
-   */
   isPassage(): boolean {
     return this.targetType === 'passage';
   }
 
-  /**
-   * Get the target ID if this is a passage target
-   */
   getTargetId(): string | undefined {
     return this.targetId;
   }
 
-  /**
-   * Get the target type
-   */
   getTargetType(): MemorizationTargetType | undefined {
     return this.targetType;
   }
 
-  /**
-   * Get full current state for hook access
-   */
   getState(): SessionState {
     return this.state;
   }

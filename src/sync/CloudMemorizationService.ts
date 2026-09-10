@@ -7,7 +7,7 @@
 
 import { MemorizationStorageAdapter } from '@/domains/memorization/storage-adapter';
 import { fsrsRatingToString } from '@/domains/memorization/entities';
-import type { CloudSyncService } from './CloudSyncService';
+import type { ISyncService } from './ISyncService';
 import type {
   MemorizationRecord,
   ReviewLogEntry,
@@ -20,12 +20,12 @@ import { MmkvStorage } from '@/infrastructure/storage';
 
 export class CloudMemorizationService {
   private storageAdapter: MemorizationStorageAdapter;
-  private syncService: CloudSyncService;
+  private syncService: ISyncService;
   private fsrsEngine: IFsrsEngine;
 
   constructor(
     storage: IStorage,
-    syncService: CloudSyncService,
+    syncService: ISyncService,
     fsrsEngine: IFsrsEngine,
   ) {
     this.storageAdapter = new MemorizationStorageAdapter(storage, 'versyflow:');

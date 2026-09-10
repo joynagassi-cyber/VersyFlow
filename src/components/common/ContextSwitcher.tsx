@@ -20,10 +20,12 @@ import { useContextStore } from '@/store/context-store';
 import { useFamilyStore } from '@/store/family-store';
 import { useRouter } from '@/hooks/useIonicNavigation';
 import { useSessionSafety } from '@/hooks/useSessionSafety';
+import { useTranslation } from 'react-i18next';
 
 export function ContextSwitcher() {
   const { colors, sp, sh, rad } = useAppTheme();
   const router = useRouter();
+  const { t } = useTranslation();
   const { activeContext, activeFamilyId, switchToFamily, switchToPersonal } = useContextStore();
   const { families } = useFamilyStore();
   const { safeSwitchToFamily, safeSwitchToPersonal } = useSessionSafety();
@@ -53,7 +55,7 @@ export function ContextSwitcher() {
           <>
             <Text style={styles.contextIcon}>{activeFamily.icon}</Text>
             <View style={styles.contextInfo}>
-              <Text style={[styles.contextLabel, { color: colors.textMuted }]}>Famille</Text>
+              <Text style={[styles.contextLabel, { color: colors.textMuted }]}>{t('family.contextFamily')}</Text>
               <Text style={[styles.contextName, { color: colors.textPrimary }]}>{activeFamily.name}</Text>
             </View>
             <Ionicons name="chevron-down" size={16} color={colors.textMuted} />
@@ -62,8 +64,8 @@ export function ContextSwitcher() {
           <>
             <Ionicons name="person" size={16} color={colors.primary} />
             <View style={styles.contextInfo}>
-              <Text style={[styles.contextLabel, { color: colors.textMuted }]}>Personnel</Text>
-              <Text style={[styles.contextName, { color: colors.textPrimary }]}>Mon profil</Text>
+              <Text style={[styles.contextLabel, { color: colors.textMuted }]}>{t('family.contextPersonal')}</Text>
+              <Text style={[styles.contextName, { color: colors.textPrimary }]}>{t('family.contextMyProfile')}</Text>
             </View>
             <Ionicons name="chevron-down" size={16} color={colors.textMuted} />
           </>
@@ -89,7 +91,7 @@ export function ContextSwitcher() {
             ]}
           >
             <View style={[styles.sheetHeader, { borderBottomColor: colors.border }]}>
-              <Text style={[styles.sheetTitle, { color: colors.textPrimary }]}>Changer de contexte</Text>
+              <Text style={[styles.sheetTitle, { color: colors.textPrimary }]}>{t('family.switchContext')}</Text>
               <TouchableOpacity onPress={() => setShowPicker(false)}>
                 <Ionicons name="close" size={24} color={colors.textSecondary} />
               </TouchableOpacity>
@@ -100,7 +102,7 @@ export function ContextSwitcher() {
               <TouchableOpacity
                 style={[
                   styles.option,
-                  activeContext === 'personal' && styles.optionActive,
+                  activeContext === 'personal' && { backgroundColor: colors.background },
                   { borderBottomColor: colors.border },
                 ]}
                 onPress={() => handleSwitch('personal')}
@@ -109,8 +111,8 @@ export function ContextSwitcher() {
                   <Ionicons name="person" size={20} color={colors.primary} />
                 </View>
                 <View style={styles.optionInfo}>
-                  <Text style={[styles.optionTitle, { color: colors.textPrimary }]}>Personnel</Text>
-                  <Text style={[styles.optionDesc, { color: colors.textMuted }]}>Mon espace privé</Text>
+                  <Text style={[styles.optionTitle, { color: colors.textPrimary }]}>{t('family.contextPersonal')}</Text>
+                  <Text style={[styles.optionDesc, { color: colors.textMuted }]}>{t('family.contextPersonalDesc')}</Text>
                 </View>
                 {activeContext === 'personal' && (
                   <Ionicons name="checkmark-circle" size={20} color={colors.primary} />
@@ -125,7 +127,7 @@ export function ContextSwitcher() {
                     key={family.id}
                     style={[
                       styles.option,
-                      isActive && styles.optionActive,
+                      isActive && { backgroundColor: colors.background },
                       { borderBottomColor: colors.border },
                     ]}
                     onPress={() => handleSwitch('family', family.id)}
@@ -135,7 +137,7 @@ export function ContextSwitcher() {
                     </View>
                     <View style={styles.optionInfo}>
                       <Text style={[styles.optionTitle, { color: colors.textPrimary }]}>{family.name}</Text>
-                      <Text style={[styles.optionDesc, { color: colors.textMuted }]}>Contexte familial</Text>
+                      <Text style={[styles.optionDesc, { color: colors.textMuted }]}>{t('family.contextFamilyDesc')}</Text>
                     </View>
                     {isActive && (
                       <Ionicons name="checkmark-circle" size={20} color={family.color} />
@@ -146,14 +148,14 @@ export function ContextSwitcher() {
 
               {/* Create Family */}
               <TouchableOpacity
-                style={styles.createButton}
+                style={[styles.createButton, { backgroundColor: colors.primary }]}
                 onPress={() => {
                   setShowPicker(false);
                   router.push('/family/create');
                 }}
               >
-                <Ionicons name="add-circle" size={18} color="#fff" />
-                <Text style={styles.createButtonText}>Créer une famille</Text>
+                <Ionicons name="add-circle" size={18} color={colors.primaryLight} />
+                <Text style={[styles.createButtonText, { color: colors.primaryLight }]}>{t('family.createFamily')}</Text>
               </TouchableOpacity>
             </ScrollView>
           </View>
@@ -219,9 +221,6 @@ const styles = StyleSheet.create({
     padding: 16,
     gap: 12,
   },
-  optionActive: {
-    backgroundColor: '#fafafa',
-  },
   optionIcon: {
     width: 44,
     height: 44,
@@ -251,10 +250,8 @@ const styles = StyleSheet.create({
     margin: 16,
     padding: 14,
     borderRadius: 26,
-    backgroundColor: '#E91E8C',
   },
   createButtonText: {
-    color: '#fff',
     fontSize: 15,
     fontWeight: '700',
   },

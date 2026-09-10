@@ -22,7 +22,7 @@ export default defineConfig({
   test: {
     environment: 'jsdom',
     globals: true,
-    setupFiles: ['tests/setup.ts'],
+    setupFiles: ['tests/setup.ts', 'tests/jest-polyfill.ts'],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],

@@ -7,6 +7,9 @@ export {
   MemorizationService,
 } from './service';
 export {
+  MemorizationSessionEngine,
+} from './session-engine';
+export {
   DEFAULT_MVP_STRATEGY,
   MEMORIZATION_STATUS_ORDER,
   RATING_LABELS,
@@ -34,6 +37,12 @@ export type {
   WordPerformance,
   WordPerformanceSnapshot,
 } from './entities';
+export type {
+  VerseData,
+  PassageTargetParams,
+  IMemorizationSessionEngine,
+  PassageStartOptions,
+} from './session-engine';
 export type { IWordFailureTracker } from './tracker';
 export type { WordFailure } from '@/services/word-failure-tracker';
 export type { MemorizationStorageAdapter } from './storage-adapter';

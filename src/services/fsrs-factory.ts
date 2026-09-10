@@ -1,45 +1,27 @@
 /**
- * FSRS Engine Factory — Creates IFsrsEngine instances
+ * FSRS Engine Factory - Creates IFsrsEngine instances
  *
- * Factory function with optional reset for testing.
- * In production: singleton pattern (WASM init is expensive).
+ * Uses TsFsrsEngine (ts-fsrs library) as the single production engine.
  * In tests: call resetFsrsEngine() between tests.
  */
 
-import { WasmFsrsEngine } from '@/domains/fsrs/wasm-engine';
-import { Sm2FallbackEngine } from '@/domains/fsrs/fallback-engine';
+import { TsFsrsEngine } from '@/domains/fsrs/ts-fsrs-engine';
 import type { IFsrsEngine } from '@/domains/fsrs/engine';
 
 let _engine: IFsrsEngine | null = null;
-let _wasmLoaded = false;
 
-/**
- * Get or create the FSRS engine instance
- * Uses WASM if available, falls back to SM-2 JS
- */
 export function getFsrsEngine(): IFsrsEngine {
   if (_engine) return _engine;
-
-  try {
-    _engine = new WasmFsrsEngine();
-    _wasmLoaded = true;
-  } catch (error) {
-    console.warn('WASM FSRS engine failed, falling back to SM-2:', error);
-    _engine = new Sm2FallbackEngine();
-  }
-
+  _engine = new TsFsrsEngine();
   return _engine;
 }
 
+/** Returns false: WASM engine is not compiled in this environment */
 export function isWasmAvailable(): boolean {
-  return _wasmLoaded;
+  return false;
 }
 
-/**
- * Reset the engine singleton (for testing)
- * Call between tests to ensure clean state
- */
+/** Reset the engine singleton (for testing) */
 export function resetFsrsEngine(): void {
   _engine = null;
-  _wasmLoaded = false;
 }

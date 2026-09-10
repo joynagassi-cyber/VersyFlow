@@ -5,17 +5,17 @@
 
 import { ProgressService } from '@/services/progress-service';
 import { MemorizationService } from '@/domains/memorization/service';
-import { MmkvStorage } from '@/infrastructure/storage';
+import { LocalStorageAdapter } from '@/infrastructure/storage/local-storage';
 import { Sm2FallbackEngine } from '@/domains/fsrs';
 
 describe('ProgressService', () => {
   let service: ProgressService;
-  let storage: MmkvStorage;
+  let storage: LocalStorageAdapter;
   let memorizationService: MemorizationService;
   let fsrsEngine: Sm2FallbackEngine;
 
   beforeEach(() => {
-    storage = new MmkvStorage();
+    storage = new LocalStorageAdapter();
     fsrsEngine = new Sm2FallbackEngine();
     memorizationService = new MemorizationService(storage, fsrsEngine);
     service = new ProgressService(memorizationService, fsrsEngine);
@@ -27,7 +27,7 @@ describe('ProgressService', () => {
 
   describe('Calcul de la streak', () => {
     it('should return 0 streak when no activity', async () => {
-      const stats = await service.calculateProgressStats();
+      const stats = await service.getStats(0);
       expect(stats.streakCount).toBe(0);
     });
 
@@ -64,11 +64,12 @@ describe('ProgressService', () => {
         favorite: false,
       };
 
-      await memorizationService.saveRecord(record);
+      const { id: _ignored, ...recordWithoutId } = record;
+      await memorizationService.saveMemorizedRecord(recordWithoutId);
       
       // Act
-      const stats = await service.calculateProgressStats();
-      
+      const stats = await service.getStats(1);
+
       // Assert
       expect(stats.totalVerses).toBeGreaterThan(0);
       expect(typeof stats.streakCount).toBe('number');
@@ -78,7 +79,7 @@ describe('ProgressService', () => {
   describe('Statistiques de progression', () => {
     it('should return correct verse counts', async () => {
       // Act
-      const stats = await service.calculateProgressStats();
+      const stats = await service.getStats(0);
       
       // Assert
       expect(stats).toHaveProperty('totalVerses');

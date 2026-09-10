@@ -6,44 +6,38 @@
 import { useCallback } from 'react';
 import { useProfileStore } from '@/store/profile-store';
 import { useAuthStore } from '@/store/auth-store';
+import { useLearnerProfile } from './useLearnerProfile';
 
 export function useActiveProfile() {
   const { activeProfileId, profiles, selectProfile, addProfile, removeProfile, autoSelectIfSingle } = useProfileStore();
   const { isAuthenticated, user } = useAuthStore();
+  const { createProfile, getProfiles, deleteProfile, setActiveProfile } = useLearnerProfile();
 
   const activeProfile = profiles.find((p) => p.id === activeProfileId) || null;
 
   const handleSelectProfile = useCallback(
     (id: string) => {
       selectProfile(id);
+      setActiveProfile(id);
     },
-    [selectProfile],
+    [selectProfile, setActiveProfile],
   );
 
   const handleCreateProfile = useCallback(
     async (displayName: string, avatar?: string) => {
-      // In a real implementation, this would call the service
-      // For now, we simulate profile creation
-      const newProfile = {
-        id: `profile-${Date.now()}`,
-        accountId: user?.userId || 'local',
-        displayName,
-        avatar,
-        createdAt: Date.now(),
-        updatedAt: Date.now(),
-        status: 'active' as const,
-      };
+      const newProfile = await createProfile(displayName, avatar);
       addProfile(newProfile);
       return newProfile;
     },
-    [user, addProfile],
+    [createProfile, addProfile],
   );
 
   const handleDeleteProfile = useCallback(
-    (id: string) => {
+    async (id: string) => {
+      await deleteProfile(id);
       removeProfile(id);
     },
-    [removeProfile],
+    [deleteProfile, removeProfile],
   );
 
   const shouldShowSelector = useCallback(() => {

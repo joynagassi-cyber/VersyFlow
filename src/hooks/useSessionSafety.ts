@@ -8,10 +8,12 @@ import { useCallback } from 'react';
 import { Alert, Platform } from '@/components/ui/Primitives';
 import { useMemoryCapability } from '@/capabilities/memory/store';
 import { useContextStore } from '@/store/context-store';
+import { useTranslation } from 'react-i18next';
 
 export function useSessionSafety() {
   const { sessionState } = useMemoryCapability();
   const { switchToFamily, switchToPersonal } = useContextStore();
+  const { t } = useTranslation();
 
   /**
    * Check if there's an active session that should be protected
@@ -29,15 +31,15 @@ export function useSessionSafety() {
   const safeSwitchToFamily = useCallback((familyId: string) => {
     if (hasActiveSession()) {
       Alert.alert(
-        'Session en cours',
-        'Vous avez une session de mémorisation en cours. Voulez-vous la sauvegarder et changer de contexte ?',
+        t('session.activeSessionTitle'),
+        t('session.activeSessionDescription'),
         [
           {
-            text: 'Annuler',
+            text: t('common.cancel'),
             style: 'cancel',
           },
           {
-            text: 'Sauvegarder & Continuer',
+            text: t('session.saveAndContinue'),
             onPress: () => {
               // Session will be preserved by the context store
               switchToFamily(familyId);
@@ -49,7 +51,7 @@ export function useSessionSafety() {
     } else {
       switchToFamily(familyId);
     }
-  }, [hasActiveSession, switchToFamily]);
+  }, [hasActiveSession, switchToFamily, t]);
 
   /**
    * Safely switch to personal context
@@ -58,15 +60,15 @@ export function useSessionSafety() {
   const safeSwitchToPersonal = useCallback(() => {
     if (hasActiveSession()) {
       Alert.alert(
-        'Session en cours',
-        'Vous avez une session de mémorisation en cours. Voulez-vous la sauvegarder et revenir au contexte personnel ?',
+        t('session.activeSessionTitle'),
+        t('session.activeSessionPersonalDescription'),
         [
           {
-            text: 'Annuler',
+            text: t('common.cancel'),
             style: 'cancel',
           },
           {
-            text: 'Sauvegarder & Continuer',
+            text: t('session.saveAndContinue'),
             onPress: () => {
               switchToPersonal();
             },
@@ -77,7 +79,7 @@ export function useSessionSafety() {
     } else {
       switchToPersonal();
     }
-  }, [hasActiveSession, switchToPersonal]);
+  }, [hasActiveSession, switchToPersonal, t]);
 
   return {
     hasActiveSession,

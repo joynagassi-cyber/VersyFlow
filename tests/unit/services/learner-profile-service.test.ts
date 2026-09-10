@@ -1,86 +1,19 @@
 /**
  * Unit Tests — LearnerProfile Service
  * Tests CRUD operations and active profile management
- * (Pure JS, no TypeScript imports to avoid Babel issues)
  */
 
-// Inline mock service (avoids TypeScript import issues)
-class MockLearnerProfileService {
-  constructor(repository) {
-    this.repository = repository;
-    this.activeProfileId = null;
-  }
-
-  async create(accountId, displayName, avatar) {
-    const now = Date.now();
-    const profile = { accountId, displayName, avatar, createdAt: now, updatedAt: now, status: 'active' };
-    const created = await this.repository.create(profile);
-    this.activeProfileId = created.id;
-    return created;
-  }
-
-  async findById(id) {
-    return this.repository.findById(id);
-  }
-
-  async findByAccountId(accountId) {
-    return this.repository.findByAccountId(accountId);
-  }
-
-  async update(id, updates) {
-    return this.repository.update(id, updates);
-  }
-
-  async delete(id) {
-    const deleted = await this.repository.delete(id);
-    if (deleted && this.activeProfileId === id) {
-      this.activeProfileId = null;
-    }
-    return deleted;
-  }
-
-  setActiveProfileId(id) {
-    this.activeProfileId = id;
-  }
-
-  getActiveProfileId() {
-    return this.activeProfileId;
-  }
-}
+import { describe, it, expect, beforeEach } from 'vitest';
+import { LearnerProfileService } from '@/services/learner-profile-service';
+import { LearnerProfileRepositoryLocal } from '@/infrastructure/repository/learner-profile-repository-local';
 
 describe('LearnerProfile Service', () => {
-  let mockRepo;
-  let service;
+  let repo: LearnerProfileRepositoryLocal;
+  let service: LearnerProfileService;
 
   beforeEach(() => {
-    mockRepo = {
-      profiles: new Map(),
-      findById: jest.fn(async (id) => mockRepo.profiles.get(id) || null),
-      findByAccountId: jest.fn(async (accountId) =>
-        Array.from(mockRepo.profiles.values()).filter((p) => p.accountId === accountId)
-      ),
-      create: jest.fn(async (profile) => {
-        const id = 'profile-' + Date.now() + '-' + Math.random();
-        const now = Date.now();
-        const newProfile = Object.assign({}, profile, { id: id, createdAt: now, updatedAt: now });
-        mockRepo.profiles.set(id, newProfile);
-        return newProfile;
-      }),
-      update: jest.fn(async (id, updates) => {
-        const profile = mockRepo.profiles.get(id);
-        if (!profile) return null;
-        const updated = Object.assign({}, profile, updates, { updatedAt: Date.now() });
-        mockRepo.profiles.set(id, updated);
-        return updated;
-      }),
-      delete: jest.fn(async (id) => {
-        if (!mockRepo.profiles.has(id)) return false;
-        mockRepo.profiles.delete(id);
-        return true;
-      }),
-    };
-
-    service = new MockLearnerProfileService(mockRepo);
+    repo = new LearnerProfileRepositoryLocal();
+    service = new LearnerProfileService(repo);
   });
 
   it('should create a profile', async () => {
@@ -98,7 +31,7 @@ describe('LearnerProfile Service', () => {
     const found = await service.findById(profile.id);
 
     expect(found).not.toBeNull();
-    expect(found.displayName).toBe('Bob');
+    expect(found!.displayName).toBe('Bob');
   });
 
   it('should find profiles by account id', async () => {
@@ -118,7 +51,7 @@ describe('LearnerProfile Service', () => {
     const updated = await service.update(profile.id, { displayName: 'Alice Smith' });
 
     expect(updated).not.toBeNull();
-    expect(updated.displayName).toBe('Alice Smith');
+    expect(updated!.displayName).toBe('Alice Smith');
   });
 
   it('should delete a profile', async () => {
@@ -156,5 +89,56 @@ describe('LearnerProfile Service', () => {
 
     const allProfiles = await service.findByAccountId('user-1');
     expect(allProfiles).toHaveLength(2);
+  });
+});
+
+describe('LearnerProfile Service Scoping', () => {
+  let repo: LearnerProfileRepositoryLocal;
+  let service: LearnerProfileService;
+
+  beforeEach(() => {
+    repo = new LearnerProfileRepositoryLocal();
+    service = new LearnerProfileService(repo);
+  });
+
+  it('should enforce accountId scoping on findById when second arg provided', async () => {
+    const profile1 = await service.create('user-a', 'Alice');
+    const profile2 = await service.create('user-b', 'Bob');
+
+    // user-a should NOT be able to see user-b's profile
+    const result = await service.findById(profile2.id, 'user-a');
+    expect(result).toBeNull();
+
+    // user-b should be able to see their own profile
+    const ownResult = await service.findById(profile2.id, 'user-b');
+    expect(ownResult).not.toBeNull();
+    expect(ownResult!.accountId).toBe('user-b');
+  });
+
+  it('should enforce accountId scoping on delete when second arg provided', async () => {
+    const profile1 = await service.create('user-a', 'Alice');
+    const profile2 = await service.create('user-b', 'Bob');
+
+    // user-a should NOT be able to delete user-b's profile
+    const deleted = await service.delete(profile2.id, 'user-a');
+    expect(deleted).toBe(false);
+
+    // user-b should be able to delete their own profile
+    const ownDeleted = await service.delete(profile2.id, 'user-b');
+    expect(ownDeleted).toBe(true);
+  });
+
+  it('should enforce accountId scoping on update when second arg provided', async () => {
+    const profile1 = await service.create('user-a', 'Alice');
+    const profile2 = await service.create('user-b', 'Bob');
+
+    // user-a should NOT be able to update user-b's profile
+    const updated = await service.update(profile2.id, { displayName: 'Hacked' }, 'user-a');
+    expect(updated).toBeNull();
+
+    // user-b should be able to update their own profile
+    const ownUpdated = await service.update(profile2.id, { displayName: 'Bob Updated' }, 'user-b');
+    expect(ownUpdated).not.toBeNull();
+    expect(ownUpdated!.displayName).toBe('Bob Updated');
   });
 });

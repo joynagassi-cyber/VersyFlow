@@ -120,4 +120,43 @@ export class StrategyRecommendor implements IStrategyRecommendor {
     this.wordFailureTracker.clear();
     this.cache.clear();
   }
+
+  /**
+   * Legacy API — recommend strategy based on word-level performance and average FSRS stability.
+   * Additive wrapper around the modern recommend() context-based API.
+   * - empty performance -> progressive-masking
+   * - any errors detected -> smart-masking
+   * - high stability (> 5) -> flashcard
+   * - very high stability (> 10) -> recall-writing
+   */
+  recommendStrategy(wordPerformance: Array<{ word: string; errorCount?: number; totalAttempts?: number }>, avgStability: number): string {
+    if (wordPerformance.length === 0) {
+      if (avgStability > 10) return 'recall-writing';
+      if (avgStability > 5) return 'flashcard';
+      return 'progressive-masking';
+    }
+
+    const hasErrors = wordPerformance.some(w => (w.errorCount ?? 0) > 0);
+    if (hasErrors) return 'smart-masking';
+
+    if (avgStability > 10) return 'recall-writing';
+    if (avgStability > 5) return 'flashcard';
+    return 'progressive-masking';
+  }
+
+  /**
+   * Calculate a difficulty score (0-1) from word performance data.
+   * Returns 0 for empty input, otherwise the average error rate across words.
+   */
+  calculateDifficultyScore(wordPerformance: Array<{ word: string; errorCount?: number; totalAttempts?: number }>): number {
+    if (wordPerformance.length === 0) return 0;
+
+    let totalErrorRate = 0;
+    for (const wp of wordPerformance) {
+      const errors = wp.errorCount ?? 0;
+      const attempts = wp.totalAttempts ?? (wp.errorCount ?? 0);
+      totalErrorRate += attempts > 0 ? errors / attempts : 0;
+    }
+    return Math.min(1, totalErrorRate / wordPerformance.length);
+  }
 }

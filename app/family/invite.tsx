@@ -3,7 +3,7 @@
  * Phase 10: Family UI
  */
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -17,22 +17,49 @@ import { IonIcon } from '@ionic/react'
 import * as Ionicons from 'ionicons/icons';
 import { useAppTheme } from '@/theme/useTheme';
 import { useFamilyStore } from '@/store/family-store';
+import { useFamilyService } from '@/hooks/useFamilyService';
+import { useTranslation } from 'react-i18next';
 
 export default function FamilyInviteScreen() {
   const router = useRouter();
   const { colors, sp, sh, rad } = useAppTheme();
+  const { t } = useTranslation();
   const { activeFamilyId, families } = useFamilyStore();
+  const { createInvitation } = useFamilyService();
+
+  const [inviteCode, setInviteCode] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const family = families.find(f => f.id === activeFamilyId) || null;
-  const [inviteCode] = useState(() => 'FAM-' + Math.random().toString(36).substring(2, 8).toUpperCase());
+
+  useEffect(() => {
+    if (family && !inviteCode) {
+      handleGenerateCode();
+    }
+  }, [family]);
+
+  const handleGenerateCode = async () => {
+    if (!family) return;
+    setIsLoading(true);
+    try {
+      const invitation = await createInvitation(family.id);
+      setInviteCode(invitation.token);
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : t('common.error');
+      Alert.alert(t('common.error'), msg);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleCopy = () => {
+    if (!inviteCode) return;
     // In real app, use Clipboard API
-    Alert.alert('Code copié!', inviteCode);
+    Alert.alert(t('family.inviteCodeCopied'), inviteCode);
   };
 
   const handleShare = () => {
-    Alert.alert('Partager', 'Fonctionnalité à implémenter un service de partage');
+    Alert.alert(t('family.shareTitle'), t('family.shareDesc'));
   };
 
   if (!family) {
@@ -46,7 +73,7 @@ export default function FamilyInviteScreen() {
         <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
           <Ionicons name="chevron-back" size={24} color={colors.primary} />
         </TouchableOpacity>
-        <Text style={[styles.title, { color: colors.textPrimary }]}>Inviter</Text>
+        <Text style={[styles.title, { color: colors.textPrimary }]}>{t('family.invite')}</Text>
         <View style={styles.headerSpacing} />
       </View>
 
@@ -57,25 +84,39 @@ export default function FamilyInviteScreen() {
         </View>
 
         <View style={[styles.codeCard, { backgroundColor: colors.surface, ...sh.md }]}>
-          <Text style={[styles.codeLabel, { color: colors.textSecondary }]}>Code d'invitation</Text>
+          <Text style={[styles.codeLabel, { color: colors.textSecondary }]}>{t('family.inviteCode')}</Text>
           <View style={styles.codeRow}>
-            <Text style={[styles.codeValue, { color: colors.primary }]}>{inviteCode}</Text>
-            <TouchableOpacity style={styles.codeAction} onPress={handleCopy}>
-              <Ionicons name="copy" size={20} color={colors.primary} />
-            </TouchableOpacity>
+            {inviteCode ? (
+              <>
+                <Text style={[styles.codeValue, { color: colors.primary }]}>{inviteCode}</Text>
+                <TouchableOpacity style={styles.codeAction} onPress={handleCopy}>
+                  <Ionicons name="copy" size={20} color={colors.primary} />
+                </TouchableOpacity>
+              </>
+            ) : (
+              <TouchableOpacity
+                style={[styles.generateButton, { backgroundColor: colors.primary }]}
+                onPress={handleGenerateCode}
+                disabled={isLoading}
+              >
+                <Text style={styles.generateButtonText}>
+                  {isLoading ? t('common.loading') : t('family.generateCode')}
+                </Text>
+              </TouchableOpacity>
+            )}
           </View>
-          <Text style={[styles.codeExpiry, { color: colors.textMuted }]}>Expira dans 7 jours</Text>
+          <Text style={[styles.codeExpiry, { color: colors.textMuted }]}>{t('family.expiryHint')}</Text>
         </View>
 
         <TouchableOpacity style={[styles.shareButton, { backgroundColor: colors.primary, ...sh.rose }]} onPress={handleShare}>
           <Ionicons name="share-social" size={20} color="#fff" />
-          <Text style={styles.shareButtonText}>Partager le code</Text>
+          <Text style={styles.shareButtonText}>{t('family.shareCode')}</Text>
         </TouchableOpacity>
 
-        <View style={styles.infoCard}>
+        <View style={[styles.infoCard, { backgroundColor: colors.surfaceTint }]}>
           <Ionicons name="information-circle" size={20} color={colors.info} />
           <Text style={[styles.infoText, { color: colors.textSecondary }]}>
-            Partagez ce code avec les membres de votre famille pour qu'ils puissent rejoindre.
+            {t('family.inviteHint')}
           </Text>
         </View>
       </View>
@@ -119,6 +160,12 @@ const styles = StyleSheet.create({
   codeValue: { fontSize: 32, fontWeight: '800', letterSpacing: 2 },
   codeAction: { padding: 8 },
   codeExpiry: { fontSize: 13 },
+  generateButton: {
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    borderRadius: 26,
+  },
+  generateButtonText: { color: '#fff', fontSize: 16, fontWeight: '700' },
   shareButton: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -133,7 +180,6 @@ const styles = StyleSheet.create({
     gap: 12,
     padding: 16,
     borderRadius: 16,
-    backgroundColor: '#E3F2FD',
   },
   infoText: { flex: 1, fontSize: 14, lineHeight: 20 },
 });

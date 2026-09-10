@@ -17,28 +17,37 @@ import { useRouter } from '@/hooks/useIonicNavigation';
 import { IonIcon } from '@ionic/react'
 import * as Ionicons from 'ionicons/icons';
 import { useAppTheme } from '@/theme/useTheme';
+import { useFamilyService } from '@/hooks/useFamilyService';
+import { useTranslation } from 'react-i18next';
 
 export default function FamilyJoinScreen() {
   const router = useRouter();
   const { colors, sp, sh, rad } = useAppTheme();
+  const { t } = useTranslation();
+  const { acceptInvitation } = useFamilyService();
   const [code, setCode] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   const handleJoin = async () => {
     if (!code.trim()) {
-      Alert.alert('Erreur', 'Veuillez entrer un code d\'invitation');
+      Alert.alert(t('common.error'), t('family.enterCode'));
       return;
     }
     setIsLoading(true);
-    // Simulate API call
-    await new Promise(r => setTimeout(r, 1000));
-    setIsLoading(false);
-    Alert.alert('Succès', 'Demande envoyée ! Attendez l\'approbation du propriétaire.');
-    router.back();
+    try {
+      await acceptInvitation(code.trim().toUpperCase());
+      Alert.alert(t('family.joinedSuccess'), t('family.joinWelcome'));
+      router.back();
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : t('family.invalidCode');
+      Alert.alert(t('common.error'), msg);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleScan = () => {
-    Alert.alert('Scanner', 'Fonctionnalité QR Code à implémenter la caméra');
+    Alert.alert(t('family.scanner'), t('family.scannerDesc'));
   };
 
   return (
@@ -47,7 +56,7 @@ export default function FamilyJoinScreen() {
         <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
           <Ionicons name="chevron-back" size={24} color={colors.primary} />
         </TouchableOpacity>
-        <Text style={[styles.title, { color: colors.textPrimary }]}>Rejoindre</Text>
+        <Text style={[styles.title, { color: colors.textPrimary }]}>{t('family.join')}</Text>
         <View style={styles.headerSpacing} />
       </View>
 
@@ -55,18 +64,18 @@ export default function FamilyJoinScreen() {
         <View style={styles.scannerSection}>
           <TouchableOpacity style={[styles.scannerButton, { borderColor: colors.border }]} onPress={handleScan}>
             <Ionicons name="qr-code" size={48} color={colors.primary} />
-            <Text style={[styles.scannerText, { color: colors.textSecondary }]}>Scanner un QR code</Text>
+            <Text style={[styles.scannerText, { color: colors.textSecondary }]}>{t('family.scanQR')}</Text>
           </TouchableOpacity>
         </View>
 
         <View style={styles.divider}>
           <View style={[styles.dividerLine, { backgroundColor: colors.border }]} />
-          <Text style={[styles.dividerText, { color: colors.textMuted }]}>ou</Text>
+          <Text style={[styles.dividerText, { color: colors.textMuted }]}>{t('family.or')}</Text>
           <View style={[styles.dividerLine, { backgroundColor: colors.border }]} />
         </View>
 
         <View style={styles.inputSection}>
-          <Text style={[styles.inputLabel, { color: colors.textSecondary }]}>Code d'invitation</Text>
+          <Text style={[styles.inputLabel, { color: colors.textSecondary }]}>{t('family.inviteCode')}</Text>
           <TextInput
             style={[
               styles.input,
@@ -94,13 +103,13 @@ export default function FamilyJoinScreen() {
           onPress={handleJoin}
           disabled={isLoading}
         >
-          <Text style={styles.joinButtonText}>
-            {isLoading ? 'Vérification...' : 'Rejoindre la famille'}
+          <Text style={[styles.joinButtonText, { color: '#fff' }]}>
+            {isLoading ? t('common.loading') : t('family.joinButton')}
           </Text>
         </TouchableOpacity>
 
         <Text style={[styles.helpText, { color: colors.textMuted }]}>
-          Le code expire après 7 jours. Contactez le propriétaire de la famille pour un nouveau code.
+          {t('family.expiryHint')}
         </Text>
       </View>
     </SafeAreaView>
@@ -154,6 +163,6 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     alignItems: 'center',
   },
-  joinButtonText: { color: '#fff', fontSize: 16, fontWeight: '700' },
+  joinButtonText: { fontSize: 16, fontWeight: '700' },
   helpText: { fontSize: 13, textAlign: 'center', lineHeight: 20 },
 });

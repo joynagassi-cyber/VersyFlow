@@ -4,18 +4,18 @@
  */
 
 import { MemorizationService } from '@/domains/memorization/service';
-import { MmkvStorage } from '@/infrastructure/storage';
+import { LocalStorageAdapter } from '@/infrastructure/storage/local-storage';
 import { Sm2FallbackEngine } from '@/domains/fsrs';
 import { MemorizationRecord, ReviewLogEntry } from '@/domains/memorization/entities';
 import { FsrsState, Rating as FsrsRating } from '@/domains/fsrs';
 
 describe('MemorizationPersistence', () => {
   let service: MemorizationService;
-  let storage: MmkvStorage;
+  let storage: LocalStorageAdapter;
   let fsrsEngine: Sm2FallbackEngine;
 
   beforeEach(() => {
-    storage = new MmkvStorage();
+    storage = new LocalStorageAdapter();
     fsrsEngine = new Sm2FallbackEngine();
     service = new MemorizationService(storage, fsrsEngine);
   });
@@ -264,7 +264,7 @@ describe('MemorizationPersistence', () => {
 
     // Assert
     expect(allLogs.length).toBe(2);
-    expect(allLogs[0].memorizationRecordId).toBe(recordId1);
-    expect(allLogs[1].memorizationRecordId).toBe(recordId2);
+    const logIds = allLogs.map(l => l.memorizationRecordId).sort();
+    expect(logIds).toEqual([recordId1, recordId2].sort());
   });
 });

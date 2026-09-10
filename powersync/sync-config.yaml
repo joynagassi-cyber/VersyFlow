@@ -1,0 +1,127 @@
+# powersync/sync-config.yaml — VersyFlow Sync Streams (edition 3)
+# yaml-language-server: $schema=https://unpkg.com/@powersync/service-sync-rules@latest/schema/sync_rules.json
+#
+# Edition 3 is REQUIRED at the top level — the service rejects a config without it.
+#
+# Classification (see docs/08-execution/DB_AUDIT_POWERSYNC_STREAMS.md):
+#   - SYNCED data is scoped to the authenticated user via auth.user_id()
+#     (JWT `sub` = public.users.id, wired by migration 005 trigger).
+#   - auto_subscribe: true  -> always-available offline data (user's own records,
+#     families the user belongs to). No client syncStream() call needed.
+#   - auto_subscribe: false + subscription.parameter() -> on-demand deep-dive data
+#     (review logs / word performance for a specific memorization record,
+#     family invitations for a specific family). Each requires an auth guard.
+#   - Excluded (LOCAL_ONLY, never synced): achievements catalogue, bible_*,
+#     versification_maps, auth.*/storage.* internal schemas.
+#
+# G4 deploy notes (2026-09-10, Production 6aa1b9078453e7cf8335b22d):
+#   - `my_streaks` originally carried `AND streak_date > date('now','-365 days')`.
+#     The Sync Streams compiler rejected it ("Unknown function" — date() with two
+#     string args is not available to the stream compiler). FILTER REMOVED per
+#     the G4 plan (volume is trivial: ~1 row/day/user). Tracked in
+#     docs/08-execution/G0_POWERSYNC_SUPABASE_SETUP.md.
+#   - Main-table aliases (cv/f/fm) were dropped so the client-side table names
+#     stay `collection_verses` / `families` / `family_memberships` (an alias on
+#     the main table renames the synced table and silently zero-out client reads).
+
+config:
+  edition: 3
+
+streams:
+  # ---- Always-available, user-scoped (auto-subscribed on connect) ----
+
+  my_profile:
+    auto_subscribe: true
+    query: SELECT * FROM users WHERE id = auth.user_id()
+
+  my_learner_profiles:
+    auto_subscribe: true
+    query: SELECT * FROM learner_profiles WHERE user_id = auth.user_id()
+
+  my_memorization_records:
+    auto_subscribe: true
+    query: SELECT * FROM memorization_records WHERE user_id = auth.user_id()
+
+  my_collections:
+    auto_subscribe: true
+    query: SELECT * FROM collections WHERE user_id = auth.user_id()
+
+  my_collection_verses:
+    auto_subscribe: true
+    query: |
+      SELECT collection_verses.*
+      FROM collection_verses
+      INNER JOIN collections ON collections.id = collection_verses.collection_id
+      WHERE collections.user_id = auth.user_id()
+
+  my_streaks:
+    auto_subscribe: true
+    query: SELECT * FROM streaks WHERE user_id = auth.user_id()
+
+  my_user_achievements:
+    auto_subscribe: true
+    query: SELECT * FROM user_achievements WHERE user_id = auth.user_id()
+
+  my_settings:
+    auto_subscribe: true
+    query: SELECT * FROM settings WHERE user_id = auth.user_id()
+
+  # ---- Family-scoped: everything the user is an active member of ----
+  # A user with no active membership sees no families (by design — the stream
+  # filter and the RLS read policy agree, so the stream never diverges from
+  # what RLS authorizes; see DEC I4 / migration 006 owner-membership trigger).
+
+  my_families:
+    with:
+      active_memberships: |
+        SELECT family_id FROM family_memberships
+        WHERE user_id = auth.user_id() AND status = 'active'
+    auto_subscribe: true
+    query: |
+      SELECT families.*
+      FROM families
+      INNER JOIN active_memberships ON active_memberships.family_id = families.id
+
+  my_family_memberships:
+    with:
+      active_memberships: |
+        SELECT family_id FROM family_memberships
+        WHERE user_id = auth.user_id() AND status = 'active'
+    auto_subscribe: true
+    query: |
+      SELECT family_memberships.*
+      FROM family_memberships
+      INNER JOIN active_memberships ON active_memberships.family_id = family_memberships.family_id
+
+  # ---- On-demand deep-dive (client subscribes with a parameter) ----
+  # subscription.parameter() is a client-controlled (unsigned) value, so each
+  # query must (1) set accept_potentially_dangerous_queries: true AND
+  # (2) carry an auth guard tying the parameter to rows the user owns.
+
+  review_logs_for_record:
+    accept_potentially_dangerous_queries: true
+    query: |
+      SELECT * FROM review_logs
+      WHERE memorization_record_id = subscription.parameter('memorization_record_id')
+        AND memorization_record_id IN (
+          SELECT id FROM memorization_records WHERE user_id = auth.user_id()
+        )
+
+  word_performance_for_record:
+    accept_potentially_dangerous_queries: true
+    query: |
+      SELECT * FROM word_performance
+      WHERE memorization_record_id = subscription.parameter('memorization_record_id')
+        AND memorization_record_id IN (
+          SELECT id FROM memorization_records WHERE user_id = auth.user_id()
+        )
+
+  family_invitations_for_family:
+    accept_potentially_dangerous_queries: true
+    query: |
+      SELECT * FROM family_invitations
+      WHERE family_id = subscription.parameter('family_id')
+        AND family_id IN (
+          SELECT family_id FROM family_memberships
+          WHERE user_id = auth.user_id() AND status = 'active'
+        )

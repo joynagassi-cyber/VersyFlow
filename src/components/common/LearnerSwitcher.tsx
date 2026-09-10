@@ -18,12 +18,14 @@ import { useAppTheme } from '@/theme/useTheme';
 import { useContextStore } from '@/store/context-store';
 import { useProfileStore } from '@/store/profile-store';
 import { useFamilyStore } from '@/store/family-store';
+import { useTranslation } from 'react-i18next';
 
 export function LearnerSwitcher() {
   const { colors, sp } = useAppTheme();
+  const { t } = useTranslation();
   const { activeContext, activeLearnerId, setLearner } = useContextStore();
   const { profiles, selectProfile } = useProfileStore();
-  const { activeFamilyId, families } = useFamilyStore();
+  const { activeFamilyId } = useFamilyStore();
 
   const [showPicker, setShowPicker] = useState(false);
 
@@ -58,7 +60,7 @@ export function LearnerSwitcher() {
             <Ionicons name="chevron-down" size={14} color={colors.textMuted} />
           </>
         ) : (
-          <Text style={[styles.placeholder, { color: colors.textMuted }]}>Profil</Text>
+          <Text style={[styles.placeholder, { color: colors.textMuted }]}>{t('family.selectProfile')}</Text>
         )}
       </TouchableOpacity>
     );
@@ -78,7 +80,7 @@ export function LearnerSwitcher() {
             <Ionicons name="chevron-down" size={14} color={colors.primary} />
           </>
         ) : (
-          <Text style={[styles.placeholder, { color: colors.primary }]}>Sélectionner</Text>
+          <Text style={[styles.placeholder, { color: colors.primary }]}>{t('family.selectLearner')}</Text>
         )}
       </TouchableOpacity>
 
@@ -87,7 +89,7 @@ export function LearnerSwitcher() {
           <View style={[styles.sheet, { backgroundColor: colors.surface }]}>
             <View style={[styles.sheetHeader, { borderBottomColor: colors.border }]}>
               <Text style={[styles.sheetTitle, { color: colors.textPrimary }]}>
-                {isFamily ? 'Membre de la famille' : 'Mon profil'}
+                {isFamily ? t('family.familyMember') : t('family.myProfile')}
               </Text>
               <TouchableOpacity onPress={() => setShowPicker(false)}>
                 <Ionicons name="close" size={24} color={colors.textSecondary} />
@@ -107,7 +109,7 @@ export function LearnerSwitcher() {
                     <View style={styles.optionInfo}>
                       <Text style={[styles.optionName, { color: colors.textPrimary }]}>{profile.displayName}</Text>
                       <Text style={[styles.optionId, { color: colors.textMuted }]}>
-                        {isActive ? (isFamily ? 'Actif dans la famille' : 'Profil actif') : 'Appuyer pour sélectionner'}
+                        {isActive ? (isFamily ? t('family.familyActive') : t('family.profileActive')) : t('family.tapSelect')}
                       </Text>
                     </View>
                     {isActive && <Ionicons name="checkmark-circle" size={20} color={colors.primary} />}

@@ -14,7 +14,7 @@ export type ProfileStatus = 'active' | 'inactive';
 /**
  * LearnerProfile entity.
  *
- * Represents a single learner persona linked to an InsForge account.
+ * Represents a single learner persona linked to a user account.
  * All learning data (memorization records, review logs, FSRS state, streaks)
  * is scoped to a LearnerProfile ID.
  *
@@ -25,7 +25,7 @@ export type ProfileStatus = 'active' | 'inactive';
 export interface LearnerProfile {
   /** Unique profile identifier (UUID v4 compatible string) */
   id: string;
-  /** InsForge account ID this profile belongs to */
+  /** User account ID this profile belongs to */
   accountId: string;
   /** Display name shown to the learner and family members */
   displayName: string;

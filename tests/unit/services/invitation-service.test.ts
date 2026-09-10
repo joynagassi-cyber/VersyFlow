@@ -1,39 +1,43 @@
 /**
- * Unit Tests — Family Invitation Service
+ * Unit Tests — Family Invitation Service (Domain)
  * Tests token generation, validation, and lifecycle
  */
 
+import { describe, it, expect, beforeEach } from 'vitest';
+import { FamilyInvitationService } from '@/domains/family-invitation/service';
+import { generateQRPayload, parseQRPayload, extractTokenFromQR, formatTokenDisplay } from '@/services/qr-generator';
+
 describe('Family Invitation Service', () => {
-  let mockRepo;
-  let mockFamilyRepo;
-  let service;
+  let mockRepo: any;
+  let mockFamilyRepo: any;
+  let service: FamilyInvitationService;
 
   beforeEach(() => {
     mockRepo = {
       invitations: new Map(),
-      findById: jest.fn(async (id) => mockRepo.invitations.get(id) || null),
-      findByToken: jest.fn(async (token) =>
-        Array.from(mockRepo.invitations.values()).find((i) => i.token === token) || null
+      findById: vi.fn(async (id: string) => mockRepo.invitations.get(id) || null),
+      findByToken: vi.fn(async (token: string) =>
+        Array.from(mockRepo.invitations.values()).find((i: any) => i.token === token) || null
       ),
-      create: jest.fn(async (inv) => {
+      create: vi.fn(async (inv: any) => {
         const id = `inv-${Date.now()}`;
         const newInv = { ...inv, id, expiresAt: inv.expiresAt || Date.now() + 604800000 };
         mockRepo.invitations.set(id, newInv);
         return newInv;
       }),
-      markUsed: jest.fn(async (id) => {
+      markUsed: vi.fn(async (id: string) => {
         const inv = mockRepo.invitations.get(id);
         if (!inv) return false;
         inv.status = 'used';
         return true;
       }),
-      revoke: jest.fn(async (id) => {
+      revoke: vi.fn(async (id: string) => {
         const inv = mockRepo.invitations.get(id);
         if (!inv) return false;
         inv.status = 'revoked';
         return true;
       }),
-      expirePastDue: jest.fn(async () => {
+      expirePastDue: vi.fn(async () => {
         let count = 0;
         const now = Date.now();
         for (const [id, inv] of mockRepo.invitations.entries()) {
@@ -47,10 +51,9 @@ describe('Family Invitation Service', () => {
     };
 
     mockFamilyRepo = {
-      findById: jest.fn(async (id) => id ? { id, ownerId: 'user-1', name: 'Test' } : null),
+      findById: vi.fn(async (id: string) => id ? { id, ownerId: 'user-1', name: 'Test' } : null),
     };
 
-    const { FamilyInvitationService } = require('@/domains/family-invitation/service');
     service = new FamilyInvitationService(mockRepo, mockFamilyRepo);
   });
 
@@ -71,8 +74,8 @@ describe('Family Invitation Service', () => {
     const result = await service.validate(invitation.token);
 
     expect(result).not.toBeNull();
-    expect(result.familyId).toBe('family-1');
-    expect(result.invitation.token).toBe(invitation.token);
+    expect(result!.familyId).toBe('family-1');
+    expect(result!.invitation.token).toBe(invitation.token);
   });
 
   it('should reject an invalid token', async () => {
@@ -127,8 +130,6 @@ describe('Family Invitation Service', () => {
 });
 
 describe('QR Code Utilities', () => {
-  const { generateQRPayload, parseQRPayload, extractTokenFromQR, formatTokenDisplay } = require('@/services/qr-generator');
-
   it('should generate a valid QR payload', () => {
     const payload = generateQRPayload({
       token: 'FAM-ABCD1234',
@@ -152,7 +153,7 @@ describe('QR Code Utilities', () => {
 
     const parsed = parseQRPayload(data);
     expect(parsed).not.toBeNull();
-    expect(parsed.token).toBe('FAM-TEST');
+    expect(parsed!.token).toBe('FAM-TEST');
   });
 
   it('should return null for invalid payload', () => {

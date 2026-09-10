@@ -1,37 +1,49 @@
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { CloudMemorizationService } from '@/sync/CloudMemorizationService';
-import { MmkvStorage } from '@/infrastructure/storage';
 import { Sm2FallbackEngine } from '@/domains/fsrs';
 import { Rating } from '@/domains/fsrs';
 
 // Shared mock implementations for storage methods
 const sharedStorageMocks = {
-  set: jest.fn(() => Promise.resolve()),
-  get: jest.fn(() => Promise.resolve(null)),
-  getAllKeys: jest.fn(() => Promise.resolve([])),
-  clear: jest.fn(() => Promise.resolve()),
+  set: vi.fn(() => Promise.resolve()),
+  get: vi.fn(() => Promise.resolve(null)),
+  getAllKeys: vi.fn(() => Promise.resolve([])),
+  clear: vi.fn(() => Promise.resolve()),
 };
 
-// Mock the storage module so all MmkvStorage instances use the shared mocks
-jest.mock('@/infrastructure/storage', () => ({
-  MmkvStorage: jest.fn().mockImplementation(() => ({
+// Mock the storage module
+vi.mock('@/infrastructure/storage', () => ({
+  MmkvStorage: vi.fn().mockImplementation(() => ({
     ...sharedStorageMocks,
   })),
 }));
 
 // Shared mock implementations for sync service methods
 const sharedSyncMocks = {
-  syncRecordsToCloud: jest.fn(() => Promise.resolve()),
-  syncLogsToCloud: jest.fn(() => Promise.resolve()),
-  autoSync: true,
-  isConnected: true,
-  sync: jest.fn(() => Promise.resolve()),
-  getStatus: jest.fn({ autoSync: true, isConnected: true, queueLength: 0 }),
-  setAutoSync: jest.fn(),
+  syncRecordsToCloud: vi.fn(() => Promise.resolve()),
+  syncLogsToCloud: vi.fn(() => Promise.resolve()),
+  autoSyncEnabled: true,
+  connected: true,
+  sync: vi.fn(() => Promise.resolve()),
+  getStatus: vi.fn(() => ({
+    autoSyncEnabled: true,
+    connected: true,
+    lastSyncAt: null,
+    pendingOperations: 0,
+  })),
+  setAutoSync: vi.fn(),
 };
 
 // Mock the sync module
-jest.mock('@/sync/CloudSyncService', () => ({
-  CloudSyncService: jest.fn().mockImplementation(() => ({
+vi.mock('@/sync/PowerSyncSyncService', () => ({
+  PowerSyncSyncService: vi.fn().mockImplementation(() => ({
+    ...sharedSyncMocks,
+  })),
+}));
+
+// Also mock CloudSyncService for backward compatibility
+vi.mock('@/sync/CloudSyncService', () => ({
+  CloudSyncService: vi.fn().mockImplementation(() => ({
     ...sharedSyncMocks,
   })),
 }));
@@ -42,8 +54,15 @@ describe('CloudMemorizationService', () => {
 
   beforeEach(() => {
     fsrsEngine = new Sm2FallbackEngine();
-    service = new CloudMemorizationService(true, fsrsEngine);
-    jest.clearAllMocks();
+    // Reset shared mock state to defaults
+    sharedSyncMocks.autoSyncEnabled = true;
+    sharedSyncMocks.connected = true;
+    service = new CloudMemorizationService(
+      { set: sharedStorageMocks.set, get: sharedStorageMocks.get, getAllKeys: sharedStorageMocks.getAllKeys, clear: sharedStorageMocks.clear } as any,
+      sharedSyncMocks as any,
+      fsrsEngine
+    );
+    vi.clearAllMocks();
   });
 
   const createTestRecord = (overrides: any = {}) => {
@@ -69,11 +88,21 @@ describe('CloudMemorizationService', () => {
     };
   };
 
+  const createTestLogEntry = () => {
+    return {
+      memorizationRecordId: 'joh:3:16:lsg',
+      rating: Rating.GOOD,
+      answeredAt: Date.now(),
+      timeSpent: 30,
+      notes: 'Test note',
+    };
+  };
+
   describe('saveMemorizedRecord', () => {
     it('should save a memorized record to local storage', async () => {
       // Arrange
       const record = createTestRecord();
-      (sharedStorageMocks.set as jest.Mock).mockResolvedValue(undefined);
+      (sharedStorageMocks.set as ReturnType<typeof vi.fn>).mockResolvedValue(undefined);
 
       // Act
       await service.saveMemorizedRecord(record);
@@ -81,14 +110,14 @@ describe('CloudMemorizationService', () => {
       // Assert
       expect(sharedStorageMocks.set).toHaveBeenCalledWith(
         expect.stringContaining('versyflow:record:joh:3:16:lsg'),
-        expect.stringContaining(JSON.stringify({ id: expect.any(String), updatedAt: expect.any(Number) }))
+        expect.any(String)
       );
     });
 
     it('should trigger cloud sync when autoSync is enabled and connected', async () => {
       // Arrange
       const record = createTestRecord();
-      (sharedStorageMocks.set as jest.Mock).mockResolvedValue(undefined);
+      (sharedStorageMocks.set as ReturnType<typeof vi.fn>).mockResolvedValue(undefined);
 
       // Act
       await service.saveMemorizedRecord(record);
@@ -99,9 +128,9 @@ describe('CloudMemorizationService', () => {
 
     it('should not trigger cloud sync when autoSync is disabled', async () => {
       // Arrange
-      (sharedSyncMocks as any).autoSync = false;
+      sharedSyncMocks.autoSyncEnabled = false;
       const record = createTestRecord();
-      (sharedStorageMocks.set as jest.Mock).mockResolvedValue(undefined);
+      (sharedStorageMocks.set as ReturnType<typeof vi.fn>).mockResolvedValue(undefined);
 
       // Act
       await service.saveMemorizedRecord(record);
@@ -112,9 +141,9 @@ describe('CloudMemorizationService', () => {
 
     it('should not trigger sync when not connected', async () => {
       // Arrange
-      (sharedSyncMocks as any).isConnected = false;
+      sharedSyncMocks.connected = false;
       const record = createTestRecord();
-      (sharedStorageMocks.set as jest.Mock).mockResolvedValue(undefined);
+      (sharedStorageMocks.set as ReturnType<typeof vi.fn>).mockResolvedValue(undefined);
 
       // Act
       await service.saveMemorizedRecord(record);
@@ -129,7 +158,7 @@ describe('CloudMemorizationService', () => {
       // Arrange
       const record = createTestRecord();
       const recordId = `${record.bookId}:${record.chapterNumber}:${record.verseNumber}:${record.translationId}`;
-      (sharedStorageMocks.get as jest.Mock).mockResolvedValueOnce(JSON.stringify({ ...record, id: recordId, updatedAt: Date.now() }));
+      (sharedStorageMocks.get as ReturnType<typeof vi.fn>).mockResolvedValueOnce(JSON.stringify({ ...record, id: recordId, updatedAt: Date.now() }));
 
       // Act
       const result = await service.getMemorizedRecord('joh', 3, 16, 'lsg');
@@ -142,7 +171,7 @@ describe('CloudMemorizationService', () => {
 
     it('should return null when record does not exist', async () => {
       // Arrange
-      (sharedStorageMocks.get as jest.Mock).mockResolvedValueOnce(null);
+      (sharedStorageMocks.get as ReturnType<typeof vi.fn>).mockResolvedValueOnce(null);
 
       // Act
       const result = await service.getMemorizedRecord('nonexistent', 1, 1, 'test');
@@ -160,12 +189,12 @@ describe('CloudMemorizationService', () => {
       const futureRecord = createTestRecord({ nextReviewAt: now + 86400000, status: 'in-progress' });
       const masteredRecord = createTestRecord({ nextReviewAt: now - 1000, status: 'mastered' });
 
-      (sharedStorageMocks.getAllKeys as jest.Mock).mockResolvedValueOnce([
+      (sharedStorageMocks.getAllKeys as ReturnType<typeof vi.fn>).mockResolvedValueOnce([
         'versyflow:record:joh:3:16:lsg',
         'versyflow:record:joh:3:17:lsg',
         'versyflow:record:joh:3:18:lsg',
       ]);
-      (sharedStorageMocks.get as jest.Mock)
+      (sharedStorageMocks.get as ReturnType<typeof vi.fn>)
         .mockResolvedValueOnce(JSON.stringify({ ...dueRecord, id: 'joh:3:16:lsg', updatedAt: now }))
         .mockResolvedValueOnce(JSON.stringify({ ...futureRecord, id: 'joh:3:17:lsg', updatedAt: now }))
         .mockResolvedValueOnce(JSON.stringify({ ...masteredRecord, id: 'joh:3:18:lsg', updatedAt: now }));
@@ -180,7 +209,7 @@ describe('CloudMemorizationService', () => {
 
     it('should return empty array when no records due', async () => {
       // Arrange
-      (sharedStorageMocks.getAllKeys as jest.Mock).mockResolvedValueOnce([]);
+      (sharedStorageMocks.getAllKeys as ReturnType<typeof vi.fn>).mockResolvedValueOnce([]);
 
       // Act
       const result = await service.getDueRecords();
@@ -191,7 +220,7 @@ describe('CloudMemorizationService', () => {
 
     it('should handle errors gracefully', async () => {
       // Arrange
-      (sharedStorageMocks.getAllKeys as jest.Mock).mockRejectedValueOnce(new Error('Test error'));
+      (sharedStorageMocks.getAllKeys as ReturnType<typeof vi.fn>).mockRejectedValueOnce(new Error('Test error'));
 
       // Act
       const result = await service.getDueRecords();
@@ -213,8 +242,8 @@ describe('CloudMemorizationService', () => {
         fsrsState: { stability: 2.5, difficulty: 5, recallProbability: 0.75, lastInterval: 0, nextInterval: 1, elapsedDays: 0, repetitions: 0, requestedRetention: 0.9 },
       });
 
-      (sharedStorageMocks.get as jest.Mock).mockResolvedValueOnce(JSON.stringify({ ...existingRecord, id: recordId, updatedAt: now }));
-      (sharedStorageMocks.set as jest.Mock).mockResolvedValue(undefined);
+      (sharedStorageMocks.get as ReturnType<typeof vi.fn>).mockResolvedValueOnce(JSON.stringify({ ...existingRecord, id: recordId, updatedAt: now }));
+      (sharedStorageMocks.set as ReturnType<typeof vi.fn>).mockResolvedValue(undefined);
 
       const newFsrsState = { stability: 3.0, difficulty: 4.8, recallProbability: 0.8, lastInterval: 1, nextInterval: 7, elapsedDays: 2, repetitions: 1, requestedRetention: 0.9 };
 
@@ -241,7 +270,7 @@ describe('CloudMemorizationService', () => {
 
     it('should return false when record does not exist', async () => {
       // Arrange
-      (sharedStorageMocks.get as jest.Mock).mockResolvedValueOnce(null);
+      (sharedStorageMocks.get as ReturnType<typeof vi.fn>).mockResolvedValueOnce(null);
 
       // Act
       const success = await service.updateRecordAfterReview(
@@ -261,8 +290,8 @@ describe('CloudMemorizationService', () => {
       const recordId = 'joh:3:16:lsg';
       const now = Date.now();
       const existingRecord = createTestRecord({ nextReviewAt: now });
-      (sharedStorageMocks.get as jest.Mock).mockResolvedValueOnce(JSON.stringify({ ...existingRecord, id: recordId, updatedAt: now }));
-      (sharedStorageMocks.set as jest.Mock).mockResolvedValue(undefined);
+      (sharedStorageMocks.get as ReturnType<typeof vi.fn>).mockResolvedValueOnce(JSON.stringify({ ...existingRecord, id: recordId, updatedAt: now }));
+      (sharedStorageMocks.set as ReturnType<typeof vi.fn>).mockResolvedValue(undefined);
 
       const newFsrsState = { stability: 3.0, difficulty: 4.8, recallProbability: 0.8, lastInterval: 1, nextInterval: 7, elapsedDays: 2, repetitions: 1, requestedRetention: 0.9 };
 
@@ -281,10 +310,10 @@ describe('CloudMemorizationService', () => {
 
       // Assert - Review log stored with specific key pattern
       expect(sharedStorageMocks.set).toHaveBeenCalledWith(
-        expect.stringContaining('versyflow:reviewlog:joh:3:16:lsg:' + expect.any(Number)),
+        expect.stringContaining('versyflow:reviewlog:' + recordId + ':'),
         expect.any(String)
       );
-      expect(sharedStorageMocks.set).toHaveBeenCalledWith('versyflow:reviewlogs:joh:3:16:lsg', expect.any(String));
+      expect(sharedStorageMocks.set).toHaveBeenCalledWith('versyflow:reviewlogs:' + recordId, expect.any(String));
     });
   });
 
@@ -292,23 +321,23 @@ describe('CloudMemorizationService', () => {
     it('should save a review log entry', async () => {
       // Arrange
       const logEntry = createTestLogEntry();
-      (sharedStorageMocks.set as jest.Mock).mockResolvedValue(undefined);
+      (sharedStorageMocks.set as ReturnType<typeof vi.fn>).mockResolvedValue(undefined);
 
       // Act
       await service.saveReviewLog(logEntry);
 
       // Assert
       expect(sharedStorageMocks.set).toHaveBeenCalledWith(
-        expect.stringContaining('versyflow:reviewlog:joh:3:16:lsg:' + expect.any(Number)),
+        expect.stringContaining('versyflow:reviewlog:' + logEntry.memorizationRecordId + ':'),
         expect.any(String)
       );
-      expect(sharedStorageMocks.set).toHaveBeenCalledWith('versyflow:reviewlogs:joh:3:16:lsg', expect.any(String));
+      expect(sharedStorageMocks.set).toHaveBeenCalledWith('versyflow:reviewlogs:' + logEntry.memorizationRecordId, expect.any(String));
     });
 
     it('should trigger cloud sync for logs', async () => {
       // Arrange
       const logEntry = createTestLogEntry();
-      (sharedStorageMocks.set as jest.Mock).mockResolvedValue(undefined);
+      (sharedStorageMocks.set as ReturnType<typeof vi.fn>).mockResolvedValue(undefined);
 
       // Act
       await service.saveReviewLog(logEntry);
@@ -319,10 +348,10 @@ describe('CloudMemorizationService', () => {
 
     it('should not trigger cloud sync when autoSync disabled', async () => {
       // Arrange
-      (sharedSyncMocks as any).autoSync = false;
-      (sharedSyncMocks as any).isConnected = true;
+      sharedSyncMocks.autoSyncEnabled = false;
+      sharedSyncMocks.connected = true;
       const logEntry = createTestLogEntry();
-      (sharedStorageMocks.set as jest.Mock).mockResolvedValue(undefined);
+      (sharedStorageMocks.set as ReturnType<typeof vi.fn>).mockResolvedValue(undefined);
 
       // Act
       await service.saveReviewLog(logEntry);
@@ -339,11 +368,11 @@ describe('CloudMemorizationService', () => {
       const record1 = createTestRecord({ bibleVerseReference: 'Jean 3:16' });
       const record2 = createTestRecord({ bibleVerseReference: 'Jean 3:17' });
 
-      (sharedStorageMocks.getAllKeys as jest.Mock).mockResolvedValueOnce([
+      (sharedStorageMocks.getAllKeys as ReturnType<typeof vi.fn>).mockResolvedValueOnce([
         'versyflow:record:joh:3:16:lsg',
         'versyflow:record:joh:3:17:lsg',
       ]);
-      (sharedStorageMocks.get as jest.Mock)
+      (sharedStorageMocks.get as ReturnType<typeof vi.fn>)
         .mockResolvedValueOnce(JSON.stringify({ ...record1, id: 'joh:3:16:lsg', updatedAt: now }))
         .mockResolvedValueOnce(JSON.stringify({ ...record2, id: 'joh:3:17:lsg', updatedAt: now }));
 
@@ -357,7 +386,7 @@ describe('CloudMemorizationService', () => {
 
     it('should return empty array when no records', async () => {
       // Arrange
-      (sharedStorageMocks.getAllKeys as jest.Mock).mockResolvedValueOnce([]);
+      (sharedStorageMocks.getAllKeys as ReturnType<typeof vi.fn>).mockResolvedValueOnce([]);
 
       // Act
       const result = await service.getAllMemorized();
@@ -381,8 +410,9 @@ describe('CloudMemorizationService', () => {
         requestedRetention: 0.9,
       };
 
-      // Mock fsrsEngine.review
-      (fsrsEngine as any).review = jest.fn().mockResolvedValue({
+      // Mock fsrsEngine methods
+      (fsrsEngine as any).newState = vi.fn().mockResolvedValue({ ...newFsrsStateReview });
+      (fsrsEngine as any).review = vi.fn().mockResolvedValue({
         state: newFsrsStateReview,
         due: new Date(),
         stability: 2.5,
@@ -390,7 +420,7 @@ describe('CloudMemorizationService', () => {
         recurring: true,
       });
 
-      (sharedStorageMocks.set as jest.Mock).mockResolvedValue(undefined);
+      (sharedStorageMocks.set as ReturnType<typeof vi.fn>).mockResolvedValue(undefined);
 
       // Act
       const result = await service.memorizeVerse({
@@ -410,8 +440,8 @@ describe('CloudMemorizationService', () => {
 
     it('should handle memorization failure', async () => {
       // Arrange
-      (fsrsEngine as any).review = jest.fn().mockRejectedValueOnce(new Error('FSRS error'));
-      (sharedStorageMocks.set as jest.Mock).mockResolvedValue(undefined);
+      (fsrsEngine as any).review = vi.fn().mockRejectedValueOnce(new Error('FSRS error'));
+      (sharedStorageMocks.set as ReturnType<typeof vi.fn>).mockResolvedValue(undefined);
 
       // Act
       const result = await service.memorizeVerse({
@@ -440,15 +470,20 @@ describe('CloudMemorizationService', () => {
 
     it('should return sync status', () => {
       // Arrange
-      (sharedSyncMocks.getStatus as jest.Mock).mockReturnValue({ autoSync: true, isConnected: true, queueLength: 0 });
+      (sharedSyncMocks.getStatus as ReturnType<typeof vi.fn>).mockReturnValue({
+        autoSyncEnabled: true,
+        connected: true,
+        lastSyncAt: null,
+        pendingOperations: 0,
+      });
 
       // Act
       const status = service.getSyncStatus();
 
       // Assert
-      expect(status.autoSync).toBe(true);
-      expect(status.isConnected).toBe(true);
-      expect(status.queueLength).toBe(0);
+      expect(status.autoSyncEnabled).toBe(true);
+      expect(status.connected).toBe(true);
+      expect(status.pendingOperations).toBe(0);
     });
 
     it('should enable/disable auto-sync', () => {

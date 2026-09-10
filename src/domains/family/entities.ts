@@ -29,7 +29,7 @@ export type MembershipStatus = 'active' | 'suspended' | 'pending';
 export interface Family {
   /** Unique family identifier */
   id: string;
-  /** InsForge account ID of the family creator/owner */
+  /** User account ID of the family creator/owner */
   ownerId: string;
   /** Display name of the family */
   name: string;
@@ -52,7 +52,7 @@ export interface FamilyMembership {
   id: string;
   /** Family this membership belongs to */
   familyId: string;
-  /** InsForge account ID of the member */
+  /** User account ID of the member */
   accountId: string;
   /** Role within the family */
   role: FamilyRole;

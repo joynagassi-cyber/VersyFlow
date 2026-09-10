@@ -24,7 +24,7 @@ export interface FamilyInvitation {
   id: string;
   /** Family this invitation is for */
   familyId: string;
-  /** InsForge account ID of the user who created this invitation */
+  /** User account ID of the user who created this invitation */
   createdBy: string;
   /** Random token used to join the family (not the familyId) */
   token: string;

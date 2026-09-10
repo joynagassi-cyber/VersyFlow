@@ -1,53 +1,55 @@
 /**
- * Unit Tests — Family Service
+ * Unit Tests — Family Service (Domain)
  * Tests family CRUD and member management
  */
 
+import { describe, it, expect, beforeEach } from 'vitest';
+import { FamilyService } from '@/domains/family/service';
+
 describe('Family Service', () => {
-  let mockRepo;
-  let service;
+  let mockRepo: any;
+  let service: FamilyService;
 
   beforeEach(() => {
     let idCounter = 0;
     mockRepo = {
       families: new Map(),
       memberships: new Map(),
-      findById: jest.fn(async (id) => mockRepo.families.get(id) || null),
-      findByOwnerId: jest.fn(async (ownerId) =>
-        Array.from(mockRepo.families.values()).filter((f) => f.ownerId === ownerId)
+      findById: vi.fn(async (id: string) => mockRepo.families.get(id) || null),
+      findByOwnerId: vi.fn(async (ownerId: string) =>
+        Array.from(mockRepo.families.values()).filter((f: any) => f.ownerId === ownerId)
       ),
-      create: jest.fn(async (family) => {
+      create: vi.fn(async (family: any) => {
         idCounter++;
         const id = `family-${idCounter}`;
         const newFamily = { ...family, id, createdAt: Date.now() };
         mockRepo.families.set(id, newFamily);
-        // Note: service.create() will call addMember separately for owner
         return newFamily;
       }),
-      update: jest.fn(async (id, updates) => {
+      update: vi.fn(async (id: string, updates: any) => {
         const family = mockRepo.families.get(id);
         if (!family) return null;
         const updated = { ...family, ...updates };
         mockRepo.families.set(id, updated);
         return updated;
       }),
-      delete: jest.fn(async (id, ownerId) => {
+      delete: vi.fn(async (id: string, ownerId: string) => {
         const family = mockRepo.families.get(id);
         if (!family || family.ownerId !== ownerId) return false;
         mockRepo.families.delete(id);
         return true;
       }),
-      getMembers: jest.fn(async (familyId) =>
-        Array.from(mockRepo.memberships.values()).filter((m) => m.familyId === familyId)
+      getMembers: vi.fn(async (familyId: string) =>
+        Array.from(mockRepo.memberships.values()).filter((m: any) => m.familyId === familyId)
       ),
-      addMember: jest.fn(async (familyId, membership) => {
+      addMember: vi.fn(async (familyId: string, membership: any) => {
         idCounter++;
         const id = `mem-${idCounter}`;
         const newMembership = { ...membership, id, familyId, createdAt: Date.now(), joinedAt: Date.now() };
         mockRepo.memberships.set(id, newMembership);
         return newMembership;
       }),
-      removeMember: jest.fn(async (familyId, accountId) => {
+      removeMember: vi.fn(async (familyId: string, accountId: string) => {
         let removed = false;
         for (const [id, mem] of mockRepo.memberships.entries()) {
           if (mem.familyId === familyId && mem.accountId === accountId) {
@@ -59,7 +61,6 @@ describe('Family Service', () => {
       }),
     };
 
-    const { FamilyService } = require('@/domains/family/service');
     service = new FamilyService(mockRepo);
   });
 

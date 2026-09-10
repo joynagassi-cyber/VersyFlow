@@ -1,13 +1,15 @@
 /**
- * LearnerProfile Service
- * Business logic for profile CRUD and selection
+ * LearnerProfile Domain Service — Fixed
+ *
+ * Uses DomainEventTypes from events, adds optional accountId scoping to findByAccountId
+ * and findById.
  */
 
 import type { LearnerProfile, ProfileStatus } from './entities';
 import type { ILearnerProfileRepository } from './repository';
-import { eventBus, DomainEventTypes } from '@/domains';
+import { eventBus, DomainEventTypes } from '@/domains/events';
 
-export class LearnerProfileService {
+export class LearnerProfileDomainService {
   private activeProfileId: string | null = null;
 
   constructor(private repository: ILearnerProfileRepository) {}
@@ -28,7 +30,7 @@ export class LearnerProfileService {
 
     eventBus.emit({
       id: crypto.randomUUID(),
-      type: 'learner_profile.created',
+      type: DomainEventTypes.PROFILE_CREATED,
       timestamp: now,
       payload: { profileId: created.id, accountId },
     });
@@ -36,21 +38,28 @@ export class LearnerProfileService {
     return created;
   }
 
-  async findById(id: string): Promise<LearnerProfile | null> {
-    return this.repository.findById(id);
+  async findById(id: string, accountId?: string): Promise<LearnerProfile | null> {
+    const profile = await this.repository.findById(id);
+    if (!profile) return null;
+    // If accountId is provided, verify ownership
+    if (accountId && profile.accountId !== accountId) return null;
+    return profile;
   }
 
   async findByAccountId(accountId: string): Promise<LearnerProfile[]> {
     return this.repository.findByAccountId(accountId);
   }
 
-  async update(id: string, updates: Partial<LearnerProfile>): Promise<LearnerProfile | null> {
+  async update(id: string, updates: Partial<LearnerProfile>, accountId?: string): Promise<LearnerProfile | null> {
+    const existing = await this.findById(id, accountId);
+    if (!existing) return null;
+
     const updated = await this.repository.update(id, { ...updates, updatedAt: Date.now() });
 
     if (updated) {
       eventBus.emit({
         id: crypto.randomUUID(),
-        type: 'learner_profile.updated',
+        type: DomainEventTypes.PROFILE_UPDATED,
         timestamp: Date.now(),
         payload: { profileId: id },
       });
@@ -59,7 +68,10 @@ export class LearnerProfileService {
     return updated;
   }
 
-  async delete(id: string): Promise<boolean> {
+  async delete(id: string, accountId?: string): Promise<boolean> {
+    const existing = await this.findById(id, accountId);
+    if (!existing) return false;
+
     const deleted = await this.repository.delete(id);
 
     if (deleted && this.activeProfileId === id) {
@@ -69,7 +81,7 @@ export class LearnerProfileService {
     if (deleted) {
       eventBus.emit({
         id: crypto.randomUUID(),
-        type: 'learner_profile.deleted',
+        type: DomainEventTypes.PROFILE_DELETED,
         timestamp: Date.now(),
         payload: { profileId: id },
       });
@@ -82,7 +94,7 @@ export class LearnerProfileService {
     this.activeProfileId = id;
     eventBus.emit({
       id: crypto.randomUUID(),
-      type: 'learner_profile.selected',
+      type: DomainEventTypes.PROFILE_SELECTED,
       timestamp: Date.now(),
       payload: { profileId: id },
     });

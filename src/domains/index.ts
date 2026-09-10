@@ -16,3 +16,26 @@ export { calculateMasteryLevel, isMastered, MasteryLevel } from './progress';
 
 // Domain Events (Shared)
 export { DomainEventTypes, eventBus, DomainEvent } from './events';
+
+// Telemetry Domain
+export { redact } from './telemetry/entities';
+export type {
+  TelemetryEvent,
+  TelemetryQueueItem,
+  TelemetrySummary,
+  ExerciseCompletedTelemetry,
+  ExerciseAbandonedTelemetry,
+  ReviewStartedTelemetry,
+  ReviewCompletedTelemetry,
+  MemorySessionStartedTelemetry,
+  MemorySessionCompletedTelemetry,
+  PassageStartedTelemetry,
+  PassageSegmentCompletedTelemetry,
+  ErrorOccurredTelemetry,
+  FeatureAccessedTelemetry,
+  StreakIncrementedTelemetry,
+  MilestoneReachedTelemetry,
+  EventType,
+  ExerciseStrategy,
+} from './telemetry/entities';
+export type { ITelemetry, TelemetryEventType } from './telemetry/it telemetry';

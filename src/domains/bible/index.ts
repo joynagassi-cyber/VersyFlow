@@ -13,3 +13,36 @@ export type { BibleTranslation, BibleChapter, BibleVerse } from './schema';
 
 // Repository
 export { BibleRepository } from './repository';
+
+// Multi-translation registry (pure catalogue)
+export {
+  BibleTranslationRegistry,
+  DEFAULT_BIBLE_TRANSLATIONS,
+  DEFAULT_TRANSLATION_ID,
+} from './registry';
+export type {
+  BibleTranslationManifest,
+  IBibleTranslationRegistry,
+  LicenseStatus,
+  TextDirection,
+  BibleDataFormat,
+} from './registry';
+
+// Local multi-translation repository (pure, port-based)
+export {
+  LocalBibleRepository,
+  InMemoryBibleTextSource,
+  parseTranslationData,
+  BibleTranslationDataSchema,
+  BibleBookDataSchema,
+  BibleChapterDataSchema,
+  BibleVerseDataSchema,
+} from './repository-local';
+export type {
+  ILocalBibleRepository,
+  IBibleTextSource,
+  BibleTranslationData,
+  BibleBookData,
+  BibleChapterData,
+  BibleVerseData,
+} from './repository-local';

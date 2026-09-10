@@ -33,8 +33,12 @@ export type EventType =
   | 'review.completed'
   | 'memory.session.started'
   | 'memory.session.completed'
+  | 'passage.started'
+  | 'passage.segment.completed'
   | 'error.occurred'
-  | 'feature.accessed';
+  | 'feature.accessed'
+  | 'streak.incremented'
+  | 'milestone.reached';
 
 /**
  * Telemetry Event payload for exercise completion
@@ -182,51 +186,6 @@ export interface MemorySessionCompletedTelemetry {
 }
 
 /**
- * Telemetry Event payload for error occurrence
- */
-export interface ErrorOccurredTelemetry {
-  eventType: 'error.occurred';
-  timestamp: number;
-  sessionId: string;
-  userId?: string;
-  payload: {
-    errorType: string;
-    errorMessage: string;
-    stack?: string;
-    context?: Record<string, unknown>;
-  };
-}
-
-/**
- * Telemetry Event payload for feature access
- */
-export interface FeatureAccessedTelemetry {
-  eventType: 'feature.accessed';
-  timestamp: number;
-  sessionId: string;
-  userId?: string;
-  payload: {
-    featureName: string;
-    screen?: string;
-  };
-}
-
-/**
- * Union of all telemetry event types
- */
-export type TelemetryEvent =
-  | ExerciseCompletedTelemetry
-  | ExerciseAbandonedTelemetry
-  | ReviewStartedTelemetry
-  | ReviewCompletedTelemetry
-  | MemorySessionStartedTelemetry
-  | MemorySessionCompletedTelemetry
-  | PassageStartedTelemetry
-  | PassageSegmentCompletedTelemetry
-  | ErrorOccurredTelemetry
-  | FeatureAccessedTelemetry;
-
-/**
  * Telemetry Event payload for passage start
  */
 export interface PassageStartedTelemetry {
@@ -277,6 +236,126 @@ export interface PassageSegmentCompletedTelemetry {
     totalWords: number;
     /** Duration for this segment in ms */
     segmentDurationMs: number;
+  };
+}
+
+/**
+ * Telemetry Event payload for error occurrence
+ */
+export interface ErrorOccurredTelemetry {
+  eventType: 'error.occurred';
+  timestamp: number;
+  sessionId: string;
+  userId?: string;
+  payload: {
+    errorType: string;
+    errorMessage: string;
+    stack?: string;
+    context?: Record<string, unknown>;
+  };
+}
+
+/**
+ * Telemetry Event payload for feature access
+ */
+export interface FeatureAccessedTelemetry {
+  eventType: 'feature.accessed';
+  timestamp: number;
+  sessionId: string;
+  userId?: string;
+  payload: {
+    featureName: string;
+    screen?: string;
+  };
+}
+
+/**
+ * Telemetry Event payload for streak increment
+ */
+export interface StreakIncrementedTelemetry {
+  eventType: 'streak.incremented';
+  timestamp: number;
+  sessionId: string;
+  userId?: string;
+  payload: {
+    streakDelta: number;
+    previousStreak: number;
+    newStreak: number;
+  };
+}
+
+/**
+ * Telemetry Event payload for milestone reached
+ */
+export interface MilestoneReachedTelemetry {
+  eventType: 'milestone.reached';
+  timestamp: number;
+  sessionId: string;
+  userId?: string;
+  payload: {
+    milestoneType: string;
+    totalVerses: number;
+    totalMastered: number;
+  };
+}
+
+/**
+ * Union of all telemetry event types
+ */
+export type TelemetryEvent =
+  | ExerciseCompletedTelemetry
+  | ExerciseAbandonedTelemetry
+  | ReviewStartedTelemetry
+  | ReviewCompletedTelemetry
+  | MemorySessionStartedTelemetry
+  | MemorySessionCompletedTelemetry
+  | PassageStartedTelemetry
+  | PassageSegmentCompletedTelemetry
+  | ErrorOccurredTelemetry
+  | FeatureAccessedTelemetry
+  | StreakIncrementedTelemetry
+  | MilestoneReachedTelemetry;
+
+/**
+ * Internal fields that must never be sent in telemetry (contain raw verse text or PII)
+ */
+const SENSITIVE_FIELDS = [
+  'bibleVerseText',
+  'verseText',
+  'verseTexts',
+  'word',
+  'words',
+  'transcript',
+  'rawText',
+  'content',
+] as const;
+
+/**
+ * Redact a telemetry event by stripping any sensitive fields.
+ * This is a pure function — no I/O, fully testable in isolation.
+ * Only ids, durations, fsrs state transitions, streak deltas, and accuracy buckets are preserved.
+ */
+export function redact(event: TelemetryEvent): TelemetryEvent {
+  const sensitiveSet = new Set(SENSITIVE_FIELDS);
+
+  const redactPayload = (obj: Record<string, unknown>): Record<string, unknown> => {
+    const result: Record<string, unknown> = {};
+    for (const [key, value] of Object.entries(obj)) {
+      if (sensitiveSet.has(key)) {
+        continue;
+      }
+      if (value !== null && typeof value === 'object' && !Array.isArray(value)) {
+        result[key] = redactPayload(value as Record<string, unknown>);
+      } else {
+        result[key] = value;
+      }
+    }
+    return result;
+  };
+
+  return {
+    ...event,
+    payload: redactPayload(event.payload as Record<string, unknown>),
   };
 }
 
