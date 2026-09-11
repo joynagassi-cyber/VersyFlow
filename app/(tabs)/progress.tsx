@@ -1,341 +1,186 @@
 /**
- * Progress Tab — Dashboard with real progress statistics
- * Connects to ProgressService for live data
- * See docs/08-ui-screens.md §10
+ * Progress Tab — dashboard with real progress statistics
+ * Connects to ProgressService for live data.
+ * Tailwind + i18n + Lucide.
  */
 
 import { useState, useEffect } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  SafeAreaView,
-  ActivityIndicator,
-} from '@/components/ui/Primitives';
-import { useAppTheme } from '@/theme/useTheme';
-import { useI18n } from '@/hooks/useI18n';
-import { MemorizationService } from '@/domains/memorization/service';
-import { IFsrsEngine, Sm2FallbackEngine } from '@/domains/fsrs';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
+import { Flame, TrendingUp, TrendingDown, Loader2 } from 'lucide-react';
+import { useActiveProfile } from '@/hooks/useActiveProfile';
 import { MmkvStorage } from '@/infrastructure/storage';
-import type { ProgressStats } from '@/services/progress-service';
+import { MemorizationService } from '@/domains/memorization/service';
+import { Sm2FallbackEngine } from '@/domains/fsrs';
 import { ProgressService } from '@/services/progress-service';
+import type { ProgressStats } from '@/services/stats-calculator';
+import { cn } from '@/lib/utils';
 
-// Singleton pour le service
-let memorizationService: MemorizationService | null = null;
-
-const getMemorizationService = () => {
-  if (!memorizationService) {
-    const storage = new MmkvStorage();
-    const fsrs = new Sm2FallbackEngine();
-    memorizationService = new MemorizationService(storage, fsrs);
+const serviceByProfile = new Map<string, MemorizationService>();
+const getMemorizationService = (profileId: string) => {
+  if (!serviceByProfile.has(profileId)) {
+    serviceByProfile.set(
+      profileId,
+      new MemorizationService(new MmkvStorage(), new Sm2FallbackEngine(), profileId),
+    );
   }
-  return memorizationService;
+  return serviceByProfile.get(profileId)!;
 };
 
 export default function ProgressScreen() {
-  const { colors, sp, sh, rad } = useAppTheme();
-  const { t } = useI18n();
+  const { t } = useTranslation();
+  const navigate = useNavigate();
+  const { activeProfile } = useActiveProfile();
+  const profileId = activeProfile?.id ?? 'default';
+
   const [stats, setStats] = useState<ProgressStats | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Charger les stats au montage
   useEffect(() => {
-    loadStats();
-  }, []);
-
-  const loadStats = async () => {
-    try {
-      const service = getMemorizationService();
-      const progressService = new ProgressService(service, new Sm2FallbackEngine());
-      const statsData = await progressService.getStats();
-      setStats(statsData);
-    } catch (error) {
-      console.error('Error loading progress stats:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+    let cancelled = false;
+    const load = async () => {
+      try {
+        const service = getMemorizationService(profileId);
+        const progressService = new ProgressService(
+          service,
+          new Sm2FallbackEngine(),
+          undefined,
+          profileId,
+        );
+        const data = await progressService.getStats();
+        if (!cancelled) setStats(data);
+      } catch (error) {
+        console.error('[Progress] Stats load failed:', error);
+        if (!cancelled) setStats(null);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    };
+    void load();
+    return () => {
+      cancelled = true;
+    };
+  }, [profileId]);
 
   if (loading) {
     return (
-      <SafeAreaView style={styles.container}>
-        <View style={styles.center}>
-          <ActivityIndicator size="large" color={colors.primary} />
-          <Text style={styles.loadingText}>Chargement des statistiques...</Text>
-        </View>
-      </SafeAreaView>
+      <div className="flex min-h-full items-center justify-center bg-background">
+        <Loader2 className="animate-spin text-primary" size={36} />
+      </div>
     );
   }
 
   if (!stats) {
     return (
-      <SafeAreaView style={styles.container}>
-        <View style={styles.empty}>
-          <Text style={styles.emptyIcon}>📊</Text>
-          <Text style={styles.emptyTitle}>Aucune progression enregistrée</Text>
-          <Text style={styles.emptySubtitle}>
-            Commencez à mémoriser des versets pour voir vos statistiques ici
-          </Text>
-        </View>
-      </SafeAreaView>
+      <div className="flex min-h-full flex-col items-center justify-center bg-background p-8 text-center">
+        <span className="text-6xl">📊</span>
+        <p className="mt-4 text-xl font-bold text-text-primary">
+          {t('progress.mastered', 'Aucune progression enregistrée')}
+        </p>
+        <p className="mt-2 text-sm text-text-muted">
+          {t('progress.inProgress', 'Commencez à mémoriser des versets pour voir vos statistiques')}
+        </p>
+        <button
+          onClick={() => navigate('/bible/explorer')}
+          className="mt-6 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-white shadow-rose"
+        >
+          {t('bible.explorer', 'Explorer la Bible')}
+        </button>
+      </div>
     );
   }
 
+  const statCards = [
+    { label: t('progress.versesMemorized', 'Verset(s) mémorisé(s)'), value: stats.totalVerses },
+    { label: t('progress.mastered', 'Maîtrisé(s)'), value: stats.masteredVerses },
+    { label: t('progress.streak', 'Série'), value: stats.streakCount },
+    { label: t('progress.toReview', 'À réviser'), value: stats.dueForReview },
+  ];
+
+  const change = stats.weeklyTrend.changePercentage;
+
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.content}>
-        {/* Stats Grid 2x2 */}
-        <View style={styles.statsGrid}>
-          <View style={styles.statCard}>
-            <Text style={styles.statLabel}>{t('progress.totalVerses')}</Text>
-            <Text style={styles.statValue}>{stats.totalVerses}</Text>
-          </View>
-          <View style={styles.statCard}>
-            <Text style={styles.statLabel}>{t('progress.mastered')}</Text>
-            <Text style={styles.statValue}>{stats.masteredVerses}</Text>
-          </View>
-          <View style={styles.statCard}>
-            <Text style={styles.statLabel}>{t('progress.streak')}</Text>
-            <Text style={styles.statValue}>{stats.streakCount}</Text>
-          </View>
-          <View style={styles.statCard}>
-            <Text style={styles.statLabel}>{t('progress.due')}</Text>
-            <Text style={styles.statValue}>{stats.dueForReview}</Text>
-          </View>
-        </View>
+    <div className="min-h-full overflow-y-auto bg-background p-4 pb-24">
+      <h1 className="mb-4 text-2xl font-bold text-text-primary">
+        {t('progress.yourProgress', 'Votre Progression')}
+      </h1>
 
-        {/* Weekly Trend */}
-        <View style={styles.trendCard}>
-          <Text style={styles.trendTitle}>Tendance hebdomadaire</Text>
-          <View style={styles.trendRow}>
-            <View style={styles.trendItem}>
-              <Text style={styles.trendLabel}>Cette semaine</Text>
-              <Text style={styles.trendValue}>{stats.weeklyTrend.thisWeek}</Text>
-            </View>
-            <View style={styles.trendSeparator}></View>
-            <View style={styles.trendItem}>
-              <Text style={styles.trendLabel}>Semaine dernière</Text>
-              <Text style={styles.trendValue}>{stats.weeklyTrend.lastWeek}</Text>
-            </View>
-          </View>
-          <View style={styles.changeIndicator}>
-            <Text
-              style={[
-                styles.changeText,
-                stats.weeklyTrend.changePercentage >= 0 ? styles.changePositive : styles.changeNegative,
-              ]}
-            >
-              {stats.weeklyTrend.changePercentage >= 0 ? '↑' : '↓'}
-              {Math.abs(stats.weeklyTrend.changePercentage)}%
-            </Text>
-            <Text style={styles.changeLabel}>
-              vs semaine précédente
-            </Text>
-          </View>
-        </View>
+      {/* Stats grid 2x2 */}
+      <div className="grid grid-cols-2 gap-3">
+        {statCards.map((card) => (
+          <div key={card.label} className="rounded-xl bg-surface p-4 text-center shadow-sm">
+            <p className="text-xs uppercase tracking-wide text-text-muted">{card.label}</p>
+            <p className="mt-2 text-3xl font-bold text-primary">{card.value}</p>
+          </div>
+        ))}
+      </div>
 
-        {/* Streak Info */}
-        {stats.streakCount > 0 && (
-          <View style={styles.streakCard}>
-            <View style={styles.streakHeader}>
-              <Text style={styles.streakTitle}>Série consecutive</Text>
-              <TouchableOpacity>
-                <Text style={styles.streakEmoji}>🔥</Text>
-              </TouchableOpacity>
-            </View>
-            <Text style={styles.streakText}>
-              Serie de {stats.streakCount} jour(s)
-            </Text>
-          </View>
-        )}
+      {/* Weekly trend */}
+      <div className="mt-4 rounded-xl bg-surface p-4 shadow-sm">
+        <div className="flex items-center justify-between">
+          <h2 className="text-base font-semibold text-text-primary">
+            {t('progress.thisWeek', 'Tendance hebdomadaire')}
+          </h2>
+          <span
+            className={cn(
+              'flex items-center gap-1 text-sm font-bold',
+              change >= 0 ? 'text-success' : 'text-error',
+            )}
+          >
+            {change >= 0 ? <TrendingUp size={16} /> : <TrendingDown size={16} />}
+            {Math.abs(change)}%
+          </span>
+        </div>
+        <div className="mt-3 flex items-center justify-between">
+          <div className="text-center">
+            <p className="text-xs text-text-muted">{t('progress.thisWeek', 'Cette semaine')}</p>
+            <p className="text-2xl font-bold text-text-primary">{stats.weeklyTrend.thisWeek}</p>
+          </div>
+          <div className="h-10 w-px bg-divider" />
+          <div className="text-center">
+            <p className="text-xs text-text-muted">Semaine dernière</p>
+            <p className="text-2xl font-bold text-text-primary">{stats.weeklyTrend.lastWeek}</p>
+          </div>
+        </div>
+      </div>
 
-        {/* Session Metrics */}
-        <View style={styles.metricsCard}>
-          <Text style={styles.metricsTitle}>Métriques de session</Text>
-          <View style={styles.metricRow}>
-            <Text style={styles.metricLabel}>Temps moyen par session</Text>
-            <Text style={styles.metricValue}>{stats.avgSessionDurationMin.toFixed(1)} min</Text>
-          </View>
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+      {/* Streak card */}
+      {stats.streakCount > 0 && (
+        <button
+          onClick={() => navigate('/review/calendar')}
+          className="mt-4 flex w-full items-center justify-between rounded-xl border border-border bg-surface p-4 shadow-sm"
+        >
+          <div className="flex items-center gap-3">
+            <Flame size={26} className="text-primary" />
+            <div className="text-left">
+              <p className="text-base font-semibold text-text-primary">
+                {t('progress.streak', 'Série consécutive')}
+              </p>
+              <p className="text-sm text-text-secondary">
+                {t('home.streak', { count: stats.streakCount })}
+              </p>
+            </div>
+          </div>
+          <span className="rounded-full bg-surface-tint px-3 py-1.5 text-xs font-semibold text-primary">
+            {t('progress.retention', 'Calendrier')}
+          </span>
+        </button>
+      )}
+
+      {/* Session metrics */}
+      <div className="mt-4 rounded-xl bg-surface p-4 shadow-sm">
+        <h2 className="text-base font-semibold text-text-primary">
+          {t('progress.inProgress', 'Métriques de session')}
+        </h2>
+        <div className="mt-3 flex items-center justify-between text-sm">
+          <span className="text-text-muted">
+            {t('progress.versesMemorized', 'Temps moyen par session')}
+          </span>
+          <span className="font-semibold text-text-primary">
+            {stats.avgSessionDurationMin.toFixed(1)} min
+          </span>
+        </div>
+      </div>
+    </div>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.surfaceTint,
-  },
-  content: {
-    padding: 16,
-    paddingBottom: 24,
-  },
-  center: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  loadingText: {
-    marginTop: 16,
-    fontSize: 16,
-    color: '#666',
-  },
-  empty: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 24,
-  },
-  emptyIcon: {
-    fontSize: 64,
-    marginBottom: 16,
-  },
-  emptyTitle: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: colors.textPrimary,
-    marginBottom: 8,
-  },
-  emptySubtitle: {
-    fontSize: 14,
-    color: colors.textMuted,
-    textAlign: 'center',
-    marginBottom: 24,
-  },
-  statsGrid: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 24,
-  },
-  statCard: {
-    flex: 0.48,
-    backgroundColor: colors.surface,
-    borderRadius: 12,
-    padding: 16,
-    alignItems: 'center',
-  },
-  statLabel: {
-    fontSize: 12,
-    color: '#888',
-    marginBottom: 8,
-    textTransform: 'uppercase',
-  },
-  statValue: {
-    fontSize: 32,
-    fontWeight: '700',
-    color: colors.primary,
-  },
-  trendCard: {
-    backgroundColor: colors.surface,
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 16,
-  },
-  trendTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: colors.textPrimary,
-    marginBottom: 16,
-  },
-  trendRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 16,
-  },
-  trendItem: {
-    alignItems: 'center',
-    flex: 1,
-  },
-  trendSeparator: {
-    width: 1,
-    height: 40,
-    backgroundColor: '#F0F0F0',
-    marginHorizontal: 8,
-  },
-  trendLabel: {
-    fontSize: 12,
-    color: '#888',
-    marginBottom: 4,
-  },
-  trendValue: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: colors.textPrimary,
-  },
-  changeIndicator: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 12,
-  },
-  changeText: {
-    fontSize: 18,
-    fontWeight: '700',
-    marginRight: 4,
-  },
-  changePositive: {
-    color: '#4CD964',
-  },
-  changeNegative: {
-    color: colors.error,
-  },
-  changeLabel: {
-    fontSize: 12,
-    color: '#888',
-  },
-  streakCard: {
-    backgroundColor: colors.border,
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 16,
-    alignItems: 'center',
-  },
-  streakHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  streakTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: colors.textPrimary,
-  },
-  streakEmoji: {
-    fontSize: 24,
-  },
-  streakText: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: colors.primary,
-    textAlign: 'center',
-  },
-  metricsCard: {
-    backgroundColor: colors.surface,
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 16,
-  },
-  metricsTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: colors.textPrimary,
-    marginBottom: 12,
-  },
-  metricRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 8,
-  },
-  metricLabel: {
-    fontSize: 14,
-    color: '#666',
-  },
-  metricValue: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: colors.textPrimary,
-  },
-});

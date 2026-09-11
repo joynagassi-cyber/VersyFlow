@@ -1,368 +1,218 @@
 /**
- * Review Calendar Screen
- * Shows upcoming review schedule and spaced repetition calendar
+ * Review Calendar Screen — upcoming review schedule.
+ * Due counts are derived from real records' nextReviewAt dates.
+ * Tailwind + i18n + Lucide.
  */
 
-import { useState, useEffect } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  SafeAreaView,
-  TouchableOpacity,
-  Platform,
-} from '@/components/ui/Primitives';
-import { useAppTheme } from '@/theme/useTheme';
-import { useRouter } from '@/hooks/useIonicNavigation';
-import { IonIcon } from '@ionic/react'
-import * as Ionicons from 'ionicons/icons';
+import { useState, useEffect, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { ChevronLeft, ChevronRight, Flame, BookOpen, TrendingUp } from 'lucide-react';
+import FullScreenPage from '@/components/layout/FullScreenPage';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
+import { useActiveProfile } from '@/hooks/useActiveProfile';
+import { MmkvStorage } from '@/infrastructure/storage';
+import { MemorizationService } from '@/domains/memorization/service';
+import { Sm2FallbackEngine } from '@/domains/fsrs';
+import { ProgressService } from '@/services/progress-service';
+import type { ProgressStats } from '@/services/stats-calculator';
 
-interface ReviewDay {
-  date: Date;
-  dueCount: number;
-  isNew: boolean;
-}
-
-const generateCalendarData = (): ReviewDay[] => {
-  const days: ReviewDay[] = [];
-  const today = new Date();
-
-  for (let i = 0; i < 30; i++) {
-    const date = new Date(today);
-    date.setDate(today.getDate() + i);
-    days.push({
-      date,
-      dueCount: Math.floor(Math.random() * 10),
-      isNew: i < 7,
-    });
+const serviceByProfile = new Map<string, MemorizationService>();
+const getMemorizationService = (profileId: string) => {
+  if (!serviceByProfile.has(profileId)) {
+    serviceByProfile.set(
+      profileId,
+      new MemorizationService(new MmkvStorage(), new Sm2FallbackEngine(), profileId),
+    );
   }
-  return days;
+  return serviceByProfile.get(profileId)!;
 };
 
+const WEEKDAYS = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
+
 export default function ReviewCalendarScreen() {
-  const { colors, sp, sh, rad } = useAppTheme();
-  const router = useRouter();
-  const [calendarData, setCalendarData] = useState<ReviewDay[]>([]);
-  const [currentMonth, setCurrentMonth] = useState(new Date());
+  const navigate = useNavigate();
+  const { t, i18n } = useTranslation();
+  const { activeProfile } = useActiveProfile();
+  const profileId = activeProfile?.id ?? 'default';
+
+  const [stats, setStats] = useState<ProgressStats | null>(null);
+  const [dueByDay, setDueByDay] = useState<Map<string, number>>(new Map());
+  const [month, setMonth] = useState(() => new Date());
 
   useEffect(() => {
-    setCalendarData(generateCalendarData());
-  }, []);
+    let cancelled = false;
+    const load = async () => {
+      try {
+        const service = getMemorizationService(profileId);
+        const [progress, records] = await Promise.all([
+          new ProgressService(service, new Sm2FallbackEngine(), undefined, profileId).getStats(),
+          service.getAllMemorized(),
+        ]);
+        if (cancelled) return;
+        setStats(progress);
+        const map = new Map<string, number>();
+        for (const r of records) {
+          if (!r.nextReviewAt) continue;
+          const key = new Date(r.nextReviewAt).toDateString();
+          map.set(key, (map.get(key) ?? 0) + 1);
+        }
+        setDueByDay(map);
+      } catch (error) {
+        console.error('[ReviewCalendar] load failed:', error);
+        if (!cancelled) setStats(null);
+      }
+    };
+    void load();
+    return () => {
+      cancelled = true;
+    };
+  }, [profileId]);
 
-  const getDaysInMonth = (date: Date) => {
-    const year = date.getFullYear();
-    const month = date.getMonth();
-    const firstDay = new Date(year, month, 1);
-    const lastDay = new Date(year, month + 1, 0);
-    const days = [];
+  const daysInMonth = useMemo(() => {
+    const year = month.getFullYear();
+    const m = month.getMonth();
+    const total = new Date(year, m + 1, 0).getDate();
+    const firstWeekday = (new Date(year, m, 1).getDay() + 6) % 7; // Monday-first
+    const cells: (Date | null)[] = [];
+    for (let i = 0; i < firstWeekday; i++) cells.push(null);
+    for (let d = 1; d <= total; d++) cells.push(new Date(year, m, d));
+    return cells;
+  }, [month]);
 
-    for (let d = firstDay; d <= lastDay; d.setDate(d.getDate() + 1)) {
-      days.push(new Date(d));
-    }
-    return days;
+  const today = new Date();
+  const monthLabel = month.toLocaleDateString(i18n.language, {
+    month: 'long',
+    year: 'numeric',
+  });
+
+  const shiftMonth = (delta: number) => {
+    setMonth((prev) => {
+      const d = new Date(prev);
+      d.setMonth(d.getMonth() + delta);
+      return d;
+    });
   };
 
-  const monthNames = [
-    'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
-    'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
+  const changeMonth = (label: string) =>
+    i18n.language === 'fr'
+      ? label.charAt(0).toUpperCase() + label.slice(1)
+      : label;
+
+  const legendItems = [
+    { key: 'review', label: t('review.dueSoon', "À réviser"), cls: 'bg-primary' },
+    { key: 'overdue', label: t('review.overdue', 'En retard'), cls: 'bg-error' },
+    { key: 'today', label: i18n.language === 'fr' ? "Aujourd'hui" : 'Today', cls: 'bg-surface-tint ring-2 ring-primary' },
   ];
 
-  const days = getDaysInMonth(currentMonth);
-  const today = new Date();
+  const monthSummary = [
+    { value: stats?.streakCount ?? 0, label: t('progress.streak', 'Jours de série'), icon: <Flame size={14} /> },
+    { value: stats?.totalVerses ?? 0, label: t('progress.versesMemorized', 'Verset(s) révisés'), icon: <BookOpen size={14} /> },
+    {
+      value: `${stats ? Math.round((stats.masteredVerses / Math.max(1, stats.totalVerses)) * 100) : 0}%`,
+      label: t('progress.retention', 'Taux de rétention'),
+      icon: <TrendingUp size={14} />,
+    },
+  ];
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-        {/* Header */}
-        <View style={styles.header}>
-          <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-            <Ionicons name="arrow-back" size={24} color={colors.textSecondary} />
-          </TouchableOpacity>
-          <Text style={styles.headerTitle}>Calendrier de révision</Text>
-          <View style={styles.headerRight} />
-        </View>
+    <FullScreenPage title={t('review.todayReviews', 'Calendrier de révision')} backPath="/review/queue">
+      {/* Month navigation */}
+      <div className="mb-4 flex items-center justify-between">
+        <button
+          onClick={() => shiftMonth(-1)}
+          className="flex h-10 w-10 items-center justify-center rounded-full bg-surface shadow-sm"
+          aria-label="Mois précédent"
+        >
+          <ChevronLeft size={20} className="text-primary" />
+        </button>
+        <h2 className="text-lg font-bold text-text-primary">
+          {changeMonth(monthLabel)}
+        </h2>
+        <button
+          onClick={() => shiftMonth(1)}
+          className="flex h-10 w-10 items-center justify-center rounded-full bg-surface shadow-sm"
+          aria-label="Mois suivant"
+        >
+          <ChevronRight size={20} className="text-primary" />
+        </button>
+      </div>
 
-        {/* Month Navigation */}
-        <View style={styles.monthNav}>
-          <TouchableOpacity style={styles.monthButton} onPress={() => {
-            const newMonth = new Date(currentMonth);
-            newMonth.setMonth(newMonth.getMonth() - 1);
-            setCurrentMonth(newMonth);
-          }}>
-            <Ionicons name="chevron-back" size={24} color={colors.primary} />
-          </TouchableOpacity>
-          <Text style={styles.monthTitle}>
-            {monthNames[currentMonth.getMonth()]} {currentMonth.getFullYear()}
-          </Text>
-          <TouchableOpacity style={styles.monthButton} onPress={() => {
-            const newMonth = new Date(currentMonth);
-            newMonth.setMonth(newMonth.getMonth() + 1);
-            setCurrentMonth(newMonth);
-          }}>
-            <Ionicons name="chevron-forward" size={24} color={colors.primary} />
-          </TouchableOpacity>
-        </View>
+      {/* Weekday header */}
+      <div className="mb-2 flex justify-around rounded-xl bg-surface-tint px-2 py-3">
+        {WEEKDAYS.map((w) => (
+          <span key={w} className="flex-1 text-center text-xs font-semibold text-text-muted">
+            {w}
+          </span>
+        ))}
+      </div>
 
-        {/* Weekdays Header */}
-        <View style={styles.weekdaysRow}>
-          {['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'].map((day) => (
-            <View key={day} style={styles.weekdayCell}>
-              <Text style={styles.weekdayText}>{day}</Text>
-            </View>
+      {/* Grid */}
+      <div className="grid grid-cols-7 gap-1">
+        {daysInMonth.map((date, i) => {
+          if (!date) return <div key={`empty-${i}`} className="aspect-square" />;
+          const isToday = date.toDateString() === today.toDateString();
+          const due = dueByDay.get(date.toDateString()) ?? 0;
+          return (
+            <button
+              key={date.toDateString()}
+              onClick={() => due > 0 && navigate('/review/queue')}
+              className={cn(
+                'relative flex aspect-square flex-col items-center justify-center rounded-lg text-sm',
+                due > 0 && 'bg-primary/10 font-semibold text-primary',
+                isToday && 'ring-2 ring-primary',
+              )}
+            >
+              <span className={cn(isToday ? 'font-bold text-primary' : 'text-text-primary')}>
+                {date.getDate()}
+              </span>
+              {due > 0 && (
+                <span
+                  className={cn(
+                    'mt-0.5 rounded-full px-1.5 text-[10px] font-bold text-white',
+                    due > 3 ? 'bg-error' : 'bg-primary',
+                  )}
+                >
+                  {due}
+                </span>
+              )}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Legend */}
+      <div className="mt-4 flex justify-around rounded-xl bg-surface px-3 py-3">
+        {legendItems.map((item) => (
+          <div key={item.key} className="flex items-center gap-2">
+            <span className={cn('h-3 w-3 rounded-full', item.cls)} />
+            <span className="text-xs text-text-tertiary">{item.label}</span>
+          </div>
+        ))}
+      </div>
+
+      {/* Month summary */}
+      <div className="mt-4 rounded-2xl bg-surface p-5 shadow-sm">
+        <h3 className="mb-4 text-base font-bold text-text-primary">
+          {t('progress.yourProgress', 'Résumé du mois')}
+        </h3>
+        <div className="flex justify-around">
+          {monthSummary.map((item) => (
+            <div key={item.label} className="flex flex-col items-center">
+              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-surface-tint text-primary">
+                {item.icon}
+              </span>
+              <p className="mt-2 text-2xl font-extrabold text-primary">{item.value}</p>
+              <p className="text-xs text-text-tertiary">{item.label}</p>
+            </div>
           ))}
-        </View>
+        </div>
+      </div>
 
-        {/* Calendar Grid */}
-        <View style={styles.calendarGrid}>
-          {days.map((day, index) => {
-            const isToday = day.toDateString() === today.toDateString();
-            const reviewData = calendarData.find(d => d.date.toDateString() === day.toDateString());
-            const dueCount = reviewData?.dueCount || 0;
-
-            return (
-              <TouchableOpacity
-                key={index}
-                style={[
-                  styles.dayCell,
-                  isToday && styles.todayCell,
-                  dueCount > 0 && styles.hasReviewsCell,
-                ]}
-                onPress={() => dueCount > 0 && router.push('/review/queue')}
-              >
-                <Text style={[
-                  styles.dayText,
-                  isToday && styles.todayText,
-                  dueCount > 0 && styles.hasReviewsText,
-                ]}>
-                  {day.getDate()}
-                </Text>
-                {dueCount > 0 && (
-                  <View style={[styles.dueBadge, { backgroundColor: dueCount > 3 ? 'colors.error' : colors.primary }]}>
-                    <Text style={styles.dueBadgeText}>{dueCount}</Text>
-                  </View>
-                )}
-              </TouchableOpacity>
-            );
-          })}
-        </View>
-
-        {/* Legend */}
-        <View style={styles.legend}>
-          <View style={styles.legendItem}>
-            <View style={[styles.legendDot, { backgroundColor: colors.primary }]} />
-            <Text style={styles.legendText}>À réviser</Text>
-          </View>
-          <View style={styles.legendItem}>
-            <View style={[styles.legendDot, { backgroundColor: colors.error }]} />
-            <Text style={styles.legendText}>En retard</Text>
-          </View>
-          <View style={styles.legendItem}>
-            <View style={[styles.legendDot, styles.todayDot]} />
-            <Text style={styles.legendText}>Aujourd'hui</Text>
-          </View>
-        </View>
-
-        {/* Stats Summary */}
-        <View style={styles.statsCard}>
-          <Text style={styles.statsTitle}>Résumé du mois</Text>
-          <View style={styles.statsGrid}>
-            <View style={styles.statItem}>
-              <Text style={styles.statValue}>23</Text>
-              <Text style={styles.statLabel}>Jours de streak</Text>
-            </View>
-            <View style={styles.statItem}>
-              <Text style={styles.statValue}>156</Text>
-              <Text style={styles.statLabel}>Verset révisés</Text>
-            </View>
-            <View style={styles.statItem}>
-              <Text style={styles.statValue}>94%</Text>
-              <Text style={styles.statLabel}>Taux de rétention</Text>
-            </View>
-          </View>
-        </View>
-
-        <View style={styles.bottomSpacer} />
-      </ScrollView>
-    </SafeAreaView>
+      <Button className="mt-4 w-full" onClick={() => navigate('/review/queue')}>
+        {t('review.startReview', 'Commencer la révision')}
+      </Button>
+    </FullScreenPage>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
-  scrollView: {
-    flex: 1,
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-    backgroundColor: colors.surface,
-  },
-  backButton: {
-    padding: 8,
-  },
-  headerTitle: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: colors.textPrimary,
-  },
-  headerRight: {
-    width: 40,
-  },
-  monthNav: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-    backgroundColor: colors.surface,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
-  },
-  monthButton: {
-    padding: 8,
-  },
-  monthTitle: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: colors.textPrimary,
-  },
-  weekdaysRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    paddingHorizontal: 20,
-    paddingVertical: 12,
-    backgroundColor: colors.surfaceTint,
-  },
-  weekdayCell: {
-    flex: 1,
-    alignItems: 'center',
-  },
-  weekdayText: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: colors.textMuted,
-  },
-  calendarGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    paddingHorizontal: 20,
-    gap: 8,
-  },
-  dayCell: {
-    width: '13.33%',
-    alignItems: 'center',
-    paddingVertical: 12,
-    position: 'relative',
-  },
-  todayCell: {
-    backgroundColor: colors.surfaceTint,
-    borderRadius: 12,
-  },
-  hasReviewsCell: {
-    backgroundColor: colors.border,
-    borderRadius: 12,
-  },
-  dayText: {
-    fontSize: 14,
-    color: colors.textPrimary,
-    fontWeight: '500',
-  },
-  todayText: {
-    color: colors.primary,
-    fontWeight: '700',
-  },
-  hasReviewsText: {
-    color: colors.primary,
-    fontWeight: '600',
-  },
-  dueBadge: {
-    position: 'absolute',
-    bottom: 4,
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 10,
-  },
-  dueBadgeText: {
-    fontSize: 10,
-    color: colors.surface,
-    fontWeight: '700',
-  },
-  legend: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-    backgroundColor: colors.surface,
-    marginTop: 8,
-  },
-  legendItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  legendDot: {
-    width: 12,
-    height: 12,
-    borderRadius: 6,
-  },
-  todayDot: {
-    backgroundColor: colors.surfaceTint,
-    borderWidth: 2,
-    borderColor: colors.primary,
-  },
-  legendText: {
-    fontSize: 12,
-    color: colors.textTertiary,
-  },
-  statsCard: {
-    margin: 20,
-    backgroundColor: colors.surface,
-    borderRadius: 20,
-    padding: 20,
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.05,
-        shadowRadius: 8,
-      },
-      android: {
-        elevation: 4,
-      },
-    }),
-  },
-  statsTitle: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: colors.textPrimary,
-    marginBottom: 16,
-  },
-  statsGrid: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-  },
-  statItem: {
-    alignItems: 'center',
-  },
-  statValue: {
-    fontSize: 24,
-    fontWeight: '800',
-    color: colors.primary,
-  },
-  statLabel: {
-    fontSize: 12,
-    color: colors.textTertiary,
-    marginTop: 4,
-    textAlign: 'center',
-  },
-  bottomSpacer: {
-    height: 24,
-  },
-});

@@ -1,154 +1,68 @@
 /**
- * Book Selection Screen — Choose a chapter from a book
+ * Book Screen — chapter list for a book, with memorization shortcuts
+ * Tailwind + i18n + Lucide + FullScreenPage.
  */
 
-import { useState, useEffect } from 'react';
-import {
-  View,
-  Text,
-  FlatList,
-  TouchableOpacity,
-  StyleSheet,
-  SafeAreaView,
-  ActivityIndicator,
-} from '@/components/ui/Primitives';
-import { useAppTheme } from '@/theme/useTheme';
-import { useLocalSearchParams, useRouter } from '@/hooks/useIonicNavigation';
-import { BibleRepository } from '@/domains/bible/repository';
-import type { BibleBook } from '@/domains/bible/schema';
+import { useParams, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { ChevronRight, BookOpen } from 'lucide-react';
+import FullScreenPage from '@/components/layout/FullScreenPage';
+import { BIBLE_BOOKS } from '@/domains/bible/entities';
 
 export default function BookScreen() {
-  const { colors, sp, sh, rad } = useAppTheme();
-  const router = useRouter();
-  const { bookId } = useLocalSearchParams<{ bookId: string }>();
-  const [book, setBook] = useState<BibleBook | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { bookId } = useParams();
+  const navigate = useNavigate();
+  const { t, i18n } = useTranslation();
 
-  useEffect(() => {
-    loadBook();
-  }, [bookId]);
-
-  const loadBook = async () => {
-    try {
-      const repo = BibleRepository.getInstance();
-      const allBooks = repo.getAllBooks();
-      const found = allBooks.find(b => b.id === bookId);
-      if (found) {
-        // Fetch chapter data
-        const chapters = await repo.getChapters(bookId);
-        setBook({ ...found, chapters });
-      }
-    } catch (error) {
-      console.error('Error loading book:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  if (loading) {
-    return (
-      <SafeAreaView style={styles.center}>
-        <ActivityIndicator size="large" color={colors.primary} />
-      </SafeAreaView>
-    );
-  }
-
+  const book = BIBLE_BOOKS.find((b) => b.id === bookId);
   if (!book) {
     return (
-      <SafeAreaView style={styles.container}>
-        <View style={styles.error}>
-          <Text style={styles.errorText}>Livre non trouvé</Text>
-          <TouchableOpacity onPress={() => router.back()}>
-            <Text style={styles.backText}>Retour</Text>
-          </TouchableOpacity>
-        </View>
-      </SafeAreaView>
+      <FullScreenPage title={t('bible.explorer', 'Bible')} backPath="/tabs/explore">
+        <p className="text-sm text-text-muted">
+          {t('errors.verseNotFound', 'Livre introuvable')}
+        </p>
+      </FullScreenPage>
     );
   }
 
-  const chapters = book.chapters || [];
+  const lang = (i18n.language ?? 'fr') as string;
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>{book.name.fr}</Text>
-        <Text style={styles.subtitle}>{chapters.length} chapitres</Text>
-      </View>
-
-      <FlatList
-        data={chapters}
-        keyExtractor={(item) => item.number.toString()}
-        numColumns={4}
-        contentContainerStyle={styles.grid}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            style={styles.chapterItem}
-            onPress={() => router.push(`/bible/chapter/${bookId}/${item.number}`)}
+    <FullScreenPage
+      title={book.name[lang] || book.name.fr}
+      subtitle={t('bible.chapterCount', { count: book.chapterCount })}
+      backPath="/tabs/explore"
+    >
+      <div className="flex flex-col gap-2">
+        <button
+          onClick={() => navigate('/bible/explorer')}
+          className="mb-2 flex w-full items-center gap-3 rounded-xl bg-surface p-4 text-left shadow-sm"
+        >
+          <span className="flex h-10 w-10 items-center justify-center rounded-full bg-icon-bg-rose">
+            <BookOpen size={18} className="text-primary" />
+          </span>
+          <span className="flex-1 text-sm font-semibold text-primary">
+            {t('bible.explorer', 'Revenir à l\'explorateur')}
+          </span>
+        </button>
+        {Array.from({ length: book.chapterCount }, (_, i) => i + 1).map((chapter) => (
+          <button
+            key={chapter}
+            onClick={() => navigate(`/bible/chapter?book=${book.id}&chapter=${chapter}`)}
+            className="flex items-center justify-between rounded-xl bg-surface p-4 text-left shadow-sm"
           >
-            <Text style={styles.chapterNumber}>{item.number}</Text>
-          </TouchableOpacity>
-        )}
-      />
-    </SafeAreaView>
+            <span className="flex items-center gap-3">
+              <span className="flex h-9 w-9 items-center justify-center rounded-full bg-surface-tint text-sm font-bold text-primary">
+                {chapter}
+              </span>
+              <span className="text-base font-semibold text-text-primary">
+                {t('bible.chapter', 'Chapitre')} {chapter}
+              </span>
+            </span>
+            <ChevronRight size={18} className="text-text-muted" />
+          </button>
+        ))}
+      </div>
+    </FullScreenPage>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.surfaceTint,
-  },
-  center: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  header: {
-    padding: 16,
-    alignItems: 'center',
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: colors.textPrimary,
-  },
-  subtitle: {
-    fontSize: 14,
-    color: colors.textTertiary,
-    marginTop: 4,
-  },
-  grid: {
-    padding: 16,
-    gap: 8,
-  },
-  chapterItem: {
-    flex: 1,
-    aspectRatio: 1,
-    backgroundColor: colors.surface,
-    borderRadius: 12,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginHorizontal: 'calc(1.25%)',
-  },
-  chapterNumber: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: colors.textPrimary,
-  },
-  error: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 24,
-  },
-  errorText: {
-    fontSize: 18,
-    color: colors.error,
-    marginBottom: 16,
-  },
-  backText: {
-    fontSize: 16,
-    color: colors.primary,
-    textDecorationLine: 'underline',
-  },
-});

@@ -1,416 +1,131 @@
 /**
- * FSRS Introduction Screen
- * See Figma: https://www.figma.com/design/BL5Cbn6s2aMXAtNDmAVJ8F/VersyFlow?node-id=7-50
- *
- * This screen introduces the FSRS (Free Spaced Repetition Scheduler) algorithm
- * with a visual graph and key benefits.
+ * FSRS Introduction — Onboarding final step
+ * Visual intro of the FSRS algorithm + 3 benefits + final CTA.
  */
 
-import { StyleSheet, View, Text, TouchableOpacity, ScrollView, Platform } from '@/components/ui/Primitives';
-import { useAppTheme } from '@/theme/useTheme';
-import { useRouter } from '@/hooks/useIonicNavigation';
-import { IonIcon } from '@ionic/react'
-import * as Ionicons from 'ionicons/icons';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
+import { ArrowRight, Brain, CheckCircle, Timer, FlaskConical } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { useSettingsStore } from '@/store/settings-store';
 
 export default function FSRSIntroductionScreen() {
-  const { colors, sp, sh, rad } = useAppTheme();
-  const router = useRouter();
+  const { t } = useTranslation();
+  const navigate = useNavigate();
+  const { completeOnboarding } = useSettingsStore();
 
   const handleStartMemorization = () => {
-    // Complete onboarding and go to home
-    useSettingsStore.getState().completeOnboarding();
-    router.replace('/(tabs)/index');
+    void completeOnboarding();
+    navigate('/tabs/home', { replace: true });
   };
 
+  const benefits = [
+    {
+      icon: Timer,
+      title: t('onboarding.benefit1Title', 'Rythme optimal'),
+      desc: t('onboarding.benefit1Desc', 'Révisez chaque verset juste avant de l\'oublier, maximisant la rétention avec un effort minimal.'),
+      bg: 'bg-icon-bg-rose',
+      color: 'text-primary',
+    },
+    {
+      icon: CheckCircle,
+      title: t('onboarding.benefit2Title', 'Moins de révisions'),
+      desc: t('onboarding.benefit2Desc', 'Ne perdez pas de temps sur ce que vous savez déjà. Concentrez-vous sur ce qui nécessite votre attention.'),
+      bg: 'bg-icon-bg-purple',
+      color: 'text-text-secondary',
+    },
+    {
+      icon: FlaskConical,
+      title: t('onboarding.benefit3Title', 'Scientifiquement prouvé'),
+      desc: t('onboarding.benefit3Desc', 'Basé sur la recherche cognitive avancée (Free Spaced Repetition Scheduler).'),
+      bg: 'bg-success',
+      color: 'text-white',
+    },
+  ];
+
   return (
-    <View style={styles.container}>
-      <ScrollView
-        style={styles.scrollView}
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
-      >
-        {/* Hero Section */}
-        <View style={styles.heroSection}>
-          {/* Icon */}
-          <View style={styles.iconContainer}>
-            <Ionicons name="brain" size={33} color={colors.primary} />
-          </View>
+    <div className="relative flex min-h-full flex-col">
+      {/* Hero */}
+      <div className="flex flex-col items-center px-6 pb-6 pt-10">
+        <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-surface-tint">
+          <Brain size={28} className="text-primary" />
+        </div>
+        <h1 className="text-center text-lg font-semibold text-text-primary">
+          {t('onboarding.fsrsTitle', 'La science de la mémorisation')}
+        </h1>
+        <p className="mt-3 max-w-sm text-center text-sm leading-6 text-text-secondary">
+          {t('onboarding.fsrsDesc', 'Découvrez FSRS : un algorithme intelligent qui s\'adapte à votre cerveau pour une mémorisation durable des Écritures.')}
+        </p>
+      </div>
 
-          {/* Title */}
-          <Text style={styles.title}>
-            La science de la mémorisation
-          </Text>
+      {/* Retention curve (simple SVG) */}
+      <div className="mx-6 overflow-hidden rounded-3xl bg-surface p-6 shadow-sm">
+        <div className="relative h-48">
+          <svg viewBox="0 0 300 180" className="h-full w-full" aria-hidden>
+            {/* grid lines */}
+            {[0, 60, 120, 180].map((y) => (
+              <line key={y} x1="0" y1={y} x2="300" y2={y} stroke="var(--color-divider)" strokeWidth="1" />
+            ))}
+            {/* natural forgetting curve */}
+            <path
+              d="M 0 20 C 80 40, 140 110, 300 165"
+              fill="none"
+              stroke="var(--color-text-muted)"
+              strokeWidth="2"
+              strokeDasharray="6 4"
+            />
+            {/* optimal retention curve with FSRS */}
+            <path
+              d="M 0 40 L 60 38 L 120 36 L 180 34 L 240 32 L 300 30"
+              fill="none"
+              stroke="var(--color-primary)"
+              strokeWidth="3"
+            />
+            {[60, 120, 180, 240].map((x) => (
+              <circle key={x} cx={x} cy="38" r="4" fill="var(--color-primary)" />
+            ))}
+          </svg>
+          {/* X-axis labels */}
+          <div className="absolute inset-x-8 bottom-0 flex justify-between text-[10px] text-text-secondary">
+            <span>Jour 1</span>
+            <span>Jour 7</span>
+            <span>Mois 1</span>
+          </div>
+        </div>
+        <div className="mt-4 flex gap-6">
+          <div className="flex items-center gap-2">
+            <span className="h-0.5 w-3 rounded-full bg-primary" />
+            <span className="text-xs text-text-primary">Rétention Optimale</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="h-0.5 w-3 border-t-2 border-dashed border-text-muted" />
+            <span className="text-xs text-text-secondary">Oubli Naturel</span>
+          </div>
+        </div>
+      </div>
 
-          {/* Description */}
-          <Text style={styles.description}>
-            Découvrez FSRS : un algorithme intelligent qui s'adapte à votre cerveau pour une mémorisation durable des Écritures.
-          </Text>
-        </View>
+      {/* Benefits */}
+      <div className="mt-8 flex flex-col gap-4 px-6">
+        {benefits.map(({ icon: Icon, title, desc, bg, color }) => (
+          <div key={title} className="flex items-start gap-4 rounded-2xl bg-surface p-4 shadow-sm">
+            <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-full ${bg}`}>
+              <Icon size={22} className={color} />
+            </div>
+            <div className="flex-1">
+              <p className="text-base font-semibold text-text-primary">{title}</p>
+              <p className="mt-1 text-sm leading-6 text-text-secondary">{desc}</p>
+            </div>
+          </div>
+        ))}
+      </div>
 
-        {/* Visual Graph Section */}
-        <View style={styles.graphSection}>
-          <View style={styles.graphCard}>
-            {/* Y-axis labels */}
-            <View style={styles.yAxisContainer}>
-              <Text style={styles.yAxisLabel}>100%</Text>
-              <Text style={styles.yAxisLabel}>50%</Text>
-              <Text style={styles.yAxisLabel}>0%</Text>
-            </View>
-
-            {/* Graph placeholder - in production, this would be an SVG or Chart component */}
-            <View style={styles.graphArea}>
-              <View style={styles.gridLines}>
-                <View style={styles.gridLine} />
-                <View style={styles.gridLine} />
-                <View style={styles.gridLine} />
-                <View style={styles.gridLine} />
-              </View>
-
-              {/* SVG graph would go here */}
-              <View style={styles.graphPlaceholder}>
-                {/* This represents the retention curve visualization */}
-                <View style={styles.retentionCurve} />
-              </View>
-
-              {/* X-axis labels */}
-              <View style={styles.xAxisContainer}>
-                <Text style={styles.xAxisLabel}>Jour 1</Text>
-                <Text style={styles.xAxisLabel}>Jour 7</Text>
-                <Text style={styles.xAxisLabel}>Mois 1</Text>
-              </View>
-            </View>
-
-            {/* Legend overlay */}
-            <View style={styles.legendContainer}>
-              <View style={styles.legendItem}>
-                <View style={[styles.legendDot, { backgroundColor: colors.primary }]} />
-                <Text style={styles.legendText}>Rétention Optimale</Text>
-              </View>
-              <View style={styles.legendItem}>
-                <View style={[styles.legendDot, styles.legendDotDashed]} />
-                <Text style={styles.legendTextSecondary}>Oubli Naturel</Text>
-              </View>
-            </View>
-          </View>
-        </View>
-
-        {/* Benefits List Section */}
-        <View style={styles.benefitsSection}>
-          {/* Benefit 1: Rythme optimal */}
-          <View style={styles.benefitCard}>
-            <View style={[styles.benefitIcon, { backgroundColor: colors.primaryFixed }]}>
-              <Ionicons name="timer" size={21} color={colors.primary} />
-            </View>
-            <View style={styles.benefitContent}>
-              <Text style={styles.benefitTitle}>Rythme optimal</Text>
-              <Text style={styles.benefitDescription}>
-                Révisez chaque verset juste avant de l'oublier, maximisant la rétention avec un effort minimal.
-              </Text>
-            </View>
-          </View>
-
-          {/* Benefit 2: Moins de révisions */}
-          <View style={styles.benefitCard}>
-            <View style={[styles.benefitIcon, { backgroundColor: colors.iconBgPurple }]}>
-              <Ionicons name="checkmark-done" size={20} color={colors.textSecondary} />
-            </View>
-            <View style={styles.benefitContent}>
-              <Text style={styles.benefitTitle}>Moins de révisions</Text>
-              <Text style={styles.benefitDescription}>
-                Ne perdez pas de temps sur ce que vous savez déjà. Concentrez-vous sur ce qui nécessite votre attention.
-              </Text>
-            </View>
-          </View>
-
-          {/* Benefit 3: Scientifiquement prouvé */}
-          <View style={styles.benefitCard}>
-            <View style={[styles.benefitIcon, { backgroundColor: colors.success }]}>
-              <Ionicons name="flask" size={18} color={colors.surface} />
-            </View>
-            <View style={styles.benefitContent}>
-              <Text style={styles.benefitTitle}>Scientifiquement prouvé</Text>
-              <Text style={styles.benefitDescription}>
-                Basé sur la recherche cognitive avancée (Free Spaced Repetition Scheduler).
-              </Text>
-            </View>
-          </View>
-        </View>
-
-        {/* Spacer for bottom bar */}
-        <View style={styles.bottomSpacer} />
-      </ScrollView>
-
-      {/* Fixed Bottom Action Bar */}
-      <View style={styles.bottomBar}>
-        <TouchableOpacity
-          style={styles.startButton}
-          onPress={handleStartMemorization}
-          activeOpacity={0.85}
-        >
-          <Text style={styles.startButtonText}>Commencer à mémoriser</Text>
-          <Ionicons name="arrow-forward" size={13} color={colors.surface} />
-        </TouchableOpacity>
-      </View>
-    </View>
+      {/* Fixed bottom CTA */}
+      <div className="mt-8 border-t border-border/50 bg-surface/80 p-6 backdrop-blur">
+        <Button className="w-full" onClick={handleStartMemorization}>
+          {t('onboarding.getStarted', 'Commencer à mémoriser')}
+          <ArrowRight size={16} />
+        </Button>
+      </div>
+    </div>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
-  scrollView: {
-    flex: 1,
-  },
-  scrollContent: {
-    flexGrow: 1,
-  },
-
-  // Hero Section
-  heroSection: {
-    alignItems: 'center',
-    paddingTop: 36,
-    paddingHorizontal: 24,
-    paddingBottom: 24,
-  },
-  iconContainer: {
-    width: 34,
-    height: 36,
-    marginBottom: 16,
-  },
-  title: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: colors.onSurface,
-    textAlign: 'center',
-    marginBottom: 12,
-    lineHeight: 24,
-  },
-  description: {
-    fontSize: 16,
-    color: colors.textSecondary,
-    textAlign: 'center',
-    lineHeight: 24,
-    paddingHorizontal: 24,
-  },
-
-  // Graph Section
-  graphSection: {
-    marginTop: 24,
-    paddingHorizontal: 24,
-  },
-  graphCard: {
-    backgroundColor: colors.surface,
-    borderRadius: 24,
-    padding: 24,
-    height: 280,
-    position: 'relative',
-    overflow: 'hidden',
-    ...Platform.select({
-      ios: {
-        shadowColor: colors.primary,
-        shadowOffset: { width: 0, height: 8 },
-        shadowOpacity: 0.04,
-        shadowRadius: 32,
-      },
-      android: {
-        elevation: 4,
-      },
-    }),
-  },
-  yAxisContainer: {
-    position: 'absolute',
-    left: 12,
-    top: 20,
-    bottom: 60,
-    justifyContent: 'space-between',
-  },
-  yAxisLabel: {
-    fontSize: 10,
-    color: colors.textSecondary,
-    fontFamily: 'Nimbus Sans',
-  },
-  graphArea: {
-    flex: 1,
-    marginTop: 8,
-    position: 'relative',
-    paddingHorizontal: 40,
-  },
-  gridLines: {
-    position: 'absolute',
-    top: 0,
-    bottom: 0,
-    left: 0,
-    right: 0,
-    justifyContent: 'space-between',
-  },
-  gridLine: {
-    height: 1,
-    backgroundColor: colors.outlineVariant,
-    opacity: 0.3,
-  },
-  graphPlaceholder: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  retentionCurve: {
-    // This would be an SVG in production
-    width: '100%',
-    height: 200,
-    backgroundColor: 'transparent',
-  },
-  xAxisContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingHorizontal: 40,
-    marginTop: 8,
-  },
-  xAxisLabel: {
-    fontSize: 10,
-    color: colors.textSecondary,
-    fontFamily: 'Nimbus Sans',
-  },
-  legendContainer: {
-    position: 'absolute',
-    top: 16,
-    right: 16,
-    backgroundColor: 'rgba(255, 255, 255, 0.8)',
-    borderRadius: 12,
-    padding: 12,
-    gap: 8,
-  },
-  legendItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  legendDot: {
-    width: 12,
-    height: 2,
-    borderRadius: 9999,
-    backgroundColor: colors.primary,
-  },
-  legendDotDashed: {
-    backgroundColor: colors.outline,
-    borderWidth: 1,
-    borderStyle: 'dashed',
-  },
-  legendText: {
-    fontSize: 9,
-    color: colors.onSurface,
-    fontFamily: 'Nimbus Sans',
-  },
-  legendTextSecondary: {
-    fontSize: 9,
-    color: colors.textSecondary,
-    fontFamily: 'Nimbus Sans',
-  },
-
-  // Benefits Section
-  benefitsSection: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-    gap: 16,
-  },
-  benefitCard: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    backgroundColor: colors.background,
-    borderRadius: 20,
-    padding: 16,
-    gap: 16,
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.02,
-        shadowRadius: 6,
-      },
-      android: {
-        elevation: 2,
-      },
-    }),
-  },
-  benefitIcon: {
-    width: 48,
-    height: 48,
-    borderRadius: 9999,
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexShrink: 0,
-  },
-  benefitContent: {
-    flex: 1,
-    gap: 4,
-  },
-  benefitTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: colors.onSurface,
-    lineHeight: 24,
-  },
-  benefitDescription: {
-    fontSize: 16,
-    color: colors.textSecondary,
-    lineHeight: 24,
-  },
-
-  // Bottom Bar
-  bottomBar: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: 'rgba(255, 255, 255, 0.8)',
-    paddingHorizontal: 24,
-    paddingVertical: 16,
-    borderTopWidth: 1,
-    borderColor: 'rgba(0, 0, 0, 0.05)',
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000000',
-        shadowOffset: { width: 0, height: -10 },
-        shadowOpacity: 0.03,
-        shadowRadius: 40,
-      },
-      android: {
-        elevation: 8,
-      },
-    }),
-  },
-  startButton: {
-    backgroundColor: colors.primary,
-    borderRadius: 9999,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 16,
-    paddingHorizontal: 24,
-    gap: 8,
-    ...Platform.select({
-      ios: {
-        shadowColor: '#DF0E84',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.2,
-        shadowRadius: 8,
-      },
-      android: {
-        elevation: 4,
-      },
-    }),
-  },
-  startButtonText: {
-    color: colors.surface,
-    fontSize: 16,
-    fontWeight: '500',
-    fontFamily: 'Nimbus Sans',
-  },
-
-  // Spacer
-  bottomSpacer: {
-    height: 100,
-  },
-});

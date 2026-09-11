@@ -207,7 +207,7 @@ export default function ComparisonResultScreen({ record, userAnswer }: Props) {
               <View key={idx} style={styles.substitutionItem}>
                 <Text style={styles.expectedText}>
                   {sub.expected}
-                  <Text style={styles.arrow}> -> </Text>
+                  <Text style={styles.arrow}>{'->'}</Text>
                   <Text style={styles.gotText}>{sub.got}</Text>
                 </Text>
               </View>

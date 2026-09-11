@@ -1,273 +1,137 @@
 /**
- * Review Summary Screen — Shows review statistics and progress
- * See docs/08-ui-screens.md §14
+ * Review Summary Screen — session stats after a review pass.
+ * Real data via ProgressService (streak, retention, counts).
+ * Tailwind + i18n + Lucide.
  */
 
 import { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, SafeAreaView } from '@/components/ui/Primitives';
-import { useAppTheme } from '@/theme/useTheme';
-import { useRouter } from '@/hooks/useIonicNavigation';
-import { useI18n } from '@/hooks/useI18n';
+import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { Flame, Loader2, TrendingUp, CheckCircle, Clock, BookOpen } from 'lucide-react';
+import FullScreenPage from '@/components/layout/FullScreenPage';
+import { Button } from '@/components/ui/button';
+import { useActiveProfile } from '@/hooks/useActiveProfile';
+import { MmkvStorage } from '@/infrastructure/storage';
+import { MemorizationService } from '@/domains/memorization/service';
+import { Sm2FallbackEngine } from '@/domains/fsrs';
+import { ProgressService } from '@/services/progress-service';
+import type { ProgressStats } from '@/services/stats-calculator';
+
+const serviceByProfile = new Map<string, MemorizationService>();
+const getMemorizationService = (profileId: string) => {
+  if (!serviceByProfile.has(profileId)) {
+    serviceByProfile.set(
+      profileId,
+      new MemorizationService(new MmkvStorage(), new Sm2FallbackEngine(), profileId),
+    );
+  }
+  return serviceByProfile.get(profileId)!;
+};
 
 export default function ReviewSummaryScreen() {
-  const { colors, sp, sh, rad } = useAppTheme();
-  const router = useRouter();
-  const { t } = useI18n();
+  const navigate = useNavigate();
+  const { t } = useTranslation();
+  const { activeProfile } = useActiveProfile();
+  const profileId = activeProfile?.id ?? 'default';
 
-  // Données de mock pour le résumé
-  const stats = {
-    totalReviews: 47,
-    todayReviews: 5,
-    mastered: 23,
-    inProgress: 12,
-    dueToday: 5,
-    streak: 3,
-    retentionRate: 85,
-  };
+  const [stats, setStats] = useState<ProgressStats | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+    const load = async () => {
+      try {
+        const service = getMemorizationService(profileId);
+        const progress = new ProgressService(service, new Sm2FallbackEngine(), undefined, profileId);
+        const data = await progress.getStats();
+        if (!cancelled) setStats(data);
+      } catch (error) {
+        console.error('[ReviewSummary] stats load failed:', error);
+        if (!cancelled) setStats(null);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    };
+    void load();
+    return () => {
+      cancelled = true;
+    };
+  }, [profileId]);
+
+  if (loading) {
+    return (
+      <FullScreenPage title={t('review.summary', 'Résumé de session')} backPath="/review/queue">
+        <div className="flex flex-col items-center py-24">
+          <Loader2 size={32} className="animate-spin text-primary" />
+        </div>
+      </FullScreenPage>
+    );
+  }
+
+  const mastered = stats?.masteredVerses ?? 0;
+  const inProgress = stats?.inProgressVerses ?? 0;
+  const total = stats?.totalVerses ?? 0;
+  const retention = total > 0 ? Math.round((mastered / total) * 100) : 0;
+
+  const statCards = [
+    { value: total, label: t('progress.versesMemorized', 'Verset(s) mémorisé(s)'), icon: <BookOpen size={16} /> },
+    { value: mastered, label: t('progress.mastered', 'Maîtrisé(s)'), icon: <CheckCircle size={16} /> },
+    { value: inProgress, label: t('progress.inProgress', 'En cours'), icon: <Clock size={16} /> },
+    { value: retention + '%', label: t('progress.retention', 'Rétention'), icon: <TrendingUp size={16} /> },
+  ];
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.content}>
-        {/* Header avec la streak */}
-        <View style={styles.streakCard}>
-          <Text style={styles.streakTitle}>Série quotidienne 🔥</Text>
-          <Text style={styles.streakNumber}>{stats.streak}</Text>
-          <Text style={styles.streakLabel}>jour{stats.streak > 1 ? 's' : ''} de suite</Text>
-        </View>
+    <FullScreenPage title={t('review.summary', 'Résumé de session')} backPath="/review/queue">
+      {/* Streak hero */}
+      <div className="mb-5 flex flex-col items-center rounded-2xl bg-primary p-6 text-white shadow-rose">
+        <span className="flex items-center gap-1.5 text-sm text-white/90">
+          <Flame size={16} />
+          {t('progress.streak', 'Série quotidienne')} 🔥
+        </span>
+        <span className="mt-2 text-5xl font-extrabold">{stats?.streakCount ?? 0}</span>
+        <span className="mt-1 text-sm text-white/90">
+          {t('home.streak', { count: stats?.streakCount ?? 0 })}
+        </span>
+      </div>
 
-        {/* Statistiques principales */}
-        <View style={styles.statsGrid}>
-          <View style={styles.statCard}>
-            <Text style={styles.statNumber}>{stats.totalReviews}</Text>
-            <Text style={styles.statLabel}>{t('review.totalReviews')}</Text>
-          </View>
-          <View style={styles.statCard}>
-            <Text style={styles.statNumber}>{stats.dueToday}</Text>
-            <Text style={styles.statLabel}>{t('review.dueToday')}</Text>
-          </View>
-          <View style={styles.statCard}>
-            <Text style={styles.statNumber}>{stats.mastered}</Text>
-            <Text style={styles.statLabel}>{t('review.mastered')}</Text>
-          </View>
-          <View style={styles.statCard}>
-            <Text style={styles.statNumber}>{stats.inProgress}</Text>
-            <Text style={styles.statLabel}>{t('review.inProgress')}</Text>
-          </View>
-        </View>
+      {/* Stat grid */}
+      <div className="mb-5 grid grid-cols-2 gap-3">
+        {statCards.map((card) => (
+          <div key={card.label} className="flex flex-col items-center rounded-xl bg-surface p-4 shadow-sm">
+            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-surface-tint text-primary">
+              {card.icon}
+            </span>
+            <p className="mt-2 text-2xl font-bold text-text-primary">{card.value}</p>
+            <p className="text-xs text-text-muted">{card.label}</p>
+          </div>
+        ))}
+      </div>
 
-        {/* Graphique de rétention */}
-        <View style={styles.chartCard}>
-          <Text style={styles.chartTitle}>Taux de rétention</Text>
-          <View style={styles.chart}>
-            <View style={styles.chartBar}>
-              <View style={[styles.chartFill, { width: `${stats.retentionRate}%` }]}/>
-            </View>
-            <Text style={styles.chartPercent}>{stats.retentionRate}%</Text>
-          </View>
-          <Text style={styles.chartSubtitle}>{t('review.retentionDescription')}</Text>
-        </View>
+      {/* Retention bar */}
+      <div className="mb-5 rounded-xl bg-surface p-4 shadow-sm">
+        <p className="text-base font-semibold text-text-primary">
+          {t('progress.retention', 'Taux de rétention')}
+        </p>
+        <div className="mt-3 flex items-center gap-3">
+          <div className="h-2.5 flex-1 overflow-hidden rounded-full bg-surface-tint">
+            <div className="h-full rounded-full bg-primary" style={{ width: `${retention}%` }} />
+          </div>
+          <span className="text-lg font-bold text-primary">{retention}%</span>
+        </div>
+        <p className="mt-2 text-center text-xs text-text-muted">
+          {t('progress.mastered', 'Verset(s) maîtrisé(s)')} : {mastered}
+        </p>
+      </div>
 
-        {/* Statistiques détaillées */}
-        <View style={styles.detailsSection}>
-          <Text style={styles.sectionTitle}>Détails</Text>
-          <View style={styles.detailItem}>
-            <Text style={styles.detailLabel}>Révisions aujourd'hui</Text>
-            <Text style={styles.detailValue}>{stats.todayReviews}</Text>
-          </View>
-          <View style={styles.detailItem}>
-            <Text style={styles.detailLabel}>Verses memorisés</Text>
-            <Text style={styles.detailValue}>{stats.mastered}</Text>
-          </View>
-          <View style={styles.detailItem}>
-            <Text style={styles.detailLabel}>En cours</Text>
-            <Text style={styles.detailValue}>{stats.inProgress}</Text>
-          </View>
-        </View>
-
-        {/* Actions */}
-        <View style={styles.actions}>
-          <TouchableOpacity style={styles.buttonPrimary} onPress={() => router.replace('/review/queue')}>
-            <Text style={styles.buttonText}>{t('review.startReviewNow')}</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.buttonSecondary} onPress={() => router.back()}>
-            <Text style={styles.buttonTextBack}>{t('review.backToQueue')}</Text>
-          </TouchableOpacity>
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+      {/* Actions */}
+      <div className="flex flex-col gap-3">
+        <Button onClick={() => navigate('/review/queue')}>
+          {t('review.startReview', 'Revenir à la file')}
+        </Button>
+        <Button variant="outline" onClick={() => navigate('/tabs/progress')}>
+          {t('progress.yourProgress', 'Voir ma progression')}
+        </Button>
+      </div>
+    </FullScreenPage>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.surfaceTint,
-  },
-  content: {
-    padding: 16,
-    paddingBottom: 24,
-  },
-  streakCard: {
-    backgroundColor: colors.primary,
-    borderRadius: 16,
-    padding: 24,
-    marginBottom: 24,
-    alignItems: 'center',
-  },
-  streakTitle: {
-    fontSize: 14,
-    color: 'rgba(255,255,255,0.9)',
-    marginBottom: 8,
-  },
-  streakNumber: {
-    fontSize: 48,
-    fontWeight: '800',
-    color: colors.surface,
-  },
-  streakLabel: {
-    fontSize: 14,
-    color: 'rgba(255,255,255,0.9)',
-    marginTop: 4,
-  },
-  statsGrid: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 24,
-  },
-  statCard: {
-    flex: 1,
-    backgroundColor: colors.surface,
-    borderRadius: 12,
-    padding: 16,
-    alignItems: 'center',
-    marginHorizontal: 4,
-    ...shadow.sm,
-  },
-  statNumber: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: colors.primary,
-  },
-  statLabel: {
-    fontSize: 12,
-    color: colors.textMuted,
-    marginTop: 4,
-  },
-  chartCard: {
-    backgroundColor: colors.surface,
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 24,
-    ...shadow.md,
-  },
-  chartTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: colors.textPrimary,
-    marginBottom: 16,
-  },
-  chart: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  chartBar: {
-    flex: 1,
-    height: 24,
-    backgroundColor: colors.surfaceElevated,
-    borderRadius: 12,
-    overflow: 'hidden',
-  },
-  chartFill: {
-    height: '100%',
-    backgroundColor: colors.primary,
-    borderRadius: 12,
-  },
-  chartPercent: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: colors.primary,
-    marginLeft: 12,
-  },
-  chartSubtitle: {
-    fontSize: 12,
-    color: colors.textMuted,
-    textAlign: 'center',
-  },
-  detailsSection: {
-    backgroundColor: colors.surface,
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 24,
-  },
-  sectionTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: colors.textPrimary,
-    marginBottom: 12,
-  },
-  detailItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.surfaceElevated,
-  },
-  detailItemLast: {
-    borderBottomWidth: 0,
-  },
-  detailLabel: {
-    fontSize: 14,
-    color: '#666',
-  },
-  detailValue: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: colors.textPrimary,
-  },
-  actions: {
-    marginTop: 24,
-  },
-  buttonPrimary: {
-    backgroundColor: colors.primary,
-    borderRadius: 26,
-    paddingVertical: 16,
-    marginBottom: 12,
-    alignItems: 'center',
-  },
-  buttonSecondary: {
-    backgroundColor: colors.surface,
-    borderColor: colors.primary,
-    borderWidth: 2,
-    borderRadius: 26,
-    paddingVertical: 16,
-    alignItems: 'center',
-  },
-  buttonText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: colors.surface,
-  },
-  buttonTextBack: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: colors.primary,
-  },
-});
-
-const shadow = {
-  sm: {
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.03,
-    shadowRadius: 2,
-    elevation: 1,
-  },
-  md: {
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
-    elevation: 1,
-  },
-};

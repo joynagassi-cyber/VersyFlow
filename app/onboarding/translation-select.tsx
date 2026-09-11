@@ -1,140 +1,92 @@
 /**
- * Translation Picker Screen — Onboarding Step 2
+ * Translation Picker Screen — Onboarding step 2
  * Default: LSG (Louis Segond 1910)
- * See docs/08-ui-screens.md §3
  */
 
 import { useState } from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-} from '@/components/ui/Primitives';
-import { useAppTheme } from '@/theme/useTheme';
-import { useRouter } from '@/hooks/useIonicNavigation';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
+import { ArrowLeft, ArrowRight, BookText, Check } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
 import { useSettingsStore } from '@/store/settings-store';
 
 const TRANSLATIONS = [
-  { id: 'lsg', name: 'Louis Segond (1910)', year: '1910', style: 'Classique', default: true },
-  // Future translations added here: KJV, NIV, NASB, ESV...
-];
+  { id: 'lsg', name: 'Louis Segond (1910)', year: '1910', style: 'Classique', isDefault: true },
+] as const;
 
 export default function TranslationPickerScreen() {
-  const { colors, sp, sh, rad } = useAppTheme();
-  const router = useRouter();
+  const { t } = useTranslation();
+  const navigate = useNavigate();
   const { setBibleTranslation, bibleTranslation } = useSettingsStore();
+  const [selected, setSelected] = useState(bibleTranslation || 'lsg');
 
-  const selectedTranslation = bibleTranslation || 'lsg';
+  const select = (id: string) => {
+    setSelected(id);
+    setBibleTranslation(id);
+  };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Traduction biblique</Text>
-
-      {TRANSLATIONS.map((trans) => (
-        <TouchableOpacity
-          key={trans.id}
-          style={[
-            styles.card,
-            selectedTranslation === trans.id && styles.cardSelected,
-          ]}
-          onPress={() => {
-            setBibleTranslation(trans.id);
-            // Go to FSRS introduction before completing onboarding
-            router.push('/onboarding/fsrs-introduction');
-          }}
+    <div className="flex min-h-full flex-col p-6">
+      <header className="mb-6 flex items-center gap-3">
+        <button
+          onClick={() => navigate('/onboarding/language-select')}
+          className="flex h-10 w-10 items-center justify-center rounded-full bg-surface shadow-sm"
+          aria-label={t('common.back')}
         >
-          <View style={styles.transInfo}>
-            <Text style={styles.transName}>{trans.name}</Text>
-            <Text style={styles.transMeta}>
-              {trans.year} • {trans.style}
-            </Text>
-            {trans.default && (
-              <Text style={styles.defaultBadge}>Traduction par défaut</Text>
-            )}
-          </View>
-        </TouchableOpacity>
-      ))}
+          <ArrowLeft size={20} className="text-text-secondary" />
+        </button>
+        <h1 className="text-2xl font-bold text-text-primary">
+          {t('onboarding.selectTranslation')}
+        </h1>
+      </header>
 
-      <TouchableOpacity
-        style={styles.continueButton}
-        onPress={() => router.back()}
-      >
-        <Text style={styles.continueText}>Retour</Text>
-      </TouchableOpacity>
-    </View>
+      <div className="flex flex-1 flex-col gap-4">
+        {TRANSLATIONS.map((trans) => {
+          const isSelected = selected === trans.id;
+          return (
+            <button
+              key={trans.id}
+              onClick={() => select(trans.id)}
+              className={cn(
+                'rounded-xl border-2 bg-surface p-5 text-left shadow-sm transition-colors',
+                isSelected ? 'border-primary bg-surface-tint' : 'border-transparent',
+              )}
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-icon-bg-purple">
+                    <BookText size={20} className="text-text-secondary" />
+                  </div>
+                  <div>
+                    <p className="text-lg font-semibold text-text-primary">{trans.name}</p>
+                    <p className="text-sm text-text-muted">
+                      {trans.year} • {trans.style}
+                    </p>
+                  </div>
+                </div>
+                {isSelected && <Check size={22} className="text-primary" />}
+              </div>
+              {trans.isDefault && (
+                <span className="mt-3 inline-block rounded-full bg-surface-tint px-3 py-1 text-xs font-semibold text-primary">
+                  {t('onboarding.defaultTranslation')}
+                  </span>
+              )}
+            </button>
+          );
+        })}
+      </div>
+
+      <div className="mt-6 flex gap-4">
+        <Button variant="outline" className="flex-1" onClick={() => navigate('/onboarding/language-select')}>
+          <ArrowLeft size={16} />
+          {t('common.back')}
+        </Button>
+        <Button className="flex-1" onClick={() => navigate('/onboarding/fsrs-introduction')}>
+          {t('common.continue')}
+          <ArrowRight size={16} />
+        </Button>
+      </div>
+    </div>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.surfaceTint,
-    padding: 16,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: '600',
-    color: colors.textPrimary,
-    marginBottom: 24,
-  },
-  card: {
-    backgroundColor: colors.surface,
-    borderRadius: 12,
-    padding: 20,
-    marginBottom: 16,
-    ...shadow.md,
-  },
-  cardSelected: {
-    backgroundColor: colors.surfaceTint,
-    borderColor: colors.primary,
-    borderWidth: 2,
-  },
-  transInfo: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  transName: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: colors.textPrimary,
-  },
-  transMeta: {
-    fontSize: 14,
-    color: colors.textMuted,
-    marginTop: 4,
-  },
-  defaultBadge: {
-    fontSize: 12,
-    color: colors.primary,
-    marginTop: 8,
-    backgroundColor: colors.border,
-    paddingHorizontal: 12,
-    paddingVertical: 4,
-    borderRadius: 12,
-  },
-  continueButton: {
-    backgroundColor: colors.primary,
-    borderRadius: 26,
-    paddingVertical: 14,
-    alignItems: 'center',
-    marginTop: 24,
-  },
-  continueText: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: colors.surface,
-  },
-});
-
-const shadow = {
-  md: {
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
-    elevation: 1,
-  },
-};
-

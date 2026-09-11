@@ -1,748 +1,326 @@
 /**
- * Settings Screen — Complete application settings
- * See docs/08-ui-screens.md §11
- * Figma: https://www.figma.com/design/BL5Cbn6s2aMXAtNDmAVJ8F/VersyFlow
+ * Settings Screen — application preferences menu
+ * Tailwind + i18n + Lucide + Shadcn Dialog.
  */
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-  SafeAreaView,
-  Modal,
-  Platform,
-  Alert,
-} from '@/components/ui/Primitives';
-import { useAppTheme } from '@/theme/useTheme';
-import { useRouter } from '@/hooks/useIonicNavigation';
-import { IonIcon } from '@ionic/react'
-import * as Ionicons from 'ionicons/icons';
-import { I18nService } from '@/domains/i18n/i18n-service';
-import { SUPPORTED_LANGUAGES } from '@/domains/i18n/config';
+  ChevronRight,
+  Languages,
+  BookText,
+  Moon,
+  CloudUpload,
+  Download,
+  ShieldCheck,
+  Info,
+  FileText,
+  HelpCircle,
+  Trash2,
+  LogOut,
+  Check,
+  CircleUserRound,
+} from 'lucide-react';
+import { cn } from '@/lib/utils';
 import { useAuthStore } from '@/store/auth-store';
 import { useSettingsStore } from '@/store/settings-store';
+import { SUPPORTED_LANGUAGES, isRTL } from '@/domains/i18n/config';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 
 export default function SettingsScreen() {
-  const { colors, sp, sh, rad } = useAppTheme();
-  const router = useRouter();
+  const navigate = useNavigate();
+  const { t, i18n } = useTranslation();
   const { user, isAuthenticated, signOut } = useAuthStore();
-  const { bibleTranslation, setBibleTranslation, completeOnboarding } = useSettingsStore();
-  const [language, setLanguage] = useState<string>('fr');
-  const [showLanguageModal, setShowLanguageModal] = useState(false);
-  const [showResetModal, setShowResetModal] = useState(false);
+  const { bibleTranslation, setBibleTranslation } = useSettingsStore();
+  const [languageModalOpen, setLanguageModalOpen] = useState(false);
 
-  useEffect(() => {
-    const i18n = I18nService.getInstance();
-    setLanguage(i18n.getLanguage());
-  }, []);
+  const currentLanguage = i18n.language ?? 'fr';
 
-  const handleLanguageChange = (lng: string) => {
-    const i18n = I18nService.getInstance();
-    i18n.setLanguage(lng);
-    setLanguage(lng);
-    setShowLanguageModal(false);
+  const changeLanguage = (code: string) => {
+    setUiLanguagePersisted(code);
+    void i18n.changeLanguage(code);
+    document.documentElement.dir = isRTL(code) ? 'rtl' : 'ltr';
+    setLanguageModalOpen(false);
   };
 
-  const handleResetProgress = () => {
-    Alert.alert(
-      'Réinitialiser la progression',
-      'Êtes-vous sûr de vouloir supprimer toutes vos données ? Cette action est irréversible.',
-      [
-        { text: 'Annuler', style: 'cancel' },
+  const handleSignOut = async () => {
+    await signOut();
+    navigate('/auth/login');
+  };
+
+  const settingsGroups = [
+    {
+      title: t('settings.uiLanguage', 'Préférences'),
+      rows: [
         {
-          text: 'Réinitialiser',
-          style: 'destructive',
-          onPress: () => {
-            // Clear all data
-            useSettingsStore.getState().resetToDefaults();
-            setShowResetModal(false);
-            router.replace('/(tabs)/index');
+          icon: <Languages size={20} />,
+          iconBg: 'bg-surface-tint',
+          iconColor: 'text-primary',
+          label: t('settings.uiLanguage', 'Langue de l\'interface'),
+          subtitle: getLanguageName(currentLanguage),
+          onClick: () => setLanguageModalOpen(true),
+        },
+        {
+          icon: <BookText size={20} />,
+          iconBg: 'bg-icon-bg-purple',
+          iconColor: 'text-text-secondary',
+          label: t('settings.bibleTranslation', 'Traduction biblique'),
+          subtitle:
+            bibleTranslation === 'lsg'
+              ? 'Louis Segond (1910)'
+              : bibleTranslation || 'LSG',
+          onClick: () => {
+            setBibleTranslation('lsg');
+            navigate('/onboarding/translation-select');
           },
         },
-      ]
-    );
-  };
+      ],
+    },
+    {
+      title: t('settings.theme', 'Apparence'),
+      rows: [
+        {
+          icon: <Moon size={20} />,
+          iconBg: 'bg-icon-bg-blue',
+          iconColor: 'text-info',
+          label: t('settings.theme', 'Thème'),
+          subtitle: t('settings.light', 'Clair'),
+          onClick: () => navigate('/settings/appearance'),
+        },
+      ],
+    },
+    {
+      title: t('settings.dataManagement', 'Données'),
+      rows: [
+        {
+          icon: <CloudUpload size={20} />,
+          iconBg: 'bg-icon-bg-green',
+          iconColor: 'text-success',
+          label: t('settings.exportData', 'Sauvegarde & Sync'),
+          subtitle: t('settings.storageUsed', 'Synchroniser vos données'),
+          onClick: () => navigate('/settings/backup'),
+        },
+        {
+          icon: <Download size={20} />,
+          iconBg: 'bg-icon-bg-orange',
+          iconColor: 'text-warning',
+          label: t('settings.exportData', 'Exporter mes données'),
+          subtitle: t('settings.storageUsed', 'Télécharger vos données'),
+          onClick: () => navigate('/settings/backup'),
+        },
+      ],
+    },
+    {
+      title: 'Confidentialité',
+      rows: [
+        {
+          icon: <ShieldCheck size={20} />,
+          iconBg: 'bg-icon-bg-blue',
+          iconColor: 'text-info',
+          label: 'Politique de confidentialité',
+          subtitle: t('settings.about', 'Voir nos conditions'),
+          onClick: () => navigate('/settings/privacy'),
+        },
+      ],
+    },
+    {
+      title: t('settings.about', 'À propos'),
+      rows: [
+        {
+          icon: <Info size={20} />,
+          iconBg: 'bg-surface-tint',
+          iconColor: 'text-text-tertiary',
+          label: t('settings.version', 'Version'),
+          subtitle: `${t('common.appName', 'VersyFlow')} v0.1.0`,
+          onClick: () => navigate('/settings/about'),
+        },
+        {
+          icon: <FileText size={20} />,
+          iconBg: 'bg-icon-bg-blue',
+          iconColor: 'text-info',
+          label: t('settings.documentation', 'Documentation'),
+          subtitle: t('settings.about', 'Guides et tutoriels'),
+          onClick: () => navigate('/settings/about'),
+        },
+        {
+          icon: <HelpCircle size={20} />,
+          iconBg: 'bg-icon-bg-green',
+          iconColor: 'text-success',
+          label: 'Aide & Support',
+          subtitle: t('settings.about', 'FAQ et contact'),
+          onClick: () => navigate('/settings/about'),
+        },
+      ],
+    },
+  ];
 
-  const handleSignOut = () => {
-    signOut();
-    router.replace('/(tabs)/auth/login');
-  };
-
-  const getLanguageName = (code: string) => {
-    const lang = SUPPORTED_LANGUAGES.find(l => l.code === code);
+  // helper for language names (kept outside JSX)
+  function getLanguageName(code: string) {
+    const lang = SUPPORTED_LANGUAGES.find((l) => l.code === code);
     return lang ? lang.name : code;
-  };
+  }
+
+  function setUiLanguagePersisted(code: string) {
+    useSettingsStore.getState().setUiLanguage(code);
+  }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView
-        style={styles.scrollView}
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
-      >
-        {/* Profile Card */}
-        <View style={styles.profileCard}>
-          <View style={styles.avatar}>
-            <Ionicons name="person" size={28} color={colors.surface} />
-          </View>
-          <View style={styles.profileInfo}>
-            <Text style={styles.profileName}>{user?.display_name || 'Utilisateur'}</Text>
-            <Text style={styles.profileStatus}>
-              {isAuthenticated ? 'Compte connecté' : 'Mode local'}
-            </Text>
-          </View>
-          <TouchableOpacity
-            style={styles.profileButton}
-            onPress={() => router.push('/profile')}
-          >
-            <Ionicons name="chevron-forward" size={20} color={colors.textMuted} />
-          </TouchableOpacity>
-        </View>
+    <div className="min-h-full overflow-y-auto bg-background p-4 pb-24">
+      <h1 className="mb-4 text-2xl font-bold text-text-primary">
+        {t('settings.settings', 'Paramètres')}
+      </h1>
 
-        {/* Preferences Group */}
-        <View style={styles.group}>
-          <Text style={styles.groupTitle}>Préférences</Text>
-          <View style={styles.card}>
-            {/* Language */}
-            <TouchableOpacity
-              style={styles.row}
-              onPress={() => setShowLanguageModal(true)}
-            >
-              <View style={styles.rowLeft}>
-                <View style={[styles.rowIcon, { backgroundColor: colors.border }]}>
-                  <Ionicons name="language" size={20} color={colors.primary} />
-                </View>
-                <View style={styles.rowText}>
-                  <Text style={styles.rowTitle}>Langue de l'interface</Text>
-                  <Text style={styles.rowSubtitle}>{getLanguageName(language)}</Text>
-                </View>
-              </View>
-              <Ionicons name="chevron-forward" size={20} color={colors.textMuted} />
-            </TouchableOpacity>
+      {/* Profile card */}
+      <div className="flex items-center gap-4 rounded-2xl bg-surface p-5 shadow-md">
+        <span className="flex h-14 w-14 items-center justify-center rounded-full bg-primary text-white">
+          <CircleUserRound size={28} />
+        </span>
+        <div className="flex-1">
+          <p className="text-lg font-bold text-text-primary">
+            {user?.display_name || t('settings.settings', 'Utilisateur')}
+          </p>
+          <p className="text-sm text-text-tertiary">
+            {isAuthenticated
+              ? t('common.confirm', 'Compte connecté')
+              : t('common.loading', 'Mode local')}
+          </p>
+        </div>
+        <button
+          onClick={() => navigate('/profile')}
+          className="rounded-full p-2 text-text-muted"
+          aria-label={t('common.back', 'Profil')}
+        >
+          <ChevronRight size={20} />
+        </button>
+      </div>
 
-            {/* Bible Translation */}
-            <TouchableOpacity
-              style={styles.row}
-              onPress={() => router.push('/onboarding/translation-select')}
-            >
-              <View style={styles.rowLeft}>
-                <View style={[styles.rowIcon, { backgroundColor: colors.iconBgPurple }]}>
-                  <Ionicons name="book" size={20} color={colors.textSecondary} />
-                </View>
-                <View style={styles.rowText}>
-                  <Text style={styles.rowTitle}>Traduction biblique</Text>
-                  <Text style={styles.rowSubtitle}>
-                    {bibleTranslation === 'lsg' ? 'Louis Segond (1910)' : bibleTranslation || 'Défaut'}
-                  </Text>
-                </View>
-              </View>
-              <Ionicons name="chevron-forward" size={20} color={colors.textMuted} />
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        {/* Appearance Group */}
-        <View style={styles.group}>
-          <Text style={styles.groupTitle}>Apparence</Text>
-          <View style={styles.card}>
-            <TouchableOpacity
-              style={styles.row}
-              onPress={() => router.push('/settings/appearance')}
-            >
-              <View style={styles.rowLeft}>
-                <View style={[styles.rowIcon, { backgroundColor: colors.iconBgBlue }]}>
-                  <Ionicons name="moon" size={20} color={colors.info} />
-                </View>
-                <View style={styles.rowText}>
-                  <Text style={styles.rowTitle}>Thème</Text>
-                  <Text style={styles.rowSubtitle}>Clair</Text>
-                </View>
-              </View>
-              <View style={styles.rowRight}>
-                <View style={styles.themePreview}>
-                  <View style={[styles.themeDot, { backgroundColor: colors.surface, borderWidth: 1, borderColor: '#E0E0E0' }]} />
-                  <View style={[styles.themeDot, { backgroundColor: '#1a1a1a' }]} />
-                </View>
-                <Ionicons name="chevron-forward" size={20} color={colors.textMuted} />
-              </View>
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        {/* Data Group */}
-        <View style={styles.group}>
-          <Text style={styles.groupTitle}>Données</Text>
-          <View style={styles.card}>
-            <TouchableOpacity
-              style={styles.row}
-              onPress={() => router.push('/settings/backup')}
-            >
-              <View style={styles.rowLeft}>
-                <View style={[styles.rowIcon, { backgroundColor: colors.iconBgGreen }]}>
-                  <Ionicons name="cloud-upload" size={20} color={colors.success} />
-                </View>
-                <View style={styles.rowText}>
-                  <Text style={styles.rowTitle}>Sauvegarde & Sync</Text>
-                  <Text style={styles.rowSubtitle}>Synchroniser vos données</Text>
-                </View>
-              </View>
-              <Ionicons name="chevron-forward" size={20} color={colors.textMuted} />
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.row}
-              onPress={() => router.push('/settings/backup')}
-            >
-              <View style={styles.rowLeft}>
-                <View style={[styles.rowIcon, { backgroundColor: colors.iconBgOrange }]}>
-                  <Ionicons name="download" size={20} color={colors.warning} />
-                </View>
-                <View style={styles.rowText}>
-                  <Text style={styles.rowTitle}>Exporter mes données</Text>
-                  <Text style={styles.rowSubtitle}>Télécharger vos données</Text>
-                </View>
-              </View>
-              <Ionicons name="chevron-forward" size={20} color={colors.textMuted} />
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        {/* Privacy Group */}
-        <View style={styles.group}>
-          <Text style={styles.groupTitle}>Confidentialité</Text>
-          <View style={styles.card}>
-            <TouchableOpacity
-              style={styles.row}
-              onPress={() => router.push('/settings/privacy')}
-            >
-              <View style={styles.rowLeft}>
-                <View style={[styles.rowIcon, { backgroundColor: '#F3E5F5' }]}>
-                  <Ionicons name="shield-checkmark" size={20} color="#7B1FA2" />
-                </View>
-                <View style={styles.rowText}>
-                  <Text style={styles.rowTitle}>Politique de confidentialité</Text>
-                  <Text style={styles.rowSubtitle}>Voir nos conditions</Text>
-                </View>
-              </View>
-              <Ionicons name="chevron-forward" size={20} color={colors.textMuted} />
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        {/* About Group */}
-        <View style={styles.group}>
-          <Text style={styles.groupTitle}>À propos</Text>
-          <View style={styles.card}>
-            <TouchableOpacity
-              style={styles.row}
-              onPress={() => router.push('/settings/about')}
-            >
-              <View style={styles.rowLeft}>
-                <View style={[styles.rowIcon, { backgroundColor: '#ECEFF1' }]}>
-                  <Ionicons name="information-circle" size={20} color="#455A64" />
-                </View>
-                <View style={styles.rowText}>
-                  <Text style={styles.rowTitle}>Version</Text>
-                  <Text style={styles.rowSubtitle}>VersyFlow v0.1.0</Text>
-                </View>
-              </View>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.row}
-              onPress={() => router.push('/settings/about')}
-            >
-              <View style={styles.rowLeft}>
-                <View style={[styles.rowIcon, { backgroundColor: colors.iconBgIndigo }]}>
-                  <Ionicons name="document-text" size={20} color="#3F51B5" />
-                </View>
-                <View style={styles.rowText}>
-                  <Text style={styles.rowTitle}>Documentation</Text>
-                  <Text style={styles.rowSubtitle}>Guides et tutoriels</Text>
-                </View>
-              </View>
-              <Ionicons name="chevron-forward" size={20} color={colors.textMuted} />
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.row}
-              onPress={() => router.push('/settings/about')}
-            >
-              <View style={styles.rowLeft}>
-                <View style={[styles.rowIcon, { backgroundColor: colors.iconBgTeal }]}>
-                  <Ionicons name="help-circle" size={20} color="#00695C" />
-                </View>
-                <View style={styles.rowText}>
-                  <Text style={styles.rowTitle}>Aide & Support</Text>
-                  <Text style={styles.rowSubtitle}>FAQ et contact</Text>
-                </View>
-              </View>
-              <Ionicons name="chevron-forward" size={20} color={colors.textMuted} />
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        {/* Destructive Actions */}
-        <View style={styles.group}>
-          <Text style={styles.groupTitle}>Danger</Text>
-          <View style={styles.card}>
-            <TouchableOpacity
-              style={[styles.row, styles.dangerRow]}
-              onPress={() => setShowResetModal(true)}
-            >
-              <View style={styles.rowLeft}>
-                <View style={[styles.rowIcon, { backgroundColor: colors.errorLight }]}>
-                  <Ionicons name="trash" size={20} color={colors.error} />
-                </View>
-                <View style={styles.rowText}>
-                  <Text style={[styles.rowTitle, styles.dangerText]}>Réinitialiser la progression</Text>
-                  <Text style={styles.rowSubtitle}>Supprimer toutes les données</Text>
-                </View>
-              </View>
-              <Ionicons name="chevron-forward" size={20} color={colors.error} />
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        {/* Sign Out */}
-        {isAuthenticated && (
-          <TouchableOpacity
-            style={styles.signOutButton}
-            onPress={handleSignOut}
-          >
-            <Ionicons name="log-out" size={20} color={colors.surface} />
-            <Text style={styles.signOutText}>Se déconnecter</Text>
-          </TouchableOpacity>
-        )}
-
-        {/* Footer */}
-        <View style={styles.footer}>
-          <Text style={styles.footerText}>VersyFlow</Text>
-          <Text style={styles.footerSubtext}>Mémorisation biblique intuitive</Text>
-          <Text style={styles.footerVersion}>v0.1.0 • © 2024</Text>
-        </View>
-      </ScrollView>
-
-      {/* Language Modal */}
-      <Modal
-        visible={showLanguageModal}
-        transparent
-        animationType="slide"
-        onRequestClose={() => setShowLanguageModal(false)}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
-            <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>Choisir la langue</Text>
-              <TouchableOpacity onPress={() => setShowLanguageModal(false)}>
-                <Ionicons name="close" size={24} color={colors.textSecondary} />
-              </TouchableOpacity>
-            </View>
-            <ScrollView style={styles.modalScroll}>
-              {SUPPORTED_LANGUAGES.map((lang) => (
-                <TouchableOpacity
-                  key={lang.code}
-                  style={[
-                    styles.languageOption,
-                    language === lang.code && styles.languageOptionSelected,
-                  ]}
-                  onPress={() => handleLanguageChange(lang.code)}
-                >
-                  <Text style={[
-                    styles.languageName,
-                    language === lang.code && styles.languageNameSelected,
-                  ]}>
-                    {lang.name}
-                  </Text>
-                  <Text style={styles.languageDisplayName}>{lang.displayName}</Text>
-                  {language === lang.code && (
-                    <Ionicons name="checkmark" size={20} color={colors.primary} />
+      {/* Groups */}
+      {settingsGroups.map((group) => (
+        <section key={group.title} className="mt-6">
+          <h2 className="mb-2 px-1 text-sm font-semibold uppercase tracking-wide text-text-tertiary">
+            {group.title}
+          </h2>
+          <div className="overflow-hidden rounded-2xl bg-surface shadow-sm">
+            {group.rows.map((row, i) => (
+              <button
+                key={i}
+                onClick={row.onClick}
+                className={cn(
+                  'flex w-full items-center gap-3 p-4 text-left',
+                  i < group.rows.length - 1 && 'border-b border-divider',
+                )}
+              >
+                <span
+                  className={cn(
+                    'flex h-10 w-10 shrink-0 items-center justify-center rounded-full',
+                    row.iconBg,
                   )}
-                </TouchableOpacity>
-              ))}
-            </ScrollView>
-          </View>
-        </View>
-      </Modal>
+                >
+                  <span className={row.iconColor}>{row.icon}</span>
+                </span>
+                <span className="flex-1">
+                  <span className="block text-base text-text-primary">{row.label}</span>
+                  <span className="block text-sm text-text-muted">{row.subtitle}</span>
+                </span>
+                <ChevronRight size={18} className="text-text-muted" />
+              </button>
+            ))}
+          </div>
+        </section>
+      ))}
 
-      {/* Reset Confirmation Modal */}
-      <Modal
-        visible={showResetModal}
-        transparent
-        animationType="fade"
-        onRequestClose={() => setShowResetModal(false)}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.resetModal}>
-            <View style={styles.resetIconContainer}>
-              <Ionicons name="warning" size={48} color={colors.error} />
-            </View>
-            <Text style={styles.resetTitle}>Réinitialiser tout ?</Text>
-            <Text style={styles.resetMessage}>
-              Cette action supprimera toutes vos données de mémorisation. Cette action est irréversible.
-            </Text>
-            <View style={styles.resetButtons}>
-              <TouchableOpacity
-                style={styles.resetCancelButton}
-                onPress={() => setShowResetModal(false)}
-              >
-                <Text style={styles.resetCancelText}>Annuler</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.resetConfirmButton}
-                onPress={handleResetProgress}
-              >
-                <Text style={styles.resetConfirmText}>Réinitialiser</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
-    </SafeAreaView>
+      {/* Danger zone */}
+      <section className="mt-6">
+        <h2 className="mb-2 px-1 text-sm font-semibold uppercase tracking-wide text-text-tertiary">
+          {t('settings.resetProgress', 'Zone de danger')}
+        </h2>
+        <div className="overflow-hidden rounded-2xl bg-surface shadow-sm">
+          <button
+            onClick={() => {
+              if (window.confirm(t('settings.resetConfirmText', 'Cela supprimera TOUS vos versets.'))) {
+                useSettingsStore.getState().resetToDefaults();
+                navigate('/onboarding/welcome', { replace: true });
+              }
+            }}
+            className="flex w-full items-center gap-3 p-4 text-left"
+          >
+            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-error-light">
+              <Trash2 size={20} className="text-error" />
+            </span>
+            <span className="flex-1">
+              <span className="block text-base font-medium text-error">
+                {t('settings.resetProgress', 'Réinitialiser la progression')}
+              </span>
+              <span className="block text-sm text-text-muted">
+                {t('common.delete', 'Supprimer toutes les données')}
+              </span>
+            </span>
+            <ChevronRight size={18} className="text-error" />
+          </button>
+        </div>
+      </section>
+
+      {/* Sign out */}
+      {isAuthenticated && (
+        <button
+          onClick={handleSignOut}
+          className="mt-6 flex w-full items-center justify-center gap-2 rounded-full bg-surface p-4 text-base font-semibold text-error shadow-sm"
+        >
+          <LogOut size={18} />
+          {t('common.skip', 'Se déconnecter')}
+        </button>
+      )}
+
+      {/* Footer */}
+      <div className="mt-10 flex flex-col items-center gap-1 pb-6">
+        <p className="text-xl font-bold text-primary">{t('common.appName', 'VersyFlow')}</p>
+        <p className="text-sm text-text-muted">v0.1.0</p>
+      </div>
+
+      {/* Language dialog (Shadcn) */}
+      <Dialog open={languageModalOpen} onOpenChange={setLanguageModalOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t('settings.uiLanguage', 'Choisir la langue')}</DialogTitle>
+          </DialogHeader>
+          <div className="mt-2 flex flex-col gap-2">
+            {SUPPORTED_LANGUAGES.map((lang) => {
+              const selected = currentLanguage === lang.code;
+              return (
+                <button
+                  key={lang.code}
+                  onClick={() => changeLanguage(lang.code)}
+                  className={cn(
+                    'flex items-center justify-between rounded-xl p-3 text-left transition-colors',
+                    selected ? 'bg-surface-tint' : 'hover:bg-surface-tint/50',
+                  )}
+                >
+                  <span>
+                    <span
+                      className={cn(
+                        'block text-base',
+                        selected
+                          ? 'font-semibold text-primary'
+                          : 'font-medium text-text-primary',
+                      )}
+                    >
+                      {lang.name}
+                    </span>
+                    <span className="text-sm text-text-muted">{lang.displayName}</span>
+                  </span>
+                  {selected && <Check size={18} className="text-primary" />}
+                </button>
+              );
+            })}
+          </div>
+        </DialogContent>
+      </Dialog>
+    </div>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
-  scrollView: {
-    flex: 1,
-  },
-  scrollContent: {
-    paddingBottom: 40,
-  },
-
-  // Profile Card
-  profileCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: colors.surface,
-    margin: 16,
-    borderRadius: 20,
-    padding: 20,
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.05,
-        shadowRadius: 8,
-      },
-      android: {
-        elevation: 4,
-      },
-    }),
-  },
-  avatar: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    backgroundColor: colors.primary,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  profileInfo: {
-    flex: 1,
-    marginLeft: 16,
-  },
-  profileName: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: colors.textPrimary,
-  },
-  profileStatus: {
-    fontSize: 14,
-    color: colors.textTertiary,
-    marginTop: 4,
-  },
-  profileButton: {
-    padding: 8,
-  },
-
-  // Groups
-  group: {
-    marginTop: 24,
-  },
-  groupTitle: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: colors.textTertiary,
-    paddingHorizontal: 20,
-    marginBottom: 8,
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
-  },
-  card: {
-    backgroundColor: colors.surface,
-    marginHorizontal: 16,
-    borderRadius: 16,
-    overflow: 'hidden',
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.03,
-        shadowRadius: 4,
-      },
-      android: {
-        elevation: 2,
-      },
-    }),
-  },
-
-  // Rows
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: 16,
-    paddingHorizontal: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.surfaceTint,
-  },
-  rowLast: {
-    borderBottomWidth: 0,
-  },
-  rowLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flex: 1,
-  },
-  rowIcon: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: 12,
-  },
-  rowText: {
-    flex: 1,
-  },
-  rowTitle: {
-    fontSize: 16,
-    fontWeight: '500',
-    color: colors.textPrimary,
-  },
-  rowSubtitle: {
-    fontSize: 13,
-    color: colors.textMuted,
-    marginTop: 2,
-  },
-  rowRight: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  themePreview: {
-    flexDirection: 'row',
-    gap: 4,
-    marginRight: 8,
-  },
-  themeDot: {
-    width: 16,
-    height: 16,
-    borderRadius: 8,
-  },
-
-  // Danger Row
-  dangerRow: {
-    backgroundColor: '#FFF5F5',
-  },
-  dangerText: {
-    color: colors.error,
-  },
-
-  // Sign Out Button
-  signOutButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 8,
-    marginHorizontal: 16,
-    marginTop: 24,
-    backgroundColor: colors.surface,
-    borderRadius: 26,
-    paddingVertical: 16,
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.05,
-        shadowRadius: 4,
-      },
-      android: {
-        elevation: 2,
-      },
-    }),
-  },
-  signOutText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: colors.error,
-  },
-
-  // Footer
-  footer: {
-    alignItems: 'center',
-    paddingVertical: 32,
-    marginTop: 24,
-  },
-  footerText: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: colors.primary,
-  },
-  footerSubtext: {
-    fontSize: 14,
-    color: colors.textMuted,
-    marginTop: 4,
-  },
-  footerVersion: {
-    fontSize: 12,
-    color: '#C0C0C0',
-    marginTop: 8,
-  },
-
-  // Modal
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'flex-end',
-  },
-  modalContent: {
-    backgroundColor: colors.surface,
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
-    maxHeight: '70%',
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: -4 },
-        shadowOpacity: 0.1,
-        shadowRadius: 12,
-      },
-      android: {
-        elevation: 8,
-      },
-    }),
-  },
-  modalHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
-  },
-  modalTitle: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: colors.textPrimary,
-  },
-  modalScroll: {
-    padding: 16,
-  },
-  languageOption: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: 16,
-    paddingHorizontal: 12,
-    borderRadius: 12,
-    marginBottom: 8,
-  },
-  languageOptionSelected: {
-    backgroundColor: colors.surfaceTint,
-  },
-  languageName: {
-    fontSize: 16,
-    fontWeight: '500',
-    color: colors.textPrimary,
-  },
-  languageNameSelected: {
-    color: colors.primary,
-    fontWeight: '600',
-  },
-  languageDisplayName: {
-    fontSize: 13,
-    color: colors.textMuted,
-    marginTop: 2,
-  },
-
-  // Reset Modal
-  resetModal: {
-    backgroundColor: colors.surface,
-    margin: 40,
-    borderRadius: 24,
-    padding: 24,
-    alignItems: 'center',
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 8 },
-        shadowOpacity: 0.2,
-        shadowRadius: 16,
-      },
-      android: {
-        elevation: 8,
-      },
-    }),
-  },
-  resetIconContainer: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    backgroundColor: colors.errorLight,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 20,
-  },
-  resetTitle: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: colors.textPrimary,
-    marginBottom: 12,
-    textAlign: 'center',
-  },
-  resetMessage: {
-    fontSize: 14,
-    color: colors.textTertiary,
-    textAlign: 'center',
-    lineHeight: 22,
-    marginBottom: 24,
-  },
-  resetButtons: {
-    flexDirection: 'row',
-    gap: 12,
-    width: '100%',
-  },
-  resetCancelButton: {
-    flex: 1,
-    paddingVertical: 14,
-    borderRadius: 26,
-    backgroundColor: colors.surfaceElevated,
-    alignItems: 'center',
-  },
-  resetCancelText: {
-    fontSize: 16,
-    color: colors.textTertiary,
-    fontWeight: '600',
-  },
-  resetConfirmButton: {
-    flex: 1,
-    paddingVertical: 14,
-    borderRadius: 26,
-    backgroundColor: colors.error,
-    alignItems: 'center',
-  },
-  resetConfirmText: {
-    fontSize: 16,
-    color: colors.surface,
-    fontWeight: '600',
-  },
-});

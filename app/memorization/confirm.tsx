@@ -1,111 +1,88 @@
 /**
- * Memorization Confirm Screen — Results and rating after session completion
+ * Memorization Confirm Screen — results + next-review after a session.
+ * Reads FSRS result from router state when available; graceful fallback.
+ * Tailwind + i18n + Lucide.
  */
 
-import { useState, useEffect } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-  SafeAreaView,
-  Platform,
-  Animated,
-} from '@/components/ui/Primitives';
-import { useAppTheme } from '@/theme/useTheme';
-import { useRouter, useLocalSearchParams } from '@/hooks/useIonicNavigation';
-import { IonIcon } from '@ionic/react'
-import * as Ionicons from 'ionicons/icons';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { PartyPopper, CalendarClock, ArrowRight, Home } from 'lucide-react';
+import FullScreenPage from '@/components/layout/FullScreenPage';
+import { Button } from '@/components/ui/button';
 
-interface FSRSResult {
-  interval: number;
-  stability: number;
-  difficulty: number;
-  elapsedDays: number;
-  repetitions: number;
+interface ConfirmState {
+  interval?: number;
+  reference?: string;
+  rating?: number;
 }
 
 export default function MemorizationConfirm() {
-  const { colors, sp, sh, rad } = useAppTheme();
-  const router = useRouter();
-  const params = useLocalSearchParams();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { t } = useTranslation();
 
-  const [result, setResult] = useState<FSRSResult | null>(null);
+  const state = (location.state as ConfirmState | null) ?? {};
+  const interval = state.interval ?? 3;
+  const reference = state.reference;
 
-  useEffect(() => {
-    // Simulate FSRS calculation
-    const mockResult: FSRSResult = {
-      interval: 3,
-      stability: 2.5,
-      difficulty: 4.2,
-      elapsedDays: 0,
-      repetitions: 1,
-    };
-    setResult(mockResult);
-  }, []);
+  const ratingMeta = [
+    { max: 0, label: t('session.ratingAgain', 'À revoir'), color: 'text-error' },
+    { max: 1, label: t('session.ratingHard', 'Difficile'), color: 'text-warning' },
+    { max: 2, label: t('session.ratingGood', 'Bon'), color: 'text-success' },
+    { max: Infinity, label: t('session.ratingEasy', 'Facile'), color: 'text-info' },
+  ];
+  const meta = ratingMeta.find((m) => (state.rating ?? 0) <= m.max) ?? ratingMeta[2];
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
-      <ScrollView style={styles.scroll}>
-        <Text style={[styles.title, { color: colors.textPrimary }]}>
-          Session terminée !
-        </Text>
-
-        {result && (
-          <View style={[styles.card, { backgroundColor: colors.surface, borderRadius: rad['2xl'], padding: 24 }]}>
-            <Text style={[styles.label, { color: colors.textMuted }]}>Prochain rappel</Text>
-            <Text style={[styles.value, { color: colors.primary }]}>{result.interval} jours</Text>
-          </View>
+    <FullScreenPage
+      title={t('session.memorizing', 'Mémorisation')}
+      backPath={reference ? '/memorization/session' : '/tabs/home'}
+    >
+      <div className="flex flex-col items-center py-8">
+        <span className="text-6xl">✨</span>
+        <h1 className="mt-4 text-2xl font-bold text-text-primary">
+          {t('session.verseComplete', "Verset mémorisé! ✨")}
+        </h1>
+        {reference && (
+          <p className="mt-2 text-base font-semibold text-primary">{reference}</p>
         )}
+      </div>
 
-        <View style={[styles.actions, { paddingHorizontal: sp.lg }]}>
-          <TouchableOpacity
-            style={[styles.button, { backgroundColor: colors.primary, borderRadius: rad.pill, paddingVertical: 14 }]}
-            onPress={() => router.back()}
-          >
-            <Text style={[styles.buttonText, { color: '#FFFFFF' }]}>Retour</Text>
-          </TouchableOpacity>
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+      {/* Result card */}
+      <div className="rounded-2xl border border-border bg-surface p-6 shadow-sm">
+        <div className="flex items-center justify-between">
+          <span className="text-sm text-text-muted">
+            {t('session.nextReview', 'Prochain rappel')}
+          </span>
+          <span className="text-3xl font-bold text-primary">{interval}j</span>
+        </div>
+        <div className="mt-4 flex items-center justify-between border-t border-divider pt-4">
+          <span className="flex items-center gap-1.5 text-sm text-text-muted">
+            <CalendarClock size={15} />
+            {t('session.nextReview', { days: interval })}
+          </span>
+          <span className={`text-sm font-semibold ${meta.color}`}>{meta.label}</span>
+        </div>
+      </div>
+
+      {/* Actions */}
+      <div className="mt-6 flex flex-col gap-3">
+        <Button onClick={() => navigate('/memorization/session')}>
+          <PartyPopper size={16} />
+          {t('session.proceed', 'Continuer à mémoriser')}
+        </Button>
+        <Button variant="outline" onClick={() => navigate('/tabs/home')}>
+          <Home size={16} />
+          {t('common.done', "Retour à l'accueil")}
+        </Button>
+        <button
+          onClick={() => navigate('/review/queue')}
+          className="mx-auto mt-1 flex items-center gap-1 text-sm font-semibold text-primary"
+        >
+          {t('review.startReview', 'Voir mes révisions')}
+          <ArrowRight size={14} />
+        </button>
+      </div>
+    </FullScreenPage>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  scroll: {
-    flex: 1,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 24,
-    paddingHorizontal: 16,
-  },
-  card: {
-    marginHorizontal: 16,
-    marginBottom: 24,
-  },
-  label: {
-    fontSize: 14,
-    marginBottom: 8,
-  },
-  value: {
-    fontSize: 32,
-    fontWeight: 'bold',
-  },
-  actions: {
-    marginBottom: 32,
-  },
-  button: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  buttonText: {
-    fontSize: 16,
-    fontWeight: '600',
-  },
-});

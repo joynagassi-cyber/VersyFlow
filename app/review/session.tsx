@@ -1,651 +1,285 @@
 /**
- * Review Session Screen — Immersive review with FSRS rating
- * See docs/08-ui-screens.md §9
- * Figma: https://www.figma.com/design/BL5Cbn6s2aMXAtNDmAVJ8F/VersyFlow
+ * Review Session Screen — immersive review with real FSRS rating.
+ * Loads the prioritized due queue (ReviewQueueService), reveals word chips,
+ * and persists ratings via MemorizationService + FSRS engine.
+ * Tailwind + i18n + Lucide.
  */
 
-import { useState, useEffect, useRef } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-  SafeAreaView,
-  ActivityIndicator,
-  Animated,
-  Platform,
-} from '@/components/ui/Primitives';
-import { useAppTheme } from '@/theme/useTheme';
-import { useRouter } from '@/hooks/useIonicNavigation';
-import { IonIcon } from '@ionic/react'
-import * as Ionicons from 'ionicons/icons';
-import { Rating as FsrsRating } from '@/domains/fsrs';
-import { MemorizationService } from '@/domains/memorization/service';
-import { IFsrsEngine, Sm2FallbackEngine } from '@/domains/fsrs';
+import { useState, useEffect, useMemo } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { Loader2, Bookmark, Hand, RefreshCw, RotateCcw, Star, Check, X } from 'lucide-react';
+import FullScreenPage from '@/components/layout/FullScreenPage';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
+import { useActiveProfile } from '@/hooks/useActiveProfile';
 import { MmkvStorage } from '@/infrastructure/storage';
+import { MemorizationService } from '@/domains/memorization/service';
 import { getFsrsEngine } from '@/services/fsrs-factory';
+import { ReviewQueueService } from '@/services/review-queue-service';
+import { Rating } from '@/domains/fsrs';
+import type { MemorizationRecord } from '@/domains/memorization/entities';
 
-// Sample data for demo
-const SAMPLE_REVIEWS = [
-  {
-    id: '1',
-    reference: 'Jean 3:16',
-    text: 'Car Dieu a tellement aimé le monde qu\'il a donné son Fils unique, afin que quiconque croit en lui ne périsse pas, mais qu\'il ait la vie éternelle.',
-    words: ['Car', 'Dieu', 'a', 'tellement', 'aimé', 'le', 'monde', 'qu\'il', 'a', 'donné', 'son', 'Fils', 'unique'],
-    stability: 3.5,
-    difficulty: 5.0,
-    elapsedDays: 2,
-    nextInterval: 4,
-  },
-  {
-    id: '2',
-    reference: 'Psaume 23:1',
-    text: 'L\'Éternel est mon berger: je ne manquerai de rien.',
-    words: ['L\'Éternel', 'est', 'mon', 'berger', ':', 'je', 'ne', 'manquerai', 'de', 'rien'],
-    stability: 5.2,
-    difficulty: 3.0,
-    elapsedDays: 5,
-    nextInterval: 7,
-  },
-  {
-    id: '3',
-    reference: 'Romains 8:28',
-    text: 'Nous savons d\'ailleurs que toutes choses contribuent au bien de ceux qui aiment Dieu.',
-    words: ['Nous', 'savons', 'd\'ailleurs', 'que', 'toutes', 'choses', 'contribuent', 'au', 'bien', 'de', 'ceux', 'qui', 'aiment', 'Dieu'],
-    stability: 1.8,
-    difficulty: 6.5,
-    elapsedDays: 1,
-    nextInterval: 2,
-  },
-];
+const serviceByProfile = new Map<string, MemorizationService>();
+const getMemorizationService = (profileId: string) => {
+  if (!serviceByProfile.has(profileId)) {
+    serviceByProfile.set(
+      profileId,
+      new MemorizationService(new MmkvStorage(), getFsrsEngine(), profileId),
+    );
+  }
+  return serviceByProfile.get(profileId)!;
+};
+
+interface ReviewItem {
+  record: MemorizationRecord;
+  reference: string;
+  text: string;
+  words: string[];
+}
 
 export default function ReviewSessionScreen() {
-  const { colors, sp, sh, rad } = useAppTheme();
-  const router = useRouter();
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [revealedWords, setRevealedWords] = useState<Set<number>>(new Set());
-  const [isRevealed, setIsRevealed] = useState(false);
+  const navigate = useNavigate();
+  const [params] = useSearchParams();
+  const { t } = useTranslation();
+  const { activeProfile } = useActiveProfile();
+  const profileId = activeProfile?.id ?? 'default';
+
+  const [items, setItems] = useState<ReviewItem[]>([]);
+  const [index, setIndex] = useState(0);
+  const [revealed, setRevealed] = useState(false);
   const [showRating, setShowRating] = useState(false);
-  const [selectedRating, setSelectedRating] = useState<FsrsRating | null>(null);
+  const [selected, setSelected] = useState<Rating | null>(null);
   const [loading, setLoading] = useState(true);
-  const [reviews, setReviews] = useState(SAMPLE_REVIEWS);
-
-  const fadeAnim = new Animated.Value(0);
-  const scaleAnim = new Animated.Value(0.95);
+  const [feedback, setFeedback] = useState<{ scheduledDays: number; label: string } | null>(null);
 
   useEffect(() => {
-    // Simulate loading
-    setTimeout(() => setLoading(false), 800);
-  }, []);
+    let cancelled = false;
+    const load = async () => {
+      try {
+        const service = getMemorizationService(profileId);
+        const queue = new ReviewQueueService(service, getFsrsEngine(), profileId);
+        const prioritized = await queue.getPrioritizedQueue();
+        if (cancelled) return;
+        const startId = params.get('recordId');
+        let list = prioritized.map((record) => ({
+          record,
+          reference:
+            record.bibleVerseReference ||
+            `${record.bookId} ${record.chapterNumber}:${record.verseNumber}`,
+          text: record.bibleVerseText,
+          words: record.bibleVerseText.split(/\s+/).filter(Boolean),
+        }));
+        if (startId) {
+          const pos = list.findIndex((i) => i.record.id === startId);
+          if (pos > 0) list = [...list.slice(pos), ...list.slice(0, pos)];
+        }
+        setItems(list);
+      } catch (error) {
+        console.error('[ReviewSession] load failed:', error);
+        if (!cancelled) setItems([]);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    };
+    void load();
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [profileId]);
 
-  useEffect(() => {
-    Animated.parallel([
-      Animated.timing(fadeAnim, {
-        toValue: 1,
-        duration: 400,
-        useNativeDriver: true,
-      }),
-      Animated.spring(scaleAnim, {
-        toValue: 1,
-        tension: 50,
-        friction: 8,
-        useNativeDriver: true,
-      }),
-    ]).start();
-  }, [currentIndex]);
+  const current = items[index];
+  const progress = items.length > 0 ? ((index + 1) / items.length) * 100 : 0;
 
-  const currentReview = reviews[currentIndex];
-  const progress = ((currentIndex + 1) / reviews.length) * 100;
+  const resetCard = () => {
+    setRevealed(false);
+    setShowRating(false);
+    setSelected(null);
+    setFeedback(null);
+  };
 
-  const handleReveal = () => {
-    if (!isRevealed) {
-      setIsRevealed(true);
-      Animated.parallel([
-        Animated.timing(fadeAnim, {
-          toValue: 0,
-          duration: 200,
-          useNativeDriver: true,
-        }),
-        Animated.timing(scaleAnim, {
-          toValue: 0.98,
-          duration: 200,
-          useNativeDriver: true,
-        }),
-      ]).start();
-      setTimeout(() => {
-        Animated.parallel([
-          Animated.timing(fadeAnim, {
-            toValue: 1,
-            duration: 300,
-            useNativeDriver: true,
-          }),
-          Animated.spring(scaleAnim, {
-            toValue: 1,
-            tension: 65,
-            friction: 11,
-            useNativeDriver: true,
-          }),
-        ]).start();
-      }, 200);
+  const goNext = () => {
+    if (index < items.length - 1) {
+      setIndex((i) => i + 1);
+      resetCard();
+    } else {
+      navigate('/review/summary', { replace: true });
     }
   };
 
-  const handleRating = (rating: FsrsRating) => {
-    setSelectedRating(rating);
+  const rate = async (rating: Rating) => {
+    if (!current) return;
+    setSelected(rating);
     setShowRating(true);
-  };
-
-  const handleSubmitRating = async () => {
-    // Simulate saving rating
-    await new Promise(resolve => setTimeout(resolve, 500));
-
-    if (currentIndex < reviews.length - 1) {
-      // Next review
-      setCurrentIndex(prev => prev + 1);
-      setRevealedWords(new Set());
-      setIsRevealed(false);
-      setShowRating(false);
-      setSelectedRating(null);
-    } else {
-      // Session complete
-      router.replace('/review/queue');
+    try {
+      const engine = getFsrsEngine();
+      const review = await engine.review(current.record.fsrsState, rating);
+      await getMemorizationService(profileId).updateRecordAfterReview(
+        current.record.id,
+        rating,
+        review.state,
+        review.due.getTime(),
+      );
+      setFeedback({ scheduledDays: review.scheduledDays, label: ratingLabel(rating) });
+    } catch (error) {
+      console.error('[ReviewSession] rating failed:', error);
+      setFeedback({ scheduledDays: 1, label: ratingLabel(rating) });
     }
   };
 
-  const handleSkip = () => {
-    if (currentIndex < reviews.length - 1) {
-      setCurrentIndex(prev => prev + 1);
-      setRevealedWords(new Set());
-      setIsRevealed(false);
-      setShowRating(false);
-      setSelectedRating(null);
-    } else {
-      router.replace('/review/queue');
-    }
-  };
-
-  const getRatingConfig = (rating: FsrsRating) => {
+  const ratingLabel = (rating: Rating) => {
     switch (rating) {
-      case FsrsRating.AGAIN:
-        return { color: colors.error, label: 'À revoir', days: 1 };
-      case FsrsRating.HARD:
-        return { color: colors.warning, label: 'Difficile', days: 2 };
-      case FsrsRating.GOOD:
-        return { color: '#4CD964', label: 'Bon', days: 4 };
-      case FsrsRating.EASY:
-        return { color: colors.info, label: 'Facile', days: 7 };
+      case Rating.AGAIN:
+        return t('session.ratingAgain', 'À revoir');
+      case Rating.HARD:
+        return t('session.ratingHard', 'Difficile');
+      case Rating.GOOD:
+        return t('session.ratingGood', 'Bon');
+      case Rating.EASY:
+        return t('session.ratingEasy', 'Facile');
       default:
-        return { color: colors.primary, label: 'Bon', days: 3 };
+        return '';
     }
   };
+
+  const ratingOptions = useMemo(
+    () => [
+      { rating: Rating.AGAIN, icon: <RotateCcw size={20} />, cls: 'bg-error text-white' },
+      { rating: Rating.HARD, icon: <X size={20} />, cls: 'bg-warning text-white' },
+      { rating: Rating.GOOD, icon: <Check size={20} />, cls: 'bg-success text-white' },
+      { rating: Rating.EASY, icon: <Star size={20} />, cls: 'bg-info text-white' },
+    ],
+    [],
+  );
 
   if (loading) {
     return (
-      <SafeAreaView style={styles.container}>
-        <View style={styles.loaderContainer}>
-          <ActivityIndicator size="large" color={colors.primary} />
-          <Text style={styles.loaderText}>Chargement de la session...</Text>
-        </View>
-      </SafeAreaView>
+      <FullScreenPage title={t('review.startReview', 'Révision')} backPath="/review/queue">
+        <div className="flex flex-col items-center py-24">
+          <Loader2 size={32} className="animate-spin text-primary" />
+          <p className="mt-4 text-sm text-text-muted">
+            {t('common.loading', 'Chargement de la session...')}
+          </p>
+        </div>
+      </FullScreenPage>
+    );
+  }
+
+  if (!current) {
+    return (
+      <FullScreenPage title={t('review.todayReviews', 'Révisions du jour')} backPath="/review/queue">
+        <div className="flex flex-col items-center py-20 text-center">
+          <p className="text-lg font-semibold text-text-primary">
+            {t('home.noReviews', 'Tout est à jour ! ✓')}
+          </p>
+          <Button className="mt-6" onClick={() => navigate('/review/queue')}>
+            {t('review.startReview', 'Retour à la file')}
+          </Button>
+        </div>
+      </FullScreenPage>
     );
   }
 
   return (
-    <SafeAreaView style={styles.container}>
-      {/* Progress Bar */}
-      <View style={styles.progressBar}>
-        <View style={[styles.progressFill, { width: `${progress}%` }]} />
-      </View>
-
-      {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity
-          style={styles.skipButton}
-          onPress={handleSkip}
-          activeOpacity={0.7}
+    <FullScreenPage
+      title={t('review.startReview', 'Révision')}
+      showBack={false}
+      right={
+        <button
+          onClick={() => (index > 0 ? setIndex((i) => i - 1) : navigate('/review/queue'))}
+          className="rounded-full bg-surface px-4 py-1.5 text-sm font-semibold text-text-secondary shadow-sm"
         >
-          <Text style={styles.skipText}>Passer</Text>
-        </TouchableOpacity>
-        <View style={styles.progressTextContainer}>
-          <Text style={styles.progressText}>
-            {currentIndex + 1} / {reviews.length}
-          </Text>
-        </View>
-        <View style={styles.headerRight} />
-      </View>
+          {index > 0 ? t('common.back', 'Précédent') : t('common.skip', 'Quitter')}
+        </button>
+      }
+    >
+      {/* Progress */}
+      <div className="mb-4">
+        <div className="h-1.5 w-full overflow-hidden rounded-full bg-surface-tint">
+          <div className="h-full rounded-full bg-primary" style={{ width: `${progress}%` }} />
+        </div>
+        <p className="mt-2 text-center text-xs text-text-muted">
+          {index + 1} / {items.length}
+        </p>
+      </div>
 
-      <ScrollView
-        style={styles.scrollView}
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
-      >
-        {/* Review Card */}
-        <Animated.View
-          style={[
-            styles.cardContainer,
-            {
-              opacity: fadeAnim,
-              transform: [{ scale: scaleAnim }],
-            },
-          ]}
-        >
-          {/* Reference Label */}
-          <View style={styles.referenceBadge}>
-            <Ionicons name="bookmark" size={16} color={colors.primary} />
-            <Text style={styles.referenceText}>{currentReview.reference}</Text>
-          </View>
+      {/* Card */}
+      <div className="rounded-2xl bg-surface p-6 shadow-lg">
+        <span className="mb-4 inline-flex items-center gap-1.5 rounded-full bg-surface-tint px-3 py-1.5 text-xs font-semibold text-primary">
+          <Bookmark size={14} />
+          {current.reference}
+        </span>
 
-          {/* Verse Display */}
-          <TouchableOpacity
-            style={styles.verseCard}
-            onPress={handleReveal}
-            activeOpacity={0.95}
+        {!revealed ? (
+          <button
+            onClick={() => setRevealed(true)}
+            className="flex w-full flex-col items-center gap-4 rounded-xl py-8"
           >
-            {!isRevealed ? (
-              // Hidden state
-              <View style={styles.hiddenState}>
-                <View style={styles.wordChips}>
-                  {currentReview.words.map((_, idx) => (
-                    <View
-                      key={idx}
-                      style={[
-                        styles.wordChip,
-                        revealedWords.has(idx) && styles.wordChipRevealed,
-                      ]}
-                    >
-                      {revealedWords.has(idx) ? (
-                        <Text style={styles.wordChipText}>{currentReview.words[idx]}</Text>
-                      ) : (
-                        <Text style={styles.wordChipPlaceholder}>•••</Text>
-                      )}
-                    </View>
-                  ))}
-                </View>
-                <View style={styles.tapHint}>
-                  <Ionicons name="hand" size={20} color={colors.primary} />
-                  <Text style={styles.tapHintText}>Tape pour révéler le verset</Text>
-                </View>
-              </View>
-            ) : (
-              // Revealed state
-              <View style={styles.revealedState}>
-                <Text style={styles.verseText}>{currentReview.text}</Text>
-                <View style={styles.revealHint}>
-                  <Ionicons name="refresh" size={16} color={colors.textMuted} />
-                  <Text style={styles.revealHintText}>Tape pour noter ta réponse</Text>
-                </View>
-              </View>
-            )}
-          </TouchableOpacity>
-        </Animated.View>
-
-        {/* Rating Section */}
-        {isRevealed && !showRating && (
-          <View style={styles.ratingSection}>
-            <Text style={styles.ratingQuestion}>
-              Comment te souvenais-tu de ce verset ?
-            </Text>
-            <View style={styles.ratingButtons}>
-              {[
-                { id: FsrsRating.AGAIN, label: 'À revoir', color: colors.error, icon: 'refresh' },
-                { id: FsrsRating.HARD, label: 'Difficile', color: colors.warning, icon: 'remove' },
-                { id: FsrsRating.GOOD, label: 'Bon', color: '#4CD964', icon: 'checkmark' },
-                { id: FsrsRating.EASY, label: 'Facile', color: colors.info, icon: 'star' },
-              ].map((option) => (
-                <TouchableOpacity
-                  key={option.id}
-                  style={[styles.ratingButton, { backgroundColor: option.color }]}
-                  onPress={() => handleRating(option.id)}
-                  activeOpacity={0.85}
+            <div className="flex flex-wrap justify-center gap-2">
+              {current.words.map((_, i) => (
+                <span
+                  key={i}
+                  className="rounded-full bg-surface-tint px-3 py-1.5 text-sm text-text-muted"
                 >
-                  <Ionicons name={option.icon as any} size={24} color={colors.surface} />
-                  <Text style={styles.ratingButtonText}>{option.label}</Text>
-                  <Text style={styles.ratingButtonDays}>
-                    {getRatingConfig(option.id).days}j
-                  </Text>
-                </TouchableOpacity>
+                  •••
+                </span>
               ))}
-            </View>
-          </View>
+            </div>
+            <span className="flex items-center gap-2 text-sm text-text-muted">
+              <Hand size={16} className="text-primary" />
+              {t('session.tapToReveal', 'Tape pour révéler le verset')}
+            </span>
+          </button>
+        ) : (
+          <div className="flex flex-col items-center gap-4 py-4">
+            <p className="bible-text text-center text-lg leading-7 text-text-primary">
+              {current.text}
+            </p>
+            <span className="flex items-center gap-2 border-t border-border pt-4 text-sm text-text-muted">
+              <RefreshCw size={14} />
+              {t('review.iRecalled', 'Comment te souvenais-tu de ce verset ?')}
+            </span>
+          </div>
         )}
+      </div>
 
-        {/* FSRS Feedback */}
-        {showRating && selectedRating && (
-          <Animated.View
-            style={[
-              styles.feedbackCard,
-              {
-                opacity: fadeAnim,
-                transform: [{ translateY: fadeAnim.interpolate({
-                  inputRange: [0, 1],
-                  outputRange: [20, 0]
-                })}],
-              },
-            ]}
-          >
-            <View style={styles.feedbackHeader}>
-              <Ionicons
-                name="checkmark-circle"
-                size={32}
-                color={getRatingConfig(selectedRating).color}
-              />
-              <Text style={styles.feedbackTitle}>
-                {getRatingConfig(selectedRating).label}
-              </Text>
-            </View>
-            <View style={styles.feedbackDetails}>
-              <View style={styles.feedbackRow}>
-                <Text style={styles.feedbackLabel}>Prochain rappel:</Text>
-                <Text style={styles.feedbackValue}>
-                  dans {getRatingConfig(selectedRating).days} jour
-                  {getRatingConfig(selectedRating).days > 1 ? 's' : ''}
-                </Text>
-              </View>
-              <View style={styles.feedbackRow}>
-                <Text style={styles.feedbackLabel}>Stabilité:</Text>
-                <Text style={styles.feedbackValue}>{currentReview.stability.toFixed(1)}j</Text>
-              </View>
-              <View style={styles.feedbackRow}>
-                <Text style={styles.feedbackLabel}>Difficulté:</Text>
-                <Text style={styles.feedbackValue}>{currentReview.difficulty.toFixed(1)}</Text>
-              </View>
-            </View>
-            <TouchableOpacity
-              style={styles.continueButton}
-              onPress={handleSubmitRating}
-              activeOpacity={0.85}
+      {/* Rating */}
+      {revealed && !showRating && (
+        <div className="mt-5 grid grid-cols-4 gap-2">
+          {ratingOptions.map(({ rating, icon, cls }) => (
+            <button
+              key={rating}
+              onClick={() => rate(rating)}
+              className={cn('flex flex-col items-center gap-1 rounded-xl py-3 text-xs font-bold', cls)}
             >
-              <Text style={styles.continueButtonText}>
-                {currentIndex < reviews.length - 1 ? 'Continuer' : 'Terminer'}
-              </Text>
-            </TouchableOpacity>
-          </Animated.View>
-        )}
-      </ScrollView>
-    </SafeAreaView>
+              {icon}
+              {ratingLabel(rating)}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {/* Feedback */}
+      {showRating && feedback && selected && (
+        <div className="mt-5 rounded-2xl bg-surface p-5 shadow-md">
+          <div className="mb-3 flex items-center gap-2">
+            <Check size={22} className="text-success" />
+            <p className="text-lg font-bold text-text-primary">{feedback.label}</p>
+          </div>
+          <div className="flex items-center justify-between border-b border-divider pb-3">
+            <span className="text-sm text-text-tertiary">
+              {t('session.nextReview', 'Prochain rappel')}
+            </span>
+            <span className="text-sm font-semibold text-text-primary">
+              {t('session.nextReview', { days: feedback.scheduledDays })}
+            </span>
+          </div>
+          <Button className="mt-4 w-full" onClick={goNext}>
+            {index < items.length - 1 ? t('session.proceed', 'Continuer') : t('common.done', 'Terminer')}
+          </Button>
+        </div>
+      )}
+    </FullScreenPage>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
-  loaderContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  loaderText: {
-    marginTop: 16,
-    fontSize: 14,
-    color: colors.textMuted,
-  },
-
-  // Progress Bar
-  progressBar: {
-    height: 4,
-    backgroundColor: colors.border,
-  },
-  progressFill: {
-    height: '100%',
-    backgroundColor: colors.primary,
-  },
-
-  // Header
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-    backgroundColor: colors.surface,
-  },
-  skipButton: {
-    padding: 8,
-  },
-  skipText: {
-    fontSize: 14,
-    color: colors.textMuted,
-    fontWeight: '500',
-  },
-  progressTextContainer: {
-    alignItems: 'center',
-  },
-  progressText: {
-    fontSize: 14,
-    color: colors.textSecondary,
-    fontWeight: '600',
-  },
-  headerRight: {
-    width: 56,
-  },
-
-  // ScrollView
-  scrollView: {
-    flex: 1,
-  },
-  scrollContent: {
-    flexGrow: 1,
-    padding: 20,
-  },
-
-  // Card Container
-  cardContainer: {
-    marginBottom: 24,
-  },
-  referenceBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    alignSelf: 'flex-start',
-    backgroundColor: colors.surfaceTint,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 20,
-    marginBottom: 16,
-  },
-  referenceText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: colors.primary,
-  },
-  verseCard: {
-    backgroundColor: colors.surface,
-    borderRadius: 24,
-    padding: 24,
-    minHeight: 200,
-    justifyContent: 'center',
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.08,
-        shadowRadius: 12,
-      },
-      android: {
-        elevation: 6,
-      },
-    }),
-  },
-  hiddenState: {
-    alignItems: 'center',
-  },
-  wordChips: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'center',
-    gap: 8,
-    marginBottom: 24,
-  },
-  wordChip: {
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 20,
-    backgroundColor: colors.surfaceTint,
-    minWidth: 40,
-    alignItems: 'center',
-  },
-  wordChipRevealed: {
-    backgroundColor: colors.primary,
-  },
-  wordChipText: {
-    fontSize: 16,
-    color: colors.primary,
-    fontWeight: '500',
-  },
-  wordChipPlaceholder: {
-    fontSize: 16,
-    color: colors.textMuted,
-    fontWeight: '500',
-  },
-  tapHint: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  tapHintText: {
-    fontSize: 14,
-    color: colors.textMuted,
-  },
-  revealedState: {
-    alignItems: 'center',
-  },
-  verseText: {
-    fontSize: 18,
-    color: colors.textPrimary,
-    lineHeight: 28,
-    textAlign: 'center',
-    fontWeight: '500',
-  },
-  revealHint: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    marginTop: 24,
-    paddingTop: 24,
-    borderTopWidth: 1,
-    borderColor: colors.border,
-  },
-  revealHintText: {
-    fontSize: 14,
-    color: colors.textMuted,
-  },
-
-  // Rating Section
-  ratingSection: {
-    marginBottom: 24,
-  },
-  ratingQuestion: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: colors.textPrimary,
-    textAlign: 'center',
-    marginBottom: 20,
-  },
-  ratingButtons: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    gap: 12,
-  },
-  ratingButton: {
-    flex: 1,
-    alignItems: 'center',
-    paddingVertical: 20,
-    borderRadius: 20,
-    gap: 8,
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.15,
-        shadowRadius: 8,
-      },
-      android: {
-        elevation: 6,
-      },
-    }),
-  },
-  ratingButtonText: {
-    fontSize: 14,
-    fontWeight: '700',
-    color: colors.surface,
-  },
-  ratingButtonDays: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: 'rgba(255, 255, 255, 0.8)',
-  },
-
-  // Feedback Card
-  feedbackCard: {
-    backgroundColor: colors.surface,
-    borderRadius: 24,
-    padding: 24,
-    marginBottom: 24,
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.08,
-        shadowRadius: 12,
-      },
-      android: {
-        elevation: 6,
-      },
-    }),
-  },
-  feedbackHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-    marginBottom: 20,
-  },
-  feedbackTitle: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: colors.textPrimary,
-  },
-  feedbackDetails: {
-    marginBottom: 20,
-  },
-  feedbackRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.surfaceTint,
-  },
-  feedbackLabel: {
-    fontSize: 14,
-    color: colors.textTertiary,
-  },
-  feedbackValue: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: colors.textPrimary,
-  },
-  continueButton: {
-    backgroundColor: colors.primary,
-    borderRadius: 26,
-    paddingVertical: 16,
-    alignItems: 'center',
-    ...Platform.select({
-      ios: {
-        shadowColor: colors.primary,
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.3,
-        shadowRadius: 8,
-      },
-      android: {
-        elevation: 6,
-      },
-    }),
-  },
-  continueButtonText: {
-    color: colors.surface,
-    fontSize: 16,
-    fontWeight: '700',
-  },
-});

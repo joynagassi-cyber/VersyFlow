@@ -1,123 +1,46 @@
 /**
  * Welcome Screen — Onboarding entry point
- * See docs/08-ui-screens.md §1
+ * Tailwind + i18n + Lucide
  */
 
-import { StyleSheet, View, Text, TouchableOpacity, ScrollView } from '@/components/ui/Primitives';
-import { useAppTheme } from '@/theme/useTheme';
-import { useRouter } from '@/hooks/useIonicNavigation';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
+import { Sparkles } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 export default function WelcomeScreen() {
-  const { colors, sp, sh, rad } = useAppTheme();
-  const router = useRouter();
+  const { t } = useTranslation();
+  const navigate = useNavigate();
+
+  const skip = () => {
+    navigate('/tabs/home');
+  };
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      <Text style={styles.logo}>VersyFlow</Text>
-      <Text style={styles.tagline}>Mémorisation biblique intuitive</Text>
+    <div className="flex min-h-full flex-col items-center justify-center p-6">
+      <div className="mb-2 flex h-16 w-16 items-center justify-center rounded-full bg-surface-tint">
+        <Sparkles className="text-primary" size={32} />
+      </div>
+      <h1 className="text-4xl font-extrabold text-primary">
+        {t('common.appName')}
+      </h1>
+      <p className="mt-2 text-base text-text-tertiary">{t('onboarding.welcome')}</p>
 
-      <View style={styles.carousel}>
-        <Text style={styles.slideTitle}>Choisissez votre traduction</Text>
-        <Text style={styles.slideDesc}>Parmi les traductions bibliques disponibles</Text>
-      </View>
+      <div className="mt-12 w-full rounded-2xl bg-surface p-8 text-center shadow-md">
+        <p className="text-lg font-semibold text-text-primary">
+          {t('onboarding.slide1Title')}
+        </p>
+        <p className="mt-2 text-sm text-text-muted">{t('onboarding.slide1Desc')}</p>
+      </div>
 
-      <View style={styles.actionRow}>
-        <TouchableOpacity
-          style={styles.skipButton}
-          onPress={() => router.replace('/(tabs)')}
-        >
-          <Text style={styles.skipText}>Passer</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.startButton}
-          onPress={() => router.push('/onboarding/language-select')}
-        >
-          <Text style={styles.startButtonText}>Commencer</Text>
-        </TouchableOpacity>
-      </View>
-    </ScrollView>
+      <div className="mt-16 flex w-full gap-4">
+        <Button variant="ghost" className="flex-1" onClick={skip}>
+          {t('common.skip')}
+        </Button>
+        <Button variant="default" className="flex-[2]" onClick={() => navigate('/onboarding/language-select')}>
+          {t('common.continue')}
+        </Button>
+      </div>
+    </div>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.surfaceTint,
-  },
-  content: {
-    flexGrow: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 24,
-  },
-  logo: {
-    fontSize: 40,
-    fontWeight: '800',
-    color: colors.primary,
-    marginBottom: 8,
-  },
-  tagline: {
-    fontSize: 16,
-    color: colors.textTertiary,
-    marginBottom: 48,
-  },
-  carousel: {
-    backgroundColor: colors.surface,
-    borderRadius: 16,
-    padding: 32,
-    marginBottom: 64,
-    ...shadow.md,
-    alignItems: 'center',
-  },
-  slideTitle: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: colors.textPrimary,
-    textAlign: 'center',
-  },
-  slideDesc: {
-    fontSize: 14,
-    color: colors.textMuted,
-    textAlign: 'center',
-    marginTop: 8,
-  },
-  actionRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: '100%',
-    gap: 16,
-  },
-  skipButton: {
-    flex: 1,
-    paddingVertical: 12,
-    alignItems: 'center',
-  },
-  skipText: {
-    fontSize: 16,
-    color: colors.textMuted,
-  },
-  startButton: {
-    flex: 2,
-    backgroundColor: colors.primary,
-    borderRadius: 26,
-    paddingVertical: 14,
-    alignItems: 'center',
-  },
-  startButtonText: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: colors.surface,
-  },
-});
-
-// Shadow utility matching tokens
-const shadow = {
-  md: {
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.07,
-    shadowRadius: 6,
-    elevation: 2,
-  },
-};

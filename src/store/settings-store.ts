@@ -9,6 +9,7 @@ import { persist, createJSONStorage } from 'zustand/middleware';
 import { MmkvStorage } from '@/infrastructure/storage';
 
 // Shared MmkvStorage instance — one handle per store lifecycle
+const storage = new MmkvStorage();
 
 // Storage keys for settings
 const STORAGE_KEYS = {

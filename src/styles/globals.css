@@ -1,0 +1,118 @@
+/* ─── VersyFlow Global Styles ──────────────────────────────────────────────── */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root,
+:root[data-theme='light'] {
+  /* Primary */
+  --color-primary: #e91e8c;
+  --color-primary-light: #ffb6cc;
+  --color-primary-dark: #b30069;
+
+  /* Backgrounds */
+  --color-background: #fcf9f8;
+  --color-surface: #ffffff;
+  --color-surface-tint: #fff0f6;
+  --color-surface-elevated: #ffffff;
+
+  /* Borders & Dividers */
+  --color-border: #ffe4ee;
+  --color-divider: #fff0f6;
+
+  /* Text */
+  --color-text-primary: #2d2d2d;
+  --color-text-secondary: #594048;
+  --color-text-tertiary: #6e6e6e;
+  --color-text-muted: #a0a0a0;
+  --color-text-placeholder: #c0c0c0;
+
+  /* Semantic */
+  --color-success: #008733;
+  --color-success-light: #e8f5e9;
+  --color-error: #ff6b6b;
+  --color-error-light: #ffebee;
+  --color-warning: #ff9500;
+  --color-warning-light: #fff3e0;
+  --color-info: #007aff;
+  --color-info-light: #e3f2fd;
+
+  /* Icon backgrounds */
+  --color-icon-bg-rose: #ffe4ee;
+  --color-icon-bg-purple: #eadce2;
+  --color-icon-bg-blue: #e3f2fd;
+  --color-icon-bg-green: #e8f5e9;
+  --color-icon-bg-orange: #fff3e0;
+
+  color-scheme: light;
+}
+
+[data-theme='dark'] {
+  --color-primary: #e91e8c;
+  --color-primary-light: #ff6bac;
+  --color-primary-dark: #ff6bac;
+
+  --color-background: #121212;
+  --color-surface: #1e1e1e;
+  --color-surface-tint: #2a1a24;
+  --color-surface-elevated: #2a2a2a;
+
+  --color-border: rgba(255, 255, 255, 0.08);
+  --color-divider: rgba(255, 255, 255, 0.06);
+
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #b3b3b3;
+  --color-text-tertiary: #6e6e6e;
+  --color-text-muted: #535353;
+  --color-text-placeholder: #404040;
+
+  --color-success: #00c853;
+  --color-success-light: #1a2e1a;
+  --color-error: #ff5252;
+  --color-error-light: #2e1a1a;
+  --color-warning: #ffb300;
+  --color-warning-light: #2e2010;
+  --color-info: #448aff;
+  --color-info-light: #1a2030;
+
+  --color-icon-bg-rose: #2a1a24;
+  --color-icon-bg-purple: #1f1520;
+  --color-icon-bg-blue: #1a2030;
+  --color-icon-bg-green: #1a2e1a;
+  --color-icon-bg-orange: #2e2010;
+
+  color-scheme: dark;
+}
+
+/* Tailwind base reset */
+@layer base {
+  html {
+    height: 100%;
+    overflow: hidden;
+  }
+  body {
+    margin: 0;
+    height: 100%;
+    font-family:
+      -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Roboto',
+      'Segoe UI', sans-serif;
+    background-color: var(--color-background);
+    color: var(--color-text-primary);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  #root {
+    height: 100%;
+  }
+}
+
+/* Custom utility layer */
+@layer components {
+  /* Serif font for scripture text */
+  .bible-text {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 20px;
+    line-height: 34px;
+    letter-spacing: 0.01em;
+  }
+}

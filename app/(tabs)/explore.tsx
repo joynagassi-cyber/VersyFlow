@@ -1,186 +1,99 @@
 /**
  * Explore Screen — Bible Explorer
- * Displays book list for Bible browsing.
- * See docs/08-ui-screens.md §5
+ * Lists books of the Old/New Testament with search.
+ * Tailwind + i18n + Lucide + Shadcn Input.
  */
 
-import { useState, useEffect } from 'react';
-import {
-  View,
-  Text,
-  FlatList,
-  TouchableOpacity,
-  StyleSheet,
-  ActivityIndicator,
-  SafeAreaView,
-  TextInput,
-} from '@/components/ui/Primitives';
-import { useAppTheme } from '@/theme/useTheme';
-import { useRouter } from '@/hooks/useIonicNavigation';
-import { BibleRepository } from '@/domains/bible/repository';
-import type { BibleBook } from '@/domains/bible/schema';
+import { useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { Search, BookOpen, ChevronRight } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { BIBLE_BOOKS } from '@/domains/bible/entities';
+import type { BibleBook } from '@/domains/bible/entities';
 
 export default function ExploreScreen() {
-  const { colors, sp, sh, rad } = useAppTheme();
-  const router = useRouter();
-  const [books, setBooks] = useState<BibleBook[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState('');
+  const navigate = useNavigate();
+  const { t, i18n } = useTranslation();
+  const [query, setQuery] = useState('');
 
-  // Charger les livres de la Bible
-  useEffect(() => {
-    const loadBooks = async () => {
-      try {
-        const repo = BibleRepository.getInstance();
-        if (!repo['loaded']) {
-          await repo.load();
-        }
-        const allBooks = repo.getAllBooks();
-        setBooks(allBooks);
-      } catch (error) {
-        console.error('Erreur lors du chargement des livres:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const lang = i18n.language as string;
 
-    loadBooks();
-  }, []);
+  const books = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return BIBLE_BOOKS;
+    return BIBLE_BOOKS.filter((b) => {
+      const names = [b.name.fr, b.name.en, b.id];
+      return names.some((n) => n?.toLowerCase().includes(q));
+    });
+  }, [query]);
 
-  const filteredBooks = books.filter(book =>
-    book.name.fr.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    book.name.en.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const oldTestament = books.filter((b) => b.testament === 'old');
+  const newTestament = books.filter((b) => b.testament === 'new');
 
-  const oldTestament = filteredBooks.filter(b => b.testament === 'old');
-  const newTestament = filteredBooks.filter(b => b.testament === 'new');
-
-  if (loading) {
-    return (
-      <SafeAreaView style={styles.center}>
-        <ActivityIndicator size="large" color={colors.primary} />
-      </SafeAreaView>
-    );
-  }
+  const renderSection = (title: string, list: BibleBook[]) =>
+    list.length > 0 ? (
+      <section className="mb-6">
+        <h2 className="mb-3 px-1 text-lg font-semibold text-text-primary">{title}</h2>
+        <div className="flex flex-col gap-2">
+          {list.map((book) => (
+            <button
+              key={book.id}
+              onClick={() => navigate(`/bible/book/${book.id}`)}
+              className="flex items-center justify-between rounded-xl bg-surface p-4 text-left shadow-sm transition-transform active:scale-[0.99]"
+            >
+              <div className="flex items-center gap-3">
+                <span className="flex h-10 w-10 items-center justify-center rounded-full bg-icon-bg-rose">
+                  <BookOpen size={18} className="text-primary" />
+                </span>
+                <div>
+                  <p className="text-base font-semibold text-text-primary">
+                    {book.name[lang] || book.name.fr}
+                  </p>
+                  <p className="text-sm text-text-muted">
+                    {t('bible.chapterCount', { count: book.chapterCount })}
+                  </p>
+                </div>
+              </div>
+              <ChevronRight size={18} className="text-primary" />
+            </button>
+          ))}
+        </div>
+      </section>
+    ) : null;
 
   return (
-    <SafeAreaView style={styles.container}>
+    <div className="min-h-full overflow-y-auto bg-background p-4 pb-24">
+      <h1 className="mb-4 text-2xl font-bold text-text-primary">
+        {t('bible.explorer', 'Explorer la Bible')}
+      </h1>
+
       {/* Search */}
-      <View style={styles.searchContainer}>
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Rechercher un livre..."
-          value={searchQuery}
-          onChangeText={setSearchQuery}
-          autoCapitalize="words"
+      <div className="relative mb-6">
+        <Search
+          size={18}
+          className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-muted"
         />
-      </View>
+        <Input
+          placeholder={t('bible.search', 'Rechercher un livre...')}
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          className="pl-10"
+        />
+      </div>
 
-      {/* Old Testament */}
-      {oldTestament.length > 0 && (
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Ancien Testament</Text>
-          <FlatList
-            data={oldTestament}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item }) => (
-              <TouchableOpacity
-                style={styles.bookItem}
-                onPress={() => router.push(`/bible/book/${item.id}`)}
-              >
-                <View style={styles.bookInfo}>
-                  <Text style={styles.bookName}>{item.name.fr}</Text>
-                  <Text style={styles.bookMeta}>{item.chapterCount} chapitres</Text>
-                </View>
-                <Text style={styles.bookArrow}>›</Text>
-              </TouchableOpacity>
-            )}
-          />
-        </View>
+      {oldTestament.length === 0 && newTestament.length === 0 ? (
+        <div className="rounded-xl border border-dashed border-border p-8 text-center">
+          <p className="text-sm text-text-muted">
+            {t('bible.verse', 'Aucun résultat pour')} « {query} »
+          </p>
+        </div>
+      ) : (
+        <>
+          {renderSection(t('bible.oldTestament', 'Ancien Testament'), oldTestament)}
+          {renderSection(t('bible.newTestament', 'Nouveau Testament'), newTestament)}
+        </>
       )}
-
-      {/* New Testament */}
-      {newTestament.length > 0 && (
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Nouveau Testament</Text>
-          <FlatList
-            data={newTestament}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item }) => (
-              <TouchableOpacity
-                style={styles.bookItem}
-                onPress={() => router.push(`/bible/book/${item.id}`)}
-              >
-                <View style={styles.bookInfo}>
-                  <Text style={styles.bookName}>{item.name.fr}</Text>
-                  <Text style={styles.bookMeta}>{item.chapterCount} chapitres</Text>
-                </View>
-                <Text style={styles.bookArrow}>›</Text>
-              </TouchableOpacity>
-            )}
-          />
-        </View>
-      )}
-    </SafeAreaView>
+    </div>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.surfaceTint,
-  },
-  center: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  searchContainer: {
-    padding: 16,
-  },
-  searchInput: {
-    backgroundColor: colors.surface,
-    borderRadius: 12,
-    padding: 12,
-    fontSize: 16,
-    borderWidth: 1,
-    borderColor: colors.border,
-  },
-  section: {
-    paddingHorizontal: 16,
-    marginBottom: 24,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: colors.textPrimary,
-    marginBottom: 12,
-  },
-  bookItem: {
-    backgroundColor: colors.surface,
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 8,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  bookInfo: {
-    flex: 1,
-  },
-  bookName: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: colors.textPrimary,
-  },
-  bookMeta: {
-    fontSize: 14,
-    color: colors.textMuted,
-    marginTop: 4,
-  },
-  bookArrow: {
-    fontSize: 24,
-    color: colors.primary,
-    marginLeft: 16,
-  },
-});

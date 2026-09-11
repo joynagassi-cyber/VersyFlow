@@ -1,296 +1,130 @@
 /**
- * Family Home Screen
- * Phase 10: Family UI
+ * Family Home Screen — family dashboard
+ * Tailwind + i18n + Lucide + FullScreenPage.
  */
 
-import { useState } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-  SafeAreaView,
-  Platform,
-} from '@/components/ui/Primitives';
-import { useRouter } from '@/hooks/useIonicNavigation';
-import { IonIcon } from '@ionic/react'
-import * as Ionicons from 'ionicons/icons';
-import { useAppTheme } from '@/theme/useTheme';
+import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { Plus, LogIn, ChevronRight, ChevronLeft, Users, Check } from 'lucide-react';
+import FullScreenPage from '@/components/layout/FullScreenPage';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 import { useFamilyStore } from '@/store/family-store';
-import { useActiveProfile } from '@/hooks/useActiveProfile';
 
 export default function FamilyHomeScreen() {
-  const router = useRouter();
-  const { colors, sp, sh, rad } = useAppTheme();
+  const navigate = useNavigate();
+  const { t } = useTranslation();
   const { families, activeFamilyId, setActiveFamily } = useFamilyStore();
-  const { activeProfile } = useActiveProfile();
 
-  const activeFamily = families.find(f => f.id === activeFamilyId) || null;
+  const activeFamily = families.find((f) => f.id === activeFamilyId) || null;
 
-  const handleCreateFamily = () => {
-    router.push('/family/create');
-  };
-
-  const handleJoinFamily = () => {
-    router.push('/family/join');
-  };
-
-  const handleSelectFamily = (familyId: string) => {
+  const selectFamily = (familyId: string) => {
     setActiveFamily(familyId);
-    router.push('/family/members');
+    navigate('/family/members');
   };
+
+  const daysAgo = (createdAt: number) =>
+    Math.max(0, Math.floor((Date.now() - createdAt) / 86400000));
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-          <Ionicons name="chevron-back" size={24} color={colors.primary} />
-        </TouchableOpacity>
-        <Text style={[styles.title, { color: colors.textPrimary }]}>Ma Famille</Text>
-        <TouchableOpacity onPress={handleCreateFamily} style={styles.createButton}>
-          <Ionicons name="add" size={20} color={colors.primary} />
-        </TouchableOpacity>
-      </View>
-
-      <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
-        {/* Active Family Card */}
-        {activeFamily ? (
-          <TouchableOpacity
-            style={[
-              styles.familyCard,
-              { backgroundColor: colors.surface, borderColor: activeFamily.color + '40' },
-              sh.md,
-            ]}
-            onPress={() => handleSelectFamily(activeFamily.id)}
+    <FullScreenPage
+      title={t('family.contextFamily', 'Ma Famille')}
+      backPath="/tabs/home"
+      right={
+        <button
+          onClick={() => navigate('/family/invite')}
+          className="rounded-full bg-surface-tint p-2"
+          aria-label={t('family.invite', 'Inviter')}
+        >
+          <Plus size={18} className="text-primary" />
+        </button>
+      }
+    >
+      {/* Active family */}
+      {activeFamily ? (
+        <button
+          onClick={() => selectFamily(activeFamily.id)}
+          className="flex w-full items-center gap-4 rounded-2xl border bg-surface p-5 shadow-sm"
+          style={{ borderColor: `${activeFamily.color}40` }}
+        >
+          <span
+            className="flex h-14 w-14 items-center justify-center rounded-full text-2xl"
+            style={{ backgroundColor: `${activeFamily.color}20` }}
           >
-            <View style={[styles.familyIcon, { backgroundColor: activeFamily.color + '20' }]}>
-              <Text style={styles.familyIconText}>{activeFamily.icon}</Text>
-            </View>
-            <View style={styles.familyInfo}>
-              <Text style={[styles.familyName, { color: colors.textPrimary }]}>{activeFamily.name}</Text>
-              <Text style={[styles.familyMeta, { color: colors.textMuted }]}>
-                4 membres • Progression partagée
-              </Text>
-            </View>
-            <Ionicons name="chevron-forward" size={20} color={colors.textMuted} />
-          </TouchableOpacity>
-        ) : (
-          <View style={[styles.emptyState, { backgroundColor: colors.surface, borderRadius: rad['2xl'] }]}>
-            <Text style={styles.emptyIcon}>👨‍👩‍👧‍👦</Text>
-            <Text style={[styles.emptyTitle, { color: colors.textPrimary }]}>Aucune famille</Text>
-            <Text style={[styles.emptyDesc, { color: colors.textMuted }]}>
-              Créez une famille pour partager votre progression
-            </Text>
-          </View>
-        )}
+            {activeFamily.icon}
+          </span>
+          <span className="flex-1 text-left">
+            <p className="text-lg font-bold text-text-primary">{activeFamily.name}</p>
+            <p className="mt-1 text-sm text-text-muted">
+              {t('family.members', 'Membres')} • {t('family.contextFamilyDesc', 'Progression partagée')}
+            </p>
+          </span>
+          <ChevronRight size={20} className="text-text-muted" />
+        </button>
+      ) : (
+        <div className="flex flex-col items-center rounded-2xl bg-surface p-8 text-center shadow-sm">
+          <span className="text-5xl">👨‍👩‍👧‍👦</span>
+          <p className="mt-4 text-lg font-bold text-text-primary">
+            {t('family.noFamily', 'Aucune famille active')}
+          </p>
+          <p className="mt-1 text-sm text-text-muted">
+            {t('family.createFamily', 'Créez une famille')}{' '}
+            {t('family.shareDesc', 'pour partager votre progression')}
+          </p>
+        </div>
+      )}
 
-        {/* Actions */}
-        <View style={styles.actions}>
-          <TouchableOpacity
-            style={[styles.actionButton, { backgroundColor: colors.primary, ...sh.md }]}
-            onPress={handleCreateFamily}
-          >
-            <Ionicons name="add-circle" size={24} color="#fff" />
-            <Text style={styles.actionButtonText}>Créer une famille</Text>
-          </TouchableOpacity>
+      {/* Actions */}
+      <div className="mt-5 flex flex-col gap-3">
+        <Button className="w-full" onClick={() => navigate('/family/invite')}>
+          <Plus size={16} />
+          {t('family.createFamily', 'Créer une famille')}
+        </Button>
+        <Button variant="outline" className="w-full" onClick={() => navigate('/family/join')}>
+          <LogIn size={16} />
+          {t('family.joinButton', 'Rejoindre la famille')}
+        </Button>
+      </div>
 
-          <TouchableOpacity
-            style={[styles.actionButtonGhost, { backgroundColor: colors.surface, ...sh.sm }]}
-            onPress={handleJoinFamily}
-          >
-            <Ionicons name="log-in" size={24} color={colors.primary} />
-            <Text style={[styles.actionButtonGhostText, { color: colors.primary }]}>Rejoindre une famille</Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* Recent Families */}
-        {families.length > 0 && (
-          <View style={styles.recentSection}>
-            <Text style={[styles.sectionTitle, { color: colors.textPrimary }]}>Familles récentes</Text>
+      {/* Recent families */}
+      {families.length > 0 && (
+        <section className="mt-6">
+          <h2 className="mb-2 px-1 text-base font-bold text-text-primary">
+            {t('family.members', 'Familles récentes')}
+          </h2>
+          <div className="flex flex-col gap-2">
             {families.map((family) => (
-              <TouchableOpacity
+              <button
                 key={family.id}
-                style={[
-                  styles.recentItem,
-                  { backgroundColor: colors.surface, borderBottomColor: colors.border },
-                ]}
-                onPress={() => handleSelectFamily(family.id)}
-              >
-                <View style={[styles.recentIcon, { backgroundColor: family.color + '20' }]}>
-                  <Text style={styles.recentIconText}>{family.icon}</Text>
-                </View>
-                <View style={styles.recentInfo}>
-                  <Text style={[styles.recentName, { color: colors.textPrimary }]}>{family.name}</Text>
-                  <Text style={[styles.recentDate, { color: colors.textMuted }]}>
-                    Créée il y a {Math.floor((Date.now() - family.createdAt) / 86400000)} jours
-                  </Text>
-                </View>
-                {activeFamilyId === family.id && (
-                  <View style={[styles.activeBadge, { backgroundColor: colors.primary + '20' }]}>
-                    <Text style={[styles.activeBadgeText, { color: colors.primary }]}>Actif</Text>
-                  </View>
+                onClick={() => selectFamily(family.id)}
+                className={cn(
+                  'flex items-center gap-3 rounded-xl bg-surface p-4 text-left shadow-sm',
+                  activeFamilyId === family.id && 'ring-1 ring-primary',
                 )}
-              </TouchableOpacity>
+              >
+                <span
+                  className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-xl"
+                  style={{ backgroundColor: `${family.color}20` }}
+                >
+                  {family.icon}
+                </span>
+                <span className="flex-1">
+                  <p className="text-base font-semibold text-text-primary">{family.name}</p>
+                  <p className="text-xs text-text-muted">
+                    {t('family.familyMember', 'Créée il y a')} {daysAgo(family.createdAt)} j
+                  </p>
+                </span>
+                {activeFamilyId === family.id && (
+                  <span className="flex items-center gap-1 rounded-full bg-surface-tint px-2.5 py-1 text-xs font-semibold text-primary">
+                    <Check size={12} />
+                    {t('family.familyActive', 'Actif')}
+                  </span>
+                )}
+              </button>
             ))}
-          </View>
-        )}
-      </ScrollView>
-    </SafeAreaView>
+          </div>
+        </section>
+      )}
+    </FullScreenPage>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: 'rgba(0,0,0,0.05)',
-  },
-  backButton: {
-    padding: 8,
-    marginLeft: -8,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: '700',
-    flex: 1,
-    textAlign: 'center',
-    marginRight: 40,
-  },
-  createButton: {
-    padding: 8,
-    marginRight: -8,
-  },
-  scrollView: {
-    flex: 1,
-  },
-  scrollContent: {
-    padding: 16,
-    gap: 16,
-  },
-  familyCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 20,
-    borderRadius: 20,
-    borderWidth: 1,
-    gap: 16,
-  },
-  familyIcon: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  familyIconText: {
-    fontSize: 28,
-  },
-  familyInfo: {
-    flex: 1,
-  },
-  familyName: {
-    fontSize: 18,
-    fontWeight: '700',
-  },
-  familyMeta: {
-    fontSize: 13,
-    marginTop: 4,
-  },
-  emptyState: {
-    padding: 40,
-    alignItems: 'center',
-  },
-  emptyIcon: {
-    fontSize: 48,
-    marginBottom: 16,
-  },
-  emptyTitle: {
-    fontSize: 18,
-    fontWeight: '700',
-    marginBottom: 8,
-  },
-  emptyDesc: {
-    fontSize: 14,
-    textAlign: 'center',
-  },
-  actions: {
-    gap: 12,
-  },
-  actionButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 12,
-    paddingVertical: 16,
-    borderRadius: 26,
-  },
-  actionButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '700',
-  },
-  actionButtonGhost: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 12,
-    paddingVertical: 16,
-    borderRadius: 26,
-  },
-  actionButtonGhostText: {
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  recentSection: {
-    gap: 8,
-  },
-  sectionTitle: {
-    fontSize: 16,
-    fontWeight: '700',
-    marginBottom: 8,
-  },
-  recentItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 16,
-    borderRadius: 16,
-    borderBottomWidth: 1,
-    gap: 12,
-  },
-  recentIcon: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  recentIconText: {
-    fontSize: 22,
-  },
-  recentInfo: {
-    flex: 1,
-  },
-  recentName: {
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  recentDate: {
-    fontSize: 12,
-    marginTop: 2,
-  },
-  activeBadge: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 12,
-  },
-  activeBadgeText: {
-    fontSize: 12,
-    fontWeight: '600',
-  },
-});

@@ -1,140 +1,97 @@
 /**
- * Language Picker Screen — Onboarding Step 1
- * Supports: French, English, Arabic (RTL), German, Chinese
- * See docs/08-ui-screens.md §2
+ * Language Picker Screen — Onboarding step 1
+ * 5 languages in cards, RTL badge for Arabic, sets UI language + i18next.
  */
 
 import { useState } from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  ScrollView,
-  StyleSheet,
-} from '@/components/ui/Primitives';
-import { useAppTheme } from '@/theme/useTheme';
-import { useRouter } from '@/hooks/useIonicNavigation';
-import { SUPPORTED_LANGUAGES } from '@/domains/i18n/config';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
+import { Check, ArrowLeft, ArrowRight, Languages } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import { SUPPORTED_LANGUAGES, isRTL } from '@/domains/i18n/config';
+import { I18nService } from '@/services/i18n-service';
 import { useSettingsStore } from '@/store/settings-store';
 
 export default function LanguagePickerScreen() {
-  const { colors, sp, sh, rad } = useAppTheme();
-  const router = useRouter();
+  const { t, i18n } = useTranslation();
+  const navigate = useNavigate();
   const { setUiLanguage, uiLanguage } = useSettingsStore();
+  const [selected, setSelected] = useState(uiLanguage || 'fr');
 
-  // Sélectionne la langue actuellement sauvegardée (ou la par défaut)
-  const selectedLanguage = uiLanguage || 'fr';
+  const selectLanguage = (code: string) => {
+    setSelected(code);
+    setUiLanguage(code);
+    void i18n.changeLanguage(code);
+    document.documentElement.dir = isRTL(code) ? 'rtl' : 'ltr';
+  };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Langue de l'interface</Text>
+    <div className="flex min-h-full flex-col p-6">
+      <header className="mb-6 flex items-center gap-3">
+        <button
+          onClick={() => navigate('/onboarding/welcome')}
+          className="flex h-10 w-10 items-center justify-center rounded-full bg-surface shadow-sm"
+          aria-label={t('common.back')}
+        >
+          <ArrowLeft size={20} className="text-text-secondary" />
+        </button>
+        <div>
+          <h1 className="text-2xl font-bold text-text-primary">
+            {t('onboarding.selectLanguage')}
+          </h1>
+        </div>
+      </header>
 
-      <ScrollView style={styles.scrollArea}>
-        {SUPPORTED_LANGUAGES.map((lang) => (
-          <TouchableOpacity
-            key={lang.code}
-            style={[
-              styles.card,
-              selectedLanguage === lang.code && styles.cardSelected,
-            ]}
-            onPress={() => {
-              setUiLanguage(lang.code);
-              // Naviguer vers l'étape suivante de l'onboarding
-              router.push('/onboarding/translation-select');
-            }}
-          >
-            <View style={styles.langInfo}>
-              <Text style={styles.nativeName}>{lang.name}</Text>
-              <Text style={styles.displayName}>{lang.displayName}</Text>
-              {lang.rtl && <Text style={styles.rtlBadge}>RTL</Text>}
-            </View>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
+      <div className="flex flex-1 flex-col gap-3">
+        {SUPPORTED_LANGUAGES.map((lang) => {
+          const isSelected = selected === lang.code;
+          return (
+            <button
+              key={lang.code}
+              onClick={() => selectLanguage(lang.code)}
+              className={cn(
+                'flex items-center justify-between rounded-xl border-2 bg-surface p-4 text-left shadow-sm transition-colors',
+                isSelected
+                  ? 'border-primary bg-surface-tint'
+                  : 'border-transparent',
+              )}
+            >
+              <div>
+                <div className="flex items-center gap-2">
+                  <Languages size={18} className="text-primary" />
+                  <span className="text-lg font-semibold text-text-primary">
+                    {lang.name}
+                  </span>
+                  {lang.rtl && (
+                    <span className="rounded bg-surface-tint px-2 py-0.5 text-[11px] font-semibold text-primary">
+                      RTL
+                    </span>
+                  )}
+                </div>
+                <p className="mt-1 text-sm text-text-muted">{lang.displayName}</p>
+                {lang.rtl && (
+                  <p className="mt-1 text-xs text-primary">
+                    {t('onboarding.rtlWarning')}
+                  </p>
+                )}
+              </div>
+              {isSelected && <Check size={22} className="text-primary" />}
+            </button>
+          );
+        })}
+      </div>
 
-      <TouchableOpacity
-        style={styles.continueButton}
-        onPress={() => router.back()}
-      >
-        <Text style={styles.continueText}>Retour</Text>
-      </TouchableOpacity>
-    </View>
+      <div className="mt-6 flex gap-4">
+        <Button variant="outline" className="flex-1" onClick={() => navigate('/onboarding/welcome')}>
+          <ArrowLeft size={16} />
+          {t('common.back')}
+        </Button>
+        <Button className="flex-1" onClick={() => navigate('/onboarding/translation-select')}>
+          {t('common.continue')}
+          <ArrowRight size={16} />
+        </Button>
+      </div>
+    </div>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.surfaceTint,
-    padding: 16,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: '600',
-    color: colors.textPrimary,
-    marginBottom: 24,
-  },
-  scrollArea: {
-    flex: 1,
-    gap: 12,
-  },
-  card: {
-    backgroundColor: colors.surface,
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 8,
-    ...shadow.md,
-  },
-  cardSelected: {
-    backgroundColor: colors.surfaceTint,
-    borderColor: colors.primary,
-    borderWidth: 2,
-  },
-  langInfo: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  nativeName: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: colors.textPrimary,
-  },
-  displayName: {
-    fontSize: 14,
-    color: colors.textMuted,
-    marginTop: 4,
-  },
-  rtlBadge: {
-    fontSize: 11,
-    color: colors.primary,
-    marginTop: 4,
-    backgroundColor: colors.border,
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-    borderRadius: 4,
-  },
-  continueButton: {
-    backgroundColor: colors.primary,
-    borderRadius: 26,
-    paddingVertical: 14,
-    alignItems: 'center',
-    marginTop: 24,
-  },
-  continueText: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: colors.surface,
-  },
-});
-
-const shadow = {
-  md: {
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
-    elevation: 1,
-  },
-};
-

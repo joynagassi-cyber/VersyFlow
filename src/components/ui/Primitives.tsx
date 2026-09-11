@@ -80,6 +80,7 @@ import {
 } from '@ionic/react';
 // useTheme imported by components that need it
 import type { CSSProperties } from 'react';
+import { useTheme, useAppTheme } from '@/theme/useTheme';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
