@@ -16,9 +16,14 @@ export interface IFamilyInvitationRepository {
 
   /**
    * Create a new invitation.
-   * The repository assigns id, createdAt, and expiresAt.
+   * The repository assigns id, createdAt, and expiresAt. Callers may supply
+   * `expiresInDays` to drive `expiresAt = createdAt + expiresInDays`.
    */
-  create(invitation: Omit<FamilyInvitation, 'id' | 'createdAt' | 'expiresAt'>): Promise<FamilyInvitation>;
+  create(
+    invitation: Omit<FamilyInvitation, 'id' | 'createdAt' | 'expiresAt'> & {
+      expiresInDays?: number;
+    },
+  ): Promise<FamilyInvitation>;
 
   /** Mark an invitation as used (acceptance). Returns true if updated. */
   markUsed(id: string): Promise<boolean>;

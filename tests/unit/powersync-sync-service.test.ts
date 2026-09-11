@@ -14,6 +14,16 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 // --- Mocks (module level; vi.mock is hoisted) ------------------------------
 
+const mockSyncStream = vi.fn(() => ({
+  subscribe: vi.fn(async () => ({
+    name: 'mock',
+    params: {},
+    subscribed: true,
+    unsubscribe: vi.fn(),
+  })),
+}));
+mockSyncStream.mockName('syncStream');
+
 const mockDb: any = {
   connected: false,
   connecting: false,
@@ -23,6 +33,7 @@ const mockDb: any = {
   disconnect: vi.fn().mockResolvedValue(undefined),
   getUploadQueueStats: vi.fn().mockResolvedValue({ count: 0 }),
   close: vi.fn().mockResolvedValue(undefined),
+  syncStream: mockSyncStream,
 };
 
 const mockPeek = vi.fn();

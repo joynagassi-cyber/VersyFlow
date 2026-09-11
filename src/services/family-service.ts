@@ -19,8 +19,16 @@ export interface MemberWithProfile extends FamilyMembership {
     displayName: string;
     avatar?: string;
   };
+  /** Cognitive data — populated only for owner/admin readers (see getMembersScoped). */
+  cognitiveData?: {
+    fsrsState?: unknown;
+    reviewCount?: number;
+    streak?: number;
+  };
 }
 
+/** Standalone scoped view of a learner's data (used when a single member's
+ *  cognitive data is requested outside the member list). */
 export interface ScopedLearnerData {
   profileId: string;
   displayName: string;
@@ -71,25 +79,22 @@ export class FamilyService {
         accountId,
         displayName: defaultDisplayName || '',
         status: 'active',
-        createdAt: Date.now(),
-        updatedAt: Date.now(),
       });
       profileId = created.id;
     }
 
-    // Add membership
-    const now = Date.now();
+    // Add membership (repository stamps id/createdAt/joinedAt + familyId).
     const membership = await this.familyRepository.addMember(inv.familyId, {
       accountId,
       role: 'member' as FamilyRole,
       status: 'active',
-      createdAt: now,
-      joinedAt: now,
     });
 
     // Mark invitation as used
     await this.invitationRepository.markUsed(inv.id);
 
+    // `now` is used below for eventBus timestamps.
+    const now = Date.now();
     eventBus.emit({
       id: crypto.randomUUID(),
       type: DomainEventTypes.FAMILY_MEMBER_JOINED,
@@ -224,6 +229,7 @@ export class FamilyService {
       throw new Error('Permission denied: only owner or admin can create invitations');
     }
 
+    // `now` is used below for eventBus timestamps and the expiry window.
     const now = Date.now();
     const token = this.generateToken();
     const invitation = await this.invitationRepository.create({
@@ -231,8 +237,7 @@ export class FamilyService {
       createdBy,
       token,
       status: 'active',
-      expiresAt: now + expiresInDays * 24 * 60 * 60 * 1000,
-      createdAt: now,
+      expiresInDays,
     });
 
     eventBus.emit({

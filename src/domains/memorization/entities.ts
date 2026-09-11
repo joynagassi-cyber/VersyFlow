@@ -219,7 +219,8 @@ export type ExerciseStrategy =
   | 'memory-fingerprint'      // V1: personalized pattern of words always forgotten
   | 'smart-masking'           // Strategy recommendation: targeted masking for error-prone verses
   | 'flashcard'               // Strategy recommendation: flashcard mode for high stability
-  | 'recall-writing';         // Strategy recommendation: recall-writing for mastery practice
+  | 'recall-writing'          // Strategy recommendation: recall-writing for mastery practice
+  | 'multi-modal-recall';    // Future: multi-sensory recall (visual + auditory + kinesthetic)
 
 /** Default strategy for MVP */
 export const DEFAULT_MVP_STRATEGY: ExerciseStrategy = 'progressive-masking';

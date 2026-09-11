@@ -11,22 +11,20 @@ export class FamilyService {
   constructor(private repository: IFamilyRepository) {}
 
   async create(ownerId: string, name: string, color = '#E91E8C', icon = '👨‍👩‍👧‍👦'): Promise<Family> {
-    const now = Date.now();
-    const family = await this.repository.create({ ownerId, name, color, icon, createdAt: now });
+    // `createdAt` is assigned by the repository, not the service.
+    const family = await this.repository.create({ ownerId, name, color, icon });
 
-    // Auto-add owner as member
+    // Auto-add owner as member (repository assigns id/createdAt/joinedAt).
     await this.repository.addMember(family.id, {
       accountId: ownerId,
       role: 'owner' as FamilyRole,
       status: 'active' as MembershipStatus,
-      createdAt: now,
-      joinedAt: now,
     });
 
     eventBus.emit({
       id: crypto.randomUUID(),
       type: DomainEventTypes.FAMILY_CREATED,
-      timestamp: now,
+      timestamp: Date.now(),
       payload: { familyId: family.id, ownerId },
     });
 
@@ -46,19 +44,16 @@ export class FamilyService {
     accountId: string,
     role: FamilyRole = 'member',
   ): Promise<FamilyMembership> {
-    const now = Date.now();
     const membership = await this.repository.addMember(familyId, {
       accountId,
       role,
       status: 'pending' as MembershipStatus,
-      createdAt: now,
-      joinedAt: now,
     });
 
     eventBus.emit({
       id: crypto.randomUUID(),
       type: DomainEventTypes.FAMILY_MEMBER_INVITED,
-      timestamp: now,
+      timestamp: Date.now(),
       payload: { familyId, accountId, role },
     });
 

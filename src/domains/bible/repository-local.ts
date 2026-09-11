@@ -80,7 +80,18 @@ export function parseTranslationData(raw: unknown): BibleTranslationData {
       .join('; ');
     throw new Error(`Invalid Bible translation dataset: ${issues}`);
   }
-  return { ...result.data, books: result.data.books.map(normalizeBook) };
+  // `safeParse` keeps Zod's tuple type on `books`. Spreading `result.data`
+  // would preserve it, which is not assignable to `BibleTranslationData`
+  // (a plain array). Build the return explicitly to coerce the tuple back.
+  const normalizedBooks: BibleBookData[] = result.data.books.map(normalizeBook);
+  return {
+    id: result.data.id,
+    language: result.data.language,
+    name: result.data.name,
+    year: result.data.year,
+    author: result.data.author,
+    books: normalizedBooks,
+  } as BibleTranslationData;
 }
 
 // =====================================================================

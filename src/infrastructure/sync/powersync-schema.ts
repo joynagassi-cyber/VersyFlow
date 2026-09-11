@@ -139,16 +139,9 @@ export function buildPowerSyncSchema(): Schema {
       },
     }),
 
-    achievements: Table.createInsertOnly({
-      key: column.text,
-      title: column.text,
-      description: column.text,
-      icon: column.text,
-      color: column.text,
-      category: column.text,
-      requirement: column.text,
-      created_at: column.text,
-    }, { indexes: { by_key: ['key'] } }),
+    // `achievements` (catalogue) is LOCAL_ONLY — it is NOT in the PowerSync
+    // publication (decision I8), so it is intentionally absent from this
+    // client schema. Only the user-owned `user_achievements` view is synced.
 
     user_achievements: new Table({
       user_id: column.text,

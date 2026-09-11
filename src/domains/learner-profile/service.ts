@@ -15,13 +15,12 @@ export class LearnerProfileDomainService {
   constructor(private repository: ILearnerProfileRepository) {}
 
   async create(accountId: string, displayName: string, avatar?: string): Promise<LearnerProfile> {
-    const now = Date.now();
-    const profile: Omit<LearnerProfile, 'id'> = {
+    // The repository assigns id/createdAt/updatedAt; the service only supplies
+    // the business fields and emits the lifecycle event with a fresh timestamp.
+    const profile: Omit<LearnerProfile, 'id' | 'createdAt' | 'updatedAt'> = {
       accountId,
       displayName,
       avatar,
-      createdAt: now,
-      updatedAt: now,
       status: 'active' as ProfileStatus,
     };
 
@@ -31,7 +30,7 @@ export class LearnerProfileDomainService {
     eventBus.emit({
       id: crypto.randomUUID(),
       type: DomainEventTypes.PROFILE_CREATED,
-      timestamp: now,
+      timestamp: created.createdAt,
       payload: { profileId: created.id, accountId },
     });
 

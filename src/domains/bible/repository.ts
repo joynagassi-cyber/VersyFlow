@@ -13,6 +13,7 @@ import { BibleTranslationSchema, validateBibleData } from './schema';
 import type { BibleBook } from './entities';
 import type { BibleChapter, BibleVerse} from './schema';
 import { BibleTranslation } from './schema';
+import { readFileSync } from 'fs';
 
 // Chemin relatif vers le fichier LSG.json
 const LSG_FILE_PATH = '/data/bible/lsg.json';

@@ -10,9 +10,18 @@ import { ar } from '@/i18n/locales/ar';
 import { de } from '@/i18n/locales/de';
 import { zh } from '@/i18n/locales/zh';
 
+/** Shape of a locale file (top-level sections only — leaf strings resolved per call). */
+type Locale = Record<string, unknown>;
+
+interface LanguageInfo {
+  code: string;
+  name: string;
+  displayName: string;
+}
+
 class TranslationRegistry {
   private static instance: TranslationRegistry;
-  private translations = { fr, en, ar, de, zh };
+  private translations: Record<string, Locale> = { fr, en, ar, de, zh };
   private loaded = true;
 
   private constructor() {}
@@ -28,25 +37,28 @@ class TranslationRegistry {
     this.loaded = true;
   }
 
-  get(key, language) {
+  get(key: string, language: string): string {
     if (!this.loaded) this.load();
-    if (this.translations[language]?.[key]) return translations[language]?.[key] || key;
-    if (this.translations.en?.[key]) return this.translations.en[key];
-    if (this.translations.fr?.[key]) return this.translations.fr[key];
+    const value = this.translations[language]?.[key];
+    if (value !== undefined) return String(value);
+    const enValue = this.translations.en?.[key];
+    if (enValue !== undefined) return String(enValue);
+    const frValue = this.translations.fr?.[key];
+    if (frValue !== undefined) return String(frValue);
     return key;
   }
 
-  isSupported(language) {
+  isSupported(language: string): boolean {
     return SUPPORTED_LANGUAGES.some(l => l.code === language);
   }
 
-  getSupportedLanguages() {
+  getSupportedLanguages(): LanguageInfo[] {
     return [...SUPPORTED_LANGUAGES];
   }
 }
 
 export class I18nService {
-  private static instance: TranslationRegistry;
+  private static instance: I18nService;
   private currentLanguage = DEFAULT_LANGUAGE;
   private translationRegistry = TranslationRegistry.getInstance();
 
@@ -61,7 +73,7 @@ export class I18nService {
     return I18nService.instance;
   }
 
-  setLanguage(language) {
+  setLanguage(language: string): void {
     if (this.isSupported(language)) {
       this.currentLanguage = language;
     } else {
@@ -69,29 +81,37 @@ export class I18nService {
     }
   }
 
-  getLanguage() {
+  getLanguage(): string {
     return this.currentLanguage;
   }
 
-  t(key) {
+  t(key: string): string {
     return this.translationRegistry.get(key, this.currentLanguage);
   }
 
-  isRTL() {
+  isRTL(): boolean {
     return isRTL(this.currentLanguage);
   }
 
-  getSupportedLanguages() {
+  getSupportedLanguages(): LanguageInfo[] {
     return this.translationRegistry.getSupportedLanguages();
   }
 
-  getLanguageName() {
+  getLanguageName(): string | undefined {
     const lang = this.translationRegistry.getSupportedLanguages().find(l => l.code === this.currentLanguage);
     return lang ? lang.name : undefined;
   }
 
-  getLanguageDisplayName() {
+  getLanguageDisplayName(): string | undefined {
     const lang = this.translationRegistry.getSupportedLanguages().find(l => l.code === this.currentLanguage);
     return lang ? lang.displayName : undefined;
+  }
+
+  isSupported(language: string): boolean {
+    return this.translationRegistry.isSupported(language);
+  }
+
+  get(language: string, key: string): string {
+    return this.translationRegistry.get(key, language);
   }
 }

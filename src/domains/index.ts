@@ -8,14 +8,15 @@ export { parseReference, buildReference } from './bible';
 export type { BibleBook, ParsedReference } from './bible';
 
 // FSRS Domain
-export { Rating, DEFAULT_FSRS_STATE, RATING_LABELS } from './fsrs';
+export { Rating, DEFAULT_FSRS_STATE } from './fsrs';
 export type { FsrsState, FsrsReview, IFsrsEngine } from './fsrs';
 
 // Progress Domain
 export { calculateMasteryLevel, isMastered, MasteryLevel } from './progress';
 
 // Domain Events (Shared)
-export { DomainEventTypes, eventBus, DomainEvent } from './events';
+export { DomainEventTypes, eventBus } from './events';
+export type { DomainEvent } from './events';
 
 // Telemetry Domain
 export { redact } from './telemetry/entities';

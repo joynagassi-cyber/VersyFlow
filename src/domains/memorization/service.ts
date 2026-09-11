@@ -6,10 +6,10 @@
 import { SessionEngine } from './session-engine';
 import { MemorizationStorageAdapter } from './storage-adapter';
 import { fsrsRatingToString } from './entities';
-import type { IFsrsEngine} from '@/domains/fsrs';
+import type { IFsrsEngine, FsrsState } from '@/domains/fsrs';
 import { Rating as FsrsRating } from '@/domains/fsrs';
 import type { IStorage } from '@/infrastructure/storage/storage-types';
-import { eventBus, DomainEventTypes } from '../index';
+import { eventBus, DomainEventTypes } from '../events';
 import type { MemorizationRecord, ReviewLogEntry, WordPerformance, MemorizationTarget} from './entities';
 import { MemorizationTargetType, ContentReference } from './entities';
 
@@ -34,10 +34,12 @@ export class MemorizationService {
   /**
    * Save a memorized record to storage (profile-scoped)
    */
-  async saveMemorizedRecord(record: Omit<MemorizationRecord, 'id'>, profileId?: string): Promise<void> {
+  async saveMemorizedRecord(record: Omit<MemorizationRecord, 'id' | 'learnerProfileId'>, profileId?: string): Promise<void> {
     const effectiveId = profileId || this.profileId;
     const recordId = `${record.bookId}:${record.chapterNumber}:${record.verseNumber}:${record.translationId}`;
-    const fullRecord: MemorizationRecord = { id: recordId, learnerProfileId: effectiveId, ...record };
+    // The service derives the profile id; it is the single source of truth, so it
+    // is applied AFTER the spread and is not part of the input type.
+    const fullRecord: MemorizationRecord = { id: recordId, ...record, learnerProfileId: effectiveId };
     await this.storageAdapter.saveRecord(fullRecord);
   }
 
@@ -45,9 +47,12 @@ export class MemorizationService {
    * Save a review log entry for a memorization record (profile-scoped)
    */
   async saveReviewLog(logEntry: Omit<ReviewLogEntry, 'id'>, profileId?: string): Promise<void> {
-    const effectiveId = profileId || this.profileId;
+    // Profile scoping is enforced by the storage adapter's key prefix; ReviewLogEntry
+    // itself carries no learnerProfileId. `profileId` is accepted for signature
+    // stability and future per-profile adapter instances.
+    void profileId;
     const logId = crypto.randomUUID();
-    const fullLog: ReviewLogEntry = { id: logId, learnerProfileId: effectiveId, ...logEntry };
+    const fullLog: ReviewLogEntry = { id: logId, ...logEntry };
     await this.storageAdapter.saveReviewLog(fullLog);
   }
 
@@ -226,7 +231,7 @@ export class MemorizationService {
 
       const isPassage = target.type === 'passage';
       const recordId = this.generateTargetId(target);
-      const record: Omit<MemorizationRecord, 'id'> = {
+      const record: Omit<MemorizationRecord, 'id' | 'learnerProfileId'> = {
         bookId: target.reference.bookId,
         chapterNumber: target.reference.chapter,
         verseNumber: target.reference.startVerse,

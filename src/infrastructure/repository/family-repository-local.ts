@@ -60,7 +60,7 @@ export class FamilyRepositoryLocal implements IFamilyRepository {
 
   async addMember(
     familyId: string,
-    membership: Omit<FamilyMembership, 'id' | 'createdAt' | 'joinedAt'>,
+    membership: Omit<FamilyMembership, 'id' | 'createdAt' | 'joinedAt' | 'familyId'>,
   ): Promise<FamilyMembership> {
     const id = generateId();
     const now = Date.now();

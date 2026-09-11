@@ -69,15 +69,16 @@ export class SupabasePowerSyncConnector implements PowerSyncBackendConnector {
    * Throws on a transient error so PowerSync retries later.
    */
   async fetchCredentials(): Promise<{ endpoint: string; token: string } | null> {
-    const { session, error } = await this.supabase.auth.getSession();
+    // supabase-js v2 returns `{ data: { session }, error }` — destructure `data`.
+    const { data, error } = await this.supabase.auth.getSession();
     if (error) {
       // Transient error reading the local session — let PowerSync retry.
       throw new Error(`[PowerSync] Could not read Supabase session: ${error.message}`);
     }
-    if (!session) {
+    if (!data?.session) {
       return null;
     }
-    return { endpoint: this.powersyncUrl, token: session.access_token };
+    return { endpoint: this.powersyncUrl, token: data.session.access_token };
   }
 
   /**
@@ -87,7 +88,8 @@ export class SupabasePowerSyncConnector implements PowerSyncBackendConnector {
    */
   async uploadData(database: CommonPowerSyncDatabase): Promise<void> {
     // Bind the user session so PostgREST requests are signed with the user JWT.
-    const { session, error } = await this.supabase.auth.getSession();
+    const { data, error } = await this.supabase.auth.getSession();
+    const session = data?.session;
     if (error || !session) {
       throw new Error('[PowerSync] No active Supabase session for upload');
     }

@@ -36,7 +36,9 @@ export interface SyncStore {
 
 export const useSyncStore = create<SyncStore>()((set, get) => ({
   status: syncService.getStatus(),
-  isConfigured: Boolean(POWERSYNC_URL),
+  // Honesty (O-3): a configured service must actually point at a PowerSync
+  // endpoint; an empty URL means "not configured", not "configured but offline".
+  isConfigured: (syncService as PowerSyncSyncService).isConfigured(),
 
   refreshStatus: () => set({ status: syncService.getStatus() }),
 

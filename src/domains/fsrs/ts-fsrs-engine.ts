@@ -7,11 +7,11 @@
 import {
   fsrs,
   createEmptyCard,
-  TypeConvert,
   dateDiffInDays,
   type Card,
 } from 'ts-fsrs';
-import type { IFsrsEngine, FsrsState, FsrsReview, Rating } from './engine';
+import type { IFsrsEngine, FsrsState, FsrsReview } from './engine';
+import { Rating as DomainRating } from './engine';
 
 export class TsFsrsEngine implements IFsrsEngine {
   private f = fsrs();
@@ -62,9 +62,11 @@ export class TsFsrsEngine implements IFsrsEngine {
     return { ...state };
   }
 
-  async review(state: FsrsState, rating: Rating): Promise<FsrsReview> {
+  async review(state: FsrsState, domainRating: DomainRating): Promise<FsrsReview> {
     const card = this.fromFsrsState(state);
-    const result = this.f.next(card, new Date(), TypeConvert.rating(rating));
+    // ts-fsrs `next()` expects its own `Grade` (numeric, 1..4); our domain
+    // `Rating` enum maps 1:1 by value.
+    const result = this.f.next(card, new Date(), domainRating as 1 | 2 | 3 | 4);
     const outState = this.toFsrsState(result.card);
     const daysAhead = Math.max(0, result.card.scheduled_days);
     return {
@@ -76,7 +78,7 @@ export class TsFsrsEngine implements IFsrsEngine {
     };
   }
 
-  explain(state: FsrsState, _rating: Rating): Record<string, string> {
+  explain(state: FsrsState, _rating: DomainRating): Record<string, string> {
     return {
       stability: `${state.stability.toFixed(1)} ${'daysUntilForget'}`,
       difficulty: `${state.difficulty.toFixed(1)}/10 ${'difficultyDesc'}`,

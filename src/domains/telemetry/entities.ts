@@ -336,7 +336,7 @@ const SENSITIVE_FIELDS = [
  * Only ids, durations, fsrs state transitions, streak deltas, and accuracy buckets are preserved.
  */
 export function redact(event: TelemetryEvent): TelemetryEvent {
-  const sensitiveSet = new Set(SENSITIVE_FIELDS);
+  const sensitiveSet = new Set<string>(SENSITIVE_FIELDS);
 
   const redactPayload = (obj: Record<string, unknown>): Record<string, unknown> => {
     const result: Record<string, unknown> = {};
@@ -353,10 +353,14 @@ export function redact(event: TelemetryEvent): TelemetryEvent {
     return result;
   };
 
+  // Strip sensitive fields. `redactPayload` only removes keys, so the output
+  // structurally matches the original payload. The final cast widens the
+  // erased object back to the discriminant-specific union — safe because
+  // each branch preserves `eventType` (which is not in SENSITIVE_FIELDS).
   return {
     ...event,
-    payload: redactPayload(event.payload as Record<string, unknown>),
-  };
+    payload: redactPayload(event.payload as unknown as Record<string, unknown>),
+  } as TelemetryEvent;
 }
 
 /**

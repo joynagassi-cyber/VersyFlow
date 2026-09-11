@@ -252,7 +252,7 @@ export class SessionEngine {
   private state: SessionState;
   private strategy: ExerciseStrategy;
   private maskingConfig: MaskingConfig;
-  private wordFailureTracker: IWordFailureTracker;
+  private wordFailureTracker: IWordFailureTracker | undefined;
   private targetId?: string;
   private targetType?: MemorizationTargetType;
   private currentVerseIndex: number = 0;

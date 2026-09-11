@@ -34,11 +34,12 @@ export interface IFamilyRepository {
 
   /**
    * Add a member to a family.
-   * The repository assigns id, createdAt, and joinedAt.
+   * The repository assigns id, createdAt, joinedAt and stamps familyId
+   * from the first argument (so it is omitted here).
    */
   addMember(
     familyId: string,
-    membership: Omit<FamilyMembership, 'id' | 'createdAt' | 'joinedAt'>,
+    membership: Omit<FamilyMembership, 'id' | 'createdAt' | 'joinedAt' | 'familyId'>,
   ): Promise<FamilyMembership>;
 
   /** Remove a member from a family. Returns true if removed. */

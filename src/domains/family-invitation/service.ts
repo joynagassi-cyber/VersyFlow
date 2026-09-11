@@ -28,13 +28,14 @@ export class FamilyInvitationService {
     const now = Date.now();
     const token = this.generateToken();
 
+    // The repository owns id/createdAt/expiresAt; `expiresInDays` (here) is the
+    // input that drives expiresAt = createdAt + expiresInDays.
     const invitation = await this.repository.create({
       familyId,
       createdBy,
       token,
       status: 'active' as InvitationStatus,
-      expiresAt: now + expiresInDays * 24 * 60 * 60 * 1000 as any,
-      createdAt: now as any,
+      expiresInDays,
     });
 
     eventBus.emit({

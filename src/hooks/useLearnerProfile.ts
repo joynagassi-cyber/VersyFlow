@@ -7,13 +7,13 @@
 import { useCallback } from 'react';
 import { useAuthStore } from '@/store/auth-store';
 import { LearnerProfileService } from '@/services/learner-profile-service';
-import { LearnerProfileRepositoryLocal } from '@/infrastructure/repository';
+import { getLearnerProfileRepository } from '@/infrastructure/repository/powersync-repositories';
 
 let _service: LearnerProfileService | null = null;
 
 function getService(): LearnerProfileService {
   if (!_service) {
-    _service = new LearnerProfileService(new LearnerProfileRepositoryLocal());
+    _service = new LearnerProfileService(getLearnerProfileRepository());
   }
   return _service;
 }

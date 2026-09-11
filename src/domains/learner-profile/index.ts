@@ -3,5 +3,5 @@
  */
 
 export type { LearnerProfile, ProfileStatus } from './entities';
-export { LearnerProfileService } from './service';
+export { LearnerProfileDomainService } from './service';
 export type { ILearnerProfileRepository } from './repository';

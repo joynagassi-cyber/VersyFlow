@@ -26,14 +26,20 @@ export class FamilyInvitationRepositoryLocal implements IFamilyInvitationReposit
     return null;
   }
 
-  async create(invitation: Omit<FamilyInvitation, 'id' | 'createdAt' | 'expiresAt'>): Promise<FamilyInvitation> {
+  async create(
+    invitation: Omit<FamilyInvitation, 'id' | 'createdAt' | 'expiresAt'> & { expiresInDays?: number },
+  ): Promise<FamilyInvitation> {
     const id = generateId();
     const now = Date.now();
+    const expiresInMs = (invitation.expiresInDays ?? 7) * 24 * 60 * 60 * 1000;
     const record: FamilyInvitation = {
-      ...invitation,
+      familyId: invitation.familyId,
+      createdBy: invitation.createdBy,
+      token: invitation.token,
+      status: invitation.status,
       id,
       createdAt: now,
-      expiresAt: invitation.expiresAt || (now + 7 * 24 * 60 * 60 * 1000), // 7 days default if not provided
+      expiresAt: now + expiresInMs,
     };
     this.invitations.set(id, record);
     return record;

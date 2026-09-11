@@ -8,19 +8,19 @@ import { useCallback } from 'react';
 import { useAuthStore } from '@/store/auth-store';
 import { FamilyService } from '@/services/family-service';
 import {
-  FamilyRepositoryLocal,
-  FamilyInvitationRepositoryLocal,
-  LearnerProfileRepositoryLocal,
-} from '@/infrastructure/repository';
+  getFamilyRepository,
+  getFamilyInvitationRepository,
+  getLearnerProfileRepository,
+} from '@/infrastructure/repository/powersync-repositories';
 
 let _service: FamilyService | null = null;
 
 function getService(): FamilyService {
   if (!_service) {
     _service = new FamilyService(
-      new FamilyRepositoryLocal(),
-      new FamilyInvitationRepositoryLocal(),
-      new LearnerProfileRepositoryLocal(),
+      getFamilyRepository(),
+      getFamilyInvitationRepository(),
+      getLearnerProfileRepository(),
     );
   }
   return _service;

@@ -35,6 +35,7 @@ export const DomainEventTypes = {
   REVIEW_SESSION_STARTED: 'review.session_started',
   REVIEW_COMPLETED: 'review.completed',
   REVIEW_SESSION_FINISHED: 'review.session_finished',
+  RECORD_REVIEWED: 'review.record_reviewed',
 
   // Progress
   STREAK_INCREMENTED: 'progress.streak_incremented',
