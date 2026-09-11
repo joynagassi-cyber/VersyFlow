@@ -22,12 +22,14 @@ import {
   type FamilyRow,
   type FamilyMembershipRow,
 } from '../sync/family-mapper';
+import { randomUUID } from '../sync/uuid';
 import type { ISyncUserIdProvider } from '../sync/sync-user-id-provider';
 import type {
   Family,
   FamilyMembership,
 } from '@/domains/family';
 import type { IFamilyRepository } from '@/domains/family/repository';
+
 
 export class FamilyRepositoryPowerSync implements IFamilyRepository {
   constructor(
@@ -63,7 +65,7 @@ export class FamilyRepositoryPowerSync implements IFamilyRepository {
   // ------------------------------------------------------------------
 
   async create(family: Omit<Family, 'id' | 'createdAt'>): Promise<Family> {
-    const id = crypto.randomUUID();
+    const id = randomUUID();
     const nowIso = new Date().toISOString();
     const fullFamily: Family = { ...family, id, createdAt: 0 };
     const row = familyToRow(fullFamily);
@@ -169,15 +171,14 @@ export class FamilyRepositoryPowerSync implements IFamilyRepository {
     row.joined_at = nowIso;
 
     const db = this.dbFactory();
+    // PowerSync v2.x: `family_memberships` is a read-only view over
+    // `ps_data__family_memberships`. A plain `INSERT` with the deterministic
+    // composite `id` is intercepted by the SDK and enqueued in `ps_crud`.
     await db.writeTransaction(async (tx) => {
       await tx.execute(
         `INSERT INTO family_memberships (
           id, family_id, user_id, role, status, invited_at, joined_at
-        ) VALUES (?, ?, ?, ?, ?, ?, ?)
-        ON CONFLICT (id) DO UPDATE SET
-          role = excluded.role,
-          status = excluded.status,
-          joined_at = excluded.joined_at`,
+        ) VALUES (?, ?, ?, ?, ?, ?, ?)`,
         [
           row.id,
           row.family_id,

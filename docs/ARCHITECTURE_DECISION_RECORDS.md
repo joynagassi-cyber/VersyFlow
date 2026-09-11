@@ -176,5 +176,46 @@
 
 ---
 
+## ADR-010: `settings.theme` en lecture seule via le PowerSync stream (O-4)
+
+**Date**: 2026-09-11
+**Statut**: ACCEPTED
+**Contexte**:
+L'audit PowerSync+SQLite (P1–P4) a identifié l'item **O-4** :
+la préférence `settings.theme` est synchronisée via le stream PowerSync
+`my_settings` en **lecture seule** côté client. Il n'existe pas de
+repository d'écriture `ISettingsRepository` / repo PowerSync dédié, et
+`settings` (une ligne par utilisateur, `user_id` owner) est exposée par
+le cloud comme données de projection, pas comme destination de CRUD local.
+**Décision**:
+Conserver `settings.theme` en **lecture seule** côté client :
+- le client lit la ligne `settings` via `CommonPowerSyncDatabase` (vue
+  `settings` sur `ps_data__settings`),
+- toute mutation de `theme` passe par un écrit Supabase direct
+  (POST/PATCH REST ou trigger edge function), et le prochain cycle de
+  sync PowerSync ramène la valeur.
+- Aucun `ISettingsRepository` local n'est créé.
+**Conséquences positives**:
+- Cohérent avec le modèle « PowerSync = projection lue, pas écriture
+  arbitraire » pour les tables gérées côté cloud (compactor + RLS owner).
+- Pas de divergence entre le thème « local » et le thème « cloud » —
+  une seule source de vérité.
+- Surcharge de schema PowerSync nulle (pas de bucket de CRUD).
+**Conséquences négatives**:
+- Une modification de thème n'apparaît localement qu'après un cycle de
+  sync (~30–60 s au lieu d'un upsert local instantané).
+- Pas de cache thématique offline persistant : le dernier thème lu est
+  mémorisé uniquement via la ligne `settings` déjà synchronisée.
+**Alternatives rejetées**:
+- Repository d'écriture PowerSync pour `settings` : nécessiterait un
+  bucket CRUD dédié + une policy d'insertion `user_id = auth.uid()`,
+  pour une feature basse fréquence (changement de thème rare) — coût
+  de complexité non justifié.
+- Écrire le thème dans un store MMKV séparé : divergerait du
+  multi-appareil (thème par utilisateur doit suivre l'utilisateur, pas
+  le device).
+
+---
+
 *Ce document est maintenu par Guardian et mis à jour à chaque décision architecturale majeure.*
 *Pour proposer une nouvelle décision, ouvrir une PR avec template ADR.*

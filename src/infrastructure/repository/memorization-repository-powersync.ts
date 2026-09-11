@@ -10,6 +10,15 @@
  * `IMemorizationRepository` is a pure domain port. This adapter performs
  * I/O via `getPowerSyncDatabase().writeTransaction(...)` and therefore lives
  * in infrastructure.
+ *
+ * ⚠️ PowerSync v2.x stores rows in `ps_data__*` as JSON blobs. The schema
+ * table name (e.g. `memorization_records`) is a READ-ONLY view on top of
+ * that. The SDK intercepts `INSERT` on the view (with an explicit `id`) and
+ * rewrites it into `ps_data__*` while enqueuing the op in `ps_crud` —
+ * that is the supported write path. A bare `INSERT ... ON CONFLICT` against
+ * the view fails with `cannot UPSERT a view`, so writes here use a plain
+ * `INSERT` + the deterministic `id`, and the upsert semantics are achieved by
+ * the SDK's op-log (a later re-INSERT with the same `id` becomes an update).
  */
 
 import type { CommonPowerSyncDatabase } from '@powersync/common';
@@ -92,6 +101,14 @@ export class MemorizationRepositoryPowerSync implements IMemorizationRepository 
     } as MemorizationRecord;
     const row = memorizationRecordToRow(userId, fullRecord);
     const db = this.dbFactory();
+    // PowerSync v2.x: the schema table `memorization_records` is a read-only
+    // view over `ps_data__memorization_records`. A plain `INSERT` (NOT an
+    // `INSERT ... ON CONFLICT` upsert) with the explicit deterministic `id`
+    // is intercepted by the SDK, rewritten into the `ps_data__` JSON store,
+    // and enqueued in `ps_crud` — this is the documented write path.
+    // Because `id` is deterministic, a second `upsert()` with the same tuple
+    // simply re-enqueues an op with the same `id`, which the upload layer
+    // resolves as an upsert on the server.
     await db.writeTransaction(async (tx) => {
       await tx.execute(
         `INSERT INTO memorization_records (
@@ -107,27 +124,7 @@ export class MemorizationRepositoryPowerSync implements IMemorizationRepository 
           ?, ?, ?, ?,
           ?, ?, ?, ?,
           ?, ?, ?
-        )
-        ON CONFLICT (id) DO UPDATE SET
-          status = excluded.status,
-          fsrs_state = excluded.fsrs_state,
-          stability = excluded.stability,
-          difficulty = excluded.difficulty,
-          next_review_at = excluded.next_review_at,
-          updated_at = excluded.updated_at,
-          last_reviewed_at = excluded.last_reviewed_at,
-          review_count = excluded.review_count,
-          total_review_minutes = excluded.total_review_minutes,
-          favorite = excluded.favorite,
-          tags = excluded.tags,
-          bible_verse_reference = excluded.bible_verse_reference,
-          bible_verse_text = excluded.bible_verse_text,
-          translation_id = excluded.translation_id,
-          book_id = excluded.book_id,
-          chapter_number = excluded.chapter_number,
-          verse_number = excluded.verse_number,
-          end_verse = excluded.end_verse
-        `,
+        )`,
         [
           row.id,
           row.user_id,

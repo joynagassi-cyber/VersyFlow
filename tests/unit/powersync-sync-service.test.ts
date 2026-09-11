@@ -70,6 +70,17 @@ describe('PowerSyncSyncService', () => {
     mockDb.connect.mockResolvedValue(undefined);
     mockDb.disconnect.mockResolvedValue(undefined);
     mockDb.getUploadQueueStats.mockResolvedValue({ count: 0 });
+    mockDb.syncStream.mockReset();
+    mockDb.syncStream.mockImplementation(
+      (name: string, params: unknown) => ({
+        subscribe: vi.fn(async () => ({
+          name,
+          params,
+          subscribed: true,
+          unsubscribe: vi.fn(),
+        })),
+      }),
+    );
     mockPeek.mockReset().mockReturnValue(mockDb);
     mockClose.mockReset();
 

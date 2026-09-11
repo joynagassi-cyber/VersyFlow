@@ -10,6 +10,7 @@
 
 import type { CommonPowerSyncDatabase } from '@powersync/common';
 import { getPowerSyncDatabase } from '../sync/powersync-database';
+import { randomUUID } from '../sync/uuid';
 import type { ISyncUserIdProvider } from '../sync/sync-user-id-provider';
 import type { LearnerProfile } from '@/domains/learner-profile';
 import type { ILearnerProfileRepository } from '@/domains/learner-profile/repository';
@@ -69,7 +70,7 @@ export class LearnerProfileRepositoryPowerSync implements ILearnerProfileReposit
   async create(
     profile: Omit<LearnerProfile, 'id' | 'createdAt' | 'updatedAt'>,
   ): Promise<LearnerProfile> {
-    const id = crypto.randomUUID();
+    const id = randomUUID();
     const nowIso = new Date().toISOString();
 
     const db = this.dbFactory();

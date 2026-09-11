@@ -190,6 +190,25 @@ function coerceStatus(raw: string | undefined | null): MemorizationStatus {
   }
 }
 
+type RatingValue = ReviewLogEntry['rating'];
+
+/**
+ * Coerce an arbitrary string to the 4-value rating vocabulary. Defensive
+ * default: any unknown value (legacy data, corruption) maps to `'again'`
+ * so the reader does not break on unknown tokens.
+ */
+function toRating(raw: string | undefined | null): RatingValue {
+  switch (raw) {
+    case 'again':
+    case 'hard':
+    case 'good':
+    case 'easy':
+      return raw;
+    default:
+      return 'again';
+  }
+}
+
 // ============================================================================
 // Entity → Row
 // ============================================================================
@@ -303,7 +322,7 @@ export function reviewLogRowToEntry(row: ReviewLogRow): ReviewLogEntry {
     id: row.id,
     memorizationRecordId: row.memorization_record_id,
     answeredAt: isoToMs(row.answered_at) ?? 0,
-    rating: row.rating as ReviewLogEntry['rating'],
+    rating: toRating(row.rating),
     actualInterval: row.actual_interval,
     predictedInterval: row.predicted_interval ?? 0,
     stabilityBefore: row.stability_before ?? 0,

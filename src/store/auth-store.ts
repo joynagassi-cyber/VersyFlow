@@ -8,6 +8,7 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import type { UserProfile} from '@/auth';
 import { SupabaseAuthService, AuthError } from '@/auth';
+import { useSyncStore } from '@/store/sync-store';
 
 interface AuthState {
   user: UserProfile | null;
@@ -50,6 +51,9 @@ export const useAuthStore = create<AuthState>()(
             isAuthenticated: true,
             isLoading: false,
           });
+          // First-launch migration: move any legacy MMKV data into PowerSync.
+          // Idempotent — a no-op when there is nothing to migrate.
+          void useSyncStore.getState().runMmkvMigrationOnce();
         } catch (err) {
           const error = err instanceof AuthError ? err : new AuthError('Failed to sign in');
           set({ error: error.message, isLoading: false });
@@ -79,6 +83,9 @@ export const useAuthStore = create<AuthState>()(
             isLoading: false,
             error: null,
           });
+          // Reset the MMKV → PowerSync migration flag so the next login
+          // re-runs it for the new user.
+          useSyncStore.getState().invalidateMigration();
         } catch (err) {
           set({ isLoading: false });
         }
@@ -98,6 +105,9 @@ export const useAuthStore = create<AuthState>()(
               isAuthenticated: true,
               isLoading: false,
             });
+            // First-launch migration: move any legacy MMKV data into PowerSync.
+            // Idempotent — a no-op when there is nothing to migrate.
+            void useSyncStore.getState().runMmkvMigrationOnce();
           } else {
             set({ isLoading: false });
           }

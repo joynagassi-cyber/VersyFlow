@@ -18,9 +18,11 @@ import {
   familyInvitationRowToEntity,
   type FamilyInvitationRow,
 } from '../sync/family-mapper';
+import { randomUUID } from '../sync/uuid';
 import type { ISyncUserIdProvider } from '../sync/sync-user-id-provider';
 import type { FamilyInvitation, InvitationStatus } from '@/domains/family-invitation';
 import type { IFamilyInvitationRepository } from '@/domains/family-invitation/repository';
+
 
 export class FamilyInvitationRepositoryPowerSync implements IFamilyInvitationRepository {
   constructor(
@@ -61,7 +63,7 @@ export class FamilyInvitationRepositoryPowerSync implements IFamilyInvitationRep
       expiresInDays?: number;
     },
   ): Promise<FamilyInvitation> {
-    const id = crypto.randomUUID();
+    const id = randomUUID();
     const now = Date.now();
     const expiresInDays = invitation.expiresInDays ?? 7;
     const expiresAt = now + expiresInDays * 24 * 60 * 60 * 1000;

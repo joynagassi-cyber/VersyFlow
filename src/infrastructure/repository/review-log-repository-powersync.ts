@@ -36,6 +36,11 @@ export class ReviewLogRepositoryPowerSync implements IReviewLogRepository {
   async append(userId: string, entry: ReviewLogEntry): Promise<void> {
     const row = reviewLogToRow(userId, entry);
     const db = this.dbFactory();
+    // PowerSync v2.x: `review_logs` is a read-only view over
+    // `ps_data__review_logs`. A plain `INSERT` (with the random `id`) is
+    // intercepted by the SDK and enqueued in `ps_crud`. Idempotency on
+    // duplicate `id` is a no-op at the SDK level — a re-INSERT of the same
+    // `id` simply overwrites the JSON blob in `ps_data__`.
     await db.writeTransaction(async (tx) => {
       await tx.execute(
         `INSERT INTO review_logs (
@@ -51,8 +56,7 @@ export class ReviewLogRepositoryPowerSync implements IReviewLogRepository {
           ?, ?,
           ?, ?,
           ?, ?, ?, ?
-        )
-        ON CONFLICT (id) DO NOTHING`,
+        )`,
         [
           row.id,
           row.user_id,

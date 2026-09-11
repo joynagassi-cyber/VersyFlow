@@ -187,25 +187,70 @@ export class PowerSyncSyncService implements ISyncService {
   }
 
   /**
-   * Open the streams for the current user. The user id is required so the
-   * stream can be scoped to that user's data only (RLS + on-demand pattern).
+   * Open the streams for the current user. The stream NAMES follow the
+   * cloud publication (`powersync/sync-config.yaml` edition 3) — the
+   * 10 auto-subscribed streams (`my_profile`, `my_learner_profiles`,
+   * `my_memorization_records`, …) are started by the SDK on connect, so
+   * this method only explicitly opens the 3 on-demand streams when the
+   * caller wants to fetch them.
+   *
+   * On-demand streams (subscription.parameter) are NOT auto-subscribed:
+   * `review_logs_for_record` and `word_performance_for_record` need a
+   * `memorization_record_id`, and `family_invitations_for_family` needs a
+   * `family_id`. They are called ad-hoc, not by the user.
    */
   async startUserStreams(userId: string): Promise<void> {
-    await this.startStream('memorization_records', { userId });
-    await this.startStream('review_logs', { userId });
-    await this.startStream('learner_profiles', { userId });
-    await this.startStream('families', { userId });
-    await this.startStream('family_invitations', { userId });
-    await this.startStream('family_memberships', { userId });
-    await this.startStream('settings', { userId });
-    await this.startStream('user_achievements', { userId });
-    await this.startStream('streaks', { userId });
-    await this.startStream('collections', { userId });
-    await this.startStream('word_performance', { userId });
-    await this.startStream('users', { userId });
+    // Auto-subscribed streams are already open at connect; this is a no-op
+    // guard for the explicit open path (idempotent).
+    await this.startStream('my_profile');
+    await this.startStream('my_learner_profiles');
+    await this.startStream('my_memorization_records');
+    await this.startStream('my_collections');
+    await this.startStream('my_collection_verses');
+    await this.startStream('my_streaks');
+    await this.startStream('my_user_achievements');
+    await this.startStream('my_settings');
+    await this.startStream('my_families');
+    await this.startStream('my_family_memberships');
   }
 
-  /** Stop all on-demand streams (call on logout / dispose). */
+  /**
+   * Subscribe to the `review_logs_for_record` on-demand stream. The user
+   * id is verified server-side by the auth guard; the `memorizationRecordId`
+   * parameter must reference a record that belongs to the same user (see
+   * `sync-config.yaml` line 105-108).
+   */
+  async startReviewLogsStream(
+    memorizationRecordId: string,
+  ): Promise<void> {
+    await this.startStream('review_logs_for_record', {
+      memorization_record_id: memorizationRecordId,
+    });
+  }
+
+  /**
+   * Subscribe to the `word_performance_for_record` on-demand stream.
+   */
+  async startWordPerformanceStream(
+    memorizationRecordId: string,
+  ): Promise<void> {
+    await this.startStream('word_performance_for_record', {
+      memorization_record_id: memorizationRecordId,
+    });
+  }
+
+  /**
+   * Subscribe to the `family_invitations_for_family` on-demand stream.
+   */
+  async startFamilyInvitationsStream(familyId: string): Promise<void> {
+    await this.startStream('family_invitations_for_family', {
+      family_id: familyId,
+    });
+  }
+
+  /**
+   * Stop all on-demand streams (call on logout / dispose).
+   */
   stopAllStreams(): void {
     for (const sub of this.streams.values()) {
       sub.unsubscribe();

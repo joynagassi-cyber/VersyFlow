@@ -18,6 +18,14 @@ module.exports = {
     project: ['./tsconfig.app.json', './tsconfig.node.json'],
     tsconfigRootDir: __dirname,
   },
+  env: {
+    // `globalThis`, `crypto`, `Math`, etc. — the Web + Node runtime globals
+    // our shared code references. Without these, `no-undef` fires on every
+    // bare global lookup (a common source of false positives in RN projects).
+    es2022: true,
+    node: true,
+    browser: true,
+  },
   rules: {
     '@typescript-eslint/no-explicit-any': ['warn', { ignoreRestArgs: true }],
     '@typescript-eslint/consistent-type-imports': ['error'],
