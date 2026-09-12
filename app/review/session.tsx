@@ -13,23 +13,12 @@ import FullScreenPage from '@/components/layout/FullScreenPage';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { useActiveProfile } from '@/hooks/useActiveProfile';
-import { MmkvStorage } from '@/infrastructure/storage';
-import { MemorizationService } from '@/domains/memorization/service';
+import { getMemorizationService } from '@/services/memorization-service-factory';
 import { getFsrsEngine } from '@/services/fsrs-factory';
 import { ReviewQueueService } from '@/services/review-queue-service';
 import { Rating } from '@/domains/fsrs';
 import type { MemorizationRecord } from '@/domains/memorization/entities';
-
-const serviceByProfile = new Map<string, MemorizationService>();
-const getMemorizationService = (profileId: string) => {
-  if (!serviceByProfile.has(profileId)) {
-    serviceByProfile.set(
-      profileId,
-      new MemorizationService(new MmkvStorage(), getFsrsEngine(), profileId),
-    );
-  }
-  return serviceByProfile.get(profileId)!;
-};
+import { eventBus, DomainEventTypes } from '@/domains/events';
 
 interface ReviewItem {
   record: MemorizationRecord;
@@ -75,6 +64,19 @@ export default function ReviewSessionScreen() {
           if (pos > 0) list = [...list.slice(pos), ...list.slice(0, pos)];
         }
         setItems(list);
+        // Telemetry: a review session is now active. Count is derived from
+        // the prioritized queue that the ReviewQueueService produced.
+        const overdue = list.filter((i) => i.record.nextReviewAt && i.record.nextReviewAt <= Date.now()).length;
+        eventBus.emit({
+          id: crypto.randomUUID(),
+          type: DomainEventTypes.REVIEW_SESSION_STARTED,
+          timestamp: Date.now(),
+          payload: {
+            versesCount: list.length,
+            overdueCount: overdue,
+            scheduledCount: list.length - overdue,
+          },
+        });
       } catch (error) {
         console.error('[ReviewSession] load failed:', error);
         if (!cancelled) setItems([]);

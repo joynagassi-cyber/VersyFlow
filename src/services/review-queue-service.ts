@@ -6,7 +6,8 @@
  */
 
 import type { IFsrsEngine } from '@/domains/fsrs';
-import type { MemorizationService, MemorizationRecord } from '@/domains/memorization';
+import type { MemorizationRecord } from '@/domains/memorization';
+import type { ReviewQueueSource } from '@/services/review-queue-source';
 import type { IFatigueDetector } from '@/domains/memorization/fatigue-detector';
 import type { IStrategyRecommendor } from '@/domains/memorization/strategy-recommendor';
 import { FatigueDetector } from '@/services/fatigue-detector';
@@ -43,7 +44,7 @@ export class ReviewQueueService {
   private ruleSet: PriorityRule[] = [];
 
   constructor(
-    private memorizationService: MemorizationService,
+    private queueSource: ReviewQueueSource,
     private fsrsEngine: IFsrsEngine,
     private profileId: string = 'default',
     fatigueDetector?: IFatigueDetector,
@@ -63,7 +64,9 @@ export class ReviewQueueService {
         name: 'byFSRS',
         weight: 0.5,
         appliesTo: () => true,
-        impact: (r) => r.nextReviewAt ? Math.max(0, (r.nextReviewAt - Date.now()) / 86400000) : 0,
+        // More overdue = more urgent. Positive when the record is past due,
+        // decays to 0 for records that are not yet due.
+        impact: (r) => r.nextReviewAt ? Math.max(0, (Date.now() - r.nextReviewAt) / 86400000) : 0,
       },
       {
         name: 'highErrorRate',
@@ -85,7 +88,7 @@ export class ReviewQueueService {
    */
   async getPrioritizedQueue(): Promise<QueueItem[]> {
     // Get due records scoped to profile
-    const records = await this.memorizationService.getDueRecords(this.profileId);
+    const records = await this.queueSource.getDueRecords(this.profileId);
 
     // Calculate fatigue level
     const fatigueLevel = this.fatigueDetector.getFatigueLevel();
@@ -150,7 +153,7 @@ export class ReviewQueueService {
     delayed: number;
     fatigueLevel: number;
   }> {
-    const records = await this.memorizationService.getDueRecords(this.profileId);
+    const records = await this.queueSource.getDueRecords(this.profileId);
     const fatigueLevel = this.fatigueDetector.getFatigueLevel();
 
     const highPriority = records.filter(r => this.calculatePriorityScore(r, fatigueLevel) > 0.5).length;

@@ -19,22 +19,10 @@ import FullScreenPage from '@/components/layout/FullScreenPage';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { useActiveProfile } from '@/hooks/useActiveProfile';
-import { MmkvStorage } from '@/infrastructure/storage';
-import { MemorizationService } from '@/domains/memorization/service';
+import { getMemorizationService } from '@/services/memorization-service-factory';
 import { getFsrsEngine } from '@/services/fsrs-factory';
 import { ReviewQueueService } from '@/services/review-queue-service';
 import type { MemorizationRecord } from '@/domains/memorization/entities';
-
-const serviceByProfile = new Map<string, MemorizationService>();
-const getMemorizationService = (profileId: string) => {
-  if (!serviceByProfile.has(profileId)) {
-    serviceByProfile.set(
-      profileId,
-      new MemorizationService(new MmkvStorage(), getFsrsEngine(), profileId),
-    );
-  }
-  return serviceByProfile.get(profileId)!;
-};
 
 interface ReviewItem {
   record: MemorizationRecord;

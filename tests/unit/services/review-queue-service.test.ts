@@ -7,6 +7,7 @@ import { ReviewQueueService } from '@/services/review-queue-service';
 import { MemorizationService } from '@/domains/memorization/service';
 import { LocalStorageAdapter } from '@/infrastructure/storage';
 import { TsFsrsEngine } from '@/domains/fsrs';
+import type { ReviewQueueSource } from '@/services/review-queue-source';
 
 describe('ReviewQueueService', () => {
   let service: ReviewQueueService;
@@ -18,7 +19,12 @@ describe('ReviewQueueService', () => {
     storage = new LocalStorageAdapter();
     fsrsEngine = new TsFsrsEngine();
     memorizationService = new MemorizationService(storage, fsrsEngine, 'default');
-    service = new ReviewQueueService(memorizationService, fsrsEngine, 'default');
+    // Adapt the domain service to the ReviewQueueSource port so the service
+    // is decoupled from the concrete MemorizationService.
+    const source: ReviewQueueSource = {
+      getDueRecords: (profileId) => memorizationService.getDueRecords(profileId),
+    };
+    service = new ReviewQueueService(source, fsrsEngine, 'default');
   });
 
   afterEach(async () => {
