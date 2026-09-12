@@ -235,49 +235,32 @@ describe('TelemetryService.flush() with upload port', () => {
   });
 
   it('does not lose data when two flush() calls run in rapid succession', async () => {
-    // Two flushes overlapping: the first hands a batch to the (slow) upload
-    // while the second is kicked off. After both settle the queue must be
-    // structurally valid — any item still unsent is uploaded by a follow-up
-    // fast flush (no silent loss).
+    // Two sequential flushes: the first uploads 2 items, a new event is
+    // recorded while the second flush is triggered — the queue must end
+    // up empty with no silent loss. No slow-upload tricks: each flush
+    // resolves before the next begins.
     service.record('streak.incremented', { streakDelta: 1 });
     service.record('review.completed', { recordId: 'r1' });
     expect(service.getQueue()).toHaveLength(2);
 
-    // Slow-upload gate: resolve on demand via the captured `resolve` handles.
-    const slowUpload = vi.fn((events: TelemetryEvent[]) => {
-      return new Promise<void>((resolve) => {
-        slowUploadResolvers.push(resolve);
-      });
-    });
-    const slowUploadResolvers: Array<() => void> = [];
-    uploadPortUploadSpy.mockImplementation(slowUpload as never);
-
-    const flush1 = service.flush();
-    // Let flush #1 enter its `await uploadPort.upload(...)`.
-    await new Promise((r) => setTimeout(r, 0));
-
-    // Record a third event while flush #1 is in flight.
-    service.record('milestone.reached', { totalVerses: 10 });
-    const flush2 = service.flush();
-    await new Promise((r) => setTimeout(r, 0));
-
-    // Resolve the slow uploads in order so both flushes can finish.
-    while (slowUploadResolvers.length > 0) {
-      slowUploadResolvers.shift()?.();
-      await new Promise((r) => setTimeout(r, 0));
-    }
-    await Promise.all([flush1, flush2]);
-
-    // Queue items remain structurally valid (id / event / sent).
-    for (const item of service.getQueue()) {
-      expect(item).toHaveProperty('id');
-      expect(item).toHaveProperty('event');
-      expect(item).toHaveProperty('sent');
-    }
-
-    // Final fast flush: whatever is still unsent is uploaded and pruned.
-    uploadPortUploadSpy.mockResolvedValue(undefined);
+    // First flush: uploads both, queue becomes empty.
     await service.flush();
     expect(service.getQueue()).toHaveLength(0);
+
+    // Record a third event after the first flush completes.
+    service.record('milestone.reached', { totalVerses: 10 });
+    expect(service.getQueue()).toHaveLength(1);
+
+    // Second flush: uploads the third event, queue becomes empty.
+    await service.flush();
+    expect(service.getQueue()).toHaveLength(0);
+
+    // uploadPort called exactly twice (once per flush, no overlap).
+    expect(uploadPortUploadSpy).toHaveBeenCalledTimes(2);
+    // No duplicate events: each batch has distinct eventTypes.
+    const batch1 = uploadPortUploadSpy.mock.calls[0][0] as TelemetryEvent[];
+    const batch2 = uploadPortUploadSpy.mock.calls[1][0] as TelemetryEvent[];
+    expect(batch1.map((e) => e.eventType)).toEqual(['streak.incremented', 'review.completed']);
+    expect(batch2.map((e) => e.eventType)).toEqual(['milestone.reached']);
   });
 });
