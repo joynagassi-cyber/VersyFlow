@@ -67,7 +67,7 @@ describe('SupabasePowerSyncConnector', () => {
     };
     mockSupabase.from = mockFrom;
     mockSupabase.auth.getSession.mockResolvedValue({
-      session: { access_token: 'jwt', refresh_token: 'refresh' },
+      data: { session: { access_token: 'jwt', refresh_token: 'refresh' } },
       error: null,
     });
     mockSupabase.auth.setSession.mockResolvedValue({ data: null, error: null });
@@ -97,13 +97,13 @@ describe('SupabasePowerSyncConnector', () => {
   });
 
   it('fetchCredentials returns null when there is no session', async () => {
-    mockSupabase.auth.getSession.mockResolvedValue({ session: null, error: null });
+    mockSupabase.auth.getSession.mockResolvedValue({ data: { session: null }, error: null });
     await expect(connector.fetchCredentials()).resolves.toBeNull();
   });
 
   it('fetchCredentials throws on a session read error', async () => {
     mockSupabase.auth.getSession.mockResolvedValue({
-      session: null,
+      data: { session: null },
       error: new Error('boom'),
     });
     await expect(connector.fetchCredentials()).rejects.toThrow(/session/i);
@@ -199,7 +199,7 @@ describe('SupabasePowerSyncConnector', () => {
   });
 
   it('uploadData throws when there is no active session', async () => {
-    mockSupabase.auth.getSession.mockResolvedValue({ session: null, error: null });
+    mockSupabase.auth.getSession.mockResolvedValue({ data: { session: null }, error: null });
     const mockDb = { getCrudBatch: vi.fn() } as any;
     await expect(connector.uploadData(mockDb)).rejects.toThrow(
       /No active Supabase session/,

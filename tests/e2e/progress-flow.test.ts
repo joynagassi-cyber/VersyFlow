@@ -29,7 +29,7 @@ describe('VersyFlow E2E - Progress & Analytics Flow', () => {
 
   describe('Streak calculation', () => {
     it('should calculate streak correctly', () => {
-      const calculateStreak = (reviewDates) => {
+      const calculateStreak = (reviewDates: number[]) => {
         if (reviewDates.length === 0) return 0;
 
         const today = Math.floor(Date.now() / 86400000);
@@ -37,7 +37,7 @@ describe('VersyFlow E2E - Progress & Analytics Flow', () => {
 
         for (let i = 0; i <= today; i++) {
           const checkDay = today - i;
-          const hasActivity = reviewDates.some(date => Math.floor(date / 86400000) === checkDay);
+          const hasActivity = reviewDates.some((date: number) => Math.floor(date / 86400000) === checkDay);
 
           if (hasActivity) {
             streak++;
@@ -58,17 +58,17 @@ describe('VersyFlow E2E - Progress & Analytics Flow', () => {
 
   describe('Weekly trend', () => {
     it('should calculate weekly trend', () => {
-      const calculateTrend = (records) => {
+      const calculateTrend = (records: Array<{ createdAt: number }>) => {
         const today = Math.floor(Date.now() / 86400000);
         const sevenDaysAgo = today - 7;
         const fourteenDaysAgo = today - 14;
 
-        const thisWeek = records.filter(r => {
+        const thisWeek = records.filter((r) => {
           const createdAtDay = Math.floor(r.createdAt / 86400000);
           return createdAtDay >= fourteenDaysAgo && createdAtDay <= sevenDaysAgo;
         }).length;
 
-        const lastWeek = records.filter(r => {
+        const lastWeek = records.filter((r) => {
           const createdAtDay = Math.floor(r.createdAt / 86400000);
           return createdAtDay >= fourteenDaysAgo - 7 && createdAtDay < fourteenDaysAgo;
         }).length;
@@ -88,7 +88,7 @@ describe('VersyFlow E2E - Progress & Analytics Flow', () => {
 
   describe('Retention calculation', () => {
     it('should calculate average retention', () => {
-      const calculateRetention = (records) => {
+      const calculateRetention = (records: Array<{ stability: number; nextInterval: number }>) => {
         if (records.length === 0) return 0;
 
         let totalRetention = 0;
@@ -110,7 +110,7 @@ describe('VersyFlow E2E - Progress & Analytics Flow', () => {
 
   describe('Mastery index', () => {
     it('should calculate mastery index for record', () => {
-      const calculateMasteryIndex = (record) => {
+      const calculateMasteryIndex = (record: { fsrsState: { stability: number; difficulty: number; recallProbability: number; lastInterval: number; nextInterval: number; elapsedDays: number; repetitions: number; requestedRetention: number } }) => {
         const { fsrsState } = record;
 
         const stabilityScore = Math.min(100, (fsrsState.stability / 30) * 100);

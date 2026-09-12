@@ -1,6 +1,8 @@
 /**
- * Tests simples pour vérifier la configuration Jest
+ * Tests simples pour vérifier la configuration de Vitest
  */
+
+import { describe, it, expect, vi } from 'vitest';
 
 describe('Jest Configuration', () => {
   it('should pass basic test', () => {
@@ -13,10 +15,10 @@ describe('Jest Configuration', () => {
   });
 
   it('should support mocks', () => {
-    const mockFn = jest.fn();
+    const mockFn = vi.fn();
     mockFn('hello');
     mockFn('world');
-    
+
     expect(mockFn).toHaveBeenCalledTimes(2);
     expect(mockFn).toHaveBeenCalledWith('hello');
     expect(mockFn).toHaveBeenCalledWith('world');
@@ -27,7 +29,7 @@ describe('VersyFlow Core', () => {
   it('should have theme tokens defined', () => {
     const primaryColor = '#E91E8C';
     const backgroundColor = '#fcf9f8';
-    
+
     expect(primaryColor).toBe('#E91E8C');
     expect(backgroundColor).toBe('#fcf9f8');
   });

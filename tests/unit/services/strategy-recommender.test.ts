@@ -28,10 +28,10 @@ describe('StrategyRecommendor', () => {
     it('should recommend smart masking for verses with errors', () => {
       // Arrange
       const wordPerformance: WordPerformance[] = [
-        { word: 'Dieu', errorCount: 3, totalAttempts: 5 },
-        { word: 'créa', errorCount: 2, totalAttempts: 4 },
+        { wordIndex: 0, word: 'Dieu', correctRecalls: 2, failedRecalls: 3, avgRecallTimeMs: 500, errorCount: 3, totalAttempts: 5 },
+        { wordIndex: 1, word: 'créa', correctRecalls: 2, failedRecalls: 2, avgRecallTimeMs: 500, errorCount: 2, totalAttempts: 4 },
       ];
-      
+
       // Act
       const recommendation = recommendor.recommendStrategy(wordPerformance, 2);
       
@@ -42,8 +42,8 @@ describe('StrategyRecommendor', () => {
     it('should recommend flashcards for verses with high stability', () => {
       // Arrange
       const wordPerformance: WordPerformance[] = [
-        { word: 'Dieu', errorCount: 0, totalAttempts: 1 },
-        { word: 'créa', errorCount: 0, totalAttempts: 1 },
+        { wordIndex: 0, word: 'Dieu', correctRecalls: 1, failedRecalls: 0, avgRecallTimeMs: 300, errorCount: 0, totalAttempts: 1 },
+        { wordIndex: 1, word: 'créa', correctRecalls: 1, failedRecalls: 0, avgRecallTimeMs: 300, errorCount: 0, totalAttempts: 1 },
       ];
       const avgStability = 8.0;
       
@@ -79,8 +79,8 @@ describe('StrategyRecommendor', () => {
     it('should calculate difficulty based on error rates', () => {
       // Arrange
       const wordPerformance: WordPerformance[] = [
-        { word: 'test', errorCount: 3, totalAttempts: 5 },
-        { word: 'word', errorCount: 2, totalAttempts: 4 },
+        { wordIndex: 0, word: 'test', correctRecalls: 2, failedRecalls: 3, avgRecallTimeMs: 400, errorCount: 3, totalAttempts: 5 },
+        { wordIndex: 1, word: 'word', correctRecalls: 2, failedRecalls: 2, avgRecallTimeMs: 400, errorCount: 2, totalAttempts: 4 },
       ];
       
       // Act

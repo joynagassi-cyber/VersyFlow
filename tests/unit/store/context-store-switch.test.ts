@@ -34,8 +34,6 @@ describe('Context Store Switch', () => {
   });
 
   it('should switch to family context and save personal snapshot', () => {
-    useContextStore.setState({ activeProfileId: 'profile-123', activeFamilyId: 'family-1' }, false);
-    // We can't pre-set these via the store's own actions easily, so let's use switchToFamily
     resetContextStore();
     useContextStore.getState().switchToFamily('family-A');
 

@@ -74,7 +74,7 @@ describe('MemorizationRepositoryPowerSync', () => {
 
   beforeEach(() => {
     db = makeMockDb();
-    repo = new MemorizationRepositoryPowerSync(provider, () => db);
+    repo = new MemorizationRepositoryPowerSync(provider, () => db as never);
   });
 
   it('upsert issues a plain INSERT (NOT an ON CONFLICT upsert) with all columns bound positionally', async () => {
@@ -138,7 +138,7 @@ describe('ReviewLogRepositoryPowerSync', () => {
 
   beforeEach(() => {
     db = makeMockDb();
-    repo = new ReviewLogRepositoryPowerSync(provider, () => db);
+    repo = new ReviewLogRepositoryPowerSync(provider, () => db as never);
   });
 
   it('append issues a plain INSERT (no ON CONFLICT clause) with 15 positional params', async () => {
@@ -168,6 +168,8 @@ describe('ReviewLogRepositoryPowerSync', () => {
   it('listByRecord queries by memorization_record_id', async () => {
     db.getAll.mockResolvedValue([]);
     await repo.listByRecord('rec-1');
-    expect(db.getAll.mock.calls[0][0]).toContain('memorization_record_id = ?');
+    await repo.listByRecord('rec-1');
+    const firstArg = (db.getAll as unknown as ReturnType<typeof vi.fn>).mock.calls[0]?.[0] as string | undefined;
+    expect(firstArg).toContain('memorization_record_id = ?');
   });
 });

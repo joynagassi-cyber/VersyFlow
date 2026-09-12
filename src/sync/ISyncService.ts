@@ -1,6 +1,7 @@
 /**
  * ISyncService — Interface générique pour le service de synchronisation cloud
- * Permet de découpler CloudMemorizationService de l'implémentation concrète
+ * Découple le service de synchronisation (`PowerSyncSyncService`) de ses
+ * consommateurs — PowerSync est le seul chemin de write.
  */
 
 export interface SyncStatus {

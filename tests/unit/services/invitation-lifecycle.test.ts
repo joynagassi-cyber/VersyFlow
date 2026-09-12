@@ -24,10 +24,10 @@ function createService() {
 }
 
 async function createFamilyWithOwner(familyRepo: FamilyRepositoryLocal, ownerId: string, familyName = 'Test Family') {
-  const family = await familyRepo.create({ ownerId, name: familyName, color: '#E91E8C', icon: '👨‍👩‍👧‍👦', createdAt: Date.now() });
+  const family = await familyRepo.create({ ownerId, name: familyName, color: '#E91E8C', icon: '👨‍👩‍👧‍👦' });
   const now = Date.now();
-  await familyRepo.addMember(family.id, { accountId: ownerId, role: 'owner', status: 'active', createdAt: now, joinedAt: now });
-  await familyRepo.addMember(family.id, { accountId: ownerId, role: 'owner', status: 'active', createdAt: now, joinedAt: now });
+  await familyRepo.addMember(family.id, { accountId: ownerId, role: 'owner', status: 'active' });
+  await familyRepo.addMember(family.id, { accountId: ownerId, role: 'owner', status: 'active' });
   return family;
 }
 
@@ -48,10 +48,10 @@ describe('Invitation Lifecycle — Full Chain', () => {
   it('should create invitation, validate token, accept, and mark used', async () => {
     const owner = 'owner-1';
     const newMember = 'new-member-1';
-    const family = await familyRepo.create({ ownerId: owner, name: 'Test Family', color: '#E91E8C', icon: '👨‍👩‍👧‍👦', createdAt: Date.now() });
+    const family = await familyRepo.create({ ownerId: owner, name: 'Test Family', color: '#E91E8C', icon: '👨‍👩‍👧‍👦' });
     const now = Date.now();
-    await familyRepo.addMember(family.id, { accountId: owner, role: 'owner', status: 'active', createdAt: now, joinedAt: now });
-    await profileRepo.create({ accountId: owner, displayName: owner, status: 'active', createdAt: Date.now(), updatedAt: Date.now() });
+    await familyRepo.addMember(family.id, { accountId: owner, role: 'owner', status: 'active' });
+    await profileRepo.create({ accountId: owner, displayName: owner, status: 'active' });
 
     // Create invitation
     const invitation = await service.createInvitation(family.id, owner);
@@ -81,10 +81,10 @@ describe('Invitation Lifecycle — Full Chain', () => {
 
   it('should reject already-used token', async () => {
     const owner = 'owner-1';
-    const family = await familyRepo.create({ ownerId: owner, name: 'Test Family', color: '#E91E8C', icon: '👨‍👩‍👧‍👦', createdAt: Date.now() });
+    const family = await familyRepo.create({ ownerId: owner, name: 'Test Family', color: '#E91E8C', icon: '👨‍👩‍👧‍👦' });
     const now = Date.now();
-    await familyRepo.addMember(family.id, { accountId: owner, role: 'owner', status: 'active', createdAt: now, joinedAt: now });
-    await profileRepo.create({ accountId: owner, displayName: owner, status: 'active', createdAt: Date.now(), updatedAt: Date.now() });
+    await familyRepo.addMember(family.id, { accountId: owner, role: 'owner', status: 'active' });
+    await profileRepo.create({ accountId: owner, displayName: owner, status: 'active' });
 
     const invitation = await service.createInvitation(family.id, owner);
 
@@ -111,10 +111,10 @@ describe('Invitation Lifecycle — Revoke', () => {
   });
 
   async function setup(ownerId: string) {
-    const family = await familyRepo.create({ ownerId, name: 'Test Family', color: '#E91E8C', icon: '👨‍👩‍👧‍👦', createdAt: Date.now() });
+    const family = await familyRepo.create({ ownerId, name: 'Test Family', color: '#E91E8C', icon: '👨‍👩‍👧‍👦' });
     const now = Date.now();
-    await familyRepo.addMember(family.id, { accountId: ownerId, role: 'owner', status: 'active', createdAt: now, joinedAt: now });
-    await profileRepo.create({ accountId: ownerId, displayName: ownerId, status: 'active', createdAt: Date.now(), updatedAt: Date.now() });
+    await familyRepo.addMember(family.id, { accountId: ownerId, role: 'owner', status: 'active' });
+    await profileRepo.create({ accountId: ownerId, displayName: ownerId, status: 'active' });
     return family;
   }
 
@@ -159,23 +159,20 @@ describe('Invitation Lifecycle — Expire Past Due', () => {
   });
 
   it('should expire past-due invitations', async () => {
-    const now = Date.now();
-    // Manually inject expired invitations
-    await invitationRepo.create({
+    // Create two invitations, then backdate their expiresAt so they are past due
+    const inv1 = await invitationRepo.create({
       familyId: 'family-1',
       createdBy: 'user-1',
       token: 'FAM-EXPIRED1',
       status: 'active',
-      expiresAt: now - 1000,
-      createdAt: now - 10000,
+      expiresInDays: 7,
     });
-    await invitationRepo.create({
+    const inv2 = await invitationRepo.create({
       familyId: 'family-2',
       createdBy: 'user-1',
       token: 'FAM-EXPIRED2',
       status: 'active',
-      expiresAt: now - 5000,
-      createdAt: now - 10000,
+      expiresInDays: 7,
     });
     // One still valid
     await invitationRepo.create({
@@ -183,20 +180,21 @@ describe('Invitation Lifecycle — Expire Past Due', () => {
       createdBy: 'user-1',
       token: 'FAM-VALID',
       status: 'active',
-      expiresAt: now + 100000,
-      createdAt: now,
+      expiresInDays: 7,
     });
+
+    // Backdate the two invitations' expiry to the past via the internal map
+    const internalMap = (invitationRepo as any).invitations as Map<string, FamilyInvitation>;
+    internalMap.set(inv1.id, { ...inv1, expiresAt: Date.now() - 1000 });
+    internalMap.set(inv2.id, { ...inv2, expiresAt: Date.now() - 1000 });
 
     const expiredCount = await service.expirePastDue();
     expect(expiredCount).toBe(2);
 
     // Verify states
-    const allInv = Array.from(invitationRepo as any).filter ? [] : [];
-    // Use the internal map
-    const internalMap = (invitationRepo as any).invitations;
     const entries = Array.from(internalMap.values());
-    const activeCount = entries.filter((i: FamilyInvitation) => i.status === 'active').length;
-    const expiredCountActual = entries.filter((i: FamilyInvitation) => i.status === 'expired').length;
+    const activeCount = entries.filter((i) => i.status === 'active').length;
+    const expiredCountActual = entries.filter((i) => i.status === 'expired').length;
     expect(activeCount).toBe(1);
     expect(expiredCountActual).toBe(2);
   });
@@ -208,8 +206,7 @@ describe('Invitation Lifecycle — Expire Past Due', () => {
       createdBy: 'user-1',
       token: 'FAM-VALID',
       status: 'active',
-      expiresAt: now + 100000,
-      createdAt: now,
+      expiresInDays: 7,
     });
 
     const expiredCount = await service.expirePastDue();

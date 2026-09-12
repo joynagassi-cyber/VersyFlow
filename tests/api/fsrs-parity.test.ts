@@ -7,7 +7,7 @@
 import { describe, it, expect } from 'vitest';
 import { TsFsrsEngine } from '@/domains/fsrs/ts-fsrs-engine';
 import { Rating, type FsrsState } from '@/domains/fsrs/engine';
-import { fsrs, createEmptyCard, TypeConvert } from 'ts-fsrs';
+import { fsrs, createEmptyCard } from 'ts-fsrs';
 
 /**
  * Helper: run a sequence of ratings starting from a new card
@@ -57,7 +57,7 @@ describe('FSRS Parity Tests - Golden Values from ts-fsrs', () => {
     it('matches raw ts-fsrs calculation', () => {
       const f = fsrs();
       const card = createEmptyCard(new Date());
-      const r = f.next(card, new Date(), TypeConvert.rating(1));
+      const r = f.next(card, new Date(), 1);
       expect(r.card.stability).toBeCloseTo(0.212, 6);
       expect(r.card.difficulty).toBeCloseTo(6.4133, 4);
       expect(r.card.reps).toBe(1);
@@ -77,8 +77,8 @@ describe('FSRS Parity Tests - Golden Values from ts-fsrs', () => {
     it('matches raw ts-fsrs calculation', () => {
       const f = fsrs();
       const card = createEmptyCard(new Date());
-      const r1 = f.next(card, new Date(), TypeConvert.rating(1));
-      const r2 = f.next(r1.card, new Date(), TypeConvert.rating(3));
+      const r1 = f.next(card, new Date(), 1);
+      const r2 = f.next(r1.card, new Date(), 3);
       expect(r2.card.stability).toBeCloseTo(0.24668919, 8);
       expect(r2.card.difficulty).toBeCloseTo(6.40211507, 8);
       expect(r2.card.reps).toBe(2);
@@ -98,9 +98,9 @@ describe('FSRS Parity Tests - Golden Values from ts-fsrs', () => {
     it('matches raw ts-fsrs calculation', () => {
       const f = fsrs();
       const card = createEmptyCard(new Date());
-      const r1 = f.next(card, new Date(), TypeConvert.rating(1));
-      const r2 = f.next(r1.card, new Date(), TypeConvert.rating(3));
-      const r3 = f.next(r2.card, new Date(), TypeConvert.rating(4));
+      const r1 = f.next(card, new Date(), 1);
+      const r2 = f.next(r1.card, new Date(), 3);
+      const r3 = f.next(r2.card, new Date(), 4);
       expect(r3.card.stability).toBeCloseTo(0.48892084, 8);
       expect(r3.card.difficulty).toBeCloseTo(5.18509795, 8);
       expect(r3.card.reps).toBe(3);
@@ -120,10 +120,10 @@ describe('FSRS Parity Tests - Golden Values from ts-fsrs', () => {
     it('matches raw ts-fsrs calculation', () => {
       const f = fsrs();
       const card = createEmptyCard(new Date());
-      const r1 = f.next(card, new Date(), TypeConvert.rating(1));
-      const r2 = f.next(r1.card, new Date(), TypeConvert.rating(3));
-      const r3 = f.next(r2.card, new Date(), TypeConvert.rating(4));
-      const r4 = f.next(r3.card, new Date(), TypeConvert.rating(2));
+      const r1 = f.next(card, new Date(), 1);
+      const r2 = f.next(r1.card, new Date(), 3);
+      const r3 = f.next(r2.card, new Date(), 4);
+      const r4 = f.next(r3.card, new Date(), 2);
       expect(r4.card.stability).toBeCloseTo(0.48892084, 8);
       expect(r4.card.difficulty).toBeCloseTo(6.78887202, 8);
       expect(r4.card.reps).toBe(4);

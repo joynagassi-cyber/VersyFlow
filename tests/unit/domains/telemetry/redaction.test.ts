@@ -8,7 +8,7 @@ import type { TelemetryEvent } from '@/domains/telemetry/entities';
 
 describe('redact()', () => {
   it('strips sensitive fields like bibleVerseText, verseText, words', () => {
-    const event: TelemetryEvent = {
+    const event = {
       eventType: 'exercise.completed',
       timestamp: 1000,
       sessionId: 'sess_1',
@@ -28,7 +28,7 @@ describe('redact()', () => {
         content: 'raw verse content',
         rawText: 'some raw text',
       },
-    };
+    } as unknown as TelemetryEvent;
 
     const redacted = redact(event);
 
@@ -70,7 +70,7 @@ describe('redact()', () => {
   });
 
   it('strips deeply nested sensitive fields', () => {
-    const event: TelemetryEvent = {
+    const event = {
       eventType: 'exercise.completed',
       timestamp: 3000,
       sessionId: 'sess_3',
@@ -84,7 +84,7 @@ describe('redact()', () => {
         fsrsAfter: { stability: 1.5, difficulty: 5, recallProbability: 0.92, lastInterval: 1, nextInterval: 2, elapsedDays: 0, repetitions: 1, requestedRetention: 0.9 },
         context: { bookId: 'psa', chapterNumber: 23, verseNumber: 1, translationId: 'lsg' },
       },
-    };
+    } as unknown as TelemetryEvent;
 
     const redacted = redact(event);
     const nestedPayload = (redacted.payload as any).verification;

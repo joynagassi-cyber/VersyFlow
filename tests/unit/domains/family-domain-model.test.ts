@@ -44,7 +44,7 @@ describe('LearnerProfile Domain', () => {
         status: 'active'
       };
 
-      expect(profile.avatar).toBeUndefined();
+      expect((profile as Record<string, unknown>).avatar).toBeUndefined();
       expect(profile.status).toBe('active');
     });
 

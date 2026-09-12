@@ -78,7 +78,7 @@ describe('Family Service', () => {
     const found = await service.findById(family.id);
 
     expect(found).not.toBeNull();
-    expect(found.name).toBe('Test Family');
+    expect(found!.name).toBe('Test Family');
   });
 
   it('should add a member to family', async () => {

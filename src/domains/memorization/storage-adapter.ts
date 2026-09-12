@@ -2,7 +2,8 @@
  * MemorizationStorageAdapter — Shared storage adapter for memorization data
  *
  * Encapsulates key formatting, read-modify-write retry logic, and JSON serialization
- * shared between MemorizationService (profile-scoped) and CloudMemorizationService.
+ * shared between MemorizationService (profile-scoped) and the standalone
+ * MMKV → PowerSync migration entry point.
  *
  * The MemorizationService passes a keyPrefix (profile-scoped) or empty prefix (cloud).
  */

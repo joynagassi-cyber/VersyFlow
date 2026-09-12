@@ -1,10 +1,10 @@
 /**
  * PowerSyncSyncService — `ISyncService` implementation backed by PowerSync.
  *
- * This is the single sync implementation for the app (single-sync invariant).
- * It wires the shared PowerSync database (`powersync-database.ts`) to the
- * Supabase PowerSync connector and exposes the app-level `ISyncService`
- * surface consumed by `CloudMemorizationService`.
+ * This is the single sync implementation for the app (single-sync invariant,
+ * P0A). It wires the shared PowerSync database (`powersync-database.ts`) to
+ * the Supabase PowerSync connector and exposes the app-level `ISyncService`
+ * surface consumed by the repositories and `sync-store`.
  *
  * Model:
  *   - All business writes are made to the LOCAL PowerSync SQLite database
@@ -17,8 +17,8 @@
  *
  * The legacy `syncRecordsToCloud` / `syncLogsToCloud` split no longer exists
  * — PowerSync uses one unified CRUD queue. Both are retained on the interface
- * for `CloudMemorizationService` compatibility and resolve to "ensure the
- * stream is active so pending writes get uploaded".
+ * for backward compatibility and resolve to "ensure the stream is active so
+ * pending writes get uploaded".
  */
 
 import type { ISyncService, SyncStatus } from '@/sync/ISyncService';

@@ -10,8 +10,11 @@ import { Colors, ColorsDark, getThemeColors, Typography, Spacing, Radius, Shadow
 
 export type ThemeMode = 'light' | 'dark';
 
+/** Common color palette satisfied by both `Colors` (light) and `ColorsDark`. */
+type ColorPalette = typeof Colors | typeof ColorsDark;
+
 interface ThemeContextType {
-  colors: typeof Colors;
+  colors: ColorPalette;
   colorsDark: typeof ColorsDark;
   isDark: boolean;
   themeMode: ThemeMode;
@@ -46,7 +49,7 @@ function getDarkMode(): ThemeMode {
 }
 
 export function IonicThemeProvider({ children }: { children: React.ReactNode }) {
-  const [isDark, setIsDark] = useState<boolean>(getDarkMode === 'dark');
+  const [isDark, setIsDark] = useState<boolean>(getDarkMode() === 'dark');
   const themeMode: ThemeMode = isDark ? 'dark' : 'light';
 
   useEffect(() => {

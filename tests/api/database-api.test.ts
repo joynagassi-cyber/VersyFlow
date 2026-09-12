@@ -101,7 +101,7 @@ describe('VersyFlow API Tests - InsForge Database', () => {
 
   describe('Data validation', () => {
     it('should validate UUID format', () => {
-      const validateUUID = (id) => {
+      const validateUUID = (id: string) => {
         const regex = /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/;
         return regex.test(id);
       };
@@ -111,7 +111,7 @@ describe('VersyFlow API Tests - InsForge Database', () => {
     });
 
     it('should validate email format', () => {
-      const validateEmail = (email) => {
+      const validateEmail = (email: string) => {
         const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return regex.test(email);
       };
@@ -121,7 +121,7 @@ describe('VersyFlow API Tests - InsForge Database', () => {
     });
 
     it('should validate timestamp format', () => {
-      const validateTimestamp = (ts) => {
+      const validateTimestamp = (ts: number) => {
         return Number.isInteger(ts) && ts > 0 && ts < Date.now() + 86400000;
       };
 

@@ -20,6 +20,23 @@ import { buildPowerSyncSchema } from './powersync-schema';
 
 const DB_FILENAME = 'versyflow.db';
 
+/**
+ * URL of the pre-bundled PowerSync web worker, copied into `public/` from
+ * `@powersync/web/dist/worker/worker.js` by `scripts/patch-powersync-worker.cjs`
+ * (postinstall). Referencing it by plain relative URL (instead of letting
+ * the SDK spawn its internal `new Worker(new URL('./worker.js', import.meta.url))`)
+ * keeps Vite from trying to re-bundle that worker — an IIFE worker is
+ * incompatible with the code-splitting main build. The SDK's `sync.worker`
+ * option accepts a URL string and spawns `new Worker(url, { type: 'module' })`
+ * internally.
+ *
+ * `publicDir` is copied as-is into `www/` at the root of the build output,
+ * so the worker is served at `/{base}worker/powersync-worker.js`. The
+ * `import.meta.url` resolution points inside the bundled chunk (a hash-named
+ * file), so the reference must be relative to the page, not to the chunk.
+ */
+const POWERSYNC_WORKER_URL = 'worker/powersync-worker.js';
+
 let instance: CommonPowerSyncDatabase | null = null;
 
 /**
@@ -33,6 +50,7 @@ export function getPowerSyncDatabase(): CommonPowerSyncDatabase {
     instance = new PowerSyncDatabase({
       schema: buildPowerSyncSchema(),
       database: { dbFilename: DB_FILENAME },
+      sync: { worker: POWERSYNC_WORKER_URL },
     });
   }
   return instance;

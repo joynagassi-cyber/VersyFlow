@@ -13,6 +13,7 @@ describe('ReviewQueue — Passage Support (Phase 8.6)', () => {
 
       const passageRecord: MemorizationRecord = {
         id: 'passage:joh:3:16-18',
+        learnerProfileId: 'profile-1',
         bookId: 'joh',
         chapterNumber: 3,
         verseNumber: 16,
@@ -59,6 +60,7 @@ describe('ReviewQueue — Passage Support (Phase 8.6)', () => {
 
       const masteredPassage: MemorizationRecord = {
         id: 'passage:mastered',
+        learnerProfileId: 'profile-1',
         bookId: 'psa',
         chapterNumber: 23,
         verseNumber: 1,
@@ -103,6 +105,7 @@ describe('ReviewQueue — Passage Support (Phase 8.6)', () => {
 
       const stablePassage: MemorizationRecord = {
         id: 'stable',
+        learnerProfileId: 'profile-1',
         bookId: 'joh',
         chapterNumber: 3,
         verseNumber: 16,
@@ -127,6 +130,7 @@ describe('ReviewQueue — Passage Support (Phase 8.6)', () => {
 
       const urgentPassage: MemorizationRecord = {
         id: 'urgent',
+        learnerProfileId: 'profile-1',
         bookId: 'joh',
         chapterNumber: 3,
         verseNumber: 16,
@@ -165,6 +169,7 @@ describe('ReviewQueue — Passage Support (Phase 8.6)', () => {
       // Single record for 3-verse passage
       const passageRecord: MemorizationRecord = {
         id: 'passage:one-entry',
+        learnerProfileId: 'profile-1',
         bookId: 'joh',
         chapterNumber: 3,
         verseNumber: 16,
@@ -202,6 +207,7 @@ describe('ReviewQueue — Passage Support (Phase 8.6)', () => {
 
       const verseRecord: MemorizationRecord = {
         id: 'verse:1',
+        learnerProfileId: 'profile-1',
         bookId: 'joh',
         chapterNumber: 3,
         verseNumber: 16,
@@ -222,6 +228,7 @@ describe('ReviewQueue — Passage Support (Phase 8.6)', () => {
 
       const passageRecord: MemorizationRecord = {
         id: 'passage:1',
+        learnerProfileId: 'profile-1',
         bookId: 'joh',
         chapterNumber: 3,
         verseNumber: 16,

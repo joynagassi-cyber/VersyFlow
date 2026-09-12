@@ -29,7 +29,7 @@ describe('Context Management', () => {
       // In a real test, we would render the hook
       // For now, we verify the logic directly
       const hasActiveSession = () => {
-        const state = null;
+        const state = null as { phase: string } | null;
         return state?.phase === 'preview' || state?.phase === 'revealing';
       };
 

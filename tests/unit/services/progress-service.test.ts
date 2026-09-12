@@ -27,7 +27,7 @@ describe('ProgressService', () => {
 
   describe('Calcul de la streak', () => {
     it('should return 0 streak when no activity', async () => {
-      const stats = await service.getStats(0);
+      const stats = await service.getStats();
       expect(stats.streakCount).toBe(0);
     });
 
@@ -62,13 +62,14 @@ describe('ProgressService', () => {
         totalReviewMinutes: 5,
         wordPerformance: [],
         favorite: false,
+        tags: [],
       };
 
       const { id: _ignored, ...recordWithoutId } = record;
       await memorizationService.saveMemorizedRecord(recordWithoutId);
       
       // Act
-      const stats = await service.getStats(1);
+      const stats = await service.getStats();
 
       // Assert
       expect(stats.totalVerses).toBeGreaterThan(0);
@@ -79,7 +80,7 @@ describe('ProgressService', () => {
   describe('Statistiques de progression', () => {
     it('should return correct verse counts', async () => {
       // Act
-      const stats = await service.getStats(0);
+      const stats = await service.getStats();
       
       // Assert
       expect(stats).toHaveProperty('totalVerses');

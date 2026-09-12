@@ -8,9 +8,9 @@
  * uniqueness constraint.
  *
  * The migration is idempotent: a subsequent call is a no-op if no MMKV data
- * remains (or there is no authenticated session). The function is called
- * from `CloudMemorizationService.migrateFromMmkvToPowerSync` and
- * `sync-store` after the PowerSync DB is initialised.
+ * remains (or there is no authenticated session). The standalone entry point
+ * is consumed by `sync-store` after the PowerSync DB is initialised, and by
+ * the one-shot tooling script `scripts/migrate-to-insforge.ts`.
  *
  * This module performs I/O and therefore lives in `src/sync` (service
  * layer). The domain and infrastructure layers stay free of migration

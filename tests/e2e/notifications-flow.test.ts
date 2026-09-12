@@ -52,7 +52,7 @@ describe('VersyFlow E2E - Notification & Reminder Flow', () => {
     });
 
     it('should validate time format', () => {
-      const validateTime = (time) => {
+      const validateTime = (time: string) => {
         const regex = /^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/;
         return regex.test(time);
       };

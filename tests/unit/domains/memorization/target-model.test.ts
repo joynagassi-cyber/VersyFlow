@@ -109,6 +109,7 @@ describe('MemorizationRecord Extension', () => {
   it('should have new optional fields', () => {
     const record: MemorizationRecord = {
       id: 'rec-1',
+      learnerProfileId: 'profile-1',
       bookId: 'joh',
       chapterNumber: 3,
       verseNumber: 16,
@@ -148,6 +149,7 @@ describe('MemorizationRecord Extension', () => {
   it('should support passage record', () => {
     const record: MemorizationRecord = {
       id: 'rec-2',
+      learnerProfileId: 'profile-1',
       bookId: 'joh',
       chapterNumber: 3,
       verseNumber: 16,
@@ -192,6 +194,7 @@ describe('MemorizationRecord Extension', () => {
     // Old record without new fields
     const oldRecord: MemorizationRecord = {
       id: 'joh:3:16:lsg',
+      learnerProfileId: 'profile-1',
       bookId: 'joh',
       chapterNumber: 3,
       verseNumber: 16,

@@ -178,7 +178,7 @@ describe('Phase 8.5 — Passage Session UI Logic', () => {
       const reference = 'Jean 3:16';
       const rating = 'good';
 
-      const params = { rating, reference };
+      const params = { rating, reference } as { rating: string; reference: string; targetType?: string };
       const isPassage = params.targetType === 'passage';
 
       expect(isPassage).toBe(false);

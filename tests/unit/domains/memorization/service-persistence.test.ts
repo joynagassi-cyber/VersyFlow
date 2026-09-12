@@ -28,7 +28,7 @@ describe('MemorizationPersistence', () => {
   it('should save and retrieve a memorized record', async () => {
     // Arrange
     const recordId = 'joh:3:16:lsg';
-    const recordToSave: Omit<MemorizationRecord, 'id'> = {
+    const recordToSave: Omit<MemorizationRecord, 'id' | 'learnerProfileId'> = {
       bookId: 'joh',
       chapterNumber: 3,
       verseNumber: 16,
@@ -43,6 +43,8 @@ describe('MemorizationPersistence', () => {
       reviewCount: 0,
       totalReviewMinutes: 0,
       wordPerformance: [],
+      favorite: false,
+      tags: [],
     };
 
     // Act - Sauvegarder le record
@@ -65,17 +67,16 @@ describe('MemorizationPersistence', () => {
 
   it('should retrieve all memorized records', async () => {
     // Arrange - Créer plusieurs records
-    const records: Omit<MemorizationRecord, 'id'>[] = [
-      { bookId: 'gen', chapterNumber: 1, verseNumber: 1, translationId: 'lsg', bibleVerseReference: 'Genèse 1:1', bibleVerseText: 'Au commencement...', status: 'in-progress', fsrsState: { stability: 2, repetitions: 0, recallProbability: 0.6, difficulty: 5, lastInterval: 0, nextInterval: 1, elapsedDays: 0, requestedRetention: 0.9 }, nextReviewAt: Date.now() + 1000, createdAt: Date.now(), lastReviewedAt: null, reviewCount: 0, totalReviewMinutes: 0, wordPerformance: [] },
-      { bookId: 'exo', chapterNumber: 2, verseNumber: 1, translationId: 'lsg', bibleVerseReference: 'Exode 2:1', bibleVerseText: 'Et il arriva...', status: 'new', fsrsState: { stability: 1.5, repetitions: 0, recallProbability: 0.5, difficulty: 5, lastInterval: 0, nextInterval: 1, elapsedDays: 0, requestedRetention: 0.9 }, nextReviewAt: Date.now() + 2000, createdAt: Date.now(), lastReviewedAt: null, reviewCount: 0, totalReviewMinutes: 0, wordPerformance: [] },
+    const records: Omit<MemorizationRecord, 'id' | 'learnerProfileId'>[] = [
+      { bookId: 'gen', chapterNumber: 1, verseNumber: 1, translationId: 'lsg', bibleVerseReference: 'Genèse 1:1', bibleVerseText: 'Au commencement...', status: 'in-progress', fsrsState: { stability: 2, repetitions: 0, recallProbability: 0.6, difficulty: 5, lastInterval: 0, nextInterval: 1, elapsedDays: 0, requestedRetention: 0.9 }, nextReviewAt: Date.now() + 1000, createdAt: Date.now(), lastReviewedAt: null, reviewCount: 0, totalReviewMinutes: 0, wordPerformance: [], favorite: false, tags: [] },
+      { bookId: 'exo', chapterNumber: 2, verseNumber: 1, translationId: 'lsg', bibleVerseReference: 'Exode 2:1', bibleVerseText: 'Et il arriva...', status: 'new', fsrsState: { stability: 1.5, repetitions: 0, recallProbability: 0.5, difficulty: 5, lastInterval: 0, nextInterval: 1, elapsedDays: 0, requestedRetention: 0.9 }, nextReviewAt: Date.now() + 2000, createdAt: Date.now(), lastReviewedAt: null, reviewCount: 0, totalReviewMinutes: 0, wordPerformance: [], favorite: false, tags: [] },
     ];
 
     for (const rec of records) {
-      const recordId = `${rec.bookId}:${rec.chapterNumber}:${rec.verseNumber}:${rec.translationId}`;
-      await service.saveMemorizedRecord({ ...rec, id: recordId });
+      await service.saveMemorizedRecord(rec);
     }
 
-    // Act
+    // Act - Récupérer tous les records
     const allRecords = await service.getAllMemorized();
 
     // Assert
@@ -170,7 +171,7 @@ describe('MemorizationPersistence', () => {
     const now = Date.now();
 
     // Créer un record initial
-    const initialRecord: Omit<MemorizationRecord, 'id'> = {
+    const initialRecord: Omit<MemorizationRecord, 'id' | 'learnerProfileId'> = {
       bookId: 'joh',
       chapterNumber: 3,
       verseNumber: 16,
@@ -185,9 +186,11 @@ describe('MemorizationPersistence', () => {
       reviewCount: 1,
       totalReviewMinutes: 5,
       wordPerformance: [],
+      favorite: false,
+      tags: [],
     };
 
-    await service.saveMemorizedRecord({ ...initialRecord, id: recordId });
+    await service.saveMemorizedRecord(initialRecord);
 
     // Act - Effectuer une révision (met à jour le record ET enregistre le log)
     const newFsrsState: FsrsState = {

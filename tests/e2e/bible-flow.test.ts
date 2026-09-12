@@ -55,7 +55,7 @@ describe('VersyFlow E2E - Bible & Content Flow', () => {
     });
 
     it('should parse verse reference correctly', () => {
-      const parseReference = (ref) => {
+      const parseReference = (ref: string) => {
         const match = ref.match(/^(.+?)\s+(\d+):(\d+)$/);
         if (match) {
           return {
@@ -67,7 +67,7 @@ describe('VersyFlow E2E - Bible & Content Flow', () => {
         return null;
       };
 
-      const result = parseReference('Psaumes 23:1');
+      const result = parseReference('Psaumes 23:1')!;
       expect(result).not.toBeNull();
       expect(result.book).toBe('Psaumes');
       expect(result.chapter).toBe(23);

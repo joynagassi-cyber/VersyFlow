@@ -63,6 +63,7 @@ describe('ReviewQueueService', () => {
         totalReviewMinutes: 10,
         wordPerformance: [],
         favorite: false,
+        tags: [],
       };
 
       await memorizationService.saveMemorizedRecord(record);
@@ -104,6 +105,7 @@ describe('ReviewQueueService', () => {
         totalReviewMinutes: 25,
         wordPerformance: [],
         favorite: false,
+        tags: [],
       };
 
       await memorizationService.saveMemorizedRecord(record);

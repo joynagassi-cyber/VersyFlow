@@ -33,6 +33,8 @@ const OnboardingWelcome = lazy(() => import('../app/onboarding/welcome'));
 const OnboardingLanguage = lazy(() => import('../app/onboarding/language-select'));
 const OnboardingTranslation = lazy(() => import('../app/onboarding/translation-select'));
 const OnboardingFsrs = lazy(() => import('../app/onboarding/fsrs-introduction'));
+const OnboardingSessionConfig = lazy(() => import('../app/onboarding/session-config'));
+const OnboardingReminderConfig = lazy(() => import('../app/onboarding/reminder-config'));
 
 // Bible
 const BibleExplorer = lazy(() => import('../app/bible/explorer'));
@@ -63,6 +65,8 @@ const SettingsAppearance = lazy(() => import('../app/settings/appearance'));
 const SettingsBackup = lazy(() => import('../app/settings/backup'));
 const SettingsAbout = lazy(() => import('../app/settings/about'));
 const SettingsPrivacy = lazy(() => import('../app/settings/privacy'));
+const SettingsSession = lazy(() => import('../app/settings/session'));
+const SettingsReminders = lazy(() => import('../app/settings/reminders'));
 const SettingsIndex = lazy(() => import('../app/settings/index'));
 
 // Misc deep pages
@@ -85,6 +89,8 @@ const MemoryRecallWriting = lazy(() => import('../app/memory/recall-writing'));
 import { I18nService } from '@/i18n';
 import i18next, { initI18next } from '@/i18n/i18next-init';
 import { initializeSettingsStore, useSettingsStore } from '@/store/settings-store';
+import { initializeAppearanceStore } from '@/store/appearance-store';
+import { ThemeManager } from '@/components/ThemeManager';
 import type { MemorizationRecord } from '@/domains/memorization/entities';
 import { isRTL } from '@/domains/i18n/config';
 
@@ -96,6 +102,7 @@ import { isRTL } from '@/domains/i18n/config';
   I18nService.getInstance().setLanguage(savedLanguage);
   document.documentElement.dir = isRTL(savedLanguage) ? 'rtl' : 'ltr';
   initializeSettingsStore();
+  initializeAppearanceStore();
 })();
 
 /** Guard: redirects to onboarding if it hasn't been completed yet */
@@ -187,6 +194,7 @@ function App() {
   return (
     <StrictMode>
       <DirSync />
+      <ThemeManager />
       <BrowserRouter>
         <IonApp>
           <Routes>
@@ -198,6 +206,8 @@ function App() {
               <Route path="welcome" element={<OnboardingWelcome />} />
               <Route path="language-select" element={<OnboardingLanguage />} />
               <Route path="translation-select" element={<OnboardingTranslation />} />
+              <Route path="session-config" element={<OnboardingSessionConfig />} />
+              <Route path="reminder-config" element={<OnboardingReminderConfig />} />
               <Route path="fsrs-introduction" element={<OnboardingFsrs />} />
             </Route>
 
@@ -248,6 +258,8 @@ function App() {
               <Route path="/settings/backup" element={<SettingsBackup />} />
               <Route path="/settings/about" element={<SettingsAbout />} />
               <Route path="/settings/privacy" element={<SettingsPrivacy />} />
+              <Route path="/settings/session" element={<SettingsSession />} />
+              <Route path="/settings/reminders" element={<SettingsReminders />} />
 
               {/* Misc */}
               <Route path="/search" element={<SearchPage />} />

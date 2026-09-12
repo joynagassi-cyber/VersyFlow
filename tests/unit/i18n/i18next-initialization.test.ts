@@ -324,7 +324,7 @@ describe('i18next initialization', () => {
   // ═══════════════════════════════════════════════════════════
 
   it('should have all 11 namespace groups resolvable in fr locale', () => {
-    const frData = i18next.store?.data?.fr?.translation;
+    const frData = (i18next.store?.data?.fr?.translation ?? {}) as Record<string, string>;
     expect(frData).toBeDefined();
 
     const requiredKeys = [

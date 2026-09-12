@@ -11,6 +11,7 @@ describe('ProgressService — Passage Stats (Phase 8.6)', () => {
     it('should count passage records in totalVerses', () => {
       const verseRecord: MemorizationRecord = {
         id: 'verse:1',
+        learnerProfileId: 'profile-1',
         bookId: 'joh',
         chapterNumber: 3,
         verseNumber: 16,
@@ -35,6 +36,7 @@ describe('ProgressService — Passage Stats (Phase 8.6)', () => {
 
       const passageRecord: MemorizationRecord = {
         id: 'passage:1',
+        learnerProfileId: 'profile-1',
         bookId: 'joh',
         chapterNumber: 3,
         verseNumber: 16,
@@ -74,6 +76,7 @@ describe('ProgressService — Passage Stats (Phase 8.6)', () => {
     it('should count mastered passages correctly', () => {
       const masteredPassage: MemorizationRecord = {
         id: 'passage:mastered',
+        learnerProfileId: 'profile-1',
         bookId: 'gen',
         chapterNumber: 1,
         verseNumber: 1,
@@ -111,6 +114,7 @@ describe('ProgressService — Passage Stats (Phase 8.6)', () => {
     it('should calculate average retention for passage records', () => {
       const passageRecord: MemorizationRecord = {
         id: 'passage:retention',
+        learnerProfileId: 'profile-1',
         bookId: 'joh',
         chapterNumber: 3,
         verseNumber: 16,
@@ -156,6 +160,7 @@ describe('ProgressService — Passage Stats (Phase 8.6)', () => {
     it('should be backward compatible with existing stats structure', () => {
       const verseRecord: MemorizationRecord = {
         id: 'backward:1',
+        learnerProfileId: 'profile-1',
         bookId: 'joh',
         chapterNumber: 3,
         verseNumber: 16,
@@ -210,6 +215,7 @@ describe('ProgressService — Passage Stats (Phase 8.6)', () => {
     it('should calculate mastery index for passage records', () => {
       const passageRecord: MemorizationRecord = {
         id: 'passage:mastery',
+        learnerProfileId: 'profile-1',
         bookId: 'joh',
         chapterNumber: 3,
         verseNumber: 16,
@@ -254,6 +260,7 @@ describe('ProgressService — Passage Stats (Phase 8.6)', () => {
     it('should not break existing single-verse records', () => {
       const record: MemorizationRecord = {
         id: 'compat:1',
+        learnerProfileId: 'profile-1',
         bookId: 'joh',
         chapterNumber: 3,
         verseNumber: 16,

@@ -4,7 +4,7 @@
  * Do NOT hardcode colors in components — always use these tokens
  */
 
-import { Platform } from '@/components/ui/Primitives';
+import { StyleSheet, Platform } from '@/components/ui/Primitives';
 
 // ─── Color Palette ───────────────────────────────────────────────────────────
 
@@ -77,6 +77,11 @@ export const Colors = {
   iconBgOrange: '#FFF3E0',
   iconBgTeal: '#E0F2F1',
   iconBgIndigo: '#E8EAF6',
+
+  // Aliases used across the codebase
+  outline: '#B3B3B3',
+  onSurface: '#FFFFFF',
+  primaryFixed: '#E91E8C',
 } as const;
 
 // Backward-compatible properties
@@ -117,8 +122,8 @@ const typographyWeights: Record<string, string> = {
 };
 
 const typographyFamilies = {
-  primary: Platform.OS === 'ios' ? 'SF Pro Text' : 'Roboto',
-  heading: Platform.OS === 'ios' ? 'SF Pro Display' : 'Roboto',
+  primary: 'system-ui',
+  heading: 'system-ui',
   mono: 'Courier New',
   bible: 'Source Serif 4',
 };
@@ -194,6 +199,11 @@ export const ColorsDark = {
   iconBgOrange: '#2E2010',
   iconBgTeal: '#1A2E2E',
   iconBgIndigo: '#1A1A2E',
+
+  // Aliases used across the codebase
+  outline: '#6E6E6E',
+  onSurface: '#FFFFFF',
+  primaryFixed: '#E91E8C',
 } as const;
 
 // ─── Typography Scale ────────────────────────────────────────────────────────
@@ -265,36 +275,32 @@ export const Radius = {
   pill: 26, // For 52px height buttons
 } as const;
 
-// ─── Shadows ──────────────────────────────────────────────────────────────────
+// ─── Shadows (web-compatible CSS box-shadow values) ─────────────────────────
+// `Platform.select` is a no-op on web (resolves to `.web`). Shadows are defined
+// as plain CSS `boxShadow` strings so they can be spread into React style
+// objects without any native-specific properties.
 
-export const Shadows = {
-  sm: Platform.select({
-    ios: { shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.03, shadowRadius: 2 },
-    android: { elevation: 1 },
-  }),
-  md: Platform.select({
-    ios: { shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.05, shadowRadius: 4 },
-    android: { elevation: 2 },
-  }),
-  lg: Platform.select({
-    ios: { shadowColor: '#000', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.08, shadowRadius: 8 },
-    android: { elevation: 4 },
-  }),
-  xl: Platform.select({
-    ios: { shadowColor: '#000', shadowOffset: { width: 0, height: 8 }, shadowOpacity: 0.1, shadowRadius: 16 },
-    android: { elevation: 8 },
-  }),
-  // Rose tinted shadows for CTAs
-  rose: Platform.select({
-    ios: { shadowColor: '#E91E8C', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.3, shadowRadius: 12 },
-    android: { elevation: 6 },
-  }),
-  // Modal shadows
-  modal: Platform.select({
-    ios: { shadowColor: '#000', shadowOffset: { width: 0, height: -4 }, shadowOpacity: 0.1, shadowRadius: 12 },
-    android: { elevation: 8 },
-  }),
-} as const;
+type ShadowToken = {
+  /** CSS box-shadow value, e.g. `0 2px 8px rgba(0,0,0,0.15)` */
+  css: string;
+};
+
+export const Shadows: Record<'sm' | 'md' | 'lg' | 'xl' | 'rose' | 'modal', ShadowToken> = {
+  sm:   { css: '0 1px 2px rgba(0,0,0,0.06)' },
+  md:   { css: '0 2px 8px rgba(0,0,0,0.10)' },
+  lg:   { css: '0 4px 16px rgba(0,0,0,0.12)' },
+  xl:   { css: '0 8px 32px rgba(0,0,0,0.14)' },
+  rose: { css: '0 4px 16px rgba(233,30,140,0.35)' },
+  modal:{ css: '0 -8px 40px rgba(0,0,0,0.18)' },
+};
+
+/**
+ * Convert a shadow token into a CSS `boxShadow` style fragment.
+ * Usage: `style={{ ...sh.md, borderRadius: rad.lg }}`
+ */
+export function shadowCss(name: keyof typeof Shadows): { boxShadow: string } {
+  return { boxShadow: Shadows[name].css };
+}
 
 // ─── Navigation Dimensions ───────────────────────────────────────────────────
 
@@ -302,7 +308,7 @@ export const Nav = {
   tabBarHeight: 64,
   tabBarActiveHeight: 64,
   headerHeight: 56,
-  safeAreaBottom: Platform.OS === 'ios' ? 34 : 16,
+  safeAreaBottom: 0,
 } as const;
 
 // ─── Elevation Levels ────────────────────────────────────────────────────────
@@ -317,7 +323,7 @@ export const Elevation = {
 
 // ─── Helper: Get theme-aware colors ──────────────────────────────────────────
 
-type ThemeMode = 'light' | 'dark';
+export type ThemeMode = 'light' | 'dark';
 
 export function getThemeColors(mode: ThemeMode) {
   return mode === 'dark' ? ColorsDark : Colors;
