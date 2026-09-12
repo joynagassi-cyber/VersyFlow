@@ -6,7 +6,7 @@
  * See docs/13-fsrs-domain.md and src/domains/events.ts
  */
 
-import { Rating } from './entities';
+import { Rating } from './engine';
 
 /**
  * Review rating button — the 4 buttons shown in the review UI.

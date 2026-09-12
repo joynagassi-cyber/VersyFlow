@@ -2,8 +2,9 @@
  * FSRS Domain — Barrel Exports
  */
 
-export { Rating, DEFAULT_FSRS_STATE, RATING_LABELS } from './entities';
-export type { FsrsState, FsrsReview } from './entities';
+export { Rating } from './engine';
+export { DEFAULT_FSRS_STATE } from './entities';
+export type { FsrsState, FsrsReview } from './engine';
 export type { IFsrsEngine } from './engine';
 export { Sm2FallbackEngine } from './fallback-engine';
 export { WasmFsrsEngine } from './wasm-engine';

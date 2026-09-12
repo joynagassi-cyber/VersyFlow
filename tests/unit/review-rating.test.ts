@@ -19,7 +19,7 @@ import {
   ratingButtonI18nKey,
   buildReviewCompletedPayload,
 } from '@/domains/fsrs/rating';
-import { Rating } from '@/domains/fsrs/entities';
+import { Rating } from '@/domains/fsrs/engine';
 import { ReviewRatingService } from '@/services/review-rating-service';
 
 // Locale imports — verify i18n keys exist in all 5 locales
