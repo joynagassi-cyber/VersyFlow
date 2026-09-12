@@ -83,6 +83,62 @@ export interface IBibleTranslationRegistry {
 }
 
 /**
+ * Canon model (§47) — the book set the corpus is expected to cover.
+ */
+export type Canon = 'PROTESTANT_66';
+
+/**
+ * Completeness level a dataset is expected to reach (§53).
+ */
+export type Completeness = 'FULL_BIBLE' | 'OLD_TESTAMENT' | 'NEW_TESTAMENT';
+
+/**
+ * Source description for a dataset (§43) — all the URLs / files needed to
+ * resolve a dataset without re-discovering it.
+ */
+export interface DatasetSource {
+  /** eBible.org source page URL. */
+  sourcePage?: string;
+  /** eBible.org download page URL. */
+  downloadPage?: string;
+  /** Licence page URL. */
+  licenseUrl?: string;
+  /** Local raw USFM source path (skips download when present, §72). */
+  rawPath?: string;
+  /** Individual files in the source archive. */
+  files?: Array<{
+    name: string;
+    url?: string;
+    format?: string;
+    sizeBytes?: number;
+  }>;
+}
+
+/**
+ * Extended manifest describing a *concrete dataset* (a built artifact) that
+ * is registered by the ingestion orchestrator. Extends the catalogue manifest
+ * with canon, completeness, checksum, source, and build metadata (§47, §49).
+ */
+export interface BibleDatasetManifest extends BibleTranslationManifest {
+  /** Which canon this dataset covers. */
+  canon: Canon;
+  /** Whether the dataset covers the full Bible or only one testament. */
+  completeness: Completeness;
+  /** SHA-256 checksum of the built runtime JSON dataset. */
+  checksum?: string;
+  /** Source description (URLs + local raw path). */
+  source?: DatasetSource;
+  /** Paths where the built dataset artifacts live (§65). */
+  datasetPaths?: {
+    raw?: string;
+    normalized?: string;
+    runtime?: string;
+  };
+  /** Expected verse count for this dataset (injected, not hardcoded per translation). */
+  expectedVerseCount?: number;
+}
+
+/**
  * Default translation when the user has not chosen one.
  */
 export const DEFAULT_TRANSLATION_ID = 'lsg';

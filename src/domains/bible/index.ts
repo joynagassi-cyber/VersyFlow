@@ -22,10 +22,14 @@ export {
 } from './registry';
 export type {
   BibleTranslationManifest,
+  BibleDatasetManifest,
   IBibleTranslationRegistry,
   LicenseStatus,
   TextDirection,
   BibleDataFormat,
+  Canon,
+  Completeness,
+  DatasetSource,
 } from './registry';
 
 // Local multi-translation repository (pure, port-based)
