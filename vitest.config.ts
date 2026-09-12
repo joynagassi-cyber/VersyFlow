@@ -22,6 +22,11 @@ export default defineConfig({
   test: {
     environment: 'jsdom',
     globals: true,
+    exclude: [
+      '**/node_modules/**',
+      '**/dist/**',
+      '**/.claude/**',
+    ],
     setupFiles: ['tests/setup.ts', 'tests/jest-polyfill.ts'],
     coverage: {
       provider: 'v8',

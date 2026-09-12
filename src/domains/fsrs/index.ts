@@ -8,6 +8,7 @@ export type { FsrsState, FsrsReview } from './engine';
 export type { IFsrsEngine } from './engine';
 export { Sm2FallbackEngine } from './fallback-engine';
 export { WasmFsrsEngine } from './wasm-engine';
+export { TsFsrsEngine } from './ts-fsrs-engine';
 export {
   ReviewRatingButton,
   REVIEW_RATING_BUTTONS,

@@ -1,1 +1,0 @@
-import{L as t}from"./repository-local-CwovQIel.js";import{BibleJsonFileSource as a}from"./bible-json-source-eJoiILVk.js";let o=null,e=null,l=null;async function u(r="lsg"){return e||(l||(o||(o=new t(new a)),l=(async()=>{try{e=await o.getBooks(r)}catch(n){console.warn("[BibleTextService] Dataset unavailable:",n),e=null}return e})()),l)}export{u as l};

@@ -17,7 +17,7 @@ import { TelemetryService } from '@/services/telemetry-service';
 import type { IStorage } from '@/infrastructure/storage/storage-types';
 import { TelemetryEventsRepositoryPowerSync } from '@/infrastructure/telemetry/telemetry-events-repository-powersync';
 import type { ISyncUserIdProvider } from '@/infrastructure/sync/sync-user-id-provider';
-import type { TelemetryEvent } from '@/domains/telemetry/entities';
+import type { TelemetryEvent, StreakIncrementedTelemetry } from '@/domains/telemetry/entities';
 
 // ---- Mocks ------------------------------------------------------------------
 
@@ -32,7 +32,7 @@ function makeMockDb() {
 
 type MockDb = ReturnType<typeof makeMockDb>;
 
-const sampleEvent: TelemetryEvent = {
+const sampleEvent: StreakIncrementedTelemetry = {
   eventType: 'streak.incremented',
   timestamp: 1_700_000_000_000,
   sessionId: 'sess_test',
@@ -43,7 +43,7 @@ const sampleEvent: TelemetryEvent = {
 
 describe('TelemetryEventsRepositoryPowerSync.upload()', () => {
   let mockDb: MockDb;
-  let userIdProvider: ISyncUserIdProvider;
+  let userIdProvider: ISyncUserIdProvider & { resolveUserId: ReturnType<typeof vi.fn> };
   let repo: TelemetryEventsRepositoryPowerSync;
 
   beforeEach(() => {
@@ -54,7 +54,7 @@ describe('TelemetryEventsRepositoryPowerSync.upload()', () => {
   });
 
   it('drops the batch when there is no authenticated session (userId === null)', async () => {
-    userIdProvider.resolveUserId.mockResolvedValue(null);
+    vi.mocked(userIdProvider.resolveUserId).mockResolvedValue(null);
 
     await repo.upload([sampleEvent]);
 
@@ -64,7 +64,7 @@ describe('TelemetryEventsRepositoryPowerSync.upload()', () => {
 
   it('INSERTs each event with deterministic SQL and positional params scoped to userId', async () => {
     const resolvedId = 'user-resolved-abc';
-    userIdProvider.resolveUserId.mockResolvedValue(resolvedId);
+    vi.mocked(userIdProvider.resolveUserId).mockResolvedValue(resolvedId);
     // Stub randomUUID so we can assert the exact SQL+params.
     vi.doMock('@/infrastructure/sync/uuid', () => ({
       randomUUID: () => 'stub-uuid-000',
@@ -92,10 +92,15 @@ describe('TelemetryEventsRepositoryPowerSync.upload()', () => {
   });
 
   it('handles multiple events in a single writeTransaction', async () => {
-    userIdProvider.resolveUserId.mockResolvedValue('u1');
+    vi.mocked(userIdProvider.resolveUserId).mockResolvedValue('u1');
 
-    const evt1 = { ...sampleEvent, eventType: 'streak.incremented' as const, id: 'e1' };
-    const evt2 = { ...sampleEvent, eventType: 'milestone.reached' as const, id: 'e2' };
+    const evt1 = sampleEvent;
+    const evt2: TelemetryEvent = {
+      eventType: 'milestone.reached',
+      timestamp: 1_700_000_000_000,
+      sessionId: 'sess_test',
+      payload: { milestoneType: 'verseCount', totalVerses: 100, totalMastered: 50 },
+    };
 
     vi.doMock('@/infrastructure/sync/uuid', () => ({
       randomUUID: () => 'stub-uuid-m',
@@ -111,14 +116,14 @@ describe('TelemetryEventsRepositoryPowerSync.upload()', () => {
   it('no-op on empty events array', async () => {
     await repo.upload([]);
 
-    expect(userIdProvider.resolveUserId).not.toHaveBeenCalled();
+    expect(vi.mocked(userIdProvider.resolveUserId)).not.toHaveBeenCalled();
     expect(mockDb.writeTransaction).not.toHaveBeenCalled();
   });
 
   it('treats a throwing resolveUserId as "no session" (no crash, no write)', async () => {
     // Resolver failure (e.g. auth store not ready) must be treated exactly
     // like a null user id: skip the local write, never crash the flush.
-    userIdProvider.resolveUserId.mockImplementation(
+    vi.mocked(userIdProvider.resolveUserId).mockImplementation(
       () => Promise.reject(new Error('auth store unavailable')),
     );
 

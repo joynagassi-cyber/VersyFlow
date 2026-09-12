@@ -53,13 +53,14 @@ function makeFakeMemorizationService(): MemorizationService {
 /** ITelemetry stub that captures `record(eventType, payload)` calls. */
 function makeTelemetryStub() {
   const calls: Array<{ eventType: string; payload: Record<string, unknown> }> = [];
+  const record = vi.fn((eventType: string, payload: Record<string, unknown>) => {
+    calls.push({ eventType, payload });
+    return Promise.resolve();
+  });
   return {
     calls,
-    record: vi.fn((eventType: string, payload: Record<string, unknown>) => {
-      calls.push({ eventType, payload });
-      return Promise.resolve();
-    }),
-  } as unknown as ITelemetry & { calls: Array<{ eventType: string; payload: Record<string, unknown> }> };
+    record,
+  } as unknown as ITelemetry & { calls: Array<{ eventType: string; payload: Record<string, unknown> }>; record: typeof record };
 }
 
 /** insertOnly stub: captures the `insert` record (asserts deterministic id). */

@@ -10,6 +10,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { StreakService } from '@/services/streak-service';
 import type { MemorizationService } from '@/domains/memorization';
+import type { ReviewLogEntry } from '@/domains/memorization/entities';
 import type { IStreakRepository } from '@/domains/streaks/repository';
 import { eventBus, DomainEventTypes } from '@/domains/events';
 
@@ -43,9 +44,13 @@ function makeMockDb() {
  * getAllMemorized(profileId) and getReviewLogsForRecord(recordId, profileId).
  */
 function makeFakeMemorizationService(): MemorizationService {
-  return {
+  const svc = {
     getAllMemorized: vi.fn().mockResolvedValue([]),
     getReviewLogsForRecord: vi.fn().mockResolvedValue([]),
+  };
+  return {
+    getAllMemorized: svc.getAllMemorized,
+    getReviewLogsForRecord: svc.getReviewLogsForRecord,
   } as unknown as MemorizationService;
 }
 
@@ -132,7 +137,7 @@ describe('StreakService', () => {
   let memorizationService: MemorizationService;
   let db: ReturnType<typeof makeMockDb>;
   let repo: IStreakRepository;
-  let userIdResolver: () => Promise<string | null>;
+  let userIdResolver: ReturnType<typeof vi.fn> & (() => Promise<string | null>);
   let service: StreakService;
   let restoreDate: () => void;
   const TEST_USER_ID = 'user-abc';
@@ -249,11 +254,12 @@ describe('StreakService', () => {
     it('calls recordDailyStreak and emits STREAK_INCREMENTED when streak > 0', async () => {
       // Simulate 3 consecutive days of activity → streak = 3
       const reviewTimes = makeReviewTimestamps(3);
-      memorizationService.getAllMemorized.mockResolvedValueOnce([
+      const memSvc = vi.mocked(memorizationService);
+      memSvc.getAllMemorized.mockResolvedValueOnce([
         { id: 'rec-1', lastReviewedAt: reviewTimes[0] },
       ] as any);
-      memorizationService.getReviewLogsForRecord.mockResolvedValueOnce(
-        reviewTimes.slice(1).map((ts) => ({ answeredAt: ts })),
+      memSvc.getReviewLogsForRecord.mockResolvedValueOnce(
+        reviewTimes.slice(1).map((ts) => ({ answeredAt: ts }) as ReviewLogEntry),
       );
 
       const handler = vi.fn();
@@ -277,11 +283,12 @@ describe('StreakService', () => {
       const milestones = [7, 30, 100];
       for (const streak of milestones) {
         const reviewTimes = makeReviewTimestamps(streak);
-        memorizationService.getAllMemorized.mockResolvedValueOnce([
+        const memSvc = vi.mocked(memorizationService);
+        memSvc.getAllMemorized.mockResolvedValueOnce([
           { id: 'rec-1', lastReviewedAt: reviewTimes[0] },
         ] as any);
-        memorizationService.getReviewLogsForRecord.mockResolvedValueOnce(
-          reviewTimes.slice(1).map((ts) => ({ answeredAt: ts })),
+        memSvc.getReviewLogsForRecord.mockResolvedValueOnce(
+          reviewTimes.slice(1).map((ts) => ({ answeredAt: ts }) as ReviewLogEntry),
         );
 
         const handler = vi.fn();
@@ -297,11 +304,12 @@ describe('StreakService', () => {
     it('emits isMilestone=false for non-milestone streaks', async () => {
       // streak = 3 is not a milestone
       const reviewTimes = makeReviewTimestamps(3);
-      memorizationService.getAllMemorized.mockResolvedValueOnce([
+      const memSvc = vi.mocked(memorizationService);
+      memSvc.getAllMemorized.mockResolvedValueOnce([
         { id: 'rec-1', lastReviewedAt: reviewTimes[0] },
       ] as any);
-      memorizationService.getReviewLogsForRecord.mockResolvedValueOnce(
-        reviewTimes.slice(1).map((ts) => ({ answeredAt: ts })),
+      memSvc.getReviewLogsForRecord.mockResolvedValueOnce(
+        reviewTimes.slice(1).map((ts) => ({ answeredAt: ts }) as ReviewLogEntry),
       );
 
       const handler = vi.fn();
@@ -314,11 +322,12 @@ describe('StreakService', () => {
 
     it('returns false and does not emit when recordDailyStreak throws', async () => {
       const reviewTimes = makeReviewTimestamps(3);
-      memorizationService.getAllMemorized.mockResolvedValueOnce([
+      const memSvc = vi.mocked(memorizationService);
+      memSvc.getAllMemorized.mockResolvedValueOnce([
         { id: 'rec-1', lastReviewedAt: reviewTimes[0] },
       ] as any);
-      memorizationService.getReviewLogsForRecord.mockResolvedValueOnce(
-        reviewTimes.slice(1).map((ts) => ({ answeredAt: ts })),
+      memSvc.getReviewLogsForRecord.mockResolvedValueOnce(
+        reviewTimes.slice(1).map((ts) => ({ answeredAt: ts }) as ReviewLogEntry),
       );
       // Make insert throw
       repo.insert = vi.fn().mockRejectedValue(new Error('db error'));

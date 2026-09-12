@@ -23,7 +23,7 @@ import type { Family, FamilyMembership } from '@/domains/family';
 
 function makeFamilyRepo() {
   const calls: string[] = [];
-  return {
+  const repo = {
     calls,
     create: (family: Omit<Family, 'id' | 'createdAt'>) => {
       calls.push('create');
@@ -42,7 +42,8 @@ function makeFamilyRepo() {
         joinedAt: 0,
       } as FamilyMembership);
     },
-  } as unknown as IFamilyRepository;
+  };
+  return repo as unknown as IFamilyRepository & { calls: string[] };
 }
 
 function makeInvRepo() {

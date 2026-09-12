@@ -325,14 +325,14 @@ describe('TelemetryEventsRepositoryPowerSync — offline hardening', () => {
   });
 
   it('does not throw when dbFactory returns a pending DB on upload', async () => {
-    const events = [{ eventType: 'page_view', timestamp: 1_700_000_000_000, payload: { page: 'home' }, sessionId: 'sess-1' }];
+    const events = [{ eventType: 'feature.accessed', timestamp: 1_700_000_000_000, payload: { featureName: 'home' }, sessionId: 'sess-1' } as unknown as import('@/domains/telemetry/entities').TelemetryEvent];
     await expect(repo.upload(events)).resolves.toBeUndefined();
     expect(db.__psCrud.length).toBe(1);
   });
 
   it('replays the pending upload batch onto the ready DB', async () => {
     const events = [
-      { eventType: 'page_view', timestamp: 1_700_000_000_000, payload: { page: 'home' }, sessionId: 'sess-1' },
+      { eventType: 'feature.accessed', timestamp: 1_700_000_000_000, payload: { featureName: 'home' }, sessionId: 'sess-1' } as unknown as import('@/domains/telemetry/entities').TelemetryEvent,
     ];
     await repo.upload(events);
     db.makeReady();

@@ -18,12 +18,12 @@ import { useAppTheme } from '@/theme/useTheme';
 import { useRoute, useRouter } from '@/hooks/useIonicNavigation';
 import { IonIcon } from '@/components/ui/Primitives'
 import {arrowBack, arrowForward, book, checkmarkCircle, medal, refresh, trendingUp} from 'ionicons/icons';
-import { FsrsRating } from '@/domains/fsrs';
+import { Rating } from '@/domains/fsrs';
 
 interface ReviewLogEntry {
   id: string;
   answeredAt: number;
-  rating: FsrsRating | string;
+  rating: Rating | string;
   stabilityBefore: number;
   stabilityAfter: number;
   difficultyBefore: number;
@@ -46,7 +46,7 @@ const SAMPLE_HISTORY: ReviewLogEntry[] = [
   {
     id: '1',
     answeredAt: Date.now() - 86400000 * 2,
-    rating: FsrsRating.GOOD,
+    rating: Rating.GOOD,
     stabilityBefore: 2.1,
     stabilityAfter: 3.5,
     difficultyBefore: 5.0,
@@ -57,7 +57,7 @@ const SAMPLE_HISTORY: ReviewLogEntry[] = [
   {
     id: '2',
     answeredAt: Date.now() - 86400000 * 5,
-    rating: FsrsRating.HARD,
+    rating: Rating.HARD,
     stabilityBefore: 1.5,
     stabilityAfter: 2.1,
     difficultyBefore: 5.5,
@@ -68,7 +68,7 @@ const SAMPLE_HISTORY: ReviewLogEntry[] = [
   {
     id: '3',
     answeredAt: Date.now() - 86400000 * 10,
-    rating: FsrsRating.AGAIN,
+    rating: Rating.AGAIN,
     stabilityBefore: 0.8,
     stabilityAfter: 1.5,
     difficultyBefore: 6.0,
@@ -507,28 +507,28 @@ export default function ReviewHistoryScreen() {
     }
   };
 
-  const getRatingConfig = (rating: FsrsRating | string) => {
-    let actualRating: FsrsRating;
+  const getRatingConfig = (rating: Rating | string) => {
+    let actualRating: Rating;
     if (typeof rating === 'string') {
       switch (rating) {
-        case 'again': actualRating = FsrsRating.AGAIN; break;
-        case 'hard': actualRating = FsrsRating.HARD; break;
-        case 'good': actualRating = FsrsRating.GOOD; break;
-        case 'easy': actualRating = FsrsRating.EASY; break;
-        default: actualRating = FsrsRating.AGAIN;
+        case 'again': actualRating = Rating.AGAIN; break;
+        case 'hard': actualRating = Rating.HARD; break;
+        case 'good': actualRating = Rating.GOOD; break;
+        case 'easy': actualRating = Rating.EASY; break;
+        default: actualRating = Rating.AGAIN;
       }
     } else {
       actualRating = rating;
     }
 
     switch (actualRating) {
-      case FsrsRating.AGAIN:
+      case Rating.AGAIN:
         return { color: colors.error, label: 'À revoir', icon: 'refresh' };
-      case FsrsRating.HARD:
+      case Rating.HARD:
         return { color: colors.warning, label: 'Difficile', icon: 'remove' };
-      case FsrsRating.GOOD:
+      case Rating.GOOD:
         return { color: '#4CD964', label: 'Bon', icon: 'checkmark' };
-      case FsrsRating.EASY:
+      case Rating.EASY:
         return { color: colors.info, label: 'Facile', icon: 'star' };
       default:
         return { color: colors.primary, label: 'Bon', icon: 'checkmark' };
@@ -538,7 +538,7 @@ export default function ReviewHistoryScreen() {
   const calculateProgress = () => {
     if (history.length === 0) return 0;
     const goodOrBetter = history.filter(h =>
-      h.rating === FsrsRating.GOOD || h.rating === FsrsRating.EASY
+      h.rating === Rating.GOOD || h.rating === Rating.EASY
     ).length;
     return Math.round((goodOrBetter / history.length) * 100);
   };
@@ -678,7 +678,7 @@ export default function ReviewHistoryScreen() {
                 <IonIcon icon={checkmarkCircle} size={24} color={colors.surface} />
               </View>
               <Text style={styles.statValue}>
-                {history.filter(h => h.rating === FsrsRating.GOOD || h.rating === FsrsRating.EASY).length}
+                {history.filter(h => h.rating === Rating.GOOD || h.rating === Rating.EASY).length}
               </Text>
               <Text style={styles.statLabel}>Bon/Facile</Text>
             </View>
@@ -687,7 +687,7 @@ export default function ReviewHistoryScreen() {
                 <IonIcon icon={refresh} size={24} color={colors.surface} />
               </View>
               <Text style={styles.statValue}>
-                {history.filter(h => h.rating === FsrsRating.AGAIN).length}
+                {history.filter(h => h.rating === Rating.AGAIN).length}
               </Text>
               <Text style={styles.statLabel}>À revoir</Text>
             </View>
