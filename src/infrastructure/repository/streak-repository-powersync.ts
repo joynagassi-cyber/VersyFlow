@@ -31,6 +31,17 @@ export class StreakRepositoryPowerSync implements IStreakRepository {
   ) {}
 
   async insert(record: Omit<StreakRecord, 'id' | 'createdAt'>): Promise<void> {
+    // Defensive: a throwing user id resolver (auth store not ready) is
+    // treated as "no session" — skip the write, never crash the caller
+    // (matches the telemetry repository behaviour).
+    let resolvedUserId: string | null;
+    try {
+      resolvedUserId = await this.userIdProvider.resolveUserId();
+    } catch {
+      resolvedUserId = null;
+    }
+    if (!resolvedUserId) return;
+
     const db = this.dbFactory();
     const nowIso = new Date().toISOString();
     try {
@@ -41,8 +52,8 @@ export class StreakRepositoryPowerSync implements IStreakRepository {
             session_duration_minutes, created_at
           ) VALUES (?, ?, ?, ?, ?, ?, ?)`,
           [
-            this.streakRecordId(record.userId, record.streakDate),
-            record.userId,
+            this.streakRecordId(resolvedUserId, record.streakDate),
+            resolvedUserId,
             record.streakDate,
             record.versesMemorized,
             record.reviewsCompleted,

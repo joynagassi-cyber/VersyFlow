@@ -96,6 +96,7 @@ import { useFamilySyncBridge } from '@/hooks/useFamilySyncBridge';
 import { useProfileSyncBridge } from '@/hooks/useProfileSyncBridge';
 import { attachSyncCompletionHandlers } from '@/services/sync-completion-service';
 import { wireAppTelemetry } from '@/services/app-telemetry-wiring';
+import { wireStreakCoordinator } from '@/services/streak-wiring';
 import type { MemorizationRecord } from '@/domains/memorization/entities';
 import { isRTL } from '@/domains/i18n/config';
 
@@ -109,9 +110,10 @@ import { isRTL } from '@/domains/i18n/config';
   initializeSettingsStore();
   initializeAppearanceStore();
   // Boot-time one-shot wiring: PowerSync lifecycle → sync stores,
-  // telemetry listener + periodic flush.
+  // telemetry listener + periodic flush, streak event-driven writer.
   attachSyncCompletionHandlers();
   wireAppTelemetry();
+  wireStreakCoordinator();
 })();
 
 /** Guard: redirects to onboarding if it hasn't been completed yet */

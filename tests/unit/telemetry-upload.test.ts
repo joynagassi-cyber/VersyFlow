@@ -115,6 +115,25 @@ describe('TelemetryEventsRepositoryPowerSync.upload()', () => {
     expect(mockDb.writeTransaction).not.toHaveBeenCalled();
   });
 
+  it('treats a throwing resolveUserId as "no session" (no crash, no write)', async () => {
+    // Resolver failure (e.g. auth store not ready) must be treated exactly
+    // like a null user id: skip the local write, never crash the flush.
+    userIdProvider.resolveUserId.mockImplementation(
+      () => Promise.reject(new Error('auth store unavailable')),
+    );
+
+    let thrown: unknown = null;
+    try {
+      await repo.upload([sampleEvent]);
+    } catch (e) {
+      thrown = e;
+    }
+
+    expect(thrown).toBeNull();
+    expect(mockDb.writeTransaction).not.toHaveBeenCalled();
+    expect(mockDb.execute).not.toHaveBeenCalled();
+  });
+
   afterEach(() => {
     vi.doUnmock('@/infrastructure/sync/uuid');
   });
@@ -213,5 +232,52 @@ describe('TelemetryService.flush() with upload port', () => {
     await service.flush();
 
     expect(uploadPortUploadSpy).not.toHaveBeenCalled();
+  });
+
+  it('does not lose data when two flush() calls run in rapid succession', async () => {
+    // Two flushes overlapping: the first hands a batch to the (slow) upload
+    // while the second is kicked off. After both settle the queue must be
+    // structurally valid — any item still unsent is uploaded by a follow-up
+    // fast flush (no silent loss).
+    service.record('streak.incremented', { streakDelta: 1 });
+    service.record('review.completed', { recordId: 'r1' });
+    expect(service.getQueue()).toHaveLength(2);
+
+    // Slow-upload gate: resolve on demand via the captured `resolve` handles.
+    const slowUpload = vi.fn((events: TelemetryEvent[]) => {
+      return new Promise<void>((resolve) => {
+        slowUploadResolvers.push(resolve);
+      });
+    });
+    const slowUploadResolvers: Array<() => void> = [];
+    uploadPortUploadSpy.mockImplementation(slowUpload as never);
+
+    const flush1 = service.flush();
+    // Let flush #1 enter its `await uploadPort.upload(...)`.
+    await new Promise((r) => setTimeout(r, 0));
+
+    // Record a third event while flush #1 is in flight.
+    service.record('milestone.reached', { totalVerses: 10 });
+    const flush2 = service.flush();
+    await new Promise((r) => setTimeout(r, 0));
+
+    // Resolve the slow uploads in order so both flushes can finish.
+    while (slowUploadResolvers.length > 0) {
+      slowUploadResolvers.shift()?.();
+      await new Promise((r) => setTimeout(r, 0));
+    }
+    await Promise.all([flush1, flush2]);
+
+    // Queue items remain structurally valid (id / event / sent).
+    for (const item of service.getQueue()) {
+      expect(item).toHaveProperty('id');
+      expect(item).toHaveProperty('event');
+      expect(item).toHaveProperty('sent');
+    }
+
+    // Final fast flush: whatever is still unsent is uploaded and pruned.
+    uploadPortUploadSpy.mockResolvedValue(undefined);
+    await service.flush();
+    expect(service.getQueue()).toHaveLength(0);
   });
 });
