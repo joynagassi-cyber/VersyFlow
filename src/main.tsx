@@ -94,6 +94,8 @@ import { ThemeManager } from '@/components/ThemeManager';
 import { useAuthStore } from '@/store/auth-store';
 import { useFamilySyncBridge } from '@/hooks/useFamilySyncBridge';
 import { useProfileSyncBridge } from '@/hooks/useProfileSyncBridge';
+import { attachSyncCompletionHandlers } from '@/services/sync-completion-service';
+import { wireAppTelemetry } from '@/services/app-telemetry-wiring';
 import type { MemorizationRecord } from '@/domains/memorization/entities';
 import { isRTL } from '@/domains/i18n/config';
 
@@ -106,6 +108,10 @@ import { isRTL } from '@/domains/i18n/config';
   document.documentElement.dir = isRTL(savedLanguage) ? 'rtl' : 'ltr';
   initializeSettingsStore();
   initializeAppearanceStore();
+  // Boot-time one-shot wiring: PowerSync lifecycle → sync stores,
+  // telemetry listener + periodic flush.
+  attachSyncCompletionHandlers();
+  wireAppTelemetry();
 })();
 
 /** Guard: redirects to onboarding if it hasn't been completed yet */
