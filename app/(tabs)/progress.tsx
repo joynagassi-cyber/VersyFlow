@@ -9,23 +9,11 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { Flame, TrendingUp, TrendingDown, Loader2 } from 'lucide-react';
 import { useActiveProfile } from '@/hooks/useActiveProfile';
-import { MmkvStorage } from '@/infrastructure/storage';
-import { MemorizationService } from '@/domains/memorization/service';
-import { Sm2FallbackEngine } from '@/domains/fsrs';
+import { getFsrsEngine } from '@/services/fsrs-factory';
 import { ProgressService } from '@/services/progress-service';
 import type { ProgressStats } from '@/services/stats-calculator';
+import { getMemorizationService } from '@/services/memorization-service-factory';
 import { cn } from '@/lib/utils';
-
-const serviceByProfile = new Map<string, MemorizationService>();
-const getMemorizationService = (profileId: string) => {
-  if (!serviceByProfile.has(profileId)) {
-    serviceByProfile.set(
-      profileId,
-      new MemorizationService(new MmkvStorage(), new Sm2FallbackEngine(), profileId),
-    );
-  }
-  return serviceByProfile.get(profileId)!;
-};
 
 export default function ProgressScreen() {
   const { t } = useTranslation();
@@ -43,7 +31,7 @@ export default function ProgressScreen() {
         const service = getMemorizationService(profileId);
         const progressService = new ProgressService(
           service,
-          new Sm2FallbackEngine(),
+          getFsrsEngine(),
           undefined,
           profileId,
         );

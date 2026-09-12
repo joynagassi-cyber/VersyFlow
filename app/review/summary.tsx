@@ -11,22 +11,10 @@ import { Flame, Loader2, TrendingUp, CheckCircle, Clock, BookOpen } from 'lucide
 import FullScreenPage from '@/components/layout/FullScreenPage';
 import { Button } from '@/components/ui/button';
 import { useActiveProfile } from '@/hooks/useActiveProfile';
-import { MmkvStorage } from '@/infrastructure/storage';
-import { MemorizationService } from '@/domains/memorization/service';
-import { Sm2FallbackEngine } from '@/domains/fsrs';
+import { getFsrsEngine } from '@/services/fsrs-factory';
 import { ProgressService } from '@/services/progress-service';
+import { getMemorizationService } from '@/services/memorization-service-factory';
 import type { ProgressStats } from '@/services/stats-calculator';
-
-const serviceByProfile = new Map<string, MemorizationService>();
-const getMemorizationService = (profileId: string) => {
-  if (!serviceByProfile.has(profileId)) {
-    serviceByProfile.set(
-      profileId,
-      new MemorizationService(new MmkvStorage(), new Sm2FallbackEngine(), profileId),
-    );
-  }
-  return serviceByProfile.get(profileId)!;
-};
 
 export default function ReviewSummaryScreen() {
   const navigate = useNavigate();
@@ -42,7 +30,7 @@ export default function ReviewSummaryScreen() {
     const load = async () => {
       try {
         const service = getMemorizationService(profileId);
-        const progress = new ProgressService(service, new Sm2FallbackEngine(), undefined, profileId);
+        const progress = new ProgressService(service, getFsrsEngine(), undefined, profileId);
         const data = await progress.getStats();
         if (!cancelled) setStats(data);
       } catch (error) {

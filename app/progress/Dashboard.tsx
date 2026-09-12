@@ -3,7 +3,7 @@
  * See docs/08-ui-screens.md §15
  */
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo} from 'react';
 import {
   View,
   Text,
@@ -14,153 +14,14 @@ import {
 } from '@/components/ui/Primitives';
 import { useAppTheme } from '@/theme/useTheme';
 import { useI18n } from '@/hooks/useI18n';
-import { MemorizationService } from '@/domains/memorization/service';
-import { IFsrsEngine, Sm2FallbackEngine } from '@/domains/fsrs';
-import { MmkvStorage } from '@/infrastructure/storage';
+import { getFsrsEngine } from '@/services/fsrs-factory';
 import type { ProgressStats } from '@/services/progress-service';
 import { ProgressService } from '@/services/progress-service';
-
-// Singleton pour le service
-let memorizationService: MemorizationService | null = null;
-
-const getMemorizationService = () => {
-  if (!memorizationService) {
-    const storage = new MmkvStorage();
-    const fsrs = new Sm2FallbackEngine();
-    memorizationService = new MemorizationService(storage, fsrs);
-  }
-  return memorizationService;
-};
+import { getMemorizationService } from '@/services/memorization-service-factory';
 
 export default function ProgressDashboardScreen() {
   const { colors, sp, sh, rad } = useAppTheme();
-  const { t } = useI18n();
-  const [stats, setStats] = useState<ProgressStats | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  // Load stats on mount
-  useEffect(() => {
-    loadStats();
-  }, []);
-
-  const loadStats = async () => {
-    try {
-      const service = getMemorizationService();
-      const progressService = new ProgressService(service, new Sm2FallbackEngine());
-      const stats = await progressService.getStats();
-      setStats(stats);
-    } catch (error) {
-      console.error('Error loading progress stats:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  if (loading) {
-    return (
-      <SafeAreaView style={styles.container}>
-        <View style={styles.center}>
-          <Text style={styles.loadingText}>Chargement des statistiques...</Text>
-        </View>
-      </SafeAreaView>
-    );
-  }
-
-  if (!stats) {
-    return (
-      <SafeAreaView style={styles.container}>
-        <View style={styles.empty}>
-          <Text style={styles.emptyIcon}>📊</Text>
-          <Text style={styles.emptyTitle}>Aucune progression enregistrée</Text>
-          <Text style={styles.emptySubtitle}>
-            Commencez à mémoriser des versets pour voir vos statistiques ici
-          </Text>
-        </View>
-      </SafeAreaView>
-    );
-  }
-
-  return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.content}>
-        {/* Stats Grid 2x2 */}
-        <View style={styles.statsGrid}>
-          <View style={styles.statCard}>
-            <Text style={styles.statLabel}>{t('progress.totalVerses')}</Text>
-            <Text style={styles.statValue}>{stats.totalVerses}</Text>
-          </View>
-          <View style={styles.statCard}>
-            <Text style={styles.statLabel}>{t('progress.mastered')}</Text>
-            <Text style={styles.statValue}>{stats.masteredVerses}</Text>
-          </View>
-          <View style={styles.statCard}>
-            <Text style={styles.statLabel}>{t('progress.streak')}</Text>
-            <Text style={styles.statValue}>{stats.streakCount}</Text>
-          </View>
-          <View style={styles.statCard}>
-            <Text style={styles.statLabel}>{t('progress.due')}</Text>
-            <Text style={styles.statValue}>{stats.dueForReview}</Text>
-          </View>
-        </View>
-
-        {/* Weekly Trend */}
-        <View style={styles.trendCard}>
-          <Text style={styles.trendTitle}>Tendance hebdomadaire</Text>
-          <View style={styles.trendRow}>
-            <View style={styles.trendItem}>
-              <Text style={styles.trendLabel}>Cette semaine</Text>
-              <Text style={styles.trendValue}>{stats.weeklyTrend.thisWeek}</Text>
-            </View>
-            <View style={[styles.trendItem, styles.trendSeparator]}></View>
-            <View style={styles.trendItem}>
-              <Text style={styles.trendLabel}>Semaine dernière</Text>
-              <Text style={styles.trendValue}>{stats.weeklyTrend.lastWeek}</Text>
-            </View>
-          </View>
-          <View style={styles.changeIndicator}>
-            <Text
-              style={[
-                styles.changeText,
-                stats.weeklyTrend.changePercentage >= 0 ? styles.changePositive : styles.changeNegative
-              ]}>
-              {stats.weeklyTrend.changePercentage >= 0 ? '↑' : '↓'}
-              {Math.abs(stats.weeklyTrend.changePercentage)}%
-            </Text>
-            <Text style={styles.changeLabel}>
-              vs semaine précédente
-            </Text>
-          </View>
-        </View>
-
-        {/* Streak Info */}
-        {stats.streakCount > 0 && (
-          <View style={styles.streakCard}>
-            <View style={styles.streakHeader}>
-              <Text style={styles.streakTitle}>Série consecutive</Text>
-              <TouchableOpacity onPress={() => alert('Félicitations! Continuez votre série!')}>
-                <Text style={styles.streakEmoji}>🔥</Text>
-              </TouchableOpacity>
-            </View>
-            <Text style={styles.streakText}>
-              Serie de {stats.streakCount} jour(s)
-            </Text>
-          </View>
-        )}
-
-        {/* Session Metrics */}
-        <View style={styles.metricsCard}>
-          <Text style={styles.metricsTitle}>Métriques de session</Text>
-          <View style={styles.metricRow}>
-            <Text style={styles.metricLabel}>Temps moyen par session</Text>
-            <Text style={styles.metricValue}>{stats.avgSessionDurationMin.toFixed(1)} min</Text>
-          </View>
-        </View>
-      </ScrollView>
-    </SafeAreaView>
-  );
-}
-
-const styles = StyleSheet.create({
+  const styles = useMemo(() => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.surfaceTint,
@@ -349,4 +210,130 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: colors.textPrimary,
   },
-});
+  }), [colors]);
+  const { t } = useI18n();
+  const [stats, setStats] = useState<ProgressStats | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  // Load stats on mount
+  useEffect(() => {
+    loadStats();
+  }, []);
+
+  const loadStats = async () => {
+    try {
+      const service = getMemorizationService();
+      const progressService = new ProgressService(service, getFsrsEngine());
+      const stats = await progressService.getStats();
+      setStats(stats);
+    } catch (error) {
+      console.error('Error loading progress stats:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={styles.center}>
+          <Text style={styles.loadingText}>Chargement des statistiques...</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
+  if (!stats) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={styles.empty}>
+          <Text style={styles.emptyIcon}>📊</Text>
+          <Text style={styles.emptyTitle}>Aucune progression enregistrée</Text>
+          <Text style={styles.emptySubtitle}>
+            Commencez à mémoriser des versets pour voir vos statistiques ici
+          </Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <ScrollView contentContainerStyle={styles.content}>
+        {/* Stats Grid 2x2 */}
+        <View style={styles.statsGrid}>
+          <View style={styles.statCard}>
+            <Text style={styles.statLabel}>{t('progress.totalVerses')}</Text>
+            <Text style={styles.statValue}>{stats.totalVerses}</Text>
+          </View>
+          <View style={styles.statCard}>
+            <Text style={styles.statLabel}>{t('progress.mastered')}</Text>
+            <Text style={styles.statValue}>{stats.masteredVerses}</Text>
+          </View>
+          <View style={styles.statCard}>
+            <Text style={styles.statLabel}>{t('progress.streak')}</Text>
+            <Text style={styles.statValue}>{stats.streakCount}</Text>
+          </View>
+          <View style={styles.statCard}>
+            <Text style={styles.statLabel}>{t('progress.due')}</Text>
+            <Text style={styles.statValue}>{stats.dueForReview}</Text>
+          </View>
+        </View>
+
+        {/* Weekly Trend */}
+        <View style={styles.trendCard}>
+          <Text style={styles.trendTitle}>Tendance hebdomadaire</Text>
+          <View style={styles.trendRow}>
+            <View style={styles.trendItem}>
+              <Text style={styles.trendLabel}>Cette semaine</Text>
+              <Text style={styles.trendValue}>{stats.weeklyTrend.thisWeek}</Text>
+            </View>
+            <View style={[styles.trendItem, styles.trendSeparator]}></View>
+            <View style={styles.trendItem}>
+              <Text style={styles.trendLabel}>Semaine dernière</Text>
+              <Text style={styles.trendValue}>{stats.weeklyTrend.lastWeek}</Text>
+            </View>
+          </View>
+          <View style={styles.changeIndicator}>
+            <Text
+              style={[
+                styles.changeText,
+                stats.weeklyTrend.changePercentage >= 0 ? styles.changePositive : styles.changeNegative
+              ]}>
+              {stats.weeklyTrend.changePercentage >= 0 ? '↑' : '↓'}
+              {Math.abs(stats.weeklyTrend.changePercentage)}%
+            </Text>
+            <Text style={styles.changeLabel}>
+              vs semaine précédente
+            </Text>
+          </View>
+        </View>
+
+        {/* Streak Info */}
+        {stats.streakCount > 0 && (
+          <View style={styles.streakCard}>
+            <View style={styles.streakHeader}>
+              <Text style={styles.streakTitle}>Série consecutive</Text>
+              <TouchableOpacity onPress={() => alert('Félicitations! Continuez votre série!')}>
+                <Text style={styles.streakEmoji}>🔥</Text>
+              </TouchableOpacity>
+            </View>
+            <Text style={styles.streakText}>
+              Serie de {stats.streakCount} jour(s)
+            </Text>
+          </View>
+        )}
+
+        {/* Session Metrics */}
+        <View style={styles.metricsCard}>
+          <Text style={styles.metricsTitle}>Métriques de session</Text>
+          <View style={styles.metricRow}>
+            <Text style={styles.metricLabel}>Temps moyen par session</Text>
+            <Text style={styles.metricValue}>{stats.avgSessionDurationMin.toFixed(1)} min</Text>
+          </View>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
+  );
+}
+

@@ -20,6 +20,13 @@ import { getFsrsEngine } from '@/services/fsrs-factory';
 import { MemorizationSessionEngine } from '@/domains/memorization/session-engine';
 import { Rating } from '@/domains/fsrs';
 import { resolveBookId } from '@/domains/bible/entities';
+import { useActiveProfile } from '@/hooks/useActiveProfile';
+import { getMemorizationRepository, getSyncUserIdProvider } from '@/infrastructure/repository/powersync-repositories';
+import type { MemorizationRecord } from '@/domains/memorization/entities';
+
+/** Resolve the authenticated user id (or null when not signed in). */
+const resolveUserId = async (): Promise<string | null> =>
+  getSyncUserIdProvider().resolveUserId();
 
 function createBibleSource() {
   if (typeof fetch === 'function') {
@@ -44,6 +51,7 @@ export default function MemorizationSession() {
   const navigate = useNavigate();
   const [params] = useSearchParams();
   const { t } = useTranslation();
+  const { activeProfile } = useActiveProfile();
 
   const [engine, setEngine] = useState<MemorizationSessionEngine | null>(null);
   const [loading, setLoading] = useState(true);
@@ -58,7 +66,8 @@ export default function MemorizationSession() {
   const verseEndParam = parseInt(params.get('verseEnd') ?? '0', 10);
   const refParam = params.get('reference') ?? '';
   const translationId = params.get('translationId') ?? 'lsg';
-  const learnerProfileId = params.get('learnerProfileId') ?? 'default';
+  // Prefer the active learner profile; fall back to URL param or 'default'.
+  const learnerProfileId = params.get('learnerProfileId') || activeProfile?.id || 'default';
 
   useEffect(() => {
     let cancelled = false;
@@ -131,6 +140,59 @@ export default function MemorizationSession() {
     setComplete(engine.isComplete());
   }, [engine]);
 
+  /**
+   * Persist a single record to the PowerSync repository (SYNCED path).
+   *
+   * The PowerSync SQLite database is the single source of truth for synced
+   * memorization records. When there is no authenticated user session
+   * (offline or signed-out), the record is intentionally NOT written:
+   * the engine's in-memory array is the user's working state for that
+   * session, and silently dropping it is a documented P0-B trade-off
+   * (MMKV no longer holds SYNCED data; see the single-sync invariant).
+   */
+  const persistRecord = useCallback(
+    async (record: MemorizationRecord) => {
+      const userId = await resolveUserId();
+      if (!userId) {
+        console.warn('[MemorizationSession] no user session; record not persisted');
+        return;
+      }
+      await getMemorizationRepository().upsert(userId, {
+        bookId: record.bookId,
+        chapterNumber: record.chapterNumber,
+        verseNumber: record.verseNumber,
+        endVerse: record.endVerse,
+        translationId: record.translationId,
+        bibleVerseReference: record.bibleVerseReference,
+        bibleVerseText: record.bibleVerseText,
+        verseTexts: record.verseTexts,
+        status: record.status,
+        fsrsState: record.fsrsState,
+        nextReviewAt: record.nextReviewAt,
+        createdAt: record.createdAt,
+        lastReviewedAt: record.lastReviewedAt,
+        reviewCount: record.reviewCount,
+        totalReviewMinutes: record.totalReviewMinutes,
+        wordPerformance: record.wordPerformance,
+        favorite: record.favorite,
+        tags: record.tags,
+        targetId: record.targetId,
+        targetType: record.targetType,
+      });
+    },
+    [],
+  );
+
+  /** Persist every record the engine has produced in this session. */
+  const persistAllRecords = useCallback(
+    async (records: MemorizationRecord[]) => {
+      for (const record of records) {
+        await persistRecord(record);
+      }
+    },
+    [persistRecord],
+  );
+
   if (loading) {
     return (
       <FullScreenPage title={t('session.memorizing', 'Mémorisation')} backPath="/tabs/home" showBack={false}>
@@ -168,7 +230,12 @@ export default function MemorizationSession() {
       showBack={false}
       right={
         <button
-          onClick={() => {
+          onClick={async () => {
+            try {
+              await persistAllRecords(engine.getRecords());
+            } catch (e) {
+              console.error('[MemorizationSession] abandon flush failed:', e);
+            }
             engine.abandon();
             navigate(-1);
           }}
@@ -210,8 +277,11 @@ export default function MemorizationSession() {
         ).map(({ rating, label, cls }) => (
           <button
             key={rating}
-            onClick={() => {
-              engine.rateCurrentVerse(rating);
+            onClick={async () => {
+              // Persist the rated record BEFORE navigating — otherwise the
+              // FSRS state (stability, nextReviewAt) is lost on unmount.
+              const record = await engine.rateCurrentVerse(rating);
+              if (record) await persistRecord(record);
               refresh();
             }}
             className={cn('rounded-xl py-3 text-sm font-semibold', cls)}
@@ -237,10 +307,18 @@ export default function MemorizationSession() {
         </Button>
         <Button
           className="flex-1"
-          onClick={() => {
+          onClick={async () => {
             engine.nextVerse();
             refresh();
             if (engine.isComplete()) {
+              // Flush any records that were produced but not yet persisted
+              // (user pressed "next" before rating the last verse, or rating
+              // failed silently) so nothing is lost on unmount.
+              try {
+                await persistAllRecords(engine.getRecords());
+              } catch (e) {
+                console.error('[MemorizationSession] flush failed:', e);
+              }
               navigate('/memorization/confirm', { state: { reference } });
             }
           }}

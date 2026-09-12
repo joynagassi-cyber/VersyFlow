@@ -13,10 +13,10 @@
  * environment (it only issues I/O when a method is awaited).
  */
 
+import { MemorizationService } from '@/domains/memorization/service';
 import {
-  MemorizationService,
-} from '@/domains/memorization/service';
-import { fsrsRatingToString } from '@/domains/memorization/entities';
+  fsrsRatingToString,
+} from '@/domains/memorization/entities';
 import type {
   MemorizationRecord,
   ReviewLogEntry,
@@ -24,7 +24,10 @@ import type {
 } from '@/domains/memorization/entities';
 import type { IFsrsEngine, Rating as FsrsRating, FsrsState } from '@/domains/fsrs';
 import type { IStorage } from '@/infrastructure/storage/storage-types';
-import { getMemorizationRepository, getReviewLogRepository } from '@/infrastructure/repository/powersync-repositories';
+import {
+  getMemorizationRepository,
+  getReviewLogRepository,
+} from '@/infrastructure/repository/powersync-repositories';
 import type { WordPerformanceSnapshot } from '@/domains/memorization/entities';
 
 /**
@@ -62,6 +65,7 @@ function toWordPerformanceSnapshot(w: WordPerformance): WordPerformanceSnapshot 
 export interface MemorizationRepoLike {
   getById(userId: string, recordId: string): Promise<MemorizationRecord | null>;
   listDueByUser(userId: string, beforeMs?: number): Promise<MemorizationRecord[]>;
+  listByUser(userId: string): Promise<MemorizationRecord[]>;
   upsert(
     userId: string,
     record: Omit<MemorizationRecord, 'id' | 'learnerProfileId' | 'updatedAt'>,
@@ -150,6 +154,25 @@ export class PowerSyncMemorizationService extends MemorizationService {
     const userId = await this.userIdProvider();
     if (!userId) return []; // offline + not signed in → nothing to review
     return this.repo.listDueByUser(userId);
+  }
+
+  /** All records for the current user (newest first), or [] when signed out. */
+  async getAllMemorized(profileId?: string): Promise<MemorizationRecord[]> {
+    void profileId;
+    const userId = await this.userIdProvider();
+    if (!userId) return [];
+    return this.repo.listByUser(userId);
+  }
+
+  /** Review logs for a record, read from the PowerSync review_logs table. */
+  async getReviewLogsForRecord(
+    recordId: string,
+    profileId?: string,
+  ): Promise<ReviewLogEntry[]> {
+    void profileId;
+    const userId = await this.userIdProvider();
+    if (!userId) return [];
+    return getReviewLogRepository().listByRecord(recordId);
   }
 
   async getMemorizedRecord(

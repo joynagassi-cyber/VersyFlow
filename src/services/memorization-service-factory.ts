@@ -8,6 +8,11 @@
  *
  * The `userIdProvider` binds the record owner to the authenticated user via
  * the shared {@link getSyncUserIdProvider}.
+ *
+ * Note: a single module-level instance is shared across all profiles — the
+ * profileId is only used for the parent's LOCAL_ONLY bookkeeping. The
+ * sync-targeting (userIdProvider + PowerSync repository) is uniform, so
+ * per-profile caching would not produce different behaviour.
  */
 
 import { getFsrsEngine } from '@/services/fsrs-factory';

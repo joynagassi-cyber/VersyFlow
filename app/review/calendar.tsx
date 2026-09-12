@@ -12,22 +12,10 @@ import FullScreenPage from '@/components/layout/FullScreenPage';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { useActiveProfile } from '@/hooks/useActiveProfile';
-import { MmkvStorage } from '@/infrastructure/storage';
-import { MemorizationService } from '@/domains/memorization/service';
-import { Sm2FallbackEngine } from '@/domains/fsrs';
+import { getFsrsEngine } from '@/services/fsrs-factory';
 import { ProgressService } from '@/services/progress-service';
+import { getMemorizationService } from '@/services/memorization-service-factory';
 import type { ProgressStats } from '@/services/stats-calculator';
-
-const serviceByProfile = new Map<string, MemorizationService>();
-const getMemorizationService = (profileId: string) => {
-  if (!serviceByProfile.has(profileId)) {
-    serviceByProfile.set(
-      profileId,
-      new MemorizationService(new MmkvStorage(), new Sm2FallbackEngine(), profileId),
-    );
-  }
-  return serviceByProfile.get(profileId)!;
-};
 
 const WEEKDAYS = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
 
@@ -47,7 +35,7 @@ export default function ReviewCalendarScreen() {
       try {
         const service = getMemorizationService(profileId);
         const [progress, records] = await Promise.all([
-          new ProgressService(service, new Sm2FallbackEngine(), undefined, profileId).getStats(),
+          new ProgressService(service, getFsrsEngine(), undefined, profileId).getStats(),
           service.getAllMemorized(),
         ]);
         if (cancelled) return;
