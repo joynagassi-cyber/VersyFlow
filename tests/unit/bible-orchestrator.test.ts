@@ -14,11 +14,10 @@ import {
   sha256,
   type ISourceProvider,
   type IFileWriter,
-  type IngestionResult,
 } from '@/infrastructure/bible/bible-ingestion-orchestrator';
 import type { CanonExpectation } from '@/infrastructure/bible/bible-validator';
-import type { BibleDatasetManifest } from '@/domains/bible/registry';
 import type { BibleDocument } from '@/domains/bible/document';
+import type { BibleDatasetManifest } from '@/domains/bible/registry';
 
 /** Minimal 2-book USFM source (VersyFlow ids via the canonical seed map). */
 const LSG_CONTENT = [
@@ -57,7 +56,7 @@ class MemorySourceProvider implements ISourceProvider {
     this.contentByDataset = contentByDataset;
     this.failDatasets = new Set(failDatasets);
   }
-  async resolve(manifest: BibleDatasetManifest) {
+  resolve(manifest: BibleDatasetManifest) {
     if (this.failDatasets.has(manifest.id)) {
       throw new Error(`source unavailable for ${manifest.id}`);
     }
@@ -71,7 +70,7 @@ class MemorySourceProvider implements ISourceProvider {
 
 class MemoryFileWriter implements IFileWriter {
   readonly written: Record<string, string> = {};
-  async writeDataset(datasetId: string, json: string): Promise<string> {
+  writeDataset(datasetId: string, json: string): Promise<string> {
     this.written[datasetId] = json;
     return `data/bible/${datasetId}.json`;
   }
@@ -92,9 +91,7 @@ describe('BibleIngestionOrchestrator', () => {
     expect(result.checksum).toBeDefined();
     expect(result.validation?.pass).toBe(true);
     // Warning-severity issues (empty verse, etc.) do not block the build (§53).
-    const written: BibleDocument = JSON.parse(writer.written.lsg) as unknown as {
-      books: Array<{ id: string }>;
-    };
+    const written = JSON.parse(writer.written.lsg) as unknown as BibleDocument;
     expect(written.books.map((b) => b.id)).toEqual(['gen', 'mat']);
   });
 

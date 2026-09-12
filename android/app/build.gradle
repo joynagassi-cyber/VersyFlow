@@ -101,15 +101,22 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
+        // Release signing is driven by GitHub Actions secrets:
+        // the workflow writes android/gradle.properties RELEASE_* values at build time
+        // and decodes keystore/release.keystore (from the KEYSTORE secret).
+        release {
+            storeFile file(findProperty('RELEASE_STORE_FILE') ?: 'release.keystore')
+            storePassword findProperty('RELEASE_STORE_PASSWORD') ?: 'android'
+            keyAlias findProperty('RELEASE_KEY_ALIAS') ?: 'androiddebugkey'
+            keyPassword findProperty('RELEASE_KEY_PASSWORD') ?: 'android'
+        }
     }
     buildTypes {
         debug {
             signingConfig signingConfigs.debug
         }
         release {
-            // Caution! In production, you need to generate your own keystore file.
-            // see https://reactnative.dev/docs/signed-apk-android.
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
             shrinkResources (findProperty('android.enableShrinkResourcesInReleaseBuilds')?.toBoolean() ?: false)
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"

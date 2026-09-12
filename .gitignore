@@ -96,3 +96,6 @@ keystore/
 .trae
 .windsurf
 .dyad/
+
+# Vite web build output (Capacitor webDir; build artifact, not source)
+/www/

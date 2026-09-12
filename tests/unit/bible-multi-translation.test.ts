@@ -47,8 +47,11 @@ describe('P1B-1 multi-translation registry', () => {
   it('same reference yields different text per translation', async () => {
     const source = new BibleJsonFileSource({ useNodeFs: true });
     const repo = new LocalBibleRepository(source);
-    const lsgVerse = await repo.getVerse('lsg', 'gen', 1, 1);
-    const ostVerse = await repo.getVerse('ostervald', 'gen', 1, 1);
+    // Note: Genesis 1:1 is worded identically in LSG and Ostervald (the two
+    // translations share the 1910 LSG wording for this verse), so the
+    // distinct-wording check uses Genesis 1:2, where they diverge.
+    const lsgVerse = await repo.getVerse('lsg', 'gen', 1, 2);
+    const ostVerse = await repo.getVerse('ostervald', 'gen', 1, 2);
     expect(lsgVerse?.text).toBeTruthy();
     expect(ostVerse?.text).toBeTruthy();
     // The two datasets are deliberately distinct wordings.

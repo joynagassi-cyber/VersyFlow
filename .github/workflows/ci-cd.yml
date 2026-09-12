@@ -1,0 +1,282 @@
+name: CI/CD — Web + Android
+
+#
+# Single unified pipeline for VersyFlow.
+#
+# Replaces all legacy workflows (build.yml, build-apk.yml, build-apk-simple.yml,
+# ci.yml, deploy.yml, claude-code.yml, agnes-ai-review.yml — all deleted).
+#
+# DAG:
+#   quality-gate (matrix: typecheck / lint / tests, in parallel)
+#     -> build-web (Vite tsc + vite build -> www/ artifact)
+#        -> build-android (debug APK, no secrets)            [PR / main / develop / dispatch]
+#        -> build-android-release (signed APK, needs KEYSTORE secrets) [main push / dispatch]
+#
+# Trigger model:
+#   - push to main/develop + PRs to main : fast gates -> web build -> debug APK
+#   - push to main                       : + signed release APK
+#   - workflow_dispatch : optional inputs (build_release, version)
+#
+# Required secrets — see .github/secrets-checklist.md
+#   VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY, VITE_POWERSYNC_URL   (build-time env)
+#   KEYSTORE, KEYSTORE_PASSWORD, KEY_ALIAS, KEY_PASSWORD           (release signing)
+#
+# Android path per job:
+#   npm ci (postinstall runs scripts/patch-powersync-worker.cjs, idempotent)
+#   -> download-artifact web-build-www -> ./www
+#   -> npx cap sync android (copies www into android/assets/www)
+#   -> cd android && ./gradlew ...
+#
+# Vite env vars are workflow-level env from secrets. PRs run with empty values
+# (safe placeholder config); release builds on main get real values.
+#
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      build_release:
+        description: 'Build a SIGNED release APK (requires KEYSTORE secrets)'
+        type: boolean
+        default: false
+      version:
+        description: 'Version label appended to APK artifact names (optional)'
+        type: string
+        required: false
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # Injected at Vite build time (import.meta.env). Empty values are safe:
+  # the app degrades to placeholder config; PRs run without secrets.
+  VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+  VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+  VITE_POWERSYNC_URL: ${{ secrets.VITE_POWERSYNC_URL }}
+
+jobs:
+  # ------------------------------------------------------------------
+  # 1. Quality gates — typecheck + lint + tests run as a parallel matrix
+  # ------------------------------------------------------------------
+  quality-gate:
+    name: Quality Gate — ${{ matrix.check }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        check: [typecheck, lint, tests]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies (runs postinstall PowerSync worker patch)
+        run: npm ci
+
+      - name: TypeScript typecheck
+        if: matrix.check == 'typecheck'
+        run: npm run typecheck
+
+      - name: ESLint
+        if: matrix.check == 'lint'
+        run: npm run lint
+
+      - name: Vitest (with coverage)
+        if: matrix.check == 'tests'
+        run: npm run test:coverage
+
+      - name: Upload coverage report
+        if: matrix.check == 'tests'
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: coverage
+          retention-days: 7
+          if-no-files-found: ignore
+
+  # ------------------------------------------------------------------
+  # 2. Web build (Vite -> www/), shared by web deploy and Android builds
+  # ------------------------------------------------------------------
+  build-web:
+    name: Build Web
+    runs-on: ubuntu-latest
+    needs: [quality-gate]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies (runs postinstall PowerSync worker patch)
+        run: npm ci
+
+      - name: Vite production build (outputs to www/)
+        run: npm run build
+
+      - name: Upload www/ artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-build-www
+          path: www
+          retention-days: 7
+
+  # ------------------------------------------------------------------
+  # 3. Android — debug APK (PRs, main/develop pushes, manual dispatch)
+  #    Debug builds need no keystore; signing uses android/app/debug.keystore.
+  #    Skipped when the dispatch explicitly asks for the signed release build.
+  # ------------------------------------------------------------------
+  build-android:
+    name: Android (debug APK)
+    runs-on: ubuntu-latest
+    needs: [quality-gate, build-web]
+    if: (github.ref == 'refs/heads/develop' && github.event_name == 'push') || github.event_name == 'pull_request' || ((github.ref == 'refs/heads/main' && github.event_name == 'push') || (github.event_name == 'workflow_dispatch' && !inputs.build_release))
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Set up JDK 17 (Temurin)
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Install Android SDK (Build-Tools 35, Platform 35)
+        uses: android-actions/setup-android@v3
+
+      - name: Install dependencies (runs postinstall PowerSync worker patch)
+        run: npm ci
+
+      - name: Restore web build (www/)
+        uses: actions/download-artifact@v4
+        with:
+          name: web-build-www
+          path: www
+
+      - name: Capacitor sync (copies www/ into android/assets/www)
+        run: npx cap sync android
+
+      - name: Gradle build debug APK
+        working-directory: android
+        run: ./gradlew assembleDebug
+
+      - name: Upload debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: versyflow-debug-${{ inputs.version || 'dev' }}-${{ github.sha }}.apk
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+          retention-days: 14
+
+  # ------------------------------------------------------------------
+  # 4. Android — SIGNED release APK
+  #    Runs on push to main and on manual dispatch with build_release=true.
+  #    The keystore (never committed) is decoded from the base64 KEYSTORE
+  #    secret into keystore/release.keystore; RELEASE_* signing properties
+  #    are appended to android/gradle.properties.
+  #    Requires the four keystore secrets — see .github/secrets-checklist.md.
+  # ------------------------------------------------------------------
+  build-android-release:
+    name: Android (signed release APK)
+    runs-on: ubuntu-latest
+    needs: [quality-gate, build-web]
+    if: (github.ref == 'refs/heads/main' && github.event_name == 'push') || (github.event_name == 'workflow_dispatch' && inputs.build_release)
+    environment: production
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Set up JDK 17 (Temurin)
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Install Android SDK (Build-Tools 35, Platform 35)
+        uses: android-actions/setup-android@v3
+
+      - name: Install dependencies (runs postinstall PowerSync worker patch)
+        run: npm ci
+
+      - name: Restore web build (www/)
+        uses: actions/download-artifact@v4
+        with:
+          name: web-build-www
+          path: www
+
+      - name: Restore release keystore from secret
+        env:
+          KEYSTORE_B64: ${{ secrets.KEYSTORE }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          set -euo pipefail
+          # Fail fast with clear errors when secrets are missing (pre-build check)
+          test -n "$KEYSTORE_B64"     || { echo "::error::KEYSTORE secret (base64 keystore) is missing — see .github/secrets-checklist.md"; exit 1; }
+          test -n "$KEYSTORE_PASSWORD" || { echo "::error::KEYSTORE_PASSWORD secret is missing — see .github/secrets-checklist.md"; exit 1; }
+          test -n "$KEY_ALIAS"        || { echo "::error::KEY_ALIAS secret is missing — see .github/secrets-checklist.md"; exit 1; }
+          test -n "$KEY_PASSWORD"     || { echo "::error::KEY_PASSWORD secret is missing — see .github/secrets-checklist.md"; exit 1; }
+
+          mkdir -p keystore
+          echo "$KEYSTORE_B64" | base64 -d > keystore/release.keystore
+
+          # Append release signing properties to gradle.properties.
+          # android/app/build.gradle defines signingConfigs.release reading
+          # RELEASE_* via findProperty(); the fallbacks there are the
+          # debug-keystore values, so a silent fallback is detected by the
+          # keytool verification step below.
+          cat >> android/gradle.properties <<EOF
+
+          # --- CI release signing (injected by GitHub Actions, never committed) ---
+          RELEASE_STORE_FILE=../../keystore/release.keystore
+          RELEASE_STORE_PASSWORD=$KEYSTORE_PASSWORD
+          RELEASE_KEY_ALIAS=$KEY_ALIAS
+          RELEASE_KEY_PASSWORD=$KEY_PASSWORD
+          EOF
+
+      - name: Capacitor sync (copies www/ into android/assets/www)
+        run: npx cap sync android
+
+      - name: Gradle build signed release APK
+        working-directory: android
+        run: ./gradlew assembleRelease
+
+      - name: Verify APK signature (must NOT be the Android debug cert)
+        run: |
+          set -euo pipefail
+          APK=android/app/build/outputs/apk/release/app-release.apk
+          test -f "$APK" || { echo "::error::APK not found at $APK"; exit 1; }
+          # Debug-keystore fallback detection: if the release build fell back
+          # to the debug signature, the RELEASE_* properties / keystore did
+          # not apply (missing secrets or gradle.properties not written).
+          if keytool -printcert -jarfile "$APK" 2>/dev/null | grep -qi "Android Debug"; then
+            echo "::error::APK is signed with the Android DEBUG keystore — release signing did not apply. Verify the KEYSTORE secrets are set."
+            exit 1
+          fi
+          echo "Release APK signature OK (not the debug keystore)."
+
+      - name: Upload release APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: versyflow-release-${{ inputs.version || 'release' }}-${{ github.sha }}.apk
+          path: android/app/build/outputs/apk/release/app-release.apk
+          retention-days: 30

@@ -9,7 +9,6 @@
 import { describe, it, expect } from 'vitest';
 import { validateDocument, type ValidationReport, type CanonExpectation } from '@/infrastructure/bible/bible-validator';
 import type { BibleDocument } from '@/domains/bible/document';
-import type { BibleBookData } from '@/domains/bible/repository-local';
 
 /** Build a minimal valid 2-book BibleDocument (normalized, VersyFlow ids). */
 function makeDoc(overrides: { books?: Array<{ id: string; chapters: Array<{ number: number; verses: Array<{ number: number; text: string }> }> }> } = {}): BibleDocument {
@@ -164,7 +163,9 @@ describe('validateDocument', () => {
     });
     const report = validateDocument(doc, expectation);
     expect(report.issues.some((i) => i.code === 'EMPTY_VERSE')).toBe(true);
-    expect(report.issues.find((i) => i.code === 'EMPTY_VERSE')?.severity).toBe('error');
+    // §53: empty verses are WARNINGS (incomplete source corpora are legal),
+    // not blocking errors — the build proceeds and the issue is reported.
+    expect(report.issues.find((i) => i.code === 'EMPTY_VERSE')?.severity).toBe('warning');
   });
 
   it('flags non-consecutive verse numbers within a chapter', () => {
