@@ -5,8 +5,7 @@
  */
 
 import { useState, useEffect, useCallback } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
+import { useNavigate, useSearchParams } from 'react-router-dom';import { useTranslation } from 'react-i18next';
 import { X, Loader2, ArrowLeft, ArrowRight, CheckCircle } from 'lucide-react';
 import FullScreenPage from '@/components/layout/FullScreenPage';
 import { Button } from '@/components/ui/button';
@@ -21,6 +20,7 @@ import { MemorizationSessionEngine } from '@/domains/memorization/session-engine
 import { Rating } from '@/domains/fsrs';
 import { resolveBookId } from '@/domains/bible/entities';
 import { useActiveProfile } from '@/hooks/useActiveProfile';
+import { useSettingsStore } from '@/store/settings-store';
 import { getMemorizationRepository, getSyncUserIdProvider } from '@/infrastructure/repository/powersync-repositories';
 import type { MemorizationRecord } from '@/domains/memorization/entities';
 
@@ -65,7 +65,11 @@ export default function MemorizationSession() {
   const verseStartParam = parseInt(params.get('verseStart') ?? params.get('verse') ?? '0', 10);
   const verseEndParam = parseInt(params.get('verseEnd') ?? '0', 10);
   const refParam = params.get('reference') ?? '';
-  const translationId = params.get('translationId') ?? 'lsg';
+  // Translation: URL param wins; otherwise the user's persisted preference;
+  // otherwise the registry default ('lsg'). No hardcoded default here.
+  const translationId =
+    params.get('translationId') ??
+    (useSettingsStore.getState().bibleTranslation || 'lsg');
   // Prefer the active learner profile; fall back to URL param or 'default'.
   const learnerProfileId = params.get('learnerProfileId') || activeProfile?.id || 'default';
 

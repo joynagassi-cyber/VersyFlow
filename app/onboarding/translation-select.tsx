@@ -10,20 +10,25 @@ import { ArrowLeft, ArrowRight, BookText, Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { useSettingsStore } from '@/store/settings-store';
+import { useTranslationPreference } from '@/hooks/useTranslationPreference';
 
+// Both bundled translations are selectable; LSG stays the default.
 const TRANSLATIONS = [
   { id: 'lsg', name: 'Louis Segond (1910)', year: '1910', style: 'Classique', isDefault: true },
+  { id: 'ostervald', name: 'Ostervald (1930)', year: '1930', style: 'Classique', isDefault: false },
 ] as const;
 
 export default function TranslationPickerScreen() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { setBibleTranslation, bibleTranslation } = useSettingsStore();
+  const { setPreference } = useTranslationPreference();
   const [selected, setSelected] = useState(bibleTranslation || 'lsg');
 
   const select = (id: string) => {
     setSelected(id);
     setBibleTranslation(id);
+    setPreference(id); // persist via PowerSync when a session exists
   };
 
   return (
@@ -82,7 +87,7 @@ export default function TranslationPickerScreen() {
           <ArrowLeft size={16} />
           {t('common.back')}
         </Button>
-        <Button className="flex-1" onClick={() => navigate('/onboarding/fsrs-introduction')}>
+        <Button className="flex-1" onClick={() => navigate('/onboarding/session-config')}>
           {t('common.continue')}
           <ArrowRight size={16} />
         </Button>

@@ -25,6 +25,7 @@ import {
 import { cn } from '@/lib/utils';
 import { useAuthStore } from '@/store/auth-store';
 import { useSettingsStore } from '@/store/settings-store';
+import { useTranslationPreference } from '@/hooks/useTranslationPreference';
 import { SUPPORTED_LANGUAGES, isRTL } from '@/domains/i18n/config';
 import {
   Dialog,
@@ -33,11 +34,17 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 
+const TRANSLATION_LABELS: Record<string, string> = {
+  lsg: 'Louis Segond (1910)',
+  ostervald: 'Ostervald (1930)',
+};
+
 export default function SettingsScreen() {
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
   const { user, isAuthenticated, signOut } = useAuthStore();
   const { bibleTranslation, setBibleTranslation } = useSettingsStore();
+  const { setPreference } = useTranslationPreference();
   const [languageModalOpen, setLanguageModalOpen] = useState(false);
 
   const currentLanguage = i18n.language ?? 'fr';
@@ -71,13 +78,13 @@ export default function SettingsScreen() {
           iconBg: 'bg-icon-bg-purple',
           iconColor: 'text-text-secondary',
           label: t('settings.bibleTranslation', 'Traduction biblique'),
-          subtitle:
-            bibleTranslation === 'lsg'
-              ? 'Louis Segond (1910)'
-              : bibleTranslation || 'LSG',
+          subtitle: TRANSLATION_LABELS[bibleTranslation] ?? bibleTranslation ?? 'LSG',
           onClick: () => {
-            setBibleTranslation('lsg');
-            navigate('/onboarding/translation-select');
+            // Toggle between the two bundled translations; persist through
+            // the PowerSync preference when a session is active.
+            const next = bibleTranslation === 'lsg' ? 'ostervald' : 'lsg';
+            setBibleTranslation(next);
+            setPreference(next);
           },
         },
       ],
