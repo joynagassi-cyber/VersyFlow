@@ -47,6 +47,39 @@ export class FamilyService {
     private profileRepository: ILearnerProfileRepository,
   ) {}
 
+  async createFamily(
+    ownerId: string,
+    name: string,
+    color?: string,
+    icon?: string,
+  ): Promise<Family> {
+    const now = Date.now();
+    // Write the family row first; the repository stamps id/createdAt when
+    // absent, but we pass a deterministic createdAt so the event is faithful.
+    const family = await this.familyRepository.create({
+      ownerId,
+      name,
+      color: color ?? '#6633CC',
+      icon: icon ?? '👨‍👩‍👧‍👦',
+    });
+
+    // The creator is always the owner with an active membership.
+    await this.familyRepository.addMember(family.id, {
+      accountId: ownerId,
+      role: 'owner' as FamilyRole,
+      status: 'active',
+    });
+
+    eventBus.emit({
+      id: crypto.randomUUID(),
+      type: DomainEventTypes.FAMILY_CREATED,
+      timestamp: now,
+      payload: { familyId: family.id, ownerId },
+    });
+
+    return family;
+  }
+
   async acceptInvitation(
     token: string,
     accountId: string,
@@ -112,7 +145,7 @@ export class FamilyService {
     return { family, membership, invitation: { ...inv, status: 'used' } };
   }
 
-  async declineInvitation(token: string, accountId: string): Promise<boolean> {
+  async declineInvitation(token: string, _accountId: string): Promise<boolean> {
     const inv = await this.invitationRepository.findByToken(token);
     if (!inv) return false;
     // Decline just means we don't process it — mark as revoked by the inviter or leave as-is

@@ -13,10 +13,10 @@ import {
   SafeAreaView,
 } from '@/components/ui/Primitives';
 import { useRouter } from '@/hooks/useIonicNavigation';
-import { IonIcon } from '@ionic/react'
-import * as Ionicons from 'ionicons/icons';
+import { IonIcon } from '@/components/ui/Primitives'
+import {checkmarkCircle, chevronBack, person, personAdd} from 'ionicons/icons';
 import { useAppTheme } from '@/theme/useTheme';
-import { useFamilyStore } from '@/store/family-store';
+import { useFamilySyncStore } from '@/store/family-sync-store';
 import { useActiveProfile } from '@/hooks/useActiveProfile';
 import { useFamilyService } from '@/hooks/useFamilyService';
 import { useTranslation } from 'react-i18next';
@@ -24,9 +24,9 @@ import type { MemberWithProfile } from '@/services/family-service';
 
 export default function FamilyMembersScreen() {
   const router = useRouter();
-  const { colors, sp, sh, rad } = useAppTheme();
+  const { colors, sh, rad } = useAppTheme();
   const { t } = useTranslation();
-  const { activeFamilyId, families } = useFamilyStore();
+  const { activeFamilyId, families } = useFamilySyncStore();
   const { activeProfile } = useActiveProfile();
   const { getMembersScoped } = useFamilyService();
 
@@ -37,9 +37,9 @@ export default function FamilyMembersScreen() {
 
   useEffect(() => {
     if (family) {
-      loadMembers();
+      void loadMembers();
     }
-  }, [family]);
+  }, [family, activeProfile?.id]);
 
   const loadMembers = async () => {
     if (!family) return;
@@ -72,11 +72,11 @@ export default function FamilyMembersScreen() {
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.backButtonSmall}>
-          <Ionicons name="chevron-back" size={24} color={colors.primary} />
+          <IonIcon icon={chevronBack} size={24} color={colors.primary} />
         </TouchableOpacity>
         <Text style={[styles.title, { color: colors.textPrimary }]}>{family.name}</Text>
         <TouchableOpacity onPress={() => router.push('/family/invite')} style={styles.inviteButton}>
-          <Ionicons name="person-add" size={20} color={colors.primary} />
+          <IonIcon icon={personAdd} size={20} color={colors.primary} />
         </TouchableOpacity>
       </View>
 
@@ -90,7 +90,7 @@ export default function FamilyMembersScreen() {
             members.map((member) => (
               <View key={member.id} style={[styles.memberCard, { backgroundColor: colors.surface, ...sh.sm }]}>
                 <View style={[styles.memberAvatar, { backgroundColor: colors.iconBgRose }]}>
-                  <Ionicons name="person" size={24} color={colors.primary} />
+                  <IonIcon icon={person} size={24} color={colors.primary} />
                 </View>
                 <View style={styles.memberInfo}>
                   <Text style={[styles.memberName, { color: colors.textPrimary }]}>
@@ -102,13 +102,13 @@ export default function FamilyMembersScreen() {
                      t('family.roleMember')}
                   </Text>
                 </View>
-                <Ionicons name="checkmark-circle" size={20} color={colors.success} />
+                <IonIcon icon={checkmarkCircle} size={20} color={colors.success} />
               </View>
             ))
           )}
 
           <View style={[styles.invitePrompt, { backgroundColor: colors.surfaceTint, borderRadius: rad.lg }]}>
-            <Ionicons name="person-add" size={24} color={colors.primary} />
+            <IonIcon icon={personAdd} size={24} color={colors.primary} />
             <View style={styles.invitePromptText}>
               <Text style={[styles.invitePromptTitle, { color: colors.textPrimary }]}>{t('family.inviteMember')}</Text>
               <Text style={[styles.invitePromptDesc, { color: colors.textSecondary }]}>{t('family.inviteHint')}</Text>

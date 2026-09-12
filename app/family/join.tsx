@@ -14,30 +14,44 @@ import {
   Alert,
 } from '@/components/ui/Primitives';
 import { useRouter } from '@/hooks/useIonicNavigation';
-import { IonIcon } from '@ionic/react'
-import * as Ionicons from 'ionicons/icons';
+import { IonIcon } from '@/components/ui/Primitives'
+import {chevronBack, qrCode} from 'ionicons/icons';
 import { useAppTheme } from '@/theme/useTheme';
 import { useFamilyService } from '@/hooks/useFamilyService';
+import { useFamilySyncStore } from '@/store/family-sync-store';
+import { useAuthStore } from '@/store/auth-store';
 import { useTranslation } from 'react-i18next';
 
 export default function FamilyJoinScreen() {
   const router = useRouter();
-  const { colors, sp, sh, rad } = useAppTheme();
+  const { colors, sh } = useAppTheme();
   const { t } = useTranslation();
   const { acceptInvitation } = useFamilyService();
+  const { addFamily, addMembership, setActiveFamily } = useFamilySyncStore();
+  const signedIn = Boolean(useAuthStore((s) => s.user?.userId));
   const [code, setCode] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   const handleJoin = async () => {
+    if (!signedIn) {
+      Alert.alert(t('common.error'), t('family.signedInRequired'));
+      return;
+    }
     if (!code.trim()) {
       Alert.alert(t('common.error'), t('family.enterCode'));
       return;
     }
     setIsLoading(true);
     try {
-      await acceptInvitation(code.trim().toUpperCase());
+      const result = await acceptInvitation(code.trim().toUpperCase());
+      // Push into the local store so the home / members screens reflect the
+      // new family immediately — the PowerSync bridge re-syncs the same rows
+      // later (idempotent addFamily / addMembership).
+      addFamily(result.family);
+      addMembership(result.membership);
+      setActiveFamily(result.family.id);
       Alert.alert(t('family.joinedSuccess'), t('family.joinWelcome'));
-      router.back();
+      router.push('/family/home');
     } catch (e) {
       const msg = e instanceof Error ? e.message : t('family.invalidCode');
       Alert.alert(t('common.error'), msg);
@@ -54,16 +68,19 @@ export default function FamilyJoinScreen() {
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-          <Ionicons name="chevron-back" size={24} color={colors.primary} />
+          <IonIcon icon={chevronBack} size={24} color={colors.primary} />
         </TouchableOpacity>
         <Text style={[styles.title, { color: colors.textPrimary }]}>{t('family.join')}</Text>
         <View style={styles.headerSpacing} />
       </View>
 
       <View style={styles.content}>
+        {!signedIn && (
+          <Text style={[styles.helpText, { color: colors.textMuted }]}>{t('family.signedInRequired')}</Text>
+        )}
         <View style={styles.scannerSection}>
           <TouchableOpacity style={[styles.scannerButton, { borderColor: colors.border }]} onPress={handleScan}>
-            <Ionicons name="qr-code" size={48} color={colors.primary} />
+            <IonIcon icon={qrCode} size={48} color={colors.primary} />
             <Text style={[styles.scannerText, { color: colors.textSecondary }]}>{t('family.scanQR')}</Text>
           </TouchableOpacity>
         </View>

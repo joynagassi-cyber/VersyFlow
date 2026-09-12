@@ -3,24 +3,52 @@
  * Tailwind + i18n + Lucide + FullScreenPage.
  */
 
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Plus, LogIn, ChevronRight, ChevronLeft, Users, Check } from 'lucide-react';
+import { Plus, LogIn, ChevronRight, Check } from 'lucide-react';
 import FullScreenPage from '@/components/layout/FullScreenPage';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { useFamilyStore } from '@/store/family-store';
+import { useFamilySyncStore } from '@/store/family-sync-store';
+import { useFamilyService } from '@/hooks/useFamilyService';
+import { useAuthStore } from '@/store/auth-store';
 
 export default function FamilyHomeScreen() {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const { families, activeFamilyId, setActiveFamily } = useFamilyStore();
+  const { families, activeFamilyId, setActiveFamily, addFamily } = useFamilySyncStore();
+  const { createFamily } = useFamilyService();
+  const signedIn = Boolean(useAuthStore((s) => s.user?.userId));
+
+  const [newName, setNewName] = useState('');
+  const [creating, setCreating] = useState(false);
 
   const activeFamily = families.find((f) => f.id === activeFamilyId) || null;
 
   const selectFamily = (familyId: string) => {
     setActiveFamily(familyId);
     navigate('/family/members');
+  };
+
+  const handleCreate = async () => {
+    const name = newName.trim();
+    if (!name || creating) return;
+    setCreating(true);
+    try {
+      const family = await createFamily(name);
+      // The PowerSync bridge re-lists families from the DB; addFamily() is
+      // idempotent so this also covers offline (local write is pending sync).
+      addFamily(family);
+      setActiveFamily(family.id);
+      setNewName('');
+      navigate('/family/members');
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.error('createFamily failed', e);
+    } finally {
+      setCreating(false);
+    }
   };
 
   const daysAgo = (createdAt: number) =>
@@ -65,21 +93,42 @@ export default function FamilyHomeScreen() {
         <div className="flex flex-col items-center rounded-2xl bg-surface p-8 text-center shadow-sm">
           <span className="text-5xl">👨‍👩‍👧‍👦</span>
           <p className="mt-4 text-lg font-bold text-text-primary">
-            {t('family.noFamily', 'Aucune famille active')}
+            {families.length === 0 ? t('family.noFamiliesYet', 'Aucune famille pour l\'instant') : t('family.noFamily', 'Aucune famille active')}
           </p>
           <p className="mt-1 text-sm text-text-muted">
             {t('family.createFamily', 'Créez une famille')}{' '}
             {t('family.shareDesc', 'pour partager votre progression')}
           </p>
+          {!signedIn && (
+            <p className="mt-3 text-xs text-text-muted">{t('family.signedInRequired', 'Connectez-vous pour créer ou rejoindre une famille')}</p>
+          )}
         </div>
       )}
 
+      {/* Create a family */}
+      <div className="mt-5 flex flex-col gap-2">
+        <input
+          value={newName}
+          onChange={(e) => setNewName(e.target.value)}
+          placeholder={t('family.familyNamePlaceholder', 'Ex. Famille Martin')}
+          aria-label={t('family.familyName', 'Nom de la famille')}
+          maxLength={40}
+          className="rounded-xl border bg-surface px-4 py-3 text-base text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-1 focus:ring-primary"
+        />
+        <Button
+          className="w-full"
+          onClick={() => {
+            void handleCreate();
+          }}
+          disabled={!signedIn || creating || !newName.trim()}
+        >
+          <Plus size={16} />
+          {creating ? t('common.loading', 'Chargement…') : t('family.createFamily', 'Créer une famille')}
+        </Button>
+      </div>
+
       {/* Actions */}
       <div className="mt-5 flex flex-col gap-3">
-        <Button className="w-full" onClick={() => navigate('/family/invite')}>
-          <Plus size={16} />
-          {t('family.createFamily', 'Créer une famille')}
-        </Button>
         <Button variant="outline" className="w-full" onClick={() => navigate('/family/join')}>
           <LogIn size={16} />
           {t('family.joinButton', 'Rejoindre la famille')}

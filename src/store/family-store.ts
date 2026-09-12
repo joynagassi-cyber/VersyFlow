@@ -4,7 +4,7 @@
  */
 
 import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
+import { persist } from 'zustand/middleware';
 import type { Family, FamilyMembership } from '@/domains/family';
 
 export interface FamilyState {
@@ -35,7 +35,11 @@ export const useFamilyStore = create<FamilyState>()(
       setActiveFamily: (id) => set({ activeFamilyId: id }),
 
       addFamily: (family) => {
-        set((state) => ({ families: [...state.families, family] }));
+        set((state) => ({
+          families: state.families.some((f) => f.id === family.id)
+            ? state.families
+            : [...state.families, family],
+        }));
       },
 
       removeFamily: (id) => {

@@ -80,6 +80,14 @@ export function useFamilyService() {
     [accountId, service],
   );
 
+  const createFamily = useCallback(
+    (name: string, color?: string, icon?: string) => {
+      if (!accountId) throw new Error('Not authenticated');
+      return service.createFamily(accountId, name, color, icon);
+    },
+    [accountId, service],
+  );
+
   const revokeInvitation = useCallback(
     (invitationId: string) => {
       if (!accountId) throw new Error('Not authenticated');
@@ -95,6 +103,7 @@ export function useFamilyService() {
     leaveFamily,
     removeMember,
     createInvitation,
+    createFamily,
     revokeInvitation,
     accountId,
   };

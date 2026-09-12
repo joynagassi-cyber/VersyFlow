@@ -13,19 +13,21 @@ import {
   Alert,
 } from '@/components/ui/Primitives';
 import { useRouter } from '@/hooks/useIonicNavigation';
-import { IonIcon } from '@ionic/react'
-import * as Ionicons from 'ionicons/icons';
+import { IonIcon } from '@/components/ui/Primitives'
+import {chevronBack, copy, informationCircle, shareSocial} from 'ionicons/icons';
 import { useAppTheme } from '@/theme/useTheme';
-import { useFamilyStore } from '@/store/family-store';
+import { useFamilySyncStore } from '@/store/family-sync-store';
 import { useFamilyService } from '@/hooks/useFamilyService';
+import { useAuthStore } from '@/store/auth-store';
 import { useTranslation } from 'react-i18next';
 
 export default function FamilyInviteScreen() {
   const router = useRouter();
-  const { colors, sp, sh, rad } = useAppTheme();
+  const { colors, sh, rad } = useAppTheme();
   const { t } = useTranslation();
-  const { activeFamilyId, families } = useFamilyStore();
+  const { activeFamilyId, families } = useFamilySyncStore();
   const { createInvitation } = useFamilyService();
+  const signedIn = Boolean(useAuthStore((s) => s.user?.userId));
 
   const [inviteCode, setInviteCode] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -34,7 +36,7 @@ export default function FamilyInviteScreen() {
 
   useEffect(() => {
     if (family && !inviteCode) {
-      handleGenerateCode();
+      void handleGenerateCode();
     }
   }, [family]);
 
@@ -52,17 +54,37 @@ export default function FamilyInviteScreen() {
     }
   };
 
-  const handleCopy = () => {
+  const buildInviteText = () => {
+    const base = t('family.shareDesc');
+    return inviteCode ? `${base} ${inviteCode}` : base;
+  };
+
+  const handleCopy = async () => {
     if (!inviteCode) return;
-    // In real app, use Clipboard API
-    Alert.alert(t('family.inviteCodeCopied'), inviteCode);
+    try {
+      await navigator.clipboard.writeText(inviteCode);
+      Alert.alert(t('family.inviteCodeCopied'));
+    } catch {
+      // Clipboard unavailable (e.g. insecure context) — show the code.
+      Alert.alert(t('family.inviteCode'), inviteCode);
+    }
   };
 
-  const handleShare = () => {
-    Alert.alert(t('family.shareTitle'), t('family.shareDesc'));
+  const handleShare = async () => {
+    const text = buildInviteText();
+    const nav = navigator as Navigator & { share?: (data: { title?: string; text: string }) => Promise<void> };
+    if (nav.share) {
+      try {
+        await nav.share({ title: t('family.shareTitle'), text });
+      } catch {
+        // User cancelled or share failed — no-op.
+      }
+    } else {
+      Alert.alert(t('family.shareTitle'), text);
+    }
   };
 
-  if (!family) {
+  if (!family || !signedIn) {
     router.back();
     return null;
   }
@@ -71,7 +93,7 @@ export default function FamilyInviteScreen() {
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-          <Ionicons name="chevron-back" size={24} color={colors.primary} />
+          <IonIcon icon={chevronBack} size={24} color={colors.primary} />
         </TouchableOpacity>
         <Text style={[styles.title, { color: colors.textPrimary }]}>{t('family.invite')}</Text>
         <View style={styles.headerSpacing} />
@@ -90,7 +112,7 @@ export default function FamilyInviteScreen() {
               <>
                 <Text style={[styles.codeValue, { color: colors.primary }]}>{inviteCode}</Text>
                 <TouchableOpacity style={styles.codeAction} onPress={handleCopy}>
-                  <Ionicons name="copy" size={20} color={colors.primary} />
+                  <IonIcon icon={copy} size={20} color={colors.primary} />
                 </TouchableOpacity>
               </>
             ) : (
@@ -109,12 +131,12 @@ export default function FamilyInviteScreen() {
         </View>
 
         <TouchableOpacity style={[styles.shareButton, { backgroundColor: colors.primary, ...sh.rose }]} onPress={handleShare}>
-          <Ionicons name="share-social" size={20} color="#fff" />
+          <IonIcon icon={shareSocial} size={20} color="#fff" />
           <Text style={styles.shareButtonText}>{t('family.shareCode')}</Text>
         </TouchableOpacity>
 
         <View style={[styles.infoCard, { backgroundColor: colors.surfaceTint }]}>
-          <Ionicons name="information-circle" size={20} color={colors.info} />
+          <IonIcon icon={informationCircle} size={20} color={colors.info} />
           <Text style={[styles.infoText, { color: colors.textSecondary }]}>
             {t('family.inviteHint')}
           </Text>

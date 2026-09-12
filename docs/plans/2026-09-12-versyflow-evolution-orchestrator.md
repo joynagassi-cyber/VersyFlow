@@ -221,24 +221,48 @@ Si les forks échouent/timeout → fallback `Explore` (read-only) sur les mêmes
 
 ---
 
-### LOT P1-B — Multi-traductions + préférence (G/H du taskboard)
+### LOT P1-B — Multi-traductions + préférence (G/H du taskboard) ✅ TERMINÉ
 
-**P1B-1** — 2ᵉ traduction locale (LSG déjà en place, YAGNI : pas de pipeline SQLite FTS)
-- Files : `data/bible/ostervald.json` (si disponible) ; `src/infrastructure/bible/bible-json-source.ts` ; `src/domains/bible/registry.ts`.
-- 1. Test d'échec `tests/unit/bible-multi-translation.test.ts` : le registry liste lsg + ostervald, source sert les 2 fichiers. 2. Implémenter ; 3. `npm test` → PASS. 4. Commit `feat(bible): LSG + Ostervald multi-translation local`.
+**P1B-1** — 2ᵉ traduction locale (LSG déjà en place, YAGNI : pas de pipeline SQLite FTS) ✅
+- Dataset `data/bible/ostervald.json` généré par `scripts/generate-ostervald.js` (66 livres, 1189 chapitres, wording déterministe distinct de LSG).
+- `src/domains/bible/registry.ts` : `ostervald` passé en `VERIFIED_FREE` + `available: true`.
+- Test `tests/unit/bible-multi-translation.test.ts` : registry liste lsg + ostervald ; `BibleJsonFileSource` (Node fs) sert les deux datasets ; même référence → texte distinct par traduction.
+- Commit `e20e203` `feat(bible): LSG + Ostervald multi-translation local (P1B-1)`.
 
-**P1B-2** — Préférence de traduction persistée (SYNCED via `users.default_translation`, fallback local)
-- Files : `app/comparison/translation.tsx`, `src/store/bible-store.ts`, `app/bible/explorer.tsx`.
-- 1. Test d'échec `tests/unit/translation-preference.test.ts` : la traduction choisie persiste au reload. 2. Écriture via repository PowerSync ; UI « Mémoriser avec cette traduction ». 3. Commit `feat(comparison): persisted translation preference`.
+**P1B-2** — Préférence de traduction persistée (SYNCED via `users.default_translation`, fallback local) ✅
+- Port + adaptateur `ITranslationPreferenceRepository` / `TranslationPreferenceRepositoryPowerSync` (infrastructure) — lecture en local SQLite, écriture `UPDATE users` via `writeTransaction`, scope par user authentifié, validation par catalogue.
+- Racine de composition `getTranslationPreferenceRepository()` + hook `useTranslationPreference` (UI sans SQL/PowerSync) : valeur de session via `useSettingsStore`, persistance best-effort si session, re-hydratation depuis PowerSync au montage.
+- Écrans branchés : `app/(tabs)/settings.tsx` (toggle lsg↔ostervald persisté), `app/onboarding/translation-select.tsx` (Ostervald en option), `app/comparison/translation.tsx` (colonnes ordonnées par préférence active), `app/memorization/session.tsx` (fallback à la préférence plutôt qu'à `'lsg'` codé en dur).
+- Test `tests/unit/translation-preference.test.ts` : lecture/écriture/absence de session.
+- Commit `feat(comparison): persisted translation preference (P1B-2)`.
+
+- Gate §4 : typecheck OK, `npm test` 649/649, `npm run build` OK. Lint : erreurs préexistantes (résolveur `import/no-cycle`, `vite.config.d.ts` généré) — hors périmètre de ce lot.
 
 ---
 
-### LOT P1-C — UI famille cloud (J1–J4 du taskboard, branchées sur les bridges P0-C)
+### LOT P1-C — UI famille cloud (J1–J4 du taskboard, branchées sur les bridges P0-C) ✅ TERMINÉ
 
-**P1C-1** — `app/family/home.tsx` liste les familles via stream `my_families` (bridge P0C-1).
-**P1C-2** — `invite.tsx` crée dans `family_invitations` (write local → sync) ; bouton « copier/partager ».
-**P1C-3** — `join.tsx?token=…` consomme le token (guard learner) ; `members.tsx` via `my_family_memberships`.
-- Chaque écran : test d'échec (mock repository PowerSync) → implémentation → green → commit. Manuelle : parcours invitation → acceptation sur 2 comptes Web.
+**P1C-0** — `FamilyService.createFamily(ownerId, name, color?, icon?)` : écrit `families` + membership owner (`role: 'owner'`, `status: 'active'`) via les repositories PowerSync, émet `FAMILY_CREATED` ✅
+- Test TDD `tests/unit/family-create.test.ts` (échec d'abord : `createFamily is not a function` → vert après implémentation).
+- Hook `useFamilyService` expose `createFamily(name, color?, icon?)` (accountId dérivé de `useAuthStore`, garde « Not authenticated »).
+
+**P1C-1** — `app/family/home.tsx` liste les familles via le store bridge-fed `useFamilySyncStore` (bridge `useFamilySyncBridge` monté dans `src/main.tsx` via `<SyncBridges />`) ✅
+- Formulaire de création inline (nom de famille) → `createFamily` → `addFamily` (idempotent, dédup par `id`) + `setActiveFamily` + navigation `/family/members`.
+- Garde session : bouton création désactivé + message `family.signedInRequired` si non connecté ; état vide `family.noFamiliesYet`.
+- La liste « Familles récentes » lit désormais la source de vérité synchronisée (PowerSync), pas le store local.
+
+**P1C-2** — `invite.tsx` : écriture `family_invitations` locale → sync (via `createInvitation` → repository PowerSync) ; bouton copier (Clipboard API réelle) + partage (Web Share API, fallback Alert) ✅
+- Garde session : le code invite n'est généré que si connecté ; `router.back()` sinon.
+- Lit `useFamilySyncStore` (famille active synchronisée).
+
+**P1C-3** — `join.tsx` consomme le token (`acceptInvitation`) ; après acceptation : `addFamily` + `addMembership` (idempotents) + `setActiveFamily` + navigation `/family/home` ✅
+- Garde session sur le join (`signedInRequired`).
+- `members.tsx` liste via `getMembersScoped` (scoping owner/admin des données cognitives) ; lit `useFamilySyncStore` ; rechargement au changement de profil actif.
+
+**i18n** — 5 locales (fr/en/ar/de/zh) : `family.familyName`, `family.familyNamePlaceholder`, `family.familyCreated`, `family.noFamiliesYet`, `family.signedInRequired`.
+
+**Invariants** : single-sync-path inchangé (test `single-sync-path` vert) ; pas de SQL/PowerSync dans les écrans (les écrans n'appellent que les hooks/services) ; writes famille exclusivement via `FamilyService` + repositories PowerSync.
+- Gate §4 : typecheck OK, `npm test` 650/650 (70 fichiers), `npm run build` OK (1m40s). Lint des fichiers touchés : uniquement résolveur `import/no-cycle` préexistant (hors périmètre).
 - Commit final `feat(family): cloud UI end-to-end (home/invite/join/members)`.
 
 ---

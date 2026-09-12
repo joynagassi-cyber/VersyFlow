@@ -91,6 +91,9 @@ import i18next, { initI18next } from '@/i18n/i18next-init';
 import { initializeSettingsStore, useSettingsStore } from '@/store/settings-store';
 import { initializeAppearanceStore } from '@/store/appearance-store';
 import { ThemeManager } from '@/components/ThemeManager';
+import { useAuthStore } from '@/store/auth-store';
+import { useFamilySyncBridge } from '@/hooks/useFamilySyncBridge';
+import { useProfileSyncBridge } from '@/hooks/useProfileSyncBridge';
 import type { MemorizationRecord } from '@/domains/memorization/entities';
 import { isRTL } from '@/domains/i18n/config';
 
@@ -138,6 +141,16 @@ function DirSync() {
       i18next.off('languageChanged', apply);
     };
   }, []);
+  return null;
+}
+
+/** Mounts the PowerSync → store bridges for family & profile data.
+ *  Activated whenever the user is authenticated; the bridges are
+ *  offline-safe and re-sync on the `initialized` event. */
+function SyncBridges() {
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  useFamilySyncBridge(isAuthenticated);
+  useProfileSyncBridge(isAuthenticated);
   return null;
 }
 
@@ -195,6 +208,7 @@ function App() {
     <StrictMode>
       <DirSync />
       <ThemeManager />
+      <SyncBridges />
       <BrowserRouter>
         <IonApp>
           <Routes>
