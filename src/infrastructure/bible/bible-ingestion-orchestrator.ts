@@ -159,11 +159,12 @@ export class BibleIngestionOrchestrator {
       },
       expectation,
     );
-    if (!report.pass) {
-      const errors = report.issues
-        .filter((i) => i.severity === 'error')
-        .map((i) => i.message)
-        .join('; ');
+    // §53: only ERROR-severity issues block the build; WARNING-severity
+    // issues (e.g. empty verses from incomplete source corpora) are recorded
+    // in the report but do not prevent the dataset from being written.
+    const blockingErrors = report.issues.filter((i) => i.severity === 'error');
+    if (blockingErrors.length > 0) {
+      const errors = blockingErrors.map((i) => i.message).join('; ');
       throw new Error(`Validation failed for ${manifest.id}: ${errors}`);
     }
 

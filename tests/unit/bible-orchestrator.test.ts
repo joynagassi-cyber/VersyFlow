@@ -91,7 +91,7 @@ describe('BibleIngestionOrchestrator', () => {
     expect(result.verseCount).toBe(3); // gen:2 + mat:1
     expect(result.checksum).toBeDefined();
     expect(result.validation?.pass).toBe(true);
-    // The written JSON normalises book codes to VersyFlow ids.
+    // Warning-severity issues (empty verse, etc.) do not block the build (§53).
     const written: BibleDocument = JSON.parse(writer.written.lsg) as unknown as {
       books: Array<{ id: string }>;
     };

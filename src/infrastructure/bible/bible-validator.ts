@@ -108,9 +108,12 @@ export function validateDocument(
       // Empty verse check
       for (const verse of chapter.verses) {
         if (verse.text.trim().length === 0) {
+          // §53: a verse with no text is a WARNING (completeness data is
+          // reported but does not block the build — the source corpus may
+          // have missing verses). Only structural errors block.
           issues.push({
             code: 'EMPTY_VERSE',
-            severity: 'error',
+            severity: 'warning',
             message: `Book "${book.id}" ch. ${chapter.number} verse ${verse.number} is empty.`,
             bookId: book.id,
             chapterNumber: chapter.number,
