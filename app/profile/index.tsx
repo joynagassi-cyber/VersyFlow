@@ -3,7 +3,7 @@
  * Displays user info and allows basic profile updates
  */
 
-import { useState } from 'react';
+import { useState, useMemo} from 'react';
 import {
   View,
   Text,
@@ -21,6 +21,121 @@ import { useSettingsStore } from '@/store/settings-store';
 
 export default function ProfileScreen() {
   const { colors, sp, sh, rad } = useAppTheme();
+  const styles = useMemo(() => StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: colors.surfaceTint,
+  },
+  content: {
+    padding: 16,
+    paddingBottom: 32,
+  },
+  header: {
+    alignItems: 'center',
+    paddingVertical: 32,
+  },
+  avatar: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: colors.primary,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  avatarText: {
+    fontSize: 32,
+    fontWeight: '700',
+    color: colors.surface,
+  },
+  email: {
+    fontSize: 14,
+    color: colors.textTertiary,
+  },
+  section: {
+    backgroundColor: colors.surface,
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 16,
+  },
+  sectionTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: colors.textPrimary,
+    marginBottom: 16,
+  },
+  field: {
+    marginBottom: 16,
+  },
+  fieldLast: {
+    marginBottom: 0,
+  },
+  label: {
+    fontSize: 14,
+    color: colors.textTertiary,
+    marginBottom: 8,
+  },
+  input: {
+    backgroundColor: colors.surfaceElevated,
+    borderRadius: 8,
+    padding: 12,
+    fontSize: 16,
+    color: colors.textPrimary,
+  },
+  value: {
+    fontSize: 16,
+    color: colors.textPrimary,
+  },
+  translationButton: {
+    backgroundColor: colors.surfaceElevated,
+    borderRadius: 8,
+    padding: 12,
+  },
+  offlineNotice: {
+    backgroundColor: colors.surfaceTint,
+    borderRadius: 8,
+    padding: 12,
+  },
+  offlineText: {
+    fontSize: 14,
+    color: colors.textTertiary,
+    lineHeight: 20,
+  },
+  button: {
+    backgroundColor: colors.primary,
+    borderRadius: 26,
+    paddingVertical: 14,
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  buttonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: colors.surface,
+  },
+  buttonGhost: {
+    backgroundColor: 'transparent',
+    borderRadius: 26,
+    paddingVertical: 14,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: colors.primary,
+  },
+  buttonGhostText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: colors.primary,
+  },
+  backButton: {
+    paddingVertical: 12,
+    alignItems: 'center',
+  },
+  backButtonText: {
+    fontSize: 14,
+    color: colors.textMuted,
+    textDecorationLine: 'underline',
+  },
+  }), [colors]);
   const router = useRouter();
   const { user, signOut } = useAuthStore();
   const { bibleTranslation, setBibleTranslation } = useSettingsStore();
@@ -135,118 +250,3 @@ export default function ProfileScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.surfaceTint,
-  },
-  content: {
-    padding: 16,
-    paddingBottom: 32,
-  },
-  header: {
-    alignItems: 'center',
-    paddingVertical: 32,
-  },
-  avatar: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    backgroundColor: colors.primary,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  avatarText: {
-    fontSize: 32,
-    fontWeight: '700',
-    color: colors.surface,
-  },
-  email: {
-    fontSize: 14,
-    color: colors.textTertiary,
-  },
-  section: {
-    backgroundColor: colors.surface,
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 16,
-  },
-  sectionTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: colors.textPrimary,
-    marginBottom: 16,
-  },
-  field: {
-    marginBottom: 16,
-  },
-  fieldLast: {
-    marginBottom: 0,
-  },
-  label: {
-    fontSize: 14,
-    color: colors.textTertiary,
-    marginBottom: 8,
-  },
-  input: {
-    backgroundColor: colors.surfaceElevated,
-    borderRadius: 8,
-    padding: 12,
-    fontSize: 16,
-    color: colors.textPrimary,
-  },
-  value: {
-    fontSize: 16,
-    color: colors.textPrimary,
-  },
-  translationButton: {
-    backgroundColor: colors.surfaceElevated,
-    borderRadius: 8,
-    padding: 12,
-  },
-  offlineNotice: {
-    backgroundColor: colors.surfaceTint,
-    borderRadius: 8,
-    padding: 12,
-  },
-  offlineText: {
-    fontSize: 14,
-    color: colors.textTertiary,
-    lineHeight: 20,
-  },
-  button: {
-    backgroundColor: colors.primary,
-    borderRadius: 26,
-    paddingVertical: 14,
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  buttonText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: colors.surface,
-  },
-  buttonGhost: {
-    backgroundColor: 'transparent',
-    borderRadius: 26,
-    paddingVertical: 14,
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: colors.primary,
-  },
-  buttonGhostText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: colors.primary,
-  },
-  backButton: {
-    paddingVertical: 12,
-    alignItems: 'center',
-  },
-  backButtonText: {
-    fontSize: 14,
-    color: colors.textMuted,
-    textDecorationLine: 'underline',
-  },
-});

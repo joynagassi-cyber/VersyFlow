@@ -27,36 +27,34 @@ export function needsTargetMigration(record: MemorizationRecord): boolean {
 export function migrateRecordToTarget(record: MemorizationRecord): MemorizationRecord {
   const now = Date.now();
 
-  // Build content reference
-  const contentReference = {
-    bookId: record.bookId,
-    chapter: record.chapterNumber,
-    startVerse: record.verseNumber,
-    endVerse: record.endVerse || record.verseNumber,
-    translationId: record.translationId,
-  };
+  // Build target display reference from content fields
+  const displayRef =
+    record.endVerse && record.endVerse > record.verseNumber
+      ? `${record.bibleVerseReference}–${record.endVerse}`
+      : record.bibleVerseReference;
 
   // Generate target ID (use existing ID for backward compat)
   const targetId = record.id;
 
   // Determine target type
-  const targetType: 'single-verse' | 'passage' = record.endVerse && record.endVerse > record.verseNumber
-    ? 'passage'
-    : 'single-verse';
+  const targetType: 'single-verse' | 'passage' =
+    record.endVerse && record.endVerse > record.verseNumber
+      ? 'passage'
+      : 'single-verse';
 
   // Build verse texts if passage
-  const verseTexts = targetType === 'passage' && record.verseTexts
-    ? record.verseTexts
-    : undefined;
+  const verseTexts =
+    targetType === 'passage' && record.verseTexts
+      ? record.verseTexts
+      : undefined;
 
   return {
     ...record,
     targetId,
     targetType,
-    contentReference,
     verseTexts,
+    bibleVerseReference: displayRef,
     createdAt: record.createdAt || now,
-    updatedAt: now,
   };
 }
 

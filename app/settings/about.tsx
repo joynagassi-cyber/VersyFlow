@@ -2,7 +2,7 @@
  * About Screen — App information and version
  */
 
-import { useState } from 'react';
+import { useState, useMemo} from 'react';
 import {
   View,
   Text,
@@ -18,50 +18,7 @@ const VERSION = '0.1.0';
 
 export default function AboutScreen() {
   const { colors, sp, sh, rad } = useAppTheme();
-  const router = useRouter();
-  const [buildNumber, setBuildNumber] = useState('1');
-
-  return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.logo}>VersyFlow</Text>
-        <Text style={styles.version}>Version {VERSION} ({buildNumber})</Text>
-      </View>
-
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>À propos</Text>
-        <Text style={styles.description}>
-          VersyFlow vous aide à mémoriser les versets bibliques grâce à la science de la répétition espacée (FSRS).
-        </Text>
-      </View>
-
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Liens</Text>
-        <TouchableOpacity style={styles.link} onPress={() => Linking.openURL('https://github.com/your-org/versyflow')}>
-          <Text style={styles.linkText}>Documentation</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.link} onPress={() => Linking.openURL('mailto:support@versyflow.com')}>
-          <Text style={styles.linkText}>Support</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.link} onPress={() => Linking.openURL('https://versyflow.com/privacy')}>
-          <Text style={styles.linkText}>Politique de confidentialité</Text>
-        </TouchableOpacity>
-      </View>
-
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Credits</Text>
-        <Text style={styles.credit}>Développé avec ❤️ pour la gloire de Dieu</Text>
-        <Text style={styles.credit}>Moteur FSRS par Dmytro Gutman</Text>
-      </View>
-
-      <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-        <Text style={styles.backText}>Retour</Text>
-      </TouchableOpacity>
-    </SafeAreaView>
-  );
-}
-
-const styles = StyleSheet.create({
+  const styles = useMemo(() => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.surfaceTint,
@@ -124,4 +81,47 @@ const styles = StyleSheet.create({
     color: colors.textMuted,
     textDecorationLine: 'underline',
   },
-});
+  }), [colors]);
+  const router = useRouter();
+  const [buildNumber, setBuildNumber] = useState('1');
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.logo}>VersyFlow</Text>
+        <Text style={styles.version}>Version {VERSION} ({buildNumber})</Text>
+      </View>
+
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>À propos</Text>
+        <Text style={styles.description}>
+          VersyFlow vous aide à mémoriser les versets bibliques grâce à la science de la répétition espacée (FSRS).
+        </Text>
+      </View>
+
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Liens</Text>
+        <TouchableOpacity style={styles.link} onPress={() => Linking.openURL('https://github.com/your-org/versyflow')}>
+          <Text style={styles.linkText}>Documentation</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.link} onPress={() => Linking.openURL('mailto:support@versyflow.com')}>
+          <Text style={styles.linkText}>Support</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.link} onPress={() => Linking.openURL('https://versyflow.com/privacy')}>
+          <Text style={styles.linkText}>Politique de confidentialité</Text>
+        </TouchableOpacity>
+      </View>
+
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Credits</Text>
+        <Text style={styles.credit}>Développé avec ❤️ pour la gloire de Dieu</Text>
+        <Text style={styles.credit}>Moteur FSRS par Dmytro Gutman</Text>
+      </View>
+
+      <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
+        <Text style={styles.backText}>Retour</Text>
+      </TouchableOpacity>
+    </SafeAreaView>
+  );
+}
+

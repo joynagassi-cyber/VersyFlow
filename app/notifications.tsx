@@ -3,7 +3,7 @@
  * Shows notification history and alert center
  */
 
-import { useState } from 'react';
+import { useState, useMemo} from 'react';
 import {
   View,
   Text,
@@ -15,8 +15,8 @@ import {
 } from '@/components/ui/Primitives';
 import { useAppTheme } from '@/theme/useTheme';
 import { useRouter } from '@/hooks/useIonicNavigation';
-import { IonIcon } from '@ionic/react'
-import * as Ionicons from 'ionicons/icons';
+import { IonIcon } from '@/components/ui/Primitives'
+import { alarm, bookmark, calendar, checkmark, notifications, arrowBack, notificationsOff } from 'ionicons/icons';
 
 interface Notification {
   id: string;
@@ -78,137 +78,7 @@ const SAMPLE_NOTIFICATIONS: Notification[] = [
 
 export default function NotificationsScreen() {
   const { colors, sp, sh, rad } = useAppTheme();
-  const router = useRouter();
-  const [notifications, setNotifications] = useState<Notification[]>(SAMPLE_NOTIFICATIONS);
-  const [filter, setFilter] = useState<'all' | 'unread'>('all');
-
-  const unreadCount = notifications.filter(n => !n.read).length;
-
-  const filteredNotifications = filter === 'unread'
-    ? notifications.filter(n => !n.read)
-    : notifications;
-
-  const markAsRead = (id: string) => {
-    setNotifications(prev =>
-      prev.map(n => n.id === id ? { ...n, read: true } : n)
-    );
-  };
-
-  const markAllAsRead = () => {
-    setNotifications(prev => prev.map(n => ({ ...n, read: true })));
-  };
-
-  const getNotificationIcon = (type: Notification['type']) => {
-    switch (type) {
-      case 'reminder': return 'notifications';
-      case 'achievement': return 'trophy';
-      case 'system': return 'settings';
-      case 'social': return 'people';
-      default: return 'notifications';
-    }
-  };
-
-  const getNotificationColor = (type: Notification['type']) => {
-    switch (type) {
-      case 'reminder': return 'colors.primary';
-      case 'achievement': return 'colors.warning';
-      case 'system': return 'colors.textMuted';
-      case 'social': return 'colors.info';
-      default: return 'colors.primary';
-    }
-  };
-
-  return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-        {/* Header */}
-        <View style={styles.header}>
-          <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-            <Ionicons name="arrow-back" size={24} color={colors.textSecondary} />
-          </TouchableOpacity>
-          <View style={styles.headerCenter}>
-            <Text style={styles.headerTitle}>Notifications</Text>
-            {unreadCount > 0 && (
-              <View style={styles.unreadBadge}>
-                <Text style={styles.unreadBadgeText}>{unreadCount}</Text>
-              </View>
-            )}
-          </View>
-          <TouchableOpacity onPress={markAllAsRead} style={styles.markAllButton}>
-            <Text style={styles.markAllText}>Tout lire</Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* Filter Tabs */}
-        <View style={styles.filterContainer}>
-          <TouchableOpacity
-            style={[styles.filterTab, filter === 'all' && styles.filterTabActive]}
-            onPress={() => setFilter('all')}
-          >
-            <Text style={[styles.filterText, filter === 'all' && styles.filterTextActive]}>
-              Toutes ({notifications.length})
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.filterTab, filter === 'unread' && styles.filterTabActive]}
-            onPress={() => setFilter('unread')}
-          >
-            <Text style={[styles.filterText, filter === 'unread' && styles.filterTextActive]}>
-              Non lues ({unreadCount})
-            </Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* Notifications List */}
-        {filteredNotifications.length > 0 ? (
-          filteredNotifications.map((notification) => (
-            <TouchableOpacity
-              key={notification.id}
-              style={[
-                styles.notificationCard,
-                !notification.read && styles.unreadCard,
-              ]}
-              onPress={() => markAsRead(notification.id)}
-              activeOpacity={0.7}
-            >
-              <View style={[styles.notificationIcon, { backgroundColor: getNotificationColor(notification.type) + '20' }]}>
-                <Ionicons
-                  name={getNotificationIcon(notification.type) as any}
-                  size={20}
-                  color={getNotificationColor(notification.type)}
-                />
-              </View>
-              <View style={styles.notificationContent}>
-                <View style={styles.notificationHeader}>
-                  <Text style={[styles.notificationTitle, !notification.read && styles.unreadTitle]}>
-                    {notification.title}
-                  </Text>
-                  <Text style={styles.notificationTime}>{notification.time}</Text>
-                </View>
-                <Text style={styles.notificationMessage} numberOfLines={2}>
-                  {notification.message}
-                </Text>
-              </View>
-              {!notification.read && <View style={styles.unreadDot} />}
-            </TouchableOpacity>
-          ))
-        ) : (
-          <View style={styles.emptyState}>
-            <Ionicons name="notifications-off" size={64} color={colors.outline} />
-            <Text style={styles.emptyTitle}>Aucune notification</Text>
-            <Text style={styles.emptyMessage}>
-              {filter === 'unread' ? 'Vous avez tout lu !' : 'Vos notifications apparaîtront ici'}
-            </Text>
-          </View>
-        )}
-
-        <View style={styles.bottomSpacer} />
-      </ScrollView>
-    </SafeAreaView>
-  );
-}
-
-const styles = StyleSheet.create({
+  const styles = useMemo(() => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,
@@ -363,4 +233,132 @@ const styles = StyleSheet.create({
   bottomSpacer: {
     height: 24,
   },
-});
+  }), [colors]);
+  const router = useRouter();
+  const [notifications, setNotifications] = useState<Notification[]>(SAMPLE_NOTIFICATIONS);
+  const [filter, setFilter] = useState<'all' | 'unread'>('all');
+
+  const unreadCount = notifications.filter(n => !n.read).length;
+
+  const filteredNotifications = filter === 'unread'
+    ? notifications.filter(n => !n.read)
+    : notifications;
+
+  const markAsRead = (id: string) => {
+    setNotifications(prev =>
+      prev.map(n => n.id === id ? { ...n, read: true } : n)
+    );
+  };
+
+  const markAllAsRead = () => {
+    setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+  };
+
+  const getNotificationIcon = (type: Notification['type']) => {
+    switch (type) {
+      case 'reminder': return 'notifications';
+      case 'achievement': return 'trophy';
+      case 'system': return 'settings';
+      case 'social': return 'people';
+      default: return 'notifications';
+    }
+  };
+
+  const getNotificationColor = (type: Notification['type']) => {
+    switch (type) {
+      case 'reminder': return 'colors.primary';
+      case 'achievement': return 'colors.warning';
+      case 'system': return 'colors.textMuted';
+      case 'social': return 'colors.info';
+      default: return 'colors.primary';
+    }
+  };
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+        {/* Header */}
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+            <IonIcon icon={arrowBack} size={24} color={colors.textSecondary} />
+          </TouchableOpacity>
+          <View style={styles.headerCenter}>
+            <Text style={styles.headerTitle}>Notifications</Text>
+            {unreadCount > 0 && (
+              <View style={styles.unreadBadge}>
+                <Text style={styles.unreadBadgeText}>{unreadCount}</Text>
+              </View>
+            )}
+          </View>
+          <TouchableOpacity onPress={markAllAsRead} style={styles.markAllButton}>
+            <Text style={styles.markAllText}>Tout lire</Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* Filter Tabs */}
+        <View style={styles.filterContainer}>
+          <TouchableOpacity
+            style={[styles.filterTab, filter === 'all' && styles.filterTabActive]}
+            onPress={() => setFilter('all')}
+          >
+            <Text style={[styles.filterText, filter === 'all' && styles.filterTextActive]}>
+              Toutes ({notifications.length})
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.filterTab, filter === 'unread' && styles.filterTabActive]}
+            onPress={() => setFilter('unread')}
+          >
+            <Text style={[styles.filterText, filter === 'unread' && styles.filterTextActive]}>
+              Non lues ({unreadCount})
+            </Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* Notifications List */}
+        {filteredNotifications.length > 0 ? (
+          filteredNotifications.map((notification) => (
+            <TouchableOpacity
+              key={notification.id}
+              style={[
+                styles.notificationCard,
+                !notification.read && styles.unreadCard,
+              ]}
+              onPress={() => markAsRead(notification.id)}
+              activeOpacity={0.7}
+            >
+              <View style={[styles.notificationIcon, { backgroundColor: getNotificationColor(notification.type) + '20' }]}>
+                <IonIcon icon={getNotificationIcon(notification.type) as any}
+                  size={20}
+                  color={getNotificationColor(notification.type)} />
+              </View>
+              <View style={styles.notificationContent}>
+                <View style={styles.notificationHeader}>
+                  <Text style={[styles.notificationTitle, !notification.read && styles.unreadTitle]}>
+                    {notification.title}
+                  </Text>
+                  <Text style={styles.notificationTime}>{notification.time}</Text>
+                </View>
+                <Text style={styles.notificationMessage} numberOfLines={2}>
+                  {notification.message}
+                </Text>
+              </View>
+              {!notification.read && <View style={styles.unreadDot} />}
+            </TouchableOpacity>
+          ))
+        ) : (
+          <View style={styles.emptyState}>
+            <IonIcon icon={notificationsOff} size={64} color={colors.outline} />
+            <Text style={styles.emptyTitle}>Aucune notification</Text>
+            <Text style={styles.emptyMessage}>
+              {filter === 'unread' ? 'Vous avez tout lu !' : 'Vos notifications apparaîtront ici'}
+            </Text>
+          </View>
+        )}
+
+        <View style={styles.bottomSpacer} />
+      </ScrollView>
+    </SafeAreaView>
+  );
+}
+

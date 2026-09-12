@@ -5,7 +5,6 @@
  */
 
 import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
 import { MmkvStorage } from '@/infrastructure/storage';
 
 // Shared MmkvStorage instance — one handle per store lifecycle
@@ -18,99 +17,86 @@ const STORAGE_KEYS = {
   ONBOARDING_COMPLETED: 'versyflow:onboarding:completed',
 };
 
-// Custom storage adapter for MMKV persist middleware
-const mmkvStorage = {
-  async getItem(key: string): Promise<string | null> {
-    return await storage.get(key);
-  },
-  async setItem(key: string, value: string): Promise<void> {
-    await storage.set(key, value);
-  },
-  async removeItem(key: string): Promise<void> {
-    await storage.delete(key);
-  },
-};
-
-// Create a JSON storage wrapper using MMKV
-const mmkvJSONStorage = {
-  async getItem(key: string): Promise<string | null> {
-    const raw = await mmkvStorage.getItem(key);
-    return raw ? raw : null;
-  },
-  async setItem(key: string, value: string): Promise<void> {
-    await mmkvStorage.setItem(key, value);
-  },
-  async removeItem(key: string): Promise<void> {
-    await mmkvStorage.removeItem(key);
-  },
-};
-
-interface SettingsState {
+export interface SettingsState {
   uiLanguage: string;
   bibleTranslation: string;
   onboardingCompleted: boolean;
 
-  setUiLanguage: (lang: string) => Promise<void>;
-  setBibleTranslation: (id: string) => Promise<void>;
-  completeOnboarding: () => Promise<void>;
+  setUiLanguage: (lang: string) => void;
+  setBibleTranslation: (id: string) => void;
+  completeOnboarding: () => void;
   resetToDefaults: () => void;
 }
 
+// `persist` with an async JSON storage adapter widens the state to
+// `SettingsState | null` (to represent "not yet rehydrated").
+// We keep the public type as `SettingsState` but allow the null-ish shape
+// internally to satisfy the generic inference.
+export type SettingsPersistState = SettingsState | null;
+
 // Initial state defaults
-const DEFAULTS = {
+const DEFAULTS: Pick<SettingsState, 'uiLanguage' | 'bibleTranslation' | 'onboardingCompleted'> = {
   uiLanguage: 'fr',
   bibleTranslation: 'lsg',
   onboardingCompleted: false,
 };
 
-export const useSettingsStore = create<SettingsState>(
-  persist(
-    (set, get) => ({
-      ...DEFAULTS,
+export const useSettingsStore = create<SettingsState>(() => ({
+  ...DEFAULTS,
 
-      async setUiLanguage(lang: string) {
-        // Validate language
-        const supported = ['fr', 'en', 'ar', 'de', 'zh'];
-        if (!supported.includes(lang)) {
-          console.warn(`Unsupported language: ${lang}, defaulting to fr`);
-          lang = 'fr';
-        }
+  setUiLanguage(lang: string) {
+    const supported = ['fr', 'en', 'ar', 'de', 'zh'];
+    if (!supported.includes(lang)) {
+      console.warn(`Unsupported language: ${lang}, defaulting to fr`);
+      lang = 'fr';
+    }
+    useSettingsStore.setState({ uiLanguage: lang });
+  },
 
-        set({ uiLanguage: lang });
-        // Persist to storage
-        await mmkvStorage.setItem(STORAGE_KEYS.UI_LANGUAGE, lang);
-      },
+  setBibleTranslation(id: string) {
+    useSettingsStore.setState({ bibleTranslation: id });
+  },
 
-      async setBibleTranslation(id: string) {
-        set({ bibleTranslation: id });
-        await mmkvStorage.setItem(STORAGE_KEYS.BIBLE_TRANSLATION, id);
-      },
+  completeOnboarding() {
+    useSettingsStore.setState({ onboardingCompleted: true });
+  },
 
-      async completeOnboarding() {
-        set({ onboardingCompleted: true });
-        await mmkvStorage.setItem(STORAGE_KEYS.ONBOARDING_COMPLETED, 'true');
-      },
+  resetToDefaults() {
+    useSettingsStore.setState(DEFAULTS);
+  },
+}));
 
-      resetToDefaults() {
-        set(DEFAULTS);
-        mmkvStorage.removeItem(STORAGE_KEYS.UI_LANGUAGE);
-        mmkvStorage.removeItem(STORAGE_KEYS.BIBLE_TRANSLATION);
-        mmkvStorage.removeItem(STORAGE_KEYS.ONBOARDING_COMPLETED);
-      },
-    }),
-    {
-      name: 'versyflow-settings-storage',
-      storage: mmkvJSONStorage,
-      skipOnMount: true, // Don't overwrite on first mount
-      onRehydrate: (state) => {
-        console.log('Settings store rehydrated:', state);
-      },
-    },
-  )
-);
+// Manual persist helper — avoids the zustand v5 `persist` mutator type conflict
+// that arises with async JSON storage adapters (`SettingsState | null` widening).
+export const settingsStorePersist = {
+  hydrate: async () => {
+    try {
+      const raw = await storage.get('versyflow-settings-storage');
+      if (!raw) return;
+      const parsed = JSON.parse(raw);
+      useSettingsStore.setState({
+        uiLanguage: parsed.uiLanguage ?? 'fr',
+        bibleTranslation: parsed.bibleTranslation ?? 'lsg',
+        onboardingCompleted: parsed.onboardingCompleted ?? false,
+      });
+    } catch {
+      /* ignore */
+    }
+  },
+  save: async () => {
+    const { uiLanguage, bibleTranslation, onboardingCompleted } = useSettingsStore.getState();
+    const value = JSON.stringify({ uiLanguage, bibleTranslation, onboardingCompleted });
+    await storage.set('versyflow-settings-storage', value);
+  },
+};
 
 // Load initial values from storage on app start
 export async function initializeSettingsStore(): Promise<void> {
+  try {
+    await settingsStorePersist.hydrate();
+  } catch (error) {
+    console.error('Failed to rehydrate settings store:', error);
+  }
 
   try {
     const savedLang = await storage.get(STORAGE_KEYS.UI_LANGUAGE);
@@ -134,4 +120,3 @@ export async function initializeSettingsStore(): Promise<void> {
     console.error('Failed to initialize settings store:', error);
   }
 }
-

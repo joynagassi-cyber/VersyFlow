@@ -2,7 +2,7 @@
  * Language Settings Screen — UI language preferences
  */
 
-import { useState } from 'react';
+import { useState, useMemo} from 'react';
 import {
   View,
   Text,
@@ -18,45 +18,7 @@ import { useSettingsStore } from '@/store/settings-store';
 
 export default function LanguageSettingsScreen() {
   const { colors, sp, sh, rad } = useAppTheme();
-  const router = useRouter();
-  const { uiLanguage, setUiLanguage } = useSettingsStore();
-  const selectedLanguage = uiLanguage || 'fr';
-
-  return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView>
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Langue de l'interface</Text>
-          {SUPPORTED_LANGUAGES.map((lang) => (
-            <TouchableOpacity
-              key={lang.code}
-              style={[
-                styles.languageCard,
-                selectedLanguage === lang.code && styles.languageCardSelected,
-              ]}
-              onPress={() => setUiLanguage(lang.code)}
-            >
-              <View style={styles.langInfo}>
-                <Text style={styles.nativeName}>{lang.name}</Text>
-                <Text style={styles.displayName}>{lang.displayName}</Text>
-                {lang.rtl && <Text style={styles.rtlBadge}>RTL</Text>}
-              </View>
-              {selectedLanguage === lang.code && (
-                <Text style={styles.checkmark}>✓</Text>
-              )}
-            </TouchableOpacity>
-          ))}
-        </View>
-
-        <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-          <Text style={styles.backText}>Retour</Text>
-        </TouchableOpacity>
-      </ScrollView>
-    </SafeAreaView>
-  );
-}
-
-const styles = StyleSheet.create({
+  const styles = useMemo(() => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.surfaceTint,
@@ -121,4 +83,42 @@ const styles = StyleSheet.create({
     color: colors.textMuted,
     textDecorationLine: 'underline',
   },
-});
+  }), [colors]);
+  const router = useRouter();
+  const { uiLanguage, setUiLanguage } = useSettingsStore();
+  const selectedLanguage = uiLanguage || 'fr';
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <ScrollView>
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Langue de l'interface</Text>
+          {SUPPORTED_LANGUAGES.map((lang) => (
+            <TouchableOpacity
+              key={lang.code}
+              style={[
+                styles.languageCard,
+                selectedLanguage === lang.code && styles.languageCardSelected,
+              ]}
+              onPress={() => setUiLanguage(lang.code)}
+            >
+              <View style={styles.langInfo}>
+                <Text style={styles.nativeName}>{lang.name}</Text>
+                <Text style={styles.displayName}>{lang.displayName}</Text>
+                {lang.rtl && <Text style={styles.rtlBadge}>RTL</Text>}
+              </View>
+              {selectedLanguage === lang.code && (
+                <Text style={styles.checkmark}>✓</Text>
+              )}
+            </TouchableOpacity>
+          ))}
+        </View>
+
+        <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
+          <Text style={styles.backText}>Retour</Text>
+        </TouchableOpacity>
+      </ScrollView>
+    </SafeAreaView>
+  );
+}
+

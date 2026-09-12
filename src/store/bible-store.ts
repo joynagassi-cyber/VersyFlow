@@ -4,7 +4,7 @@
 
 import { create } from 'zustand';
 
-interface BibleState {
+export interface BibleState {
   selectedBook: string | null;
   selectedChapter: number | null;
   searchQuery: string;

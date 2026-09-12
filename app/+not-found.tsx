@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 /**
  * Not Found — 404 Fallback Screen
  */
@@ -8,20 +9,7 @@ import { useAppTheme } from '@/theme/useTheme';
 
 export default function NotFoundScreen() {
   const { colors, sp, sh, rad } = useAppTheme();
-  return (
-    <>
-      <Stack.Screen options={{ title: 'Oops!' }} />
-      <View style={styles.container}>
-        <Text style={styles.title}>Cette page n'existe pas</Text>
-        <Link href="/" style={styles.link}>
-          <Text style={styles.linkText}>Retour à l'accueil</Text>
-        </Link>
-      </View>
-    </>
-  );
-}
-
-const styles = StyleSheet.create({
+  const styles = useMemo(() => StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
@@ -47,4 +35,13 @@ const styles = StyleSheet.create({
     color: colors.surface,
     fontWeight: '600',
   },
-});
+  }), [colors]);
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>Cette page n'existe pas</Text>
+      <Link to="/" style={styles.link as any}>
+        <Text style={styles.linkText}>Retour à l'accueil</Text>
+      </Link>
+    </View>
+  );
+}

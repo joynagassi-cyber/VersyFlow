@@ -3,7 +3,7 @@
  * See docs/08-ui-screens.md
  */
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo} from 'react';
 import {
   View,
   Text,
@@ -16,8 +16,8 @@ import {
 } from '@/components/ui/Primitives';
 import { useAppTheme } from '@/theme/useTheme';
 import { useRoute, useRouter } from '@/hooks/useIonicNavigation';
-import { IonIcon } from '@ionic/react'
-import * as Ionicons from 'ionicons/icons';
+import { IonIcon } from '@/components/ui/Primitives'
+import {arrowBack, arrowForward, book, checkmarkCircle, medal, refresh, trendingUp} from 'ionicons/icons';
 import { FsrsRating } from '@/domains/fsrs';
 
 interface ReviewLogEntry {
@@ -89,267 +89,7 @@ const SAMPLE_VERSE: VerseRecord = {
 
 export default function ReviewHistoryScreen() {
   const { colors, sp, sh, rad } = useAppTheme();
-  const route = useRoute();
-  const router = useRouter();
-  const [history, setHistory] = useState<ReviewLogEntry[]>(SAMPLE_HISTORY);
-  const [verse, setVerse] = useState<VerseRecord>(SAMPLE_VERSE);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    // Simulate loading
-    setTimeout(() => setLoading(false), 500);
-  }, []);
-
-  const formatTimestamp = (timestamp: number): string => {
-    const date = new Date(timestamp);
-    const now = new Date();
-    const diffMs = now.getTime() - timestamp;
-    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-
-    if (diffDays === 0) {
-      return 'Aujourd\'hui';
-    } else if (diffDays === 1) {
-      return 'Hier';
-    } else if (diffDays < 7) {
-      return `Il y a ${diffDays} jours`;
-    } else {
-      return date.toLocaleDateString('fr-FR', {
-        day: 'numeric',
-        month: 'short',
-        year: 'numeric'
-      });
-    }
-  };
-
-  const getRatingConfig = (rating: FsrsRating | string) => {
-    let actualRating: FsrsRating;
-    if (typeof rating === 'string') {
-      switch (rating) {
-        case 'again': actualRating = FsrsRating.AGAIN; break;
-        case 'hard': actualRating = FsrsRating.HARD; break;
-        case 'good': actualRating = FsrsRating.GOOD; break;
-        case 'easy': actualRating = FsrsRating.EASY; break;
-        default: actualRating = FsrsRating.AGAIN;
-      }
-    } else {
-      actualRating = rating;
-    }
-
-    switch (actualRating) {
-      case FsrsRating.AGAIN:
-        return { color: colors.error, label: 'À revoir', icon: 'refresh' };
-      case FsrsRating.HARD:
-        return { color: colors.warning, label: 'Difficile', icon: 'remove' };
-      case FsrsRating.GOOD:
-        return { color: '#4CD964', label: 'Bon', icon: 'checkmark' };
-      case FsrsRating.EASY:
-        return { color: colors.info, label: 'Facile', icon: 'star' };
-      default:
-        return { color: colors.primary, label: 'Bon', icon: 'checkmark' };
-    }
-  };
-
-  const calculateProgress = () => {
-    if (history.length === 0) return 0;
-    const goodOrBetter = history.filter(h =>
-      h.rating === FsrsRating.GOOD || h.rating === FsrsRating.EASY
-    ).length;
-    return Math.round((goodOrBetter / history.length) * 100);
-  };
-
-  if (loading) {
-    return (
-      <SafeAreaView style={styles.container}>
-        <View style={styles.loaderContainer}>
-          <ActivityIndicator size="large" color={colors.primary} />
-          <Text style={styles.loaderText}>Chargement de l'historique...</Text>
-        </View>
-      </SafeAreaView>
-    );
-  }
-
-  return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView
-        style={styles.scrollView}
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
-      >
-        {/* Header */}
-        <View style={styles.header}>
-          <TouchableOpacity
-            style={styles.backButton}
-            onPress={() => router.back()}
-          >
-            <Ionicons name="arrow-back" size={24} color={colors.textSecondary} />
-          </TouchableOpacity>
-          <Text style={styles.headerTitle}>Historique</Text>
-          <View style={styles.headerRight} />
-        </View>
-
-        {/* Verse Info Card */}
-        <View style={styles.verseCard}>
-          <View style={styles.verseHeader}>
-            <View style={styles.verseIconContainer}>
-              <Ionicons name="book" size={24} color={colors.primary} />
-            </View>
-            <View style={styles.verseInfo}>
-              <Text style={styles.verseReference}>{verse.reference}</Text>
-              <Text style={styles.verseText} numberOfLines={2}>{verse.text}</Text>
-            </View>
-          </View>
-          <View style={styles.verseStats}>
-            <View style={styles.verseStat}>
-              <Text style={styles.verseStatValue}>{verse.totalReviews}</Text>
-              <Text style={styles.verseStatLabel}>Révisions</Text>
-            </View>
-            <View style={styles.verseStatDivider} />
-            <View style={styles.verseStat}>
-              <Text style={styles.verseStatValue}>{verse.averageStability.toFixed(1)}j</Text>
-              <Text style={styles.verseStatLabel}>Stabilité</Text>
-            </View>
-            <View style={styles.verseStatDivider} />
-            <View style={styles.verseStat}>
-              <Text style={styles.verseStatValue}>{calculateProgress()}%</Text>
-              <Text style={styles.verseStatLabel}>Réussite</Text>
-            </View>
-          </View>
-        </View>
-
-        {/* Timeline */}
-        <View style={styles.timelineSection}>
-          <Text style={styles.sectionTitle}>Chronologie des révisions</Text>
-          <View style={styles.timeline}>
-            {history.map((log, index) => {
-              const config = getRatingConfig(log.rating);
-              const isLast = index === history.length - 1;
-
-              return (
-                <View key={log.id} style={styles.timelineItem}>
-                  {/* Timeline dot */}
-                  <View style={styles.timelineDotContainer}>
-                    <View style={[styles.timelineDot, { backgroundColor: config.color }]}>
-                      <Ionicons name={config.icon as any} size={12} color={colors.surface} />
-                    </View>
-                    {!isLast && <View style={styles.timelineLine} />}
-                  </View>
-
-                  {/* Timeline content */}
-                  <View style={styles.timelineContent}>
-                    <View style={styles.timelineHeader}>
-                      <Text style={styles.timelineDate}>{formatTimestamp(log.answeredAt)}</Text>
-                      <View style={[styles.ratingBadge, { backgroundColor: config.color }]}>
-                        <Text style={styles.ratingBadgeText}>{config.label}</Text>
-                      </View>
-                    </View>
-
-                    <View style={styles.timelineDetails}>
-                      <View style={styles.detailGroup}>
-                        <Text style={styles.detailLabel}>Stabilité</Text>
-                        <View style={styles.detailValues}>
-                          <Text style={styles.detailBefore}>{log.stabilityBefore.toFixed(1)}j</Text>
-                          <Ionicons name="arrow-forward" size={12} color={colors.textMuted} />
-                          <Text style={styles.detailAfter}>{log.stabilityAfter.toFixed(1)}j</Text>
-                        </View>
-                      </View>
-                      <View style={styles.detailGroup}>
-                        <Text style={styles.detailLabel}>Difficulté</Text>
-                        <View style={styles.detailValues}>
-                          <Text style={styles.detailBefore}>{log.difficultyBefore.toFixed(1)}</Text>
-                          <Ionicons name="arrow-forward" size={12} color={colors.textMuted} />
-                          <Text style={styles.detailAfter}>{log.difficultyAfter.toFixed(1)}</Text>
-                        </View>
-                      </View>
-                    </View>
-
-                    <View style={styles.timelineMeta}>
-                      <Text style={styles.timelineMetaText}>
-                        {log.elapsedDays}j écoulés • {log.repetitions} répétition{log.repetitions > 1 ? 's' : ''}
-                      </Text>
-                    </View>
-                  </View>
-                </View>
-              );
-            })}
-          </View>
-        </View>
-
-        {/* Stats Summary */}
-        <View style={styles.statsSection}>
-          <Text style={styles.sectionTitle}>Statistiques</Text>
-          <View style={styles.statsGrid}>
-            <View style={[styles.statCard, styles.statCardLarge]}>
-              <View style={styles.statIconContainer}>
-                <Ionicons name="trending-up" size={24} color={colors.surface} />
-              </View>
-              <Text style={styles.statValue}>
-                {(verse.averageStability * 10).toFixed(0)}%
-              </Text>
-              <Text style={styles.statLabel}>Rétention estimée</Text>
-            </View>
-            <View style={[styles.statCard, styles.statCardMedium]}>
-              <View style={[styles.statIconContainer, { backgroundColor: colors.success }]}>
-                <Ionicons name="checkmark-circle" size={24} color={colors.surface} />
-              </View>
-              <Text style={styles.statValue}>
-                {history.filter(h => h.rating === FsrsRating.GOOD || h.rating === FsrsRating.EASY).length}
-              </Text>
-              <Text style={styles.statLabel}>Bon/Facile</Text>
-            </View>
-            <View style={[styles.statCard, styles.statCardMedium]}>
-              <View style={[styles.statIconContainer, { backgroundColor: colors.error }]}>
-                <Ionicons name="refresh" size={24} color={colors.surface} />
-              </View>
-              <Text style={styles.statValue}>
-                {history.filter(h => h.rating === FsrsRating.AGAIN).length}
-              </Text>
-              <Text style={styles.statLabel}>À revoir</Text>
-            </View>
-          </View>
-        </View>
-
-        {/* Mastery Level */}
-        <View style={styles.masteryCard}>
-          <View style={styles.masteryHeader}>
-            <Ionicons name="medal" size={24} color={colors.warning} />
-            <Text style={styles.masteryTitle}>Niveau de maîtrise</Text>
-          </View>
-          <View style={styles.masteryLevel}>
-            <Text style={styles.masteryLevelText}>{verse.masteryLevel}</Text>
-          </View>
-          <View style={styles.masteryProgress}>
-            <View style={styles.masteryProgressBar}>
-              <View
-                style={[
-                  styles.masteryProgressFill,
-                  { width: `${Math.min(100, verse.averageStability * 10)}%` },
-                ]}
-              />
-            </View>
-            <Text style={styles.masteryProgressText}>
-              {verse.averageStability.toFixed(1)}j de stabilité
-            </Text>
-          </View>
-        </View>
-
-        {/* Actions */}
-        <View style={styles.actions}>
-          <TouchableOpacity
-            style={styles.primaryButton}
-            onPress={() => router.back()}
-          >
-            <Ionicons name="arrow-back" size={20} color={colors.surface} />
-            <Text style={styles.primaryButtonText}>Retour à la file</Text>
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.bottomSpacer} />
-      </ScrollView>
-    </SafeAreaView>
-  );
-}
-
-const styles = StyleSheet.create({
+  const styles = useMemo(() => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,
@@ -734,4 +474,264 @@ const styles = StyleSheet.create({
   bottomSpacer: {
     height: 24,
   },
-});
+  }), [colors]);
+  const route = useRoute();
+  const router = useRouter();
+  const [history, setHistory] = useState<ReviewLogEntry[]>(SAMPLE_HISTORY);
+  const [verse, setVerse] = useState<VerseRecord>(SAMPLE_VERSE);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Simulate loading
+    setTimeout(() => setLoading(false), 500);
+  }, []);
+
+  const formatTimestamp = (timestamp: number): string => {
+    const date = new Date(timestamp);
+    const now = new Date();
+    const diffMs = now.getTime() - timestamp;
+    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+    if (diffDays === 0) {
+      return 'Aujourd\'hui';
+    } else if (diffDays === 1) {
+      return 'Hier';
+    } else if (diffDays < 7) {
+      return `Il y a ${diffDays} jours`;
+    } else {
+      return date.toLocaleDateString('fr-FR', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric'
+      });
+    }
+  };
+
+  const getRatingConfig = (rating: FsrsRating | string) => {
+    let actualRating: FsrsRating;
+    if (typeof rating === 'string') {
+      switch (rating) {
+        case 'again': actualRating = FsrsRating.AGAIN; break;
+        case 'hard': actualRating = FsrsRating.HARD; break;
+        case 'good': actualRating = FsrsRating.GOOD; break;
+        case 'easy': actualRating = FsrsRating.EASY; break;
+        default: actualRating = FsrsRating.AGAIN;
+      }
+    } else {
+      actualRating = rating;
+    }
+
+    switch (actualRating) {
+      case FsrsRating.AGAIN:
+        return { color: colors.error, label: 'À revoir', icon: 'refresh' };
+      case FsrsRating.HARD:
+        return { color: colors.warning, label: 'Difficile', icon: 'remove' };
+      case FsrsRating.GOOD:
+        return { color: '#4CD964', label: 'Bon', icon: 'checkmark' };
+      case FsrsRating.EASY:
+        return { color: colors.info, label: 'Facile', icon: 'star' };
+      default:
+        return { color: colors.primary, label: 'Bon', icon: 'checkmark' };
+    }
+  };
+
+  const calculateProgress = () => {
+    if (history.length === 0) return 0;
+    const goodOrBetter = history.filter(h =>
+      h.rating === FsrsRating.GOOD || h.rating === FsrsRating.EASY
+    ).length;
+    return Math.round((goodOrBetter / history.length) * 100);
+  };
+
+  if (loading) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={styles.loaderContainer}>
+          <ActivityIndicator size="large" color={colors.primary} />
+          <Text style={styles.loaderText}>Chargement de l'historique...</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* Header */}
+        <View style={styles.header}>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => router.back()}
+          >
+            <IonIcon icon={arrowBack} size={24} color={colors.textSecondary} />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Historique</Text>
+          <View style={styles.headerRight} />
+        </View>
+
+        {/* Verse Info Card */}
+        <View style={styles.verseCard}>
+          <View style={styles.verseHeader}>
+            <View style={styles.verseIconContainer}>
+              <IonIcon icon={book} size={24} color={colors.primary} />
+            </View>
+            <View style={styles.verseInfo}>
+              <Text style={styles.verseReference}>{verse.reference}</Text>
+              <Text style={styles.verseText} numberOfLines={2}>{verse.text}</Text>
+            </View>
+          </View>
+          <View style={styles.verseStats}>
+            <View style={styles.verseStat}>
+              <Text style={styles.verseStatValue}>{verse.totalReviews}</Text>
+              <Text style={styles.verseStatLabel}>Révisions</Text>
+            </View>
+            <View style={styles.verseStatDivider} />
+            <View style={styles.verseStat}>
+              <Text style={styles.verseStatValue}>{verse.averageStability.toFixed(1)}j</Text>
+              <Text style={styles.verseStatLabel}>Stabilité</Text>
+            </View>
+            <View style={styles.verseStatDivider} />
+            <View style={styles.verseStat}>
+              <Text style={styles.verseStatValue}>{calculateProgress()}%</Text>
+              <Text style={styles.verseStatLabel}>Réussite</Text>
+            </View>
+          </View>
+        </View>
+
+        {/* Timeline */}
+        <View style={styles.timelineSection}>
+          <Text style={styles.sectionTitle}>Chronologie des révisions</Text>
+          <View style={styles.timeline}>
+            {history.map((log, index) => {
+              const config = getRatingConfig(log.rating);
+              const isLast = index === history.length - 1;
+
+              return (
+                <View key={log.id} style={styles.timelineItem}>
+                  {/* Timeline dot */}
+                  <View style={styles.timelineDotContainer}>
+                    <View style={[styles.timelineDot, { backgroundColor: config.color }]}>
+                      <IonIcon icon={config.icon as any} size={12} color={colors.surface} />
+                    </View>
+                    {!isLast && <View style={styles.timelineLine} />}
+                  </View>
+
+                  {/* Timeline content */}
+                  <View style={styles.timelineContent}>
+                    <View style={styles.timelineHeader}>
+                      <Text style={styles.timelineDate}>{formatTimestamp(log.answeredAt)}</Text>
+                      <View style={[styles.ratingBadge, { backgroundColor: config.color }]}>
+                        <Text style={styles.ratingBadgeText}>{config.label}</Text>
+                      </View>
+                    </View>
+
+                    <View style={styles.timelineDetails}>
+                      <View style={styles.detailGroup}>
+                        <Text style={styles.detailLabel}>Stabilité</Text>
+                        <View style={styles.detailValues}>
+                          <Text style={styles.detailBefore}>{log.stabilityBefore.toFixed(1)}j</Text>
+                          <IonIcon icon={arrowForward} size={12} color={colors.textMuted} />
+                          <Text style={styles.detailAfter}>{log.stabilityAfter.toFixed(1)}j</Text>
+                        </View>
+                      </View>
+                      <View style={styles.detailGroup}>
+                        <Text style={styles.detailLabel}>Difficulté</Text>
+                        <View style={styles.detailValues}>
+                          <Text style={styles.detailBefore}>{log.difficultyBefore.toFixed(1)}</Text>
+                          <IonIcon icon={arrowForward} size={12} color={colors.textMuted} />
+                          <Text style={styles.detailAfter}>{log.difficultyAfter.toFixed(1)}</Text>
+                        </View>
+                      </View>
+                    </View>
+
+                    <View style={styles.timelineMeta}>
+                      <Text style={styles.timelineMetaText}>
+                        {log.elapsedDays}j écoulés • {log.repetitions} répétition{log.repetitions > 1 ? 's' : ''}
+                      </Text>
+                    </View>
+                  </View>
+                </View>
+              );
+            })}
+          </View>
+        </View>
+
+        {/* Stats Summary */}
+        <View style={styles.statsSection}>
+          <Text style={styles.sectionTitle}>Statistiques</Text>
+          <View style={styles.statsGrid}>
+            <View style={[styles.statCard, styles.statCardLarge]}>
+              <View style={styles.statIconContainer}>
+                <IonIcon icon={trendingUp} size={24} color={colors.surface} />
+              </View>
+              <Text style={styles.statValue}>
+                {(verse.averageStability * 10).toFixed(0)}%
+              </Text>
+              <Text style={styles.statLabel}>Rétention estimée</Text>
+            </View>
+            <View style={[styles.statCard, styles.statCardMedium]}>
+              <View style={[styles.statIconContainer, { backgroundColor: colors.success }]}>
+                <IonIcon icon={checkmarkCircle} size={24} color={colors.surface} />
+              </View>
+              <Text style={styles.statValue}>
+                {history.filter(h => h.rating === FsrsRating.GOOD || h.rating === FsrsRating.EASY).length}
+              </Text>
+              <Text style={styles.statLabel}>Bon/Facile</Text>
+            </View>
+            <View style={[styles.statCard, styles.statCardMedium]}>
+              <View style={[styles.statIconContainer, { backgroundColor: colors.error }]}>
+                <IonIcon icon={refresh} size={24} color={colors.surface} />
+              </View>
+              <Text style={styles.statValue}>
+                {history.filter(h => h.rating === FsrsRating.AGAIN).length}
+              </Text>
+              <Text style={styles.statLabel}>À revoir</Text>
+            </View>
+          </View>
+        </View>
+
+        {/* Mastery Level */}
+        <View style={styles.masteryCard}>
+          <View style={styles.masteryHeader}>
+            <IonIcon icon={medal} size={24} color={colors.warning} />
+            <Text style={styles.masteryTitle}>Niveau de maîtrise</Text>
+          </View>
+          <View style={styles.masteryLevel}>
+            <Text style={styles.masteryLevelText}>{verse.masteryLevel}</Text>
+          </View>
+          <View style={styles.masteryProgress}>
+            <View style={styles.masteryProgressBar}>
+              <View
+                style={[
+                  styles.masteryProgressFill,
+                  { width: `${Math.min(100, verse.averageStability * 10)}%` },
+                ]}
+              />
+            </View>
+            <Text style={styles.masteryProgressText}>
+              {verse.averageStability.toFixed(1)}j de stabilité
+            </Text>
+          </View>
+        </View>
+
+        {/* Actions */}
+        <View style={styles.actions}>
+          <TouchableOpacity
+            style={styles.primaryButton}
+            onPress={() => router.back()}
+          >
+            <IonIcon icon={arrowBack} size={20} color={colors.surface} />
+            <Text style={styles.primaryButtonText}>Retour à la file</Text>
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.bottomSpacer} />
+      </ScrollView>
+    </SafeAreaView>
+  );
+}
+

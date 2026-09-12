@@ -2,7 +2,7 @@
  * Memory Start Screen — Choose memorization strategy
  */
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import {
   View,
   Text,
@@ -65,6 +65,95 @@ const STRATEGIES = [
 ];
 
 export default function MemorizationStartScreen({ verseData }: Props) {
+  const { colors } = useAppTheme();
+  const styles = useMemo(() => StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.surfaceTint,
+    },
+    content: {
+      padding: 20,
+    },
+    verseCard: {
+      backgroundColor: colors.surface,
+      borderRadius: 16,
+      padding: 20,
+      marginBottom: 24,
+    },
+    verseReference: {
+      fontSize: 14,
+      color: colors.primary,
+      fontWeight: '600',
+      marginBottom: 8,
+    },
+    verseText: {
+      fontSize: 16,
+      color: colors.textPrimary,
+      lineHeight: 24,
+    },
+    title: {
+      fontSize: 18,
+      fontWeight: '700',
+      color: colors.textPrimary,
+      marginBottom: 16,
+    },
+    strategyCard: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: colors.surface,
+      borderRadius: 16,
+      padding: 16,
+      marginBottom: 8,
+      borderWidth: 2,
+      borderColor: colors.border,
+    },
+    strategyCardSelected: {
+      borderColor: colors.primary,
+    },
+    strategyIcon: {
+      fontSize: 32,
+      marginRight: 16,
+    },
+    strategyInfo: {
+      flex: 1,
+    },
+    strategyName: {
+      fontSize: 15,
+      fontWeight: '600',
+      color: colors.textPrimary,
+      marginBottom: 4,
+    },
+    strategyDesc: {
+      fontSize: 13,
+      color: colors.textTertiary,
+    },
+    checkmark: {
+      fontSize: 20,
+      color: colors.primary,
+      fontWeight: '700',
+    },
+    startButton: {
+      backgroundColor: colors.primary,
+      borderRadius: 12,
+      padding: 16,
+      alignItems: 'center',
+      marginTop: 24,
+    },
+    startButtonText: {
+      color: colors.surface,
+      fontSize: 16,
+      fontWeight: '600',
+    },
+    backButton: {
+      marginTop: 12,
+      alignItems: 'center',
+      padding: 8,
+    },
+    backText: {
+      color: colors.textMuted,
+      fontSize: 14,
+    },
+  }), [colors]);
   const router = useRouter();
   const [selectedStrategy, setSelectedStrategy] = useState<ExerciseStrategy>(
     'progressive-masking'
@@ -132,92 +221,3 @@ export default function MemorizationStartScreen({ verseData }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.surfaceTint,
-  },
-  content: {
-    padding: 16,
-    paddingBottom: 32,
-  },
-  verseCard: {
-    backgroundColor: colors.surface,
-    borderRadius: 16,
-    padding: 20,
-    marginBottom: 24,
-  },
-  verseReference: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: colors.primary,
-    marginBottom: 8,
-  },
-  verseText: {
-    fontSize: 16,
-    color: colors.textPrimary,
-    lineHeight: 24,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: colors.textPrimary,
-    marginBottom: 16,
-  },
-  strategyCard: {
-    backgroundColor: colors.surface,
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 12,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  strategyCardSelected: {
-    backgroundColor: colors.surfaceTint,
-    borderColor: colors.primary,
-    borderWidth: 2,
-  },
-  strategyIcon: {
-    fontSize: 32,
-    marginRight: 16,
-  },
-  strategyInfo: {
-    flex: 1,
-  },
-  strategyName: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: colors.textPrimary,
-  },
-  strategyDesc: {
-    fontSize: 14,
-    color: colors.textTertiary,
-    marginTop: 4,
-  },
-  checkmark: {
-    fontSize: 24,
-    color: colors.primary,
-    marginLeft: 12,
-  },
-  startButton: {
-    backgroundColor: colors.primary,
-    borderRadius: 26,
-    paddingVertical: 16,
-    alignItems: 'center',
-    marginTop: 24,
-  },
-  startButtonText: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: colors.surface,
-  },
-  backButton: {
-    padding: 16,
-    alignItems: 'center',
-  },
-  backText: {
-    fontSize: 14,
-    color: colors.textMuted,
-    textDecorationLine: 'underline',
-  },
-});

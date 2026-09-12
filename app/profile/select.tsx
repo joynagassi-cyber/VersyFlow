@@ -14,8 +14,8 @@ import {
   TextInput,
 } from '@/components/ui/Primitives';
 import { useRouter } from '@/hooks/useIonicNavigation';
-import { IonIcon } from '@ionic/react'
-import * as Ionicons from 'ionicons/icons';
+import { IonIcon } from '@/components/ui/Primitives'
+import {add, chevronForward} from 'ionicons/icons';
 import { useActiveProfile } from '@/hooks/useActiveProfile';
 import { useAppTheme } from '@/theme/useTheme';
 
@@ -89,7 +89,7 @@ export default function ProfileSelectionScreen() {
                   </Text>
                 )}
               </View>
-              <Ionicons name="chevron-forward" size={20} color={colors.textMuted} />
+              <IonIcon icon={chevronForward} size={20} color={colors.textMuted} />
             </TouchableOpacity>
           ))}
         </View>
@@ -98,7 +98,7 @@ export default function ProfileSelectionScreen() {
           style={[styles.createButton, { backgroundColor: colors.surfaceTint }]}
           onPress={() => setShowCreate(!showCreate)}
         >
-          <Ionicons name="add" size={20} color={colors.primary} />
+          <IonIcon icon={add} size={20} color={colors.primary} />
           <Text style={[styles.createButtonText, { color: colors.primary }]}>
             Ajouter un profil
           </Text>

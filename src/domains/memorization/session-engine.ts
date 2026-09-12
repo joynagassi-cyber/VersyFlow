@@ -4,7 +4,7 @@
  * Extension passage: revealNextVerse() pour navigation verset par verset
  */
 
-import type { SessionState, VerificationResult, ExerciseStrategy, MaskingConfig, MemorizationTargetType } from './entities';
+import type { SessionState, VerificationResult, ExerciseStrategy, MaskingConfig, MemorizationTargetType, MemorizationStatus } from './entities';
 import { SessionPhase, DEFAULT_MVP_STRATEGY, getMaskingConfigForStability } from './entities';
 import { ComparisonEngine } from './comparison-engine';
 import type { IWordFailureTracker } from './tracker';
@@ -12,6 +12,7 @@ import { Rating } from '@/domains/fsrs';
 import type { ILocalBibleRepository, BibleVerseData } from '@/domains/bible';
 import type { IFsrsEngine, FsrsState, FsrsReview } from '@/domains/fsrs';
 import type { MemorizationRecord } from './entities';
+import { eventBus, DomainEventTypes } from '@/domains/events';
 
 // =====================================================================
 // PassageMemorizationEngine types
@@ -116,6 +117,20 @@ export class MemorizationSessionEngine implements IMemorizationSessionEngine {
     this.records = options?.initialRecords ?? [];
     this.abandoned = false;
     this.passageParams = { bookId, chapter, verseStart, verseEnd, translationId, learnerProfileId };
+
+    // Telemetry: a passage session has started (no PII in payload).
+    eventBus.emit({
+      id: crypto.randomUUID(),
+      type: DomainEventTypes.PASSAGE_STARTED,
+      timestamp: Date.now(),
+      payload: {
+        targetId: `${bookId}:${chapter}:${verseStart}-${verseEnd}`,
+        displayReference: `${bookId} ${chapter}:${verseStart}${verseEnd !== verseStart ? `-${verseEnd}` : ''}`,
+        passageLength: verseEnd - verseStart + 1,
+        exerciseType: 'active-recall',
+        context: { bookId, chapterNumber: chapter, startVerse: verseStart, endVerse: verseEnd, translationId },
+      },
+    });
   }
 
   // ---- navigation ----
@@ -154,7 +169,11 @@ export class MemorizationSessionEngine implements IMemorizationSessionEngine {
 
     const review = await this.fsrsEngine.review(priorState, rating);
 
-    const newRecord: MemorizationRecord = {
+    // Derive the memorization status from the resulting FSRS state:
+    // a card the scheduler already considers mastered stays 'mastered';
+    // any newly rated card is 'in-progress' until it reaches the mastery
+    // threshold (stability > 30 + 5 reps + recall > 0.9).
+    const provisionalRecord: MemorizationRecord = {
       id: recordKey,
       learnerProfileId: this.passageParams.learnerProfileId,
       bookId: verse.bookId,
@@ -165,7 +184,7 @@ export class MemorizationSessionEngine implements IMemorizationSessionEngine {
       bibleVerseReference: this.buildReference(verse),
       bibleVerseText: verse.text,
       verseTexts: this.verses.map(v => v.text),
-      status: 'new',
+      status: existingRecord?.status ?? 'new',
       fsrsState: review.state,
       favorite: false,
       tags: [],
@@ -179,10 +198,42 @@ export class MemorizationSessionEngine implements IMemorizationSessionEngine {
       targetType: 'passage',
     };
 
+    const status: MemorizationStatus = provisionalRecord.status === 'mastered'
+      ? 'mastered'
+      : (this.shouldPromote(provisionalRecord) ? 'mastered' : 'in-progress');
+    const newRecord: MemorizationRecord = { ...provisionalRecord, status };
+
     this.records.push(newRecord);
     this.completedCount++;
     this.phase = 'rated';
+
+    // Telemetry: this segment (single verse) of the passage is complete.
+    eventBus.emit({
+      id: crypto.randomUUID(),
+      type: DomainEventTypes.SEGMENT_COMPLETED,
+      timestamp: Date.now(),
+      payload: {
+        targetId: recordKey,
+        verseNumber: verse.verse,
+        segmentIndex: this.completedCount - 1,
+        totalSegments: this.verses.length,
+        wordsRevealed: verse.text.split(/\s+/).filter(Boolean).length,
+        totalWords: verse.text.split(/\s+/).filter(Boolean).length,
+      },
+    });
+
     return newRecord;
+  }
+
+  /**
+   * Promote a non-mastered record to 'mastered' when the FSRS state shows
+   * long-term retention (stability > 30 days AND 5+ repetitions).
+   * Mirrors the `MasteryLevel.MASTERED` criteria from entities.ts without
+   * the recall-probability term, which the current scheduler keeps high
+   * for a fresh card and is therefore not a reliable mastery signal.
+   */
+  private shouldPromote(record: MemorizationRecord): boolean {
+    return record.fsrsState.stability > 30 && record.fsrsState.repetitions >= 5;
   }
 
   // ---- getters ----

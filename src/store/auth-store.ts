@@ -6,9 +6,11 @@ import { capacitorStorage } from '@/infrastructure/storage';
 
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import type { UserProfile} from '@/auth';
+import type { UserProfile } from '@/auth';
 import { SupabaseAuthService, AuthError } from '@/auth';
 import { useSyncStore } from '@/store/sync-store';
+import { getSyncUserIdProvider } from '@/infrastructure/repository/powersync-repositories';
+import { invalidateSyncUserIdProvider } from '@/infrastructure/repository/powersync-repositories';
 
 interface AuthState {
   user: UserProfile | null;
@@ -41,12 +43,14 @@ export const useAuthStore = create<AuthState>()(
       signIn: async (email: string, password: string) => {
         set({ isLoading: true, error: null });
         try {
-          const session = await authService.signIn(email, password);
+          const { user, error: authErr } = await authService.signIn(email, password);
+          if (authErr || !user) throw authErr || new AuthError('No user returned');
           set({
             user: {
-              userId: session.user.id,
-              display_name: session.user.display_name,
-              default_translation: session.user.default_translation,
+              userId: user.id,
+              email: user.email || email,
+              display_name: (user as any).display_name,
+              default_translation: (user as any).default_translation,
             },
             isAuthenticated: true,
             isLoading: false,
@@ -64,7 +68,8 @@ export const useAuthStore = create<AuthState>()(
       signUp: async (email: string, password: string) => {
         set({ isLoading: true, error: null });
         try {
-          await authService.signUp(email, password);
+          const { error: authErr } = await authService.signUp(email, password);
+          if (authErr) throw authErr;
           set({ isLoading: false });
         } catch (err) {
           const error = err instanceof AuthError ? err : new AuthError('Failed to sign up');
@@ -76,7 +81,8 @@ export const useAuthStore = create<AuthState>()(
       signOut: async () => {
         set({ isLoading: true });
         try {
-          await authService.signOut();
+          const { error: authErr } = await authService.signOut();
+          if (authErr) throw authErr;
           set({
             user: null,
             isAuthenticated: false,
@@ -86,6 +92,9 @@ export const useAuthStore = create<AuthState>()(
           // Reset the MMKV → PowerSync migration flag so the next login
           // re-runs it for the new user.
           useSyncStore.getState().invalidateMigration();
+          // Invalidate the cached user id so no in-flight PowerSync write
+          // can resolve a stale user id after sign-out.
+          invalidateSyncUserIdProvider();
         } catch (err) {
           set({ isLoading: false });
         }
@@ -99,8 +108,9 @@ export const useAuthStore = create<AuthState>()(
             set({
               user: {
                 userId: user.id,
-                display_name: user.display_name,
-                default_translation: user.default_translation,
+                email: user.email || '',
+                display_name: (user as any).display_name,
+                default_translation: (user as any).default_translation,
               },
               isAuthenticated: true,
               isLoading: false,
@@ -124,17 +134,14 @@ export const useAuthStore = create<AuthState>()(
       name: 'versyflow-auth-storage',
       storage: createJSONStorage(() => ({
         getItem: async (key: string) => {
-          const { default: AsyncStorage } = Promise.resolve({ getItem: (k: string) => capacitorStorage.get(k), setItem: (k: string, v: string) => capacitorStorage.set(k, v), removeItem: (k: string) => capacitorStorage.delete(k) });
-          const value = await AsyncStorage.getItem(key);
+          const value = await capacitorStorage.get(key);
           return value ? JSON.parse(value) : null;
         },
         setItem: async (key: string, value: string) => {
-          const { default: AsyncStorage } = Promise.resolve({ getItem: (k: string) => capacitorStorage.get(k), setItem: (k: string, v: string) => capacitorStorage.set(k, v), removeItem: (k: string) => capacitorStorage.delete(k) });
-          await AsyncStorage.setItem(key, value);
+          await capacitorStorage.set(key, value);
         },
         removeItem: async (key: string) => {
-          const { default: AsyncStorage } = Promise.resolve({ getItem: (k: string) => capacitorStorage.get(k), setItem: (k: string, v: string) => capacitorStorage.set(k, v), removeItem: (k: string) => capacitorStorage.delete(k) });
-          await AsyncStorage.removeItem(key);
+          await capacitorStorage.delete(key);
         },
       })),
     }

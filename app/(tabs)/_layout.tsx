@@ -13,6 +13,7 @@ import {
 } from '@ionic/react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { Home, BookOpen, BarChart3, Settings, Plus } from 'lucide-react';
+import SyncStatusIndicator from '@/components/common/SyncStatusIndicator';
 
 interface TabDef {
   path: string;
@@ -38,6 +39,11 @@ export default function TabLayout() {
     <IonPage>
       {/* Content area — the active tab page renders here */}
       <div className="flex h-full flex-col overflow-hidden">
+        {/* Global sync status (single token-only surface — no per-screen `if (offline)`) */}
+        <div className="flex items-center justify-end px-2 pt-1">
+          <SyncStatusIndicator />
+        </div>
+
         <div className="flex-1 overflow-hidden">
           <Outlet />
         </div>

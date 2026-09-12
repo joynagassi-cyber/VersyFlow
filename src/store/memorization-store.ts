@@ -10,7 +10,7 @@ export interface WordChipState {
   revealed: boolean;
 }
 
-interface MemorizationState {
+export interface MemorizationState {
   // Session state
   currentRecordId: string | null;
   verseText: string;

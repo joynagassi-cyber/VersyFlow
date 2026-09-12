@@ -49,12 +49,12 @@ export function useRouter(): Router {
   return { push, replace, back, dismiss };
 }
 
-export function useLocalSearchParams(): Record<string, string> {
+export function useLocalSearchParams<T extends Record<string, string | undefined> = Record<string, string | undefined>>(): T {
   const [searchParams] = useSearchParams();
   const params = useParams();
-  const result: Record<string, string> = { ...params };
+  const result: Record<string, string | undefined> = { ...params };
   searchParams.forEach((value, key) => { result[key] = value; });
-  return result;
+  return result as T;
 }
 
 export function useRoute() {

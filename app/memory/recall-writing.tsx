@@ -2,7 +2,7 @@
  * Memory Recall Writing Screen
  */
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -14,24 +14,29 @@ import {
 } from '@/components/ui/Primitives';
 import { useAppTheme } from '@/theme/useTheme';
 import { useRouter, useLocalSearchParams } from '@/hooks/useIonicNavigation';
-import { useRecallWriting } from '@/capabilities/memory/strategies/recall-writing';
 import { useMemoryCapability } from '@/capabilities/memory/store';
 
 export default function RecallWritingScreen() {
-  const { colors, sp, sh, rad } = useAppTheme();
+  const { colors, rad } = useAppTheme();
   const router = useRouter();
   const params = useLocalSearchParams();
   const { sessionState, startSession } = useMemoryCapability();
-  const writing = useRecallWriting();
+  const [text, setText] = useState('');
 
-  useState(() => {
+  useEffect(() => {
     if (!sessionState && params.text) {
       startSession({
         phase: 'preview',
         verseText: params.text,
+        words: params.text.split(' '),
+        revealedWordIndices: new Set<number>(),
+        startedAt: Date.now(),
+        durationSeconds: 0,
+        wordsRevealed: 0,
+        totalWords: params.text.split(' ').length,
       });
     }
-  });
+  }, []);
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
@@ -46,10 +51,11 @@ export default function RecallWritingScreen() {
             padding: 16,
             color: colors.textPrimary,
           }]}
+          value={text}
+          onChangeText={setText}
           placeholder="Écrivez le verset de mémoire..."
           placeholderTextColor={colors.textMuted}
           multiline
-          numberOfLines={6}
         />
         <TouchableOpacity
           style={[styles.button, { backgroundColor: colors.primary, borderRadius: rad.pill, paddingVertical: 14, marginTop: 16 }]}

@@ -8,6 +8,7 @@ interface WordAlignment {
   substituted: Array<{ position: number; expected: string; got: string }>;
   transpositions: Array<{ first: number; second: number }>;
 }
+export type { WordAlignment };
 
 /**
  * Comparison Engine — Compare user answer against expected verse
@@ -16,6 +17,7 @@ interface WordAlignment {
  */
 
 import type { VerificationResult } from './entities';
+export type { VerificationResult } from './entities';
 
 /**
  * ComparisonEngine — Pure domain logic for text comparison
@@ -60,8 +62,9 @@ export class ComparisonEngine {
 
   /**
    * Normalize text: lowercase, trim, remove punctuation, normalize whitespace
+   * Public for unit testing.
    */
-  private normalize(text: string): string {
+  normalize(text: string): string {
     return text.toLowerCase().trim()
       .replace(/[.,;:'!?"]/g, '')  // Remove common punctuation
       .replace(/\s+/g, ' ');        // Normalize multiple spaces to single space
@@ -69,8 +72,9 @@ export class ComparisonEngine {
 
   /**
    * Split text into words, filtering empty strings
+   * Public for unit testing.
    */
-  private tokenize(text: string): string[] {
+  tokenize(text: string): string[] {
     return text.split(' ').filter(w => w.length > 0);
   }
 
@@ -81,8 +85,9 @@ export class ComparisonEngine {
    * - "substituted": expected[i] !== provided[i] but word exists elsewhere in provided
    * - "extra": provided word not found in expected at all
    * - "transpositions": adjacent words swapped
+   * Public for unit testing.
    */
-  private alignWords(expected: string[], provided: string[]): WordAlignment {
+  alignWords(expected: string[], provided: string[]): WordAlignment {
     const alignment: WordAlignment = {
       correct: [],
       missing: [],
@@ -142,8 +147,9 @@ export class ComparisonEngine {
 
   /**
    * Calculate similarity score based on aligned words
+   * Public for unit testing.
    */
-  private calculateSimilarityScore(alignment: any, totalWords: number): number {
+  calculateSimilarityScore(alignment: WordAlignment, totalWords: number): number {
     const correctCount = alignment.correct.length;
     return correctCount / Math.max(totalWords, 1);
   }
@@ -151,8 +157,9 @@ export class ComparisonEngine {
   /**
    * Analyze the verse into strong (consistently correct) and fragile (error-prone) portions
    * Based on the alignment of correct words
+   * Public for unit testing.
    */
-  private analyzePortions(alignment: WordAlignment, totalWords: number): {
+  analyzePortions(alignment: WordAlignment, totalWords: number): {
     strongPortions: Array<{ start: number; end: number; accuracy: number }>;
     fragilePortions: Array<{ start: number; end: number; accuracy: number }>;
   } {

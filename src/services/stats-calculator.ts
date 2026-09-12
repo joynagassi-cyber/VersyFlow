@@ -17,6 +17,15 @@ export interface ProgressStats {
   avgSessionDurationMin: number;
 }
 
+/** A milestone reached by the learner (badge-able event). */
+export interface Milestone {
+  id: string;
+  label: string;
+  threshold: number;
+  reachedAt: number;
+  category: 'memorization' | 'streak' | 'review' | 'special';
+}
+
 export class StatsCalculator {
   constructor(
     private memorizationService: MemorizationService,

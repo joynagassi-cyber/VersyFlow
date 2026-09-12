@@ -3,7 +3,7 @@
  */
 
 import { StyleSheet, Text, TouchableOpacity } from '@/components/ui/Primitives';
-import { colors, radius, spacing } from '@/tokens';
+import { useAppTheme } from '@/theme/useTheme';
 
 interface ButtonSecondaryProps {
   title: string;
@@ -12,6 +12,29 @@ interface ButtonSecondaryProps {
 }
 
 export function ButtonSecondary({ title, onPress, disabled = false }: ButtonSecondaryProps) {
+  const { colors } = useAppTheme();
+  const styles = StyleSheet.create({
+    button: {
+      backgroundColor: colors.surface,
+      borderWidth: 1,
+      borderColor: colors.border,
+      borderRadius: 12,
+      paddingVertical: 14,
+      paddingHorizontal: 20,
+      alignItems: 'center',
+      justifyContent: 'center',
+      minHeight: 48,
+    },
+    disabled: {
+      opacity: 0.5,
+    },
+    text: {
+      color: colors.textPrimary,
+      fontSize: 16,
+      fontWeight: '500',
+    },
+  });
+
   return (
     <TouchableOpacity
       style={[styles.button, disabled && styles.disabled]}
@@ -23,26 +46,3 @@ export function ButtonSecondary({ title, onPress, disabled = false }: ButtonSeco
     </TouchableOpacity>
   );
 }
-
-const styles = StyleSheet.create({
-  button: {
-    backgroundColor: 'transparent',
-    borderWidth: 2,
-    borderColor: colors.primary,
-    borderRadius: radius.full,
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    minHeight: 52,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  disabled: {
-    opacity: 0.5,
-    borderColor: colors.border,
-  },
-  text: {
-    color: colors.primary,
-    fontSize: 16,
-    fontWeight: '600',
-  },
-});

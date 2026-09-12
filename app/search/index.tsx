@@ -2,7 +2,7 @@
  * Search Screen — Bible verse search by reference or keyword
  */
 
-import { useState } from 'react';
+import { useState, useMemo} from 'react';
 import {
   View,
   Text,
@@ -15,8 +15,8 @@ import {
 } from '@/components/ui/Primitives';
 import { useAppTheme } from '@/theme/useTheme';
 import { useRouter } from '@/hooks/useIonicNavigation';
-import { IonIcon } from '@ionic/react'
-import * as Ionicons from 'ionicons/icons';
+import { IonIcon } from '@/components/ui/Primitives'
+import { arrowBack, bookmark, chevronForward, close, closeCircle, school, search, time } from 'ionicons/icons';
 
 interface SearchResult {
   id: string;
@@ -38,176 +38,7 @@ const SAMPLE_RESULTS: SearchResult[] = [
 
 export default function SearchScreen() {
   const { colors, sp, sh, rad } = useAppTheme();
-  const router = useRouter();
-  const [query, setQuery] = useState('');
-  const [results, setResults] = useState<SearchResult[]>([]);
-  const [isSearching, setIsSearching] = useState(false);
-  const [showHistory, setShowHistory] = useState(true);
-
-  const searchHistory = [
-    'Jean 3:16',
-    'Psaume 23',
-    'Genèse 1',
-    'Romains 8',
-  ];
-
-  const handleSearch = (text: string) => {
-    setQuery(text);
-    setShowHistory(false);
-
-    if (text.length < 2) {
-      setResults([]);
-      return;
-    }
-
-    setIsSearching(true);
-
-    // Simulate search
-    setTimeout(() => {
-      const filtered = SAMPLE_RESULTS.filter(r =>
-        r.reference.toLowerCase().includes(text.toLowerCase()) ||
-        r.text.toLowerCase().includes(text.toLowerCase()) ||
-        r.book.toLowerCase().includes(text.toLowerCase())
-      );
-      setResults(filtered);
-      setIsSearching(false);
-    }, 500);
-  };
-
-  const handleResultPress = (result: SearchResult) => {
-    router.push({
-      pathname: '/memorization/session',
-      params: {
-        reference: result.reference,
-        text: result.text,
-      },
-    });
-  };
-
-  const handleQuickSearch = (reference: string) => {
-    setQuery(reference);
-    setShowHistory(false);
-    const result = SAMPLE_RESULTS.find(r => r.reference === reference);
-    if (result) {
-      setResults([result]);
-    }
-  };
-
-  return (
-    <SafeAreaView style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-          <Ionicons name="arrow-back" size={24} color={colors.textSecondary} />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Rechercher</Text>
-        <View style={styles.headerRight} />
-      </View>
-
-      {/* Search Input */}
-      <View style={styles.searchContainer}>
-        <View style={styles.searchInputWrapper}>
-          <Ionicons name="search" size={20} color={colors.textMuted} style={styles.searchIcon} />
-          <TextInput
-            style={styles.searchInput}
-            placeholder="Rechercher un verset..."
-            placeholderTextColor="colors.textMuted"
-            value={query}
-            onChangeText={handleSearch}
-            autoCorrect={false}
-            autoCapitalize="sentences"
-          />
-          {query ? (
-            <TouchableOpacity onPress={() => handleSearch('')}>
-              <Ionicons name="close-circle" size={20} color={colors.textMuted} />
-            </TouchableOpacity>
-          ) : null}
-        </View>
-
-        {/* Quick Suggestions */}
-        {!query && showHistory && (
-          <View style={styles.suggestionsContainer}>
-            <Text style={styles.suggestionsTitle}>Recherches populaires</Text>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.suggestionsScroll}>
-              {['Jean 3:16', 'Psaume 23', 'Genèse 1', 'Romains 8:28', 'Philippiens 4:13'].map((suggestion) => (
-                <TouchableOpacity
-                  key={suggestion}
-                  style={styles.suggestionPill}
-                  onPress={() => handleQuickSearch(suggestion)}
-                >
-                  <Text style={styles.suggestionText}>{suggestion}</Text>
-                </TouchableOpacity>
-              ))}
-            </ScrollView>
-          </View>
-        )}
-
-        {/* Search History */}
-        {showHistory && (
-          <View style={styles.historyContainer}>
-            <Text style={styles.historyTitle}>Historique récent</Text>
-            {searchHistory.map((item, index) => (
-              <TouchableOpacity
-                key={index}
-                style={styles.historyItem}
-                onPress={() => handleQuickSearch(item)}
-              >
-                <Ionicons name="clock" size={18} color={colors.textMuted} />
-                <Text style={styles.historyText}>{item}</Text>
-                <Ionicons name="chevron-forward" size={18} color={colors.textMuted} />
-              </TouchableOpacity>
-            ))}
-          </View>
-        )}
-      </View>
-
-      {/* Results */}
-      {isSearching ? (
-        <View style={styles.loadingContainer}>
-          <Ionicons name="search" size={40} color={colors.primary} />
-          <Text style={styles.loadingText}>Recherche en cours...</Text>
-        </View>
-      ) : results.length > 0 ? (
-        <ScrollView style={styles.resultsContainer}>
-          <Text style={styles.resultsTitle}>{results.length} résultat(s)</Text>
-          {results.map((result) => (
-            <TouchableOpacity
-              key={result.id}
-              style={styles.resultCard}
-              onPress={() => handleResultPress(result)}
-            >
-              <View style={styles.resultHeader}>
-                <Text style={styles.resultReference}>{result.reference}</Text>
-                <View style={[styles.relevanceBadge, { backgroundColor: result.relevance >= 90 ? 'colors.success' : result.relevance >= 70 ? 'colors.warning' : colors.textMuted }]}>
-                  <Text style={styles.relevanceText}>{result.relevance}%</Text>
-                </View>
-              </View>
-              <Text style={styles.resultText} numberOfLines={2}>{result.text}</Text>
-              <View style={styles.resultActions}>
-                <TouchableOpacity style={styles.resultAction}>
-                  <Ionicons name="learn" size={16} color={colors.primary} />
-                  <Text style={styles.resultActionText}>Mémoriser</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.resultAction}>
-                  <Ionicons name="bookmark" size={16} color={colors.primary} />
-                  <Text style={styles.resultActionText}>Sauvegarder</Text>
-                </TouchableOpacity>
-              </View>
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
-      ) : query.length >= 2 ? (
-        <View style={styles.emptyContainer}>
-          <Ionicons name="search-off" size={64} color={colors.outline} />
-          <Text style={styles.emptyTitle}>Aucun résultat</Text>
-          <Text style={styles.emptySubtitle}>Essayez avec une autre référence ou un mot-clé</Text>
-        </View>
-      ) : null}
-    </SafeAreaView>
-  );
-}
-
-const styles = StyleSheet.create({
+  const styles = useMemo(() => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,
@@ -407,4 +238,173 @@ const styles = StyleSheet.create({
     marginTop: 8,
     textAlign: 'center',
   },
-});
+  }), [colors]);
+  const router = useRouter();
+  const [query, setQuery] = useState('');
+  const [results, setResults] = useState<SearchResult[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [showHistory, setShowHistory] = useState(true);
+
+  const searchHistory = [
+    'Jean 3:16',
+    'Psaume 23',
+    'Genèse 1',
+    'Romains 8',
+  ];
+
+  const handleSearch = (text: string) => {
+    setQuery(text);
+    setShowHistory(false);
+
+    if (text.length < 2) {
+      setResults([]);
+      return;
+    }
+
+    setIsSearching(true);
+
+    // Simulate search
+    setTimeout(() => {
+      const filtered = SAMPLE_RESULTS.filter(r =>
+        r.reference.toLowerCase().includes(text.toLowerCase()) ||
+        r.text.toLowerCase().includes(text.toLowerCase()) ||
+        r.book.toLowerCase().includes(text.toLowerCase())
+      );
+      setResults(filtered);
+      setIsSearching(false);
+    }, 500);
+  };
+
+  const handleResultPress = (result: SearchResult) => {
+    router.push({
+      pathname: '/memorization/session',
+      params: {
+        reference: result.reference,
+        text: result.text,
+      },
+    });
+  };
+
+  const handleQuickSearch = (reference: string) => {
+    setQuery(reference);
+    setShowHistory(false);
+    const result = SAMPLE_RESULTS.find(r => r.reference === reference);
+    if (result) {
+      setResults([result]);
+    }
+  };
+
+  return (
+    <SafeAreaView style={styles.container}>
+      {/* Header */}
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+          <IonIcon icon={arrowBack} size={24} color={colors.textSecondary} />
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>Rechercher</Text>
+        <View style={styles.headerRight} />
+      </View>
+
+      {/* Search Input */}
+      <View style={styles.searchContainer}>
+        <View style={styles.searchInputWrapper}>
+          <IonIcon icon={search} size={20} color={colors.textMuted} style={styles.searchIcon} />
+          <TextInput
+            style={styles.searchInput}
+            placeholder="Rechercher un verset..."
+            placeholderTextColor="colors.textMuted"
+            value={query}
+            onChangeText={handleSearch}
+            autoCorrect={false}
+            autoCapitalize="sentences"
+          />
+          {query ? (
+            <TouchableOpacity onPress={() => handleSearch('')}>
+              <IonIcon icon={closeCircle} size={20} color={colors.textMuted} />
+            </TouchableOpacity>
+          ) : null}
+        </View>
+
+        {/* Quick Suggestions */}
+        {!query && showHistory && (
+          <View style={styles.suggestionsContainer}>
+            <Text style={styles.suggestionsTitle}>Recherches populaires</Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.suggestionsScroll}>
+              {['Jean 3:16', 'Psaume 23', 'Genèse 1', 'Romains 8:28', 'Philippiens 4:13'].map((suggestion) => (
+                <TouchableOpacity
+                  key={suggestion}
+                  style={styles.suggestionPill}
+                  onPress={() => handleQuickSearch(suggestion)}
+                >
+                  <Text style={styles.suggestionText}>{suggestion}</Text>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+          </View>
+        )}
+
+        {/* Search History */}
+        {showHistory && (
+          <View style={styles.historyContainer}>
+            <Text style={styles.historyTitle}>Historique récent</Text>
+            {searchHistory.map((item, index) => (
+              <TouchableOpacity
+                key={index}
+                style={styles.historyItem}
+                onPress={() => handleQuickSearch(item)}
+              >
+                <IonIcon icon={time} size={18} color={colors.textMuted} />
+                <Text style={styles.historyText}>{item}</Text>
+                <IonIcon icon={chevronForward} size={18} color={colors.textMuted} />
+              </TouchableOpacity>
+            ))}
+          </View>
+        )}
+      </View>
+
+      {/* Results */}
+      {isSearching ? (
+        <View style={styles.loadingContainer}>
+          <IonIcon icon={search} size={40} color={colors.primary} />
+          <Text style={styles.loadingText}>Recherche en cours...</Text>
+        </View>
+      ) : results.length > 0 ? (
+        <ScrollView style={styles.resultsContainer}>
+          <Text style={styles.resultsTitle}>{results.length} résultat(s)</Text>
+          {results.map((result) => (
+            <TouchableOpacity
+              key={result.id}
+              style={styles.resultCard}
+              onPress={() => handleResultPress(result)}
+            >
+              <View style={styles.resultHeader}>
+                <Text style={styles.resultReference}>{result.reference}</Text>
+                <View style={[styles.relevanceBadge, { backgroundColor: result.relevance >= 90 ? 'colors.success' : result.relevance >= 70 ? 'colors.warning' : colors.textMuted }]}>
+                  <Text style={styles.relevanceText}>{result.relevance}%</Text>
+                </View>
+              </View>
+              <Text style={styles.resultText} numberOfLines={2}>{result.text}</Text>
+              <View style={styles.resultActions}>
+                <TouchableOpacity style={styles.resultAction}>
+                  <IonIcon icon={school} size={16} color={colors.primary} />
+                  <Text style={styles.resultActionText}>Mémoriser</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.resultAction}>
+                  <IonIcon icon={bookmark} size={16} color={colors.primary} />
+                  <Text style={styles.resultActionText}>Sauvegarder</Text>
+                </TouchableOpacity>
+              </View>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      ) : query.length >= 2 ? (
+        <View style={styles.emptyContainer}>
+          <IonIcon icon={close} size={64} color={colors.outline} />
+          <Text style={styles.emptyTitle}>Aucun résultat</Text>
+          <Text style={styles.emptySubtitle}>Essayez avec une autre référence ou un mot-clé</Text>
+        </View>
+      ) : null}
+    </SafeAreaView>
+  );
+}
+

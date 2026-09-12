@@ -15,8 +15,8 @@ import {
   type TextStyle,
   type StyleProp,
 } from '@/components/ui/Primitives';
-import { IonIcon } from '@ionic/react'
-import * as Ionicons from 'ionicons/icons';
+import { IonIcon } from '@/components/ui/Primitives'
+import {arrowBack} from 'ionicons/icons';
 import { useAppTheme } from '@/theme/useTheme';
 import { colors } from '@/tokens';
 
@@ -87,7 +87,7 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
           onPress={onBack}
           accessibilityLabel="Retour"
         >
-          <Ionicons name="arrow-back" size={20} color={colors.textSecondary} />
+          <IonIcon icon={arrowBack} size={20} color={colors.textSecondary} />
         </TouchableOpacity>
       )}
       <Text style={[styles.headerTitle, { color: colors.textPrimary }]} numberOfLines={1}>
@@ -223,7 +223,7 @@ export const IconButton: React.FC<IconButtonProps> = ({
       accessibilityRole="button"
       accessibilityLabel={accessibilityLabel || icon}
     >
-      <Ionicons name={icon as any} size={size} color={color || colors.textSecondary} />
+      <IonIcon icon={icon as any} size={size} color={color || colors.textSecondary} />
     </TouchableOpacity>
   );
 };
@@ -311,7 +311,7 @@ export const StatCard: React.FC<StatCardProps> = ({
             },
           ]}
         >
-          <Ionicons name={icon as any} size={24} color={iconColor} />
+          <IonIcon icon={icon as any} size={24} color={iconColor} />
         </View>
       )}
       <Text style={[typ.headlineSmall, { color: colors.textPrimary, fontWeight: '800' }]}>
@@ -338,7 +338,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({ icon, title, description
 
   return (
     <View style={{ alignItems: 'center', justifyContent: 'center', paddingVertical: sp['2xl'], paddingHorizontal: sp.xl }}>
-      <Ionicons name={icon as any} size={64} color={colors.textMuted} />
+      <IonIcon icon={icon as any} size={64} color={colors.textMuted} />
       <Text style={[typ.titleMedium, { color: colors.textPrimary, marginTop: sp.lg, textAlign: 'center' }]}>
         {title}
       </Text>

@@ -9,6 +9,7 @@ import { useAuthStore } from '@/store/auth-store';
 import { useSettingsStore } from '@/store/settings-store';
 import SplashScreen from '@/app/splash';
 import BootScreen from '@/app/boot';
+import { Stack } from '@/components/ui/Primitives';
 
 export default function RootNavigator() {
   const [appStage, setAppStage] = useState<'splash' | 'boot' | 'main'>('splash');
@@ -65,6 +66,9 @@ export default function RootNavigator() {
       <Stack.Screen name="onboarding/welcome" options={{ presentation: 'modal' }} />
       <Stack.Screen name="onboarding/language-select" options={{ presentation: 'modal' }} />
       <Stack.Screen name="onboarding/translation-select" options={{ presentation: 'modal' }} />
+      <Stack.Screen name="onboarding/session-config" options={{ presentation: 'modal' }} />
+      <Stack.Screen name="onboarding/reminder-config" options={{ presentation: 'modal' }} />
+      <Stack.Screen name="onboarding/fsrs-introduction" options={{ presentation: 'modal' }} />
 
       {/* Bible Explorer */}
       <Stack.Screen name="bible/explorer" options={{ presentation: 'modal' }} />
@@ -91,6 +95,8 @@ export default function RootNavigator() {
       <Stack.Screen name="settings/backup" options={{ presentation: 'modal' }} />
       <Stack.Screen name="settings/privacy" options={{ presentation: 'modal' }} />
       <Stack.Screen name="settings/about" options={{ presentation: 'modal' }} />
+      <Stack.Screen name="settings/session" options={{ presentation: 'modal' }} />
+      <Stack.Screen name="settings/reminders" options={{ presentation: 'modal' }} />
 
       {/* 404 Fallback */}
       <Stack.Screen name="+not-found" />

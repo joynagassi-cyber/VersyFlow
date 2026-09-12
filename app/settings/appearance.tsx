@@ -1,8 +1,12 @@
 /**
  * Appearance Settings Screen — Theme and display preferences
+ *
+ * Wired to the real theme system (`useTheme().setThemeMode`) and persisted via
+ * the `useAppearanceStore`, so a theme choice actually applies (CSS variables
+ * on <html> + Ionic tokens) and survives restarts.
  */
 
-import { useState } from 'react';
+import { useMemo } from 'react';
 import {
   View,
   Text,
@@ -11,17 +15,124 @@ import {
   SafeAreaView,
   Switch,
 } from '@/components/ui/Primitives';
-import { useAppTheme } from '@/theme/useTheme';
+import { useTheme } from '@/theme/useTheme';
 import { useRouter } from '@/hooks/useIonicNavigation';
+import { useAppearanceStore } from '@/store/appearance-store';
 
 type Theme = 'light' | 'dark' | 'system';
 
 export default function AppearanceScreen() {
-  const { colors, sp, sh, rad } = useAppTheme();
+  const theme = useTheme();
   const router = useRouter();
-  const [theme, setTheme] = useState<Theme>('light');
-  const [fontSize, setFontSize] = useState<number>(16);
-  const [showVerseNumbers, setShowVerseNumbers] = useState(true);
+
+  const {
+    themeMode,
+    fontSize,
+    showVerseNumbers,
+    setThemeMode,
+    setFontSize,
+    toggleVerseNumbers,
+  } = useAppearanceStore();
+
+  const { colors, sp, sh, rad } = theme;
+  const styles = useMemo(() => StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    section: {
+      backgroundColor: colors.surface,
+      borderRadius: rad.md,
+      padding: sp.md,
+      marginHorizontal: sp.md,
+      marginBottom: sp.md,
+    },
+    sectionTitle: {
+      fontSize: 16,
+      fontWeight: '600',
+      color: colors.textPrimary,
+      marginBottom: sp.sm,
+    },
+    option: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      paddingVertical: sp.sm * 1.5,
+      borderBottomWidth: 1,
+      borderBottomColor: colors.divider,
+      borderRadius: rad.sm,
+    },
+    optionLast: {
+      borderBottomWidth: 0,
+    },
+    optionSelected: {
+      backgroundColor: colors.surfaceTint,
+      borderRadius: rad.sm,
+      paddingHorizontal: sp.md,
+    },
+    optionText: {
+      fontSize: 16,
+      color: colors.textPrimary,
+    },
+    optionTextSelected: {
+      fontWeight: '600',
+      color: colors.primary,
+    },
+    checkmark: {
+      fontSize: 20,
+      color: colors.primary,
+    },
+    fontSizeRow: {
+      flexDirection: 'row',
+      justifyContent: 'space-around',
+    },
+    fontSizeButton: {
+      paddingVertical: sp.sm * 1.5,
+      paddingHorizontal: sp.md * 1.25,
+      borderRadius: rad.sm,
+      backgroundColor: colors.surfaceElevated,
+    },
+    fontSizeButtonSelected: {
+      backgroundColor: colors.primary,
+    },
+    fontSizeText: {
+      fontSize: 16,
+      color: colors.textPrimary,
+    },
+    fontSizeTextSelected: {
+      color: colors.onSurface,
+      fontWeight: '600',
+    },
+    toggleRow: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      paddingVertical: sp.sm * 1.5,
+    },
+    toggleLabel: {
+      fontSize: 16,
+      color: colors.textPrimary,
+    },
+    backButton: {
+      padding: sp.md,
+      alignItems: 'center',
+    },
+    backText: {
+      fontSize: 14,
+      color: colors.textMuted,
+      textDecorationLine: 'underline',
+    },
+  }), [colors, sp, rad, sh]);
+
+  const handleSelectTheme = (value: Theme) => {
+    setThemeMode(value);
+    if (value === 'system') {
+      // Reset to system preference
+      theme.setThemeMode(theme.isDark ? 'dark' : 'light');
+    } else {
+      theme.setThemeMode(value);
+    }
+  };
 
   const themes: { value: Theme; label: string }[] = [
     { value: 'light', label: 'Clair' },
@@ -35,16 +146,16 @@ export default function AppearanceScreen() {
     <SafeAreaView style={styles.container}>
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Thème</Text>
-        {themes.map((t) => (
+        {themes.map((t, i) => (
           <TouchableOpacity
             key={t.value}
-            style={[styles.option, theme === t.value && styles.optionSelected]}
-            onPress={() => setTheme(t.value)}
+            style={[styles.option, i === themes.length - 1 ? styles.optionLast : null, themeMode === t.value ? styles.optionSelected : null]}
+            onPress={() => handleSelectTheme(t.value)}
           >
-            <Text style={[styles.optionText, theme === t.value && styles.optionTextSelected]}>
+            <Text style={[styles.optionText, themeMode === t.value ? styles.optionTextSelected : null]}>
               {t.label}
             </Text>
-            {theme === t.value && <Text style={styles.checkmark}>✓</Text>}
+            {themeMode === t.value && <Text style={styles.checkmark}>✓</Text>}
           </TouchableOpacity>
         ))}
       </View>
@@ -55,10 +166,10 @@ export default function AppearanceScreen() {
           {fontSizes.map((size) => (
             <TouchableOpacity
               key={size}
-              style={[styles.fontSizeButton, fontSize === size && styles.fontSizeButtonSelected]}
+              style={[styles.fontSizeButton, fontSize === size ? styles.fontSizeButtonSelected : null]}
               onPress={() => setFontSize(size)}
             >
-              <Text style={[styles.fontSizeText, fontSize === size && styles.fontSizeTextSelected]}>
+              <Text style={[styles.fontSizeText, fontSize === size ? styles.fontSizeTextSelected : null]}>
                 {size}
               </Text>
             </TouchableOpacity>
@@ -72,9 +183,7 @@ export default function AppearanceScreen() {
           <Text style={styles.toggleLabel}>Numéros de versets</Text>
           <Switch
             value={showVerseNumbers}
-            onValueChange={setShowVerseNumbers}
-            trackColor={{ false: '#767570', true: colors.primary }}
-            thumbColor={showVerseNumbers ? 'colors.primary' : '#f4f3f2'}
+            onValueChange={() => toggleVerseNumbers()}
           />
         </View>
       </View>
@@ -85,90 +194,3 @@ export default function AppearanceScreen() {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.surfaceTint,
-  },
-  section: {
-    backgroundColor: colors.surface,
-    borderRadius: 12,
-    padding: 16,
-    marginHorizontal: 16,
-    marginBottom: 16,
-  },
-  sectionTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: colors.textPrimary,
-    marginBottom: 12,
-  },
-  option: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.surfaceElevated,
-  },
-  optionLast: {
-    borderBottomWidth: 0,
-  },
-  optionSelected: {
-    backgroundColor: colors.surfaceTint,
-    borderRadius: 8,
-    paddingHorizontal: 12,
-  },
-  optionText: {
-    fontSize: 16,
-    color: colors.textPrimary,
-  },
-  optionTextSelected: {
-    fontWeight: '600',
-    color: colors.primary,
-  },
-  checkmark: {
-    fontSize: 20,
-    color: colors.primary,
-  },
-  fontSizeRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-  },
-  fontSizeButton: {
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 8,
-    backgroundColor: colors.surfaceElevated,
-  },
-  fontSizeButtonSelected: {
-    backgroundColor: colors.primary,
-  },
-  fontSizeText: {
-    fontSize: 16,
-    color: colors.textPrimary,
-  },
-  fontSizeTextSelected: {
-    color: colors.surface,
-  },
-  toggleRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 12,
-  },
-  toggleLabel: {
-    fontSize: 16,
-    color: colors.textPrimary,
-  },
-  backButton: {
-    padding: 16,
-    alignItems: 'center',
-  },
-  backText: {
-    fontSize: 14,
-    color: colors.textMuted,
-    textDecorationLine: 'underline',
-  },
-});

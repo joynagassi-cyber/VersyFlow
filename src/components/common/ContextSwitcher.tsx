@@ -13,8 +13,8 @@ import {
   ScrollView,
   Platform,
 } from '@/components/ui/Primitives';
-import { IonIcon } from '@ionic/react'
-import * as Ionicons from 'ionicons/icons';
+import { IonIcon } from '@/components/ui/Primitives'
+import {addCircle, checkmarkCircle, chevronDown, close, person} from 'ionicons/icons';
 import { useAppTheme } from '@/theme/useTheme';
 import { useContextStore } from '@/store/context-store';
 import { useFamilyStore } from '@/store/family-store';
@@ -58,16 +58,16 @@ export function ContextSwitcher() {
               <Text style={[styles.contextLabel, { color: colors.textMuted }]}>{t('family.contextFamily')}</Text>
               <Text style={[styles.contextName, { color: colors.textPrimary }]}>{activeFamily.name}</Text>
             </View>
-            <Ionicons name="chevron-down" size={16} color={colors.textMuted} />
+            <IonIcon icon={chevronDown} size={16} color={colors.textMuted} />
           </>
         ) : (
           <>
-            <Ionicons name="person" size={16} color={colors.primary} />
+            <IonIcon icon={person} size={16} color={colors.primary} />
             <View style={styles.contextInfo}>
               <Text style={[styles.contextLabel, { color: colors.textMuted }]}>{t('family.contextPersonal')}</Text>
               <Text style={[styles.contextName, { color: colors.textPrimary }]}>{t('family.contextMyProfile')}</Text>
             </View>
-            <Ionicons name="chevron-down" size={16} color={colors.textMuted} />
+            <IonIcon icon={chevronDown} size={16} color={colors.textMuted} />
           </>
         )}
       </TouchableOpacity>
@@ -93,7 +93,7 @@ export function ContextSwitcher() {
             <View style={[styles.sheetHeader, { borderBottomColor: colors.border }]}>
               <Text style={[styles.sheetTitle, { color: colors.textPrimary }]}>{t('family.switchContext')}</Text>
               <TouchableOpacity onPress={() => setShowPicker(false)}>
-                <Ionicons name="close" size={24} color={colors.textSecondary} />
+                <IonIcon icon={close} size={24} color={colors.textSecondary} />
               </TouchableOpacity>
             </View>
 
@@ -108,14 +108,14 @@ export function ContextSwitcher() {
                 onPress={() => handleSwitch('personal')}
               >
                 <View style={[styles.optionIcon, { backgroundColor: colors.iconBgRose }]}>
-                  <Ionicons name="person" size={20} color={colors.primary} />
+                  <IonIcon icon={person} size={20} color={colors.primary} />
                 </View>
                 <View style={styles.optionInfo}>
                   <Text style={[styles.optionTitle, { color: colors.textPrimary }]}>{t('family.contextPersonal')}</Text>
                   <Text style={[styles.optionDesc, { color: colors.textMuted }]}>{t('family.contextPersonalDesc')}</Text>
                 </View>
                 {activeContext === 'personal' && (
-                  <Ionicons name="checkmark-circle" size={20} color={colors.primary} />
+                  <IonIcon icon={checkmarkCircle} size={20} color={colors.primary} />
                 )}
               </TouchableOpacity>
 
@@ -140,7 +140,7 @@ export function ContextSwitcher() {
                       <Text style={[styles.optionDesc, { color: colors.textMuted }]}>{t('family.contextFamilyDesc')}</Text>
                     </View>
                     {isActive && (
-                      <Ionicons name="checkmark-circle" size={20} color={family.color} />
+                      <IonIcon icon={checkmarkCircle} size={20} color={family.color} />
                     )}
                   </TouchableOpacity>
                 );
@@ -154,7 +154,7 @@ export function ContextSwitcher() {
                   router.push('/family/create');
                 }}
               >
-                <Ionicons name="add-circle" size={18} color={colors.primaryLight} />
+                <IonIcon icon={addCircle} size={18} color={colors.primaryLight} />
                 <Text style={[styles.createButtonText, { color: colors.primaryLight }]}>{t('family.createFamily')}</Text>
               </TouchableOpacity>
             </ScrollView>

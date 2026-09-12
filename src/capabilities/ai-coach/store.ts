@@ -8,6 +8,9 @@
 import { create } from 'zustand';
 import type { IAiCoachPort, IAiCoachRecommendation, IAiCoachInsight, IAiCoachDailyPlan, IAiCoachWeeklyReport } from './types';
 
+/** Mutable holder for the injected port — avoids polluting the store state. */
+const portRef: { current: IAiCoachPort | null } = { current: null };
+
 export interface AICoachState {
   recommendations: IAiCoachRecommendation[];
   insights: IAiCoachInsight[];
@@ -19,27 +22,25 @@ export interface AICoachState {
   analyzePerformance: () => Promise<void>;
   refreshRecommendations: () => Promise<void>;
   refreshInsights: () => Promise<void>;
-}
-
-interface AICoachStore extends AICoachState {
   setPort: (port: IAiCoachPort) => void;
+  getWeeklyReport: () => Promise<IAiCoachWeeklyReport | null>;
 }
 
-export const useAICoachStore = create<AICoachStore>((set, get) => ({
+export const useAICoachStore = create<AICoachState>((set) => ({
   recommendations: [],
   insights: [],
   dailyPlan: null,
   weeklyReport: null,
   isAnalyzing: false,
 
-  setPort: (_port: IAiCoachPort) => {
-    // Port injection point — future implementations will wire real adapters here
+  setPort: (port: IAiCoachPort) => {
+    portRef.current = port;
   },
 
   analyzePerformance: async () => {
     set({ isAnalyzing: true });
     try {
-      const port = get()._port;
+      const port = portRef.current;
       if (!port) {
         set({
           recommendations: [],
@@ -71,30 +72,30 @@ export const useAICoachStore = create<AICoachStore>((set, get) => ({
   },
 
   refreshRecommendations: async () => {
-    const port = get()._port;
+    const port = portRef.current;
     if (!port) return;
     const recommendations = await port.getRecommendations();
     set({ recommendations });
   },
 
   refreshInsights: async () => {
-    const port = get()._port;
+    const port = portRef.current;
     if (!port) return;
     const insights = await port.getInsights();
     set({ insights });
   },
+
+  getWeeklyReport: async () => {
+    const port = portRef.current;
+    if (!port) return null;
+    return port.getWeeklyReport();
+  },
 }));
 
-// Attach port setter to the store for external wiring
-Object.defineProperty(useAICoachStore, '_port', {
-  writable: true,
-  value: null as IAiCoachPort | null,
-});
+// ── Aliases required by consumers ──────────────────────────────────────────
+/**
+ * Alias of `useAICoachStore` for call-sites that use the capability name.
+ */
+export const useAICoachCapability = useAICoachStore;
 
-// Patch setPort to actually set the internal port
-const originalSetPort = useAICoachStore.getState().setPort;
-useAICoachStore.setState({
-  setPort: (port: IAiCoachPort) => {
-    (useAICoachStore as unknown as { _port: IAiCoachPort | null })._port = port;
-  },
-});
+export type { IAiCoachRecommendation as AIRecommendation } from './types';

@@ -12,7 +12,7 @@ export interface ReviewQueueItem {
   nextReviewAt: number;
 }
 
-interface ReviewState {
+export interface ReviewState {
   queue: ReviewQueueItem[];
   isReviewSessionActive: boolean;
   currentIndex: number;

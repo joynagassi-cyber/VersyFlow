@@ -12,11 +12,13 @@
 import { BibleTranslationSchema, validateBibleData } from './schema';
 import type { BibleBook } from './entities';
 import type { BibleChapter, BibleVerse} from './schema';
-import { BibleTranslation } from './schema';
-import { readFileSync } from 'fs';
 
-// Chemin relatif vers le fichier LSG.json
-const LSG_FILE_PATH = '/data/bible/lsg.json';
+// Static import of the bundled LSG dataset. The dataset lives in
+// `data/bible/lsg.json` at the project root; Vite bundles it into the app
+// and the JSON is still importable from tooling via relative path.
+// The old `readFileSync('/data/bible/lsg.json')` call only ever worked on
+// Node and never on web (the absolute path did not exist there).
+import LSG_JSON from '../../../data/bible/lsg.json';
 
 /**
  * Cache des données de Bible pour éviter de re-lire le fichier à chaque appel.
@@ -44,8 +46,7 @@ class BibleRepository {
  */
   public load(): BibleRepository {
     try {
-      const content = readFileSync(LSG_FILE_PATH, 'utf-8');
-      const rawData = JSON.parse(content);
+      const rawData = LSG_JSON as unknown;
       const validated = validateBibleData(rawData);
 
       // Vérifier que tous les livres sont présents (66 livres)
@@ -202,6 +203,29 @@ class BibleRepository {
   getBooksByTestament(testament: 'old' | 'new'): BibleBook[] {
     return (this.books)?.filter((b: any) => b.testament === testament) || [];
   }
+}
+
+/**
+ * Interface de l'instance du repository (port pour injection).
+ * Le type `typeof BibleRepository` ne décrit que les membres statiques
+ * (comme `getInstance`), pas les méthodes d'instance.
+ */
+export interface IBibleRepository {
+  load(): IBibleRepository;
+  getAllBooks(): BibleBook[];
+  getBookById(id: string): BibleBook | null;
+  getOldTestamentBooks(): BibleBook[];
+  getNewTestamentBooks(): BibleBook[];
+  getBooksByTestament(testament: 'old' | 'new'): BibleBook[];
+  getChapter(bookId: string, chapterNumber: number): BibleChapter | null;
+  getVerse(bookId: string, chapterNumber: number, verseNumber: number): BibleVerse | null;
+  getChapterVerses(bookId: string, chapterNumber: number): BibleVerse[];
+  bookExists(bookId: string): boolean;
+  chapterExists(bookId: string, chapterNumber: number): boolean;
+  verseExists(bookId: string, chapterNumber: number, verseNumber: number): boolean;
+  getBookCount(): number;
+  getChapterCount(): number;
+  getVerseCount(): number;
 }
 
 // Exporter l'instance unique

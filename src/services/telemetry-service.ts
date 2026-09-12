@@ -1,14 +1,19 @@
 /**
- * Telemetry Service — Collects anonymized learning data (MVP version)
+ * Telemetry Service — Collects anonymized learning data.
  * Implements CAP-007: Telemetry capability
  *
  * Deep module: small interface (6 methods) → large implementation
- * Queue-based persistence, fire-and-forget, non-blocking for critical paths
+ * Queue-based persistence, fire-and-forget, non-blocking for critical paths.
+ *
+ * P2-1: `flush()` now optionally delegates to an `ITelemetryUploadPort`
+ * (single sync write path → PowerSync `telemetry_events`). When no port is
+ * provided the legacy local-only behaviour is preserved (trim + persist).
  */
 
 import type { IStorage } from '@/infrastructure/storage/storage-types';
 import type { TelemetryEvent, TelemetryQueueItem, TelemetrySummary } from '@/domains/telemetry/entities';
 import type { ITelemetry } from '@/domains/telemetry/it telemetry';
+import type { ITelemetryUploadPort } from '@/infrastructure/telemetry/upload-adapter';
 
 /** Maximum queue size before dropping oldest events */
 const MAX_QUEUE_SIZE = 1000;
@@ -17,21 +22,24 @@ const MAX_QUEUE_SIZE = 1000;
 const RETENTION_DAYS = 730;
 
 /**
- * TelemetryService — Orchestrates anonymized data collection for AI coaching
- * All data is anonymized and never contains PII
+ * TelemetryService — Orchestrates anonymized data collection for AI coaching.
+ * All data is anonymized and never contains PII.
  */
 export class TelemetryService implements ITelemetry {
   private queue: TelemetryQueueItem[] = [];
   private sessionId: string;
   private userId?: string;
 
-  constructor(private storage: IStorage) {
+  constructor(
+    private storage: IStorage,
+    private uploadPort?: ITelemetryUploadPort,
+  ) {
     this.sessionId = this.generateSessionId();
     this.loadQueue();
   }
 
   /**
-   * Record a telemetry event — single entry point for all event types
+   * Record a telemetry event — single entry point for all event types.
    */
   record(eventType: string, payload: Record<string, unknown>): void {
     if (this.queue.length >= MAX_QUEUE_SIZE) return;
@@ -54,17 +62,35 @@ export class TelemetryService implements ITelemetry {
   }
 
   /**
-   * Flush queued events to remote storage
-   * In MVP: trims old events and persists locally
+   * Flush queued events to remote storage.
+   *
+   * With an upload port (P2-1): the unsent queue is handed to the port —
+   * the PowerSync adapter INSERTs each event into `telemetry_events`
+   * (single sync write path, offline-safe). Successful items are marked
+   * `sent` and pruned so they are not re-sent.
+   *
+   * Without a port (legacy): trims old events and persists locally only.
    */
   async flush(): Promise<void> {
     const now = Date.now();
     this.queue = this.queue.filter(item => now - item.queuedAt <= RETENTION_DAYS * 86400000);
+
+    if (this.uploadPort && this.queue.some((i) => !i.sent)) {
+      const unsent = this.queue.filter((i) => !i.sent);
+      try {
+        await this.uploadPort.upload(unsent.map((i) => i.event));
+        this.queue = this.queue.filter((i) => i.sent);
+      } catch {
+        // Upload failed (offline / no session) — keep the queue; it will be
+        // retried on a later flush. Telemetry never blocks the critical path.
+      }
+    }
+
     await this.saveQueue();
   }
 
   /**
-   * Get aggregated summary for analytics dashboards
+   * Get aggregated summary for analytics dashboards.
    */
   getSummary(): TelemetrySummary {
     const eventsByType: Record<string, number> = {};
@@ -85,7 +111,7 @@ export class TelemetryService implements ITelemetry {
   }
 
   /**
-   * Clear all queued events
+   * Clear all queued events.
    */
   clear(): void {
     this.queue = [];
@@ -97,14 +123,14 @@ export class TelemetryService implements ITelemetry {
   }
 
   /**
-   * Get current queue (for debugging/testing)
+   * Get current queue (for debugging/testing).
    */
   getQueue(): TelemetryQueueItem[] {
     return [...this.queue];
   }
 
   /**
-   * Set anonymous user ID
+   * Set anonymous user ID.
    */
   setUserId(userId: string): void {
     this.userId = userId;

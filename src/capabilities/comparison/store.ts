@@ -15,11 +15,11 @@ export interface ComparisonCapabilityState {
 }
 
 export const useComparisonCapability = create<ComparisonCapabilityState>(
-  (set, get) => ({
+  (set) => ({
     lastVerification: null,
     isVerifying: false,
 
-    verifyAnswer: (expected: string, provided: string) => {
+    verifyAnswer: (expected: string, provided: string): VerificationResult => {
       set({ isVerifying: true });
 
       // Normalize strings
@@ -33,7 +33,7 @@ export const useComparisonCapability = create<ComparisonCapabilityState>(
       let correctWords = 0;
       const missingWords: string[] = [];
       const extraWords: string[] = [];
-      const substitutions: Array<{ expected: string; got: string }> = [];
+      const substitutedWords: Array<{ expected: string; got: string }> = [];
 
       const maxLen = Math.max(expectedWords.length, providedWords.length);
 
@@ -45,7 +45,7 @@ export const useComparisonCapability = create<ComparisonCapabilityState>(
         } else if (!expectedWords[i] && providedWords[i]) {
           extraWords.push(providedWords[i]);
         } else if (expectedWords[i] && providedWords[i]) {
-          substitutions.push({
+          substitutedWords.push({
             expected: expectedWords[i],
             got: providedWords[i],
           });
@@ -55,8 +55,8 @@ export const useComparisonCapability = create<ComparisonCapabilityState>(
       const score = expectedWords.length > 0 ? correctWords / expectedWords.length : 0;
 
       // Identify weak portions
-      const weakPortions: Array<{ start: number; end: number; accuracy: number }> =
-        [];
+      const fragilePortions: Array<{ start: number; end: number; accuracy: number }> = [];
+      const strongPortions: Array<{ start: number; end: number; accuracy: number }> = [];
       let currentStart = 0;
       let currentCorrect = 0;
 
@@ -64,12 +64,11 @@ export const useComparisonCapability = create<ComparisonCapabilityState>(
         if (expectedWords[i] === providedWords[i]) {
           currentCorrect++;
         } else {
-          if (currentCorrect < 3) {
-            weakPortions.push({
-              start: currentStart,
-              end: i,
-              accuracy: currentCorrect / (i - currentStart),
-            });
+          const accuracy = currentCorrect / Math.max(1, i - currentStart);
+          if (accuracy < 0.7) {
+            fragilePortions.push({ start: currentStart, end: i, accuracy });
+          } else {
+            strongPortions.push({ start: currentStart, end: i, accuracy });
           }
           currentStart = i + 1;
           currentCorrect = 0;
@@ -77,21 +76,23 @@ export const useComparisonCapability = create<ComparisonCapabilityState>(
       }
 
       // Handle last portion
-      if (currentCorrect < 3 && currentStart < expectedWords.length) {
-        weakPortions.push({
-          start: currentStart,
-          end: expectedWords.length,
-          accuracy: currentCorrect / (expectedWords.length - currentStart),
-        });
+      if (currentStart < expectedWords.length) {
+        const accuracy = currentCorrect / Math.max(1, expectedWords.length - currentStart);
+        const portion = { start: currentStart, end: expectedWords.length, accuracy };
+        if (accuracy < 0.7) fragilePortions.push(portion);
+        else strongPortions.push(portion);
       }
 
-      const result: any = {
+      const result: VerificationResult = {
         score,
         wordCount: expectedWords.length,
-        correctWords,
+        correctWords: Array.from({ length: correctWords }, (_, i) => expectedWords[i]),
         missingWords,
         extraWords,
-        substitutions,
+        substitutedWords,
+        characterDiffs: [],
+        strongPortions,
+        fragilePortions,
       };
 
       set({

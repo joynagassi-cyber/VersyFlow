@@ -2,7 +2,7 @@
  * Achievement Screen — Badges and accomplishments
  */
 
-import { useState } from 'react';
+import { useState, useMemo} from 'react';
 import {
   View,
   Text,
@@ -14,8 +14,8 @@ import {
 } from '@/components/ui/Primitives';
 import { useAppTheme } from '@/theme/useTheme';
 import { useRouter } from '@/hooks/useIonicNavigation';
-import { IonIcon } from '@ionic/react'
-import * as Ionicons from 'ionicons/icons';
+import { IonIcon } from '@/components/ui/Primitives'
+import { book, flame, medal, refresh, trophy, arrowBack, checkmark, checkmarkCircle, lockClosed, star } from 'ionicons/icons';
 
 interface Achievement {
   id: string;
@@ -37,7 +37,7 @@ const ACHIEVEMENTS: Achievement[] = [
     title: 'Premier pas',
     description: 'Mémorisez votre premier verset',
     icon: 'book',
-    color: colors.primary,
+    color: '#E91E8C',
     unlocked: true,
     unlockedAt: 'Il y a 15 jours',
     progress: 100,
@@ -49,7 +49,7 @@ const ACHIEVEMENTS: Achievement[] = [
     title: 'Collectionneur',
     description: 'Mémorisez 10 versets',
     icon: 'bookmarks',
-    color: colors.info,
+    color: '#3F51B5',
     unlocked: true,
     unlockedAt: 'Il y a 7 jours',
     progress: 100,
@@ -61,7 +61,7 @@ const ACHIEVEMENTS: Achievement[] = [
     title: 'Érudit',
     description: 'Mémorisez 50 versets',
     icon: 'school',
-    color: colors.warning,
+    color: '#FFC107',
     unlocked: false,
     progress: 89,
     requirement: '50 versets',
@@ -72,7 +72,7 @@ const ACHIEVEMENTS: Achievement[] = [
     title: 'Maître bibliste',
     description: 'Mémorisez 100 versets',
     icon: 'trophy',
-    color: colors.success,
+    color: '#4CAF50',
     unlocked: false,
     progress: 89,
     requirement: '100 versets',
@@ -84,7 +84,7 @@ const ACHIEVEMENTS: Achievement[] = [
     title: 'Hébdomadaire',
     description: '7 jours de suite',
     icon: 'flame',
-    color: colors.error,
+    color: '#FF5722',
     unlocked: true,
     unlockedAt: 'Aujourd\'hui',
     progress: 100,
@@ -96,7 +96,7 @@ const ACHIEVEMENTS: Achievement[] = [
     title: 'Mensuel',
     description: '30 jours de suite',
     icon: 'fire',
-    color: colors.warning,
+    color: '#FFC107',
     unlocked: false,
     progress: 23,
     requirement: '30 jours',
@@ -107,7 +107,7 @@ const ACHIEVEMENTS: Achievement[] = [
     title: 'Dédié',
     description: '100 jours de suite',
     icon: 'star',
-    color: colors.primary,
+    color: '#E91E8C',
     unlocked: false,
     progress: 7,
     requirement: '100 jours',
@@ -131,7 +131,7 @@ const ACHIEVEMENTS: Achievement[] = [
     title: 'Assidu',
     description: '50 révisions complétées',
     icon: 'checkmark-done',
-    color: colors.success,
+    color: '#4CAF50',
     unlocked: false,
     progress: 67,
     requirement: '50 révisions',
@@ -142,7 +142,7 @@ const ACHIEVEMENTS: Achievement[] = [
     title: 'Perseérant',
     description: '100 révisions complétées',
     icon: 'star',
-    color: colors.primary,
+    color: '#E91E8C',
     unlocked: false,
     progress: 45,
     requirement: '100 révisions',
@@ -154,7 +154,7 @@ const ACHIEVEMENTS: Achievement[] = [
     title: 'Organisateur',
     description: 'Créez votre première collection',
     icon: 'folder',
-    color: colors.info,
+    color: '#3F51B5',
     unlocked: true,
     unlockedAt: 'Il y a 10 jours',
     progress: 100,
@@ -189,7 +189,7 @@ const ACHIEVEMENTS: Achievement[] = [
     title: 'Évangéliste',
     description: 'Maîtrisez tous les Évangiles',
     icon: 'globe',
-    color: colors.primary,
+    color: '#E91E8C',
     unlocked: false,
     progress: 25,
     requirement: '91 versets Évangiles',
@@ -208,159 +208,7 @@ const CATEGORIES = [
 
 export default function AchievementScreen() {
   const { colors, sp, sh, rad } = useAppTheme();
-  const router = useRouter();
-  const [selectedCategory, setSelectedCategory] = useState('all');
-  const [showAll, setShowAll] = useState(false);
-
-  const unlockedCount = ACHIEVEMENTS.filter(a => a.unlocked).length;
-  const totalCount = ACHIEVEMENTS.length;
-  const overallProgress = (unlockedCount / totalCount) * 100;
-
-  const filteredAchievements = selectedCategory === 'all'
-    ? ACHIEVEMENTS
-    : ACHIEVEMENTS.filter(a => a.category === selectedCategory);
-
-  const displayedAchievements = showAll ? filteredAchievements : filteredAchievements.slice(0, 6);
-
-  return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView
-        style={styles.scrollView}
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
-      >
-        {/* Header */}
-        <View style={styles.header}>
-          <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-            <Ionicons name="arrow-back" size={24} color={colors.textSecondary} />
-          </TouchableOpacity>
-          <Text style={styles.headerTitle}>Succès & Badges</Text>
-          <View style={styles.headerRight}>
-            <View style={styles.badgeCount}>
-              <Ionicons name="star" size={16} color="#FFD700" />
-              <Text style={styles.badgeCountText}>{unlockedCount}/{totalCount}</Text>
-            </View>
-          </View>
-        </View>
-
-        {/* Overall Progress */}
-        <View style={styles.overallProgress}>
-          <View style={styles.overallHeader}>
-            <Text style={styles.overallTitle}>Progression globale</Text>
-            <Text style={styles.overallPercent}>{Math.round(overallProgress)}%</Text>
-          </View>
-          <View style={styles.overallBar}>
-            <View style={[styles.overallFill, { width: `${overallProgress}%` }]} />
-          </View>
-          <Text style={styles.overallInfo}>
-            {unlockedCount} succès débloqués sur {totalCount}
-          </Text>
-        </View>
-
-        {/* Category Filter */}
-        <View style={styles.filterContainer}>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            {CATEGORIES.map((category) => (
-              <TouchableOpacity
-                key={category.id}
-                style={[styles.filterButton, selectedCategory === category.id && styles.filterButtonActive]}
-                onPress={() => {
-                  setSelectedCategory(category.id);
-                  setShowAll(false);
-                }}
-              >
-                <Text style={[styles.filterText, selectedCategory === category.id && styles.filterTextActive]}>
-                  {category.label}
-                </Text>
-                <View style={[styles.filterCount, selectedCategory === category.id && styles.filterCountActive]}>
-                  <Text style={[styles.filterCountText, selectedCategory === category.id && styles.filterCountTextActive]}>
-                    {category.count}
-                  </Text>
-                </View>
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
-        </View>
-
-        {/* Achievements Grid */}
-        <View style={styles.achievementsSection}>
-          {displayedAchievements.map((achievement) => (
-            <TouchableOpacity
-              key={achievement.id}
-              style={styles.achievementCard}
-              onPress={() => router.push(`/achievements/${achievement.id}`)}
-            >
-              <View style={[styles.achievementIcon, { backgroundColor: achievement.color + '20' }]}>
-                <Ionicons
-                  name={achievement.unlocked ? achievement.icon : 'lock-closed'}
-                  size={28}
-                  color={achievement.unlocked ? achievement.color : colors.textMuted}
-                />
-              </View>
-              <View style={styles.achievementInfo}>
-                <Text style={[styles.achievementTitle, achievement.unlocked && { color: achievement.color }]}>
-                  {achievement.title}
-                </Text>
-                <Text style={styles.achievementDesc}>{achievement.description}</Text>
-                <View style={styles.achievementProgress}>
-                  <View style={styles.achievementBar}>
-                    <View
-                      style={[
-                        styles.achievementFill,
-                        { width: `${achievement.progress}%`, backgroundColor: achievement.color },
-                      ]}
-                    />
-                  </View>
-                  <Text style={styles.achievementProgressText}>
-                    {achievement.progress >= 100 ? '✓ Complété' : `${achievement.progress}%`}
-                  </Text>
-                </View>
-              </View>
-              {achievement.unlocked && (
-                <View style={[styles.unlockedBadge, { backgroundColor: achievement.color }]}>
-                  <Ionicons name="checkmark" size={14} color={colors.surface} />
-                </View>
-              )}
-            </TouchableOpacity>
-          ))}
-        </View>
-
-        {/* Show More */}
-        {filteredAchievements.length > 6 && !showAll && (
-          <TouchableOpacity
-            style={styles.showMoreButton}
-            onPress={() => setShowAll(true)}
-          >
-            <Text style={styles.showMoreText}>Voir tous les succès ({filteredAchievements.length})</Text>
-          </TouchableOpacity>
-        )}
-
-        {/* Tips */}
-        <View style={styles.tipsSection}>
-          <Text style={styles.tipsTitle}>Comment débloquer des succès</Text>
-          <View style={styles.tipsCard}>
-            <View style={styles.tipItem}>
-              <Ionicons name="checkmark-circle" size={20} color={colors.primary} />
-              <Text style={styles.tipText}>Mémorisez des versets régulièrement</Text>
-            </View>
-            <View style={styles.tipItem}>
-              <Ionicons name="checkmark-circle" size={20} color={colors.primary} />
-              <Text style={styles.tipText}>Maintenez votre streak quotidien</Text>
-            </View>
-            <View style={styles.tipItem}>
-              <Ionicons name="checkmark-circle" size={20} color={colors.primary} />
-              <Text style={styles.tipText}>Créez des collections thématiques</Text>
-            </View>
-          </View>
-        </View>
-
-        <View style={styles.bottomSpacer} />
-      </ScrollView>
-    </SafeAreaView>
-  );
-}
-
-const styles = StyleSheet.create({
+  const styles = useMemo(() => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,
@@ -655,4 +503,154 @@ const styles = StyleSheet.create({
   bottomSpacer: {
     height: 24,
   },
-});
+  }), [colors]);
+  const router = useRouter();
+  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [showAll, setShowAll] = useState(false);
+
+  const unlockedCount = ACHIEVEMENTS.filter(a => a.unlocked).length;
+  const totalCount = ACHIEVEMENTS.length;
+  const overallProgress = (unlockedCount / totalCount) * 100;
+
+  const filteredAchievements = selectedCategory === 'all'
+    ? ACHIEVEMENTS
+    : ACHIEVEMENTS.filter(a => a.category === selectedCategory);
+
+  const displayedAchievements = showAll ? filteredAchievements : filteredAchievements.slice(0, 6);
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* Header */}
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+            <IonIcon icon={arrowBack} size={24} color={colors.textSecondary} />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Succès & Badges</Text>
+          <View style={styles.headerRight}>
+            <View style={styles.badgeCount}>
+              <IonIcon icon={star} size={16} color="#FFD700" />
+              <Text style={styles.badgeCountText}>{unlockedCount}/{totalCount}</Text>
+            </View>
+          </View>
+        </View>
+
+        {/* Overall Progress */}
+        <View style={styles.overallProgress}>
+          <View style={styles.overallHeader}>
+            <Text style={styles.overallTitle}>Progression globale</Text>
+            <Text style={styles.overallPercent}>{Math.round(overallProgress)}%</Text>
+          </View>
+          <View style={styles.overallBar}>
+            <View style={[styles.overallFill, { width: `${overallProgress}%` }]} />
+          </View>
+          <Text style={styles.overallInfo}>
+            {unlockedCount} succès débloqués sur {totalCount}
+          </Text>
+        </View>
+
+        {/* Category Filter */}
+        <View style={styles.filterContainer}>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+            {CATEGORIES.map((category) => (
+              <TouchableOpacity
+                key={category.id}
+                style={[styles.filterButton, selectedCategory === category.id && styles.filterButtonActive]}
+                onPress={() => {
+                  setSelectedCategory(category.id);
+                  setShowAll(false);
+                }}
+              >
+                <Text style={[styles.filterText, selectedCategory === category.id && styles.filterTextActive]}>
+                  {category.label}
+                </Text>
+                <View style={[styles.filterCount, selectedCategory === category.id && styles.filterCountActive]}>
+                  <Text style={[styles.filterCountText, selectedCategory === category.id && styles.filterCountTextActive]}>
+                    {category.count}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+        </View>
+
+        {/* Achievements Grid */}
+        <View style={styles.achievementsSection}>
+          {displayedAchievements.map((achievement) => (
+            <TouchableOpacity
+              key={achievement.id}
+              style={styles.achievementCard}
+              onPress={() => router.push(`/achievements/${achievement.id}`)}
+            >
+              <View style={[styles.achievementIcon, { backgroundColor: achievement.color + '20' }]}>
+                <IonIcon icon={achievement.unlocked ? achievement.icon : 'lock-closed'}
+                  size={28}
+                  color={achievement.unlocked ? achievement.color : colors.textMuted} />
+              </View>
+              <View style={styles.achievementInfo}>
+                <Text style={[styles.achievementTitle, achievement.unlocked && { color: achievement.color }]}>
+                  {achievement.title}
+                </Text>
+                <Text style={styles.achievementDesc}>{achievement.description}</Text>
+                <View style={styles.achievementProgress}>
+                  <View style={styles.achievementBar}>
+                    <View
+                      style={[
+                        styles.achievementFill,
+                        { width: `${achievement.progress}%`, backgroundColor: achievement.color },
+                      ]}
+                    />
+                  </View>
+                  <Text style={styles.achievementProgressText}>
+                    {achievement.progress >= 100 ? '✓ Complété' : `${achievement.progress}%`}
+                  </Text>
+                </View>
+              </View>
+              {achievement.unlocked && (
+                <View style={[styles.unlockedBadge, { backgroundColor: achievement.color }]}>
+                  <IonIcon icon={checkmark} size={14} color={colors.surface} />
+                </View>
+              )}
+            </TouchableOpacity>
+          ))}
+        </View>
+
+        {/* Show More */}
+        {filteredAchievements.length > 6 && !showAll && (
+          <TouchableOpacity
+            style={styles.showMoreButton}
+            onPress={() => setShowAll(true)}
+          >
+            <Text style={styles.showMoreText}>Voir tous les succès ({filteredAchievements.length})</Text>
+          </TouchableOpacity>
+        )}
+
+        {/* Tips */}
+        <View style={styles.tipsSection}>
+          <Text style={styles.tipsTitle}>Comment débloquer des succès</Text>
+          <View style={styles.tipsCard}>
+            <View style={styles.tipItem}>
+              <IonIcon icon={checkmarkCircle} size={20} color={colors.primary} />
+              <Text style={styles.tipText}>Mémorisez des versets régulièrement</Text>
+            </View>
+            <View style={styles.tipItem}>
+              <IonIcon icon={checkmarkCircle} size={20} color={colors.primary} />
+              <Text style={styles.tipText}>Maintenez votre streak quotidien</Text>
+            </View>
+            <View style={styles.tipItem}>
+              <IonIcon icon={checkmarkCircle} size={20} color={colors.primary} />
+              <Text style={styles.tipText}>Créez des collections thématiques</Text>
+            </View>
+          </View>
+        </View>
+
+        <View style={styles.bottomSpacer} />
+      </ScrollView>
+    </SafeAreaView>
+  );
+}
+

@@ -15,8 +15,8 @@ import {
   Alert,
 } from '@/components/ui/Primitives';
 import { useRouter } from '@/hooks/useIonicNavigation';
-import { IonIcon } from '@ionic/react'
-import * as Ionicons from 'ionicons/icons';
+import { IonIcon } from '@/components/ui/Primitives'
+import { personAdd, chevronBack } from 'ionicons/icons';
 import { useAppTheme } from '@/theme/useTheme';
 import { useActiveProfile } from '@/hooks/useActiveProfile';
 
@@ -52,7 +52,7 @@ export default function CreateProfileScreen() {
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-          <Ionicons name="chevron-back" size={24} color={colors.primary} />
+          <IonIcon icon={chevronBack} size={24} color={colors.primary} />
         </TouchableOpacity>
         <Text style={[styles.title, { color: colors.textPrimary }]}>Nouveau profil</Text>
       </View>

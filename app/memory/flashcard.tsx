@@ -2,7 +2,7 @@
  * Memory Flashcard Screen
  */
 
-import { useState } from 'react';
+import { useEffect } from 'react';
 import {
   View,
   Text,
@@ -12,24 +12,28 @@ import {
 } from '@/components/ui/Primitives';
 import { useAppTheme } from '@/theme/useTheme';
 import { useRouter, useLocalSearchParams } from '@/hooks/useIonicNavigation';
-import { useFlashcard } from '@/capabilities/memory/strategies/flashcard';
 import { useMemoryCapability } from '@/capabilities/memory/store';
 
 export default function FlashcardScreen() {
-  const { colors, sp, sh, rad } = useAppTheme();
+  const { colors, rad } = useAppTheme();
   const router = useRouter();
   const params = useLocalSearchParams();
   const { sessionState, startSession } = useMemoryCapability();
-  const flashcard = useFlashcard();
 
-  useState(() => {
+  useEffect(() => {
     if (!sessionState && params.text) {
       startSession({
         phase: 'preview',
         verseText: params.text,
+        words: params.text.split(' '),
+        revealedWordIndices: new Set<number>(),
+        startedAt: Date.now(),
+        durationSeconds: 0,
+        wordsRevealed: 0,
+        totalWords: params.text.split(' ').length,
       });
     }
-  });
+  }, []);
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>

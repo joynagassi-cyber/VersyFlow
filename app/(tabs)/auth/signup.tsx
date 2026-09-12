@@ -2,7 +2,7 @@
  * Auth Signup Screen — Enhanced with skip option
  */
 
-import { useState } from 'react';
+import { useState, useMemo} from 'react';
 import {
   View,
   Text,
@@ -22,6 +22,109 @@ interface Props {
 }
 
 export default function SignupScreen({ onSkip }: Props) {
+  const { colors, sp, sh, rad } = useAppTheme();
+  const styles = useMemo(() => StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: colors.surfaceTint,
+    padding: 16,
+  },
+  formContainer: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: '700',
+    color: colors.textPrimary,
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  subtitle: {
+    fontSize: 16,
+    color: colors.textTertiary,
+    marginBottom: 32,
+    textAlign: 'center',
+  },
+  input: {
+    backgroundColor: colors.surface,
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: colors.border,
+    fontSize: 16,
+  },
+  button: {
+    backgroundColor: colors.primary,
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 16,
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: colors.surface,
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  link: {
+    alignItems: 'center',
+  },
+  linkText: {
+    color: colors.primary,
+    fontSize: 14,
+  },
+  skipButton: {
+    alignItems: 'center',
+    marginTop: 24,
+    padding: 12,
+  },
+  skipText: {
+    color: colors.textMuted,
+    fontSize: 14,
+    textDecorationLine: 'underline',
+  },
+  note: {
+    fontSize: 12,
+    color: colors.textMuted,
+    textAlign: 'center',
+    marginTop: 16,
+  },
+  errorContainer: {
+    backgroundColor: '#FFE4E4',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: '#FFAAAA',
+  },
+  errorText: {
+    color: '#CC0000',
+    fontSize: 14,
+    textAlign: 'center',
+  },
+  successContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  successTitle: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: colors.textPrimary,
+    marginBottom: 16,
+  },
+  successMessage: {
+    fontSize: 16,
+    color: colors.textTertiary,
+    textAlign: 'center',
+    marginBottom: 24,
+    paddingHorizontal: 24,
+  },
+  spinner: {
+    marginBottom: 24,
+  },
+  }), [colors]);
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -140,105 +243,3 @@ export default function SignupScreen({ onSkip }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.surfaceTint,
-    padding: 16,
-  },
-  formContainer: {
-    flex: 1,
-    justifyContent: 'center',
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: '700',
-    color: colors.textPrimary,
-    marginBottom: 8,
-    textAlign: 'center',
-  },
-  subtitle: {
-    fontSize: 16,
-    color: colors.textTertiary,
-    marginBottom: 32,
-    textAlign: 'center',
-  },
-  input: {
-    backgroundColor: colors.surface,
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 16,
-    borderWidth: 1,
-    borderColor: colors.border,
-    fontSize: 16,
-  },
-  button: {
-    backgroundColor: colors.primary,
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 16,
-    alignItems: 'center',
-  },
-  buttonText: {
-    color: colors.surface,
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  link: {
-    alignItems: 'center',
-  },
-  linkText: {
-    color: colors.primary,
-    fontSize: 14,
-  },
-  skipButton: {
-    alignItems: 'center',
-    marginTop: 24,
-    padding: 12,
-  },
-  skipText: {
-    color: colors.textMuted,
-    fontSize: 14,
-    textDecorationLine: 'underline',
-  },
-  note: {
-    fontSize: 12,
-    color: colors.textMuted,
-    textAlign: 'center',
-    marginTop: 16,
-  },
-  errorContainer: {
-    backgroundColor: '#FFE4E4',
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 16,
-    borderWidth: 1,
-    borderColor: '#FFAAAA',
-  },
-  errorText: {
-    color: '#CC0000',
-    fontSize: 14,
-    textAlign: 'center',
-  },
-  successContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  successTitle: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: colors.textPrimary,
-    marginBottom: 16,
-  },
-  successMessage: {
-    fontSize: 16,
-    color: colors.textTertiary,
-    textAlign: 'center',
-    marginBottom: 24,
-    paddingHorizontal: 24,
-  },
-  spinner: {
-    marginBottom: 24,
-  },
-});

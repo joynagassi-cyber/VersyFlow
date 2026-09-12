@@ -2,7 +2,7 @@
  * Comparison Result Screen — Shows verification results
  */
 
-import { useState, useEffect } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import {
   View,
   Text,
@@ -29,136 +29,140 @@ export default function ComparisonResultScreen({ record, userAnswer }: Props) {
   const { lastVerification, verifyAnswer } = useComparisonCapability();
   const [verified, setVerified] = useState(false);
 
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: colors.surfaceTint,
-    },
-    content: {
-      padding: sp.md,
-      paddingBottom: sp.xl,
-    },
-    center: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    scoreCard: {
-      backgroundColor: colors.surface,
-      borderRadius: rad.lg,
-      padding: sp.lg,
-      marginBottom: sp.lg,
-      alignItems: 'center',
-    },
-    scoreLabel: {
-      fontSize: 14,
-      color: colors.textTertiary,
-      marginBottom: sp.sm,
-    },
-    scoreValue: {
-      fontSize: 48,
-      fontWeight: '800',
-      marginBottom: sp.md,
-    },
-    scoreBar: {
-      width: '100%',
-      height: 12,
-      backgroundColor: colors.surfaceElevated,
-      borderRadius: rad.sm,
-      overflow: 'hidden',
-    },
-    scoreFill: {
-      height: '100%',
-      borderRadius: 6,
-    },
-    section: {
-      backgroundColor: colors.surface,
-      borderRadius: rad.md,
-      padding: sp.md,
-      marginBottom: sp.md,
-    },
-    sectionTitle: {
-      fontSize: 16,
-      fontWeight: '600',
-      color: colors.textPrimary,
-      marginBottom: sp.sm,
-    },
-    substitutionItem: {
-      paddingVertical: sp.sm,
-      borderBottomWidth: 1,
-      borderBottomColor: colors.surfaceElevated,
-    },
-    expectedText: {
-      fontSize: 14,
-      color: colors.textPrimary,
-    },
-    arrow: {
-      color: colors.textMuted,
-    },
-    gotText: {
-      color: colors.error,
-    },
-    wordsRow: {
-      flexDirection: 'row',
-      flexWrap: 'wrap',
-      gap: sp.sm,
-    },
-    missingWord: {
-      fontSize: 14,
-      color: colors.error,
-      backgroundColor: colors.errorLight,
-      paddingVertical: sp.xs,
-      paddingHorizontal: sp.sm,
-      borderRadius: rad.sm,
-    },
-    portionItem: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      paddingVertical: sp.sm,
-      borderBottomWidth: 1,
-      borderBottomColor: colors.surfaceElevated,
-    },
-    portionText: {
-      fontSize: 14,
-      color: colors.textTertiary,
-    },
-    portionAccuracy: {
-      fontSize: 14,
-      fontWeight: '600',
-    },
-    actions: {
-      marginTop: sp.lg,
-      gap: sp.md,
-    },
-    primaryButton: {
-      backgroundColor: colors.primary,
-      borderRadius: rad.pill,
-      paddingVertical: sp.md,
-      alignItems: 'center',
-    },
-    primaryButtonText: {
-      fontSize: 16,
-      fontWeight: '600',
-      color: colors.surface,
-    },
-    secondaryButton: {
-      backgroundColor: colors.surface,
-      borderRadius: rad.pill,
-      paddingVertical: sp.md,
-      borderWidth: 2,
-      borderColor: colors.primary,
-      alignItems: 'center',
-    },
-    secondaryButtonText: {
-      fontSize: 16,
-      fontWeight: '600',
-      color: colors.primary,
-    },
-  });
+  const styles = useMemo(
+    () =>
+      StyleSheet.create({
+        container: {
+          flex: 1,
+          backgroundColor: colors.surfaceTint,
+        },
+        content: {
+          padding: sp.md,
+          paddingBottom: sp.xl,
+        },
+        center: {
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+        },
+        scoreCard: {
+          backgroundColor: colors.surface,
+          borderRadius: rad.lg,
+          padding: sp.lg,
+          marginBottom: sp.lg,
+          alignItems: 'center',
+        },
+        scoreLabel: {
+          fontSize: 14,
+          color: colors.textTertiary,
+          marginBottom: sp.sm,
+        },
+        scoreValue: {
+          fontSize: 48,
+          fontWeight: '800',
+          marginBottom: sp.md,
+        },
+        scoreBar: {
+          width: '100%',
+          height: 12,
+          backgroundColor: colors.surfaceElevated,
+          borderRadius: rad.sm,
+          overflow: 'hidden',
+        },
+        scoreFill: {
+          height: '100%',
+          borderRadius: 6,
+        },
+        section: {
+          backgroundColor: colors.surface,
+          borderRadius: rad.md,
+          padding: sp.md,
+          marginBottom: sp.md,
+        },
+        sectionTitle: {
+          fontSize: 16,
+          fontWeight: '600',
+          color: colors.textPrimary,
+          marginBottom: sp.sm,
+        },
+        substitutionItem: {
+          paddingVertical: sp.sm,
+          borderBottomWidth: 1,
+          borderBottomColor: colors.surfaceElevated,
+        },
+        expectedText: {
+          fontSize: 14,
+          color: colors.textPrimary,
+        },
+        arrow: {
+          color: colors.textMuted,
+        },
+        gotText: {
+          color: colors.error,
+        },
+        wordsRow: {
+          flexDirection: 'row',
+          flexWrap: 'wrap',
+          gap: sp.sm,
+        },
+        missingWord: {
+          fontSize: 14,
+          color: colors.error,
+          backgroundColor: colors.errorLight,
+          paddingVertical: sp.xs,
+          paddingHorizontal: sp.sm,
+          borderRadius: rad.sm,
+        },
+        portionItem: {
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          paddingVertical: sp.sm,
+          borderBottomWidth: 1,
+          borderBottomColor: colors.surfaceElevated,
+        },
+        portionText: {
+          fontSize: 14,
+          color: colors.textTertiary,
+        },
+        portionAccuracy: {
+          fontSize: 14,
+          fontWeight: '600',
+        },
+        actions: {
+          marginTop: sp.lg,
+          gap: sp.md,
+        },
+        primaryButton: {
+          backgroundColor: colors.primary,
+          borderRadius: rad.pill,
+          paddingVertical: sp.md,
+          alignItems: 'center',
+        },
+        primaryButtonText: {
+          fontSize: 16,
+          fontWeight: '600',
+          color: colors.surface,
+        },
+        secondaryButton: {
+          backgroundColor: colors.surface,
+          borderRadius: rad.pill,
+          paddingVertical: sp.md,
+          borderWidth: 2,
+          borderColor: colors.primary,
+          alignItems: 'center',
+        },
+        secondaryButtonText: {
+          fontSize: 16,
+          fontWeight: '600',
+          color: colors.primary,
+        },
+      }),
+    [colors, sp, rad],
+  );
 
   useEffect(() => {
     if (!verified) {
-      const result = verifyAnswer(record.bibleVerseText, userAnswer);
+      verifyAnswer(record.bibleVerseText, userAnswer);
       setVerified(true);
     }
   }, []);
@@ -200,14 +204,14 @@ export default function ComparisonResultScreen({ record, userAnswer }: Props) {
         </View>
 
         {/* Word Analysis */}
-        {lastVerification.substitutions.length > 0 && (
+        {lastVerification.substitutedWords.length > 0 && (
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>{t('comparison.substitutions')}</Text>
-            {lastVerification.substitutions.map((sub, idx) => (
+            {lastVerification.substitutedWords.map((sub, idx) => (
               <View key={idx} style={styles.substitutionItem}>
                 <Text style={styles.expectedText}>
                   {sub.expected}
-                  <Text style={styles.arrow}>{'->'}</Text>
+                  <Text style={styles.arrow}>{' -> '}</Text>
                   <Text style={styles.gotText}>{sub.got}</Text>
                 </Text>
               </View>

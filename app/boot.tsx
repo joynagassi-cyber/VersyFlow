@@ -35,9 +35,8 @@ export default function BootScreen({ onComplete }: Props) {
       const i18n = I18nService.getInstance();
       i18n.setLanguage(uiLanguage || 'fr');
 
-      // Initialize Bible repository
-      const bibleRepo = BibleRepository.getInstance();
-      await bibleRepo.load();
+      // Initialize Bible repository (synchronous load — not awaited)
+      BibleRepository.load();
 
       // Auto-select single profile
       autoSelectIfSingle();

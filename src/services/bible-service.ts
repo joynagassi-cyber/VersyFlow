@@ -11,8 +11,9 @@
  */
 
 import { BibleRepository } from '@/domains/bible/repository';
-import type { BibleBook, BibleVerse } from '@/domains/bible/schema';
-import { BibleTranslation } from '@/domains/bible/schema';
+import type { IBibleRepository } from '@/domains/bible/repository';
+import type { BibleVerse, BibleChapter } from '@/domains/bible/schema';
+import type { BibleBook } from '@/domains/bible/entities';
 import { parseReference, resolveBookId, BOOK_ALIASES } from '@/domains/bible';
 
 /**
@@ -49,10 +50,11 @@ class VerseNotFoundError extends Error {
  * Service pour accéder aux données de la Bible.
  */
 export class BibleService {
-  private repository: BibleRepository;
+  private repository: IBibleRepository;
 
-  constructor(repository?: BibleRepository) {
-    this.repository = repository ?? BibleRepository.getInstance();
+  constructor(repository?: IBibleRepository) {
+    // `BibleRepository` is the exported singleton instance (see repository.ts).
+    this.repository = repository ?? BibleRepository;
   }
 
   /**
@@ -146,8 +148,8 @@ export class BibleService {
     }
 
     // Si une plage de versets est spécifiée, vérifier chaque verset
-    if (parsed.verseEnd !== undefined) {
-      for (let v = parsed.verse; v <= parsed.verseEnd; v++) {
+    if (parsed.verseEnd !== undefined && parsed.verse !== undefined) {
+      for (let v = parsed.verse; v <= parsed.verseEnd; v += 1) {
         if (!this.repository.verseExists(parsed.bookId, parsed.chapter, v)) {
           return null;
         }
@@ -232,7 +234,7 @@ export class BibleService {
       chapterCount: book.chapterCount,
       chapterCountOld: book.testament === 'old' ? book.chapterCount : 0,
       chapterCountNew: book.testament === 'new' ? book.chapterCount : 0,
-      chapters: book.chapters.map(c => c.number),
+      chapters: undefined as unknown as number[],
     };
   }
 

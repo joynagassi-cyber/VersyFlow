@@ -12,8 +12,8 @@ import {
   Modal,
   ScrollView,
 } from '@/components/ui/Primitives';
-import { IonIcon } from '@ionic/react'
-import * as Ionicons from 'ionicons/icons';
+import { IonIcon } from '@/components/ui/Primitives'
+import { person, checkmarkCircle, chevronDown, close } from 'ionicons/icons';
 import { useAppTheme } from '@/theme/useTheme';
 import { useContextStore } from '@/store/context-store';
 import { useProfileStore } from '@/store/profile-store';
@@ -57,7 +57,7 @@ export function LearnerSwitcher() {
           <>
             <Text style={styles.avatar}>{currentLearner.avatar || '👤'}</Text>
             <Text style={[styles.name, { color: colors.textPrimary }]}>{currentLearner.displayName}</Text>
-            <Ionicons name="chevron-down" size={14} color={colors.textMuted} />
+            <IonIcon icon={chevronDown} size={14} color={colors.textMuted} />
           </>
         ) : (
           <Text style={[styles.placeholder, { color: colors.textMuted }]}>{t('family.selectProfile')}</Text>
@@ -77,7 +77,7 @@ export function LearnerSwitcher() {
           <>
             <Text style={styles.avatar}>{currentLearner.avatar || '👤'}</Text>
             <Text style={[styles.name, { color: colors.primary }]}>{currentLearner.displayName}</Text>
-            <Ionicons name="chevron-down" size={14} color={colors.primary} />
+            <IonIcon icon={chevronDown} size={14} color={colors.primary} />
           </>
         ) : (
           <Text style={[styles.placeholder, { color: colors.primary }]}>{t('family.selectLearner')}</Text>
@@ -92,7 +92,7 @@ export function LearnerSwitcher() {
                 {isFamily ? t('family.familyMember') : t('family.myProfile')}
               </Text>
               <TouchableOpacity onPress={() => setShowPicker(false)}>
-                <Ionicons name="close" size={24} color={colors.textSecondary} />
+                <IonIcon icon={close} size={24} color={colors.textSecondary} />
               </TouchableOpacity>
             </View>
 
@@ -112,7 +112,7 @@ export function LearnerSwitcher() {
                         {isActive ? (isFamily ? t('family.familyActive') : t('family.profileActive')) : t('family.tapSelect')}
                       </Text>
                     </View>
-                    {isActive && <Ionicons name="checkmark-circle" size={20} color={colors.primary} />}
+                    {isActive && <IonIcon icon={checkmarkCircle} size={20} color={colors.primary} />}
                   </TouchableOpacity>
                 );
               })}

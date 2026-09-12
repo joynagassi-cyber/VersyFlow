@@ -2,7 +2,7 @@
  * Backup & Sync Settings Screen
  */
 
-import { useState } from 'react';
+import { useState, useMemo} from 'react';
 import {
   View,
   Text,
@@ -17,73 +17,7 @@ import { useAuthStore } from '@/store/auth-store';
 
 export default function BackupScreen() {
   const { colors, sp, sh, rad } = useAppTheme();
-  const router = useRouter();
-  const { isAuthenticated } = useAuthStore();
-  const [autoBackup, setAutoBackup] = useState(false);
-  const [syncEnabled, setSyncEnabled] = useState(isAuthenticated);
-
-  const handleExport = () => {
-    // TODO: Implement data export
-    router.push('/settings/export');
-  };
-
-  const handleImport = () => {
-    // TODO: Implement data import
-  };
-
-  return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Sauvegarde</Text>
-
-        <View style={styles.toggleRow}>
-          <Text style={styles.toggleLabel}>Sauvegarde automatique</Text>
-          <Switch
-            value={autoBackup}
-            onValueChange={setAutoBackup}
-            trackColor={{ false: '#767570', true: colors.primary }}
-            thumbColor={autoBackup ? 'colors.primary' : '#f4f3f2'}
-          />
-        </View>
-
-        <TouchableOpacity style={styles.button} onPress={handleExport}>
-          <Text style={styles.buttonText}>Exporter mes données</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.buttonGhost} onPress={handleImport}>
-          <Text style={styles.buttonGhostText}>Importer des données</Text>
-        </TouchableOpacity>
-      </View>
-
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Synchronisation Cloud</Text>
-
-        <View style={styles.toggleRow}>
-          <Text style={styles.toggleLabel}>Sync automatique</Text>
-          <Switch
-            value={syncEnabled}
-            onValueChange={setSyncEnabled}
-            disabled={!isAuthenticated}
-            trackColor={{ false: '#767570', true: colors.primary }}
-            thumbColor={syncEnabled ? 'colors.primary' : '#f4f3f2'}
-          />
-        </View>
-
-        {!isAuthenticated && (
-          <Text style={styles.note}>
-            Connectez-vous pour activer la synchronisation cloud
-          </Text>
-        )}
-      </View>
-
-      <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-        <Text style={styles.backText}>Retour</Text>
-      </TouchableOpacity>
-    </SafeAreaView>
-  );
-}
-
-const styles = StyleSheet.create({
+  const styles = useMemo(() => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.surfaceTint,
@@ -151,4 +85,70 @@ const styles = StyleSheet.create({
     color: colors.textMuted,
     textDecorationLine: 'underline',
   },
-});
+  }), [colors]);
+  const router = useRouter();
+  const { isAuthenticated } = useAuthStore();
+  const [autoBackup, setAutoBackup] = useState(false);
+  const [syncEnabled, setSyncEnabled] = useState(isAuthenticated);
+
+  const handleExport = () => {
+    // TODO: Implement data export
+    router.push('/settings/export');
+  };
+
+  const handleImport = () => {
+    // TODO: Implement data import
+  };
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Sauvegarde</Text>
+
+        <View style={styles.toggleRow}>
+          <Text style={styles.toggleLabel}>Sauvegarde automatique</Text>
+          <Switch
+            value={autoBackup}
+            onValueChange={setAutoBackup}
+            trackColor={{ false: '#767570', true: colors.primary }}
+            thumbColor={autoBackup ? 'colors.primary' : '#f4f3f2'}
+          />
+        </View>
+
+        <TouchableOpacity style={styles.button} onPress={handleExport}>
+          <Text style={styles.buttonText}>Exporter mes données</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.buttonGhost} onPress={handleImport}>
+          <Text style={styles.buttonGhostText}>Importer des données</Text>
+        </TouchableOpacity>
+      </View>
+
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Synchronisation Cloud</Text>
+
+        <View style={styles.toggleRow}>
+          <Text style={styles.toggleLabel}>Sync automatique</Text>
+          <Switch
+            value={syncEnabled}
+            onValueChange={setSyncEnabled}
+            disabled={!isAuthenticated}
+            trackColor={{ false: '#767570', true: colors.primary }}
+            thumbColor={syncEnabled ? 'colors.primary' : '#f4f3f2'}
+          />
+        </View>
+
+        {!isAuthenticated && (
+          <Text style={styles.note}>
+            Connectez-vous pour activer la synchronisation cloud
+          </Text>
+        )}
+      </View>
+
+      <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
+        <Text style={styles.backText}>Retour</Text>
+      </TouchableOpacity>
+    </SafeAreaView>
+  );
+}
+

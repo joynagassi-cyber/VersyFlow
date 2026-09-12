@@ -4,7 +4,7 @@
  * See docs/08-ui-screens.md §10
  */
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import {
   View,
   Text,
@@ -13,305 +13,23 @@ import {
   SafeAreaView,
   ActivityIndicator,
   TouchableOpacity,
-  Platform,
 } from '@/components/ui/Primitives';
 import { useAppTheme } from '@/theme/useTheme';
+import { shadowCss } from '@/theme/tokens';
 import { useRouter } from '@/hooks/useIonicNavigation';
-import { IonIcon } from '@ionic/react'
-import * as Ionicons from 'ionicons/icons';
+import { IonIcon } from '@/components/ui/Primitives'
+import { analytics, book, calendar, calendarOutline, checkmarkCircle, flame, refresh, trendingDown, trendingUp } from 'ionicons/icons';
 import { useAnalyticsCapability } from '@/capabilities/analytics/store';
 import { useI18n } from '@/hooks/useI18n';
 
 interface DataPoint {
   date: string;
   retention: number;
-  sessions: number;
 }
 
 export default function AnalyticsDashboardScreen() {
-  const { colors, sp, sh, rad } = useAppTheme();
-  const router = useRouter();
-  const { t } = useI18n();
-  const { stats, calculateStats, getRetentionCurve, getLearningTime } =
-    useAnalyticsCapability();
-  const [loading, setLoading] = useState(true);
-  const [retentionCurve, setRetentionCurve] = useState<DataPoint[]>([]);
-
-  useEffect(() => {
-    loadData();
-  }, []);
-
-  const loadData = async () => {
-    try {
-      await calculateStats();
-      const curve = getRetentionCurve();
-      setRetentionCurve(curve.slice(-30));
-    } catch (error) {
-      console.error('Erreur chargement analytics:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  if (loading) {
-    return (
-      <SafeAreaView style={styles.container}>
-        <View style={styles.loaderContainer}>
-          <ActivityIndicator size="large" color={colors.primary} />
-          <Text style={styles.loaderText}>Chargement des statistiques...</Text>
-        </View>
-      </SafeAreaView>
-    );
-  }
-
-  return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView
-        style={styles.scrollView}
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
-      >
-        {/* Header */}
-        <View style={styles.header}>
-          <Text style={styles.headerTitle}>Votre Progression</Text>
-          <TouchableOpacity
-            style={styles.refreshButton}
-            onPress={loadData}
-          >
-            <Ionicons name="refresh" size={20} color={colors.primary} />
-          </TouchableOpacity>
-        </View>
-
-        {/* Stats Overview Cards */}
-        <View style={styles.statsOverview}>
-          <View style={[styles.statCard, styles.statCardLarge]}>
-            <View style={styles.statIconContainer}>
-              <Ionicons name="book" size={24} color={colors.surface} />
-            </View>
-            <Text style={styles.statValue}>{stats?.totalVerses || 0}</Text>
-            <Text style={styles.statLabel}>Versets mémorisés</Text>
-          </View>
-
-          <View style={[styles.statCard, styles.statCardMedium]}>
-            <View style={[styles.statIconContainer, { backgroundColor: colors.success }]}>
-              <Ionicons name="checkmark-circle" size={24} color={colors.surface} />
-            </View>
-            <Text style={styles.statValue}>{stats?.masteredVerses || 0}</Text>
-            <Text style={styles.statLabel}>Maîtrisés</Text>
-          </View>
-
-          <View style={[styles.statCard, styles.statCardMedium]}>
-            <View style={[styles.statIconContainer, { backgroundColor: colors.error }]}>
-              <Ionicons name="flame" size={24} color={colors.surface} />
-            </View>
-            <Text style={styles.statValue}>{stats?.streakCount || 0}</Text>
-            <Text style={styles.statLabel}>Streak (jours)</Text>
-          </View>
-        </View>
-
-        {/* Retention Chart Section */}
-        <View style={styles.chartSection}>
-          <View style={styles.chartHeader}>
-            <Text style={styles.chartTitle}>Rétention sur 30 jours</Text>
-            <TouchableOpacity style={styles.chartAction}>
-              <Text style={styles.chartActionText}>Détails</Text>
-            </TouchableOpacity>
-          </View>
-
-          <View style={styles.chartCard}>
-            {retentionCurve.length > 0 ? (
-              <View style={styles.chartContainer}>
-                {/* Y-axis labels */}
-                <View style={styles.yAxisContainer}>
-                  <Text style={styles.yAxisLabel}>100%</Text>
-                  <Text style={styles.yAxisLabel}>50%</Text>
-                  <Text style={styles.yAxisLabel}>0%</Text>
-                </View>
-
-                {/* Chart bars */}
-                <View style={styles.chartBars}>
-                  {retentionCurve.slice(-14).map((point, idx) => (
-                    <View key={idx} style={styles.barWrapper}>
-                      <View
-                        style={[
-                          styles.bar,
-                          {
-                            height: Math.max(4, point.retention * 100),
-                            backgroundColor:
-                              point.retention > 0.8
-                                ? 'colors.success'
-                                : point.retention > 0.5
-                                ? 'colors.primary'
-                                : colors.error,
-                          },
-                        ]}
-                      />
-                      <Text style={styles.barLabel}>
-                        {new Date(point.date).getDate()}
-                      </Text>
-                    </View>
-                  ))}
-                </View>
-              </View>
-            ) : (
-              <View style={styles.emptyChart}>
-                <Ionicons name="analytics" size={48} color={colors.outline} />
-                <Text style={styles.emptyChartText}>
-                  Aucune donnée de rétention
-                </Text>
-                <Text style={styles.emptyChartSubtext}>
-                  Commencez à mémoriser pour voir vos courbes
-                </Text>
-              </View>
-            )}
-          </View>
-        </View>
-
-        {/* Weekly Trend */}
-        {stats?.weeklyTrend && (
-          <View style={styles.trendSection}>
-            <Text style={styles.sectionTitle}>Tendance hebdomadaire</Text>
-            <View style={styles.trendCard}>
-              <View style={styles.trendGrid}>
-                <View style={styles.trendItem}>
-                  <View style={[styles.trendIcon, { backgroundColor: colors.primaryFixed }]}>
-                    <Ionicons name="calendar" size={20} color={colors.primary} />
-                  </View>
-                  <Text style={styles.trendValue}>{stats.weeklyTrend.thisWeek}</Text>
-                  <Text style={styles.trendLabel}>Cette semaine</Text>
-                </View>
-                <View style={styles.trendItem}>
-                  <View style={[styles.trendIcon, { backgroundColor: colors.iconBgPurple }]}>
-                    <Ionicons name="calendar-outline" size={20} color={colors.textSecondary} />
-                  </View>
-                  <Text style={styles.trendValue}>{stats.weeklyTrend.lastWeek}</Text>
-                  <Text style={styles.trendLabel}>Semaine dernière</Text>
-                </View>
-              </View>
-
-              <View
-                style={[
-                  styles.changeIndicator,
-                  stats.weeklyTrend.changePercentage >= 0
-                    ? styles.changePositive
-                    : styles.changeNegative,
-                ]}
-              >
-                <Ionicons
-                  name={stats.weeklyTrend.changePercentage >= 0 ? 'trending-up' : 'trending-down'}
-                  size={16}
-                  color={stats.weeklyTrend.changePercentage >= 0 ? 'colors.success' : colors.error}
-                />
-                <Text style={styles.changeText}>
-                  {stats.weeklyTrend.changePercentage >= 0 ? '+' : ''}
-                  {stats.weeklyTrend.changePercentage}%
-                </Text>
-                <Text style={styles.changeLabel}>
-                  {stats.weeklyTrend.changePercentage >= 0 ? 'Meilleur que' : 'Pire que'} la semaine dernière
-                </Text>
-              </View>
-            </View>
-          </View>
-        )}
-
-        {/* Learning Time */}
-        <View style={styles.timeSection}>
-          <Text style={styles.sectionTitle}>Temps d'apprentissage</Text>
-          <View style={styles.timeCard}>
-            <View style={styles.timeGrid}>
-              <View style={styles.timeItem}>
-                <Text style={styles.timeValue}>{getLearningTime()} min</Text>
-                <Text style={styles.timeLabel}>Total</Text>
-              </View>
-              <View style={styles.timeItem}>
-                <Text style={styles.timeValue}>
-                  {Math.round((stats?.totalSessions || 0) / Math.max(1, stats?.totalDays || 1))} min
-                </Text>
-                <Text style={styles.timeLabel}>Moyenne/jour</Text>
-              </View>
-            </View>
-            <View style={styles.timeBar}>
-              <View
-                style={[
-                  styles.timeBarFill,
-                  {
-                    width: `${Math.min(100, ((stats?.totalSessions || 0) / 30) * 100)}%`,
-                  },
-                ]}
-              />
-            </View>
-            <Text style={styles.timeBarLabel}>
-              {(stats?.totalSessions || 0)} sessions cette semaine
-            </Text>
-          </View>
-        </View>
-
-        {/* Verses by Status */}
-        <View style={styles.versesSection}>
-          <Text style={styles.sectionTitle}>Verset par statut</Text>
-          <View style={styles.versesCard}>
-            <TouchableOpacity
-              style={styles.verseStatusRow}
-              onPress={() => router.push('/progress')}
-            >
-              <View style={styles.verseStatusLeft}>
-                <View style={[styles.statusDot, { backgroundColor: colors.success }]} />
-                <Text style={styles.verseStatusText}>Maîtrisés</Text>
-              </View>
-              <Text style={styles.verseStatusCount}>
-                {stats?.masteredVerses || 0}
-              </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.verseStatusRow}
-              onPress={() => router.push('/review/queue')}
-            >
-              <View style={styles.verseStatusLeft}>
-                <View style={[styles.statusDot, { backgroundColor: colors.primary }]} />
-                <Text style={styles.verseStatusText}>En cours</Text>
-              </View>
-              <Text style={styles.verseStatusCount}>
-                {stats?.inProgressVerses || 0}
-              </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.verseStatusRow}
-              onPress={() => router.push('/review/queue')}
-            >
-              <View style={styles.verseStatusLeft}>
-                <View style={[styles.statusDot, { backgroundColor: colors.error }]} />
-                <Text style={styles.verseStatusText}>À réviser</Text>
-              </View>
-              <Text style={styles.verseStatusCount}>
-                {stats?.dueForReview || 0}
-              </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.verseStatusRow}
-              onPress={() => router.push('/bible/explorer')}
-            >
-              <View style={styles.verseStatusLeft}>
-                <View style={[styles.statusDot, { backgroundColor: colors.textMuted }]} />
-                <Text style={styles.verseStatusText}>Nouveaux</Text>
-              </View>
-              <Text style={styles.verseStatusCount}>
-                {stats?.newVerses || 0}
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        {/* Spacer */}
-        <View style={styles.bottomSpacer} />
-      </ScrollView>
-    </SafeAreaView>
-  );
-}
-
-const styles = StyleSheet.create({
+  const { colors } = useAppTheme();
+  const styles = useMemo(() => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,
@@ -369,7 +87,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 20,
     alignItems: 'center',
-    ...shadow.md,
+    ...shadowCss('md'),
   },
   statCardLarge: {
     width: '100%',
@@ -433,7 +151,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surface,
     borderRadius: 20,
     padding: 20,
-    ...shadow.md,
+    ...shadowCss('md'),
   },
   chartContainer: {
     flexDirection: 'row',
@@ -470,17 +188,6 @@ const styles = StyleSheet.create({
     width: '60%',
     borderRadius: 4,
     minHeight: 4,
-    ...Platform.select({
-      ios: {
-        shadowColor: colors.primary,
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.2,
-        shadowRadius: 4,
-      },
-      android: {
-        elevation: 2,
-      },
-    }),
   },
   barLabel: {
     fontSize: 10,
@@ -519,7 +226,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surface,
     borderRadius: 20,
     padding: 20,
-    ...shadow.md,
+    ...shadowCss('md'),
   },
   trendGrid: {
     flexDirection: 'row',
@@ -580,7 +287,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surface,
     borderRadius: 20,
     padding: 20,
-    ...shadow.md,
+    ...shadowCss('md'),
   },
   timeGrid: {
     flexDirection: 'row',
@@ -627,7 +334,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surface,
     borderRadius: 20,
     padding: 8,
-    ...shadow.md,
+    ...shadowCss('md'),
   },
   verseStatusRow: {
     flexDirection: 'row',
@@ -662,21 +369,284 @@ const styles = StyleSheet.create({
   bottomSpacer: {
     height: 24,
   },
-});
+  }), [colors]);
+  const router = useRouter();
+  const { t } = useI18n();
+  const { stats, calculateStats, getRetentionCurve, getLearningTime } =
+    useAnalyticsCapability();
+  const [loading, setLoading] = useState(true);
+  const [retentionCurve, setRetentionCurve] = useState<DataPoint[]>([]);
 
-const shadow = {
-  sm: {
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  md: {
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.08,
-    shadowRadius: 8,
-    elevation: 4,
-  },
-};
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  const loadData = async () => {
+    try {
+      await calculateStats();
+      const curve = getRetentionCurve();
+      setRetentionCurve(curve.slice(-30));
+    } catch (error) {
+      console.error('Erreur chargement analytics:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={styles.loaderContainer}>
+          <ActivityIndicator size="large" color={colors.primary} />
+          <Text style={styles.loaderText}>Chargement des statistiques...</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* Header */}
+        <View style={styles.header}>
+          <Text style={styles.headerTitle}>Votre Progression</Text>
+          <TouchableOpacity
+            style={styles.refreshButton}
+            onPress={loadData}
+          >
+            <IonIcon icon={refresh} size={20} color={colors.primary} />
+          </TouchableOpacity>
+        </View>
+
+        {/* Stats Overview Cards */}
+        <View style={styles.statsOverview}>
+          <View style={[styles.statCard, styles.statCardLarge]}>
+            <View style={styles.statIconContainer}>
+              <IonIcon icon={book} size={24} color={colors.surface} />
+            </View>
+            <Text style={styles.statValue}>{stats?.totalVerses || 0}</Text>
+            <Text style={styles.statLabel}>Versets mémorisés</Text>
+          </View>
+
+          <View style={[styles.statCard, styles.statCardMedium]}>
+            <View style={[styles.statIconContainer, { backgroundColor: colors.success }]}>
+              <IonIcon icon={checkmarkCircle} size={24} color={colors.surface} />
+            </View>
+            <Text style={styles.statValue}>{stats?.masteredVerses || 0}</Text>
+            <Text style={styles.statLabel}>Maîtrisés</Text>
+          </View>
+
+          <View style={[styles.statCard, styles.statCardMedium]}>
+            <View style={[styles.statIconContainer, { backgroundColor: colors.error }]}>
+              <IonIcon icon={flame} size={24} color={colors.surface} />
+            </View>
+            <Text style={styles.statValue}>{stats?.streakCount || 0}</Text>
+            <Text style={styles.statLabel}>Streak (jours)</Text>
+          </View>
+        </View>
+
+        {/* Retention Chart Section */}
+        <View style={styles.chartSection}>
+          <View style={styles.chartHeader}>
+            <Text style={styles.chartTitle}>Rétention sur 30 jours</Text>
+            <TouchableOpacity style={styles.chartAction}>
+              <Text style={styles.chartActionText}>Détails</Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.chartCard}>
+            {retentionCurve.length > 0 ? (
+              <View style={styles.chartContainer}>
+                {/* Y-axis labels */}
+                <View style={styles.yAxisContainer}>
+                  <Text style={styles.yAxisLabel}>100%</Text>
+                  <Text style={styles.yAxisLabel}>50%</Text>
+                  <Text style={styles.yAxisLabel}>0%</Text>
+                </View>
+
+                {/* Chart bars */}
+                <View style={styles.chartBars}>
+                  {retentionCurve.slice(-14).map((point, idx) => (
+                    <View key={idx} style={styles.barWrapper}>
+                      <View
+                        style={[
+                          styles.bar,
+                          {
+                            height: Math.max(4, point.retention * 100),
+                            backgroundColor:
+                              point.retention > 0.8
+                                ? colors.success
+                                : point.retention > 0.5
+                                ? colors.primary
+                                : colors.error,
+                          },
+                        ]}
+                      />
+                      <Text style={styles.barLabel}>
+                        {new Date(point.date).getDate()}
+                      </Text>
+                    </View>
+                  ))}
+                </View>
+              </View>
+            ) : (
+              <View style={styles.emptyChart}>
+                <IonIcon icon={analytics} size={48} color={colors.outline} />
+                <Text style={styles.emptyChartText}>
+                  Aucune donnée de rétention
+                </Text>
+                <Text style={styles.emptyChartSubtext}>
+                  Commencez à mémoriser pour voir vos courbes
+                </Text>
+              </View>
+            )}
+          </View>
+        </View>
+
+        {/* Weekly Trend */}
+        {stats?.weeklyTrend && (
+          <View style={styles.trendSection}>
+            <Text style={styles.sectionTitle}>Tendance hebdomadaire</Text>
+            <View style={styles.trendCard}>
+              <View style={styles.trendGrid}>
+                <View style={styles.trendItem}>
+                  <View style={[styles.trendIcon, { backgroundColor: colors.primaryFixed }]}>
+                    <IonIcon icon={calendar} size={20} color={colors.primary} />
+                  </View>
+                  <Text style={styles.trendValue}>{stats.weeklyTrend.thisWeek}</Text>
+                  <Text style={styles.trendLabel}>Cette semaine</Text>
+                </View>
+                <View style={styles.trendItem}>
+                  <View style={[styles.trendIcon, { backgroundColor: colors.iconBgPurple }]}>
+                    <IonIcon icon={calendarOutline} size={20} color={colors.textSecondary} />
+                  </View>
+                  <Text style={styles.trendValue}>{stats.weeklyTrend.lastWeek}</Text>
+                  <Text style={styles.trendLabel}>Semaine dernière</Text>
+                </View>
+              </View>
+
+              <View
+                style={[
+                  styles.changeIndicator,
+                  stats.weeklyTrend.changePercentage >= 0
+                    ? styles.changePositive
+                    : styles.changeNegative,
+                ]}
+              >
+                <IonIcon
+                  icon={stats.weeklyTrend.changePercentage >= 0 ? trendingUp : trendingDown}
+                  size={16}
+                  color={stats.weeklyTrend.changePercentage >= 0 ? colors.success : colors.error}
+                />
+                <Text style={styles.changeText}>
+                  {stats.weeklyTrend.changePercentage >= 0 ? '+' : ''}
+                  {stats.weeklyTrend.changePercentage}%
+                </Text>
+                <Text style={styles.changeLabel}>
+                  {stats.weeklyTrend.changePercentage >= 0 ? 'Meilleur que' : 'Pire que'} la semaine dernière
+                </Text>
+              </View>
+            </View>
+          </View>
+        )}
+
+        {/* Learning Time */}
+        <View style={styles.timeSection}>
+          <Text style={styles.sectionTitle}>Temps d'apprentissage</Text>
+          <View style={styles.timeCard}>
+            <View style={styles.timeGrid}>
+              <View style={styles.timeItem}>
+                <Text style={styles.timeValue}>{getLearningTime()} min</Text>
+                <Text style={styles.timeLabel}>Total</Text>
+              </View>
+              <View style={styles.timeItem}>
+                <Text style={styles.timeValue}>
+                  {stats?.avgSessionDurationMin ?? 0} min
+                </Text>
+                <Text style={styles.timeLabel}>Moyenne/session</Text>
+              </View>
+            </View>
+            <View style={styles.timeBar}>
+              <View
+                style={[
+                  styles.timeBarFill,
+                  {
+                    width: `${Math.min(100, (stats?.weeklyTrend?.thisWeek ?? 0) * 100 / 30)}%`,
+                  },
+                ]}
+              />
+            </View>
+            <Text style={styles.timeBarLabel}>
+              {stats?.weeklyTrend.thisWeek ?? 0} sessions cette semaine
+            </Text>
+          </View>
+        </View>
+
+        {/* Verses by Status */}
+        <View style={styles.versesSection}>
+          <Text style={styles.sectionTitle}>Verset par statut</Text>
+          <View style={styles.versesCard}>
+            <TouchableOpacity
+              style={styles.verseStatusRow}
+              onPress={() => router.push('/progress')}
+            >
+              <View style={styles.verseStatusLeft}>
+                <View style={[styles.statusDot, { backgroundColor: colors.success }]} />
+                <Text style={styles.verseStatusText}>Maîtrisés</Text>
+              </View>
+              <Text style={styles.verseStatusCount}>
+                {stats?.masteredVerses || 0}
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.verseStatusRow}
+              onPress={() => router.push('/review/queue')}
+            >
+              <View style={styles.verseStatusLeft}>
+                <View style={[styles.statusDot, { backgroundColor: colors.primary }]} />
+                <Text style={styles.verseStatusText}>En cours</Text>
+              </View>
+              <Text style={styles.verseStatusCount}>
+                {stats?.inProgressVerses || 0}
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.verseStatusRow}
+              onPress={() => router.push('/review/queue')}
+            >
+              <View style={styles.verseStatusLeft}>
+                <View style={[styles.statusDot, { backgroundColor: colors.error }]} />
+                <Text style={styles.verseStatusText}>À réviser</Text>
+              </View>
+              <Text style={styles.verseStatusCount}>
+                {stats?.dueForReview || 0}
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.verseStatusRow}
+              onPress={() => router.push('/bible/explorer')}
+            >
+              <View style={styles.verseStatusLeft}>
+                <View style={[styles.statusDot, { backgroundColor: colors.textMuted }]} />
+                <Text style={styles.verseStatusText}>Nouveaux</Text>
+              </View>
+              <Text style={styles.verseStatusCount}>
+                {stats?.inProgressVerses ?? 0}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        {/* Spacer */}
+        <View style={styles.bottomSpacer} />
+      </ScrollView>
+    </SafeAreaView>
+  );
+}

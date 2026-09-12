@@ -1,54 +1,16 @@
 /**
  * SplashScreen — App Entry Point
- * Display logo and brand while app initializes
+ * Displays the VersyFlow logo (image asset) + tagline while the app
+ * initializes. Uses the same logo as the app icon (assets/icons/versyflow_logo_app.png).
  */
 
-import { useEffect } from 'react';
-import { View, Text, StyleSheet, Animated, Easing } from '@/components/ui/Primitives';
+import { useEffect, useState } from 'react';
+import { View, Text, Image, StyleSheet } from '@/components/ui/Primitives';
 import { useAppTheme } from '@/theme/useTheme';
+import logoUrl from '@/assets/icons/versyflow_logo_app.png?url';
 
 interface Props {
   onFinish: () => void;
-}
-
-export default function SplashScreen({ onFinish }: Props) {
-  const { colors } = useAppTheme();
-  const opacity = new Animated.Value(0);
-  const scale = new Animated.Value(0.8);
-
-  useEffect(() => {
-    Animated.parallel([
-      Animated.timing(opacity, {
-        toValue: 1,
-        duration: 800,
-        easing: Easing.out(Easing.ease),
-        useNativeDriver: true,
-      }),
-      Animated.spring(scale, {
-        toValue: 1,
-        tension: 50,
-        friction: 7,
-        useNativeDriver: true,
-      }),
-    ]).start();
-
-    const timer = setTimeout(onFinish, 2000);
-    return () => clearTimeout(timer);
-  }, []);
-
-  return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
-      <Animated.View
-        style={[
-          styles.logoContainer,
-          { opacity, transform: [{ scale }] },
-        ]}
-      >
-        <Text style={[styles.logo, { color: colors.primary }]}>VersyFlow</Text>
-        <Text style={[styles.tagline, { color: colors.textSecondary }]}>Mémorisation biblique intuitive</Text>
-      </Animated.View>
-    </View>
-  );
 }
 
 const styles = StyleSheet.create({
@@ -61,9 +23,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   logo: {
-    fontSize: 48,
+    fontSize: 44,
     fontWeight: '800',
     letterSpacing: -1,
+  },
+  logoImage: {
+    width: 120,
+    height: 120,
+    marginBottom: 16,
   },
   tagline: {
     fontSize: 16,
@@ -72,3 +39,39 @@ const styles = StyleSheet.create({
     paddingHorizontal: 32,
   },
 });
+
+export default function SplashScreen({ onFinish }: Props) {
+  const { colors } = useAppTheme();
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    requestAnimationFrame(() => setVisible(true));
+    const timer = setTimeout(onFinish, 2000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  return (
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
+      <View
+        style={[
+          styles.logoContainer,
+          {
+            opacity: visible ? 1 : 0,
+            transform: `scale(${visible ? 1 : 0.8})`,
+            transition: 'opacity 0.8s ease, transform 0.8s ease',
+          },
+        ]}
+      >
+        <Image
+          source={logoUrl}
+          style={[styles.logoImage, { opacity: visible ? 1 : 0, transition: 'opacity 0.8s ease' }]}
+          alt="VersyFlow"
+        />
+        <Text style={[styles.logo, { color: colors.primary }]}>VersyFlow</Text>
+        <Text style={[styles.tagline, { color: colors.textSecondary }]}>
+          Mémorisation biblique intuitive
+        </Text>
+      </View>
+    </View>
+  );
+}

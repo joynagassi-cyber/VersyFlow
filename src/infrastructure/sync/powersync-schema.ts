@@ -204,5 +204,19 @@ export function buildPowerSyncSchema(): Schema {
         by_family: ['family_id'],
       },
     }),
+
+    // -- migration 008 -------------------------------------------------------
+    telemetry_events: Table.createInsertOnly({
+      user_id: column.text,
+      event_type: column.text,
+      payload: column.text,
+      session_id: column.text,
+      created_at: column.text,
+    }, {
+      indexes: {
+        by_user: ['user_id'],
+        by_event_type: ['event_type'],
+      },
+    }),
   });
 }

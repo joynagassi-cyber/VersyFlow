@@ -3,7 +3,7 @@
  */
 
 import { StyleSheet, View, Text } from '@/components/ui/Primitives';
-import { colors, spacing, typography } from '@/tokens';
+import { useAppTheme } from '@/theme/useTheme';
 
 interface StatCardProps {
   value: string | number;
@@ -12,6 +12,26 @@ interface StatCardProps {
 }
 
 export function StatCard({ value, label, icon }: StatCardProps) {
+  const { colors } = useAppTheme();
+  const styles = StyleSheet.create({
+    card: {
+      backgroundColor: colors.surface,
+      borderRadius: 16,
+      padding: 16,
+      ...shadow,
+    },
+    value: {
+      fontSize: 24,
+      fontWeight: '700',
+      color: colors.textPrimary,
+      marginBottom: 4,
+    },
+    label: {
+      fontSize: 13,
+      color: colors.textTertiary,
+    },
+  });
+
   return (
     <View style={styles.card}>
       <Text style={styles.value}>{value}</Text>
@@ -21,34 +41,9 @@ export function StatCard({ value, label, icon }: StatCardProps) {
 }
 
 const shadow = {
-  sm: {
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 1,
-  },
+  shadowColor: '#000',
+  shadowOffset: { width: 0, height: 1 },
+  shadowOpacity: 0.05,
+  shadowRadius: 2,
+  elevation: 1,
 };
-
-const styles = StyleSheet.create({
-  card: {
-    flex: 1,
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    padding: spacing.md,
-    alignItems: 'center',
-    ...shadow.sm,
-  },
-  value: {
-    fontSize: 32,
-    fontWeight: '700',
-    color: colors.primary,
-    fontFamily: typography.families.heading,
-  },
-  label: {
-    fontSize: 14,
-    color: '#6E6E6E',
-    marginTop: 4,
-  },
-});
-

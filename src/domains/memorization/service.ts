@@ -143,12 +143,40 @@ export class MemorizationService {
       };
       await this.saveReviewLog(reviewLog, effectiveProfileId);
 
-      // Emit review event
+      // Emit the record-level review event. The enriched payload carries
+      // before/after FSRS state so TelemetryListener can record a
+      // `review.completed` telemetry event without a PII round-trip.
       eventBus.emit({
         id: crypto.randomUUID(),
         type: DomainEventTypes.RECORD_REVIEWED,
         timestamp: Date.now(),
-        payload: { recordId, rating },
+        payload: {
+          recordId,
+          rating,
+          previousStability: stabilityBeforeValue,
+          newStability: newFsrsState.stability,
+          previousDifficulty: difficultyBeforeValue,
+          newDifficulty: newFsrsState.difficulty,
+          predictedInterval: predictedIntervalValue,
+        },
+      });
+
+      // Emit the session-level completion event (used by TelemetryListener
+      // and any other consumers that track session boundaries).
+      eventBus.emit({
+        id: crypto.randomUUID(),
+        type: DomainEventTypes.REVIEW_COMPLETED,
+        timestamp: Date.now(),
+        payload: {
+          recordId,
+          rating,
+          previousStability: stabilityBeforeValue,
+          newStability: newFsrsState.stability,
+          previousDifficulty: difficultyBeforeValue,
+          newDifficulty: newFsrsState.difficulty,
+          predictedInterval: predictedIntervalValue,
+          timeSpentMs: 0,
+        },
       });
 
       return true;

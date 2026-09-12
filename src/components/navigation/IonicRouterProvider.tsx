@@ -1,15 +1,16 @@
 /**
  * Ionic Router Provider
  *
- * Sets up React Router DOM with all VersyFlow routes.
+ * Sets up React Router DOM v6 with all VersyFlow routes.
  * Replaces React Navigation (expo-router) stack and tab navigation.
  */
 
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { IonApp, IonRouterOutlet, IonTabs, IonTabBar, IonTabButton, IonIcon, IonLabel, IonContent, IonHeader, IonToolbar, IonTitle, IonButtons, IonBackButton } from '@ionic/react';
+import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
+import { IonApp, IonRouterOutlet, IonTabBar, IonTabButton, IonIcon, IonLabel, IonContent, IonHeader, IonToolbar, IonTitle, IonButtons, IonBackButton } from '@ionic/react';
 import { home, book, analytics, add, ellipsisVertical, time, personCircle, flame, star, text, people, settings, calendar, notifications, helpCircle, download, chevronForward, close } from 'ionicons/icons';
+import type { MemorizationRecord } from '@/domains/memorization/entities';
 import { useAppTheme } from '@/theme/useTheme';
-import { useRouter } from '@/hooks/useIonicNavigation';
+import { useRouter, useLocalSearchParams } from '@/hooks/useIonicNavigation';
 import React, { useState, useEffect } from 'react';
 
 // ─── Lazy-loaded page components ──────────────────────────────────────────────
@@ -21,7 +22,14 @@ const SettingsPage = React.lazy(() => import('@/app/(tabs)/settings'));
 const AuthLogin = React.lazy(() => import('@/app/(tabs)/auth/login'));
 const AuthSignup = React.lazy(() => import('@/app/(tabs)/auth/signup'));
 const AuthVerify = React.lazy(() => import('@/app/(tabs)/auth/verify'));
-const SplashScreen = React.lazy(() => import('@/app/splash'));
+const SplashScreen = React.lazy(async () => {
+  const mod = await import('@/app/splash');
+  return {
+    default: (props: { onFinish?: () => void }) => (
+      <mod.default onFinish={props.onFinish ?? (() => {}) } />
+    ),
+  };
+});
 const BootPage = React.lazy(() => import('@/app/boot'));
 const BibleExplorer = React.lazy(() => import('@/app/bible/explorer'));
 const BibleBook = React.lazy(() => import('@/app/bible/book'));
@@ -46,17 +54,67 @@ const SettingsLanguages = React.lazy(() => import('@/app/settings/languages'));
 const SettingsBackup = React.lazy(() => import('@/app/settings/backup'));
 const SettingsPrivacy = React.lazy(() => import('@/app/settings/privacy'));
 const SettingsAbout = React.lazy(() => import('@/app/settings/about'));
+const SettingsSession = React.lazy(() => import('@/app/settings/session'));
+const SettingsReminders = React.lazy(() => import('@/app/settings/reminders'));
 const NotificationsPage = React.lazy(() => import('@/app/notifications'));
 const OnboardingWelcome = React.lazy(() => import('@/app/onboarding/welcome'));
 const OnboardingLanguageSelect = React.lazy(() => import('@/app/onboarding/language-select'));
 const OnboardingTranslationSelect = React.lazy(() => import('@/app/onboarding/translation-select'));
+const OnboardingSessionConfig = React.lazy(() => import('@/app/onboarding/session-config'));
+const OnboardingReminderConfig = React.lazy(() => import('@/app/onboarding/reminder-config'));
 const OnboardingFsrsIntroduction = React.lazy(() => import('@/app/onboarding/fsrs-introduction'));
 const AnalyticsDashboard = React.lazy(() => import('@/app/analytics/dashboard'));
 const AiCoachPage = React.lazy(() => import('@/app/ai-coach'));
-const MemoryStart = React.lazy(() => import('@/app/memory/start'));
+const MemoryStart = React.lazy(async () => {
+  const mod = await import('@/app/memory/start');
+  const { useLocalSearchParams } = await import('@/hooks/useIonicNavigation');
+  return {
+    default: () => {
+      const sp = useLocalSearchParams();
+      const verseData = {
+        reference: sp.reference ?? 'Jean 3:16',
+        text: sp.text ?? '',
+        bookId: sp.bookId ?? 'joh',
+        chapter: Number(sp.chapter ?? 3),
+        verse: Number(sp.verse ?? 16),
+      };
+      return <mod.default verseData={verseData} />;
+    },
+  };
+});
 const MemoryFlashcard = React.lazy(() => import('@/app/memory/flashcard'));
 const MemoryRecallWriting = React.lazy(() => import('@/app/memory/recall-writing'));
-const ComparisonResult = React.lazy(() => import('@/app/comparison/result'));
+const ComparisonResult = React.lazy(async () => {
+  const mod = await import('@/app/comparison/result');
+  const { useLocalSearchParams } = await import('@/hooks/useIonicNavigation');
+  return {
+    default: () => {
+      const sp = useLocalSearchParams();
+      const record = {
+        id: sp.recordId ?? 'local',
+        learnerProfileId: 'local',
+        bookId: sp.bookId ?? 'joh',
+        chapterNumber: Number(sp.chapter ?? 3),
+        verseNumber: Number(sp.verse ?? 16),
+        translationId: 'lsg',
+        bibleVerseReference: sp.reference ?? 'Jean 3:16',
+        bibleVerseText: sp.verseText ?? '',
+        status: 'in-progress' as const,
+        fsrsState: { stability: 0, difficulty: 0, recallProbability: 0, lastInterval: 0, nextInterval: 0, elapsedDays: 0, repetitions: 0, requestedRetention: 0.9 },
+        favorite: false,
+        tags: [],
+        createdAt: Date.now(),
+        lastReviewedAt: null,
+        nextReviewAt: null,
+        reviewCount: 0,
+        totalReviewMinutes: 0,
+        wordPerformance: [],
+      } satisfies MemorizationRecord;
+      const userAnswer = sp.userAnswer ?? '';
+      return <mod.default record={record} userAnswer={userAnswer} />;
+    },
+  };
+});
 const AchievementsPage = React.lazy(() => import('@/app/achievements'));
 const CollectionsPage = React.lazy(() => import('@/app/collections'));
 const MasteryPage = React.lazy(() => import('@/app/mastery'));
@@ -65,18 +123,17 @@ const NotFound = React.lazy(() => import('@/app/+not-found'));
 
 // ─── Tab Navigation ───────────────────────────────────────────────────────────
 
-interface TabRouteProps {
+interface TabRouteDef {
   path: string;
-  exact?: boolean;
-  component: React.ComponentType;
+  element: React.ElementType;
   icon: string;
   label: string;
 }
 
-const tabRoutes: TabRouteProps[] = [
-  { path: '/tabs/home', exact: true, component: HomePage, icon: home, label: 'Accueil' },
-  { path: '/tabs/explore', component: ExplorePage, icon: book, label: 'Memorize' },
-  { path: '/tabs/progress', component: ProgressPage, icon: analytics, label: 'Stats' },
+const tabRoutes: TabRouteDef[] = [
+  { path: '/tabs/home', element: HomePage, icon: home, label: 'Accueil' },
+  { path: '/tabs/explore', element: ExplorePage, icon: book, label: 'Memorize' },
+  { path: '/tabs/progress', element: ProgressPage, icon: analytics, label: 'Stats' },
 ];
 
 function TabNav() {
@@ -94,31 +151,32 @@ function TabNav() {
 
   return (
     <>
-      <IonTabs>
-        <IonRouterOutlet>
-          <Route exact path="/tabs" render={() => <Navigate to="/tabs/home" replace />} />
+      <IonRouterOutlet>
+        <Routes>
+          <Route path="/tabs" element={<Navigate to="/tabs/home" replace />} />
           {tabRoutes.map((route) => (
-            <Route key={route.path} path={route.path} exact={route.exact} component={route.component} />
+            <Route key={route.path} path={route.path} element={<route.element />} />
           ))}
-        </IonRouterOutlet>
+          <Route path="*" element={<Navigate to="/tabs/home" replace />} />
+        </Routes>
+      </IonRouterOutlet>
 
-        <IonTabBar style={{
-          borderTopWidth: 1,
-          borderTopColor: colors.border,
-          backgroundColor: colors.surface,
-          height: 64,
-          paddingBottom: 8,
-          paddingTop: 8,
-          boxShadow: '0 -2px 8px rgba(0,0,0,0.05)',
-        }}>
-          {tabRoutes.map((route) => (
-            <IonTabButton key={route.path} tab={route.path.slice(6)} href={route.path}>
-              <IonIcon icon={route.icon} />
-              <IonLabel style={{ fontSize: 11, fontWeight: 600, marginTop: 4 }}>{route.label}</IonLabel>
-            </IonTabButton>
-          ))}
-        </IonTabBar>
-      </IonTabs>
+      <IonTabBar style={{
+        borderTopWidth: 1,
+        borderTopColor: colors.border,
+        backgroundColor: colors.surface,
+        height: 64,
+        paddingBottom: 8,
+        paddingTop: 8,
+        boxShadow: '0 -2px 8px rgba(0,0,0,0.05)',
+      } as any}>
+        {tabRoutes.map((route) => (
+          <IonTabButton key={route.path} tab={route.path.slice(6)} href={route.path}>
+            <IonIcon icon={route.icon} />
+            <IonLabel style={{ fontSize: 11, fontWeight: 600, marginTop: 4 }}>{route.label}</IonLabel>
+          </IonTabButton>
+        ))}
+      </IonTabBar>
 
       {/* FAB Button */}
       <button
@@ -205,7 +263,7 @@ function TabNav() {
                 <IonIcon icon={close} size="large" color={colors.textSecondary} />
               </button>
             </div>
-            <div style={{ paddingVertical: 8 }}>
+            <div style={{ padding: '8px 0' }}>
               {plusMenuItems.map((item) => (
                 <button
                   key={item.id}
@@ -258,76 +316,80 @@ export function IonicRouterProvider({ children }: { children: React.ReactNode })
     <BrowserRouter>
       <IonApp>
         <IonContent fullscreen={false} className="ionic-page">
-          <IonRouterOutlet>
+          <Routes>
             {/* Splash & Boot */}
-            <Route path="/" component={SplashScreen} />
+            <Route path="/" element={<SplashScreen />} />
 
             {/* Tabs */}
-            <Route path="/tabs" component={TabNav} />
+            <Route path="/tabs" element={<TabNav />} />
 
             {/* Auth */}
-            <Route path="/auth/login" component={AuthLogin} />
-            <Route path="/auth/signup" component={AuthSignup} />
-            <Route path="/auth/verify" component={AuthVerify} />
+            <Route path="/auth/login" element={<AuthLogin />} />
+            <Route path="/auth/signup" element={<AuthSignup />} />
+            <Route path="/auth/verify" element={<AuthVerify />} />
 
             {/* Onboarding */}
-            <Route path="/onboarding/welcome" component={OnboardingWelcome} />
-            <Route path="/onboarding/language-select" component={OnboardingLanguageSelect} />
-            <Route path="/onboarding/translation-select" component={OnboardingTranslationSelect} />
-            <Route path="/onboarding/fsrs-introduction" component={OnboardingFsrsIntroduction} />
+            <Route path="/onboarding/welcome" element={<OnboardingWelcome />} />
+            <Route path="/onboarding/language-select" element={<OnboardingLanguageSelect />} />
+            <Route path="/onboarding/translation-select" element={<OnboardingTranslationSelect />} />
+            <Route path="/onboarding/session-config" element={<OnboardingSessionConfig />} />
+            <Route path="/onboarding/reminder-config" element={<OnboardingReminderConfig />} />
+            <Route path="/onboarding/fsrs-introduction" element={<OnboardingFsrsIntroduction />} />
 
             {/* Bible */}
-            <Route path="/bible/explorer" component={BibleExplorer} />
-            <Route path="/bible/book/:bookId" component={BibleBook} />
-            <Route path="/bible/chapter/:bookId/:chapterNumber" component={BibleChapter} />
+            <Route path="/bible/explorer" element={<BibleExplorer />} />
+            <Route path="/bible/book/:bookId" element={<BibleBook />} />
+            <Route path="/bible/chapter/:bookId/:chapterNumber" element={<BibleChapter />} />
 
             {/* Memorization */}
-            <Route path="/memorization/session" component={MemorizationSession} />
-            <Route path="/memorization/confirm" component={MemorizationConfirm} />
-            <Route path="/memorization/flashcard" component={MemorizationFlashcard} />
+            <Route path="/memorization/session" element={<MemorizationSession />} />
+            <Route path="/memorization/confirm" element={<MemorizationConfirm />} />
+            <Route path="/memorization/flashcard" element={<MemorizationFlashcard />} />
 
             {/* Review */}
-            <Route path="/review/queue" component={ReviewQueue} />
-            <Route path="/review/session" component={ReviewSession} />
-            <Route path="/review/summary" component={ReviewSummary} />
-            <Route path="/review/history" component={ReviewHistory} />
-            <Route path="/review/calendar" component={ReviewCalendar} />
+            <Route path="/review/queue" element={<ReviewQueue />} />
+            <Route path="/review/session" element={<ReviewSession />} />
+            <Route path="/review/summary" element={<ReviewSummary />} />
+            <Route path="/review/history" element={<ReviewHistory />} />
+            <Route path="/review/calendar" element={<ReviewCalendar />} />
 
             {/* Profile */}
-            <Route path="/profile" component={ProfileIndex} />
-            <Route path="/profile/create" component={ProfileCreate} />
-            <Route path="/profile/select" component={ProfileSelect} />
+            <Route path="/profile" element={<ProfileIndex />} />
+            <Route path="/profile/create" element={<ProfileCreate />} />
+            <Route path="/profile/select" element={<ProfileSelect />} />
 
             {/* Family */}
-            <Route path="/family/home" component={FamilyHome} />
-            <Route path="/family/invite" component={FamilyInvite} />
-            <Route path="/family/join" component={FamilyJoin} />
-            <Route path="/family/members" component={FamilyMembers} />
+            <Route path="/family/home" element={<FamilyHome />} />
+            <Route path="/family/invite" element={<FamilyInvite />} />
+            <Route path="/family/join" element={<FamilyJoin />} />
+            <Route path="/family/members" element={<FamilyMembers />} />
 
             {/* Settings */}
-            <Route path="/settings" component={SettingsPage} />
-            <Route path="/settings/appearance" component={SettingsAppearance} />
-            <Route path="/settings/languages" component={SettingsLanguages} />
-            <Route path="/settings/backup" component={SettingsBackup} />
-            <Route path="/settings/privacy" component={SettingsPrivacy} />
-            <Route path="/settings/about" component={SettingsAbout} />
+            <Route path="/settings" element={<SettingsPage />} />
+            <Route path="/settings/appearance" element={<SettingsAppearance />} />
+            <Route path="/settings/languages" element={<SettingsLanguages />} />
+            <Route path="/settings/backup" element={<SettingsBackup />} />
+            <Route path="/settings/privacy" element={<SettingsPrivacy />} />
+            <Route path="/settings/about" element={<SettingsAbout />} />
+            <Route path="/settings/session" element={<SettingsSession />} />
+            <Route path="/settings/reminders" element={<SettingsReminders />} />
 
             {/* Memory */}
-            <Route path="/memory/start" component={MemoryStart} />
-            <Route path="/memory/flashcard" component={MemoryFlashcard} />
-            <Route path="/memory/recall-writing" component={MemoryRecallWriting} />
+            <Route path="/memory/start" element={<MemoryStart />} />
+            <Route path="/memory/flashcard" element={<MemoryFlashcard />} />
+            <Route path="/memory/recall-writing" element={<MemoryRecallWriting />} />
 
             {/* Other */}
-            <Route path="/notifications" component={NotificationsPage} />
-            <Route path="/comparison/result" component={ComparisonResult} />
-            <Route path="/analytics/dashboard" component={AnalyticsDashboard} />
-            <Route path="/ai-coach" component={AiCoachPage} />
-            <Route path="/achievements" component={AchievementsPage} />
-            <Route path="/collections" component={CollectionsPage} />
-            <Route path="/mastery" component={MasteryPage} />
-            <Route path="/search" component={SearchPage} />
-            <Route path="*" component={NotFound} />
-          </IonRouterOutlet>
+            <Route path="/notifications" element={<NotificationsPage />} />
+            <Route path="/comparison/result" element={<ComparisonResult />} />
+            <Route path="/analytics/dashboard" element={<AnalyticsDashboard />} />
+            <Route path="/ai-coach" element={<AiCoachPage />} />
+            <Route path="/achievements" element={<AchievementsPage />} />
+            <Route path="/collections" element={<CollectionsPage />} />
+            <Route path="/mastery" element={<MasteryPage />} />
+            <Route path="/search" element={<SearchPage />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
 
           {children}
         </IonContent>

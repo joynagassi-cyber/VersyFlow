@@ -3,9 +3,8 @@
  * See docs/06-design-system.md (ButtonPrimary) + docs/07-design-tokens.md
  */
 
-import { StyleSheet, Text, TouchableOpacity } from '@/components/ui/Primitives';
-import { ActivityIndicator } from '@/components/ui/Primitives';
-import { colors, radius, spacing } from '@/tokens';
+import { StyleSheet, Text, TouchableOpacity, ActivityIndicator } from '@/components/ui/Primitives';
+import { useAppTheme } from '@/theme/useTheme';
 
 interface ButtonPrimaryProps {
   title: string;
@@ -15,6 +14,31 @@ interface ButtonPrimaryProps {
 }
 
 export function ButtonPrimary({ title, onPress, disabled = false, loading = false }: ButtonPrimaryProps) {
+  const { colors } = useAppTheme();
+  const styles = StyleSheet.create({
+    button: {
+      backgroundColor: colors.primary,
+      borderRadius: 12,
+      paddingVertical: 14,
+      paddingHorizontal: 20,
+      alignItems: 'center',
+      justifyContent: 'center',
+      minHeight: 48,
+    },
+    disabled: {
+      backgroundColor: colors.textMuted,
+      opacity: 0.5,
+    },
+    loading: {
+      opacity: 0.8,
+    },
+    text: {
+      color: colors.surface,
+      fontSize: 16,
+      fontWeight: '600',
+    },
+  });
+
   return (
     <TouchableOpacity
       style={[
@@ -27,33 +51,10 @@ export function ButtonPrimary({ title, onPress, disabled = false, loading = fals
       activeOpacity={0.8}
     >
       {loading ? (
-        <ActivityIndicator color="#FFFFFF" size="small" />
+        <ActivityIndicator color={colors.surface} size="small" />
       ) : (
         <Text style={styles.text}>{title}</Text>
       )}
     </TouchableOpacity>
   );
 }
-
-const styles = StyleSheet.create({
-  button: {
-    backgroundColor: colors.primary,
-    borderRadius: radius.full,
-    paddingVertical: 14,
-    paddingHorizontal: 24,
-    minHeight: 52,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  disabled: {
-    opacity: 0.5,
-  },
-  loading: {
-    opacity: 0.8,
-  },
-  text: {
-    color: '#FFFFFF',
-    fontSize: 18,
-    fontWeight: '600',
-  },
-});

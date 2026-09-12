@@ -26,7 +26,7 @@ import {
   IonTitle,
   IonButtons,
   IonButton,
-  IonIcon,
+  IonIcon as IonIonIcon,
   IonSpinner,
   IonChip,
   IonFab,
@@ -51,41 +51,39 @@ import {
   IonRouterLink,
   IonPage,
   IonFooter,
-  type IonContentProps,
-  type IonHeaderProps,
-  type IonToolbarProps,
-  type IonButtonsProps,
-  type IonButtonProps,
-  type IonSpinnerProps,
-  type IonChipProps,
-  type IonFabProps,
-  type IonFabButtonProps,
-  type IonListProps,
-  type IonItemProps,
-  type IonLabelProps,
-  type IonToggleProps,
-  type IonInputProps,
-  type IonTextareaProps,
-  type IonSelectProps,
-  type IonSegmentProps,
-  type IonSegmentButtonProps,
-  type IonRefresherProps,
-  type IonInfiniteScrollProps,
-  type IonModalProps,
-  type IonPopoverProps,
-  type IonPageProps,
-  type IonFooterProps,
-  type IonNavProps,
-  type IonRouterLinkProps,
 } from '@ionic/react';
 // useTheme imported by components that need it
-import type { CSSProperties } from 'react';
+import type { CSSProperties as ReactCSSProperties } from 'react';
+export type CSSProperties = ReactCSSProperties;
 import { useTheme, useAppTheme } from '@/theme/useTheme';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
+/**
+ * React-Native-compatible StyleProp: accepts a single style object, an array
+ * of style objects, or a function of a state. Each entry is either a known
+ * RNStyle/RNTextStyle or any extra CSS properties (escape hatch for
+ * `textShadow`, `filter`, `clipPath`, arbitrary keys from `Platform.select`).
+ */
+export type StyleProp<T extends RNStyle = RNStyle> =
+  | T
+  | (T | CSSProperties)[]
+  | ((state: { pressed: boolean }) => T | CSSProperties | (T | CSSProperties)[]);
+
+// Merge multiple CSS objects into a single CSSProperties (avoids array styles
+// that React doesn't accept).
+export function mergeStyles(...styles: Array<Partial<CSSProperties> | undefined | null>): CSSProperties {
+  const out: Record<string, unknown> = {};
+  for (const s of styles) if (s) Object.assign(out, s);
+  return out as CSSProperties;
+}
+
 export interface RNStyle {
   flex?: number | string;
+  flexGrow?: number | string;
+  flexShrink?: number | string;
+  flexBasis?: number | string;
+  flexWrap?: 'wrap' | 'nowrap' | 'wrap-reverse';
   flexDirection?: 'row' | 'column' | 'row-reverse' | 'column-reverse';
   justifyContent?: 'flex-start' | 'flex-end' | 'center' | 'space-between' | 'space-around' | 'space-evenly';
   alignItems?: 'flex-start' | 'flex-end' | 'center' | 'stretch' | 'baseline';
@@ -108,11 +106,15 @@ export interface RNStyle {
   marginRight?: number | string;
   marginBottom?: number | string;
   marginLeft?: number | string;
+  marginHorizontal?: number | string;
+  marginVertical?: number | string;
   padding?: number | string;
   paddingTop?: number | string;
   paddingRight?: number | string;
   paddingBottom?: number | string;
   paddingLeft?: number | string;
+  paddingHorizontal?: number | string;
+  paddingVertical?: number | string;
   borderWidth?: number;
   borderTopWidth?: number;
   borderRightWidth?: number;
@@ -129,6 +131,8 @@ export interface RNStyle {
   opacity?: number;
   zIndex?: number;
   gap?: number | string;
+  rowGap?: number | string;
+  columnGap?: number | string;
 }
 
 export interface RNTextStyle extends RNStyle {
@@ -171,8 +175,8 @@ export const StyleSheet: StyleSheetType = {
 /**
  * Convert a React Native style object to a CSS-in-JS object compatible with Ionic/React.
  */
-function convertStyle(style: RNStyle | RNTextStyle): React.CSSProperties {
-  const result: React.CSSProperties = {};
+function convertStyle(style: RNStyle | RNTextStyle): CSSProperties {
+  const result = {} as CSSProperties;
 
   const numberToPx = (value: number | string | undefined): string | undefined => {
     if (value === undefined) return undefined;
@@ -274,7 +278,7 @@ function convertStyle(style: RNStyle | RNTextStyle): React.CSSProperties {
     result.color = textStyle.color;
   }
   if ('textAlign' in textStyle && textStyle.textAlign !== undefined) {
-    result.textAlign = textStyle.textAlign;
+    (result as Record<string, unknown>).textAlign = textStyle.textAlign;
   }
   if ('textTransform' in textStyle && textStyle.textTransform !== undefined) {
     result.textTransform = textStyle.textTransform;
@@ -286,8 +290,8 @@ function convertStyle(style: RNStyle | RNTextStyle): React.CSSProperties {
     result.textDecorationColor = textStyle.textDecorationColor;
   }
   if ('numberOfLines' in textStyle && textStyle.numberOfLines !== undefined) {
-    result.webkitLineClamp = textStyle.numberOfLines;
-    result.webkitBoxOrient = 'vertical';
+    (result as Record<string, unknown>).WebkitLineClamp = textStyle.numberOfLines;
+    (result as Record<string, unknown>).WebkitBoxOrient = 'vertical';
     result.overflow = 'hidden';
   }
 
@@ -346,7 +350,7 @@ export const View = forwardRef<HTMLDivElement, IonicViewProps>(
   ({ style, className, children, testID, accessible, accessibilityLabel, role, ...rest }, ref) => {
     const { colors } = useTheme();
     const resolvedStyle = Array.isArray(style)
-      ? style.map(s => convertStyle(s as RNStyle))
+      ? mergeStyles(...style.map(s => convertStyle(s as RNStyle)))
       : convertStyle(style as RNStyle);
 
     return (
@@ -354,7 +358,7 @@ export const View = forwardRef<HTMLDivElement, IonicViewProps>(
         ref={ref}
         className={className}
         data-testid={testID}
-        style={[resolvedStyle, { color: colors.textPrimary }]}
+        style={mergeStyles(resolvedStyle, { color: colors.textPrimary })}
         role={role || 'presentation'}
         {...rest}
       >
@@ -402,11 +406,11 @@ export const Text = forwardRef<HTMLSpanElement, IonicTextProps>(
   ({ style, className, children, testID, numberOfLines, ellipsizeMode, color, ...rest }, ref) => {
     const { colors, typ } = useTheme();
     const resolvedStyle = Array.isArray(style)
-      ? style.map(s => convertStyle(s as RNTextStyle))
+      ? mergeStyles(...style.map(s => convertStyle(s as RNTextStyle)))
       : convertStyle(style as RNTextStyle);
 
     // Apply default text color if not overridden
-    const finalStyle = {
+    const finalStyle: CSSProperties = {
       ...resolvedStyle,
       color: (resolvedStyle as any).color || color || colors.textPrimary,
     };
@@ -472,7 +476,7 @@ export const TouchableOpacity = forwardRef<HTMLButtonElement, IonicTouchableOpac
     ...rest
   }, ref) => {
     const resolvedStyle = Array.isArray(style)
-      ? style.map(s => convertStyle(s as RNStyle))
+      ? mergeStyles(...style.map(s => convertStyle(s as RNStyle)))
       : convertStyle(style as RNStyle);
 
     const handleClick = useCallback(() => {
@@ -493,18 +497,15 @@ export const TouchableOpacity = forwardRef<HTMLButtonElement, IonicTouchableOpac
         className={className}
         data-testid={testID}
         disabled={disabled}
-        style={[
-          resolvedStyle,
-          {
+        style={mergeStyles(resolvedStyle, {
             cursor: disabled ? 'not-allowed' : 'pointer',
             opacity: disabled ? 0.5 : activeOpacity === 1 ? 1 : undefined,
-            border: 'none',
-            background: 'transparent',
+            border: 'none' as CSSProperties['border'],
+            background: 'transparent' as CSSProperties['background'],
             padding: 0,
             margin: 0,
             ...(!disabled ? { transition: 'opacity 0.15s ease' } : {}),
-          },
-        ]}
+          })}
         onClick={handleClick}
         onMouseDown={handleMouseDown}
         onMouseUp={handleMouseUp}
@@ -623,11 +624,11 @@ export const ScrollView = forwardRef<HTMLIonContentElement, IonicScrollViewProps
     ...rest
   }, ref) => {
     const resolvedStyle = Array.isArray(style)
-      ? style.map(s => convertStyle(s as RNStyle))
+      ? mergeStyles(...style.map(s => convertStyle(s as RNStyle)))
       : convertStyle(style as RNStyle);
     const resolvedContentStyle = contentContainerStyle
       ? Array.isArray(contentContainerStyle)
-        ? contentContainerStyle.map(s => convertStyle(s as RNStyle))
+        ? mergeStyles(...contentContainerStyle.map(s => convertStyle(s as RNStyle)))
         : convertStyle(contentContainerStyle as RNStyle)
       : undefined;
 
@@ -636,12 +637,12 @@ export const ScrollView = forwardRef<HTMLIonContentElement, IonicScrollViewProps
         ref={ref}
         className={className}
         data-testid={testID}
-        style={resolvedStyle}
+        style={resolvedStyle as any}
         contentClassName={resolvedContentStyle as any}
         scrollEvents={!!onScroll}
-        onIonScroll={onScroll}
+        onIonScroll={onScroll as any}
         overflowHidden={!showsVerticalScrollIndicator}
-        {...rest}
+        {...(rest as any)}
       >
         {refreshControl}
         {children}
@@ -674,14 +675,14 @@ interface IonicImageProps {
 export const Image = React.forwardRef<HTMLImageElement, IonicImageProps>(
   ({ source, src, alt, style, className, testID, resizeMode, onLoad, onError, ...rest }, ref) => {
     const resolvedStyle = Array.isArray(style)
-      ? style.map(s => convertStyle(s as RNStyle))
+      ? mergeStyles(...style.map(s => convertStyle(s as RNStyle)))
       : convertStyle(style as RNStyle);
 
     const imageSrc = source?.uri || src;
 
-    const imgStyle: React.CSSProperties = {
+    const imgStyle: CSSProperties = {
       ...resolvedStyle,
-      objectFit: resizeMode === 'cover' ? 'cover' : resizeMode === 'contain' ? 'contain' : 'stretch',
+      objectFit: (resizeMode === 'cover' ? 'cover' : resizeMode === 'contain' ? 'contain' : 'stretch') as CSSProperties['objectFit'],
     };
 
     return (
@@ -720,10 +721,10 @@ interface IonicSafeAreaViewProps {
 export const SafeAreaView = forwardRef<HTMLDivElement, IonicSafeAreaViewProps>(
   ({ style, className, children, testID, edges = { top: true, bottom: true }, ...rest }, ref) => {
     const resolvedStyle = Array.isArray(style)
-      ? style.map(s => convertStyle(s as RNStyle))
+      ? mergeStyles(...style.map(s => convertStyle(s as RNStyle)))
       : convertStyle(style as RNStyle);
 
-    const edgePadding: React.CSSProperties = {
+    const edgePadding: CSSProperties = {
       ...(edges.top ? { paddingTop: 'env(safe-area-inset-top, 0px)' } : {}),
       ...(edges.bottom ? { paddingBottom: 'env(safe-area-inset-bottom, 0px)' } : {}),
       ...(edges.left ? { paddingLeft: 'env(safe-area-inset-left, 0px)' } : {}),
@@ -764,12 +765,12 @@ interface IonicSectionProps {
  */
 export const Section = ({ title, header, children, style, className, testID, ...rest }: IonicSectionProps) => {
   const resolvedStyle = Array.isArray(style)
-    ? style.map(s => convertStyle(s as RNStyle))
+    ? mergeStyles(...style.map(s => convertStyle(s as RNStyle)))
     : convertStyle(style as RNStyle);
 
   return (
-    <IonList className={className} data-testid={testID} style={resolvedStyle} {...rest}>
-      {title && <IonItem><IonLabel header>{title}</IonLabel></IonItem>}
+    <IonList className={className} data-testid={testID} style={resolvedStyle as any} {...rest}>
+      {title && <IonItem><IonLabel slot="header">{title}</IonLabel></IonItem>}
       {header}
       {children}
     </IonList>
@@ -825,7 +826,7 @@ export const Modal = ({
   ...rest
 }: IonicModalProps) => {
   const resolvedStyle = Array.isArray(style)
-    ? style.map(s => convertStyle(s as RNStyle))
+    ? mergeStyles(...style.map(s => convertStyle(s as RNStyle)))
     : convertStyle(style as RNStyle);
 
   return (
@@ -834,9 +835,9 @@ export const Modal = ({
       animation={animationType === 'slide' ? 'ion-slide' : animationType === 'fade' ? 'ion-fade' : undefined}
       onDidDismiss={onRequestClose}
       onDidPresent={onShow}
-      style={resolvedStyle}
+      style={resolvedStyle as any}
       data-testid={testID}
-      {...rest}
+      {...(rest as any)}
     >
       {children}
     </IonModal>
@@ -862,7 +863,7 @@ interface IonicKeyboardAvoidingViewProps {
 export const KeyboardAvoidingView = forwardRef<HTMLDivElement, IonicKeyboardAvoidingViewProps>(
   ({ style, className, children, testID, behavior = 'padding', keyboardVerticalOffset = 0, ...rest }, ref) => {
     const resolvedStyle = Array.isArray(style)
-      ? style.map(s => convertStyle(s as RNStyle))
+      ? mergeStyles(...style.map(s => convertStyle(s as RNStyle)))
       : convertStyle(style as RNStyle);
 
     // Simple padding-based approach; full implementation requires keyboard events
@@ -896,21 +897,94 @@ interface IonicAlertProps {
 
 /**
  * IonicAlert — wraps IonAlert for RN alert functionality.
+ *
+ * Also exposes a static `Alert.alert(title, message)` helper that mirrors the
+ * RN `Alert.alert(...)` API used throughout the codebase. The helper renders
+ * a lightweight imperative toast so that `Alert.alert('Erreur', 'msg')`
+ * works without requiring a React context.
  */
-export const Alert = ({ title, message, buttons, onDidDismiss, ...rest }: IonicAlertProps) => {
-  const ionButtons = (buttons || []).map(b => ({
-    text: b.text,
-    role: b.cssClass?.includes('destructive') ? 'destructive' : 'cancel',
-    handler: b.handler,
-  }));
+export const Alert = Object.assign(
+  ({ title, message, buttons, onDidDismiss, ...rest }: IonicAlertProps) => {
+    const ionButtons = (buttons || []).map(b => ({
+      text: b.text,
+      role: b.cssClass?.includes('destructive') ? 'destructive' as const : 'cancel' as const,
+      handler: b.handler,
+    }));
 
-  return (
-    <IonModal isOpen={false} initialBreakpoint={0} breakpoints={[0]}>
-      {/* Alert is shown programmatically via controller — placeholder */}
-      <div style={{ display: 'none' }} data-testid="alert-placeholder" />
-    </IonModal>
-  );
-};
+    return (
+      <IonModal isOpen={false} initialBreakpoint={0} breakpoints={[0]}>
+        {/* Alert is shown programmatically via controller — placeholder */}
+        <div style={{ display: 'none' }} data-testid="alert-placeholder" />
+      </IonModal>
+    );
+  },
+  {
+    alert(
+      title: string,
+      message?: string,
+      buttons?: Array<{ text: string; style?: 'cancel' | 'default' | 'destructive'; onPress?: () => void }>,
+      _options?: { cancelable?: boolean },
+    ) {
+      if (typeof document === 'undefined') return;
+      const el = document.createElement('div');
+      el.setAttribute('role', 'alert');
+      el.style.cssText = [
+        'position:fixed',
+        'top:20px',
+        'left:50%',
+        'transform:translateX(-50%)',
+        'z-index:9999',
+        'min-width:240px',
+        'max-width:80vw',
+        'background:rgba(30,30,30,0.95)',
+        'color:#fff',
+        'font-size:14px',
+        'font-family:system-ui,sans-serif',
+        'border-radius:12px',
+        'padding:14px 18px',
+        'box-shadow:0 6px 24px rgba(0,0,0,0.25)',
+        'text-align:center',
+        'line-height:1.4',
+      ].join(';');
+      const t = document.createElement('div');
+      t.style.fontWeight = '700';
+      t.textContent = title;
+      el.appendChild(t);
+      if (message) {
+        const m = document.createElement('div');
+        m.style.marginTop = '4px';
+        m.textContent = message;
+        el.appendChild(m);
+      }
+      // Render buttons (non-cancel actions fire their onPress; cancel removes the toast)
+      if (buttons && buttons.length > 0) {
+        const btnRow = document.createElement('div');
+        btnRow.style.cssText = 'display:flex;gap:8px;margin-top:12px;justify-content:center;flex-wrap:wrap;';
+        buttons.forEach((btn) => {
+          const b = document.createElement('button');
+          b.textContent = btn.text;
+          b.style.cssText = [
+            'padding:6px 14px',
+            'border-radius:8px',
+            'border:1px solid rgba(255,255,255,0.25)',
+            'background:rgba(255,255,255,0.1)',
+            'color:#fff',
+            'font-size:13px',
+            'cursor:pointer',
+          ].join(';');
+          b.addEventListener('click', () => {
+            el.remove();
+            if (btn.style !== 'cancel') btn.onPress?.();
+          });
+          btnRow.appendChild(b);
+        });
+        el.appendChild(btnRow);
+      }
+      document.body.appendChild(el);
+      window.setTimeout(() => el.remove(), 5000);
+    },
+  },
+);
 
 // ─── Link (RN Link -> IonRouterLink) ─────────────────────────────────────────
 
@@ -930,7 +1004,7 @@ interface IonicLinkProps {
 export const Link = forwardRef<HTMLAnchorElement, IonicLinkProps>(
   ({ href, onPress, style, className, children, testID, ...rest }, ref) => {
     const resolvedStyle = Array.isArray(style)
-      ? style.map(s => convertStyle(s as RNTextStyle))
+      ? mergeStyles(...style.map(s => convertStyle(s as RNTextStyle)))
       : convertStyle(style as RNTextStyle);
 
     return (
@@ -994,7 +1068,7 @@ export function FlatList<T = any>({
   ...rest
 }: FlatListProps<T>) {
   const resolvedStyle = Array.isArray(style)
-    ? style.map(s => convertStyle(s as RNStyle))
+    ? mergeStyles(...style.map(s => convertStyle(s as RNStyle)))
     : convertStyle(style as RNStyle);
 
   const keys = data.map((item, index) => keyExtractor?.(item, index) ?? String(index));
@@ -1053,7 +1127,7 @@ export function SectionList<T = any>({
   ...rest
 }: SectionListProps<T>) {
   const resolvedStyle = Array.isArray(style)
-    ? style.map(s => convertStyle(s as RNStyle))
+    ? mergeStyles(...style.map(s => convertStyle(s as RNStyle)))
     : convertStyle(style as RNStyle);
 
   return (
@@ -1090,7 +1164,7 @@ interface TouchableWithoutFeedbackProps {
 export const TouchableWithoutFeedback = forwardRef<HTMLDivElement, TouchableWithoutFeedbackProps>(
   ({ style, onPress, onPressIn, onPressOut, onLongPress, testID, children, ...rest }, ref) => {
     const resolvedStyle = Array.isArray(style)
-      ? style.map(s => convertStyle(s as RNStyle))
+      ? mergeStyles(...style.map(s => convertStyle(s as RNStyle)))
       : convertStyle(style as RNStyle);
 
     return (
@@ -1133,7 +1207,7 @@ interface TouchableNativeFeedbackProps {
 export const TouchableNativeFeedback = forwardRef<HTMLButtonElement, TouchableNativeFeedbackProps>(
   ({ style, onPress, testID, children, ...rest }, ref) => {
     const resolvedStyle = Array.isArray(style)
-      ? style.map(s => convertStyle(s as RNStyle))
+      ? mergeStyles(...style.map(s => convertStyle(s as RNStyle)))
       : convertStyle(style as RNStyle);
 
     return (
@@ -1181,7 +1255,7 @@ export const Pressable = forwardRef<HTMLButtonElement, PressableProps>(
       : style;
 
     const finalStyle = Array.isArray(resolvedStyle)
-      ? resolvedStyle.map(s => convertStyle(s as RNStyle))
+      ? mergeStyles(...resolvedStyle.map(s => convertStyle(s as RNStyle)))
       : convertStyle(resolvedStyle as RNStyle);
 
     return (
@@ -1190,15 +1264,12 @@ export const Pressable = forwardRef<HTMLButtonElement, PressableProps>(
         className={testID ? `pressable-${testID}` : undefined}
         data-testid={testID}
         disabled={disabled}
-        style={[
-          finalStyle,
-          {
-            cursor: disabled ? 'not-allowed' : 'pointer',
-            border: 'none',
-            background: 'transparent',
-            padding: 0,
-          },
-        ]}
+        style={mergeStyles(finalStyle, {
+          cursor: disabled ? 'not-allowed' : 'pointer',
+          border: 'none' as CSSProperties['border'],
+          background: 'transparent' as CSSProperties['background'],
+          padding: 0,
+        })}
         onClick={onPress}
         onMouseDown={onPressIn}
         onMouseUp={onPressOut}
@@ -1277,6 +1348,23 @@ export const Easing = {
   cubic: () => (t: number) => t * t * t,
 };
 
+// ─── Stack (no-op on web — React Router DOM drives navigation) ───────────
+/**
+ * Stack — stub for screens that still use React Navigation syntax
+ * (e.g. `<Stack.Screen name="..." />` in legacy files).
+ * On the web, routing is handled by React Router; this no-op keeps type-check
+ * green while we migrate those call-sites to Router.
+ */
+export const Stack = (() => (props: { children?: React.ReactNode; screenOptions?: Record<string, unknown> }) =>
+  <>{props.children}</>
+) as unknown as {
+  (props: { children?: React.ReactNode; screenOptions?: Record<string, unknown> }): React.ReactElement;
+  Screen: (props: { name: string; options?: Record<string, unknown> }) => React.ReactElement;
+  Group: (props: { children?: React.ReactNode }) => React.ReactElement;
+};
+Stack.Screen = (() => null) as unknown as () => React.ReactElement;
+Stack.Group = ({ children }) => <>{children}</>;
+
 
 // ─── TextInput (web compatible) ────────────────────────────────────────────
 export const TextInput = React.forwardRef<HTMLTextAreaElement, any>(({
@@ -1316,4 +1404,100 @@ export const TextInput = React.forwardRef<HTMLTextAreaElement, any>(({
   );
 });
 TextInput.displayName = 'TextInput';
+
+// ─── IonIcon shim — accepts numeric size (RN-compatible) ──────────────────
+/**
+ * IonIcon wrapper: accepts `size` as a number (converted to px string) so
+ * RN-style call-sites (`size={24}`) type-check against Ionic's string-only
+ * `size` prop. Delegates to the real `IonIonIcon` from @ionic/react.
+ */
+export const IonIcon = ({ size, ...rest }: {
+  size?: number | string;
+  icon?: string;
+  color?: string;
+  [key: string]: unknown;
+}) => (
+  <IonIonIcon
+    icon={rest.icon as string | undefined}
+    size={typeof size === 'number' ? `${size}px` : size}
+    color={rest.color as string | undefined}
+    {...rest}
+  />
+);
+IonIcon.displayName = 'IonIcon';
+
+// ─── ViewStyle / TextStyle type aliases (React Native compat) ─────────────
+export type ViewStyle = RNStyle;
+export type TextStyle = RNTextStyle;
+export type LayoutAnimation = { type: string; duration: number; tension: number };
+export type AnimationVariant = 'timing' | 'spring' | 'loop';
+export type AnimationType = 'timing' | 'spring';
+
+// ─── Switch (web toggle) ───────────────────────────────────────────────────
+export const Switch = React.forwardRef<HTMLButtonElement, {
+  value?: boolean;
+  onValueChange?: (v: boolean) => void;
+  style?: StyleProp<RNStyle>;
+  disabled?: boolean;
+  ios?: { onTintColor?: string; thumbColor?: string };
+  [key: string]: unknown;
+}>(({ value = false, onValueChange, style, disabled, ...rest }, ref) => {
+  const { colors } = useAppTheme();
+  const resolvedStyle = Array.isArray(style) ? mergeStyles(...style.map(s => convertStyle(s as RNStyle))) : convertStyle(style as RNStyle);
+  const handleChange = () => (onValueChange as ((v: boolean) => void) | undefined)?.(!value);
+  return (
+    <button
+      ref={ref}
+      role="switch"
+      aria-checked={value}
+      disabled={disabled}
+      onClick={handleChange}
+      style={mergeStyles(resolvedStyle, {
+        position: 'relative',
+        width: 52,
+        height: 28,
+        borderRadius: 14,
+        backgroundColor: value ? colors.primary : colors.surfaceTint,
+        border: `1px solid ${colors.border}`,
+        cursor: 'pointer',
+        transition: 'background-color 0.2s',
+      })}
+      {...rest as any}
+    >
+      <span style={{
+        position: 'absolute',
+        top: 2,
+        left: value ? 26 : 2,
+        width: 24,
+        height: 24,
+        borderRadius: 12,
+        backgroundColor: colors.surface,
+        transition: 'left 0.2s',
+        boxShadow: '0 1px 3px rgba(0,0,0,0.15)',
+      }} />
+    </button>
+  );
+});
+Switch.displayName = 'Switch';
+
+// ─── Linking (web stub) ────────────────────────────────────────────────────
+export const Linking = {
+  openURL: (url: string) => { window.open(url, '_blank'); return Promise.resolve({}); },
+  canOpenURL: (url: string) => Promise.resolve(typeof url === 'string' && url.length > 0),
+  parse: (_url: string) => ({}),
+  createURL: (_path: string, _params?: Record<string, string>) => `${window.location.origin}${_path}`,
+};
+
+// ─── PanResponder (web stub — no-op handlers) ─────────────────────────────
+export const PanResponder = {
+  create: (_config: Record<string, unknown> = {}) => ({
+    panHandlers: {} as Record<string, unknown>,
+  }),
+};
+
+// ─── useColorScheme (web stub) ─────────────────────────────────────────────
+export function useColorScheme(): 'light' | 'dark' | null {
+  const { isDark } = useAppTheme();
+  return isDark ? 'dark' : 'light';
+}
 

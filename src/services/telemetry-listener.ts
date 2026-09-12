@@ -6,7 +6,7 @@
  */
 
 import { eventBus, DomainEventTypes } from '@/domains/events';
-import type { TelemetryEvent } from '@/domains/telemetry/entities';
+import type { TelemetryEvent, ExerciseStrategy } from '@/domains/telemetry/entities';
 import { redact } from '@/domains/telemetry/entities';
 import type { ITelemetry } from '@/domains/telemetry/it telemetry';
 
@@ -30,7 +30,7 @@ function mapDomainEventToTelemetry(event: { type: string; payload: Record<string
           fsrsBefore: event.payload.fsrsBefore as { stability: number; difficulty: number; recallProbability: number; lastInterval: number; nextInterval: number; elapsedDays: number; repetitions: number; requestedRetention: number },
           fsrsAfter: event.payload.fsrsAfter as { stability: number; difficulty: number; recallProbability: number; lastInterval: number; nextInterval: number; elapsedDays: number; repetitions: number; requestedRetention: number },
           context: event.payload.context as { bookId: string; chapterNumber: number; verseNumber: number; translationId: string },
-          exerciseType: (event.payload.exerciseType as string) ?? 'active-recall',
+          exerciseType: ((event.payload.exerciseType as string) ?? 'active-recall') as ExerciseStrategy,
         },
       };
 
@@ -60,7 +60,7 @@ function mapDomainEventToTelemetry(event: { type: string; payload: Record<string
           targetId: (event.payload.targetId as string) ?? '',
           displayReference: (event.payload.displayReference as string) ?? '',
           passageLength: (event.payload.passageLength as number) ?? 0,
-          exerciseType: (event.payload.exerciseType as string) ?? 'active-recall',
+          exerciseType: ((event.payload.exerciseType as string) ?? 'active-recall') as ExerciseStrategy,
           context: event.payload.context as { bookId: string; chapterNumber: number; startVerse: number; endVerse: number; translationId: string },
         },
       };
@@ -107,7 +107,7 @@ function mapDomainEventToTelemetry(event: { type: string; payload: Record<string
           newDifficulty: (event.payload.newDifficulty as number) ?? 0,
           predictedInterval: (event.payload.predictedInterval as number) ?? 0,
           timeSpentMs: (event.payload.timeSpentMs as number) ?? 0,
-          exerciseType: (event.payload.exerciseType as string) ?? undefined,
+          exerciseType: ((event.payload.exerciseType as string) ?? undefined) as ExerciseStrategy | undefined,
         },
       };
 

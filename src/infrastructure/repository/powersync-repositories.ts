@@ -32,6 +32,14 @@ import {
 import {
   LearnerProfileRepositoryPowerSync,
 } from './learner-profile-repository-powersync';
+import {
+  TelemetryEventsRepositoryPowerSync,
+} from '@/infrastructure/telemetry/telemetry-events-repository-powersync';
+import type { ITelemetryUploadPort } from '@/infrastructure/telemetry/upload-adapter';
+import {
+  StreakRepositoryPowerSync,
+} from './streak-repository-powersync';
+import type { IStreakRepository } from '@/domains/streaks/repository';
 
 let _auth: SupabaseAuthService | null = null;
 function getAuthService(): SupabaseAuthService {
@@ -48,6 +56,17 @@ export function getSyncUserIdProvider(): ISyncUserIdProvider {
     });
   }
   return _userIdProvider;
+}
+
+/**
+ * Invalidate the cached user id. Call on logout so that no in-flight
+ * PowerSync write can resolve a stale user id after sign-out.
+ * The next `resolveUserId()` call re-fetches from `getCurrentUser()`.
+ */
+export function invalidateSyncUserIdProvider(): void {
+  if (_userIdProvider instanceof CachingSyncUserIdProvider) {
+    _userIdProvider.invalidate();
+  }
 }
 
 // ------------------------------------------------------------------
@@ -100,4 +119,22 @@ export function getLearnerProfileRepository(): LearnerProfileRepositoryPowerSync
     );
   }
   return _learnerProfileRepo;
+}
+
+let _telemetryUploadPort: ITelemetryUploadPort | null = null;
+export function getTelemetryUploadPort(): ITelemetryUploadPort {
+  if (!_telemetryUploadPort) {
+    _telemetryUploadPort = new TelemetryEventsRepositoryPowerSync(
+      getSyncUserIdProvider(),
+    );
+  }
+  return _telemetryUploadPort;
+}
+
+let _streakRepo: IStreakRepository | null = null;
+export function getStreakRepository(): IStreakRepository {
+  if (!_streakRepo) {
+    _streakRepo = new StreakRepositoryPowerSync(getSyncUserIdProvider());
+  }
+  return _streakRepo;
 }

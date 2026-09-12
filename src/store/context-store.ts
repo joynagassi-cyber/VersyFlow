@@ -8,7 +8,7 @@ import { persist, createJSONStorage } from 'zustand/middleware';
 
 export type AppContext = 'personal' | 'family';
 
-interface ContextState {
+export interface ContextState {
   activeContext: AppContext;
   activeFamilyId: string | null;
   activeLearnerId: string | null;
@@ -43,12 +43,12 @@ export const useContextStore = create<ContextState>()(
       setLearner: (learnerId) => set({ activeLearnerId: learnerId }),
 
       switchToFamily: (familyId) => {
-        const { activeProfileId, activeFamilyId: currentFamily } = get();
-        // Save personal snapshot before switching
+        // Save personal snapshot before switching.
+        // activeProfileId lives in the profile store, not in ContextState.
         set({
           activeContext: 'family',
           activeFamilyId: familyId,
-          personalSnapshot: { activeProfileId, activeFamilyId: currentFamily },
+          personalSnapshot: { activeProfileId: get().activeLearnerId, activeFamilyId: get().activeFamilyId },
         });
       },
 
