@@ -1,0 +1,8 @@
+{
+  "iso639_1": "en",
+  "name": "English",
+  "translations": [
+    { "id": "kujv", "name": "King James Version (1611)", "license": "LEGAL_REVIEW_REQUIRED", "available": false, "usfmCode": "engKJV" }
+  ],
+  "note": "English translations (WEB, WEB-Updated, RVR1909) are discovered at build time via eBible §44."
+}

@@ -1,0 +1,9 @@
+{
+  "iso639_1": "fr",
+  "name": "French",
+  "translations": [
+    { "id": "lsg",       "name": "Louis Segond (1910)", "license": "VERIFIED_FREE",   "available": true,  "usfmCode": "fraLSG" },
+    { "id": "ostervald", "name": "Ostervald (1930)",    "license": "VERIFIED_FREE",   "available": true,  "usfmCode": "fra_fob" },
+    { "id": "darby",     "name": "Darby (1865)",        "license": "LICENSE_REQUIRED","available": false, "usfmCode": "frajnd" }
+  ]
+}

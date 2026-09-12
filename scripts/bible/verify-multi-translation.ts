@@ -1,3 +1,15 @@
+/**
+ * §50 Multi-translation proof — run the SAME generic USFMAdapter over each of
+ * the three on-disk French USFM corpora and report books / verse counts.
+ *
+ * Gate: all corpora must produce exactly 66 books AND verse counts within
+ * 5% of each other (same verse-numbering convention). The D5 reference count
+ * (17,380) was measured on a synthetic placeholder corpus and is not a valid
+ * invariant for real scripture; the real corpus verse count varies slightly
+ * per translation (≈ 31,000–31,200).
+ *
+ * Usage: npx tsx scripts/bible/verify-multi-translation.ts
+ */
 import { USFMAdapter } from '../../src/infrastructure/bible/adapters/usfm-adapter';
 import { countVerses } from '../../src/domains/bible/document';
 import { readdirSync, readFileSync, existsSync } from 'node:fs';
@@ -5,46 +17,21 @@ import { join } from 'node:path';
 
 const BASE = 'data/bible/raw/fra';
 const EXPECTED_BOOKS = 66;
+const TOLERANCE = 0.05; // 5 %
 
-function parseDir(dir) {
-  const files = readdirSync(dir).filter((f) => f.endsWith('.usfm')).sort();
+function parseDir(dir: string) {
+  const files = readdirSync(dir)
+    .filter((f) => f.endsWith('.usfm'))
+    .sort();
   const all = files.map((f) => readFileSync(join(dir, f), 'utf-8')).join('\n');
   return USFMAdapter.parse(all);
 }
 
-const corpora = {
+const corpora: Record<string, string> = {
   frajnd_usfm: join(BASE, 'frajnd_usfm'),
   fra_fob_usfm: join(BASE, 'fra_fob_usfm'),
   fraLSG_usfm: join(BASE, 'fraLSG_usfm'),
 };
-
-let allPass = true;
-for (const [name, dir] of Object.entries(corpora)) {
-  if (!existsSync(dir)) {
-    console.log(`${name}: MISSING (${dir})`);
-    allPass = false;
-    continue;
-  }
-  const doc = parseDir(dir);
-  const books = doc.books.length;
-  const verses = countVerses(doc);
-  const okBooks = books === EXPECTED_BOOKS;
-  const ok = okBooks && verses > 0;
-  if (!ok) allPass = false;
-  console.log(`${name}: ${books} books ${okBooks ? '✓' : '✗'}, ${verses} verses`);
-}
-
-// §50 Gate: adapter is translation-agnostic — ALL corpora must produce:
-// 1. Exactly 66 books (canon completeness), AND
-// 2. Verse counts within 5% of each other (same verse numbering convention).
-//
-// The D5 reference count (17,380) was measured on a synthetic placeholder
-// corpus and is not a valid invariant for real scripture. The real corpus
-// verse count varies slightly per translation (≈ 31,000–31,200), driven by
-// verse-numbering conventions in different source corpora.
-const BASE = 'data/bible/raw/fra';
-const EXPECTED_BOOKS = 66;
-const TOLERANCE = 0.05; // 5 %
 
 const results: Array<{ name: string; books: number; verses: number }> = [];
 let allBooksOk = true;
@@ -66,22 +53,19 @@ for (const [name, dir] of Object.entries(corpora)) {
   );
 }
 
-// Check verse counts are within tolerance of each other
-const verses = results.map((r) => r.verses).filter((v) => v > 0);
+const verseCounts = results.map((r) => r.verses).filter((v) => v > 0);
 let verseCountGate = true;
-if (verses.length >= 2) {
-  const min = Math.min(...verses);
-  const max = Math.max(...verses);
+if (verseCounts.length >= 2) {
+  const min = Math.min(...verseCounts);
+  const max = Math.max(...verseCounts);
   const range = max - min;
   const avg = (min + max) / 2;
-  const withinTolerance = range / avg <= TOLERANCE;
-  verseCountGate = withinTolerance;
+  verseCountGate = range / avg <= TOLERANCE;
   console.log(
     `Verse count range: ${min}–${max} (Δ${range}, ${((range / avg) * 100).toFixed(1)}% — tolerance ${(TOLERANCE * 100).toFixed(0)}%)`,
   );
 }
 
-let allPass = allBooksOk && verseCountGate;
+const allPass = allBooksOk && verseCountGate;
 console.log(allPass ? '\n§50 GATE: PASS' : '\n§50 GATE: FAIL');
 process.exit(allPass ? 0 : 1);
-

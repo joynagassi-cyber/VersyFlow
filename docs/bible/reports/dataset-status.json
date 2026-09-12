@@ -1,0 +1,63 @@
+[
+  {
+    "datasetId": "lsg",
+    "status": "BUILT",
+    "datasetPath": "data/bible/lsg.json",
+    "checksum": "96d1f2e2f3d66679d161939a48154c2a246b06bcc62bfbc588c35af2cd651836",
+    "verseCount": 31170,
+    "validation": {
+      "pass": true,
+      "totalIssues": 0,
+      "issues": []
+    }
+  },
+  {
+    "datasetId": "ostervald",
+    "status": "BUILT",
+    "datasetPath": "data/bible/ostervald.json",
+    "checksum": "72766156e213aad5d9d0a5f8f083415bbc832075e34f10b2f62c43b0593bddbb",
+    "verseCount": 31107,
+    "validation": {
+      "pass": true,
+      "totalIssues": 0,
+      "issues": []
+    }
+  },
+  {
+    "datasetId": "darby",
+    "status": "BUILT",
+    "datasetPath": "data/bible/darby.json",
+    "checksum": "cbc2ddbccc696f41ad3dbf84d135f9fc3bd90cd88fdd25ca165801183058a1ea",
+    "verseCount": 31170,
+    "validation": {
+      "pass": true,
+      "totalIssues": 3,
+      "issues": [
+        {
+          "code": "EMPTY_VERSE",
+          "severity": "warning",
+          "message": "Book \"mat\" ch. 23 verse 14 is empty.",
+          "bookId": "mat",
+          "chapterNumber": 23,
+          "verseNumber": 14
+        },
+        {
+          "code": "EMPTY_VERSE",
+          "severity": "warning",
+          "message": "Book \"act\" ch. 8 verse 37 is empty.",
+          "bookId": "act",
+          "chapterNumber": 8,
+          "verseNumber": 37
+        },
+        {
+          "code": "EMPTY_VERSE",
+          "severity": "warning",
+          "message": "Book \"act\" ch. 15 verse 34 is empty.",
+          "bookId": "act",
+          "chapterNumber": 15,
+          "verseNumber": 34
+        }
+      ]
+    }
+  }
+]

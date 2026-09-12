@@ -1,0 +1,105 @@
+{
+  "languages": [
+    { "iso639_1": "fr", "name": "French", "priority": 1 },
+    { "iso639_1": "en", "name": "English", "priority": 2 },
+    { "iso639_1": "es", "name": "Spanish", "priority": 3 },
+    { "iso639_1": "pt", "name": "Portuguese", "priority": 4 },
+    { "iso639_1": "de", "name": "German", "priority": 5 },
+    { "iso639_1": "ru", "name": "Russian", "priority": 6 },
+    { "iso639_1": "uk", "name": "Ukrainian", "priority": 7 },
+    { "iso639_1": "it", "name": "Italian", "priority": 8 },
+    { "iso639_1": "ar", "name": "Arabic", "priority": 9 },
+    { "iso639_1": "zh", "name": "Chinese", "priority": 10 },
+    { "iso639_1": "ko", "name": "Korean", "priority": 11 },
+    { "iso639_1": "ja", "name": "Japanese", "priority": 12 },
+    { "iso639_1": "fa", "name": "Persian", "priority": 13 },
+    { "iso639_1": "tl", "name": "Tagalog", "priority": 14 },
+    { "iso639_1": "sw", "name": "Swahili", "priority": 15 },
+    { "iso639_1": "nl", "name": "Dutch", "priority": 16 },
+    { "iso639_1": "id", "name": "Indonesian", "priority": 17 },
+    { "iso639_1": "hi", "name": "Hindi", "priority": 18 },
+    { "iso639_1": "ml", "name": "Malayalam", "priority": 19 },
+    { "iso639_1": "no", "name": "Norwegian", "priority": 20 },
+    { "iso639_1": "sv", "name": "Swedish", "priority": 21 },
+    { "iso639_1": "da", "name": "Danish", "priority": 22 },
+    { "iso639_1": "fi", "name": "Finnish", "priority": 23 },
+    { "iso639_1": "is", "name": "Icelandic", "priority": 24 },
+    { "iso639_1": "so", "name": "Somali", "priority": 25 },
+    { "iso639_1": "la", "name": "Latin", "priority": 26 },
+    { "iso639_1": "el", "name": "Greek", "priority": 27 },
+    { "iso639_1": "he", "name": "Hebrew", "priority": 28 }
+  ],
+  "translations": [
+    {
+      "id": "lsg",
+      "language": "fr",
+      "name": "Louis Segond (1910)",
+      "year": 1910,
+      "license": "VERIFIED_FREE",
+      "available": true
+    },
+    {
+      "id": "ostervald",
+      "language": "fr",
+      "name": "Ostervald (1930)",
+      "year": 1930,
+      "license": "VERIFIED_FREE",
+      "available": true
+    },
+    {
+      "id": "darby",
+      "language": "fr",
+      "name": "Darby (1865)",
+      "year": 1865,
+      "license": "LICENSE_REQUIRED",
+      "available": false
+    },
+    {
+      "id": "kujv",
+      "language": "en",
+      "name": "King James Version (1611)",
+      "year": 1611,
+      "license": "LEGAL_REVIEW_REQUIRED",
+      "available": false
+    }
+  ],
+  "datasets": [
+    {
+      "id": "lsg",
+      "language": "fr",
+      "canon": "PROTESTANT_66",
+      "completeness": "FULL_BIBLE",
+      "expectedVerseCount": 31170,
+      "source": {
+        "rawPath": "data/bible/raw/fra/fraLSG_usfm/"
+      },
+      "checksum": "96d1f2e2f3d6"
+    },
+    {
+      "id": "ostervald",
+      "language": "fr",
+      "canon": "PROTESTANT_66",
+      "completeness": "FULL_BIBLE",
+      "expectedVerseCount": 31107,
+      "source": {
+        "rawPath": "data/bible/raw/fra/fra_fob_usfm/"
+      },
+      "checksum": "72766156e213"
+    },
+    {
+      "id": "darby",
+      "language": "fr",
+      "canon": "PROTESTANT_66",
+      "completeness": "FULL_BIBLE",
+      "expectedVerseCount": 31170,
+      "source": {
+        "rawPath": "data/bible/raw/fra/frajnd_usfm/"
+      },
+      "checksum": "cbc2ddbccc69"
+    }
+  ],
+  "notes": [
+    "This is the SEED registry (§44). The full world-corpus catalogue is populated by eBible discovery (§44/§41–§43) at build time.",
+    "New translations are REGISTRY ENTRIES, not features (§76)."
+  ]
+}
