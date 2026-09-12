@@ -138,10 +138,11 @@ export class BibleTranslationRegistry implements IBibleTranslationRegistry {
 /**
  * The app's default seeded catalogue.
  *
- * Only LSG is asserted `available` + `VERIFIED_FREE`. KJV / Ostervald / Darby
- * are listed so the UI can surface them, but are NOT asserted free — KJV in
- * particular needs jurisdiction review (public domain in the US/UK, not
- * universally). Adjust these once the source licence is verified.
+ * LSG and Ostervald (1930) are asserted `available` + `VERIFIED_FREE` — both
+ * French datasets are bundled locally under `data/bible/`. KJV and Darby are
+ * listed for the future but are NOT asserted free — KJV in particular needs
+ * jurisdiction review (public domain in the US/UK, not universally). Adjust
+ * these once the source licence is verified.
  */
 export const DEFAULT_BIBLE_TRANSLATIONS: BibleTranslationManifest[] = [
   {
@@ -173,10 +174,10 @@ export const DEFAULT_BIBLE_TRANSLATIONS: BibleTranslationManifest[] = [
     language: 'fr',
     name: 'Ostervald (1930)',
     year: 1930,
-    license: 'LICENSE_REQUIRED',
+    license: 'VERIFIED_FREE',
     direction: 'ltr',
     format: 'json',
-    available: false,
+    available: true,
   },
   {
     id: 'darby',

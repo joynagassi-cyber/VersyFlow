@@ -267,7 +267,11 @@ function generateBookData(book) {
   };
 }
 
-// Generate the complete LSG data
+// Exposed so other generators (Ostervald) can reuse the canonical structure.
+module.exports = { bibleBooks };
+
+// Generate the complete LSG data — only when run directly.
+if (require.main === module) {
 console.log('Generating LSG Bible data (v3 - realistic)...');
 
 const translation = {
@@ -308,3 +312,4 @@ fs.mkdirSync(outputDir, { recursive: true });
 const outputPath = path.join(outputDir, 'lsg.json');
 fs.writeFileSync(outputPath, JSON.stringify(translation, null, 2), 'utf8');
 console.log(`LSG data written to ${outputPath}`);
+}
