@@ -56,7 +56,7 @@ class MemorySourceProvider implements ISourceProvider {
     this.contentByDataset = contentByDataset;
     this.failDatasets = new Set(failDatasets);
   }
-  resolve(manifest: BibleDatasetManifest) {
+  async resolve(manifest: BibleDatasetManifest) {
     if (this.failDatasets.has(manifest.id)) {
       throw new Error(`source unavailable for ${manifest.id}`);
     }
@@ -64,6 +64,7 @@ class MemorySourceProvider implements ISourceProvider {
     if (content == null) {
       throw new Error(`no source content registered for ${manifest.id}`);
     }
+    await Promise.resolve();
     return { content, origin: 'local' as const, sourceChecksum: sha256(content) };
   }
 }
