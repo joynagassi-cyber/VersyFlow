@@ -44,15 +44,17 @@ const EXPECTATION: CanonExpectation = {
 };
 
 class MemorySourceProvider implements ISourceProvider {
-  resolve() {
+  async resolve() {
+    await Promise.resolve();
     return { content: USFM, origin: 'local' as const, sourceChecksum: sha256(USFM) };
   }
 }
 
 class MemoryFileWriter implements IFileWriter {
   written: Record<string, string> = {};
-  writeDataset(id: string, json: string): Promise<string> {
+  async writeDataset(id: string, json: string): Promise<string> {
     this.written[id] = json;
+    await Promise.resolve();
     return `data/bible/${id}.json`;
   }
 }

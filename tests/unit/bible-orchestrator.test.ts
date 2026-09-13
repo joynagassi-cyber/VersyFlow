@@ -71,8 +71,9 @@ class MemorySourceProvider implements ISourceProvider {
 
 class MemoryFileWriter implements IFileWriter {
   readonly written: Record<string, string> = {};
-  writeDataset(datasetId: string, json: string): Promise<string> {
+  async writeDataset(datasetId: string, json: string): Promise<string> {
     this.written[datasetId] = json;
+    await Promise.resolve();
     return `data/bible/${datasetId}.json`;
   }
 }

@@ -69,7 +69,8 @@ const TEST_EXPECTATION: CanonExpectation = {
 /** In-memory source provider (simulates local raw USFM on disk). */
 class TestSourceProvider implements ISourceProvider {
   constructor(private readonly content: string) {}
-  resolve() {
+  async resolve() {
+    await Promise.resolve();
     return {
       content: this.content,
       origin: 'local' as const,
@@ -81,9 +82,10 @@ class TestSourceProvider implements ISourceProvider {
 /** In-memory file writer (captures the written JSON for assertions). */
 class TestFileWriter implements IFileWriter {
   written: string | null = null;
-  writeDataset(_id: string, json: string): Promise<string> {
+  async writeDataset(datasetId: string, json: string): Promise<string> {
     this.written = json;
-    return 'data/bible/neo-bible.json';
+    await Promise.resolve();
+    return `data/bible/${datasetId}.json`;
   }
 }
 
