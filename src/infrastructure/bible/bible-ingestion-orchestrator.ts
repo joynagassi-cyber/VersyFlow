@@ -38,7 +38,6 @@ import {
 } from '@/infrastructure/bible/bible-validator';
 import { USFM_TO_VFLOW, usfmTestament } from '@/domains/bible/canon-maps';
 import type { BibleDatasetManifest } from '@/domains/bible/registry';
-import type { BibleTranslationData } from '@/domains/bible/repository-local';
 import type { BibleDocument } from '@/domains/bible/document';
 
 /**
@@ -111,7 +110,7 @@ export class BibleIngestionOrchestrator {
     const adapter = this.opts.adapter ?? { parse: (c: string) => USFMAdapter.parse(c) };
 
     // 1. Resolve raw source content (local reuse §72, or download).
-    const { content, sourceChecksum } = await sourceProvider.resolve(manifest);
+    const { content } = await sourceProvider.resolve(manifest);
 
     // 2. Detect format (usfm is expected; the adapter handles it).
     const format = detectFormat(content);

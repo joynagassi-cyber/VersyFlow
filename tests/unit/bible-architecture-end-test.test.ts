@@ -109,8 +109,8 @@ describe('§76 Architecture End-Test', () => {
     // 2. Output conforms to the runtime Zod schema (the exact contract that
     //    LocalBibleRepository + BibleJsonFileSource consume).
     expect(fileWriter.written).not.toBeNull();
-    const writtenJson = JSON.parse(fileWriter.written!);
-    const parsed = parseTranslationData(writtenJson as Record<string, unknown>);
+    const writtenJson = JSON.parse(fileWriter.written!) as Record<string, unknown>;
+    const parsed = parseTranslationData(writtenJson);
     expect(parsed.books).toHaveLength(3);
 
     // 3. Book ids are VersyFlow canonical ids (normalizer did its job).
@@ -133,7 +133,7 @@ describe('§76 Architecture End-Test', () => {
     await orchestrator.ingestDataset(NEW_MANIFEST);
 
     // The written JSON must pass the full Zod runtime schema.
-    const writtenJson = JSON.parse(fileWriter.written!);
+    const writtenJson = JSON.parse(fileWriter.written!) as Record<string, unknown>;
     const schemaResult = BibleTranslationDataSchema.safeParse(writtenJson);
     expect(schemaResult.success).toBe(true);
   });

@@ -65,7 +65,7 @@ describe('USFMAdapter (structural, §50 multi-style)', () => {
     expect(v1.text).not.toContain('\\xt');
   });
 
-  it('joins poetry (\q1/\q2) lines into a single verse with spaces', () => {
+  it('joins poetry (q1/q2) lines into a single verse with spaces', () => {
     const doc = parseFixture();
     const v3 = doc.books[0].chapters[0].verses[2];
     expect(v3.text).toContain('La terre n’était pas encore sortie');
@@ -91,7 +91,7 @@ describe('USFMAdapter (structural, §50 multi-style)', () => {
     expect(v1.text).toMatch(/[àâéèê]/u); // accented chars preserved
   });
 
-  it('reports a multi-book corpus (book switches on \id)', () => {
+  it('reports a multi-book corpus (book switches on id)', () => {
     const two = USFMAdapter.parse([
       '\\id GEN\n\\c 1\n\\v 1 un\n',
       '\\id MAT\n\\c 1\n\\v 1 deux\n',
