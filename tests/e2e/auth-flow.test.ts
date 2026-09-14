@@ -1,17 +1,17 @@
 /**
  * E2E Test - Authentication Flow
- * Teste les flux d'authentification complets
+ * Teste les flux d'authentification complets (Supabase)
  */
 
 describe('VersyFlow E2E - Authentication Flow', () => {
   describe('Service initialization', () => {
-    it('should initialize with correct InsForge URL', () => {
-      const url = 'https://wypi8tgf.eu-central.insforge.app';
-      expect(url).toBe('https://wypi8tgf.eu-central.insforge.app');
+    it('should initialize with correct Supabase URL', () => {
+      const url = 'https://dspqvyesfngxuwqhceog.supabase.co';
+      expect(url).toBe('https://dspqvyesfngxuwqhceog.supabase.co');
     });
 
     it('should have anon key configured', () => {
-      const key = 'anon_5db10acfd8d50598afafe6d574dfd647edd9fba32514816c7f4c00346651a7c6';
+      const key = 'sb_publishable_xY_pLCgEB5TzBu_bNWHVbA_YgqbOJBX';
       expect(key).toBeDefined();
       expect(key.length).toBeGreaterThan(10);
     });

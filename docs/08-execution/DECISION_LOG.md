@@ -12,18 +12,18 @@
 **Date**: Sprint 0 Jour 1
 **Décidé par**: CEO (sur base de specs V1)
 **Contexte**: Choix technologique pour le MVP
-**Décision**: React Native + Expo + TypeScript + Rust (FSRS) + MMKV + Zustand + Reanimated
+**Décision**: Ionic React + Capacitor + TypeScript + Rust (FSRS) + Capacitor SQLite + Zustand
 **Justification**:
-- Expo: OTA updates, ecosystem mature, community support
+- Capacitor: WebView natif, multiplateforme, écosystème React
 - TypeScript: strict mode for type safety
 - Rust WASM: FSRS needs precision SM-2 can't provide
-- MMKV: fastest JS storage for React Native
+- Capacitor SQLite: stockage natif rapide, PowerSync pour sync
 - Zustand: lightweight state management
-- Reanimated: smooth animations at 60fps
+- Ionic React: composants UI natifs web, 60fps
 **Alternatives rejetees**:
-- Flutter → rejeté: team knowns React Native, Expo ecosystem superior
+- Flutter → rejeté: stack React déjà en place
 - Redux → rejeté: Zustand is lighter and sufficient for MVP scope
-- SQLite → rejected: MMKV sufficient for MVP data volume (~250KB for 500 verses)
+- PowerSync cloud sync (V1): Capacitor SQLite est suffisant pour le MVP
 **Statut**: ACTIVE
 
 ### DEC-002: Default Bible Translation = LSG (Louis Segond 1910)
@@ -53,16 +53,16 @@
 ### DEC-004: FSRS via WASM avec fallback SM-2 JS
 **Date**: Sprint 2 Jour 1
 **Décidé par**: CEO (sur base de 13-fsrs-domain.md)
-**Contexte**: Comment intégrer l'algorithme FSRS Rust dans React Native
+**Contexte**: Comment intégrer l'algorithme FSRS Rust dans Ionic Web (Capacitor)
 **Décision**: Compiler en WASM + loader asynchrone + fallback SM-2 JS si échec
 **Justification**:
 - WASM: FSRS math requires precision and performance only Rust provides
 - Fallback SM-2: ensures app works even if WASM fails (offline-first principle)
 - Async loading: doesn't block UI startup
-**Alternatives rejetees**:
+**Alternatives rejetées**:
 - Pure JavaScript FSRS → too slow, less accurate, no access to optimized fsrs-rs crate
-- React Native native module → adds complexity to build process, harder to maintain
-- Web worker → not available in React Native
+- Native module JS → ajoute de la complexité au build process, moins maintainable
+- Web worker → non nécessaire avec Capacitor WebView (disponible via Worker API web)
 **Statut**: ACTIVE
 
 ### DEC-005: 5 Langues UI au MVP (FR, EN, AR, DE, ZH)
@@ -76,7 +76,7 @@
 - 10+ langues → too much translation work delays MVP
 **Statut**: ACTIVE
 
-### DEC-006: Stockage local UNIQUE (MMKV), pas de cloud sync au MVP
+### DEC-006: Stockage local UNIQUE (Capacitor SQLite + PowerSync), pas de cloud sync au MVP
 **Date**: Sprint 0 Jour 1
 **Décidé par**: CEO (sur base de 09-architecture.md section Offline-First)
 **Contexte**: Sync vs offline-only
@@ -134,7 +134,7 @@
 ### DEC-011: settings synchronisé tel quel, thème y compris (I9)
 **Date**: 2026-09-10
 **Décidé par**: Product owner
-**Contexte**: `settings.theme` est classé EPHEMERAL (à vivre dans Capacitor Preferences, jamais MMKV). Question : faut-il l'exclure du sync ?
+**Contexte**: `settings.theme` est classé EPHEMERAL (à vivre dans Capacitor Preferences, jamais Capacitor SQLite). Question : faut-il l'exclure du sync ?
 **Décision**: La table `settings` est **synchronisée telle quelle** (dont `theme`). Le champ thème est le seed/backup de préférence ; l'app lit l'état courant de Capacitor Preferences et ne doit pas dépendre du sync pour son thème.
 **Justification**: Unicité de la source de préférences persistentes ; éviter une double écriture ; le sync ne bloque jamais le rendu (offline-first).
 **Alternatives rejetées**:

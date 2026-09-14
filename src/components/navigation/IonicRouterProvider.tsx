@@ -56,6 +56,9 @@ const SettingsPrivacy = React.lazy(() => import('@/app/settings/privacy'));
 const SettingsAbout = React.lazy(() => import('@/app/settings/about'));
 const SettingsSession = React.lazy(() => import('@/app/settings/session'));
 const SettingsReminders = React.lazy(() => import('@/app/settings/reminders'));
+const SettingsAvailableTranslations = React.lazy(
+  () => import('@/app/settings/available-translations'),
+);
 const NotificationsPage = React.lazy(() => import('@/app/notifications'));
 const OnboardingWelcome = React.lazy(() => import('@/app/onboarding/welcome'));
 const OnboardingLanguageSelect = React.lazy(() => import('@/app/onboarding/language-select'));
@@ -373,6 +376,10 @@ export function IonicRouterProvider({ children }: { children: React.ReactNode })
             <Route path="/settings/about" element={<SettingsAbout />} />
             <Route path="/settings/session" element={<SettingsSession />} />
             <Route path="/settings/reminders" element={<SettingsReminders />} />
+            <Route
+              path="/settings/available-translations"
+              element={<SettingsAvailableTranslations />}
+            />
 
             {/* Memory */}
             <Route path="/memory/start" element={<MemoryStart />} />

@@ -61,6 +61,9 @@ const FamilyJoin = lazy(() => import('../app/family/join'));
 
 // Settings sub-pages
 const SettingsLanguages = lazy(() => import('../app/settings/languages'));
+const SettingsAvailableTranslations = lazy(
+  () => import('../app/settings/available-translations'),
+);
 const SettingsAppearance = lazy(() => import('../app/settings/appearance'));
 const SettingsBackup = lazy(() => import('../app/settings/backup'));
 const SettingsAbout = lazy(() => import('../app/settings/about'));
@@ -276,6 +279,10 @@ function App() {
               {/* Settings sub-pages */}
               <Route path="/settings" element={<SettingsIndex />} />
               <Route path="/settings/languages" element={<SettingsLanguages />} />
+              <Route
+                path="/settings/available-translations"
+                element={<SettingsAvailableTranslations />}
+              />
               <Route path="/settings/appearance" element={<SettingsAppearance />} />
               <Route path="/settings/backup" element={<SettingsBackup />} />
               <Route path="/settings/about" element={<SettingsAbout />} />

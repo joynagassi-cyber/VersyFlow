@@ -138,6 +138,47 @@ function buildExpectation(): CanonExpectation {
 }
 
 // ---------------------------------------------------------------------------
+// Raw USFM source paths (per dataset id)
+// ---------------------------------------------------------------------------
+const RAW_PATHS: Record<string, string> = {
+  lsg: 'fra/fraLSG_usfm',
+  ostervald: 'fra/fra_fob_usfm',
+  darby: 'fra/frajnd_usfm',
+  // Additional datasets have raw dirs under data/bible/raw/{lang}/
+  'ar-nav': 'ar/ar-nav_usfm',
+  'cmnswcb': 'zh/cmnswcb_usfm',
+  'cmn-uvs': 'zh/cmn-uvs_usfm',
+  'da-1931': 'da/da-1931_usfm',
+  'es-godword': 'es/es-godword_usfm',
+  'es-onbv': 'es/es-onbv_usfm',
+  'fa-opcb': 'fa/fa-opcb_usfm',
+  francrampon: 'fr/francrampon_usfm',
+  'frlsg-eb': 'fr/frlsg-eb_usfm',
+  'hi-irv': 'hi/hi-irv_usfm',
+  'it-diodati1885': 'it/it-diodati1885_usfm',
+  'it-riveduta1927': 'it/it-riveduta1927_usfm',
+  'jp-freedom': 'jp/jp-freedom_usfm',
+  'ko-1910': 'ko/ko-1910_usfm',
+  'la-vulgate': 'la/la-vulgate_usfm',
+  luther1912: 'de/luther1912_usfm',
+  'ml-irv': 'ml/ml-irv_usfm',
+  'nl-1917': 'nl/nl-1917_usfm',
+  'nl-nbg1951': 'nl/nl-nbg1951_usfm',
+  'pt-onbv': 'pt/pt-onbv_usfm',
+  'ru-synodal': 'ru/ru-synodal_usfm',
+  rv1909: 'sw/rv1909_usfm',
+  schlatter1951: 'de/schlatter1951_usfm',
+  'so-bible': 'so/so-bible_usfm',
+  'sv-ntplus': 'sv/sv-ntplus_usfm',
+  'sw-ulb': 'sw/sw-ulb_usfm',
+  'tl-ulb': 'tl/tl-ulb_usfm',
+  'uk-bju1996': 'uk/uk-bju1996_usfm',
+  'uk-kulish1871': 'uk/uk-kulish1871_usfm',
+  web: 'en/web_usfm',
+  webu: 'en/webu_usfm',
+};
+
+// ---------------------------------------------------------------------------
 // Manifest seed (from registry + raw source discovery)
 // ---------------------------------------------------------------------------
 
@@ -146,9 +187,7 @@ function buildManifests(): BibleDatasetManifest[] {
     ...t,
     canon: 'PROTESTANT_66' as const,
     completeness: 'FULL_BIBLE' as const,
-    source: t.id === 'lsg' ? { rawPath: 'fra/fraLSG_usfm' } :
-           t.id === 'ostervald' ? { rawPath: 'fra/fra_fob_usfm' } :
-           t.id === 'darby' ? { rawPath: 'fra/frajnd_usfm' } : undefined,
+    source: RAW_PATHS[t.id] ? { rawPath: RAW_PATHS[t.id] } : undefined,
   }));
 }
 

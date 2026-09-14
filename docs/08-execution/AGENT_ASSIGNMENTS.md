@@ -66,7 +66,7 @@
 ### 3. Herald — Architecte UI & Navigation
 
 **Dossiers propriétaires**: Tous les ecrans, composants UI, hooks, et animations
-- app/** (tous les ecra ns Expo Router)
+- app/** (tous les écrans React Router DOM)
 - src/components/ui/** (apres les 3 premiers de Forge)
 - src/components/common/** (HeaderBar, TabNavigation, EmptyState, ToastNotification, SearchBar, StatCard, LoadingSpinner, Skeleton)
 - src/components/bible/** (BookCard, ChapterGrid, VerseCard, WordChip, ReferenceSearchInput)

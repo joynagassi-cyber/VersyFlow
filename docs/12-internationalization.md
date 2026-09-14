@@ -271,7 +271,7 @@ Quand `language === 'ar'` (ou autre langue RTL), `isRTL()` retourne `true`.
 - **Icons**: Certains icons doivent être mirrorés (flèche, bookmark)
 - **Texte**: Direction du texte forcée en RTL
 
-### Mise en œuvre React Native
+### Mise en œuvre Ionic Web (Capacitor)
 ```typescript
 import { I18nManager } from 'react-native';
 import { useI18n } from '@/i18n/hooks';

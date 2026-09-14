@@ -355,7 +355,7 @@ jobs:
   deploy-preview:
     needs: [test, e2e]
     if: github.event_name == 'pull_request'
-    runs: expo publish --profile preview
+    runs: npm run build && npm run cap:sync   # preview web bundle in Capacitor WebView
 ```
 
 ---

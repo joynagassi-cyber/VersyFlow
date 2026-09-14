@@ -1,6 +1,6 @@
 -- =====================================================
 -- SUPABASE MIGRATION 001: CORE TABLES
--- Migration from InsForge to Supabase
+-- Migration to Supabase (backend primaire)
 -- Date: 2026-09-09
 -- Tables: 10 core tables + RLS + Indexes + Triggers
 -- =====================================================

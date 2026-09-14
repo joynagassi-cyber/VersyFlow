@@ -9,7 +9,7 @@
 ```
 versyflow/
 │
-├── app/                              # Expo Router (file-based routing)
+├── app/                              # Écrans (React Router DOM)
 │   ├── (tabs)/                       # Tab navigator screens
 │   │   ├── _layout.tsx               # Tab layout shell
 │   │   ├── index.tsx                 # Home tab

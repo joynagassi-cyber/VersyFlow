@@ -1,19 +1,25 @@
 /**
- * API Tests - InsForge Database Integration
- * Teste les interactions avec la base de données InsForge
+ * API Tests — Supabase Database Integration
+ * Teste les interactions avec la base de données Supabase (backend primaire)
  */
 
-describe('VersyFlow API Tests - InsForge Database', () => {
+describe('VersyFlow API Tests — Supabase Database', () => {
   describe('Database configuration', () => {
-    it('should have correct InsForge URL', () => {
-      const url = process.env.EXPO_PUBLIC_INSFORGE_URL || process.env.INFORGE_URL || 'https://wypi8tgf.eu-central.insforge.app';
-      expect(url).toBe('https://wypi8tgf.eu-central.insforge.app');
+    it('should have correct Supabase URL', () => {
+      const url =
+        process.env.VITE_SUPABASE_URL ||
+        process.env.SUPABASE_URL ||
+        'https://dspqvyesfngxuwqhceog.supabase.co';
+      expect(url).toBe('https://dspqvyesfngxuwqhceog.supabase.co');
     });
 
     it('should have anon key configured', () => {
-      const key = process.env.EXPO_PUBLIC_INSFORGE_ANON_KEY || process.env.INFORGE_ANON_KEY || 'anon_test_key';
+      const key =
+        process.env.VITE_SUPABASE_ANON_KEY ||
+        process.env.SUPABASE_ANON_KEY ||
+        'sb_publishable_xY_pLCgEB5TzBu_bNWHVbA_YgqbOJBX';
       expect(key).toBeDefined();
-      expect(key.startsWith('anon_')).toBe(true);
+      expect(key.startsWith('sb_publishable_')).toBe(true);
     });
   });
 

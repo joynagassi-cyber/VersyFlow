@@ -11,11 +11,13 @@ import FullScreenPage from '@/components/layout/FullScreenPage';
 import { Button } from '@/components/ui/button';
 import { BIBLE_BOOKS } from '@/domains/bible/entities';
 import { loadTranslationBooks } from '@/services/bible-text-service';
+import { useSettingsStore } from '@/store/settings-store';
 
 export default function ChapterScreen() {
   const [params] = useSearchParams();
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
+  const bibleTranslation = useSettingsStore((s) => s.bibleTranslation);
 
   const bookId = params.get('book') ?? 'gen';
   const chapter = Number(params.get('chapter') ?? '1');
@@ -26,7 +28,7 @@ export default function ChapterScreen() {
 
   useEffect(() => {
     let cancelled = false;
-    loadTranslationBooks().then((booksData) => {
+    loadTranslationBooks(bibleTranslation).then((booksData) => {
       if (cancelled || !booksData) return;
       const b = booksData.find((x) => x.id === bookId);
       const ch = b?.chapters.find((c) => c.number === chapter);
@@ -39,7 +41,7 @@ export default function ChapterScreen() {
     return () => {
       cancelled = true;
     };
-  }, [bookId, chapter]);
+  }, [bookId, chapter, bibleTranslation]);
 
   const memorizePassage = () => {
     const params = new URLSearchParams();

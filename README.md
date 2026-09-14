@@ -8,8 +8,8 @@
 
 **Mémorisation biblique intuitive — Science • Élégance • Foi**
 
-[![React Native](https://img.shields.io/badge/React%20Native-000?style=flat-square&logo=react)](https://reactnative.dev/)
-[![Expo](https://img.shields.io/badge/Expo-100059?style=flat-square&logo=expo)](https://expo.dev/)
+[![Ionic React](https://img.shields.io/badge/Ionic%20React-663399?style=flat-square&logo=ionic&logoColor=fff)](https://ionicframework.com/)
+[![Capacitor](https://img.shields.io/badge/Capacitor-023c69?style=flat-square&logo=capacitor)](https://capacitorjs.com/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=fff)](https://www.typescriptlang.org/)
 [![Rust](https://img.shields.io/badge/Rust-000?style=flat-square&logo=rust&logoColor=orange)](https://www.rust-lang.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](LICENSE)
@@ -24,7 +24,7 @@
 
 Elle combine :
 - Un **moteur FSRS (Free Spaced Repetition Scheduler)** écrit en Rust pour une précision maximale de mémorisation
-- Une architecture **React Native + Expo** pour une compatibilité multiplateforme fluide
+- Une architecture **Ionic React + Capacitor** pour une compatibilité multiplateforme fluide
 - Un support **multilingue** dès la conception (interface + traductions bibliques indépendantes)
 - Une approche **offline-first** totale
 
@@ -53,7 +53,7 @@ Elle combine :
 
 ```
 VersyFlow/
-├── app/                    # Écrans Expo Router
+├── app/                    # Écrans React Router
 ├── src/
 │   ├── components/         # Composants UI réutilisables (view uniquement)
 │   ├── domains/            # Couche domaine (Bible, FSRS, i18n)
@@ -98,7 +98,7 @@ Toute la documentation du projet se trouve dans le dossier `docs/` :
 |-------|-----------------|
 | Node.js | >= 18.x |
 | npm / pnpm | >= 9.x |
-| Expo CLI | >= 16.x |
+| Capacitor CLI | >= 8.x |
 | Rust | >= 1.75 (pour compilation WASM) |
 | Xcode | >= 15 (iOS targeting) |
 | Android Studio | >= 2023 (API 26 targeting) |
@@ -116,11 +116,11 @@ npm install
 pnpm install
 
 # 3. Lancer l'application
-npx expo start
+npm run dev                # Dev server web (Vite)
 
-# 4. Ouvrir sur un émulateur
-npx expo run:ios   # iOS
-npx expo run:android  # Android
+# 4. Ouvrir sur une plateforme native (Capacitor)
+npm run cap:run:ios      # iOS
+npm run cap:run:android  # Android
 ```
 
 ## 🧪 Tests
@@ -174,6 +174,6 @@ Ce projet est sous licence MIT. Voir [LICENSE](LICENSE) pour plus de détails.
 
 **VersyFlow** — *La science de la mémorisation au service de la Parole*
 
-Made with ❤️ et foi • React Native • Expo • Rust • FSRS
+Made with ❤️ et foi • Ionic React • Capacitor • Rust • FSRS
 
 </div>

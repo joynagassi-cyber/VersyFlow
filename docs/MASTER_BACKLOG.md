@@ -29,17 +29,17 @@
 
 ## Sprint 0 — Fondations (Jours 1-10)
 
-### S0-01: Expo Project Initialized
+### S0-01: Capacitor Android Platform Initialized
 - **ID**: S0-01
 - **Module**: Core/Configuration
 - **Dépendances**: Aucune
 - **Propriétaire**: Forge
 - **Priorité**: P0
-- **Fichiers**: package.json, app.json, tsconfig.json, babel.config.js, metro.config.js
-- **Tests requis**: `npx expo start` fonctionne
-- **Critères d'acceptation**: Expo CLI lance sans erreur, build iOS et Android simulés passent
+- **Fichiers**: package.json, capacitor.config.ts, tsconfig.json, babel.config.js
+- **Tests requis**: `npx cap:sync` s'exécute sans erreur, le web build Vite est empaqueté dans le WebView Capacitor
+- **Critères d'acceptation**: `npx cap:sync` réussit, builds Android via gradle passent
 - **Statut**: DONE ✅
-- **Commentaires**: Configuration Expo 52 + React Native 0.76 implémentée
+- **Commentaires**: Migration d'Expo → Capacitor 8 (envelope Android) + Ionic React 7 (UI), 2026-09
 
 ### S0-02: ESLint + Prettier + Husky Configured
 - **ID**: S0-02
@@ -149,7 +149,7 @@
 - **Statut**: DONE ✅
 - **Commentaires**: Stores fins comme requis, pas de logique metier dedans
 
-### S0-11: Expo Router Navigation Shell
+### S0-11: React Router Navigation Shell
 - **ID**: S0-11
 - **Module**: App/Navigation
 - **Dépendances**: S0-03
@@ -159,7 +159,7 @@
 - **Tests requis**: Navigation route resolution
 - **Critères d'acceptation**: Stack layout with modal presentations, tab bar with 4 tabs defined
 - **Statut**: DONE ✅
-- **Commentaires**: Expo Router typed routes enabled per best practices
+- **Commentaires**: React Router v6 (remplace Expo Router) — navigation déclarative, lazy loading
 
 ### S0-12: Root Layout with i18n Init
 - **ID**: S0-12
@@ -216,7 +216,7 @@
 - **Propriétaire**: Anvil
 - **Priorité**: P1
 - **Fichiers**: jest.config.js
-- **Tests requis**: Jest runs with expo preset
+- **Tests requis**: Vitest (runner actif, remplace Jest) — `npx vitest run` passe
 - **Critères d'acceptation**: Coverage thresholds set (70% global), module name mapper @/*
 - **Statut**: DONE ✅
 - **Commentaires**: Basic Jest setup, full coverage metrics defined in testing-strategy.md

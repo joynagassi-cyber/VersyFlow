@@ -1,6 +1,6 @@
 /**
  * E2E Test - Cloud Sync Flow
- * Teste la synchronisation avec InsForge
+ * Teste la synchronisation avec Supabase (PowerSync)
  */
 
 describe('VersyFlow E2E - Cloud Sync Flow', () => {

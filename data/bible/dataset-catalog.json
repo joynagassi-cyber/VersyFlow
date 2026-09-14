@@ -1,0 +1,200 @@
+[
+  {
+    "id": "cmn-uvs",
+    "checksum": "cd442dabf0d6d21d71bf74f4802d1f3e3722c813f7958c5164e888208aec6294",
+    "sizeBytes": 6103933,
+    "builtAt": "2026-09-13T19:41:18.841Z"
+  },
+  {
+    "id": "cmnswcb",
+    "checksum": "124b94dec5f3484bcda38fe24b5969a3ad6e1fd47a327109b15343f2a4892f8f",
+    "sizeBytes": 6102263,
+    "builtAt": "2026-09-13T19:41:21.980Z"
+  },
+  {
+    "id": "da-1931",
+    "checksum": "56219547c7efd2b50b1a4fab9fc56e9e055f77ece1994c18015653e5007685b7",
+    "sizeBytes": 6345129,
+    "builtAt": "2026-09-13T19:42:09.121Z"
+  },
+  {
+    "id": "darby",
+    "checksum": "cbc2ddbccc696f41ad3dbf84d135f9fc3bd90cd88fdd25ca165801183058a1ea",
+    "sizeBytes": 7098451,
+    "builtAt": "2026-09-12T21:46:42.443Z"
+  },
+  {
+    "id": "es-godword",
+    "checksum": "096b01bac0d09fdfb3eb46b99db615c7cece5dbdb9dfbbc34ed7397e91cafc0d",
+    "sizeBytes": 6521308,
+    "builtAt": "2026-09-13T19:40:35.655Z"
+  },
+  {
+    "id": "es-onbv",
+    "checksum": "2ce6909c0b248ace12840c66e8a4420926e86e3f25c922501d330bd6c4d77327",
+    "sizeBytes": 7022528,
+    "builtAt": "2026-09-13T19:40:29.688Z"
+  },
+  {
+    "id": "fa-opcb",
+    "checksum": "a24b97095b858cd202f6c7012acd8d518a684cbad1c88b02c525878d2cd2c5cc",
+    "sizeBytes": 8678973,
+    "builtAt": "2026-09-13T19:41:34.524Z"
+  },
+  {
+    "id": "francrampon",
+    "checksum": "ede8c01a808b5a8c5447652537b1131decd91fcb9e03df60b1ae05f8fd98e726",
+    "sizeBytes": 7315961,
+    "builtAt": "2026-09-13T19:40:01.926Z"
+  },
+  {
+    "id": "frlsg-eb",
+    "checksum": "15b3c79b287451c4dba5f8134d72666c9fefb4ef0c00c3788749785b3ff19f52",
+    "sizeBytes": 6986768,
+    "builtAt": "2026-09-13T19:40:07.028Z"
+  },
+  {
+    "id": "hi-irv",
+    "checksum": "cee8774675808dfceef360543c86ff11095a0ca4709cfb27bb332e104f19ef87",
+    "sizeBytes": 12189465,
+    "builtAt": "2026-09-13T19:41:54.392Z"
+  },
+  {
+    "id": "it-diodati1885",
+    "checksum": "f98fd79fb872acf5c99c59da2a603736e19a588d5e03e918af07018663ca7509",
+    "sizeBytes": 7211170,
+    "builtAt": "2026-09-13T19:41:07.163Z"
+  },
+  {
+    "id": "it-riveduta1927",
+    "checksum": "44515b50648cb6e3fd1d31682354278f1364612baa2b90638b1a96f1165bd08e",
+    "sizeBytes": 6799216,
+    "builtAt": "2026-09-13T19:41:12.384Z"
+  },
+  {
+    "id": "jp-freedom",
+    "checksum": "1e72fce4365dad7057859eb4adf325c0502999f22a4eccac24a6b95e9e9901be",
+    "sizeBytes": 7718586,
+    "builtAt": "2026-09-13T19:41:30.004Z"
+  },
+  {
+    "id": "ko-1910",
+    "checksum": "564c1bec1f1923eee12b91afa922571a99eb818444f357a017e7f8d27b5a218c",
+    "sizeBytes": 7048700,
+    "builtAt": "2026-09-13T19:41:26.346Z"
+  },
+  {
+    "id": "la-vulgate",
+    "checksum": "90c1eb20daa348b48fc9892d18544337673a28cec57e9a0100d6a0fa9c689d36",
+    "sizeBytes": 6395795,
+    "builtAt": "2026-09-13T19:42:17.972Z"
+  },
+  {
+    "id": "lsg",
+    "checksum": "96d1f2e2f3d66679d161939a48154c2a246b06bcc62bfbc588c35af2cd651836",
+    "sizeBytes": 6986776,
+    "builtAt": "2026-09-12T21:46:32.673Z"
+  },
+  {
+    "id": "luther1912",
+    "checksum": "9c7711fe28c68456e63b21a13a7699fe022de1e6305696806e91d7486087dd47",
+    "sizeBytes": 6669469,
+    "builtAt": "2026-09-13T19:40:44.446Z"
+  },
+  {
+    "id": "ml-irv",
+    "checksum": "04bdc1c94c78f6c8f824458b954bcaeba23a0df85bfc99da5498fbd1d829db46",
+    "sizeBytes": 13834467,
+    "builtAt": "2026-09-13T19:41:59.904Z"
+  },
+  {
+    "id": "nl-1917",
+    "checksum": "f3cee2bd0a80d23b3d26185e2432f5dfe421229696c8d75a7939d7613a0a1c58",
+    "sizeBytes": 6887685,
+    "builtAt": "2026-09-13T19:41:46.026Z"
+  },
+  {
+    "id": "nl-nbg1951",
+    "checksum": "90803bbc2cc3dd3c195adad0a711226569d23566b040ad7e0863bec305ba43ea",
+    "sizeBytes": 6700582,
+    "builtAt": "2026-09-13T19:41:50.112Z"
+  },
+  {
+    "id": "ostervald",
+    "checksum": "72766156e213aad5d9d0a5f8f083415bbc832075e34f10b2f62c43b0593bddbb",
+    "sizeBytes": 7042710,
+    "builtAt": "2026-09-12T21:46:39.344Z"
+  },
+  {
+    "id": "pt-onbv",
+    "checksum": "e19c6dc3877a05156700962e58e648fc06da6f3cab49a942b3b8bdff5857282e",
+    "sizeBytes": 7069049,
+    "builtAt": "2026-09-13T19:40:40.434Z"
+  },
+  {
+    "id": "ru-synodal",
+    "checksum": "79a5f1a88a6c5ee1f6d55efdd9299a194b9f2b2805f9de00d32d77c9cb033783",
+    "sizeBytes": 8558649,
+    "builtAt": "2026-09-13T19:40:52.192Z"
+  },
+  {
+    "id": "rv1909",
+    "checksum": "83ececa5a3d7d510df696f3070890e66f38bec155a13e4d28cb69395db67bc41",
+    "sizeBytes": 6597666,
+    "builtAt": "2026-09-13T19:40:25.636Z"
+  },
+  {
+    "id": "schlatter1951",
+    "checksum": "f6fdde4b67921acec0bde2a0a77391ee978fab45564a9e6846380417686951a8",
+    "sizeBytes": 6813495,
+    "builtAt": "2026-09-13T19:40:48.994Z"
+  },
+  {
+    "id": "so-bible",
+    "checksum": "7525cecba64d340e4eb129a131bcd433d54b3715308ac656a2f0c02b375e2187",
+    "sizeBytes": 7127471,
+    "builtAt": "2026-09-13T19:42:12.501Z"
+  },
+  {
+    "id": "sv-ntplus",
+    "checksum": "82cb31f7db1199e7853a383578aec39a5aad3e2790633016069475360761555a",
+    "sizeBytes": 8395260,
+    "builtAt": "2026-09-13T19:42:04.776Z"
+  },
+  {
+    "id": "sw-ulb",
+    "checksum": "5b913101411b6423410805415298dbcd1ff3e386063cc6791fa42d1c99f216a7",
+    "sizeBytes": 6443553,
+    "builtAt": "2026-09-13T19:41:42.834Z"
+  },
+  {
+    "id": "tl-ulb",
+    "checksum": "4785d41c402d5865b1538be466c1c3468282cba80a0421a034ab0a0469330a7d",
+    "sizeBytes": 7534220,
+    "builtAt": "2026-09-13T19:41:38.330Z"
+  },
+  {
+    "id": "uk-bju1996",
+    "checksum": "89aa244b06802b3f13f413878f6cb82a31d5d6ed83d579370f6cfed4cf1f915a",
+    "sizeBytes": 8644575,
+    "builtAt": "2026-09-13T19:40:57.427Z"
+  },
+  {
+    "id": "uk-kulish1871",
+    "checksum": "abc61716d3ded5a9d859bf0966b0f26ace238a9480765a1042a45a24849cc193",
+    "sizeBytes": 8644581,
+    "builtAt": "2026-09-13T19:41:02.808Z"
+  },
+  {
+    "id": "web",
+    "checksum": "a8e6c04ef0a4100d1ff346edde09e4666e9b4fa0b62845a47894359fb2ec8482",
+    "sizeBytes": 6598884,
+    "builtAt": "2026-09-13T19:40:13.599Z"
+  },
+  {
+    "id": "webu",
+    "checksum": "3fd3c72fc66069fe977cb0000c28b145d248b517b6e1e620da7f41cecc9505d4",
+    "sizeBytes": 6973367,
+    "builtAt": "2026-09-13T19:40:20.759Z"
+  }
+]

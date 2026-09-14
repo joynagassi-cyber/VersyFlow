@@ -1,22 +1,18 @@
 # AGENTS.md
 
-<!-- INSFORGE:START -->
-## InsForge backend
+<!-- SUPABASE:START -->
+## Supabase backend (backend primaire)
 
-This project uses [InsForge](https://insforge.dev): an all-in-one, open-source Postgres-based backend (BaaS) that gives this app a database, authentication, file storage, edge functions, realtime, an AI model gateway, and payments through one platform.
+Ce projet utilise [Supabase](https://supabase.com) : un backend Postgres open-source (BaaS) qui fournit à l'application une base de données, de l'authentification (GoTrue), du stockage de fichiers, des edge functions (Deno), du realtime et une couche de sync via [PowerSync](https://powersync.com).
 
-- **Project:** **oss-project** (API base `https://wypi8tgf.eu-central.insforge.app`)
-- **Skills:** these InsForge skills are installed for supported coding agents. Reach for them before implementing any InsForge feature instead of guessing the API:
-  - `insforge`: app code with the `@insforge/sdk` client (database CRUD, auth, storage, edge functions, realtime, AI, email, and Stripe payments).
-  - `insforge-cli`: backend and infrastructure via the `insforge` CLI (projects, SQL, migrations, RLS policies, storage buckets, functions, secrets, payment setup, schedules, deploys).
-  - `insforge-debug`: diagnosing failures (SDK/HTTP errors, RLS denials, auth and OAuth issues) and running security or performance audits.
-  - `insforge-integrations`: wiring external auth providers (Clerk, Auth0, WorkOS, Better Auth, etc.) for JWT-based RLS, or the OKX x402 payment facilitator.
-  - `find-skills`: discovering additional skills on demand.
-- **Credentials:** app code reads keys from `.env.local`; the CLI reads `.insforge/project.json`. Never hardcode or commit keys.
+- **Projet** : API base `https://dspqvyesfngxuwqhceog.supabase.co` (voir `.env.local` → `VITE_SUPABASE_URL`)
+- **Client** : `@supabase/supabase-js` (authentification + RLS CRUD), `@powersync/web` + `@powersync/capacitor` pour la synchronisation temps réel des données applicatives
+- **Credentials** : app code lit les clés depuis `.env.local` (`VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`). Ne JAMAIS hardcoder ni committer les clés.
 
-Key patterns:
+Patterns clés :
 
-- Database inserts take an array: `insert([{ ... }])`.
-- Reference users with `auth.users(id)`; use `auth.uid()` in RLS policies.
-- For storage uploads, persist both the returned `url` and `key`.
-<!-- INSFORGE:END -->
+- Les inserts Supabase prennent un tableau : `insert([{ ... }])` (ou un objet unique pour une seule ligne).
+- Référencer les utilisateurs via `auth.uid()` dans les policies RLS ; le câblage `auth.users` → `public.users` est assuré par les triggers `handle_new_user` / `handle_user_updated` (voir `supabase/migrations/005`).
+- Pour les uploads Storage, persister les deux champs `url` ET `key` retournés par l'API.
+- **Datasets statiques** (Bible, etc.) : les fichiers de contenu non synchronisés sont distribués via Supabase Storage (bucket `bible-datasets`), pas via la publication PowerSync.
+<!-- SUPABASE:END -->

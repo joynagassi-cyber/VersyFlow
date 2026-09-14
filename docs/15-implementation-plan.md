@@ -12,15 +12,15 @@
 
 | Étape | Task | Deliverable | Durée |
 |-------|------|-------------|-------|
-| 0.1 | Setup Expo project + TypeScript | Projet initialisé, build fonctionne | 1 jour |
+| 0.1 | Setup Ionic React + Capacitor + TypeScript | Projet initialisé, build fonctionne | 1 jour |
 | 0.2 | Configurer ESLint + Prettier + Husky | Pipeline qualité code | 0.5 jour |
 | 0.3 | Créer structure dossiers (cf docs/14) | Tous répertoires créés | 0.5 jour |
 | 0.4 | Skeleton Zustand stores | Stores vides pour settings, bible, memorization | 1 jour |
-| 0.5 | Expo Router + Tab navigation shell | Tab bar fonctionnel, 4 tabs vides | 1 jour |
+| 0.5 | React Router DOM + Tab navigation shell | Tab bar fonctionnel, 4 tabs vides | 1 jour |
 | 0.6 | Design tokens (couleurs, typo, spacing) | tokens.ts exporté, 3 composants construits | 2 jours |
 | 0.7 | Setup Rust project + fsrs dep | Cargo.toml configuré, compilation works | 2 jours |
 | 0.8 | Infrastructure i18n | Service i18n fonctionnel avec locale FR | 1 jour |
-| 0.9 | MMKV storage setup | Couche storage fonctionnelle | 1 jour |
+| 0.9 | Capacitor SQLite + PowerSync setup | Couche storage fonctionnelle | 1 jour |
 
 **Sous-total Phase 0**: ~10 jours ouvrés
 
@@ -40,7 +40,7 @@
 | 1.6 | Chapter list screen | ChapterListScreen avec verse count | 1.5 jour |
 | 1.7 | Verse list screen | VerseListScreen avec texte complet | 2 jours |
 | 1.8 | Reference search input | ReferenceSearchInput avec regex parser | 2 jours |
-| 1.9 | Persister settings (langue + trad.) | Settings stockées dans MMKV | 0.5 jour |
+| 1.9 | Persister settings (langue + trad.) | Settings stockées dans Capacitor SQLite | 0.5 jour |
 
 **Sous-total Phase 1**: ~15 jours ouvrés
 
@@ -61,7 +61,7 @@
 | 2.7 | Tap-to-reveal interaction | Word chips interactifs | 1.5 jour |
 | 2.8 | Intégration FSRS dans session | Session appelle FSRS sur "J'ai mémorisé" | 2 jours |
 | 2.9 | Confirmation mémorisation screen | MemorizationConfirmScreen with FSRS preview | 1.5 jour |
-| 2.10 | Persistance MemorizationRecord | Records sauvegardés dans MMKV | 1 jour |
+| 2.10 | Persistance MemorizationRecord | Records sauvegardés dans Capacitor SQLite | 1 jour |
 
 **Sous-total Phase 2**: ~19 jours ouvrés
 
