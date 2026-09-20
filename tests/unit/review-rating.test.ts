@@ -86,8 +86,8 @@ describe('Phase 3 / Step 3.4 — Review rating system', () => {
 
     it.each(EXPECTED)('$i18nKey exists in all 5 locales', ({ i18nKey }) => {
       for (const locale of LOCALES) {
-        const review = locale.review as Record<string, unknown>;
-        const key = i18nKey.split('.')[1]!;
+        const review = locale.review as unknown as Record<string, unknown>;
+        const key = i18nKey.split('.')[1];
         expect(review[key]).toBeDefined();
         expect(typeof review[key]).toBe('string');
       }

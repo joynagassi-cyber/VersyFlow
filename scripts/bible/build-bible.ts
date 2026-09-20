@@ -234,7 +234,7 @@ function parseEbibleHtml(dir: string): string {
     s
       .replace(/&#(\d+);/g, (_, n) => String.fromCodePoint(Number(n)))
       .replace(/&#x([0-9a-fA-F]+);/g, (_, n) => String.fromCodePoint(parseInt(n, 16)))
-      .replace(/&nbsp;/g, ' ')
+      .replace(/&nbsp;/g, '\u00A0')
       .replace(/&lt;/g, '<')
       .replace(/&gt;/g, '>')
       .replace(/&amp;/g, '&')
@@ -276,7 +276,7 @@ function parseEbibleHtml(dir: string): string {
         // Strip notemarks († popups) and inline markup.
         text = text.replace(/<a href="#FN\d+"[^>]*>[\s\S]*?<\/a>/g, '');
         text = text.replace(/<[^>]+>/g, '');
-        text = decode(text).replace(/ /g, ' ').replace(/\s+/g, ' ').trim();
+        text = decode(text).replace(/\u00A0/g, ' ').replace(/\s+/g, ' ').trim();
         if (!text) text = ''; // §53: EMPTY verse → warning, not blocking
         lines.push(`\\v ${num} ${text}`);
         vcount += 1;

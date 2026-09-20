@@ -31,7 +31,7 @@ describe('fsrs-factory', () => {
 
     it('creates engine lazily on first call', () => {
       resetFsrsEngine();
-      let created = false;
+      const created = false;
       const OriginalTsFsrsEngine = TsFsrsEngine;
       // First call should create
       const engine = getFsrsEngine();

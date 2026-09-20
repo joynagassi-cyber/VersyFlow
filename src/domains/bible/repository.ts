@@ -26,7 +26,9 @@ import LSG_JSON from '../../../data/bible/lsg.json';
  */
 class BibleRepository {
   private static instance: BibleRepository;
-  private books: any | null = null;
+  // `any[]` volontaire : les livres validés (schema.ts) n'ont pas d'orderIndex,
+  // alors que le type BibleBook (entities.ts) l'exige — cast au point de sortie.
+  private books: any[] | null = null;
   private bookMap: Record<string, BibleBook> = {};
   private loaded = false;
 

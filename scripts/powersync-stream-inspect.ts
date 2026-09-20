@@ -59,7 +59,7 @@ async function main() {
     await new Promise((r) => setTimeout(r, 5000)); // settle replication
 
     const { data: signIn } = await anon.auth.signInWithPassword({ email, password });
-    const jwt = signIn!.session!.access_token;
+    const jwt = signIn.session!.access_token;
     const endpoint = cfg.powersyncUrl.replace(/\/$/, '');
 
     // Raw stream request — same shape the SDK makes on connect.

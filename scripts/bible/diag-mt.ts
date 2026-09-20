@@ -34,5 +34,5 @@ for (const k of keys) {
   const diff = vals[0] !== vals[1] || vals[0] !== vals[2];
   console.log(k.padEnd(6), vals.join(' '), diff ? '  <-- DIFF' : '');
 }
-const tot = (o) => Object.values(o).reduce((a, b) => a + b, 0);
+const tot = (o: Record<string, number>) => Object.values(o).reduce((a, b) => a + b, 0);
 console.log('TOTAL', [tot(results.fraLSG_usfm), tot(results.fra_fob_usfm), tot(results.frajnd_usfm)].join(' '));

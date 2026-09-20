@@ -7,7 +7,7 @@
 import { describe, it, expect } from 'vitest';
 import { TsFsrsEngine } from '@/domains/fsrs/ts-fsrs-engine';
 import { Rating, type FsrsState } from '@/domains/fsrs/engine';
-import { fsrs, createEmptyCard } from 'ts-fsrs';
+import { fsrs, createEmptyCard, dateDiffInDays } from 'ts-fsrs';
 
 /**
  * Helper: run a sequence of ratings starting from a new card
@@ -140,7 +140,6 @@ describe('FSRS Parity Tests - Golden Values from ts-fsrs', () => {
     });
 
     it('elapsed days are tracked correctly via dateDiffInDays', () => {
-      const { dateDiffInDays } = require('ts-fsrs');
       const d1 = new Date('2026-09-10T00:00:00Z');
       const d2 = new Date('2026-09-17T00:00:00Z');
       expect(dateDiffInDays(d1, d2)).toBe(7);

@@ -91,7 +91,7 @@ describe('PowerSyncMemorizationService (P0B-2)', () => {
   });
 
   it('updateRecordAfterReview writes the record row via the repository upsert', async () => {
-    const state = (await engine.newState(0)) as FsrsState;
+    const state = await engine.newState(0);
     const review = await engine.review(state, Rating.GOOD);
 
     const ok = await service.updateRecordAfterReview(

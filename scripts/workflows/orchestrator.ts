@@ -142,6 +142,7 @@ async function TaskWorkflow({ taskId, agent, withTests = true }) {
 async function HealthMonitorWorkflow({ interval = 30000 }) {
   const vcc = getVCC();
 
+  // eslint-disable-next-line no-constant-condition -- boucle de monitoring volontaire
   while (true) {
     // Collecter les métriques en temps réel
     const metrics = vcc.cell3.collectLiveMetrics();
@@ -299,6 +300,7 @@ if (require.main === module) {
 
   switch (command) {
     case 'sprint':
+      {
       const sprintId = parseInt(processArgs[1]) || 1;
       SprintWorkflow({ sprintId }).then(result => {
         console.log('Sprint result:', JSON.stringify(result, null, 2));
@@ -306,9 +308,11 @@ if (require.main === module) {
         console.error('Sprint failed:', err);
         process.exit(1);
       });
+      }
       break;
 
     case 'task':
+      {
       const taskId = processArgs[1];
       const agent = processArgs[2] || 'Anvil';
       TaskWorkflow({ taskId, agent }).then(result => {
@@ -317,6 +321,7 @@ if (require.main === module) {
         console.error('Task failed:', err);
         process.exit(1);
       });
+      }
       break;
 
     case 'monitor':
@@ -326,6 +331,7 @@ if (require.main === module) {
       break;
 
     case 'release':
+      {
       const version = processArgs[1] || '1.0.0';
       ReleaseWorkflow({ version }).then(result => {
         console.log('Release result:', JSON.stringify(result, null, 2));
@@ -333,6 +339,7 @@ if (require.main === module) {
         console.error('Release failed:', err);
         process.exit(1);
       });
+      }
       break;
 
     default:

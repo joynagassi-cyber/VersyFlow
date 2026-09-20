@@ -17,7 +17,7 @@ export default function ExploreScreen() {
   const { t, i18n } = useTranslation();
   const [query, setQuery] = useState('');
 
-  const lang = i18n.language as string;
+  const lang = i18n.language;
 
   const books = useMemo(() => {
     const q = query.trim().toLowerCase();

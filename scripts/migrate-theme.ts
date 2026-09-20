@@ -2,6 +2,8 @@
  * Auto-Theme Migration Script
  * Converts hardcoded colors to theme tokens across all screens
  */
+/* Legacy one-off script (déjà exécuté 2026-08) — conservé pour référence. */
+/* eslint-disable @typescript-eslint/no-var-requires, no-dupe-keys, prefer-const */
 
 const fs = require('fs');
 const path = require('path');

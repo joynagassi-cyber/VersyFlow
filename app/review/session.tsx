@@ -89,8 +89,7 @@ export default function ReviewSessionScreen() {
     return () => {
       cancelled = true;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [profileId]);
+}, [profileId]);
 
   const current = items[index];
   const progress = items.length > 0 ? ((index + 1) / items.length) * 100 : 0;

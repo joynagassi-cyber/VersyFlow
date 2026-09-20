@@ -61,8 +61,7 @@ export default function ReviewQueueScreen() {
 
   useEffect(() => {
     void load();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [profileId]);
+}, [profileId]);
 
   const overdue = items.filter((i) => i.isOverdue);
   const due = items.filter((i) => !i.isOverdue);

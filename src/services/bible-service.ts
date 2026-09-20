@@ -253,6 +253,7 @@ export class BibleService {
 
 // === Types pour le service ===
 
+// eslint-disable-next-line @typescript-eslint/no-namespace, no-redeclare -- namespace de types uniquement (refactor en interfaces à faire, hors P0)
 export namespace BibleService {
   export interface ParsedReference {
     bookId: string;

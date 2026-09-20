@@ -2,6 +2,8 @@
  * Migration Script — Convert hardcoded colors to theme tokens
  * Run this script to audit and fix all hardcoded color values
  */
+/* Legacy one-off script (déjà exécuté 2026-08) — conservé pour référence. */
+/* eslint-disable @typescript-eslint/no-var-requires, no-dupe-keys */
 
 const fs = require('fs');
 const path = require('path');

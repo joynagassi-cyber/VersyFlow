@@ -640,7 +640,7 @@ export const ScrollView = forwardRef<HTMLIonContentElement, IonicScrollViewProps
         style={resolvedStyle as any}
         contentClassName={resolvedContentStyle as any}
         scrollEvents={!!onScroll}
-        onIonScroll={onScroll as any}
+        onIonScroll={onScroll}
         overflowHidden={!showsVerticalScrollIndicator}
         {...(rest as any)}
       >
@@ -1418,9 +1418,9 @@ export const IonIcon = ({ size, ...rest }: {
   [key: string]: unknown;
 }) => (
   <IonIonIcon
-    icon={rest.icon as string | undefined}
+    icon={rest.icon}
     size={typeof size === 'number' ? `${size}px` : size}
-    color={rest.color as string | undefined}
+    color={rest.color}
     {...rest}
   />
 );
@@ -1500,4 +1500,3 @@ export function useColorScheme(): 'light' | 'dark' | null {
   const { isDark } = useAppTheme();
   return isDark ? 'dark' : 'light';
 }
-

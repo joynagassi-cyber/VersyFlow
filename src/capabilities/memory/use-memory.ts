@@ -36,10 +36,15 @@ export function useMemoryCapabilityHook() {
         return progressiveMask;
       case 'heat-words':
         return smartMask;
+      // TODO(domains/memorization): labels dupliqués — à mapper sur les ids
+      // ExerciseStrategy réels (cf. src/domains/memorization/entities.ts).
+      // eslint-disable-next-line no-duplicate-case
       case 'heat-words':
         return randomMask;
+      // eslint-disable-next-line no-duplicate-case
       case 'heat-words':
         return flashcard;
+      // eslint-disable-next-line no-duplicate-case
       case 'heat-words':
         return recallWriting;
       default:

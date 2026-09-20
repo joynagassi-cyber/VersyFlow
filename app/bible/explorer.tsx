@@ -32,7 +32,7 @@ export default function BibleExplorerScreen() {
   const [selectedBookId, setSelectedBookId] = useState<string | null>(null);
   const [selectedChapter, setSelectedChapter] = useState<number | null>(null);
 
-  const lang = (i18n.language ?? 'fr') as string;
+  const lang = i18n.language ?? 'fr';
   const selectedBook = BIBLE_BOOKS.find((b) => b.id === selectedBookId) || null;
 
   const verses = useMemo(

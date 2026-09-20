@@ -121,7 +121,7 @@ describe('Family Invitation Service', () => {
     await service.create('family-2', 'user-1');
 
     // Expire one
-    const inv1 = Array.from(mockRepo.invitations.values())[0] as unknown as { expiresAt: number };
+    const inv1 = Array.from(mockRepo.invitations.values())[0] as { expiresAt: number };
     inv1.expiresAt = Date.now() - 1000;
 
     const expiredCount = await service.expirePastDue();

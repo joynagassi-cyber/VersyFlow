@@ -79,8 +79,7 @@ export default function AvailableTranslationsScreen() {
     return () => {
       cancelled = true;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+}, []);
 
   const handleDownload = async (id: string) => {
     setStates((prev) => ({ ...prev, [id]: { state: { status: 'loading' }, available: prev[id]?.available ?? false } }));

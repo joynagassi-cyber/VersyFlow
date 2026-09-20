@@ -12,9 +12,7 @@ import { SupabaseAuthService } from '@/auth';
 import { getSyncUserIdProvider } from '@/infrastructure/repository/powersync-repositories';
 import { migrateMmkvToPowerSync } from '@/sync/migration-mmkv-powersync';
 
-const POWERSYNC_URL = (import.meta.env.VITE_POWERSYNC_URL || import.meta.env.POWERSYNC_URL) as
-  | string
-  | undefined;
+const POWERSYNC_URL = import.meta.env.VITE_POWERSYNC_URL || import.meta.env.POWERSYNC_URL;
 
 const authService = new SupabaseAuthService();
 

@@ -25,7 +25,7 @@ export default function BookScreen() {
     );
   }
 
-  const lang = (i18n.language ?? 'fr') as string;
+  const lang = i18n.language ?? 'fr';
 
   return (
     <FullScreenPage

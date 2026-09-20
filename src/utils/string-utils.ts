@@ -7,7 +7,7 @@
  * Converts to lowercase, trims, removes special chars except colons/hyphens.
  */
 export function normalizeReference(ref: string): string {
-  return ref.toLowerCase().trim().replace(/[^a-zàâäéèêëïîôùûüÿçœæ0-9:\s\-]/g, '');
+  return ref.toLowerCase().trim().replace(/[^a-zàâäéèêëïîôùûüÿçœæ0-9:\s-]/g, '');
 }
 
 /**

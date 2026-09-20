@@ -20,7 +20,7 @@ export default function ChapterScreen() {
   const bookId = params.get('book') ?? 'gen';
   const chapter = Number(params.get('chapter') ?? '1');
   const book = BIBLE_BOOKS.find((b) => b.id === bookId) || BIBLE_BOOKS[0];
-  const lang = (i18n.language ?? 'fr') as string;
+  const lang = i18n.language ?? 'fr';
 
   const [verseTexts, setVerseTexts] = useState<Record<number, string>>({});
 

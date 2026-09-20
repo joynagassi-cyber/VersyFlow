@@ -23,8 +23,7 @@ export function ThemeManager() {
       return;
     }
     theme.setThemeMode(themeMode);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [themeMode]);
+}, [themeMode]);
 
   return null;
 }

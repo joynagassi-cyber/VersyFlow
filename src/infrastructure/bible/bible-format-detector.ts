@@ -20,7 +20,7 @@ export type BibleSourceFormat = 'usfm' | 'usfx' | 'json' | 'unknown';
  * - unknown: anything else.
  */
 export function detectFormat(sample: string): BibleSourceFormat {
-  const stripped = sample.replace(/^[﻿\s]+/, ''); // BOM + leading whitespace
+  const stripped = sample.replace(/^[\uFEFF\s]+/, ''); // BOM + leading whitespace
   if (stripped.length === 0) return 'unknown';
 
   if (stripped.startsWith('<?xml') || stripped.startsWith('<')) {
