@@ -99,3 +99,7 @@ keystore/
 
 # Vite web build output (Capacitor webDir; build artifact, not source)
 /www/
+
+# Capacitor generated web assets synced into the native shell (rebuild with cap:sync)
+android/app/src/main/assets/public/assets/
+android/app/src/main/assets/public/worker/
