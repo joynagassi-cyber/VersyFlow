@@ -20,9 +20,11 @@ function makeMockRepository(overrides: Partial<IBibleRepository> = {}): IBibleRe
     getBookById: vi.fn((id: string) => books.find(b => b.id === id) ?? null),
     getOldTestamentBooks: vi.fn(() => books.filter(b => b.testament === 'old')),
     getNewTestamentBooks: vi.fn(() => books.filter(b => b.testament === 'new')),
-    getChapter: vi.fn(),
-    getVerse: vi.fn(),
-    getChapterVerses: vi.fn(),
+    // Typed against the real signatures so override callbacks in individual
+    // tests are checked against the correct arities / return types.
+    getChapter: (vi.fn() as unknown) as IBibleRepository['getChapter'],
+    getVerse: (vi.fn() as unknown) as IBibleRepository['getVerse'],
+    getChapterVerses: (vi.fn() as unknown) as IBibleRepository['getChapterVerses'],
     bookExists: vi.fn((id: string) => books.some(b => b.id === id)),
     chapterExists: vi.fn(() => true),
     verseExists: vi.fn(() => true),
@@ -280,7 +282,7 @@ describe('BibleService', () => {
   describe('getChapter() / getVerse() / getChapterVerses()', () => {
     it('delegates getChapter to repository', () => {
       const mockRepo = makeMockRepository({
-        getChapter: vi.fn(() => ({ number: 3, verses: [] })),
+        getChapter: vi.fn(() => ({ number: 3, verses: [] })) as unknown as IBibleRepository['getChapter'],
       });
       const svc = new BibleService(mockRepo);
       const chapter = svc.getChapter('joh', 3);
@@ -290,7 +292,7 @@ describe('BibleService', () => {
 
     it('delegates getVerse to repository', () => {
       const mockRepo = makeMockRepository({
-        getVerse: vi.fn(() => ({ number: 16, text: 'test' })),
+        getVerse: vi.fn(() => ({ number: 16, text: 'test' })) as unknown as IBibleRepository['getVerse'],
       });
       const svc = new BibleService(mockRepo);
       const verse = svc.getVerse('joh', 3, 16);
@@ -300,7 +302,7 @@ describe('BibleService', () => {
 
     it('delegates getChapterVerses to repository', () => {
       const mockRepo = makeMockRepository({
-        getChapterVerses: vi.fn(() => [{ number: 1, text: 'a' }, { number: 2, text: 'b' }]),
+        getChapterVerses: vi.fn(() => [{ number: 1, text: 'a' }, { number: 2, text: 'b' }]) as unknown as IBibleRepository['getChapterVerses'],
       });
       const svc = new BibleService(mockRepo);
       const verses = svc.getChapterVerses('joh', 3);

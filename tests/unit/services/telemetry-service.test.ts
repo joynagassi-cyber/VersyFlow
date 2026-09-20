@@ -26,11 +26,12 @@ function makeMockStorage(overrides: Partial<IStorage> = {}): IStorage {
   } as unknown as IStorage;
 }
 
-function makeMockUploadPort(overrides: Partial<ITelemetryUploadPort> = {}): ITelemetryUploadPort {
+function makeMockUploadPort(overrides: Partial<ITelemetryUploadPort> = {}): ITelemetryUploadPort & { upload: ReturnType<typeof vi.fn> } {
+  const upload = vi.fn(async () => {});
   return {
-    upload: vi.fn(async () => {}),
+    upload,
     ...overrides,
-  } as unknown as ITelemetryUploadPort;
+  } as unknown as ITelemetryUploadPort & { upload: ReturnType<typeof vi.fn> };
 }
 
 describe('TelemetryService', () => {
@@ -93,7 +94,7 @@ describe('TelemetryService', () => {
       await service.flush();
 
       expect(uploadPort.upload).toHaveBeenCalledTimes(1);
-      const uploaded = uploadPort.upload.mock.calls[0][0];
+      const uploaded = (uploadPort.upload as unknown as { mock: { calls: unknown[][] } }).mock.calls[0][0];
       expect(uploaded).toHaveLength(2);
     });
 

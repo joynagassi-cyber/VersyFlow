@@ -7,6 +7,25 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { StreakService } from '@/services/streak-service';
 import type { MemorizationService } from '@/domains/memorization/service';
 import type { IStreakRepository } from '@/domains/streaks/repository';
+import type { ReviewLogEntry } from '@/domains/memorization/entities';
+
+/** Minimal valid ReviewLogEntry factory (all required fields present). */
+function makeReviewLog(overrides: Partial<ReviewLogEntry> = {}): ReviewLogEntry {
+  return {
+    id: 'log-1',
+    memorizationRecordId: 'rec_1',
+    answeredAt: Date.now(),
+    rating: 'good',
+    actualInterval: null,
+    predictedInterval: 1,
+    stabilityBefore: 1,
+    stabilityAfter: 1,
+    difficultyBefore: 1,
+    difficultyAfter: 1,
+    wordPerformance: [],
+    ...overrides,
+  };
+}
 
 function makeMockMemorizationService(overrides: Partial<MemorizationService> = {}): MemorizationService {
   return {
@@ -66,7 +85,7 @@ describe('StreakService', () => {
       };
       vi.spyOn(mockMemService, 'getAllMemorized').mockResolvedValue([record as any]);
       vi.spyOn(mockMemService, 'getReviewLogsForRecord').mockResolvedValue([
-        { answeredAt: today * 86400000 },
+        { answeredAt: today * 86400000 } as ReviewLogEntry,
       ]);
 
       const streak = await service.calculateStreak();

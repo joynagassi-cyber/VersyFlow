@@ -2,7 +2,7 @@
  * Tests for MilestoneService — progress milestone detection and emission
  */
 
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { MilestoneService } from '@/services/milestone-service';
 import type { MemorizationService } from '@/domains/memorization/service';
 import type { ITelemetry } from '@/domains/telemetry/it telemetry';
@@ -37,7 +37,7 @@ describe('MilestoneService', () => {
 
   beforeEach(() => {
     mockTelemetry = makeMockTelemetry();
-    emitSpy = vi.spyOn(eventBus, 'emit').mockReturnValue(undefined);
+    emitSpy = vi.spyOn(eventBus, 'emit') as unknown as ReturnType<typeof vi.fn>;
   });
 
   afterEach(() => {
