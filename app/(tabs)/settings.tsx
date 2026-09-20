@@ -26,6 +26,7 @@ import {
 import { cn } from '@/lib/utils';
 import { useAuthStore } from '@/store/auth-store';
 import { useSettingsStore } from '@/store/settings-store';
+import { eventBus, DomainEventTypes } from '@/domains/events';
 import { useTranslationPreference } from '@/hooks/useTranslationPreference';
 import { SUPPORTED_LANGUAGES, isRTL } from '@/domains/i18n/config';
 import {
@@ -260,6 +261,13 @@ export default function SettingsScreen() {
           <button
             onClick={() => {
               if (window.confirm(t('settings.resetConfirmText', 'Cela supprimera TOUS vos versets.'))) {
+                // Emit PROGRESS_RESET before clearing data so listeners can react.
+                eventBus.emit({
+                  id: crypto.randomUUID(),
+                  type: DomainEventTypes.PROGRESS_RESET,
+                  timestamp: Date.now(),
+                  payload: { reason: 'user_initiated' as const, versesDeleted: 0, reviewsDeleted: 0 },
+                });
                 useSettingsStore.getState().resetToDefaults();
                 navigate('/onboarding/welcome', { replace: true });
               }

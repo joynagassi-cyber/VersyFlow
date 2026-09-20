@@ -80,6 +80,7 @@ export class MemorizationSessionEngine implements IMemorizationSessionEngine {
   private passageParams: PassageTargetParams | null = null;
   private records: MemorizationRecord[] = [];
   private abandoned: boolean = false;
+  private startedAt: number = 0;
 
   constructor(
     private readonly bibleRepo: ILocalBibleRepository,
@@ -114,6 +115,7 @@ export class MemorizationSessionEngine implements IMemorizationSessionEngine {
     this.currentIndex = 0;
     this.phase = 'preview';
     this.completedCount = 0;
+    this.startedAt = Date.now();
     this.records = options?.initialRecords ?? [];
     this.abandoned = false;
     this.passageParams = { bookId, chapter, verseStart, verseEnd, translationId, learnerProfileId };
@@ -263,6 +265,19 @@ export class MemorizationSessionEngine implements IMemorizationSessionEngine {
 
   getPhase(): 'idle' | 'preview' | 'rated' {
     return this.phase;
+  }
+
+  getState(): SessionState {
+    return {
+      phase: this.phase as SessionPhase,
+      verseText: this.verses[this.currentIndex]?.text ?? '',
+      words: this.verses[this.currentIndex]?.text?.split(/\s+/).filter(w => w.length > 0) ?? [],
+      revealedWordIndices: new Set(),
+      startedAt: this.startedAt,
+      durationSeconds: 0,
+      wordsRevealed: 0,
+      totalWords: 0,
+    };
   }
 
   getRecords(): MemorizationRecord[] {

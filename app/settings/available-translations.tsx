@@ -34,6 +34,7 @@ import {
 } from '@/services/bible-text-service';
 import { getTranslationPreferenceRepository } from '@/services/translation-preference-service';
 import { useAuthStore } from '@/store/auth-store';
+import { eventBus, DomainEventTypes } from '@/domains/events';
 
 type DownloadState =
   | { status: 'idle' }
@@ -98,6 +99,7 @@ export default function AvailableTranslationsScreen() {
   };
 
   const handleSelect = async (id: string) => {
+    const prevTranslation = bibleTranslation;
     const entryState = states[id];
     if (!entryState?.available) {
       // Not resolvable locally yet — try to fetch before activating.
@@ -113,6 +115,17 @@ export default function AvailableTranslationsScreen() {
       .catch(() => {
         /* Offline / no session — the local value already applied. */
       });
+    // Emit TRANSLATION_CHANGED after the new translation is set.
+    eventBus.emit({
+      id: crypto.randomUUID(),
+      type: DomainEventTypes.TRANSLATION_CHANGED,
+      timestamp: Date.now(),
+      payload: {
+        fromTranslationId: prevTranslation,
+        toTranslationId: id,
+        changedByUser: true,
+      },
+    });
     navigate('/bible/explorer');
   };
 

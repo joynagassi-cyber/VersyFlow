@@ -41,6 +41,7 @@ export default function ReviewSessionScreen() {
   const [selected, setSelected] = useState<Rating | null>(null);
   const [loading, setLoading] = useState(true);
   const [feedback, setFeedback] = useState<{ scheduledDays: number; label: string } | null>(null);
+  const [ratingsAccum, setRatingsAccum] = useState<{ again: number; hard: number; good: number; easy: number }>({ again: 0, hard: 0, good: 0, easy: 0 });
 
   useEffect(() => {
     let cancelled = false;
@@ -106,6 +107,18 @@ export default function ReviewSessionScreen() {
       setIndex((i) => i + 1);
       resetCard();
     } else {
+      // Emit REVIEW_SESSION_FINISHED on the last verse before navigating to summary.
+      eventBus.emit({
+        id: crypto.randomUUID(),
+        type: DomainEventTypes.REVIEW_SESSION_FINISHED,
+        timestamp: Date.now(),
+        payload: {
+          versesReviewed: items.length,
+          ratingsDistribution: ratingsAccum,
+          totalTimeMs: 0,
+          avgStabilityDelta: 0,
+        },
+      });
       navigate('/review/summary', { replace: true });
     }
   };
@@ -123,6 +136,7 @@ export default function ReviewSessionScreen() {
         review.state,
         review.due.getTime(),
       );
+      setRatingsAccum(prev => ({ ...prev, [rating]: (prev[rating as unknown as keyof typeof prev] ?? 0) + 1 }));
       setFeedback({ scheduledDays: review.scheduledDays, label: ratingLabel(rating) });
     } catch (error) {
       console.error('[ReviewSession] rating failed:', error);

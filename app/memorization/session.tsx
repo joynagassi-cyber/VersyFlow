@@ -23,6 +23,7 @@ import { useActiveProfile } from '@/hooks/useActiveProfile';
 import { useSettingsStore } from '@/store/settings-store';
 import { getMemorizationRepository, getSyncUserIdProvider } from '@/infrastructure/repository/powersync-repositories';
 import type { MemorizationRecord } from '@/domains/memorization/entities';
+import { eventBus, DomainEventTypes } from '@/domains/events';
 
 /** Resolve the authenticated user id (or null when not signed in). */
 const resolveUserId = async (): Promise<string | null> =>
@@ -72,6 +73,13 @@ export default function MemorizationSession() {
     (useSettingsStore.getState().bibleTranslation || 'lsg');
   // Prefer the active learner profile; fall back to URL param or 'default'.
   const learnerProfileId = params.get('learnerProfileId') || activeProfile?.id || 'default';
+
+  // Coordinates resolved up-front for the abandon-callback payload (outside
+  // the effect scope). Mirrors the resolution logic below.
+  const initParsed = refParam && !bookIdParam ? parseReference(refParam) : null;
+  const bookId = bookIdParam || initParsed?.bookId || '';
+  const chapter = chapterParam || initParsed?.chapter || 0;
+  const verseStart = verseStartParam || initParsed?.verseStart || 0;
 
   useEffect(() => {
     let cancelled = false;
@@ -123,6 +131,20 @@ export default function MemorizationSession() {
         );
         setProgress(memorizationEngine.getProgress());
         setComplete(memorizationEngine.isComplete());
+
+        // Emit MEMORIZATION_STARTED once the passage is fully loaded.
+        eventBus.emit({
+          id: crypto.randomUUID(),
+          type: DomainEventTypes.MEMORIZATION_STARTED,
+          timestamp: Date.now(),
+          payload: {
+            recordId: `${bookId}:${chapter}:${verseStart}:${translationId}`,
+            bookId,
+            chapterNumber: chapter,
+            verseNumber: verseStart,
+            translationId,
+          },
+        });
       } catch (e) {
         if (cancelled) return;
         setError(e instanceof Error ? e.message : String(e));
@@ -240,6 +262,22 @@ export default function MemorizationSession() {
             } catch (e) {
               console.error('[MemorizationSession] abandon flush failed:', e);
             }
+            // Emit SESSION_ABANDONED before navigating away.
+            eventBus.emit({
+              id: crypto.randomUUID(),
+              type: DomainEventTypes.SESSION_ABANDONED,
+              timestamp: Date.now(),
+              payload: {
+                recordId: `${bookId}:${chapter}:${verseStart}:${translationId}`,
+                // `getState` is a class-only member (not on the interface);
+                // fall back to `Date.now()` when the engine is still idle so
+                // the payload shape is stable.
+                elapsedMs: Date.now() - ((engine as unknown as { getState?: () => { startedAt?: number } }).getState?.()?.startedAt ?? Date.now()),
+                wordsRevealed: engine.getCurrentVerseIndex() + 1,
+                totalWords: engine.getTotalVerses(),
+                abandonedByClose: true,
+              },
+            });
             engine.abandon();
             navigate(-1);
           }}

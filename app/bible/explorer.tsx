@@ -19,6 +19,8 @@ import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 import { BIBLE_BOOKS } from '@/domains/bible/entities';
 import { loadTranslationBooks } from '@/services/bible-text-service';
+import { eventBus, DomainEventTypes } from '@/domains/events';
+import { useSettingsStore } from '@/store/settings-store';
 
 type ViewMode = 'books' | 'chapters' | 'verses';
 
@@ -104,6 +106,22 @@ export default function BibleExplorerScreen() {
     params.set('reference', reference);
     if (text) params.set('text', text);
     navigate(`/memorization/session?${params.toString()}`);
+  };
+
+  const selectVerse = (bookId: string, chapter: number, verse: number, wasSearchResult: boolean = false) => {
+    eventBus.emit({
+      id: crypto.randomUUID(),
+      type: DomainEventTypes.VERSE_SELECTED,
+      timestamp: Date.now(),
+      payload: {
+        bookId,
+        chapterNumber: chapter,
+        verseNumber: verse,
+        translationId: useSettingsStore.getState().bibleTranslation || 'lsg',
+        referenceDisplay: `${bookId} ${chapter}:${verse}`,
+        wasSearchResult,
+      },
+    });
   };
 
   const title =
@@ -255,12 +273,13 @@ export default function BibleExplorerScreen() {
                   </p>
                 )}
                 <button
-                  onClick={() =>
+                  onClick={() => {
+                    selectVerse(selectedBookId!, selectedChapter, n);
                     memorize(
                       `${selectedBook.name.fr} ${selectedChapter}:${n}`,
                       text,
-                    )
-                  }
+                    );
+                  }}
                   className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-white shadow-rose"
                 >
                   <BrainCircuit size={15} />

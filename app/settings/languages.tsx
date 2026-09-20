@@ -15,6 +15,7 @@ import { useAppTheme } from '@/theme/useTheme';
 import { useRouter } from '@/hooks/useIonicNavigation';
 import { SUPPORTED_LANGUAGES } from '@/domains/i18n/config';
 import { useSettingsStore } from '@/store/settings-store';
+import { eventBus, DomainEventTypes } from '@/domains';
 
 export default function LanguageSettingsScreen() {
   const { colors, sp, sh, rad } = useAppTheme();
@@ -100,7 +101,16 @@ export default function LanguageSettingsScreen() {
                 styles.languageCard,
                 selectedLanguage === lang.code && styles.languageCardSelected,
               ]}
-              onPress={() => setUiLanguage(lang.code)}
+              onPress={() => {
+                const prev = uiLanguage;
+                setUiLanguage(lang.code);
+                eventBus.emit({
+                  id: crypto.randomUUID(),
+                  type: DomainEventTypes.LANGUAGE_CHANGED,
+                  timestamp: Date.now(),
+                  payload: { fromLanguage: prev, toLanguage: lang.code, isRTL: lang.rtl },
+                });
+              }}
             >
               <View style={styles.langInfo}>
                 <Text style={styles.nativeName}>{lang.name}</Text>
