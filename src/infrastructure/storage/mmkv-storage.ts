@@ -33,6 +33,15 @@ let _mmkv: any = null;
 let _resolved = false;
 
 /**
+ * The module specifier is kept in a variable so that Rollup's static
+ * analysis does not attempt to resolve `react-native-mmkv` into the web
+ * bundle (it is a native-only Capacitor binding). At native runtime the
+ * Capacitor shell provides the module; at web runtime the dynamic import
+ * rejects and we fall back to localStorage.
+ */
+const MMKV_MODULE = 'react-native-mmkv' as string;
+
+/**
  * Attempt a one-shot dynamic import of react-native-mmkv.
  * Returns true if the native MMKV instance was created successfully.
  * On web the dynamic import throws and we return false.
@@ -41,7 +50,11 @@ async function resolveMmkv(): Promise<boolean> {
   if (_resolved) return _mmkv !== null;
   _resolved = true;
   try {
-    const mod = await import('react-native-mmkv');
+    // Non-literal specifier: Rollup treats this as unresolvable at build
+    // time (it cannot prove the module exists) and leaves the `import()`
+    // expression as a runtime dynamic import — which is exactly what we
+    // want, because the Capacitor shell resolves it on-device.
+    const mod = await import(MMKV_MODULE);
     _mmkv = new mod.MMKV();
     return true;
   } catch {

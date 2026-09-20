@@ -54,6 +54,14 @@ export default defineConfig({
     target: 'esnext',
     minify: true,
     chunkSizeWarningLimit: 500,
+    // `react-native-mmkv` is a Capacitor-native-only binding (declared in
+    // package.json for the Android/iOS shells, never installed into the web
+    // node_modules). `MmkvStorage` imports it dynamically and catches the
+    // failure to fall back to localStorage, so Vite must be told it's an
+    // environment-provided module, not something to bundle.
+    rollupOptions: {
+      external: ['react-native-mmkv'],
+    },
   },
   worker: {
     format: 'es',

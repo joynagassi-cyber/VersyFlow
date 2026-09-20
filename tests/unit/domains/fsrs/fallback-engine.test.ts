@@ -17,7 +17,7 @@ describe('Sm2FallbackEngine', () => {
 
   describe('newState()', () => {
     it('returns default FSRS state for a new verse', async () => {
-      const state = await engine.newState(0);
+      const state = await engine.newState();
       expect(state.stability).toBe(DEFAULT_FSRS_STATE.stability);
       expect(state.difficulty).toBe(DEFAULT_FSRS_STATE.difficulty);
       expect(state.repetitions).toBe(0);
@@ -26,8 +26,8 @@ describe('Sm2FallbackEngine', () => {
     });
 
     it('returns a copy (not the original)', async () => {
-      const state1 = await engine.newState(0);
-      const state2 = await engine.newState(0);
+      const state1 = await engine.newState();
+      const state2 = await engine.newState();
       expect(state1).not.toBe(state2);
     });
   });
