@@ -2,10 +2,20 @@
  * MmkvStorage — MMKV-backed storage with localStorage fallback for web
  *
  * Architecture: Adapter pattern per ADR-006
- * - Native (Capacitor): uses react-native-mmkv for high-performance storage
- * - Web: falls back to localStorage transparently
+ * - Native (Capacitor): uses `react-native-mmkv` / `@capacitor-community/mmkv`
+ *   for high-performance storage. The `react-native-mmkv` JS binding is
+ *   resolved lazily; the native implementation is bridged by the Capacitor
+ *   plugin installed on the Android/iOS shell (see package.json devDeps note
+ *   below). On a pure web/WebView target without the native bridge, the
+ *   dynamic import throws and we transparently fall back to localStorage.
+ * - Web: falls back to localStorage
  *
  * Implements IStorage interface.
+ *
+ * NOTE (deployment): for the Capacitor shell to actually get the MMKV
+ * native engine, install `@capacitor-community/mmkv` and bridge it into
+ * `react-native-mmkv` via its recommended JS-interop layer (or keep the
+ * localStorage fallback, which is fully functional for MVP-scale data).
  * Storage key schema (see docs/10-data-model.md):
  *   versyflow:settings                          → JSON UserSettings
  *   versyflow:bible:{id}                        → JSON BibleBook[]

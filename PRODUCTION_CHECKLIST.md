@@ -4,6 +4,20 @@
 **Version**: v0.1.0  
 **Statut**: 🟡 PRÊT POUR TESTS FINAUX
 
+> **Mise à jour 2026-09-20** — cette checklist est un instantané du 08/09.
+> Points devenus obsolètes ou modifiés depuis :
+> - **InsForge → Supabase** : le backend primaire est Supabase + PowerSync
+>   (migrations `supabase/001→008`, streams édition 3). Les prérequis
+>   « Clés API InsForge » et « Expo EAS » plus bas sont à ignorer.
+> - **Tests** : la suite tourne sur Vitest (82 fichiers, 773/774 au 20/09 —
+>   1 flaky temps-dépendant, passe en run isolé). 0 `TODO` / `console.log` dans `src/`.
+> - **i18n** : 45 locales UI au 20/09 (43 en cours de complétion) — audit :
+>   `docs/coordination/AUDIT-I18N.md`.
+> - **FSRS** : le moteur actif est `ts-fsrs` (TS) ; le WASM Rust
+>   (`rust/fsrs-wasm/`) est optionnel, l'item « Moteur FSRS WASM (vrai) »
+>   est donc déjà couvert par le fallback + ts-fsrs.
+> - **Gonflement dépôt** : plan d'action dans `docs/coordination/REPO-BLOAT-PLAN.md`.
+
 ---
 
 ## ✅ CORRECTIONS RÉALISÉES
@@ -135,9 +149,12 @@
 ## 🚀 DÉPLOYEMENT
 
 ### Pré-requis
-- [ ] Variables d'environnement configurées (Expo EAS)
-- [ ] Clés API InsForge sécurisées
-- [ ] Tests QA complétés
+
+> ⚠️ Section obsolète (08/09) — remplacée par :
+
+- [x] Variables d'environnement Supabase/PowerSync dans `.env.local` (cf. `BUILD-GUIDE.md` §5)
+- [ ] Secrets keystore GitHub (4) — `BUILD-GUIDE.md` §2
+- [ ] Tests QA manuels complétés (sections ci-dessus)
 - [ ] Documentation utilisateur mise à jour
 
 ### Étapes

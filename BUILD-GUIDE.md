@@ -144,22 +144,31 @@ sdkmanager "build-tools;35.0.0" "platforms;android-35" "platform-tools"
 ### `.env.local` (déjà présent — ne pas committer)
 
 ```bash
-INSFORGE_URL=https://wypi8tgf.eu-central.insforge.app
-INSFORGE_ANON_KEY=<clé anon InsForge>
+# Exposé au client (prefixe VITE_*)
 VITE_SUPABASE_URL=https://<votre-projet>.supabase.co
 VITE_SUPABASE_ANON_KEY=<clé anon/publishable Supabase>
-VITE_POWERSYNC_URL=https://<votre-projet>.powersync.supabase.co
+VITE_POWERSYNC_URL=https://<votre-projet>.powersync.supabase.run
+
+# Uniquement local (git-ignoré, JAMAIS vers le client)
+SUPABASE_SECRET_KEY=<service role — scripts / migrations locales>
+SUPABASE_JWKS_URL=https://<votre-projet>.supabase.co/auth/v1/.well-known/jwks.json
+PS_POWERSYNC_ROLE_PASSWORD=<secret PowerSync Cloud — role de repli>
+PS_ADMIN_TOKEN=<PAT CLI PowerSync : link / pull / deploy>
 ```
+
+> **Note (2026-09)** : InsForge est **OBSOLETE** (retiré de `.env.example`).
+> Le backend primaire est Supabase (voir `AGENTS.md` → section Supabase).
 
 ### Builds locaux
 
 ```bash
-npm start                        # dev (Vite)
-npm run android                  # APK debug local (Expo/Capacitor)
+npm run dev                      # dev server Vite (http://localhost:3000)
+npm run build                    # build web production (→ www/, utilisé par la CI)
+npm run cap:sync                 # copie www/ dans android/assets/www
+npm run cap:run:android          # APK debug local (Android)
+npm run cap:run:ios              # iOS (macOS + Xcode requis)
 npm run typecheck && npm run lint # portes qualité (reprennent les gates CI)
 npm test                         # Vitest
-npm run build                    # build web production (→ www/, utilisé par la CI)
-npx cap sync android             # copie www/ dans android/assets/www
 ```
 
 ---
@@ -216,4 +225,4 @@ déverrouillage de cet environnement.
 | `signingConfigs.release` dans `android/app/build.gradle` | ✅ Via `findProperty('RELEASE_*')` |
 | `www/` et `keystore/` git-ignorés | ✅ (artefacts build / secrets) |
 | Documentation des secrets | ✅ `.github/secrets-checklist.md` + `ci-secrets.example.env` |
-| Secrets à créer (7 requis au total) | ⚠️ reste à créer : `VITE_POWERSYNC_URL` + les 4 secrets keystore (`KEYSTORE`, `KEYSTORE_PASSWORD`, `KEY_ALIAS`, `KEY_PASSWORD`) — `VITE_SUPABASE_URL`/`VITE_SUPABASE_ANON_KEY` existent déjà — voir checklist |
+| Secrets CI | ✅ `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY` / `VITE_POWERSYNC_URL` en place (logs CI du 2026-09-20) ; ⚠️ 4 secrets keystore (`KEYSTORE`, `KEYSTORE_PASSWORD`, `KEY_ALIAS`, `KEY_PASSWORD`) : vérifier GitHub → Settings → Secrets avant un premier `build_release` |
