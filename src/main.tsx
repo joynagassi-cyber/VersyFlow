@@ -68,6 +68,7 @@ const SettingsPrivacy = lazy(() => import('../app/settings/privacy'));
 const SettingsSession = lazy(() => import('../app/settings/session'));
 const SettingsReminders = lazy(() => import('../app/settings/reminders'));
 const SettingsIndex = lazy(() => import('../app/settings/index'));
+const SettingsAvailableTranslations = lazy(() => import('../app/settings/available-translations'));
 
 // Misc deep pages
 const SearchPage = lazy(() => import('../app/search/index'));
@@ -282,6 +283,7 @@ function App() {
               <Route path="/settings/privacy" element={<SettingsPrivacy />} />
               <Route path="/settings/session" element={<SettingsSession />} />
               <Route path="/settings/reminders" element={<SettingsReminders />} />
+              <Route path="/settings/available-translations" element={<SettingsAvailableTranslations />} />
 
               {/* Misc */}
               <Route path="/search" element={<SearchPage />} />

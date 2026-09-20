@@ -21,6 +21,7 @@ import {
   LogOut,
   Check,
   CircleUserRound,
+  DownloadCloud,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuthStore } from '@/store/auth-store';
@@ -86,6 +87,14 @@ export default function SettingsScreen() {
             setBibleTranslation(next);
             setPreference(next);
           },
+        },
+        {
+          icon: <DownloadCloud size={20} />,
+          iconBg: 'bg-icon-bg-green',
+          iconColor: 'text-success',
+          label: t('settings.availableTranslations', 'Traductions disponibles'),
+          subtitle: t('settings.availableTranslationsHint', 'Télécharger d’autres traductions'),
+          onClick: () => navigate('/settings/available-translations'),
         },
       ],
     },

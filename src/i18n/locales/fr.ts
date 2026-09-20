@@ -156,6 +156,8 @@ export const fr = {
     resetConfirmTitle: 'Êtes-vous sûr?',
     resetConfirmText: 'Cela supprimera TOUS vos versets mémorisés et historiques.',
     typeConfirm: 'Tapez SUPPRIMER pour confirmer',
+    availableTranslations: 'Traductions disponibles',
+    availableTranslationsHint: 'Télécharger d\'autres traductions',
   },
   errors: {
     translationReset: 'Traduction réinitialisée à LSG',

@@ -71,6 +71,8 @@ describe('BibleTranslationRegistry', () => {
     const fr = registry.getByLanguage('fr').map((t) => t.id);
     expect(fr).toEqual(expect.arrayContaining(['lsg', 'ostervald', 'darby']));
     const en = registry.getByLanguage('en').map((t) => t.id);
+    // `kujv` is the only English entry in the *default* seeded catalogue;
+    // `web`/`webu` are remote-download datasets (not bundled manifests yet).
     expect(en).toEqual(['kujv']);
   });
 

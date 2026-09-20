@@ -155,6 +155,8 @@ export const en = {
     resetConfirmTitle: 'Are you sure?',
     resetConfirmText: 'This will delete ALL your memorized verses and history.',
     typeConfirm: 'Type DELETE to confirm',
+    availableTranslations: 'Available Translations',
+    availableTranslationsHint: 'Download other translations',
   },
   errors: {
     translationReset: 'Translation reset to LSG',
