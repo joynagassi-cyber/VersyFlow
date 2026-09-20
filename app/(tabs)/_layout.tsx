@@ -14,6 +14,7 @@ import {
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { Home, BookOpen, BarChart3, Settings, Plus } from 'lucide-react';
 import SyncStatusIndicator from '@/components/common/SyncStatusIndicator';
+import { useTranslation } from 'react-i18next';
 
 interface TabDef {
   path: string;
@@ -21,16 +22,17 @@ interface TabDef {
   Icon: typeof Home;
 }
 
-const TABS: TabDef[] = [
-  { path: '/tabs/home', label: 'Accueil', Icon: Home },
-  { path: '/tabs/explore', label: 'Bible', Icon: BookOpen },
-  { path: '/tabs/progress', label: 'Stats', Icon: BarChart3 },
-  { path: '/tabs/settings', label: 'Réglages', Icon: Settings },
-];
-
 export default function TabLayout() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
+
+  const TABS: TabDef[] = [
+    { path: '/tabs/home', label: t('common.navHome', 'Accueil'), Icon: Home },
+    { path: '/tabs/explore', label: t('common.navBible', 'Bible'), Icon: BookOpen },
+    { path: '/tabs/progress', label: t('common.navStats', 'Stats'), Icon: BarChart3 },
+    { path: '/tabs/settings', label: t('common.navSettings', 'Réglages'), Icon: Settings },
+  ];
 
   const isActive = (path: string) =>
     location.pathname === path || location.pathname.startsWith(`${path}/`);

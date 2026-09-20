@@ -126,7 +126,7 @@ export default function ProgressScreen() {
           </div>
           <div className="h-10 w-px bg-divider" />
           <div className="text-center">
-            <p className="text-xs text-text-muted">Semaine dernière</p>
+            <p className="text-xs text-text-muted">{t('progress.lastWeek', 'Semaine dernière')}</p>
             <p className="text-2xl font-bold text-text-primary">{stats.weeklyTrend.lastWeek}</p>
           </div>
         </div>

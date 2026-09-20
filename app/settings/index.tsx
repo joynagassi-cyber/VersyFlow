@@ -17,10 +17,12 @@ import { IonIcon } from '@/components/ui/Primitives'
 import { calendar, cloud, settings, notifications, chevronForward, logOut } from 'ionicons/icons';
 import { useAuthStore } from '@/store/auth-store';
 import { useAppTheme } from '@/theme/useTheme';
+import { useTranslation } from 'react-i18next';
 
 export default function SettingsScreen() {
   const router = useRouter();
   const { colors, sh, sp, rad } = useAppTheme();
+  const { t } = useTranslation();
   const { user, isAuthenticated, signOut } = useAuthStore();
   const [showConfirm, setShowConfirm] = useState(false);
 
@@ -158,40 +160,40 @@ export default function SettingsScreen() {
 
   const settingsGroups = useMemo(() => [
     {
-      title: 'Compte',
+      title: t('settings.profile', 'Compte'),
       items: [
-        { label: 'Profil', icon: 'person' as any, action: () => router.push('/profile') },
-        ...(isAuthenticated ? [{ label: 'Synchronisation', icon: cloud, action: () => router.push('/settings/backup') }] : []),
+        { label: t('settings.profile', 'Profil'), icon: 'person' as any, action: () => router.push('/profile') },
+        ...(isAuthenticated ? [{ label: t('settings.sync', 'Synchronisation'), icon: cloud, action: () => router.push('/settings/backup') }] : []),
       ],
     },
     {
-      title: 'Apparence',
+      title: t('settings.theme', 'Apparence'),
       items: [
-        { label: 'Thème', icon: settings as any, action: () => router.push('/settings/appearance') },
-        { label: 'Langue', icon: 'language' as any, action: () => router.push('/settings/languages') },
+        { label: t('settings.theme', 'Thème'), icon: settings as any, action: () => router.push('/settings/appearance') },
+        { label: t('settings.uiLanguage', 'Langue'), icon: 'language' as any, action: () => router.push('/settings/languages') },
       ],
     },
     {
-      title: 'Session & Rappels',
+      title: t('settings.session', 'Session & Rappels'),
       items: [
-        { label: 'Session', icon: calendar as any, action: () => router.push('/settings/session') },
-        { label: 'Rappels', icon: notifications as any, action: () => router.push('/settings/reminders') },
+        { label: t('settings.session', 'Session'), icon: calendar as any, action: () => router.push('/settings/session') },
+        { label: t('settings.reminders', 'Rappels'), icon: notifications as any, action: () => router.push('/settings/reminders') },
       ],
     },
     {
-      title: 'Confidentialité',
+      title: t('settings.privacy', 'Confidentialité'),
       items: [
-        { label: 'Données', icon: calendar as any, action: () => router.push('/settings/privacy') },
-        { label: 'Sauvegarde', icon: cloud as any, action: () => router.push('/settings/backup') },
+        { label: t('settings.data', 'Données'), icon: calendar as any, action: () => router.push('/settings/privacy') },
+        { label: t('settings.backup', 'Sauvegarde'), icon: cloud as any, action: () => router.push('/settings/backup') },
       ],
     },
     {
-      title: 'Aide',
+      title: t('settings.helpSupport', 'Aide'),
       items: [
-        { label: 'À propos', icon: notifications as any, action: () => router.push('/settings/about') },
+        { label: t('settings.about', 'À propos'), icon: notifications as any, action: () => router.push('/settings/about') },
       ],
     },
-  ], [isAuthenticated, router]);
+  ], [isAuthenticated, router, t]);
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>

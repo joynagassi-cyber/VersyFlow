@@ -15,6 +15,7 @@ import {
 } from '@/components/ui/Primitives';
 import { useAppTheme } from '@/theme/useTheme';
 import { useRouter } from '@/hooks/useIonicNavigation';
+import { useTranslation } from 'react-i18next';
 import { IonIcon } from '@/components/ui/Primitives'
 import { alarm, bookmark, calendar, checkmark, notifications, arrowBack, notificationsOff } from 'ionicons/icons';
 
@@ -78,6 +79,8 @@ const SAMPLE_NOTIFICATIONS: Notification[] = [
 
 export default function NotificationsScreen() {
   const { colors, sp, sh, rad } = useAppTheme();
+  const router = useRouter();
+  const { t } = useTranslation();
   const styles = useMemo(() => StyleSheet.create({
   container: {
     flex: 1,
@@ -234,7 +237,6 @@ export default function NotificationsScreen() {
     height: 24,
   },
   }), [colors]);
-  const router = useRouter();
   const [notifications, setNotifications] = useState<Notification[]>(SAMPLE_NOTIFICATIONS);
   const [filter, setFilter] = useState<'all' | 'unread'>('all');
 
@@ -291,7 +293,7 @@ export default function NotificationsScreen() {
             )}
           </View>
           <TouchableOpacity onPress={markAllAsRead} style={styles.markAllButton}>
-            <Text style={styles.markAllText}>Tout lire</Text>
+            <Text style={styles.markAllText}>{t('notifications.markAllRead', 'Tout lire')}</Text>
           </TouchableOpacity>
         </View>
 
@@ -302,7 +304,7 @@ export default function NotificationsScreen() {
             onPress={() => setFilter('all')}
           >
             <Text style={[styles.filterText, filter === 'all' && styles.filterTextActive]}>
-              Toutes ({notifications.length})
+              {t('notifications.allTab', 'Toutes')} ({notifications.length})
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
@@ -310,7 +312,7 @@ export default function NotificationsScreen() {
             onPress={() => setFilter('unread')}
           >
             <Text style={[styles.filterText, filter === 'unread' && styles.filterTextActive]}>
-              Non lues ({unreadCount})
+              {t('notifications.unreadTab', 'Non lues')} ({unreadCount})
             </Text>
           </TouchableOpacity>
         </View>
@@ -349,9 +351,9 @@ export default function NotificationsScreen() {
         ) : (
           <View style={styles.emptyState}>
             <IonIcon icon={notificationsOff} size={64} color={colors.outline} />
-            <Text style={styles.emptyTitle}>Aucune notification</Text>
+            <Text style={styles.emptyTitle}>{t('notifications.empty', 'Aucune notification')}</Text>
             <Text style={styles.emptyMessage}>
-              {filter === 'unread' ? 'Vous avez tout lu !' : 'Vos notifications apparaîtront ici'}
+              {filter === 'unread' ? t('notifications.emptyUnread', 'Vous avez tout lu !') : t('notifications.emptyAll', 'Vos notifications apparaîtront ici')}
             </Text>
           </View>
         )}

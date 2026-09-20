@@ -94,12 +94,12 @@ export default function HomeScreen() {
   });
 
   const quickActions = [
-    { icon: BookOpen, label: t('home.explore', 'Explorer la Bible'), desc: t('bible.explorer', 'Explorer la Bible'), color: 'text-primary', bg: 'bg-icon-bg-rose', action: () => navigate('/bible/explorer') },
+    { icon: BookOpen, label: t('home.explore', 'Explorer la Bible'), desc: t('home.explore', 'Explorer la Bible'), color: 'text-primary', bg: 'bg-icon-bg-rose', action: () => navigate('/bible/explorer') },
     { icon: BrainCircuit, label: t('session.memorizing', 'Mémorisation'), desc: 'Nouveau verset', color: 'text-text-secondary', bg: 'bg-icon-bg-purple', action: () => navigate('/memorization/session') },
-    { icon: FileText, label: 'Passage', desc: 'Multi-versets', color: 'text-info', bg: 'bg-icon-bg-blue', action: () => navigate('/bible/chapter') },
-    { icon: Repeat, label: 'Réviser', desc: 'FSRS', color: 'text-success', bg: 'bg-icon-bg-green', action: () => navigate('/review/queue') },
-    { icon: BarChart3, label: 'Progression', desc: 'Statistiques', color: 'text-primary', bg: 'bg-icon-bg-rose', action: () => navigate('/analytics/dashboard') },
-    { icon: Users, label: 'Famille', desc: 'Partager', color: 'text-warning', bg: 'bg-icon-bg-orange', action: () => navigate('/family/home') },
+    { icon: FileText, label: t('home.passage', 'Passage'), desc: t('home.passageDesc', 'Multi-versets'), color: 'text-info', bg: 'bg-icon-bg-blue', action: () => navigate('/bible/chapter') },
+    { icon: Repeat, label: t('home.review', 'Réviser'), desc: t('home.reviewDesc', 'FSRS'), color: 'text-success', bg: 'bg-icon-bg-green', action: () => navigate('/review/queue') },
+    { icon: BarChart3, label: t('home.progress', 'Progression'), desc: t('home.progressDesc', 'Statistiques'), color: 'text-primary', bg: 'bg-icon-bg-rose', action: () => navigate('/analytics/dashboard') },
+    { icon: Users, label: t('home.family', 'Famille'), desc: t('home.familyDesc', 'Partager'), color: 'text-warning', bg: 'bg-icon-bg-orange', action: () => navigate('/family/home') },
   ];
 
   return (
@@ -173,7 +173,7 @@ export default function HomeScreen() {
 
       {/* Quick actions grid */}
       <h2 className="mb-3 mt-8 text-lg font-bold text-text-primary">
-        {t('home.explore', 'Actions rapides')}
+        {t('home.quickActions', 'Actions rapides')}
       </h2>
       <div className="grid grid-cols-2 gap-3">
         {quickActions.map(({ icon: Icon, label, desc, color, bg, action }) => (
