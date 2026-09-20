@@ -147,8 +147,6 @@ export const fr = {
     light: 'Clair',
     dark: 'Sombre',
     dataManagement: 'Données & Stockage',
-    availableTranslations: 'Traductions disponibles',
-    availableTranslationsHint: 'Télécharger des traductions supplémentaires',
     storageUsed: 'Stockage utilisé',
     exportData: 'Exporter mes données',
     about: 'À propos',

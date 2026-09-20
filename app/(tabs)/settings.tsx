@@ -28,67 +28,16 @@ import { useSettingsStore } from '@/store/settings-store';
 import { useTranslationPreference } from '@/hooks/useTranslationPreference';
 import { SUPPORTED_LANGUAGES, isRTL } from '@/domains/i18n/config';
 import {
-  BibleTranslationRegistry,
-  DEFAULT_BIBLE_TRANSLATIONS,
-  type BibleTranslationManifest,
-} from '@/domains/bible/registry';
-import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
 
-const bibleCatalogue = new BibleTranslationRegistry(DEFAULT_BIBLE_TRANSLATIONS);
-
-const availableTranslations = bibleCatalogue
-  .listTranslations()
-  .filter((t) => t.available)
-  .sort((a, b) => a.name.localeCompare(b.name));
-
-const LANG_NAMES: Record<string, string> = {
-  fr: 'Français',
-  en: 'English',
-  de: 'Deutsch',
-  es: 'Español',
-  pt: 'Português',
-  ru: 'Русский',
-  uk: 'Українська',
-  ar: 'العربية',
-  fa: 'فارسی',
-  zh: '中文',
-  ja: '日本語',
-  ko: '한국어',
-  hi: 'हिन्दी',
-  ml: 'മലയാളം',
-  it: 'Italiano',
-  la: 'Latina',
-  nl: 'Nederlands',
-  da: 'Dansk',
-  sv: 'Svenska',
-  so: 'Soomaali',
-  sw: 'Kiswahili',
-  tl: 'Tagalog',
+const TRANSLATION_LABELS: Record<string, string> = {
+  lsg: 'Louis Segond (1910)',
+  ostervald: 'Ostervald (1930)',
 };
-
-function groupTranslationsByLanguage(): Array<{
-  language: string;
-  name: string;
-  items: BibleTranslationManifest[];
-}> {
-  const byLanguage = new Map<string, BibleTranslationManifest[]>();
-  for (const tr of availableTranslations) {
-    const key = tr.language.toLowerCase();
-    const arr = byLanguage.get(key) ?? [];
-    arr.push(tr);
-    byLanguage.set(key, arr);
-  }
-  return [...byLanguage.entries()].map(([language, items]) => ({
-    language,
-    name: LANG_NAMES[language] ?? language.toUpperCase(),
-    items: items.sort((a, b) => a.name.localeCompare(b.name)),
-  }));
-}
 
 export default function SettingsScreen() {
   const navigate = useNavigate();
@@ -97,19 +46,8 @@ export default function SettingsScreen() {
   const { bibleTranslation, setBibleTranslation } = useSettingsStore();
   const { setPreference } = useTranslationPreference();
   const [languageModalOpen, setLanguageModalOpen] = useState(false);
-  const [translationModalOpen, setTranslationModalOpen] = useState(false);
 
   const currentLanguage = i18n.language ?? 'fr';
-  const currentTranslationLabel =
-    availableTranslations.find((x) => x.id === bibleTranslation)?.name ??
-    bibleTranslation ??
-    'Louis Segond (1910)';
-
-  const chooseTranslation = (id: string) => {
-    setBibleTranslation(id);
-    setPreference(id);
-    setTranslationModalOpen(false);
-  };
 
   const changeLanguage = (code: string) => {
     setUiLanguagePersisted(code);
@@ -140,8 +78,14 @@ export default function SettingsScreen() {
           iconBg: 'bg-icon-bg-purple',
           iconColor: 'text-text-secondary',
           label: t('settings.bibleTranslation', 'Traduction biblique'),
-          subtitle: currentTranslationLabel,
-          onClick: () => setTranslationModalOpen(true),
+          subtitle: TRANSLATION_LABELS[bibleTranslation] ?? bibleTranslation ?? 'LSG',
+          onClick: () => {
+            // Toggle between the two bundled translations; persist through
+            // the PowerSync preference when a session is active.
+            const next = bibleTranslation === 'lsg' ? 'ostervald' : 'lsg';
+            setBibleTranslation(next);
+            setPreference(next);
+          },
         },
       ],
     },
@@ -161,14 +105,6 @@ export default function SettingsScreen() {
     {
       title: t('settings.dataManagement', 'Données'),
       rows: [
-        {
-          icon: <Download size={20} />,
-          iconBg: 'bg-icon-bg-orange',
-          iconColor: 'text-warning',
-          label: t('settings.availableTranslations', 'Traductions disponibles'),
-          subtitle: t('settings.availableTranslationsHint', 'Télécharger des bibles en ligne'),
-          onClick: () => navigate('/settings/available-translations'),
-        },
         {
           icon: <CloudUpload size={20} />,
           iconBg: 'bg-icon-bg-green',
@@ -389,43 +325,6 @@ export default function SettingsScreen() {
                 </button>
               );
             })}
-          </div>
-        </DialogContent>
-      </Dialog>
-
-      {/* Bible translation picker (catalogue-driven, groups by language) */}
-      <Dialog open={translationModalOpen} onOpenChange={setTranslationModalOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>{t('settings.bibleTranslation', 'Choisir la traduction')}</DialogTitle>
-          </DialogHeader>
-          <div className="mt-2 flex max-h-[60vh] flex-col gap-4 overflow-y-auto">
-            {groupTranslationsByLanguage().map((group) => (
-              <div key={group.language}>
-                <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-text-tertiary">
-                  {group.name}
-                </p>
-                {group.items.map((tr) => {
-                  const selected = tr.id === bibleTranslation;
-                  return (
-                    <button
-                      key={tr.id}
-                      onClick={() => chooseTranslation(tr.id)}
-                      className={cn(
-                        'flex w-full items-center justify-between rounded-xl p-3 text-left transition-colors',
-                        selected ? 'bg-surface-tint' : 'hover:bg-surface-tint/50',
-                      )}
-                    >
-                      <span className="text-base font-medium text-text-primary">
-                        {tr.name}
-                        {tr.year ? ` (${tr.year})` : ''}
-                      </span>
-                      {selected && <Check size={18} className="text-primary" />}
-                    </button>
-                  );
-                })}
-              </div>
-            ))}
           </div>
         </DialogContent>
       </Dialog>

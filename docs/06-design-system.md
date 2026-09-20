@@ -45,7 +45,7 @@ Contraste minimal 4.5:1, tailles de texte accessibles, support VoiceOver/TalkBac
 
 ---
 
-## 3. Composants UI (Ionic React)
+## 3. Composants UI (React Native)
 
 ### ButtonPrimary
 - **Usage**: Action principale d'un écran

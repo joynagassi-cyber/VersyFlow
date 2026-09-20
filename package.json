@@ -13,7 +13,7 @@
     "postinstall": "node scripts/patch-powersync-worker.cjs",
     "powersync:wire": "tsx -r tsconfig-paths/register scripts/powersync-wire-check.ts",
     "powersync:wire:live": "cross-env TS_NODE_PROJECT=tsconfig.app.json tsx -r tsconfig-paths/register scripts/powersync-wire-check.ts --live",
-    "bible:build": "cross-env TS_NODE_PROJECT=tsconfig.app.json tsx -r tsconfig-paths/register scripts/bible/build-bible.ts",
+    "bible:build": "tsx -r ./scripts/tsconfig-alias-hook.cjs scripts/bible/build-bible.ts",
     "bible:verify": "cross-env TS_NODE_PROJECT=tsconfig.app.json tsx -r tsconfig-paths/register scripts/bible/verify-multi-translation.ts",    "cap:add:android": "capacitor add android",
     "cap:add:ios": "capacitor add ios",
     "cap:sync": "capacitor sync",
@@ -22,8 +22,7 @@
     "cap:run:android": "capacitor run android",
     "cap:run:ios": "capacitor run ios",
     "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage",
-    "bible:deploy": "cross-env TS_NODE_PROJECT=tsconfig.app.json tsx scripts/supabase/setup-bible-datasets.ts"
+    "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
     "@capacitor-community/sqlite": "^8.1.1",

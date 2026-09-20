@@ -6,7 +6,7 @@
 
 ## 1. Vue d'ensemble Architecturale
 
-VersyFlow suit une **Architecture en couches séparées** inspirée de Clean Architecture et Hexagonal Architecture, adaptée à Ionic React + Capacitor + TypeScript + Rust.
+VersyFlow suit une **Architecture en couches séparées** inspirée de Clean Architecture et Hexagonal Architecture, adaptée à React Native + Expo + TypeScript + Rust.
 
 ### Principes architecturaux
 
@@ -23,8 +23,8 @@ VersyFlow suit une **Architecture en couches séparées** inspirée de Clean Arc
 │                        UI LAYER                              │
 │  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌────────────┐  │
 │  │  Screens  │  │Components│  │  Hooks   │  │ Navigation │  │
-│  │(React     │  │(Ionic    │  │ (UI glue │  │  (Router)  │  │
-│  │ Router DOM)│ React)     │  │  only)   │  │            │  │
+│  │(Expo Router)│ (React    │  │ (UI glue │  │  (Router)  │  │
+│  │          │  │ Native)  │  │  only)   │  │            │  │
 │  └────┬─────┘  └──────────┘  └──────────┴─  └────────────┘  │
 │       │                                                      │
 ├───────┼──────────────────────────────────────────────────────┤

@@ -168,7 +168,7 @@ Utilisé pour: bouton primary pressed state glow, streak fire animation surround
 - **ease-out**: `cubic-bezier(0, 0, 0.2, 1)`
 - **ease-in-out**: `cubic-bezier(0.4, 0, 0.2, 1)`
 - **easeOutExpo**: `cubic-bezier(1, 0, 1, 1)`
-- **spring**: `{ tension: 300, friction: 25 }` (Ionic Web — CSS transitions/framer-motion)
+- **spring**: `{ tension: 300, friction: 25 }` (React Native Reanimated spring)
 
 ---
 
@@ -187,7 +187,7 @@ Utilisé pour: bouton primary pressed state glow, streak fire animation surround
 
 ---
 
-## 8. Implémentation Ionic React (Web/Capacitor)
+## 8. Implémentation React Native
 
 ### Tokens en TypeScript
 ```typescript

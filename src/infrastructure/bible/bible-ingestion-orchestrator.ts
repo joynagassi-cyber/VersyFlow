@@ -36,7 +36,7 @@ import {
   type CanonExpectation,
   type ValidationReport,
 } from '@/infrastructure/bible/bible-validator';
-import { USFM_TO_VFLOW, usfmTestament } from '@/domains/bible/canon-maps';
+import { USFM_TO_VFLOW, EBIBLE_TO_VFLOW, usfmTestament, OLD_TESTAMENT_USFM_CODES } from '@/domains/bible/canon-maps';
 import type { BibleDatasetManifest } from '@/domains/bible/registry';
 import type { BibleDocument } from '@/domains/bible/document';
 
@@ -86,8 +86,15 @@ export interface IngestionResult {
 export interface IngestionOrchestratorOptions {
   sourceProvider: ISourceProvider;
   fileWriter: IFileWriter;
-  /** Canon expectation applied during validation. */
-  expectation: CanonExpectation;
+  /**
+   * Canon expectation applied during validation. A plain object applies to
+   * every dataset; a factory derives the expectation from each dataset's
+   * `completeness` (§53: a NEW_TESTAMENT corpus expects the 27 NT books,
+   * not the 66-book canon).
+   */
+  expectation:
+    | CanonExpectation
+    | ((manifest: BibleDatasetManifest) => CanonExpectation);
   /** Adapter that turns raw content into a `BibleDocument`. Defaults to USFM. */
   adapter?: { parse(content: string): BibleDocument };
   /** Normalizer options (injected codeMap / names / testament, D4). */
@@ -101,26 +108,35 @@ export class BibleIngestionOrchestrator {
     this.opts = opts;
   }
 
+  private resolveExpectation(manifest: BibleDatasetManifest): CanonExpectation {
+    const e = this.opts.expectation;
+    return typeof e === 'function' ? e(manifest) : e;
+  }
+
   /**
    * Ingest a single dataset end-to-end. Throws on any step failure so the
    * batch caller can isolate it (§67/§68).
    */
   async ingestDataset(manifest: BibleDatasetManifest): Promise<IngestionResult> {
-    const { sourceProvider, fileWriter, expectation } = this.opts;
+    const { sourceProvider, fileWriter } = this.opts;
     const adapter = this.opts.adapter ?? { parse: (c: string) => USFMAdapter.parse(c) };
+    // §53: expectation may be per-dataset (completeness-aware).
+    const expectation = this.resolveExpectation(manifest);
 
     // 1. Resolve raw source content (local reuse §72, or download).
     const { content } = await sourceProvider.resolve(manifest);
 
-    // 2. Detect format (usfm is expected; the adapter handles it).
+    // 2. Detect format. eBible mobile-HTML archives are parsed to a
+    //    USFM-equivalent stream (format detector still sees `usfm`).
     const format = detectFormat(content);
+    const sourceIsEbible = format !== 'usfm' && content.includes('\\id') && content.includes('\\v');
     if (format === 'usfx') {
       throw new Error('USFXAdapter is not implemented yet (lazy extensibility, §46)');
     }
     if (format === 'json') {
       throw new Error('JSONAdapter is not implemented yet (lazy extensibility, §46)');
     }
-    if (format !== 'usfm') {
+    if (!sourceIsEbible && format !== 'usfm') {
       throw new Error(`Unrecognized source format for ${manifest.id} (got "${format}")`);
     }
 
@@ -128,8 +144,9 @@ export class BibleIngestionOrchestrator {
     const document = adapter.parse(content);
 
     // 4. Normalize → VersyFlow runtime shape (injected maps, D4).
+    //    eBible book codes need the EBIBLE map; plain USFM uses USFM_TO_VFLOW.
     const normalizerOpts: NormalizerOptions = {
-      codeMap: USFM_TO_VFLOW,
+      codeMap: sourceIsEbible ? EBIBLE_TO_VFLOW : USFM_TO_VFLOW,
       testament: usfmTestament,
       ...this.opts.normalizer,
     };
@@ -145,6 +162,23 @@ export class BibleIngestionOrchestrator {
       normalizerOpts,
     );
 
+    // §53: filter canon expectations per completeness level. FULL_BIBLE = all
+    // 66 books, NEW_TESTAMENT = 27 NT books (canon-maps knows the OT set,
+    // so NT = "not in OLD_TESTAMENT_USFM_CODES"), OLD_TESTAMENT = 39 OT books.
+    // The validator uses `expectation.expectedBooks` for the MISSING_BOOK
+    // check and `expectation.expectedVerseCount` / `expectedChapterCount`
+    // for book-level checks, both of which respect the completeness filter.
+    const filteredExpectedBooks = expectation.expectedBooks.filter((bookId) => {
+      const isNT = !OLD_TESTAMENT_USFM_CODES.has(bookId.toUpperCase());
+      if (manifest.completeness === 'NEW_TESTAMENT') return isNT;
+      if (manifest.completeness === 'OLD_TESTAMENT') return !isNT;
+      return true;
+    });
+    const filteredExpectation: CanonExpectation = {
+      ...expectation,
+      expectedBooks: filteredExpectedBooks,
+    };
+
     // 5. Validate against the canon expectation.
     const report = validateDocument(
       {
@@ -156,7 +190,7 @@ export class BibleIngestionOrchestrator {
           })),
         })),
       },
-      expectation,
+      filteredExpectation,
     );
     // §53: only ERROR-severity issues block the build; WARNING-severity
     // issues (e.g. empty verses from incomplete source corpora) are recorded

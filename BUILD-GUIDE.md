@@ -144,6 +144,8 @@ sdkmanager "build-tools;35.0.0" "platforms;android-35" "platform-tools"
 ### `.env.local` (déjà présent — ne pas committer)
 
 ```bash
+INSFORGE_URL=https://wypi8tgf.eu-central.insforge.app
+INSFORGE_ANON_KEY=<clé anon InsForge>
 VITE_SUPABASE_URL=https://<votre-projet>.supabase.co
 VITE_SUPABASE_ANON_KEY=<clé anon/publishable Supabase>
 VITE_POWERSYNC_URL=https://<votre-projet>.powersync.supabase.co
@@ -153,7 +155,7 @@ VITE_POWERSYNC_URL=https://<votre-projet>.powersync.supabase.co
 
 ```bash
 npm start                        # dev (Vite)
-npx cap run android          # APK debug local (Capacitor)
+npm run android                  # APK debug local (Expo/Capacitor)
 npm run typecheck && npm run lint # portes qualité (reprennent les gates CI)
 npm test                         # Vitest
 npm run build                    # build web production (→ www/, utilisé par la CI)

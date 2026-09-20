@@ -3,7 +3,7 @@
     "datasetId": "lsg",
     "status": "BUILT",
     "datasetPath": "data/bible/lsg.json",
-    "checksum": "96d1f2e2f3d66679d161939a48154c2a246b06bcc62bfbc588c35af2cd651836",
+    "checksum": "5d0bda66cdacfd4127cb0cf2fb1e5867981a48915419b0887d46614342e3f403",
     "verseCount": 31170,
     "validation": {
       "pass": true,
@@ -24,22 +24,53 @@
     }
   },
   {
-    "datasetId": "darby",
+    "datasetId": "francrampon",
     "status": "BUILT",
-    "datasetPath": "data/bible/darby.json",
-    "checksum": "cbc2ddbccc696f41ad3dbf84d135f9fc3bd90cd88fdd25ca165801183058a1ea",
+    "datasetPath": "data/bible/francrampon.json",
+    "checksum": "ede8c01a808b5a8c5447652537b1131decd91fcb9e03df60b1ae05f8fd98e726",
+    "verseCount": 32370,
+    "validation": {
+      "pass": true,
+      "totalIssues": 1,
+      "issues": [
+        {
+          "code": "EXTRA_BOOK",
+          "severity": "warning",
+          "message": "Book \"1ma\" not in the expected canon list.",
+          "bookId": "1ma"
+        }
+      ]
+    }
+  },
+  {
+    "datasetId": "frlsg-eb",
+    "status": "BUILT",
+    "datasetPath": "data/bible/frlsg-eb.json",
+    "checksum": "15b3c79b287451c4dba5f8134d72666c9fefb4ef0c00c3788749785b3ff19f52",
     "verseCount": 31170,
     "validation": {
       "pass": true,
-      "totalIssues": 3,
+      "totalIssues": 0,
+      "issues": []
+    }
+  },
+  {
+    "datasetId": "web",
+    "status": "BUILT",
+    "datasetPath": "data/bible/web.json",
+    "checksum": "a8e6c04ef0a4100d1ff346edde09e4666e9b4fa0b62845a47894359fb2ec8482",
+    "verseCount": 31103,
+    "validation": {
+      "pass": true,
+      "totalIssues": 5,
       "issues": [
         {
           "code": "EMPTY_VERSE",
           "severity": "warning",
-          "message": "Book \"mat\" ch. 23 verse 14 is empty.",
-          "bookId": "mat",
-          "chapterNumber": 23,
-          "verseNumber": 14
+          "message": "Book \"luk\" ch. 17 verse 36 is empty.",
+          "bookId": "luk",
+          "chapterNumber": 17,
+          "verseNumber": 36
         },
         {
           "code": "EMPTY_VERSE",
@@ -56,6 +87,853 @@
           "bookId": "act",
           "chapterNumber": 15,
           "verseNumber": 34
+        },
+        {
+          "code": "EMPTY_VERSE",
+          "severity": "warning",
+          "message": "Book \"act\" ch. 24 verse 7 is empty.",
+          "bookId": "act",
+          "chapterNumber": 24,
+          "verseNumber": 7
+        },
+        {
+          "code": "EMPTY_VERSE",
+          "severity": "warning",
+          "message": "Book \"rom\" ch. 16 verse 25 is empty.",
+          "bookId": "rom",
+          "chapterNumber": 16,
+          "verseNumber": 25
+        }
+      ]
+    }
+  },
+  {
+    "datasetId": "webu",
+    "status": "BUILT",
+    "datasetPath": "data/bible/webu.json",
+    "checksum": "3fd3c72fc66069fe977cb0000c28b145d248b517b6e1e620da7f41cecc9505d4",
+    "verseCount": 32762,
+    "validation": {
+      "pass": true,
+      "totalIssues": 8,
+      "issues": [
+        {
+          "code": "EXTRA_BOOK",
+          "severity": "warning",
+          "message": "Book \"esg\" not in the expected canon list.",
+          "bookId": "esg"
+        },
+        {
+          "code": "EXTRA_BOOK",
+          "severity": "warning",
+          "message": "Book \"1ma\" not in the expected canon list.",
+          "bookId": "1ma"
+        },
+        {
+          "code": "EXTRA_BOOK",
+          "severity": "warning",
+          "message": "Book \"dag\" not in the expected canon list.",
+          "bookId": "dag"
+        },
+        {
+          "code": "EMPTY_VERSE",
+          "severity": "warning",
+          "message": "Book \"luk\" ch. 17 verse 36 is empty.",
+          "bookId": "luk",
+          "chapterNumber": 17,
+          "verseNumber": 36
+        },
+        {
+          "code": "EMPTY_VERSE",
+          "severity": "warning",
+          "message": "Book \"act\" ch. 8 verse 37 is empty.",
+          "bookId": "act",
+          "chapterNumber": 8,
+          "verseNumber": 37
+        },
+        {
+          "code": "EMPTY_VERSE",
+          "severity": "warning",
+          "message": "Book \"act\" ch. 15 verse 34 is empty.",
+          "bookId": "act",
+          "chapterNumber": 15,
+          "verseNumber": 34
+        },
+        {
+          "code": "EMPTY_VERSE",
+          "severity": "warning",
+          "message": "Book \"act\" ch. 24 verse 7 is empty.",
+          "bookId": "act",
+          "chapterNumber": 24,
+          "verseNumber": 7
+        },
+        {
+          "code": "EMPTY_VERSE",
+          "severity": "warning",
+          "message": "Book \"rom\" ch. 16 verse 25 is empty.",
+          "bookId": "rom",
+          "chapterNumber": 16,
+          "verseNumber": 25
+        }
+      ]
+    }
+  },
+  {
+    "datasetId": "kujv",
+    "status": "BUILT",
+    "datasetPath": "data/bible/kujv.json",
+    "checksum": "89ad73408ab4e663f78e49a4e9942e9d08a0847d802959fcef270f26b0605999",
+    "verseCount": 32305,
+    "validation": {
+      "pass": true,
+      "totalIssues": 12,
+      "issues": [
+        {
+          "code": "EXTRA_BOOK",
+          "severity": "warning",
+          "message": "Book \"int\" not in the expected canon list.",
+          "bookId": "int"
+        },
+        {
+          "code": "EXTRA_BOOK",
+          "severity": "warning",
+          "message": "Book \"esg\" not in the expected canon list.",
+          "bookId": "esg"
+        },
+        {
+          "code": "VERSE_GAP",
+          "severity": "warning",
+          "message": "Book \"esg\" ch. 1: verse numbers are not consecutive at position 0 (found 2, expected 1).",
+          "bookId": "esg",
+          "chapterNumber": 1,
+          "verseNumber": 2
+        },
+        {
+          "code": "VERSE_GAP",
+          "severity": "warning",
+          "message": "Book \"esg\" ch. 3: verse numbers are not consecutive at position 0 (found 14, expected 1).",
+          "bookId": "esg",
+          "chapterNumber": 3,
+          "verseNumber": 14
+        },
+        {
+          "code": "VERSE_GAP",
+          "severity": "warning",
+          "message": "Book \"esg\" ch. 4: verse numbers are not consecutive at position 0 (found 18, expected 1).",
+          "bookId": "esg",
+          "chapterNumber": 4,
+          "verseNumber": 18
+        },
+        {
+          "code": "VERSE_GAP",
+          "severity": "warning",
+          "message": "Book \"esg\" ch. 8: verse numbers are not consecutive at position 0 (found 13, expected 1).",
+          "bookId": "esg",
+          "chapterNumber": 8,
+          "verseNumber": 13
+        },
+        {
+          "code": "VERSE_GAP",
+          "severity": "warning",
+          "message": "Book \"esg\" ch. 10: verse numbers are not consecutive at position 1 (found 4, expected 2).",
+          "bookId": "esg",
+          "chapterNumber": 10,
+          "verseNumber": 4
+        },
+        {
+          "code": "EXTRA_BOOK",
+          "severity": "warning",
+          "message": "Book \"s3y\" not in the expected canon list.",
+          "bookId": "s3y"
+        },
+        {
+          "code": "EXTRA_BOOK",
+          "severity": "warning",
+          "message": "Book \"sus\" not in the expected canon list.",
+          "bookId": "sus"
+        },
+        {
+          "code": "EXTRA_BOOK",
+          "severity": "warning",
+          "message": "Book \"bel\" not in the expected canon list.",
+          "bookId": "bel"
+        },
+        {
+          "code": "EXTRA_BOOK",
+          "severity": "warning",
+          "message": "Book \"1ma\" not in the expected canon list.",
+          "bookId": "1ma"
+        },
+        {
+          "code": "EXTRA_BOOK",
+          "severity": "warning",
+          "message": "Book \"oth\" not in the expected canon list.",
+          "bookId": "oth"
+        }
+      ]
+    }
+  },
+  {
+    "datasetId": "rv1909",
+    "status": "BUILT",
+    "datasetPath": "data/bible/rv1909.json",
+    "checksum": "83ececa5a3d7d510df696f3070890e66f38bec155a13e4d28cb69395db67bc41",
+    "verseCount": 31102,
+    "validation": {
+      "pass": true,
+      "totalIssues": 18,
+      "issues": [
+        {
+          "code": "EMPTY_VERSE",
+          "severity": "warning",
+          "message": "Book \"num\" ch. 12 verse 16 is empty.",
+          "bookId": "num",
+          "chapterNumber": 12,
+          "verseNumber": 16
+        },
+        {
+          "code": "EMPTY_VERSE",
+          "severity": "warning",
+          "message": "Book \"num\" ch. 29 verse 40 is empty.",
+          "bookId": "num",
+          "chapterNumber": 29,
+          "verseNumber": 40
+        },
+        {
+          "code": "EMPTY_VERSE",
+          "severity": "warning",
+          "message": "Book \"1sam\" ch. 23 verse 29 is empty.",
+          "bookId": "1sam",
+          "chapterNumber": 23,
+          "verseNumber": 29
+        },
+        {
+          "code": "EMPTY_VERSE",
+          "severity": "warning",
+          "message": "Book \"2sam\" ch. 20 verse 26 is empty.",
+          "bookId": "2sam",
+          "chapterNumber": 20,
+          "verseNumber": 26
+        },
+        {
+          "code": "EMPTY_VERSE",
+          "severity": "warning",
+          "message": "Book \"2chron\" ch. 33 verse 25 is empty.",
+          "bookId": "2chron",
+          "chapterNumber": 33,
+          "verseNumber": 25
+        },
+        {
+          "code": "EMPTY_VERSE",
+          "severity": "warning",
+          "message": "Book \"job\" ch. 35 verse 16 is empty.",
+          "bookId": "job",
+          "chapterNumber": 35,
+          "verseNumber": 16
+        },
+        {
+          "code": "EMPTY_VERSE",
+          "severity": "warning",
+          "message": "Book \"job\" ch. 38 verse 39 is empty.",
+          "bookId": "job",
+          "chapterNumber": 38,
+          "verseNumber": 39
+        },
+        {
+          "code": "EMPTY_VERSE",
+          "severity": "warning",
+          "message": "Book \"job\" ch. 38 verse 40 is empty.",
+          "bookId": "job",
+          "chapterNumber": 38,
+          "verseNumber": 40
+        },
+        {
+          "code": "EMPTY_VERSE",
+          "severity": "warning",
+          "message": "Book \"job\" ch. 38 verse 41 is empty.",
+          "bookId": "job",
+          "chapterNumber": 38,
+          "verseNumber": 41
+        },
+        {
+          "code": "EMPTY_VERSE",
+          "severity": "warning",
+          "message": "Book \"job\" ch. 40 verse 20 is empty.",
+          "bookId": "job",
+          "chapterNumber": 40,
+          "verseNumber": 20
+        },
+        {
+          "code": "EMPTY_VERSE",
+          "severity": "warning",
+          "message": "Book \"job\" ch. 40 verse 21 is empty.",
+          "bookId": "job",
+          "chapterNumber": 40,
+          "verseNumber": 21
+        },
+        {
+          "code": "EMPTY_VERSE",
+          "severity": "warning",
+          "message": "Book \"job\" ch. 40 verse 22 is empty.",
+          "bookId": "job",
+          "chapterNumber": 40,
+          "verseNumber": 22
+        },
+        {
+          "code": "EMPTY_VERSE",
+          "severity": "warning",
+          "message": "Book \"job\" ch. 40 verse 23 is empty.",
+          "bookId": "job",
+          "chapterNumber": 40,
+          "verseNumber": 23
+        },
+        {
+          "code": "EMPTY_VERSE",
+          "severity": "warning",
+          "message": "Book \"job\" ch. 40 verse 24 is empty.",
+          "bookId": "job",
+          "chapterNumber": 40,
+          "verseNumber": 24
+        },
+        {
+          "code": "EMPTY_VERSE",
+          "severity": "warning",
+          "message": "Book \"os\" ch. 11 verse 12 is empty.",
+          "bookId": "os",
+          "chapterNumber": 11,
+          "verseNumber": 12
+        },
+        {
+          "code": "EMPTY_VERSE",
+          "severity": "warning",
+          "message": "Book \"jon\" ch. 1 verse 17 is empty.",
+          "bookId": "jon",
+          "chapterNumber": 1,
+          "verseNumber": 17
+        },
+        {
+          "code": "EMPTY_VERSE",
+          "severity": "warning",
+          "message": "Book \"act\" ch. 19 verse 41 is empty.",
+          "bookId": "act",
+          "chapterNumber": 19,
+          "verseNumber": 41
+        },
+        {
+          "code": "EMPTY_VERSE",
+          "severity": "warning",
+          "message": "Book \"2cor\" ch. 13 verse 14 is empty.",
+          "bookId": "2cor",
+          "chapterNumber": 13,
+          "verseNumber": 14
+        }
+      ]
+    }
+  },
+  {
+    "datasetId": "es-onbv",
+    "status": "BUILT",
+    "datasetPath": "data/bible/es-onbv.json",
+    "checksum": "2ce6909c0b248ace12840c66e8a4420926e86e3f25c922501d330bd6c4d77327",
+    "verseCount": 31103,
+    "validation": {
+      "pass": true,
+      "totalIssues": 0,
+      "issues": []
+    }
+  },
+  {
+    "datasetId": "es-godword",
+    "status": "BUILT",
+    "datasetPath": "data/bible/es-godword.json",
+    "checksum": "096b01bac0d09fdfb3eb46b99db615c7cece5dbdb9dfbbc34ed7397e91cafc0d",
+    "verseCount": 31103,
+    "validation": {
+      "pass": true,
+      "totalIssues": 1,
+      "issues": [
+        {
+          "code": "EXTRA_BOOK",
+          "severity": "warning",
+          "message": "Book \"int\" not in the expected canon list.",
+          "bookId": "int"
+        }
+      ]
+    }
+  },
+  {
+    "datasetId": "pt-onbv",
+    "status": "BUILT",
+    "datasetPath": "data/bible/pt-onbv.json",
+    "checksum": "e19c6dc3877a05156700962e58e648fc06da6f3cab49a942b3b8bdff5857282e",
+    "verseCount": 31105,
+    "validation": {
+      "pass": true,
+      "totalIssues": 0,
+      "issues": []
+    }
+  },
+  {
+    "datasetId": "luther1912",
+    "status": "BUILT",
+    "datasetPath": "data/bible/luther1912.json",
+    "checksum": "9c7711fe28c68456e63b21a13a7699fe022de1e6305696806e91d7486087dd47",
+    "verseCount": 31102,
+    "validation": {
+      "pass": true,
+      "totalIssues": 0,
+      "issues": []
+    }
+  },
+  {
+    "datasetId": "schlatter1951",
+    "status": "BUILT",
+    "datasetPath": "data/bible/schlatter1951.json",
+    "checksum": "f6fdde4b67921acec0bde2a0a77391ee978fab45564a9e6846380417686951a8",
+    "verseCount": 31102,
+    "validation": {
+      "pass": true,
+      "totalIssues": 1,
+      "issues": [
+        {
+          "code": "EMPTY_VERSE",
+          "severity": "warning",
+          "message": "Book \"mat\" ch. 21 verse 44 is empty.",
+          "bookId": "mat",
+          "chapterNumber": 21,
+          "verseNumber": 44
+        }
+      ]
+    }
+  },
+  {
+    "datasetId": "ru-synodal",
+    "status": "BUILT",
+    "datasetPath": "data/bible/ru-synodal.json",
+    "checksum": "79a5f1a88a6c5ee1f6d55efdd9299a194b9f2b2805f9de00d32d77c9cb033783",
+    "verseCount": 31169,
+    "validation": {
+      "pass": true,
+      "totalIssues": 0,
+      "issues": []
+    }
+  },
+  {
+    "datasetId": "uk-bju1996",
+    "status": "BUILT",
+    "datasetPath": "data/bible/uk-bju1996.json",
+    "checksum": "89aa244b06802b3f13f413878f6cb82a31d5d6ed83d579370f6cfed4cf1f915a",
+    "verseCount": 31082,
+    "validation": {
+      "pass": true,
+      "totalIssues": 0,
+      "issues": []
+    }
+  },
+  {
+    "datasetId": "uk-kulish1871",
+    "status": "BUILT",
+    "datasetPath": "data/bible/uk-kulish1871.json",
+    "checksum": "abc61716d3ded5a9d859bf0966b0f26ace238a9480765a1042a45a24849cc193",
+    "verseCount": 31082,
+    "validation": {
+      "pass": true,
+      "totalIssues": 0,
+      "issues": []
+    }
+  },
+  {
+    "datasetId": "it-diodati1885",
+    "status": "BUILT",
+    "datasetPath": "data/bible/it-diodati1885.json",
+    "checksum": "f98fd79fb872acf5c99c59da2a603736e19a588d5e03e918af07018663ca7509",
+    "verseCount": 31095,
+    "validation": {
+      "pass": true,
+      "totalIssues": 0,
+      "issues": []
+    }
+  },
+  {
+    "datasetId": "it-riveduta1927",
+    "status": "BUILT",
+    "datasetPath": "data/bible/it-riveduta1927.json",
+    "checksum": "44515b50648cb6e3fd1d31682354278f1364612baa2b90638b1a96f1165bd08e",
+    "verseCount": 31102,
+    "validation": {
+      "pass": true,
+      "totalIssues": 0,
+      "issues": []
+    }
+  },
+  {
+    "datasetId": "ar-nav",
+    "status": "BUILT",
+    "datasetPath": "data/bible/ar-nav.json",
+    "checksum": "2c4599eb987272196fcc0d053471e91599ac170ab8781d56d915018336d45deb",
+    "verseCount": 31103,
+    "validation": {
+      "pass": true,
+      "totalIssues": 0,
+      "issues": []
+    }
+  },
+  {
+    "datasetId": "cmn-uvs",
+    "status": "BUILT",
+    "datasetPath": "data/bible/cmn-uvs.json",
+    "checksum": "cd442dabf0d6d21d71bf74f4802d1f3e3722c813f7958c5164e888208aec6294",
+    "verseCount": 31104,
+    "validation": {
+      "pass": true,
+      "totalIssues": 1,
+      "issues": [
+        {
+          "code": "VERSE_GAP",
+          "severity": "warning",
+          "message": "Book \"isa\" ch. 38: verse numbers are not consecutive at position 7 (found 7, expected 8).",
+          "bookId": "isa",
+          "chapterNumber": 38,
+          "verseNumber": 7
+        }
+      ]
+    }
+  },
+  {
+    "datasetId": "cmnswcb",
+    "status": "BUILT",
+    "datasetPath": "data/bible/cmnswcb.json",
+    "checksum": "124b94dec5f3484bcda38fe24b5969a3ad6e1fd47a327109b15343f2a4892f8f",
+    "verseCount": 31096,
+    "validation": {
+      "pass": true,
+      "totalIssues": 5,
+      "issues": [
+        {
+          "code": "EMPTY_VERSE",
+          "severity": "warning",
+          "message": "Book \"luk\" ch. 17 verse 36 is empty.",
+          "bookId": "luk",
+          "chapterNumber": 17,
+          "verseNumber": 36
+        },
+        {
+          "code": "EMPTY_VERSE",
+          "severity": "warning",
+          "message": "Book \"act\" ch. 8 verse 37 is empty.",
+          "bookId": "act",
+          "chapterNumber": 8,
+          "verseNumber": 37
+        },
+        {
+          "code": "EMPTY_VERSE",
+          "severity": "warning",
+          "message": "Book \"act\" ch. 15 verse 34 is empty.",
+          "bookId": "act",
+          "chapterNumber": 15,
+          "verseNumber": 34
+        },
+        {
+          "code": "EMPTY_VERSE",
+          "severity": "warning",
+          "message": "Book \"act\" ch. 24 verse 7 is empty.",
+          "bookId": "act",
+          "chapterNumber": 24,
+          "verseNumber": 7
+        },
+        {
+          "code": "EMPTY_VERSE",
+          "severity": "warning",
+          "message": "Book \"rom\" ch. 16 verse 25 is empty.",
+          "bookId": "rom",
+          "chapterNumber": 16,
+          "verseNumber": 25
+        }
+      ]
+    }
+  },
+  {
+    "datasetId": "ko-1910",
+    "status": "BUILT",
+    "datasetPath": "data/bible/ko-1910.json",
+    "checksum": "564c1bec1f1923eee12b91afa922571a99eb818444f357a017e7f8d27b5a218c",
+    "verseCount": 30991,
+    "validation": {
+      "pass": true,
+      "totalIssues": 0,
+      "issues": []
+    }
+  },
+  {
+    "datasetId": "jp-freedom",
+    "status": "BUILT",
+    "datasetPath": "data/bible/jp-freedom.json",
+    "checksum": "1e72fce4365dad7057859eb4adf325c0502999f22a4eccac24a6b95e9e9901be",
+    "verseCount": 31103,
+    "validation": {
+      "pass": true,
+      "totalIssues": 5,
+      "issues": [
+        {
+          "code": "EMPTY_VERSE",
+          "severity": "warning",
+          "message": "Book \"luk\" ch. 17 verse 36 is empty.",
+          "bookId": "luk",
+          "chapterNumber": 17,
+          "verseNumber": 36
+        },
+        {
+          "code": "EMPTY_VERSE",
+          "severity": "warning",
+          "message": "Book \"act\" ch. 8 verse 37 is empty.",
+          "bookId": "act",
+          "chapterNumber": 8,
+          "verseNumber": 37
+        },
+        {
+          "code": "EMPTY_VERSE",
+          "severity": "warning",
+          "message": "Book \"act\" ch. 15 verse 34 is empty.",
+          "bookId": "act",
+          "chapterNumber": 15,
+          "verseNumber": 34
+        },
+        {
+          "code": "EMPTY_VERSE",
+          "severity": "warning",
+          "message": "Book \"act\" ch. 24 verse 7 is empty.",
+          "bookId": "act",
+          "chapterNumber": 24,
+          "verseNumber": 7
+        },
+        {
+          "code": "EMPTY_VERSE",
+          "severity": "warning",
+          "message": "Book \"rom\" ch. 16 verse 25 is empty.",
+          "bookId": "rom",
+          "chapterNumber": 16,
+          "verseNumber": 25
+        }
+      ]
+    }
+  },
+  {
+    "datasetId": "fa-opcb",
+    "status": "BUILT",
+    "datasetPath": "data/bible/fa-opcb.json",
+    "checksum": "a24b97095b858cd202f6c7012acd8d518a684cbad1c88b02c525878d2cd2c5cc",
+    "verseCount": 29469,
+    "validation": {
+      "pass": true,
+      "totalIssues": 0,
+      "issues": []
+    }
+  },
+  {
+    "datasetId": "tl-ulb",
+    "status": "BUILT",
+    "datasetPath": "data/bible/tl-ulb.json",
+    "checksum": "4785d41c402d5865b1538be466c1c3468282cba80a0421a034ab0a0469330a7d",
+    "verseCount": 31104,
+    "validation": {
+      "pass": true,
+      "totalIssues": 0,
+      "issues": []
+    }
+  },
+  {
+    "datasetId": "sw-ulb",
+    "status": "BUILT",
+    "datasetPath": "data/bible/sw-ulb.json",
+    "checksum": "5b913101411b6423410805415298dbcd1ff3e386063cc6791fa42d1c99f216a7",
+    "verseCount": 31103,
+    "validation": {
+      "pass": true,
+      "totalIssues": 0,
+      "issues": []
+    }
+  },
+  {
+    "datasetId": "nl-1917",
+    "status": "BUILT",
+    "datasetPath": "data/bible/nl-1917.json",
+    "checksum": "f3cee2bd0a80d23b3d26185e2432f5dfe421229696c8d75a7939d7613a0a1c58",
+    "verseCount": 31102,
+    "validation": {
+      "pass": true,
+      "totalIssues": 0,
+      "issues": []
+    }
+  },
+  {
+    "datasetId": "nl-nbg1951",
+    "status": "BUILT",
+    "datasetPath": "data/bible/nl-nbg1951.json",
+    "checksum": "90803bbc2cc3dd3c195adad0a711226569d23566b040ad7e0863bec305ba43ea",
+    "verseCount": 31176,
+    "validation": {
+      "pass": true,
+      "totalIssues": 9,
+      "issues": [
+        {
+          "code": "VERSE_GAP",
+          "severity": "warning",
+          "message": "Book \"1sam\" ch. 4: verse numbers are not consecutive at position 1 (found 1, expected 2).",
+          "bookId": "1sam",
+          "chapterNumber": 4,
+          "verseNumber": 1
+        },
+        {
+          "code": "VERSE_GAP",
+          "severity": "warning",
+          "message": "Book \"esai\" ch. 7: verse numbers are not consecutive at position 28 (found 28, expected 29).",
+          "bookId": "esai",
+          "chapterNumber": 7,
+          "verseNumber": 28
+        },
+        {
+          "code": "VERSE_GAP",
+          "severity": "warning",
+          "message": "Book \"mar\" ch. 6: verse numbers are not consecutive at position 6 (found 6, expected 7).",
+          "bookId": "mar",
+          "chapterNumber": 6,
+          "verseNumber": 6
+        },
+        {
+          "code": "VERSE_GAP",
+          "severity": "warning",
+          "message": "Book \"mar\" ch. 12: verse numbers are not consecutive at position 37 (found 37, expected 38).",
+          "bookId": "mar",
+          "chapterNumber": 12,
+          "verseNumber": 37
+        },
+        {
+          "code": "VERSE_GAP",
+          "severity": "warning",
+          "message": "Book \"luk\" ch. 9: verse numbers are not consecutive at position 43 (found 43, expected 44).",
+          "bookId": "luk",
+          "chapterNumber": 9,
+          "verseNumber": 43
+        },
+        {
+          "code": "VERSE_GAP",
+          "severity": "warning",
+          "message": "Book \"luk\" ch. 23: verse numbers are not consecutive at position 56 (found 56, expected 57).",
+          "bookId": "luk",
+          "chapterNumber": 23,
+          "verseNumber": 56
+        },
+        {
+          "code": "VERSE_GAP",
+          "severity": "warning",
+          "message": "Book \"joh\" ch. 19: verse numbers are not consecutive at position 16 (found 16, expected 17).",
+          "bookId": "joh",
+          "chapterNumber": 19,
+          "verseNumber": 16
+        },
+        {
+          "code": "VERSE_GAP",
+          "severity": "warning",
+          "message": "Book \"act\" ch. 9: verse numbers are not consecutive at position 19 (found 19, expected 20).",
+          "bookId": "act",
+          "chapterNumber": 9,
+          "verseNumber": 19
+        },
+        {
+          "code": "VERSE_GAP",
+          "severity": "warning",
+          "message": "Book \"1tim\" ch. 6: verse numbers are not consecutive at position 2 (found 2, expected 3).",
+          "bookId": "1tim",
+          "chapterNumber": 6,
+          "verseNumber": 2
+        }
+      ]
+    }
+  },
+  {
+    "datasetId": "hi-irv",
+    "status": "BUILT",
+    "datasetPath": "data/bible/hi-irv.json",
+    "checksum": "cee8774675808dfceef360543c86ff11095a0ca4709cfb27bb332e104f19ef87",
+    "verseCount": 31104,
+    "validation": {
+      "pass": true,
+      "totalIssues": 0,
+      "issues": []
+    }
+  },
+  {
+    "datasetId": "ml-irv",
+    "status": "BUILT",
+    "datasetPath": "data/bible/ml-irv.json",
+    "checksum": "04bdc1c94c78f6c8f824458b954bcaeba23a0df85bfc99da5498fbd1d829db46",
+    "verseCount": 31104,
+    "validation": {
+      "pass": true,
+      "totalIssues": 0,
+      "issues": []
+    }
+  },
+  {
+    "datasetId": "sv-ntplus",
+    "status": "BUILT",
+    "datasetPath": "data/bible/sv-ntplus.json",
+    "checksum": "82cb31f7db1199e7853a383578aec39a5aad3e2790633016069475360761555a",
+    "verseCount": 31162,
+    "validation": {
+      "pass": true,
+      "totalIssues": 1,
+      "issues": [
+        {
+          "code": "EMPTY_VERSE",
+          "severity": "warning",
+          "message": "Book \"act\" ch. 24 verse 7 is empty.",
+          "bookId": "act",
+          "chapterNumber": 24,
+          "verseNumber": 7
+        }
+      ]
+    }
+  },
+  {
+    "datasetId": "da-1931",
+    "status": "BUILT",
+    "datasetPath": "data/bible/da-1931.json",
+    "checksum": "56219547c7efd2b50b1a4fab9fc56e9e055f77ece1994c18015653e5007685b7",
+    "verseCount": 31168,
+    "validation": {
+      "pass": true,
+      "totalIssues": 0,
+      "issues": []
+    }
+  },
+  {
+    "datasetId": "so-bible",
+    "status": "BUILT",
+    "datasetPath": "data/bible/so-bible.json",
+    "checksum": "7525cecba64d340e4eb129a131bcd433d54b3715308ac656a2f0c02b375e2187",
+    "verseCount": 31103,
+    "validation": {
+      "pass": true,
+      "totalIssues": 0,
+      "issues": []
+    }
+  },
+  {
+    "datasetId": "la-vulgate",
+    "status": "BUILT",
+    "datasetPath": "data/bible/la-vulgate.json",
+    "checksum": "90c1eb20daa348b48fc9892d18544337673a28cec57e9a0100d6a0fa9c689d36",
+    "verseCount": 32363,
+    "validation": {
+      "pass": true,
+      "totalIssues": 1,
+      "issues": [
+        {
+          "code": "EXTRA_BOOK",
+          "severity": "warning",
+          "message": "Book \"1ma\" not in the expected canon list.",
+          "bookId": "1ma"
         }
       ]
     }

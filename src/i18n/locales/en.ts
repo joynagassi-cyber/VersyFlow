@@ -146,8 +146,6 @@ export const en = {
     light: 'Light',
     dark: 'Dark',
     dataManagement: 'Data & Storage',
-    availableTranslations: 'Available translations',
-    availableTranslationsHint: 'Download additional Bibles',
     storageUsed: 'Storage Used',
     exportData: 'Export My Data',
     about: 'About',

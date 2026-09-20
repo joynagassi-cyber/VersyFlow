@@ -1,33 +1,145 @@
 {
   "languages": [
-    { "iso639_1": "fr", "name": "French", "priority": 1 },
-    { "iso639_1": "en", "name": "English", "priority": 2 },
-    { "iso639_1": "es", "name": "Spanish", "priority": 3 },
-    { "iso639_1": "pt", "name": "Portuguese", "priority": 4 },
-    { "iso639_1": "de", "name": "German", "priority": 5 },
-    { "iso639_1": "ru", "name": "Russian", "priority": 6 },
-    { "iso639_1": "uk", "name": "Ukrainian", "priority": 7 },
-    { "iso639_1": "it", "name": "Italian", "priority": 8 },
-    { "iso639_1": "ar", "name": "Arabic", "priority": 9 },
-    { "iso639_1": "zh", "name": "Chinese", "priority": 10 },
-    { "iso639_1": "ko", "name": "Korean", "priority": 11 },
-    { "iso639_1": "ja", "name": "Japanese", "priority": 12 },
-    { "iso639_1": "fa", "name": "Persian", "priority": 13 },
-    { "iso639_1": "tl", "name": "Tagalog", "priority": 14 },
-    { "iso639_1": "sw", "name": "Swahili", "priority": 15 },
-    { "iso639_1": "nl", "name": "Dutch", "priority": 16 },
-    { "iso639_1": "id", "name": "Indonesian", "priority": 17 },
-    { "iso639_1": "hi", "name": "Hindi", "priority": 18 },
-    { "iso639_1": "ml", "name": "Malayalam", "priority": 19 },
-    { "iso639_1": "no", "name": "Norwegian", "priority": 20 },
-    { "iso639_1": "sv", "name": "Swedish", "priority": 21 },
-    { "iso639_1": "da", "name": "Danish", "priority": 22 },
-    { "iso639_1": "fi", "name": "Finnish", "priority": 23 },
-    { "iso639_1": "is", "name": "Icelandic", "priority": 24 },
-    { "iso639_1": "so", "name": "Somali", "priority": 25 },
-    { "iso639_1": "la", "name": "Latin", "priority": 26 },
-    { "iso639_1": "el", "name": "Greek", "priority": 27 },
-    { "iso639_1": "he", "name": "Hebrew", "priority": 28 }
+    {
+      "iso639_1": "fr",
+      "name": "French",
+      "priority": 1
+    },
+    {
+      "iso639_1": "en",
+      "name": "English",
+      "priority": 2
+    },
+    {
+      "iso639_1": "es",
+      "name": "Spanish",
+      "priority": 3
+    },
+    {
+      "iso639_1": "pt",
+      "name": "Portuguese",
+      "priority": 4
+    },
+    {
+      "iso639_1": "de",
+      "name": "German",
+      "priority": 5
+    },
+    {
+      "iso639_1": "ru",
+      "name": "Russian",
+      "priority": 6
+    },
+    {
+      "iso639_1": "uk",
+      "name": "Ukrainian",
+      "priority": 7
+    },
+    {
+      "iso639_1": "it",
+      "name": "Italian",
+      "priority": 8
+    },
+    {
+      "iso639_1": "ar",
+      "name": "Arabic",
+      "priority": 9
+    },
+    {
+      "iso639_1": "zh",
+      "name": "Chinese",
+      "priority": 10
+    },
+    {
+      "iso639_1": "ko",
+      "name": "Korean",
+      "priority": 11
+    },
+    {
+      "iso639_1": "ja",
+      "name": "Japanese",
+      "priority": 12
+    },
+    {
+      "iso639_1": "fa",
+      "name": "Persian",
+      "priority": 13
+    },
+    {
+      "iso639_1": "tl",
+      "name": "Tagalog",
+      "priority": 14
+    },
+    {
+      "iso639_1": "sw",
+      "name": "Swahili",
+      "priority": 15
+    },
+    {
+      "iso639_1": "nl",
+      "name": "Dutch",
+      "priority": 16
+    },
+    {
+      "iso639_1": "id",
+      "name": "Indonesian",
+      "priority": 17
+    },
+    {
+      "iso639_1": "hi",
+      "name": "Hindi",
+      "priority": 18
+    },
+    {
+      "iso639_1": "ml",
+      "name": "Malayalam",
+      "priority": 19
+    },
+    {
+      "iso639_1": "no",
+      "name": "Norwegian",
+      "priority": 20
+    },
+    {
+      "iso639_1": "sv",
+      "name": "Swedish",
+      "priority": 21
+    },
+    {
+      "iso639_1": "da",
+      "name": "Danish",
+      "priority": 22
+    },
+    {
+      "iso639_1": "fi",
+      "name": "Finnish",
+      "priority": 23
+    },
+    {
+      "iso639_1": "is",
+      "name": "Icelandic",
+      "priority": 24
+    },
+    {
+      "iso639_1": "so",
+      "name": "Somali",
+      "priority": 25
+    },
+    {
+      "iso639_1": "la",
+      "name": "Latin",
+      "priority": 26
+    },
+    {
+      "iso639_1": "el",
+      "name": "Greek",
+      "priority": 27
+    },
+    {
+      "iso639_1": "he",
+      "name": "Hebrew",
+      "priority": 28
+    }
   ],
   "translations": [
     {
@@ -55,12 +167,433 @@
       "available": false
     },
     {
+      "id": "frlsg-eb",
+      "language": "fr",
+      "name": "fraLSG",
+      "license": "VERIFIED_FREE",
+      "available": true,
+      "rawPath": "data/bible/raw/fr/fraLSG_usfm",
+      "url": "https://ebible.org/Scriptures/fraLSG_usfm.zip",
+      "checksum": "980b237aa3d054f60daa3f745cae91c226f065870e6a7b01a620b58019574be6",
+      "eBibleId": "fraLSG",
+      "verseCount": 31170
+    },
+    {
+      "id": "francrampon",
+      "language": "fr",
+      "name": "francl",
+      "license": "VERIFIED_FREE",
+      "available": true,
+      "rawPath": "data/bible/raw/fr/francl_usfm",
+      "url": "https://ebible.org/Scriptures/francl_usfm.zip",
+      "checksum": "155899de05d98bad3dafb3b01a2a8ebcff1fbf1271a69e62ab2a5023a5b5fd77",
+      "eBibleId": "francl",
+      "verseCount": 35530
+    },
+    {
+      "id": "web",
+      "language": "en",
+      "name": "engweb",
+      "license": "VERIFIED_FREE",
+      "available": true,
+      "fetchError": "HTTP 404 and no USFM URL on details page",
+      "rawPath": "data/bible/raw/en/engwebp_usfm",
+      "url": "https://ebible.org/Scriptures/engwebp_usfm.zip",
+      "checksum": "f184ffc22df2b14872d6faffe4ccfe612bf90dd2462d6246b231733e10bb8859",
+      "eBibleId": "engwebp",
+      "verseCount": 31103
+    },
+    {
+      "id": "webu",
+      "language": "en",
+      "name": "engwebu",
+      "license": "VERIFIED_FREE",
+      "available": true,
+      "rawPath": "data/bible/raw/en/engwebu_usfm",
+      "url": "https://ebible.org/Scriptures/engwebu_usfm.zip",
+      "checksum": "01a6105c30b2677ccbb82b0193ff541df59b6d05ee462ca03bb9c15b1abc415e",
+      "eBibleId": "engwebu",
+      "verseCount": 38058
+    },
+    {
+      "id": "rv1909",
+      "language": "es",
+      "name": "spaRV1909",
+      "license": "VERIFIED_FREE",
+      "available": true,
+      "rawPath": "data/bible/raw/es/spaRV1909_usfm",
+      "url": "https://ebible.org/Scriptures/spaRV1909_usfm.zip",
+      "checksum": "0ec491311d954623c0b878562f1d44dd6c981513b8d6c75a9690ce796274216c",
+      "eBibleId": "spaRV1909",
+      "verseCount": 31102
+    },
+    {
+      "id": "es-onbv",
+      "language": "es",
+      "name": "spaonbv",
+      "license": "VERIFIED_FREE",
+      "available": true,
+      "rawPath": "data/bible/raw/es/spaonbv_usfm",
+      "url": "https://ebible.org/Scriptures/spaonbv_usfm.zip",
+      "checksum": "2b47aa3072132606e8d5ef727555e47ac7fa1f88bb7704a9a11e81085beb2bc3",
+      "eBibleId": "spaonbv",
+      "verseCount": 29102
+    },
+    {
+      "id": "es-godword",
+      "language": "es",
+      "name": "spapddpt",
+      "license": "VERIFIED_FREE",
+      "available": true,
+      "rawPath": "data/bible/raw/es/spapddpt_usfm",
+      "url": "https://ebible.org/Scriptures/spapddpt_usfm.zip",
+      "checksum": "d7a0f382bb60c0f1bab22bcb787b8f86c5b25ef59a25bd00216e3d50269e58be",
+      "eBibleId": "spapddpt",
+      "verseCount": 31081
+    },
+    {
+      "id": "pt-onbv",
+      "language": "pt",
+      "name": "poronbv",
+      "license": "VERIFIED_FREE",
+      "available": true,
+      "rawPath": "data/bible/raw/pt/poronbv_usfm",
+      "url": "https://ebible.org/Scriptures/poronbv_usfm.zip",
+      "checksum": "6770a10e4cf7d2a849faefd71e6872600f242a55929f91c64bf06186bc9fef7b",
+      "eBibleId": "poronbv",
+      "verseCount": 31105
+    },
+    {
+      "id": "luther1912",
+      "language": "de",
+      "name": "deu1912",
+      "license": "VERIFIED_FREE",
+      "available": true,
+      "rawPath": "data/bible/raw/de/deu1912_usfm",
+      "url": "https://ebible.org/Scriptures/deu1912_usfm.zip",
+      "checksum": "cf4589de307456f22070c9d9e53899381afcd777cdd4ce9f2c42fb1538dd1811",
+      "eBibleId": "deu1912",
+      "verseCount": 31102
+    },
+    {
+      "id": "schlatter1951",
+      "language": "de",
+      "name": "deu1951",
+      "license": "VERIFIED_FREE",
+      "available": true,
+      "rawPath": "data/bible/raw/de/deu1951_usfm",
+      "url": "https://ebible.org/Scriptures/deu1951_usfm.zip",
+      "checksum": "196ff8573f8e64caac3b9a4db7081cc5414150878adddf9b2e5dfabff1c6a73a",
+      "eBibleId": "deu1951",
+      "verseCount": 31102
+    },
+    {
+      "id": "ru-synodal",
+      "language": "ru",
+      "name": "russyn",
+      "license": "VERIFIED_FREE",
+      "available": true,
+      "rawPath": "data/bible/raw/ru/russyn_usfm",
+      "url": "https://ebible.org/Scriptures/russyn_usfm.zip",
+      "checksum": "b88455487bb14e5f68405af0089a7ababd2239da0c63ef926af2f72df619298e",
+      "eBibleId": "russyn",
+      "verseCount": 31169
+    },
+    {
+      "id": "uk-bju1996",
+      "language": "uk",
+      "name": "ukr1996",
+      "license": "VERIFIED_FREE",
+      "available": true,
+      "rawPath": "data/bible/raw/uk/ukr1996_usfm",
+      "url": "https://ebible.org/Scriptures/ukr1996_usfm.zip",
+      "checksum": "eace8f93f31531e34e1c697b88937ad5183de3ed1d4e49b70035870f6eab4456",
+      "eBibleId": "ukr1996",
+      "verseCount": 31082
+    },
+    {
+      "id": "uk-kulish1871",
+      "language": "uk",
+      "name": "ukr1871",
+      "license": "VERIFIED_FREE",
+      "available": true,
+      "rawPath": "data/bible/raw/uk/ukr1871_usfm",
+      "url": "https://ebible.org/Scriptures/ukr1871_usfm.zip",
+      "checksum": "ce0eb9f3148bac9ad8f8c7aa5141ab8b9dd7878dfb04ad275ef066d2987683e8",
+      "eBibleId": "ukr1871",
+      "verseCount": 31082
+    },
+    {
+      "id": "it-diodati1885",
+      "language": "it",
+      "name": "ita1885",
+      "license": "VERIFIED_FREE",
+      "available": true,
+      "rawPath": "data/bible/raw/it/ita1885_usfm",
+      "url": "https://ebible.org/Scriptures/ita1885_usfm.zip",
+      "checksum": "b421561f635b6c562b744bb16f624943273a72312d03796345011ad46eeb31b1",
+      "eBibleId": "ita1885",
+      "verseCount": 31095
+    },
+    {
+      "id": "it-riveduta1927",
+      "language": "it",
+      "name": "ita1927",
+      "license": "VERIFIED_FREE",
+      "available": true,
+      "rawPath": "data/bible/raw/it/ita1927_usfm",
+      "url": "https://ebible.org/Scriptures/ita1927_usfm.zip",
+      "checksum": "451dc2046d27989ca7aeb23fbd9a2b0b009cca2ac7c99b9e0522bb10d2c7b8d6",
+      "eBibleId": "ita1927",
+      "verseCount": 31102
+    },
+    {
+      "id": "ar-nav",
+      "language": "ar",
+      "name": "arbnav",
+      "license": "VERIFIED_FREE",
+      "available": true,
+      "rawPath": "data/bible/raw/ar/arbnav_usfm",
+      "url": "https://ebible.org/Scriptures/arbnav_usfm.zip",
+      "checksum": "fb95523e4e51ce0572b05c88685efa3a937addf7b018109673e263a45f19320a",
+      "eBibleId": "arbnav",
+      "verseCount": 31103
+    },
+    {
+      "id": "cmn-uvs",
+      "language": "zh",
+      "name": "cmn",
+      "license": "VERIFIED_FREE",
+      "available": false,
+      "fetchError": "HTTP 404 and no USFM URL on details page"
+    },
+    {
+      "id": "cmnswcb",
+      "language": "zh",
+      "name": "cmnswcb",
+      "license": "VERIFIED_FREE",
+      "available": true,
+      "rawPath": "data/bible/raw/zh/cmnswcb_usfm",
+      "url": "https://ebible.org/Scriptures/cmnswcb_usfm.zip",
+      "checksum": "3a6f606bee0a86976d45ff33343f802dd77c03d0e9672d52b9e34878a04c8e9b",
+      "eBibleId": "cmnswcb",
+      "verseCount": 31096
+    },
+    {
+      "id": "ko-1910",
+      "language": "ko",
+      "name": "kor",
+      "license": "VERIFIED_FREE",
+      "available": true,
+      "rawPath": "data/bible/raw/ko/kor_usfm",
+      "url": "https://ebible.org/Scriptures/kor_usfm.zip",
+      "checksum": "b3ae999f3c1ee1ed4e38f9106a24c41b8cb2ac3b12db1010cfd3e34f8102ba27",
+      "eBibleId": "kor",
+      "verseCount": 30991
+    },
+    {
+      "id": "cmn-cob",
+      "language": "zh",
+      "name": "cmncbs",
+      "license": "VERIFIED_FREE",
+      "available": true,
+      "rawPath": "data/bible/raw/zh/cmncbs_usfm",
+      "url": "https://ebible.org/Scriptures/cmncbs_usfm.zip",
+      "checksum": "f96ea6e3569cd127632d07b55b1475f8481b305908b743ded9ffdc7231e546f0",
+      "eBibleId": "cmncbs",
+      "verseCount": 30961
+    },
+    {
+      "id": "jp-freedom",
+      "language": "ja",
+      "name": "jpnm",
+      "license": "VERIFIED_FREE",
+      "available": true,
+      "rawPath": "data/bible/raw/ja/jpnm_usfm",
+      "url": "https://ebible.org/Scriptures/jpnm_usfm.zip",
+      "checksum": "9c34f93800b2a18471e858fea04e64f143645b5bfabb78a881b2749b00951dbd",
+      "eBibleId": "jpnm",
+      "verseCount": 31103
+    },
+    {
+      "id": "fa-opcb",
+      "language": "fa",
+      "name": "pesopcb",
+      "license": "VERIFIED_FREE",
+      "available": true,
+      "rawPath": "data/bible/raw/fa/pesopcb_usfm",
+      "url": "https://ebible.org/Scriptures/pesopcb_usfm.zip",
+      "checksum": "3d51faf22d9bbbf9640ae49fa76b506d3f24deb6f8fc158cbab285f9967074d6",
+      "eBibleId": "pesopcb",
+      "verseCount": 29469
+    },
+    {
+      "id": "tl-ulb",
+      "language": "tl",
+      "name": "tglulb",
+      "license": "VERIFIED_FREE",
+      "available": true,
+      "rawPath": "data/bible/raw/tl/tglulb_usfm",
+      "url": "https://ebible.org/Scriptures/tglulb_usfm.zip",
+      "checksum": "925b1443469fd2d85d8257ad870f9932ffb1a16977050cd89ff5622be284bea2",
+      "eBibleId": "tglulb",
+      "verseCount": 31103
+    },
+    {
+      "id": "sw-ulb",
+      "language": "sw",
+      "name": "swhulb",
+      "license": "VERIFIED_FREE",
+      "available": true,
+      "rawPath": "data/bible/raw/sw/swhulb_usfm",
+      "url": "https://ebible.org/Scriptures/swhulb_usfm.zip",
+      "checksum": "b358c7943344bd89e2f486c1e4252b3580f0bddb4bc9c9aee013c8a4cc361e2c",
+      "eBibleId": "swhulb",
+      "verseCount": 31101
+    },
+    {
+      "id": "nl-1917",
+      "language": "nl",
+      "name": "nld",
+      "license": "VERIFIED_FREE",
+      "available": true,
+      "rawPath": "data/bible/raw/nl/nld_usfm",
+      "url": "https://ebible.org/Scriptures/nld_usfm.zip",
+      "checksum": "d058b627904d4e7a406eeb7caa6a6e690c64487bc81d42c994c7e78b749a2aa0",
+      "eBibleId": "nld",
+      "verseCount": 31102
+    },
+    {
+      "id": "nl-nbg1951",
+      "language": "nl",
+      "name": "nldnbg",
+      "license": "VERIFIED_FREE",
+      "available": true,
+      "rawPath": "data/bible/raw/nl/nldnbg_usfm",
+      "url": "https://ebible.org/Scriptures/nldnbg_usfm.zip",
+      "checksum": "a857b56d41af2025ff30e20fdd6c76e3011bd5455a27d0f00d5087c36ad8ee4d",
+      "eBibleId": "nldnbg",
+      "verseCount": 31176
+    },
+    {
+      "id": "id-tsi",
+      "language": "id",
+      "name": "ind",
+      "license": "VERIFIED_FREE",
+      "available": false,
+      "excluded": "§53 incomplete source: eBible archive ships 48/66 books (18 OT books missing). See docs/bible/EXCLUDED_TRANSLATIONS.md.",
+      "rawPath": "data/bible/raw/id/ind_usfm",
+      "url": "https://ebible.org/Scriptures/ind_usfm.zip",
+      "checksum": "9610835b02aa9775f111b360e2c648cc50b8aef9e548aa2f2bacd3e3a1f44c40",
+      "eBibleId": "ind",
+      "verseCount": 20650
+    },
+    {
+      "id": "hi-irv",
+      "language": "hi",
+      "name": "hin2017",
+      "license": "VERIFIED_FREE",
+      "available": true,
+      "rawPath": "data/bible/raw/hi/hin2017_usfm",
+      "url": "https://ebible.org/Scriptures/hin2017_usfm.zip",
+      "checksum": "f242dc540cd0d5a70175214ef9876206e20293e48bfd00a0896c033411c79ff2",
+      "eBibleId": "hin2017",
+      "verseCount": 31104
+    },
+    {
+      "id": "ml-irv",
+      "language": "ml",
+      "name": "mal",
+      "license": "VERIFIED_FREE",
+      "available": true,
+      "rawPath": "data/bible/raw/ml/mal_usfm",
+      "url": "https://ebible.org/Scriptures/mal_usfm.zip",
+      "checksum": "ef31fc8d037208fc8b892e7719601ce046ca6b8bf63c3937f844bc2c3a657d22",
+      "eBibleId": "mal",
+      "verseCount": 31102
+    },
+    {
+      "id": "sv-ntplus",
+      "language": "sv",
+      "name": "swe",
+      "license": "VERIFIED_FREE",
+      "available": true,
+      "rawPath": "data/bible/raw/sv/swe_usfm",
+      "url": "https://ebible.org/Scriptures/swe_usfm.zip",
+      "checksum": "cb34777b88536351b88789a85c338d8e0141ff52ce28f2e1eecf8b147e143a96",
+      "eBibleId": "swe",
+      "verseCount": 31162
+    },
+    {
+      "id": "da-1931",
+      "language": "da",
+      "name": "dan1931",
+      "license": "VERIFIED_FREE",
+      "available": true,
+      "rawPath": "data/bible/raw/da/dan1931_usfm",
+      "url": "https://ebible.org/Scriptures/dan1931_usfm.zip",
+      "checksum": "e5b69396faba0da106e24d6331c6e97324d755906a978a0e8fd501b166b500fc",
+      "eBibleId": "dan1931",
+      "verseCount": 31168
+    },
+    {
+      "id": "so-bible",
+      "language": "so",
+      "name": "som",
+      "license": "VERIFIED_FREE",
+      "available": true,
+      "rawPath": "data/bible/raw/so/som_usfm",
+      "url": "https://ebible.org/Scriptures/som_usfm.zip",
+      "checksum": "6f912c00faa7e1c63fa14c11f4336f244a426d238abb56cf33106fce038edc45",
+      "eBibleId": "som",
+      "verseCount": 31103
+    },
+    {
+      "id": "la-vulgate",
+      "language": "la",
+      "name": "latVUC",
+      "license": "VERIFIED_FREE",
+      "available": true,
+      "rawPath": "data/bible/raw/la/latVUC_usfm",
+      "url": "https://ebible.org/Scriptures/latVUC_usfm.zip",
+      "checksum": "ae0f336778be9d4173f186aa1b675c404f5bedc996cb6c1170b1495ab9b5de3f",
+      "eBibleId": "latVUC",
+      "verseCount": 35809
+    },
+    {
+      "id": "sv-folk",
+      "language": "sv",
+      "name": "swef",
+      "license": "VERIFIED_FREE",
+      "available": true,
+      "rawPath": "data/bible/raw/sv/swef_usfm",
+      "url": "https://ebible.org/Scriptures/swef_usfm.zip",
+      "checksum": "77200d8febd736bc102afa25da67b5f1f210b1c27d6fa2af988c65247307e7e4",
+      "eBibleId": "swef",
+      "verseCount": 31153
+    },
+    {
+      "id": "he-wlc",
+      "language": "he",
+      "name": "hebwlc",
+      "license": "VERIFIED_FREE",
+      "available": true,
+      "rawPath": "data/bible/raw/he/hebwlc_usfm",
+      "url": "https://ebible.org/Scriptures/hebwlc_usfm.zip",
+      "checksum": "98b028ee179ef41cc068ffe67ab7600661ba646f0ffa6de2167f4756a4d229b5",
+      "eBibleId": "hebwlc",
+      "verseCount": 23213
+    },
+    {
       "id": "kujv",
       "language": "en",
-      "name": "King James Version (1611)",
-      "year": 1611,
-      "license": "LEGAL_REVIEW_REQUIRED",
-      "available": false
+      "name": "engkjvcpb",
+      "title": "KJV Cambridge Paragraph Bible",
+      "license": "VERIFIED_FREE",
+      "available": true,
+      "rawPath": "data/bible/raw/en/engkjvcpb_usfm",
+      "url": "https://ebible.org/Scriptures/engkjvcpb_usfm.zip",
+      "eBibleId": "engkjvcpb"
     }
   ],
   "datasets": [

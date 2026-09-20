@@ -24,7 +24,7 @@
 - [x] **Navigation conforme au design** — Structure correcte
 
 ### 3. Corrections Techniques
-- [x] **SupabaseAuthService** — Correction variable d'environnement (Supabase)
+- [x] **InsForgeAuthService** — Correction variable d'environnement
 - [x] **CloudSyncService** — Migration vers NetInfo (React Native)
 - [x] **tsconfig.json** — Correction moduleResolution
 - [x] **console.log('Test')** — Supprimé de i18n-service-simple.ts
@@ -36,7 +36,7 @@
 
 | # | Problème | Statut | Fichier |
 |---|----------|--------|---------|
-| 1 | Connexion Supabase | ✅ CORRIGÉ | `src/auth/SupabaseAuthService.ts` |
+| 1 | Connexion InsForge | ✅ CORRIGÉ | `src/auth/InsForgeAuthService.ts` |
 | 2 | Détection réseau RN | ✅ CORRIGÉ | `src/sync/CloudSyncService.ts` |
 | 3 | Variables d'environnement | ✅ CORRIGÉ | `.env.local` |
 | 4 | TypeScript config | ✅ CORRIGÉ | `tsconfig.json` |
@@ -136,7 +136,7 @@
 
 ### Pré-requis
 - [ ] Variables d'environnement configurées (Expo EAS)
-- [ ] Clés API Supabase sécurisées (VITE_SUPABASE_ANON_KEY, jamais la service role)
+- [ ] Clés API InsForge sécurisées
 - [ ] Tests QA complétés
 - [ ] Documentation utilisateur mise à jour
 

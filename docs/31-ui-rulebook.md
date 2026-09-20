@@ -70,15 +70,15 @@ function SessionScreen() {
 ## 2. Règles des Écrans
 
 ### UE-1: Navigation Declarative
-Toujours utiliser React Router DOM pour la navigation.
+Toujours utiliser Expo Router pour la navigation.
 
 ```typescript
 // ✅ CORRECT
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'expo-router';
 
 function HomeScreen() {
-  const navigate = useNavigate();
-  return <Button onClick={() => navigate('/explore')} />;
+  const router = useRouter();
+  return <Button onPress={() => router.push('/explore')} />;
 }
 
 // ❌ INCORRECT — Navigation imperatif

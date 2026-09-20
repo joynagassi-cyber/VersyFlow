@@ -1,6 +1,6 @@
 -- =====================================================
 -- SUPABASE MIGRATION 002: FAMILY & INVITATIONS
--- Migration to Supabase (backend primaire)
+-- Migration from InsForge to Supabase
 -- Date: 2026-09-09
 -- Tables: 4 family tables + RLS + Indexes
 -- =====================================================

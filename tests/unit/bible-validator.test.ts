@@ -196,7 +196,9 @@ describe('validateDocument', () => {
     });
     const report = validateDocument(doc, expectation);
     expect(report.issues.some((i) => i.code === 'VERSE_GAP')).toBe(true);
-    expect(report.issues.find((i) => i.code === 'VERSE_GAP')?.severity).toBe('error');
+    // §53: a verse-number gap is a source-data quirk, never structural —
+    // WARNING severity so it does not block the build.
+    expect(report.issues.find((i) => i.code === 'VERSE_GAP')?.severity).toBe('warning');
   });
 
   it('flags duplicate book ids', () => {

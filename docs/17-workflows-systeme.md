@@ -101,7 +101,7 @@ Assurer qu'aucune contradiction n'existe entre les documents produits.
 ## 3. Workflow: Création des Écrans UI à Partir du Design System
 
 ### Objectif
-Générer les écrans Ionic React à partir des specs Design System + UI Screens.
+Générer les écrans React Native à partir des specs Design System + UI Screens.
 
 ### Processus
 
@@ -122,7 +122,7 @@ Générer les écrans Ionic React à partir des specs Design System + UI Screens
     ↓
 [Ajouter state management hook dédié]
     ↓
-[Intégrer dans React Router DOM]
+[Intégrer dans Expo Router]
     ↓
 [Validator: aucun hardcoded, respect architecture, tests]
 ```
@@ -158,7 +158,7 @@ export function MemorizationSessionScreen() {
 ## 4. Workflow: Intégration FSRS (Rust → App)
 
 ### Objectif
-Intégrer le moteur FSRS écrit en Rust dans l'application Ionic React (via WASM).
+Intégrer le moteur FSRS écrit en Rust dans l'application React Native.
 
 ### Processus
 
@@ -276,7 +276,7 @@ Noms de livres localisés?
 
 ---
 
-## 7. Workflow: Structuration du Projet (Ionic React + Capacitor)
+## 7. Workflow: Structuration du Projet Expo
 
 ### Objectif
 Maintenir la structure de projet propre et cohérente durant tout le développement.
@@ -285,7 +285,7 @@ Maintenir la structure de projet propre et cohérente durant tout le développem
 
 | Type de fichier | Où le créer |
 |-----------------|-------------|
-| Écran (route React Router) | `src/app/[feature]/[name].tsx` |
+| Écran (route) | `app/[feature]/[name].tsx` |
 | Composant UI pur | `src/components/[category]/[Name].tsx` |
 | Hook React | `src/hooks/use[Name].ts` |
 | Service métier | `src/services/[name]-service.ts` |
@@ -422,9 +422,7 @@ Empêcher la dérive architecturale au fil du temps.
 ```
 npm run build
     ↓
-[Vite bundle → www/]
-    ↓
-npm run cap:sync → génère dossiers ios/ android/
+[Expo prebuild → génere dossiers ios/ android/]
     ↓
 [TypeScript compile]
     ↓

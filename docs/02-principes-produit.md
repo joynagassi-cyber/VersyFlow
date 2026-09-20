@@ -8,7 +8,7 @@
 
 ### PA-1 : Aucune logique métier dans les composants UI
 
-Les composants Ionic React sont des **fonctions pures de rendu**. Ils reçoivent des props en entrée et produisent du JSX en sortie. Toute logique métier doit vivre dans les hooks ou services.
+Les composants React Native sont des **fonctions pures de rendu**. Ils reçoivent des props en entrée et produisent du JSX en sortie. Toute logique métier doit vivre dans les hooks ou services.
 
 **❌ WRONG — Logic in component:**
 ```typescript
@@ -157,9 +157,9 @@ Le design rose/frais premium n'est pas un choix décoratif — il communique le 
 | Contrainte | Détail |
 |-----------|--------|
 | TypeScript strict mode | `noImplicitAny: true`, `strict: true` |
-| Ionic React conventions | Functional components, hooks pattern |
+| React Native conventions | Functional components, hooks pattern |
 | Rust FFI safety | Tous les appels WASM wrapped dans try/catch |
-| Capacitor updates | Code modifications compatibles avec déploiement natif |
+| Expo Updates | Code modifications compatibles OTA where possible |
 | Memory budget | App footprint < 50MB, JS heap < 100MB |
 | Accessibility | WCAG 2.1 AA minimum, VoiceOver/TalkBack labels |
 

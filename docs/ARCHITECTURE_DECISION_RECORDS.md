@@ -5,13 +5,22 @@
 
 ---
 
-## ADR-001: Ionic React + Capacitor pour UI Mobile
+## ADR-001: React Native + Expo pour UI Mobile
 
 **Date**: Sprint 0 Jour 1
-**Statut**: SUPERSEDED (remplacé par ADR-001b, Capacitor 8)
+**Statut**: ACCEPTED
 **Contexte**: Choisir une technologie UI mobile native cross-platform.
-**Décision initiale**: React Native + Expo (obsolète — le projet a migré vers Ionic React + Capacitor).
-**ADR-001b**: Le code web Vite/React est empaqueté dans un WebView natif via Capacitor 8 ; UI = Ionic React 7.
+**Décision**: Utiliser React Native avec Expo SDK 52 et Expo Router pour la navigation fichier-based.
+**Conséquences positives**:
+- Écosystème mature et community support
+- OTA updates via Expo Updates
+- TypeScript natif support
+- Expo Router provides file-based routing (Next.js style)
+- Easy to debug with React DevTools
+**Conséquences négatives**:
+- Apprendre l'API Expo + RN spécifique
+- Bundle size potentially large si libs mal choisies
+**Alternatives rejetées**: Flutter, Native (iOS/Android seul), Web-only
 
 ---
 
@@ -109,17 +118,23 @@
 
 ---
 
-## ADR-007: React Router DOM pour Navigation
+## ADR-007: Expo Router pour Navigation
 
-**Date**: Sprint 0 Jour 1 (mis à jour après migration Capacitor)
-**Statut**: SUPERSEDED (Expo Router) → React Router DOM ^6.28
+**Date**: Sprint 0 Jour 1
+**Statut**: ACCEPTED
 **Contexte**: Navigation entre écrans de l'application.
-**Décision**: React Router DOM pour la navigation SPA (remplace Expo Router après migration Ionic/Capacitor).
+**Décision**: Expo Router basé sur les fichiers (file-based routing) au lieu de React Navigation direct.
 **Conséquences positives**:
-- URLs déclaratives (v6), nested routes, lazy loading
-- Intégration native avec @ionic/react-router
-- Pas de dépendance RN — fonctionne identique web/native (WebView)
-**Alternatives rejetées**: Expo Router (obsolète), React Navigation (boilerplate), router v5 (légacy)
+- URL-like patterns natifs
+- Deep linking built-in
+- Server-side rendering possible (via expo-web)
+- Typed routes avec `typedRoutes: true`
+- Moins de boilerplate navigation
+**Conséquences négatives**:
+- Moins de contrôle low-level que React Navigation direct
+- Certaines features avancées limitées
+- Custom screen transitions moins flexibles
+**Alternatives rejetées**: React Navigation standalone (boilerplate excessif, pas de typing automatic)
 
 ---
 

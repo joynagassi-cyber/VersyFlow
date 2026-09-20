@@ -98,4 +98,32 @@ describe('USFMAdapter (structural, §50 multi-style)', () => {
     ].join(''));
     expect(two.books.map((b) => b.id)).toEqual(['GEN', 'MAT']);
   });
+
+  it('bridges missing verse numbers (eBible drop-quirk, §53/§55)', () => {
+    // The eBible USFM corpus sometimes drops a verse outright (webu EST 4
+    // omits \v 6; arbnav ACT 15 omits \v 26; pesopcb GEN 25 omits \v 8).
+    // The adapter rennumbers down so numbering stays consecutive; the
+    // validator no longer raises VERSE_GAP on such corpora.
+    const doc = USFMAdapter.parse('\\id EST\n\\c 4\n\\v 1 a\n\\v 2 b\n\\v 3 c\n\\v 4 d\n\\v 5 e\n\\v 7 f\n');
+    const ch = doc.books[0].chapters[0];
+    expect(ch.verses.map((v) => v.number)).toEqual([1, 2, 3, 4, 5, 6]);
+    expect(ch.verses[5].text).toBe('f');
+  });
+
+  it('expands a verse range tag \\v 24-25 into two consecutive verses', () => {
+    // With verse 23 immediately preceding, `\v 24-25` keeps canonical
+    // numbering (24, 25) — the range text is shared by both verses.
+    // §55: if the range had followed verse 10, it would renumber to
+    // [11, 12] (previous + 1).
+    const doc = USFMAdapter.parse('\\id GEN\n\\c 1\n\\v 23 ctx\n\\v 24-25 range text\n');
+    const ch = doc.books[0].chapters[0];
+    expect(ch.verses.map((v) => v.number)).toEqual([23, 24, 25]);
+    expect(ch.verses[1].text).toBe('range text');
+    expect(ch.verses[2].text).toBe('range text');
+
+    // Gap case: verse 23 is missing, so `\v 24-25` after verse 10
+    // renumbers both down to 11 and 12.
+    const gap = USFMAdapter.parse('\\id GEN\n\\c 1\n\\v 10 ctx\n\\v 24-25 range text\n');
+    expect(gap.books[0].chapters[0].verses.map((v) => v.number)).toEqual([10, 11, 12]);
+  });
 });

@@ -71,7 +71,7 @@ describe('BibleTranslationRegistry', () => {
     const fr = registry.getByLanguage('fr').map((t) => t.id);
     expect(fr).toEqual(expect.arrayContaining(['lsg', 'ostervald', 'darby']));
     const en = registry.getByLanguage('en').map((t) => t.id);
-    expect(en).toEqual(expect.arrayContaining(['kujv', 'web', 'webu']));
+    expect(en).toEqual(['kujv']);
   });
 
   it('marks availability from the manifest', () => {

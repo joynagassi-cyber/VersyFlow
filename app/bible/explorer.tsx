@@ -19,14 +19,12 @@ import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 import { BIBLE_BOOKS } from '@/domains/bible/entities';
 import { loadTranslationBooks } from '@/services/bible-text-service';
-import { useSettingsStore } from '@/store/settings-store';
 
 type ViewMode = 'books' | 'chapters' | 'verses';
 
 export default function BibleExplorerScreen() {
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
-  const bibleTranslation = useSettingsStore((s) => s.bibleTranslation);
   const [viewMode, setViewMode] = useState<ViewMode>('books');
   const [query, setQuery] = useState('');
   const [selectedBookId, setSelectedBookId] = useState<string | null>(null);
@@ -54,7 +52,7 @@ export default function BibleExplorerScreen() {
       setVerseTexts({});
       return;
     }
-    loadTranslationBooks(bibleTranslation).then((booksData) => {
+    loadTranslationBooks().then((booksData) => {
       if (cancelled || !booksData) return;
       const book = booksData.find((b) => b.id === selectedBookId);
       const chapter = book?.chapters.find((c) => c.number === selectedChapter);
@@ -67,7 +65,7 @@ export default function BibleExplorerScreen() {
     return () => {
       cancelled = true;
     };
-  }, [selectedBook, selectedChapter, bibleTranslation]);
+  }, [selectedBook, selectedChapter]);
 
   const filteredBooks = useMemo(() => {
     const q = query.trim().toLowerCase();

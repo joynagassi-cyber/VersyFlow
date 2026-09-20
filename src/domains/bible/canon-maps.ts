@@ -36,6 +36,38 @@ export const OLD_TESTAMENT_USFM_CODES: ReadonlySet<string> = new Set([
   'MIC', 'NAM', 'HAB', 'ZEP', 'HAG', 'ZEC', 'MAL',
 ]);
 
+/** The 27 New-Testament USFM codes (complement of the OT set, PROTESTANT_66). */
+export const NEW_TESTAMENT_USFM_CODES: ReadonlySet<string> = new Set([
+  'MAT', 'MRK', 'LUK', 'JHN', 'ACT', 'ROM', '1CO', '2CO', 'GAL',
+  'EPH', 'PHP', 'COL', '1TH', '2TH', '1TI', '2TI', 'TIT', 'PHM',
+  'HEB', 'JAS', '1PE', '2PE', '1JN', '2JN', '3JN', 'JUD', 'REV',
+]);
+
+/**
+ * eBible book code → VersyFlow id (66-book Protestant canon).
+ *
+ * eBible mobile-HTML archives use their own 3-letter codes, most of which
+ * MATCH the USFM codes but differ on six:
+ *   DAG = Daniel, ESG = Ezra, OBA = Obadiah, PHM = Philemon,
+ *   ZEP = Zephaniah, 1TH/2TH = Thessalonians.
+ * Unknown codes fall through to `code.toLowerCase()` in the normalizer (§49 D4).
+ */
+export const EBIBLE_TO_VFLOW: Record<string, string> = {
+  GEN: 'gen', EXO: 'exo', LEV: 'lev', NUM: 'num', DEU: 'deb',
+  JOS: 'jos', JDG: 'jug', RUT: 'rut', '1SA': '1sam', '2SA': '2sam',
+  '1KI': '1roi', '2KI': '2roi', '1CH': '1chron', '2CH': '2chron',
+  ESG: 'esai', NEH: 'neh', EST: 'est', JOB: 'job', PSA: 'psa',
+  PRO: 'prov', ECC: 'eccl', SNG: 'cant', ISA: 'isa', JER: 'jer',
+  LAM: 'lament', EZK: 'ezek', DAG: 'dan', HOS: 'os', JOL: 'joel',
+  AMO: 'amos', OBA: 'abdj', JON: 'jon', MIC: 'mich', NAM: 'nah',
+  HAB: 'hab', ZEP: 'sep', HAG: 'ag', ZEC: 'zach', MAL: 'mal',
+  MAT: 'mat', MRK: 'mar', LUK: 'luk', JHN: 'joh', ACT: 'act',
+  ROM: 'rom', '1CO': '1cor', '2CO': '2cor', GAL: 'gal',
+  EPH: 'eph', PHP: 'phil', COL: 'col', '1TH': '1thes', '2TH': '2thes',
+  '1TI': '1tim', '2TI': '2tim', TIT: 'tit', PHM: 'philem', HEB: 'heb',
+  JAS: 'jac', '1PE': '1pet', '2PE': '2pet', '1JN': '1joh', '2JN': '2joh',
+  '3JN': '3joh', JUD: 'jud', REV: 'rev',
+};
 /** VersyFlow id → localized display name (fr/en seed; extend per UI lang). */
 export const VFLOW_DISPLAY_NAMES: Record<string, { fr: string; en: string }> = {
   gen: { fr: 'Genèse', en: 'Genesis' }, exo: { fr: 'Exode', en: 'Exodus' },

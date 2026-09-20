@@ -18,7 +18,7 @@ Le produit existe pour aider les croyants à mémoriser les versets bibliques.
 ```
 
 ### IF-2 : La Méthode
-**VersyFlow est développé avec Ionic React + Capacitor + TypeScript + Rust (FSRS).**
+**VersyFlow est développé avec React Native + Expo + TypeScript + Rust (FSRS).**
 
 ```
 ✅ CORRECT : Utiliser Zustand pour le state management

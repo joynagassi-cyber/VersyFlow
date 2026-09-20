@@ -4,8 +4,14 @@
  */
 
 export default {
-  // Jest est obsolète — le runner actif est Vitest (voir vitest.config.ts)
-  // Ce fichier est conservé uniquement pour compatibilité si des plugins en dépendent.
+  // preset: 'jest-expo', // Disabled for node tests - use babel-jest instead
+  // setupFilesAfterEnv: ['@testing-library/jest-native/extend-expect'],
+  transformIgnorePatterns: [
+    'node_modules/(?!((jest-)?react-native|@react-native(-community)?)|' +
+    'expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|' +
+    '@react-navigation/.*|@unimodules/.*|unimodules|sentry-expo|native-base|' +
+    'react-native-svg)',
+  ],
   collectCoverageFrom: [
     'src/**/*.{ts,tsx}',
     '!src/**/*.d.ts',

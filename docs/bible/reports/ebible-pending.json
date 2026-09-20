@@ -1,0 +1,355 @@
+{
+  "resolved": [
+    {
+      "vflow_id": "frlsg-eb",
+      "country_code": "fr",
+      "title": "Louis Segond 1910",
+      "eb_id": "fraLSG",
+      "source": "prefilled",
+      "country_url": "https://ebible.org/Scriptures/country.php?c=fr",
+      "match_type": "exact"
+    },
+    {
+      "vflow_id": "ostervald",
+      "country_code": "fr",
+      "title": "La Sainte Bible",
+      "eb_id": "fra_fob",
+      "source": "prefilled",
+      "country_url": "https://ebible.org/Scriptures/country.php?c=fr",
+      "match_type": "exact"
+    },
+    {
+      "vflow_id": "darby",
+      "country_code": "fr",
+      "title": "Bible J.N. Darby",
+      "eb_id": "frajnd",
+      "source": "prefilled",
+      "country_url": "https://ebible.org/Scriptures/country.php?c=fr",
+      "match_type": "exact"
+    },
+    {
+      "vflow_id": "francrampon",
+      "country_code": "fr",
+      "title": "Sainte Bible néo-Crampon Libre",
+      "eb_id": "francl",
+      "source": "prefilled",
+      "country_url": "https://ebible.org/Scriptures/country.php?c=fr",
+      "match_type": "exact"
+    },
+    {
+      "vflow_id": "web",
+      "country_code": "en",
+      "title": "World English Bible",
+      "eb_id": "engwebp",
+      "source": "prefilled",
+      "country_url": "https://ebible.org/Scriptures/country.php?c=en",
+      "match_type": "exact"
+    },
+    {
+      "vflow_id": "webu",
+      "country_code": "en",
+      "title": "World English Bible Updated",
+      "eb_id": "engwebu",
+      "source": "prefilled",
+      "country_url": "https://ebible.org/Scriptures/country.php?c=en",
+      "match_type": "exact"
+    },
+    {
+      "vflow_id": "kujv",
+      "country_code": "en",
+      "title": "King James Version",
+      "eb_id": "engkjvcpb",
+      "source": "unmatched-verified",
+      "country_url": "https://ebible.org/Scriptures/country.php?c=en",
+      "match_type": "unknown"
+    },
+    {
+      "vflow_id": "rv1909",
+      "country_code": "es",
+      "title": "Santa Biblia Reina Valera 1909",
+      "eb_id": "spaRV1909",
+      "source": "prefilled",
+      "country_url": "https://ebible.org/Scriptures/country.php?c=es",
+      "match_type": "exact"
+    },
+    {
+      "vflow_id": "es-onbv",
+      "country_code": "es",
+      "title": "Biblica® Open Nueva Biblia Viva 2008",
+      "eb_id": "spaonbv",
+      "source": "prefilled",
+      "country_url": "https://ebible.org/Scriptures/country.php?c=es",
+      "match_type": "exact"
+    },
+    {
+      "vflow_id": "es-godword",
+      "country_code": "es",
+      "title": "God's Word for You (Spanish)",
+      "eb_id": "spapddpt",
+      "source": "prefilled",
+      "country_url": "https://ebible.org/Scriptures/country.php?c=es",
+      "match_type": "exact"
+    },
+    {
+      "vflow_id": "pt-onbv",
+      "country_code": "pt",
+      "title": "Biblica® Open Nova Bíblia Viva 2007",
+      "eb_id": "poronbv",
+      "source": "prefilled",
+      "country_url": "https://ebible.org/Scriptures/country.php?c=pt",
+      "match_type": "exact"
+    },
+    {
+      "vflow_id": "luther1912",
+      "country_code": "de",
+      "title": "Luther Bible 1912",
+      "eb_id": "deu1912",
+      "source": "prefilled",
+      "country_url": "https://ebible.org/Scriptures/country.php?c=de",
+      "match_type": "exact"
+    },
+    {
+      "vflow_id": "schlatter1951",
+      "country_code": "de",
+      "title": "Schlatter Bible 1951",
+      "eb_id": "deu1951",
+      "source": "prefilled",
+      "country_url": "https://ebible.org/Scriptures/country.php?c=de",
+      "match_type": "exact"
+    },
+    {
+      "vflow_id": "ru-synodal",
+      "country_code": "ru",
+      "title": "Russian Synodal Bible",
+      "eb_id": "russyn",
+      "source": "prefilled",
+      "country_url": "https://ebible.org/Scriptures/country.php?c=ru",
+      "match_type": "exact"
+    },
+    {
+      "vflow_id": "uk-bju1996",
+      "country_code": "uk",
+      "title": "Ukrainian Bible BJU 1996",
+      "eb_id": "ukr1996",
+      "source": "prefilled",
+      "country_url": "https://ebible.org/Scriptures/country.php?c=uk",
+      "match_type": "exact"
+    },
+    {
+      "vflow_id": "uk-kulish1871",
+      "country_code": "uk",
+      "title": "Ukrainian Bible by P. Kulish",
+      "eb_id": "ukr1871",
+      "source": "prefilled",
+      "country_url": "https://ebible.org/Scriptures/country.php?c=uk",
+      "match_type": "exact"
+    },
+    {
+      "vflow_id": "it-diodati1885",
+      "country_code": "it",
+      "title": "Diodati Bible 1885",
+      "eb_id": "ita1885",
+      "source": "prefilled",
+      "country_url": "https://ebible.org/Scriptures/country.php?c=it",
+      "match_type": "exact"
+    },
+    {
+      "vflow_id": "it-riveduta1927",
+      "country_code": "it",
+      "title": "Riveduta Bible 1927",
+      "eb_id": "ita1927",
+      "source": "prefilled",
+      "country_url": "https://ebible.org/Scriptures/country.php?c=it",
+      "match_type": "exact"
+    },
+    {
+      "vflow_id": "ar-nav",
+      "country_code": "ar",
+      "title": "New Arabic Version",
+      "eb_id": "arbnav",
+      "source": "prefilled",
+      "country_url": "https://ebible.org/Scriptures/country.php?c=ar",
+      "match_type": "exact"
+    },
+    {
+      "vflow_id": "cmn-uvs",
+      "country_code": "zh",
+      "title": "Chinese Union Version",
+      "eb_id": "cmncbs",
+      "source": "prefilled",
+      "country_url": "https://ebible.org/Scriptures/country.php?c=zh",
+      "match_type": "exact"
+    },
+    {
+      "vflow_id": "cmnswcb",
+      "country_code": "zh",
+      "title": "World Chinese Bible",
+      "eb_id": "cmnswcb",
+      "source": "prefilled",
+      "country_url": "https://ebible.org/Scriptures/country.php?c=zh",
+      "match_type": "exact"
+    },
+    {
+      "vflow_id": "cmn-cob",
+      "country_code": "zh",
+      "title": "Open Contemporary Bible",
+      "eb_id": "cmncob",
+      "source": "prefilled",
+      "country_url": "https://ebible.org/Scriptures/country.php?c=zh",
+      "match_type": "exact"
+    },
+    {
+      "vflow_id": "ko-1910",
+      "country_code": "ko",
+      "title": "Korean Bible 1910",
+      "eb_id": "kor",
+      "source": "prefilled",
+      "country_url": "https://ebible.org/Scriptures/country.php?c=ko",
+      "match_type": "exact"
+    },
+    {
+      "vflow_id": "jp-freedom",
+      "country_code": "ja",
+      "title": "Japanese Freedom Bible",
+      "eb_id": "jpnm",
+      "source": "prefilled",
+      "country_url": "https://ebible.org/Scriptures/country.php?c=ja",
+      "match_type": "exact"
+    },
+    {
+      "vflow_id": "fa-opcb",
+      "country_code": "fa",
+      "title": "Open Persian Contemporary Bible",
+      "eb_id": "pesopcb",
+      "source": "prefilled",
+      "country_url": "https://ebible.org/Scriptures/country.php?c=fa",
+      "match_type": "exact"
+    },
+    {
+      "vflow_id": "tl-ulb",
+      "country_code": "tl",
+      "title": "Unlocked Literal Bible",
+      "eb_id": "tglulb",
+      "source": "prefilled",
+      "country_url": "https://ebible.org/Scriptures/country.php?c=tl",
+      "match_type": "exact"
+    },
+    {
+      "vflow_id": "sw-ulb",
+      "country_code": "sw",
+      "title": "Unlocked Literal Bible",
+      "eb_id": "swhulb",
+      "source": "prefilled",
+      "country_url": "https://ebible.org/Scriptures/country.php?c=sw",
+      "match_type": "exact"
+    },
+    {
+      "vflow_id": "nl-1917",
+      "country_code": "nl",
+      "title": "De Bijbel (1917)",
+      "eb_id": "nld",
+      "source": "prefilled",
+      "country_url": "https://ebible.org/Scriptures/country.php?c=nl",
+      "match_type": "exact"
+    },
+    {
+      "vflow_id": "nl-nbg1951",
+      "country_code": "nl",
+      "title": "NBG-vertaling 1951",
+      "eb_id": "nldnbg",
+      "source": "prefilled",
+      "country_url": "https://ebible.org/Scriptures/country.php?c=nl",
+      "match_type": "exact"
+    },
+    {
+      "vflow_id": "id-tsi",
+      "country_code": "id",
+      "title": "Alkitab TSI",
+      "eb_id": "ind",
+      "source": "prefilled",
+      "country_url": "https://ebible.org/Scriptures/country.php?c=id",
+      "match_type": "exact"
+    },
+    {
+      "vflow_id": "hi-irv",
+      "country_code": "hi",
+      "title": "Indian Revised Version",
+      "eb_id": "hin2017",
+      "source": "prefilled",
+      "country_url": "https://ebible.org/Scriptures/country.php?c=hi",
+      "match_type": "exact"
+    },
+    {
+      "vflow_id": "ml-irv",
+      "country_code": "ml",
+      "title": "Malayalam Indian Revised Version",
+      "eb_id": "mal",
+      "source": "prefilled",
+      "country_url": "https://ebible.org/Scriptures/country.php?c=ml",
+      "match_type": "exact"
+    },
+    {
+      "vflow_id": "sv-ntplus",
+      "country_code": "sv",
+      "title": "Swedish NT+ (full 66-book corpus)",
+      "eb_id": "swe",
+      "source": "prefilled",
+      "country_url": "https://ebible.org/Scriptures/country.php?c=sv",
+      "match_type": "exact"
+    },
+    {
+      "vflow_id": "sv-folk",
+      "country_code": "sv",
+      "title": "Swedish Folkbibeln",
+      "eb_id": "swef",
+      "source": "prefilled",
+      "country_url": "https://ebible.org/Scriptures/country.php?c=sv",
+      "match_type": "exact"
+    },
+    {
+      "vflow_id": "da-1931",
+      "country_code": "da",
+      "title": "Den Danske Bibel 1931",
+      "eb_id": "dan1931",
+      "source": "prefilled",
+      "country_url": "https://ebible.org/Scriptures/country.php?c=da",
+      "match_type": "exact"
+    },
+    {
+      "vflow_id": "so-bible",
+      "country_code": "so",
+      "title": "Somali Bible",
+      "eb_id": "som",
+      "source": "prefilled",
+      "country_url": "https://ebible.org/Scriptures/country.php?c=so",
+      "match_type": "exact"
+    },
+    {
+      "vflow_id": "la-vulgate",
+      "country_code": "la",
+      "title": "Vulgata Clementina 1598",
+      "eb_id": "latVUC",
+      "source": "prefilled",
+      "country_url": "https://ebible.org/Scriptures/country.php?c=la",
+      "match_type": "exact"
+    },
+    {
+      "vflow_id": "he-wlc",
+      "country_code": "he",
+      "title": "Hebrew WLC (BHS)",
+      "eb_id": "hebwlc",
+      "source": "prefilled",
+      "country_url": "https://ebible.org/Scriptures/country.php?c=he",
+      "match_type": "exact"
+    }
+  ],
+  "pending": [
+    {
+      "vflow_id": "kujv",
+      "eb_id": "engkjvcpb",
+      "lang": "en",
+      "url": "https://ebible.org/Scriptures/engkjvcpb_usfm.zip",
+      "reason": ""
+    }
+  ]
+}
