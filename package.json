@@ -16,7 +16,8 @@
     "bible:build": "tsx -r ./scripts/tsconfig-alias-hook.cjs scripts/bible/build-bible.ts",
     "bible:catalog": "npx tsx scripts/bible/generate-dataset-catalog.ts",
     "bible:deploy": "cross-env TS_NODE_PROJECT=tsconfig.app.json tsx scripts/supabase/setup-bible-datasets.ts",
-    "bible:verify": "cross-env TS_NODE_PROJECT=tsconfig.app.json tsx -r tsconfig-paths/register scripts/bible/verify-multi-translation.ts",    "cap:add:android": "capacitor add android",
+    "bible:verify": "cross-env TS_NODE_PROJECT=tsconfig.app.json tsx -r tsconfig-paths/register scripts/bible/verify-multi-translation.ts",
+    "cap:add:android": "capacitor add android",
     "cap:add:ios": "capacitor add ios",
     "cap:sync": "capacitor sync",
     "cap:open:android": "capacitor open android",
@@ -67,7 +68,8 @@
     "tailwindcss": "3.4.17",
     "ts-fsrs": "^5.4.2",
     "zod": "^3.22.0",
-    "zustand": "^5.0.0"
+    "zustand": "^5.0.0",
+    "react-native-mmkv": "^4.3.2"
   },
   "devDependencies": {
     "@capacitor/cli": "^8.5.1",

@@ -51,18 +51,22 @@ export const useSettingsStore = create<SettingsState>(() => ({
       lang = 'fr';
     }
     useSettingsStore.setState({ uiLanguage: lang });
+    void settingsStorePersist.save();
   },
 
   setBibleTranslation(id: string) {
     useSettingsStore.setState({ bibleTranslation: id });
+    void settingsStorePersist.save();
   },
 
   completeOnboarding() {
     useSettingsStore.setState({ onboardingCompleted: true });
+    void settingsStorePersist.save();
   },
 
   resetToDefaults() {
     useSettingsStore.setState(DEFAULTS);
+    void settingsStorePersist.save();
   },
 }));
 
