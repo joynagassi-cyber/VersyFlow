@@ -22,7 +22,8 @@
     "cap:run:android": "capacitor run android",
     "cap:run:ios": "capacitor run ios",
     "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "bible:deploy": "cross-env TS_NODE_PROJECT=tsconfig.app.json tsx scripts/supabase/setup-bible-datasets.ts"
   },
   "dependencies": {
     "@capacitor-community/sqlite": "^8.1.1",
