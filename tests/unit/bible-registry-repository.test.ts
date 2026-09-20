@@ -79,7 +79,7 @@ describe('BibleTranslationRegistry', () => {
   it('marks availability from the manifest', () => {
     const registry = new BibleTranslationRegistry(DEFAULT_BIBLE_TRANSLATIONS);
     expect(registry.isAvailable('lsg')).toBe(true);
-    expect(registry.isAvailable('kujv')).toBe(false);
+    expect(registry.isAvailable('kujv')).toBe(true);
   });
 
   it('exposes the default translation', () => {

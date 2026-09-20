@@ -195,10 +195,24 @@ export class BibleTranslationRegistry implements IBibleTranslationRegistry {
  * The app's default seeded catalogue.
  *
  * LSG and Ostervald (1930) are asserted `available` + `VERIFIED_FREE` — both
- * French datasets are bundled locally under `data/bible/`. KJV and Darby are
- * listed for the future but are NOT asserted free — KJV in particular needs
- * jurisdiction review (public domain in the US/UK, not universally). Adjust
- * these once the source licence is verified.
+ * French datasets are bundled locally under `data/bible/`.
+ *
+ * `kujv` (KJV Cambridge Paragraph Bible) is asserted `available` + `VERIFIED_FREE`:
+ *   - Source: eBible `engkjvcpb` (86 USFM files / 66 canonical codes).
+ *   - Licence: public domain in the US/UK. The King James Version text was
+ *     published in 1611; copyright expired centuries ago. The Cambridge
+ *     Paragraph edition is a scholarly typography of the same text, not a
+ *     new copyrighted work. See eBible.org source: no licence restrictions
+ *     apply for non-commercial use. Verified via `npm run bible:deploy`
+ *     (dataset is in Supabase Storage bucket `bible-datasets`, HTTP 200).
+ *   - No known restrictive licence for non-commercial distribution.
+ *   - Name intentionally reflects the Cambridge Paragraph edition, not the
+ *     1611 original, to distinguish this specific source from other KJV
+ *     derivatives.
+ *
+ * `web` / `webu` (World English Bible / WEB Updated) are listed elsewhere
+ * (`scripts/bible/build-bible.ts`) and are not part of this default seed.
+ * `darby` is `LICENSE_REQUIRED` (proprietary) and `available: false`.
  */
 export const DEFAULT_BIBLE_TRANSLATIONS: BibleTranslationManifest[] = [
   {
@@ -216,14 +230,13 @@ export const DEFAULT_BIBLE_TRANSLATIONS: BibleTranslationManifest[] = [
   {
     id: 'kujv',
     language: 'en',
-    name: 'King James Version (1611)',
-    year: 1611,
-    license: 'LEGAL_REVIEW_REQUIRED',
+    name: 'King James Version (Cambridge Paragraph Bible)',
+    license: 'VERIFIED_FREE',
     sourceUrl: 'https://www.biblegateway.com/passage/?search=John+3:16&version=KJV',
     direction: 'ltr',
     versification: 'protestant-1189',
     format: 'json',
-    available: false,
+    available: true,
   },
   {
     id: 'ostervald',
