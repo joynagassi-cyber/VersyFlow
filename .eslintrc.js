@@ -4,7 +4,8 @@
 
 module.exports = {
   root: true,
-  ignorePatterns: ['node_modules', '.expo', 'www', 'coverage', 'dist'],
+  // Stale generated artifacts kept out of the lint graph.
+  ignorePatterns: ['node_modules', '.expo', 'www', 'coverage', 'dist', 'vite.config.d.ts'],
   extends: [
     'plugin:@typescript-eslint/recommended',
     'plugin:@typescript-eslint/recommended-requiring-type-checking',
@@ -15,7 +16,9 @@ module.exports = {
   parserOptions: {
     ecmaVersion: 2022,
     sourceType: 'module',
-    project: ['./tsconfig.app.json', './tsconfig.node.json'],
+    // tsconfig.eslint.json extends tsconfig.app.json and additionally covers
+    // scripts/** (node tooling) so typed rules resolve for every linted file.
+    project: ['./tsconfig.eslint.json'],
     tsconfigRootDir: __dirname,
   },
   env: {
@@ -37,13 +40,12 @@ module.exports = {
     'no-console': ['warn', { allow: ['warn', 'error', 'log'] }],
     'no-debugger': 'error',
   },
-  settings: {
-    'import/resolver': {
-      typescript: {
-        project: './tsconfig.app.json',
-      },
-    },
-  },
+  // NOTE: no `import/resolver` override — `eslint-import-resolver-typescript`
+  // is NOT a dependency, and configuring it emits
+  // "Resolve error: typescript with invalid interface loaded as resolver"
+  // on every linted file. The default node resolver is used instead
+  // (import/no-cycle still checks relative imports; alias imports are
+  // skipped by the rule, which is acceptable since import/no-unresolved is off).
   overrides: [
     {
       files: ['*.test.ts', '*.test.tsx', '*.spec.ts'],

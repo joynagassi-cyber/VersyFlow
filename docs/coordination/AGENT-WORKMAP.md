@@ -39,9 +39,20 @@
 
 ## P0 CI (garde-à-vous, non exécuté)
 
-La CI `main` est **rouge depuis les pushes bible** : `npm ci` échoue en ERESOLVE
-(`@ionic/react-router@7.8.6` peer `react-router@^5` vs `react-router@6.30.6`).
-Fix identifié : `.npmrc` avec `legacy-peer-deps=true` (1 ligne) — **en attente du
-feu vert owner** (toucherait le comportement de la CI).
-L'état lint local (`npm run lint` → 3 111 erreurs de typed-linting sur fichiers
-non couverts par les tsconfig `project`) est documenté dans le même P0.
+## P0 CI (statut 2026-09-20 19h)
+
+| Item | Statut |
+|---|---|
+| `npm ci` ERESOLVE (`@ionic/react-router` peer `react-router@^5` vs 6.30.6) | ✅ **Résolu** — `.npmrc` (`legacy-peer-deps=true`) commité en `d451702` (agent #2) |
+| Lint : « invalid interface loaded as resolver » (3 111 erreurs) | ✅ **Infra fixée** — `eslint-import-resolver-typescript` n'était pas installé ; config nettoyée (`.eslintrc.js` + `tsconfig.eslint.json` couvrant `scripts/**`) |
+| Lint : dette réelle restante (~3 000 erreurs typed, no-unused-vars & co) | ⚠️ **Décision owner requise** — le gate CI `npm run lint` restera rouge tant que la dette n'est pas purgée (ou les règles adoucies). Répartition par règle : `C:\Users\joyda\i18n-audit\lint.txt` (transitoire) |
+| Test flaky temps-dépendant (`powersync-memorization-service.test.ts`) | ⚠️ En attente (thème mémorisation = agent #2) |
+| Gate tests (4 fichiers cassés sur le worktree) | ⚠️ Dépend de l'état commité de l'agent #2 |
+
+## P2 poubelle racine (statut 2026-09-20 19h)
+
+✅ 9 artefacts dé-trackés (`VersyFlow.fig`, `plugin.zip`, `package.json.bak`,
+`setup.js`, `sh.exe.stackdump`, `FINAL_REPORT*.md`, `diagram-etat-projet.html`,
+`DATABASE_SETUP_REPORT.md`) + `vite.config.d.ts` (artefact tsc obsolète) +
+entrées `.gitignore`. **Non commité** au moment de cette note.
+`graphify-out/` : non traité (tooling de l'agent #2, en cours d'usage).
