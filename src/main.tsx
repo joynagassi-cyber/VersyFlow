@@ -124,7 +124,19 @@ import { isRTL } from '@/domains/i18n/config';
   attachSyncCompletionHandlers();
   wireAppTelemetry();
   wireStreakCoordinator();
+  wireSessionRefresh();
 })();
+
+/** SPA equivalent of the Supabase "session refresh" middleware: re-checks and
+ *  refreshes the auth session periodically so long-lived webview/native
+ *  sessions don't expire unnoticed. No-op when signed out. */
+function wireSessionRefresh() {
+  const REFRESH_EVERY_MS = 10 * 60 * 1000;
+  setInterval(() => {
+    const { isAuthenticated, refreshSession } = useAuthStore.getState();
+    if (isAuthenticated) void refreshSession();
+  }, REFRESH_EVERY_MS);
+}
 
 /** Guard: redirects to onboarding if it hasn't been completed yet */
 function RequireOnboarded() {

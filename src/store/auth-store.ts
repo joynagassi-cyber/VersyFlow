@@ -24,6 +24,7 @@ interface AuthState {
   signUp: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
   checkSession: () => Promise<void>;
+  refreshSession: () => Promise<void>;
   clearError: () => void;
   setActiveProfileId: (id: string | null) => void;
 }
@@ -127,6 +128,31 @@ export const useAuthStore = create<AuthState>()(
       },
 
       clearError: () => set({ error: null }),
+      refreshSession: async () => {
+        try {
+          const { user: refreshed, error: refreshError } = await authService.refreshSession();
+          if (refreshError) {
+            // Non-fatal: invalid/revoked keys or no active session.
+            console.warn('[AuthStore] session refresh failed:', refreshError.message);
+            return;
+          }
+          if (refreshed) {
+            set({
+              user: {
+                userId: refreshed.id,
+                email: refreshed.email || '',
+                display_name: (refreshed as any).display_name,
+                default_translation: (refreshed as any).default_translation,
+              },
+              isAuthenticated: true,
+            });
+          } else {
+            set({ user: null, isAuthenticated: false });
+          }
+        } catch (e) {
+          console.warn('[AuthStore] session refresh error:', e);
+        }
+      },
 
       setActiveProfileId: (id) => set({ activeProfileId: id }),
     }),

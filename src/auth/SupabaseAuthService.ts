@@ -108,6 +108,15 @@ export class SupabaseAuthService {
     return { session: data.session, error: null };
   }
 
+  /** Refresh the current access token (keeps long-lived sessions alive). */
+  async refreshSession(): Promise<{ user: User | null; error: AuthError | null }> {
+    const { data, error } = await this.supabase.auth.refreshSession();
+    if (error) {
+      return { user: null, error: new AuthError(error.message, error.code) };
+    }
+    return { user: data.session?.user ?? null, error: null };
+  }
+
   async getUserProfile(userId: string): Promise<UserProfile | null> {
     const { data, error } = await this.supabase
       .from('users')
