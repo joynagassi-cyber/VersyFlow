@@ -2,7 +2,7 @@
  * Collections Screen — User's saved verse collections
  */
 
-import { useState, useMemo } from 'react';
+import { Fragment, useState, useMemo } from 'react';
 import {
   View,
   Text,
@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   ScrollView,
   SafeAreaView,
+  TextInput,
 } from '@/components/ui/Primitives';
 import { useAppTheme } from '@/theme/useTheme';
 import { shadowCss } from '@/theme/tokens';
@@ -70,6 +71,10 @@ const SAMPLE_COLLECTIONS: Collection[] = [
     verses: ['Jean 3:16', 'Philippiens 4:13'],
   },
 ];
+
+const STORAGE_KEY = 'versyflow:collections';
+const NEW_COLLECTION_COLORS = ['#E91E8C', '#007AFF', '#008733', '#FF9500', '#3F51B5'];
+
 
 const COLLECTION_ICON_MAP: Record<Collection['icon'], unknown> = {
   heart,
@@ -235,8 +240,22 @@ export default function CollectionsScreen() {
     [colors],
   );
   const router = useRouter();
-  const [collections] = useState<Collection[]>(SAMPLE_COLLECTIONS);
+  const [collections, setCollections] = useState<Collection[]>(() => {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw) as Collection[];
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch {
+      // Storage unavailable — fall back to the seed list
+    }
+    return SAMPLE_COLLECTIONS;
+  });
   const [selectedCategory, setSelectedCategory] = useState<'all' | 'memorized' | 'favorites'>('all');
+  const [creating, setCreating] = useState(false);
+  const [newName, setNewName] = useState('');
+  const [expandedId, setExpandedId] = useState<string | null>(null);
 
   const filteredCollections = selectedCategory === 'all'
     ? collections
@@ -244,15 +263,38 @@ export default function CollectionsScreen() {
     ? collections.filter(c => c.icon === 'bulb')
     : collections.filter(c => c.icon === 'heart');
 
-  const handleCreateCollection = () => {
-    router.push('/collections/create');
+  const persistCollections = (next: Collection[]) => {
+    setCollections(next);
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+    } catch {
+      // Storage unavailable (private mode) — in-memory only
+    }
+  };
+
+  const handleCreateCollection = () => setCreating(true);
+
+  const submitCreateCollection = () => {
+    const name = newName.trim();
+    if (!name) return;
+    const collection: Collection = {
+      id: `c-${Date.now()}`,
+      name,
+      description: 'Collection personnalisée',
+      verseCount: 0,
+      lastUpdated: "Aujourd'hui",
+      color: NEW_COLLECTION_COLORS[collections.length % NEW_COLLECTION_COLORS.length],
+      icon: 'heart',
+      verses: [],
+    };
+    persistCollections([...collections, collection]);
+    setNewName('');
+    setCreating(false);
+    setExpandedId(collection.id);
   };
 
   const handleCollectionPress = (collection: Collection) => {
-    router.push({
-      pathname: '/collections/[id]',
-      params: { id: collection.id, name: collection.name },
-    });
+    setExpandedId(expandedId === collection.id ? null : collection.id);
   };
 
   return (
@@ -295,11 +337,11 @@ export default function CollectionsScreen() {
         showsVerticalScrollIndicator={false}
       >
         {filteredCollections.map((collection) => (
-          <TouchableOpacity
-            key={collection.id}
-            style={styles.collectionCard}
-            onPress={() => handleCollectionPress(collection)}
-          >
+          <Fragment key={collection.id}>
+            <TouchableOpacity
+              style={styles.collectionCard}
+              onPress={() => handleCollectionPress(collection)}
+            >
             <View style={[styles.collectionIcon, { backgroundColor: collection.color + '20' }]}>
               <IonIcon icon={COLLECTION_ICON_MAP[collection.icon] as any} size={28} color={collection.color} />
             </View>
@@ -319,25 +361,87 @@ export default function CollectionsScreen() {
             </View>
             <IonIcon icon={chevronForward} size={20} color={colors.textMuted} />
           </TouchableOpacity>
+            {expandedId === collection.id && (
+              <View
+                style={{
+                  marginHorizontal: 16,
+                  marginBottom: 12,
+                  backgroundColor: colors.surfaceTint,
+                  borderRadius: 12,
+                  padding: 12,
+                }}
+              >
+                <Text style={{ fontSize: 13, color: colors.textSecondary }}>{collection.description}</Text>
+                {collection.verses.length === 0 ? (
+                  <Text style={{ fontSize: 13, color: colors.textMuted, marginTop: 6 }}>
+                    Aucun verset dans cette collection pour le moment
+                  </Text>
+                ) : (
+                  collection.verses.map((v) => (
+                    <Text key={v} style={{ fontSize: 14, color: colors.textPrimary, marginTop: 4 }}>
+                      • {v}
+                    </Text>
+                  ))
+                )}
+              </View>
+            )}
+          </Fragment>
         ))}
 
         {/* Create New Collection */}
-        <TouchableOpacity
-          style={styles.createCard}
-          onPress={handleCreateCollection}
-        >
-          <View style={[styles.createIcon, { backgroundColor: colors.surfaceTint }]}>
-            <IonIcon icon={addCircle} size={32} color={colors.primary} />
+        {creating ? (
+          <View style={styles.createCard}>
+            <TextInput
+              style={{ flex: 1, minHeight: 44 }}
+              placeholder="Nom de la collection"
+              placeholderTextColor={colors.textMuted}
+              value={newName}
+              onChangeText={(text: string) => setNewName(text)}
+            />
+            <TouchableOpacity
+              style={{
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderRadius: 12,
+                paddingHorizontal: 14,
+                paddingVertical: 10,
+                backgroundColor: colors.surfaceTint,
+              }}
+              onPress={() => setCreating(false)}
+            >
+              <Text style={{ fontSize: 13, color: colors.textMuted }}>Annuler</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: 52,
+                height: 52,
+                borderRadius: 26,
+                backgroundColor: colors.primary,
+              }}
+              onPress={submitCreateCollection}
+            >
+              <IonIcon icon={addCircle} size={26} color="#FFFFFF" />
+            </TouchableOpacity>
           </View>
-          <View style={styles.createInfo}>
-            <Text style={styles.createTitle}>Créer une collection</Text>
-            <Text style={styles.createSubtitle}>Organisez vos versets préférés</Text>
-          </View>
-        </TouchableOpacity>
+        ) : (
+          <TouchableOpacity
+            style={styles.createCard}
+            onPress={handleCreateCollection}
+          >
+            <View style={[styles.createIcon, { backgroundColor: colors.surfaceTint }]}>
+              <IonIcon icon={addCircle} size={32} color={colors.primary} />
+            </View>
+            <View style={styles.createInfo}>
+              <Text style={styles.createTitle}>Créer une collection</Text>
+              <Text style={styles.createSubtitle}>Organisez vos versets préférés</Text>
+            </View>
+          </TouchableOpacity>
+        )}
 
         <View style={styles.bottomSpacer} />
       </ScrollView>
     </SafeAreaView>
   );
 }
-
