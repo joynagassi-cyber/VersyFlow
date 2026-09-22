@@ -151,7 +151,7 @@ export function ContextSwitcher() {
                 style={[styles.createButton, { backgroundColor: colors.primary }]}
                 onPress={() => {
                   setShowPicker(false);
-                  router.push('/family/create');
+                  router.push('/family/home');
                 }}
               >
                 <IonIcon icon={addCircle} size={18} color={colors.primaryLight} />

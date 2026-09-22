@@ -592,7 +592,7 @@ export default function AnalyticsDashboardScreen() {
           <View style={styles.versesCard}>
             <TouchableOpacity
               style={styles.verseStatusRow}
-              onPress={() => router.push('/progress')}
+              onPress={() => router.push('/tabs/progress')}
             >
               <View style={styles.verseStatusLeft}>
                 <View style={[styles.statusDot, { backgroundColor: colors.success }]} />
