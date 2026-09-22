@@ -1,0 +1,48 @@
+## Supabase CLI configuration (project ref: dspqvyesfngxuwqhceog)
+## Generated 2026-09-22 to allow `supabase link / db push / functions` against the cloud project.
+## The local development stack (below) is optional; cloud operations use the linked ref.
+
+project_id = "versy-flow"
+
+[api]
+# The port the API server (PostgREST) is reachable at
+enabled = true
+port = 54321
+schemas = []
+extra_search_path = []
+allow_singletons = false
+
+[db]
+# The port the database is reachable at
+port = 54322
+shadow_port = 54320
+major_version = 15
+
+[studio]
+enabled = true
+port = 54323
+
+[inbucket]
+enabled = true
+port = 54324
+
+[auth]
+enabled = true
+site_url = "http://127.0.0.1:3000"
+additional_enabled_providers = []
+enable_anonymous_sign_ins = false
+enable_email_signup = true
+
+[auth.email]
+double_confirmations = false
+enable_confirmations = false
+allow_multiple_accounts = true
+
+## PowerSync
+# The project uses a PowerSync Cloud production instance pulling from this
+# Supabase project via the `powersync` replication role (see .env.local notes).
+[edge_runtime]
+enabled = false
+
+[analytics]
+enabled = false
