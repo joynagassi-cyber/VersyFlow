@@ -15,7 +15,9 @@ import { z } from 'zod';
 
 export const BibleVerseSchema = z.object({
   number: z.number().int().positive(),
-  text: z.string().min(1),
+  // Some versions contain legitimately empty verse slots (e.g. Darby) —
+  // an empty string is valid data, not an error.
+  text: z.string(),
 });
 
 // ============================================

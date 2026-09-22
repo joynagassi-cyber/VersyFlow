@@ -154,6 +154,10 @@ export default function ChapterScreen() {
                   </p>
                 ) : status === 'loading' ? (
                   <div className="h-4 flex-1 animate-pulse rounded bg-surface-tint" />
+                ) : text !== undefined ? (
+                  <p className="flex-1 text-sm italic text-text-muted">
+                    {t('bible.emptyVerse', 'Verset vide dans cette traduction')}
+                  </p>
                 ) : (
                   <p className="flex-1 text-sm italic text-text-muted">
                     {t('errors.verseNotFound', 'Verset non disponible dans cette traduction')}

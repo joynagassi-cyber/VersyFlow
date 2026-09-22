@@ -337,6 +337,10 @@ export default function BibleExplorerScreen() {
                   <p className="bible-text text-base leading-6 text-text-secondary">{text}</p>
                 ) : status === 'loading' ? (
                   <div className="h-4 w-3/4 animate-pulse rounded bg-surface-tint" />
+                ) : text !== undefined ? (
+                  <p className="text-sm italic text-text-muted">
+                    {t('bible.emptyVerse', 'Verset vide dans cette traduction')}
+                  </p>
                 ) : (
                   <p className="text-sm italic text-text-muted">
                     {t('errors.verseNotFound', 'Verset non disponible dans cette traduction')}
