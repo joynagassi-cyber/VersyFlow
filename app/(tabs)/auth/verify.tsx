@@ -15,6 +15,8 @@ import {
 } from '@/components/ui/Primitives';
 import { useAppTheme } from '@/theme/useTheme';
 import { useRouter } from '@/hooks/useIonicNavigation';
+import { getSupabaseAuthService } from '@/auth';
+import { useAuthStore } from '@/store/auth-store';
 
 export default function VerifyScreen() {
   const { colors, sp, sh, rad } = useAppTheme();
@@ -102,14 +104,15 @@ export default function VerifyScreen() {
   },
   }), [colors]);
   const router = useRouter();
-  const [code, setCode] = useState('');
+  const [email, setEmail] = useState('');
+  const [otp, setOtp] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const [sent, setSent] = useState(false);
 
   const handleSendCode = async () => {
-    if (!code) {
+    if (!email) {
       Alert.alert('Erreur', 'Entrez votre adresse e-mail');
       return;
     }
@@ -118,20 +121,20 @@ export default function VerifyScreen() {
     setError(null);
 
     try {
-      // Simulation d'envoi
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      const { error: sendError } = await getSupabaseAuthService().sendVerificationCode(email);
+      if (sendError) throw sendError;
       setSent(true);
-      Alert.alert('Code envoyé', `Un code de vérification a été envoyé à ${code}\n(code test: 123456)`);
-      setLoading(false);
+      Alert.alert('Code envoyé', `Un code de vérification a été envoyé à ${email}`);
     } catch (err: any) {
       setError(err?.message || 'Échec de l\'envoi du code');
       Alert.alert('Erreur', err?.message || 'Échec de l\'envoi du code');
+    } finally {
       setLoading(false);
     }
   };
 
   const verifyCode = async () => {
-    if (!code) {
+    if (!otp) {
       Alert.alert('Erreur', 'Entrez le code de vérification');
       return;
     }
@@ -140,19 +143,18 @@ export default function VerifyScreen() {
     setError(null);
 
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
-      if (code !== '123456') {
-        throw new Error('Code de vérification invalide');
-      }
-
+      const { user, error: verifyError } = await getSupabaseAuthService().verifyEmailCode(email, otp);
+      if (verifyError || !user) throw verifyError || new Error('Code de vérification invalide');
+      // The confirmed session is now live — mirror it into the app state.
+      await useAuthStore.getState().checkSession();
       setSuccess(true);
       setTimeout(() => {
-        router.replace('/(tabs)');
+        router.replace('/tabs/home');
       }, 1500);
     } catch (err: any) {
       setError(err?.message || 'Code de vérification invalide');
       Alert.alert('Erreur', err?.message || 'Code de vérification invalide');
+    } finally {
       setLoading(false);
     }
   };
@@ -183,15 +185,15 @@ export default function VerifyScreen() {
 
             {!sent ? (
               <>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Adresse e-mail"
-                  value={code}
-                  onChangeText={setCode}
-                  keyboardType="email-address"
-                  autoCapitalize="none"
-                  editable={!loading}
-                />
+              <TextInput
+                style={styles.input}
+                placeholder="Adresse e-mail"
+                value={email}
+                onChangeText={setEmail}
+                keyboardType="email-address"
+                autoCapitalize="none"
+                editable={!loading}
+              />
 
                 <TouchableOpacity
                   style={styles.button}
@@ -207,15 +209,15 @@ export default function VerifyScreen() {
               </>
             ) : (
               <>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Code de vérification (6 chiffres)"
-                  value={code}
-                  onChangeText={setCode}
-                  keyboardType="numeric"
-                  maxLength={6}
-                  editable={!loading}
-                />
+              <TextInput
+                style={styles.input}
+                placeholder="Code de vérification (6 chiffres)"
+                value={otp}
+                onChangeText={setOtp}
+                keyboardType="numeric"
+                maxLength={6}
+                editable={!loading}
+              />
 
                 <TouchableOpacity
                   style={styles.button}

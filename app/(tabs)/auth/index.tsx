@@ -2,7 +2,7 @@
  * Auth Gate Component — Shows login/signup or skip option
  */
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -21,9 +21,9 @@ export default function AuthGate({ onLogin, onSignup, onSkip }: Props) {
   const { colors } = useAppTheme();
   const [mounted, setMounted] = useState(false);
 
-  useState(() => {
+  useEffect(() => {
     setMounted(true);
-  });
+  }, []);
 
   if (!mounted) return null;
 
