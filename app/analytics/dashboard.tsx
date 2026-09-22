@@ -1,26 +1,18 @@
-/**
- * Analytics Dashboard Screen
- * Visualizes memorization progress, retention curves, and learning patterns
- * See docs/08-ui-screens.md §10
- */
-
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  SafeAreaView,
-  ActivityIndicator,
-  TouchableOpacity,
-} from '@/components/ui/Primitives';
-import { useAppTheme } from '@/theme/useTheme';
-import { shadowCss } from '@/theme/tokens';
-import { useRouter } from '@/hooks/useIonicNavigation';
-import { IonIcon } from '@/components/ui/Primitives'
-import { analytics, book, calendar, calendarOutline, checkmarkCircle, flame, refresh, trendingDown, trendingUp } from 'ionicons/icons';
+  BookOpen,
+  CheckCircle2,
+  Flame,
+  RefreshCw,
+  TrendingUp,
+  TrendingDown,
+  Loader2,
+  LineChart,
+} from 'lucide-react';
+import { FullScreenPage } from '@/components/layout/FullScreenPage';
+import { useTranslation } from 'react-i18next';
 import { useAnalyticsCapability } from '@/capabilities/analytics/store';
-import { useI18n } from '@/hooks/useI18n';
 
 interface DataPoint {
   date: string;
@@ -28,625 +20,218 @@ interface DataPoint {
 }
 
 export default function AnalyticsDashboardScreen() {
-  const { colors } = useAppTheme();
-  const styles = useMemo(() => StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
-  scrollView: {
-    flex: 1,
-  },
-  scrollContent: {
-    flexGrow: 1,
-  },
-  loaderContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  loaderText: {
-    fontSize: 14,
-    color: colors.textMuted,
-    marginTop: 16,
-  },
-
-  // Header
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingTop: 16,
-    paddingBottom: 12,
-  },
-  headerTitle: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: colors.textPrimary,
-  },
-  refreshButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: colors.surfaceTint,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-
-  // Stats Overview
-  statsOverview: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    paddingHorizontal: 20,
-    marginBottom: 24,
-    gap: 12,
-  },
-  statCard: {
-    backgroundColor: colors.surface,
-    borderRadius: 20,
-    padding: 20,
-    alignItems: 'center',
-    ...shadowCss('md'),
-  },
-  statCardLarge: {
-    width: '100%',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-    gap: 16,
-  },
-  statCardMedium: {
-    width: '48%',
-  },
-  statIconContainer: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: colors.primary,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  statValue: {
-    fontSize: 32,
-    fontWeight: '800',
-    color: colors.textPrimary,
-    lineHeight: 38,
-  },
-  statLabel: {
-    fontSize: 13,
-    color: colors.textTertiary,
-    marginTop: 4,
-    textAlign: 'center',
-  },
-
-  // Chart Section
-  chartSection: {
-    paddingHorizontal: 20,
-    marginBottom: 24,
-  },
-  chartHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  chartTitle: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: colors.textPrimary,
-  },
-  chartAction: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    backgroundColor: colors.surfaceTint,
-    borderRadius: 12,
-  },
-  chartActionText: {
-    fontSize: 13,
-    color: colors.primary,
-    fontWeight: '600',
-  },
-  chartCard: {
-    backgroundColor: colors.surface,
-    borderRadius: 20,
-    padding: 20,
-    ...shadowCss('md'),
-  },
-  chartContainer: {
-    flexDirection: 'row',
-    alignItems: 'flex-end',
-    height: 160,
-    marginTop: 16,
-  },
-  yAxisContainer: {
-    position: 'absolute',
-    left: 0,
-    top: 0,
-    bottom: 24,
-    justifyContent: 'space-between',
-  },
-  yAxisLabel: {
-    fontSize: 10,
-    color: colors.textMuted,
-  },
-  chartBars: {
-    flexDirection: 'row',
-    alignItems: 'flex-end',
-    justifyContent: 'space-around',
-    flex: 1,
-    marginLeft: 24,
-    height: '100%',
-  },
-  barWrapper: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-    height: '100%',
-  },
-  bar: {
-    width: '60%',
-    borderRadius: 4,
-    minHeight: 4,
-  },
-  barLabel: {
-    fontSize: 10,
-    color: colors.textMuted,
-    marginTop: 8,
-  },
-  emptyChart: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 40,
-  },
-  emptyChartText: {
-    fontSize: 16,
-    color: colors.textTertiary,
-    marginTop: 12,
-    fontWeight: '600',
-  },
-  emptyChartSubtext: {
-    fontSize: 14,
-    color: colors.textMuted,
-    marginTop: 4,
-  },
-
-  // Trend Section
-  trendSection: {
-    paddingHorizontal: 20,
-    marginBottom: 24,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: colors.textPrimary,
-    marginBottom: 12,
-  },
-  trendCard: {
-    backgroundColor: colors.surface,
-    borderRadius: 20,
-    padding: 20,
-    ...shadowCss('md'),
-  },
-  trendGrid: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginBottom: 16,
-  },
-  trendItem: {
-    alignItems: 'center',
-    flex: 1,
-  },
-  trendIcon: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 8,
-  },
-  trendValue: {
-    fontSize: 28,
-    fontWeight: '800',
-    color: colors.textPrimary,
-  },
-  trendLabel: {
-    fontSize: 12,
-    color: colors.textTertiary,
-    marginTop: 4,
-  },
-  changeIndicator: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 8,
-    paddingVertical: 12,
-    borderRadius: 12,
-  },
-  changePositive: {
-    backgroundColor: colors.iconBgGreen,
-  },
-  changeNegative: {
-    backgroundColor: colors.errorLight,
-  },
-  changeText: {
-    fontSize: 16,
-    fontWeight: '700',
-  },
-  changeLabel: {
-    fontSize: 12,
-    color: colors.textTertiary,
-  },
-
-  // Time Section
-  timeSection: {
-    paddingHorizontal: 20,
-    marginBottom: 24,
-  },
-  timeCard: {
-    backgroundColor: colors.surface,
-    borderRadius: 20,
-    padding: 20,
-    ...shadowCss('md'),
-  },
-  timeGrid: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginBottom: 16,
-  },
-  timeItem: {
-    alignItems: 'center',
-  },
-  timeValue: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: colors.textPrimary,
-  },
-  timeLabel: {
-    fontSize: 12,
-    color: colors.textTertiary,
-    marginTop: 4,
-  },
-  timeBar: {
-    height: 8,
-    backgroundColor: colors.surfaceTint,
-    borderRadius: 4,
-    overflow: 'hidden',
-    marginBottom: 8,
-  },
-  timeBarFill: {
-    height: '100%',
-    backgroundColor: colors.primary,
-    borderRadius: 4,
-  },
-  timeBarLabel: {
-    fontSize: 12,
-    color: colors.textMuted,
-    textAlign: 'center',
-  },
-
-  // Verses Section
-  versesSection: {
-    paddingHorizontal: 20,
-    marginBottom: 24,
-  },
-  versesCard: {
-    backgroundColor: colors.surface,
-    borderRadius: 20,
-    padding: 8,
-    ...shadowCss('md'),
-  },
-  verseStatusRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 16,
-    paddingHorizontal: 12,
-    borderRadius: 12,
-  },
-  verseStatusLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-  },
-  statusDot: {
-    width: 12,
-    height: 12,
-    borderRadius: 6,
-  },
-  verseStatusText: {
-    fontSize: 16,
-    color: colors.textPrimary,
-    fontWeight: '500',
-  },
-  verseStatusCount: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: colors.primary,
-  },
-
-  // Bottom spacer
-  bottomSpacer: {
-    height: 24,
-  },
-  }), [colors]);
-  const router = useRouter();
-  const { t } = useI18n();
+  const navigate = useNavigate();
+  const { t } = useTranslation();
   const { stats, calculateStats, getRetentionCurve, getLearningTime } =
     useAnalyticsCapability();
   const [loading, setLoading] = useState(true);
-  const [retentionCurve, setRetentionCurve] = useState<DataPoint[]>([]);
-
-  useEffect(() => {
-    loadData();
-  }, []);
+  const [curve, setCurve] = useState<DataPoint[]>([]);
 
   const loadData = async () => {
     try {
       await calculateStats();
-      const curve = getRetentionCurve();
-      setRetentionCurve(curve.slice(-30));
-    } catch (error) {
-      console.error('Erreur chargement analytics:', error);
+      setCurve(getRetentionCurve().slice(-30));
+    } catch (e) {
+      console.error('analytics load failed:', e);
     } finally {
       setLoading(false);
     }
   };
 
+  useEffect(() => {
+    loadData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   if (loading) {
     return (
-      <SafeAreaView style={styles.container}>
-        <View style={styles.loaderContainer}>
-          <ActivityIndicator size="large" color={colors.primary} />
-          <Text style={styles.loaderText}>Chargement des statistiques...</Text>
-        </View>
-      </SafeAreaView>
+      <FullScreenPage title={t('analytics.title', 'Progression')} showBack>
+        <div className="flex min-h-[50vh] flex-col items-center justify-center gap-3">
+          <Loader2 size={28} className="animate-spin text-primary" />
+          <p className="text-sm text-text-muted">
+            {t('analytics.loading', 'Chargement des statistiques...')}
+          </p>
+        </div>
+      </FullScreenPage>
     );
   }
 
+  const barColor = (r: number) =>
+    r > 0.8 ? 'var(--color-success)' : r > 0.5 ? 'var(--color-primary)' : 'var(--color-error)';
+
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView
-        style={styles.scrollView}
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
-      >
-        {/* Header */}
-        <View style={styles.header}>
-          <Text style={styles.headerTitle}>Votre Progression</Text>
-          <TouchableOpacity
-            style={styles.refreshButton}
-            onPress={loadData}
-          >
-            <IonIcon icon={refresh} size={20} color={colors.primary} />
-          </TouchableOpacity>
-        </View>
+    <FullScreenPage
+      title={t('analytics.title', 'Progression')}
+      showBack
+      right={
+        <button
+          onClick={loadData}
+          className="flex h-9 w-9 items-center justify-center rounded-full bg-surface-tint"
+        >
+          <RefreshCw size={16} className="text-primary" />
+        </button>
+      }
+    >
+      <div className="mx-auto max-w-md space-y-6">
+        {/* Stats */}
+        <div className="grid grid-cols-2 gap-3">
+          <div className="col-span-2 flex items-center gap-4 rounded-3xl bg-surface p-4 shadow-sm">
+            <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary text-white">
+              <BookOpen size={22} />
+            </span>
+            <div>
+              <p className="text-3xl font-extrabold text-text-primary">
+                {stats?.totalVerses || 0}
+              </p>
+              <p className="text-xs text-text-muted">
+                {t('analytics.versesMemorized', 'Versets memorises')}
+              </p>
+            </div>
+          </div>
+          <div className="rounded-2xl bg-surface p-4 text-center shadow-sm">
+            <p className="text-2xl font-extrabold text-success">
+              {stats?.masteredVerses || 0}
+            </p>
+            <p className="text-xs text-text-muted">
+              {t('analytics.mastered', 'Maitrises')}
+            </p>
+          </div>
+          <div className="rounded-2xl bg-surface p-4 text-center shadow-sm">
+            <p className="text-2xl font-extrabold text-error">
+              {stats?.streakCount || 0}
+            </p>
+            <p className="text-xs text-text-muted">{t('analytics.streak', 'Streak')}</p>
+          </div>
+        </div>
 
-        {/* Stats Overview Cards */}
-        <View style={styles.statsOverview}>
-          <View style={[styles.statCard, styles.statCardLarge]}>
-            <View style={styles.statIconContainer}>
-              <IonIcon icon={book} size={24} color={colors.surface} />
-            </View>
-            <Text style={styles.statValue}>{stats?.totalVerses || 0}</Text>
-            <Text style={styles.statLabel}>Versets mémorisés</Text>
-          </View>
+        {/* Retention chart */}
+        <div className="rounded-3xl bg-surface p-5 shadow-sm">
+          <div className="mb-4 flex items-center justify-between">
+            <p className="text-base font-bold text-text-primary">
+              {t('analytics.retention30', 'Retention sur 30 jours')}
+            </p>
+          </div>
+          {curve.length > 0 ? (
+            <div className="flex h-40 items-end gap-1">
+              {curve.slice(-14).map((p, i) => (
+                <div key={i} className="flex flex-1 flex-col items-center gap-1">
+                  <div
+                    className="w-full rounded-t"
+                    style={{
+                      height: Math.max(6, p.retention * 100) + 'px',
+                      backgroundColor: barColor(p.retention),
+                    }}
+                  />
+                  <span className="text-[10px] text-text-muted">
+                    {new Date(p.date).getDate()}
+                  </span>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="flex flex-col items-center gap-2 py-8 text-center">
+              <LineChart size={32} className="text-text-muted" />
+              <p className="text-sm font-semibold text-text-primary">
+                {t('analytics.noData', 'Aucune donnee de retention')}
+              </p>
+              <p className="text-xs text-text-muted">
+                {t('analytics.noDataHint', 'Commencez a memoriser pour voir vos courbes')}
+              </p>
+            </div>
+          )}
+        </div>
 
-          <View style={[styles.statCard, styles.statCardMedium]}>
-            <View style={[styles.statIconContainer, { backgroundColor: colors.success }]}>
-              <IonIcon icon={checkmarkCircle} size={24} color={colors.surface} />
-            </View>
-            <Text style={styles.statValue}>{stats?.masteredVerses || 0}</Text>
-            <Text style={styles.statLabel}>Maîtrisés</Text>
-          </View>
-
-          <View style={[styles.statCard, styles.statCardMedium]}>
-            <View style={[styles.statIconContainer, { backgroundColor: colors.error }]}>
-              <IonIcon icon={flame} size={24} color={colors.surface} />
-            </View>
-            <Text style={styles.statValue}>{stats?.streakCount || 0}</Text>
-            <Text style={styles.statLabel}>Streak (jours)</Text>
-          </View>
-        </View>
-
-        {/* Retention Chart Section */}
-        <View style={styles.chartSection}>
-          <View style={styles.chartHeader}>
-            <Text style={styles.chartTitle}>Rétention sur 30 jours</Text>
-            <TouchableOpacity style={styles.chartAction}>
-              <Text style={styles.chartActionText}>Détails</Text>
-            </TouchableOpacity>
-          </View>
-
-          <View style={styles.chartCard}>
-            {retentionCurve.length > 0 ? (
-              <View style={styles.chartContainer}>
-                {/* Y-axis labels */}
-                <View style={styles.yAxisContainer}>
-                  <Text style={styles.yAxisLabel}>100%</Text>
-                  <Text style={styles.yAxisLabel}>50%</Text>
-                  <Text style={styles.yAxisLabel}>0%</Text>
-                </View>
-
-                {/* Chart bars */}
-                <View style={styles.chartBars}>
-                  {retentionCurve.slice(-14).map((point, idx) => (
-                    <View key={idx} style={styles.barWrapper}>
-                      <View
-                        style={[
-                          styles.bar,
-                          {
-                            height: Math.max(4, point.retention * 100),
-                            backgroundColor:
-                              point.retention > 0.8
-                                ? colors.success
-                                : point.retention > 0.5
-                                ? colors.primary
-                                : colors.error,
-                          },
-                        ]}
-                      />
-                      <Text style={styles.barLabel}>
-                        {new Date(point.date).getDate()}
-                      </Text>
-                    </View>
-                  ))}
-                </View>
-              </View>
-            ) : (
-              <View style={styles.emptyChart}>
-                <IonIcon icon={analytics} size={48} color={colors.outline} />
-                <Text style={styles.emptyChartText}>
-                  Aucune donnée de rétention
-                </Text>
-                <Text style={styles.emptyChartSubtext}>
-                  Commencez à mémoriser pour voir vos courbes
-                </Text>
-              </View>
-            )}
-          </View>
-        </View>
-
-        {/* Weekly Trend */}
+        {/* Weekly trend */}
         {stats?.weeklyTrend && (
-          <View style={styles.trendSection}>
-            <Text style={styles.sectionTitle}>Tendance hebdomadaire</Text>
-            <View style={styles.trendCard}>
-              <View style={styles.trendGrid}>
-                <View style={styles.trendItem}>
-                  <View style={[styles.trendIcon, { backgroundColor: colors.primaryFixed }]}>
-                    <IonIcon icon={calendar} size={20} color={colors.primary} />
-                  </View>
-                  <Text style={styles.trendValue}>{stats.weeklyTrend.thisWeek}</Text>
-                  <Text style={styles.trendLabel}>Cette semaine</Text>
-                </View>
-                <View style={styles.trendItem}>
-                  <View style={[styles.trendIcon, { backgroundColor: colors.iconBgPurple }]}>
-                    <IonIcon icon={calendarOutline} size={20} color={colors.textSecondary} />
-                  </View>
-                  <Text style={styles.trendValue}>{stats.weeklyTrend.lastWeek}</Text>
-                  <Text style={styles.trendLabel}>Semaine dernière</Text>
-                </View>
-              </View>
-
-              <View
-                style={[
-                  styles.changeIndicator,
-                  stats.weeklyTrend.changePercentage >= 0
-                    ? styles.changePositive
-                    : styles.changeNegative,
-                ]}
-              >
-                <IonIcon
-                  icon={stats.weeklyTrend.changePercentage >= 0 ? trendingUp : trendingDown}
-                  size={16}
-                  color={stats.weeklyTrend.changePercentage >= 0 ? colors.success : colors.error}
-                />
-                <Text style={styles.changeText}>
-                  {stats.weeklyTrend.changePercentage >= 0 ? '+' : ''}
-                  {stats.weeklyTrend.changePercentage}%
-                </Text>
-                <Text style={styles.changeLabel}>
-                  {stats.weeklyTrend.changePercentage >= 0 ? 'Meilleur que' : 'Pire que'} la semaine dernière
-                </Text>
-              </View>
-            </View>
-          </View>
+          <div className="rounded-3xl bg-surface p-5 shadow-sm">
+            <p className="mb-3 text-base font-bold text-text-primary">
+              {t('analytics.weeklyTrend', 'Tendance hebdomadaire')}
+            </p>
+            <div className="grid grid-cols-2 gap-3 text-center">
+              <div className="rounded-2xl bg-surface-tint p-4">
+                <p className="text-2xl font-extrabold text-text-primary">
+                  {stats.weeklyTrend.thisWeek}
+                </p>
+                <p className="text-xs text-text-muted">
+                  {t('analytics.thisWeek', 'Cette semaine')}
+                </p>
+              </div>
+              <div className="rounded-2xl bg-surface-tint p-4">
+                <p className="text-2xl font-extrabold text-text-primary">
+                  {stats.weeklyTrend.lastWeek}
+                </p>
+                <p className="text-xs text-text-muted">
+                  {t('analytics.lastWeek', 'Semaine derniere')}
+                </p>
+              </div>
+            </div>
+            <div
+              className={
+                'mt-3 flex items-center justify-center gap-2 rounded-xl py-3 ' +
+                (stats.weeklyTrend.changePercentage >= 0
+                  ? 'bg-success/10 text-success'
+                  : 'bg-error/10 text-error')
+              }
+            >
+              {stats.weeklyTrend.changePercentage >= 0 ? (
+                <TrendingUp size={16} />
+              ) : (
+                <TrendingDown size={16} />
+              )}
+              <span className="font-bold">
+                {(stats.weeklyTrend.changePercentage >= 0 ? '+' : '') +
+                  stats.weeklyTrend.changePercentage +
+                  '%'}
+              </span>
+              <span className="text-xs">
+                {stats.weeklyTrend.changePercentage >= 0
+                  ? t('analytics.betterThan', 'Meilleure que')
+                  : t('analytics.worseThan', 'Moins bien que')}{' '}
+                {t('analytics.lastWeek', 'la semaine derniere')}
+              </span>
+            </div>
+          </div>
         )}
 
-        {/* Learning Time */}
-        <View style={styles.timeSection}>
-          <Text style={styles.sectionTitle}>Temps d'apprentissage</Text>
-          <View style={styles.timeCard}>
-            <View style={styles.timeGrid}>
-              <View style={styles.timeItem}>
-                <Text style={styles.timeValue}>{getLearningTime()} min</Text>
-                <Text style={styles.timeLabel}>Total</Text>
-              </View>
-              <View style={styles.timeItem}>
-                <Text style={styles.timeValue}>
-                  {stats?.avgSessionDurationMin ?? 0} min
-                </Text>
-                <Text style={styles.timeLabel}>Moyenne/session</Text>
-              </View>
-            </View>
-            <View style={styles.timeBar}>
-              <View
-                style={[
-                  styles.timeBarFill,
-                  {
-                    width: `${Math.min(100, (stats?.weeklyTrend?.thisWeek ?? 0) * 100 / 30)}%`,
-                  },
-                ]}
-              />
-            </View>
-            <Text style={styles.timeBarLabel}>
-              {stats?.weeklyTrend.thisWeek ?? 0} sessions cette semaine
-            </Text>
-          </View>
-        </View>
+        {/* Verses by status */}
+        <div>
+          <p className="mb-3 text-base font-bold text-text-primary">
+            {t('analytics.byStatus', 'Verset par statut')}
+          </p>
+          <div className="overflow-hidden rounded-3xl bg-surface shadow-sm">
+            {[
+              { label: t('analytics.mastered', 'Maitrises'), value: stats?.masteredVerses || 0, dot: 'var(--color-success)', to: '/tabs/progress' },
+              { label: t('analytics.inProgress', 'En cours'), value: stats?.inProgressVerses || 0, dot: 'var(--color-primary)', to: '/review/queue' },
+              { label: t('analytics.toReview', 'A reviser'), value: stats?.dueForReview || 0, dot: 'var(--color-error)', to: '/review/queue' },
+            ].map((row, i) => (
+              <button
+                key={i}
+                onClick={() => navigate(row.to)}
+                className="flex w-full items-center justify-between border-b border-[color:var(--color-divider)] px-4 py-4 last:border-0"
+              >
+                <span className="flex items-center gap-3">
+                  <span
+                    className="h-3 w-3 rounded-full"
+                    style={{ backgroundColor: row.dot }}
+                  />
+                  <span className="text-base font-medium text-text-primary">{row.label}</span>
+                </span>
+                <span className="text-lg font-bold text-primary">{row.value}</span>
+              </button>
+            ))}
+          </div>
+        </div>
 
-        {/* Verses by Status */}
-        <View style={styles.versesSection}>
-          <Text style={styles.sectionTitle}>Verset par statut</Text>
-          <View style={styles.versesCard}>
-            <TouchableOpacity
-              style={styles.verseStatusRow}
-              onPress={() => router.push('/tabs/progress')}
-            >
-              <View style={styles.verseStatusLeft}>
-                <View style={[styles.statusDot, { backgroundColor: colors.success }]} />
-                <Text style={styles.verseStatusText}>Maîtrisés</Text>
-              </View>
-              <Text style={styles.verseStatusCount}>
-                {stats?.masteredVerses || 0}
-              </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.verseStatusRow}
-              onPress={() => router.push('/review/queue')}
-            >
-              <View style={styles.verseStatusLeft}>
-                <View style={[styles.statusDot, { backgroundColor: colors.primary }]} />
-                <Text style={styles.verseStatusText}>En cours</Text>
-              </View>
-              <Text style={styles.verseStatusCount}>
-                {stats?.inProgressVerses || 0}
-              </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.verseStatusRow}
-              onPress={() => router.push('/review/queue')}
-            >
-              <View style={styles.verseStatusLeft}>
-                <View style={[styles.statusDot, { backgroundColor: colors.error }]} />
-                <Text style={styles.verseStatusText}>À réviser</Text>
-              </View>
-              <Text style={styles.verseStatusCount}>
-                {stats?.dueForReview || 0}
-              </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.verseStatusRow}
-              onPress={() => router.push('/bible/explorer')}
-            >
-              <View style={styles.verseStatusLeft}>
-                <View style={[styles.statusDot, { backgroundColor: colors.textMuted }]} />
-                <Text style={styles.verseStatusText}>Nouveaux</Text>
-              </View>
-              <Text style={styles.verseStatusCount}>
-                {stats?.inProgressVerses ?? 0}
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        {/* Spacer */}
-        <View style={styles.bottomSpacer} />
-      </ScrollView>
-    </SafeAreaView>
+        {/* Learning time */}
+        <div className="rounded-3xl bg-surface p-5 text-center shadow-sm">
+          <p className="text-3xl font-extrabold text-text-primary">
+            {getLearningTime()} min
+          </p>
+          <p className="text-xs text-text-muted">
+            {t('analytics.totalTime', 'Temps total d\'apprentissage')}
+          </p>
+        </div>
+      </div>
+    </FullScreenPage>
   );
 }

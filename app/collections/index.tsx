@@ -1,22 +1,17 @@
-/**
- * Collections Screen — User's saved verse collections
- */
-
-import { Fragment, useState, useMemo } from 'react';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-  SafeAreaView,
-  TextInput,
-} from '@/components/ui/Primitives';
-import { useAppTheme } from '@/theme/useTheme';
-import { shadowCss } from '@/theme/tokens';
-import { useRouter } from '@/hooks/useIonicNavigation';
-import { IonIcon } from '@/components/ui/Primitives';
-import { add, addCircle, arrowBack, book, chevronForward, heart, musicalNotes, time, bulb } from 'ionicons/icons';
+  Plus,
+  BookOpen,
+  ChevronDown,
+  Heart,
+  Music,
+  Lightbulb,
+  Clock,
+} from 'lucide-react';
+import { FullScreenPage } from '@/components/layout/FullScreenPage';
+import { EmptyState } from '@/components/ui/EmptyState';
 
 interface Collection {
   id: string;
@@ -30,216 +25,25 @@ interface Collection {
 }
 
 const SAMPLE_COLLECTIONS: Collection[] = [
-  {
-    id: '1',
-    name: 'Mes favoris',
-    description: 'Versets sauvegardés pour référence rapide',
-    verseCount: 12,
-    lastUpdated: "Aujourd'hui",
-    color: '#E91E8C',
-    icon: 'heart',
-    verses: ['Jean 3:16', 'Psaume 23:1', 'Romains 8:28'],
-  },
-  {
-    id: '2',
-    name: 'Psaumes',
-    description: 'Collection de psaumes pour la méditation',
-    verseCount: 8,
-    lastUpdated: 'Hier',
-    color: '#007AFF',
-    icon: 'musicalNotes',
-    verses: ['Psaume 23', 'Psaume 91', 'Psaume 119'],
-  },
-  {
-    id: '3',
-    name: 'Évangiles',
-    description: 'Paroles de Jésus',
-    verseCount: 15,
-    lastUpdated: 'Il y a 3 jours',
-    color: '#008733',
-    icon: 'book',
-    verses: ['Matthieu 5:3-12', 'Jean 14:6', 'Luc 15'],
-  },
-  {
-    id: '4',
-    name: 'Mémorisés',
-    description: 'Verset en cours de mémorisation',
-    verseCount: 5,
-    lastUpdated: "Aujourd'hui",
-    color: '#FF9500',
-    icon: 'bulb',
-    verses: ['Jean 3:16', 'Philippiens 4:13'],
-  },
+  { id: '1', name: 'Mes favoris', description: 'Versets sauvegardes', verseCount: 12, lastUpdated: "Aujourd'hui", color: '#D81B97', icon: 'heart', verses: ['Jean 3:16', 'Psaume 23:1', 'Romains 8:28'] },
+  { id: '2', name: 'Psaumes', description: 'Collection de psaumes', verseCount: 8, lastUpdated: 'Hier', color: '#007AFF', icon: 'musicalNotes', verses: ['Psaume 23', 'Psaume 91', 'Psaume 119'] },
+  { id: '3', name: 'Evangiles', description: 'Paroles de Jesus', verseCount: 15, lastUpdated: 'Il y a 3 jours', color: '#008733', icon: 'book', verses: ['Matthieu 5:3', 'Jean 14:6'] },
+  { id: '4', name: 'Memorises', description: 'Verset en cours de memorisation', verseCount: 5, lastUpdated: "Aujourd'hui", color: '#FF9500', icon: 'bulb', verses: ['Jean 3:16', 'Philippiens 4:13'] },
 ];
 
 const STORAGE_KEY = 'versyflow:collections';
-const NEW_COLLECTION_COLORS = ['#E91E8C', '#007AFF', '#008733', '#FF9500', '#3F51B5'];
+const NEW_COLLECTION_COLORS = ['#D81B97', '#007AFF', '#008733', '#FF9500', '#3F51B5'];
 
-
-const COLLECTION_ICON_MAP: Record<Collection['icon'], unknown> = {
-  heart,
-  musicalNotes,
-  book,
-  bulb,
+const ICONS: Record<Collection['icon'], typeof Heart> = {
+  heart: Heart,
+  musicalNotes: Music,
+  book: BookOpen,
+  bulb: Lightbulb,
 };
 
 export default function CollectionsScreen() {
-  const { colors } = useAppTheme();
-  const styles = useMemo(
-    () =>
-      StyleSheet.create({
-        container: {
-          flex: 1,
-          backgroundColor: colors.background,
-        },
-        header: {
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          paddingHorizontal: 20,
-          paddingVertical: 16,
-          backgroundColor: colors.surface,
-          borderBottomWidth: 1,
-          borderBottomColor: colors.border,
-        },
-        backButton: {
-          width: 40,
-          height: 40,
-          borderRadius: 20,
-          backgroundColor: colors.surfaceTint,
-          alignItems: 'center',
-          justifyContent: 'center',
-        },
-        headerTitle: {
-          fontSize: 18,
-          fontWeight: '700',
-          color: colors.textPrimary,
-        },
-        addButton: {
-          width: 40,
-          height: 40,
-          borderRadius: 20,
-          backgroundColor: colors.surfaceTint,
-          alignItems: 'center',
-          justifyContent: 'center',
-        },
-        filterContainer: {
-          flexDirection: 'row',
-          paddingHorizontal: 20,
-          paddingVertical: 12,
-          gap: 8,
-          backgroundColor: colors.surface,
-          borderBottomWidth: 1,
-          borderBottomColor: colors.border,
-        },
-        filterButton: {
-          paddingHorizontal: 16,
-          paddingVertical: 8,
-          borderRadius: 20,
-          backgroundColor: colors.surfaceTint,
-        },
-        filterButtonActive: {
-          backgroundColor: colors.primary,
-        },
-        filterText: {
-          fontSize: 14,
-          color: colors.textTertiary,
-          fontWeight: '500',
-        },
-        filterTextActive: {
-          color: colors.surface,
-        },
-        filterCount: {
-          fontWeight: '400',
-        },
-        scrollView: {
-          flex: 1,
-        },
-        scrollContent: {
-          padding: 20,
-          gap: 12,
-        },
-        collectionCard: {
-          flexDirection: 'row',
-          alignItems: 'center',
-          backgroundColor: colors.surface,
-          borderRadius: 16,
-          padding: 16,
-          gap: 16,
-          ...shadowCss('sm'),
-        },
-        collectionIcon: {
-          width: 56,
-          height: 56,
-          borderRadius: 28,
-          alignItems: 'center',
-          justifyContent: 'center',
-        },
-        collectionInfo: {
-          flex: 1,
-        },
-        collectionName: {
-          fontSize: 16,
-          fontWeight: '700',
-          color: colors.textPrimary,
-          marginBottom: 4,
-        },
-        collectionDesc: {
-          fontSize: 13,
-          color: colors.textTertiary,
-          marginBottom: 8,
-        },
-        collectionMeta: {
-          flexDirection: 'row',
-          gap: 16,
-        },
-        collectionStat: {
-          flexDirection: 'row',
-          alignItems: 'center',
-          gap: 4,
-        },
-        collectionStatText: {
-          fontSize: 12,
-          color: colors.textMuted,
-        },
-        createCard: {
-          flexDirection: 'row',
-          alignItems: 'center',
-          backgroundColor: colors.surface,
-          borderRadius: 16,
-          padding: 20,
-          gap: 16,
-          borderWidth: 2,
-          borderColor: colors.border,
-          borderStyle: 'dashed',
-        },
-        createIcon: {
-          width: 56,
-          height: 56,
-          borderRadius: 28,
-          alignItems: 'center',
-          justifyContent: 'center',
-        },
-        createInfo: {
-          flex: 1,
-        },
-        createTitle: {
-          fontSize: 16,
-          fontWeight: '700',
-          color: colors.primary,
-          marginBottom: 4,
-        },
-        createSubtitle: {
-          fontSize: 13,
-          color: colors.textTertiary,
-        },
-        bottomSpacer: {
-          height: 24,
-        },
-      }),
-    [colors],
-  );
-  const router = useRouter();
+  const navigate = useNavigate();
+  const { t } = useTranslation();
   const [collections, setCollections] = useState<Collection[]>(() => {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
@@ -248,200 +52,200 @@ export default function CollectionsScreen() {
         if (Array.isArray(parsed) && parsed.length > 0) return parsed;
       }
     } catch {
-      // Storage unavailable — fall back to the seed list
+      /* fall back to seed */
     }
     return SAMPLE_COLLECTIONS;
   });
-  const [selectedCategory, setSelectedCategory] = useState<'all' | 'memorized' | 'favorites'>('all');
+  const [selected, setSelected] = useState<'all' | 'memorized' | 'favorites'>('all');
   const [creating, setCreating] = useState(false);
   const [newName, setNewName] = useState('');
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
-  const filteredCollections = selectedCategory === 'all'
-    ? collections
-    : selectedCategory === 'memorized'
-    ? collections.filter(c => c.icon === 'bulb')
-    : collections.filter(c => c.icon === 'heart');
+  const filtered =
+    selected === 'all'
+      ? collections
+      : selected === 'memorized'
+        ? collections.filter((c) => c.icon === 'bulb')
+        : collections.filter((c) => c.icon === 'heart');
 
-  const persistCollections = (next: Collection[]) => {
+  const persist = (next: Collection[]) => {
     setCollections(next);
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
     } catch {
-      // Storage unavailable (private mode) — in-memory only
+      /* in-memory only */
     }
   };
 
-  const handleCreateCollection = () => setCreating(true);
-
-  const submitCreateCollection = () => {
+  const submitCreate = () => {
     const name = newName.trim();
     if (!name) return;
-    const collection: Collection = {
-      id: `c-${Date.now()}`,
+    const c: Collection = {
+      id: 'c-' + Date.now(),
       name,
-      description: 'Collection personnalisée',
+      description: t('collections.custom', 'Collection personnalisee'),
       verseCount: 0,
       lastUpdated: "Aujourd'hui",
       color: NEW_COLLECTION_COLORS[collections.length % NEW_COLLECTION_COLORS.length],
       icon: 'heart',
       verses: [],
     };
-    persistCollections([...collections, collection]);
+    persist([...collections, c]);
     setNewName('');
     setCreating(false);
-    setExpandedId(collection.id);
+    setExpandedId(c.id);
   };
 
-  const handleCollectionPress = (collection: Collection) => {
-    setExpandedId(expandedId === collection.id ? null : collection.id);
-  };
+  const categories = [
+    { id: 'all' as const, label: t('collections.all', 'Toutes'), count: collections.length },
+    { id: 'memorized' as const, label: t('collections.memorized', 'En memorisation'), count: collections.filter((c) => c.icon === 'bulb').length },
+    { id: 'favorites' as const, label: t('collections.favorites', 'Favoris'), count: collections.filter((c) => c.icon === 'heart').length },
+  ];
 
   return (
-    <SafeAreaView style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-          <IonIcon icon={arrowBack} size={24} color={colors.textSecondary} />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Mes Collections</Text>
-        <TouchableOpacity style={styles.addButton} onPress={handleCreateCollection}>
-          <IonIcon icon={add} size={24} color={colors.primary} />
-        </TouchableOpacity>
-      </View>
-
-      {/* Category Filter */}
-      <View style={styles.filterContainer}>
-        {[
-          { id: 'all', label: 'Toutes', count: collections.length },
-          { id: 'memorized', label: 'En mémorisation', count: collections.filter(c => c.icon === 'bulb').length },
-          { id: 'favorites', label: 'Favoris', count: collections.filter(c => c.icon === 'heart').length },
-        ].map((category) => (
-          <TouchableOpacity
-            key={category.id}
-            style={[styles.filterButton, selectedCategory === category.id && styles.filterButtonActive]}
-            onPress={() => setSelectedCategory(category.id as any)}
-          >
-            <Text style={[styles.filterText, selectedCategory === category.id && styles.filterTextActive]}>
-              {category.label}
-              <Text style={styles.filterCount}> ({category.count})</Text>
-            </Text>
-          </TouchableOpacity>
-        ))}
-      </View>
-
-      {/* Collections List */}
-      <ScrollView
-        style={styles.scrollView}
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
-      >
-        {filteredCollections.map((collection) => (
-          <Fragment key={collection.id}>
-            <TouchableOpacity
-              style={styles.collectionCard}
-              onPress={() => handleCollectionPress(collection)}
+    <FullScreenPage
+      title={t('nav.collections', 'Collections')}
+      showBack
+      right={
+        <button
+          onClick={() => setCreating(true)}
+          className="flex h-9 w-9 items-center justify-center rounded-full bg-surface-tint"
+        >
+          <Plus size={18} className="text-primary" />
+        </button>
+      }
+    >
+      <div className="mx-auto max-w-md space-y-4">
+        {/* Filter */}
+        <div className="flex gap-2">
+          {categories.map((cat) => (
+            <button
+              key={cat.id}
+              onClick={() => setSelected(cat.id)}
+              className={
+                'rounded-full px-3.5 py-1.5 text-sm font-medium ' +
+                (selected === cat.id
+                  ? 'bg-primary text-white'
+                  : 'bg-surface-tint text-text-secondary')
+              }
             >
-            <View style={[styles.collectionIcon, { backgroundColor: collection.color + '20' }]}>
-              <IonIcon icon={COLLECTION_ICON_MAP[collection.icon] as any} size={28} color={collection.color} />
-            </View>
-            <View style={styles.collectionInfo}>
-              <Text style={styles.collectionName}>{collection.name}</Text>
-              <Text style={styles.collectionDesc} numberOfLines={1}>{collection.description}</Text>
-              <View style={styles.collectionMeta}>
-                <View style={styles.collectionStat}>
-                  <IonIcon icon={book} size={14} color={colors.textMuted} />
-                  <Text style={styles.collectionStatText}>{collection.verseCount} versets</Text>
-                </View>
-                <View style={styles.collectionStat}>
-                  <IonIcon icon={time} size={14} color={colors.textMuted} />
-                  <Text style={styles.collectionStatText}>{collection.lastUpdated}</Text>
-                </View>
-              </View>
-            </View>
-            <IonIcon icon={chevronForward} size={20} color={colors.textMuted} />
-          </TouchableOpacity>
-            {expandedId === collection.id && (
-              <View
-                style={{
-                  marginHorizontal: 16,
-                  marginBottom: 12,
-                  backgroundColor: colors.surfaceTint,
-                  borderRadius: 12,
-                  padding: 12,
-                }}
-              >
-                <Text style={{ fontSize: 13, color: colors.textSecondary }}>{collection.description}</Text>
-                {collection.verses.length === 0 ? (
-                  <Text style={{ fontSize: 13, color: colors.textMuted, marginTop: 6 }}>
-                    Aucun verset dans cette collection pour le moment
-                  </Text>
-                ) : (
-                  collection.verses.map((v) => (
-                    <Text key={v} style={{ fontSize: 14, color: colors.textPrimary, marginTop: 4 }}>
-                      • {v}
-                    </Text>
-                  ))
-                )}
-              </View>
-            )}
-          </Fragment>
-        ))}
+              {cat.label} ({cat.count})
+            </button>
+          ))}
+        </div>
 
-        {/* Create New Collection */}
-        {creating ? (
-          <View style={styles.createCard}>
-            <TextInput
-              style={{ flex: 1, minHeight: 44 }}
-              placeholder="Nom de la collection"
-              placeholderTextColor={colors.textMuted}
-              value={newName}
-              onChangeText={(text: string) => setNewName(text)}
-            />
-            <TouchableOpacity
-              style={{
-                alignItems: 'center',
-                justifyContent: 'center',
-                borderRadius: 12,
-                paddingHorizontal: 14,
-                paddingVertical: 10,
-                backgroundColor: colors.surfaceTint,
-              }}
-              onPress={() => setCreating(false)}
-            >
-              <Text style={{ fontSize: 13, color: colors.textMuted }}>Annuler</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{
-                alignItems: 'center',
-                justifyContent: 'center',
-                width: 52,
-                height: 52,
-                borderRadius: 26,
-                backgroundColor: colors.primary,
-              }}
-              onPress={submitCreateCollection}
-            >
-              <IonIcon icon={addCircle} size={26} color="#FFFFFF" />
-            </TouchableOpacity>
-          </View>
-        ) : (
-          <TouchableOpacity
-            style={styles.createCard}
-            onPress={handleCreateCollection}
-          >
-            <View style={[styles.createIcon, { backgroundColor: colors.surfaceTint }]}>
-              <IonIcon icon={addCircle} size={32} color={colors.primary} />
-            </View>
-            <View style={styles.createInfo}>
-              <Text style={styles.createTitle}>Créer une collection</Text>
-              <Text style={styles.createSubtitle}>Organisez vos versets préférés</Text>
-            </View>
-          </TouchableOpacity>
+        {filtered.length === 0 && (
+          <EmptyState
+            title={t('collections.empty', 'Aucune collection')}
+            description={t('collections.emptyHint', 'Créez votre premiere collection.')}
+            actionLabel={t('collections.create', 'Creer une collection')}
+            onAction={() => setCreating(true)}
+            showLogo={false}
+          />
         )}
 
-        <View style={styles.bottomSpacer} />
-      </ScrollView>
-    </SafeAreaView>
+        {filtered.map((collection) => {
+          const Icon = ICONS[collection.icon];
+          const expanded = expandedId === collection.id;
+          return (
+            <div key={collection.id}>
+              <button
+                onClick={() =>
+                  setExpandedId(expanded ? null : collection.id)
+                }
+                className="flex w-full items-center gap-4 rounded-2xl bg-surface p-4 text-left shadow-sm"
+              >
+                <span
+                  className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full"
+                  style={{ color: collection.color, backgroundColor: collection.color + '20' }}
+                >
+                  <Icon size={26} />
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="block text-base font-bold text-text-primary">
+                    {collection.name}
+                  </span>
+                  <span className="text-sm text-text-muted">{collection.description}</span>
+                  <span className="mt-1 flex gap-3 text-xs text-text-muted">
+                    <span className="flex items-center gap-1">
+                      <BookOpen size={12} />
+                      {collection.verseCount} {t('collections.verses', 'versets')}
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <Clock size={12} />
+                      {collection.lastUpdated}
+                    </span>
+                  </span>
+                </span>
+                <ChevronDown
+                  size={18}
+                  className={'text-text-muted transition ' + (expanded ? 'rotate-180' : '')}
+                />
+              </button>
+              {expanded && (
+                <div className="mx-4 mt-2 space-y-1 rounded-xl bg-surface-tint p-3">
+                  {collection.verses.length === 0 ? (
+                    <p className="text-sm text-text-muted">
+                      {t('collections.noVerses', 'Aucun verset dans cette collection.')}
+                    </p>
+                  ) : (
+                    collection.verses.map((v) => (
+                      <button
+                        key={v}
+                        onClick={() => navigate('/bible/chapter?' + new URLSearchParams({ book: v.split(' ')[0], chapter: v }).toString())}
+                        className="block text-left text-sm text-text-primary"
+                      >
+                        • {v}
+                      </button>
+                    ))
+                  )}
+                </div>
+              )}
+            </div>
+          );
+        })}
+
+        {creating ? (
+          <div className="flex items-center gap-2 rounded-2xl border-2 border-dashed border-primary/40 p-4">
+            <input
+              autoFocus
+              value={newName}
+              onChange={(e) => setNewName(e.target.value)}
+              placeholder={t('collections.namePlaceholder', 'Nom de la collection')}
+              className="flex-1 bg-transparent px-1 text-base text-text-primary outline-none"
+            />
+            <button
+              onClick={() => setCreating(false)}
+              className="rounded-full bg-surface-tint px-3 py-2 text-sm text-text-muted"
+            >
+              {t('common.cancel', 'Annuler')}
+            </button>
+            <button
+              onClick={submitCreate}
+              className="flex h-11 w-11 items-center justify-center rounded-full bg-primary text-white"
+            >
+              <Plus size={20} />
+            </button>
+          </div>
+        ) : (
+          <button
+            onClick={() => setCreating(true)}
+            className="flex w-full items-center gap-4 rounded-2xl border-2 border-dashed border-primary/40 p-4 text-left active:opacity-90"
+          >
+            <span className="flex h-14 w-14 items-center justify-center rounded-full bg-surface-tint">
+              <Plus size={26} className="text-primary" />
+            </span>
+            <span>
+              <span className="block text-base font-bold text-primary">
+                {t('collections.create', 'Creer une collection')}
+              </span>
+              <span className="text-sm text-text-muted">
+                {t('collections.createHint', 'Organisez vos versets preferes')}
+              </span>
+            </span>
+          </button>
+        )}
+      </div>
+    </FullScreenPage>
   );
 }

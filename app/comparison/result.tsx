@@ -1,19 +1,9 @@
-/**
- * Comparison Result Screen — Shows verification results
- */
-
-import { useEffect, useState, useMemo } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  SafeAreaView,
-  TouchableOpacity,
-} from '@/components/ui/Primitives';
-import { useAppTheme } from '@/theme/useTheme';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { useRouter } from '@/hooks/useIonicNavigation';
+import { ArrowRight, Check } from 'lucide-react';
+import { FullScreenPage } from '@/components/layout/FullScreenPage';
+import { Button } from '@/components/ui/button';
 import { useComparisonCapability } from '@/capabilities/comparison/store';
 import type { MemorizationRecord } from '@/domains/memorization/entities';
 
@@ -23,247 +13,129 @@ interface Props {
 }
 
 export default function ComparisonResultScreen({ record, userAnswer }: Props) {
-  const router = useRouter();
-  const { colors, sp, rad } = useAppTheme();
+  const navigate = useNavigate();
   const { t } = useTranslation();
   const { lastVerification, verifyAnswer } = useComparisonCapability();
   const [verified, setVerified] = useState(false);
-
-  const styles = useMemo(
-    () =>
-      StyleSheet.create({
-        container: {
-          flex: 1,
-          backgroundColor: colors.surfaceTint,
-        },
-        content: {
-          padding: sp.md,
-          paddingBottom: sp.xl,
-        },
-        center: {
-          flex: 1,
-          justifyContent: 'center',
-          alignItems: 'center',
-        },
-        scoreCard: {
-          backgroundColor: colors.surface,
-          borderRadius: rad.lg,
-          padding: sp.lg,
-          marginBottom: sp.lg,
-          alignItems: 'center',
-        },
-        scoreLabel: {
-          fontSize: 14,
-          color: colors.textTertiary,
-          marginBottom: sp.sm,
-        },
-        scoreValue: {
-          fontSize: 48,
-          fontWeight: '800',
-          marginBottom: sp.md,
-        },
-        scoreBar: {
-          width: '100%',
-          height: 12,
-          backgroundColor: colors.surfaceElevated,
-          borderRadius: rad.sm,
-          overflow: 'hidden',
-        },
-        scoreFill: {
-          height: '100%',
-          borderRadius: 6,
-        },
-        section: {
-          backgroundColor: colors.surface,
-          borderRadius: rad.md,
-          padding: sp.md,
-          marginBottom: sp.md,
-        },
-        sectionTitle: {
-          fontSize: 16,
-          fontWeight: '600',
-          color: colors.textPrimary,
-          marginBottom: sp.sm,
-        },
-        substitutionItem: {
-          paddingVertical: sp.sm,
-          borderBottomWidth: 1,
-          borderBottomColor: colors.surfaceElevated,
-        },
-        expectedText: {
-          fontSize: 14,
-          color: colors.textPrimary,
-        },
-        arrow: {
-          color: colors.textMuted,
-        },
-        gotText: {
-          color: colors.error,
-        },
-        wordsRow: {
-          flexDirection: 'row',
-          flexWrap: 'wrap',
-          gap: sp.sm,
-        },
-        missingWord: {
-          fontSize: 14,
-          color: colors.error,
-          backgroundColor: colors.errorLight,
-          paddingVertical: sp.xs,
-          paddingHorizontal: sp.sm,
-          borderRadius: rad.sm,
-        },
-        portionItem: {
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          paddingVertical: sp.sm,
-          borderBottomWidth: 1,
-          borderBottomColor: colors.surfaceElevated,
-        },
-        portionText: {
-          fontSize: 14,
-          color: colors.textTertiary,
-        },
-        portionAccuracy: {
-          fontSize: 14,
-          fontWeight: '600',
-        },
-        actions: {
-          marginTop: sp.lg,
-          gap: sp.md,
-        },
-        primaryButton: {
-          backgroundColor: colors.primary,
-          borderRadius: rad.pill,
-          paddingVertical: sp.md,
-          alignItems: 'center',
-        },
-        primaryButtonText: {
-          fontSize: 16,
-          fontWeight: '600',
-          color: colors.surface,
-        },
-        secondaryButton: {
-          backgroundColor: colors.surface,
-          borderRadius: rad.pill,
-          paddingVertical: sp.md,
-          borderWidth: 2,
-          borderColor: colors.primary,
-          alignItems: 'center',
-        },
-        secondaryButtonText: {
-          fontSize: 16,
-          fontWeight: '600',
-          color: colors.primary,
-        },
-      }),
-    [colors, sp, rad],
-  );
 
   useEffect(() => {
     if (!verified) {
       verifyAnswer(record.bibleVerseText, userAnswer);
       setVerified(true);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (!lastVerification) {
     return (
-      <SafeAreaView style={styles.container}>
-        <View style={styles.center}>
-          <Text>{t('comparison.analyzing')}</Text>
-        </View>
-      </SafeAreaView>
+      <FullScreenPage title={t('comparison.result', 'Resultat')} showBack>
+        <div className="flex min-h-[50vh] flex-col items-center justify-center">
+          <p className="text-sm text-text-muted">
+            {t('comparison.analyzing', 'Analyse en cours...')}
+          </p>
+        </div>
+      </FullScreenPage>
     );
   }
 
   const scoreColor =
     lastVerification.score >= 0.9
-      ? colors.success
+      ? 'var(--color-success)'
       : lastVerification.score >= 0.7
-      ? colors.warning
-      : colors.error;
+        ? 'var(--color-warning)'
+        : 'var(--color-error)';
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.content}>
-        {/* Score Display */}
-        <View style={styles.scoreCard}>
-          <Text style={styles.scoreLabel}>{t('comparison.accuracyScore')}</Text>
-          <Text style={[styles.scoreValue, { color: scoreColor }]}>
+    <FullScreenPage title={t('comparison.result', 'Resultat')} showBack>
+      <div className="mx-auto max-w-md space-y-4">
+        {/* Score */}
+        <div className="flex flex-col items-center rounded-3xl bg-surface p-6 shadow-sm">
+          <p className="text-sm text-text-muted">
+            {t('comparison.accuracyScore', 'Score de precision')}
+          </p>
+          <p className="my-2 text-5xl font-extrabold" style={{ color: scoreColor }}>
             {Math.round(lastVerification.score * 100)}%
-          </Text>
-          <View style={styles.scoreBar}>
-            <View
-              style={[
-                styles.scoreFill,
-                { width: `${lastVerification.score * 100}%`, backgroundColor: scoreColor },
-              ]}
+          </p>
+          <div className="h-3 w-full overflow-hidden rounded-full bg-surface-tint">
+            <div
+              className="h-full rounded-full"
+              style={{ width: lastVerification.score * 100 + '%', backgroundColor: scoreColor }}
             />
-          </View>
-        </View>
+          </div>
+        </div>
 
-        {/* Word Analysis */}
+        {/* Substitutions */}
         {lastVerification.substitutedWords.length > 0 && (
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>{t('comparison.substitutions')}</Text>
-            {lastVerification.substitutedWords.map((sub, idx) => (
-              <View key={idx} style={styles.substitutionItem}>
-                <Text style={styles.expectedText}>
-                  {sub.expected}
-                  <Text style={styles.arrow}>{' -> '}</Text>
-                  <Text style={styles.gotText}>{sub.got}</Text>
-                </Text>
-              </View>
-            ))}
-          </View>
-        )}
-
-        {/* Missing Words */}
-        {lastVerification.missingWords.length > 0 && (
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>{t('comparison.missingWords')}</Text>
-            <View style={styles.wordsRow}>
-              {lastVerification.missingWords.map((word, idx) => (
-                <Text key={idx} style={styles.missingWord}>{word}</Text>
+          <div className="rounded-2xl bg-surface p-4 shadow-sm">
+            <p className="mb-2 text-base font-bold text-text-primary">
+              {t('comparison.substitutions', 'Substitutions')}
+            </p>
+            <div className="space-y-2">
+              {lastVerification.substitutedWords.map((sub, i) => (
+                <p key={i} className="text-sm">
+                  <span className="text-text-primary">{sub.expected}</span>
+                  <ArrowRight size={12} className="mx-1 inline text-text-muted" />
+                  <span className="text-error">{sub.got}</span>
+                </p>
               ))}
-            </View>
-          </View>
+            </div>
+          </div>
         )}
 
-        {/* Fragile Portions */}
+        {/* Missing */}
+        {lastVerification.missingWords.length > 0 && (
+          <div className="rounded-2xl bg-surface p-4 shadow-sm">
+            <p className="mb-2 text-base font-bold text-text-primary">
+              {t('comparison.missingWords', 'Mots manquants')}
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {lastVerification.missingWords.map((word, i) => (
+                <span
+                  key={i}
+                  className="rounded-lg bg-error/10 px-2 py-1 text-sm text-error"
+                >
+                  {word}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Fragile portions */}
         {lastVerification.fragilePortions.length > 0 && (
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>{t('comparison.fragilePortions')}</Text>
-            {lastVerification.fragilePortions.map((portion, idx) => (
-              <View key={idx} style={styles.portionItem}>
-                <Text style={styles.portionText}>
-                  Positions {portion.start + 1}–{portion.end}
-                </Text>
-                <Text style={[styles.portionAccuracy, { color: scoreColor }]}>
-                  {Math.round(portion.accuracy * 100)}%
-                </Text>
-              </View>
-            ))}
-          </View>
+          <div className="rounded-2xl bg-surface p-4 shadow-sm">
+            <p className="mb-2 text-base font-bold text-text-primary">
+              {t('comparison.fragilePortions', 'Portions fragiles')}
+            </p>
+            <div className="space-y-2">
+              {lastVerification.fragilePortions.map((portion, i) => (
+                <div key={i} className="flex items-center justify-between text-sm">
+                  <span className="text-text-secondary">
+                    Positions {portion.start + 1}-{portion.end}
+                  </span>
+                  <span className="font-semibold" style={{ color: scoreColor }}>
+                    {Math.round(portion.accuracy * 100)}%
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
         )}
 
-        {/* Actions */}
-        <View style={styles.actions}>
-          <TouchableOpacity
-            style={styles.primaryButton}
-            onPress={() => router.back()}
+        <div className="space-y-3 pt-2">
+          <Button variant="default" className="w-full" onClick={() => navigate(-1)}>
+            <Check size={18} />
+            {t('comparison.finish', 'Terminer')}
+          </Button>
+          <Button
+            variant="secondary"
+            className="w-full"
+            onClick={() => navigate('/review/queue')}
           >
-            <Text style={styles.primaryButtonText}>{t('comparison.finish')}</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.secondaryButton}
-            onPress={() => router.push('/review/queue')}
-          >
-            <Text style={styles.secondaryButtonText}>{t('comparison.reviewQueue')}</Text>
-          </TouchableOpacity>
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+            {t('comparison.reviewQueue', 'Voir la file de revision')}
+          </Button>
+        </div>
+      </div>
+    </FullScreenPage>
   );
 }

@@ -22,9 +22,11 @@ import {
   Check,
   CircleUserRound,
   DownloadCloud,
+  LayoutGrid,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuthStore } from '@/store/auth-store';
+import { ALL_TABS, useUiStore } from '@/store/ui-store';
 import { useSettingsStore } from '@/store/settings-store';
 import { eventBus, DomainEventTypes } from '@/domains/events';
 import { useTranslationPreference } from '@/hooks/useTranslationPreference';
@@ -48,6 +50,8 @@ export default function SettingsScreen() {
   const { bibleTranslation, setBibleTranslation } = useSettingsStore();
   const { setPreference } = useTranslationPreference();
   const [languageModalOpen, setLanguageModalOpen] = useState(false);
+  const visibleTabs = useUiStore((s) => s.visibleTabs);
+  const setVisibleTab = useUiStore((s) => s.setVisibleTab);
 
   const currentLanguage = i18n.language ?? 'fr';
 
@@ -195,7 +199,7 @@ export default function SettingsScreen() {
 
       {/* Profile card */}
       <div className="flex items-center gap-4 rounded-2xl bg-surface p-5 shadow-md">
-        <span className="flex h-14 w-14 items-center justify-center rounded-full bg-primary text-white">
+        <span className="flex h-14 w-14 items-center justify-center rounded-full gradient-hero text-white">
           <CircleUserRound size={28} />
         </span>
         <div className="flex-1">
@@ -216,6 +220,54 @@ export default function SettingsScreen() {
           <ChevronRight size={20} />
         </button>
       </div>
+
+      {/* Navigation - enable/disable the bottom tabs */}
+      <section className="mt-6">
+        <h2 className="mb-2 flex items-center gap-2 px-1 text-sm font-semibold uppercase tracking-wide text-text-tertiary">
+          <LayoutGrid size={16} />
+          {t('settings.navigation', 'Navigation')}
+        </h2>
+        <div className="overflow-hidden rounded-2xl bg-surface shadow-sm">
+          {ALL_TABS.map((tab, i) => {
+            const on = visibleTabs.includes(tab.id);
+            return (
+              <div
+                key={tab.id}
+                className={cn(
+                  'flex w-full items-center gap-3 p-4',
+                  i < ALL_TABS.length - 1 && 'border-b border-divider',
+                )}
+              >
+                <span className="flex-1">
+                  <span className="block text-base text-text-primary">
+                    {t(tab.labelKey, tab.label)}
+                  </span>
+                  <span className="block text-sm text-text-muted">
+                    {on
+                      ? t('settings.tabEnabled', 'Affiché dans la barre')
+                      : t('settings.tabHidden', 'Masqué')}
+                  </span>
+                </span>
+                <button
+                  onClick={() => setVisibleTab(tab.id, !on)}
+                  className={cn(
+                    'relative h-6 w-11 shrink-0 rounded-full transition-colors',
+                    on ? 'bg-primary' : 'bg-border',
+                  )}
+                  aria-pressed={on}
+                >
+                  <span
+                    className={cn(
+                      'absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-all',
+                      on ? 'left-[22px]' : 'left-0.5',
+                    )}
+                  />
+                </button>
+              </div>
+            );
+          })}
+        </div>
+      </section>
 
       {/* Groups */}
       {settingsGroups.map((group) => (

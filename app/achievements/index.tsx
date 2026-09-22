@@ -1,26 +1,29 @@
-/**
- * Achievement Screen — Badges and accomplishments
- */
-
 import { useState, useEffect, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  SafeAreaView,
-  TouchableOpacity,
-  Platform,
-} from '@/components/ui/Primitives';
-import { useAppTheme } from '@/theme/useTheme';
-import { useRouter } from '@/hooks/useIonicNavigation';
-import { IonIcon } from '@/components/ui/Primitives'
-import { book, flame, medal, refresh, trophy, arrowBack, checkmark, checkmarkCircle, lockClosed, star } from 'ionicons/icons';
+  BookOpen,
+  Flame,
+  Medal,
+  RefreshCw,
+  Trophy,
+  Star,
+  Lock,
+  Check,
+  CheckCircle2,
+  BookMarked,
+  FolderOpen,
+  Globe,
+  School,
+} from 'lucide-react';
+import { FullScreenPage } from '@/components/layout/FullScreenPage';
+import { ProgressRing } from '@/components/ui/ProgressRing';
 import { useActiveProfile } from '@/hooks/useActiveProfile';
 import { getMemorizationService } from '@/services/memorization-service-factory';
 import { getFsrsEngine } from '@/services/fsrs-factory';
 import { ProgressService } from '@/services/progress-service';
 
+type Cat = 'memorization' | 'review' | 'streak' | 'collection' | 'special';
 interface Achievement {
   id: string;
   title: string;
@@ -31,492 +34,65 @@ interface Achievement {
   unlockedAt?: string;
   progress: number;
   requirement: string;
-  category: 'memorization' | 'review' | 'streak' | 'collection' | 'special';
+  category: Cat;
 }
 
+const ICON_MAP: Record<string, typeof Star> = {
+  book: BookOpen,
+  bookmarks: BookMarked,
+  school: School,
+  trophy: Trophy,
+  flame: Flame,
+  fire: Flame,
+  star: Star,
+  refresh: RefreshCw,
+  'checkmark-done': CheckCircle2,
+  folder: FolderOpen,
+  folders: FolderOpen,
+  medal: Medal,
+  globe: Globe,
+};
+
 const ACHIEVEMENTS: Achievement[] = [
-  // Memorization
-  {
-    id: 'first_verse',
-    title: 'Premier pas',
-    description: 'Mémorisez votre premier verset',
-    icon: 'book',
-    color: '#E91E8C',
-    unlocked: true,
-    unlockedAt: 'Il y a 15 jours',
-    progress: 100,
-    requirement: '1 verset',
-    category: 'memorization',
-  },
-  {
-    id: 'ten_verses',
-    title: 'Collectionneur',
-    description: 'Mémorisez 10 versets',
-    icon: 'bookmarks',
-    color: '#3F51B5',
-    unlocked: true,
-    unlockedAt: 'Il y a 7 jours',
-    progress: 100,
-    requirement: '10 versets',
-    category: 'memorization',
-  },
-  {
-    id: 'fifty_verses',
-    title: 'Érudit',
-    description: 'Mémorisez 50 versets',
-    icon: 'school',
-    color: '#FFC107',
-    unlocked: false,
-    progress: 89,
-    requirement: '50 versets',
-    category: 'memorization',
-  },
-  {
-    id: 'hundred_verses',
-    title: 'Maître bibliste',
-    description: 'Mémorisez 100 versets',
-    icon: 'trophy',
-    color: '#4CAF50',
-    unlocked: false,
-    progress: 89,
-    requirement: '100 versets',
-    category: 'memorization',
-  },
-  // Streak
-  {
-    id: 'streak_7',
-    title: 'Hébdomadaire',
-    description: '7 jours de suite',
-    icon: 'flame',
-    color: '#FF5722',
-    unlocked: true,
-    unlockedAt: 'Aujourd\'hui',
-    progress: 100,
-    requirement: '7 jours',
-    category: 'streak',
-  },
-  {
-    id: 'streak_30',
-    title: 'Mensuel',
-    description: '30 jours de suite',
-    icon: 'fire',
-    color: '#FFC107',
-    unlocked: false,
-    progress: 23,
-    requirement: '30 jours',
-    category: 'streak',
-  },
-  {
-    id: 'streak_100',
-    title: 'Dédié',
-    description: '100 jours de suite',
-    icon: 'star',
-    color: '#E91E8C',
-    unlocked: false,
-    progress: 7,
-    requirement: '100 jours',
-    category: 'streak',
-  },
-  // Review
-  {
-    id: 'first_review',
-    title: 'Révisionné',
-    description: 'Révisez votre premier verset',
-    icon: 'refresh',
-    color: '#7B1FA2',
-    unlocked: true,
-    unlockedAt: 'Il y a 20 jours',
-    progress: 100,
-    requirement: '1 révision',
-    category: 'review',
-  },
-  {
-    id: 'fifty_reviews',
-    title: 'Assidu',
-    description: '50 révisions complétées',
-    icon: 'checkmark-done',
-    color: '#4CAF50',
-    unlocked: false,
-    progress: 67,
-    requirement: '50 révisions',
-    category: 'review',
-  },
-  {
-    id: 'hundred_reviews',
-    title: 'Perseérant',
-    description: '100 révisions complétées',
-    icon: 'star',
-    color: '#E91E8C',
-    unlocked: false,
-    progress: 45,
-    requirement: '100 révisions',
-    category: 'review',
-  },
-  // Collection
-  {
-    id: 'first_collection',
-    title: 'Organisateur',
-    description: 'Créez votre première collection',
-    icon: 'folder',
-    color: '#3F51B5',
-    unlocked: true,
-    unlockedAt: 'Il y a 10 jours',
-    progress: 100,
-    requirement: '1 collection',
-    category: 'collection',
-  },
-  {
-    id: 'five_collections',
-    title: 'Archiviste',
-    description: 'Créez 5 collections',
-    icon: 'folders',
-    color: '#3F51B5',
-    unlocked: false,
-    progress: 40,
-    requirement: '5 collections',
-    category: 'collection',
-  },
-  // Special
-  {
-    id: 'patriarch',
-    title: 'Patriarche',
-    description: 'Maîtrisez tous les Psaumes',
-    icon: 'medal',
-    color: '#FFD700',
-    unlocked: false,
-    progress: 12,
-    requirement: '150 versets Psaumes',
-    category: 'special',
-  },
-  {
-    id: 'gospel',
-    title: 'Évangéliste',
-    description: 'Maîtrisez tous les Évangiles',
-    icon: 'globe',
-    color: '#E91E8C',
-    unlocked: false,
-    progress: 25,
-    requirement: '91 versets Évangiles',
-    category: 'special',
-  },
+  { id: 'first_verse', title: 'Premier pas', description: "Memorisez votre premier verset", icon: 'book', color: '#D81B97', unlocked: false, progress: 0, requirement: '1 verset', category: 'memorization' },
+  { id: 'ten_verses', title: 'Collectionneur', description: 'Memorisez 10 versets', icon: 'bookmarks', color: '#3F51B5', unlocked: false, progress: 0, requirement: '10 versets', category: 'memorization' },
+  { id: 'fifty_verses', title: 'Erudit', description: 'Memorisez 50 versets', icon: 'school', color: '#FF9500', unlocked: false, progress: 0, requirement: '50 versets', category: 'memorization' },
+  { id: 'hundred_verses', title: "Maitre bibliste", description: 'Memorisez 100 versets', icon: 'trophy', color: '#008733', unlocked: false, progress: 0, requirement: '100 versets', category: 'memorization' },
+  { id: 'streak_7', title: 'Hebdomadaire', description: '7 jours de suite', icon: 'flame', color: '#FF5722', unlocked: false, progress: 0, requirement: '7 jours', category: 'streak' },
+  { id: 'streak_30', title: 'Mensuel', description: '30 jours de suite', icon: 'fire', color: '#FF9500', unlocked: false, progress: 0, requirement: '30 jours', category: 'streak' },
+  { id: 'streak_100', title: 'Dedie', description: '100 jours de suite', icon: 'star', color: '#D81B97', unlocked: false, progress: 0, requirement: '100 jours', category: 'streak' },
+  { id: 'first_review', title: 'Revisionne', description: "Revisez votre premier verset", icon: 'refresh', color: '#7B1FA2', unlocked: false, progress: 0, requirement: '1 revision', category: 'review' },
+  { id: 'fifty_reviews', title: 'Assidu', description: '50 revisions complétees', icon: 'checkmark-done', color: '#008733', unlocked: false, progress: 0, requirement: '50 revisions', category: 'review' },
+  { id: 'hundred_reviews', title: 'Perseverant', description: '100 revisions complétees', icon: 'star', color: '#D81B97', unlocked: false, progress: 0, requirement: '100 revisions', category: 'review' },
+  { id: 'first_collection', title: 'Organisateur', description: "Creez votre premiere collection", icon: 'folder', color: '#3F51B5', unlocked: false, progress: 0, requirement: '1 collection', category: 'collection' },
+  { id: 'five_collections', title: 'Archiviste', description: 'Creez 5 collections', icon: 'folders', color: '#3F51B5', unlocked: false, progress: 0, requirement: '5 collections', category: 'collection' },
+  { id: 'patriarch', title: 'Patriarche', description: "Maitrisez tous les Psaumes", icon: 'medal', color: '#FFD700', unlocked: false, progress: 0, requirement: '150 versets Psaumes', category: 'special' },
+  { id: 'gospel', title: 'Evangéliste', description: "Maitrisez tous les Evangiles", icon: 'globe', color: '#D81B97', unlocked: false, progress: 0, requirement: '91 versets Evangiles', category: 'special' },
 ];
 
-const CATEGORIES = [
-  { id: 'all', label: 'Tous', count: ACHIEVEMENTS.length },
-  { id: 'memorization', label: 'Mémorisation', count: ACHIEVEMENTS.filter(a => a.category === 'memorization').length },
-  { id: 'streak', label: 'Streak', count: ACHIEVEMENTS.filter(a => a.category === 'streak').length },
-  { id: 'review', label: 'Révisions', count: ACHIEVEMENTS.filter(a => a.category === 'review').length },
-  { id: 'collection', label: 'Collections', count: ACHIEVEMENTS.filter(a => a.category === 'collection').length },
-  { id: 'special', label: 'Spécial', count: ACHIEVEMENTS.filter(a => a.category === 'special').length },
+const CATEGORIES: { id: 'all' | Cat; label: string }[] = [
+  { id: 'all', label: 'Tous' },
+  { id: 'memorization', label: 'Memorisation' },
+  { id: 'streak', label: 'Streak' },
+  { id: 'review', label: 'Revisions' },
+  { id: 'collection', label: 'Collections' },
+  { id: 'special', label: 'Special' },
 ];
 
 export default function AchievementScreen() {
-  const { colors, sp, sh, rad } = useAppTheme();
-  const styles = useMemo(() => StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
-  scrollView: {
-    flex: 1,
-  },
-  scrollContent: {
-    flexGrow: 1,
-  },
-
-  // Header
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-    backgroundColor: colors.surface,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
-  },
-  backButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: colors.surfaceTint,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  headerTitle: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: colors.textPrimary,
-  },
-  headerRight: {
-    width: 40,
-    alignItems: 'flex-end',
-  },
-  badgeCount: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-    backgroundColor: colors.surfaceTint,
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 12,
-  },
-  badgeCountText: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: colors.primary,
-  },
-
-  // Overall Progress
-  overallProgress: {
-    margin: 20,
-    backgroundColor: colors.surface,
-    borderRadius: 20,
-    padding: 20,
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.05,
-        shadowRadius: 8,
-      },
-      android: {
-        elevation: 4,
-      },
-    }),
-  },
-  overallHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  overallTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: colors.textPrimary,
-  },
-  overallPercent: {
-    fontSize: 20,
-    fontWeight: '800',
-    color: colors.primary,
-  },
-  overallBar: {
-    height: 10,
-    backgroundColor: colors.surfaceTint,
-    borderRadius: 5,
-    overflow: 'hidden',
-    marginBottom: 8,
-  },
-  overallFill: {
-    height: '100%',
-    backgroundColor: colors.primary,
-    borderRadius: 5,
-  },
-  overallInfo: {
-    fontSize: 13,
-    color: colors.textMuted,
-  },
-
-  // Filter
-  filterContainer: {
-    paddingHorizontal: 20,
-    marginBottom: 16,
-  },
-  filterButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
-    backgroundColor: colors.surface,
-    marginRight: 8,
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.03,
-        shadowRadius: 2,
-      },
-      android: {
-        elevation: 1,
-      },
-    }),
-  },
-  filterButtonActive: {
-    backgroundColor: colors.primary,
-  },
-  filterText: {
-    fontSize: 14,
-    color: colors.textTertiary,
-    fontWeight: '500',
-  },
-  filterTextActive: {
-    color: colors.surface,
-  },
-  filterCount: {
-    backgroundColor: colors.surfaceTint,
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 10,
-  },
-  filterCountActive: {
-    backgroundColor: 'rgba(255, 255, 255, 0.3)',
-  },
-  filterCountText: {
-    fontSize: 11,
-    color: colors.primary,
-    fontWeight: '600',
-  },
-  filterCountTextActive: {
-    color: colors.surface,
-  },
-
-  // Achievements
-  achievementsSection: {
-    paddingHorizontal: 20,
-    gap: 12,
-  },
-  achievementCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: colors.surface,
-    borderRadius: 16,
-    padding: 16,
-    gap: 12,
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.03,
-        shadowRadius: 2,
-      },
-      android: {
-        elevation: 1,
-      },
-    }),
-  },
-  achievementIcon: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  achievementInfo: {
-    flex: 1,
-  },
-  achievementTitle: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: colors.textPrimary,
-    marginBottom: 4,
-  },
-  achievementDesc: {
-    fontSize: 13,
-    color: colors.textTertiary,
-    marginBottom: 8,
-  },
-  achievementProgress: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  achievementBar: {
-    flex: 1,
-    height: 6,
-    backgroundColor: colors.surfaceTint,
-    borderRadius: 3,
-    overflow: 'hidden',
-  },
-  achievementFill: {
-    height: '100%',
-    borderRadius: 3,
-  },
-  achievementProgressText: {
-    fontSize: 11,
-    color: colors.textMuted,
-    minWidth: 60,
-  },
-  unlockedBadge: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-
-  // Show More
-  showMoreButton: {
-    alignItems: 'center',
-    paddingVertical: 16,
-  },
-  showMoreText: {
-    fontSize: 14,
-    color: colors.primary,
-    fontWeight: '600',
-  },
-
-  // Tips
-  tipsSection: {
-    paddingHorizontal: 20,
-    marginTop: 24,
-    marginBottom: 16,
-  },
-  tipsTitle: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: colors.textPrimary,
-    marginBottom: 12,
-  },
-  tipsCard: {
-    backgroundColor: colors.surface,
-    borderRadius: 16,
-    padding: 16,
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.03,
-        shadowRadius: 2,
-      },
-      android: {
-        elevation: 1,
-      },
-    }),
-  },
-  tipItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-    paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.surfaceTint,
-  },
-  tipItemLast: {
-    borderBottomWidth: 0,
-  },
-  tipText: {
-    flex: 1,
-    fontSize: 14,
-    color: colors.textSecondary,
-  },
-
-  // Bottom spacer
-  bottomSpacer: {
-    height: 24,
-  },
-  }), [colors]);
-  const router = useRouter();
-  const [selectedCategory, setSelectedCategory] = useState('all');
+  const navigate = useNavigate();
+  const { t } = useTranslation();
+  const [selectedCategory, setSelectedCategory] = useState<'all' | Cat>('all');
   const [showAll, setShowAll] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const { activeProfile } = useActiveProfile();
   const profileId = activeProfile?.id ?? 'default';
   const [data, setData] = useState<{
-    total: number; mastered: number; totalReviews: number;
-    streak: number; longest: number; collections: number;
+    total: number;
+    mastered: number;
+    totalReviews: number;
+    longest: number;
+    collections: number;
   } | null>(null);
 
   useEffect(() => {
@@ -535,13 +111,12 @@ export default function AchievementScreen() {
           const parsed = raw ? (JSON.parse(raw) as Array<{ id: string }>) : [];
           collections = parsed.filter((c) => c.id.startsWith('c-')).length;
         } catch {
-          // No collections persisted yet
+          /* none */
         }
         setData({
           total: records.length,
           mastered: records.filter((r) => r.status === 'mastered').length,
           totalReviews: records.reduce((s, r) => s + (r.reviewCount ?? 0), 0),
-          streak: progress.streakCount,
           longest: Math.max(progress.streakCount, progress.longestStreak),
           collections,
         });
@@ -555,8 +130,6 @@ export default function AchievementScreen() {
     };
   }, [profileId]);
 
-  // Real unlock state derived from learner data (the catalog above keeps the
-  // badge definitions only).
   const derived = useMemo(() => {
     if (!data) return {};
     const rule = (threshold: number, value: number) => ({
@@ -586,195 +159,161 @@ export default function AchievementScreen() {
     [derived],
   );
 
-  const unlockedCount = achievements.filter(a => a.unlocked).length;
-  const totalCount = achievements.length;
-  const overallProgress = (unlockedCount / totalCount) * 100;
-
-  const filteredAchievements = selectedCategory === 'all'
-    ? achievements
-    : achievements.filter(a => a.category === selectedCategory);
-
-  const displayedAchievements = showAll ? filteredAchievements : filteredAchievements.slice(0, 6);
-  const selectedAchievement = displayedAchievements.find((a) => a.id === selectedId) ?? null;
+  const unlockedCount = achievements.filter((a) => a.unlocked).length;
+  const overall = (unlockedCount / achievements.length) * 100;
+  const filtered =
+    selectedCategory === 'all'
+      ? achievements
+      : achievements.filter((a) => a.category === selectedCategory);
+  const displayed = showAll ? filtered : filtered.slice(0, 6);
+  const selected = displayed.find((a) => a.id === selectedId) ?? null;
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView
-        style={styles.scrollView}
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
-      >
-        {/* Header */}
-        <View style={styles.header}>
-          <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-            <IonIcon icon={arrowBack} size={24} color={colors.textSecondary} />
-          </TouchableOpacity>
-          <Text style={styles.headerTitle}>Succès & Badges</Text>
-          <View style={styles.headerRight}>
-            <View style={styles.badgeCount}>
-              <IonIcon icon={star} size={16} color="#FFD700" />
-              <Text style={styles.badgeCountText}>{unlockedCount}/{totalCount}</Text>
-            </View>
-          </View>
-        </View>
+    <FullScreenPage
+      title={t('nav.achievements', 'Succes')}
+      showBack
+      right={
+        <span className="flex items-center gap-1 rounded-full bg-surface-tint px-3 py-1 text-sm font-semibold text-primary">
+          <Star size={14} className="text-warning" />
+          {unlockedCount}/{achievements.length}
+        </span>
+      }
+    >
+      <div className="mx-auto max-w-md space-y-5">
+        {/* Overall */}
+        <div className="flex items-center gap-4 rounded-3xl bg-surface p-5 shadow-sm">
+          <ProgressRing value={Math.round(overall)} size={72} />
+          <div className="flex-1">
+            <p className="text-sm font-semibold text-text-primary">
+              {t('achievements.overall', 'Progression globale')}
+            </p>
+            <p className="mt-1 text-xs text-text-muted">
+              {unlockedCount} {t('achievements.unlockedOn', 'succes debloques')} sur {achievements.length}
+            </p>
+          </div>
+        </div>
 
-        {/* Overall Progress */}
-        <View style={styles.overallProgress}>
-          <View style={styles.overallHeader}>
-            <Text style={styles.overallTitle}>Progression globale</Text>
-            <Text style={styles.overallPercent}>{Math.round(overallProgress)}%</Text>
-          </View>
-          <View style={styles.overallBar}>
-            <View style={[styles.overallFill, { width: `${overallProgress}%` }]} />
-          </View>
-          <Text style={styles.overallInfo}>
-            {unlockedCount} succès débloqués sur {totalCount}
-          </Text>
-        </View>
-
-        {/* Category Filter */}
-        <View style={styles.filterContainer}>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            {CATEGORIES.map((category) => (
-              <TouchableOpacity
-                key={category.id}
-                style={[styles.filterButton, selectedCategory === category.id && styles.filterButtonActive]}
-                onPress={() => {
-                  setSelectedCategory(category.id);
-                  setShowAll(false);
-                }}
-              >
-                <Text style={[styles.filterText, selectedCategory === category.id && styles.filterTextActive]}>
-                  {category.label}
-                </Text>
-                <View style={[styles.filterCount, selectedCategory === category.id && styles.filterCountActive]}>
-                  <Text style={[styles.filterCountText, selectedCategory === category.id && styles.filterCountTextActive]}>
-                    {category.count}
-                  </Text>
-                </View>
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
-        </View>
-
-        {/* Achievements Grid */}
-        <View style={styles.achievementsSection}>
-          {displayedAchievements.map((achievement) => (
-            <TouchableOpacity
-              key={achievement.id}
-              style={styles.achievementCard}
-              onPress={() =>
-                setSelectedId(selectedId === achievement.id ? null : achievement.id)
+        {/* Filter */}
+        <div className="flex flex-wrap gap-2">
+          {CATEGORIES.map((cat) => (
+            <button
+              key={cat.id}
+              onClick={() => {
+                setSelectedCategory(cat.id);
+                setShowAll(false);
+              }}
+              className={
+                'rounded-full px-3.5 py-1.5 text-sm font-medium ' +
+                (selectedCategory === cat.id
+                  ? 'bg-primary text-white'
+                  : 'bg-surface-tint text-text-secondary')
               }
             >
-              <View style={[styles.achievementIcon, { backgroundColor: achievement.color + '20' }]}>
-                <IonIcon icon={achievement.unlocked ? achievement.icon : 'lock-closed'}
-                  size={28}
-                  color={achievement.unlocked ? achievement.color : colors.textMuted} />
-              </View>
-              <View style={styles.achievementInfo}>
-                <Text style={[styles.achievementTitle, achievement.unlocked && { color: achievement.color }]}>
-                  {achievement.title}
-                </Text>
-                <Text style={styles.achievementDesc}>{achievement.description}</Text>
-                <View style={styles.achievementProgress}>
-                  <View style={styles.achievementBar}>
-                    <View
-                      style={[
-                        styles.achievementFill,
-                        { width: `${achievement.progress}%`, backgroundColor: achievement.color },
-                      ]}
-                    />
-                  </View>
-                  <Text style={styles.achievementProgressText}>
-                    {achievement.progress >= 100 ? '✓ Complété' : `${achievement.progress}%`}
-                  </Text>
-                </View>
-              </View>
-              {achievement.unlocked && (
-                <View style={[styles.unlockedBadge, { backgroundColor: achievement.color }]}>
-                  <IonIcon icon={checkmark} size={14} color={colors.surface} />
-                </View>
-              )}
-            </TouchableOpacity>
+              {cat.label}
+            </button>
           ))}
-        </View>
+        </div>
 
-        {/* Detail of the selected achievement */}
-        {selectedAchievement && (
-          <View
-            style={{
-              marginHorizontal: 16,
-              backgroundColor: colors.surface,
-              borderRadius: 16,
-              padding: 16,
-              borderWidth: 1,
-              borderColor: selectedAchievement.color + '40',
-            }}
-          >
-            <Text style={{ fontSize: 16, fontWeight: '700', color: selectedAchievement.color }}>
-              {selectedAchievement.title}
-            </Text>
-            <Text style={{ fontSize: 13, color: colors.textSecondary, marginTop: 4 }}>
-              {selectedAchievement.description}
-            </Text>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 10 }}>
-              <View style={{ flex: 1, height: 8, borderRadius: 4, backgroundColor: colors.surfaceTint, overflow: 'hidden' }}>
-                <View
+        {/* List */}
+        <div className="space-y-3">
+          {displayed.map((a) => {
+            const Icon = a.unlocked ? ICON_MAP[a.icon] ?? Star : Lock;
+            return (
+              <button
+                key={a.id}
+                onClick={() => setSelectedId(selectedId === a.id ? null : a.id)}
+                className="flex w-full items-center gap-4 rounded-2xl bg-surface p-4 text-left shadow-sm"
+              >
+                <span
+                  className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full"
                   style={{
-                    width: `${selectedAchievement.progress}%`,
-                    height: 8,
-                    borderRadius: 4,
-                    backgroundColor: selectedAchievement.color,
+                    color: a.unlocked ? a.color : 'var(--color-text-muted)',
+                    backgroundColor: a.color + '20',
                   }}
-                />
-              </View>
-              <Text style={{ fontSize: 12, color: colors.textMuted }}>
-                {selectedAchievement.progress >= 100 ? '✓ Complété' : `${selectedAchievement.progress}%`}
-              </Text>
-            </View>
-            <Text style={{ fontSize: 12, color: colors.textMuted, marginTop: 8 }}>
-              Condition : {selectedAchievement.requirement}
-            </Text>
-            {selectedAchievement.unlocked && selectedAchievement.unlockedAt && (
-              <Text style={{ fontSize: 12, color: selectedAchievement.color, marginTop: 4 }}>
-                Débloqué : {selectedAchievement.unlockedAt}
-              </Text>
+                >
+                  <Icon size={26} />
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span
+                    className="block text-base font-bold"
+                    style={{ color: a.unlocked ? a.color : 'var(--color-text-primary)' }}
+                  >
+                    {a.title}
+                  </span>
+                  <span className="text-sm text-text-muted">{a.description}</span>
+                  <span className="mt-2 flex items-center gap-2">
+                    <span className="h-1.5 flex-1 overflow-hidden rounded-full bg-surface-tint">
+                      <span
+                        className="block h-full rounded-full"
+                        style={{ width: a.progress + '%', backgroundColor: a.color }}
+                      />
+                    </span>
+                    <span className="w-10 text-right text-xs text-text-muted">
+                      {a.progress >= 100 ? '100%' : a.progress + '%'}
+                    </span>
+                  </span>
+                </span>
+                {a.unlocked && (
+                  <span
+                    className="flex h-6 w-6 items-center justify-center rounded-full text-white"
+                    style={{ backgroundColor: a.color }}
+                  >
+                    <Check size={14} />
+                  </span>
+                )}
+              </button>
+            );
+          })}
+        </div>
+
+        {selected && (
+          <div
+            className="rounded-2xl bg-surface p-4 shadow-sm"
+            style={{ borderColor: selected.color + '40' }}
+          >
+            <p className="text-base font-bold" style={{ color: selected.color }}>
+              {selected.title}
+            </p>
+            <p className="mt-1 text-sm text-text-secondary">{selected.description}</p>
+            <p className="mt-2 text-xs text-text-muted">
+              {t('achievements.condition', 'Condition')} : {selected.requirement}
+            </p>
+            {selected.unlocked && selected.unlockedAt && (
+              <p className="mt-1 text-xs" style={{ color: selected.color }}>
+                {t('achievements.unlockedAt', 'Debloe')} : {selected.unlockedAt}
+              </p>
             )}
-          </View>
+          </div>
         )}
 
-        {/* Show More */}
-        {filteredAchievements.length > 6 && !showAll && (
-          <TouchableOpacity
-            style={styles.showMoreButton}
-            onPress={() => setShowAll(true)}
+        {filtered.length > 6 && !showAll && (
+          <button
+            onClick={() => setShowAll(true)}
+            className="w-full py-3 text-center text-sm font-semibold text-primary"
           >
-            <Text style={styles.showMoreText}>Voir tous les succès ({filteredAchievements.length})</Text>
-          </TouchableOpacity>
+            {t('achievements.showAll', 'Voir tous les succes')} ({filtered.length})
+          </button>
         )}
 
         {/* Tips */}
-        <View style={styles.tipsSection}>
-          <Text style={styles.tipsTitle}>Comment débloquer des succès</Text>
-          <View style={styles.tipsCard}>
-            <View style={styles.tipItem}>
-              <IonIcon icon={checkmarkCircle} size={20} color={colors.primary} />
-              <Text style={styles.tipText}>Mémorisez des versets régulièrement</Text>
-            </View>
-            <View style={styles.tipItem}>
-              <IonIcon icon={checkmarkCircle} size={20} color={colors.primary} />
-              <Text style={styles.tipText}>Maintenez votre streak quotidien</Text>
-            </View>
-            <View style={styles.tipItem}>
-              <IonIcon icon={checkmarkCircle} size={20} color={colors.primary} />
-              <Text style={styles.tipText}>Créez des collections thématiques</Text>
-            </View>
-          </View>
-        </View>
-
-        <View style={styles.bottomSpacer} />
-      </ScrollView>
-    </SafeAreaView>
+        <div className="rounded-2xl bg-surface p-4 shadow-sm">
+          <p className="mb-2 text-base font-bold text-text-primary">
+            {t('achievements.howTo', 'Comment debloquer des succes')}
+          </p>
+          <div className="space-y-2">
+            {[
+              t('achievements.tip1', 'Memorisez des versets regulierement'),
+              t('achievements.tip2', "Maintenez votre streak quotidien"),
+              t('achievements.tip3', 'Creez des collections thematiques'),
+            ].map((tip, i) => (
+              <p key={i} className="flex items-center gap-2 text-sm text-text-secondary">
+                <CheckCircle2 size={16} className="text-primary" />
+                {tip}
+              </p>
+            ))}
+          </div>
+        </div>
+      </div>
+    </FullScreenPage>
   );
 }

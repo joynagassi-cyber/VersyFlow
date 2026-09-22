@@ -1,0 +1,1 @@
+create policy "semantic_concepts_manual_insert" on public.concepts for insert to authenticated with check (source = 'manual' and created_by = auth.uid()::text);

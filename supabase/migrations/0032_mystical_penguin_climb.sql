@@ -1,0 +1,1 @@
+create policy "semantic_concepts_manual_update" on public.concepts for update to authenticated using (source = 'manual' and created_by = auth.uid()::text) with check (source = 'manual' and created_by = auth.uid()::text);

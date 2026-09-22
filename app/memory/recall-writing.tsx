@@ -1,30 +1,8 @@
-/**
- * Memory Recall Writing Screen (P0.1 WRITING RECALL)
- *
- * The user writes the verse from memory, then the written text is compared
- * against the expected passage with a deterministic LCS word diff
- * (`compareWrittenRecall`). The result renders as word chips:
- *   - correct  → success
- *   - wrong    → error (the expected word, flagged red)
- *   - missing  → warning (highlighted, the word the user omitted)
- *   - extra    → muted (listed after the verse, not part of it)
- *
- * No second cognitive score is derived (master prompt §11 P0.1): the
- * matchScore shown is the similarity of the written text only.
- */
-
 import { useEffect, useState } from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  StyleSheet,
-  SafeAreaView,
-  ScrollView,
-} from '@/components/ui/Primitives';
-import { useAppTheme } from '@/theme/useTheme';
 import { useTranslation } from 'react-i18next';
+import { RotateCcw, Scale } from 'lucide-react';
+import { FullScreenPage } from '@/components/layout/FullScreenPage';
+import { Button } from '@/components/ui/button';
 import { useLocalSearchParams } from '@/hooks/useIonicNavigation';
 import { useMemoryCapability } from '@/capabilities/memory/store';
 import { compareWrittenRecall } from '@/services/recall-comparison-service';
@@ -32,35 +10,31 @@ import type { WrittenRecallResult } from '@/services/recall-comparison-service';
 
 type WordDiff = WrittenRecallResult['wordDiffs'][number];
 
-function diffColorFor(
-  type: WordDiff['type'],
-  colors: ReturnType<typeof useAppTheme>['colors'],
-): string {
+function chipClass(type: WordDiff['type']) {
   switch (type) {
     case 'correct':
-      return colors.success;
+      return 'bg-success/15 text-success';
     case 'wrong':
-      return colors.error;
+      return 'bg-error/15 text-error';
     case 'missing':
-      return colors.warning;
+      return 'bg-warning/15 text-warning';
     case 'extra':
-      return colors.textMuted;
+    default:
+      return 'bg-surface-tint text-text-muted';
   }
 }
 
 export default function RecallWritingScreen() {
-  const { colors, rad, sp } = useAppTheme();
-  const params = useLocalSearchParams();
   const { t } = useTranslation();
+  const params = useLocalSearchParams();
   const { sessionState, startSession } = useMemoryCapability();
   const [text, setText] = useState('');
   const [result, setResult] = useState<WrittenRecallResult | null>(null);
 
-  const expectedVerse =
-    params.verse ?? sessionState?.verseText ?? '';
+  const expectedVerse = (params.verse as string) ?? sessionState?.verseText ?? '';
 
   useEffect(() => {
-    const verse = params.verse ?? expectedVerse;
+    const verse = (params.verse as string) ?? expectedVerse;
     if (!sessionState && verse) {
       const words = verse.split(' ').filter(Boolean);
       startSession({
@@ -74,6 +48,7 @@ export default function RecallWritingScreen() {
         totalWords: words.length,
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleCompare = () => {
@@ -86,294 +61,115 @@ export default function RecallWritingScreen() {
     setResult(null);
   };
 
-  const chipStyles = (type: WordDiff['type']) =>
-    [
-      styles.chip,
-      {
-        color: diffColorFor(type, colors),
-        backgroundColor:
-          type === 'missing' ? colors.warningLight : colors.surfaceElevated,
-        borderRadius: rad.sm,
-      },
-    ];
+  const scoreColor = result
+    ? result.matchScore >= 0.9
+      ? 'var(--color-success)'
+      : result.matchScore >= 0.7
+        ? 'var(--color-warning)'
+        : 'var(--color-error)'
+    : 'var(--color-text-muted)';
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
-      <ScrollView style={styles.scroll}>
-        <Text style={[styles.title, { color: colors.textPrimary }]}>
-          {t('recallWriting.title', 'Écriture de mémoire')}
-        </Text>
-
-        {/* Expected verse (what should be recalled) */}
-        {expectedVerse ? (
-          <View
-            style={[
-              styles.verseCard,
-              {
-                backgroundColor: colors.surface,
-                borderRadius: rad.lg,
-                padding: sp.md,
-                marginBottom: sp.md,
-              },
-            ]}
-          >
-            <Text
-              style={[
-                styles.sectionLabel,
-                { color: colors.textTertiary, marginBottom: sp.xs },
-              ]}
-            >
+    <FullScreenPage
+      title={t('recallWriting.title', "Ecriture de memoire")}
+      showBack
+      backPath="/tabs/home"
+    >
+      <div className="mx-auto max-w-md space-y-4">
+        {expectedVerse && (
+          <div className="rounded-2xl bg-surface p-4 shadow-sm">
+            <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-text-muted">
               {t('semantic.expected', 'Texte attendu')}
-            </Text>
-            <Text style={[styles.verseText, { color: colors.textPrimary }]}>
+            </p>
+            <p className="font-serif italic text-base leading-relaxed text-text-primary">
               {expectedVerse}
-            </Text>
-          </View>
-        ) : null}
+            </p>
+          </div>
+        )}
 
-        <TextInput
-          style={[
-            styles.input,
-            {
-              backgroundColor: colors.surface,
-              borderRadius: rad.md,
-              padding: sp.md,
-              color: colors.textPrimary,
-            },
-          ]}
+        <textarea
           value={text}
-          onChangeText={setText}
-          placeholder={t('recallWriting.placeholder', 'Écrivez le verset de mémoire...')}
-          placeholderTextColor={colors.textMuted}
-          multiline
+          onChange={(e) => setText(e.target.value)}
+          placeholder={t('recallWriting.placeholder', "Ecrivez le verset de memoire...")}
+          className="min-h-[150px] w-full resize-y rounded-2xl bg-surface p-4 text-base text-text-primary shadow-sm outline-none focus:ring-2 focus:ring-[color:var(--color-primary)]"
         />
 
-        <View style={[styles.actions, { gap: sp.sm, marginTop: sp.md }]}>
-          <TouchableOpacity
-            style={[
-              styles.button,
-              {
-                backgroundColor: colors.primary,
-                borderRadius: rad.pill,
-                paddingVertical: sp.md,
-              },
-            ]}
-            onPress={handleCompare}
+        <div className="flex gap-3">
+          <Button
+            variant="default"
+            className="flex-1"
+            onClick={handleCompare}
             disabled={!text.trim() || !expectedVerse}
           >
-            <Text
-              style={[
-                styles.buttonText,
-                {
-                  color: colors.surface,
-                  opacity: text.trim() && expectedVerse ? 1 : 0.5,
-                },
-              ]}
-            >
-              {t('recallWriting.compare', 'Comparer')}
-            </Text>
-          </TouchableOpacity>
-          {result ? (
-            <TouchableOpacity
-              style={[
-                styles.button,
-                {
-                  backgroundColor: colors.surface,
-                  borderRadius: rad.pill,
-                  paddingVertical: sp.md,
-                },
-              ]}
-              onPress={handleReset}
-            >
-              <Text
-                style={[
-                  styles.buttonText,
-                  { color: colors.primary, borderWidth: 1, borderColor: colors.primary },
-                ]}
-              >
-                {t('recallWriting.reset', 'Recommencer')}
-              </Text>
-            </TouchableOpacity>
-          ) : null}
-        </View>
+            <Scale size={18} />
+            {t('recallWriting.compare', 'Comparer')}
+          </Button>
+          {result && (
+            <Button variant="secondary" className="flex-1" onClick={handleReset}>
+              <RotateCcw size={18} />
+              {t('recallWriting.reset', 'Recommencer')}
+            </Button>
+          )}
+        </div>
 
-        {/* Comparison result */}
-        {result ? (
-          <View
-            style={[
-              styles.resultCard,
-              {
-                backgroundColor: colors.surface,
-                borderRadius: rad.lg,
-                padding: sp.md,
-                marginTop: sp.lg,
-              },
-            ]}
-          >
-            <View style={[styles.scoreRow, { marginBottom: sp.md }]}>
-              <Text
-                style={[
-                  styles.scoreLabel,
-                  { color: colors.textTertiary },
-                ]}
-              >
-                {t('recallWriting.matchScore', 'Similarité')}
-              </Text>
-              <Text
-                style={[
-                  styles.scoreValue,
-                  {
-                    color:
-                      result.matchScore >= 0.9
-                        ? colors.success
-                        : result.matchScore >= 0.7
-                          ? colors.warning
-                          : colors.error,
-                  },
-                ]}
-              >
+        {result && (
+          <div className="rounded-2xl bg-surface p-4 shadow-sm">
+            <div className="mb-4 flex items-center justify-between">
+              <span className="text-xs font-semibold uppercase tracking-wide text-text-muted">
+                {t('recallWriting.matchScore', 'Similarite')}
+              </span>
+              <span className="text-3xl font-extrabold" style={{ color: scoreColor }}>
                 {Math.round(result.matchScore * 100)}%
-              </Text>
-            </View>
+              </span>
+            </div>
 
-            <Text
-              style={[
-                styles.sectionLabel,
-                { color: colors.textTertiary, marginBottom: sp.xs },
-              ]}
-            >
+            <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-text-muted">
               {t('semantic.verses', 'Verset')}
-            </Text>
-            <View style={styles.chipRow}>
+            </p>
+            <div className="flex flex-wrap gap-1.5">
               {result.wordDiffs
                 .filter((d) => d.type !== 'extra')
                 .map((d, i) => (
-                  <Text key={i} style={chipStyles(d.type)}>
+                  <span key={i} className={'rounded px-2 py-0.5 text-sm ' + chipClass(d.type)}>
                     {d.word}
-                  </Text>
+                  </span>
                 ))}
-            </View>
+            </div>
 
-            {result.wordDiffs.some((d) => d.type === 'extra') ? (
-              <View style={[styles.extraBlock, { marginTop: sp.md }]}>
-                <Text
-                  style={[
-                    styles.sectionLabel,
-                    { color: colors.textTertiary, marginBottom: sp.xs },
-                  ]}
-                >
+            {result.wordDiffs.some((d) => d.type === 'extra') && (
+              <div className="mt-4">
+                <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-text-muted">
                   {t('recallWriting.extraWords', 'Mots en trop')}
-                </Text>
-                <View style={styles.chipRow}>
+                </p>
+                <div className="flex flex-wrap gap-1.5">
                   {result.wordDiffs
                     .filter((d) => d.type === 'extra')
                     .map((d, i) => (
-                      <Text key={i} style={chipStyles(d.type)}>
+                      <span key={i} className={'rounded px-2 py-0.5 text-sm ' + chipClass(d.type)}>
                         {d.word}
-                      </Text>
+                      </span>
                     ))}
-                </View>
-              </View>
-            ) : null}
+                </div>
+              </div>
+            )}
 
-            <View style={[styles.legend, { marginTop: sp.md, gap: sp.xs }]}>
+            <div className="mt-4 space-y-1.5">
               {(['correct', 'wrong', 'missing'] as const).map((type) => (
-                <View key={type} style={styles.legendRow}>
-                  <Text style={[styles.chip, chipStyles(type), { opacity: 0.65 }]}>
-                    •
-                  </Text>
-                  <Text style={[styles.legendLabel, { color: colors.textTertiary }]}>
+                <div key={type} className="flex items-center gap-2">
+                  <span className={'rounded px-1.5 text-sm opacity-70 ' + chipClass(type)}>•</span>
+                  <span className="text-sm text-text-muted">
                     {type === 'correct'
                       ? t('recallWriting.correct', 'Correct')
                       : type === 'wrong'
                         ? t('recallWriting.wrong', 'Incorrect')
                         : t('recallWriting.missing', 'Manquant')}
-                  </Text>
-                </View>
+                  </span>
+                </div>
               ))}
-            </View>
-          </View>
-        ) : null}
-      </ScrollView>
-    </SafeAreaView>
+            </div>
+          </div>
+        )}
+      </div>
+    </FullScreenPage>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  scroll: {
-    flex: 1,
-    padding: 24,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 24,
-  },
-  input: {
-    minHeight: 150,
-    textAlignVertical: 'top',
-  },
-  verseCard: {},
-  verseText: {
-    fontSize: 15,
-    lineHeight: 22,
-    fontStyle: 'italic',
-  },
-  sectionLabel: {
-    fontSize: 13,
-    fontWeight: '600',
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
-  },
-  actions: {
-    flexDirection: 'row',
-  },
-  button: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  buttonText: {
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  resultCard: {},
-  scoreRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  scoreLabel: {
-    fontSize: 13,
-    fontWeight: '600',
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
-  },
-  scoreValue: {
-    fontSize: 28,
-    fontWeight: '800',
-  },
-  chipRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 6,
-  },
-  chip: {
-    fontSize: 14,
-    paddingVertical: 4,
-    paddingHorizontal: 8,
-  },
-  extraBlock: {},
-  legend: {},
-  legendRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  legendLabel: {
-    fontSize: 13,
-  },
-});

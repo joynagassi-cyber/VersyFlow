@@ -1,0 +1,1 @@
+create index if not exists idx_concepts_status on public.concepts(status);

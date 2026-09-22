@@ -1,16 +1,13 @@
 /**
- * Store — Appearance Settings Store (Zustand)
- * Persists display preferences (theme mode, font size, verse numbers, reminder
- * frequency) so that user choices survive app restarts.
- *
- * The theme mode is additionally wired to the `useTheme` hook which applies the
- * CSS variables; this store provides the source of truth and persistence.
+ * Appearance Settings Store (Zustand).
+ * Persists display preferences (theme mode, accent, font size, verse numbers,
+ * reminders) so user choices survive restarts.
  */
 
 import { create } from 'zustand';
 import { MmkvStorage } from '@/infrastructure/storage';
+import { DEFAULT_ACCENT, type AccentKey } from '@/theme/theme-presets';
 
-// Shared MmkvStorage instance — one handle per store lifecycle
 const storage = new MmkvStorage();
 
 const STORAGE_KEY = 'versyflow:appearance:settings';
@@ -19,6 +16,7 @@ export type ThemeMode = 'light' | 'dark' | 'system';
 
 export interface AppearanceState {
   themeMode: ThemeMode;
+  accent: AccentKey;
   fontSize: number;
   showVerseNumbers: boolean;
   reminderFrequency: number;
@@ -28,6 +26,7 @@ export interface AppearanceState {
   reminderTime: string;
 
   setThemeMode: (mode: ThemeMode) => void;
+  setAccent: (key: AccentKey) => void;
   setFontSize: (size: number) => void;
   toggleVerseNumbers: () => void;
   setReminderFrequency: (count: number) => void;
@@ -41,6 +40,7 @@ export interface AppearanceState {
 const DEFAULTS: Pick<
   AppearanceState,
   | 'themeMode'
+  | 'accent'
   | 'fontSize'
   | 'showVerseNumbers'
   | 'reminderFrequency'
@@ -50,6 +50,7 @@ const DEFAULTS: Pick<
   | 'reminderTime'
 > = {
   themeMode: 'system',
+  accent: DEFAULT_ACCENT,
   fontSize: 16,
   showVerseNumbers: true,
   reminderFrequency: 1,
@@ -64,6 +65,11 @@ export const useAppearanceStore = create<AppearanceState>(() => ({
 
   setThemeMode(mode: ThemeMode) {
     useAppearanceStore.setState({ themeMode: mode });
+    void appearanceStorePersist.save();
+  },
+
+  setAccent(key: AccentKey) {
+    useAppearanceStore.setState({ accent: key });
     void appearanceStorePersist.save();
   },
 
@@ -112,24 +118,32 @@ export const useAppearanceStore = create<AppearanceState>(() => ({
   },
 }));
 
-// Manual persist helper — reuses the proven MmkvStorage pattern from
-// `settings-store.ts` to avoid the zustand v5 `persist` mutator type widening.
+const PERSISTED_KEYS: (keyof AppearanceState)[] = [
+  'themeMode',
+  'accent',
+  'fontSize',
+  'showVerseNumbers',
+  'reminderFrequency',
+  'reminderEnabled',
+  'sessionGoal',
+  'focusMode',
+  'reminderTime',
+];
+
 export const appearanceStorePersist = {
   hydrate: async () => {
     try {
       const raw = await storage.get(STORAGE_KEY);
       if (!raw) return;
       const parsed = JSON.parse(raw) as Partial<AppearanceState>;
-      useAppearanceStore.setState({
-        themeMode: parsed.themeMode ?? DEFAULTS.themeMode,
-        fontSize: parsed.fontSize ?? DEFAULTS.fontSize,
-        showVerseNumbers: parsed.showVerseNumbers ?? DEFAULTS.showVerseNumbers,
-        reminderFrequency: parsed.reminderFrequency ?? DEFAULTS.reminderFrequency,
-        reminderEnabled: parsed.reminderEnabled ?? DEFAULTS.reminderEnabled,
-        sessionGoal: parsed.sessionGoal ?? DEFAULTS.sessionGoal,
-        focusMode: parsed.focusMode ?? DEFAULTS.focusMode,
-        reminderTime: parsed.reminderTime ?? DEFAULTS.reminderTime,
-      });
+      const patch: Partial<AppearanceState> = {};
+      for (const k of PERSISTED_KEYS) {
+        const v = parsed[k];
+        if (v !== undefined) (patch as Record<string, unknown>)[k] = v;
+      }
+      if (parsed.themeMode) patch.themeMode = parsed.themeMode;
+      if (parsed.accent) patch.accent = parsed.accent;
+      useAppearanceStore.setState(patch);
     } catch {
       /* ignore */
     }
@@ -138,6 +152,7 @@ export const appearanceStorePersist = {
     const s = useAppearanceStore.getState();
     const value = JSON.stringify({
       themeMode: s.themeMode,
+      accent: s.accent,
       fontSize: s.fontSize,
       showVerseNumbers: s.showVerseNumbers,
       reminderFrequency: s.reminderFrequency,

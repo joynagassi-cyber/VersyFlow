@@ -1,0 +1,1 @@
+create policy "semantic_concepts_public_read" on public.concepts for select to anon, authenticated using (true);

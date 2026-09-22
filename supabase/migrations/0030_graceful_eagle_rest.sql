@@ -1,0 +1,1 @@
+create policy "semantic_verse_concepts_manual_insert" on public.verse_concepts for insert to authenticated with check (source = 'manual');

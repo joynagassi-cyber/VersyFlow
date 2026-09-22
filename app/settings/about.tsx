@@ -1,129 +1,73 @@
-/**
- * About Screen — App information and version
- */
-
-import { useState, useMemo} from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  SafeAreaView,
-  Linking,
-} from '@/components/ui/Primitives';
-import { useAppTheme } from '@/theme/useTheme';
-import { useRouter } from '@/hooks/useIonicNavigation';
 import { useTranslation } from 'react-i18next';
+import { BookOpen, ExternalLink, Heart, Cpu } from 'lucide-react';
+import { FullScreenPage } from '@/components/layout/FullScreenPage';
+import { Logo } from '@/components/brand/Logo';
 
 const VERSION = '0.1.0';
 
 export default function AboutScreen() {
-  const { colors, sp, sh, rad } = useAppTheme();
-  const styles = useMemo(() => StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.surfaceTint,
-  },
-  header: {
-    alignItems: 'center',
-    padding: 32,
-  },
-  logo: {
-    fontSize: 36,
-    fontWeight: '800',
-    color: colors.primary,
-  },
-  version: {
-    fontSize: 14,
-    color: colors.textMuted,
-    marginTop: 8,
-  },
-  section: {
-    backgroundColor: colors.surface,
-    borderRadius: 12,
-    padding: 16,
-    marginHorizontal: 16,
-    marginBottom: 16,
-  },
-  sectionTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: colors.textPrimary,
-    marginBottom: 12,
-  },
-  description: {
-    fontSize: 14,
-    color: colors.textTertiary,
-    lineHeight: 22,
-  },
-  link: {
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.surfaceElevated,
-  },
-  linkLast: {
-    borderBottomWidth: 0,
-  },
-  linkText: {
-    fontSize: 16,
-    color: colors.primary,
-  },
-  credit: {
-    fontSize: 14,
-    color: colors.textTertiary,
-    paddingVertical: 6,
-  },
-  backButton: {
-    padding: 16,
-    alignItems: 'center',
-  },
-  backText: {
-    fontSize: 14,
-    color: colors.textMuted,
-    textDecorationLine: 'underline',
-  },
-  }), [colors]);
-  const router = useRouter();
   const { t } = useTranslation();
-  const [buildNumber, setBuildNumber] = useState('1');
+
+  const open = (url: string) => {
+    window.open(url, '_blank');
+  };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.logo}>VersyFlow</Text>
-        <Text style={styles.version}>Version {VERSION} ({buildNumber})</Text>
-      </View>
+    <FullScreenPage
+      title={t('settings.about', "A propos")}
+      showBack
+      backPath="/settings"
+    >
+      <div className="mx-auto max-w-md space-y-4">
+        {/* Header */}
+        <div className="flex flex-col items-center gap-2 rounded-3xl bg-surface p-6 shadow-sm">
+          <Logo size={72} />
+          <p className="text-2xl font-extrabold text-text-primary">VersyFlow</p>
+          <p className="text-sm text-text-muted">Version {VERSION}</p>
+        </div>
 
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>{t('settings.about', 'À propos')}</Text>
-        <Text style={styles.description}>
-          {t('settings.aboutDescription', 'VersyFlow vous aide à mémoriser les versets bibliques grâce à la science de la répétition espacée (FSRS).')}
-        </Text>
-      </View>
+        {/* About */}
+        <div className="rounded-2xl bg-surface p-4 shadow-sm">
+          <p className="mb-2 flex items-center gap-2 text-base font-bold text-text-primary">
+            <BookOpen size={18} className="text-primary" />
+            {t('settings.about', "A propos")}
+          </p>
+          <p className="text-sm leading-relaxed text-text-secondary">
+            {t('settings.aboutDescription',
+              "VersyFlow vous aide a memoriser les versets bibliques grace a la science de la repetition espacee (FSRS).")}
+          </p>
+        </div>
 
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>{t('settings.links', 'Liens')}</Text>
-        <TouchableOpacity style={styles.link} onPress={() => Linking.openURL('https://github.com/your-org/versyflow')}>
-          <Text style={styles.linkText}>{t('settings.documentation', 'Documentation')}</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.link} onPress={() => Linking.openURL('mailto:support@versyflow.com')}>
-          <Text style={styles.linkText}>{t('settings.supportLink', 'Support')}</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.link} onPress={() => Linking.openURL('https://versyflow.com/privacy')}>
-          <Text style={styles.linkText}>{t('settings.privacyPolicy', 'Politique de confidentialité')}</Text>
-        </TouchableOpacity>
-      </View>
+        {/* Links */}
+        <div className="overflow-hidden rounded-2xl bg-surface shadow-sm">
+          {[
+            { label: t('settings.documentation', 'Documentation'), url: 'https://github.com/your-org/versyflow' },
+            { label: t('settings.supportLink', 'Support'), url: 'mailto:support@versyflow.com' },
+            { label: t('settings.privacyPolicy', 'Politique de confidentialite'), url: 'https://versyflow.com/privacy' },
+          ].map((l, i) => (
+            <button
+              key={i}
+              onClick={() => open(l.url)}
+              className="flex w-full items-center justify-between border-b border-[color:var(--color-divider)] px-4 py-3.5 last:border-0"
+            >
+              <span className="text-base font-medium text-primary">{l.label}</span>
+              <ExternalLink size={16} className="text-text-muted" />
+            </button>
+          ))}
+        </div>
 
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>{t('settings.credits', 'Crédits')}</Text>
-        <Text style={styles.credit}>{t('settings.creditMission', 'Développé avec ❤️ pour la gloire de Dieu')}</Text>
-        <Text style={styles.credit}>{t('settings.creditEngine', 'Moteur FSRS par Dmytro Gutman')}</Text>
-      </View>
-
-      <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-        <Text style={styles.backText}>{t('common.back', 'Retour')}</Text>
-      </TouchableOpacity>
-    </SafeAreaView>
+        {/* Credits */}
+        <div className="space-y-2 rounded-2xl bg-surface p-4 text-center shadow-sm">
+          <p className="flex items-center justify-center gap-2 text-sm text-text-secondary">
+            <Heart size={14} className="text-primary" />
+            {t('settings.creditMission', 'Developpe avec amour pour la gloire de Dieu')}
+          </p>
+          <p className="flex items-center justify-center gap-2 text-sm text-text-muted">
+            <Cpu size={14} />
+            {t('settings.creditEngine', 'Moteur FSRS par Dmytro Gutman')}
+          </p>
+        </div>
+      </div>
+    </FullScreenPage>
   );
 }
-

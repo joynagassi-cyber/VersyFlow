@@ -1,335 +1,164 @@
-/**
- * Enhanced Settings Screen — Navigation hub for all settings
- */
-
-import { useState, useEffect, useMemo } from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  ScrollView,
-  SafeAreaView,
-  StyleSheet,
-  Platform,
-} from '@/components/ui/Primitives';
-import { useRouter } from '@/hooks/useIonicNavigation';
-import { IonIcon } from '@/components/ui/Primitives'
-import { calendar, cloud, settings, notifications, chevronForward, logOut } from 'ionicons/icons';
-import { useAuthStore } from '@/store/auth-store';
-import { useAppTheme } from '@/theme/useTheme';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import {
+  User,
+  Cloud,
+  Palette,
+  Languages,
+  Calendar,
+  Bell,
+  Shield,
+  BookOpen,
+  LogOut,
+  ChevronRight,
+} from 'lucide-react';
+import { FullScreenPage } from '@/components/layout/FullScreenPage';
+import { Button } from '@/components/ui/button';
+import { useAuthStore } from '@/store/auth-store';
+
+type Row = { label: string; icon: typeof User; to: string };
 
 export default function SettingsScreen() {
-  const router = useRouter();
-  const { colors, sh, sp, rad } = useAppTheme();
+  const navigate = useNavigate();
   const { t } = useTranslation();
   const { user, isAuthenticated, signOut } = useAuthStore();
   const [showConfirm, setShowConfirm] = useState(false);
 
-  const styles = useMemo(() => StyleSheet.create({
-    container: {
-      flex: 1,
-    },
-    scrollView: {
-      flex: 1,
-    },
-    profileCard: {
-      flexDirection: 'row',
-      alignItems: 'center',
-    },
-    avatar: {
-      width: 48,
-      height: 48,
-      borderRadius: 24,
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    avatarText: {
-      fontSize: 20,
-      fontWeight: '700',
-      color: '#FFFFFF',
-    },
-    profileInfo: {
-      flex: 1,
-      marginLeft: sp.md,
-    },
-    profileName: {
-      fontSize: 16,
-      fontWeight: '600',
-    },
-    profileStatus: {
-      fontSize: 14,
-      marginTop: 2,
-    },
-    profileArrow: {
-      padding: sp.sm,
-    },
-    groupTitle: {
-      fontSize: 14,
-      fontWeight: '600',
-      textTransform: 'uppercase',
-      letterSpacing: 0.5,
-    },
-    groupContent: {
-      overflow: 'hidden',
-    },
-    item: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      paddingVertical: sp.md,
-      paddingHorizontal: sp.lg,
-      borderBottomWidth: 1,
-    },
-    itemLast: {
-      borderBottomWidth: 0,
-    },
-    itemLeft: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: sp.md,
-    },
-    itemText: {
-      fontSize: 16,
-    },
-    signOutButton: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'center',
-      gap: sp.sm,
-      paddingVertical: sp.md,
-    },
-    signOutText: {
-      fontSize: 16,
-      fontWeight: '600',
-    },
-    modalOverlay: {
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      backgroundColor: 'rgba(0,0,0,0.5)',
-      justifyContent: 'center',
-      alignItems: 'center',
-      padding: sp.xl,
-    },
-    modal: {
-      padding: sp.xl,
-      width: '100%',
-      maxWidth: 320,
-    },
-    modalTitle: {
-      fontSize: 20,
-      fontWeight: '700',
-      textAlign: 'center',
-      marginBottom: sp.md,
-    },
-    modalMessage: {
-      fontSize: 16,
-      textAlign: 'center',
-      marginBottom: sp.xl,
-      lineHeight: 22,
-    },
-    modalButtons: {
-      flexDirection: 'row',
-      gap: sp.md,
-    },
-    modalButton: {
-      flex: 1,
-      paddingVertical: sp.md,
-      alignItems: 'center',
-    },
-    modalButtonCancel: {},
-    modalButtonConfirm: {},
-    modalButtonTextCancel: {
-      fontSize: 16,
-      fontWeight: '600',
-    },
-    modalButtonTextConfirm: {
-      fontSize: 16,
-      color: '#FFFFFF',
-      fontWeight: '600',
-    },
-  }), [colors, sh, sp, rad]);
-
   const handleSignOut = () => {
     signOut();
-    router.replace('/(tabs)/auth/login');
+    navigate('/auth/login');
   };
 
-  const settingsGroups = useMemo(() => [
+  const groups: { title: string; items: Row[] }[] = [
     {
-      title: t('settings.profile', 'Compte'),
+      title: t('settings.compte', 'Compte'),
       items: [
-        { label: t('settings.profile', 'Profil'), icon: 'person' as any, action: () => router.push('/profile') },
-        ...(isAuthenticated ? [{ label: t('settings.sync', 'Synchronisation'), icon: cloud, action: () => router.push('/settings/backup') }] : []),
+        { label: t('settings.profil', 'Profil'), icon: User, to: '/profile' },
+        ...(isAuthenticated
+          ? [{ label: t('settings.sync', 'Synchronisation'), icon: Cloud, to: '/settings/backup' }]
+          : []),
       ],
     },
     {
-      title: t('settings.theme', 'Apparence'),
+      title: t('settings.apparence', 'Apparence'),
       items: [
-        { label: t('settings.theme', 'Thème'), icon: settings as any, action: () => router.push('/settings/appearance') },
-        { label: t('settings.uiLanguage', 'Langue'), icon: 'language' as any, action: () => router.push('/settings/languages') },
+        { label: t('settings.theme', 'Theme'), icon: Palette, to: '/settings/appearance' },
+        { label: t('settings.uiLanguage', 'Langue'), icon: Languages, to: '/settings/languages' },
       ],
     },
     {
-      title: t('settings.session', 'Session & Rappels'),
+      title: t('settings.sessionReminders', 'Session & Rappels'),
       items: [
-        { label: t('settings.session', 'Session'), icon: calendar as any, action: () => router.push('/settings/session') },
-        { label: t('settings.reminders', 'Rappels'), icon: notifications as any, action: () => router.push('/settings/reminders') },
+        { label: t('settings.session', 'Session'), icon: Calendar, to: '/settings/session' },
+        { label: t('settings.reminders', 'Rappels'), icon: Bell, to: '/settings/reminders' },
       ],
     },
     {
-      title: t('settings.privacy', 'Confidentialité'),
+      title: t('settings.confidentialite', 'Confidentialite'),
       items: [
-        { label: t('settings.data', 'Données'), icon: calendar as any, action: () => router.push('/settings/privacy') },
-        { label: t('settings.backup', 'Sauvegarde'), icon: cloud as any, action: () => router.push('/settings/backup') },
+        { label: t('settings.data', 'Donnees'), icon: Shield, to: '/settings/privacy' },
+        { label: t('settings.backup', 'Sauvegarde'), icon: Cloud, to: '/settings/backup' },
       ],
     },
     {
-      title: t('settings.helpSupport', 'Aide'),
-      items: [
-        { label: t('settings.about', 'À propos'), icon: notifications as any, action: () => router.push('/settings/about') },
-      ],
+      title: t('settings.aide', 'Aide'),
+      items: [{ label: t('settings.about', "A propos"), icon: BookOpen, to: '/settings/about' }],
     },
-  ], [isAuthenticated, router, t]);
+  ];
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
-      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-        {/* Profile Card */}
-        <View
-          style={[
-            styles.profileCard,
-            {
-              backgroundColor: colors.surface,
-              marginHorizontal: sp.lg,
-              marginTop: sp.md,
-              borderRadius: rad.xl,
-              padding: sp.lg,
-              ...sh.md,
-            },
-          ]}
+    <FullScreenPage title={t('nav.settings', 'Parametres')} showBack>
+      <div className="mx-auto max-w-md space-y-5">
+        {/* Profile card */}
+        <button
+          onClick={() => navigate('/profile')}
+          className="flex w-full items-center gap-4 rounded-3xl bg-surface p-4 text-left shadow-sm"
         >
-          <View style={[styles.avatar, { backgroundColor: colors.primary }]}>
-            <Text style={styles.avatarText}>
-              {(user?.display_name || 'U').charAt(0).toUpperCase()}
-            </Text>
-          </View>
-          <View style={styles.profileInfo}>
-            <Text style={[styles.profileName, { color: colors.textPrimary }]}>
-              {user?.display_name || 'Utilisateur'}
-            </Text>
-            <Text style={[styles.profileStatus, { color: colors.textTertiary }]}>
-              {isAuthenticated ? 'Connecté' : 'Mode local'}
-            </Text>
-          </View>
-          <TouchableOpacity
-            style={styles.profileArrow}
-            onPress={() => router.push('/profile')}
-          >
-            <IonIcon icon={chevronForward} size={20} color={colors.textMuted} />
-          </TouchableOpacity>
-        </View>
+          <span className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-xl font-bold text-white">
+            {(user?.display_name || 'U').charAt(0).toUpperCase()}
+          </span>
+          <span className="flex-1">
+            <span className="block text-base font-semibold text-text-primary">
+              {user?.display_name || t('settings.localUser', 'Utilisateur')}
+            </span>
+            <span className="text-sm text-text-muted">
+              {isAuthenticated
+                ? t('settings.connected', 'Connecte')
+                : t('settings.localMode', 'Mode local')}
+            </span>
+          </span>
+          <ChevronRight size={18} className="text-text-muted" />
+        </button>
 
-        {/* Settings Groups */}
-        {settingsGroups.map((group, groupIndex) => (
-          <View key={groupIndex} style={{ marginTop: sp.xl }}>
-            <Text style={[styles.groupTitle, { color: colors.textTertiary, paddingHorizontal: sp.xl, marginBottom: sp.sm }]}>
+        {/* Groups */}
+        {groups.map((group, gi) => (
+          <div key={gi}>
+            <p className="mb-2 px-1 text-xs font-bold uppercase tracking-wide text-text-muted">
               {group.title}
-            </Text>
-            <View
-              style={[
-                styles.groupContent,
-                {
-                  backgroundColor: colors.surface,
-                  marginHorizontal: sp.md,
-                  borderRadius: rad.lg,
-                  ...sh.sm,
-                },
-              ]}
-            >
-              {group.items.map((item: any, itemIndex: number) => (
-                <TouchableOpacity
-                  key={itemIndex}
-                  style={[
-                    styles.item,
-                    itemIndex === group.items.length - 1 && styles.itemLast,
-                    { borderBottomColor: colors.divider },
-                  ]}
-                  onPress={item.action}
+            </p>
+            <div className="overflow-hidden rounded-2xl bg-surface shadow-sm">
+              {group.items.map((item, i) => (
+                <button
+                  key={i}
+                  onClick={() => navigate(item.to)}
+                  className={
+                    'flex w-full items-center justify-between px-4 py-3.5 text-left ' +
+                    (i < group.items.length - 1
+                      ? 'border-b border-[color:var(--color-divider)]'
+                      : '')
+                  }
                 >
-                  <View style={styles.itemLeft}>
-                    <IonIcon icon={item.icon} size={20} color={colors.textMuted} />
-                    <Text style={[styles.itemText, { color: colors.textPrimary }]}>{item.label}</Text>
-                  </View>
-                  <IonIcon icon={chevronForward} size={16} color={colors.textMuted} />
-                </TouchableOpacity>
+                  <span className="flex items-center gap-3">
+                    <item.icon size={18} className="text-text-muted" />
+                    <span className="text-base text-text-primary">{item.label}</span>
+                  </span>
+                  <ChevronRight size={16} className="text-text-muted" />
+                </button>
               ))}
-            </View>
-          </View>
+            </div>
+          </div>
         ))}
 
-        {/* Sign Out */}
+        {/* Sign out */}
         {isAuthenticated && (
-          <TouchableOpacity
-            style={[
-              styles.signOutButton,
-              {
-                marginHorizontal: sp.lg,
-                marginTop: sp.xl,
-                backgroundColor: colors.surface,
-                borderRadius: rad.lg,
-                ...sh.sm,
-              },
-            ]}
-            onPress={() => setShowConfirm(true)}
+          <button
+            onClick={() => setShowConfirm(true)}
+            className="flex w-full items-center justify-center gap-2 rounded-2xl bg-surface py-3.5 font-semibold text-error shadow-sm"
           >
-            <IonIcon icon={logOut} size={20} color={colors.error} />
-            <Text style={[styles.signOutText, { color: colors.error }]}>Se déconnecter</Text>
-          </TouchableOpacity>
+            <LogOut size={18} />
+            {t('settings.signOut', 'Se deconnecter')}
+          </button>
         )}
-      </ScrollView>
+      </div>
 
-      {/* Confirmation Modal */}
+      {/* Confirm modal */}
       {showConfirm && (
-        <View style={styles.modalOverlay}>
-          <View
-            style={[
-              styles.modal,
-              { backgroundColor: colors.surface, borderRadius: rad.xl },
-            ]}
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-6"
+          onClick={() => setShowConfirm(false)}
+        >
+          <div
+            className="w-full max-w-[320px] rounded-3xl bg-surface p-6 text-center shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
           >
-            <Text style={[styles.modalTitle, { color: colors.textPrimary }]}>Déconnexion</Text>
-            <Text style={[styles.modalMessage, { color: colors.textSecondary }]}>
-              Êtes-vous sûr de vouloir vous déconnecter ?
-            </Text>
-            <View style={styles.modalButtons}>
-              <TouchableOpacity
-                style={[
-                  styles.modalButton,
-                  styles.modalButtonCancel,
-                  { backgroundColor: colors.surfaceTint, borderRadius: rad.pill },
-                ]}
-                onPress={() => setShowConfirm(false)}
-              >
-                <Text style={[styles.modalButtonTextCancel, { color: colors.textSecondary }]}>Annuler</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[
-                  styles.modalButton,
-                  styles.modalButtonConfirm,
-                  { backgroundColor: colors.error, borderRadius: rad.pill },
-                ]}
-                onPress={handleSignOut}
-              >
-                <Text style={styles.modalButtonTextConfirm}>Déconnexion</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
+            <p className="text-xl font-bold text-text-primary">
+              {t('settings.signOutTitle', 'Deconnexion')}
+            </p>
+            <p className="mt-2 text-sm text-text-secondary">
+              {t('settings.signOutConfirm', 'Etes-vous sur de vouloir vous deconnecter ?')}
+            </p>
+            <div className="mt-5 flex gap-3">
+              <Button variant="ghost" className="flex-1" onClick={() => setShowConfirm(false)}>
+                {t('common.cancel', 'Annuler')}
+              </Button>
+              <Button variant="destructive" className="flex-1" onClick={handleSignOut}>
+                {t('settings.signOut', 'Deconnexion')}
+              </Button>
+            </div>
+          </div>
+        </div>
       )}
-    </SafeAreaView>
+    </FullScreenPage>
   );
 }

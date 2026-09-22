@@ -1,142 +1,40 @@
-/**
- * AI Coach Screen — Personalized recommendations
- */
-
-import { useState, useEffect, useMemo } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  SafeAreaView,
-} from '@/components/ui/Primitives';
-import { useAppTheme } from '@/theme/useTheme';
-import { useRouter } from '@/hooks/useIonicNavigation';
+import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
+import { BookOpen, Dumbbell, AlarmClock, Lightbulb, Loader2, Sparkles } from 'lucide-react';
+import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { useAICoachCapability } from '@/capabilities/ai-coach/store';
 import type { IAiCoachWeeklyReport } from '@/capabilities/ai-coach/types';
 
+function typeIcon(type: string) {
+  switch (type) {
+    case 'verse':
+      return BookOpen;
+    case 'exercise':
+      return Dumbbell;
+    case 'reminder':
+      return AlarmClock;
+    case 'insight':
+      return Lightbulb;
+    default:
+      return Sparkles;
+  }
+}
+function priorityColor(p: string) {
+  switch (p) {
+    case 'high':
+      return 'var(--color-error)';
+    case 'medium':
+      return 'var(--color-warning)';
+    case 'low':
+      return 'var(--color-success)';
+    default:
+      return 'var(--color-text-muted)';
+  }
+}
+
 export default function AICoachScreen() {
-  const { colors } = useAppTheme();
-  const styles = useMemo(
-    () =>
-      StyleSheet.create({
-        container: {
-          flex: 1,
-          backgroundColor: colors.surfaceTint,
-        },
-        content: {
-          padding: 16,
-          paddingBottom: 32,
-        },
-        center: {
-          flex: 1,
-          justifyContent: 'center',
-          alignItems: 'center',
-        },
-        reportCard: {
-          backgroundColor: colors.surface,
-          borderRadius: 16,
-          padding: 20,
-          marginBottom: 24,
-        },
-        reportTitle: {
-          fontSize: 18,
-          fontWeight: '700',
-          color: colors.textPrimary,
-          marginBottom: 16,
-        },
-        reportGrid: {
-          flexDirection: 'row',
-          justifyContent: 'space-around',
-        },
-        reportItem: {
-          alignItems: 'center',
-        },
-        reportValue: {
-          fontSize: 28,
-          fontWeight: '800',
-          color: colors.primary,
-        },
-        reportLabel: {
-          fontSize: 12,
-          color: colors.textTertiary,
-          marginTop: 4,
-        },
-        section: {
-          marginBottom: 24,
-        },
-        sectionTitle: {
-          fontSize: 18,
-          fontWeight: '700',
-          color: colors.textPrimary,
-          marginBottom: 12,
-        },
-        planItem: {
-          flexDirection: 'row',
-          alignItems: 'center',
-          backgroundColor: colors.surface,
-          borderRadius: 12,
-          padding: 16,
-          marginBottom: 8,
-        },
-        planNumber: {
-          fontSize: 18,
-          fontWeight: '700',
-          color: colors.primary,
-          width: 28,
-          height: 28,
-          borderRadius: 14,
-          backgroundColor: colors.border,
-          justifyContent: 'center',
-          alignItems: 'center',
-          marginRight: 12,
-        },
-        planText: {
-          fontSize: 16,
-          color: colors.textPrimary,
-          flex: 1,
-        },
-        recommendationCard: {
-          backgroundColor: colors.surface,
-          borderRadius: 12,
-          padding: 16,
-          marginBottom: 8,
-        },
-        recHeader: {
-          flexDirection: 'row',
-          alignItems: 'flex-start',
-        },
-        recIcon: {
-          fontSize: 24,
-          marginRight: 12,
-        },
-        recInfo: {
-          flex: 1,
-        },
-        recTitle: {
-          fontSize: 16,
-          fontWeight: '600',
-          color: colors.textPrimary,
-        },
-        recDesc: {
-          fontSize: 14,
-          color: colors.textTertiary,
-          marginTop: 4,
-        },
-        priorityBadge: {
-          paddingHorizontal: 8,
-          paddingVertical: 4,
-          borderRadius: 4,
-        },
-        priorityText: {
-          fontSize: 12,
-          fontWeight: '600',
-        },
-      }),
-    [colors],
-  );
-  const router = useRouter();
-  const { recommendations, dailyPlan, analyzePerformance, getWeeklyReport, weeklyReport: weeklyReportState } =
+  const { t } = useTranslation();
+  const { recommendations, dailyPlan, analyzePerformance, getWeeklyReport } =
     useAICoachCapability();
   const [loading, setLoading] = useState(true);
   const [weeklyReport, setWeeklyReport] = useState<IAiCoachWeeklyReport | null>(null);
@@ -156,136 +54,126 @@ export default function AICoachScreen() {
     return () => {
       cancelled = true;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (loading) {
     return (
-      <SafeAreaView style={styles.center}>
-        <Text>Analyse en cours...</Text>
-      </SafeAreaView>
+      <FullScreenPage title={t('coach.title', 'Coach IA')} showBack>
+        <div className="flex min-h-[50vh] flex-col items-center justify-center gap-3">
+          <Loader2 size={28} className="animate-spin text-primary" />
+          <p className="text-sm text-text-muted">
+            {t('coach.analyzing', 'Analyse en cours...')}
+          </p>
+        </div>
+      </FullScreenPage>
     );
   }
 
-  const getPriorityColor = (priority: string) => {
-    switch (priority) {
-      case 'high':
-        return colors.error;
-      case 'medium':
-        return colors.warning;
-      case 'low':
-        return colors.success;
-      default:
-        return colors.textMuted;
-    }
-  };
-
-  const getTypeIcon = (type: string) => {
-    switch (type) {
-      case 'verse':
-        return '📖';
-      case 'exercise':
-        return '💪';
-      case 'reminder':
-        return '⏰';
-      case 'insight':
-        return '💡';
-      default:
-        return '📌';
-    }
-  };
-
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.content}>
-        {/* Weekly Report */}
-        <View style={styles.reportCard}>
-          <Text style={styles.reportTitle}>Rapport hebdomadaire</Text>
+    <FullScreenPage title={t('coach.title', 'Coach IA')} showBack>
+      <div className="mx-auto max-w-md space-y-6">
+        {/* Weekly report */}
+        <div className="gradient-hero glow-primary rounded-3xl p-5 text-white">
+          <p className="mb-4 text-base font-bold">
+            {t('coach.weekly', 'Rapport hebdomadaire')}
+          </p>
           {weeklyReport ? (
-            <View style={styles.reportGrid}>
-              <View style={styles.reportItem}>
-                <Text style={styles.reportValue}>{weeklyReport.totalSessions}</Text>
-                <Text style={styles.reportLabel}>Sessions</Text>
-              </View>
-              <View style={styles.reportItem}>
-                <Text style={styles.reportValue}>{weeklyReport.versesMemorized}</Text>
-                <Text style={styles.reportLabel}>Versets</Text>
-              </View>
-              <View style={styles.reportItem}>
-                <Text style={styles.reportValue}>
+            <div className="grid grid-cols-3 gap-2 text-center">
+              <div>
+                <p className="text-2xl font-extrabold">{weeklyReport.totalSessions}</p>
+                <p className="text-xs opacity-80">{t('coach.sessions', 'Sessions')}</p>
+              </div>
+              <div>
+                <p className="text-2xl font-extrabold">{weeklyReport.versesMemorized}</p>
+                <p className="text-xs opacity-80">{t('coach.verses', 'Versets')}</p>
+              </div>
+              <div>
+                <p className="text-2xl font-extrabold">
                   {Math.round(weeklyReport.avgScore * 100)}%
-                </Text>
-                <Text style={styles.reportLabel}>Score moy.</Text>
-              </View>
-            </View>
+                </p>
+                <p className="text-xs opacity-80">{t('coach.avgScore', 'Score moy.')}</p>
+              </div>
+            </div>
           ) : (
-            <Text style={{ color: colors.textTertiary, fontSize: 14 }}>
-              Pas encore assez de données pour générer un rapport.
-            </Text>
+            <p className="text-sm opacity-90">
+              {t('coach.noReport', 'Pas encore assez de donnees.')}
+            </p>
           )}
-        </View>
+        </div>
 
-        {/* Daily Plan */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Plan du jour</Text>
+        {/* Daily plan */}
+        <div>
+          <h2 className="mb-3 text-base font-bold text-text-primary">
+            {t('coach.dailyPlan', 'Plan du jour')}
+          </h2>
           {dailyPlan?.items.length ? (
-            dailyPlan.items.map((task, idx) => (
-              <View key={idx} style={styles.planItem}>
-                <Text style={styles.planNumber}>{idx + 1}</Text>
-                <Text style={styles.planText}>{task}</Text>
-              </View>
-            ))
+            <div className="space-y-2">
+              {dailyPlan.items.map((task, idx) => (
+                <div
+                  key={idx}
+                  className="flex items-center gap-3 rounded-2xl bg-surface p-4 shadow-sm"
+                >
+                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-surface-tint text-sm font-bold text-primary">
+                    {idx + 1}
+                  </span>
+                  <p className="flex-1 text-base text-text-primary">{task}</p>
+                </div>
+              ))}
+            </div>
           ) : (
-            <Text style={{ color: colors.textTertiary, fontSize: 14 }}>
-              Aucun plan pour aujourd'hui.
-            </Text>
+            <p className="text-sm text-text-muted">
+              {t('coach.noPlan', "Aucun plan pour aujourd'hui.")}
+            </p>
           )}
-        </View>
+        </div>
 
         {/* Recommendations */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Recommandations</Text>
+        <div>
+          <h2 className="mb-3 text-base font-bold text-text-primary">
+            {t('coach.recommendations', 'Recommandations')}
+          </h2>
           {recommendations.length ? (
-            recommendations.map((rec) => (
-              <View
-                key={rec.id}
-                style={styles.recommendationCard}
-              >
-              <View style={styles.recHeader}>
-                <Text style={styles.recIcon}>{getTypeIcon(rec.type)}</Text>
-                <View style={styles.recInfo}>
-                  <Text style={styles.recTitle}>{rec.title}</Text>
-                  <Text style={styles.recDesc}>{rec.description}</Text>
-                </View>
-                <View
-                  style={[
-                    styles.priorityBadge,
-                    { backgroundColor: getPriorityColor(rec.priority) + '20' },
-                  ]}
-                >
-                  <Text
-                    style={[
-                      styles.priorityText,
-                      { color: getPriorityColor(rec.priority) },
-                    ]}
+            <div className="space-y-2">
+              {recommendations.map((rec) => {
+                const Icon = typeIcon(rec.type);
+                const pc = priorityColor(rec.priority);
+                return (
+                  <div
+                    key={rec.id}
+                    className="flex items-start gap-3 rounded-2xl bg-surface p-4 shadow-sm"
                   >
-                    {rec.priority === 'high'
-                      ? 'Important'
-                      : rec.priority === 'medium'
-                      ? 'Moyen'
-                      : 'Faible'}
-                  </Text>
-                </View>
-              </View>
-              </View>
-            ))
+                    <span
+                      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl"
+                      style={{ color: pc, backgroundColor: 'transparent' }}
+                    >
+                      <Icon size={20} />
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-base font-semibold text-text-primary">{rec.title}</p>
+                      <p className="text-sm text-text-muted">{rec.description}</p>
+                    </div>
+                    <span
+                      className="rounded px-2 py-0.5 text-xs font-bold"
+                      style={{ color: pc, backgroundColor: pc + '20' }}
+                    >
+                      {rec.priority === 'high'
+                        ? t('coach.high', 'Important')
+                        : rec.priority === 'medium'
+                          ? t('coach.medium', 'Moyen')
+                          : t('coach.low', 'Faible')}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
           ) : (
-            <Text style={{ color: colors.textTertiary, fontSize: 14 }}>
-              Aucune recommandation pour le moment.
-            </Text>
+            <p className="text-sm text-text-muted">
+              {t('coach.noRecs', 'Aucune recommandation pour le moment.')}
+            </p>
           )}
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+        </div>
+      </div>
+    </FullScreenPage>
   );
 }
-

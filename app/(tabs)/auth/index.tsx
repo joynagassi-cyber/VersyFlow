@@ -1,15 +1,8 @@
-/**
- * Auth Gate Component — Shows login/signup or skip option
- */
-
 import { useEffect, useState } from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-} from '@/components/ui/Primitives';
-import { useAppTheme } from '@/theme/useTheme';
+import { useTranslation } from 'react-i18next';
+import { LogIn, UserPlus, ArrowRight } from 'lucide-react';
+import { Logo } from '@/components/brand/Logo';
+import { Button } from '@/components/ui/button';
 
 interface Props {
   onLogin: () => void;
@@ -18,102 +11,48 @@ interface Props {
 }
 
 export default function AuthGate({ onLogin, onSignup, onSkip }: Props) {
-  const { colors } = useAppTheme();
+  const { t } = useTranslation();
   const [mounted, setMounted] = useState(false);
-
   useEffect(() => {
     setMounted(true);
   }, []);
-
   if (!mounted) return null;
 
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: colors.surfaceTint,
-      padding: 24,
-      justifyContent: 'center',
-    },
-    title: {
-      fontSize: 28,
-      fontWeight: '700',
-      color: colors.textPrimary,
-      textAlign: 'center',
-      marginBottom: 12,
-    },
-    subtitle: {
-      fontSize: 16,
-      color: colors.textTertiary,
-      textAlign: 'center',
-      marginBottom: 48,
-      lineHeight: 24,
-    },
-    buttonPrimary: {
-      backgroundColor: colors.primary,
-      borderRadius: 26,
-      paddingVertical: 16,
-      marginBottom: 12,
-      alignItems: 'center',
-    },
-    buttonTextPrimary: {
-      fontSize: 16,
-      fontWeight: '600',
-      color: colors.surface,
-    },
-    buttonSecondary: {
-      backgroundColor: colors.surface,
-      borderRadius: 26,
-      paddingVertical: 16,
-      borderWidth: 2,
-      borderColor: colors.primary,
-      marginBottom: 12,
-      alignItems: 'center',
-    },
-    buttonTextSecondary: {
-      fontSize: 16,
-      fontWeight: '600',
-      color: colors.primary,
-    },
-    buttonGhost: {
-      paddingVertical: 12,
-      alignItems: 'center',
-    },
-    buttonTextGhost: {
-      fontSize: 14,
-      color: colors.textMuted,
-      textDecorationLine: 'underline',
-    },
-    note: {
-      fontSize: 12,
-      color: colors.textMuted,
-      textAlign: 'center',
-      marginTop: 32,
-      lineHeight: 18,
-    },
-  });
-
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Bienvenue sur VersyFlow</Text>
-      <Text style={styles.subtitle}>
-        Connectez-vous pour synchroniser vos mémorisations sur le cloud, ou continuez en mode local.
-      </Text>
+    <div className="flex min-h-[60vh] flex-col items-center justify-center gap-5 px-6">
+      <Logo size={72} />
+      <div className="text-center">
+        <h1 className="text-2xl font-extrabold text-text-primary">
+          {t('auth.welcome', 'Bienvenue sur VersyFlow')}
+        </h1>
+        <p className="mx-auto mt-2 max-w-xs text-sm text-text-muted">
+          {t('auth.welcomeSubtitle',
+            "Connectez-vous pour synchroniser vos memorisations sur le cloud, ou continuez en mode local.")}
+        </p>
+      </div>
 
-      <TouchableOpacity style={styles.buttonPrimary} onPress={onLogin}>
-        <Text style={styles.buttonTextPrimary}>Se connecter</Text>
-      </TouchableOpacity>
+      <div className="flex w-full max-w-xs flex-col gap-3">
+        <Button variant="default" onClick={onLogin}>
+          <LogIn size={18} />
+          {t('auth.login', 'Se connecter')}
+        </Button>
+        <Button variant="secondary" onClick={onSignup}>
+          <UserPlus size={18} />
+          {t('auth.signup', 'Creer un compte')}
+        </Button>
+        <button
+          onClick={onSkip}
+          className="flex items-center justify-center gap-1 py-2 text-sm font-medium text-text-muted underline"
+        >
+          {t('auth.skip', 'Continuer sans compte')}
+          <ArrowRight size={14} />
+        </button>
+      </div>
 
-      <TouchableOpacity style={styles.buttonSecondary} onPress={onSignup}>
-        <Text style={styles.buttonTextSecondary}>Créer un compte</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={styles.buttonGhost} onPress={onSkip}>
-        <Text style={styles.buttonTextGhost}>Continuer sans compte</Text>
-      </TouchableOpacity>
-
-      <Text style={styles.note}>
-        Votre progression sera sauvegardée localement. Connectez-vous plus tard pour synchroniser.
-      </Text>
-    </View>
+      <p className="max-w-xs text-center text-xs leading-5 text-text-muted">
+        {t('auth.localNote',
+          "Votre progression est sauvegardee localement. Connectez-vous plus tard pour synchroniser.")}
+      </p>
+    </div>
   );
 }

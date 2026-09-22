@@ -1,109 +1,28 @@
-/**
- * Language Settings Screen — UI language preferences
- */
-
-import { useState, useMemo} from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  ScrollView,
-  StyleSheet,
-  SafeAreaView,
-} from '@/components/ui/Primitives';
-import { useAppTheme } from '@/theme/useTheme';
-import { useRouter } from '@/hooks/useIonicNavigation';
 import { useTranslation } from 'react-i18next';
+import { Check } from 'lucide-react';
+import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { SUPPORTED_LANGUAGES } from '@/domains/i18n/config';
 import { useSettingsStore } from '@/store/settings-store';
 import { eventBus, DomainEventTypes } from '@/domains';
 
 export default function LanguageSettingsScreen() {
-  const { colors, sp, sh, rad } = useAppTheme();
-  const styles = useMemo(() => StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.surfaceTint,
-  },
-  section: {
-    padding: 16,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: colors.textPrimary,
-    marginBottom: 16,
-  },
-  languageCard: {
-    backgroundColor: colors.surface,
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 8,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  languageCardSelected: {
-    backgroundColor: colors.surfaceTint,
-    borderColor: colors.primary,
-    borderWidth: 2,
-  },
-  langInfo: {
-    flex: 1,
-  },
-  nativeName: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: colors.textPrimary,
-  },
-  displayName: {
-    fontSize: 14,
-    color: colors.textMuted,
-    marginTop: 4,
-  },
-  rtlBadge: {
-    fontSize: 11,
-    color: colors.primary,
-    marginTop: 4,
-    backgroundColor: colors.border,
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-    borderRadius: 4,
-    alignSelf: 'flex-start',
-  },
-  checkmark: {
-    fontSize: 24,
-    color: colors.primary,
-    marginLeft: 16,
-  },
-  backButton: {
-    padding: 16,
-    alignItems: 'center',
-  },
-  backText: {
-    fontSize: 14,
-    color: colors.textMuted,
-    textDecorationLine: 'underline',
-  },
-  }), [colors]);
-  const router = useRouter();
   const { t } = useTranslation();
   const { uiLanguage, setUiLanguage } = useSettingsStore();
-  const selectedLanguage = uiLanguage || 'fr';
+  const selected = uiLanguage || 'fr';
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView>
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>{t('settings.uiLanguage', 'Langue de l\'interface')}</Text>
-          {SUPPORTED_LANGUAGES.map((lang) => (
-            <TouchableOpacity
+    <FullScreenPage
+      title={t('settings.uiLanguage', "Langue de l'interface")}
+      showBack
+      backPath="/settings"
+    >
+      <div className="mx-auto max-w-md space-y-2">
+        {SUPPORTED_LANGUAGES.map((lang) => {
+          const active = selected === lang.code;
+          return (
+            <button
               key={lang.code}
-              style={[
-                styles.languageCard,
-                selectedLanguage === lang.code && styles.languageCardSelected,
-              ]}
-              onPress={() => {
+              onClick={() => {
                 const prev = uiLanguage;
                 setUiLanguage(lang.code);
                 eventBus.emit({
@@ -113,24 +32,31 @@ export default function LanguageSettingsScreen() {
                   payload: { fromLanguage: prev, toLanguage: lang.code, isRTL: lang.rtl },
                 });
               }}
+              className={
+                'flex w-full items-center justify-between rounded-2xl p-4 text-left ' +
+                (active ? 'bg-surface ring-2 ring-[color:var(--color-primary)] shadow-sm' : 'bg-surface shadow-sm')
+              }
             >
-              <View style={styles.langInfo}>
-                <Text style={styles.nativeName}>{lang.name}</Text>
-                <Text style={styles.displayName}>{lang.displayName}</Text>
-                {lang.rtl && <Text style={styles.rtlBadge}>RTL</Text>}
-              </View>
-              {selectedLanguage === lang.code && (
-                <Text style={styles.checkmark}>✓</Text>
+              <span className="flex-1">
+                <span className="flex items-center gap-2">
+                  <span className="text-lg font-semibold text-text-primary">{lang.name}</span>
+                  {lang.rtl && (
+                    <span className="rounded bg-surface-tint px-1.5 py-0.5 text-[10px] font-bold text-primary">
+                      RTL
+                    </span>
+                  )}
+                </span>
+                <span className="text-sm text-text-muted">{lang.displayName}</span>
+              </span>
+              {active && (
+                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-white">
+                  <Check size={14} />
+                </span>
               )}
-            </TouchableOpacity>
-          ))}
-        </View>
-
-        <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-          <Text style={styles.backText}>{t('common.back', 'Retour')}</Text>
-        </TouchableOpacity>
-      </ScrollView>
-    </SafeAreaView>
+            </button>
+          );
+        })}
+      </div>
+    </FullScreenPage>
   );
 }
-

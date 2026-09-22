@@ -1,133 +1,78 @@
-/**
- * Privacy Settings Screen
- */
-
-import { useState, useMemo} from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  SafeAreaView,
-  Switch,
-} from '@/components/ui/Primitives';
-import { useAppTheme } from '@/theme/useTheme';
-import { useRouter } from '@/hooks/useIonicNavigation';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { ChevronRight, Download, Trash2 } from 'lucide-react';
+import { FullScreenPage } from '@/components/layout/FullScreenPage';
 
 export default function PrivacyScreen() {
-  const { colors, sp, sh, rad } = useAppTheme();
-  const styles = useMemo(() => StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.surfaceTint,
-  },
-  section: {
-    backgroundColor: colors.surface,
-    borderRadius: 12,
-    padding: 16,
-    marginHorizontal: 16,
-    marginBottom: 16,
-  },
-  sectionTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: colors.textPrimary,
-    marginBottom: 12,
-  },
-  toggleRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.surfaceElevated,
-  },
-  toggleLabel: {
-    fontSize: 16,
-    color: colors.textPrimary,
-  },
-  option: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 14,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.surfaceElevated,
-  },
-  optionLast: {
-    borderBottomWidth: 0,
-  },
-  optionText: {
-    fontSize: 16,
-    color: colors.textPrimary,
-  },
-  dangerText: {
-    color: colors.error,
-  },
-  arrow: {
-    fontSize: 20,
-    color: colors.textMuted,
-  },
-  backButton: {
-    padding: 16,
-    alignItems: 'center',
-  },
-  backText: {
-    fontSize: 14,
-    color: colors.textMuted,
-    textDecorationLine: 'underline',
-  },
-  }), [colors]);
-  const router = useRouter();
   const { t } = useTranslation();
   const [analyticsEnabled, setAnalyticsEnabled] = useState(true);
   const [crashReporting, setCrashReporting] = useState(true);
 
+  const Toggle = ({ on, onChange }: { on: boolean; onChange: () => void }) => (
+    <button
+      onClick={onChange}
+      className={
+        'relative h-7 w-12 shrink-0 rounded-full transition ' +
+        (on ? 'bg-primary' : 'bg-[color:var(--color-divider)]')
+      }
+      aria-pressed={on}
+    >
+      <span
+        className={
+          'absolute top-0.5 h-6 w-6 rounded-full bg-white transition-all ' +
+          (on ? 'left-[calc(100%-1.625rem)]' : 'left-0.5')
+        }
+      />
+    </button>
+  );
+
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>{t('settings.privacyTitle', 'Données & Confidentialité')}</Text>
+    <FullScreenPage
+      title={t('settings.privacyTitle', 'Donnees & confidentialite')}
+      showBack
+      backPath="/settings"
+    >
+      <div className="mx-auto max-w-md space-y-4">
+        <div className="space-y-1 rounded-2xl bg-surface p-2 shadow-sm">
+          <p className="px-3 pt-2 text-base font-bold text-text-primary">
+            {t('settings.privacyTitle', 'Donnees & confidentialite')}
+          </p>
+          <div className="flex items-center justify-between px-3 py-3">
+            <span className="text-base text-text-primary">
+              {t('settings.anonymousAnalytics', "Partager l'analyse anonyme")}
+            </span>
+            <Toggle on={analyticsEnabled} onChange={() => setAnalyticsEnabled((v) => !v)} />
+          </div>
+          <div className="flex items-center justify-between px-3 py-3">
+            <span className="text-base text-text-primary">
+              {t('settings.crashReports', 'Rapports de plantage')}
+            </span>
+            <Toggle on={crashReporting} onChange={() => setCrashReporting((v) => !v)} />
+          </div>
+        </div>
 
-        <View style={styles.toggleRow}>
-          <Text style={styles.toggleLabel}>{t('settings.anonymousAnalytics', "Partager l'analyse anonyme")}</Text>
-          <Switch
-            value={analyticsEnabled}
-            onValueChange={setAnalyticsEnabled}
-            trackColor={{ false: '#767570', true: colors.primary }}
-            thumbColor={analyticsEnabled ? 'colors.primary' : '#f4f3f2'}
-          />
-        </View>
-
-        <View style={styles.toggleRow}>
-          <Text style={styles.toggleLabel}>{t('settings.crashReports', 'Rapports de plantage')}</Text>
-          <Switch
-            value={crashReporting}
-            onValueChange={setCrashReporting}
-            trackColor={{ false: '#767570', true: colors.primary }}
-            thumbColor={crashReporting ? 'colors.primary' : '#f4f3f2'}
-          />
-        </View>
-      </View>
-
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>{t('settings.dataManagement', 'Gestion des données')}</Text>
-
-        <TouchableOpacity style={styles.option}>
-          <Text style={styles.optionText}>{t('settings.downloadData', 'Télécharger mes données')}</Text>
-          <Text style={styles.arrow}>›</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.option}>
-          <Text style={styles.optionText}>{t('settings.deleteAccount', 'Supprimer mon compte')}</Text>
-          <Text style={[styles.optionText, styles.dangerText]}>Supprimer</Text>
-        </TouchableOpacity>
-      </View>
-
-      <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-        <Text style={styles.backText}>{t('common.back', 'Retour')}</Text>
-      </TouchableOpacity>
-    </SafeAreaView>
+        <div className="overflow-hidden rounded-2xl bg-surface shadow-sm">
+          <p className="px-4 pt-3 text-base font-bold text-text-primary">
+            {t('settings.dataManagement', 'Gestion des donnees')}
+          </p>
+          <button className="flex w-full items-center justify-between px-4 py-3.5">
+            <span className="flex items-center gap-3 text-base text-text-primary">
+              <Download size={18} className="text-text-muted" />
+              {t('settings.downloadData', 'Telecharger mes donnees')}
+            </span>
+            <ChevronRight size={18} className="text-text-muted" />
+          </button>
+          <button className="flex w-full items-center justify-between px-4 py-3.5">
+            <span className="flex items-center gap-3 text-base font-medium text-error">
+              <Trash2 size={18} />
+              {t('settings.deleteAccount', 'Supprimer mon compte')}
+            </span>
+            <span className="text-sm font-semibold text-error">
+              {t('common.delete', 'Supprimer')}
+            </span>
+          </button>
+        </div>
+      </div>
+    </FullScreenPage>
   );
 }
-

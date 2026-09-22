@@ -10,7 +10,7 @@ import type { IFsrsEngine, FsrsState } from '@/domains/fsrs';
 import { Rating as FsrsRating } from '@/domains/fsrs';
 import type { IStorage } from '@/infrastructure/storage/storage-types';
 import { eventBus, DomainEventTypes } from '../events';
-import type { MemorizationRecord, ReviewLogEntry, WordPerformance, MemorizationTarget} from './entities';
+import type { MemorizationRecord, ReviewLogEntry, WordPerformance, WordPerformanceSnapshot, MemorizationTarget} from './entities';
 import { MemorizationTargetType, ContentReference } from './entities';
 
 export class MemorizationService {
@@ -139,7 +139,7 @@ export class MemorizationService {
         stabilityAfter: newFsrsState.stability,
         difficultyBefore: difficultyBeforeValue,
         difficultyAfter: newFsrsState.difficulty,
-        wordPerformance: (wordPerformance as any) || [],
+        wordPerformance: (wordPerformance ?? []) as unknown as WordPerformanceSnapshot[],
       };
       await this.saveReviewLog(reviewLog, effectiveProfileId);
 

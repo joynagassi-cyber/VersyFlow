@@ -1,73 +1,88 @@
-/* ─── VersyFlow Global Styles ──────────────────────────────────────────────── */
+/* VersyFlow Global Styles - "Vif & inspirant" brand system */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root,
 :root[data-theme='light'] {
-  /* Primary */
-  --color-primary: #e91e8c;
-  --color-primary-light: #ffb6cc;
-  --color-primary-dark: #b30069;
+  /* Primary - Vivid Magenta (from the logo) */
+  --color-primary: #d81b97;
+  --color-primary-light: #ff9ee0;
+  --color-primary-dark: #a60d6e;
+
+  /* Accent - logo red (for secondary CTAs / highlights) */
+  --color-accent: #ff2d55;
+  --color-accent-light: #ff7a93;
 
   /* Backgrounds */
-  --color-background: #fcf9f8;
+  --color-background: #fcf9fa;
   --color-surface: #ffffff;
-  --color-surface-tint: #fff0f6;
+  --color-surface-tint: #fff0f7;
   --color-surface-elevated: #ffffff;
 
   /* Borders & Dividers */
-  --color-border: #ffe4ee;
-  --color-divider: #fff0f6;
+  --color-border: #fbd9ec;
+  --color-divider: #fde6f1;
 
   /* Text */
-  --color-text-primary: #2d2d2d;
-  --color-text-secondary: #594048;
-  --color-text-tertiary: #6e6e6e;
-  --color-text-muted: #a0a0a0;
-  --color-text-placeholder: #c0c0c0;
+  --color-text-primary: #241019;
+  --color-text-secondary: #5a3a48;
+  --color-text-tertiary: #6e5a63;
+  --color-text-muted: #a99ca3;
+  --color-text-placeholder: #c7bcc2;
 
   /* Semantic */
-  --color-success: #008733;
-  --color-success-light: #e8f5e9;
-  --color-error: #ff6b6b;
-  --color-error-light: #ffebee;
+  --color-success: #00a86b;
+  --color-success-light: #e8f8f1;
+  --color-error: #ff4d6d;
+  --color-error-light: #ffe6ea;
   --color-warning: #ff9500;
   --color-warning-light: #fff3e0;
   --color-info: #007aff;
   --color-info-light: #e3f2fd;
 
   /* Icon backgrounds */
-  --color-icon-bg-rose: #ffe4ee;
-  --color-icon-bg-purple: #eadce2;
+  --color-icon-bg-rose: #fde1f0;
+  --color-icon-bg-purple: #efe0f4;
   --color-icon-bg-blue: #e3f2fd;
-  --color-icon-bg-green: #e8f5e9;
+  --color-icon-bg-green: #e8f8f1;
   --color-icon-bg-orange: #fff3e0;
+  --color-icon-bg-teal: #e0f5f3;
+  --color-icon-bg-indigo: #e8eaf6;
 
   color-scheme: light;
 }
 
 [data-theme='dark'] {
-  --color-primary: #e91e8c;
-  --color-primary-light: #ff6bac;
-  --color-primary-dark: #ff6bac;
+  /* Primary - lighter magenta for contrast on dark */
+  --color-primary: #f472d6;
+  --color-primary-light: #ff9ee0;
+  --color-primary-dark: #c21585;
 
-  --color-background: #121212;
-  --color-surface: #1e1e1e;
-  --color-surface-tint: #2a1a24;
-  --color-surface-elevated: #2a2a2a;
+  /* Accent */
+  --color-accent: #ff5a7a;
+  --color-accent-light: #ff8fa5;
 
+  /* Backgrounds */
+  --color-background: #120a12;
+  --color-surface: #1c121c;
+  --color-surface-tint: #241620;
+  --color-surface-elevated: #261823;
+
+  /* Borders & Dividers */
   --color-border: rgba(255, 255, 255, 0.08);
   --color-divider: rgba(255, 255, 255, 0.06);
 
+  /* Text */
   --color-text-primary: #ffffff;
-  --color-text-secondary: #b3b3b3;
-  --color-text-tertiary: #6e6e6e;
-  --color-text-muted: #535353;
-  --color-text-placeholder: #404040;
+  --color-text-secondary: #cbb3c0;
+  --color-text-tertiary: #8f7f88;
+  --color-text-muted: #6a5a63;
+  --color-text-placeholder: #4a3a43;
 
+  /* Semantic */
   --color-success: #00c853;
-  --color-success-light: #1a2e1a;
+  --color-success-light: #14301f;
   --color-error: #ff5252;
   --color-error-light: #2e1a1a;
   --color-warning: #ffb300;
@@ -75,11 +90,14 @@
   --color-info: #448aff;
   --color-info-light: #1a2030;
 
-  --color-icon-bg-rose: #2a1a24;
-  --color-icon-bg-purple: #1f1520;
+  /* Icon backgrounds */
+  --color-icon-bg-rose: #2a1626;
+  --color-icon-bg-purple: #221428;
   --color-icon-bg-blue: #1a2030;
-  --color-icon-bg-green: #1a2e1a;
+  --color-icon-bg-green: #14301f;
   --color-icon-bg-orange: #2e2010;
+  --color-icon-bg-teal: #142e2b;
+  --color-icon-bg-indigo: #1a1a2e;
 
   color-scheme: dark;
 }
@@ -106,7 +124,7 @@
   }
 }
 
-/* Custom utility layer */
+/* Brand utility layer */
 @layer components {
   /* Serif font for scripture text */
   .bible-text {
@@ -114,5 +132,49 @@
     font-size: 20px;
     line-height: 34px;
     letter-spacing: 0.01em;
+  }
+
+  /* Vibrant hero gradient (magenta to accent) */
+  .gradient-hero {
+    background: linear-gradient(
+      135deg,
+      var(--color-primary) 0%,
+      var(--color-accent) 100%
+    );
+  }
+
+  /* Soft glow used behind heroes / onboarding */
+  .glow-primary {
+    box-shadow: 0 12px 40px -8px color-mix(in srgb, var(--color-primary) 55%, transparent);
+  }
+  .glow-accent {
+    box-shadow: 0 12px 40px -8px color-mix(in srgb, var(--color-accent) 55%, transparent);
+  }
+
+  /* Gradient text */
+  .text-gradient-hero {
+    background: linear-gradient(
+      120deg,
+      var(--color-primary) 0%,
+      var(--color-accent) 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Gentle entrance animation */
+  @keyframes vf-fade-in-up {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  .animate-fade-in-up {
+    animation: vf-fade-in-up 0.35s ease both;
   }
 }

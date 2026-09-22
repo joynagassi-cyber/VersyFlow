@@ -1,47 +1,27 @@
-import { useMemo } from 'react';
-/**
- * Not Found — 404 Fallback Screen
- */
-
 import { Link } from 'react-router-dom';
-import { StyleSheet, View, Text } from '@/components/ui/Primitives';
-import { useAppTheme } from '@/theme/useTheme';
+import { useTranslation } from 'react-i18next';
+import { Logo } from '@/components/brand/Logo';
+import { Button } from '@/components/ui/button';
 
+/** 404 — calm brand fallback (logo + wordmark + home CTA). */
 export default function NotFoundScreen() {
-  const { colors, sp, sh, rad } = useAppTheme();
-  const styles = useMemo(() => StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 20,
-    backgroundColor: colors.surfaceTint,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 16,
-    color: colors.textPrimary,
-  },
-  link: {
-    marginTop: 16,
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    backgroundColor: colors.primary,
-    borderRadius: 26,
-  },
-  linkText: {
-    fontSize: 14,
-    color: colors.surface,
-    fontWeight: '600',
-  },
-  }), [colors]);
+  const { t } = useTranslation();
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Cette page n'existe pas</Text>
-      <Link to="/" style={styles.link as any}>
-        <Text style={styles.linkText}>Retour à l'accueil</Text>
-      </Link>
-    </View>
+    <div className="flex min-h-full flex-col items-center justify-center gap-6 bg-background p-6 text-center animate-fade-in-up">
+      <Logo size={96} />
+      <div>
+        <p className="text-gradient-hero text-5xl font-extrabold tracking-tight">404</p>
+        <p className="mt-2 text-lg font-semibold text-text-primary">
+          {t('notFound.title', "Cette page n'existe pas")}
+        </p>
+        <p className="mt-1 text-sm text-text-muted">
+          {t('notFound.subtitle', 'Le lien est peut-etre casse ou la page a ete deplacee.')}
+        </p>
+      </div>
+      <Button asChild variant="default" className="mt-2">
+        <Link to="/tabs/home">{t('notFound.back', "Retour a l'accueil")}</Link>
+      </Button>
+    </div>
   );
 }

@@ -10,9 +10,9 @@ import { StyleSheet, Platform } from '@/components/ui/Primitives';
 
 export const Colors = {
   // Primary — Sacred Rose
-  primary: '#E91E8C',
-  primaryLight: '#FFB6CC',
-  primaryDark: '#B30069',
+  primary: '#d81b97',
+  primaryLight: '#ff9ee0',
+  primaryDark: '#a60d6e',
 
   // Backgrounds
   background: '#fcf9f8',
@@ -65,7 +65,7 @@ export const Colors = {
 
   // Status indicators
   statusNew: '#A0A0A0',
-  statusReview: '#E91E8C',
+  statusReview: '#d81b97',
   statusLearned: '#008733',
 
   // Icon backgrounds
@@ -81,7 +81,7 @@ export const Colors = {
   // Aliases used across the codebase
   outline: '#B3B3B3',
   onSurface: '#FFFFFF',
-  primaryFixed: '#E91E8C',
+  primaryFixed: '#d81b97',
 } as const;
 
 // Backward-compatible properties
@@ -132,9 +132,9 @@ const typographyFamilies = {
 
 export const ColorsDark = {
   // Primary — Sacred Rose (same, works on dark)
-  primary: '#E91E8C',
-  primaryLight: '#FFB6CC',
-  primaryDark: '#FF6BAC',
+  primary: '#f472d6',
+  primaryLight: '#ff9ee0',
+  primaryDark: '#c21585',
 
   // Backgrounds
   background: '#121212',
@@ -187,7 +187,7 @@ export const ColorsDark = {
 
   // Status indicators
   statusNew: '#6E6E6E',
-  statusReview: '#E91E8C',
+  statusReview: '#f472d6',
   statusLearned: '#00C853',
 
   // Icon backgrounds
@@ -203,7 +203,7 @@ export const ColorsDark = {
   // Aliases used across the codebase
   outline: '#6E6E6E',
   onSurface: '#FFFFFF',
-  primaryFixed: '#E91E8C',
+  primaryFixed: '#f472d6',
 } as const;
 
 // ─── Typography Scale ────────────────────────────────────────────────────────

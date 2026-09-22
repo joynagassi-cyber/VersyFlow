@@ -1,77 +1,39 @@
-/**
- * SplashScreen — App Entry Point
- * Displays the VersyFlow logo (image asset) + tagline while the app
- * initializes. Uses the same logo as the app icon (assets/icons/versyflow_logo_app.png).
- */
-
 import { useEffect, useState } from 'react';
-import { View, Text, Image, StyleSheet } from '@/components/ui/Primitives';
-import { useAppTheme } from '@/theme/useTheme';
-import logoUrl from '@/assets/icons/versyflow_logo_app.png?url';
+import { useTranslation } from 'react-i18next';
+import { AppIcon } from '@/components/brand/AppIcon';
+import { cn } from '@/lib/utils';
 
 interface Props {
   onFinish: () => void;
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  logoContainer: {
-    alignItems: 'center',
-  },
-  logo: {
-    fontSize: 44,
-    fontWeight: '800',
-    letterSpacing: -1,
-  },
-  logoImage: {
-    width: 120,
-    height: 120,
-    marginBottom: 16,
-  },
-  tagline: {
-    fontSize: 16,
-    marginTop: 12,
-    textAlign: 'center',
-    paddingHorizontal: 32,
-  },
-});
-
 export default function SplashScreen({ onFinish }: Props) {
-  const { colors } = useAppTheme();
+  const { t } = useTranslation();
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     requestAnimationFrame(() => setVisible(true));
-    const timer = setTimeout(onFinish, 2000);
+    const timer = setTimeout(onFinish, 1600);
     return () => clearTimeout(timer);
-  }, []);
+  }, [onFinish]);
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
-      <View
-        style={[
-          styles.logoContainer,
-          {
-            opacity: visible ? 1 : 0,
-            transform: `scale(${visible ? 1 : 0.8})`,
-            transition: 'opacity 0.8s ease, transform 0.8s ease',
-          },
-        ]}
+    <div className="relative flex h-full flex-col items-center justify-center overflow-hidden bg-background">
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-surface-tint via-background to-background" />
+      <div
+        className={cn(
+          'relative flex flex-col items-center transition-all duration-700',
+          visible ? 'translate-y-0 scale-100 opacity-100' : 'translate-y-4 scale-95 opacity-0',
+        )}
       >
-        <Image
-          source={logoUrl}
-          style={[styles.logoImage, { opacity: visible ? 1 : 0, transition: 'opacity 0.8s ease' }]}
-          alt="VersyFlow"
-        />
-        <Text style={[styles.logo, { color: colors.primary }]}>VersyFlow</Text>
-        <Text style={[styles.tagline, { color: colors.textSecondary }]}>
-          Mémorisation biblique intuitive
-        </Text>
-      </View>
-    </View>
+        <div className="glow-primary rounded-[28%] bg-surface p-1">
+          <AppIcon size={104} rounded />
+        </div>
+        <h1 className="text-gradient-hero mt-5 text-3xl font-extrabold tracking-tight">VersyFlow</h1>
+        <p className="mt-2 px-8 text-center text-sm text-text-tertiary">
+          {t('onboarding.tagline', "Mémorisation biblique intuitive")}
+        </p>
+      </div>
+    </div>
   );
 }

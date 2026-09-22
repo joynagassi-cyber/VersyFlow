@@ -1,252 +1,180 @@
-/**
- * Profile Screen — User Profile Management
- * Displays user info and allows basic profile updates
- */
-
-import { useState, useMemo} from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  StyleSheet,
-  ScrollView,
-  SafeAreaView,
-  Alert,
-} from '@/components/ui/Primitives';
-import { useAppTheme } from '@/theme/useTheme';
-import { useRouter } from '@/hooks/useIonicNavigation';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { Pencil, LogOut, Users, Globe, BookText, Download, UsersRound } from 'lucide-react';
+import { FullScreenPage } from '@/components/layout/FullScreenPage';
+import { ListItem } from '@/components/ui/ListItem';
+import { Button } from '@/components/ui/button';
 import { useAuthStore } from '@/store/auth-store';
 import { useSettingsStore } from '@/store/settings-store';
+import { useActiveProfile } from '@/hooks/useActiveProfile';
+import { getMemorizationService } from '@/services/memorization-service-factory';
+import { getFsrsEngine } from '@/services/fsrs-factory';
+import { ProgressService } from '@/services/progress-service';
+import type { ProgressStats } from '@/services/stats-calculator';
+import { cn } from '@/lib/utils';
 
-export default function ProfileScreen() {
-  const { colors, sp, sh, rad } = useAppTheme();
-  const styles = useMemo(() => StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.surfaceTint,
-  },
-  content: {
-    padding: 16,
-    paddingBottom: 32,
-  },
-  header: {
-    alignItems: 'center',
-    paddingVertical: 32,
-  },
-  avatar: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    backgroundColor: colors.primary,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  avatarText: {
-    fontSize: 32,
-    fontWeight: '700',
-    color: colors.surface,
-  },
-  email: {
-    fontSize: 14,
-    color: colors.textTertiary,
-  },
-  section: {
-    backgroundColor: colors.surface,
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 16,
-  },
-  sectionTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: colors.textPrimary,
-    marginBottom: 16,
-  },
-  field: {
-    marginBottom: 16,
-  },
-  fieldLast: {
-    marginBottom: 0,
-  },
-  label: {
-    fontSize: 14,
-    color: colors.textTertiary,
-    marginBottom: 8,
-  },
-  input: {
-    backgroundColor: colors.surfaceElevated,
-    borderRadius: 8,
-    padding: 12,
-    fontSize: 16,
-    color: colors.textPrimary,
-  },
-  value: {
-    fontSize: 16,
-    color: colors.textPrimary,
-  },
-  translationButton: {
-    backgroundColor: colors.surfaceElevated,
-    borderRadius: 8,
-    padding: 12,
-  },
-  offlineNotice: {
-    backgroundColor: colors.surfaceTint,
-    borderRadius: 8,
-    padding: 12,
-  },
-  offlineText: {
-    fontSize: 14,
-    color: colors.textTertiary,
-    lineHeight: 20,
-  },
-  button: {
-    backgroundColor: colors.primary,
-    borderRadius: 26,
-    paddingVertical: 14,
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  buttonText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: colors.surface,
-  },
-  buttonGhost: {
-    backgroundColor: 'transparent',
-    borderRadius: 26,
-    paddingVertical: 14,
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: colors.primary,
-  },
-  buttonGhostText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: colors.primary,
-  },
-  backButton: {
-    paddingVertical: 12,
-    alignItems: 'center',
-  },
-  backButtonText: {
-    fontSize: 14,
-    color: colors.textMuted,
-    textDecorationLine: 'underline',
-  },
-  }), [colors]);
-  const router = useRouter();
-  const { user, signOut } = useAuthStore();
-  const { bibleTranslation, setBibleTranslation } = useSettingsStore();
+const TRANSLATION_LABELS: Record<string, string> = {
+  lsg: 'Louis Segond (1910)',
+  ostervald: 'Ostervald (1930)',
+};
 
-  const [displayName, setDisplayName] = useState(user?.display_name || '');
-  const [isEditing, setIsEditing] = useState(false);
-
-  const handleSaveProfile = async () => {
-    if (!user) return;
-    // TODO: Update profile via authService
-    setIsEditing(false);
-    Alert.alert('Succès', 'Profil mis à jour');
-  };
-
-  const handleSignOut = () => {
-    Alert.alert(
-      'Déconnexion',
-      'Êtes-vous sûr de vouloir vous déconnecter ?',
-      [
-        { text: 'Annuler', style: 'cancel' },
-        {
-          text: 'Déconnexion',
-          style: 'destructive',
-          onPress: async () => {
-            await signOut();
-            router.replace('/auth/login');
-          },
-        },
-      ]
-    );
-  };
-
+function StatTile({ value, label }: { value: number; label: string }) {
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.content}>
-        {/* Profile Header */}
-        <View style={styles.header}>
-          <View style={styles.avatar}>
-            <Text style={styles.avatarText}>
-              {(user?.display_name || 'U').charAt(0).toUpperCase()}
-            </Text>
-          </View>
-          <Text style={styles.email}>
-            {user?.userId || 'Mode hors ligne'}
-          </Text>
-        </View>
-
-        {/* Profile Info */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Informations</Text>
-
-          {user ? (
-            <>
-              <View style={styles.field}>
-                <Text style={styles.label}>Nom d'affichage</Text>
-                {isEditing ? (
-                  <TextInput
-                    style={styles.input}
-                    value={displayName}
-                    onChangeText={setDisplayName}
-                    autoCapitalize="words"
-                  />
-                ) : (
-                  <TouchableOpacity onPress={() => setIsEditing(true)}>
-                    <Text style={styles.value}>{displayName || 'Définir un nom'}</Text>
-                  </TouchableOpacity>
-                )}
-              </View>
-
-              <View style={styles.field}>
-                <Text style={styles.label}>Traduction Bible par défaut</Text>
-                <TouchableOpacity
-                  style={styles.translationButton}
-                  onPress={() => {
-                    const next = bibleTranslation === 'lsg' ? 'kjv' : 'lsg';
-                    setBibleTranslation(next);
-                  }}
-                >
-                  <Text style={styles.value}>{bibleTranslation === 'lsg' ? 'Louis Segond (1910)' : 'King James Version'}</Text>
-                </TouchableOpacity>
-              </View>
-            </>
-          ) : (
-            <View style={styles.offlineNotice}>
-              <Text style={styles.offlineText}>
-                Vous utilisez VersyFlow en mode local. Connectez-vous pour synchroniser vos données.
-              </Text>
-            </View>
-          )}
-        </View>
-
-        {/* Actions */}
-        {user && (
-          <View style={styles.section}>
-            {isEditing && (
-              <TouchableOpacity style={styles.button} onPress={handleSaveProfile}>
-                <Text style={styles.buttonText}>Sauvegarder</Text>
-              </TouchableOpacity>
-            )}
-
-            <TouchableOpacity style={styles.buttonGhost} onPress={handleSignOut}>
-              <Text style={styles.buttonGhostText}>Se déconnecter</Text>
-            </TouchableOpacity>
-          </View>
-        )}
-
-        <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-          <Text style={styles.backButtonText}>Retour</Text>
-        </TouchableOpacity>
-      </ScrollView>
-    </SafeAreaView>
+    <div className="rounded-2xl bg-surface p-3 text-center shadow-sm">
+      <p className="text-2xl font-extrabold text-primary">{value}</p>
+      <p className="mt-1 text-[11px] font-medium uppercase tracking-wide text-text-muted">{label}</p>
+    </div>
   );
 }
 
+export default function ProfileScreen() {
+  const navigate = useNavigate();
+  const { t } = useTranslation();
+  const { user, isAuthenticated, signOut } = useAuthStore();
+  const { bibleTranslation, setBibleTranslation } = useSettingsStore();
+  const { activeProfile, profiles } = useActiveProfile();
+  const [editing, setEditing] = useState(false);
+  const [name, setName] = useState(user?.display_name || activeProfile?.displayName || '');
+  const [stats, setStats] = useState<ProgressStats | null>(null);
+
+  const profileId = activeProfile?.id ?? 'default';
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const service = getMemorizationService(profileId);
+        const progress = new ProgressService(service, getFsrsEngine(), undefined, profileId);
+        const data = await progress.getStats();
+        if (!cancelled) setStats(data);
+      } catch {
+        if (!cancelled) setStats(null);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [profileId]);
+
+  const displayName = name || user?.display_name || activeProfile?.displayName || '';
+  const initial = (displayName || 'U').charAt(0).toUpperCase();
+
+  const toggleTranslation = () =>
+    setBibleTranslation(bibleTranslation === 'lsg' ? 'ostervald' : 'lsg');
+
+  const handleSignOut = async () => {
+    if (window.confirm(t('profile.confirmSignOut', 'Se deconnecter ?'))) {
+      await signOut();
+      navigate('/auth/login');
+    }
+  };
+
+  return (
+    <FullScreenPage title={t('common.profil', 'Profil')} showBack>
+      <div className="mx-auto max-w-md space-y-5">
+        {/* Header card */}
+        <div className="gradient-hero glow-primary rounded-3xl p-5 text-white">
+          <div className="flex items-center gap-4">
+            <span className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-white/25 text-2xl font-extrabold">
+              {initial}
+            </span>
+            <div className="min-w-0 flex-1">
+              {editing ? (
+                <input
+                  value={name}
+                  autoFocus
+                  onChange={(e) => setName(e.target.value)}
+                  onBlur={() => setEditing(false)}
+                  onKeyDown={(e) => e.key === 'Enter' && setEditing(false)}
+                  className="w-full rounded-lg bg-white/20 px-2 py-1 text-lg font-bold text-white outline-none"
+                />
+              ) : (
+                <p className="truncate text-lg font-bold">{displayName || t('profile.setName', 'Definir un nom')}</p>
+              )}
+              <p className="truncate text-sm text-white/80">{user?.userId || 'Mode local'}</p>
+              <span className="mt-2 inline-block rounded-full bg-white/20 px-2.5 py-0.5 text-xs font-semibold">
+                {isAuthenticated ? t('profile.connected', 'Connecte') : t('profile.local', 'Local')}
+              </span>
+            </div>
+            <button
+              onClick={() => setEditing(true)}
+              className="rounded-full bg-white/20 p-2 active:bg-white/30"
+              aria-label="edit"
+            >
+              <Pencil size={16} />
+            </button>
+          </div>
+        </div>
+
+        {/* Stats band */}
+        <div className="grid grid-cols-2 gap-3">
+          <StatTile value={stats?.streakCount ?? 0} label={t('progress.streak', 'Serie')} />
+          <StatTile value={stats?.masteredVerses ?? 0} label={t('progress.mastered', 'Maitres')} />
+          <StatTile value={stats?.totalVerses ?? 0} label={t('progress.versesMemorized', 'Versets')} />
+          <StatTile value={stats?.dueForReview ?? 0} label={t('progress.toReview', 'A reviser')} />
+        </div>
+
+        {/* Preferences */}
+        <div className="overflow-hidden rounded-2xl bg-surface shadow-sm">
+          <h2 className="px-4 pt-4 text-xs font-bold uppercase tracking-wide text-text-muted">
+            {t('profile.preferences', 'Preferences')}
+          </h2>
+          <div className="mt-2 flex flex-col divide-y divide-[color:var(--color-divider)]">
+            <ListItem
+              icon={BookText}
+              label={t('settings.bibleTranslation', 'Traduction')}
+              value={TRANSLATION_LABELS[bibleTranslation] ?? bibleTranslation}
+              onClick={toggleTranslation}
+            />
+            <ListItem
+              icon={Globe}
+              label={t('settings.uiLanguage', 'Langue')}
+              onClick={() => navigate('/settings/languages')}
+              showChevron
+            />
+            <ListItem
+              icon={Users}
+              label={t('profile.activeProfile', 'Profil actif')}
+              value={activeProfile?.displayName}
+              onClick={() => navigate('/profile/select')}
+              showChevron
+            />
+            <ListItem
+              icon={UsersRound}
+              label={t('profile.createProfile', 'Creer un profil')}
+              onClick={() => navigate('/profile/create')}
+              showChevron
+            />
+            <ListItem
+              icon={Users}
+              label={t('settings.family', 'Famille active')}
+              onClick={() => navigate('/family/home')}
+              showChevron
+            />
+          </div>
+        </div>
+
+        {/* Actions */}
+        <div className="flex flex-col gap-3">
+          <Button variant="outline" onClick={() => navigate('/settings/backup')}>
+            <Download size={18} />
+            {t('settings.exportData', 'Exporter mes donnees')}
+          </Button>
+          {profiles.length > 1 && (
+            <Button variant="ghost" onClick={() => navigate('/profile/select')}>
+              <UsersRound size={18} />
+              {t('profile.manageProfiles', 'Gerer les profils')}
+            </Button>
+          )}
+          {isAuthenticated && (
+            <Button variant="ghost" className={cn('text-error')} onClick={handleSignOut}>
+              <LogOut size={18} />
+              {t('nav.signOut', 'Se deconnecter')}
+            </Button>
+          )}
+        </div>
+      </div>
+    </FullScreenPage>
+  );
+}
