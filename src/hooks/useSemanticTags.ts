@@ -35,13 +35,32 @@ export interface ChapterSemanticTags {
   community: Community | null;
 }
 
-/** Locale-preferred label of a concept (fr → en → canonical). */
+/**
+ * Format a canonical verse key (`bookId:chapter:verse`) for display.
+ * Accepts alphanumeric book ids (e.g. `1co`), falls back to the raw key.
+ */
+export function formatVerseKey(key: string): string {
+  const m = /^([a-z0-9]+):(\d+):(\d+)$/i.exec(key);
+  if (!m) return key;
+  return `${m[1]} ${m[2]}:${m[3]}`;
+}
+
+/**
+ * Locale-preferred label of a concept.
+ *
+ * Resolution: exact BCP-47 tag (e.g. `pt-BR`) → base language (`pt`) →
+ * canonical_name. The engine stays fully offline and i18n-agnostic: each
+ * `Concept` carries `labels_by_language` (a per-language label map, not a
+ * per-translation map — translation and UI language are orthogonal
+ * dimensions by design), so the chip re-labels itself the moment the app
+ * language changes.
+ */
 export function conceptLabel(
   concept: Pick<Concept, 'canonical_name' | 'labels_by_language'>,
   lang: string,
 ): string {
   const labels = concept.labels_by_language ?? {};
-  const base = lang?.split('-')?.[0];
+  const base = lang?.split('-')?.[0] ?? '';
   return labels[lang] ?? labels[base] ?? concept.canonical_name;
 }
 

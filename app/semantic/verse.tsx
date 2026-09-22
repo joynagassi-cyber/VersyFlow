@@ -22,6 +22,7 @@ import {
 } from 'lucide-react';
 import FullScreenPage from '@/components/layout/FullScreenPage';
 import { useVerseView } from '@/hooks/useSemanticViews';
+import { formatVerseKey } from '@/hooks/useSemanticTags';
 import { loadTranslationBooks } from '@/services/bible-text-service';
 import { useSettingsStore } from '@/store/settings-store';
 
@@ -30,15 +31,8 @@ function displayLabel(
   lang: string,
 ): string {
   const labels = concept.labels_by_language ?? {};
-  const base = lang?.split('-')?.[0];
+  const base = lang?.split('-')?.[0] ?? '';
   return labels[lang] ?? labels[base] ?? concept.canonical_name;
-}
-
-function formatVerseKey(key: string): string {
-  // `bookId:ch:verse` → `bookId ch:verse`
-  const m = /^([a-z]+):(\d+):(\d+)$/i.exec(key);
-  if (!m) return key;
-  return `${m[1]} ${m[2]}:${m[3]}`;
 }
 
 export default function VerseView() {
