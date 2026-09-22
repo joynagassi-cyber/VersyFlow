@@ -2,7 +2,7 @@
  * Achievement Screen — Badges and accomplishments
  */
 
-import { useState, useMemo} from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import {
   View,
   Text,
@@ -16,6 +16,10 @@ import { useAppTheme } from '@/theme/useTheme';
 import { useRouter } from '@/hooks/useIonicNavigation';
 import { IonIcon } from '@/components/ui/Primitives'
 import { book, flame, medal, refresh, trophy, arrowBack, checkmark, checkmarkCircle, lockClosed, star } from 'ionicons/icons';
+import { useActiveProfile } from '@/hooks/useActiveProfile';
+import { getMemorizationService } from '@/services/memorization-service-factory';
+import { getFsrsEngine } from '@/services/fsrs-factory';
+import { ProgressService } from '@/services/progress-service';
 
 interface Achievement {
   id: string;
@@ -508,14 +512,87 @@ export default function AchievementScreen() {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [showAll, setShowAll] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const { activeProfile } = useActiveProfile();
+  const profileId = activeProfile?.id ?? 'default';
+  const [data, setData] = useState<{
+    total: number; mastered: number; totalReviews: number;
+    streak: number; longest: number; collections: number;
+  } | null>(null);
 
-  const unlockedCount = ACHIEVEMENTS.filter(a => a.unlocked).length;
-  const totalCount = ACHIEVEMENTS.length;
+  useEffect(() => {
+    let cancelled = false;
+    const load = async () => {
+      try {
+        const service = getMemorizationService(profileId);
+        const [records, progress] = await Promise.all([
+          service.getAllMemorized(),
+          new ProgressService(service, getFsrsEngine(), undefined, profileId).getStats(),
+        ]);
+        if (cancelled) return;
+        let collections = 0;
+        try {
+          const raw = localStorage.getItem('versyflow:collections');
+          const parsed = raw ? (JSON.parse(raw) as Array<{ id: string }>) : [];
+          collections = parsed.filter((c) => c.id.startsWith('c-')).length;
+        } catch {
+          // No collections persisted yet
+        }
+        setData({
+          total: records.length,
+          mastered: records.filter((r) => r.status === 'mastered').length,
+          totalReviews: records.reduce((s, r) => s + (r.reviewCount ?? 0), 0),
+          streak: progress.streakCount,
+          longest: Math.max(progress.streakCount, progress.longestStreak),
+          collections,
+        });
+      } catch (e) {
+        console.error('[Achievements] data load failed:', e);
+      }
+    };
+    void load();
+    return () => {
+      cancelled = true;
+    };
+  }, [profileId]);
+
+  // Real unlock state derived from learner data (the catalog above keeps the
+  // badge definitions only).
+  const derived = useMemo(() => {
+    if (!data) return {};
+    const rule = (threshold: number, value: number) => ({
+      unlocked: value >= threshold,
+      progress: Math.min(100, Math.round((value / threshold) * 100)),
+    });
+    const d: Record<string, { unlocked: boolean; progress: number }> = {};
+    d.first_verse = rule(1, data.total);
+    d.ten_verses = rule(10, data.total);
+    d.fifty_verses = rule(50, data.total);
+    d.hundred_verses = rule(100, data.total);
+    d.streak_7 = rule(7, data.longest);
+    d.streak_30 = rule(30, data.longest);
+    d.streak_100 = rule(100, data.longest);
+    d.first_review = rule(1, data.totalReviews);
+    d.fifty_reviews = rule(50, data.totalReviews);
+    d.hundred_reviews = rule(100, data.totalReviews);
+    d.first_collection = rule(1, data.collections);
+    d.five_collections = rule(5, data.collections);
+    d.patriarch = rule(200, data.total);
+    d.gospel = rule(50, data.mastered);
+    return d;
+  }, [data]);
+
+  const achievements = useMemo(
+    () => ACHIEVEMENTS.map((a) => ({ ...a, ...(derived[a.id] ?? { unlocked: false, progress: 0 }) })),
+    [derived],
+  );
+
+  const unlockedCount = achievements.filter(a => a.unlocked).length;
+  const totalCount = achievements.length;
   const overallProgress = (unlockedCount / totalCount) * 100;
 
   const filteredAchievements = selectedCategory === 'all'
-    ? ACHIEVEMENTS
-    : ACHIEVEMENTS.filter(a => a.category === selectedCategory);
+    ? achievements
+    : achievements.filter(a => a.category === selectedCategory);
 
   const displayedAchievements = showAll ? filteredAchievements : filteredAchievements.slice(0, 6);
   const selectedAchievement = displayedAchievements.find((a) => a.id === selectedId) ?? null;
