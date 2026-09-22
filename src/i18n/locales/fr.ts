@@ -130,6 +130,7 @@ export const fr = {
     concept: 'Concept',
     community: 'Communauté',
     related: 'Concepts liés',
+    tags: 'Concepts',
     verses: 'Verset{count}',
     crossRefs: 'Références croisées',
     openVerse: 'Ouvrir le verset',

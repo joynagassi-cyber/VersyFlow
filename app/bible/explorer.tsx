@@ -21,6 +21,8 @@ import { BIBLE_BOOKS } from '@/domains/bible/entities';
 import { loadTranslationBooks } from '@/services/bible-text-service';
 import { eventBus, DomainEventTypes } from '@/domains/events';
 import { useSettingsStore } from '@/store/settings-store';
+import { useChapterSemanticTags } from '@/hooks/useSemanticTags';
+import VerseSemanticTags from '@/components/semantic/VerseSemanticTags';
 
 type ViewMode = 'books' | 'chapters' | 'verses';
 
@@ -34,6 +36,9 @@ export default function BibleExplorerScreen() {
 
   const lang = i18n.language ?? 'fr';
   const selectedBook = BIBLE_BOOKS.find((b) => b.id === selectedBookId) || null;
+
+  const { tags } = useChapterSemanticTags(selectedBookId, selectedChapter);
+  const tagsByVerse = new Map((tags?.entries ?? []).map((e) => [e.verse, e.concepts]));
 
   const verses = useMemo(
     () =>
@@ -272,6 +277,7 @@ export default function BibleExplorerScreen() {
                     {t('errors.verseNotFound', 'Verset non disponible dans cette traduction')}
                   </p>
                 )}
+                <VerseSemanticTags concepts={tagsByVerse.get(n) ?? []} />
                 <button
                   onClick={() => {
                     selectVerse(selectedBookId!, selectedChapter, n);

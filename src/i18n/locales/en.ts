@@ -129,6 +129,7 @@ export const en = {
     concept: 'Concept',
     community: 'Community',
     related: 'Related concepts',
+    tags: 'Concepts',
     verses: 'Verse{count}',
     crossRefs: 'Cross-references',
     openVerse: 'Open verse',

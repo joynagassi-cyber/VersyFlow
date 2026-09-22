@@ -11,6 +11,8 @@ import FullScreenPage from '@/components/layout/FullScreenPage';
 import { Button } from '@/components/ui/button';
 import { BIBLE_BOOKS } from '@/domains/bible/entities';
 import { loadTranslationBooks } from '@/services/bible-text-service';
+import { useChapterSemanticTags } from '@/hooks/useSemanticTags';
+import VerseSemanticTags from '@/components/semantic/VerseSemanticTags';
 
 export default function ChapterScreen() {
   const [params] = useSearchParams();
@@ -21,6 +23,9 @@ export default function ChapterScreen() {
   const chapter = Number(params.get('chapter') ?? '1');
   const book = BIBLE_BOOKS.find((b) => b.id === bookId) || BIBLE_BOOKS[0];
   const lang = i18n.language ?? 'fr';
+
+  const { tags } = useChapterSemanticTags(book.id, chapter);
+  const tagsByVerse = new Map((tags?.entries ?? []).map((e) => [e.verse, e.concepts]));
 
   const [verseTexts, setVerseTexts] = useState<Record<number, string>>({});
 
@@ -72,6 +77,7 @@ export default function ChapterScreen() {
                     </p>
                   )}
                 </div>
+                <VerseSemanticTags concepts={tagsByVerse.get(n) ?? []} />
               </div>
             );
           })}
