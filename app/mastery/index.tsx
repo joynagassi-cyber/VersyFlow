@@ -2,7 +2,7 @@
  * Mastery Screen — Verse mastery levels and progress
  */
 
-import { useState, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import {
   View,
   Text,
@@ -15,6 +15,9 @@ import { useAppTheme } from '@/theme/useTheme';
 import { shadowCss } from '@/theme/tokens';
 import { useRouter } from '@/hooks/useIonicNavigation';
 import { IonIcon } from '@/components/ui/Primitives';
+import { useActiveProfile } from '@/hooks/useActiveProfile';
+import { getMemorizationService } from '@/services/memorization-service-factory';
+import { StreakService } from '@/services/streak-service';
 import {
   trophy,
   analytics,
@@ -99,14 +102,24 @@ const MASTERY_LEVELS: MasteryLevel[] = [
   },
 ];
 
-const VERSE_STATISTICS = {
-  totalMemorized: 89,
-  inProgress: 15,
-  dueForReview: 8,
-  mastered: 66,
-  averageStability: 4.2,
-  currentStreak: 7,
-  totalSessions: 156,
+interface LiveMasteryStats {
+  totalMemorized: number;
+  inProgress: number;
+  dueForReview: number;
+  mastered: number;
+  averageStability: number;
+  currentStreak: number;
+  totalReviews: number;
+}
+
+const EMPTY_STATS: LiveMasteryStats = {
+  totalMemorized: 0,
+  inProgress: 0,
+  dueForReview: 0,
+  mastered: 0,
+  averageStability: 0,
+  currentStreak: 0,
+  totalReviews: 0,
 };
 
 export default function MasteryScreen() {
@@ -359,11 +372,65 @@ export default function MasteryScreen() {
   );
   const router = useRouter();
   const [selectedLevel, setSelectedLevel] = useState<string>('novice');
+  const [stats, setStats] = useState<LiveMasteryStats>(EMPTY_STATS);
+  const [levelCounts, setLevelCounts] = useState<Record<string, number>>({});
+  const { activeProfile } = useActiveProfile();
+  const profileId = activeProfile?.id ?? 'default';
 
-  const currentLevel = MASTERY_LEVELS.find((l) => l.verses >= 47) || MASTERY_LEVELS[0];
-  const nextLevel = MASTERY_LEVELS.find((l) => l.verses < 47);
+  useEffect(() => {
+    let cancelled = false;
+    const load = async () => {
+      try {
+        const service = getMemorizationService(profileId);
+        const [records, streak] = await Promise.all([
+          service.getAllMemorized(),
+          new StreakService(service, profileId).calculateStreak(),
+        ]);
+        if (cancelled) return;
+        const mastered = records.filter((r) => r.status === 'mastered').length;
+        const due = records.filter((r) => r.nextReviewAt && r.nextReviewAt <= Date.now()).length;
+        const avgStability = records.length
+          ? records.reduce((s, r) => s + (r.fsrsState?.stability ?? 0), 0) / records.length
+          : 0;
+        const totalReviews = records.reduce((s, r) => s + (r.reviewCount ?? 0), 0);
+        setStats({
+          totalMemorized: records.length,
+          inProgress: records.length - mastered,
+          dueForReview: due,
+          mastered,
+          averageStability: avgStability,
+          currentStreak: streak,
+          totalReviews,
+        });
+        // Verses that reached each level's stability threshold (novice = all).
+        const counts: Record<string, number> = {};
+        for (const level of MASTERY_LEVELS) {
+          counts[level.id] =
+            level.requiredStability <= 0
+              ? records.length
+              : records.filter((r) => (r.fsrsState?.stability ?? 0) >= level.requiredStability).length;
+        }
+        setLevelCounts(counts);
+      } catch (e) {
+        console.error('[Mastery] data load failed:', e);
+      }
+    };
+    void load();
+    return () => {
+      cancelled = true;
+    };
+  }, [profileId]);
+
+  // Highest unlocked level (array order novice -> master); progress = current
+  // average stability vs. the next level's required stability.
+  let currentIndex = 0;
+  MASTERY_LEVELS.forEach((level, i) => {
+    if ((levelCounts[level.id] ?? 0) > 0) currentIndex = i;
+  });
+  const currentLevel = MASTERY_LEVELS[currentIndex];
+  const nextLevel = MASTERY_LEVELS[currentIndex + 1] ?? null;
   const progressToNext = nextLevel
-    ? ((89 - nextLevel.verses) / (currentLevel.verses - nextLevel.verses)) * 100
+    ? Math.max(0, Math.min(100, (stats.averageStability / nextLevel.requiredStability) * 100))
     : 100;
 
   return (
@@ -393,8 +460,7 @@ export default function MasteryScreen() {
               <View style={[styles.progressFill, { width: `${progressToNext}%` }]} />
             </View>
             <Text style={styles.progressInfo}>
-              Il vous manque {Math.max(0, nextLevel.verses - 89).toFixed(0)} versets pour
-              atteindre {nextLevel.name}
+              Stabilité moyenne requise : {nextLevel.requiredStability}j — vous êtes à {stats.averageStability.toFixed(1)}j
             </Text>
           </View>
         )}
@@ -405,29 +471,29 @@ export default function MasteryScreen() {
           <View style={styles.statsGrid}>
             <View style={[styles.statCard, styles.statCardLarge]}>
               <IonIcon icon={book} size={24} color={colors.primary} />
-              <Text style={styles.statValue}>{VERSE_STATISTICS.totalMemorized}</Text>
+              <Text style={styles.statValue}>{stats.totalMemorized}</Text>
               <Text style={styles.statLabel}>Versets mémorisés</Text>
             </View>
             <View style={[styles.statCard, styles.statCardMedium]}>
               <IonIcon icon={flame} size={24} color={colors.error} />
-              <Text style={styles.statValue}>{VERSE_STATISTICS.currentStreak}</Text>
+              <Text style={styles.statValue}>{stats.currentStreak}</Text>
               <Text style={styles.statLabel}>Streak (jours)</Text>
             </View>
             <View style={[styles.statCard, styles.statCardMedium]}>
               <IonIcon icon={analytics} size={24} color={colors.info} />
-              <Text style={styles.statValue}>
-                {VERSE_STATISTICS.averageStability.toFixed(1)}j
-              </Text>
+                <Text style={styles.statValue}>
+                  {stats.averageStability.toFixed(1)}j
+                </Text>
               <Text style={styles.statLabel}>Stabilité moy.</Text>
             </View>
             <View style={[styles.statCard, styles.statCardMedium]}>
               <IonIcon icon={time} size={24} color={colors.warning} />
-              <Text style={styles.statValue}>{VERSE_STATISTICS.totalSessions}</Text>
-              <Text style={styles.statLabel}>Sessions total</Text>
+              <Text style={styles.statValue}>{stats.totalReviews}</Text>
+              <Text style={styles.statLabel}>Révisions</Text>
             </View>
             <View style={[styles.statCard, styles.statCardMedium]}>
               <IonIcon icon={checkmarkCircle} size={24} color={colors.success} />
-              <Text style={styles.statValue}>{VERSE_STATISTICS.mastered}</Text>
+              <Text style={styles.statValue}>{stats.mastered}</Text>
               <Text style={styles.statLabel}>Maîtrisés</Text>
             </View>
           </View>
@@ -437,7 +503,7 @@ export default function MasteryScreen() {
         <View style={styles.levelsSection}>
           <Text style={styles.sectionTitle}>Niveaux de maîtrise</Text>
           {MASTERY_LEVELS.map((level) => {
-            const isUnlocked = VERSE_STATISTICS.totalMemorized >= level.verses;
+            const isUnlocked = (levelCounts[level.id] ?? 0) > 0;
             const isCurrent = selectedLevel === level.id;
 
             return (
@@ -476,14 +542,14 @@ export default function MasteryScreen() {
                         style={[
                           styles.levelProgressFill,
                           {
-                            width: `${Math.min(100, (VERSE_STATISTICS.totalMemorized / level.verses) * 100)}%`,
+                            width: `${Math.min(100, ((levelCounts[level.id] ?? 0) / Math.max(1, stats.totalMemorized)) * 100)}%`,
                             backgroundColor: level.color,
                           },
                         ]}
                       />
                     </View>
                     <Text style={styles.levelCardVerses}>
-                      {Math.min(VERSE_STATISTICS.totalMemorized, level.verses)}/{level.verses}
+                      {levelCounts[level.id] ?? 0}/{stats.totalMemorized}
                     </Text>
                   </View>
                 </View>
