@@ -1,0 +1,413 @@
+{
+  "labels": {
+    "seed:faith": {
+      "canonicalKey": "seed:faith",
+      "label": "Faith",
+      "labelsByLanguage": {
+        "seed": "Faith",
+        "en": "Faith"
+      }
+    },
+    "seed:love of god": {
+      "canonicalKey": "seed:love of god",
+      "label": "Love of God",
+      "labelsByLanguage": {
+        "seed": "Love of God",
+        "en": "Love of God"
+      }
+    },
+    "seed:grace": {
+      "canonicalKey": "seed:grace",
+      "label": "Grace",
+      "labelsByLanguage": {
+        "seed": "Grace",
+        "en": "Grace"
+      }
+    },
+    "seed:salvation": {
+      "canonicalKey": "seed:salvation",
+      "label": "Salvation",
+      "labelsByLanguage": {
+        "seed": "Salvation",
+        "en": "Salvation"
+      }
+    },
+    "seed:redemption": {
+      "canonicalKey": "seed:redemption",
+      "label": "Redemption",
+      "labelsByLanguage": {
+        "seed": "Redemption",
+        "en": "Redemption"
+      }
+    },
+    "seed:forgiveness": {
+      "canonicalKey": "seed:forgiveness",
+      "label": "Forgiveness",
+      "labelsByLanguage": {
+        "seed": "Forgiveness",
+        "en": "Forgiveness"
+      }
+    },
+    "seed:repentance": {
+      "canonicalKey": "seed:repentance",
+      "label": "Repentance",
+      "labelsByLanguage": {
+        "seed": "Repentance",
+        "en": "Repentance"
+      }
+    },
+    "seed:repent": {
+      "canonicalKey": "seed:repent",
+      "label": "Repent",
+      "labelsByLanguage": {
+        "seed": "Repent",
+        "en": "Repent"
+      }
+    },
+    "seed:prayer": {
+      "canonicalKey": "seed:prayer",
+      "label": "Prayer",
+      "labelsByLanguage": {
+        "seed": "Prayer",
+        "en": "Prayer"
+      }
+    },
+    "seed:praise": {
+      "canonicalKey": "seed:praise",
+      "label": "Praise",
+      "labelsByLanguage": {
+        "seed": "Praise",
+        "en": "Praise"
+      }
+    },
+    "seed:worship": {
+      "canonicalKey": "seed:worship",
+      "label": "Worship",
+      "labelsByLanguage": {
+        "seed": "Worship",
+        "en": "Worship"
+      }
+    },
+    "seed:humility": {
+      "canonicalKey": "seed:humility",
+      "label": "Humility",
+      "labelsByLanguage": {
+        "seed": "Humility",
+        "en": "Humility"
+      }
+    },
+    "seed:patience": {
+      "canonicalKey": "seed:patience",
+      "label": "Patience",
+      "labelsByLanguage": {
+        "seed": "Patience",
+        "en": "Patience"
+      }
+    },
+    "seed:prudence": {
+      "canonicalKey": "seed:prudence",
+      "label": "Prudence",
+      "labelsByLanguage": {
+        "seed": "Prudence",
+        "en": "Prudence"
+      }
+    },
+    "seed:wisdom": {
+      "canonicalKey": "seed:wisdom",
+      "label": "Wisdom",
+      "labelsByLanguage": {
+        "seed": "Wisdom",
+        "en": "Wisdom"
+      }
+    },
+    "seed:hope": {
+      "canonicalKey": "seed:hope",
+      "label": "Hope",
+      "labelsByLanguage": {
+        "seed": "Hope",
+        "en": "Hope"
+      }
+    },
+    "seed:joy": {
+      "canonicalKey": "seed:joy",
+      "label": "Joy",
+      "labelsByLanguage": {
+        "seed": "Joy",
+        "en": "Joy"
+      }
+    },
+    "seed:peace": {
+      "canonicalKey": "seed:peace",
+      "label": "Peace",
+      "labelsByLanguage": {
+        "seed": "Peace",
+        "en": "Peace"
+      }
+    },
+    "seed:gospel": {
+      "canonicalKey": "seed:gospel",
+      "label": "Gospel",
+      "labelsByLanguage": {
+        "seed": "Gospel",
+        "en": "Gospel"
+      }
+    },
+    "seed:the commandments": {
+      "canonicalKey": "seed:the commandments",
+      "label": "The Commandments",
+      "labelsByLanguage": {
+        "seed": "The Commandments",
+        "en": "The Commandments"
+      }
+    },
+    "seed:creation": {
+      "canonicalKey": "seed:creation",
+      "label": "Creation",
+      "labelsByLanguage": {
+        "seed": "Creation",
+        "en": "Creation"
+      }
+    },
+    "seed:the flood": {
+      "canonicalKey": "seed:the flood",
+      "label": "The Flood",
+      "labelsByLanguage": {
+        "seed": "The Flood",
+        "en": "The Flood"
+      }
+    },
+    "seed:the exodus": {
+      "canonicalKey": "seed:the exodus",
+      "label": "The Exodus",
+      "labelsByLanguage": {
+        "seed": "The Exodus",
+        "en": "The Exodus"
+      }
+    },
+    "seed:manna": {
+      "canonicalKey": "seed:manna",
+      "label": "Manna",
+      "labelsByLanguage": {
+        "seed": "Manna",
+        "en": "Manna"
+      }
+    },
+    "seed:the tabernacle": {
+      "canonicalKey": "seed:the tabernacle",
+      "label": "The Tabernacle",
+      "labelsByLanguage": {
+        "seed": "The Tabernacle",
+        "en": "The Tabernacle"
+      }
+    },
+    "seed:sacrifice": {
+      "canonicalKey": "seed:sacrifice",
+      "label": "Sacrifice",
+      "labelsByLanguage": {
+        "seed": "Sacrifice",
+        "en": "Sacrifice"
+      }
+    },
+    "seed:passover": {
+      "canonicalKey": "seed:passover",
+      "label": "Passover",
+      "labelsByLanguage": {
+        "seed": "Passover",
+        "en": "Passover"
+      }
+    },
+    "seed:god's promises": {
+      "canonicalKey": "seed:god's promises",
+      "label": "God's Promises",
+      "labelsByLanguage": {
+        "seed": "God's Promises",
+        "en": "God's Promises"
+      }
+    },
+    "seed:the law": {
+      "canonicalKey": "seed:the law",
+      "label": "The Law",
+      "labelsByLanguage": {
+        "seed": "The Law",
+        "en": "The Law"
+      }
+    },
+    "seed:psalm hymn": {
+      "canonicalKey": "seed:psalm hymn",
+      "label": "Psalm Hymn",
+      "labelsByLanguage": {
+        "seed": "Psalm Hymn",
+        "en": "Psalm Hymn"
+      }
+    },
+    "seed:abraham": {
+      "canonicalKey": "seed:abraham",
+      "label": "Abraham",
+      "labelsByLanguage": {
+        "seed": "Abraham",
+        "en": "Abraham"
+      }
+    },
+    "seed:moses": {
+      "canonicalKey": "seed:moses",
+      "label": "Moses",
+      "labelsByLanguage": {
+        "seed": "Moses",
+        "en": "Moses"
+      }
+    },
+    "seed:david": {
+      "canonicalKey": "seed:david",
+      "label": "David",
+      "labelsByLanguage": {
+        "seed": "David",
+        "en": "David"
+      }
+    },
+    "seed:samuel": {
+      "canonicalKey": "seed:samuel",
+      "label": "Samuel",
+      "labelsByLanguage": {
+        "seed": "Samuel",
+        "en": "Samuel"
+      }
+    },
+    "seed:jeremiah": {
+      "canonicalKey": "seed:jeremiah",
+      "label": "Jeremiah",
+      "labelsByLanguage": {
+        "seed": "Jeremiah",
+        "en": "Jeremiah"
+      },
+      "bookId": "jer"
+    },
+    "seed:ezekiel": {
+      "canonicalKey": "seed:ezekiel",
+      "label": "Ezekiel",
+      "labelsByLanguage": {
+        "seed": "Ezekiel",
+        "en": "Ezekiel"
+      },
+      "bookId": "ezek"
+    },
+    "seed:john the baptist": {
+      "canonicalKey": "seed:john the baptist",
+      "label": "John the Baptist",
+      "labelsByLanguage": {
+        "seed": "John the Baptist",
+        "en": "John the Baptist"
+      }
+    },
+    "seed:peter": {
+      "canonicalKey": "seed:peter",
+      "label": "Peter",
+      "labelsByLanguage": {
+        "seed": "Peter",
+        "en": "Peter"
+      }
+    },
+    "seed:paul": {
+      "canonicalKey": "seed:paul",
+      "label": "Paul",
+      "labelsByLanguage": {
+        "seed": "Paul",
+        "en": "Paul"
+      }
+    },
+    "seed:the baptism of jesus": {
+      "canonicalKey": "seed:the baptism of jesus",
+      "label": "The Baptism of Jesus",
+      "labelsByLanguage": {
+        "seed": "The Baptism of Jesus",
+        "en": "The Baptism of Jesus"
+      }
+    },
+    "seed:baptism": {
+      "canonicalKey": "seed:baptism",
+      "label": "Baptism",
+      "labelsByLanguage": {
+        "seed": "Baptism",
+        "en": "Baptism"
+      }
+    },
+    "seed:the resurrection": {
+      "canonicalKey": "seed:the resurrection",
+      "label": "The Resurrection",
+      "labelsByLanguage": {
+        "seed": "The Resurrection",
+        "en": "The Resurrection"
+      }
+    },
+    "seed:pentecost": {
+      "canonicalKey": "seed:pentecost",
+      "label": "Pentecost",
+      "labelsByLanguage": {
+        "seed": "Pentecost",
+        "en": "Pentecost"
+      }
+    },
+    "seed:second coming": {
+      "canonicalKey": "seed:second coming",
+      "label": "Second Coming",
+      "labelsByLanguage": {
+        "seed": "Second Coming",
+        "en": "Second Coming"
+      }
+    },
+    "seed:the millennium": {
+      "canonicalKey": "seed:the millennium",
+      "label": "The Millennium",
+      "labelsByLanguage": {
+        "seed": "The Millennium",
+        "en": "The Millennium"
+      }
+    },
+    "seed:the atonement": {
+      "canonicalKey": "seed:the atonement",
+      "label": "The Atonement",
+      "labelsByLanguage": {
+        "seed": "The Atonement",
+        "en": "The Atonement"
+      }
+    },
+    "seed:the cross": {
+      "canonicalKey": "seed:the cross",
+      "label": "The Cross",
+      "labelsByLanguage": {
+        "seed": "The Cross",
+        "en": "The Cross"
+      }
+    },
+    "seed:the crucifixion": {
+      "canonicalKey": "seed:the crucifixion",
+      "label": "The Crucifixion",
+      "labelsByLanguage": {
+        "seed": "The Crucifixion",
+        "en": "The Crucifixion"
+      }
+    },
+    "seed:life of jesus": {
+      "canonicalKey": "seed:life of jesus",
+      "label": "Life of Jesus",
+      "labelsByLanguage": {
+        "seed": "Life of Jesus",
+        "en": "Life of Jesus"
+      }
+    },
+    "seed:teaching of jesus": {
+      "canonicalKey": "seed:teaching of jesus",
+      "label": "Teaching of Jesus",
+      "labelsByLanguage": {
+        "seed": "Teaching of Jesus",
+        "en": "Teaching of Jesus"
+      }
+    }
+  },
+  "stats": {
+    "total_raw": 50,
+    "alias_hits": 0,
+    "self_canonical": 50,
+    "similarity_merges": 0,
+    "canonical": 50
+  }
+}

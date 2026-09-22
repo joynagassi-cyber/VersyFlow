@@ -15,7 +15,8 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": true,
-    "types": ["vitest/globals", "node"],
+    "types": ["node", "node-fetch", "vitest-globals"],
+    "typeRoots": ["./node_modules/@types", "./node_modules/vitest", "./scripts/types"],
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"],
@@ -32,5 +33,13 @@
       "@/app/*": ["app/*"]
     }
   },
-  "include": ["src", "app", "tests", "vite.config.ts", "vitest.config.ts", "env.d.ts"]
+  "include": [
+    "src",
+    "app",
+    "tests",
+    "scripts/semantic",
+    "vite.config.ts",
+    "vitest.config.ts",
+    "env.d.ts"
+  ]
 }

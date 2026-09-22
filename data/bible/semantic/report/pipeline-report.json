@@ -1,0 +1,111 @@
+{
+  "ranAt": "2026-09-13T22:00:43.494Z",
+  "idempotent": true,
+  "stages": [
+    {
+      "stage": "A-import",
+      "ok": true,
+      "counts": {
+        "datasets": 35,
+        "verses": 32430,
+        "book_ids": 66,
+        "seed_concepts": 50,
+        "seed_relations": 50
+      },
+      "durationMs": 0,
+      "errors": []
+    },
+    {
+      "stage": "B-align",
+      "ok": true,
+      "counts": {
+        "total_raw": 50,
+        "alias_hits": 0,
+        "self_canonical": 50,
+        "similarity_merges": 0,
+        "canonical": 50
+      },
+      "durationMs": 0,
+      "errors": []
+    },
+    {
+      "stage": "C-seed",
+      "ok": true,
+      "counts": {
+        "concepts": 50,
+        "relations": 50,
+        "verse_concepts": 50,
+        "accepted": 50,
+        "unresolved": 0
+      },
+      "durationMs": 0,
+      "errors": []
+    },
+    {
+      "stage": "D-normalize",
+      "ok": true,
+      "counts": {
+        "input_concepts": 50,
+        "input_edges": 50,
+        "folded": 0,
+        "output_concepts": 50,
+        "output_edges": 50,
+        "self_edges_dropped": 0
+      },
+      "durationMs": 0,
+      "errors": []
+    },
+    {
+      "stage": "E-map",
+      "ok": true,
+      "counts": {
+        "refs": 50,
+        "llm_calls": 0,
+        "auto_accepted": 50,
+        "unresolved": 0
+      },
+      "durationMs": 0,
+      "errors": []
+    },
+    {
+      "stage": "F-relations",
+      "ok": true,
+      "counts": {
+        "crossrefs": 12,
+        "shared_concept": 0
+      },
+      "durationMs": 0,
+      "errors": []
+    },
+    {
+      "stage": "G-communities",
+      "ok": true,
+      "counts": {
+        "clusters_total": 10,
+        "clusters_valid": 0,
+        "communities_minted": 0,
+        "llm_calls": 0,
+        "deterministic_names": 0
+      },
+      "durationMs": 0,
+      "errors": []
+    },
+    {
+      "stage": "H-validate",
+      "ok": true,
+      "counts": {
+        "concepts": 50,
+        "linked_concepts": 50,
+        "orphan_concept_ratio": 0,
+        "violation_groups": 0,
+        "passed": 1
+      },
+      "durationMs": 0,
+      "errors": []
+    }
+  ],
+  "validation": {
+    "passed": true,
+    "details": {}
+  }
+}

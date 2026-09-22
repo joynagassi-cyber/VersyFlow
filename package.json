@@ -25,7 +25,8 @@
     "cap:run:android": "capacitor run android",
     "cap:run:ios": "capacitor run ios",
     "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "semantic:build": "npx tsx scripts/semantic/run.ts"
   },
   "dependencies": {
     "@capacitor-community/sqlite": "^8.1.1",
