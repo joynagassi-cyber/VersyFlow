@@ -97,6 +97,7 @@ import { I18nService } from '@/i18n';
 import i18next, { initI18next } from '@/i18n/i18next-init';
 import { initializeSettingsStore, useSettingsStore } from '@/store/settings-store';
 import { initializeAppearanceStore } from '@/store/appearance-store';
+import { initializeUiStore } from '@/store/ui-store';
 import { ThemeManager } from '@/components/ThemeManager';
 import { useAuthStore } from '@/store/auth-store';
 import { useFamilySyncBridge } from '@/hooks/useFamilySyncBridge';
@@ -116,6 +117,7 @@ import { isRTL } from '@/domains/i18n/config';
   document.documentElement.dir = isRTL(savedLanguage) ? 'rtl' : 'ltr';
   initializeSettingsStore();
   initializeAppearanceStore();
+  initializeUiStore();
   // Boot-time one-shot wiring: PowerSync lifecycle → sync stores,
   // telemetry listener + periodic flush, streak event-driven writer.
   attachSyncCompletionHandlers();
@@ -260,7 +262,8 @@ function App() {
               <Route path="/bible/explorer" element={<BibleExplorer />} />
               <Route path="/bible/book/:bookId" element={<BibleBook />} />
               <Route path="/bible/book" element={<Navigate to="/bible/explorer" replace />} />
-              <Route path="/bible/chapter" element={<BibleChapter />} />
+              <Route path="/bible/chapter" element={<Navigate to="/bible/chapter/gen/1" replace />} />
+              <Route path="/bible/chapter/:bookId/:chapterNumber" element={<BibleChapter />} />
 
               {/* Memorization */}
               <Route path="/memorization/session" element={<MemorizationSession />} />

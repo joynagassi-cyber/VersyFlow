@@ -4,7 +4,7 @@
  */
 
 import { useEffect, useState } from 'react';
-import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useSearchParams, useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { BrainCircuit, FileText } from 'lucide-react';
 import FullScreenPage from '@/components/layout/FullScreenPage';
@@ -16,11 +16,14 @@ import VerseSemanticTags from '@/components/semantic/VerseSemanticTags';
 
 export default function ChapterScreen() {
   const [params] = useSearchParams();
+  const urlParams = useParams();
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
 
-  const bookId = params.get('book') ?? 'gen';
-  const chapter = Number(params.get('chapter') ?? '1');
+  // URL params (canon route /bible/chapter/:bookId/:chapterNumber) win,
+  // query params kept as a migration fallback.
+  const bookId = urlParams.bookId ?? params.get('book') ?? 'gen';
+  const chapter = Number(urlParams.chapterNumber ?? params.get('chapter') ?? '1');
   const book = BIBLE_BOOKS.find((b) => b.id === bookId) || BIBLE_BOOKS[0];
   const lang = i18n.language ?? 'fr';
 

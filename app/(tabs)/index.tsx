@@ -230,7 +230,7 @@ export default function HomeScreen() {
               onClick={() =>
                 navigate(
                   verse.bookId && verse.chapterNumber
-                    ? `/bible/chapter?book=${verse.bookId}&chapter=${verse.chapterNumber}`
+                    ? `/bible/chapter/${verse.bookId}/${verse.chapterNumber}`
                     : '/bible/chapter',
                 )
               }

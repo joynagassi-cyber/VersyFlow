@@ -48,7 +48,7 @@ export default function BookScreen() {
         {Array.from({ length: book.chapterCount }, (_, i) => i + 1).map((chapter) => (
           <button
             key={chapter}
-            onClick={() => navigate(`/bible/chapter?book=${book.id}&chapter=${chapter}`)}
+            onClick={() => navigate(`/bible/chapter/${book.id}/${chapter}`)}
             className="flex items-center justify-between rounded-xl bg-surface p-4 text-left shadow-sm"
           >
             <span className="flex items-center gap-3">
