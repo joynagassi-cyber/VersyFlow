@@ -47,6 +47,12 @@ export interface CommunityInput {
   versesByConcept: Record<string, string[]>;
   /** Concept relations (undirected for clustering purposes). */
   conceptEdges: Array<{ fromKey: string; toKey: string }>;
+  /**
+   * Seed labels: winner key → the display label Stage G's deterministic
+   * naming fallback resolves it to (e.g. `canon:love` → "Love"). When
+   * absent, the winner key's `canon:` token is used.
+   */
+  seedLabels?: Record<string, string>;
   /** Pinned timestamp. */
   now: string;
 }
@@ -65,6 +71,8 @@ export interface Cluster {
   /** Structural validity per the decision-phase rule. */
   valid: boolean;
   validReason: string;
+  /** Seed-label map carried through from the input (for naming). */
+  seedLabels?: Record<string, string>;
 }
 
 // ---------------------------------------------------------------------------
@@ -203,7 +211,7 @@ export function buildClusters(input: CommunityInput): Cluster[] {
     const coherence = clusterCoherence(membersCapped, input.versesByConcept);
     const anchors = rankAnchors(membersCapped, input.degree).map((a) => ({
       key: a.key,
-      label: a.key.split(':').slice(1).join(':') ?? a.key,
+      label: inputLabel(a.key, input.seedLabels),
       degree: a.degree,
     }));
     const distinctConcepts = membersCapped.length;
@@ -226,6 +234,7 @@ export function buildClusters(input: CommunityInput): Cluster[] {
       anchors,
       valid,
       validReason,
+      seedLabels: input.seedLabels,
     });
   }
 
@@ -251,6 +260,8 @@ export interface MintedCommunity {
   name: string;
   nameSource: 'deterministic' | 'llm' | 'unique-anchor';
   sourceConceptId: string | null;
+  /** Winner concept key of the top anchor (for Stage F SAME_COMMUNITY rows). */
+  sourceConceptKey: string | null;
   size: number;
   coherence: number;
   source: string;
@@ -278,10 +289,17 @@ function isUniqueAnchor(cluster: Cluster): boolean {
   if (!top) return false;
   const label = top.label;
   let count = 0;
-  for (const m of cluster.members) if (inputLabel(m) === label) count++;
+  for (const m of cluster.members) if (inputLabel(m, cluster.seedLabels) === label) count++;
   return count === 1;
 }
-function inputLabel(key: string): string {
+
+/**
+ * Resolve a display label for a winner key: prefer the seed label (e.g.
+ * `canon:love` → "Love" from `seed:love`), else strip the `canon:` /
+ * source prefix and use the token.
+ */
+function inputLabel(key: string, seedLabels?: Record<string, string>): string {
+  if (seedLabels && seedLabels[key]) return seedLabels[key];
   return key.split(':').slice(1).join(':') ?? key;
 }
 
@@ -297,7 +315,7 @@ function validateLlmName(
   if (!reusesAnchor) return false;
   // Must not introduce an entity absent from the community.
   const memberLabels = new Set(
-    cluster.members.map(inputLabel).map((l) => l.toLowerCase())
+    cluster.members.map((m) => inputLabel(m, cluster.seedLabels)).map((l) => l.toLowerCase())
   );
   for (const w of words) {
     if (w.toLowerCase() === 'community' || /^\d+$/.test(w)) continue;
@@ -337,7 +355,7 @@ export async function runCommunities(
           size: cluster.members.length,
           coherence: cluster.coherence,
           anchorConcepts: cluster.anchors.map((a) => ({ key: a.key, label: a.label, degree: a.degree })),
-          memberLabels: cluster.members.map(inputLabel),
+          memberLabels: cluster.members.map((m) => inputLabel(m, cluster.seedLabels)),
         },
       });
       if (proposed !== null && validateLlmName(proposed, cluster)) {
@@ -356,6 +374,7 @@ export async function runCommunities(
       name,
       nameSource,
       sourceConceptId: topAnchor ? detUuid(`stage-c-concept:${topAnchor.key}`) : null,
+      sourceConceptKey: topAnchor ? topAnchor.key : null,
       size: cluster.members.length,
       coherence: cluster.coherence,
       source: LOUVAIN_SOURCE,

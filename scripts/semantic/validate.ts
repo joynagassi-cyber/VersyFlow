@@ -189,6 +189,223 @@ export function runHChecks(
 }
 
 // ---------------------------------------------------------------------------
+// Extended invariants (verse-universe + concept-graph checks)
+// ---------------------------------------------------------------------------
+
+/**
+ * Checks that run on top of `runHChecksInMemory` when a verse universe and
+ * a concept graph (post-Stage D) are available:
+ *
+ *  - `verse_ids_resolve`   — every verseId / fromVerseId / toVerseId is a
+ *                            key of the universe (translation-independent
+ *                            `bookId:ch:verse`);
+ *  - `concept_ids_resolve` — every conceptId (including `verse_relations`
+ *                            `conceptId`) is a seeded concept;
+ *  - `no_orphan_verse_concepts` — every verse_concept row's concept exists
+ *                            in the (post-normalize) concept set;
+ *  - `no_self_relations`   — no relation where both ends are identical
+ *                            (redundant with `no_self_loops`, kept explicit);
+ *  - `no_child_of_cycles`  — no cycles in the CHILD_OF subgraph
+ *                            (topological Kahn + remaining-edge scan);
+ *  - `no_empty_communities`— every community row has size ≥ 1 and a name;
+ *  - `confidence_valid`    — reasserted on the extended row set;
+ *  - `unique_canonical_concepts` — no two post-normalize concepts share
+ *                            the same canonical key (casefold + NFC +
+ *                            accent-strip).
+ *
+ * Returns the same `HResult` shape (an `HViolation` per finding) so the
+ * caller can merge it into the gate.
+ */
+export function runExtendedChecks(opts: {
+  rows: InMemoryRows;
+  verseUniverse: string[];
+  concepts: Array<Record<string, unknown>>;
+  conceptEdges: Array<Record<string, unknown>>;
+  /** Seed rows (snake_case `id`). When given, concept-id resolution uses
+   * the seed set instead of the normalized set (which carries no ids). */
+  conceptIds?: string[];
+  verseConcepts?: Array<Record<string, unknown>>;
+}): HResult {
+  const { rows, verseUniverse, concepts, conceptEdges, conceptIds, verseConcepts } = opts;
+  const violations: HViolation[] = [];
+  const add = (check: string, bad: Array<Record<string, unknown>>, detail: string) => {
+    if (bad.length === 0) return;
+    violations.push({
+      check,
+      detail: `${bad.length} row(s) — ${detail}`,
+      rows: bad.slice(0, 25).map((r) => String(r.id ?? JSON.stringify(r))),
+    });
+  };
+
+  const universe = new Set(verseUniverse);
+
+  // verse_ids_resolve
+  const badVerses: Array<Record<string, unknown>> = [];
+  for (const r of rows.verse_concepts) {
+    if (!universe.has(String(r.verseId)))
+      badVerses.push({ id: String(r.id), verseId: r.verseId, why: 'verse_concepts.verse_id' });
+  }
+  for (const r of rows.verse_relations) {
+    if (!universe.has(String(r.fromVerseId)))
+      badVerses.push({ id: String(r.id), verseId: r.fromVerseId, why: 'verse_relations.from_verse_id' });
+    if (!universe.has(String(r.toVerseId)))
+      badVerses.push({ id: String(r.id), verseId: r.toVerseId, why: 'verse_relations.to_verse_id' });
+  }
+  add('verse_ids_resolve', badVerses, 'a verse key is absent from the verse universe');
+
+  // concept_ids_resolve — the valid set is the seed ids (the schema rows);
+  // `concepts` (post-normalize) carries no ids, so prefer `conceptIds`
+  // when provided.
+  const validConceptIds = new Set(conceptIds ? conceptIds.map(String) : concepts.map((r) => String(r.id)));
+  const badConcepts: Array<Record<string, unknown>> = [];
+  for (const r of rows.verse_concepts) {
+    if (!validConceptIds.has(String(r.conceptId)))
+      badConcepts.push({ id: String(r.id), conceptId: r.conceptId });
+  }
+  for (const r of rows.verse_relations) {
+    const cid = r.conceptId;
+    if (cid != null && !validConceptIds.has(String(cid)))
+      badConcepts.push({ id: String(r.id), conceptId: cid });
+  }
+  for (const r of rows.concept_relations) {
+    if (!validConceptIds.has(String(r.fromConceptId)))
+      badConcepts.push({ id: String(r.id), conceptId: r.fromConceptId });
+    if (!validConceptIds.has(String(r.toConceptId)))
+      badConcepts.push({ id: String(r.id), conceptId: r.toConceptId });
+  }
+  add('concept_ids_resolve', badConcepts, 'a concept reference has no concept row');
+
+  // no_orphan_verse_concepts (verse_concept's concept must exist in the
+  // post-normalize concept set — the rows passed in are the D-normalized
+  // view, so this is a membership check, not just a row-exists check).
+  const vc = verseConcepts ?? [];
+  add(
+    'no_orphan_verse_concepts',
+    vc.filter((r) => !validConceptIds.has(String(r.conceptId ?? r.concept_id))),
+    'a verse_concept row points at a missing concept'
+  );
+
+  // no_self_relations (redundant with no_self_loops; kept explicit).
+  add(
+    'no_self_relations',
+    [
+      ...rows.concept_relations.filter((r) => String(r.fromConceptId) === String(r.toConceptId)),
+      ...rows.verse_relations.filter((r) => String(r.fromVerseId) === String(r.toVerseId)),
+    ],
+    'a relation points at itself'
+  );
+
+  // no_child_of_cycles (deterministic Kahn + remaining-edge scan).
+  const childOf = conceptEdges.filter(
+    (e) => String(e.relationType ?? e.relation_type) === 'CHILD_OF'
+  );
+  const inDeg = new Map<string, number>();
+  const out = new Map<string, string[]>();
+  const seenNode = new Set<string>();
+  for (const e of childOf) {
+    const a = String(e.fromConceptId ?? e.from_concept_id);
+    const b = String(e.toConceptId ?? e.to_concept_id);
+    for (const n of [a, b]) {
+      if (!seenNode.has(n)) {
+        seenNode.add(n);
+        inDeg.set(n, 0);
+        out.set(n, []);
+      }
+    }
+    inDeg.set(b, (inDeg.get(b) ?? 0) + 1);
+    out.get(a)!.push(b);
+  }
+  const queue = Array.from(inDeg.keys()).filter((k) => inDeg.get(k) === 0);
+  const visited = new Set<string>();
+  while (queue.length > 0) {
+    const n = queue.shift()!;
+    if (visited.has(n)) continue;
+    visited.add(n);
+    for (const m of out.get(n) ?? []) {
+      const d = inDeg.get(m) ?? 0;
+      inDeg.set(m, d - 1);
+      if (d - 1 === 0) queue.push(m);
+    }
+  }
+  // Nodes in the cycle core: reachable via CHILD_OF but never reduced to 0
+  // in-degree (a source in the core has in-degree ≥ 1 in the core itself,
+  // so it is never queued — its presence in `seenNode` without a `visited`
+  // hit is the cycle signal).
+  const coreNodes = Array.from(seenNode).filter((n) => !visited.has(n));
+  const inCore = new Set(coreNodes);
+  const cycleEdges = childOf.filter((e) => {
+    const a = String(e.fromConceptId ?? e.from_concept_id);
+    const b = String(e.toConceptId ?? e.to_concept_id);
+    // A back-edge: both endpoints in the cycle core (neither reduced to 0).
+    return inCore.has(a) && inCore.has(b);
+  });
+  add('no_child_of_cycles', cycleEdges, 'a CHILD_OF edge is part of a cycle');
+
+  // no_empty_communities
+  add(
+    'no_empty_communities',
+    rows.communities.filter((r) => Number(r.size ?? 0) < 1 || !String(r.name ?? '').trim()),
+    'a community row has size < 1 or no name'
+  );
+
+  // confidence_valid — reassert on the extended row set. The normalized
+  // concept view carries no `confidence` column (only label + provenance);
+  // rows that DO carry a confidence value are what we check, so we test
+  // only the row-level tables where confidence is a real column.
+  const inRange = (v: unknown): boolean => typeof v === 'number' && v >= 0 && v <= 1;
+  add(
+    'confidence_valid',
+    [
+      ...concepts.filter((r) => r.confidence !== undefined && !inRange(r.confidence)),
+      ...rows.concept_relations.filter((r) => !inRange(r.confidence)),
+      ...rows.verse_concepts.filter((r) => !inRange(r.confidence)),
+      ...rows.verse_relations.filter((r) => !inRange(r.confidence)),
+      ...rows.communities.filter((r) => !inRange(r.coherence)),
+      ...vc.filter((r) => r.confidence !== undefined && !inRange(r.confidence)),
+    ],
+    'a confidence/coherence value is outside [0,1]'
+  );
+
+  // unique_canonical_concepts — no two post-normalize concepts share the
+  // same canonical key (casefold + NFC + accent-strip of the label).
+  // Keys are built from the concept's `key` pipeline token (seed:<slug> or
+  // source:<label>) — two concepts folding to the same canonical key are
+  // duplicates that Stage D was supposed to merge.
+  const normKeyOf = (r: Record<string, unknown>): string => {
+    const k = String(r.key ?? r.canonical_key ?? '');
+    if (k.length > 0) return k;
+    const label = String(r.canonicalLabel ?? r.canonical_label ?? r.label ?? '');
+    return label
+      .normalize('NFC')
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/\p{Diacritic}/gu, '');
+  };
+  const canonSeen = new Map<string, string>();
+  const dupCanon: Array<Record<string, unknown>> = [];
+  for (const r of concepts) {
+    const ck = normKeyOf(r);
+    if (!ck) continue;
+    const prev = canonSeen.get(ck);
+    if (prev === undefined) canonSeen.set(ck, String(r.id));
+    else dupCanon.push({ id: String(r.id), key: ck, prev });
+  }
+  add('unique_canonical_concepts', dupCanon, 'two concepts share one canonical key');
+
+  return {
+    passed: violations.length === 0,
+    violations,
+    counts: {
+      verse_universe: universe.size,
+      concepts_checked: concepts.length,
+      concept_edges_checked: childOf.length,
+      verse_concepts_checked: vc.length,
+      violation_groups: violations.length,
+    },
+  };
+}
+
+// ---------------------------------------------------------------------------
 // In-memory driver — runs Stage H over plain JSON row arrays.  This is
 // what the pipeline's own build (which has no live SQLite yet) uses in
 // `run.ts`, and it is also the reference implementation the unit tests

@@ -11,7 +11,10 @@
  *    edge confidence ≥ 0.7. Computed over the verse_concept roles from
  *    Stage E (PRIMARY/SECONDARY only count; RELATED does not raise the
  *    co-occurrence bar).
- *  - SAME_COMMUNITY: deferred to Stage G (which owns the community id).
+ *  - SAME_COMMUNITY: every verse pair within a structurally-validated
+ *    community's verse set, attributed to the community's anchor
+ *    concept. Pairs already emitted as CROSS_REFERENCE / SHARED_CONCEPT
+ *    are skipped (first-emitted relation type wins, deterministically).
  */
 
 import { detUuid } from './helpers';
@@ -20,6 +23,21 @@ export interface CrossrefEdge {
   fromVerseId: string;
   toVerseId: string;
   /** Confidence in [0,1]; defaults to 0.8 for the curated fallback set. */
+  confidence?: number;
+  source?: string;
+}
+
+/**
+ * A pre-aligned source-dataset crossref edge (Stage A import). When the
+ * eBible 1.1M-edge crossref dataset is present under
+ * `data/bible/semantic/raw/`, its edges feed in here ALIGNED — i.e. every
+ * verse key already in the canonical `bookId:chapter:verse` form.
+ */
+export interface AlignedCrossrefEdge {
+  /** Canonical verse key `bookId:chapter:verse`. */
+  fromVerseId: string;
+  /** Canonical verse key `bookId:chapter:verse`. */
+  toVerseId: string;
   confidence?: number;
   source?: string;
 }
@@ -40,17 +58,25 @@ export interface VerseRelationRow {
   id: string;
   fromVerseId: string;
   toVerseId: string;
-  relationType: 'CROSS_REFERENCE' | 'SHARED_CONCEPT';
+  relationType: 'CROSS_REFERENCE' | 'SHARED_CONCEPT' | 'SAME_COMMUNITY';
   conceptId?: string;
-  /** Community id; set when the edge is later promoted to SAME_COMMUNITY (Stage G). */
+  /** Community id; set on SAME_COMMUNITY rows (Stage G owns the id). */
   communityId?: string;
   confidence: number;
   source: string;
 }
 
+export interface SameCommunityInput {
+  id: string;
+  name: string;
+  verseIds: string[];
+  sourceConceptKey?: string;
+}
+
 export interface RelationsOut {
   crossrefs: VerseRelationRow[];
   shared: VerseRelationRow[];
+  sameCommunity: VerseRelationRow[];
   stats: Record<string, number>;
 }
 
@@ -85,12 +111,64 @@ function rowId(type: string, from: string, to: string, conceptId?: string): stri
   return detUuid(`stage-f-${type}:${from}:${to}${conceptId ? `:${conceptId}` : ''}`);
 }
 
-/** Deterministic CROSS_REFERENCE rows (deduped, undirected). */
+export function runRelations(input: {
+  crossrefs?: CrossrefEdge[];
+  shared?: SharedConceptInput;
+  /** Pre-aligned source crossref edges (Stage A import); preferred over `crossrefs` when non-empty. */
+  alignedCrossrefs?: AlignedCrossrefEdge[];
+  /** Structurally-validated communities from Stage G (for SAME_COMMUNITY rows). */
+  communities?: SameCommunityInput[];
+}): RelationsOut {
+  const sharedInput = input.shared;
+  const alignedCrossrefs = input.alignedCrossrefs;
+  const communities = input.communities;
+
+  // Deterministic CROSS_REFERENCE rows from the source crossref dataset
+  // (aligned edges when the source dataset is present; otherwise the
+  // curated per-call crossrefs; otherwise the curated fallback).
+  const xrefEdges: CrossrefEdge[] =
+    alignedCrossrefs && alignedCrossrefs.length > 0
+      ? alignedCrossrefs
+      : input.crossrefs && input.crossrefs.length > 0
+        ? input.crossrefs
+        : FALLBACK_CROSSREFS;
+  const crossrefs = buildCrossrefRelations(xrefEdges);
+
+  // SHARED_CONCEPT rows: co-occurrence under one concept at ≥ 0.7 mean
+  // edge confidence.
+  const shared = sharedInput ? buildSharedConceptRelations(sharedInput) : [];
+
+  // SAME_COMMUNITY rows: every verse pair within a community's verse set,
+  // attributed to the community's anchor. Skips pairs already emitted as
+  // CROSS_REFERENCE / SHARED_CONCEPT (first-emitted relation type wins,
+  // deterministically).
+  const emittedPairs = new Set<string>();
+  for (const r of crossrefs) emittedPairs.add(`CC:${r.fromVerseId}:${r.toVerseId}`);
+  for (const r of shared) emittedPairs.add(`CC:${r.fromVerseId}:${r.toVerseId}`);
+  const sameCommunity =
+    communities && communities.length > 0
+      ? buildSameCommunityRelations({ communities, skipKeys: emittedPairs })
+      : [];
+
+  return {
+    crossrefs,
+    shared,
+    sameCommunity,
+    stats: {
+      crossrefs: crossrefs.length,
+      shared_concept: shared.length,
+      same_community: sameCommunity.length,
+    },
+  };
+}
+
+/**
+ * Deterministic CROSS_REFERENCE rows (deduped, undirected).
+ */
 export function buildCrossrefRelations(edges: CrossrefEdge[], source = 'stage-F:crossref'): VerseRelationRow[] {
   const seen = new Set<string>();
   const out: VerseRelationRow[] = [];
   for (const e of edges) {
-    // Placeholder / invalid keys (bad book id, confidence 0) are dropped.
     if (e.fromVerseId === e.toVerseId) continue;
     const conf = e.confidence ?? 0.8;
     if (conf <= 0) continue;
@@ -145,16 +223,40 @@ export function buildSharedConceptRelations(input: SharedConceptInput): VerseRel
   return out;
 }
 
-/** Full Stage F run. `edges` defaults to the curated fallback list. */
-export function runRelations(input: {
-  crossrefs?: CrossrefEdge[];
-  shared?: SharedConceptInput;
-}): RelationsOut {
-  const crossrefs = buildCrossrefRelations(input.crossrefs ?? FALLBACK_CROSSREFS);
-  const shared = input.shared ? buildSharedConceptRelations(input.shared) : [];
-  return {
-    crossrefs,
-    shared,
-    stats: { crossrefs: crossrefs.length, shared_concept: shared.length },
-  };
+/**
+ * SAME_COMMUNITY rows: every verse pair within a community's verse set
+ * (transitively co-occurring through shared concepts), attributed to the
+ * community's anchor concept. Pairs are emitted undirected once, deduped
+ * against `skipKeys` (already-emitted verse pairs) and internally.
+ */
+export function buildSameCommunityRelations(input: {
+  communities: SameCommunityInput[];
+  skipKeys?: Set<string>;
+}): VerseRelationRow[] {
+  const out: VerseRelationRow[] = [];
+  const skip = input.skipKeys ?? new Set<string>();
+  const seen = new Set<string>();
+  for (const c of input.communities) {
+    const uniq = Array.from(new Set(c.verseIds)).sort();
+    for (let i = 0; i < uniq.length; i++) {
+      for (let j = i + 1; j < uniq.length; j++) {
+        const [lo, hi] = canonicalPair(uniq[i], uniq[j]);
+        const key = `CC:${lo}:${hi}`;
+        if (seen.has(key) || skip.has(key)) continue;
+        seen.add(key);
+        out.push({
+          id: rowId('SAME_COMMUNITY', lo, hi, c.sourceConceptKey ?? c.name),
+          fromVerseId: lo,
+          toVerseId: hi,
+          relationType: 'SAME_COMMUNITY',
+          conceptId: c.sourceConceptKey,
+          communityId: c.id,
+          confidence: 0.8,
+          source: `stage-F:same-community:${c.id}`,
+        });
+      }
+    }
+  }
+  return out;
 }
+

@@ -31,6 +31,7 @@ import { join } from 'node:path';
 import { alignBookId } from './align';
 import { detUuid, casefold, verseKey } from './helpers';
 import type { AlignedRef } from './helpers';
+import { buildSeedConcepts } from './concepts/seed';
 
 /** Pinned build timestamp — keeps `createdAt`/`updatedAt` byte-stable. */
 export const DEFAULT_NOW = '2026-09-13T22:00:43.494Z';
@@ -169,6 +170,31 @@ export interface RawRef {
   verse: number;
 }
 
+/**
+ * A raw cross-reference edge read from a source dataset. The `from` /
+ * `to` sides are RAW book tokens (e.g. `Gen 1`, `Heb 11`); alignment to
+ * canonical `bookId:chapter:verse` verse keys happens in
+ * `alignCrossrefs` (Stage A), exactly like topic refs.
+ */
+export interface RawCrossref {
+  from: string;
+  to: string;
+}
+
+/**
+ * A cross-reference edge aligned to the canonical verse universe:
+ * `fromVerse` / `toVerse` are `bookId:chapter:verse` keys, one per
+ * verse in the referenced chapter (a crossref dataset cites chapters,
+ * not verses). Emitted undirected (lexicographic lower verse key first).
+ */
+export interface AlignedCrossref {
+  fromVerse: string;
+  toVerse: string;
+  /** The book pair that produced this edge, for provenance. */
+  fromBook: string;
+  toBook: string;
+}
+
 /** A concept candidate read from any source layer. */
 export interface RawTopic {
   /** Stable pipeline key — `source:casefold(label)`. */
@@ -199,6 +225,9 @@ const LAYER_FILES: Record<string, string[]> = {
   '02_unified': ['topics.json', 'edges.json'],
   '01_structured': ['topics.json', 'edges.json'],
 };
+
+/** The crossref dataset lives at `raw/crossrefs.json` (source-scoped, not layer-scoped). */
+const CROSSREFS_FILE = 'crossrefs.json';
 
 export function discoverLayers(baseDir: string): Record<string, string[]> {
   const out: Record<string, string[]> = {};
@@ -266,8 +295,12 @@ export interface ImportResult {
   refsAligned: number;
   refsUnresolved: number;
   edgesRead: number;
+  crossrefsRead: number;
+  crossrefsUnresolved: number;
   topics: RawTopic[];
   edges: RawConceptEdge[];
+  /** Raw crossref edges (`from`/`to` book tokens); align via `alignCrossrefs`. */
+  crossrefs: RawCrossref[];
   alignedRefsByTopic: Record<string, AlignedRef[]>;
   errors: string[];
 }
@@ -282,11 +315,14 @@ export function importLayer(opts: ImportOptions): ImportResult {
   const layerDir = join(baseDir, 'raw', layer);
   const topicsFile = join(layerDir, 'topics.json');
   const edgesFile = join(layerDir, 'edges.json');
+  const crossrefsFile = join(baseDir, 'raw', CROSSREFS_FILE);
 
   const rawTopics: unknown[] =
     existsSync(topicsFile) ? (readJson<unknown[]>(topicsFile, errors) ?? []) : [];
   const rawEdges: unknown[] =
     existsSync(edgesFile) ? (readJson<unknown[]>(edgesFile, errors) ?? []) : [];
+  const rawCrossrefs: unknown[] =
+    existsSync(crossrefsFile) ? (readJson<unknown[]>(crossrefsFile, errors) ?? []) : [];
 
   const topics: RawTopic[] = [];
   const alignedRefsByTopic: Record<string, AlignedRef[]> = {};
@@ -368,6 +404,22 @@ export function importLayer(opts: ImportOptions): ImportResult {
     });
   }
 
+  // Crossref edges: `from`/`to` are RAW book tokens ("Gen 1" / "Gen",
+  // "Heb 11" / "Heb"). Read them raw here; alignment to verse keys is a
+  // separate step (`alignCrossrefs`) against the verse universe.
+  const crossrefs: RawCrossref[] = [];
+  for (const [i, entry] of rawCrossrefs.entries()) {
+    if (!entry || typeof entry !== 'object') {
+      errors.push(`crossref #${i} is not an object; skipped`);
+      continue;
+    }
+    const o = entry as Record<string, unknown>;
+    const from = typeof o.from === 'string' ? o.from : null;
+    const to = typeof o.to === 'string' ? o.to : null;
+    if (!from || !to || from === to) continue;
+    crossrefs.push({ from, to });
+  }
+
   return {
     layer,
     source,
@@ -375,8 +427,11 @@ export function importLayer(opts: ImportOptions): ImportResult {
     refsAligned,
     refsUnresolved,
     edgesRead: edges.length,
+    crossrefsRead: crossrefs.length,
+    crossrefsUnresolved: 0,
     topics,
     edges,
+    crossrefs,
     alignedRefsByTopic,
     errors,
   };
@@ -384,12 +439,14 @@ export function importLayer(opts: ImportOptions): ImportResult {
 
 /**
  * Read every available layer under `baseDir/raw/` and merge their
- * topics/edges, de-duplicating by topic key (authoritative reads win).
+ * topics/edges/crossrefs, de-duplicating by topic key (authoritative
+ * reads win).
  */
 export function importAllLayers(baseDir: string, source = 'nave'): ImportResult {
   const layers = discoverLayers(baseDir);
   const merged: RawTopic[] = [];
   const edges: RawConceptEdge[] = [];
+  const crossrefs: RawCrossref[] = [];
   const alignedRefsByTopic: Record<string, AlignedRef[]> = {};
   const errors: string[] = [];
   let refsAligned = 0;
@@ -403,6 +460,7 @@ export function importAllLayers(baseDir: string, source = 'nave'): ImportResult 
     refsAligned += res.refsAligned;
     refsUnresolved += res.refsUnresolved;
     edges.push(...res.edges);
+    crossrefs.push(...res.crossrefs);
 
     const seen = new Set(merged.map((t) => t.key));
     for (const t of res.topics) {
@@ -421,11 +479,90 @@ export function importAllLayers(baseDir: string, source = 'nave'): ImportResult 
     refsAligned,
     refsUnresolved,
     edgesRead: edges.length,
+    crossrefsRead: crossrefs.length,
+    crossrefsUnresolved: 0,
     topics: merged,
     edges,
+    crossrefs,
     alignedRefsByTopic,
     errors,
   };
+}
+
+// ---------------------------------------------------------------------------
+// Crossref alignment (book tokens → canonical verse keys)
+// ---------------------------------------------------------------------------
+
+/**
+ * Parse a raw crossref book token ("Gen 1" / "Gen") into `{ book, chapter }`.
+ * Chapter defaults to 1 when the token names a book only — a crossref
+ * dataset that cites "John" means "all of John", and its verse-key
+ * expansion (below) covers every verse of chapter 1 of the *pair* — see
+ * `alignCrossrefs`.
+ */
+function parseCrossrefToken(token: string): { book: string; chapter: number } | null {
+  const m = /^([A-Za-z0-9]+)\s*(\d*)$/.exec(token.trim());
+  if (!m) return null;
+  const chapter = m[2] ? Number(m[2]) : 1;
+  if (!Number.isInteger(chapter) || chapter < 1) return null;
+  return { book: m[1], chapter };
+}
+
+/**
+ * Align raw crossref edges to the verse universe. Each book token resolves
+ * via `alignBookId`; when both sides resolve, the edge emits ONE verse
+ * pair: verse 1 of `from`'s chapter vs verse 1 of `to`'s chapter
+ * (deterministic, bounded — a full ×× expansion of a 1M-edge dataset
+ * against a 32k-verse universe would mint ~32B rows and is not the
+ * pipeline's job). Edges with an unresolved book token are counted, not
+ * errors (the book may simply be outside the 66-book canon).
+ *
+ * `universe.byChapter` is used to confirm the verse actually exists before
+ * emitting — an out-of-range chapter yields no row, not a dangling key.
+ */
+export function alignCrossrefs(
+  crossrefs: RawCrossref[],
+  universe: VerseUniverse
+): { aligned: AlignedCrossref[]; unresolved: number } {
+  const out: AlignedCrossref[] = [];
+  let unresolved = 0;
+  const seen = new Set<string>();
+  for (const c of crossrefs) {
+    const a = parseCrossrefToken(c.from);
+    const b = parseCrossrefToken(c.to);
+    if (!a || !b) {
+      unresolved++;
+      continue;
+    }
+    const fromBook = alignBookId(a.book);
+    const toBook = alignBookId(b.book);
+    if (!fromBook || !toBook) {
+      unresolved++;
+      continue;
+    }
+    // One verse pair per edge: verse 1 of each referenced chapter. A
+    // chapter absent from the universe (out of range) skips the edge.
+    const fromCh = `${fromBook}:${a.chapter}`;
+    const toCh = `${toBook}:${b.chapter}`;
+    const fromVerse = verseKey(fromBook, a.chapter, 1);
+    const toVerse = verseKey(toBook, b.chapter, 1);
+    if (!universe.byChapter[fromCh] || !universe.byChapter[toCh]) {
+      unresolved++;
+      continue;
+    }
+    if (fromVerse === toVerse) continue;
+    const [lo, hi] = fromVerse < toVerse ? [fromVerse, toVerse] : [toVerse, fromVerse];
+    const key = `${lo}|${hi}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    out.push({
+      fromVerse: lo,
+      toVerse: hi,
+      fromBook,
+      toBook,
+    });
+  }
+  return { aligned: out, unresolved };
 }
 
 // ---------------------------------------------------------------------------
@@ -443,6 +580,8 @@ export interface SeedConcept {
   source: string;
   /** The seed dataset the concept's head verse is anchored in. */
   dataset: string;
+  /** One-line description (carried through from concepts/seed.ts). */
+  description?: string;
   confidence: number;
   createdBy: string;
   status: 'unresolved' | 'accepted';
@@ -478,141 +617,121 @@ interface SeedTopicDef {
 }
 
 /**
- * Fixed 50-concept seed.  Every head verse is verified to exist in the
- * canonical 66-book verse universe (the `web` dataset covers all of
- * them).  The relation graph is a deterministic affinity list: each pair
- * is a RELATED edge with confidence 0.8, emitted undirected (lexicographic
+ * Fixed 56-concept seed.  The concept list (head verses, kinds, ids) comes
+ * from `scripts/semantic/concepts/seed.ts` — the canonical source of
+ * truth.  Every head verse is verified to exist in the canonical
+ * 66-book verse universe.  The relation graph below is a deterministic
+ * affinity list: each pair is a RELATED edge with confidence 0.8,
+ * emitted undirected (lexicographic lower concept id first) and
+ * de-duplicated — byte-stable across runs.
+ */
+const SEED_CONCEPTS = buildSeedConcepts();
+
+/**
+ * Fixed 50-concept seed (concepts/seed.ts — the canonical source).  Every
+ * head verse is verified to exist in the canonical 66-book verse universe.
+ * `SEED_AFFINITIES` below is the deterministic relation graph: each pair is
+ * a RELATED edge with confidence 0.8, emitted undirected (lexicographic
  * lower concept id first) and de-duplicated — byte-stable across runs.
  */
-const SEED_TOPICS: SeedTopicDef[] = [
-  { key: 'faith', label: 'Faith', kind: 'TOPIC', head: 'heb:11:1' },
-  { key: 'love-of-god', label: 'Love of God', kind: 'TOPIC', head: '1joh:4:8' },
-  { key: 'grace', label: 'Grace', kind: 'TOPIC', head: 'eph:2:8' },
-  { key: 'salvation', label: 'Salvation', kind: 'TOPIC', head: 'act:4:12' },
-  { key: 'redemption', label: 'Redemption', kind: 'TOPIC', head: 'rom:3:24' },
-  { key: 'forgiveness', label: 'Forgiveness', kind: 'TOPIC', head: 'eph:1:7' },
-  { key: 'repentance', label: 'Repentance', kind: 'TOPIC', head: 'act:2:38' },
-  { key: 'repent', label: 'Repent', kind: 'TEACHING', head: 'luk:5:32' },
-  { key: 'prayer', label: 'Prayer', kind: 'TEACHING', head: 'mat:6:9' },
-  { key: 'praise', label: 'Praise', kind: 'TEACHING', head: 'psa:147:1' },
-  { key: 'worship', label: 'Worship', kind: 'TEACHING', head: 'heb:12:28' },
-  { key: 'humility', label: 'Humility', kind: 'TOPIC', head: 'jac:4:10' },
-  { key: 'patience', label: 'Patience', kind: 'TEACHING', head: 'jac:1:5' },
-  { key: 'prudence', label: 'Prudence', kind: 'TEACHING', head: 'mat:7:15' },
-  { key: 'wisdom', label: 'Wisdom', kind: 'TOPIC', head: 'jac:1:5' },
-  { key: 'hope', label: 'Hope', kind: 'TOPIC', head: 'heb:6:19' },
-  { key: 'joy', label: 'Joy', kind: 'TOPIC', head: 'phil:4:4' },
-  { key: 'peace', label: 'Peace', kind: 'TOPIC', head: 'phil:4:7' },
-  { key: 'gospel', label: 'Gospel', kind: 'TOPIC', head: 'mar:1:1' },
-  { key: 'commandments', label: 'The Commandments', kind: 'TEACHING', head: 'mat:19:17' },
-  { key: 'creation', label: 'Creation', kind: 'EVENT', head: 'gen:1:1' },
-  { key: 'flood', label: 'The Flood', kind: 'EVENT', head: 'gen:7:1' },
-  { key: 'exodus', label: 'The Exodus', kind: 'EVENT', head: 'exo:3:7' },
-  { key: 'manna', label: 'Manna', kind: 'EVENT', head: 'exo:16:4' },
-  { key: 'tabernacle', label: 'The Tabernacle', kind: 'EVENT', head: 'exo:25:8' },
-  { key: 'sacrifice', label: 'Sacrifice', kind: 'TEACHING', head: 'lev:1:3' },
-  { key: 'passover', label: 'Passover', kind: 'EVENT', head: 'exo:12:11' },
-  { key: 'promises', label: "God's Promises", kind: 'TOPIC', head: 'rom:4:21' },
-  { key: 'law', label: 'The Law', kind: 'TEACHING', head: 'deb:4:13' },
-  { key: 'psalm-hymn', label: 'Psalm Hymn', kind: 'OTHER', head: 'psa:78:24' },
-  { key: 'abraham', label: 'Abraham', kind: 'PERSON', head: 'gen:12:1' },
-  { key: 'moses', label: 'Moses', kind: 'PERSON', head: 'exo:3:1' },
-  { key: 'david', label: 'David', kind: 'PERSON', head: '1sam:16:13' },
-  { key: 'samuel', label: 'Samuel', kind: 'PERSON', head: '1sam:3:1' },
-  { key: 'jeremiah', label: 'Jeremiah', kind: 'PERSON', head: 'jer:1:5' },
-  { key: 'ezekiel', label: 'Ezekiel', kind: 'PERSON', head: 'ezek:1:3' },
-  { key: 'john-baptist', label: 'John the Baptist', kind: 'PERSON', head: 'mat:3:1' },
-  { key: 'peter', label: 'Peter', kind: 'PERSON', head: 'act:1:15' },
-  { key: 'paul', label: 'Paul', kind: 'PERSON', head: 'act:9:1' },
-  { key: 'baptism-jesus', label: 'The Baptism of Jesus', kind: 'EVENT', head: 'mat:3:13' },
-  { key: 'baptism', label: 'Baptism', kind: 'TEACHING', head: 'mat:28:19' },
-  { key: 'resurrection', label: 'The Resurrection', kind: 'EVENT', head: 'mat:28:6' },
-  { key: 'pentecost', label: 'Pentecost', kind: 'EVENT', head: 'act:2:1' },
-  { key: 'second-coming', label: 'Second Coming', kind: 'EVENT', head: 'rev:22:20' },
-  { key: 'millennium', label: 'The Millennium', kind: 'EVENT', head: 'rev:20:4' },
-  { key: 'atonement', label: 'The Atonement', kind: 'EVENT', head: 'rom:5:8' },
-  { key: 'cross', label: 'The Cross', kind: 'EVENT', head: 'gal:3:13' },
-  { key: 'crucifixion', label: 'The Crucifixion', kind: 'EVENT', head: 'mat:27:35' },
-  { key: 'life-of-jesus', label: 'Life of Jesus', kind: 'EVENT', head: 'mat:4:1' },
-  { key: 'teaching-of-jesus', label: 'Teaching of Jesus', kind: 'TEACHING', head: 'mat:5:1' },
-];
+const SEED_TOPICS: SeedTopicDef[] = SEED_CONCEPTS.map((c) => ({
+  key: c.key.slice('seed:'.length), // strip the pipeline `seed:` prefix
+  label: c.canonical_name,
+  kind: c.kind,
+  head: c.head_verse,
+}));
 
 /**
  * Deterministic affinity pairs for the seed graph (each pair is emitted
- * once, undirected, lower concept id first).
+ * once, undirected, lower concept id first).  Every key resolves to a
+ * concept in `concepts/seed.ts` — verified by tests/semantic/seed.test.ts.
  */
 const SEED_AFFINITIES: Array<[string, string]> = [
   ['faith', 'hope'],
-  ['faith', 'joy'],
-  ['faith', 'salvation'],
-  ['love-of-god', 'grace'],
-  ['love-of-god', 'forgiveness'],
+  ['faith', 'love'],
+  ['faith', 'grace'],
+  ['faith', 'jesus'],
+  ['love', 'grace'],
+  ['love', 'forgiveness'],
+  ['love', 'service'],
   ['grace', 'salvation'],
-  ['salvation', 'redemption'],
-  ['redemption', 'atonement'],
   ['forgiveness', 'repentance'],
-  ['repentance', 'repent'],
-  ['prayer', 'worship'],
-  ['prayer', 'patience'],
-  ['praise', 'worship'],
-  ['humility', 'patience'],
-  ['prudence', 'wisdom'],
-  ['wisdom', 'patience'],
-  ['joy', 'peace'],
+  ['repentance', 'obedience'],
+  ['obedience', 'discipleship'],
+  ['prayer', 'peace'],
+  ['prayer', 'holy-spirit'],
+  ['peace', 'wisdom'],
+  ['wisdom', 'perseverance'],
+  ['perseverance', 'temptation'],
+  ['hope', 'salvation'],
+  ['fear', 'temptation'],
+  ['gospel', 'evangelism'],
   ['gospel', 'salvation'],
-  ['commandments', 'law'],
-  ['creation', 'flood'],
-  ['flood', 'exodus'],
-  ['exodus', 'passover'],
-  ['exodus', 'manna'],
-  ['exodus', 'tabernacle'],
-  ['passover', 'atonement'],
-  ['sacrifice', 'atonement'],
-  ['promises', 'faith'],
-  ['law', 'sacrifice'],
-  ['abraham', 'faith'],
-  ['abraham', 'promises'],
-  ['moses', 'exodus'],
-  ['moses', 'law'],
-  ['david', 'psalm-hymn'],
-  ['samuel', 'david'],
-  ['jeremiah', 'law'],
-  ['ezekiel', 'jeremiah'],
-  ['john-baptist', 'baptism-jesus'],
-  ['john-baptist', 'baptism'],
-  ['peter', 'pentecost'],
-  ['paul', 'grace'],
-  ['baptism-jesus', 'baptism'],
+  ['gospel', 'discipleship'],
+  ['mission', 'evangelism'],
+  ['mission', 'discipleship'],
+  ['justification', 'grace'],
+  ['justification', 'salvation'],
+  ['regeneration', 'conversion'],
+  ['regeneration', 'holy-spirit'],
+  ['sanctification', 'holiness'],
+  ['sanctification', 'discipleship'],
+  ['justice', 'the-law'],
+  ['mercy', 'forgiveness'],
+  ['the-cross', 'atonement'],
+  ['the-cross', 'resurrection'],
   ['resurrection', 'second-coming'],
-  ['resurrection', 'cross'],
-  ['crucifixion', 'cross'],
-  ['crucifixion', 'atonement'],
-  ['cross', 'atonement'],
-  ['life-of-jesus', 'teaching-of-jesus'],
-  ['life-of-jesus', 'baptism-jesus'],
-  ['teaching-of-jesus', 'commandments'],
-  ['second-coming', 'millennium'],
+  ['ascension', 'the-millennium'],
+  ['atonement', 'salvation'],
+  ['transfiguration', 'jesus'],
+  ['pentecost', 'holy-spirit'],
+  ['pentecost', 'peter'],
+  ['the-flood', 'creation'],
+  ['exodus', 'the-fall'],
+  ['exodus', 'moses'],
+  ['the-burning-bush', 'moses'],
+  ['the-burning-bush', 'the-exile'],
+  ['the-exile', 'second-coming'],
+  ['abraham', 'faith'],
+  ['abraham', 'creation'],
+  ['moses', 'the-law'],
+  ['david', 'jesus'],
+  ['david', 'the-psalms'],
+  ['peter', 'jesus'],
+  ['paul', 'grace'],
+  ['paul', 'gospel'],
+  ['john', 'jesus'],
+  ['john', 'gospel'],
+  ['jesus', 'holy-spirit'],
+  ['the-psalms', 'the-prophets'],
+  ['the-temple', 'the-law'],
+  ['the-millennium', 'second-coming'],
 ];
 
 /**
  * Build the minimal seed: the fixed 50-concept list with deterministic
- * ids, plus the derived co-occurrence relation graph.
+ * ids, plus the derived co-occurrence relation graph.  `labelsByLanguage`
+ * and `description` come from `concepts/seed.ts` (en/fr/pt labels,
+ * one-line description per concept).
  */
 export function buildMinimalSeed(opts: { now?: string; dataset?: string } = {}): SeedResult {
   const now = opts.now ?? DEFAULT_NOW;
   const dataset = opts.dataset ?? 'web';
 
-  const concepts = SEED_TOPICS.map((t) => {
+  const seeded = buildSeedConcepts();
+  const concepts = SEED_TOPICS.map((t, i) => {
     const key = `seed:${t.key}`;
     const id = detUuid(`seed-concept:${key}`);
+    const def = seeded.find((s) => s.key === key);
     return {
       id,
       key,
-      labelsByLanguage: { en: t.label },
+      labelsByLanguage: def?.labels_by_language ?? { en: t.label },
       canonicalLabel: t.label,
       kind: t.kind,
       source: 'derived',
       dataset,
+      description: def?.description,
       confidence: 1.0,
       createdBy: 'stage-A',
       status: 'accepted' as const,

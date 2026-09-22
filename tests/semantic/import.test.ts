@@ -1,10 +1,11 @@
 /**
  * Stage A — Import: verse-universe loading, layer discovery, and the
- * documented minimal seed (fixed 50-concept list + deterministic
+ * documented minimal seed (fixed 56-concept list + deterministic
  * co-occurrence graph). Pure, no network.
  */
 import { describe, it, expect } from 'vitest';
 import {
+  alignCrossrefs,
   buildMinimalSeed,
   loadVerseUniverse,
   discoverLayers,
@@ -31,10 +32,10 @@ describe('stage A — import', () => {
     expect(layers).toEqual({});
   });
 
-  it('builds the minimal 50-concept seed with deterministic ids + head verses', () => {
+  it('builds the minimal 56-concept seed with deterministic ids + head verses', () => {
     const a = buildMinimalSeed({ now: DEFAULT_NOW });
     const b = buildMinimalSeed({ now: DEFAULT_NOW });
-    expect(a.concepts).toHaveLength(50);
+    expect(a.concepts).toHaveLength(56);
     expect(a.relations.length).toBeGreaterThan(0);
     // Deterministic: two runs are byte-identical.
     expect(JSON.stringify(a.concepts)).toBe(JSON.stringify(b.concepts));
@@ -72,4 +73,25 @@ describe('stage A — import', () => {
     expect(res.edges).toEqual([]);
     expect(res.errors).toEqual([]);
   });
+
+  it('alignCrossrefs aligns raw crossref tokens to verse keys, counting unresolvable tokens', () => {
+    const errors: string[] = [];
+    const { universe } = loadVerseUniverse(`${REPO_ROOT}/data/bible`, errors);
+    // 'Gen 1' → gen:1:1 and 'Heb 11' → heb:11:1 both exist in the
+    // universe; a nonsense book token is counted unresolved, not an error.
+    const { aligned, unresolved } = alignCrossrefs(
+      [
+        { from: 'Gen 1', to: 'Heb 11' },
+        { from: 'Gen 1', to: 'Heb 11' }, // undirected duplicate → deduped
+        { from: 'Zzz 5', to: 'Gen 1' }, // unresolvable book → unresolved
+      ],
+      universe,
+    );
+    expect(unresolved).toBe(1);
+    expect(aligned).toHaveLength(1);
+    expect(aligned[0].fromVerse).toBe('gen:1:1');
+    expect(aligned[0].toVerse).toBe('heb:11:1');
+    expect(aligned[0].fromBook).toBe('gen');
+    expect(aligned[0].toBook).toBe('heb');
+  }, 60_000);
 });

@@ -19,10 +19,9 @@ describe('stage C — seed', () => {
     expect(out.stats.unresolved).toBe(0);
     // Row ids are deterministic detUuid values (stable across runs).
     expect(out.concepts[0].id).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-4/);
-    // labelsByLanguage is JSON-encoded per the schema.
-    expect(JSON.parse(out.concepts[0].labelsByLanguage)).toEqual({
-      en: seed.concepts[0].canonicalLabel,
-    });
+    // labelsByLanguage is JSON-encoded per the schema; every seed concept
+    // carries en/fr/pt labels (concepts/seed.ts is the canonical source).
+    expect(JSON.parse(out.concepts[0].labelsByLanguage)).toEqual(seed.concepts[0].labelsByLanguage);
   });
 
   it('emits a head-verse PRIMARY row for every concept with a head verse', () => {

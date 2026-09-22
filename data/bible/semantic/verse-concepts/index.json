@@ -1,6 +1,24 @@
 {
   "verseConcepts": [
     {
+      "id": "d305d220-d605-46d9-d505-d546d805d9ff",
+      "verseId": "jac:4:10",
+      "conceptId": "156dd073-166d-4206-176d-d399186dd52c",
+      "role": "PRIMARY",
+      "confidence": 0.95,
+      "source": "stage-C:derived",
+      "createdAt": "2026-09-13T22:00:43.494Z"
+    },
+    {
+      "id": "00ba9bab-1ba9-43e2-ba9e-d13baa064000",
+      "verseId": "prov:16:18",
+      "conceptId": "21a6579a-20a6-4607-1fa6-54741ea652e1",
+      "role": "PRIMARY",
+      "confidence": 0.95,
+      "source": "stage-C:derived",
+      "createdAt": "2026-09-13T22:00:43.494Z"
+    },
+    {
       "id": "eb1078f9-e810-4440-e910-75d3ee107db2",
       "verseId": "heb:11:1",
       "conceptId": "330ee278-360e-4731-350e-e59e380eea57",
@@ -10,9 +28,9 @@
       "createdAt": "2026-09-13T22:00:43.494Z"
     },
     {
-      "id": "28f7b36b-29f7-44fe-2af7-b6912bf7b824",
-      "verseId": "1joh:4:8",
-      "conceptId": "0cea7019-9ea6-460a-ea6c-f3fea74d2000",
+      "id": "6b8b0aba-6a8b-4927-698b-0794688b0601",
+      "verseId": "mat:22:37",
+      "conceptId": "c9e5ab5e-c8e5-49cb-c7e5-a838cee5b33d",
       "role": "PRIMARY",
       "confidence": 0.95,
       "source": "stage-C:derived",
@@ -28,27 +46,27 @@
       "createdAt": "2026-09-13T22:00:43.494Z"
     },
     {
-      "id": "3ef82e03-3ff8-4f96-40f8-312941f832bc",
-      "verseId": "act:4:12",
-      "conceptId": "9dba6407-9eba-459a-9fba-672d98ba5c28",
-      "role": "PRIMARY",
-      "confidence": 0.95,
-      "source": "stage-C:derived",
-      "createdAt": "2026-09-13T22:00:43.494Z"
-    },
-    {
-      "id": "35dca63b-36dc-47ce-37dc-a96138dcaaf4",
-      "verseId": "rom:3:24",
-      "conceptId": "56283727-5728-48ba-5828-3a4d51282f48",
-      "role": "PRIMARY",
-      "confidence": 0.95,
-      "source": "stage-C:derived",
-      "createdAt": "2026-09-13T22:00:43.494Z"
-    },
-    {
-      "id": "d68cdf4a-d58c-4db7-d48c-dc24d38cda91",
-      "verseId": "eph:1:7",
+      "id": "e36ce37e-e26c-41eb-e16c-e058e86ceb5d",
+      "verseId": "mat:6:14",
       "conceptId": "3b26f129-3826-4c70-3926-ee033e26f5e2",
+      "role": "PRIMARY",
+      "confidence": 0.95,
+      "source": "stage-C:derived",
+      "createdAt": "2026-09-13T22:00:43.494Z"
+    },
+    {
+      "id": "48790043-4979-41d6-4a79-03694b7904fc",
+      "verseId": "rom:1:5",
+      "conceptId": "38b66ca8-3bb6-4161-3ab6-6fce3db67487",
+      "role": "PRIMARY",
+      "confidence": 0.95,
+      "source": "stage-C:derived",
+      "createdAt": "2026-09-13T22:00:43.494Z"
+    },
+    {
+      "id": "2876dd57-2976-4eea-2a76-e07d2376d578",
+      "verseId": "phil:4:6",
+      "conceptId": "ba9d2601-b79d-4148-b89d-22dbbd9d2aba",
       "role": "PRIMARY",
       "confidence": 0.95,
       "source": "stage-C:derived",
@@ -64,63 +82,18 @@
       "createdAt": "2026-09-13T22:00:43.494Z"
     },
     {
-      "id": "d9618ea3-da61-4036-db61-91c9dc61935c",
-      "verseId": "luk:5:32",
-      "conceptId": "f4c31e32-f3c3-4c9f-f2c3-1b0cf1c31979",
+      "id": "8302c1b3-8402-4346-8502-c4d98602c66c",
+      "verseId": "jac:1:12",
+      "conceptId": "46ad4155-43ad-4c9c-44ad-3e2f41ad3976",
       "role": "PRIMARY",
       "confidence": 0.95,
       "source": "stage-C:derived",
       "createdAt": "2026-09-13T22:00:43.494Z"
     },
     {
-      "id": "50fc3ad1-4dfc-4618-4efc-37ab53fc3f8a",
-      "verseId": "mat:6:9",
-      "conceptId": "ba9d2601-b79d-4148-b89d-22dbbd9d2aba",
-      "role": "PRIMARY",
-      "confidence": 0.95,
-      "source": "stage-C:derived",
-      "createdAt": "2026-09-13T22:00:43.494Z"
-    },
-    {
-      "id": "a6d1bb85-a3d1-46cc-a4d1-b85fa1d1b3a6",
-      "verseId": "psa:147:1",
-      "conceptId": "6d68be5e-6c68-4ccb-6b68-bb387268c63d",
-      "role": "PRIMARY",
-      "confidence": 0.95,
-      "source": "stage-C:derived",
-      "createdAt": "2026-09-13T22:00:43.494Z"
-    },
-    {
-      "id": "a0f59c06-9ff5-4a73-9ef5-98e0a5f5a3e5",
-      "verseId": "heb:12:28",
-      "conceptId": "34be1412-33be-427f-32be-10ec31be0f59",
-      "role": "PRIMARY",
-      "confidence": 0.95,
-      "source": "stage-C:derived",
-      "createdAt": "2026-09-13T22:00:43.494Z"
-    },
-    {
-      "id": "d305d220-d605-46d9-d505-d546d805d9ff",
-      "verseId": "jac:4:10",
-      "conceptId": "156dd073-166d-4206-176d-d399186dd52c",
-      "role": "PRIMARY",
-      "confidence": 0.95,
-      "source": "stage-C:derived",
-      "createdAt": "2026-09-13T22:00:43.494Z"
-    },
-    {
-      "id": "a0f5d71f-a1f5-48b2-a2f5-da459bf5cf40",
-      "verseId": "jac:1:5",
-      "conceptId": "2af4df0d-27f4-4a54-28f4-dbe725f4d72e",
-      "role": "PRIMARY",
-      "confidence": 0.95,
-      "source": "stage-C:derived",
-      "createdAt": "2026-09-13T22:00:43.494Z"
-    },
-    {
-      "id": "eb191e89-e819-49d0-e919-1b63ee192342",
-      "verseId": "mat:7:15",
-      "conceptId": "4a559e5e-4955-4ccb-4855-9b384f55a63d",
+      "id": "b969d01a-b869-4e87-b769-ccf4b669cb61",
+      "verseId": "mat:26:41",
+      "conceptId": "9ed11391-9bd1-4ed8-9cd1-106ba1d1184a",
       "role": "PRIMARY",
       "confidence": 0.95,
       "source": "stage-C:derived",
@@ -145,9 +118,9 @@
       "createdAt": "2026-09-13T22:00:43.494Z"
     },
     {
-      "id": "fee0f6f7-ffe0-488a-e0fa-1df9e0ef1800",
-      "verseId": "phil:4:4",
-      "conceptId": "bd96882e-bc96-469b-bb96-8508c296900d",
+      "id": "c347a1fc-c647-46b5-c547-a522c0479d43",
+      "verseId": "deb:31:6",
+      "conceptId": "c5338e30-c833-42e9-c733-9156ca33960f",
       "role": "PRIMARY",
       "confidence": 0.95,
       "source": "stage-C:derived",
@@ -163,6 +136,123 @@
       "createdAt": "2026-09-13T22:00:43.494Z"
     },
     {
+      "id": "ff6f7842-fe6f-46af-fd6f-751cfc6f7389",
+      "verseId": "mar:10:45",
+      "conceptId": "b40ab483-b50a-4616-b60a-b7a9b70ab93c",
+      "role": "PRIMARY",
+      "confidence": 0.95,
+      "source": "stage-C:derived",
+      "createdAt": "2026-09-13T22:00:43.494Z"
+    },
+    {
+      "id": "41cafb0b-42ca-4c9e-43ca-fe3144caffc4",
+      "verseId": "rom:1:17",
+      "conceptId": "f35d8cb9-f05d-4800-f15d-8993f65d9172",
+      "role": "PRIMARY",
+      "confidence": 0.95,
+      "source": "stage-C:derived",
+      "createdAt": "2026-09-13T22:00:43.494Z"
+    },
+    {
+      "id": "ab1f7b73-ac1f-4d06-ad1f-7e99ae1f802c",
+      "verseId": "mich:7:18",
+      "conceptId": "c94704a4-cc47-495d-cb47-07cac646ffeb",
+      "role": "PRIMARY",
+      "confidence": 0.95,
+      "source": "stage-C:derived",
+      "createdAt": "2026-09-13T22:00:43.494Z"
+    },
+    {
+      "id": "fa372014-fd37-44cd-fc37-233af7371b5b",
+      "verseId": "1pet:1:16",
+      "conceptId": "969fe1e3-979f-4376-989f-e509999fe69c",
+      "role": "PRIMARY",
+      "confidence": 0.95,
+      "source": "stage-C:derived",
+      "createdAt": "2026-09-13T22:00:43.494Z"
+    },
+    {
+      "id": "edd88f06-ecd8-4d73-ebd8-8be0f2d896e5",
+      "verseId": "heb:12:14",
+      "conceptId": "a9b113b9-a6b1-4f00-a7b1-1093acb11872",
+      "role": "PRIMARY",
+      "confidence": 0.95,
+      "source": "stage-C:derived",
+      "createdAt": "2026-09-13T22:00:43.494Z"
+    },
+    {
+      "id": "430b57bf-440b-4952-450b-5ae53e0b4fe0",
+      "verseId": "rom:3:28",
+      "conceptId": "1f8ade0a-1e8a-4c77-1d8a-dae41c8ad951",
+      "role": "PRIMARY",
+      "confidence": 0.95,
+      "source": "stage-C:derived",
+      "createdAt": "2026-09-13T22:00:43.494Z"
+    },
+    {
+      "id": "ba2576ed-b725-4234-b825-73c7b5256f0e",
+      "verseId": "joh:3:3",
+      "conceptId": "0ab41f3d-7b41-4848-b41c-175b4175e000",
+      "role": "PRIMARY",
+      "confidence": 0.95,
+      "source": "stage-C:derived",
+      "createdAt": "2026-09-13T22:00:43.494Z"
+    },
+    {
+      "id": "9d4049f5-9a40-453c-9b40-46cf98404216",
+      "verseId": "act:9:34",
+      "conceptId": "984b5192-974b-4fff-964b-4e6c954b4cd9",
+      "role": "PRIMARY",
+      "confidence": 0.95,
+      "source": "stage-C:derived",
+      "createdAt": "2026-09-13T22:00:43.494Z"
+    },
+    {
+      "id": "2ba31534-2ea3-49ed-2da3-185a28a3107b",
+      "verseId": "gal:1:15",
+      "conceptId": "2e339720-3133-4bd9-3033-9a4633339eff",
+      "role": "PRIMARY",
+      "confidence": 0.95,
+      "source": "stage-C:derived",
+      "createdAt": "2026-09-13T22:00:43.494Z"
+    },
+    {
+      "id": "4d863de8-5086-42a1-4f86-410e528645c7",
+      "verseId": "mat:28:19",
+      "conceptId": "f61153d2-f511-423f-f411-50acf3114f19",
+      "role": "PRIMARY",
+      "confidence": 0.95,
+      "source": "stage-C:derived",
+      "createdAt": "2026-09-13T22:00:43.494Z"
+    },
+    {
+      "id": "01b96bda-b96a-47ff-b968-b4feb9672100",
+      "verseId": "mar:16:15",
+      "conceptId": "e7c46e89-e4c4-49d0-e5c4-6b63eac47342",
+      "role": "PRIMARY",
+      "confidence": 0.95,
+      "source": "stage-C:derived",
+      "createdAt": "2026-09-13T22:00:43.494Z"
+    },
+    {
+      "id": "439d3cd3-449d-4e66-459d-3ff9469d418c",
+      "verseId": "mat:28:20",
+      "conceptId": "a4b234f7-a5b2-468a-a6b2-381d9fb22d18",
+      "role": "PRIMARY",
+      "confidence": 0.95,
+      "source": "stage-C:derived",
+      "createdAt": "2026-09-13T22:00:43.494Z"
+    },
+    {
+      "id": "fe4bcb94-14bd-44d4-bceb-afb4bc6db000",
+      "verseId": "act:8:12",
+      "conceptId": "91e4086e-90e4-46db-8fe4-054896e4104d",
+      "role": "PRIMARY",
+      "confidence": 0.95,
+      "source": "stage-C:derived",
+      "createdAt": "2026-09-13T22:00:43.494Z"
+    },
+    {
       "id": "be393718-c139-4bd1-c039-3a3ec3393ef7",
       "verseId": "mar:1:1",
       "conceptId": "e50be5d2-e40b-443f-e30b-e2ace20be119",
@@ -172,9 +262,108 @@
       "createdAt": "2026-09-13T22:00:43.494Z"
     },
     {
-      "id": "fc1a0e56-fb1a-4cc3-fa1a-0b3011a16350",
-      "verseId": "mat:19:17",
-      "conceptId": "09297650-c297-409b-2979-76e297e2f000",
+      "id": "3ef82e03-3ff8-4f96-40f8-312941f832bc",
+      "verseId": "act:4:12",
+      "conceptId": "9dba6407-9eba-459a-9fba-672d98ba5c28",
+      "role": "PRIMARY",
+      "confidence": 0.95,
+      "source": "stage-C:derived",
+      "createdAt": "2026-09-13T22:00:43.494Z"
+    },
+    {
+      "id": "1559c469-1259-4fb0-1359-c1431859c922",
+      "verseId": "1cor:1:18",
+      "conceptId": "f81c0a1e-f71c-488b-f61c-06f8fd1c11fd",
+      "role": "PRIMARY",
+      "confidence": 0.95,
+      "source": "stage-C:derived",
+      "createdAt": "2026-09-13T22:00:43.494Z"
+    },
+    {
+      "id": "192cd149-162c-4c90-172c-ce231c2cd602",
+      "verseId": "rom:5:8",
+      "conceptId": "91de3593-92de-4726-93de-38b994de3a4c",
+      "role": "PRIMARY",
+      "confidence": 0.95,
+      "source": "stage-C:derived",
+      "createdAt": "2026-09-13T22:00:43.494Z"
+    },
+    {
+      "id": "554fef4c-584f-4405-574f-f272524fea93",
+      "verseId": "1cor:15:3",
+      "conceptId": "f31c89a1-f01c-44e8-f11c-867bf61c8e5a",
+      "role": "PRIMARY",
+      "confidence": 0.95,
+      "source": "stage-C:derived",
+      "createdAt": "2026-09-13T22:00:43.494Z"
+    },
+    {
+      "id": "b4225572-b322-43df-b222-524cb12250b9",
+      "verseId": "act:1:11",
+      "conceptId": "acbfe5ef-adbf-4782-aebf-e915a7bfde10",
+      "role": "PRIMARY",
+      "confidence": 0.95,
+      "source": "stage-C:derived",
+      "createdAt": "2026-09-13T22:00:43.494Z"
+    },
+    {
+      "id": "6c7a3307-6d7a-449a-6e7a-362d677a2b28",
+      "verseId": "luk:9:29",
+      "conceptId": "852b6a98-882b-4f51-872b-6dbe8a2b7277",
+      "role": "PRIMARY",
+      "confidence": 0.95,
+      "source": "stage-C:derived",
+      "createdAt": "2026-09-13T22:00:43.494Z"
+    },
+    {
+      "id": "76e5a1af-77e5-4342-78e5-a4d571e599d0",
+      "verseId": "act:2:1",
+      "conceptId": "f43d6bdd-f13d-4724-f23d-68b7ef3d63fe",
+      "role": "PRIMARY",
+      "confidence": 0.95,
+      "source": "stage-C:derived",
+      "createdAt": "2026-09-13T22:00:43.494Z"
+    },
+    {
+      "id": "034e2d20-64e3-4d95-4e30-4684e34ff000",
+      "verseId": "gen:6:11",
+      "conceptId": "82d1c39e-81d1-420b-80d1-c07887d1cb7d",
+      "role": "PRIMARY",
+      "confidence": 0.95,
+      "source": "stage-C:derived",
+      "createdAt": "2026-09-13T22:00:43.494Z"
+    },
+    {
+      "id": "523a3346-513a-41b3-503a-3020573a3b25",
+      "verseId": "jer:25:11",
+      "conceptId": "2faa816d-2caa-4cb4-2daa-7e472aaa798e",
+      "role": "PRIMARY",
+      "confidence": 0.95,
+      "source": "stage-C:derived",
+      "createdAt": "2026-09-13T22:00:43.494Z"
+    },
+    {
+      "id": "0677c9b9-377c-4004-77c6-93977ce72000",
+      "verseId": "rev:22:20",
+      "conceptId": "6971f150-6c71-4609-6b71-f4766e71f92f",
+      "role": "PRIMARY",
+      "confidence": 0.95,
+      "source": "stage-C:derived",
+      "createdAt": "2026-09-13T22:00:43.494Z"
+    },
+    {
+      "id": "f4117265-f111-4dac-f211-6f3fef116a86",
+      "verseId": "rev:20:4",
+      "conceptId": "15a2af7a-14a2-4de7-13a2-ac5412a2aac1",
+      "role": "PRIMARY",
+      "confidence": 0.95,
+      "source": "stage-C:derived",
+      "createdAt": "2026-09-13T22:00:43.494Z"
+    },
+    {
+      "id": "60e34726-5fe3-4593-5ee3-440065e34f05",
+      "verseId": "gen:3:6",
+      "conceptId": "ccf3a285-c9f3-4dcc-caf3-9f5fc7f39aa6",
       "role": "PRIMARY",
       "confidence": 0.95,
       "source": "stage-C:derived",
@@ -190,17 +379,8 @@
       "createdAt": "2026-09-13T22:00:43.494Z"
     },
     {
-      "id": "db6668db-dc66-4a6e-dd66-6c01de666d94",
-      "verseId": "gen:7:1",
-      "conceptId": "f665462c-f965-4ae5-f865-4952f3654173",
-      "role": "PRIMARY",
-      "confidence": 0.95,
-      "source": "stage-C:derived",
-      "createdAt": "2026-09-13T22:00:43.494Z"
-    },
-    {
-      "id": "b3179353-b417-44e6-b517-9679b617980c",
-      "verseId": "exo:3:7",
+      "id": "06793f50-9794-4098-7942-76b79472f000",
+      "verseId": "exo:12:51",
       "conceptId": "1839c19c-1b39-4655-1a39-c4c21539bce3",
       "role": "PRIMARY",
       "confidence": 0.95,
@@ -208,63 +388,9 @@
       "createdAt": "2026-09-13T22:00:43.494Z"
     },
     {
-      "id": "ca4d8d3b-cb4d-4ece-cc4d-9061cd4d91f4",
-      "verseId": "exo:16:4",
-      "conceptId": "84e84a29-81e8-4570-82e8-470387e84ee2",
-      "role": "PRIMARY",
-      "confidence": 0.95,
-      "source": "stage-C:derived",
-      "createdAt": "2026-09-13T22:00:43.494Z"
-    },
-    {
-      "id": "1334040a-1234-4277-1134-00e41033ff51",
-      "verseId": "exo:25:8",
-      "conceptId": "0085126b-1851-4fe2-8515-913851724000",
-      "role": "PRIMARY",
-      "confidence": 0.95,
-      "source": "stage-C:derived",
-      "createdAt": "2026-09-13T22:00:43.494Z"
-    },
-    {
-      "id": "4a13014f-4b13-42e2-4c13-04754512f970",
-      "verseId": "lev:1:3",
-      "conceptId": "e3e014e5-e0e0-402c-e1e0-11bfdee00d06",
-      "role": "PRIMARY",
-      "confidence": 0.95,
-      "source": "stage-C:derived",
-      "createdAt": "2026-09-13T22:00:43.494Z"
-    },
-    {
-      "id": "9287c86c-9587-4d25-9487-cb928f87c3b3",
-      "verseId": "exo:12:11",
-      "conceptId": "ebbb3555-e8bb-409c-e9bb-322fe6bb2d76",
-      "role": "PRIMARY",
-      "confidence": 0.95,
-      "source": "stage-C:derived",
-      "createdAt": "2026-09-13T22:00:43.494Z"
-    },
-    {
-      "id": "9f3f0e15-9c3f-495c-9d3f-0aef9a3f0636",
-      "verseId": "rom:4:21",
-      "conceptId": "481f3154-4b1f-460d-4a1f-347a451f2c9b",
-      "role": "PRIMARY",
-      "confidence": 0.95,
-      "source": "stage-C:derived",
-      "createdAt": "2026-09-13T22:00:43.494Z"
-    },
-    {
-      "id": "e596cf5c-e896-4415-e796-d282e296caa3",
-      "verseId": "deb:4:13",
-      "conceptId": "5376e7a4-5676-4c5d-5576-eaca5076e2eb",
-      "role": "PRIMARY",
-      "confidence": 0.95,
-      "source": "stage-C:derived",
-      "createdAt": "2026-09-13T22:00:43.494Z"
-    },
-    {
-      "id": "c6e9a7ac-c9e9-4c65-c8e9-aad2c3e9a2f3",
-      "verseId": "psa:78:24",
-      "conceptId": "e717cccc-ea17-4185-e917-cff2e417c813",
+      "id": "869f8d00-899f-41b9-889f-90268b9f94df",
+      "verseId": "exo:3:2",
+      "conceptId": "ad7c52d4-b07c-478d-af7c-55faaa7c4e1b",
       "role": "PRIMARY",
       "confidence": 0.95,
       "source": "stage-C:derived",
@@ -298,42 +424,6 @@
       "createdAt": "2026-09-13T22:00:43.494Z"
     },
     {
-      "id": "951838dd-9218-4424-9318-35b7901830fe",
-      "verseId": "1sam:3:1",
-      "conceptId": "2f85a5cd-2c85-4114-2d85-a2a72a859dee",
-      "role": "PRIMARY",
-      "confidence": 0.95,
-      "source": "stage-C:derived",
-      "createdAt": "2026-09-13T22:00:43.494Z"
-    },
-    {
-      "id": "06607826-5607-4934-6075-00b608005000",
-      "verseId": "jer:1:5",
-      "conceptId": "d50a1b45-d20a-468c-d30a-181fd00a1366",
-      "role": "PRIMARY",
-      "confidence": 0.95,
-      "source": "stage-C:derived",
-      "createdAt": "2026-09-13T22:00:43.494Z"
-    },
-    {
-      "id": "0f933301-c932-448d-932f-db129337ba00",
-      "verseId": "ezek:1:3",
-      "conceptId": "1d5206d3-1e52-4866-1f52-09f920520b8c",
-      "role": "PRIMARY",
-      "confidence": 0.95,
-      "source": "stage-C:derived",
-      "createdAt": "2026-09-13T22:00:43.494Z"
-    },
-    {
-      "id": "3b7096e4-3e70-4b9d-3d70-9a0a3870922b",
-      "verseId": "mat:3:1",
-      "conceptId": "3c9a3311-399a-4e58-3a9a-2feb3f9a37ca",
-      "role": "PRIMARY",
-      "confidence": 0.95,
-      "source": "stage-C:derived",
-      "createdAt": "2026-09-13T22:00:43.494Z"
-    },
-    {
       "id": "c6dbbfd7-c7db-416a-c8db-c2fdc1dbb7f8",
       "verseId": "act:1:15",
       "conceptId": "a5aa8416-a4aa-4283-a3aa-80f0aaaa8bf5",
@@ -352,99 +442,63 @@
       "createdAt": "2026-09-13T22:00:43.494Z"
     },
     {
-      "id": "b80b04b6-b70b-4323-b60b-0190bd0b0c95",
-      "verseId": "mat:3:13",
-      "conceptId": "bbe1c3d7-bce1-456a-bde1-c6fdb6e1bbf8",
+      "id": "1f25d0b2-1e25-4f1f-1d25-cd8c1c25cbf9",
+      "verseId": "joh:21:20",
+      "conceptId": "c897ec43-c997-4dd6-ca97-ef69cb97f0fc",
       "role": "PRIMARY",
       "confidence": 0.95,
       "source": "stage-C:derived",
       "createdAt": "2026-09-13T22:00:43.494Z"
     },
     {
-      "id": "6be76d5f-6ce7-4ef2-6de7-708566e76580",
-      "verseId": "mat:28:19",
-      "conceptId": "51f0ed9c-54f0-4255-53f0-f0c24ef0e8e3",
+      "id": "d182ebd4-d482-408d-d382-eeface82e71b",
+      "verseId": "joh:1:1",
+      "conceptId": "dbbeecc2-dabe-4b2f-d9be-e99cd8bee809",
       "role": "PRIMARY",
       "confidence": 0.95,
       "source": "stage-C:derived",
       "createdAt": "2026-09-13T22:00:43.494Z"
     },
     {
-      "id": "26343f70-2934-4429-2834-42962b34474f",
-      "verseId": "mat:28:6",
-      "conceptId": "f31c89a1-f01c-44e8-f11c-867bf61c8e5a",
+      "id": "cd535e32-cc53-4c9f-cb53-5b0cca535979",
+      "verseId": "psa:139:7",
+      "conceptId": "9e06c508-a106-49c1-a006-c82ea306cce7",
       "role": "PRIMARY",
       "confidence": 0.95,
       "source": "stage-C:derived",
       "createdAt": "2026-09-13T22:00:43.494Z"
     },
     {
-      "id": "76e5a1af-77e5-4342-78e5-a4d571e599d0",
-      "verseId": "act:2:1",
-      "conceptId": "f43d6bdd-f13d-4724-f23d-68b7ef3d63fe",
+      "id": "5c11bd45-5911-488c-5a11-ba1f5711b566",
+      "verseId": "deb:4:13",
+      "conceptId": "84a43fae-83a4-4e1b-82a4-3c8889a4478d",
       "role": "PRIMARY",
       "confidence": 0.95,
       "source": "stage-C:derived",
       "createdAt": "2026-09-13T22:00:43.494Z"
     },
     {
-      "id": "0677c9b9-377c-4004-77c6-93977ce72000",
-      "verseId": "rev:22:20",
-      "conceptId": "6971f150-6c71-4609-6b71-f4766e71f92f",
+      "id": "74d2203d-71d2-4b84-72d2-1d176fd2185e",
+      "verseId": "psa:1:1",
+      "conceptId": "e3c051d4-e6c0-468d-e5c0-54fae0c04d1b",
       "role": "PRIMARY",
       "confidence": 0.95,
       "source": "stage-C:derived",
       "createdAt": "2026-09-13T22:00:43.494Z"
     },
     {
-      "id": "a49c95ef-a59c-4782-a69c-99159f9c8e10",
-      "verseId": "rev:20:4",
-      "conceptId": "fee384a8-1e38-461e-387c-e3e38c870000",
+      "id": "17f1b48f-18f1-4622-19f1-b7b512f1acb0",
+      "verseId": "isa:20:3",
+      "conceptId": "653903a7-6639-453a-6739-06cd6038fbc8",
       "role": "PRIMARY",
       "confidence": 0.95,
       "source": "stage-C:derived",
       "createdAt": "2026-09-13T22:00:43.494Z"
     },
     {
-      "id": "192cd149-162c-4c90-172c-ce231c2cd602",
-      "verseId": "rom:5:8",
-      "conceptId": "91de3593-92de-4726-93de-38b994de3a4c",
-      "role": "PRIMARY",
-      "confidence": 0.95,
-      "source": "stage-C:derived",
-      "createdAt": "2026-09-13T22:00:43.494Z"
-    },
-    {
-      "id": "ba998642-b999-44af-b899-831cb7998189",
-      "verseId": "gal:3:13",
-      "conceptId": "b5a971e4-b8a9-469d-b7a9-750ab2a96d2b",
-      "role": "PRIMARY",
-      "confidence": 0.95,
-      "source": "stage-C:derived",
-      "createdAt": "2026-09-13T22:00:43.494Z"
-    },
-    {
-      "id": "f622cbaf-f722-4d42-f822-ced5f122c3d0",
-      "verseId": "mat:27:35",
-      "conceptId": "f57dc833-f67d-49c6-f77d-cb59f87dccec",
-      "role": "PRIMARY",
-      "confidence": 0.95,
-      "source": "stage-C:derived",
-      "createdAt": "2026-09-13T22:00:43.494Z"
-    },
-    {
-      "id": "2ae6f6d1-27e6-4218-28e6-f3ab2de6fb8a",
-      "verseId": "mat:4:1",
-      "conceptId": "a4dbcd63-a5db-4ef6-a6db-d089a7dbd21c",
-      "role": "PRIMARY",
-      "confidence": 0.95,
-      "source": "stage-C:derived",
-      "createdAt": "2026-09-13T22:00:43.494Z"
-    },
-    {
-      "id": "bdff3586-bcff-43f3-bbff-3260c2ff3d65",
-      "verseId": "mat:5:1",
-      "conceptId": "b35e89a8-b65e-4e61-b55e-8cceb85e9187",
+      "id": "71ccc85c-74cc-4d15-73cc-cb826eccc3a3",
+      "verseId": "psa:11:4",
+      "conceptId": "465bc2d1-435b-4e18-445b-bfab495bc78a",
       "role": "PRIMARY",
       "confidence": 0.95,
       "source": "stage-C:derived",
@@ -452,6 +506,26 @@
     }
   ],
   "mapped": [
+    {
+      "id": "283cd8f5-253c-443c-263c-d5cf233cd116",
+      "verseId": "jac:4:10",
+      "conceptKey": "seed:humility",
+      "role": "PRIMARY",
+      "confidence": 0.95,
+      "source": "stage-E:rule",
+      "status": "accepted",
+      "llmAsked": false
+    },
+    {
+      "id": "06d7cefc-9d7d-4b58-d7d2-223d7ca43000",
+      "verseId": "prov:16:18",
+      "conceptKey": "seed:pride",
+      "role": "PRIMARY",
+      "confidence": 0.95,
+      "source": "stage-E:rule",
+      "status": "accepted",
+      "llmAsked": false
+    },
     {
       "id": "e004a2c5-dd04-4e0c-de04-9f9fdb049ae6",
       "verseId": "heb:11:1",
@@ -463,9 +537,9 @@
       "llmAsked": false
     },
     {
-      "id": "a25cab76-a15c-49e3-a05c-a850a75cb355",
-      "verseId": "1joh:4:8",
-      "conceptKey": "seed:love-of-god",
+      "id": "bb3c2ead-b83c-49f4-b93c-2b87b63c26ce",
+      "verseId": "mat:22:37",
+      "conceptKey": "seed:love",
       "role": "PRIMARY",
       "confidence": 0.95,
       "source": "stage-E:rule",
@@ -483,29 +557,29 @@
       "llmAsked": false
     },
     {
-      "id": "bae589cb-bbe5-4b5e-bce5-8cf1bde58e84",
-      "verseId": "act:4:12",
-      "conceptKey": "seed:salvation",
-      "role": "PRIMARY",
-      "confidence": 0.95,
-      "source": "stage-E:rule",
-      "status": "accepted",
-      "llmAsked": false
-    },
-    {
-      "id": "f05c1489-ed5c-4fd0-ee5c-1163f35c1942",
-      "verseId": "rom:3:24",
-      "conceptKey": "seed:redemption",
-      "role": "PRIMARY",
-      "confidence": 0.95,
-      "source": "stage-E:rule",
-      "status": "accepted",
-      "llmAsked": false
-    },
-    {
-      "id": "bf17d515-bc17-405c-bd17-d1efba17cd36",
-      "verseId": "eph:1:7",
+      "id": "90bf7cdf-91bf-4e72-92bf-80058bbf7500",
+      "verseId": "mat:6:14",
       "conceptKey": "seed:forgiveness",
+      "role": "PRIMARY",
+      "confidence": 0.95,
+      "source": "stage-E:rule",
+      "status": "accepted",
+      "llmAsked": false
+    },
+    {
+      "id": "d449527b-d549-440e-d649-55a1d7495734",
+      "verseId": "rom:1:5",
+      "conceptKey": "seed:obedience",
+      "role": "PRIMARY",
+      "confidence": 0.95,
+      "source": "stage-E:rule",
+      "status": "accepted",
+      "llmAsked": false
+    },
+    {
+      "id": "0ea022bf-fa02-4521-0a02-5e59a01ae000",
+      "verseId": "phil:4:6",
+      "conceptKey": "seed:prayer",
       "role": "PRIMARY",
       "confidence": 0.95,
       "source": "stage-E:rule",
@@ -523,9 +597,9 @@
       "llmAsked": false
     },
     {
-      "id": "ca20ddad-c720-48f4-c820-da87c520d5ce",
-      "verseId": "luk:5:32",
-      "conceptKey": "seed:repent",
+      "id": "3338ac04-3638-40bd-3538-af2a3038a74b",
+      "verseId": "jac:1:12",
+      "conceptKey": "seed:perseverance",
       "role": "PRIMARY",
       "confidence": 0.95,
       "source": "stage-E:rule",
@@ -533,59 +607,9 @@
       "llmAsked": false
     },
     {
-      "id": "f87d0a79-f57d-45c0-f67d-0753fb7d0f32",
-      "verseId": "mat:6:9",
-      "conceptKey": "seed:prayer",
-      "role": "PRIMARY",
-      "confidence": 0.95,
-      "source": "stage-E:rule",
-      "status": "accepted",
-      "llmAsked": false
-    },
-    {
-      "id": "fff53120-2f53-4d91-f534-464f538ff000",
-      "verseId": "psa:147:1",
-      "conceptKey": "seed:praise",
-      "role": "PRIMARY",
-      "confidence": 0.95,
-      "source": "stage-E:rule",
-      "status": "accepted",
-      "llmAsked": false
-    },
-    {
-      "id": "005439e7-1543-47a2-543d-0dfb54320800",
-      "verseId": "heb:12:28",
-      "conceptKey": "seed:worship",
-      "role": "PRIMARY",
-      "confidence": 0.95,
-      "source": "stage-E:rule",
-      "status": "accepted",
-      "llmAsked": false
-    },
-    {
-      "id": "283cd8f5-253c-443c-263c-d5cf233cd116",
-      "verseId": "jac:4:10",
-      "conceptKey": "seed:humility",
-      "role": "PRIMARY",
-      "confidence": 0.95,
-      "source": "stage-E:rule",
-      "status": "accepted",
-      "llmAsked": false
-    },
-    {
-      "id": "7d71209c-8071-4555-7f71-23c27a711be3",
-      "verseId": "jac:1:5",
-      "conceptKey": "seed:patience",
-      "role": "PRIMARY",
-      "confidence": 0.95,
-      "source": "stage-E:rule",
-      "status": "accepted",
-      "llmAsked": false
-    },
-    {
-      "id": "b1c78eb2-b0c7-4d1f-afc7-8b8caec789f9",
-      "verseId": "mat:7:15",
-      "conceptKey": "seed:prudence",
+      "id": "88c28b7f-89c2-4d12-8ac2-8ea583c283a0",
+      "verseId": "mat:26:41",
+      "conceptKey": "seed:temptation",
       "role": "PRIMARY",
       "confidence": 0.95,
       "source": "stage-E:rule",
@@ -613,9 +637,9 @@
       "llmAsked": false
     },
     {
-      "id": "498633de-4886-424b-4786-30b84e863bbd",
-      "verseId": "phil:4:4",
-      "conceptKey": "seed:joy",
+      "id": "28901804-2b90-4cbd-2a90-1b2a2590134b",
+      "verseId": "deb:31:6",
+      "conceptKey": "seed:fear",
       "role": "PRIMARY",
       "confidence": 0.95,
       "source": "stage-E:rule",
@@ -633,6 +657,136 @@
       "llmAsked": false
     },
     {
+      "id": "5b8e1536-5a8e-43a3-598e-1210608e1d15",
+      "verseId": "mar:10:45",
+      "conceptKey": "seed:service",
+      "role": "PRIMARY",
+      "confidence": 0.95,
+      "source": "stage-E:rule",
+      "status": "accepted",
+      "llmAsked": false
+    },
+    {
+      "id": "e373505d-e073-4ba4-e173-4d37de73487e",
+      "verseId": "rom:1:17",
+      "conceptKey": "seed:justice",
+      "role": "PRIMARY",
+      "confidence": 0.95,
+      "source": "stage-E:rule",
+      "status": "accepted",
+      "llmAsked": false
+    },
+    {
+      "id": "0e29fe78-112a-4331-102a-019e132a0657",
+      "verseId": "mich:7:18",
+      "conceptKey": "seed:mercy",
+      "role": "PRIMARY",
+      "confidence": 0.95,
+      "source": "stage-E:rule",
+      "status": "accepted",
+      "llmAsked": false
+    },
+    {
+      "id": "8fe1f116-8ee1-4f83-8de1-edf094e1f8f5",
+      "verseId": "1pet:1:16",
+      "conceptKey": "seed:holiness",
+      "role": "PRIMARY",
+      "confidence": 0.95,
+      "source": "stage-E:rule",
+      "status": "accepted",
+      "llmAsked": false
+    },
+    {
+      "id": "ac8064b9-a980-4000-aa80-6193af806972",
+      "verseId": "heb:12:14",
+      "conceptKey": "seed:sanctification",
+      "role": "PRIMARY",
+      "confidence": 0.95,
+      "source": "stage-E:rule",
+      "status": "accepted",
+      "llmAsked": false
+    },
+    {
+      "id": "b7067bf8-ba06-40b1-b906-7f1ebc0683d7",
+      "verseId": "rom:3:28",
+      "conceptKey": "seed:justification",
+      "role": "PRIMARY",
+      "confidence": 0.95,
+      "source": "stage-E:rule",
+      "status": "accepted",
+      "llmAsked": false
+    },
+    {
+      "id": "5b3acf9f-5c3a-4132-5d3a-d2c5563ac7c0",
+      "verseId": "joh:3:3",
+      "conceptKey": "seed:regeneration",
+      "role": "PRIMARY",
+      "confidence": 0.95,
+      "source": "stage-E:rule",
+      "status": "accepted",
+      "llmAsked": false
+    },
+    {
+      "id": "96f71b17-97f7-4caa-98f7-1e3d91f71338",
+      "verseId": "act:9:34",
+      "conceptKey": "seed:conversion",
+      "role": "PRIMARY",
+      "confidence": 0.95,
+      "source": "stage-E:rule",
+      "status": "accepted",
+      "llmAsked": false
+    },
+    {
+      "id": "373d1692-363d-44ff-353d-136c343d11d9",
+      "verseId": "gal:1:15",
+      "conceptKey": "seed:calling",
+      "role": "PRIMARY",
+      "confidence": 0.95,
+      "source": "stage-E:rule",
+      "status": "accepted",
+      "llmAsked": false
+    },
+    {
+      "id": "ba7719b9-b777-4500-b877-1693bd771e72",
+      "verseId": "mat:28:19",
+      "conceptKey": "seed:mission",
+      "role": "PRIMARY",
+      "confidence": 0.95,
+      "source": "stage-E:rule",
+      "status": "accepted",
+      "llmAsked": false
+    },
+    {
+      "id": "52feaca9-4ffe-47f0-50fe-a98355feb162",
+      "verseId": "mar:16:15",
+      "conceptKey": "seed:evangelism",
+      "role": "PRIMARY",
+      "confidence": 0.95,
+      "source": "stage-E:rule",
+      "status": "accepted",
+      "llmAsked": false
+    },
+    {
+      "id": "a22fcefe-a12f-4d6b-a02f-cbd8a72fd6dd",
+      "verseId": "mat:28:20",
+      "conceptKey": "seed:discipleship",
+      "role": "PRIMARY",
+      "confidence": 0.95,
+      "source": "stage-E:rule",
+      "status": "accepted",
+      "llmAsked": false
+    },
+    {
+      "id": "3cf99712-3bf9-457f-3af9-93ec39f99259",
+      "verseId": "act:8:12",
+      "conceptKey": "seed:evangelistic-preaching",
+      "role": "PRIMARY",
+      "confidence": 0.95,
+      "source": "stage-E:rule",
+      "status": "accepted",
+      "llmAsked": false
+    },
+    {
       "id": "ae0c213d-ab0c-4c84-ac0c-1e17a90c195e",
       "verseId": "mar:1:1",
       "conceptKey": "seed:gospel",
@@ -643,9 +797,119 @@
       "llmAsked": false
     },
     {
-      "id": "63225a93-6422-4c26-6522-5db966225f4c",
-      "verseId": "mat:19:17",
-      "conceptKey": "seed:commandments",
+      "id": "bae589cb-bbe5-4b5e-bce5-8cf1bde58e84",
+      "verseId": "act:4:12",
+      "conceptKey": "seed:salvation",
+      "role": "PRIMARY",
+      "confidence": 0.95,
+      "source": "stage-E:rule",
+      "status": "accepted",
+      "llmAsked": false
+    },
+    {
+      "id": "f5ec9364-f8ec-481d-f7ec-968af2ec8eab",
+      "verseId": "1cor:1:18",
+      "conceptKey": "seed:the-cross",
+      "role": "PRIMARY",
+      "confidence": 0.95,
+      "source": "stage-E:rule",
+      "status": "accepted",
+      "llmAsked": false
+    },
+    {
+      "id": "ccb03ab7-cdb0-4c4a-ceb0-3dddc7b032d8",
+      "verseId": "rom:5:8",
+      "conceptKey": "seed:atonement",
+      "role": "PRIMARY",
+      "confidence": 0.95,
+      "source": "stage-E:rule",
+      "status": "accepted",
+      "llmAsked": false
+    },
+    {
+      "id": "25f5d93a-24f5-47a7-23f5-d61422f5d481",
+      "verseId": "1cor:15:3",
+      "conceptKey": "seed:resurrection",
+      "role": "PRIMARY",
+      "confidence": 0.95,
+      "source": "stage-E:rule",
+      "status": "accepted",
+      "llmAsked": false
+    },
+    {
+      "id": "c75c6607-c85c-479a-c95c-692dc25c5e28",
+      "verseId": "act:1:11",
+      "conceptKey": "seed:ascension",
+      "role": "PRIMARY",
+      "confidence": 0.95,
+      "source": "stage-E:rule",
+      "status": "accepted",
+      "llmAsked": false
+    },
+    {
+      "id": "941504d5-9115-401c-9215-01af8f14fcf6",
+      "verseId": "luk:9:29",
+      "conceptKey": "seed:transfiguration",
+      "role": "PRIMARY",
+      "confidence": 0.95,
+      "source": "stage-E:rule",
+      "status": "accepted",
+      "llmAsked": false
+    },
+    {
+      "id": "7d4a3c69-7a4a-47b0-7b4a-3943804a4122",
+      "verseId": "act:2:1",
+      "conceptKey": "seed:pentecost",
+      "role": "PRIMARY",
+      "confidence": 0.95,
+      "source": "stage-E:rule",
+      "status": "accepted",
+      "llmAsked": false
+    },
+    {
+      "id": "358ac9e1-328a-4528-338a-c6bb388ace9a",
+      "verseId": "gen:6:11",
+      "conceptKey": "seed:the-flood",
+      "role": "PRIMARY",
+      "confidence": 0.95,
+      "source": "stage-E:rule",
+      "status": "accepted",
+      "llmAsked": false
+    },
+    {
+      "id": "eaa60364-eda6-481d-eca6-068ae7a5feab",
+      "verseId": "jer:25:11",
+      "conceptKey": "seed:the-exile",
+      "role": "PRIMARY",
+      "confidence": 0.95,
+      "source": "stage-E:rule",
+      "status": "accepted",
+      "llmAsked": false
+    },
+    {
+      "id": "4b2d45c2-4a2d-442f-492d-429c482d4109",
+      "verseId": "rev:22:20",
+      "conceptKey": "seed:second-coming",
+      "role": "PRIMARY",
+      "confidence": 0.95,
+      "source": "stage-E:rule",
+      "status": "accepted",
+      "llmAsked": false
+    },
+    {
+      "id": "bba16494-bea1-494d-bda1-67bab8a15fdb",
+      "verseId": "rev:20:4",
+      "conceptKey": "seed:the-millennium",
+      "role": "PRIMARY",
+      "confidence": 0.95,
+      "source": "stage-E:rule",
+      "status": "accepted",
+      "llmAsked": false
+    },
+    {
+      "id": "f25d7f63-f35d-40f6-f45d-8289f55d841c",
+      "verseId": "gen:3:6",
+      "conceptKey": "seed:the-fall",
       "role": "PRIMARY",
       "confidence": 0.95,
       "source": "stage-E:rule",
@@ -663,18 +927,8 @@
       "llmAsked": false
     },
     {
-      "id": "852b1b89-822b-46d0-832b-1863882b2042",
-      "verseId": "gen:7:1",
-      "conceptKey": "seed:flood",
-      "role": "PRIMARY",
-      "confidence": 0.95,
-      "source": "stage-E:rule",
-      "status": "accepted",
-      "llmAsked": false
-    },
-    {
-      "id": "26d1b7cd-23d1-4314-24d1-b4a721d1afee",
-      "verseId": "exo:3:7",
+      "id": "2553bbb6-2453-4a23-2353-b8902a53c395",
+      "verseId": "exo:12:51",
       "conceptKey": "seed:exodus",
       "role": "PRIMARY",
       "confidence": 0.95,
@@ -683,69 +937,9 @@
       "llmAsked": false
     },
     {
-      "id": "5f931897-6093-4a2a-6193-1bbd5a9310b8",
-      "verseId": "exo:16:4",
-      "conceptKey": "seed:manna",
-      "role": "PRIMARY",
-      "confidence": 0.95,
-      "source": "stage-E:rule",
-      "status": "accepted",
-      "llmAsked": false
-    },
-    {
-      "id": "1e3ec4d5-1b3e-401c-1c3e-c1af193ebcf6",
-      "verseId": "exo:25:8",
-      "conceptKey": "seed:tabernacle",
-      "role": "PRIMARY",
-      "confidence": 0.95,
-      "source": "stage-E:rule",
-      "status": "accepted",
-      "llmAsked": false
-    },
-    {
-      "id": "e8e3e611-e5e3-4158-e6e3-e2ebebe3eaca",
-      "verseId": "lev:1:3",
-      "conceptKey": "seed:sacrifice",
-      "role": "PRIMARY",
-      "confidence": 0.95,
-      "source": "stage-E:rule",
-      "status": "accepted",
-      "llmAsked": false
-    },
-    {
-      "id": "c73623c3-c836-4556-c936-26e9ca36287c",
-      "verseId": "exo:12:11",
-      "conceptKey": "seed:passover",
-      "role": "PRIMARY",
-      "confidence": 0.95,
-      "source": "stage-E:rule",
-      "status": "accepted",
-      "llmAsked": false
-    },
-    {
-      "id": "d03b46a4-d33b-4b5d-d23b-49cacd3b41eb",
-      "verseId": "rom:4:21",
-      "conceptKey": "seed:promises",
-      "role": "PRIMARY",
-      "confidence": 0.95,
-      "source": "stage-E:rule",
-      "status": "accepted",
-      "llmAsked": false
-    },
-    {
-      "id": "713b7aac-743b-4f65-733b-7dd26e3b75f3",
-      "verseId": "deb:4:13",
-      "conceptKey": "seed:law",
-      "role": "PRIMARY",
-      "confidence": 0.95,
-      "source": "stage-E:rule",
-      "status": "accepted",
-      "llmAsked": false
-    },
-    {
-      "id": "bef9d2e8-c1f9-47a1-c0f9-d60ec3f9dac7",
-      "verseId": "psa:78:24",
-      "conceptKey": "seed:psalm-hymn",
+      "id": "3a8f12b2-398f-411f-388f-0f8c378f0df9",
+      "verseId": "exo:3:2",
+      "conceptKey": "seed:the-burning-bush",
       "role": "PRIMARY",
       "confidence": 0.95,
       "source": "stage-E:rule",
@@ -783,46 +977,6 @@
       "llmAsked": false
     },
     {
-      "id": "dd0f146c-e00f-4925-df0f-1792da0f0fb3",
-      "verseId": "1sam:3:1",
-      "conceptKey": "seed:samuel",
-      "role": "PRIMARY",
-      "confidence": 0.95,
-      "source": "stage-E:rule",
-      "status": "accepted",
-      "llmAsked": false
-    },
-    {
-      "id": "2905641b-2a05-45ae-2b05-67412c0568d4",
-      "verseId": "jer:1:5",
-      "conceptKey": "seed:jeremiah",
-      "role": "PRIMARY",
-      "confidence": 0.95,
-      "source": "stage-E:rule",
-      "status": "accepted",
-      "llmAsked": false
-    },
-    {
-      "id": "46dd04e9-43dd-4030-44dd-01c349dd09a2",
-      "verseId": "ezek:1:3",
-      "conceptKey": "seed:ezekiel",
-      "role": "PRIMARY",
-      "confidence": 0.95,
-      "source": "stage-E:rule",
-      "status": "accepted",
-      "llmAsked": false
-    },
-    {
-      "id": "778b96a2-768b-450f-758b-937c748b91e9",
-      "verseId": "mat:3:1",
-      "conceptKey": "seed:john-baptist",
-      "role": "PRIMARY",
-      "confidence": 0.95,
-      "source": "stage-E:rule",
-      "status": "accepted",
-      "llmAsked": false
-    },
-    {
       "id": "2e73e244-3173-46fd-3073-e56a2b73dd8b",
       "verseId": "act:1:15",
       "conceptKey": "seed:peter",
@@ -843,9 +997,9 @@
       "llmAsked": false
     },
     {
-      "id": "542f9201-512f-4d48-522f-8edb572f96ba",
-      "verseId": "mat:3:13",
-      "conceptKey": "seed:baptism-jesus",
+      "id": "8f087598-9208-4a51-9108-78be94087d77",
+      "verseId": "joh:21:20",
+      "conceptKey": "seed:john",
       "role": "PRIMARY",
       "confidence": 0.95,
       "source": "stage-E:rule",
@@ -853,9 +1007,9 @@
       "llmAsked": false
     },
     {
-      "id": "449c0497-459c-462a-469c-07bd3f9bfcb8",
-      "verseId": "mat:28:19",
-      "conceptKey": "seed:baptism",
+      "id": "101b95d6-f1b9-443e-1b92-b0151b9db500",
+      "verseId": "joh:1:1",
+      "conceptKey": "seed:jesus",
       "role": "PRIMARY",
       "confidence": 0.95,
       "source": "stage-E:rule",
@@ -863,9 +1017,9 @@
       "llmAsked": false
     },
     {
-      "id": "7045a332-6f45-419f-6e45-a00c6d459e79",
-      "verseId": "mat:28:6",
-      "conceptKey": "seed:resurrection",
+      "id": "c9d866b7-cad8-484a-cbd8-69ddc4d85ed8",
+      "verseId": "psa:139:7",
+      "conceptKey": "seed:holy-spirit",
       "role": "PRIMARY",
       "confidence": 0.95,
       "source": "stage-E:rule",
@@ -873,9 +1027,9 @@
       "llmAsked": false
     },
     {
-      "id": "7d4a3c69-7a4a-47b0-7b4a-3943804a4122",
-      "verseId": "act:2:1",
-      "conceptKey": "seed:pentecost",
+      "id": "59219ace-5821-493b-5721-97a85e21a2ad",
+      "verseId": "deb:4:13",
+      "conceptKey": "seed:the-law",
       "role": "PRIMARY",
       "confidence": 0.95,
       "source": "stage-E:rule",
@@ -883,9 +1037,9 @@
       "llmAsked": false
     },
     {
-      "id": "4b2d45c2-4a2d-442f-492d-429c482d4109",
-      "verseId": "rev:22:20",
-      "conceptKey": "seed:second-coming",
+      "id": "9d99fedf-9e9a-4072-9f9a-02059899f700",
+      "verseId": "psa:1:1",
+      "conceptKey": "seed:the-psalms",
       "role": "PRIMARY",
       "confidence": 0.95,
       "source": "stage-E:rule",
@@ -893,9 +1047,9 @@
       "llmAsked": false
     },
     {
-      "id": "03b5e6de-2b5e-44b1-b5e3-b88b5eebd000",
-      "verseId": "rev:20:4",
-      "conceptKey": "seed:millennium",
+      "id": "4fbb2f5c-52bb-4415-51bb-32824cbb2aa3",
+      "verseId": "isa:20:3",
+      "conceptKey": "seed:the-prophets",
       "role": "PRIMARY",
       "confidence": 0.95,
       "source": "stage-E:rule",
@@ -903,49 +1057,9 @@
       "llmAsked": false
     },
     {
-      "id": "ccb03ab7-cdb0-4c4a-ceb0-3dddc7b032d8",
-      "verseId": "rom:5:8",
-      "conceptKey": "seed:atonement",
-      "role": "PRIMARY",
-      "confidence": 0.95,
-      "source": "stage-E:rule",
-      "status": "accepted",
-      "llmAsked": false
-    },
-    {
-      "id": "dfc81d22-dec8-4b8f-ddc8-19fcdcc81869",
-      "verseId": "gal:3:13",
-      "conceptKey": "seed:cross",
-      "role": "PRIMARY",
-      "confidence": 0.95,
-      "source": "stage-E:rule",
-      "status": "accepted",
-      "llmAsked": false
-    },
-    {
-      "id": "8b2ee93d-882e-4484-892e-e617862ee15e",
-      "verseId": "mat:27:35",
-      "conceptKey": "seed:crucifixion",
-      "role": "PRIMARY",
-      "confidence": 0.95,
-      "source": "stage-E:rule",
-      "status": "accepted",
-      "llmAsked": false
-    },
-    {
-      "id": "a26fbaff-a36f-4c92-a46f-be259d6fb320",
-      "verseId": "mat:4:1",
-      "conceptKey": "seed:life-of-jesus",
-      "role": "PRIMARY",
-      "confidence": 0.95,
-      "source": "stage-E:rule",
-      "status": "accepted",
-      "llmAsked": false
-    },
-    {
-      "id": "d430da5f-d530-4bf2-d630-dd85cf30d280",
-      "verseId": "mat:5:1",
-      "conceptKey": "seed:teaching-of-jesus",
+      "id": "bd356b46-bc35-49b3-bb35-6820c2357325",
+      "verseId": "psa:11:4",
+      "conceptKey": "seed:the-temple",
       "role": "PRIMARY",
       "confidence": 0.95,
       "source": "stage-E:rule",

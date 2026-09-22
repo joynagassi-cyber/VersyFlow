@@ -29,14 +29,15 @@ import {
   loadVerseUniverse,
   importAllLayers,
   buildMinimalSeed,
+  alignCrossrefs,
 } from './import';import { alignTopics } from './align';
 import { seedMinimalSeed, type SeedOut } from './seed';
 import { dedupConcepts } from './normalize';
 import { mapVerseRoles, type MapResult } from './map';
-import { runRelations, type VerseRelationRow } from './relations';
+import { runRelations, buildSameCommunityRelations, type VerseRelationRow } from './relations';
 import { runCommunities, type CommunityOut } from './communities';
 import { NoopLlmPort } from './llm-port';
-import { runHChecksInMemory, type InMemoryRows, type HResult } from './validate';
+import { runHChecksInMemory, runExtendedChecks, type InMemoryRows, type HResult } from './validate';
 import type { StageResult, PipelineReport } from './helpers';
 
 export interface RunOptions {
@@ -55,7 +56,11 @@ export interface RunOptions {
 interface StageAOut {
   datasetsCount: number;
   verseCount: number;
+  /** Full canonical verse universe (Stage H resolves verse ids against it). */
+  universeVerses: string[];
   universeBookIds: number;
+  /** Aligned source crossref edges (empty when no crossref dataset is present). */
+  alignedCrossrefs: Array<{ fromVerseId: string; toVerseId: string; confidence?: number; source?: string }>;
   minimalSeed: ReturnType<typeof buildMinimalSeed>;
   errors: string[];
 }
@@ -73,13 +78,25 @@ function runStageA(opts: RunOptions): StageAOut {
   const imported = importAllLayers(semanticBaseDir, 'nave');
   errors.push(...imported.errors);
 
+  // Align source crossref edges to the verse universe (one verse pair per
+  // edge — verse 1 of each referenced chapter; out-of-range chapters and
+  // unresolvable book tokens are counted, not errors).
+  const xref = alignCrossrefs(imported.crossrefs, universe);
+  errors.push(...(xref.unresolved > 0 ? [`crossrefs: ${xref.unresolved} unresolved book token(s)`] : []));
+
   const now = opts.now ?? DEFAULT_NOW;
   const minimalSeed = buildMinimalSeed({ now });
 
   return {
     datasetsCount: datasets.length,
     verseCount: universe.verses.length,
+    universeVerses: universe.verses,
     universeBookIds: universe.bookIds.length,
+    alignedCrossrefs: xref.aligned.map((a) => ({
+      fromVerseId: a.fromVerse,
+      toVerseId: a.toVerse,
+      source: `stage-A:crossref:${a.fromBook}→${a.toBook}`,
+    })),
     minimalSeed,
     errors,
   };
@@ -126,7 +143,14 @@ function runStageD(seeded: SeedOut) {
     confidence: e.confidence,
     source: e.source,
   }));
-  return dedupConcepts(concepts, edges);
+  // Explicit provenance: every original concept term is preserved on the
+  // winner it folds into (source/language from the seed row itself).
+  const provenance: Record<string, { source?: string; language?: string }> = {};
+  for (const c of seeded.concepts) {
+    const labels = JSON.parse(c.labelsByLanguage as string) as Record<string, string>;
+    provenance[c.key] = { source: c.source, language: Object.keys(labels)[0] ?? 'en' };
+  }
+  return dedupConcepts(concepts, edges, { provenance });
 }
 
 // ---------------------------------------------------------------------------
@@ -157,11 +181,10 @@ function versesByConceptFrom(seeded: SeedOut): Record<string, string[]> {
   return out;
 }
 
-function runStageF(seeded: SeedOut) {
+function runStageF(seeded: SeedOut, normalized: ReturnType<typeof runStageD>, alignedCrossrefs?: StageAOut['alignedCrossrefs']) {
   const versesByConcept = versesByConceptFrom(seeded);
-  // The minimal seed attaches one verse per concept, so no pair of verses
-  // shares a concept at the 0.7 bar — the CROSS_REFERENCE fallback set is
-  // what Stage F actually emits here (deterministic, curated).
+  // When the source crossref dataset is present, its aligned edges take
+  // precedence over the curated fallback.
   return runRelations({
     shared: {
       versesByConcept,
@@ -170,6 +193,7 @@ function runStageF(seeded: SeedOut) {
       ),
       minConfidence: 0.7,
     },
+    alignedCrossrefs,
   });
 }
 
@@ -197,6 +221,7 @@ async function runStageG(
       degree: normalized.degree,
       versesByConcept,
       conceptEdges,
+      seedLabels: normalized.seedLabels,
       now,
     },
     port
@@ -211,6 +236,7 @@ function buildInMemoryRows(
   seeded: SeedOut,
   mapResult: MapResult,
   relations: ReturnType<typeof runStageF>,
+  sameCommunity: ReturnType<typeof buildSameCommunityRelations>,
   communities: CommunityOut
 ): InMemoryRows {
   const conceptIds = new Set(seeded.concepts.map((c) => c.id));
@@ -258,6 +284,16 @@ function buildInMemoryRows(
       source: r.source,
     })),
     ...relations.shared.map((r: VerseRelationRow) => ({
+      id: r.id,
+      fromVerseId: r.fromVerseId,
+      toVerseId: r.toVerseId,
+      relationType: r.relationType,
+      conceptId: r.conceptId,
+      communityId: r.communityId,
+      confidence: r.confidence,
+      source: r.source,
+    })),
+    ...sameCommunity.map((r: VerseRelationRow) => ({
       id: r.id,
       fromVerseId: r.fromVerseId,
       toVerseId: r.toVerseId,
@@ -358,7 +394,7 @@ export async function runPipeline(opts: RunOptions = {}): Promise<{
 
   // --- F ---
   t = Date.now();
-  const relations = runStageF(seeded);
+  const relations = runStageF(seeded, normalized, stageA.alignedCrossrefs);
   mark('F-relations', t, relations.stats);
 
   // --- G ---
@@ -366,10 +402,43 @@ export async function runPipeline(opts: RunOptions = {}): Promise<{
   const communities = await runStageG(seeded, normalized, now);
   mark('G-communities', t, communities.stats);
 
+  // --- G′ — SAME_COMMUNITY verse edges (Stage G owns the community ids;
+  //      Stage F's deterministic builder emits the verse pairs).
+  t = Date.now();
+  const emittedPairs = new Set<string>();
+  for (const r of relations.crossrefs) emittedPairs.add(`CC:${r.fromVerseId}:${r.toVerseId}`);
+  for (const r of relations.shared) emittedPairs.add(`CC:${r.fromVerseId}:${r.toVerseId}`);
+  const sameCommunity = buildSameCommunityRelations({
+    communities: communities.communities.map((c) => ({
+      id: c.id,
+      name: c.name,
+      verseIds: c.verseIds,
+      sourceConceptKey: c.sourceConceptKey ?? undefined,
+    })),
+    skipKeys: emittedPairs,
+  });
+  mark('G2-same-community', t, {
+    communities_with_edges: sameCommunity.filter((r) => r.communityId).length,
+    edges: sameCommunity.length,
+  });
+
   // --- H ---
   t = Date.now();
-  const rows = buildInMemoryRows(seeded, mapped, relations, communities);
-  const h = runHChecksInMemory(rows, { orphanThreshold: 0.2 });
+  const rows = buildInMemoryRows(seeded, mapped, relations, sameCommunity, communities);
+  const baseH = runHChecksInMemory(rows, { orphanThreshold: 0.2 });
+  const extendedH = runExtendedChecks({
+    rows,
+    verseUniverse: stageA.universeVerses,
+    concepts: Object.values(normalized.concepts) as unknown as Array<Record<string, unknown>>,
+    conceptEdges: normalized.edges as unknown as Array<Record<string, unknown>>,
+    conceptIds: seeded.concepts.map((c) => c.id),
+    verseConcepts: seeded.verseConcepts as unknown as Array<Record<string, unknown>>,
+  });
+  const h: HResult = {
+    passed: baseH.passed && extendedH.passed,
+    violations: [...baseH.violations, ...extendedH.violations],
+    counts: { ...baseH.counts, ...extendedH.counts },
+  };
   const hErrors = h.violations.map((v) => `${v.check}: ${v.detail}`);
   mark(
     'H-validate',
@@ -394,6 +463,10 @@ export async function runPipeline(opts: RunOptions = {}): Promise<{
     },
   };
 
+  // The dataset report is derived from `report` + `h` only — deterministic
+  // (no wall-clock), so the build stays byte-identical on re-runs.
+  const datasetReport = buildDatasetReport(report, h, stageA);
+
   // --- Output (git-safe JSON; reverted on H failure) ---
   // The persisted report zeroes `durationMs` (real wall-clock is
   // non-reproducible); the in-memory `report` keeps it for diagnostics.
@@ -410,6 +483,12 @@ export async function runPipeline(opts: RunOptions = {}): Promise<{
       concepts: seeded.concepts,
       relations: seeded.relations,
     },
+    normalize: {
+      concepts: normalized.concepts,
+      edges: normalized.edges,
+      degree: normalized.degree,
+      stats: normalized.stats,
+    },
     'verse-concepts': {
       verseConcepts: seeded.verseConcepts,
       mapped: mapped.rows,
@@ -425,7 +504,7 @@ export async function runPipeline(opts: RunOptions = {}): Promise<{
   };
 
   if (write) {
-    const subs = ['aligned', 'concepts', 'verse-concepts', 'relations', 'communities', 'report'];
+    const subs = ['aligned', 'concepts', 'normalize', 'verse-concepts', 'relations', 'communities', 'report'];
     if (!h.passed) {
       // Revert the offending batch: staged outputs must not ship.
       for (const sub of subs) {
@@ -445,6 +524,7 @@ export async function runPipeline(opts: RunOptions = {}): Promise<{
       };
       writeJson('aligned', out.aligned);
       writeJson('concepts', out.concepts);
+      writeJson('normalize', out.normalize);
       writeJson('verse-concepts', out['verse-concepts']);
       writeJson('relations', out.relations);
       writeJson('communities', out.communities);
@@ -455,9 +535,137 @@ export async function runPipeline(opts: RunOptions = {}): Promise<{
         'utf8'
       );
     }
+    // Dataset report (json + markdown) is always written — it is the
+    // machine-readable PASS/FAIL the pipeline run must end with.
+    writeFileSync(
+      join(semanticDir, 'report', 'semantic-dataset-report.json'),
+      JSON.stringify(datasetReport, null, 2) + '\n',
+      'utf8'
+    );
+    writeFileSync(
+      join(semanticDir, 'report', 'semantic-dataset-report.md'),
+      renderDatasetReportMarkdown(datasetReport),
+      'utf8'
+    );
   }
 
   return { report, h };
+}
+
+// ---------------------------------------------------------------------------
+// Dataset report (Stage H output, machine-readable PASS/FAIL)
+// ---------------------------------------------------------------------------
+
+export interface DatasetReport {
+  result: 'PASS' | 'FAIL';
+  ranAt: string;
+  datasets: number;
+  verseUniverse: number;
+  bookIds: number;
+  concepts: number;
+  conceptRelations: number;
+  verseConcepts: number;
+  verseRelations: number;
+  communities: number;
+  checks: Record<string, 'pass' | 'fail'>;
+  details: Record<string, string>;
+}
+
+/**
+ * Build the dataset report from the pipeline report + Stage H result.
+ * Pure — no I/O, no clock. The `result` field is the machine-readable
+ * PASS/FAIL the run must end with.
+ */
+export function buildDatasetReport(
+  report: PipelineReport,
+  h: HResult,
+  stageA: StageAOut
+): DatasetReport {
+  // One 'pass'/'fail' entry per check — the invariants named in the
+  // design decision + the extended checks run in `runExtendedChecks`.
+  const CHECKS = [
+    'verse_ids_resolve',
+    'concept_ids_resolve',
+    'no_orphan_verse_concepts',
+    'no_self_relations',
+    'no_child_of_cycles',
+    'no_empty_communities',
+    'confidence_valid',
+    'unique_canonical_concepts',
+    'orphan_fk_verse_concepts',
+    'orphan_fk_concept_relations',
+    'orphan_fk_communities',
+    'confidence_in_range',
+    'no_self_loops',
+    'unique_verse_concept_role',
+    'unique_concept_relation_pair',
+    'unique_verse_relation',
+    'community_provenance',
+    'orphan_concept_ratio',
+  ] as const;
+
+  const failedChecks = new Set(h.violations.map((v) => v.check));
+  const checks: Record<string, 'pass' | 'fail'> = {};
+  for (const c of CHECKS) checks[c] = failedChecks.has(c) ? 'fail' : 'pass';
+
+  const stageF = report.stages.find((s) => s.stage === 'F-relations');
+  const stageC = report.stages.find((s) => s.stage === 'C-seed');
+  const stageG = report.stages.find((s) => s.stage === 'G-communities');
+
+  return {
+    result: h.passed ? 'PASS' : 'FAIL',
+    ranAt: report.ranAt,
+    datasets: stageA.datasetsCount,
+    verseUniverse: stageA.verseCount,
+    bookIds: stageA.universeBookIds,
+    concepts: stageC?.counts.concepts ?? 0,
+    conceptRelations: stageC?.counts.relations ?? 0,
+    verseConcepts: stageC?.counts.verse_concepts ?? 0,
+    verseRelations:
+      (stageF?.counts.crossrefs ?? 0) +
+      (stageF?.counts.shared_concept ?? 0) +
+      (stageF?.counts.same_community ?? 0),
+    communities: stageG?.counts.communities_minted ?? 0,
+    checks,
+    details: h.violations.reduce<Record<string, string>>((acc, v) => {
+      acc[v.check] = v.detail;
+      return acc;
+    }, {}),
+  };
+}
+
+/** Render the dataset report as markdown (deterministic — no wall-clock). */
+export function renderDatasetReportMarkdown(r: DatasetReport): string {
+  const lines: string[] = [];
+  lines.push('# Semantic dataset report');
+  lines.push('');
+  lines.push(`**Result:** ${r.result}`);
+  lines.push('');
+  lines.push(`- run: ${r.ranAt}`);
+  lines.push(`- datasets: ${r.datasets}`);
+  lines.push(`- verse universe: ${r.verseUniverse}`);
+  lines.push(`- book ids: ${r.bookIds}`);
+  lines.push(`- concepts: ${r.concepts}`);
+  lines.push(`- concept relations: ${r.conceptRelations}`);
+  lines.push(`- verse concepts: ${r.verseConcepts}`);
+  lines.push(`- verse relations: ${r.verseRelations}`);
+  lines.push(`- communities: ${r.communities}`);
+  lines.push('');
+  lines.push('## Checks');
+  lines.push('');
+  for (const [name, res] of Object.entries(r.checks)) {
+    lines.push(`- ${res === 'pass' ? 'PASS' : 'FAIL'}: \`${name}\``);
+  }
+  if (Object.keys(r.details).length > 0) {
+    lines.push('');
+    lines.push('## Violations');
+    lines.push('');
+    for (const [name, detail] of Object.entries(r.details)) {
+      lines.push(`- \`${name}\`: ${detail}`);
+    }
+  }
+  lines.push('');
+  return lines.join('\n');
 }
 
 // ---------------------------------------------------------------------------
@@ -466,6 +674,24 @@ export async function runPipeline(opts: RunOptions = {}): Promise<{
 
 async function main(): Promise<void> {
   const { report, h } = await runPipeline({ write: true });
+  const root = process.cwd();
+  const stageA: StageAOut = {
+    datasetsCount: 0,
+    verseCount: 0,
+    universeVerses: [],
+    universeBookIds: 0,
+    alignedCrossrefs: [],
+    minimalSeed: buildMinimalSeed({ now: report.ranAt }),
+    errors: [],
+  };
+  // Re-run Stage A bookkeeping just for the report numbers (deterministic,
+  // cheap relative to the full pipeline).
+  const { datasets, universe } = loadVerseUniverse(join(root, 'data', 'bible'), stageA.errors);
+  stageA.datasetsCount = datasets.length;
+  stageA.verseCount = universe.verses.length;
+  stageA.universeVerses = universe.verses;
+  stageA.universeBookIds = universe.bookIds.length;
+  const dataset = buildDatasetReport(report, h, stageA);
   for (const s of report.stages) {
     const ok = s.ok ? 'ok' : 'FAIL';
     const counts = Object.entries(s.counts)
@@ -477,6 +703,10 @@ async function main(): Promise<void> {
   console.log(
     `[semantic] Stage H passed=${h.passed}  (concepts=${h.counts.concepts}, orphan ratio=${h.counts.orphan_concept_ratio})`
   );
+  console.log(`[semantic] dataset report: ${dataset.result}`);
+  for (const [name, detail] of Object.entries(dataset.details)) {
+    console.log(`         ${name}: ${detail}`);
+  }
   if (!h.passed || report.stages.some((s) => !s.ok)) {
     process.exit(1);
   }

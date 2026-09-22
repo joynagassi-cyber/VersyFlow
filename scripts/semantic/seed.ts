@@ -98,9 +98,9 @@ export function seedConcepts(
       key: string;
       headVerse?: string;
       definition?: string;
+      description?: string;
     }
-  >,
-  edges: Array<{
+  >,  edges: Array<{
     fromKey: string;
     toKey: string;
     relationType: SeedRelation['relationType'];
@@ -127,7 +127,7 @@ export function seedConcepts(
       canonicalLabel: c.canonicalLabel,
       kind: c.kind,
       source: c.source,
-      definition: c.definition ?? null,
+      definition: c.description ?? c.definition ?? null,
       status,
       confidence: c.confidence,
       createdBy: c.createdBy,
@@ -223,6 +223,7 @@ export function seedMinimalSeed(
       kind: c.kind,
       source: c.source,
       dataset: c.dataset,
+      description: c.description,
       confidence: c.confidence,
       createdBy: c.createdBy,
       status: c.status,

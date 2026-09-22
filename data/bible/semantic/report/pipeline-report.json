@@ -9,8 +9,8 @@
         "datasets": 35,
         "verses": 32430,
         "book_ids": 66,
-        "seed_concepts": 50,
-        "seed_relations": 50
+        "seed_concepts": 56,
+        "seed_relations": 59
       },
       "durationMs": 0,
       "errors": []
@@ -19,11 +19,11 @@
       "stage": "B-align",
       "ok": true,
       "counts": {
-        "total_raw": 50,
+        "total_raw": 56,
         "alias_hits": 0,
-        "self_canonical": 50,
+        "self_canonical": 56,
         "similarity_merges": 0,
-        "canonical": 50
+        "canonical": 56
       },
       "durationMs": 0,
       "errors": []
@@ -32,10 +32,10 @@
       "stage": "C-seed",
       "ok": true,
       "counts": {
-        "concepts": 50,
-        "relations": 50,
-        "verse_concepts": 50,
-        "accepted": 50,
+        "concepts": 56,
+        "relations": 59,
+        "verse_concepts": 56,
+        "accepted": 56,
         "unresolved": 0
       },
       "durationMs": 0,
@@ -45,11 +45,12 @@
       "stage": "D-normalize",
       "ok": true,
       "counts": {
-        "input_concepts": 50,
-        "input_edges": 50,
+        "input_concepts": 56,
+        "input_edges": 59,
+        "equivalence_merges": 0,
         "folded": 0,
-        "output_concepts": 50,
-        "output_edges": 50,
+        "output_concepts": 56,
+        "output_edges": 59,
         "self_edges_dropped": 0
       },
       "durationMs": 0,
@@ -59,9 +60,9 @@
       "stage": "E-map",
       "ok": true,
       "counts": {
-        "refs": 50,
+        "refs": 56,
         "llm_calls": 0,
-        "auto_accepted": 50,
+        "auto_accepted": 56,
         "unresolved": 0
       },
       "durationMs": 0,
@@ -72,7 +73,8 @@
       "ok": true,
       "counts": {
         "crossrefs": 12,
-        "shared_concept": 0
+        "shared_concept": 0,
+        "same_community": 0
       },
       "durationMs": 0,
       "errors": []
@@ -81,7 +83,7 @@
       "stage": "G-communities",
       "ok": true,
       "counts": {
-        "clusters_total": 10,
+        "clusters_total": 6,
         "clusters_valid": 0,
         "communities_minted": 0,
         "llm_calls": 0,
@@ -91,13 +93,27 @@
       "errors": []
     },
     {
+      "stage": "G2-same-community",
+      "ok": true,
+      "counts": {
+        "communities_with_edges": 0,
+        "edges": 0
+      },
+      "durationMs": 0,
+      "errors": []
+    },
+    {
       "stage": "H-validate",
       "ok": true,
       "counts": {
-        "concepts": 50,
-        "linked_concepts": 50,
+        "concepts": 56,
+        "linked_concepts": 56,
         "orphan_concept_ratio": 0,
         "violation_groups": 0,
+        "verse_universe": 32430,
+        "concepts_checked": 56,
+        "concept_edges_checked": 0,
+        "verse_concepts_checked": 56,
         "passed": 1
       },
       "durationMs": 0,

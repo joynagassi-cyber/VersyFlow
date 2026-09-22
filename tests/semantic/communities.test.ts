@@ -72,6 +72,25 @@ describe('stage G — communities', () => {
     expect(c.memberKeys).toEqual(['a:x', 'b:y', 'c:z']);
     // Provenance: sourceConceptId points at the top anchor's row id.
     expect(c.sourceConceptId).toBeTypeOf('string');
+    // The anchor's winner key rides along for Stage F SAME_COMMUNITY rows.
+    expect(c.sourceConceptKey).toBe('a:x');
+  });
+
+  it('seedLabels resolve winner keys to their seed display label in names', async () => {
+    // `canon:love` is the winner key (Stage D canonicalization); the seed
+    // label map says its display label is "Love". The deterministic
+    // fallback name must use the seed label, not a raw `canon:` token.
+    const input = {
+      degree: { 'canon:love': 2 },
+      versesByConcept: { 'canon:love': ['v:1:1', 'v:1:2', 'v:1:3', 'v:1:4', 'v:1:5'] },
+      conceptEdges: [] as Array<{ fromKey: string; toKey: string }>,
+      seedLabels: { 'canon:love': 'Love' },
+      now: NOW,
+    };
+    const out = await runCommunities(input, new NoopLlmPort());
+    expect(out.communities.length).toBe(1);
+    expect(out.communities[0].nameSource).toBe('unique-anchor');
+    expect(out.communities[0].name).toBe('Love');
   });
 
   it('a non-unique-anchor community consults the port, and an LLM name is validated', async () => {
