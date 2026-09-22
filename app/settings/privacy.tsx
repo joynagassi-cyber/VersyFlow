@@ -13,6 +13,7 @@ import {
 } from '@/components/ui/Primitives';
 import { useAppTheme } from '@/theme/useTheme';
 import { useRouter } from '@/hooks/useIonicNavigation';
+import { useTranslation } from 'react-i18next';
 
 export default function PrivacyScreen() {
   const { colors, sp, sh, rad } = useAppTheme();
@@ -79,16 +80,17 @@ export default function PrivacyScreen() {
   },
   }), [colors]);
   const router = useRouter();
+  const { t } = useTranslation();
   const [analyticsEnabled, setAnalyticsEnabled] = useState(true);
   const [crashReporting, setCrashReporting] = useState(true);
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Données & Confidentialité</Text>
+        <Text style={styles.sectionTitle}>{t('settings.privacyTitle', 'Données & Confidentialité')}</Text>
 
         <View style={styles.toggleRow}>
-          <Text style={styles.toggleLabel}>Partager l'anonymat analyse</Text>
+          <Text style={styles.toggleLabel}>{t('settings.anonymousAnalytics', "Partager l'analyse anonyme")}</Text>
           <Switch
             value={analyticsEnabled}
             onValueChange={setAnalyticsEnabled}
@@ -98,7 +100,7 @@ export default function PrivacyScreen() {
         </View>
 
         <View style={styles.toggleRow}>
-          <Text style={styles.toggleLabel}>Rapport de plantages</Text>
+          <Text style={styles.toggleLabel}>{t('settings.crashReports', 'Rapports de plantage')}</Text>
           <Switch
             value={crashReporting}
             onValueChange={setCrashReporting}
@@ -109,21 +111,21 @@ export default function PrivacyScreen() {
       </View>
 
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Gestion des données</Text>
+        <Text style={styles.sectionTitle}>{t('settings.dataManagement', 'Gestion des données')}</Text>
 
         <TouchableOpacity style={styles.option}>
-          <Text style={styles.optionText}>Télécharger mes données</Text>
+          <Text style={styles.optionText}>{t('settings.downloadData', 'Télécharger mes données')}</Text>
           <Text style={styles.arrow}>›</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.option}>
-          <Text style={styles.optionText}>Supprimer mon compte</Text>
+          <Text style={styles.optionText}>{t('settings.deleteAccount', 'Supprimer mon compte')}</Text>
           <Text style={[styles.optionText, styles.dangerText]}>Supprimer</Text>
         </TouchableOpacity>
       </View>
 
       <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-        <Text style={styles.backText}>Retour</Text>
+        <Text style={styles.backText}>{t('common.back', 'Retour')}</Text>
       </TouchableOpacity>
     </SafeAreaView>
   );

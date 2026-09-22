@@ -13,6 +13,7 @@ import {
 } from '@/components/ui/Primitives';
 import { useAppTheme } from '@/theme/useTheme';
 import { useRouter } from '@/hooks/useIonicNavigation';
+import { useTranslation } from 'react-i18next';
 import { SUPPORTED_LANGUAGES } from '@/domains/i18n/config';
 import { useSettingsStore } from '@/store/settings-store';
 import { eventBus, DomainEventTypes } from '@/domains';
@@ -86,6 +87,7 @@ export default function LanguageSettingsScreen() {
   },
   }), [colors]);
   const router = useRouter();
+  const { t } = useTranslation();
   const { uiLanguage, setUiLanguage } = useSettingsStore();
   const selectedLanguage = uiLanguage || 'fr';
 
@@ -93,7 +95,7 @@ export default function LanguageSettingsScreen() {
     <SafeAreaView style={styles.container}>
       <ScrollView>
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Langue de l'interface</Text>
+          <Text style={styles.sectionTitle}>{t('settings.uiLanguage', 'Langue de l\'interface')}</Text>
           {SUPPORTED_LANGUAGES.map((lang) => (
             <TouchableOpacity
               key={lang.code}
@@ -125,7 +127,7 @@ export default function LanguageSettingsScreen() {
         </View>
 
         <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-          <Text style={styles.backText}>Retour</Text>
+          <Text style={styles.backText}>{t('common.back', 'Retour')}</Text>
         </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>

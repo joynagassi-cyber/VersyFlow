@@ -13,6 +13,7 @@ import {
 } from '@/components/ui/Primitives';
 import { useAppTheme } from '@/theme/useTheme';
 import { useRouter } from '@/hooks/useIonicNavigation';
+import { useTranslation } from 'react-i18next';
 
 const VERSION = '0.1.0';
 
@@ -83,6 +84,7 @@ export default function AboutScreen() {
   },
   }), [colors]);
   const router = useRouter();
+  const { t } = useTranslation();
   const [buildNumber, setBuildNumber] = useState('1');
 
   return (
@@ -93,33 +95,33 @@ export default function AboutScreen() {
       </View>
 
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>À propos</Text>
+        <Text style={styles.sectionTitle}>{t('settings.about', 'À propos')}</Text>
         <Text style={styles.description}>
-          VersyFlow vous aide à mémoriser les versets bibliques grâce à la science de la répétition espacée (FSRS).
+          {t('settings.aboutDescription', 'VersyFlow vous aide à mémoriser les versets bibliques grâce à la science de la répétition espacée (FSRS).')}
         </Text>
       </View>
 
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Liens</Text>
+        <Text style={styles.sectionTitle}>{t('settings.links', 'Liens')}</Text>
         <TouchableOpacity style={styles.link} onPress={() => Linking.openURL('https://github.com/your-org/versyflow')}>
-          <Text style={styles.linkText}>Documentation</Text>
+          <Text style={styles.linkText}>{t('settings.documentation', 'Documentation')}</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.link} onPress={() => Linking.openURL('mailto:support@versyflow.com')}>
-          <Text style={styles.linkText}>Support</Text>
+          <Text style={styles.linkText}>{t('settings.supportLink', 'Support')}</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.link} onPress={() => Linking.openURL('https://versyflow.com/privacy')}>
-          <Text style={styles.linkText}>Politique de confidentialité</Text>
+          <Text style={styles.linkText}>{t('settings.privacyPolicy', 'Politique de confidentialité')}</Text>
         </TouchableOpacity>
       </View>
 
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Credits</Text>
-        <Text style={styles.credit}>Développé avec ❤️ pour la gloire de Dieu</Text>
-        <Text style={styles.credit}>Moteur FSRS par Dmytro Gutman</Text>
+        <Text style={styles.sectionTitle}>{t('settings.credits', 'Crédits')}</Text>
+        <Text style={styles.credit}>{t('settings.creditMission', 'Développé avec ❤️ pour la gloire de Dieu')}</Text>
+        <Text style={styles.credit}>{t('settings.creditEngine', 'Moteur FSRS par Dmytro Gutman')}</Text>
       </View>
 
       <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-        <Text style={styles.backText}>Retour</Text>
+        <Text style={styles.backText}>{t('common.back', 'Retour')}</Text>
       </TouchableOpacity>
     </SafeAreaView>
   );
