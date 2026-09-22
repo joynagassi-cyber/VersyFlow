@@ -118,3 +118,4 @@ android/app/src/main/assets/public/worker/
 # Stale generated artifacts
 vite.config.d.ts
 *.tsbuildinfo
+tsconfig.build.tsbuildinfo
