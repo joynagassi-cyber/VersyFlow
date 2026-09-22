@@ -10,6 +10,7 @@ import {
   Layers,
   Sparkles,
   Search,
+  Download,
   X,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -26,6 +27,7 @@ const ACTIONS: QuickAction[] = [
   { icon: BrainCircuit, key: 'dock.memorize', path: '/memorization/session', color: 'text-primary', bg: 'bg-icon-bg-rose' },
   { icon: Repeat, key: 'dock.review', path: '/review/queue', color: 'text-success', bg: 'bg-icon-bg-green' },
   { icon: BookOpen, key: 'dock.explore', path: '/bible/explorer', color: 'text-info', bg: 'bg-icon-bg-blue' },
+  { icon: Download, key: 'dock.versions', path: '/settings/available-translations', color: 'text-info', bg: 'bg-surface-tint' },
   { icon: ArrowLeftRight, key: 'dock.compare', path: '/comparison/translation', color: 'text-warning', bg: 'bg-icon-bg-orange' },
   { icon: Network, key: 'dock.semantic', path: '/semantic', color: 'text-primary', bg: 'bg-icon-bg-purple' },
   { icon: Layers, key: 'dock.collections', path: '/collections', color: 'text-info', bg: 'bg-icon-bg-indigo' },
@@ -37,6 +39,7 @@ const DOCK_LABELS: Record<string, string> = {
   memorize: 'Mémoriser',
   review: 'Réviser',
   explore: 'Explorer',
+  versions: 'Versions',
   compare: 'Comparer',
   semantic: 'Sémantique',
   collections: 'Collections',

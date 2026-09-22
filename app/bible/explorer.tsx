@@ -1,78 +1,80 @@
 /**
  * Bible Explorer Screen — browse books → chapters → verses
  * Tailwind + i18n + Lucide + FullScreenPage.
+ *
+ * Verse text comes from the active translation (settings store). When the
+ * dataset is not resolvable locally, a download-on-demand banner pulls it
+ * from the Supabase Storage bucket `bible-datasets`.
  */
 
-import { useState, useMemo, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Search,
   ChevronRight,
   BookOpen,
   Cross,
-  BrainCircuit,
   X,
+  Download,
+  Loader2,
+  AlertCircle,
 } from 'lucide-react';
 import FullScreenPage from '@/components/layout/FullScreenPage';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 import { BIBLE_BOOKS } from '@/domains/bible/entities';
-import { loadTranslationBooks } from '@/services/bible-text-service';
-import { eventBus, DomainEventTypes } from '@/domains/events';
 import { useSettingsStore } from '@/store/settings-store';
 import { useChapterSemanticTags } from '@/hooks/useSemanticTags';
+import { useBibleData } from '@/hooks/useBibleData';
 import VerseSemanticTags from '@/components/semantic/VerseSemanticTags';
+import VerseActionBar from '@/components/bible/VerseActionBar';
 
 type ViewMode = 'books' | 'chapters' | 'verses';
 
+function formatBytes(bytes: number): string {
+  if (bytes < 1024 * 1024) return `${Math.ceil(bytes / 1024)} Ko`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} Mo`;
+}
+
 export default function BibleExplorerScreen() {
-  const navigate = useNavigate();
   const { t, i18n } = useTranslation();
   const [viewMode, setViewMode] = useState<ViewMode>('books');
   const [query, setQuery] = useState('');
   const [selectedBookId, setSelectedBookId] = useState<string | null>(null);
   const [selectedChapter, setSelectedChapter] = useState<number | null>(null);
+  const [selectedVerse, setSelectedVerse] = useState<number | null>(null);
 
   const lang = i18n.language ?? 'fr';
   const selectedBook = BIBLE_BOOKS.find((b) => b.id === selectedBookId) || null;
 
+  const { books, status, error, remoteEntry, translationId, download } = useBibleData();
+  const [downloadPercent, setDownloadPercent] = useState<number | null>(null);
+
   const { tags } = useChapterSemanticTags(selectedBookId, selectedChapter);
   const tagsByVerse = new Map((tags?.entries ?? []).map((e) => [e.verse, e.concepts]));
 
-  const verses = useMemo(
-    () =>
-      selectedBook && selectedChapter
-        ? Array.from(
-            { length: 30 },
-            (_, i) => i + 1,
-          )
-        : [],
-    [selectedBook, selectedChapter],
-  );
+  const activeBookData =
+    selectedBookId != null ? books?.find((b) => b.id === selectedBookId) : undefined;
+  const activeChapterData =
+    selectedChapter != null
+      ? activeBookData?.chapters.find((c) => c.number === selectedChapter)
+      : undefined;
 
-  // Attempt to load real verse text (graceful degradation)
-  const [verseTexts, setVerseTexts] = useState<Record<number, string>>({});
-  useEffect(() => {
-    let cancelled = false;
-    if (!selectedBook || !selectedChapter) {
-      setVerseTexts({});
-      return;
+  // Verse numbers: real data when available, otherwise a fallback range.
+  const verseNumbers = useMemo(() => {
+    if (activeChapterData?.verses.length) {
+      return activeChapterData.verses.map((v) => v.number);
     }
-    loadTranslationBooks().then((booksData) => {
-      if (cancelled || !booksData) return;
-      const book = booksData.find((b) => b.id === selectedBookId);
-      const chapter = book?.chapters.find((c) => c.number === selectedChapter);
-      const map: Record<number, string> = {};
-      chapter?.verses.forEach((v) => {
-        map[v.number] = v.text;
-      });
-      if (!cancelled) setVerseTexts(map);
+    return selectedChapter ? Array.from({ length: 30 }, (_, i) => i + 1) : [];
+  }, [activeChapterData, selectedChapter]);
+
+  const verseTexts = useMemo(() => {
+    const map: Record<number, string> = {};
+    activeChapterData?.verses.forEach((v) => {
+      map[v.number] = v.text;
     });
-    return () => {
-      cancelled = true;
-    };
-  }, [selectedBook, selectedChapter]);
+    return map;
+  }, [activeChapterData]);
 
   const filteredBooks = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -93,12 +95,14 @@ export default function BibleExplorerScreen() {
 
   const openChapter = (chapter: number) => {
     setSelectedChapter(chapter);
+    setSelectedVerse(null);
     setViewMode('verses');
   };
 
   const goBack = () => {
     if (viewMode === 'verses') {
       setSelectedChapter(null);
+      setSelectedVerse(null);
       setViewMode('chapters');
     } else {
       setSelectedBookId(null);
@@ -106,28 +110,26 @@ export default function BibleExplorerScreen() {
     }
   };
 
-  const memorize = (reference: string, text?: string) => {
-    const params = new URLSearchParams();
-    params.set('reference', reference);
-    if (text) params.set('text', text);
-    navigate(`/memorization/session?${params.toString()}`);
+  const handleDownload = () => {
+    setDownloadPercent(null);
+    void download((p) => setDownloadPercent(p));
   };
 
-  const selectVerse = (bookId: string, chapter: number, verse: number, wasSearchResult: boolean = false) => {
-    eventBus.emit({
-      id: crypto.randomUUID(),
-      type: DomainEventTypes.VERSE_SELECTED,
-      timestamp: Date.now(),
-      payload: {
-        bookId,
-        chapterNumber: chapter,
-        verseNumber: verse,
-        translationId: useSettingsStore.getState().bibleTranslation || 'lsg',
-        referenceDisplay: `${bookId} ${chapter}:${verse}`,
-        wasSearchResult,
-      },
-    });
-  };
+  // The active translation is not available locally → start the download
+  // from the Supabase bucket automatically (progress shown in the banner).
+  const autoDownloadedFor = useRef<string | null>(null);
+  useEffect(() => {
+    if (status === 'unavailable' && remoteEntry && autoDownloadedFor.current !== translationId) {
+      autoDownloadedFor.current = translationId;
+      handleDownload();
+    }
+  }, [status, remoteEntry, translationId]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const translationLabel =
+    useSettingsStore.getState().bibleTranslation || 'LSG';
+
+  const showDownloadBanner =
+    remoteEntry != null && status !== 'loading' && status !== 'ready';
 
   const title =
     viewMode === 'books'
@@ -261,39 +263,99 @@ export default function BibleExplorerScreen() {
       {/* Verses */}
       {viewMode === 'verses' && selectedBook && selectedChapter && (
         <div className="flex flex-col gap-3">
-          {verses.map((n) => {
+          {/* Download-on-demand banner */}
+          {showDownloadBanner && (
+            <div className="rounded-2xl bg-surface p-4 shadow-sm">
+              <div className="flex items-start gap-3">
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-surface-tint text-primary">
+                  {status === 'downloading' ? (
+                    <Loader2 size={18} className="animate-spin" />
+                  ) : (
+                    <Download size={18} />
+                  )}
+                </span>
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-semibold text-text-primary">
+                    {status === 'error'
+                      ? t('bible.downloadFailed', 'Échec du téléchargement')
+                      : t('bible.downloadNeeded', 'Traduction non disponible hors ligne')}
+                  </p>
+                  <p className="text-xs text-text-muted">
+                    {translationLabel} · {formatBytes(remoteEntry.sizeBytes)}
+                  </p>
+                  {status === 'downloading' && downloadPercent != null && (
+                    <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-surface-tint">
+                      <div
+                        className="h-full rounded-full bg-primary transition-all"
+                        style={{ width: `${downloadPercent}%` }}
+                      />
+                    </div>
+                  )}
+                  {status === 'error' && (
+                    <p className="mt-1 flex items-center gap-1 text-xs text-error">
+                      <AlertCircle size={12} /> {error}
+                    </p>
+                  )}
+                </div>
+                {status !== 'downloading' && (
+                  <button
+                    onClick={handleDownload}
+                    className="shrink-0 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-white shadow-sm"
+                  >
+                    {status === 'error'
+                      ? t('common.retry', 'Réessayer')
+                      : t('common.download', 'Télécharger')}
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
+
+          {verseNumbers.map((n) => {
             const text = verseTexts[n];
+            const isSelected = selectedVerse === n;
             return (
-              <div key={n} className="rounded-2xl bg-surface p-4 shadow-sm">
+              <div
+                key={n}
+                onClick={() => setSelectedVerse(n)}
+                className={cn(
+                  'cursor-pointer rounded-2xl bg-surface p-4 shadow-sm transition',
+                  isSelected && 'ring-2 ring-primary',
+                )}
+              >
                 <div className="mb-2 flex items-center gap-2">
                   <span className="flex h-7 w-7 items-center justify-center rounded-full bg-surface-tint text-xs font-bold text-primary">
                     {n}
                   </span>
+                  {isSelected && (
+                    <span className="text-xs font-semibold text-primary">
+                      {t('bible.selected', 'Sélectionné')}
+                    </span>
+                  )}
                 </div>
                 {text ? (
                   <p className="bible-text text-base leading-6 text-text-secondary">{text}</p>
+                ) : status === 'loading' ? (
+                  <div className="h-4 w-3/4 animate-pulse rounded bg-surface-tint" />
                 ) : (
                   <p className="text-sm italic text-text-muted">
                     {t('errors.verseNotFound', 'Verset non disponible dans cette traduction')}
                   </p>
                 )}
                 <VerseSemanticTags concepts={tagsByVerse.get(n) ?? []} />
-                <button
-                  onClick={() => {
-                    selectVerse(selectedBookId!, selectedChapter, n);
-                    memorize(
-                      `${selectedBook.name.fr} ${selectedChapter}:${n}`,
-                      text,
-                    );
-                  }}
-                  className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-white shadow-rose"
-                >
-                  <BrainCircuit size={15} />
-                  {t('bible.memorize', 'Mémoriser')}
-                </button>
               </div>
             );
           })}
+
+          {/* Contextual action bar for the selected verse */}
+          {selectedVerse != null && (
+            <VerseActionBar
+              bookId={selectedBook.id}
+              chapter={selectedChapter}
+              verse={selectedVerse}
+              verseText={verseTexts[selectedVerse]}
+            />
+          )}
         </div>
       )}
     </FullScreenPage>

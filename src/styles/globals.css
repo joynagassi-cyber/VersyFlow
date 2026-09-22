@@ -14,15 +14,15 @@
   --color-accent: #ff2d55;
   --color-accent-light: #ff7a93;
 
-  /* Backgrounds */
-  --color-background: #fcf9fa;
+  /* Backgrounds (neutral cream — accent stays in --color-*) */
+  --color-background: #faf6ee;
   --color-surface: #ffffff;
-  --color-surface-tint: #fff0f7;
+  --color-surface-tint: #f2ecdf;
   --color-surface-elevated: #ffffff;
 
   /* Borders & Dividers */
-  --color-border: #fbd9ec;
-  --color-divider: #fde6f1;
+  --color-border: #e8e1d2;
+  --color-divider: #efe9dd;
 
   /* Text */
   --color-text-primary: #241019;
@@ -63,11 +63,11 @@
   --color-accent: #ff5a7a;
   --color-accent-light: #ff8fa5;
 
-  /* Backgrounds */
-  --color-background: #120a12;
-  --color-surface: #1c121c;
-  --color-surface-tint: #241620;
-  --color-surface-elevated: #261823;
+  /* Backgrounds (neutral #121212 — accent stays in --color-*) */
+  --color-background: #121212;
+  --color-surface: #1e1e1e;
+  --color-surface-tint: #1c1c1c;
+  --color-surface-elevated: #262626;
 
   /* Borders & Dividers */
   --color-border: rgba(255, 255, 255, 0.08);
@@ -209,11 +209,11 @@ ion-page,
 :root,
 :root[data-theme='light'] {
   --ion-background-color: var(--color-background);
-  --ion-background-color-rgb: 252, 249, 250;
+  --ion-background-color-rgb: 250, 246, 238;
   --ion-text-color: var(--color-text-primary);
 }
 [data-theme='dark'] {
   --ion-background-color: var(--color-background);
-  --ion-background-color-rgb: 18, 10, 18;
+  --ion-background-color-rgb: 18, 18, 18;
   --ion-text-color: var(--color-text-primary);
 }

@@ -40,7 +40,6 @@ import { ALL_TABS, useUiStore } from '@/store/ui-store';
 import { useSettingsStore } from '@/store/settings-store';
 import { useFamilyStore } from '@/store/family-store';
 import { eventBus, DomainEventTypes } from '@/domains/events';
-import { useTranslationPreference } from '@/hooks/useTranslationPreference';
 import { SUPPORTED_LANGUAGES, isRTL } from '@/domains/i18n/config';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
@@ -138,8 +137,7 @@ function ParamsTab() {
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
   const { user, isAuthenticated, signOut } = useAuthStore();
-  const { bibleTranslation, setBibleTranslation } = useSettingsStore();
-  const { setPreference } = useTranslationPreference();
+  const { bibleTranslation } = useSettingsStore();
   const [languageModalOpen, setLanguageModalOpen] = useState(false);
   const visibleTabs = useUiStore((s) => s.visibleTabs);
   const setVisibleTab = useUiStore((s) => s.setVisibleTab);
@@ -163,7 +161,7 @@ function ParamsTab() {
       title: t('settings.apparence', 'Apparence'),
       rows: [
         { icon: <Languages size={20} />, bg: 'bg-icon-bg-purple', color: 'text-primary', label: t('settings.uiLanguage', "Langue de l'interface"), sub: getLanguageName(currentLanguage), onClick: () => setLanguageModalOpen(true) },
-        { icon: <BookText size={20} />, bg: 'bg-surface-tint', color: 'text-text-secondary', label: t('settings.bibleTranslation', 'Traduction biblique'), sub: TRANSLATION_LABELS[bibleTranslation] ?? 'LSG', onClick: () => { const next = bibleTranslation === 'lsg' ? 'ostervald' : 'lsg'; setBibleTranslation(next); setPreference(next); } },
+        { icon: <BookText size={20} />, bg: 'bg-surface-tint', color: 'text-text-secondary', label: t('settings.bibleTranslation', 'Traduction biblique'), sub: `${TRANSLATION_LABELS[bibleTranslation] ?? bibleTranslation} · ${t('settings.downloadTranslations', 'Télécharger d’autres versions')}`, onClick: () => navigate('/settings/available-translations') },
         { icon: <Moon size={20} />, bg: 'bg-icon-bg-blue', color: 'text-info', label: t('settings.theme', 'Thème & accent'), sub: t('settings.fontSize', 'Clair, sombre, taille, accent'), onClick: () => navigate('/settings/appearance') },
       ],
     },
