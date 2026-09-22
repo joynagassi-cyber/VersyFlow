@@ -68,6 +68,8 @@ const NAMESPACES = [
   'errors',
   'comparison',
   'family',
+  'semantic',
+  'recallWriting',
 ] as const;
 
 /**

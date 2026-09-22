@@ -7,7 +7,7 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Search, BookOpen, ChevronRight } from 'lucide-react';
+import { Search, BookOpen, ChevronRight, Network } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { BIBLE_BOOKS } from '@/domains/bible/entities';
 import type { BibleBook } from '@/domains/bible/entities';
@@ -81,6 +81,27 @@ export default function ExploreScreen() {
           className="pl-10"
         />
       </div>
+
+      {/* Semantic memory — tree views into the local semantic store */}
+      <button
+        onClick={() => navigate('/semantic')}
+        className="mb-6 flex items-center justify-between rounded-xl bg-surface p-4 text-left shadow-sm transition-transform active:scale-[0.99]"
+      >
+        <div className="flex items-center gap-3">
+          <span className="flex h-10 w-10 items-center justify-center rounded-full bg-icon-bg-purple">
+            <Network size={18} className="text-primary" />
+          </span>
+          <div>
+            <p className="text-base font-semibold text-text-primary">
+              {t('semantic.title', 'Mémoire sémantique')}
+            </p>
+            <p className="text-sm text-text-muted">
+              {t('semantic.subtitle', 'Concepts, versets et communautés')}
+            </p>
+          </div>
+        </div>
+        <ChevronRight size={18} className="text-primary" />
+      </button>
 
       {oldTestament.length === 0 && newTestament.length === 0 ? (
         <div className="rounded-xl border border-dashed border-border p-8 text-center">

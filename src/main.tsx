@@ -87,6 +87,12 @@ const MemoryStart = lazy(() => import('../app/memory/start'));
 const MemoryFlashcard = lazy(() => import('../app/memory/flashcard'));
 const MemoryRecallWriting = lazy(() => import('../app/memory/recall-writing'));
 
+// Semantic tree views (LOCAL_ONLY semantic store, tree UI — P0.2)
+const SemanticIndex = lazy(() => import('../app/semantic/index'));
+const SemanticConcept = lazy(() => import('../app/semantic/concept'));
+const SemanticVerse = lazy(() => import('../app/semantic/verse'));
+const SemanticCommunity = lazy(() => import('../app/semantic/community'));
+
 import { I18nService } from '@/i18n';
 import i18next, { initI18next } from '@/i18n/i18next-init';
 import { initializeSettingsStore, useSettingsStore } from '@/store/settings-store';
@@ -301,6 +307,12 @@ function App() {
               <Route path="/memory/start" element={<MemoryStartRoute />} />
               <Route path="/memory/flashcard" element={<MemoryFlashcard />} />
               <Route path="/memory/recall-writing" element={<MemoryRecallWriting />} />
+
+              {/* Semantic tree views */}
+              <Route path="/semantic" element={<SemanticIndex />} />
+              <Route path="/semantic/concept" element={<SemanticConcept />} />
+              <Route path="/semantic/verse" element={<SemanticVerse />} />
+              <Route path="/semantic/community" element={<SemanticCommunity />} />
             </Route>
 
             {/* Public routes */}

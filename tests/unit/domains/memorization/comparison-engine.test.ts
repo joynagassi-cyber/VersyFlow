@@ -246,4 +246,90 @@ describe('ComparisonEngine', () => {
       expect(result.score).toBe(1.0);
     });
   });
+
+  describe('Written recall — compareWrittenRecall() (P0.1, LCS diff)', () => {
+    it('should return matchScore 1.0 and all-correct for an identical verse', () => {
+      const result = engine.compareWrittenRecall(
+        'Dieu a tant aimé le monde',
+        'Dieu a tant aimé le monde',
+      );
+      expect(result.matchScore).toBe(1.0);
+      // 6 words: Dieu, a, tant, aimé, le, monde
+      expect(result.wordCount).toBe(6);
+      expect(result.wordDiffs.every((d) => d.type === 'correct')).toBe(true);
+    });
+
+    it('should flag a wrong word as "wrong" and lower the score', () => {
+      const result = engine.compareWrittenRecall(
+        'Dieu a tant aimé la terre',
+        'Dieu a tant aimé le monde',
+      );
+      // expected: [Dieu, a, tant, aimé, le, monde]
+      const wrong = result.wordDiffs.filter((d) => d.type === 'wrong');
+      // One expected word is replaced by another ('monde'→'terre', pos 5);
+      // 'le' is absent from the written text ('la' ≠ 'le') → missing (pos 4).
+      expect(wrong).toEqual([{ word: 'monde', type: 'wrong', position: 5 }]);
+      expect(result.wordDiffs).toContainEqual({
+        word: 'le',
+        type: 'missing',
+        position: 4,
+      });
+      expect(result.matchScore).toBe(4 / 6);
+    });
+
+    it('should flag an omitted word as "missing"', () => {
+      const result = engine.compareWrittenRecall('Dieu tant aimé', 'Dieu a tant aimé');
+      const missing = result.wordDiffs.filter((d) => d.type === 'missing');
+      expect(missing).toEqual([{ word: 'a', type: 'missing', position: 1 }]);
+      expect(result.matchScore).toBe(3 / 4);
+    });
+
+    it('should flag words added by the user as "extra"', () => {
+      const result = engine.compareWrittenRecall('Dieu a tant aimé le monde bien', 'Dieu a tant aimé le monde');
+      const extra = result.wordDiffs.filter((d) => d.type === 'extra');
+      expect(extra).toHaveLength(1);
+      expect(extra[0].word).toBe('bien');
+      // matchScore measures the expected verse, not the extras
+      expect(result.matchScore).toBe(1.0);
+    });
+
+    it('should be case- and punctuation-insensitive', () => {
+      const result = engine.compareWrittenRecall('DIEU, A TANT AIMÉ !', 'Dieu a tant aimé');
+      expect(result.matchScore).toBe(1.0);
+      expect(result.wordDiffs.every((d) => d.type === 'correct')).toBe(true);
+    });
+
+    it('should handle an empty written answer', () => {
+      const result = engine.compareWrittenRecall('', 'Dieu a tant aimé');
+      expect(result.matchScore).toBe(0);
+      expect(result.wordDiffs.every((d) => d.type === 'missing')).toBe(true);
+      expect(result.wordCount).toBe(4);
+    });
+
+    it('should handle an empty expected verse without dividing by zero', () => {
+      const result = engine.compareWrittenRecall('anything', '');
+      expect(result.wordCount).toBe(0);
+      expect(result.matchScore).toBe(1);
+    });
+
+    it('should flag a swapped word pair as "missing" + "extra" (transposition)', () => {
+      // Both words still appear in the written text, just in the wrong
+      // order: the LCS is 1 (only one word can be aligned in place), so
+      // 'a' is missing at position 0 and the written 'a' (index 1) is an
+      // extra. matchScore reflects the true alignment quality: 1/2.
+      const result = engine.compareWrittenRecall('b a', 'a b');
+      expect(result.wordDiffs).toEqual([
+        { word: 'a', type: 'missing', position: 0 },
+        { word: 'b', type: 'correct', position: 1 },
+        { word: 'a', type: 'extra', position: 1 },
+      ]);
+      expect(result.matchScore).toBe(0.5);
+    });
+
+    it('lcsLength should compute the longest common subsequence', () => {
+      expect(engine.lcsLength(['a', 'b', 'c'], ['a', 'x', 'c'])).toBe(2);
+      expect(engine.lcsLength(['a', 'b'], ['b', 'a'])).toBe(1);
+      expect(engine.lcsLength([], ['x'])).toBe(0);
+    });
+  });
 });
