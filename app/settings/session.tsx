@@ -25,7 +25,7 @@ export default function SettingsSessionScreen() {
   } = useAppearanceStore();
 
   return (
-    <div className="flex min-h-full flex-col p-6">
+    <div className="flex h-full flex-col overflow-y-auto p-6">
       <header className="mb-6 flex items-center gap-3">
         <button
           onClick={() => navigate(-1)}

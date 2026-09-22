@@ -14,10 +14,7 @@ import { ProgressService } from '@/services/progress-service';
 import type { ProgressStats } from '@/services/stats-calculator';
 import { cn } from '@/lib/utils';
 
-const TRANSLATION_LABELS: Record<string, string> = {
-  lsg: 'Louis Segond (1910)',
-  ostervald: 'Ostervald (1930)',
-};
+import { bibleTranslationDisplayName } from '@/services/bible-translation-names';
 
 function StatTile({ value, label }: { value: number; label: string }) {
   return (
@@ -124,7 +121,7 @@ export default function ProfileScreen() {
             <ListItem
               icon={BookText}
               label={t('settings.bibleTranslation', 'Traduction')}
-              value={TRANSLATION_LABELS[bibleTranslation] ?? bibleTranslation}
+              value={bibleTranslationDisplayName(bibleTranslation)}
               onClick={toggleTranslation}
             />
             <ListItem

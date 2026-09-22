@@ -7,7 +7,7 @@
  * from the Supabase Storage bucket `bible-datasets`.
  */
 
-import { useState, useMemo, useEffect, useRef } from 'react';
+import { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Search,
@@ -23,7 +23,7 @@ import FullScreenPage from '@/components/layout/FullScreenPage';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 import { BIBLE_BOOKS } from '@/domains/bible/entities';
-import { useSettingsStore } from '@/store/settings-store';
+import { bibleTranslationDisplayName } from '@/services/bible-translation-names';
 import { useChapterSemanticTags } from '@/hooks/useSemanticTags';
 import { useBibleData } from '@/hooks/useBibleData';
 import VerseSemanticTags from '@/components/semantic/VerseSemanticTags';
@@ -47,8 +47,8 @@ export default function BibleExplorerScreen() {
   const lang = i18n.language ?? 'fr';
   const selectedBook = BIBLE_BOOKS.find((b) => b.id === selectedBookId) || null;
 
-  const { books, status, error, remoteEntry, translationId, download } = useBibleData();
-  const [downloadPercent, setDownloadPercent] = useState<number | null>(null);
+  const { books, status, error, remoteEntry, translationId, downloadPercent, download } =
+    useBibleData();
 
   const { tags } = useChapterSemanticTags(selectedBookId, selectedChapter);
   const tagsByVerse = new Map((tags?.entries ?? []).map((e) => [e.verse, e.concepts]));
@@ -110,23 +110,12 @@ export default function BibleExplorerScreen() {
     }
   };
 
+  // Manual retry (auto-download already runs inside the hook on a cache miss).
   const handleDownload = () => {
-    setDownloadPercent(null);
-    void download((p) => setDownloadPercent(p));
+    void download();
   };
 
-  // The active translation is not available locally → start the download
-  // from the Supabase bucket automatically (progress shown in the banner).
-  const autoDownloadedFor = useRef<string | null>(null);
-  useEffect(() => {
-    if (status === 'unavailable' && remoteEntry && autoDownloadedFor.current !== translationId) {
-      autoDownloadedFor.current = translationId;
-      handleDownload();
-    }
-  }, [status, remoteEntry, translationId]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  const translationLabel =
-    useSettingsStore.getState().bibleTranslation || 'LSG';
+  const translationLabel = bibleTranslationDisplayName(translationId);
 
   const showDownloadBanner =
     remoteEntry != null && status !== 'loading' && status !== 'ready';

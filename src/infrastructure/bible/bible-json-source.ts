@@ -39,7 +39,11 @@ export class BibleJsonFileSource implements IBibleTextSource {
     this.dataDir = options.dataDir ?? 'data/bible';
     const hasFetch = typeof fetch === 'function' || options.fetchImpl != null;
     this.useNodeFs = options.useNodeFs ?? !hasFetch;
-    this.fetchImpl = options.fetchImpl ?? (typeof fetch === 'function' ? fetch : null);
+    // `fetch` must keep its global receiver: storing the bare reference and
+    // calling it detached throws "Illegal invocation" in WebKit.
+    this.fetchImpl =
+      options.fetchImpl ??
+      (typeof fetch === 'function' ? (fetch.bind(globalThis) as typeof fetch) : null);
   }
 
   private resolvePath(translationId: string): string {

@@ -7,7 +7,7 @@
  * (Mémoriser · Tag · Note · Comparer).
  */
 
-import { useState, useMemo, useEffect, useRef } from 'react';
+import { useState, useMemo } from 'react';
 import { useSearchParams, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Download, Loader2, AlertCircle } from 'lucide-react';
@@ -37,9 +37,9 @@ export default function ChapterScreen() {
   const book = BIBLE_BOOKS.find((b) => b.id === bookId) || BIBLE_BOOKS[0];
 
   const [selectedVerse, setSelectedVerse] = useState<number | null>(null);
-  const [downloadPercent, setDownloadPercent] = useState<number | null>(null);
 
-  const { books, status, error, remoteEntry, translationId, download } = useBibleData();
+  const { books, status, error, remoteEntry, translationId, downloadPercent, download } =
+    useBibleData();
 
   const { tags } = useChapterSemanticTags(book.id, chapter);
   const tagsByVerse = new Map((tags?.entries ?? []).map((e) => [e.verse, e.concepts]));
@@ -64,18 +64,10 @@ export default function ChapterScreen() {
   const showDownloadBanner =
     remoteEntry != null && status !== 'loading' && status !== 'ready';
 
+  // Manual retry (auto-download already runs inside the hook on a cache miss).
   const handleDownload = () => {
-    setDownloadPercent(null);
-    void download((p) => setDownloadPercent(p));
+    void download();
   };
-
-  const autoDownloadedFor = useRef<string | null>(null);
-  useEffect(() => {
-    if (status === 'unavailable' && remoteEntry && autoDownloadedFor.current !== translationId) {
-      autoDownloadedFor.current = translationId;
-      handleDownload();
-    }
-  }, [status, remoteEntry, translationId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <FullScreenPage

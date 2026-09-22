@@ -2,15 +2,15 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
-  BrainCircuit,
-  Repeat,
-  BookOpen,
-  ArrowLeftRight,
-  Network,
-  Layers,
   Sparkles,
+  CalendarClock,
+  Compass,
+  Library,
+  GitCompareArrows,
+  BrainCircuit,
+  Gem,
+  MessageCircleHeart,
   Search,
-  Download,
   X,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -24,14 +24,14 @@ interface QuickAction {
 }
 
 const ACTIONS: QuickAction[] = [
-  { icon: BrainCircuit, key: 'dock.memorize', path: '/memorization/session', color: 'text-primary', bg: 'bg-icon-bg-rose' },
-  { icon: Repeat, key: 'dock.review', path: '/review/queue', color: 'text-success', bg: 'bg-icon-bg-green' },
-  { icon: BookOpen, key: 'dock.explore', path: '/bible/explorer', color: 'text-info', bg: 'bg-icon-bg-blue' },
-  { icon: Download, key: 'dock.versions', path: '/settings/available-translations', color: 'text-info', bg: 'bg-surface-tint' },
-  { icon: ArrowLeftRight, key: 'dock.compare', path: '/comparison/translation', color: 'text-warning', bg: 'bg-icon-bg-orange' },
-  { icon: Network, key: 'dock.semantic', path: '/semantic', color: 'text-primary', bg: 'bg-icon-bg-purple' },
-  { icon: Layers, key: 'dock.collections', path: '/collections', color: 'text-info', bg: 'bg-icon-bg-indigo' },
+  { icon: Gem, key: 'dock.memorize', path: '/memorization/session', color: 'text-primary', bg: 'bg-icon-bg-rose' },
+  { icon: CalendarClock, key: 'dock.review', path: '/review/queue', color: 'text-success', bg: 'bg-icon-bg-green' },
+  { icon: Compass, key: 'dock.explore', path: '/bible/explorer', color: 'text-info', bg: 'bg-icon-bg-blue' },
+  { icon: Library, key: 'dock.versions', path: '/settings/available-translations', color: 'text-info', bg: 'bg-icon-bg-indigo' },
+  { icon: GitCompareArrows, key: 'dock.compare', path: '/comparison/translation', color: 'text-warning', bg: 'bg-icon-bg-orange' },
+  { icon: BrainCircuit, key: 'dock.semantic', path: '/semantic', color: 'text-primary', bg: 'bg-icon-bg-purple' },
   { icon: Sparkles, key: 'dock.coach', path: '/ai-coach', color: 'text-warning', bg: 'bg-icon-bg-teal' },
+  { icon: MessageCircleHeart, key: 'dock.family', path: '/family/home', color: 'text-error', bg: 'bg-icon-bg-rose' },
   { icon: Search, key: 'dock.search', path: '/search', color: 'text-text-secondary', bg: 'bg-surface-tint' },
 ];
 
@@ -42,15 +42,16 @@ const DOCK_LABELS: Record<string, string> = {
   versions: 'Versions',
   compare: 'Comparer',
   semantic: 'Sémantique',
-  collections: 'Collections',
   coach: 'Coach IA',
+  family: 'Famille',
   search: 'Recherche',
 };
 
 /**
- * Bottom dock: a slim white grab-handle above the tab bar that pulls up a
- * bottom sheet with quick-access features. The handle is rendered in-flow;
- * the sheet is a fixed overlay.
+ * Bottom dock: a slim white home-indicator bar centred at the very bottom
+ * of the screen (below the tab bar) that pulls up a bottom sheet with
+ * quick-access features. The handle is an absolute overlay; the sheet is a
+ * fixed overlay.
  */
 export function QuickDock() {
   const navigate = useNavigate();
@@ -64,12 +65,12 @@ export function QuickDock() {
 
   return (
     <>
-      {/* Grab handle (in-flow, sits just above the tab bar) */}
-      <div className="flex justify-center bg-background py-2">
+      {/* Home indicator — centred at the very bottom, below the tab bar */}
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-40 flex justify-center pb-[max(8px,env(safe-area-inset-bottom))]">
         <button
           onClick={() => setOpen(true)}
           aria-label={t('dock.open', 'Ouvrir les raccourcis')}
-          className="h-1.5 w-14 rounded-full bg-white shadow-[0_1px_4px_rgba(0,0,0,0.25)] active:scale-95"
+          className="pointer-events-auto h-[5px] w-32 rounded-full bg-white shadow-[0_1px_5px_rgba(0,0,0,0.35)] transition-transform active:scale-95"
         />
       </div>
 

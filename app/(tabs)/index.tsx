@@ -9,17 +9,20 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
-  BookOpen,
-  BrainCircuit,
-  FileText,
-  Repeat,
-  BarChart3,
   Users,
   Flame,
   Star,
   Clock,
   ChevronRight,
   CircleUserRound,
+  Compass,
+  Gem,
+  ScrollText,
+  CalendarClock,
+  TrendingUp,
+  HeartHandshake,
+  Library,
+  Feather,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useActiveProfile } from '@/hooks/useActiveProfile';
@@ -94,16 +97,18 @@ export default function HomeScreen() {
   });
 
   const quickActions = [
-    { icon: BookOpen, label: t('home.explore', 'Explorer la Bible'), desc: t('home.explore', 'Explorer la Bible'), color: 'text-primary', bg: 'bg-icon-bg-rose', action: () => navigate('/bible/explorer') },
-    { icon: BrainCircuit, label: t('session.memorizing', 'Mémorisation'), desc: 'Nouveau verset', color: 'text-text-secondary', bg: 'bg-icon-bg-purple', action: () => navigate('/memorization/session') },
-    { icon: FileText, label: t('home.passage', 'Passage'), desc: t('home.passageDesc', 'Multi-versets'), color: 'text-info', bg: 'bg-icon-bg-blue', action: () => navigate('/bible/chapter') },
-    { icon: Repeat, label: t('home.review', 'Réviser'), desc: t('home.reviewDesc', 'FSRS'), color: 'text-success', bg: 'bg-icon-bg-green', action: () => navigate('/review/queue') },
-    { icon: BarChart3, label: t('home.progress', 'Progression'), desc: t('home.progressDesc', 'Statistiques'), color: 'text-primary', bg: 'bg-icon-bg-rose', action: () => navigate('/analytics/dashboard') },
-    { icon: Users, label: t('home.family', 'Famille'), desc: t('home.familyDesc', 'Partager'), color: 'text-warning', bg: 'bg-icon-bg-orange', action: () => navigate('/family/home') },
+    { icon: Compass, label: t('home.explore', 'Explorer la Bible'), desc: t('home.exploreDesc', 'Livre & chapitre'), color: 'text-primary', bg: 'bg-icon-bg-rose', action: () => navigate('/bible/explorer') },
+    { icon: Gem, label: t('session.memorizing', 'Mémorisation'), desc: 'Nouveau verset', color: 'text-primary', bg: 'bg-icon-bg-purple', action: () => navigate('/memorization/session') },
+    { icon: ScrollText, label: t('home.passage', 'Passage'), desc: t('home.passageDesc', 'Multi-versets'), color: 'text-info', bg: 'bg-icon-bg-blue', action: () => navigate('/bible/chapter') },
+    { icon: CalendarClock, label: t('home.review', 'Réviser'), desc: t('home.reviewDesc', 'Méthode FSRS'), color: 'text-success', bg: 'bg-icon-bg-green', action: () => navigate('/review/queue') },
+    { icon: TrendingUp, label: t('home.progress', 'Progression'), desc: t('home.progressDesc', 'Statistiques'), color: 'text-primary', bg: 'bg-icon-bg-rose', action: () => navigate('/analytics/dashboard') },
+    { icon: HeartHandshake, label: t('home.family', 'Famille'), desc: t('home.familyDesc', 'Partager'), color: 'text-warning', bg: 'bg-icon-bg-orange', action: () => navigate('/family/home') },
+    { icon: Library, label: t('home.bibleVersions', 'Versions de la Bible'), desc: t('home.bibleVersionsDesc', 'Téléchargées'), color: 'text-info', bg: 'bg-icon-bg-blue', action: () => navigate('/settings/available-translations') },
+    { icon: Feather, label: t('home.notes', 'Notes & tags'), desc: 'Mémoire sémantique', color: 'text-primary', bg: 'bg-icon-bg-teal', action: () => navigate('/semantic') },
   ];
 
   return (
-    <div className="min-h-full overflow-y-auto bg-background p-4 pb-24">
+    <div className="h-full overflow-y-auto bg-background p-4 pb-24">
       {/* Header */}
       <div className="flex items-start justify-between">
         <div className="flex-1">
@@ -127,48 +132,51 @@ export default function HomeScreen() {
         </button>
       </div>
 
-      {/* Review reminder card */}
-      {reviewsDue !== null && reviewsDue > 0 && (
-        <button
-          onClick={() => navigate('/review/queue')}
-          className="mt-5 flex w-full items-center rounded-2xl bg-primary p-4 text-white shadow-rose transition-opacity active:opacity-90"
-        >
-          <span className="flex h-12 w-12 items-center justify-center rounded-full bg-white/20">
-            <Clock size={22} />
-          </span>
-          <span className="ml-4 flex-1 text-left">
-            <span className="block text-base font-bold">
-              {t('home.reviewDue', { count: reviewsDue })}
-            </span>
-            <span className="mt-0.5 block text-xs text-white/85">
-              {t('home.noReviews', 'Ne perdez pas votre progression — révisez maintenant')}
-            </span>
-          </span>
-          <ChevronRight size={20} />
-        </button>
-      )}
-
-      {/* Streak card */}
-      <div className="mt-4 flex items-center justify-between rounded-2xl bg-surface p-4 shadow-md">
-        <div className="flex flex-1 items-center">
-          <div className="mr-4 flex h-14 w-14 items-center justify-center rounded-full bg-surface-tint">
-            <Flame size={28} className={cn(streak && streak >= 7 ? 'text-primary' : 'text-error')} />
-          </div>
+      {/* Hero card — streak + due reviews, premium gradient */}
+      <div className="gradient-hero glow-primary relative mt-5 overflow-hidden rounded-3xl p-5 text-white">
+        <div className="flex items-center justify-between">
           <div>
-            <p className="text-3xl font-extrabold leading-9 text-primary">
-              {streak ?? '–'}
+            <p className="text-xs font-semibold uppercase tracking-widest text-white/80">
+              {t('home.streakLabel', 'Série de jours')}
             </p>
-            <p className="text-xs text-text-tertiary">
+            <p className="mt-1 flex items-end gap-2">
+              <span className="text-5xl font-black leading-none">
+                {streak ?? '–'}
+              </span>
+              <Flame size={26} className="mb-1 text-white/90" />
+            </p>
+            <p className="mt-1 text-xs text-white/80">
               {t('home.streak', { count: streak ?? 1 })}
             </p>
           </div>
+          <button
+            onClick={() => navigate('/tabs/progress')}
+            className="flex h-11 w-11 items-center justify-center rounded-full bg-white/20 backdrop-blur active:scale-95"
+            aria-label={t('home.goodJob', 'Voir détails')}
+          >
+            <TrendingUp size={20} />
+          </button>
         </div>
-        <button
-          onClick={() => navigate('/tabs/progress')}
-          className="rounded-full bg-surface-tint px-4 py-2 text-sm font-semibold text-primary"
-        >
-          {t('home.goodJob', 'Voir détails')}
-        </button>
+
+        {reviewsDue !== null && reviewsDue > 0 && (
+          <button
+            onClick={() => navigate('/review/queue')}
+            className="mt-5 flex w-full items-center gap-3 rounded-2xl bg-white/15 p-3.5 text-left backdrop-blur transition active:scale-[0.99]"
+          >
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white/25">
+              <Clock size={18} />
+            </span>
+            <span className="flex-1">
+              <span className="block text-sm font-bold">
+                {t('home.reviewDue', { count: reviewsDue })}
+              </span>
+              <span className="block text-[11px] text-white/80">
+                {t('home.noReviews', 'Ne perdez pas votre progression — révisez maintenant')}
+              </span>
+            </span>
+            <ChevronRight size={18} />
+          </button>
+        )}
       </div>
 
       {/* Quick actions grid */}

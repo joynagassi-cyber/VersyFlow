@@ -65,8 +65,40 @@ type LoadResult = BibleBookData[] | null;
 const repo: ILocalBibleRepository = new LocalBibleRepository(new BibleJsonFileSource());
 let cache: IBibleDatasetCache | null = null;
 
+/**
+ * In dev the app is expected to use the REAL Supabase Storage bucket as its
+ * source of truth (not the bundled `data/bible/*.json` files, which are
+ * treated as mock/offline fixtures). `import.meta.env.DEV` is true under
+ * Vite's dev server.
+ */
+function preferRemoteSource(): boolean {
+  const env = (import.meta as unknown as { env?: Record<string, unknown> }).env;
+  return env?.DEV === true;
+}
+
+/** Per-session in-memory mirror of the dataset cache (dev-fast, quota-free). */
+const memoryCache = new Map<string, import('@/infrastructure/bible/bible-dataset-cache').CachedBibleDataset>();
+
 function peekCache(): IBibleDatasetCache {
-  if (!cache) cache = createBibleDatasetCache();
+  if (!cache) {
+    const base = createBibleDatasetCache();
+    cache = {
+      get: async (id, checksum) => {
+        const mem = memoryCache.get(id);
+        if (mem && mem.checksum === checksum) return mem;
+        return base.get(id, checksum);
+      },
+      set: async (dataset) => {
+        memoryCache.set(dataset.id, dataset);
+        try {
+          await base.set(dataset);
+        } catch {
+          // Quota / no-DB failure: the in-memory mirror already serves this
+          // session; persisting is best-effort.
+        }
+      },
+    };
+  }
   return cache;
 }
 
@@ -90,7 +122,18 @@ async function peekLocal(
 export async function loadTranslationBooks(
   translationId: string = 'lsg',
 ): Promise<LoadResult> {
-  // 1. Bundled local dataset (lsg, ostervald, …).
+  const entry = findRemoteDatasetEntry(translationId);
+
+  // Dev: the real Supabase bucket is the source of truth. Serve from the
+  // download cache when present; otherwise report "unavailable" so the caller
+  // triggers a fresh fetch from the bucket (never reads the local mock files).
+  if (preferRemoteSource() && entry) {
+    const data = await peekLocal(translationId, entry.checksum);
+    if (data) return data.books;
+    return null;
+  }
+
+  // 1. Bundled local dataset (production / offline).
   try {
     return await repo.getBooks(translationId);
   } catch {
@@ -98,7 +141,6 @@ export async function loadTranslationBooks(
   }
 
   // 2. Download-on-demand cache.
-  const entry = findRemoteDatasetEntry(translationId);
   if (entry) {
     const data = await peekLocal(translationId, entry.checksum);
     if (data) return data.books;
@@ -137,7 +179,9 @@ export async function downloadAndLoadTranslationBooks(
     return parseTranslationData(JSON.parse(cached.text)).books;
   }
 
-  const fetchImpl = options.fetchImpl ?? globalThis.fetch;
+  // `fetch` must keep its global receiver (detached calls throw
+  // "Illegal invocation" in WebKit).
+  const fetchImpl = options.fetchImpl ?? (globalThis.fetch.bind(globalThis) as typeof fetch);
   const url = `${datasetBaseUrl()}/${translationId}.json`;
   onProgress?.(0);
 

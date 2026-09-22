@@ -20,7 +20,7 @@ export default function TabLayout() {
     <>
       <HamburgerMenu />
       <IonPage>
-        <div id="main-content" className="flex h-full flex-col overflow-hidden bg-background">
+        <div id="main-content" className="relative flex h-full flex-col overflow-hidden bg-background">
           <div className="flex items-center justify-between px-4 py-2">
             <button
               onClick={openMenu}

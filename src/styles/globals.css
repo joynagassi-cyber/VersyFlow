@@ -205,6 +205,27 @@ ion-page,
   display: none;
 }
 
+/* Also hide Ionic's own scroll containers (they run their own inner scrollers). */
+ion-content,
+ion-content *,
+ion-scroll,
+ion-scroll *,
+.inner-scroll,
+.inner-scroll-holder,
+.scroll-bar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+ion-content::-webkit-scrollbar,
+ion-scroll::-webkit-scrollbar,
+.inner-scroll::-webkit-scrollbar,
+.inner-scroll-holder::-webkit-scrollbar,
+.scroll-bar::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
+}
+
 /* Map a few Ionic tokens to the VersyFlow theme so bare components look right */
 :root,
 :root[data-theme='light'] {

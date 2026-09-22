@@ -51,10 +51,7 @@ const TAB_DEFS: { id: SettingsTab; key: string; label: string }[] = [
   { id: 'profile', key: 'settingsTab.profile', label: 'Profil' },
 ];
 
-const TRANSLATION_LABELS: Record<string, string> = {
-  lsg: 'Louis Segond (1910)',
-  ostervald: 'Ostervald (1930)',
-};
+import { bibleTranslationDisplayName } from '@/services/bible-translation-names';
 
 const AVATAR_KEY = 'versyflow:profile:avatar';
 const NAME_KEY = 'versyflow:profile:name';
@@ -161,7 +158,7 @@ function ParamsTab() {
       title: t('settings.apparence', 'Apparence'),
       rows: [
         { icon: <Languages size={20} />, bg: 'bg-icon-bg-purple', color: 'text-primary', label: t('settings.uiLanguage', "Langue de l'interface"), sub: getLanguageName(currentLanguage), onClick: () => setLanguageModalOpen(true) },
-        { icon: <BookText size={20} />, bg: 'bg-surface-tint', color: 'text-text-secondary', label: t('settings.bibleTranslation', 'Traduction biblique'), sub: `${TRANSLATION_LABELS[bibleTranslation] ?? bibleTranslation} · ${t('settings.downloadTranslations', 'Télécharger d’autres versions')}`, onClick: () => navigate('/settings/available-translations') },
+        { icon: <BookText size={20} />, bg: 'bg-surface-tint', color: 'text-text-secondary', label: t('settings.bibleTranslation', 'Traduction biblique'), sub: `${bibleTranslationDisplayName(bibleTranslation)} · ${t('settings.downloadTranslations', 'Télécharger d’autres versions')}`, onClick: () => navigate('/settings/available-translations') },
         { icon: <Moon size={20} />, bg: 'bg-icon-bg-blue', color: 'text-info', label: t('settings.theme', 'Thème & accent'), sub: t('settings.fontSize', 'Clair, sombre, taille, accent'), onClick: () => navigate('/settings/appearance') },
       ],
     },

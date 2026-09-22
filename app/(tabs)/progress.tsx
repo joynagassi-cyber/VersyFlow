@@ -88,7 +88,7 @@ export default function ProgressScreen() {
   const change = stats.weeklyTrend.changePercentage;
 
   return (
-    <div className="min-h-full overflow-y-auto bg-background p-4 pb-24">
+    <div className="h-full overflow-y-auto bg-background p-4 pb-24">
       <h1 className="mb-4 text-2xl font-bold text-text-primary">
         {t('progress.yourProgress', 'Votre Progression')}
       </h1>
