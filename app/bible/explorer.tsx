@@ -7,7 +7,8 @@
  * from the Supabase Storage bucket `bible-datasets`.
  */
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
   Search,
@@ -36,19 +37,38 @@ function formatBytes(bytes: number): string {
   return `${(bytes / (1024 * 1024)).toFixed(1)} Mo`;
 }
 
+/**
+ * URL-driven views (each view IS a route, so tooling can detect them):
+ *   /bible/explorer                    → books
+ *   /bible/explorer/:bookId            → chapters
+ *   /bible/explorer/:bookId/:chapter   → verses
+ */
 export default function BibleExplorerScreen() {
+  const navigate = useNavigate();
+  const params = useParams();
   const { t, i18n } = useTranslation();
-  const [viewMode, setViewMode] = useState<ViewMode>('books');
   const [query, setQuery] = useState('');
-  const [selectedBookId, setSelectedBookId] = useState<string | null>(null);
-  const [selectedChapter, setSelectedChapter] = useState<number | null>(null);
   const [selectedVerse, setSelectedVerse] = useState<number | null>(null);
+
+  const rawBookId = params.bookId ?? null;
+  const selectedBookId = BIBLE_BOOKS.some((b) => b.id === rawBookId) ? rawBookId : null;
+  const chapterParam = Number(params.chapter);
+  const selectedChapter =
+    selectedBookId && Number.isInteger(chapterParam) && chapterParam > 0 ? chapterParam : null;
+
+  const viewMode: ViewMode =
+    selectedBookId && selectedChapter != null ? 'verses' : selectedBookId ? 'chapters' : 'books';
 
   const lang = i18n.language ?? 'fr';
   const selectedBook = BIBLE_BOOKS.find((b) => b.id === selectedBookId) || null;
 
   const { books, status, error, remoteEntry, translationId, downloadPercent, download } =
     useBibleData();
+
+  // Reset the verse selection whenever the route (book/chapter) changes.
+  useEffect(() => {
+    setSelectedVerse(null);
+  }, [selectedBookId, selectedChapter]);
 
   const { tags } = useChapterSemanticTags(selectedBookId, selectedChapter);
   const tagsByVerse = new Map((tags?.entries ?? []).map((e) => [e.verse, e.concepts]));
@@ -89,24 +109,18 @@ export default function BibleExplorerScreen() {
   const newTestament = filteredBooks.filter((b) => b.testament === 'new');
 
   const openBook = (id: string) => {
-    setSelectedBookId(id);
-    setViewMode('chapters');
+    navigate(`/bible/explorer/${id}`);
   };
 
   const openChapter = (chapter: number) => {
-    setSelectedChapter(chapter);
-    setSelectedVerse(null);
-    setViewMode('verses');
+    if (selectedBookId) navigate(`/bible/explorer/${selectedBookId}/${chapter}`);
   };
 
   const goBack = () => {
-    if (viewMode === 'verses') {
-      setSelectedChapter(null);
-      setSelectedVerse(null);
-      setViewMode('chapters');
+    if (viewMode === 'verses' && selectedBookId) {
+      navigate(`/bible/explorer/${selectedBookId}`);
     } else {
-      setSelectedBookId(null);
-      setViewMode('books');
+      navigate('/bible/explorer');
     }
   };
 
@@ -140,7 +154,13 @@ export default function BibleExplorerScreen() {
             : undefined
       }
       showBack={viewMode !== 'books'}
-      backPath="/tabs/explore"
+      backPath={
+        viewMode === 'verses' && selectedBookId
+          ? `/bible/explorer/${selectedBookId}`
+          : viewMode === 'chapters'
+            ? '/bible/explorer'
+            : '/tabs/explore'
+      }
       right={
         viewMode !== 'books' ? (
           <button onClick={goBack} className="text-sm font-semibold text-primary">

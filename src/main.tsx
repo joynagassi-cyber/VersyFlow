@@ -272,8 +272,10 @@ function App() {
               <Route path="/auth/signup" element={<AuthSignup />} />
               <Route path="/auth/verify" element={<AuthVerify />} />
 
-              {/* Bible */}
+              {/* Bible — the explorer is URL-driven: each view is a route */}
               <Route path="/bible/explorer" element={<BibleExplorer />} />
+              <Route path="/bible/explorer/:bookId" element={<BibleExplorer />} />
+              <Route path="/bible/explorer/:bookId/:chapter" element={<BibleExplorer />} />
               <Route path="/bible/book/:bookId" element={<BibleBook />} />
               <Route path="/bible/book" element={<Navigate to="/bible/explorer" replace />} />
               <Route path="/bible/chapter" element={<Navigate to="/bible/chapter/gen/1" replace />} />
