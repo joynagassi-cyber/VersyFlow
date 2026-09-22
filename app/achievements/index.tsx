@@ -507,6 +507,7 @@ export default function AchievementScreen() {
   const router = useRouter();
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [showAll, setShowAll] = useState(false);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const unlockedCount = ACHIEVEMENTS.filter(a => a.unlocked).length;
   const totalCount = ACHIEVEMENTS.length;
@@ -517,6 +518,7 @@ export default function AchievementScreen() {
     : ACHIEVEMENTS.filter(a => a.category === selectedCategory);
 
   const displayedAchievements = showAll ? filteredAchievements : filteredAchievements.slice(0, 6);
+  const selectedAchievement = displayedAchievements.find((a) => a.id === selectedId) ?? null;
 
   return (
     <SafeAreaView style={styles.container}>
@@ -584,7 +586,9 @@ export default function AchievementScreen() {
             <TouchableOpacity
               key={achievement.id}
               style={styles.achievementCard}
-              onPress={() => router.push(`/achievements/${achievement.id}`)}
+              onPress={() =>
+                setSelectedId(selectedId === achievement.id ? null : achievement.id)
+              }
             >
               <View style={[styles.achievementIcon, { backgroundColor: achievement.color + '20' }]}>
                 <IonIcon icon={achievement.unlocked ? achievement.icon : 'lock-closed'}
@@ -618,6 +622,50 @@ export default function AchievementScreen() {
             </TouchableOpacity>
           ))}
         </View>
+
+        {/* Detail of the selected achievement */}
+        {selectedAchievement && (
+          <View
+            style={{
+              marginHorizontal: 16,
+              backgroundColor: colors.surface,
+              borderRadius: 16,
+              padding: 16,
+              borderWidth: 1,
+              borderColor: selectedAchievement.color + '40',
+            }}
+          >
+            <Text style={{ fontSize: 16, fontWeight: '700', color: selectedAchievement.color }}>
+              {selectedAchievement.title}
+            </Text>
+            <Text style={{ fontSize: 13, color: colors.textSecondary, marginTop: 4 }}>
+              {selectedAchievement.description}
+            </Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 10 }}>
+              <View style={{ flex: 1, height: 8, borderRadius: 4, backgroundColor: colors.surfaceTint, overflow: 'hidden' }}>
+                <View
+                  style={{
+                    width: `${selectedAchievement.progress}%`,
+                    height: 8,
+                    borderRadius: 4,
+                    backgroundColor: selectedAchievement.color,
+                  }}
+                />
+              </View>
+              <Text style={{ fontSize: 12, color: colors.textMuted }}>
+                {selectedAchievement.progress >= 100 ? '✓ Complété' : `${selectedAchievement.progress}%`}
+              </Text>
+            </View>
+            <Text style={{ fontSize: 12, color: colors.textMuted, marginTop: 8 }}>
+              Condition : {selectedAchievement.requirement}
+            </Text>
+            {selectedAchievement.unlocked && selectedAchievement.unlockedAt && (
+              <Text style={{ fontSize: 12, color: selectedAchievement.color, marginTop: 4 }}>
+                Débloqué : {selectedAchievement.unlockedAt}
+              </Text>
+            )}
+          </View>
+        )}
 
         {/* Show More */}
         {filteredAchievements.length > 6 && !showAll && (
@@ -653,4 +701,3 @@ export default function AchievementScreen() {
     </SafeAreaView>
   );
 }
-
