@@ -39,4 +39,4 @@ export type {
   EventType,
   ExerciseStrategy,
 } from './telemetry/entities';
-export type { ITelemetry, TelemetryEventType } from './telemetry/it telemetry';
+export type { ITelemetry, TelemetryEventType } from './telemetry/it-telemetry';

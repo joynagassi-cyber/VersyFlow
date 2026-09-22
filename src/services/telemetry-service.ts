@@ -12,7 +12,7 @@
 
 import type { IStorage } from '@/infrastructure/storage/storage-types';
 import type { TelemetryEvent, TelemetryQueueItem, TelemetrySummary } from '@/domains/telemetry/entities';
-import type { ITelemetry } from '@/domains/telemetry/it telemetry';
+import type { ITelemetry } from '@/domains/telemetry/it-telemetry';
 import type { ITelemetryUploadPort } from '@/infrastructure/telemetry/upload-adapter';
 
 /** Maximum queue size before dropping oldest events */

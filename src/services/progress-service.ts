@@ -7,7 +7,7 @@
 import type { MemorizationService } from '@/domains/memorization/service';
 import type { MemorizationRecord } from '@/domains/memorization/entities';
 import type { IFsrsEngine } from '@/domains/fsrs';
-import type { ITelemetry } from '@/domains/telemetry/it telemetry';
+import type { ITelemetry } from '@/domains/telemetry/it-telemetry';
 import type { IStreakRepository } from '@/domains/streaks/repository';
 import { StreakService } from './streak-service';
 import type { Milestone } from './milestone-service';

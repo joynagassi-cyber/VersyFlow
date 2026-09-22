@@ -16,7 +16,7 @@ import { startStreakCoordinator } from '@/services/streak-coordinator';
 import { ProgressService } from '@/services/progress-service';
 import type { MemorizationService } from '@/domains/memorization';
 import type { IFsrsEngine } from '@/domains/fsrs';
-import type { ITelemetry } from '@/domains/telemetry/it telemetry';
+import type { ITelemetry } from '@/domains/telemetry/it-telemetry';
 import type { IStreakRepository } from '@/domains/streaks/repository';
 
 // ---------------------------------------------------------------------------

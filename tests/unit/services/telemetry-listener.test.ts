@@ -5,7 +5,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { eventBus, DomainEventTypes } from '@/domains/events';
 import { TelemetryListener } from '@/services/telemetry-listener';
-import type { ITelemetry } from '@/domains/telemetry/it telemetry';
+import type { ITelemetry } from '@/domains/telemetry/it-telemetry';
 
 describe('TelemetryListener', () => {
   let mockTelemetry: ITelemetry;

@@ -5,7 +5,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { MilestoneService } from '@/services/milestone-service';
 import type { MemorizationService } from '@/domains/memorization/service';
-import type { ITelemetry } from '@/domains/telemetry/it telemetry';
+import type { ITelemetry } from '@/domains/telemetry/it-telemetry';
 import { eventBus, DomainEventTypes } from '@/domains/events';
 
 function makeMockMemorizationService(count: number, masteredCount: number = 0): MemorizationService {

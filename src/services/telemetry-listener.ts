@@ -8,7 +8,7 @@
 import { eventBus, DomainEventTypes } from '@/domains/events';
 import type { TelemetryEvent, ExerciseStrategy } from '@/domains/telemetry/entities';
 import { redact } from '@/domains/telemetry/entities';
-import type { ITelemetry } from '@/domains/telemetry/it telemetry';
+import type { ITelemetry } from '@/domains/telemetry/it-telemetry';
 
 /**
  * Map a DomainEvent to a TelemetryEvent, returning null if the event should not be tracked.
