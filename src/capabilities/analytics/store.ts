@@ -4,6 +4,10 @@
 
 import { create } from 'zustand';
 import type { ProgressStats } from '@/services/progress-service';
+import { getMemorizationService } from '@/services/memorization-service-factory';
+import { getFsrsEngine } from '@/services/fsrs-factory';
+import { ProgressService } from '@/services/progress-service';
+import { useProfileStore } from '@/store/profile-store';
 
 export interface AnalyticsState {
   stats: ProgressStats | null;
@@ -24,21 +28,11 @@ export const useAnalyticsCapability = create<AnalyticsState>((set, get) => ({
   calculateStats: async () => {
     set({ isCalculating: true });
     try {
-      // TODO: Integrate with ProgressService
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      set({
-        stats: {
-          totalVerses: 0,
-          masteredVerses: 0,
-          inProgressVerses: 0,
-          streakCount: 0,
-          longestStreak: 0,
-          dueForReview: 0,
-          weeklyTrend: { thisWeek: 0, lastWeek: 0, changePercentage: 0 },
-          avgSessionDurationMin: 0,
-        },
-        isCalculating: false,
-      });
+      const profileId = useProfileStore.getState().activeProfileId ?? 'default';
+      const service = getMemorizationService(profileId);
+      const progressService = new ProgressService(service, getFsrsEngine(), undefined, profileId);
+      const stats = await progressService.getStats();
+      set({ stats, isCalculating: false });
     } catch (error) {
       set({ isCalculating: false });
     }
@@ -55,7 +49,7 @@ export const useAnalyticsCapability = create<AnalyticsState>((set, get) => ({
   },
 
   getLearningTime: () => {
-    // Mock - would come from session logs
-    return 45; // minutes
+    // Real value once calculateStats() has populated stats (session logs via ProgressStats).
+    return get().stats?.avgSessionDurationMin ?? 0;
   },
 }));
