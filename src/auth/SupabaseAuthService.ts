@@ -74,7 +74,7 @@ export class SupabaseAuthService {
   async verifyEmailCode(email: string, code: string): Promise<{ user: User | null; error: AuthError | null }> {
     const { data, error } = await this.supabase.auth.verifyOtp({
       email,
-      code,
+      token: code,
       type: 'email',
     });
     if (error) {

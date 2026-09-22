@@ -15,7 +15,8 @@ import {
 } from '@/components/ui/Primitives';
 import { useAppTheme } from '@/theme/useTheme';
 import { useRouter } from '@/hooks/useIonicNavigation';
-import { useTranslation, type TFunction } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
+import type { TFunction } from 'i18next';
 import { IonIcon } from '@/components/ui/Primitives'
 import { alarm, bookmark, calendar, checkmark, notifications, arrowBack, notificationsOff } from 'ionicons/icons';
 import { useActiveProfile } from '@/hooks/useActiveProfile';
