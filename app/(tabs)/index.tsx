@@ -227,7 +227,13 @@ export default function HomeScreen() {
           recentVerses.map((verse) => (
             <button
               key={verse.id}
-              onClick={() => navigate('/bible/chapter')}
+              onClick={() =>
+                navigate(
+                  verse.bookId && verse.chapterNumber
+                    ? `/bible/chapter?book=${verse.bookId}&chapter=${verse.chapterNumber}`
+                    : '/bible/chapter',
+                )
+              }
               className="w-40 shrink-0 rounded-xl bg-surface p-4 text-left shadow-sm"
             >
               <span
