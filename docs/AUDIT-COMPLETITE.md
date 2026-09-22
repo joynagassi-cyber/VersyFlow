@@ -125,8 +125,45 @@ Backend : **Supabase + PowerSync** (`.env.example:12` marque InsForge « OBSOLET
 
 ---
 
-## 4. Vérification (session 2026-09-22)
+## 4. État d'exécution (feu vert 2026-09-22)
+
+| Lot | Contenu | Commit |
+|---|---|---|
+| P0-nav | 404 `/progress`, `/family/create` | `db922bf` |
+| P0-backup | export/import JSON réels (TODOs comblés, `/settings/export` supprimé) | `a1b3aef` |
+| P0-collections | création inline + localStorage + détail inline | `2076cd8` |
+| P0-achievements | détail inline | `ff9ab22` |
+| P1-1 | points d'entrée : namespace `nav.*` fr/en + menu hamburger (mastery, notifications, history, comparaison) | `fb9bc05` |
+| P1-3 | store analytics branché `ProgressService` (setTimeout factice supprimé) | `ec193a7` |
+| P1-5 | verify e-mail réel (`signInWithOtp`/`verifyOtp` Supabase), bug useState→useEffect AuthGate | `8431885` |
+| P1-6 | deep-link accueil vers le vrai chapitre du verset | `73f0b65` |
+| P1-2a | notifications réelles (due/streak/milestones + eventBus live, read-state persisté) | `e4b5e43` |
+| P1-2b | historique de révision : logs PowerSync du verset le plus révisé + état vide | `406199b` |
+| P1-2c | mastery : stats réelles (records/streak/seuils de stabilité) | `1be7c6b` |
+| P1-2d | achievements : états dérivés (records/streak/longest/reviews/collections) | `948b0b8` |
+| P1-2e | search : index biblique réel (traduction active) + recherche réf/texte + historique persisté | `09961ee` |
+| P1-4 | i18n sous-pages settings legacy (about/privacy/languages) + namespaces fr/en | `b6903e5` |
+| D-3 | renommage `it telemetry.ts` → `it-telemetry.ts` (8 importeurs) | `2e9237c` |
+| D-1 | purge de 5 fichiers morts (RootNavigator, IonicRouterProvider, app/index, boot, AuthGate) | `cc596f4` |
+| D-4 | AGENTS.md : bloc InsForge obsolète → Supabase+PowerSync | `6309c36` |
+| D-5 | `/bible/chapter/:bookId/:chapterNumber` (URL params, fallback query conservé) | `2d70a26` |
+
+### Reporté / à trancher
+
+- **D-1 (partiel)** : `app/progress/Dashboard.tsx` conservé — l'agent parallèle le réécrit
+  (worktree en cours) ; il pourra le purger ou le recâbler.
+- **D-2** : double flux `memorization/*` (live) vs `memory/*` (stratégies, toujours sans
+  point d'entrée `verseData` — `MemoryStartRoute` redirige). Décision UX à trancher.
+- **D-6** : splash retiré du démarrage (`/` → `RootRedirect`) ; réintroduction à trancher.
+- **i18n restant** : écrans `ai-coach`, `mastery`, `achievements`, `comparison` restent FR
+  hardcodés (données devenues réelles, libellés pas encore traduits).
+
+## 5. Vérification (session 2026-09-22)
 
 - `npx tsc -p tsconfig.app.json --noEmit` → **exit 0**
-- `eslint` sur les 5 fichiers modifiés → **0 erreur** (warnings préexistants uniquement)
-- `vitest` `settings-flow` + `collections-achievements-flow` + `cloud-sync-flow` → **31/31 pass**
+- `eslint` sur l'ensemble des fichiers modifiés → **0 erreur** (warnings préexistants restants)
+- `vitest` (9 fichiers : e2e notifications/search/review/progress/collections-achievements/
+  settings + integration streak-telemetry + unit telemetry-listener/milestone) → **77/77 pass**
+- Note : `app/notifications.tsx` (lint) et les correctifs de l'agent parallèle
+  (`verifyOtp` token, import `TFunction`) ont été capturés pour la cohérence de l'arbre
+  (`2c71a71`).
