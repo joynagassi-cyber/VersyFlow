@@ -465,4 +465,21 @@ export const en = {
     daysOfStability: ' days of stability',
     backQueue: 'Back to the queue',
   },
+  dock: {
+    title: 'Quick access',
+    open: 'Open shortcuts',
+    memorize: 'Memorize',
+    review: 'Review',
+    explore: 'Explore',
+    compare: 'Compare',
+    semantic: 'Semantic',
+    collections: 'Collections',
+    coach: 'AI Coach',
+    search: 'Search',
+  },
+  settingsTab: {
+    data: 'Data',
+    params: 'Settings',
+    profile: 'Profile',
+  },
 } as const;

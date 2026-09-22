@@ -3,18 +3,25 @@ import { useTranslation } from 'react-i18next';
 import { Logo } from '@/components/brand/Logo';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { useSettingsStore } from '@/store/settings-store';
 
 const TOTAL_STEPS = 6;
 
 export default function WelcomeScreen() {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const completeOnboarding = useSettingsStore((s) => s.completeOnboarding);
+
+  const skip = () => {
+    completeOnboarding();
+    navigate('/tabs/home', { replace: true });
+  };
 
   return (
     <div className="flex min-h-full flex-col items-center justify-between p-6 animate-fade-in-up">
       <div className="flex w-full justify-end">
         <button
-          onClick={() => navigate('/tabs/home')}
+          onClick={skip}
           className="text-sm font-medium text-text-muted active:opacity-70"
         >
           {t('common.skip', 'Passer')}

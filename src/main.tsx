@@ -99,6 +99,7 @@ import { initializeSettingsStore, useSettingsStore } from '@/store/settings-stor
 import { initializeAppearanceStore } from '@/store/appearance-store';
 import { initializeUiStore } from '@/store/ui-store';
 import { ThemeManager } from '@/components/ThemeManager';
+import ErrorBoundary from '@/components/ErrorBoundary';
 import { useAuthStore } from '@/store/auth-store';
 import { useFamilySyncBridge } from '@/hooks/useFamilySyncBridge';
 import { useProfileSyncBridge } from '@/hooks/useProfileSyncBridge';
@@ -228,7 +229,8 @@ function App() {
       <SyncBridges />
       <BrowserRouter>
         <IonApp>
-          <Routes>
+          <ErrorBoundary>
+            <Routes>
             <Route path="/" element={<RootRedirect />} />
 
             {/* Onboarding (public) */}
@@ -321,7 +323,8 @@ function App() {
             {/* Public routes */}
             <Route path="/splash" element={<SplashRoute />} />
             <Route path="*" element={<NotFound />} />
-          </Routes>
+            </Routes>
+          </ErrorBoundary>
         </IonApp>
       </BrowserRouter>
     </StrictMode>

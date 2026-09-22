@@ -178,3 +178,42 @@
     animation: vf-fade-in-up 0.35s ease both;
   }
 }
+
+/* ── Ionic custom elements: guarantee the full-height scroll chain ────────
+   Without these overrides ion-app / ion-page can collapse to content height
+   (no 100% height), which clips long pages and disables scrolling. */
+ion-app,
+.ion-app,
+ion-page,
+.ion-page {
+  display: block;
+  height: 100%;
+}
+ion-page,
+.ion-page {
+  overflow: hidden;
+}
+
+/* Invisible scrollbars everywhere — scrolling still works. */
+* {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+*::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
+}
+
+/* Map a few Ionic tokens to the VersyFlow theme so bare components look right */
+:root,
+:root[data-theme='light'] {
+  --ion-background-color: var(--color-background);
+  --ion-background-color-rgb: 252, 249, 250;
+  --ion-text-color: var(--color-text-primary);
+}
+[data-theme='dark'] {
+  --ion-background-color: var(--color-background);
+  --ion-background-color-rgb: 18, 10, 18;
+  --ion-text-color: var(--color-text-primary);
+}

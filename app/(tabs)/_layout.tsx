@@ -3,6 +3,7 @@ import { Outlet, useNavigate } from 'react-router-dom';
 import { Plus, Menu } from 'lucide-react';
 import SyncStatusIndicator from '@/components/common/SyncStatusIndicator';
 import { BottomTabs } from '@/components/navigation/BottomTabs';
+import { QuickDock } from '@/components/navigation/QuickDock';
 import { HamburgerMenu } from '@/components/navigation/HamburgerMenu';
 import { Logo } from '@/components/brand/Logo';
 import { useUiStore } from '@/store/ui-store';
@@ -41,7 +42,7 @@ export default function TabLayout() {
             <Outlet />
           </div>
 
-          <IonFab horizontal="end" vertical="bottom" style={{ marginBottom: '84px' }}>
+          <IonFab horizontal="end" vertical="bottom" style={{ marginBottom: '116px' }}>
             <IonFabButton
               onClick={() => navigate('/memorization/session')}
               aria-label="Nouvelle session de memorisation"
@@ -50,6 +51,7 @@ export default function TabLayout() {
             </IonFabButton>
           </IonFab>
 
+          <QuickDock />
           <BottomTabs />
         </div>
       </IonPage>

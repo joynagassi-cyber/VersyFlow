@@ -466,4 +466,21 @@ export const fr = {
     daysOfStability: ' jours de stabilité',
     backQueue: 'Retour à la file',
   },
+  dock: {
+    title: 'Accès rapide',
+    open: 'Ouvrir les raccourcis',
+    memorize: 'Mémoriser',
+    review: 'Réviser',
+    explore: 'Explorer',
+    compare: 'Comparer',
+    semantic: 'Sémantique',
+    collections: 'Collections',
+    coach: 'Coach IA',
+    search: 'Recherche',
+  },
+  settingsTab: {
+    data: 'Données',
+    params: 'Paramètres',
+    profile: 'Profil',
+  },
 } as const;
