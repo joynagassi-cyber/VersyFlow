@@ -218,5 +218,90 @@ export function buildPowerSyncSchema(): Schema {
         by_event_type: ['event_type'],
       },
     }),
+
+    // -- semantic memory (Stage B alignment layer) -----------------------
+    // Five semantic graph tables, synced from Supabase. Bare table
+    // names (DB-relative). JSON blobs are declared as `text` so the
+    // PowerSync view is created with the correct column type.
+    concepts: new Table({
+      labels_by_language: column.text,
+      canonical_name: column.text,
+      slug: column.text,
+      description: column.text,
+      source_provenance: column.text,
+      confidence: column.real,
+      status: column.text,
+      kind: column.text,
+      source: column.text,
+      created_by: column.text,
+      created_at: column.text,
+      updated_at: column.text,
+    }, {
+      indexes: {
+        by_canonical_name: ['canonical_name'],
+        by_status: ['status'],
+      },
+    }),
+
+    concept_relations: Table.createInsertOnly({
+      from_concept_id: column.text,
+      to_concept_id: column.text,
+      type: column.text,
+      confidence: column.real,
+      source: column.text,
+      created_at: column.text,
+    }, {
+      indexes: {
+        by_from: ['from_concept_id'],
+        by_to: ['to_concept_id'],
+      },
+    }),
+
+    communities: new Table({
+      name: column.text,
+      description: column.text,
+      concept_ids: column.text,
+      source_concept_id: column.text,
+      size: column.integer,
+      coherence: column.real,
+      source: column.text,
+      confidence: column.real,
+      created_at: column.text,
+      updated_at: column.text,
+    }, {
+      indexes: {
+        by_source_concept: ['source_concept_id'],
+      },
+    }),
+
+    verse_concepts: Table.createInsertOnly({
+      verse_id: column.text,
+      concept_id: column.text,
+      role: column.text,
+      confidence: column.real,
+      source: column.text,
+      created_at: column.text,
+    }, {
+      indexes: {
+        by_concept: ['concept_id'],
+        by_verse: ['verse_id'],
+      },
+    }),
+
+    verse_relations: Table.createInsertOnly({
+      verse_a: column.text,
+      verse_b: column.text,
+      type: column.text,
+      score: column.real,
+      source: column.text,
+      concept_id: column.text,
+      community_id: column.text,
+      created_at: column.text,
+    }, {
+      indexes: {
+        by_verse_a: ['verse_a'],
+        by_verse_b: ['verse_b'],
+      },
+    }),
   });
 }
