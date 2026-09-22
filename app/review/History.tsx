@@ -16,9 +16,14 @@ import {
 } from '@/components/ui/Primitives';
 import { useAppTheme } from '@/theme/useTheme';
 import { useRoute, useRouter } from '@/hooks/useIonicNavigation';
+import { useTranslation } from 'react-i18next';
 import { IonIcon } from '@/components/ui/Primitives'
 import {arrowBack, arrowForward, book, checkmarkCircle, medal, refresh, trendingUp} from 'ionicons/icons';
 import { Rating } from '@/domains/fsrs';
+import { useActiveProfile } from '@/hooks/useActiveProfile';
+import { getMemorizationService } from '@/services/memorization-service-factory';
+import { getReviewLogRepository } from '@/infrastructure/repository/powersync-repositories';
+import type { ReviewLogEntry as DomainReviewLogEntry } from '@/domains/memorization/entities';
 
 interface ReviewLogEntry {
   id: string;
@@ -41,50 +46,20 @@ interface VerseRecord {
   masteryLevel: string;
 }
 
-// Sample data for demo
-const SAMPLE_HISTORY: ReviewLogEntry[] = [
-  {
-    id: '1',
-    answeredAt: Date.now() - 86400000 * 2,
-    rating: Rating.GOOD,
-    stabilityBefore: 2.1,
-    stabilityAfter: 3.5,
-    difficultyBefore: 5.0,
-    difficultyAfter: 4.8,
-    elapsedDays: 2,
-    repetitions: 3,
-  },
-  {
-    id: '2',
-    answeredAt: Date.now() - 86400000 * 5,
-    rating: Rating.HARD,
-    stabilityBefore: 1.5,
-    stabilityAfter: 2.1,
-    difficultyBefore: 5.5,
-    difficultyAfter: 5.0,
-    elapsedDays: 5,
-    repetitions: 2,
-  },
-  {
-    id: '3',
-    answeredAt: Date.now() - 86400000 * 10,
-    rating: Rating.AGAIN,
-    stabilityBefore: 0.8,
-    stabilityAfter: 1.5,
-    difficultyBefore: 6.0,
-    difficultyAfter: 5.5,
-    elapsedDays: 10,
-    repetitions: 1,
-  },
-];
+const RATING_MAP: Record<DomainReviewLogEntry['rating'], Rating> = {
+  again: Rating.AGAIN,
+  hard: Rating.HARD,
+  good: Rating.GOOD,
+  easy: Rating.EASY,
+};
 
-const SAMPLE_VERSE: VerseRecord = {
-  id: '1',
-  reference: 'Jean 3:16',
-  text: 'Car Dieu a tellement aimé le monde qu\'il a donné son Fils unique...',
-  totalReviews: 3,
-  averageStability: 2.4,
-  masteryLevel: 'En cours',
+const EMPTY_VERSE: VerseRecord = {
+  id: '',
+  reference: '',
+  text: '',
+  totalReviews: 0,
+  averageStability: 0,
+  masteryLevel: '—',
 };
 
 export default function ReviewHistoryScreen() {
@@ -477,14 +452,68 @@ export default function ReviewHistoryScreen() {
   }), [colors]);
   const route = useRoute();
   const router = useRouter();
-  const [history, setHistory] = useState<ReviewLogEntry[]>(SAMPLE_HISTORY);
-  const [verse, setVerse] = useState<VerseRecord>(SAMPLE_VERSE);
+  const [history, setHistory] = useState<ReviewLogEntry[]>([]);
+  const [verse, setVerse] = useState<VerseRecord>(EMPTY_VERSE);
   const [loading, setLoading] = useState(true);
+  const [noData, setNoData] = useState(false);
+  const { activeProfile } = useActiveProfile();
+  const profileId = activeProfile?.id ?? 'default';
+  const { t } = useTranslation();
 
   useEffect(() => {
-    // Simulate loading
-    setTimeout(() => setLoading(false), 500);
-  }, []);
+    let cancelled = false;
+    const load = async () => {
+      try {
+        const service = getMemorizationService(profileId);
+        const records = await service.getAllMemorized();
+        const withReviews = records
+          .filter((r) => r.reviewCount > 0)
+          .sort((a, b) => (b.lastReviewedAt ?? 0) - (a.lastReviewedAt ?? 0));
+        const record = withReviews[0];
+        if (!record) {
+          if (!cancelled) {
+            setNoData(true);
+            setLoading(false);
+          }
+          return;
+        }
+        const domainLogs = await getReviewLogRepository().listByRecord(record.id);
+        const mapped: ReviewLogEntry[] = domainLogs.map((log) => ({
+          id: log.id,
+          answeredAt: log.answeredAt,
+          rating: RATING_MAP[log.rating] ?? Rating.AGAIN,
+          stabilityBefore: log.stabilityBefore,
+          stabilityAfter: log.stabilityAfter,
+          difficultyBefore: log.difficultyBefore,
+          difficultyAfter: log.difficultyAfter,
+          elapsedDays: Math.max(0, Math.round((log.answeredAt - (record.createdAt || log.answeredAt)) / 86400000)),
+          repetitions: record.reviewCount,
+        }));
+        if (cancelled) return;
+        setHistory(mapped);
+        setVerse({
+          id: record.id,
+          reference: record.bibleVerseReference || `${record.bookId} ${record.chapterNumber}:${record.verseNumber}`,
+          text: record.bibleVerseText,
+          totalReviews: record.reviewCount,
+          averageStability: record.fsrsState?.stability ?? 0,
+          masteryLevel: record.status === 'mastered' ? 'Maîtrisé' : 'En cours',
+        });
+        setNoData(false);
+        setLoading(false);
+      } catch (e) {
+        console.error('[ReviewHistory] data load failed:', e);
+        if (!cancelled) {
+          setNoData(true);
+          setLoading(false);
+        }
+      }
+    };
+    void load();
+    return () => {
+      cancelled = true;
+    };
+  }, [profileId]);
 
   const formatTimestamp = (timestamp: number): string => {
     const date = new Date(timestamp);
@@ -573,6 +602,17 @@ export default function ReviewHistoryScreen() {
           <View style={styles.headerRight} />
         </View>
 
+        {noData ? (
+          <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', padding: 40 }}>
+            <Text style={{ fontSize: 18, fontWeight: '700', color: colors.textPrimary }}>
+              {t('review.historyEmpty', 'Aucune révision enregistrée')}
+            </Text>
+            <Text style={{ fontSize: 14, color: colors.textMuted, marginTop: 8, textAlign: 'center' }}>
+              {t('review.historyEmptyHint', 'Revisez des versets pour construire votre historique.')}
+            </Text>
+          </View>
+        ) : (
+          <>
         {/* Verse Info Card */}
         <View style={styles.verseCard}>
           <View style={styles.verseHeader}>
@@ -728,10 +768,11 @@ export default function ReviewHistoryScreen() {
             <Text style={styles.primaryButtonText}>Retour à la file</Text>
           </TouchableOpacity>
         </View>
+          </>
+        )}
 
         <View style={styles.bottomSpacer} />
       </ScrollView>
     </SafeAreaView>
   );
 }
-
