@@ -1,22 +1,23 @@
 # AGENTS.md
 
-<!-- INSFORGE:START -->
-## InsForge backend
+<!-- BACKEND:START -->
+## Backend — Supabase + PowerSync
 
-This project uses [InsForge](https://insforge.dev): an all-in-one, open-source Postgres-based backend (BaaS) that gives this app a database, authentication, file storage, edge functions, realtime, an AI model gateway, and payments through one platform.
+This project (VersyFlow — bilingual biblical verse memorization, Ionic React + Capacitor)
+runs on **Supabase** (auth, Postgres, Storage) with **PowerSync** for offline-first
+local-first sync. InsForge was used historically and is **OBSOLETE** (see `.env.example`).
 
-- **Project:** **oss-project** (API base `https://wypi8tgf.eu-central.insforge.app`)
-- **Skills:** these InsForge skills are installed for supported coding agents. Reach for them before implementing any InsForge feature instead of guessing the API:
-  - `insforge`: app code with the `@insforge/sdk` client (database CRUD, auth, storage, edge functions, realtime, AI, email, and Stripe payments).
-  - `insforge-cli`: backend and infrastructure via the `insforge` CLI (projects, SQL, migrations, RLS policies, storage buckets, functions, secrets, payment setup, schedules, deploys).
-  - `insforge-debug`: diagnosing failures (SDK/HTTP errors, RLS denials, auth and OAuth issues) and running security or performance audits.
-  - `insforge-integrations`: wiring external auth providers (Clerk, Auth0, WorkOS, Better Auth, etc.) for JWT-based RLS, or the OKX x402 payment facilitator.
-  - `find-skills`: discovering additional skills on demand.
-- **Credentials:** app code reads keys from `.env.local`; the CLI reads `.insforge/project.json`. Never hardcode or commit keys.
+- **Credentials:** app code reads keys from `.env.local` / env (`VITE_SUPABASE_URL`,
+  `VITE_SUPABASE_ANON_KEY`, optional `POWERSYNC_URL` / `POWERSYNC_SECRET`).
+  Never hardcode or commit keys.
 
 Key patterns:
 
-- Database inserts take an array: `insert([{ ... }])`.
-- Reference users with `auth.users(id)`; use `auth.uid()` in RLS policies.
-- For storage uploads, persist both the returned `url` and `key`.
-<!-- INSFORGE:END -->
+- Auth is Supabase-only: `src/auth/SupabaseAuthService.ts` (signIn / signUp / signOut /
+  verifyOtp) wrapped by `src/store/auth-store.ts` (zustand).
+- Synced writes go through the PowerSync repositories in
+  `src/infrastructure/repository/powersync-repositories.ts`; local-only data (e.g.
+  semantic memory) uses SQLite adapters.
+- Learner records are owned by the authenticated user: bind writes with
+  `getSyncUserIdProvider().resolveUserId()`; invalidate it on sign-out.
+<!-- BACKEND:END -->
