@@ -2,7 +2,7 @@
  * Search Screen — Bible verse search by reference or keyword
  */
 
-import { useState, useMemo} from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import {
   View,
   Text,
@@ -17,6 +17,10 @@ import { useAppTheme } from '@/theme/useTheme';
 import { useRouter } from '@/hooks/useIonicNavigation';
 import { IonIcon } from '@/components/ui/Primitives'
 import { arrowBack, bookmark, chevronForward, close, closeCircle, school, search, time } from 'ionicons/icons';
+import { loadTranslationBooks } from '@/services/bible-text-service';
+import { useSettingsStore } from '@/store/settings-store';
+
+const HISTORY_KEY = 'versyflow:search:history';
 
 interface SearchResult {
   id: string;
@@ -28,13 +32,18 @@ interface SearchResult {
   relevance: number;
 }
 
-const SAMPLE_RESULTS: SearchResult[] = [
-  { id: '1', reference: 'Jean 3:16', book: 'Jean', chapter: 3, verse: 16, text: 'Car Dieu a tellement aimé le monde...', relevance: 100 },
-  { id: '2', reference: 'Psaume 23:1', book: 'Psaumes', chapter: 23, verse: 1, text: 'L\'Éternel est mon berger...', relevance: 95 },
-  { id: '3', reference: 'Romains 8:28', book: 'Romains', chapter: 8, verse: 28, text: 'Nous savons d\'ailleurs que...', relevance: 90 },
-  { id: '4', reference: 'Jean 1:1', book: 'Jean', chapter: 1, verse: 1, text: 'Au commencement était la Parole...', relevance: 85 },
-  { id: '5', reference: 'Genèse 1:1', book: 'Genèse', chapter: 1, verse: 1, text: 'Au commencement, Dieu créa...', relevance: 80 },
-];
+/** "Psaume 23" / "Jean 3:16" style quick lookup against a result row. */
+function quickMatch(row: SearchResult, q: string): boolean {
+  const m = q.match(/^(.*?)\s*(\d.*)?$/);
+  const bookPart = (m?.[1] ?? q).trim().toLowerCase();
+  const refPart = (m?.[2] ?? '').toLowerCase().replace(/^:+/, '');
+  const bookHit =
+    !bookPart ||
+    row.book.toLowerCase().startsWith(bookPart) ||
+    row.book.toLowerCase().includes(bookPart);
+  const refHit = !refPart || `${row.chapter}:${row.verse}`.includes(refPart);
+  return bookHit && refHit;
+}
 
 export default function SearchScreen() {
   const { colors, sp, sh, rad } = useAppTheme();
@@ -242,15 +251,58 @@ export default function SearchScreen() {
   const router = useRouter();
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<SearchResult[]>([]);
-  const [isSearching, setIsSearching] = useState(false);
   const [showHistory, setShowHistory] = useState(true);
+  const [index, setIndex] = useState<SearchResult[]>([]);
+  const [searchHistory, setSearchHistory] = useState<string[]>(() => {
+    try {
+      const raw = localStorage.getItem(HISTORY_KEY);
+      const parsed = raw ? (JSON.parse(raw) as string[]) : [];
+      return Array.isArray(parsed) ? parsed.slice(0, 6) : [];
+    } catch {
+      return [];
+    }
+  });
 
-  const searchHistory = [
-    'Jean 3:16',
-    'Psaume 23',
-    'Genèse 1',
-    'Romains 8',
-  ];
+  // Real verse index for the user's active translation (built once).
+  useEffect(() => {
+    let cancelled = false;
+    const translationId = useSettingsStore.getState().bibleTranslation || 'lsg';
+    void loadTranslationBooks(translationId).then((booksData) => {
+      if (cancelled || !booksData) return;
+      const rows: SearchResult[] = [];
+      for (const book of booksData) {
+        for (const ch of book.chapters ?? []) {
+          for (const v of ch.verses ?? []) {
+            rows.push({
+              id: `${book.id}-${ch.number}-${v.number}`,
+              reference: `${book.name.fr} ${ch.number}:${v.number}`,
+              book: book.name.fr,
+              chapter: ch.number,
+              verse: v.number,
+              text: v.text,
+              relevance: 0,
+            });
+          }
+        }
+      }
+      setIndex(rows);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const recordHistory = (term: string) => {
+    setSearchHistory((prev) => {
+      const next = [term, ...prev.filter((p) => p !== term)].slice(0, 6);
+      try {
+        localStorage.setItem(HISTORY_KEY, JSON.stringify(next));
+      } catch {
+        // In-memory history only
+      }
+      return next;
+    });
+  };
 
   const handleSearch = (text: string) => {
     setQuery(text);
@@ -261,18 +313,19 @@ export default function SearchScreen() {
       return;
     }
 
-    setIsSearching(true);
-
-    // Simulate search
-    setTimeout(() => {
-      const filtered = SAMPLE_RESULTS.filter(r =>
-        r.reference.toLowerCase().includes(text.toLowerCase()) ||
-        r.text.toLowerCase().includes(text.toLowerCase()) ||
-        r.book.toLowerCase().includes(text.toLowerCase())
-      );
-      setResults(filtered);
-      setIsSearching(false);
-    }, 500);
+    const q = text.trim().toLowerCase();
+    const matches = index
+      .filter(
+        (r) =>
+          r.reference.toLowerCase().includes(q) ||
+          r.book.toLowerCase().includes(q) ||
+          r.text.toLowerCase().includes(q),
+      )
+      .map((r) => ({ ...r, relevance: r.reference.toLowerCase().startsWith(q) ? 100 : 60 }))
+      .sort((a, b) => b.relevance - a.relevance)
+      .slice(0, 25);
+    setResults(matches);
+    if (matches.length > 0) recordHistory(text.trim());
   };
 
   const handleResultPress = (result: SearchResult) => {
@@ -288,10 +341,12 @@ export default function SearchScreen() {
   const handleQuickSearch = (reference: string) => {
     setQuery(reference);
     setShowHistory(false);
-    const result = SAMPLE_RESULTS.find(r => r.reference === reference);
-    if (result) {
-      setResults([result]);
-    }
+    const matches = index
+      .filter((r) => quickMatch(r, reference.toLowerCase()))
+      .map((r) => ({ ...r, relevance: 100 }))
+      .slice(0, 25);
+    setResults(matches);
+    if (matches.length > 0) recordHistory(reference);
   };
 
   return (
@@ -363,12 +418,7 @@ export default function SearchScreen() {
       </View>
 
       {/* Results */}
-      {isSearching ? (
-        <View style={styles.loadingContainer}>
-          <IonIcon icon={search} size={40} color={colors.primary} />
-          <Text style={styles.loadingText}>Recherche en cours...</Text>
-        </View>
-      ) : results.length > 0 ? (
+      {results.length > 0 ? (
         <ScrollView style={styles.resultsContainer}>
           <Text style={styles.resultsTitle}>{results.length} résultat(s)</Text>
           {results.map((result) => (
@@ -407,4 +457,3 @@ export default function SearchScreen() {
     </SafeAreaView>
   );
 }
-
