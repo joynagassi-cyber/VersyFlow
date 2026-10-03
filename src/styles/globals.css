@@ -126,9 +126,14 @@
   /*
    * Image-based color theme — when the user picks an image theme from the
    * catalog (theme-catalog), ThemeManager sets `--theme-image` on <html>.
-   * The applied portrait illustration covers the app background; a soft
-   * scrim over it keeps the UI surface readable on either theme (pure
-   * white #FFFFFF or pure black #121212 base).
+   * The applied portrait illustration covers the app background.
+   *
+   * The treatment is a soft depth-of-field wash, NOT a raw photo:
+   *  - a large gaussian blur makes the illustration ambient (creative,
+   *    fluid, "in background") instead of a sharp sticker pasted on white
+   *  - a slight scale-up avoids the blurred edges revealing the base color
+   *  - the base (#FFFFFF light / #121212 dark) shows through at the edges,
+   *    so the illustration reads as color light rather than a rectangle
    */
   html {
     position: relative;
@@ -136,23 +141,27 @@
   html::before {
     content: '';
     position: fixed;
-    inset: 0;
+    inset: -4%;
     z-index: -1;
     background-image: var(--theme-image, none);
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
     opacity: 0;
-    transition: opacity 400ms ease;
+    transition: opacity 400ms ease, filter 400ms ease;
     pointer-events: none;
+    /* Depth-of-field treatment: strong blur so the illustration reads as
+       an ambient wash; scale-up hides the soft blurred edges. */
+    filter: blur(32px);
+    transform: scale(1.12);
   }
   html[data-theme-image='on']::before {
     opacity: 0.94;
   }
-  /* In dark mode the portrait (monochrome-on-white) is inverted so the
-     background reads as a dark illustration over #121212. */
+  /* In dark mode the illustration is inverted so it reads as a dark
+     landscape over #121212; the blur/scale is kept for consistency. */
   html[data-theme='dark'][data-theme-image='on']::before {
-    filter: invert(0.85) hue-rotate(180deg);
+    filter: blur(32px) invert(0.85) hue-rotate(180deg);
   }
 }
 

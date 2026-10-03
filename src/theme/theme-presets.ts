@@ -10,6 +10,8 @@ export type AccentKey =
   | (string & {});
 
 import { findThemeById as catalogFindThemeById, type ThemeCatalogEntry } from './theme-catalog';
+import { extractImageAccent } from './image-accent';
+import { useAppearanceStore } from '@/store/appearance-store';
 
 export function findThemeById(id: string | null | undefined): ThemeCatalogEntry | null {
   return catalogFindThemeById(id);
@@ -92,20 +94,20 @@ export function applyAccentPreset(key: string | null | undefined, isDark: boolea
   if (typeof document === 'undefined') return;
   const root = document.documentElement;
   // An image/color theme overrides all preset accent variables. Its accent
-  // color is the theme's core hex (from the catalog), and its background is
-  // the applied portrait illustration.
+  // color is extracted live from the illustration's own palette (not the
+  // static catalog hex), and its background is the applied portrait.
   if (colorThemeId) {
-    const hex = findThemeById(colorThemeId)?.color ?? '#d81b97';
-    const v = colorThemeValues(hex);
-    root.style.setProperty('--color-primary', v.primary);
-    root.style.setProperty('--color-primary-light', v.primaryLight);
-    root.style.setProperty('--color-primary-dark', v.primaryDark);
-    root.style.setProperty('--color-accent', v.accent);
-    root.style.setProperty('--color-accent-light', v.accentLight);
-    root.style.setProperty('--ion-color-primary', v.primary);
-    root.style.setProperty('--ion-color-secondary', v.accent);
-    root.style.setProperty('--theme-image', `url(${themeImagePath(colorThemeId)})`);
-    root.setAttribute('data-theme-image', 'on');
+    const theme = findThemeById(colorThemeId);
+    const fallback = theme ? colorThemeValues(theme.color) : colorThemeValues('#d81b97');
+    const src = themeImagePath(colorThemeId);
+    // Apply the fallback immediately (synchronous, zero-flash), then
+    // refine with the real extracted palette once the image is sampled.
+    setAccentVars(root, fallback, src, colorThemeId, isDark);
+    void extractImageAccent(colorThemeId, src, fallback).then((values) => {
+      // Guard: the theme may have changed while the sample was in flight.
+      if (useAppearanceStore.getState().colorThemeId !== colorThemeId) return;
+      setAccentVars(root, values, src, colorThemeId, isDark);
+    });
     return;
   }
   const v = isDark ? getAccentPreset(key).dark : getAccentPreset(key).light;
@@ -118,6 +120,29 @@ export function applyAccentPreset(key: string | null | undefined, isDark: boolea
   root.style.setProperty('--ion-color-secondary', v.accent);
   root.style.removeProperty('--theme-image');
   root.removeAttribute('data-theme-image');
+}
+
+function setAccentVars(
+  root: HTMLElement,
+  v: AccentValues,
+  src: string,
+  id: string,
+  isDark: boolean,
+): void {
+  root.style.setProperty('--color-primary', v.primary);
+  root.style.setProperty('--color-primary-light', v.primaryLight);
+  root.style.setProperty('--color-primary-dark', v.primaryDark);
+  root.style.setProperty('--color-accent', v.accent);
+  root.style.setProperty('--color-accent-light', v.accentLight);
+  root.style.setProperty('--ion-color-primary', v.primary);
+  root.style.setProperty('--ion-color-secondary', v.accent);
+  // The applied portrait gets a soft depth-of-field treatment: a large
+  // blur + slight scale so it reads as an ambient wash (creativity,
+  // not a raw photo), and the UI surface stays readable on top of it.
+  root.style.setProperty('--theme-image', `url(${src})`);
+  root.setAttribute('data-theme-image', 'on');
+  root.setAttribute('data-theme-image-mode', isDark ? 'dark' : 'light');
+  void id;
 }
 
 /**
