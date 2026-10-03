@@ -11,10 +11,13 @@ import { applyAccentPreset } from '@/theme/theme-presets';
  *  - Syncs `appearance-store.themeMode` into `useTheme` (drives `data-theme`).
  *  - Applies the accent preset (`--color-primary*` / `--color-accent` / Ionic)
  *    based on the chosen accent + the effective dark state.
+ *  - When the accent is an image-based color theme (theme-catalog), also sets
+ *    `--theme-image` so the full-screen portrait illustration is applied.
  */
 export function ThemeManager() {
   const themeMode = useAppearanceStore((s) => s.themeMode);
   const accent = useAppearanceStore((s) => s.accent);
+  const colorThemeId = useAppearanceStore((s) => s.colorThemeId);
   const theme = useTheme();
 
   // Follow a manual override; for 'system' the useTheme hook tracks the OS.
@@ -23,10 +26,11 @@ export function ThemeManager() {
     theme.setThemeMode(themeMode);
   }, [themeMode, theme]);
 
-  // Apply the accent color for the current effective dark state.
+  // Apply the accent color for the current effective dark state, and the
+  // image-based theme background (when an image theme is active).
   useEffect(() => {
-    applyAccentPreset(accent, theme.isDark);
-  }, [accent, theme.isDark, theme]);
+    applyAccentPreset(accent, theme.isDark, colorThemeId);
+  }, [accent, colorThemeId, theme.isDark, theme]);
 
   return null;
 }

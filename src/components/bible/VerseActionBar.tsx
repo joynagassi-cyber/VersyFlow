@@ -1,19 +1,35 @@
 /**
- * VerseActionBar — contextual action bar shown when a verse is selected.
+ * VerseActionBar — floating contextual bar shown when a verse is selected.
  *
- * Sticky bar with four actions on the selected verse:
- *   Mémoriser · Tag · Note · Comparer
- * The bar emits VERSE_SELECTED so other screens (semantic, AI coach…)
- * can react to the choice.
+ * Six actions on the selected verse:
+ *   Mémoriser · Copier · Note · Tag · Comparer · Surligner
+ *  - "Tag" marks the verse in the personal semantic tree (highlight-store
+ *    flag) and routes to `/semantic/verse?verseRef=…` where the concepts
+ *    for that verse are browsed/added.
+ *  - "Surligner" toggles a translucent light highlight of the verse in the
+ *    manuscript text (light + fluid on both #FFFFFF and #121212).
+ *  - "Copier" copies the verse text + reference to the clipboard.
+ * The bar emits VERSE_SELECTED so other screens can react to the choice.
  */
 
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { BrainCircuit, Check, PenLine, Tag, ArrowLeftRight } from 'lucide-react';
+import i18next from 'i18next';
+import {
+  BrainCircuit,
+  Check,
+  Copy,
+  Highlighter,
+  PenLine,
+  Tag,
+  ArrowLeftRight,
+} from 'lucide-react';
 import { BIBLE_BOOKS } from '@/domains/bible/entities';
 import { eventBus, DomainEventTypes } from '@/domains/events';
 import { getVerseNote, saveVerseNote } from '@/services/verse-note-service';
+import { getSemanticService } from '@/services/semantic-query-service';
+import { useHighlightStore } from '@/store/highlight-store';
 import { cn } from '@/lib/utils';
 
 interface VerseActionBarProps {
@@ -38,12 +54,12 @@ function ActionButton({
     <button
       onClick={onClick}
       className={cn(
-        'flex w-[72px] flex-col items-center gap-1 rounded-xl py-2 text-[11px] font-semibold transition active:scale-95',
+        'flex w-[64px] flex-col items-center gap-1 rounded-xl py-2 text-[11px] font-semibold transition active:scale-95',
         active ? 'bg-primary/10 text-primary' : 'text-text-secondary active:bg-surface-tint',
       )}
     >
       <Icon size={19} />
-      {label}
+      <span className="leading-tight">{label}</span>
     </button>
   );
 }
@@ -59,13 +75,22 @@ export default function VerseActionBar({
   const book = BIBLE_BOOKS.find((b) => b.id === bookId);
   const bookName = book?.name?.fr ?? bookId;
   const reference = `${bookName} ${chapter}:${verse}`;
+  const verseKey = `${bookId}:${chapter}:${verse}`;
+
+  const isHighlighted = useHighlightStore((s) => s.keys.includes(verseKey));
+  const toggleHighlight = useHighlightStore((s) => s.toggle);
 
   const [noteOpen, setNoteOpen] = useState(false);
   const [noteText, setNoteText] = useState('');
   const [noteSaved, setNoteSaved] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const [tagOpen, setTagOpen] = useState(false);
+  const [tagName, setTagName] = useState('');
+  const [tagSaving, setTagSaving] = useState(false);
+  const [tagSaved, setTagSaved] = useState(false);
+  const [tagged, setTagged] = useState(false);
   const noteLoadedFor = useRef<string>('');
 
-  // Announce the selection once the bar appears for this verse.
   useEffect(() => {
     eventBus.emit({
       id: crypto.randomUUID(),
@@ -80,14 +105,29 @@ export default function VerseActionBar({
     });
     setNoteOpen(false);
     setNoteSaved(false);
-  }, [bookId, chapter, verse]); // eslint-disable-line react-hooks/exhaustive-deps
+    setCopied(false);
+    setTagOpen(false);
+    setTagName('');
+    setTagSaved(false);
+    setTagged(false);
+  }, [bookId, chapter, verse, reference]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const copyToClipboard = async () => {
+    if (!verseText) return;
+    try {
+      await navigator.clipboard.writeText(`${verseText} — ${reference}`);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    } catch {
+      /* clipboard unavailable */
+    }
+  };
 
   const openNote = async () => {
     if (!noteOpen) {
-      const key = `${bookId}:${chapter}:${verse}`;
-      if (noteLoadedFor.current !== key) {
+      if (noteLoadedFor.current !== verseKey) {
         setNoteText(await getVerseNote(bookId, chapter, verse));
-        noteLoadedFor.current = key;
+        noteLoadedFor.current = verseKey;
       }
     }
     setNoteOpen(true);
@@ -99,17 +139,53 @@ export default function VerseActionBar({
     setTimeout(() => setNoteOpen(false), 350);
   };
 
+  const tagVerse = async () => {
+    if (tagName.trim().length === 0) {
+      // No name given: just mark the verse and route to its concept page
+      // (where the user can browse/attach existing concepts).
+      if (!isHighlighted) toggleHighlight(verseKey);
+      navigate(`/semantic/verse?verseRef=${encodeURIComponent(verseKey)}`);
+      return;
+    }
+    // Name given: insert the tag into the semantic tree immediately
+    // (reuses an existing concept of the same name, or creates it).
+    setTagSaving(true);
+    try {
+      await getSemanticService().saveVerseTag({
+        verseKey,
+        conceptId: crypto.randomUUID(),
+        canonicalName: tagName.trim(),
+        role: 'PRIMARY',
+        locale: i18next.language,
+        bridgeId: crypto.randomUUID(),
+      });
+      setTagSaved(true);
+      setTagged(true);
+      setTimeout(() => {
+        navigate(`/semantic/verse?verseRef=${encodeURIComponent(verseKey)}`);
+      }, 400);
+    } catch {
+      /* tag write failed — still route so the user sees the verse page */
+      navigate(`/semantic/verse?verseRef=${encodeURIComponent(verseKey)}`);
+    } finally {
+      setTagSaving(false);
+    }
+  };
+
+  const toggleHighlightAction = () => {
+    toggleHighlight(verseKey);
+  };
+
   return (
     <>
-      {/* Contextual action bar */}
-      <div className="sticky bottom-3 z-30 mx-auto w-fit max-w-full rounded-2xl border border-border bg-surface shadow-lg">
-        <div className="flex items-center justify-center gap-2 px-2 py-2">
-          <span className="max-w-[110px] truncate px-2 text-xs font-bold text-text-muted">
+      <div className="sticky bottom-3 z-30 mx-auto w-fit max-w-full rounded-2xl border border-border bg-surface/95 shadow-lg backdrop-blur-md">
+        <div className="flex items-center justify-center gap-1 px-2 py-2">
+          <span className="max-w-[96px] truncate px-2 text-xs font-bold text-text-muted">
             {reference}
           </span>
           <ActionButton
             icon={BrainCircuit}
-            label={t('bible.memorize', 'Mémoriser')}
+            label={t('settings.verseBar.memorize', 'Mémoriser')}
             onClick={() => {
               const params = new URLSearchParams();
               params.set('reference', reference);
@@ -118,32 +194,82 @@ export default function VerseActionBar({
             }}
           />
           <ActionButton
-            icon={Tag}
-            label={t('bible.tag', 'Taguer')}
-            onClick={() =>
-              navigate(
-                `/semantic/verse?verseRef=${bookId}:${chapter}:${verse}`,
-              )
-            }
+            icon={Copy}
+            label={copied ? t('settings.verseBar.copied', 'Copié') : t('settings.verseBar.copy', 'Copier')}
+            active={copied}
+            onClick={() => void copyToClipboard()}
           />
           <ActionButton
             icon={PenLine}
-            label={t('bible.note', 'Note')}
+            label={t('settings.verseBar.note', 'Note')}
             active={noteOpen || noteSaved}
             onClick={() => void openNote()}
           />
           <ActionButton
+            icon={Tag}
+            label={t('settings.verseBar.tag', 'Taguer')}
+            active={tagged || tagOpen}
+            onClick={() => setTagOpen((o) => !o)}
+          />
+          <ActionButton
             icon={ArrowLeftRight}
-            label={t('bible.compare', 'Comparer')}
+            label={t('settings.verseBar.compare', 'Comparer')}
             onClick={() =>
               navigate(
                 `/comparison/translation?bookId=${bookId}&chapter=${chapter}&verse=${verse}`,
               )
             }
           />
+          <ActionButton
+            icon={Highlighter}
+            label={t('settings.verseBar.highlight', 'Surligner')}
+            active={isHighlighted}
+            onClick={toggleHighlightAction}
+          />
         </div>
 
-        {/* Note editor */}
+        {tagOpen && (
+          <div className="border-t border-[color:var(--color-divider)] p-3">
+            <p className="mb-2 text-xs font-bold text-text-muted">
+              {t('settings.verseBar.tagTo', 'Taguer ce verset avec le concept')}
+            </p>
+            <input
+              autoFocus
+              type="text"
+              value={tagName}
+              onChange={(e) => {
+                setTagName(e.target.value);
+                setTagSaved(false);
+              }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') void tagVerse();
+              }}
+              placeholder={t('settings.verseBar.tagPlaceholder', 'ex. foi, pardon, Éternel…')}
+              className="w-full rounded-xl bg-surface-tint p-3 text-sm text-text-primary outline-none"
+            />
+            <div className="mt-2 flex items-center justify-between gap-2">
+              <p className="text-[11px] text-text-muted">
+                {t('settings.verseBar.tagHint', 'Ajouté immédiatement à votre arbre sémantique')}
+              </p>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setTagOpen(false)}
+                  className="rounded-full px-4 py-2 text-xs font-semibold text-text-muted active:bg-surface-tint"
+                >
+                  {t('common.cancel', 'Annuler')}
+                </button>
+                <button
+                  onClick={() => void tagVerse()}
+                  disabled={tagSaving}
+                  className="rounded-full bg-primary px-4 py-2 text-xs font-semibold text-white shadow-sm disabled:opacity-50"
+                >
+                  {tagSaving ? t('common.saving', 'Enregistrement…') : t('common.save', 'Enregistrer')}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
         {noteOpen && (
           <div className="border-t border-[color:var(--color-divider)] p-3">
             <div className="mb-2 flex items-center justify-between">

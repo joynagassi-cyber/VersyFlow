@@ -93,6 +93,9 @@ export function HamburgerMenu() {
             <button onClick={() => go('/settings/appearance')} className={itemClass}>
               {t('nav.theme', 'Theme et Apparence')}
             </button>
+            <button onClick={() => go('/settings/theme-picker')} className={itemClass}>
+              {t('nav.themeImage', "Thèmes d'image")}
+            </button>
             <button onClick={() => go('/settings')} className={itemClass}>
               {t('nav.settings', 'Reglages')}
             </button>

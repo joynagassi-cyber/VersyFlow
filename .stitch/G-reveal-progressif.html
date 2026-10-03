@@ -1,0 +1,446 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <title>G · Révélation progressive — croquis</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --surface: #fcf9f8;
+      --surface-tint: #f6efe9;
+      --border: #efe6e0;
+      --text-primary: #1c1a1a;
+      --text-secondary: #5a5350;
+      --text-muted: #9a8f8a;
+      --primary: #d81b97;
+      --success: #1f8a4c;
+      --warning: #c77d00;
+      --error: #c0392b;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--surface);
+      font-family: -apple-system, "Segoe UI", Roboto, sans-serif;
+      color: var(--text-primary);
+    }
+    .phone {
+      max-width: 420px;
+      margin: 0 auto;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: var(--surface);
+    }
+
+    /* ── Top bar ─────────────────────────────────────── */
+    .topbar {
+      position: sticky; top: 0; z-index: 30;
+      display: grid;
+      grid-template-columns: 44px 1fr 44px;
+      align-items: center;
+      padding: 12px 16px;
+      background: linear-gradient(to bottom, var(--surface) 0%, rgba(252,249,248,0.96) 85%, transparent 100%);
+      backdrop-filter: blur(8px);
+    }
+    .topbar .back, .topbar .compare {
+      width: 44px; height: 44px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--surface);
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+    }
+    .topbar .title {
+      text-align: center;
+      font-weight: 700;
+      font-size: 18px;
+    }
+    .topbar .subtitle {
+      display: flex; align-items: center; justify-content: center;
+      gap: 4px;
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+    .topbar .subtitle .translation {
+      display: inline-flex; align-items: center; gap: 3px;
+      background: var(--surface-tint);
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    /* ── Body ─────────────────────────────────────────── */
+    .body {
+      flex: 1;
+      padding: 16px 16px 120px;
+      display: flex; flex-direction: column; gap: 16px;
+    }
+
+    /* ── Mode label ──────────────────────────────────── */
+    .mode-label {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 2px 4px;
+    }
+    .mode-label .label {
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--text-muted);
+    }
+    .mode-label .progress {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 12px; font-weight: 600;
+      color: var(--text-secondary);
+    }
+    .mode-label .progress .dots {
+      display: flex; gap: 4px;
+    }
+    .mode-label .progress .dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--border);
+    }
+    .mode-label .progress .dot.done { background: var(--primary); }
+    .mode-label .progress .dot.current { background: var(--primary); width: 18px; border-radius: 3px; }
+
+    /* ── Reveal card (3D depth) ───────────────────────── */
+    .reveal-card {
+      position: relative;
+      border-radius: 20px;
+      background: var(--surface);
+      padding: 20px;
+      box-shadow:
+        0 1px 2px rgba(0,0,0,0.04),
+        0 8px 24px -6px rgba(0,0,0,0.06),
+        0 16px 40px -12px rgba(0,0,0,0.04);
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+    .reveal-card::before {
+      content: "";
+      position: absolute; inset: 0;
+      background: radial-gradient(circle at 50% 0%, rgba(216,27,151,0.08) 0%, transparent 55%);
+      pointer-events: none;
+    }
+    .reveal-card .case {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--surface-tint);
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 12px; font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 14px;
+    }
+
+    /* ── Blocks ────────────────────────────────────────── */
+    .blocks {
+      display: flex; flex-direction: column; gap: 8px;
+      min-height: 160px;
+    }
+    .block {
+      position: relative;
+      padding: 12px 14px;
+      border-radius: 12px;
+      font-family: "Source Serif 4", Georgia, serif;
+      font-size: 18px;
+      line-height: 28px;
+      text-align: justify;
+      transition: all 280ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .block.done {
+      background: var(--surface);
+      color: var(--text-primary);
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .block.done .check {
+      position: absolute; top: 8px; right: 10px;
+      width: 18px; height: 18px; border-radius: 50%;
+      background: var(--success);
+      color: white;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 700;
+      opacity: 0.9;
+    }
+    .block.current {
+      background: var(--surface-tint);
+      color: transparent;
+      cursor: pointer;
+      user-select: none;
+      -webkit-user-select: none;
+      box-shadow: inset 0 0 0 1px rgba(216,27,151,0.25);
+      animation: pulse 2.4s ease-in-out infinite;
+    }
+    .block.current .dots {
+      color: var(--primary);
+      letter-spacing: 2px;
+    }
+    .block.current .hint {
+      display: flex; align-items: center; gap: 6px;
+      color: var(--text-muted);
+      font-family: -apple-system, "Segoe UI", sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-top: 8px;
+    }
+    .block.locked {
+      background: transparent;
+      color: transparent;
+      border: 1px dashed var(--border);
+      opacity: 0.6;
+    }
+    .block.locked .dots { color: var(--border); }
+
+    @keyframes pulse {
+      0%, 100% { box-shadow: inset 0 0 0 1px rgba(216,27,151,0.25); }
+      50%      { box-shadow: inset 0 0 0 1px rgba(216,27,151,0.6), 0 0 0 4px rgba(216,27,151,0.06); }
+    }
+
+    /* ── Reveal action bar ─────────────────────────────── */
+    .reveal-actions {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 10px;
+      margin-top: 16px;
+    }
+    .reveal-actions .btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 10px 16px;
+      border-radius: 999px;
+      font-size: 13px; font-weight: 700;
+      border: none;
+      cursor: pointer;
+      transition: all 160ms;
+    }
+    .reveal-actions .btn.ghost {
+      background: transparent; color: var(--text-secondary);
+    }
+    .reveal-actions .btn.ghost:disabled { opacity: 0.35; cursor: not-allowed; }
+    .reveal-actions .btn.primary {
+      background: var(--primary); color: white;
+      box-shadow: 0 2px 8px rgba(216,27,151,0.35);
+    }
+    .reveal-actions .btn.primary:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(216,27,151,0.45); }
+    .reveal-actions .btn.primary:active { transform: translateY(0); }
+
+    /* ── Completion banner ────────────────────────────── */
+    .done-banner {
+      display: none;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #e9f9f0 0%, #d4f1e0 100%);
+      border: 1px solid rgba(31,138,76,0.2);
+      padding: 18px;
+    }
+    .done-banner .head {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 14px; font-weight: 700;
+      color: var(--success);
+    }
+    .done-banner .head .ic {
+      width: 30px; height: 30px; border-radius: 50%;
+      background: var(--success); color: white;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 12px rgba(31,138,76,0.35);
+    }
+    .done-banner .body {
+      font-size: 13px; color: var(--text-secondary);
+      margin-top: 8px; line-height: 1.55;
+    }
+    .done-banner .cta {
+      display: inline-flex; align-items: center; gap: 8px;
+      margin-top: 14px;
+      padding: 11px 18px;
+      border-radius: 999px;
+      background: var(--success); color: white;
+      font-size: 13px; font-weight: 700;
+      border: none; cursor: pointer;
+      box-shadow: 0 2px 8px rgba(31,138,76,0.35);
+      transition: all 160ms;
+    }
+    .done-banner .cta:hover { transform: translateY(-1px); }
+
+    /* ── Mode switcher (replié) ───────────────────────── */
+    .mode-switcher {
+      position: fixed; bottom: 16px; left: 0; right: 0;
+      display: flex; justify-content: center;
+      padding: 0 16px;
+      z-index: 20;
+      pointer-events: none;
+    }
+    .mode-switcher .pill {
+      pointer-events: auto;
+      display: inline-flex; align-items: center; gap: 10px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 4px 6px;
+      box-shadow:
+        0 1px 2px rgba(0,0,0,0.04),
+        0 12px 32px -8px rgba(0,0,0,0.18);
+      margin-bottom: 8px;
+    }
+    .mode-switcher .seg {
+      display: inline-flex; align-items: center; gap: 10px;
+    }
+    .mode-switcher .seg .icon {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: var(--surface-tint);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--text-muted);
+      font-size: 15px;
+    }
+    .mode-switcher .seg .label {
+      font-size: 13px; font-weight: 700;
+      color: var(--text-primary);
+    }
+    .mode-switcher .chevron {
+      width: 30px; height: 30px; border-radius: 50%;
+      background: var(--surface-tint);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+
+    /* ── Caption ───────────────────────────────────────── */
+    .caption {
+      text-align: center;
+      font-size: 11px; color: var(--text-muted);
+      padding: 8px 0 16px;
+      font-weight: 500;
+    }
+
+    /* ── Tab bar (for fidelity) ──────────────────────── */
+    .tabbar {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      display: grid; grid-template-columns: repeat(5, 1fr);
+      padding: 10px 0 14px;
+      z-index: 10;
+    }
+    .tabbar a {
+      display: flex; flex-direction: column; align-items: center; gap: 3px;
+      font-size: 10px; font-weight: 600;
+      color: var(--text-muted);
+      text-decoration: none;
+    }
+    .tabbar a.active { color: var(--text-primary); }
+    .tabbar a .tab-ic {
+      width: 22px; height: 22px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+  <div class="phone">
+    <!-- Top bar -->
+    <header class="topbar">
+      <button class="back" aria-label="Retour">←</button>
+      <div>
+        <div class="title">Jean 3:16</div>
+        <div class="subtitle">
+          <span class="translation">LSG ▾</span>
+          <span>·</span>
+          <span>À revoir</span>
+          <span>·</span>
+          <span>J+1</span>
+        </div>
+      </div>
+      <button class="compare" aria-label="Comparer">⇄</button>
+    </header>
+
+    <!-- Body -->
+    <main class="body">
+      <!-- Mode label -->
+      <div class="mode-label">
+        <span class="label">Mode révéler · par défaut</span>
+        <div class="progress">
+          <div class="dots">
+            <span class="dot done"></span>
+            <span class="dot done"></span>
+            <span class="dot current"></span>
+            <span class="dot"></span>
+          </div>
+          <span>Bloc 3 / 4</span>
+        </div>
+      </div>
+
+      <!-- Reveal card -->
+      <section class="reveal-card">
+        <span class="case">📖 &nbsp;Jean 3:16</span>
+
+        <div class="blocks">
+          <div class="block done">
+            <span>Car Dieu a tant aimé le monde</span>
+            <span class="check">✓</span>
+          </div>
+          <div class="block done">
+            <span>qu'il a donné son Fils unique,</span>
+            <span class="check">✓</span>
+          </div>
+          <div class="block current" title="Touchez pour révéler">
+            <span class="dots">██████████████████</span>
+            <span class="hint">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+              Toucher pour révéler
+            </span>
+          </div>
+          <div class="block locked">
+            <span class="dots">██████████████</span>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="reveal-actions">
+          <button class="btn ghost">← Précédent</button>
+          <button class="btn primary">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M8 5v14l11-7z"/></svg>
+            Révéler le bloc
+          </button>
+        </div>
+      </section>
+
+      <!-- Completion banner (hidden by default, shown when last block revealed) -->
+      <section class="done-banner" style="display:block">
+        <div class="head">
+          <span class="ic">✓</span>
+          <span>Verset révélé</span>
+        </div>
+        <div class="body">
+          Le mode suivant est recommandé pour consolider la mémoire :
+          <strong>Écriture (D)</strong>. Continuez pour ancrer ce verset durablement.
+        </div>
+        <button class="cta">
+          Passer au mode suivant
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+        </button>
+      </section>
+    </main>
+
+    <!-- Mode switcher (collapsed: 1 button + chevron) -->
+    <div class="mode-switcher">
+      <div class="pill">
+        <div class="seg">
+          <span class="icon">👁</span>
+          <span class="label">Révéler</span>
+        </div>
+        <span class="chevron">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+        </span>
+      </div>
+    </div>
+
+    <!-- Tab bar -->
+    <nav class="tabbar">
+      <a><span class="tab-ic">⌂</span>Accueil</a>
+      <a><span class="tab-ic">📖</span>Bible</a>
+      <a class="active"><span class="tab-ic">✦</span>Mémoriser</a>
+      <a><span class="tab-ic">↗</span>Progress</a>
+      <a><span class="tab-ic">☺</span>Profil</a>
+    </nav>
+  </div>
+</body>
+</html>

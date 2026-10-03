@@ -1,8 +1,10 @@
 import { useTranslation } from 'react-i18next';
-import { Check, Sun, Moon, Monitor } from 'lucide-react';
+import { Check, Sun, Moon, Monitor, Palette } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { useAppearanceStore } from '@/store/appearance-store';
 import { ACCENT_PRESETS } from '@/theme/theme-presets';
+import { THEME_CATEGORIES } from '@/theme/theme-catalog';
 import { cn } from '@/lib/utils';
 
 type ThemeMode = 'light' | 'dark' | 'system';
@@ -32,14 +34,16 @@ function Toggle({ on, onChange }: { on: boolean; onChange: () => void }) {
 
 export default function AppearanceScreen() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const {
     themeMode,
     accent,
+    colorThemeId,
     fontSize,
     showVerseNumbers,
     focusMode,
     setThemeMode,
-    setAccent,
+    setColorTheme,
     setFontSize,
     toggleVerseNumbers,
     setFocusMode,
@@ -50,6 +54,8 @@ export default function AppearanceScreen() {
     { value: 'dark', label: t('settings.themeDark', 'Sombre'), Icon: Moon },
     { value: 'system', label: t('settings.themeSystem', 'Systeme'), Icon: Monitor },
   ];
+
+  const totalThemes = THEME_CATEGORIES.reduce((n, c) => n + c.themes.length, 0);
 
   return (
     <FullScreenPage title={t('settings.theme', 'Theme')}>
@@ -88,11 +94,12 @@ export default function AppearanceScreen() {
         <Section title={t('settings.accentColor', 'Couleur d\'accent')}>
           <div className="grid grid-cols-4 gap-3">
             {ACCENT_PRESETS.map((p) => {
-              const active = accent === p.key;
+              const active = accent === p.key && colorThemeId == null;
               return (
                 <button
                   key={p.key}
-                  onClick={() => setAccent(p.key)}
+                  onClick={() => setColorTheme(null)}
+                  aria-pressed={active}
                   className="flex flex-col items-center gap-1.5"
                 >
                   <span
@@ -109,6 +116,36 @@ export default function AppearanceScreen() {
               );
             })}
           </div>
+
+          {/* Image-based color themes (100 flat-2D monochrome illustrations) */}
+          <button
+            type="button"
+            onClick={() => navigate('/settings/theme-picker')}
+            className={cn(
+              'mt-3 flex w-full items-center gap-3 rounded-xl p-3 text-left transition',
+              colorThemeId != null
+                ? 'bg-primary/10 ring-1 ring-primary/30'
+                : 'bg-surface-tint/50 active:bg-surface-tint',
+            )}
+          >
+            <span
+              className={cn(
+                'flex h-10 w-10 shrink-0 items-center justify-center rounded-full',
+                colorThemeId != null ? 'bg-primary text-white' : 'bg-surface-tint text-primary',
+              )}
+            >
+              <Palette size={18} />
+            </span>
+            <span className="min-w-0 flex-1">
+              <span className="block text-sm font-semibold text-text-primary">
+                {t('settings.themeImage', "Thèmes d'image")}
+              </span>
+              <span className="block text-xs text-text-muted">
+                {totalThemes} {t('settings.themeImagesCount', 'illustrations 2D monochromes par catégorie')}
+              </span>
+            </span>
+            <span className="text-xs font-bold text-primary">›</span>
+          </button>
         </Section>
 
         <Section title={t('settings.fontSize', 'Taille du texte')}>

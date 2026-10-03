@@ -45,6 +45,9 @@ export type {
   ICommunityRepository,
   IVerseRelationRepository,
   ConceptSearchHit,
+  IConceptTagRepository,
+  ConceptTagInput,
+  TagWriteResult,
 } from './repositories';
 
 // Query service (pure)

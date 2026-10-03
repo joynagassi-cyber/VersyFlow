@@ -94,6 +94,57 @@ export interface ICommunityRepository {
 }
 
 // ====================
+// Tag write port (user "Taguer" action)
+// ====================
+
+/**
+ * Input for {@link IConceptTagRepository.insertTag}: one user-contributed
+ * concept-verse bridge row.
+ */
+export interface ConceptTagInput {
+  /** UUID (client-generated via crypto.randomUUID()). */
+  id: string;
+  /** Canonical verse key `bookId:ch:verse`. */
+  verse_id: string;
+  /** Canonical display name of the concept. */
+  concept_id: string;
+  canonical_name: string;
+  /** Optional BCP-47 locale for a localized label (usually the UI language). */
+  locale?: string;
+  /** Bridge role (default 'PRIMARY'). */
+  role?: 'PRIMARY' | 'SECONDARY' | 'CONTRAST' | 'RELATED';
+  /** Bridge row UUID (generated when absent). */
+  bridgeId?: string;
+}
+
+/**
+ * A single user tag to be written: upserts the concept row (new concepts
+ * are created with `source = 'manual'`, `created_by = 'user'`) and
+ * attaches the verse bridge.
+ */
+export interface TagWriteResult {
+  concept: Concept;
+  /** True when the concept row was created (not merely reused). */
+  created: boolean;
+}
+
+/**
+ * Write-side port for the "Tag" action on the verse bar. Mirrors the
+ * read ports: pure interface, implemented by the SQLite adapter.
+ */
+export interface IConceptTagRepository {
+  /**
+   * Ensure the concept exists (by `concept_id` first, then by
+   * `canonical_name`), insert the `verse_concepts` bridge row if new,
+   * and return the concept actually linked.
+   *
+   * @param tag the tag payload (UUID, verse key, concept name).
+   * @returns the linked concept + whether it was newly created.
+   */
+  insertTag(tag: ConceptTagInput): Promise<TagWriteResult>;
+}
+
+// ====================
 // Verse-relation repository
 // ====================
 

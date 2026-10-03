@@ -6,7 +6,14 @@ export type AccentKey =
   | 'blue'
   | 'emerald'
   | 'amber'
-  | 'ink';
+  | 'ink'
+  | (string & {});
+
+import { findThemeById as catalogFindThemeById, type ThemeCatalogEntry } from './theme-catalog';
+
+export function findThemeById(id: string | null | undefined): ThemeCatalogEntry | null {
+  return catalogFindThemeById(id);
+}
 
 export interface AccentValues {
   primary: string;
@@ -66,10 +73,42 @@ export function getAccentPreset(key?: string | null): AccentPreset {
   return ACCENT_PRESETS.find((p) => p.key === key) ?? ACCENT_PRESETS[0];
 }
 
-export function applyAccentPreset(key: string | null | undefined, isDark: boolean): void {
+/**
+ * Build an AccentValues set for a color-based image theme (public/themes/…).
+ * The light variant uses the raw hex; the dark variant uses a lightened
+ * variant for contrast on #121212.
+ */
+export function colorThemeValues(hex: string): AccentValues {
+  return {
+    primary: hex,
+    primaryLight: hex,
+    primaryDark: hex,
+    accent: hex,
+    accentLight: hex,
+  };
+}
+
+export function applyAccentPreset(key: string | null | undefined, isDark: boolean, colorThemeId?: string | null): void {
   if (typeof document === 'undefined') return;
-  const v = isDark ? getAccentPreset(key).dark : getAccentPreset(key).light;
   const root = document.documentElement;
+  // An image/color theme overrides all preset accent variables. Its accent
+  // color is the theme's core hex (from the catalog), and its background is
+  // the applied portrait illustration.
+  if (colorThemeId) {
+    const hex = findThemeById(colorThemeId)?.color ?? '#d81b97';
+    const v = colorThemeValues(hex);
+    root.style.setProperty('--color-primary', v.primary);
+    root.style.setProperty('--color-primary-light', v.primaryLight);
+    root.style.setProperty('--color-primary-dark', v.primaryDark);
+    root.style.setProperty('--color-accent', v.accent);
+    root.style.setProperty('--color-accent-light', v.accentLight);
+    root.style.setProperty('--ion-color-primary', v.primary);
+    root.style.setProperty('--ion-color-secondary', v.accent);
+    root.style.setProperty('--theme-image', `url(${themeImagePath(colorThemeId)})`);
+    root.setAttribute('data-theme-image', 'on');
+    return;
+  }
+  const v = isDark ? getAccentPreset(key).dark : getAccentPreset(key).light;
   root.style.setProperty('--color-primary', v.primary);
   root.style.setProperty('--color-primary-light', v.primaryLight);
   root.style.setProperty('--color-primary-dark', v.primaryDark);
@@ -77,6 +116,19 @@ export function applyAccentPreset(key: string | null | undefined, isDark: boolea
   root.style.setProperty('--color-accent-light', v.accentLight);
   root.style.setProperty('--ion-color-primary', v.primary);
   root.style.setProperty('--ion-color-secondary', v.accent);
+  root.style.removeProperty('--theme-image');
+  root.removeAttribute('data-theme-image');
+}
+
+/**
+ * Resolve the portrait image path for an image-based color theme.
+ * `id` = theme id from the catalog, e.g. "esprit-pentecote".
+ * The category is the first two id segments; the file lives at
+ * public/themes/{category}/{id}-portrait.png.
+ */
+export function themeImagePath(id: string): string {
+  const category = id.split('-').slice(0, 2).join('-');
+  return `/themes/${category}/${id}-portrait.png`;
 }
 
 export function clearAccentPreset(): void {

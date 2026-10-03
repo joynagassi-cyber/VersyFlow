@@ -9,7 +9,8 @@
  * See: docs/12-internationalization.md
  */
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
+import i18next from 'i18next';
 import { I18nService, SUPPORTED_LANGUAGES } from '@/services/i18n-service';
 
 /**
@@ -52,14 +53,26 @@ export type I18nHook = {
 export function useI18n(): I18nHook {
   const i18n = I18nService.getInstance();
 
-  // État local pour le component — en pratique, le service est un singleton
+  // État local pour le component — en pratique, le service est un singleton.
+  // S'abonner à `languageChanged` garantit que la valeur locale suit les
+  // changements exogènes (détection i18next au boot, changement de langue
+  // par un autre composant via i18next.changeLanguage), pas seulement les
+  // appels locaux à setLanguage.
   const [localLanguage, setLocalLanguage] = useState<string>(i18n.getLanguage());
+
+  useEffect(() => {
+    const handler = () => setLocalLanguage(i18n.getLanguage());
+    i18next.on('languageChanged', handler);
+    return () => {
+      i18next.off('languageChanged', handler);
+    };
+  }, [i18n]);
 
   // Mettre à jour la langue dans le service et l'état local
   const setLanguage = useCallback((language: string) => {
     i18n.setLanguage(language);
     setLocalLanguage(language);
-  }, []);
+  }, [i18n]);
 
   // Traduire une clé
   const t = useCallback((key: string, params?: Record<string, unknown>) => {

@@ -17,6 +17,10 @@ export type ThemeMode = 'light' | 'dark' | 'system';
 export interface AppearanceState {
   themeMode: ThemeMode;
   accent: AccentKey;
+  /** Image-based color theme id (from theme-catalog) — null when a plain
+   *  accent preset is active. The portrait illustration is applied as the
+   *  app background; the accent color is the theme's core hex. */
+  colorThemeId: string | null;
   fontSize: number;
   showVerseNumbers: boolean;
   reminderFrequency: number;
@@ -27,6 +31,7 @@ export interface AppearanceState {
 
   setThemeMode: (mode: ThemeMode) => void;
   setAccent: (key: AccentKey) => void;
+  setColorTheme: (id: string | null) => void;
   setFontSize: (size: number) => void;
   toggleVerseNumbers: () => void;
   setReminderFrequency: (count: number) => void;
@@ -41,6 +46,7 @@ const DEFAULTS: Pick<
   AppearanceState,
   | 'themeMode'
   | 'accent'
+  | 'colorThemeId'
   | 'fontSize'
   | 'showVerseNumbers'
   | 'reminderFrequency'
@@ -51,6 +57,7 @@ const DEFAULTS: Pick<
 > = {
   themeMode: 'system',
   accent: DEFAULT_ACCENT,
+  colorThemeId: null,
   fontSize: 16,
   showVerseNumbers: true,
   reminderFrequency: 1,
@@ -69,7 +76,12 @@ export const useAppearanceStore = create<AppearanceState>(() => ({
   },
 
   setAccent(key: AccentKey) {
-    useAppearanceStore.setState({ accent: key });
+    useAppearanceStore.setState({ accent: key, colorThemeId: null });
+    void appearanceStorePersist.save();
+  },
+
+  setColorTheme(id: string | null) {
+    useAppearanceStore.setState({ colorThemeId: id, accent: id ?? DEFAULT_ACCENT });
     void appearanceStorePersist.save();
   },
 
@@ -121,6 +133,7 @@ export const useAppearanceStore = create<AppearanceState>(() => ({
 const PERSISTED_KEYS: (keyof AppearanceState)[] = [
   'themeMode',
   'accent',
+  'colorThemeId',
   'fontSize',
   'showVerseNumbers',
   'reminderFrequency',
@@ -153,6 +166,7 @@ export const appearanceStorePersist = {
     const value = JSON.stringify({
       themeMode: s.themeMode,
       accent: s.accent,
+      colorThemeId: s.colorThemeId,
       fontSize: s.fontSize,
       showVerseNumbers: s.showVerseNumbers,
       reminderFrequency: s.reminderFrequency,

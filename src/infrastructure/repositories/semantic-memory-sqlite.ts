@@ -39,8 +39,12 @@ import type {
   IConceptRepository,
   ICommunityRepository,
   IVerseRelationRepository,
+  IConceptTagRepository,
   ConceptSearchHit,
+  ConceptTagInput,
+  TagWriteResult,
 } from '@/domains/semantic-memory/repositories';
+import type { Concept } from '@/domains/semantic-memory/entities';
 
 // ------------------------------------------------------------------
 // Row shapes (snake_case, as stored in SQLite)
@@ -392,6 +396,117 @@ export class SemanticVerseRelationRepository
 }
 
 // ------------------------------------------------------------------
+// IConceptTagRepository (write port for the "Taguer" verse action)
+// ------------------------------------------------------------------
+
+/** Deterministic URL-safe slug of a canonical name (entity convention). */
+function slugify(name: string): string {
+  return (
+    name
+      .toLowerCase()
+      .normalize('NFD')
+      // Strip combining diacritical marks (U+0300..U+036F).
+      .replace(/[̀-ͯ]/g, '')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '')
+      .slice(0, 64) || 'concept'
+  );
+}
+
+export class SemanticConceptTagRepository implements IConceptTagRepository {
+  async insertTag(tag: ConceptTagInput): Promise<TagWriteResult> {
+    const db = await resolveDb();
+    const name = tag.canonical_name.trim();
+    if (name.length === 0) throw new Error('canonical_name is required');
+
+    // (1) Resolve the concept: by id, else by canonical name (case-insens.).
+    let concept = await this.fetchConcept(db, tag.concept_id);
+    let created = false;
+    if (!concept) {
+      concept = (
+        await db.getAll<ConceptRow>(
+          `SELECT * FROM concepts
+            WHERE lower(canonical_name) = ?
+            ORDER BY confidence DESC LIMIT 1`,
+          [name.toLowerCase()],
+        )
+      ).map(mapConcept)[0] ?? null;
+    }
+    if (!concept) {
+      // New user concept — a full valid domain row (Zod-parseable shape).
+      const now = new Date().toISOString();
+      concept = {
+        id: tag.concept_id,
+        canonical_name: name,
+        slug: slugify(name),
+        labels_by_language: tag.locale ? { [tag.locale]: name } : {},
+        source_provenance: [{ source: 'user', url: `tag:${tag.verse_id}` }],
+        confidence: 1,
+        status: 'active',
+        kind: 'TOPIC',
+        source: 'manual',
+        created_by: 'user',
+        created_at: now,
+        updated_at: now,
+      };
+      const labels = JSON.stringify(concept.labels_by_language ?? {});
+      const provenance = JSON.stringify(concept.source_provenance ?? []);
+      await db.database.execute(
+        `INSERT INTO concepts
+            (id, labels_by_language, canonical_name, slug, description,
+             source_provenance, confidence, status, kind, source,
+             created_by, created_at, updated_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+         ON CONFLICT(id) DO NOTHING`,
+        [
+          concept.id,
+          labels,
+          concept.canonical_name,
+          concept.slug,
+          concept.description ?? null,
+          provenance,
+          concept.confidence,
+          concept.status,
+          concept.kind ?? null,
+          concept.source ?? null,
+          concept.created_by ?? null,
+          concept.created_at ?? null,
+          concept.updated_at ?? null,
+        ],
+      );
+      created = true;
+    }
+
+    // (2) Attach the verse bridge (idempotent on the natural key).
+    const bridgeId = tag.bridgeId ?? crypto.randomUUID();
+    const role = tag.role ?? 'PRIMARY';
+    const now = new Date().toISOString();
+    await db.database.execute(
+      `INSERT INTO verse_concepts
+          (id, verse_id, concept_id, role, confidence, source, created_at)
+       VALUES (?, ?, ?, ?, 1.0, 'user', ?)
+       ON CONFLICT(verse_id, concept_id, role) DO NOTHING`,
+      [bridgeId, tag.verse_id, concept.id, role, now],
+    );
+
+    return { concept, created };
+  }
+
+  private async fetchConcept(
+    db: CommonPowerSyncDatabase,
+    id: string,
+  ): Promise<Concept | null> {
+    const rows = await db.getAll<ConceptRow>('SELECT * FROM concepts WHERE id = ?', [id]);
+    if (rows.length === 0) return null;
+    try {
+      return mapConcept(rows[0]);
+    } catch {
+      return null; // malformed legacy row — fall through to name lookup
+    }
+  }
+}
+
+// ------------------------------------------------------------------
 // Composition convenience
 // ------------------------------------------------------------------
 
@@ -404,10 +519,12 @@ export function createSemanticMemoryRepositories(): {
   conceptRepository: IConceptRepository;
   communityRepository: ICommunityRepository;
   verseRelationRepository: IVerseRelationRepository;
+  tagRepository: IConceptTagRepository;
 } {
   return {
     conceptRepository: new SemanticConceptRepository(),
     communityRepository: new SemanticCommunityRepository(),
     verseRelationRepository: new SemanticVerseRelationRepository(),
+    tagRepository: new SemanticConceptTagRepository(),
   };
 }

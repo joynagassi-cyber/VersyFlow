@@ -15,6 +15,7 @@ import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils';
 import type { BibleVerseData } from '@/domains/bible/repository-local';
 import type { ChapterSemanticTags } from '@/hooks/useSemanticTags';
+import { useHighlightStore } from '@/store/highlight-store';
 import VerseSemanticTags from '@/components/semantic/VerseSemanticTags';
 
 interface ManuscriptViewProps {
@@ -55,6 +56,8 @@ export function ManuscriptView({
 
   const selectedConcepts = selectedVerse != null ? tagsByVerse.get(selectedVerse) ?? [] : [];
 
+  const highlightKeys = useHighlightStore((s) => s.keys);
+
   return (
     <div className="mx-auto w-full">
       {/* Continuous manuscript text */}
@@ -71,12 +74,14 @@ export function ManuscriptView({
         <p className="verse-flow mt-6 text-text-primary">
           {verses.map((verse, i) => {
             const isSelected = selectedVerse === verse.number;
+            const isHighlighted = highlightKeys.includes(`${bookId}:${chapter}:${verse.number}`);
             return (
               <span
                 key={verse.number}
                 className={cn(
                   'manuscript-verse',
                   isSelected && 'is-selected',
+                  isHighlighted && 'is-highlighted',
                   i > 0 && 'ml-2',
                 )}
                 onClick={() => onSelectVerse(verse.number)}

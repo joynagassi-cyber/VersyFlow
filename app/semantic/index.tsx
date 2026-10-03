@@ -15,11 +15,13 @@ import {
   BrainCircuit,
   Map,
   ChevronRight,
+  User,
 } from 'lucide-react';
 import FullScreenPage from '@/components/layout/FullScreenPage';
-import { useSemanticIndex } from '@/hooks/useSemanticViews';
+import { useSemanticIndex, useMyConcepts } from '@/hooks/useSemanticViews';
 import type { Community } from '@/domains/semantic-memory';
 import type { ConceptWithVerses } from '@/services/semantic-query-service';
+import { formatVerseKey } from '@/hooks/useSemanticTags';
 
 function displayLabel(
   concept: ConceptWithVerses['concept'],
@@ -36,6 +38,7 @@ export default function SemanticIndex() {
   const lang = i18n.language ?? 'fr';
 
   const { data, loading } = useSemanticIndex();
+  const { entries: myConcepts } = useMyConcepts();
 
   const communities = data?.communities ?? [];
   const featuredConcepts = data?.featuredConcepts ?? [];
@@ -47,6 +50,46 @@ export default function SemanticIndex() {
           <p className="text-sm text-text-muted">{t('common.loading', 'Chargement...')}</p>
         ) : (
           <>
+            {/* User's personal semantic tree */}
+            <section className="mb-6">
+              <h2 className="mb-3 flex items-center gap-2 px-1 text-lg font-semibold text-text-primary">
+                <User size={18} className="text-primary" />
+                {t('semantic.myConcepts', 'Mes concepts')}
+              </h2>
+              {myConcepts.length === 0 ? (
+                <p className="px-1 text-sm text-text-muted">
+                  {t('semantic.myConceptsEmpty', 'Aucun concept tagué pour l’instant. Utilisez l’action « Taguer » sur un verset pour créer le vôtre.')}
+                </p>
+              ) : (
+                <div className="flex flex-col gap-2">
+                  {myConcepts.map((item) => (
+                    <button
+                      key={item.concept.id}
+                      onClick={() =>
+                        navigate(`/semantic/concept?conceptId=${encodeURIComponent(item.concept.id)}`)
+                      }
+                      className="flex items-center justify-between rounded-xl bg-surface p-4 text-left shadow-sm transition-transform active:scale-[0.99]"
+                    >
+                      <div className="min-w-0">
+                        <p className="truncate text-base font-semibold text-text-primary">
+                          {item.label}
+                        </p>
+                        {item.verseKeys.length > 0 ? (
+                          <p className="truncate text-xs text-text-muted">
+                            {item.verseKeys.slice(0, 3).map(formatVerseKey).join(' · ')}
+                            {item.verseKeys.length > 3
+                              ? ` +${item.verseKeys.length - 3}`
+                              : ''}
+                          </p>
+                        ) : null}
+                      </div>
+                      <ChevronRight size={18} className="shrink-0 text-primary" />
+                    </button>
+                  ))}
+                </div>
+              )}
+            </section>
+
             {/* Active concepts */}
             <section className="mb-6">
               <h2 className="mb-3 flex items-center gap-2 px-1 text-lg font-semibold text-text-primary">

@@ -12,6 +12,7 @@ import type {
   CommunityViewData,
   ConceptViewData,
   ConceptWithVerses,
+  MyConceptEntry,
 } from '@/services/semantic-query-service';
 import { getSemanticService } from '@/services/semantic-query-service';
 
@@ -189,4 +190,52 @@ export function useSemanticIndex(): {
   }, []);
 
   return { data, loading };
+}
+
+// ------------------------------------------------------------------
+// User's personal semantic tree (concepts created via "Taguer")
+// ------------------------------------------------------------------
+
+export { MyConceptEntry } from '@/services/semantic-query-service';
+
+export function useMyConcepts(limit = 40): {
+  entries: MyConceptEntry[];
+  loading: boolean;
+  /** Bump to re-fetch (e.g. after a tag is saved). */
+  refreshKey: number;
+  refresh: () => void;
+} {
+  const [entries, setEntries] = useState<MyConceptEntry[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [refreshKey, setRefreshKey] = useState(0);
+  const reqRef = useRef(0);
+
+  useEffect(() => {
+    const req = ++reqRef.current;
+    setLoading(true);
+    getSemanticService()
+      .myConcepts(limit)
+      .then((result) => {
+        if (req !== reqRef.current) return;
+        setEntries(result as MyConceptEntry[]);
+      })
+      .catch(() => {
+        if (req !== reqRef.current) return;
+        setEntries([]);
+      })
+      .finally(() => {
+        if (req === reqRef.current) setLoading(false);
+      });
+
+    return () => {
+      reqRef.current++;
+    };
+  }, [limit, refreshKey]);
+
+  return {
+    entries,
+    loading,
+    refreshKey,
+    refresh: () => setRefreshKey((k) => k + 1),
+  };
 }

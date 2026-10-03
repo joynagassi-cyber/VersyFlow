@@ -14,22 +14,22 @@
   --color-accent: #ff2d55;
   --color-accent-light: #ff7a93;
 
-  /* Backgrounds (neutral cream — accent stays in --color-*) */
-  --color-background: #faf6ee;
+  /* Backgrounds (neutral white — accent stays in --color-*) */
+  --color-background: #FFFFFF;
   --color-surface: #ffffff;
-  --color-surface-tint: #f2ecdf;
+  --color-surface-tint: #f5f5f7;
   --color-surface-elevated: #ffffff;
 
   /* Borders & Dividers */
-  --color-border: #e8e1d2;
-  --color-divider: #efe9dd;
+  --color-border: #e5e5ea;
+  --color-divider: #f0f0f2;
 
   /* Text */
-  --color-text-primary: #241019;
-  --color-text-secondary: #5a3a48;
-  --color-text-tertiary: #6e5a63;
-  --color-text-muted: #a99ca3;
-  --color-text-placeholder: #c7bcc2;
+  --color-text-primary: #1c1c1e;
+  --color-text-secondary: #48484c;
+  --color-text-tertiary: #6e6e73;
+  --color-text-muted: #98989e;
+  --color-text-placeholder: #c7c7cc;
 
   /* Semantic */
   --color-success: #00a86b;
@@ -122,6 +122,38 @@
   #root {
     height: 100%;
   }
+
+  /*
+   * Image-based color theme — when the user picks an image theme from the
+   * catalog (theme-catalog), ThemeManager sets `--theme-image` on <html>.
+   * The applied portrait illustration covers the app background; a soft
+   * scrim over it keeps the UI surface readable on either theme (pure
+   * white #FFFFFF or pure black #121212 base).
+   */
+  html {
+    position: relative;
+  }
+  html::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background-image: var(--theme-image, none);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0;
+    transition: opacity 400ms ease;
+    pointer-events: none;
+  }
+  html[data-theme-image='on']::before {
+    opacity: 0.94;
+  }
+  /* In dark mode the portrait (monochrome-on-white) is inverted so the
+     background reads as a dark illustration over #121212. */
+  html[data-theme='dark'][data-theme-image='on']::before {
+    filter: invert(0.85) hue-rotate(180deg);
+  }
 }
 
 /* Brand utility layer */
@@ -158,6 +190,26 @@
 
   .manuscript-verse.is-selected {
     background-color: color-mix(in srgb, var(--color-primary) 8%, transparent);
+  }
+
+  /* User highlight (light, fluid, translucent) — readable on #FFFFFF and
+     #121212. A translucent tint of the accent color with a soft glow. */
+  .manuscript-verse.is-highlighted {
+    background: linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--color-primary) 14%, transparent),
+      color-mix(in srgb, var(--color-primary) 22%, transparent)
+    );
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-primary) 18%, transparent) inset;
+    border-radius: 10px;
+  }
+
+  .manuscript-verse.is-highlighted.is-selected {
+    background: linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--color-primary) 20%, transparent),
+      color-mix(in srgb, var(--color-primary) 28%, transparent)
+    );
   }
 
   .verse-flow-number {
@@ -761,28 +813,29 @@ ion-page,
   overflow: hidden;
 }
 
-/* Invisible scrollbars everywhere — scrolling still works. */
+/* Slim, theme-aware scrollbars — visible but quiet (mobile + desktop). */
 * {
-  scrollbar-width: none;
-  -ms-overflow-style: none;
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--color-text-muted) 35%, transparent) transparent;
+  -ms-overflow-style: auto;
 }
 *::-webkit-scrollbar {
-  width: 0;
-  height: 0;
-  display: none;
+  width: 6px;
+  height: 6px;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+*::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--color-text-muted) 30%, transparent);
+  border-radius: 3px;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in srgb, var(--color-text-muted) 50%, transparent);
 }
 
-/* Also hide Ionic's own scroll containers (they run their own inner scrollers). */
-ion-content,
-ion-content *,
-ion-scroll,
-ion-scroll *,
-.inner-scroll,
-.inner-scroll-holder,
-.scroll-bar {
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
+/* Hide scrollbars on the Ionic native scroller internals only — their
+   outer page scroll keeps the slim web scrollbar above. */
 ion-content::-webkit-scrollbar,
 ion-scroll::-webkit-scrollbar,
 .inner-scroll::-webkit-scrollbar,
@@ -792,12 +845,19 @@ ion-scroll::-webkit-scrollbar,
   height: 0;
   display: none;
 }
+ion-content,
+ion-scroll,
+.inner-scroll,
+.inner-scroll-holder,
+.scroll-bar {
+  scrollbar-width: none;
+}
 
 /* Map a few Ionic tokens to the VersyFlow theme so bare components look right */
 :root,
 :root[data-theme='light'] {
   --ion-background-color: var(--color-background);
-  --ion-background-color-rgb: 250, 246, 238;
+  --ion-background-color-rgb: 255, 255, 255;
   --ion-text-color: var(--color-text-primary);
 }
 [data-theme='dark'] {

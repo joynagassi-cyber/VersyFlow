@@ -1,0 +1,57 @@
+{
+  "version": "1.0",
+  "stitch": {
+    "projectId": "17776033121259267838",
+    "referenceScreen": {
+      "id": "6292919931976666837",
+      "route": "/C:/Program Files/Git/onboarding/reminder-config",
+      "title": "Onboarding - Rappels",
+      "deviceType": "DESKTOP",
+      "extractedAt": "2026-10-02T11:11:22.335Z"
+    },
+    "referenceScreens": [
+      {
+        "id": "2191182025389786694",
+        "route": "/C:/Program Files/Git/onboarding/welcome",
+        "title": "Onboarding - Bienvenue",
+        "deviceType": "DESKTOP",
+        "extractedAt": "2026-10-02T11:09:10.789Z"
+      },
+      {
+        "id": "3161124037628304783",
+        "route": "/C:/Program Files/Git/onboarding/fsrs-introduction",
+        "title": "Onboarding - FSRS",
+        "deviceType": "DESKTOP",
+        "extractedAt": "2026-10-02T11:10:05.768Z"
+      },
+      {
+        "id": "7359019590717635427",
+        "route": "/C:/Program Files/Git/onboarding/language-select",
+        "title": "Onboarding - Langue",
+        "deviceType": "DESKTOP",
+        "extractedAt": "2026-10-02T11:10:07.294Z"
+      },
+      {
+        "id": "10778163237470066282",
+        "route": "/C:/Program Files/Git/onboarding/translation-select",
+        "title": "Onboarding - Traduction",
+        "deviceType": "DESKTOP",
+        "extractedAt": "2026-10-02T11:10:24.930Z"
+      },
+      {
+        "id": "17435462707923182640",
+        "route": "/C:/Program Files/Git/onboarding/session-config",
+        "title": "Onboarding - Session",
+        "deviceType": "DESKTOP",
+        "extractedAt": "2026-10-02T11:11:01.402Z"
+      },
+      {
+        "id": "6292919931976666837",
+        "route": "/C:/Program Files/Git/onboarding/reminder-config",
+        "title": "Onboarding - Rappels",
+        "deviceType": "DESKTOP",
+        "extractedAt": "2026-10-02T11:11:22.335Z"
+      }
+    ]
+  }
+}
