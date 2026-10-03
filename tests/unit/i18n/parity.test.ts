@@ -30,7 +30,7 @@ const ROOT = path.resolve(__dirname, '../../..');
 const SCAN_DIRS = ['app', 'src'];
 const LOCALES_DIR = path.join(ROOT, 'src/i18n/locales');
 
-const GOLD_LOCALES = ['fr', 'en'] as const;
+const GOLD_LOCALES: readonly string[] = ['fr', 'en'];
 
 // Primary namespaces: fully translated in all 45 locales.
 const PRIMARY_NAMESPACES = [
@@ -101,26 +101,71 @@ function readLocaleKeys(lng: string): Set<string> {
   const exportName = lng === 'zh-Hant' ? 'zhHant' : lng;
   const raw = fs.readFileSync(file, 'utf8');
 
+  // Strategy 1: extract the object literal after `export const <name> =`
+  // and evaluate it as a plain JS object. Locale files are data-only, so
+  // this works for all 45. On failure, Strategy 2 falls back to a
+  // line-by-line parse that is indent-based (namespace headers are 2-space
+  // `ns: {`, keys are 4-space `key: ...`).
+  const keys = new Set<string>();
+
   const declRe = new RegExp(
-    `export\\s+const\\s+${exportName}\\s*=\\s*(\\{[\\s\\S]*\\})`,
+    `export\\s+const\\s+${exportName}\\s*=\\s*\\{`,
   );
   const m = raw.match(declRe);
-  if (!m) return new Set();
-
-  let obj: Record<string, unknown>;
-  try {
-    obj = new Function(`return (${m[1]})`)();
-  } catch {
-    return new Set();
+  if (m) {
+    const start = m.index! + m[0].length - 1; // position of the opening `{`
+    // Walk forward counting braces (ignoring strings/comments) to find
+    // the matching closing brace.
+    let depth = 0;
+    let i = start;
+    let inString: string | null = null;
+    let inComment = false;
+    while (i < raw.length) {
+      const c = raw[i];
+      if (inComment) {
+        if (c === '\n') inComment = false;
+        i++;
+        continue;
+      }
+      if (inString) {
+        if (c === '\\') { i += 2; continue; }
+        if (c === inString) inString = null;
+        i++;
+        continue;
+      }
+      if (c === '\'' || c === '"' || c === '`') { inString = c; i++; continue; }
+      if (c === '/' && raw[i + 1] === '/') { inComment = true; i += 2; continue; }
+      if (c === '{') depth++;
+      else if (c === '}') {
+        depth--;
+        if (depth === 0) { i++; break; }
+      }
+      i++;
+    }
+    const literal = raw.slice(start, i);
+    try {
+      const obj = new Function(`return (${literal})`)() as Record<string, Record<string, unknown>>;
+      for (const ns of Object.keys(obj)) {
+        const block = obj[ns];
+        if (block && typeof block === 'object') {
+          for (const k of Object.keys(block)) keys.add(`${ns}.${k}`);
+        }
+      }
+      if (keys.size > 0) return keys;
+    } catch {
+      /* fall through to line parse */
+    }
   }
 
-  const keys = new Set<string>();
-  for (const ns of Object.keys(obj)) {
-    const block = obj[ns];
-    if (block && typeof block === 'object') {
-      for (const k of Object.keys(block as Record<string, unknown>)) {
-        keys.add(`${ns}.${k}`);
-      }
+  // Strategy 2: line-based indent parse (works even if eval fails).
+  let currentNs: string | null = null;
+  for (const line of raw.split('\n')) {
+    const nsMatch = line.match(/^ {2}([a-z][a-zA-Z]*)\s*:\s*\{/);
+    if (nsMatch) { currentNs = nsMatch[1]; continue; }
+    if (/^ {1,2}\}/.test(line)) { currentNs = null; continue; }
+    if (currentNs) {
+      const keyMatch = line.match(/^ {4}([a-zA-Z][a-zA-Z0-9_]*)\s*:/);
+      if (keyMatch) keys.add(`${currentNs}.${keyMatch[1]}`);
     }
   }
   return keys;

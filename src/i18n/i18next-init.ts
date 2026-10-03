@@ -72,10 +72,10 @@ const NAMESPACES = [
   'family',
   'semantic',
   'recallWriting',
-  // Extra top-level namespaces present in the fr/en locale files.
-  // Only fr/en ship these; other locales fall back to EN (the locale
-  // itself is preloaded, i18next's `fallbackLng: 'en'` covers the gap).
   'nav',
+  'search',
+  'sync',
+  'workspace',
   'notifications',
   'profile',
   'notFound',
