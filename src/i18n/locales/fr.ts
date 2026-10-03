@@ -313,7 +313,7 @@ export const fr = {
     family: 'Famille',
     familyActive: 'Famille active',
     themeImage: "Thèmes d'image",
-    themeImagesCount: 'illustrations 2D monochromes classées par catégorie',
+    themeImagesCount: "{count} thèmes d'image",
     themeReset: 'Fond par défaut',
     themeWhite: 'Blanc pur #FFFFFF',
     themeBlack: 'Noir pur #121212',
