@@ -17,7 +17,7 @@ export const BIBLE_BOOKS: BibleBook[] = [
   { id: 'gen', name: { fr: 'Genèse', en: 'Genesis' }, testament: 'old', chapterCount: 50, orderIndex: 1 },
   { id: 'exo', name: { fr: 'Exode', en: 'Exodus' }, testament: 'old', chapterCount: 40, orderIndex: 2 },
   { id: 'lev', name: { fr: 'Lévitique', en: 'Leviticus' }, testament: 'old', chapterCount: 27, orderIndex: 3 },
-  { id: 'nam', name: { fr: 'Nombres', en: 'Numbers' }, testament: 'old', chapterCount: 36, orderIndex: 4 },
+  { id: 'num', name: { fr: 'Nombres', en: 'Numbers' }, testament: 'old', chapterCount: 36, orderIndex: 4 },
   { id: 'deb', name: { fr: 'Deutéronome', en: 'Deuteronomy' }, testament: 'old', chapterCount: 34, orderIndex: 5 },
   { id: 'jos', name: { fr: 'Josué', en: 'Joshua' }, testament: 'old', chapterCount: 24, orderIndex: 6 },
   { id: 'jug', name: { fr: 'Juges', en: 'Judges' }, testament: 'old', chapterCount: 21, orderIndex: 7 },
@@ -87,6 +87,7 @@ export const BIBLE_BOOKS: BibleBook[] = [
 export const BOOK_ALIASES: Record<string, string[]> = {
   'gen': ['genèse', 'genesis', 'gn'],
   'exo': ['exode', 'ex', 'exc'],
+  'num': ['nombres', 'numbers', 'num', 'nb'],
   'psa': ['psaumes', 'psalm', 'ps', 'psz'],
   'joh': ['jean', 'john', 'jn', 'joh'],
   'mat': ['matthieu', 'matthew', 'mt'],
