@@ -87,7 +87,6 @@ export default function VerseActionBar({
   const [tagOpen, setTagOpen] = useState(false);
   const [tagName, setTagName] = useState('');
   const [tagSaving, setTagSaving] = useState(false);
-  const [tagSaved, setTagSaved] = useState(false);
   const [tagged, setTagged] = useState(false);
   const noteLoadedFor = useRef<string>('');
 
@@ -108,9 +107,10 @@ export default function VerseActionBar({
     setCopied(false);
     setTagOpen(false);
     setTagName('');
-    setTagSaved(false);
     setTagged(false);
-  }, [bookId, chapter, verse, reference]); // eslint-disable-line react-hooks/exhaustive-deps
+    // The bar re-anchors on verse change; `reference` is derived from the
+    // same inputs, so the deps list is intentionally narrow.
+  }, [bookId, chapter, verse]);
 
   const copyToClipboard = async () => {
     if (!verseText) return;
@@ -159,7 +159,6 @@ export default function VerseActionBar({
         locale: i18next.language,
         bridgeId: crypto.randomUUID(),
       });
-      setTagSaved(true);
       setTagged(true);
       setTimeout(() => {
         navigate(`/semantic/verse?verseRef=${encodeURIComponent(verseKey)}`);
@@ -239,7 +238,7 @@ export default function VerseActionBar({
               value={tagName}
               onChange={(e) => {
                 setTagName(e.target.value);
-                setTagSaved(false);
+                setTagged(false);
               }}
               onKeyDown={(e) => {
                 if (e.key === 'Enter') void tagVerse();

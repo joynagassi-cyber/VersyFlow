@@ -280,7 +280,9 @@ export class SemanticService {
    */
   async myConcepts(limit = 40, lang?: string): Promise<MyConceptEntry[]> {
     const db = await this.resolveDbForUserTags();
-    const rows = await db.getAll<{ id: string; canonical_name: string; labels_by_language: string | null }>(
+    const rows = await db.getAll<
+      { id: string; canonical_name: string; labels_by_language: string | null }
+    >(
       `SELECT id, canonical_name, labels_by_language
        FROM concepts
        WHERE source = 'manual' AND created_by = 'user'
@@ -330,9 +332,14 @@ export class SemanticService {
     labels_by_language: string | null;
   }): Concept | null {
     let labels: Record<string, string> = {};
-    if (row.labels_by_language) {
+    const raw = row.labels_by_language;
+    if (raw) {
       try {
-        labels = JSON.parse(row.labels_by_language);
+        const parsed: unknown = JSON.parse(raw);
+        labels =
+          parsed && typeof parsed === 'object' && !Array.isArray(parsed)
+            ? ((parsed as Record<string, unknown>) as Record<string, string>)
+            : {};
       } catch {
         labels = {};
       }

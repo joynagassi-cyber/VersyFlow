@@ -235,14 +235,6 @@ function clampLimit(limit: number | undefined, max: number): number {
 // IConceptRepository
 // ------------------------------------------------------------------
 
-/** Role weights for ordering bridge rows (PRIMARY first). */
-const ROLE_ORDER: Record<string, number> = {
-  PRIMARY: 0,
-  SECONDARY: 1,
-  CONTRAST: 2,
-  RELATED: 3,
-};
-
 export class SemanticConceptRepository implements IConceptRepository {
   async getConcept(id: string) {
     const db = await resolveDb();

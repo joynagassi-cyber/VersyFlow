@@ -217,7 +217,7 @@ export function useMyConcepts(limit = 40): {
       .myConcepts(limit)
       .then((result) => {
         if (req !== reqRef.current) return;
-        setEntries(result as MyConceptEntry[]);
+        setEntries(result);
       })
       .catch(() => {
         if (req !== reqRef.current) return;
