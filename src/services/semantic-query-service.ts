@@ -255,6 +255,7 @@ export class SemanticService {
    */
   async saveVerseTag(seed: VerseTagSeed): Promise<VerseTagResult> {
     return this.tagRepo.insertTag({
+      id: seed.conceptId,
       verse_id: seed.verseKey,
       concept_id: seed.conceptId,
       canonical_name: seed.canonicalName,

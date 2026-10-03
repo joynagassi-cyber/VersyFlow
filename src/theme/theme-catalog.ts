@@ -24,7 +24,7 @@ export interface ThemeCatalogEntry {
 export interface ThemeCategory {
   id: string;
   name: string;
-  themes: ThemeCatalogEntry[];
+  themes: Omit<ThemeCatalogEntry, 'category'>[];
 }
 
 export const THEME_CATEGORIES: ThemeCategory[] = [

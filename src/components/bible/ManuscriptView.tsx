@@ -15,7 +15,7 @@ import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils';
 import type { BibleVerseData } from '@/domains/bible/repository-local';
 import type { ChapterSemanticTags } from '@/hooks/useSemanticTags';
-import { useHighlightStore } from '@/store/highlight-store';
+import { useHighlightStore, type HighlightState } from '@/store/highlight-store';
 import VerseSemanticTags from '@/components/semantic/VerseSemanticTags';
 
 interface ManuscriptViewProps {
@@ -56,7 +56,7 @@ export function ManuscriptView({
 
   const selectedConcepts = selectedVerse != null ? tagsByVerse.get(selectedVerse) ?? [] : [];
 
-  const highlightKeys = useHighlightStore((s) => s.keys);
+  const highlightKeys = useHighlightStore((s: HighlightState) => s.keys);
 
   return (
     <div className="mx-auto w-full">

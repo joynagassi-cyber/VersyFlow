@@ -16,6 +16,7 @@
  */
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { BIBLE_BOOKS, resolveBookId } from '@/domains/bible/entities';
 import { LocalBibleRepository } from '@/domains/bible/repository-local';
 import { resolveBibleTextSource } from '@/services/bible-text-service';

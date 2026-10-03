@@ -75,7 +75,7 @@ export default function MemorizationWorkspace() {
     const verse = parseInt(params.get('verse') ?? '', 10);
     if (!bookId || !chapter || !verse) return null;
     const translationId =
-      params.get('translationId') ?? useSettingsStore.getState().bibleTranslation || 'lsg';
+      (params.get('translationId') ?? useSettingsStore.getState().bibleTranslation) || 'lsg';
     return { bookId, chapter, verse, translationId };
   }, [params]);
 

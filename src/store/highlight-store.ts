@@ -43,15 +43,16 @@ function persist(keys: string[]): void {
 
 const initial = loadInitial();
 
-export const useHighlightStore = create<HighlightState>(() => ({
+export const useHighlightStore = create<HighlightState>((set) => ({
   keys: initial,
   toggle: (key) => {
-    const next = useHighlightStore.getState().keys.includes(key)
-      ? useHighlightStore.getState().keys.filter((k) => k !== key)
-      : [...useHighlightStore.getState().keys, key];
-    useHighlightStore.setState({ keys: next });
+    const current = useHighlightStore.getState().keys;
+    const next = current.includes(key)
+      ? current.filter((k) => k !== key)
+      : [...current, key];
+    set({ keys: next });
     persist(next);
     void storage.set(STORAGE_KEY, JSON.stringify(next));
   },
-  has: (key) => useHighlightStore.getState().keys.includes(key),
+  has: (key): boolean => useHighlightStore.getState().keys.includes(key),
 }));

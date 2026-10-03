@@ -139,7 +139,9 @@ export async function loadTranslationData(
         id: translationId,
         language: 'fr',
         name: translationId,
-        books,
+        // The canonical 66-book structure (Zod tuple); the repository
+        // returns the same canon, cast for the fixed shape.
+        books: books as unknown as BibleTranslationData['books'],
       };
     });
   } catch {

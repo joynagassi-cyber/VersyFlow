@@ -29,7 +29,7 @@ import { BIBLE_BOOKS } from '@/domains/bible/entities';
 import { eventBus, DomainEventTypes } from '@/domains/events';
 import { getVerseNote, saveVerseNote } from '@/services/verse-note-service';
 import { getSemanticService } from '@/services/semantic-query-service';
-import { useHighlightStore } from '@/store/highlight-store';
+import { useHighlightStore, type HighlightState } from '@/store/highlight-store';
 import { cn } from '@/lib/utils';
 
 interface VerseActionBarProps {
@@ -77,8 +77,8 @@ export default function VerseActionBar({
   const reference = `${bookName} ${chapter}:${verse}`;
   const verseKey = `${bookId}:${chapter}:${verse}`;
 
-  const isHighlighted = useHighlightStore((s) => s.keys.includes(verseKey));
-  const toggleHighlight = useHighlightStore((s) => s.toggle);
+  const isHighlighted = useHighlightStore((s: HighlightState) => s.keys.includes(verseKey));
+  const toggleHighlight = useHighlightStore((s: HighlightState) => s.toggle);
 
   const [noteOpen, setNoteOpen] = useState(false);
   const [noteText, setNoteText] = useState('');

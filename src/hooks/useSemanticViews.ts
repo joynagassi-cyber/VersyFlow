@@ -196,7 +196,7 @@ export function useSemanticIndex(): {
 // User's personal semantic tree (concepts created via "Taguer")
 // ------------------------------------------------------------------
 
-export { MyConceptEntry } from '@/services/semantic-query-service';
+export type { MyConceptEntry } from '@/services/semantic-query-service';
 
 export function useMyConcepts(limit = 40): {
   entries: MyConceptEntry[];

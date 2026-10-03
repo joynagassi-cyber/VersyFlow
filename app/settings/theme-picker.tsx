@@ -26,7 +26,7 @@ export default function ThemePickerScreen() {
   const setColorTheme = useAppearanceStore((s) => s.setColorTheme);
   const [expanded, setExpanded] = useState<string | null>(THEME_CATEGORIES[0].id);
 
-  const select = (entry: ThemeCatalogEntry) => {
+  const select = (entry: Omit<ThemeCatalogEntry, 'category'>) => {
     setColorTheme(entry.id);
   };
 
