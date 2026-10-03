@@ -95,7 +95,6 @@ const ProfileSelect = lazy(() => import('../app/profile/select'));
 const CollectionsPage = lazy(() => import('../app/collections/index'));
 const ComparisonTranslation = lazy(() => import('../app/comparison/translation'));
 const ComparisonResult = lazy(() => import('../app/comparison/result'));
-const AiCoachPage = lazy(() => import('../app/ai-coach/index'));
 const MemoryStart = lazy(() => import('../app/memory/start'));
 const MemoryFlashcard = lazy(() => import('../app/memory/flashcard'));
 const MemoryRecallWriting = lazy(() => import('../app/memory/recall-writing'));
@@ -342,7 +341,6 @@ function App() {
               <Route path="/collections" element={<CollectionsPage />} />
               <Route path="/comparison/translation" element={<ComparisonTranslation />} />
               <Route path="/comparison/result" element={<ComparisonResultRoute />} />
-              <Route path="/ai-coach" element={<AiCoachPage />} />
               <Route path="/memory/start" element={<MemoryStartRoute />} />
               <Route path="/memory/flashcard" element={<MemoryFlashcard />} />
               <Route path="/memory/recall-writing" element={<MemoryRecallWriting />} />

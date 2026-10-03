@@ -5,11 +5,19 @@ import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { useAppearanceStore } from '@/store/appearance-store';
 import { ACCENT_PRESETS } from '@/theme/theme-presets';
 import { THEME_CATEGORIES } from '@/theme/theme-catalog';
+import { BIBLE_FONTS } from '@/theme/theme-fonts';
 import { cn } from '@/lib/utils';
 
 type ThemeMode = 'light' | 'dark' | 'system';
 
-const FONT_SIZES = [14, 16, 18, 20, 22];
+const FONT_SIZE_MIN = 14;
+const FONT_SIZE_MAX = 28;
+const LINE_HEIGHT_MIN = 1.2;
+const LINE_HEIGHT_MAX = 2.2;
+const LETTER_SPACING_MIN = -0.02;
+const LETTER_SPACING_MAX = 0.12;
+const LINE_LENGTH_MIN = 28;
+const LINE_LENGTH_MAX = 80;
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
@@ -32,6 +40,44 @@ function Toggle({ on, onChange }: { on: boolean; onChange: () => void }) {
   );
 }
 
+/** Labeled range control for a single reading parameter. */
+function SliderRow({
+  label,
+  value,
+  display,
+  min,
+  max,
+  step,
+  onChange,
+}: {
+  label: string;
+  value: number;
+  display: string;
+  min: number;
+  max: number;
+  step: number;
+  onChange: (value: number) => void;
+}) {
+  return (
+    <div className="mb-3 last:mb-0">
+      <div className="mb-1 flex items-center justify-between">
+        <span className="text-xs font-semibold text-text-secondary">{label}</span>
+        <span className="text-xs font-bold tabular-nums text-primary">{display}</span>
+      </div>
+      <input
+        type="range"
+        min={min}
+        max={max}
+        step={step}
+        value={value}
+        onChange={(e) => onChange(Number(e.target.value))}
+        className="h-1.5 w-full cursor-pointer appearance-none rounded-full bg-surface-tint accent-[var(--color-primary)]"
+        aria-label={label}
+      />
+    </div>
+  );
+}
+
 export default function AppearanceScreen() {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -42,23 +88,33 @@ export default function AppearanceScreen() {
     fontSize,
     showVerseNumbers,
     focusMode,
+    bibleFontFamily,
+    bibleFontSize,
+    bibleLineHeight,
+    bibleLetterSpacing,
+    bibleLineLength,
     setThemeMode,
     setColorTheme,
     setFontSize,
     toggleVerseNumbers,
     setFocusMode,
+    setBibleFontFamily,
+    setBibleFontSize,
+    setBibleLineHeight,
+    setBibleLetterSpacing,
+    setBibleLineLength,
   } = useAppearanceStore();
 
   const themeOptions: { value: ThemeMode; label: string; Icon: typeof Sun }[] = [
     { value: 'light', label: t('settings.themeLight', 'Clair'), Icon: Sun },
     { value: 'dark', label: t('settings.themeDark', 'Sombre'), Icon: Moon },
-    { value: 'system', label: t('settings.themeSystem', 'Systeme'), Icon: Monitor },
+    { value: 'system', label: t('settings.themeSystem', 'Système'), Icon: Monitor },
   ];
 
   const totalThemes = THEME_CATEGORIES.reduce((n, c) => n + c.themes.length, 0);
 
   return (
-    <FullScreenPage title={t('settings.theme', 'Theme')}>
+    <FullScreenPage title={t('settings.theme', 'Thème')}>
       <div className="mx-auto max-w-md">
         <Section title={t('settings.themeMode', 'Mode')}>
           <div className="flex flex-col gap-2">
@@ -91,7 +147,7 @@ export default function AppearanceScreen() {
           </div>
         </Section>
 
-        <Section title={t('settings.accentColor', 'Couleur d\'accent')}>
+        <Section title={t('settings.accentColor', "Couleur d'accent")}>
           <div className="grid grid-cols-4 gap-3">
             {ACCENT_PRESETS.map((p) => {
               const active = accent === p.key && colorThemeId == null;
@@ -148,9 +204,87 @@ export default function AppearanceScreen() {
           </button>
         </Section>
 
+        {/* ── Lecture : full Bible reading controls (font + fine spacing) ── */}
+        <Section title={t('settings.reading', 'Lecture')}>
+          {/* Font family selector — 10 premium serifs, live preview in own family */}
+          <div className="grid grid-cols-2 gap-2">
+            {BIBLE_FONTS.map((font) => {
+              const active = bibleFontFamily === font.id;
+              return (
+                <button
+                  key={font.id}
+                  onClick={() => setBibleFontFamily(font.id)}
+                  aria-pressed={active}
+                  className={cn(
+                    'flex flex-col items-start gap-1 rounded-xl border-2 p-2.5 text-left transition',
+                    active
+                      ? 'border-primary bg-primary/5'
+                      : 'border-border bg-surface-tint/40 active:bg-surface-tint',
+                  )}
+                >
+                  <span
+                    className="text-base leading-tight text-text-primary"
+                    style={{ fontFamily: font.family }}
+                  >
+                    {t('settings.fonts.' + font.id, font.label)}
+                  </span>
+                  <span
+                    className={cn(
+                      'text-[10px] font-bold uppercase tracking-wide',
+                      active ? 'text-primary' : 'text-text-muted',
+                    )}
+                  >
+                    Aa · {font.label}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Fine spacing controls */}
+          <div className="mt-4 border-t border-[color:var(--color-divider)] pt-3">
+            <SliderRow
+              label={t('settings.reading.size', 'Taille')}
+              value={bibleFontSize}
+              display={`${bibleFontSize}px`}
+              min={FONT_SIZE_MIN}
+              max={FONT_SIZE_MAX}
+              step={1}
+              onChange={setBibleFontSize}
+            />
+            <SliderRow
+              label={t('settings.reading.lineHeight', 'Interlignage')}
+              value={bibleLineHeight}
+              display={bibleLineHeight.toFixed(2)}
+              min={LINE_HEIGHT_MIN}
+              max={LINE_HEIGHT_MAX}
+              step={0.05}
+              onChange={setBibleLineHeight}
+            />
+            <SliderRow
+              label={t('settings.reading.letterSpacing', 'Espacement des lettres')}
+              value={bibleLetterSpacing}
+              display={`${(bibleLetterSpacing * 100).toFixed(1)}‱`}
+              min={LETTER_SPACING_MIN}
+              max={LETTER_SPACING_MAX}
+              step={0.005}
+              onChange={setBibleLetterSpacing}
+            />
+            <SliderRow
+              label={t('settings.reading.lineLength', 'Largeur de colonne')}
+              value={bibleLineLength}
+              display={`${bibleLineLength} em`}
+              min={LINE_LENGTH_MIN}
+              max={LINE_LENGTH_MAX}
+              step={1}
+              onChange={setBibleLineLength}
+            />
+          </div>
+        </Section>
+
         <Section title={t('settings.fontSize', 'Taille du texte')}>
           <div className="flex justify-between gap-2">
-            {FONT_SIZES.map((size) => {
+            {[14, 16, 18, 20, 22].map((size) => {
               const active = fontSize === size;
               return (
                 <button
@@ -172,7 +306,7 @@ export default function AppearanceScreen() {
           <div className="flex flex-col gap-3">
             <div className="flex items-center justify-between">
               <span className="text-sm text-text-primary">
-                {t('settings.verseNumbers', 'Numeros de versets')}
+                {t('settings.verseNumbers', 'Numéros de versets')}
               </span>
               <Toggle on={showVerseNumbers} onChange={toggleVerseNumbers} />
             </div>

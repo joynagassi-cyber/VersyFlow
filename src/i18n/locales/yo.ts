@@ -40,7 +40,7 @@ export const yo = {
     analytics: 'Ìwọ̀n',
     collections: 'Àkójú',
     achievements: 'Ìṣírò àbájáde',
-    coach: 'Olùtọ́nà ìmòlára',
+
     search: 'Ìwádìí',
     family: 'Ẹbí',
     profile: 'Ìlọ́síwaju',
@@ -533,22 +533,6 @@ export const yo = {
     welcome: 'Ki o dún kó o rọ àjọ VersyFlow',
     welcomeSubtitle: 'Kó àkọ́sílẹ̀ láti ṣe ìyípadà ìtútmọ rẹ sí àlòsìwaju, tàbí tẹ̀síwájú ní ìlànà àra-ẹni.'
   },
-  coach: {
-    title: 'Olùtọ́nà ìmòlára',
-    analyzing: 'Àyẹ̀wò ń ṣiṣẹ́…',
-    weekly: 'Àkọ́sílẹ̀ ìsẹ́-ọjọ́',
-    sessions: 'Àwọn àjọ',
-    verses: 'Ọ̀rọ̀-ọ̀nà',
-    avgScore: 'Ìwọ̀n àárín.',
-    noReport: 'Kò kún àlòsìwaju tó fún àkọ́sílẹ̀.',
-    dailyPlan: 'Ètò ọjọ́',
-    noPlan: 'Kò ní ètò fún ọjọ́ ìwúnnì.',
-    recommendations: 'Àwọn ìdíye',
-    noRecs: 'Kò ní ìdíye ní báyèí.',
-    high: 'Pàtàkì',
-    medium: 'Àárín',
-    low: 'Kúkùrú'
-  },
   mastery: {
     stats: 'Ìwọ̀n',
     memorized: 'Ọ̀rọ̀-ọ̀nà tí a kọ́',
@@ -642,7 +626,6 @@ export const yo = {
     compare: 'Lo àwọn ìtútmọ',
     semantic: 'Sémantiki',
     collections: 'Àwọn àkójú',
-    coach: 'Olùtọ́nà ìmòlára',
     search: 'Ìwádìí'
   },
   settingsTab: {

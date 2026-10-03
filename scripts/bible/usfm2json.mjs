@@ -347,20 +347,22 @@ const output = {
   style: 'classique',
   publicDomain,
   author,
-  books: books.map((b) => {
-    const vflowId = CODE_TO_VFLOW[b.code] || b.code.toLowerCase();
-    const frLabel = FR_NAMES[vflowId] || b.nameFr || b.code;
-    return {
-      id: vflowId,
-      name: { fr: frLabel, en: b.nameFr || b.code },
-      testament: b.testament,
-      chapterCount: b.chapters.length,
-      chapters: b.chapters.map((ch) => ({
-        number: ch.number,
-        verses: ch.verses,
-      })),
-    };
-  }),
+  books: books
+    .filter((b) => b.chapters.length > 0)
+    .map((b) => {
+      const vflowId = CODE_TO_VFLOW[b.code] || b.code.toLowerCase();
+      const frLabel = FR_NAMES[vflowId] || b.nameFr || b.code;
+      return {
+        id: vflowId,
+        name: { fr: frLabel, en: b.nameFr || b.code },
+        testament: b.testament,
+        chapterCount: b.chapters.length,
+        chapters: b.chapters.map((ch) => ({
+          number: ch.number,
+          verses: ch.verses,
+        })),
+      };
+    }),
 };
 
 mkdirSync(dirname(outPath), { recursive: true });

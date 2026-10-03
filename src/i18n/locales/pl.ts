@@ -40,7 +40,7 @@ export const pl = {
     analytics: 'Analityka',
     collections: 'Kolekcje',
     achievements: 'Osiągnięcia',
-    coach: 'Coach IA',
+
     search: 'Szukaj',
     family: 'Rodzina',
     profile: 'Profil',
@@ -533,22 +533,6 @@ export const pl = {
     welcome: 'Witaj w VersyFlow',
     welcomeSubtitle: 'Zaloguj się, aby synchronizować swoje zapamiętywania w chmurze, lub kontynuuj w trybie lokalnym.'
   },
-  coach: {
-    title: 'Coach AI',
-    analyzing: 'Analiza w toku...',
-    weekly: 'Raport tygodniowy',
-    sessions: 'Sesje',
-    verses: 'Wersety',
-    avgScore: 'Śr. wynik',
-    noReport: 'Jeszcze za mało danych, aby wygenerować raport.',
-    dailyPlan: 'Plan na dziś',
-    noPlan: 'Nie ma planu na dziś.',
-    recommendations: 'Zalecenia',
-    noRecs: 'Na razie brak zaleceń.',
-    high: 'Ważny',
-    medium: 'Średni',
-    low: 'Niski'
-  },
   mastery: {
     stats: 'Statystyki',
     memorized: 'Zapamiętane wersety',
@@ -642,7 +626,6 @@ export const pl = {
     compare: 'Porównaj',
     semantic: 'Semantyka',
     collections: 'Kolekcje',
-    coach: 'Coach AI',
     search: 'Szukaj'
   },
   settingsTab: {

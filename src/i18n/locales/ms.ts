@@ -347,7 +347,7 @@ export const ms = {
     analytics: 'Analytique',
     collections: 'Collections',
     achievements: 'Succès',
-    coach: 'Coach IA',
+
     search: 'Recherche',
     family: 'Famille',
     profile: 'Profil',
@@ -532,22 +532,6 @@ export const ms = {
     welcome: 'Bienvenue sur VersyFlow',
     welcomeSubtitle: 'Connectez-vous pour synchroniser vos mémorisations sur le cloud, ou continuez en mode local.'
   },
-  coach: {
-    title: 'Coach IA',
-    analyzing: 'Analyse en cours...',
-    weekly: 'Rapport hebdomadaire',
-    sessions: 'Sessions',
-    verses: 'Versets',
-    avgScore: 'Score moy.',
-    noReport: 'Pas encore assez de données pour générer un rapport.',
-    dailyPlan: 'Plan du jour',
-    noPlan: "Aucun plan pour aujourd'hui.",
-    recommendations: 'Recommandations',
-    noRecs: 'Aucune recommandation pour le moment.',
-    high: 'Important',
-    medium: 'Moyen',
-    low: 'Faible'
-  },
   mastery: {
     stats: 'Statistiques',
     memorized: 'Versets mémorisés',
@@ -641,7 +625,6 @@ export const ms = {
     compare: 'Comparer',
     semantic: 'Sémantique',
     collections: 'Collections',
-    coach: 'Coach IA',
     search: 'Recherche'
   },
   settingsTab: {

@@ -167,12 +167,14 @@
 
 /* Brand utility layer */
 @layer components {
-  /* Serif font for scripture text */
+  /* Serif font for scripture text — driven by the user's reading settings
+     (appearance-store bibleFont*) via the --reading-* vars set by
+     ThemeManager; static fallbacks keep it readable before hydration. */
   .bible-text {
-    font-family: 'Source Serif 4', Georgia, serif;
-    font-size: 20px;
-    line-height: 34px;
-    letter-spacing: 0.01em;
+    font-family: var(--reading-font-family, 'Source Serif 4', Georgia, serif);
+    font-size: var(--reading-font-size, 20px);
+    line-height: var(--reading-line-height, 1.7);
+    letter-spacing: var(--reading-letter-spacing, 0.01em);
   }
 
   /*
@@ -180,14 +182,17 @@
    * tappable inline verse numbers (superscript, primary rose) instead of a
    * card-per-verse layout. `.verse-flow-number` is the interactive number;
    * the selected verse is wrapped in `.manuscript-verse.is-selected`.
+   * The column width (max-width) is the user-tunable `--reading-line-length`.
    */
   .verse-flow {
-    font-family: 'Source Serif 4', Georgia, serif;
-    font-size: 19px;
-    line-height: 33px;
-    letter-spacing: 0.01em;
+    font-family: var(--reading-font-family, 'Source Serif 4', Georgia, serif);
+    font-size: var(--reading-font-size, 19px);
+    line-height: var(--reading-line-height, 1.75);
+    letter-spacing: var(--reading-letter-spacing, 0.01em);
     text-align: justify;
     hyphens: auto;
+    max-width: var(--reading-line-length, 42em);
+    margin-inline: auto;
   }
 
   .manuscript-verse {
@@ -401,9 +406,9 @@
     position: relative;
     padding: 14px 16px;
     border-radius: 14px;
-    font-family: "Source Serif 4", Georgia, serif;
-    font-size: 18px;
-    line-height: 30px;
+    font-family: var(--reading-font-family, 'Source Serif 4', Georgia, serif);
+    font-size: calc(var(--reading-font-size, 19px) * 0.95);
+    line-height: var(--reading-line-height, 1.75);
     text-align: justify;
     transition: all 320ms cubic-bezier(0.4, 0, 0.2, 1);
   }
@@ -561,9 +566,9 @@
     );
   }
   .mw-flashcard-face .verse {
-    font-family: "Source Serif 4", Georgia, serif;
-    font-size: 22px;
-    line-height: 36px;
+    font-family: var(--reading-font-family, 'Source Serif 4', Georgia, serif);
+    font-size: calc(var(--reading-font-size, 19px) * 1.15);
+    line-height: var(--reading-line-height, 1.75);
     text-align: center;
     color: var(--color-text-primary);
     max-width: 90%;
@@ -631,9 +636,9 @@
     margin-bottom: 6px;
   }
   .mw-diff-col.original .verse {
-    font-family: "Source Serif 4", Georgia, serif;
-    font-size: 13px;
-    line-height: 22px;
+    font-family: var(--reading-font-family, 'Source Serif 4', Georgia, serif);
+    font-size: calc(var(--reading-font-size, 19px) * 0.7);
+    line-height: 1.6;
     color: var(--color-text-primary);
   }
   .mw-diff-col.written .verse {
@@ -666,9 +671,9 @@
 
   /* ── Mask (E mode) — tappable word chips ──────────────── */
   .mw-mask-flow {
-    font-family: "Source Serif 4", Georgia, serif;
-    font-size: 18px;
-    line-height: 34px;
+    font-family: var(--reading-font-family, 'Source Serif 4', Georgia, serif);
+    font-size: calc(var(--reading-font-size, 19px) * 0.95);
+    line-height: var(--reading-line-height, 1.75);
     text-align: justify;
     padding: 16px;
     border-radius: 14px;
@@ -841,6 +846,29 @@ ion-page,
 }
 *::-webkit-scrollbar-thumb:hover {
   background: color-mix(in srgb, var(--color-text-muted) 50%, transparent);
+}
+
+/*
+ * Premium reading surface — when an image theme is active the scripture card
+ * becomes a translucent, lightly blurred panel so the ambient illustration
+ * (html::before DOF wash) shows through behind the text. Gated on
+ * data-theme-image='on' so plain accent themes keep the opaque surface.
+ */
+:root,
+:root[data-theme='light'] {
+  --reading-surface-alpha: 0.92;
+}
+[data-theme='dark'] {
+  --reading-surface-alpha: 0.95;
+}
+html[data-theme-image='on'] .bible-card {
+  background-color: color-mix(
+    in srgb,
+    var(--color-surface) calc(var(--reading-surface-alpha) * 100%),
+    transparent
+  );
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
 /* Hide scrollbars on the Ionic native scroller internals only — their

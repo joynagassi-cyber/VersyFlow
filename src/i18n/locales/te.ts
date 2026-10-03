@@ -40,7 +40,7 @@ export const te = {
     analytics: 'విశ్లేషణ',
     collections: 'సంకలనాలు',
     achievements: 'అవధానాలు',
-    coach: 'AI కోచ్',
+
     search: 'శోధన',
     family: 'కుటుంబం',
     profile: 'ప్రొఫైల్',
@@ -533,22 +533,6 @@ export const te = {
     welcome: 'వెర్సీ ఫ్లోకి స్వాగతం',
     welcomeSubtitle: 'మీ స్మరణలను క్లౌడ్‌లో సమన్వయం చేయడానికి లాగిన్ అవ్వండి, లేదా నిజపరవైన మోడ్‌లో కొనసాగండి.'
   },
-  coach: {
-    title: 'AI కోచ్',
-    analyzing: 'విశ్లేషణ జరుగుతోంది...',
-    weekly: 'వారావరణ పరిశీలన',
-    sessions: 'సెషన్లు',
-    verses: 'వాక్యాలు',
-    avgScore: 'సగటు స్కోరు.',
-    noReport: 'పరిశీలనను ఉత్పత్తి చేయడానికి ఇంకా వివరణల సర్వత్రా తలపం లేదు.',
-    dailyPlan: 'రోజు యోజన',
-    noPlan: 'ఈరోజుకు యోజన లేదు.',
-    recommendations: 'సిఫార్సులు',
-    noRecs: 'ఇంకా సిఫార్సులు లేవు.',
-    high: 'ముఖ్యం',
-    medium: 'గరిష్ఠం',
-    low: 'తక్కువ'
-  },
   mastery: {
     stats: 'గణాంకాలు',
     memorized: 'స్మరించబడిన వాక్యాలు',
@@ -642,7 +626,6 @@ export const te = {
     compare: 'పోల్చండి',
     semantic: 'అర్థం',
     collections: 'సంకలనాలు',
-    coach: 'AI కోచ్',
     search: 'శోధన'
   },
   settingsTab: {

@@ -40,7 +40,7 @@ export const ml = {
     analytics: 'വിശകലനം',
     collections: 'കളക്ഷനുകൾ',
     achievements: 'പ്രവൃതികൾ',
-    coach: 'AI കൊച്ച',
+
     search: 'തിരച്ചിൽ',
     family: 'കുടുംബം',
     profile: 'പ്രൊഫൈൽ',
@@ -533,22 +533,6 @@ export const ml = {
     welcome: 'VersyFlow-ൽ സ്വാഗതം',
     welcomeSubtitle: 'ക്ലൗഡിൽ നിങ്ങളുടെ ഓർമ്മപ്പെടുത്തലുകൾ ചേർച്ചയിലാക്കാൻ ലോഗിൻ ചെയ്യുക, അല്ലെങ്കിൽ ലോക്കൽ മോഡിൽ തുടരാൻ.'
   },
-  coach: {
-    title: 'AI കൊച്ച',
-    analyzing: 'വിശകലനം പുരോഗതി...',
-    weekly: 'ആഴ്ചകാല റിപ്പോർട്ട്',
-    sessions: 'സെഷനുകൾ',
-    verses: 'വചനങ്ങൾ',
-    avgScore: 'ശരാശരി ഓസ്കോർ',
-    noReport: 'ഒരു റിപ്പോർട്ട് ഉണ്ടാക്കാനുള്ള ഡാറ്റ ഇപ്പോഴും പ്രയാസം.',
-    dailyPlan: 'ദിവസ പദ്ധതി',
-    noPlan: 'ഇന്നെ പദ്ധതി ഇല്ല.',
-    recommendations: 'റെകമൻഡേഷനുകൾ',
-    noRecs: 'ഇപ്പോൾ റെകമൻഡേഷനുകൾ ഇല്ല.',
-    high: 'പ്രധാനം',
-    medium: 'മധ്യം',
-    low: 'ചെറു'
-  },
   mastery: {
     stats: 'പിവിതം',
     memorized: 'ഓർത്തെടുത്ത വചനങ്ങൾ',
@@ -642,7 +626,6 @@ export const ml = {
     compare: 'താരതമ്യപ്പെടുത്തുക',
     semantic: 'അർത്ഥകം',
     collections: 'കളക്ഷനുകൾ',
-    coach: 'AI കൊച്ച',
     search: 'തിരച്ചിൽ'
   },
   settingsTab: {

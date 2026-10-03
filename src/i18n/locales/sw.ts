@@ -40,7 +40,7 @@ export const sw = {
     analytics: 'Takwimu',
     collections: 'Mkusanyo',
     achievements: 'Matunda',
-    coach: 'Msimamizi AI',
+
     search: 'Utafiti',
     family: 'Familia',
     profile: 'Wasifu',
@@ -533,22 +533,6 @@ export const sw = {
     welcome: 'Karibu kwenye VersyFlow',
     welcomeSubtitle: 'Ingia ili usonge kumbukumbu zako kwenye anga, au uendelee hali ya hapo kando.'
   },
-  coach: {
-    title: 'Msimamizi AI',
-    analyzing: 'Uchambuzi umejiri…',
-    weekly: 'Ripoti ya wiki',
-    sessions: 'Mikao',
-    verses: 'Aya',
-    avgScore: 'Wastani wa alama',
-    noReport: 'Hakuna takwimu nyingi kutosha kutoa ripoti.',
-    dailyPlan: 'Mpango wa siku',
-    noPlan: 'Hakuna mpango kwa siku hii.',
-    recommendations: 'Onyo',
-    noRecs: 'Hakuna onyo kwa wakati huu.',
-    high: 'Muhimu',
-    medium: 'Changanyiko',
-    low: 'Ndogo'
-  },
   mastery: {
     stats: 'Takwimu',
     memorized: 'Aya zilizokumbukwa',
@@ -642,7 +626,6 @@ export const sw = {
     compare: 'Linganisha',
     semantic: 'Sémantiki',
     collections: 'Mkusanyo',
-    coach: 'Msimamizi AI',
     search: 'Utafiti'
   },
   settingsTab: {

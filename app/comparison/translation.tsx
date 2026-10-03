@@ -13,7 +13,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import i18next from 'i18next';
-import { Plus, X, Loader2, Languages, Check } from 'lucide-react';
+import { Plus, X, Loader2, Languages, Check, Globe } from 'lucide-react';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { BibleTranslationRegistry, DEFAULT_BIBLE_TRANSLATIONS } from '@/domains/bible/registry';
 import { bibleTranslationDisplayName, getTranslationDisplayInfo } from '@/services/bible-translation-names';
@@ -36,7 +36,7 @@ interface Row {
 }
 
 export default function TranslationComparisonScreen() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { bibleTranslation } = useSettingsStore();
   const [searchParams] = useSearchParams();
   const bookId = searchParams.get('bookId') ?? '';
@@ -46,6 +46,7 @@ export default function TranslationComparisonScreen() {
   const [rows, setRows] = useState<Row[]>([]);
   const [addOpen, setAddOpen] = useState(false);
   const [bookName, setBookName] = useState<string>(bookId);
+  const [targetLang, setTargetLang] = useState<string | null>(null);
 
   const activeIds = useMemo(() => rows.map((r) => r.id), [rows]);
 
@@ -76,6 +77,18 @@ export default function TranslationComparisonScreen() {
     }
     return Array.from(byId.values());
   }, [bibleTranslation]);
+
+  // Languages present in the manifest set, for the target-language picker.
+  const availableLanguages = useMemo(
+    () => Array.from(new Set(allManifests.map((m) => m.language))).sort(),
+    [allManifests],
+  );
+
+  // Seed language: the target-language picker wins; otherwise the active
+  // translation's own Bible language (never a hardcoded 'fr').
+  const seedLanguage = targetLang ?? (
+    allManifests.find((m) => m.id === bibleTranslation)?.language ?? 'fr'
+  );
 
   useEffect(() => {
     let cancelled = false;
@@ -124,11 +137,12 @@ export default function TranslationComparisonScreen() {
     }
   };
 
-  // Initial load: the active translation + the other French versions.
+  // Initial load: the active translation + the other versions in the seed
+  // language (active translation's Bible language by default).
   useEffect(() => {
     if (!bookId || !chapter || !verse) return;
     const seed = allManifests.filter(
-      (m) => m.id === bibleTranslation || m.language === 'fr',
+      (m) => m.id === bibleTranslation || m.language === seedLanguage,
     );
     setRows(
       seed.map((m) => ({
@@ -144,7 +158,7 @@ export default function TranslationComparisonScreen() {
       void loadRow(m.id, m.language, m.name);
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [bookId, chapter, verse, bibleTranslation]);
+  }, [bookId, chapter, verse, bibleTranslation, seedLanguage, allManifests]);
 
   const add = (id: string, name: string, language: string) => {
     setRows((rs) =>
@@ -162,6 +176,10 @@ export default function TranslationComparisonScreen() {
   const availableToAdd = allManifests.filter((m) => !activeIds.includes(m.id));
   const referenceLabel = `${bookName} ${chapter}:${verse}`;
 
+  const changeLanguage = (lang: string) => {
+    setTargetLang(lang || null);
+  };
+
   return (
     <FullScreenPage
       title={t('comparison.title', 'Comparaison')}
@@ -178,12 +196,34 @@ export default function TranslationComparisonScreen() {
       }
     >
       <div className="mx-auto max-w-md">
-        {/* Sticky reference label */}
-        <div className="sticky top-0 z-10 mb-3 flex items-center justify-between rounded-xl bg-surface/95 px-3 py-2.5 shadow-sm backdrop-blur">
-          <span className="text-sm font-bold text-text-primary">{referenceLabel}</span>
-          <span className="text-xs text-text-muted">
-            {rows.length} {t('comparison.versions', 'versions')}
-          </span>
+        {/* Sticky reference label + target-language picker */}
+        <div className="sticky top-0 z-10 mb-3 space-y-2 rounded-xl bg-surface/95 px-3 py-2.5 shadow-sm backdrop-blur">
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-bold text-text-primary">{referenceLabel}</span>
+            <span className="text-xs text-text-muted">
+              {rows.length} {t('comparison.versions', 'versions')}
+            </span>
+          </div>
+          {availableLanguages.length > 1 && (
+            <div className="flex items-center gap-2">
+              <Globe size={13} className="shrink-0 text-primary" />
+              <select
+                value={targetLang ?? ''}
+                onChange={(e) => changeLanguage(e.target.value)}
+                className="h-7 min-w-0 flex-1 rounded-lg border border-[color:var(--color-border)] bg-surface-tint px-2 text-xs font-semibold text-text-primary outline-none"
+                aria-label={t('comparison.language', 'Langue de comparaison')}
+              >
+                <option value="">
+                  {t('comparison.autoLanguage', 'Langue de la version active')}
+                </option>
+                {availableLanguages.map((l) => (
+                  <option key={l} value={l}>
+                    {l.toUpperCase()}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
         </div>
 
         {/* Vertical scrollable list */}
@@ -192,7 +232,7 @@ export default function TranslationComparisonScreen() {
             <div
               key={r.id}
               className={cn(
-                'rounded-2xl bg-surface p-4 shadow-sm transition',
+                'bible-card rounded-2xl bg-surface p-4 shadow-sm transition',
                 r.id === bibleTranslation && 'ring-1 ring-primary/40',
               )}
             >
@@ -225,7 +265,12 @@ export default function TranslationComparisonScreen() {
               ) : r.error ? (
                 <p className="text-xs italic text-text-muted">{r.error}</p>
               ) : r.text ? (
-                <p className="font-serif text-[15px] leading-relaxed text-text-primary">{r.text}</p>
+                <p
+                  className="bible-text text-[15px] text-text-primary"
+                  style={{ fontFamily: 'var(--reading-font-family, "Source Serif 4", Georgia, serif)' }}
+                >
+                  {r.text}
+                </p>
               ) : (
                 <p className="text-xs italic text-text-muted">
                   {t('comparison.unavailable', 'Verset non disponible')}

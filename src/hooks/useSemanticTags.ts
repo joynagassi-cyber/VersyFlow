@@ -1,17 +1,18 @@
 /**
  * Semantic Tags Hook — UI glue for on-verse tag chips
  *
- * Bridges {@link SemanticService.verseTags} to React: given a
+ * Bridges {@link SemanticService.chapterConceptsResolved} to React: given a
  * `bookId:chapter` selection, returns the per-verse concept tags of that
  * chapter (with the verse text from the active translation) plus the
  * cross-references and community. Cancellation-safe; no business logic.
  *
- * Data source is the local SQLite semantic tables populated by
- * `npm run semantic:build` — fully offline, no network.
+ * The chapter's concepts are fetched in ONE `verse_concepts` range query
+ * (not N per-verse `recallCues` calls), so chapters beyond verse 30 are
+ * covered as well. Data source is the local SQLite semantic tables
+ * populated by `npm run semantic:build` — fully offline, no network.
  */
 
 import { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { getSemanticService } from '@/services/semantic-query-service';
 import type { Concept, Community } from '@/domains/semantic-memory';
 import { loadTranslationBooks } from '@/services/bible-text-service';
@@ -20,8 +21,10 @@ import { useSettingsStore } from '@/store/settings-store';
 export interface VerseTagEntry {
   /** Verse number within the chapter (display order). */
   verse: number;
-  /** Concept tags attached to this verse (0..n, sorted by role priority). */
+  /** Concept tags attached to this verse (0..n). */
   concepts: Concept[];
+  /** Bridge provenance per verse ('user' when manually tagged). */
+  source: string | null;
 }
 
 export interface ChapterSemanticTags {
@@ -82,51 +85,61 @@ export function useChapterSemanticTags(
     }
 
     setState({ tags: null, loading: true });
-    const keys: string[] = [];
-    for (let v = 1; v <= 30; v += 1) keys.push(`${bookId}:${chapter}:${v}`);
 
     void (async () => {
       const service = getSemanticService();
-      const [entries, texts, crossRefs, community] = await (async () => {
-        const byVerse = new Map<number, Concept[]>();
-        const xrefs: { targetKey: string; type: string }[] = [];
-        let comm: Community | null = null;
-        for (const key of keys) {
+      // One range query for the whole chapter's concept bridges + texts in
+      // parallel (replaces the old N×per-verse `recallCues` loop capped
+      // at verse 30).
+      const [resolved, books, sources] = await Promise.all([
+        service.chapterConceptsResolved(bookId, chapter),
+        loadTranslationBooks(translationId),
+        service.chapterConcepts(bookId, chapter).then((r) => r.sourcesByVerse),
+      ]);
+      if (cancelled) return;
+
+      const texts: Record<number, string> = {};
+      const book = books?.find((b) => b.id === bookId);
+      const ch = book?.chapters.find((c) => c.number === chapter);
+      ch?.verses.forEach((v) => {
+        texts[v.number] = v.text;
+      });
+
+      // Only verses that are tagged can carry cross-refs: when the chapter
+      // has no tagged verse, the per-verse recall pass is skipped entirely
+      // (the old loop's only heavy side).
+      const taggedKeys = Object.keys(resolved.conceptsByVerse);
+      const xrefs: { targetKey: string; type: string }[] = [];
+      if (taggedKeys.length > 0) {
+        const seen = new Set<string>();
+        for (const key of taggedKeys) {
           const cues = await service.verseView(key);
-          if (cues) {
-            if (cues.concepts.length > 0) {
-              const verseNum = Number(key.split(':')[2]);
-              byVerse.set(verseNum, cues.concepts.map((c) => c.concept));
-            }
-            for (const r of cues.relatedVerses) {
-              xrefs.push({ targetKey: r.verseKey, type: r.relation.type });
-            }
-            if (!comm && cues.community) comm = cues.community;
+          for (const r of cues.relatedVerses) {
+            const marker = `${r.verseKey}:${r.relation.type}`;
+            if (seen.has(marker)) continue;
+            seen.add(marker);
+            xrefs.push({ targetKey: r.verseKey, type: r.relation.type });
           }
         }
-        const map: Record<number, string> = {};
-        const books = await loadTranslationBooks(translationId);
-        const book = books?.find((b) => b.id === bookId);
-        const ch = book?.chapters.find((c) => c.number === chapter);
-        ch?.verses.forEach((v) => {
-          map[v.number] = v.text;
-        });
-        const sorted = [...byVerse.entries()].sort((a, b) => a[0] - b[0]);
-        return [
-          sorted.map(([verse, concepts]) => ({ verse, concepts })),
-          map,
-          xrefs,
-          comm,
-        ] as const;
-      })();
+      }
 
-      if (cancelled) return;
+      // Verse-key → verse-number entries, sorted by verse number. The
+      // user flag comes from the bridge rows' source, not the concept row.
+      const entries: VerseTagEntry[] = Object.entries(resolved.conceptsByVerse)
+        .map(([key, concepts]) => {
+          const verseNum = Number(key.split(':')[2]);
+          const source = (sources[key] ?? []).includes('user') ? 'user' : null;
+          return { verse: verseNum, concepts, source };
+        })
+        .filter((e) => e.verse > 0)
+        .sort((a, b) => a.verse - b.verse);
+
       setState({
         tags: {
           entries,
           verseTexts: texts,
-          crossRefs,
-          community,
+          crossRefs: xrefs,
+          community: resolved.community,
         },
         loading: false,
       });

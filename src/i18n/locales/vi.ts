@@ -40,7 +40,7 @@ export const vi = {
     analytics: 'Phân tích',
     collections: 'Bộ sưu tập',
     achievements: 'Thành tựu',
-    coach: 'Huấn luyện viên AI',
+
     search: 'Tìm kiếm',
     family: 'Gia đình',
     profile: 'Hồ sơ',
@@ -533,22 +533,6 @@ export const vi = {
     welcome: 'Chào mừng đến VersyFlow',
     welcomeSubtitle: 'Đăng nhập để đồng bộ hóa các câu thơ bạn đã học lên cloud, hoặc tiếp tục ở chế độ ngoại tuyến.'
   },
-  coach: {
-    title: 'Huấn luyện viên AI',
-    analyzing: 'Đang phân tích…',
-    weekly: 'Báo cáo tuần',
-    sessions: 'Phiên học',
-    verses: 'Câu thơ',
-    avgScore: 'Điểm TB.',
-    noReport: 'Chưa đủ dữ liệu để tạo báo cáo.',
-    dailyPlan: 'Kế hoạch hôm nay',
-    noPlan: 'Chưa có kế hoạch cho hôm nay.',
-    recommendations: 'Khuyến nghị',
-    noRecs: 'Hiện chưa có khuyến nghị nào.',
-    high: 'Quan trọng',
-    medium: 'Trung bình',
-    low: 'Thấp'
-  },
   mastery: {
     stats: 'Thống kê',
     memorized: 'Đã thuộc lòng',
@@ -642,7 +626,6 @@ export const vi = {
     compare: 'So sánh',
     semantic: 'Ngữ nghĩa',
     collections: 'Bộ sưu tập',
-    coach: 'Huấn luyện viên AI',
     search: 'Tìm kiếm'
   },
   settingsTab: {

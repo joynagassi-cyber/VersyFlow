@@ -40,7 +40,7 @@ export const id = {
     analytics: 'Analitik',
     collections: 'Koleksi',
     achievements: 'Pencapaian',
-    coach: 'Pelatih AI',
+
     search: 'Cari',
     family: 'Keluarga',
     profile: 'Profil',
@@ -533,22 +533,6 @@ export const id = {
     welcome: 'Selamat datang di VersyFlow',
     welcomeSubtitle: 'Masuk untuk menyinkronkan penghafalan Anda ke cloud, atau lanjutkan dalam mode lokal.'
   },
-  coach: {
-    title: 'Pelatih AI',
-    analyzing: 'Menganalisis…',
-    weekly: 'Laporan mingguan',
-    sessions: 'Sesi',
-    verses: 'Ayat',
-    avgScore: 'Rata-rata skor',
-    noReport: 'Data belum cukup untuk menghasilkan laporan.',
-    dailyPlan: 'Rencana hari ini',
-    noPlan: 'Belum ada rencana untuk hari ini.',
-    recommendations: 'Rekomendasi',
-    noRecs: 'Belum ada rekomendasi untuk saat ini.',
-    high: 'Penting',
-    medium: 'Sedang',
-    low: 'Rendah'
-  },
   mastery: {
     stats: 'Statistik',
     memorized: 'Ayat dihafal',
@@ -642,7 +626,6 @@ export const id = {
     compare: 'Bandingkan',
     semantic: 'Semantik',
     collections: 'Koleksi',
-    coach: 'Pelatih AI',
     search: 'Cari'
   },
   settingsTab: {

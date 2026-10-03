@@ -14,7 +14,6 @@ const NAV: [string, string, string][] = [
   ['/analytics/dashboard', 'nav.analytics', 'Analytics'],
   ['/collections', 'nav.collections', 'Collections'],
   ['/achievements', 'nav.achievements', 'Succes'],
-  ['/ai-coach', 'nav.coach', 'Coach IA'],
   ['/search', 'nav.search', 'Recherche'],
   ['/mastery', 'nav.mastery', 'Mastery'],
   ['/notifications', 'nav.notifications', 'Notifications'],

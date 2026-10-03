@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
-  Sparkles,
   CalendarClock,
   Compass,
   Library,
@@ -30,7 +29,6 @@ const ACTIONS: QuickAction[] = [
   { icon: Library, key: 'dock.versions', path: '/settings/available-translations', color: 'text-info', bg: 'bg-icon-bg-indigo' },
   { icon: GitCompareArrows, key: 'dock.compare', path: '/comparison/translation', color: 'text-warning', bg: 'bg-icon-bg-orange' },
   { icon: BrainCircuit, key: 'dock.semantic', path: '/semantic', color: 'text-primary', bg: 'bg-icon-bg-purple' },
-  { icon: Sparkles, key: 'dock.coach', path: '/ai-coach', color: 'text-warning', bg: 'bg-icon-bg-teal' },
   { icon: MessageCircleHeart, key: 'dock.family', path: '/family/home', color: 'text-error', bg: 'bg-icon-bg-rose' },
   { icon: Search, key: 'dock.search', path: '/search', color: 'text-text-secondary', bg: 'bg-surface-tint' },
 ];
@@ -42,7 +40,6 @@ const DOCK_LABELS: Record<string, string> = {
   versions: 'Versions',
   compare: 'Comparer',
   semantic: 'Sémantique',
-  coach: 'Coach IA',
   family: 'Famille',
   search: 'Recherche',
 };

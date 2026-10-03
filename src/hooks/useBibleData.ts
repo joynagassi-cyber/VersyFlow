@@ -4,11 +4,13 @@
  * Resolution:
  *   - Dev (Vite): the REAL Supabase Storage bucket is the source of truth.
  *     A cache miss triggers an automatic download from the bucket (with
- *     progress), so the Bible renders out of the box without any mock data.
+ *     real streaming progress), so the Bible renders out of the box without
+ *     any mock data.
  *   - Production / offline: bundled dataset → download cache → "unavailable".
  *
- * `download()` is also exposed for manual retry; `downloadPercent` tracks the
- * in-flight transfer.
+ * `download()` is also exposed for manual retry; `downloadPercent` +
+ * `downloadBytes` track the in-flight transfer, and `cancelDownload()`
+ * aborts it (AbortController → 'unavailable' status, byte counters reset).
  */
 
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -33,12 +35,16 @@ export interface UseBibleData {
   books: BibleBookData[] | null;
   status: BibleDataStatus;
   error: string | null;
-  /** 0–100 while a download is in flight; null otherwise. */
+  /** 0–100 (real, streamed) while a download is in flight; null otherwise. */
   downloadPercent: number | null;
+  /** Bytes received so far while downloading; null otherwise. */
+  downloadBytes: number | null;
   /** Catalog entry when the translation is available as a remote dataset. */
   remoteEntry: ReturnType<typeof findRemoteDatasetEntry>;
   /** Fetch the dataset from the Supabase bucket (no-op when cached). */
-  download: (onProgress?: (percent: number) => void) => Promise<void>;
+  download: (onProgress?: (percent: number, receivedBytes: number) => void) => Promise<void>;
+  /** Abort the in-flight download (no-op when not downloading). */
+  cancelDownload: () => void;
 }
 
 export function useBibleData(explicitTranslationId?: string): UseBibleData {
@@ -49,28 +55,48 @@ export function useBibleData(explicitTranslationId?: string): UseBibleData {
   const [status, setStatus] = useState<BibleDataStatus>('loading');
   const [error, setError] = useState<string | null>(null);
   const [downloadPercent, setDownloadPercent] = useState<number | null>(null);
+  const [downloadBytes, setDownloadBytes] = useState<number | null>(null);
   const autoStartedFor = useRef<string | null>(null);
+  const abortRef = useRef<AbortController | null>(null);
+
+  const cancelDownload = useCallback(() => {
+    abortRef.current?.abort();
+  }, []);
 
   const download = useCallback(
-    async (onProgress?: (percent: number) => void) => {
+    async (onProgress?: (percent: number, receivedBytes: number) => void) => {
+      abortRef.current?.abort();
+      const controller = new AbortController();
+      abortRef.current = controller;
       setStatus('downloading');
       setError(null);
       setDownloadPercent(0);
+      setDownloadBytes(0);
       try {
         const data = await downloadAndLoadTranslationBooks(
           translationId,
-          (p) => {
+          (p, received) => {
             setDownloadPercent(p);
-            onProgress?.(p);
+            setDownloadBytes(received);
+            onProgress?.(p, received);
           },
+          { signal: controller.signal },
         );
         setBooks(data);
         setStatus('ready');
       } catch (e) {
-        setError(e instanceof Error ? e.message : String(e));
-        setStatus('error');
+        if (controller.signal.aborted) {
+          // User cancelled — back to "not available locally", not an error.
+          setStatus('unavailable');
+          setError(null);
+        } else {
+          setError(e instanceof Error ? e.message : String(e));
+          setStatus('error');
+        }
       } finally {
         setDownloadPercent(null);
+        setDownloadBytes(null);
+        if (abortRef.current === controller) abortRef.current = null;
       }
     },
     [translationId],
@@ -102,6 +128,8 @@ export function useBibleData(explicitTranslationId?: string): UseBibleData {
 
     return () => {
       cancelled = true;
+      abortRef.current?.abort();
+      abortRef.current = null;
     };
   }, [translationId, download]);
 
@@ -113,8 +141,10 @@ export function useBibleData(explicitTranslationId?: string): UseBibleData {
     status,
     error,
     downloadPercent,
+    downloadBytes,
     remoteEntry,
     download,
+    cancelDownload,
   };
 }
 

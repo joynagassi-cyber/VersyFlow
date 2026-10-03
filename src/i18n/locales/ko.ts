@@ -40,7 +40,7 @@ export const ko = {
     analytics: '분석',
     collections: '컬렉션',
     achievements: '성취',
-    coach: 'AI 코치',
+
     search: '검색',
     family: '가족',
     profile: '프로필',
@@ -533,22 +533,6 @@ export const ko = {
     welcome: 'VersyFlow에 오신 것을 환영합니다',
     welcomeSubtitle: '클라우드에서 암기를 동기화하려면 로그인하거나, 로컬 모드로 계속하세요.'
   },
-  coach: {
-    title: 'AI 코치',
-    analyzing: '분석 중...',
-    weekly: '주별 보고서',
-    sessions: '세션',
-    verses: '말씀',
-    avgScore: '평균 점수',
-    noReport: '보고서를 생성할 데이터가 아직 충분하지 않습니다.',
-    dailyPlan: '오늘의 계획',
-    noPlan: '오늘의 계획이 없습니다.',
-    recommendations: '권장 사항',
-    noRecs: '현재 추천 사항이 없습니다.',
-    high: '중요',
-    medium: '보통',
-    low: '낮음'
-  },
   mastery: {
     stats: '통계',
     memorized: '암기된 말씀',
@@ -642,7 +626,6 @@ export const ko = {
     compare: '비교',
     semantic: '시맨틱',
     collections: '컬렉션',
-    coach: 'AI 코치',
     search: '검색'
   },
   settingsTab: {

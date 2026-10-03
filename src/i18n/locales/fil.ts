@@ -40,7 +40,7 @@ export const fil = {
     analytics: 'Pagsusuri',
     collections: 'Mga Koleksyon',
     achievements: 'Mga Tagumpay',
-    coach: 'AI Coach',
+
     search: 'Paghahanap',
     family: 'Pamilya',
     profile: 'Profile',
@@ -533,22 +533,6 @@ export const fil = {
     welcome: 'Maligayang pagdating sa VersyFlow',
     welcomeSubtitle: 'Mag-sign in upang i-sync ang iyong mga alalala sa cloud, o magpatuloy sa local mode.'
   },
-  coach: {
-    title: 'AI Coach',
-    analyzing: 'Nagagawa ang pagsusuri...',
-    weekly: 'Lingguwang rapor',
-    sessions: 'Mga Session',
-    verses: 'Mga Talata',
-    avgScore: 'Karaniwang score',
-    noReport: 'Hindi sapat pang datos upang makagawa ng rapor.',
-    dailyPlan: 'Plano ng araw',
-    noPlan: 'Wala pang plano para ngayon.',
-    recommendations: 'Mga Rekomendasyon',
-    noRecs: 'Walang rekomendasyon sa panahong ito.',
-    high: 'Mahalaga',
-    medium: 'Katamtaman',
-    low: 'Mahina'
-  },
   mastery: {
     stats: 'Istatistika',
     memorized: 'Mga nalilingon na talata',
@@ -642,7 +626,6 @@ export const fil = {
     compare: 'Ihambing',
     semantic: 'Semaniko',
     collections: 'Mga Koleksyon',
-    coach: 'AI Coach',
     search: 'Paghahanap'
   },
   settingsTab: {

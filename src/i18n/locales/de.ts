@@ -40,7 +40,7 @@ export const de = {
     analytics: 'Analysen',
     collections: 'Sammlungen',
     achievements: 'Erfolge',
-    coach: 'KI-Coach',
+
     search: 'Suche',
     family: 'Familie',
     profile: 'Profil',
@@ -533,22 +533,6 @@ export const de = {
     welcome: 'Willkommen zu VersyFlow',
     welcomeSubtitle: 'Melde dich an, um deine Memorierungen zu synchronisieren, oder fahre im lokalen Modus fort.'
   },
-  coach: {
-    title: 'KI-Coach',
-    analyzing: 'Analyse läuft…',
-    weekly: 'Wöchentlicher Bericht',
-    sessions: 'Sitzungen',
-    verses: 'Verse',
-    avgScore: 'Ø Punktzahl',
-    noReport: 'Noch nicht genügend Daten für einen Bericht.',
-    dailyPlan: 'Plan des Tages',
-    noPlan: 'Kein Plan für heute.',
-    recommendations: 'Empfehlungen',
-    noRecs: 'Aktuell keine Empfehlungen.',
-    high: 'Wichtig',
-    medium: 'Mittel',
-    low: 'Gering'
-  },
   mastery: {
     stats: 'Statistiken',
     memorized: 'Memorisierte Verse',
@@ -642,7 +626,6 @@ export const de = {
     compare: 'Vergleichen',
     semantic: 'Semantik',
     collections: 'Sammlungen',
-    coach: 'KI-Coach',
     search: 'Suche'
   },
   settingsTab: {

@@ -40,7 +40,7 @@ export const sd = {
     analytics: 'شماريات',
     collections: 'ڪوليڪشنز',
     achievements: 'ڪاميابيون',
-    coach: 'AI کوچ',
+
     search: 'ڳولا',
     family: 'خاندان',
     profile: 'پروفائل',
@@ -533,22 +533,6 @@ export const sd = {
     welcome: 'VersyFlow ۾ خوش آمد',
     welcomeSubtitle: 'ڪلائيڊ تي منسابتون هڻائڻ لاءِ لاگ اِن ڪريو، يا لاڪل موڊ ۾ جاري رکو.'
   },
-  coach: {
-    title: 'AI کوچ',
-    analyzing: 'تجزيو جاري آهي...',
-    weekly: 'هفتيوار رپورٽ',
-    sessions: 'سيشنز',
-    verses: 'آيتون',
-    avgScore: 'مئزين اسڪور',
-    noReport: 'رپورٽ ٺاهڻ لاءِ اڃان ڪافي ڊيٽا ناهي.',
-    dailyPlan: 'ڏينهن جي پلان',
-    noPlan: 'هاڻي لاءِ ڪو پلان ناهي.',
-    recommendations: 'سفارشون',
-    noRecs: 'هاڻي ڪا به سفارش ناهي.',
-    high: 'اهم',
-    medium: 'متوسط',
-    low: 'گهٽ'
-  },
   mastery: {
     stats: 'شماريات',
     memorized: 'ياد ٿيل آيتون',
@@ -642,7 +626,6 @@ export const sd = {
     compare: 'ڀيٽيو',
     semantic: 'مرني',
     collections: 'ڪوليڪشنز',
-    coach: 'AI کوچ',
     search: 'ڳولا'
   },
   settingsTab: {

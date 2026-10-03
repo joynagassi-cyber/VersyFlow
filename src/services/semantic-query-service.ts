@@ -94,6 +94,18 @@ export interface MyConceptEntry {
   label: string;
 }
 
+/**
+ * All concept bridges of a chapter, in one `verse_concepts` range query
+ * (`verse_id LIKE 'book:ch:%'`). The domain's per-verse `recallCues`
+ * composes N queries; this is the O(1) variant the chapter tag chips use.
+ */
+export interface ChapterVerseConcepts {
+  /** Canonical verse key → concept ids (deduplicated). */
+  conceptIdsByVerse: Record<string, string[]>;
+  /** Canonical verse key → bridge source ('user' / pipeline stage). */
+  sourcesByVerse: Record<string, string[]>;
+}
+
 /** Community detail view payload. */
 export interface CommunityViewData {
   community: Community;
@@ -201,19 +213,25 @@ export class SemanticService {
   /**
    * Canonical verse keys a concept is attached to. A concept is linked to
    * verses through two routes:
-   *   - direct `verse_concepts` bridges (`verse_id = concept` is not a
-   *     key; the bridge's `concept_id` is the concept) — resolved here
-   *     through the repositories the adapters expose, and
+   *   - direct `verse_concepts` bridges (the bridge's `concept_id` is the
+   *     concept) — resolved here through a single `verse_concepts` query,
+   *     and
    *   - indirectly via SAME_COMMUNITY / SHARED_CONCEPT verse edges that
    *     name this concept.
    * The first route is authoritative; the second only fills gaps when
    * no bridge rows exist yet for the concept (sparse pipeline output).
    */
   private async conceptsForConcept(conceptId: string): Promise<string[]> {
-    // The port API does not index concept → verse directly, so compose:
-    // (1) verse relations that name this concept,
+    // (1) Authoritative: direct verse_concepts bridges for this concept.
+    const db = await this.resolveDbForUserTags();
+    const direct = await db.getAll<{ verse_id: string }>(
+      `SELECT DISTINCT verse_id FROM verse_concepts WHERE concept_id = ?`,
+      [conceptId],
+    );
+    const keys = new Set<string>(direct.map((r) => r.verse_id));
+
+    // (2) Indirect: verse relations naming this concept (sparse pipeline).
     const relations = await this.verseRelationRepo.getCrossRefs(200);
-    const keys = new Set<string>();
     for (const r of relations) {
       if (r.concept_id === conceptId) {
         keys.add(r.verse_a);
@@ -221,6 +239,94 @@ export class SemanticService {
       }
     }
     return Array.from(keys);
+  }
+
+  /**
+   * All concept bridges of a whole chapter in a single range query.
+   * Replaces the N-per-verse `recallCues` loop: one `verse_concepts`
+   * read for `bookId:ch:%`, concepts then resolved in bulk.
+   */
+  async chapterConcepts(
+    bookId: string,
+    chapter: number,
+  ): Promise<ChapterVerseConcepts> {
+    const db = await this.resolveDbForUserTags();
+    const like = `${bookId}:${chapter}:`;
+    const rows = await db.getAll<{ verse_id: string; concept_id: string; source: string }>(
+      `SELECT verse_id, concept_id, source FROM verse_concepts WHERE verse_id LIKE ?`,
+      [`${like}%`],
+    );
+
+    const conceptIdsByVerse: Record<string, string[]> = {};
+    const sourcesByVerse: Record<string, string[]> = {};
+    const allConceptIds = new Set<string>();
+    for (const row of rows) {
+      (conceptIdsByVerse[row.verse_id] ??= []).push(row.concept_id);
+      const sources = (sourcesByVerse[row.verse_id] ??= []);
+      if (!sources.includes(row.source)) sources.push(row.source);
+      allConceptIds.add(row.concept_id);
+    }
+
+    // Resolve concept rows in one query (IN-list, capped for safety).
+    const ids = Array.from(allConceptIds).slice(0, 500);
+    const resolvable = new Set<string>();
+    if (ids.length > 0) {
+      const placeholders = ids.map(() => '?').join(', ');
+      const conceptRows = await db.getAll<{ id: string }>(
+        `SELECT id FROM concepts WHERE id IN (${placeholders})`,
+        ids,
+      );
+      for (const cr of conceptRows) resolvable.add(cr.id);
+    }
+    // Drop unresolvable ids (concept row deleted / out of sync).
+    for (const [key, list] of Object.entries(conceptIdsByVerse)) {
+      const filtered = list.filter((id) => resolvable.has(id));
+      if (filtered.length === 0) {
+        delete conceptIdsByVerse[key];
+        delete sourcesByVerse[key];
+      } else {
+        conceptIdsByVerse[key] = filtered;
+      }
+    }
+    return { conceptIdsByVerse, sourcesByVerse };
+  }
+
+  /**
+   * Resolve the concept rows behind a chapter's bridge rows: verse-key →
+   * `Concept[]` (deduplicated) + the community any of them belongs to
+   * (one lookup, not N). Composes `chapterConcepts` (single range query)
+   * with bulk concept resolution.
+   */
+  async chapterConceptsResolved(
+    bookId: string,
+    chapter: number,
+  ): Promise<{
+    conceptsByVerse: Record<string, Concept[]>;
+    community: Community | null;
+  }> {
+    const raw = await this.chapterConcepts(bookId, chapter);
+    const ids = Object.values(raw.conceptIdsByVerse).flat();
+    const resolved = new Map<string, Concept>();
+    const uniq = Array.from(new Set(ids));
+    await Promise.all(
+      uniq.map(async (id) => {
+        const c = await this.conceptRepo.getConcept(id);
+        if (c) resolved.set(id, c);
+      }),
+    );
+    const conceptsByVerse: Record<string, Concept[]> = {};
+    for (const [key, list] of Object.entries(raw.conceptIdsByVerse)) {
+      const out = list.map((id) => resolved.get(id)).filter((c): c is Concept => Boolean(c));
+      if (out.length > 0) conceptsByVerse[key] = out;
+    }
+    // One community pass over the union of concepts.
+    let community: Community | null = null;
+    if (uniq.length > 0) {
+      const all = await this.communityRepo.getCommunities();
+      const union = new Set(uniq);
+      community = all.find((cm) => cm.concept_ids.some((cid) => union.has(cid))) ?? null;
+    }
+    return { conceptsByVerse, community };
   }
 
   /** A few representative verse keys inside a community. */

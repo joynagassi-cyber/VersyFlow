@@ -40,7 +40,7 @@ export const am = {
     analytics: 'ተለመደ',
     collections: 'ሙሉ ስብስብ',
     achievements: 'ውጤቶች',
-    coach: 'ማጓጓዣ',
+
     search: 'ፍለጋ',
     family: 'ቤተሰብ',
     profile: 'ግለፀ',
@@ -533,22 +533,6 @@ export const am = {
     welcome: 'ወደ VersyFlow እንኳን ደህና መጡ',
     welcomeSubtitle: 'ማስታወሶችዎን ክላውድ ላይ ለማስተካካት ይግቡ፣ ወይም በራስ-ባዶ ኮድ ይቀጥሉ።'
   },
-  coach: {
-    title: 'AI ኦሪገና',
-    analyzing: 'ተለመደ በሂደት...',
-    weekly: 'የሳምንታዊ ሪፖርት',
-    sessions: 'ግምቶች',
-    verses: 'ማጣሪያዎች',
-    avgScore: 'አማካይ ስኮር',
-    noReport: 'ሪፖርት ለመፍጠር በእዚፉ በቂ ህሳብ የለም።',
-    dailyPlan: 'የዛሬው ዕቅድ',
-    noPlan: 'ለዛሬ ዕቅድ የለም።',
-    recommendations: 'ማስኖክያ',
-    noRecs: 'በእዚፉ ምንም ማስኖክያ የለም።',
-    high: 'ከፍተኛ',
-    medium: 'መካከለኛ',
-    low: 'ዝቅተኛ'
-  },
   mastery: {
     stats: 'ስታቲስቲክስ',
     memorized: 'ተመዘገቡ ማጣሪያዎች',
@@ -642,7 +626,6 @@ export const am = {
     compare: 'ግምት',
     semantic: 'ትርጉም',
     collections: 'ስብስቦች',
-    coach: 'AI ኦሪገና',
     search: 'ፍለጋ'
   },
   settingsTab: {

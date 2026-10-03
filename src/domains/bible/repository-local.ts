@@ -35,23 +35,28 @@ export type BibleVerseData = z.infer<typeof BibleVerseDataSchema>;
 
 export const BibleChapterDataSchema = z.object({
   number: z.number().int().positive(),
-  verses: z.array(BibleVerseDataSchema).nonempty(),
+  // A genuinely empty chapter slot is tolerated (some editions carry
+  // commentary-only gaps); lookups treat it as "no verses".
+  verses: z.array(BibleVerseDataSchema),
 });
 export type BibleChapterData = z.infer<typeof BibleChapterDataSchema>;
 
 export const BibleBookDataSchema = z.object({
-  id: z.string().min(2).max(10),
+  id: z.string().min(2).max(12),
   name: z.record(z.string()),
   testament: z.enum(['old', 'new']),
-  chapterCount: z.number().int().positive(),
+  // Zero is tolerated: some editions carry commentary-only book slots.
+  chapterCount: z.number().int().nonnegative(),
   orderIndex: z.number().int().positive().optional(),
-  chapters: z.array(BibleChapterDataSchema).nonempty(),
+  chapters: z.array(BibleChapterDataSchema),
 });
 export type BibleBookData = z.infer<typeof BibleBookDataSchema>;
 
 /** The full local dataset for one translation (normalized form). */
 export const BibleTranslationDataSchema = z.object({
-  id: z.string().min(2).max(10),
+  // Long catalogued ids (e.g. `it-diodati1885`, `uk-kulish1871`) exceed the
+  // historical 10-char cap; the dataset catalog is the source of truth.
+  id: z.string().min(2).max(16),
   language: z.string().length(2),
   name: z.string().min(1),
   year: z.number().int().positive().optional(),

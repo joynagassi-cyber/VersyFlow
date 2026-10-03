@@ -40,7 +40,7 @@ export const th = {
     analytics: 'การวิเคราะห์',
     collections: 'คอลเลกชัน',
     achievements: 'ความสำเร็จ',
-    coach: 'โค้ช AI',
+
     search: 'ค้นหา',
     family: 'ครอบครัว',
     profile: 'โปรไฟล์',
@@ -533,22 +533,6 @@ export const th = {
     welcome: 'ยินดีต้อนรับสู่ VersyFlow',
     welcomeSubtitle: 'เข้าสู่ระบบเพื่อซิงค์ข้อมูลการจดจำกับคลาวด์ หรือใช้แบบโหมดในเครื่อง'
   },
-  coach: {
-    title: 'โค้ช AI',
-    analyzing: 'กำลังวิเคราะห์...',
-    weekly: 'รายงานรายสัปดาห์',
-    sessions: 'เซสชัน',
-    verses: 'พระคัมภีร์บท',
-    avgScore: 'คะแนนเฉลี่ย',
-    noReport: 'ข้อมูลยังไม่เพียงพอสำหรับการสร้างรายงาน',
-    dailyPlan: 'แผนประจำวัน',
-    noPlan: 'ยังไม่มีแผนสำหรับวันนี้',
-    recommendations: 'ข้อแนะนำ',
-    noRecs: 'ยังไม่มีข้อแนะนำในขณะนี้',
-    high: 'สำคัญ',
-    medium: 'ปานกลาง',
-    low: 'น้อย'
-  },
   mastery: {
     stats: 'สถิติ',
     memorized: 'จดจำพระคัมภีร์บทแล้ว',
@@ -642,7 +626,6 @@ export const th = {
     compare: 'เปรียบเทียบ',
     semantic: 'ความหมาย',
     collections: 'คอลเลกชัน',
-    coach: 'โค้ช AI',
     search: 'ค้นหา'
   },
   settingsTab: {

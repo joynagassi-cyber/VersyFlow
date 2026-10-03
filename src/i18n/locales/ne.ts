@@ -40,7 +40,7 @@ export const ne = {
     analytics: 'अनालिटिक्स',
     collections: 'सङ्कलन',
     achievements: 'उपलब्धिहरू',
-    coach: 'एआई कोच',
+
     search: 'खोज',
     family: 'परिवार',
     profile: 'प्रोफाइल',
@@ -533,22 +533,6 @@ export const ne = {
     welcome: 'VersyFlowमा स्वागत छ',
     welcomeSubtitle: 'तपाईंको याद गर्नका लागि क्लाउडमा सिङ्क गर्न लगइन गर्नुहोस्, वा स्थानीय मोडमा जारी राख्नुहोस्।'
   },
-  coach: {
-    title: 'एआई कोच',
-    analyzing: 'विश्लेषण हुँदैछ...',
-    weekly: 'साप्ताहिक रिपोर्ट',
-    sessions: 'सत्रहरू',
-    verses: 'वचनहरू',
-    avgScore: 'औसत स्कोर',
-    noReport: 'रिपोर्ट जनरेट गर्न बस्ती डेटा छैन।',
-    dailyPlan: 'आजको योजना',
-    noPlan: 'आजको लागि कुनै योजना छैन।',
-    recommendations: 'सल्लाहहरू',
-    noRecs: 'हिले कुनै सल्लाह छैन।',
-    high: 'महत्त्वपूर्ण',
-    medium: 'मध्यम',
-    low: 'कम'
-  },
   mastery: {
     stats: 'सांख्यिकी',
     memorized: 'वचन orमा',
@@ -642,7 +626,6 @@ export const ne = {
     compare: 'तुलना गर्नुहोस्',
     semantic: 'अर्थत्मक',
     collections: 'सङ्कलन',
-    coach: 'एआई कोच',
     search: 'खोज'
   },
   settingsTab: {

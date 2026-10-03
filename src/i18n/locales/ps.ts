@@ -40,7 +40,7 @@ export const ps = {
     analytics: 'تحلیل',
     collections: 'کلیکشنونه',
     achievements: 'بریالیتوبونه',
-    coach: 'د AI کوښ',
+
     search: 'پلټنه',
     family: 'کورنۍ',
     profile: 'پروفایل',
@@ -533,22 +533,6 @@ export const ps = {
     welcome: 'د VersyFlow څخه ښه راغلاست',
     welcomeSubtitle: 'د ورژکو سمون لپاره ونځئ، یا په محلي حالت کې دوام ورکړئ.'
   },
-  coach: {
-    title: 'د AI کوښ',
-    analyzing: 'تحلیل ترسره کېږي...',
-    weekly: 'اونیز راپور',
-    sessions: 'سیشنونه',
-    verses: 'آیتونه',
-    avgScore: 'اوسط سکور.',
-    noReport: 'تر اوسه راپور جوړولو لپاره ډاټا نشته.',
-    dailyPlan: 'د ورځې پلان',
-    noPlan: 'نن لپاره پلان نشته.',
-    recommendations: 'پېژندونکي',
-    noRecs: 'هالنې پېژندونکی نه شته.',
-    high: 'مهم',
-    medium: 'منځنی',
-    low: 'کمزور'
-  },
   mastery: {
     stats: 'احصائيات',
     memorized: 'حفظ شوي ایتونه',
@@ -642,7 +626,6 @@ export const ps = {
     compare: 'پرتله',
     semantic: 'سمنټیک',
     collections: 'کلیکشنونه',
-    coach: 'د AI کوښ',
     search: 'پلټنه'
   },
   settingsTab: {

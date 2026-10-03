@@ -40,7 +40,7 @@ export const ku = {
     analytics: 'Analîtîk',
     collections: 'Koleksiyon',
     achievements: 'Serkeftin',
-    coach: 'Revanberê AI',
+
     search: 'Geriyan',
     family: 'Malbat',
     profile: 'Profil',
@@ -533,22 +533,6 @@ export const ku = {
     welcome: 'Bi xêrhatî li VersyFlow',
     welcomeSubtitle: 'Ji bo hêsaniya xwe şûrve bike an jî di moda li ser hê de berdewam bike.'
   },
-  coach: {
-    title: 'Revanberê AI',
-    analyzing: 'Şikanîn li ser e...',
-    weekly: 'Rapora heftane',
-    sessions: 'Seans',
-    verses: 'Vergik',
-    avgScore: 'Poina navînî',
-    noReport: 'Desta nabe raporek çêkirinê.',
-    dailyPlan: 'Plana rojê',
-    noPlan: 'Hîn tu plana ji bo nîha tune ye.',
-    recommendations: 'Pêşniyarkirin',
-    noRecs: 'Hîn tu pêşniyarkirineke tune ye.',
-    high: 'Girîng',
-    medium: 'Navîn',
-    low: 'Kêm'
-  },
   mastery: {
     stats: 'Stastîstîk',
     memorized: 'Vergikên hatine bîrkirin',
@@ -642,7 +626,6 @@ export const ku = {
     compare: 'Berawird bike',
     semantic: 'Semantîk',
     collections: 'Koleksiyon',
-    coach: 'Revanberê AI',
     search: 'Geriya'
   },
   settingsTab: {

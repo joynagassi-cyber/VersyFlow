@@ -40,7 +40,7 @@ export const nl = {
     analytics: 'Analytics',
     collections: 'Collecties',
     achievements: 'Prestaties',
-    coach: 'AI Coach',
+
     search: 'Zoeken',
     family: 'Familie',
     profile: 'Profiel',
@@ -533,22 +533,6 @@ export const nl = {
     welcome: 'Welkom bij VersyFlow',
     welcomeSubtitle: 'Log in om je onthoudingen met de cloud te synchroniseren, of ga door in lokale modus.'
   },
-  coach: {
-    title: 'AI Coach',
-    analyzing: 'Analyse loopt...',
-    weekly: 'Rapport hebdomadaire',
-    sessions: 'Sessions',
-    verses: 'Versets',
-    avgScore: 'Gem. score',
-    noReport: 'Nog niet genoeg gegevens om een rapport te maken.',
-    dailyPlan: 'Dagelijks plan',
-    noPlan: 'Geen plan voor vandaag.',
-    recommendations: 'Recommandations',
-    noRecs: 'Geen aanbevelingen op dit moment.',
-    high: 'Belangrijk',
-    medium: 'Middelniveau',
-    low: 'Laag'
-  },
   mastery: {
     stats: 'Statistieken',
     memorized: 'Versen onthouden',
@@ -642,7 +626,6 @@ export const nl = {
     compare: 'Vergelijken',
     semantic: 'Semantisch',
     collections: 'Collecties',
-    coach: 'AI Coach',
     search: 'Zoeken'
   },
   settingsTab: {

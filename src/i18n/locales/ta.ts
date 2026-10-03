@@ -40,7 +40,7 @@ export const ta = {
     analytics: 'புள்ளியியல்',
     collections: 'வெளிப்படுத்தல்',
     achievements: 'நட்புகள்',
-    coach: 'AI நண்பன்',
+
     search: 'தேடல்',
     family: 'குடும்பம்',
     profile: 'சுயவிவரம்',
@@ -533,22 +533,6 @@ export const ta = {
     welcome: 'VersyFlow இல் வரவேற்கிறோம்',
     welcomeSubtitle: 'மேகத்தில் உங்கள் நினைவுகளை ஒத்திசைக்க உள்நுழையவும் அல்லது உள்ளூர் முறையில் தொடரவும்.'
   },
-  coach: {
-    title: 'AI நண்பன்',
-    analyzing: 'பகுப்பாய்வு நடக்கிறது…',
-    weekly: 'வாராந்திர அறிக்கை',
-    sessions: 'நிகழ்நேரங்கள்',
-    verses: 'வசனங்கள்',
-    avgScore: 'சராசரி மதிப்பெண்',
-    noReport: 'அறிக்கையை உருவாக்க போதுமான தரவு இன்னும் இல்லை.',
-    dailyPlan: 'இன்றைய திட்டம்',
-    noPlan: 'இன்று திட்டம் இல்லை.',
-    recommendations: 'பரிந்துரைகள்',
-    noRecs: 'இதுவரை பரிந்துரைகள் இல்லை.',
-    high: 'முக்கியமானது',
-    medium: 'நடுத்தர',
-    low: 'குறைவு'
-  },
   mastery: {
     stats: 'புள்ளியியல்',
     memorized: 'நினைவு-கொள்ளப்பட்ட வசனங்கள்',
@@ -642,7 +626,6 @@ export const ta = {
     compare: 'ஒப்பிடு',
     semantic: 'தத்துவ',
     collections: 'கலெக்சன்கள்',
-    coach: 'AI நண்பன்',
     search: 'தேடல்'
   },
   settingsTab: {

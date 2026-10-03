@@ -55,13 +55,15 @@ export function ManuscriptView({
   }
 
   const selectedConcepts = selectedVerse != null ? tagsByVerse.get(selectedVerse) ?? [] : [];
+  const selectedIsUser = selectedVerse != null ? (tags?.entries.find((e) => e.verse === selectedVerse)?.source ?? null) === 'user' : false;
 
   const highlightKeys = useHighlightStore((s: HighlightState) => s.keys);
 
   return (
     <div className="mx-auto w-full">
-      {/* Continuous manuscript text */}
-      <div className="rounded-3xl bg-surface px-5 py-6 shadow-sm sm:px-7">
+      {/* Continuous manuscript text — .bible-card gets the premium
+         translucent/blur surface over the image theme (globals.css). */}
+      <div className="bible-card mx-auto rounded-3xl bg-surface px-5 py-6 shadow-sm sm:px-7">
         <div className="text-center">
           <span className="text-sm font-semibold text-text-primary">
             {t('bible.chapter', 'Chapitre')} {chapter}
@@ -113,7 +115,7 @@ export function ManuscriptView({
             <p className="mb-2 text-xs font-bold uppercase tracking-wide text-text-muted">
               {t('semantic.concepts', 'Concepts')} · {t('bible.verse', 'Verset')} {selectedVerse}
             </p>
-            <VerseSemanticTags concepts={selectedConcepts} />
+            <VerseSemanticTags concepts={selectedConcepts} userSource={selectedIsUser} />
           </div>
         )}
       </div>

@@ -40,7 +40,7 @@ export const hi = {
     analytics: 'विश्लेषण',
     collections: 'संग्रह',
     achievements: 'उपलब्धियाँ',
-    coach: 'एआई कोच',
+
     search: 'खोजें',
     family: 'परिवार',
     profile: 'प्रोफ़ाइल',
@@ -533,22 +533,6 @@ export const hi = {
     welcome: 'VersyFlow में स्वागत है',
     welcomeSubtitle: 'अपने श्लोक को क्लाउड में सिंक करने के लिए लॉगिन करें, या लोकल मोड में जारी रखें।'
   },
-  coach: {
-    title: 'एआई कोच',
-    analyzing: 'विश्लेषण जारी है…',
-    weekly: 'साप्ताहिक रिपोर्ट',
-    sessions: 'सेशन',
-    verses: 'आयत',
-    avgScore: 'औसत स्कोर',
-    noReport: 'रिपोर्ट बनाने के लिए अभी पर्याप्त डेटा नहीं।',
-    dailyPlan: 'आज का प्लान',
-    noPlan: 'आज के लिए कोई प्लान नहीं।',
-    recommendations: 'सिफ़ारिशें',
-    noRecs: 'अभी कोई सिफ़ारिश नहीं।',
-    high: 'महत्वपूर्ण',
-    medium: 'मध्यम',
-    low: 'कम'
-  },
   mastery: {
     stats: 'तथ्यांक',
     memorized: 'याद की गई आयतें',
@@ -642,7 +626,6 @@ export const hi = {
     compare: 'तुलना',
     semantic: 'अर्थिक',
     collections: 'संग्रह',
-    coach: 'एआई कोच',
     search: 'खोजें'
   },
   settingsTab: {

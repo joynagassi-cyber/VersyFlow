@@ -22,8 +22,10 @@ const MAX_QUEUE_SIZE = 1000;
 const RETENTION_DAYS = 730;
 
 /**
- * TelemetryService — Orchestrates anonymized data collection for AI coaching.
- * All data is anonymized and never contains PII.
+ * TelemetryService — Orchestrates anonymized data collection for product
+ * improvement. All data is anonymized and never contains PII. The anonymized
+ * usage signals collected here inform future features (e.g. a future AI
+ * coaching layer) but no PII or verse content is ever transmitted.
  */
 export class TelemetryService implements ITelemetry {
   private queue: TelemetryQueueItem[] = [];

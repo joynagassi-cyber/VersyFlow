@@ -40,7 +40,7 @@ export const tr = {
     analytics: 'Analitik',
     collections: 'Koleksiyonlar',
     achievements: 'Başarımlar',
-    coach: 'Yapay Zekâ Coach',
+
     search: 'Ara',
     family: 'Aile',
     profile: 'Profil',
@@ -533,22 +533,6 @@ export const tr = {
     welcome: "VersyFlow'a hoş geldiniz",
     welcomeSubtitle: 'Ezberlerinizi buluta eşitlemek için oturum açın veya yerel modda devam edin.'
   },
-  coach: {
-    title: 'Yapay Zekâ Coach',
-    analyzing: 'Analiz ediliyor...',
-    weekly: 'Haftalık rapor',
-    sessions: 'Oturumlar',
-    verses: 'Ayetler',
-    avgScore: 'Ort. puan',
-    noReport: 'Rapor oluşturmak için henüz yeterli veri yok.',
-    dailyPlan: 'Bugünün planı',
-    noPlan: 'Bugün için plan yok.',
-    recommendations: 'Öneriler',
-    noRecs: 'Şimdilik öneri yok.',
-    high: 'Önemli',
-    medium: 'Orta',
-    low: 'Düşük'
-  },
   mastery: {
     stats: 'İstatistikler',
     memorized: 'Ezberlenen ayetler',
@@ -642,7 +626,6 @@ export const tr = {
     compare: 'Karşılaştır',
     semantic: 'Dâli',
     collections: 'Koleksiyonlar',
-    coach: 'Yapay Zekâ Coach',
     search: 'Ara'
   },
   settingsTab: {

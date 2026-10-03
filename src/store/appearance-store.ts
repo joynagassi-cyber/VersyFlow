@@ -28,6 +28,12 @@ export interface AppearanceState {
   sessionGoal: number;
   focusMode: boolean;
   reminderTime: string;
+  /** Reading (Bible) typography settings — applied live via theme-fonts.ts. */
+  bibleFontFamily: string;
+  bibleFontSize: number;
+  bibleLineHeight: number;
+  bibleLetterSpacing: number;
+  bibleLineLength: number;
 
   setThemeMode: (mode: ThemeMode) => void;
   setAccent: (key: AccentKey) => void;
@@ -39,6 +45,11 @@ export interface AppearanceState {
   setSessionGoal: (count: number) => void;
   setFocusMode: (enabled: boolean) => void;
   setReminderTime: (time: string) => void;
+  setBibleFontFamily: (id: string) => void;
+  setBibleFontSize: (size: number) => void;
+  setBibleLineHeight: (value: number) => void;
+  setBibleLetterSpacing: (value: number) => void;
+  setBibleLineLength: (value: number) => void;
   resetToDefaults: () => void;
 }
 
@@ -54,6 +65,11 @@ const DEFAULTS: Pick<
   | 'sessionGoal'
   | 'focusMode'
   | 'reminderTime'
+  | 'bibleFontFamily'
+  | 'bibleFontSize'
+  | 'bibleLineHeight'
+  | 'bibleLetterSpacing'
+  | 'bibleLineLength'
 > = {
   themeMode: 'system',
   accent: DEFAULT_ACCENT,
@@ -65,6 +81,11 @@ const DEFAULTS: Pick<
   sessionGoal: 3,
   focusMode: false,
   reminderTime: '09:00',
+  bibleFontFamily: 'source-serif-4',
+  bibleFontSize: 19,
+  bibleLineHeight: 1.75,
+  bibleLetterSpacing: 0.01,
+  bibleLineLength: 42,
 };
 
 export const useAppearanceStore = create<AppearanceState>(() => ({
@@ -124,6 +145,35 @@ export const useAppearanceStore = create<AppearanceState>(() => ({
     void appearanceStorePersist.save();
   },
 
+  setBibleFontFamily(id: string) {
+    useAppearanceStore.setState({ bibleFontFamily: id });
+    void appearanceStorePersist.save();
+  },
+
+  setBibleFontSize(size: number) {
+    const clamped = Math.max(14, Math.min(28, Math.round(size)));
+    useAppearanceStore.setState({ bibleFontSize: clamped });
+    void appearanceStorePersist.save();
+  },
+
+  setBibleLineHeight(value: number) {
+    const clamped = Math.max(1.2, Math.min(2.2, value));
+    useAppearanceStore.setState({ bibleLineHeight: clamped });
+    void appearanceStorePersist.save();
+  },
+
+  setBibleLetterSpacing(value: number) {
+    const clamped = Math.max(-0.02, Math.min(0.12, value));
+    useAppearanceStore.setState({ bibleLetterSpacing: clamped });
+    void appearanceStorePersist.save();
+  },
+
+  setBibleLineLength(value: number) {
+    const clamped = Math.max(28, Math.min(80, Math.round(value)));
+    useAppearanceStore.setState({ bibleLineLength: clamped });
+    void appearanceStorePersist.save();
+  },
+
   resetToDefaults() {
     useAppearanceStore.setState(DEFAULTS);
     void appearanceStorePersist.save();
@@ -141,6 +191,11 @@ const PERSISTED_KEYS: (keyof AppearanceState)[] = [
   'sessionGoal',
   'focusMode',
   'reminderTime',
+  'bibleFontFamily',
+  'bibleFontSize',
+  'bibleLineHeight',
+  'bibleLetterSpacing',
+  'bibleLineLength',
 ];
 
 export const appearanceStorePersist = {
@@ -174,6 +229,11 @@ export const appearanceStorePersist = {
       sessionGoal: s.sessionGoal,
       focusMode: s.focusMode,
       reminderTime: s.reminderTime,
+      bibleFontFamily: s.bibleFontFamily,
+      bibleFontSize: s.bibleFontSize,
+      bibleLineHeight: s.bibleLineHeight,
+      bibleLetterSpacing: s.bibleLetterSpacing,
+      bibleLineLength: s.bibleLineLength,
     });
     await storage.set(STORAGE_KEY, value);
   },

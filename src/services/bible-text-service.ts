@@ -172,13 +172,19 @@ export async function loadTranslationBooks(
  * - Skips the network entirely when the cache already holds the expected
  *   checksum (instant second load, fully offline).
  * - Stale cache (checksum changed on the server) is re-downloaded.
- * - `onProgress` reports 0 → 100; intermediate granularity would need a
- *   streaming reader and is not worth it for ~7 MB payloads.
+ * - `onProgress(percent, receivedBytes)` reports real progress by streaming
+ *   the response body chunk by chunk, using the catalogued `sizeBytes` as
+ *   the denominator (graceful fallback when unknown).
+ * - Pass `options.signal` to abort an in-flight download.
  */
 export async function downloadAndLoadTranslationData(
   translationId: string,
-  onProgress?: (percent: number) => void,
-  options: { fetchImpl?: typeof fetch; cacheOverride?: IBibleDatasetCache } = {},
+  onProgress?: (percent: number, receivedBytes: number) => void,
+  options: {
+    fetchImpl?: typeof fetch;
+    cacheOverride?: IBibleDatasetCache;
+    signal?: AbortSignal;
+  } = {},
 ): Promise<BibleTranslationData> {
   const entry = findRemoteDatasetEntry(translationId);
   if (!entry) {
@@ -192,23 +198,55 @@ export async function downloadAndLoadTranslationData(
   const peek = options.cacheOverride ?? peekCache();
   const cached = await peek.get(translationId, entry.checksum);
   if (cached) {
+    onProgress?.(100, cached.text.length);
     return parseTranslationData(JSON.parse(cached.text));
+  }
+
+  if (options.signal?.aborted) {
+    throw new DOMException('Download aborted', 'AbortError');
   }
 
   // `fetch` must keep its global receiver (detached calls throw
   // "Illegal invocation" in WebKit).
-  const fetchImpl = options.fetchImpl ?? (globalThis.fetch.bind(globalThis) as typeof fetch);
+  const fetchImpl = options.fetchImpl ?? globalThis.fetch.bind(globalThis);
   const url = `${datasetBaseUrl()}/${translationId}.json`;
-  onProgress?.(0);
+  onProgress?.(0, 0);
 
-  const res = await fetchImpl(url);
+  const res = await fetchImpl(url, { signal: options.signal });
   if (!res.ok) {
     throw new Error(`Failed to download Bible dataset "${translationId}" (HTTP ${res.status})`);
   }
 
-  const text = await res.text();
-  onProgress?.(100);
+  const totalBytes = entry.sizeBytes;
 
+  // Stream the body so progress is real (not a 0→100 jump).
+  if (res.body && totalBytes > 0) {
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+    let received = 0;
+    let buf = '';
+    for (;;) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      received += value.byteLength;
+      buf += decoder.decode(value, { stream: true });
+      onProgress?.(Math.min(99, Math.round((received / totalBytes) * 100)), received);
+    }
+    buf += decoder.decode();
+    onProgress?.(100, received);
+    await peek.set({
+      id: translationId,
+      checksum: entry.checksum,
+      text: buf,
+      downloadedAt: Date.now(),
+    });
+    // The INSERT OR REPLACE above supersedes any stale checksum copy.
+    return parseTranslationData(JSON.parse(buf));
+  }
+
+  // Fallback: no readable body or unknown size — one-shot read.
+  const text = await res.text();
+  onProgress?.(100, text.length);
   await peek.set({
     id: translationId,
     checksum: entry.checksum,
@@ -222,8 +260,12 @@ export async function downloadAndLoadTranslationData(
 
 export async function downloadAndLoadTranslationBooks(
   translationId: string,
-  onProgress?: (percent: number) => void,
-  options: { fetchImpl?: typeof fetch; cacheOverride?: IBibleDatasetCache } = {},
+  onProgress?: (percent: number, receivedBytes: number) => void,
+  options: {
+    fetchImpl?: typeof fetch;
+    cacheOverride?: IBibleDatasetCache;
+    signal?: AbortSignal;
+  } = {},
 ): Promise<BibleBookData[]> {
   return (await downloadAndLoadTranslationData(translationId, onProgress, options)).books;
 }

@@ -40,7 +40,7 @@ export const ur = {
     analytics: 'تحلیلات',
     collections: 'مجموعے',
     achievements: 'کامیابیاں',
-    coach: 'ای آ کوچ',
+
     search: 'تلاش',
     family: 'خاندان',
     profile: 'پروفائل',
@@ -533,22 +533,6 @@ export const ur = {
     welcome: 'VersyFlow میں خوش آمدید',
     welcomeSubtitle: 'اپنی حفاظت کو کلاؤڈ میں ہم آہنگ کرنے کے لیے لاگ اِن کریں، یا مقامی موڈ میں جاری رکھیں۔'
   },
-  coach: {
-    title: 'ای آ کوچ',
-    analyzing: 'تحلیل جاری ہے...',
-    weekly: 'ہفتہ وار رپورٹ',
-    sessions: 'سیشنز',
-    verses: 'آئیں',
-    avgScore: 'اوسط اسکور',
-    noReport: 'رپورٹ بنانے کے لیے ابھی کافی ڈیٹا نہیں۔',
-    dailyPlan: 'آج کا منصوبہ',
-    noPlan: 'آج کا کوئی منصوبہ نہیں۔',
-    recommendations: 'تجویزات',
-    noRecs: 'ابھی کوئی تجویز نہیں۔',
-    high: 'اہم',
-    medium: 'درمیانی',
-    low: 'کم'
-  },
   mastery: {
     stats: 'شماریات',
     memorized: 'حفظ شدہ آئیں',
@@ -642,7 +626,6 @@ export const ur = {
     compare: 'موازنہ کریں',
     semantic: 'معناتی',
     collections: 'مجموعے',
-    coach: 'ای آ کوچ',
     search: 'تلاش'
   },
   settingsTab: {

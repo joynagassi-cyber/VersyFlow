@@ -40,7 +40,7 @@ export const tw = {
     analytics: 'Kukumbukira',
     collections: 'Zogulidwa',
     achievements: 'Zopatsira',
-    coach: 'Mwachimizira AI',
+
     search: 'Fufuzani',
     family: 'Banja',
     profile: 'Profailo',
@@ -533,22 +533,6 @@ export const tw = {
     welcome: 'Tikukambirana pa VersyFlow',
     welcomeSubtitle: 'Lowani kuti mutha kusintha zokumbukira pa cloud, kapena pitirizani popanda intaneti.'
   },
-  coach: {
-    title: 'Mwachimizira AI',
-    analyzing: 'Kuyereza…',
-    weekly: 'Zotsatira za sabata',
-    sessions: 'Masesi',
-    verses: 'Mawu',
-    avgScore: 'Kuchuluka kwapangʼono',
-    noReport: 'Mawu osakwanira kuti zotsatira zitsatire.',
-    dailyPlan: 'Nzeru za lero',
-    noPlan: 'Palibe nzeru za lero.',
-    recommendations: 'Zokopa',
-    noRecs: 'Palibe zokopa pano.',
-    high: 'Zofunika',
-    medium: 'Zakati',
-    low: 'Zosavuta'
-  },
   mastery: {
     stats: 'Zidzitsalo',
     memorized: 'Mawu akukumbukidwa',
@@ -642,7 +626,6 @@ export const tw = {
     compare: 'Linganizani',
     semantic: 'Kukumbukira kwamtundu',
     collections: 'Zokonda',
-    coach: 'Mwachimizira AI',
     search: 'Fufuzani'
   },
   settingsTab: {

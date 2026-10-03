@@ -40,7 +40,7 @@ export const zhHant = {
     analytics: '分析',
     collections: '收藏集',
     achievements: '成就',
-    coach: 'AI 教練',
+
     search: '搜尋',
     family: '家庭',
     profile: '檔案',
@@ -533,22 +533,6 @@ export const zhHant = {
     welcome: '歡迎來到 VersyFlow',
     welcomeSubtitle: '登入後可將您的記憶內容同步至雲端，或繼續本機模式。'
   },
-  coach: {
-    title: 'AI 教練',
-    analyzing: '分析中...',
-    weekly: '每週報告',
-    sessions: '學習次數',
-    verses: '經文',
-    avgScore: '平均評分',
-    noReport: '資料不足，無法產生報告。',
-    dailyPlan: '今日計畫',
-    noPlan: '今天沒有計畫。',
-    recommendations: '建議',
-    noRecs: '目前沒有建議。',
-    high: '重要',
-    medium: '中等',
-    low: '輕微'
-  },
   mastery: {
     stats: '統計',
     memorized: '已記憶經文',
@@ -642,7 +626,6 @@ export const zhHant = {
     compare: '比較',
     semantic: '語意',
     collections: '收藏集',
-    coach: 'AI 教練',
     search: '搜尋'
   },
   settingsTab: {

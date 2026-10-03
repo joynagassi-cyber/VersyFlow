@@ -40,7 +40,7 @@ export const ha = {
     analytics: 'Statistiki',
     collections: 'Madayin abubuwa',
     achievements: 'Manya',
-    coach: 'Malami na AI',
+
     search: 'Bincike',
     family: 'Iyali',
     profile: 'Bayani',
@@ -533,22 +533,6 @@ export const ha = {
     welcome: 'Kai gaba zuwa VersyFlow',
     welcomeSubtitle: 'Shiga don haɗa koyewunku cloud, ko ci gaba da modin gaba.'
   },
-  coach: {
-    title: 'Malami na AI',
-    analyzing: 'Ana bincike...',
-    weekly: 'Bayani na mako',
-    sessions: 'Sessiyoyi',
-    verses: 'Ayati',
-    avgScore: 'Matsakaicin muna',
-    noReport: 'Ba ku cika ba da bayanai don gina bayani.',
-    dailyPlan: 'Tsarin yau',
-    noPlan: 'Babu tsarin don yau.',
-    recommendations: 'Shawara',
-    noRecs: 'Babu shawara a halin yanzu.',
-    high: 'Muhimmanci',
-    medium: 'Matsakaici',
-    low: 'Ƙarami'
-  },
   mastery: {
     stats: 'Statistiki',
     memorized: 'Ayati da aka koyi',
@@ -642,7 +626,6 @@ export const ha = {
     compare: 'Kwatanta',
     semantic: "Ma'anomi",
     collections: 'Maɓi',
-    coach: 'Malami na AI',
     search: 'Bincike'
   },
   settingsTab: {

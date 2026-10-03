@@ -40,7 +40,7 @@ export const km = {
     analytics: 'ការវិភាគ',
     collections: 'កាណូនបង្រួប',
     achievements: 'ការសម្បូរ',
-    coach: 'តម្លាភ្នំ IA',
+
     search: 'ស្វែងរក',
     family: 'គ្រួសារ',
     profile: 'ប្រវត្តិរូប',
@@ -533,22 +533,6 @@ export const km = {
     welcome: 'សូមស្វាគមន៍មកកាន់ VersyFlow',
     welcomeSubtitle: 'ចូលដើម្បីរៀបចំការចងចាំរបស់អ្នកក្នុង cloud, ឬបន្តដោយរបៀបម៉ាស៊ីន។'
   },
-  coach: {
-    title: 'តម្លាភ្នំ IA',
-    analyzing: 'កំពុងវិភាគ...',
-    weekly: 'របាយការណ៍សប្តាហ៍',
-    sessions: 'សម័យ',
-    verses: 'ពាក្យរូប',
-    avgScore: 'ពិន្ទុមធ្យម.',
-    noReport: 'ទិន្នន័យមិនគ្រប់គ្រាន់ដើម្បីបង្កើតរបាយការណ៍។',
-    dailyPlan: 'ផែនការថ្ងៃ',
-    noPlan: 'មិនមានផែនការសម្រាប់ថ្ងៃនេះទេ។',
-    recommendations: 'អនុសាសន៍',
-    noRecs: 'មិនមានអនុសាសន៍នៅឡើយទេ។',
-    high: 'សំខាន់',
-    medium: 'មធ្យម',
-    low: 'ទាប'
-  },
   mastery: {
     stats: 'ស្ថិតិ',
     memorized: 'បានចងចាំពាក្យរូប',
@@ -642,7 +626,6 @@ export const km = {
     compare: 'ប្រៀបធៀប',
     semantic: 'រត់មកវិញ',
     collections: 'កាណូនបង្រួប',
-    coach: 'តម្លាភ្នំ IA',
     search: 'ស្វែងរក'
   },
   settingsTab: {

@@ -40,7 +40,7 @@ export const fa = {
     analytics: 'تحلیل',
     collections: 'مجموعه‌ها',
     achievements: 'دستاوردها',
-    coach: 'مربی هوش مصنوعی',
+
     search: 'جستجو',
     family: 'خانواده',
     profile: 'پروفایل',
@@ -533,22 +533,6 @@ export const fa = {
     welcome: 'به VersyFlow خوش آمدید',
     welcomeSubtitle: 'برای همگام‌سازی حفظ‌هایتان با فضای ابری وارد شوید یا در حالت محلی ادامه دهید.'
   },
-  coach: {
-    title: 'مربی هوش مصنوعی',
-    analyzing: 'در حال تحلیل...',
-    weekly: 'گزارش هفتگی',
-    sessions: 'جلسه‌ها',
-    verses: 'آیات',
-    avgScore: 'میانگین امتیاز',
-    noReport: 'هنوز داده کافی برای تولید گزارش وجود ندارد.',
-    dailyPlan: 'برنامه روزانه',
-    noPlan: 'برای امروز برنامه‌ای وجود ندارد.',
-    recommendations: 'توصیه‌ها',
-    noRecs: 'در حال حاضر توصیه‌ای وجود ندارد.',
-    high: 'مهم',
-    medium: 'متوسط',
-    low: 'کم'
-  },
   mastery: {
     stats: 'آمار',
     memorized: 'آیات حفظ‌شده',
@@ -642,7 +626,6 @@ export const fa = {
     compare: 'مقایسه',
     semantic: 'معنایی',
     collections: 'مجموعه‌ها',
-    coach: 'مربی هوش مصنوعی',
     search: 'جستجو'
   },
   settingsTab: {

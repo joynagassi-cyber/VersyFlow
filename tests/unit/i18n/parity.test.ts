@@ -42,8 +42,7 @@ const PRIMARY_NAMESPACES = [
 // Secondary namespaces: fr/en only today. This test reports the gap
 // instead of failing, so we can track completion over time.
 const SECONDARY_NAMESPACES = [
-  'nav', 'notifications', 'profile', 'notFound', 'auth', 'coach',
-  'mastery', 'collections', 'achievements', 'analytics', 'memory',
+  'nav', 'notifications', 'profile', 'notFound', 'auth', 'mastery', 'collections', 'achievements', 'analytics', 'memory',
   'history', 'dock', 'settingsTab',
 ] as const;
 

@@ -40,7 +40,7 @@ export const ar = {
     analytics: 'التحليلات',
     collections: 'المجموعات',
     achievements: 'الإنجازات',
-    coach: 'المدرب الذكي',
+
     search: 'البحث',
     family: 'العائلة',
     profile: 'الملف الشخصي',
@@ -533,22 +533,6 @@ export const ar = {
     welcome: 'مرحبًا بك في VersyFlow',
     welcomeSubtitle: 'سجّل الدخول لمزامنة حفظاتك سحابيًا، أو تابع في الوضع المحلي.'
   },
-  coach: {
-    title: 'المدرب الذكي',
-    analyzing: 'جارٍ التحليل...',
-    weekly: 'تقرير أسبوعي',
-    sessions: 'جلسات',
-    verses: 'آيات',
-    avgScore: 'متوسط الدرجات',
-    noReport: 'لا توجد بيانات كافية بعد لتوليد تقرير.',
-    dailyPlan: 'خطة اليوم',
-    noPlan: 'لا توجد خطة لليوم.',
-    recommendations: 'توصيات',
-    noRecs: 'لا توجد توصيات حاليًا.',
-    high: 'مرتفع',
-    medium: 'متوسط',
-    low: 'منخفض'
-  },
   mastery: {
     stats: 'إحصاءات',
     memorized: 'آيات محفوظة',
@@ -642,7 +626,6 @@ export const ar = {
     compare: 'قارن',
     semantic: 'دلالي',
     collections: 'مجموعات',
-    coach: 'المدرب الذكي',
     search: 'بحث'
   },
   settingsTab: {

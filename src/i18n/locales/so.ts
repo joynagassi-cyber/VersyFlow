@@ -40,7 +40,7 @@ export const so = {
     analytics: 'Fahma',
     collections: 'Ururinta',
     achievements: 'Guulaha',
-    coach: 'Tabiibe Cunt',
+
     search: 'Raadi',
     family: 'Qoys',
     profile: 'Profiil',
@@ -533,22 +533,6 @@ export const so = {
     welcome: 'Ku soo dhawoow VersyFlow',
     welcomeSubtitle: 'Isdiiwaangeliso si aad u aqoonsid xoqyaadaada cloud-ka, ama sii wad si shakhsi ah.'
   },
-  coach: {
-    title: 'Tabiibe Cunt',
-    analyzing: 'Faham la socda...',
-    weekly: 'Warbixin isbuux',
-    sessions: 'Isbuux',
-    verses: 'Maqaal',
-    avgScore: 'Midda dhibcaad',
-    noReport: 'Weli ma jirto macluumaad la filayo warbixin.',
-    dailyPlan: 'Qorsaha maanta',
-    noPlan: "Qorshe la'aan maanta.",
-    recommendations: 'Talooyin',
-    noRecs: "Talooyin la'aan hadda.",
-    high: 'Muhiim ah',
-    medium: 'Dhexdhexaad',
-    low: 'Hoose'
-  },
   mastery: {
     stats: 'Isku xiridho',
     memorized: 'Maqaal la xafiday',
@@ -642,7 +626,6 @@ export const so = {
     compare: 'Heli',
     semantic: "Ma'anaadka",
     collections: 'Ururinta',
-    coach: 'Tabiibe Cunt',
     search: 'Raadi'
   },
   settingsTab: {

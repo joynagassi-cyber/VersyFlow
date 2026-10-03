@@ -40,7 +40,7 @@ export const bn = {
     analytics: 'অ্যানালিটিক্স',
     collections: 'সংগ্রহ',
     achievements: 'সফলতা',
-    coach: 'এআই কোচ',
+
     search: 'অনুসন্ধান',
     family: 'পরিবার',
     profile: 'প্রোফাইল',
@@ -533,22 +533,6 @@ export const bn = {
     welcome: 'ভার্সিফ্লোতে স্বাগতম',
     welcomeSubtitle: 'ক্লাউডে আপনার স্মার্তি সিংক করতে লগইন করুন, অথবা লোকাল মোডে কনটিনিউ করুন।'
   },
-  coach: {
-    title: 'এআই কোচ',
-    analyzing: 'অ্যানালাইসিস চলছে...',
-    weekly: 'সাপ্তাহিক রিপোর্ট',
-    sessions: 'সেশন',
-    verses: 'বাস্তি',
-    avgScore: 'গড় স্কোর',
-    noReport: 'রিপোর্ত তৈরি করতে প্রচুর ডেটাস্ট নেই।',
-    dailyPlan: 'আজকের প্ল্যান',
-    noPlan: 'আজকের জন্য কোনো প্ল্যান নেই।',
-    recommendations: 'প্রস্তাব',
-    noRecs: 'এখনো কোনো প্রস্তাব নেই।',
-    high: 'গুরুত্বপূর্ণ',
-    medium: 'মাঝারি',
-    low: 'কম'
-  },
   mastery: {
     stats: 'পরিসংখ্যান',
     memorized: 'মনে রাখা বাস্তি',
@@ -642,7 +626,6 @@ export const bn = {
     compare: 'তুলনা করুন',
     semantic: 'সামেন্টিক',
     collections: 'সংগ্রহ',
-    coach: 'এআই কোচ',
     search: 'অনুসন্ধান'
   },
   settingsTab: {

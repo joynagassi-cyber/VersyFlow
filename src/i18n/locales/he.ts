@@ -40,7 +40,7 @@ export const he = {
     analytics: 'אנליטיקה',
     collections: 'אוספים',
     achievements: 'הישגים',
-    coach: 'מאמן AI',
+
     search: 'חיפוש',
     family: 'משפחה',
     profile: 'פרופיל',
@@ -533,22 +533,6 @@ export const he = {
     welcome: 'ברוך הבא אל VersyFlow',
     welcomeSubtitle: 'התחבר כדי לסנכרן את הזיכרונות שלך בענן, או המשך במצב מקומי.'
   },
-  coach: {
-    title: 'מאמן AI',
-    analyzing: 'מנתח…',
-    weekly: 'דוח שבועי',
-    sessions: 'סשנים',
-    verses: 'פסוקים',
-    avgScore: 'ציון ממוצע',
-    noReport: 'אין עדיין מספיק נתונים כדי ליצור דוח.',
-    dailyPlan: 'תוכנית להיום',
-    noPlan: 'אין תוכנית להיום.',
-    recommendations: 'המלצות',
-    noRecs: 'אין המלצות כרגע.',
-    high: 'חשוב',
-    medium: 'בינוני',
-    low: 'נמוך'
-  },
   mastery: {
     stats: 'סטטיסטיקה',
     memorized: 'פסוקים שנמחרו',
@@ -642,7 +626,6 @@ export const he = {
     compare: 'השוואה',
     semantic: 'סמנטי',
     collections: 'אוספים',
-    coach: 'מאמן AI',
     search: 'חיפוש'
   },
   settingsTab: {

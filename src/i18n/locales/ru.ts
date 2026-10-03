@@ -40,7 +40,7 @@ export const ru = {
     analytics: 'Аналитика',
     collections: 'Коллекции',
     achievements: 'Достижения',
-    coach: 'ИИ-коуч',
+
     search: 'Поиск',
     family: 'Семья',
     profile: 'Профиль',
@@ -547,22 +547,6 @@ export const ru = {
     welcome: 'Добро пожаловать в VersyFlow',
     welcomeSubtitle: 'Connectez-vous pour synchroniser vos mémorisations sur le cloud, ou continuez en mode local.'
   },
-  coach: {
-    title: 'ИИ-коуч',
-    analyzing: 'Анализ…',
-    weekly: 'Недельный отчёт',
-    sessions: 'Сессии',
-    verses: 'Стихи',
-    avgScore: 'Ср. оценка',
-    noReport: 'Пока недостаточно данных для отчёта.',
-    dailyPlan: 'План на день',
-    noPlan: "Aucun plan pour aujourd'hui.",
-    recommendations: 'Рекомендации',
-    noRecs: 'Пока нет рекомендаций.',
-    high: 'Важно',
-    medium: 'Средне',
-    low: 'Низко'
-  },
   mastery: {
     stats: 'Статистика',
     memorized: 'Заучено стихов',
@@ -656,7 +640,6 @@ export const ru = {
     compare: 'Сравнить',
     semantic: 'Семантика',
     collections: 'Коллекции',
-    coach: 'ИИ-коуч',
     search: 'Поиск'
   },
   settingsTab: {

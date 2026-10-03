@@ -40,7 +40,7 @@ export const ig = {
     analytics: 'Nyocha',
     collections: 'Ngwakọta',
     achievements: 'Nsonaazụ',
-    coach: 'Onyeisi AI',
+
     search: 'Chọta',
     family: 'Ezinụlọ',
     profile: 'Profaili',
@@ -533,22 +533,6 @@ export const ig = {
     welcome: "Ịrịba n'ọzịrị na VersyFlow",
     welcomeSubtitle: "Banye ka ị ga-esike ncheta gị n'elu ebili mmiri, ma ọ bụ gaa n'ihu n'usoro onwe gị."
   },
-  coach: {
-    title: 'Onyeisi AI',
-    analyzing: 'Na-enyocha...',
-    weekly: 'Nzaghari nke izu',
-    sessions: 'Usoro',
-    verses: 'Okwu',
-    avgScore: 'Akara ịga nke ọma',
-    noReport: 'Enweghị oge oge irè maka akara ị ga-achọpụta.',
-    dailyPlan: "Plan n'ụbọchị a",
-    noPlan: "Enweghị plan n'ụbọchị a.",
-    recommendations: 'Otu ị ga-emeso ọzọ',
-    noRecs: 'Enweghị otu ị ga-emeso ọzọ ugbu a.',
-    high: 'Dị mkpa',
-    medium: 'Na-etiti',
-    low: 'Dị nwayọ'
-  },
   mastery: {
     stats: 'Nyocha',
     memorized: 'Okwu echetara',
@@ -642,7 +626,6 @@ export const ig = {
     compare: 'Tụnyere',
     semantic: 'Nsogbu okwu',
     collections: 'Nzukọ',
-    coach: 'Onyeisi AI',
     search: 'Chọta'
   },
   settingsTab: {

@@ -80,7 +80,7 @@ const NAMESPACES = [
   'profile',
   'notFound',
   'auth',
-  'coach',
+
   'mastery',
   'collections',
   'achievements',

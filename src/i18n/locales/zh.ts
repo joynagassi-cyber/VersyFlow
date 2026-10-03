@@ -40,7 +40,7 @@ export const zh = {
     analytics: '分析',
     collections: '收藏集',
     achievements: '成就',
-    coach: 'AI 教练',
+
     search: '搜索',
     family: '家庭',
     profile: '资料',
@@ -533,22 +533,6 @@ export const zh = {
     welcome: '欢迎使用 VersyFlow',
     welcomeSubtitle: '登录以在云端同步您的背诵进度，或以本地模式继续。'
   },
-  coach: {
-    title: 'AI 教练',
-    analyzing: '分析中...',
-    weekly: '每周报告',
-    sessions: '会话',
-    verses: '经文',
-    avgScore: '平均得分',
-    noReport: '数据尚不足以生成报告。',
-    dailyPlan: '今日计划',
-    noPlan: '今日暂无计划。',
-    recommendations: '推荐',
-    noRecs: '暂无推荐。',
-    high: '高',
-    medium: '中',
-    low: '低'
-  },
   mastery: {
     stats: '统计',
     memorized: '已背诵经文',
@@ -642,7 +626,6 @@ export const zh = {
     compare: '对比',
     semantic: '语义',
     collections: '收藏集',
-    coach: 'AI 教练',
     search: '搜索'
   },
   settingsTab: {

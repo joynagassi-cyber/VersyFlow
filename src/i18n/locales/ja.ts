@@ -40,7 +40,7 @@ export const ja = {
     analytics: '分析',
     collections: 'コレクション',
     achievements: '実績',
-    coach: 'AIコーチ',
+
     search: '検索',
     family: '家族',
     profile: 'プロフィール',
@@ -533,22 +533,6 @@ export const ja = {
     welcome: 'VersyFlow へようこそ',
     welcomeSubtitle: 'ログインして暗唱をクラウドに同期するか、ローカルモードで続行できます。'
   },
-  coach: {
-    title: 'AIコーチ',
-    analyzing: '解析中...',
-    weekly: '週間レポート',
-    sessions: 'セッション',
-    verses: '聖句',
-    avgScore: '平均スコア',
-    noReport: 'レポート生成に必要なデータがまだ足りません。',
-    dailyPlan: '本日のおすすめ',
-    noPlan: '本日のおすすめはありません。',
-    recommendations: 'おすすめ',
-    noRecs: '現在、おすすめはありません。',
-    high: '重要',
-    medium: '中',
-    low: '低'
-  },
   mastery: {
     stats: '統計',
     memorized: '暗唱した聖句',
@@ -642,7 +626,6 @@ export const ja = {
     compare: '比較',
     semantic: 'セマンティック',
     collections: 'コレクション',
-    coach: 'AIコーチ',
     search: '検索'
   },
   settingsTab: {

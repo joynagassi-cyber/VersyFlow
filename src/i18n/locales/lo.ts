@@ -40,7 +40,7 @@ export const lo = {
     analytics: 'ການວິເຄາະ',
     collections: 'ຊຸດຂໍ້ມູນ',
     achievements: 'ຜົນສຳເຜັດ',
-    coach: 'ໂທດຊ້າຍ AI',
+
     search: 'ຄົ້ນຫາ',
     family: 'ຄອບຄົວ',
     profile: 'ໂປຣໄຟລ໌',
@@ -533,22 +533,6 @@ export const lo = {
     welcome: 'ຍິນດີຕ້ອນຮັບສູ່ VersyFlow',
     welcomeSubtitle: 'ເຊື່ອມຕໍ່ເພື່ອດຶງດູດການຈື່ຈຳຂອງທ່ານໄປຮອດຄ້າວ ຫຼື ຕໍ່ສືບໃນຮູບແບບທາງຍ້ອນການ.'
   },
-  coach: {
-    title: 'ໂທດຊ້າຍ AI',
-    analyzing: 'ກຳລັງວິເຄາະ...',
-    weekly: 'ບົດລາຍງານຕໍ່ອາທິດ',
-    sessions: 'ຊຸດ',
-    verses: 'ຫົວຂໍ້',
-    avgScore: 'ຄະແນນສະເລ່ຍ.',
-    noReport: 'ຍັງບໍ່ມີຂໍ້ມູນພໍທີ່ຈະສ້າງບົດລາຍງານ.',
-    dailyPlan: 'ແຜນຂອງມື້ນີ້',
-    noPlan: 'ບໍ່ມີແຜນສຳລັບມື້ນີ້.',
-    recommendations: 'ການແນະນຳ',
-    noRecs: 'ຍັງບໍ່ມີການແນະນຳ.',
-    high: 'ສໍາຄັນ',
-    medium: 'ກາງຂອງ',
-    low: 'ຕ່ໍາ'
-  },
   mastery: {
     stats: 'ສະຖິຕິ',
     memorized: 'ຫົວຂໍ້ທີ່ໄດ້ຈື່ຈຳແລ້ວ',
@@ -642,7 +626,6 @@ export const lo = {
     compare: 'ປຽບທຽບ',
     semantic: 'ສາມາດຕັດສິນໃຈ',
     collections: 'ຊຸດຂໍ້ມູນ',
-    coach: 'ໂທດຊ້າຍ AI',
     search: 'ຄົ້ນຫາ'
   },
   settingsTab: {

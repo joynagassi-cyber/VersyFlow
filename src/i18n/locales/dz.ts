@@ -40,7 +40,7 @@ export const dz = {
     analytics: 'གྲངས་འགྲེལ།',
     collections: 'ཚོགས་བྱས།',
     achievements: 'སྤྱི་སྤྲིན།',
-    coach: 'སློབ་དཔོན་།',
+
     search: 'འཚོལ།',
     family: 'གྲོས་ཚོགས།',
     profile: 'ངོས་གནས།',
@@ -533,22 +533,6 @@ export const dz = {
     welcome: 'VersyFlow ལ་བཀྲ་ཤིས་བདེ་ལེགས།',
     welcomeSubtitle: 'རྟགས་འཛིན་ལ་དམིགས་བསལ་དུ་མཐུད་ཐག་བྱེད་དམ། གནས་སྟངས་ལ་བཀོད་པ་དང་མཐའ་མཚམས་བྱེད།'
   },
-  coach: {
-    title: 'སློབ་དཔོན་།',
-    analyzing: 'ལེགས་སྐྲུན་བྱེད་བཞིན...',
-    weekly: 'རིགས་ཀྱི་ལོགས་འགྲེལ།',
-    sessions: 'རིགས་',
-    verses: 'རྣམ་ཐར་',
-    avgScore: 'ཨང་གྲངས་བྲེལ་མཆོད།',
-    noReport: 'ལོགས་འགྲེལ་བཟོ་བར་གནས་ཚུལ་མ་འདང་།',
-    dailyPlan: 'ཉིན་གྱི་ལམ་ཡུལ།',
-    noPlan: 'ཉིན་འདིར་ལམ་ཡུལ་མེད།',
-    recommendations: 'བརྟགས་པ་གཏོར་བའི་བསྟན་བཅོས།',
-    noRecs: 'ད་ལྟར་བརྟགས་པ་གཏོར་བའི་བསྟན་བཅོས་མེད།',
-    high: 'དམིགས་བསལ།',
-    medium: 'བར་དམ།',
-    low: 'གཞན།'
-  },
   mastery: {
     stats: 'འགྲེལ་པ།',
     memorized: 'རྣམ་ཐར་བཞག་ཟིན།',
@@ -642,7 +626,6 @@ export const dz = {
     compare: 'བསྡུར།',
     semantic: 'རྣམ་གསལ།',
     collections: 'ཚོགས་བྱས།',
-    coach: 'སློབ་དཔོན་།',
     search: 'འཚོལ།'
   },
   settingsTab: {

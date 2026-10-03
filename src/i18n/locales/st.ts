@@ -40,7 +40,7 @@ export const st = {
     analytics: 'Tlhahlo-kekeng',
     collections: 'Liphetoho',
     achievements: 'Lithabo',
-    coach: 'Moenjini AI',
+
     search: 'Pata',
     family: 'Lelapa',
     profile: 'Profaile',
@@ -533,22 +533,6 @@ export const st = {
     welcome: 'O amohetsoe ho VersyFlow',
     welcomeSubtitle: 'Hokahanya ho kopanya ho hopola ha hau ho pholoketsing, kapa u tsamaee ka mokhoa oa haufi.'
   },
-  coach: {
-    title: 'Moenjini AI',
-    analyzing: 'Tlhahlo-kekeng e tsamaya…',
-    weekly: 'Kakaretso ea beke',
-    sessions: 'Lisechaba',
-    verses: 'Lentšu',
-    avgScore: 'Mehloso e tloaetseng.',
-    noReport: 'Ha ho lefatse le lengata ho hlahisa kakaretso.',
-    dailyPlan: 'Porojeke ea la kajeno',
-    noPlan: 'Ha ho projoekeng ea la kajeno.',
-    recommendations: 'Likhetho tse kgothelelitsoeng',
-    noRecs: 'Ha ho likhetho tse kgothelelitsoeng kajeno.',
-    high: 'Bohlokoa',
-    medium: 'Bohareng',
-    low: 'E tlase'
-  },
   mastery: {
     stats: 'Lipalo-palo',
     memorized: 'Lentšu le hopotsoeng',
@@ -642,7 +626,6 @@ export const st = {
     compare: 'Bapisa',
     semantic: 'Semantiki',
     collections: 'Liphetoho',
-    coach: 'Moenjini AI',
     search: 'Batla'
   },
   settingsTab: {

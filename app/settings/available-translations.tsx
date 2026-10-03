@@ -8,20 +8,24 @@
  *
  * The active translation is persisted through the settings store +
  * PowerSync preference repository.
+ *
+ * Downloads show a real streaming progress bar (percent + Mo received /
+ * total) driven by the `bible-text-service` chunk reader, with a dedicated
+ * cancel button (AbortController).
  */
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
   BookOpen,
   Check,
   Download,
-  Loader2,
   Languages,
   AlertCircle,
   ChevronRight,
   CircleCheck,
+  X,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useSettingsStore } from '@/store/settings-store';
@@ -38,7 +42,7 @@ import { eventBus, DomainEventTypes } from '@/domains/events';
 
 type DownloadState =
   | { status: 'idle' }
-  | { status: 'loading' }
+  | { status: 'downloading'; percent: number; receivedBytes: number }
   | { status: 'ready' }
   | { status: 'error'; message: string };
 
@@ -62,6 +66,7 @@ export default function AvailableTranslationsScreen() {
 
   const [entries] = useState<BibleDatasetCatalogEntry[]>(BIBLE_DATASET_CATALOG);
   const [states, setStates] = useState<Record<string, EntryState>>({});
+  const abortRef = useRef<AbortController | null>(null);
 
   // Probe which datasets are already resolvable locally (bundled or cached)
   // without forcing a download.
@@ -85,12 +90,32 @@ export default function AvailableTranslationsScreen() {
     };
   }, [entries]);
 
+  useEffect(() => () => abortRef.current?.abort(), []);
+
   const handleDownload = async (id: string) => {
-    setStates((prev) => ({ ...prev, [id]: { state: { status: 'loading' }, available: prev[id]?.available ?? false } }));
+    const entry = entries.find((e) => e.id === id);
+    abortRef.current?.abort();
+    const controller = new AbortController();
+    abortRef.current = controller;
+    setStates((prev) => ({ ...prev, [id]: { state: { status: 'downloading', percent: 0, receivedBytes: 0 }, available: prev[id]?.available ?? false } }));
     try {
-      await downloadAndLoadTranslationBooks(id);
+      await downloadAndLoadTranslationBooks(
+        id,
+        (percent, receivedBytes) => {
+          setStates((prev) => ({
+            ...prev,
+            [id]: { state: { status: 'downloading', percent, receivedBytes }, available: prev[id]?.available ?? false },
+          }));
+        },
+        { signal: controller.signal },
+      );
       setStates((prev) => ({ ...prev, [id]: { state: { status: 'ready' }, available: true } }));
     } catch (error) {
+      if (controller.signal.aborted) {
+        // User cancelled — back to idle.
+        setStates((prev) => ({ ...prev, [id]: { state: { status: 'idle' }, available: prev[id]?.available ?? false } }));
+        return;
+      }
       setStates((prev) => ({
         ...prev,
         [id]: {
@@ -98,7 +123,15 @@ export default function AvailableTranslationsScreen() {
           available: prev[id]?.available ?? false,
         },
       }));
+    } finally {
+      if (abortRef.current === controller) abortRef.current = null;
+      void entry;
     }
+  };
+
+  const handleCancel = (id: string) => {
+    abortRef.current?.abort();
+    setStates((prev) => ({ ...prev, [id]: { state: { status: 'idle' }, available: prev[id]?.available ?? false } }));
   };
 
   const handleSelect = async (id: string) => {
@@ -146,15 +179,17 @@ export default function AvailableTranslationsScreen() {
     const state = st.state;
     const info = getTranslationDisplayInfo(entry.id);
     const isLocal = st.available;
+    const downloading = state.status === 'downloading';
     return (
       <div
         key={entry.id}
         className={cn(
           'rounded-2xl bg-surface p-4 shadow-sm transition',
           isActive && 'ring-2 ring-primary',
+          downloading && 'ring-1 ring-primary/30',
         )}
       >
-        <div className="flex items-center gap-3">
+        <div className="flex items-start gap-3">
           <span
             className={cn(
               'flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl',
@@ -182,23 +217,52 @@ export default function AvailableTranslationsScreen() {
               <Languages size={12} />
               {info.language} · {formatBytes(entry.sizeBytes)}
             </p>
+
+            {/* Real streaming progress — percent + Mo reçus / total + cancel */}
+            {downloading && (
+              <div className="mt-2.5">
+                <div className="mb-1 flex items-center justify-between text-[11px] font-semibold">
+                  <span className="text-primary">{Math.round(state.percent)} %</span>
+                  <span className="tabular-nums text-text-muted">
+                    {formatBytes(state.receivedBytes)} / {formatBytes(entry.sizeBytes)}
+                  </span>
+                </div>
+                <div
+                  className="h-1.5 w-full overflow-hidden rounded-full bg-surface-tint"
+                  role="progressbar"
+                  aria-valuenow={Math.round(state.percent)}
+                  aria-valuemin={0}
+                  aria-valuemax={100}
+                >
+                  <div
+                    className="h-full rounded-full bg-primary transition-[width] duration-200 ease-out"
+                    style={{ width: `${Math.max(2, state.percent)}%` }}
+                  />
+                </div>
+              </div>
+            )}
+
             {state.status === 'error' && (
-              <p className="mt-1 flex items-center gap-1 text-xs text-error">
+              <p className="mt-1.5 flex items-center gap-1 text-xs text-error">
                 <AlertCircle size={12} /> {state.message}
               </p>
             )}
           </div>
 
           {/* Per-row action */}
-          {state.status === 'loading' ? (
-            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-surface-tint text-primary">
-              <Loader2 size={20} className="animate-spin" />
-            </span>
+          {downloading ? (
+            <button
+              onClick={() => handleCancel(entry.id)}
+              className="flex h-10 shrink-0 items-center gap-1.5 rounded-full bg-surface-tint px-3.5 text-xs font-bold text-text-secondary transition active:scale-95"
+            >
+              <X size={15} />
+              {t('common.cancel', 'Annuler')}
+            </button>
           ) : isLocal ? (
             <button
               onClick={() => void handleSelect(entry.id)}
               className={cn(
-                'flex h-10 items-center gap-2 rounded-full px-4 text-sm font-semibold transition active:scale-95',
+                'flex h-10 shrink-0 items-center gap-2 rounded-full px-4 text-sm font-semibold transition active:scale-95',
                 isActive ? 'bg-primary text-white' : 'bg-surface-tint text-primary',
               )}
             >
@@ -208,7 +272,7 @@ export default function AvailableTranslationsScreen() {
           ) : (
             <button
               onClick={() => void handleDownload(entry.id)}
-              className="flex h-10 items-center gap-2 rounded-full bg-primary px-4 text-sm font-semibold text-white shadow-sm transition active:scale-95"
+              className="flex h-10 shrink-0 items-center gap-2 rounded-full bg-primary px-4 text-sm font-semibold text-white shadow-sm transition active:scale-95"
             >
               <Download size={16} />
               {t('common.download', 'Télécharger')}

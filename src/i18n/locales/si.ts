@@ -40,7 +40,7 @@ export const si = {
     analytics: 'විශ්ලේෂණය',
     collections: 'එකතුවන්',
     achievements: 'සාධන',
-    coach: 'AI කෝච්චි',
+
     search: 'අසන්න',
     family: 'මෛතෘකය',
     profile: 'පරාවචනය',
@@ -533,22 +533,6 @@ export const si = {
     welcome: 'VersyFlow වෙත සාදරයෙන් පිළිගනිමු',
     welcomeSubtitle: 'වූල්ඩ්පරතායක ස්මරණය සමමිලනය කිරීමට ප්‍රවේශ වන්න, හෝ පැතිර ක්‍රමයෙන් ඉදිරියට යන්න.'
   },
-  coach: {
-    title: 'AI කෝච්චි',
-    analyzing: 'විශ්ලේෂණය කරමින්...',
-    weekly: 'සතිපතා වාර්තාව',
-    sessions: 'සාඬා',
-    verses: 'පාඨ',
-    avgScore: 'සාමාන්‍ය ලකුණ',
-    noReport: 'වාර්තාවක් ජනනය කිරීමට තවමත් ප්‍රමාණවත් දත්ත නැත.',
-    dailyPlan: 'දින සැලැස්ම',
-    noPlan: 'අද සඳහා සැලැස්මක් නැත.',
-    recommendations: 'අවසාන',
-    noRecs: 'දැනට අවසාන නැත.',
-    high: 'වැදගත්',
-    medium: 'මධ්‍යම',
-    low: 'අඩු'
-  },
   mastery: {
     stats: 'සංඛ්‍යාලේඛන',
     memorized: 'ස්මරණය කරන ලද පාඨ',
@@ -642,7 +626,6 @@ export const si = {
     compare: 'සසාපෙන්න',
     semantic: 'අර්ථාත්මක',
     collections: 'එකතුවන්',
-    coach: 'AI කෝච්චි',
     search: 'අසන්න'
   },
   settingsTab: {
