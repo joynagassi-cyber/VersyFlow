@@ -217,5 +217,55 @@ Conserver `settings.theme` en **lecture seule** côté client :
 
 ---
 
+## ADR-011: Coach IA — Sponsor-Triggered, No-Op par défaut
+
+**Date**: 2026-10-03
+**Statut**: ACCEPTED
+**Contexte**:
+L'écran `/ai-coach` est déjà branché (routage + QuickDock + HamburgerMenu) et
+le domaine `src/capabilities/ai-coach/` définit l'interface `IAiCoachPort` +
+le store Zustand `useAICoachCapability`. L'adapter actif est
+`NoOpAiCoachAdapter` : zéro appel LLM, zéro coût token. La question
+architecturale posée : faut-il brancher un vrai moteur LLM maintenant ?
+**Décision**:
+**Non.** Le Coach IA reste **inerte** (no-op) tant qu'un financement
+partenaire/sponsor n'est pas disponible. À l'échelle « millions
+d'utilisateurs », 4–8 appels LLM/utilisateur/jour est économiquement
+insoutenable sans un modèle de revenus dédié. Le port `IAiCoachPort`
+(existant) est la surface de relance : au moment du relaunch on
+injecte un `LlmAiCoachAdapter` **sans toucher à l'UI, au store ni aux
+routes** — seul le binding du port change.
+**Conséquences positives**:
+- Zéro coût opérationnel aujourd'hui ; le no-op ne fait aucune requête.
+- Les 9 écrans existants (QuickDock, HamburgerMenu, `/ai-coach`) restent
+  en place et peuvent être masqués/affichés par un simple flag.
+- La future intégration LLM est un drop-in (adapter swap via
+  `setPort`), pas un refactoring.
+**Conséquences négatives**:
+- L'écran `/ai-coach` affiche aujourd'hui « Pas encore assez de
+  données » (no-op) — UX décevante pour les curieux.
+- Risque de « feature fantôme » (menu qui mène à un écran vide) si on
+  ne masque pas le flag.
+**Alternatives rejetées**:
+- LLM en temps réel par session : coût prohibitif, latence perçue,
+  dérive de l'offline-first.
+- Rapport batch quotidien (1 LLM/utilisateur/jour) : mieux mais reste
+  non viable sans sponsor ; garder pour le relaunch.
+- Rules-based (FSRS + stats) sans LLM : bon plan B gratuit mais hors
+  scope de cet ADR ; à évaluer si le sponsor tarde.
+
+**Critère de relance (gate)**:
+Le flag `coach.isEnabled` (settings store ou feature-flag) passe à
+`true` **uniquement** quand :
+1. Un adapter LLM concret satisfait `IAiCoachPort` ET
+2. Un modèle de revenus (sponsor/partenaire, ou pack premium) couvre
+   le coût token prévu.
+
+Jusqu'à ce gate : adapter no-op par défaut, écran visible (menu
+conservé) mais le contenu vide est acceptable — la valeur de la
+feature est dans le pipeline de données, pas dans l'interface.
+
+---
+
 *Ce document est maintenu par Guardian et mis à jour à chaque décision architecturale majeure.*
 *Pour proposer une nouvelle décision, ouvrir une PR avec template ADR.*
