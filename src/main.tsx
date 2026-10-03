@@ -14,6 +14,17 @@ import { I18nextProvider } from 'react-i18next';
 import { Suspense, lazy, useEffect } from 'react';
 import '@/styles/globals.css';
 
+// Serif font bundle for bible text (referenced by `--vf-font-bible` and
+// `tokens.typography.bible = 'Source Serif 4'`). Self-hosted — no network
+// fetch, works offline. Other @fontsource packages are available for
+// theme font choices (playfair-display, lora, merriweather, etc.) but
+// are not imported by default — add them on demand when a theme
+// references a specific one.
+import '@fontsource/source-serif-4/400.css';
+import '@fontsource/source-serif-4/400-italic.css';
+import '@fontsource/source-serif-4/600.css';
+import '@fontsource/source-serif-4/700.css';
+
 // Lazy loaded route pages
 const TabLayout = lazy(() => import('../app/(tabs)/_layout'));
 const HomePage = lazy(() => import('../app/(tabs)/index'));
