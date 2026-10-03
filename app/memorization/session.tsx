@@ -10,11 +10,8 @@ import { X, Loader2, ArrowLeft, ArrowRight, CheckCircle } from 'lucide-react';
 import FullScreenPage from '@/components/layout/FullScreenPage';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import {
-  LocalBibleRepository,
-  InMemoryBibleTextSource,
-} from '@/domains/bible/repository-local';
-import { BibleJsonFileSource } from '@/infrastructure/bible/bible-json-source';
+import { LocalBibleRepository } from '@/domains/bible/repository-local';
+import { resolveBibleTextSource } from '@/services/bible-text-service';
 import { getFsrsEngine } from '@/services/fsrs-factory';
 import { MemorizationSessionEngine } from '@/domains/memorization/session-engine';
 import { Rating } from '@/domains/fsrs';
@@ -29,12 +26,6 @@ import { eventBus, DomainEventTypes } from '@/domains/events';
 const resolveUserId = async (): Promise<string | null> =>
   getSyncUserIdProvider().resolveUserId();
 
-function createBibleSource() {
-  if (typeof fetch === 'function') {
-    return new BibleJsonFileSource({ dataDir: 'data/bible' });
-  }
-  return new InMemoryBibleTextSource({});
-}
 
 /** Parse a "Jean 3:16" / "Psalm 23" style reference into coordinates */
 function parseReference(reference: string) {
@@ -60,6 +51,7 @@ export default function MemorizationSession() {
   const [reference, setReference] = useState('');
   const [progress, setProgress] = useState(0);
   const [complete, setComplete] = useState(false);
+  const [downloadPercent, setDownloadPercent] = useState<number | null>(null);
 
   const bookIdParam = params.get('bookId') ?? '';
   const chapterParam = parseInt(params.get('chapter') ?? '0', 10);
@@ -107,7 +99,9 @@ export default function MemorizationSession() {
 
     async function init() {
       try {
-        const source = createBibleSource();
+        const source = await resolveBibleTextSource(translationId, (p) =>
+          setDownloadPercent(p),
+        );
         const bibleRepo = new LocalBibleRepository(source);
         const fsrsEngine = getFsrsEngine();
         const memorizationEngine = new MemorizationSessionEngine(bibleRepo, fsrsEngine);
@@ -223,9 +217,24 @@ export default function MemorizationSession() {
       <FullScreenPage title={t('session.memorizing', 'Mémorisation')} backPath="/tabs/home" showBack={false}>
         <div className="flex flex-col items-center justify-center py-24">
           <Loader2 size={36} className="animate-spin text-primary" />
-          <p className="mt-3 text-sm text-text-tertiary">
-            {t('session.startingPassage', 'Démarrage du passage...')}
-          </p>
+          {downloadPercent !== null ? (
+            <>
+              <p className="mt-3 text-sm font-semibold text-text-primary">
+                {t('session.downloadingTranslation', 'Téléchargement de la traduction...')}
+              </p>
+              <div className="mt-3 h-1.5 w-48 overflow-hidden rounded-full bg-surface-tint">
+                <div
+                  className="h-full rounded-full bg-primary transition-all"
+                  style={{ width: `${downloadPercent}%` }}
+                />
+              </div>
+              <p className="mt-2 text-xs text-text-tertiary">{downloadPercent}%</p>
+            </>
+          ) : (
+            <p className="mt-3 text-sm text-text-tertiary">
+              {t('session.startingPassage', 'Démarrage du passage...')}
+            </p>
+          )}
         </div>
       </FullScreenPage>
     );

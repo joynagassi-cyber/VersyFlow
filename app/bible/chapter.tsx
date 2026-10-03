@@ -12,11 +12,10 @@ import { useSearchParams, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Download, Loader2, AlertCircle } from 'lucide-react';
 import FullScreenPage from '@/components/layout/FullScreenPage';
-import { cn } from '@/lib/utils';
 import { BIBLE_BOOKS } from '@/domains/bible/entities';
 import { useChapterSemanticTags } from '@/hooks/useSemanticTags';
 import { useBibleData } from '@/hooks/useBibleData';
-import VerseSemanticTags from '@/components/semantic/VerseSemanticTags';
+import ManuscriptView from '@/components/bible/ManuscriptView';
 import VerseActionBar from '@/components/bible/VerseActionBar';
 
 function formatBytes(bytes: number): string {
@@ -42,17 +41,10 @@ export default function ChapterScreen() {
     useBibleData();
 
   const { tags } = useChapterSemanticTags(book.id, chapter);
-  const tagsByVerse = new Map((tags?.entries ?? []).map((e) => [e.verse, e.concepts]));
 
   const chapterData = books?.find((x) => x.id === bookId)?.chapters.find(
     (c) => c.number === chapter,
   );
-  const verseNumbers = useMemo(() => {
-    if (chapterData?.verses.length) {
-      return chapterData.verses.map((v) => v.number);
-    }
-    return Array.from({ length: 30 }, (_, i) => i + 1);
-  }, [chapterData]);
   const verseTexts = useMemo(() => {
     const map: Record<number, string> = {};
     chapterData?.verses.forEach((v) => {
@@ -124,42 +116,25 @@ export default function ChapterScreen() {
           </div>
         )}
 
-        {verseNumbers.map((n) => {
-          const text = verseTexts[n];
-          const isSelected = selectedVerse === n;
-          return (
-            <div
-              key={n}
-              onClick={() => setSelectedVerse(n)}
-              className={cn(
-                'cursor-pointer rounded-2xl bg-surface p-4 shadow-sm transition',
-                isSelected && 'ring-2 ring-primary',
-              )}
-            >
-              <div className="flex items-start gap-3">
-                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-surface-tint text-xs font-bold text-primary">
-                  {n}
-                </span>
-                {text ? (
-                  <p className="bible-text flex-1 text-base leading-6 text-text-secondary">
-                    {text}
-                  </p>
-                ) : status === 'loading' ? (
-                  <div className="h-4 flex-1 animate-pulse rounded bg-surface-tint" />
-                ) : text !== undefined ? (
-                  <p className="flex-1 text-sm italic text-text-muted">
-                    {t('bible.emptyVerse', 'Verset vide dans cette traduction')}
-                  </p>
-                ) : (
-                  <p className="flex-1 text-sm italic text-text-muted">
-                    {t('errors.verseNotFound', 'Verset non disponible dans cette traduction')}
-                  </p>
-                )}
-              </div>
-              <VerseSemanticTags concepts={tagsByVerse.get(n) ?? []} />
-            </div>
-          );
-        })}
+        {/* Manuscript flow: the chapter as one continuous serif text,
+            with tappable inline verse numbers. */}
+        {status === 'loading' ? (
+          <div className="space-y-3 rounded-3xl bg-surface p-5 shadow-sm">
+            <div className="h-4 w-3/4 animate-pulse rounded bg-surface-tint" />
+            <div className="h-4 w-2/3 animate-pulse rounded bg-surface-tint" />
+            <div className="h-4 w-full animate-pulse rounded bg-surface-tint" />
+            <div className="h-4 w-1/2 animate-pulse rounded bg-surface-tint" />
+          </div>
+        ) : (
+          <ManuscriptView
+            bookId={book.id}
+            chapter={chapter}
+            verses={chapterData?.verses ?? []}
+            tags={tags}
+            selectedVerse={selectedVerse}
+            onSelectVerse={setSelectedVerse}
+          />
+        )}
 
         {/* Contextual action bar for the selected verse */}
         {selectedVerse != null && (

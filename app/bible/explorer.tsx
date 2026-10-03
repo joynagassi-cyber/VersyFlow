@@ -27,7 +27,7 @@ import { BIBLE_BOOKS } from '@/domains/bible/entities';
 import { bibleTranslationDisplayName } from '@/services/bible-translation-names';
 import { useChapterSemanticTags } from '@/hooks/useSemanticTags';
 import { useBibleData } from '@/hooks/useBibleData';
-import VerseSemanticTags from '@/components/semantic/VerseSemanticTags';
+import ManuscriptView from '@/components/bible/ManuscriptView';
 import VerseActionBar from '@/components/bible/VerseActionBar';
 
 type ViewMode = 'books' | 'chapters' | 'verses';
@@ -71,7 +71,6 @@ export default function BibleExplorerScreen() {
   }, [selectedBookId, selectedChapter]);
 
   const { tags } = useChapterSemanticTags(selectedBookId, selectedChapter);
-  const tagsByVerse = new Map((tags?.entries ?? []).map((e) => [e.verse, e.concepts]));
 
   const activeBookData =
     selectedBookId != null ? books?.find((b) => b.id === selectedBookId) : undefined;
@@ -79,14 +78,6 @@ export default function BibleExplorerScreen() {
     selectedChapter != null
       ? activeBookData?.chapters.find((c) => c.number === selectedChapter)
       : undefined;
-
-  // Verse numbers: real data when available, otherwise a fallback range.
-  const verseNumbers = useMemo(() => {
-    if (activeChapterData?.verses.length) {
-      return activeChapterData.verses.map((v) => v.number);
-    }
-    return selectedChapter ? Array.from({ length: 30 }, (_, i) => i + 1) : [];
-  }, [activeChapterData, selectedChapter]);
 
   const verseTexts = useMemo(() => {
     const map: Record<number, string> = {};
@@ -269,7 +260,7 @@ export default function BibleExplorerScreen() {
         </div>
       )}
 
-      {/* Verses */}
+      {/* Verses — manuscript flow */}
       {viewMode === 'verses' && selectedBook && selectedChapter && (
         <div className="flex flex-col gap-3">
           {/* Download-on-demand banner */}
@@ -320,45 +311,25 @@ export default function BibleExplorerScreen() {
             </div>
           )}
 
-          {verseNumbers.map((n) => {
-            const text = verseTexts[n];
-            const isSelected = selectedVerse === n;
-            return (
-              <div
-                key={n}
-                onClick={() => setSelectedVerse(n)}
-                className={cn(
-                  'cursor-pointer rounded-2xl bg-surface p-4 shadow-sm transition',
-                  isSelected && 'ring-2 ring-primary',
-                )}
-              >
-                <div className="mb-2 flex items-center gap-2">
-                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-surface-tint text-xs font-bold text-primary">
-                    {n}
-                  </span>
-                  {isSelected && (
-                    <span className="text-xs font-semibold text-primary">
-                      {t('bible.selected', 'Sélectionné')}
-                    </span>
-                  )}
-                </div>
-                {text ? (
-                  <p className="bible-text text-base leading-6 text-text-secondary">{text}</p>
-                ) : status === 'loading' ? (
-                  <div className="h-4 w-3/4 animate-pulse rounded bg-surface-tint" />
-                ) : text !== undefined ? (
-                  <p className="text-sm italic text-text-muted">
-                    {t('bible.emptyVerse', 'Verset vide dans cette traduction')}
-                  </p>
-                ) : (
-                  <p className="text-sm italic text-text-muted">
-                    {t('errors.verseNotFound', 'Verset non disponible dans cette traduction')}
-                  </p>
-                )}
-                <VerseSemanticTags concepts={tagsByVerse.get(n) ?? []} />
-              </div>
-            );
-          })}
+          {/* Manuscript flow: the chapter as one continuous serif text,
+              with tappable inline verse numbers. */}
+          {status === 'loading' ? (
+            <div className="space-y-3 rounded-3xl bg-surface p-5 shadow-sm">
+              <div className="h-4 w-3/4 animate-pulse rounded bg-surface-tint" />
+              <div className="h-4 w-2/3 animate-pulse rounded bg-surface-tint" />
+              <div className="h-4 w-full animate-pulse rounded bg-surface-tint" />
+              <div className="h-4 w-1/2 animate-pulse rounded bg-surface-tint" />
+            </div>
+          ) : (
+            <ManuscriptView
+              bookId={selectedBook.id}
+              chapter={selectedChapter}
+              verses={activeChapterData?.verses ?? []}
+              tags={tags}
+              selectedVerse={selectedVerse}
+              onSelectVerse={setSelectedVerse}
+            />
+          )}
 
           {/* Contextual action bar for the selected verse */}
           {selectedVerse != null && (

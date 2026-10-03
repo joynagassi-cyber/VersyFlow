@@ -45,6 +45,7 @@ const BibleChapter = lazy(() => import('../app/bible/chapter'));
 const MemorizationSession = lazy(() => import('../app/memorization/session'));
 const MemorizationFlashcard = lazy(() => import('../app/memorization/flashcard'));
 const MemorizationConfirm = lazy(() => import('../app/memorization/confirm'));
+const MemorizationWorkspace = lazy(() => import('../app/memorization/workspace'));
 
 // Review
 const ReviewQueue = lazy(() => import('../app/review/queue'));
@@ -93,7 +94,6 @@ const SemanticConcept = lazy(() => import('../app/semantic/concept'));
 const SemanticVerse = lazy(() => import('../app/semantic/verse'));
 const SemanticCommunity = lazy(() => import('../app/semantic/community'));
 
-import { I18nService } from '@/i18n';
 import i18next, { initI18next } from '@/i18n/i18next-init';
 import { initializeSettingsStore, useSettingsStore } from '@/store/settings-store';
 import { initializeAppearanceStore } from '@/store/appearance-store';
@@ -107,15 +107,21 @@ import { attachSyncCompletionHandlers } from '@/services/sync-completion-service
 import { wireAppTelemetry } from '@/services/app-telemetry-wiring';
 import { wireStreakCoordinator } from '@/services/streak-wiring';
 import type { MemorizationRecord } from '@/domains/memorization/entities';
-import { isRTL } from '@/domains/i18n/config';
+import { isRTL, DEFAULT_LANGUAGE, normalizeLocaleCode } from '@/domains/i18n/config';
 
 // Initialize i18n (async — runs on import; app renders after ready)
 (async () => {
   await initI18next();
-  const savedLanguage =
-    localStorage.getItem('versyflow:ui:language') ?? 'fr';
-  I18nService.getInstance().setLanguage(savedLanguage);
-  document.documentElement.dir = isRTL(savedLanguage) ? 'rtl' : 'ltr';
+  // Language resolution order:
+  //  1. Explicit user choice persisted in localStorage ('versyflow:ui:language')
+  //     — written by the settings store on every language change.
+  //  2. Otherwise the i18next detector already applied the device/browser
+  //     locale at init time (first launch).
+  // We read the *final* i18next language so RTL is computed from the value
+  // that actually won, not from a stale guess. Normalize in case the
+  // detector returned a compound tag (e.g. 'es-419').
+  const activeLanguage = normalizeLocaleCode(i18next.language ?? DEFAULT_LANGUAGE);
+  document.documentElement.dir = isRTL(activeLanguage) ? 'rtl' : 'ltr';
   initializeSettingsStore();
   initializeAppearanceStore();
   initializeUiStore();
@@ -161,7 +167,7 @@ function RootRedirect() {
 function DirSync() {
   useEffect(() => {
     const apply = () => {
-      const lng = i18next.language ?? 'fr';
+      const lng = normalizeLocaleCode(i18next.language ?? DEFAULT_LANGUAGE);
       document.documentElement.dir = isRTL(lng) ? 'rtl' : 'ltr';
       document.documentElement.lang = lng;
     };
@@ -285,6 +291,7 @@ function App() {
               <Route path="/memorization/session" element={<MemorizationSession />} />
               <Route path="/memorization/flashcard" element={<MemorizationFlashcard />} />
               <Route path="/memorization/confirm" element={<MemorizationConfirm />} />
+              <Route path="/memorization/workspace" element={<MemorizationWorkspace />} />
 
               {/* Review */}
               <Route path="/review/queue" element={<ReviewQueue />} />

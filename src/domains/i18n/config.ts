@@ -77,3 +77,35 @@ export const RTL_LANGUAGES = ['ar', 'he', 'ur', 'ps'];
 export function isRTL(code: string): boolean {
   return RTL_LANGUAGES.includes(code);
 }
+
+/**
+ * Normalizes a raw locale (e.g. `navigator.language` like `es-419`, `zh-CN`,
+ * `fr-CA`, or a full BCP-47 tag) to the closest supported bare code, or
+ * `DEFAULT_LANGUAGE` if none of the 45 codes matches.
+ *
+ * Strategy:
+ *  1. Exact match against a supported code (case-insensitive, hyphens vs
+ *     underscores normalized).
+ *  2. Bare primary subtag match (`es-419` → `es`, `zh-CN` → `zh`) — used for
+ *     the 44 non-regional codes; `zh-Hant` still needs the full region form.
+ *  3. Region-qualified match when the bare subtag is `zh` (distinguishes
+ *     `zh-Hant` from `zh-Hans`).
+ *  4. Fallback to `DEFAULT_LANGUAGE`.
+ */
+export function normalizeLocaleCode(raw: string | null | undefined): string {
+  if (!raw) return DEFAULT_LANGUAGE;
+
+  const lower = raw.toLowerCase().replace(/_/g, '-');
+  const codes = SUPPORTED_LANGUAGES.map((l) => l.code);
+  const exact = codes.find((c) => c.toLowerCase() === lower);
+  if (exact) return exact;
+
+  // `zh-Hant` is only reachable via the full region-qualified tag.
+  if (lower === 'zh-hant') return 'zh-Hant';
+
+  const bare = lower.split('-')[0];
+  const bareMatch = codes.find((c) => c.toLowerCase() === bare);
+  if (bareMatch) return bareMatch;
+
+  return DEFAULT_LANGUAGE;
+}

@@ -41,6 +41,17 @@ const DAILY_VERSES_FALLBACK = [
   { ref: 'Ésaïe 40:31', text: "Mais ceux qui espèrent en l'Éternel renaîtront de nouvelles forces." },
 ];
 
+// Encouragement verses — rotates every 4 seconds in the "Verse of the
+// week" footer block. The user's requirement: the word of God is useful,
+// and this is an eternal heritage that endures through time.
+const ENCOURAGEMENT_VERSES: Array<{ ref: string; text: string }> = [
+  { ref: 'Jérémie 1:9', text: "Je mets mes paroles dans ta bouche, tu es consacré comme phare pour les nations." },
+  { ref: 'Psaumes 119:105', text: "Ta parole est une lampe à mes pieds, et une lumière sur mon sentier." },
+  { ref: 'Ésaïe 40:8', text: "L'herbe flétrit, la fleur se faner, mais la parole de notre Dieu est éternelle." },
+  { ref: 'Psaumes 119:89', text: "Éternel, ta parole est affermie dans les cieux, elle subsiste à jamais." },
+  { ref: 'Jérémie 15:16', text: "Tes paroles se sont offert à moi, j'ai dévoré, elles ont été pour moi une joie et une allégresse." },
+];
+
 export default function HomeScreen() {
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
@@ -50,6 +61,7 @@ export default function HomeScreen() {
   const [streak, setStreak] = useState<number | null>(null);
   const [reviewsDue, setReviewsDue] = useState<number | null>(null);
   const [recentVerses, setRecentVerses] = useState<MemorizationRecord[]>([]);
+  const [encouragementIdx, setEncouragementIdx] = useState(0);
 
   const activeFamily = families.find((f) => f.id === activeFamilyId) || null;
   const profileId = activeProfile?.id ?? 'default';
@@ -86,6 +98,16 @@ export default function HomeScreen() {
     };
   }, [profileId]);
 
+  // Rotate the encouragement verse every 4 s (no autoplay sound, no
+  // confetti — just a calm, ever-present banner at the bottom of the page).
+  useEffect(() => {
+    const id = setInterval(() => {
+      setEncouragementIdx((i) => (i + 1) % ENCOURAGEMENT_VERSES.length);
+    }, 4000);
+    return () => clearInterval(id);
+  }, []);
+
+  const encouragement = ENCOURAGEMENT_VERSES[encouragementIdx];
   const todayVerse = DAILY_VERSES_FALLBACK[
     Math.floor(Date.now() / 86400000) % DAILY_VERSES_FALLBACK.length
   ];
@@ -259,6 +281,32 @@ export default function HomeScreen() {
             </button>
           ))
         )}
+      </div>
+
+      {/* Encouragement verse of the week — a quiet, ever-present footer
+          block. No confetti, no stats: just one verse of God's word that
+          rotates every 4 seconds, to stay with the user. */}
+      <div className="mt-8 rounded-2xl border border-success/20 bg-success/5 p-4">
+        <div className="flex items-start gap-3">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-success text-white shadow-sm">
+            <Star size={16} />
+          </span>
+          <div className="min-w-0 flex-1">
+            <p className="text-xs font-bold uppercase tracking-wider text-success">
+              {t('home.encouragementTitle', "L'héritage éternel")}
+            </p>
+            <p className="mt-1 text-sm font-bold text-text-primary">{encouragement.ref}</p>
+            <p className="bible-text mt-1 text-sm leading-6 text-text-secondary">
+              {encouragement.text}
+            </p>
+          </div>
+        </div>
+        <p className="mt-3 text-[11px] italic text-text-muted">
+          {t(
+            'home.encouragementCaption',
+            'La parole de Dieu est utile et importante, un héritage éternel qui perdure à travers les temps.',
+          )}
+        </p>
       </div>
     </div>
   );

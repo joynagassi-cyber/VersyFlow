@@ -134,6 +134,573 @@
     letter-spacing: 0.01em;
   }
 
+  /*
+   * Manuscript-style scripture flow: one continuous serif text block with
+   * tappable inline verse numbers (superscript, primary rose) instead of a
+   * card-per-verse layout. `.verse-flow-number` is the interactive number;
+   * the selected verse is wrapped in `.manuscript-verse.is-selected`.
+   */
+  .verse-flow {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 19px;
+    line-height: 33px;
+    letter-spacing: 0.01em;
+    text-align: justify;
+    hyphens: auto;
+  }
+
+  .manuscript-verse {
+    border-radius: 12px;
+    padding: 2px 4px;
+    margin: 0 -4px;
+    transition: background-color 160ms ease;
+  }
+
+  .manuscript-verse.is-selected {
+    background-color: color-mix(in srgb, var(--color-primary) 8%, transparent);
+  }
+
+  .verse-flow-number {
+    font-family: inherit;
+    font-size: 0.62em;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--color-primary);
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+    vertical-align: super;
+    margin: 0 0.3em 0 0.12em;
+    padding: 2px 4px;
+    border-radius: 6px;
+    transition: background-color 140ms ease;
+  }
+
+  .verse-flow-number:active {
+    background-color: color-mix(in srgb, var(--color-primary) 18%, transparent);
+  }
+
+  .verse-flow-number.is-selected {
+    background-color: var(--color-primary);
+    color: var(--color-surface);
+  }
+
+  /*
+   * ───────────────────────────────────────────────────────────────
+   * Memorization Workspace — premium surface system
+   *
+   * Shared design language for the 4 unified memorization modes:
+   *  - 3D card surfaces (depth, soft glows, layered shadows)
+   *  - Flashcard flip (rotateY with perspective)
+   *  - Block-reveal (pulse ring on the current block)
+   *  - Pill buttons (rounded, springy hover/active states)
+   *  - Floating segmented control (mode switcher)
+   *
+   * All classes are scoped under .mw-* so they don't clash with the
+   * rest of the app.
+   * ───────────────────────────────────────────────────────────────
+   */
+
+  /* Soft ambient shadow for "surface" cards */
+  .mw-card {
+    position: relative;
+    background: var(--color-surface);
+    border-radius: 24px;
+    border: 1px solid var(--color-border);
+    padding: 20px;
+    overflow: hidden;
+    box-shadow:
+      0 1px 2px rgba(28, 26, 26, 0.03),
+      0 8px 24px -6px rgba(28, 26, 26, 0.08),
+      0 20px 48px -16px rgba(216, 27, 151, 0.10);
+    transition: box-shadow 240ms cubic-bezier(0.4, 0, 0.2, 1),
+                transform 240ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .mw-card:hover {
+    box-shadow:
+      0 2px 4px rgba(28, 26, 26, 0.04),
+      0 14px 36px -8px rgba(28, 26, 26, 0.10),
+      0 28px 64px -20px rgba(216, 27, 151, 0.14);
+  }
+
+  /* Radial primary tint (glow) at the top of the card */
+  .mw-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      circle at 50% -20%,
+      color-mix(in srgb, var(--color-primary) 14%, transparent) 0%,
+      transparent 60%
+    );
+    pointer-events: none;
+    z-index: 0;
+  }
+  .mw-card > * { position: relative; z-index: 1; }
+
+  /* "Reference case" — the book:chapter:verse chip at the card corner */
+  .mw-case {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 10px;
+    background: var(--color-surface-tint);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: var(--color-primary);
+    margin-bottom: 14px;
+  }
+
+  /* Small-caps section label */
+  .mw-label {
+    display: block;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    margin-bottom: 8px;
+  }
+
+  /* Primary pill button (Vérifier / Révéler / Passer au mode suivant) */
+  .mw-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 14px 18px;
+    border: none;
+    border-radius: 999px;
+    background: var(--color-primary);
+    color: white;
+    font-size: 14px;
+    font-weight: 800;
+    letter-spacing: 0.01em;
+    cursor: pointer;
+    box-shadow:
+      0 1px 2px rgba(166, 13, 110, 0.25),
+      0 8px 20px -4px rgba(216, 27, 151, 0.45);
+    transition: transform 160ms cubic-bezier(0.34, 1.56, 0.64, 1),
+                box-shadow 160ms ease,
+                filter 160ms ease;
+  }
+  .mw-pill:hover { transform: translateY(-1px); filter: brightness(1.04); }
+  .mw-pill:active { transform: translateY(0); box-shadow: 0 1px 2px rgba(166, 13, 110, 0.2); }
+  .mw-pill:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
+
+  /* Ghost / secondary pill */
+  .mw-pill-ghost {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 16px;
+    border: none;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--color-text-secondary);
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 140ms ease, transform 120ms ease;
+  }
+  .mw-pill-ghost:hover { background: var(--color-surface-tint); }
+  .mw-pill-ghost:active { transform: scale(0.98); }
+  .mw-pill-ghost:disabled { opacity: 0.35; cursor: not-allowed; }
+
+  /* Success CTA (the "Passer au mode suivant" after completion) */
+  .mw-cta-success {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding: 14px 18px;
+    border: none;
+    border-radius: 999px;
+    background: var(--color-success);
+    color: white;
+    font-size: 14px;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow:
+      0 1px 2px rgba(0, 0, 0, 0.08),
+      0 10px 24px -6px rgba(0, 168, 107, 0.5);
+    transition: transform 160ms cubic-bezier(0.34, 1.56, 0.64, 1),
+                filter 160ms ease;
+  }
+  .mw-cta-success:hover { transform: translateY(-1px); filter: brightness(1.05); }
+  .mw-cta-success:active { transform: translateY(0); }
+
+  /* ── Block reveal (G mode) ────────────────────────────── */
+  .mw-block {
+    position: relative;
+    padding: 14px 16px;
+    border-radius: 14px;
+    font-family: "Source Serif 4", Georgia, serif;
+    font-size: 18px;
+    line-height: 30px;
+    text-align: justify;
+    transition: all 320ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .mw-block.done {
+    background: var(--color-surface);
+    color: var(--color-text-primary);
+    box-shadow: inset 0 0 0 1px var(--color-divider);
+  }
+  .mw-block.done .mw-check {
+    position: absolute;
+    top: 8px; right: 10px;
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    background: var(--color-success);
+    color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px;
+    box-shadow: 0 2px 6px rgba(0, 168, 107, 0.4);
+  }
+  .mw-block.current {
+    background: var(--color-surface-tint);
+    color: transparent;
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+    animation: mw-pulse 2.4s ease-in-out infinite;
+  }
+  .mw-block.current .mw-hint {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--color-text-muted);
+    font-family: -apple-system, "Segoe UI", sans-serif;
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-top: 6px;
+  }
+  .mw-block.locked {
+    background: transparent;
+    color: transparent;
+    border: 1px dashed var(--color-border);
+    opacity: 0.55;
+  }
+
+  @keyframes mw-pulse {
+    0%, 100% { box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-primary) 30%, transparent); }
+    50%      { box-shadow: inset 0 0 0 1px var(--color-primary), 0 0 0 5px color-mix(in srgb, var(--color-primary) 10%, transparent); }
+  }
+
+  /* ── Success celebration (firework pulse) ─────────────── */
+  @keyframes mw-success-pop {
+    0%   { transform: scale(0.6); opacity: 0; }
+    60%  { transform: scale(1.15); opacity: 1; }
+    100% { transform: scale(1); }
+  }
+  @keyframes mw-success-ring {
+    0%   { transform: scale(0.9); opacity: 0.6; }
+    100% { transform: scale(1.8); opacity: 0; }
+  }
+  @keyframes mw-confetti-fall {
+    0%   { transform: translateY(-10px) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(60px) rotate(360deg); opacity: 0; }
+  }
+
+  .mw-success-celebration {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    animation: mw-success-pop 480ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  }
+  .mw-success-celebration .ring {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: var(--color-success);
+    animation: mw-success-ring 900ms ease-out both;
+  }
+  .mw-success-celebration .ic {
+    position: relative;
+    z-index: 1;
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    background: var(--color-success);
+    color: white;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 8px 20px -4px rgba(0, 168, 107, 0.5);
+  }
+  .mw-confetti {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    border-radius: inherit;
+  }
+  .mw-confetti span {
+    position: absolute;
+    top: 8%;
+    width: 6px; height: 10px;
+    border-radius: 2px;
+    animation: mw-confetti-fall 1200ms ease-in both;
+  }
+
+  /* ── Flashcard (F mode) — 3D flip ─────────────────────── */
+  .mw-flashcard {
+    position: relative;
+    border-radius: 24px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    min-height: 300px;
+    box-shadow:
+      0 1px 2px rgba(28, 26, 26, 0.04),
+      0 10px 30px -8px rgba(28, 26, 26, 0.10),
+      0 28px 64px -18px rgba(216, 27, 151, 0.12);
+    perspective: 1400px;
+    overflow: hidden;
+  }
+  .mw-flashcard-inner {
+    position: relative;
+    min-height: inherit;
+    transform-style: preserve-3d;
+    transition: transform 600ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .mw-flashcard-inner.is-flipped {
+    transform: rotateY(180deg);
+  }
+  .mw-flashcard-face {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    padding: 28px;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+  .mw-flashcard-face.front {
+    transform: rotateY(0deg);
+    background: linear-gradient(
+      160deg,
+      var(--color-surface) 0%,
+      var(--color-surface-tint) 100%
+    );
+  }
+  .mw-flashcard-face.back {
+    transform: rotateY(180deg);
+    background: linear-gradient(
+      160deg,
+      var(--color-surface-tint) 0%,
+      var(--color-surface) 100%
+    );
+  }
+  .mw-flashcard-face .verse {
+    font-family: "Source Serif 4", Georgia, serif;
+    font-size: 22px;
+    line-height: 36px;
+    text-align: center;
+    color: var(--color-text-primary);
+    max-width: 90%;
+  }
+  .mw-flashcard-face .hint {
+    font-size: 12px;
+    color: var(--color-text-muted);
+    font-weight: 500;
+  }
+  .mw-flashcard-corner {
+    position: absolute;
+    top: 14px; left: 16px;
+    padding: 5px 11px;
+    border-radius: 8px;
+    background: var(--color-surface-tint);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--color-primary);
+  }
+  .mw-flashcard-counter {
+    position: absolute;
+    top: 14px; right: 52px;
+    padding: 4px 9px;
+    border-radius: 8px;
+    background: var(--color-surface-tint);
+    font-size: 10px;
+    font-weight: 800;
+    color: var(--color-text-muted);
+  }
+  .mw-flashcard-zoom {
+    position: absolute;
+    bottom: 14px; right: 14px;
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: var(--color-surface-tint);
+    color: var(--color-text-muted);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    border: none;
+    transition: background 140ms ease, transform 140ms ease;
+  }
+  .mw-flashcard-zoom:hover { background: color-mix(in srgb, var(--color-primary) 12%, var(--color-surface-tint)); transform: scale(1.05); }
+
+  /* ── Writing recall (D mode) — diff columns ──────────── */
+  .mw-diff-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  @media (max-width: 380px) {
+    .mw-diff-grid { grid-template-columns: 1fr; }
+  }
+  .mw-diff-col {
+    padding: 12px 14px;
+    border-radius: 12px;
+    background: var(--color-surface-tint);
+  }
+  .mw-diff-col .col-label {
+    display: block;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    margin-bottom: 6px;
+  }
+  .mw-diff-col.original .verse {
+    font-family: "Source Serif 4", Georgia, serif;
+    font-size: 13px;
+    line-height: 22px;
+    color: var(--color-text-primary);
+  }
+  .mw-diff-col.written .verse {
+    font-size: 13px;
+    line-height: 22px;
+    color: var(--color-text-primary);
+  }
+  .mw-diff-col.written .word-missing {
+    background: color-mix(in srgb, var(--color-warning) 18%, transparent);
+    color: var(--color-warning);
+    font-weight: 700;
+    padding: 1px 3px;
+    border-radius: 4px;
+  }
+  .mw-diff-col.written .word-wrong {
+    background: color-mix(in srgb, var(--color-error) 14%, transparent);
+    color: var(--color-error);
+    font-weight: 700;
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 3px;
+    padding: 1px 3px;
+    border-radius: 4px;
+  }
+  .mw-diff-col.written .word-extra {
+    color: var(--color-text-muted);
+    text-decoration: line-through;
+    padding: 1px 3px;
+  }
+
+  /* ── Mask (E mode) — tappable word chips ──────────────── */
+  .mw-mask-flow {
+    font-family: "Source Serif 4", Georgia, serif;
+    font-size: 18px;
+    line-height: 34px;
+    text-align: justify;
+    padding: 16px;
+    border-radius: 14px;
+    background: var(--color-surface-tint);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 2px;
+  }
+  .mw-mask-word {
+    display: inline;
+    padding: 2px 4px;
+    border-radius: 6px;
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+    transition: background 120ms ease, color 120ms ease, transform 120ms ease;
+  }
+  .mw-mask-word.is-masked {
+    background: color-mix(in srgb, var(--color-primary) 10%, transparent);
+    color: var(--color-primary);
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 4px;
+    text-decoration-color: var(--color-primary);
+  }
+  .mw-mask-word.is-masked:hover { background: color-mix(in srgb, var(--color-primary) 18%, transparent); transform: translateY(-1px); }
+  .mw-mask-word.is-correct { background: color-mix(in srgb, var(--color-success) 14%, transparent); color: var(--color-success); }
+  .mw-mask-word.is-missing { background: color-mix(in srgb, var(--color-warning) 22%, transparent); color: var(--color-warning); font-weight: 700; }
+
+  /* ── Mode switcher — floating pill bar ────────────────── */
+  .mw-switcher {
+    position: sticky;
+    bottom: 0;
+    z-index: 20;
+    padding: 12px 16px 16px;
+    background: linear-gradient(
+      to top,
+      var(--color-background) 0%,
+      color-mix(in srgb, var(--color-background) 90%, transparent) 70%,
+      transparent 100%
+    );
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    pointer-events: none;
+  }
+  .mw-switcher > * { pointer-events: auto; }
+  .mw-switcher-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    padding: 5px;
+    box-shadow:
+      0 1px 2px rgba(28, 26, 26, 0.04),
+      0 16px 40px -10px rgba(28, 26, 26, 0.22);
+  }
+  .mw-switcher-pill button {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border: none;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--color-text-secondary);
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 140ms ease;
+  }
+  .mw-switcher-pill button.active {
+    background: var(--color-text-primary);
+    color: white;
+    box-shadow: 0 4px 14px -4px rgba(28, 26, 26, 0.4);
+  }
+  .mw-switcher-pill button.recommended {
+    outline: 2px solid var(--color-warning);
+    outline-offset: 1px;
+  }
+  .mw-switcher-pill button .badge {
+    background: var(--color-warning);
+    color: white;
+    font-size: 8px;
+    font-weight: 800;
+    padding: 1px 5px;
+    border-radius: 4px;
+    letter-spacing: 0.04em;
+  }
+
   /* Vibrant hero gradient (magenta to accent) */
   .gradient-hero {
     background: linear-gradient(

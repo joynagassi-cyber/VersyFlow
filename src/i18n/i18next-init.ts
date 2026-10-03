@@ -17,7 +17,9 @@
 
 import i18next from 'i18next';
 import { initReactI18next } from 'react-i18next';
+import LanguageDetector from 'i18next-browser-languagedetector';
 import type { Resource } from 'i18next';
+import { normalizeLocaleCode } from '@/domains/i18n/config';
 
 /**
  * All supported locales, ordered by language family / population so the
@@ -70,6 +72,23 @@ const NAMESPACES = [
   'family',
   'semantic',
   'recallWriting',
+  // Extra top-level namespaces present in the fr/en locale files.
+  // Only fr/en ship these; other locales fall back to EN (the locale
+  // itself is preloaded, i18next's `fallbackLng: 'en'` covers the gap).
+  'nav',
+  'notifications',
+  'profile',
+  'notFound',
+  'auth',
+  'coach',
+  'mastery',
+  'collections',
+  'achievements',
+  'analytics',
+  'memory',
+  'history',
+  'dock',
+  'settingsTab',
 ] as const;
 
 /**
@@ -118,11 +137,30 @@ async function buildResources(): Promise<Resource> {
 export async function initI18next(): Promise<void> {
   const resources = await buildResources();
 
+  // Detect the device/browser language on first launch so the app opens
+  // in the user's language instead of a hardcoded default. Detector order:
+  // localStorage → navigator. The persisted choice (localStorage key
+  // 'versyflow:ui:language') is written by the settings store and boot, so
+  // an explicit user selection always wins over the raw navigator locale
+  // after the first launch.
+  //
+  // Normalize the persisted/detected value to a supported bare code before
+  // passing it to i18next — otherwise a compound tag (e.g. 'fr-CA') would
+  // be left as `i18next.language` while the app actually renders in the
+  // fallback EN resource (load: 'currentOnly'), silently diverging RTL and
+  // getLanguageInfo() from the active resource.
+  const savedLang =
+    typeof localStorage !== 'undefined'
+      ? localStorage.getItem('versyflow:ui:language')
+      : null;
+  const resolvedLang = savedLang ? normalizeLocaleCode(savedLang) : undefined;
+
   await i18next
+    .use(LanguageDetector)
     .use(initReactI18next)
     .init({
       resources,
-      lng: 'fr',
+      lng: resolvedLang, // undefined → detector decides (navigator on first launch)
       fallbackLng: 'en',
       defaultNS: 'translation',
       ns: ['translation'],
@@ -130,6 +168,14 @@ export async function initI18next(): Promise<void> {
       interpolation: { escapeValue: false },
       load: 'currentOnly',
       preload: Array.from(LOCALES),
+      detection: {
+        // No caches: a stale persisted choice always wins over navigator,
+        // so the detector must not re-write the localStorage key — that would
+        // clobber an explicit user selection on the next launch.
+        order: ['localStorage', 'navigator'],
+        lookupLocalStorage: 'versyflow:ui:language',
+        caches: [],
+      },
     });
 }
 

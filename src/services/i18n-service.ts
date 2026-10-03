@@ -6,6 +6,8 @@
  */
 
 import i18next from 'i18next';
+import { SUPPORTED_LANGUAGES, DEFAULT_LANGUAGE, FALLBACK_LANGUAGE, isRTL, normalizeLocaleCode } from '@/domains/i18n/config';
+import type { Language } from '@/domains/i18n/config';
 
 export class I18nService {
   private static instance: {
@@ -22,14 +24,14 @@ export class I18nService {
           i18next.changeLanguage(lng);
         },
         getLanguage: () => {
-          return i18next.language ?? 'fr';
+          return normalizeLocaleCode(i18next.language ?? DEFAULT_LANGUAGE);
         },
         t: (key: string, params?: Record<string, unknown>) => {
           return i18next.t(key, params);
         },
         isRTL: () => {
-          const lng = i18next.language ?? 'fr';
-          return lng === 'ar' || lng === 'he' || lng === 'fa' || lng === 'ur';
+          const lng = normalizeLocaleCode(i18next.language ?? DEFAULT_LANGUAGE);
+          return isRTL(lng);
         },
       };
     }
@@ -37,11 +39,6 @@ export class I18nService {
   }
 }
 
-export const SUPPORTED_LANGUAGES = ['fr', 'en', 'ar', 'de', 'zh'] as const;
-export type Language = (typeof SUPPORTED_LANGUAGES)[number];
-export const DEFAULT_LANGUAGE: Language = 'fr';
-export const FALLBACK_LANGUAGE: Language = 'en';
-
-export function isRTL(lng: string): boolean {
-  return lng === 'ar' || lng === 'he' || lng === 'fa' || lng === 'ur';
-}
+// Re-export the canonical definitions from the domain layer — single source of truth.
+export { SUPPORTED_LANGUAGES, DEFAULT_LANGUAGE, FALLBACK_LANGUAGE, isRTL, normalizeLocaleCode };
+export type { Language };

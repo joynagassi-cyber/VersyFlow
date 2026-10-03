@@ -114,7 +114,7 @@ export default function VerseActionBar({
               const params = new URLSearchParams();
               params.set('reference', reference);
               if (verseText) params.set('text', verseText);
-              navigate(`/memorization/session?${params.toString()}`);
+              navigate(`/memorization/workspace?${params.toString()}`);
             }}
           />
           <ActionButton

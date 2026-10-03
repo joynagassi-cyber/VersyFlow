@@ -5,7 +5,9 @@
  */
 
 import { create } from 'zustand';
+import i18next from 'i18next';
 import { MmkvStorage } from '@/infrastructure/storage';
+import { SUPPORTED_LANGUAGES, DEFAULT_LANGUAGE, normalizeLocaleCode } from '@/domains/i18n/config';
 
 // Shared MmkvStorage instance — one handle per store lifecycle
 const storage = new MmkvStorage();
@@ -36,7 +38,7 @@ export type SettingsPersistState = SettingsState | null;
 
 // Initial state defaults
 const DEFAULTS: Pick<SettingsState, 'uiLanguage' | 'bibleTranslation' | 'onboardingCompleted'> = {
-  uiLanguage: 'fr',
+  uiLanguage: DEFAULT_LANGUAGE,
   bibleTranslation: 'lsg',
   onboardingCompleted: false,
 };
@@ -45,13 +47,16 @@ export const useSettingsStore = create<SettingsState>(() => ({
   ...DEFAULTS,
 
   setUiLanguage(lang: string) {
-    const supported = ['fr', 'en', 'ar', 'de', 'zh'];
-    if (!supported.includes(lang)) {
-      console.warn(`Unsupported language: ${lang}, defaulting to fr`);
-      lang = 'fr';
+    // Validate against the canonical registry (single source of truth).
+    const codes: string[] = SUPPORTED_LANGUAGES.map((l) => l.code);
+    if (!codes.includes(lang)) {
+      console.warn(`Unsupported language: ${lang}, defaulting to ${DEFAULT_LANGUAGE}`);
+      lang = DEFAULT_LANGUAGE;
     }
     useSettingsStore.setState({ uiLanguage: lang });
     void settingsStorePersist.save();
+    // Also persist to localStorage for main.tsx boot-time restore.
+    localStorage.setItem(STORAGE_KEYS.UI_LANGUAGE, lang);
   },
 
   setBibleTranslation(id: string) {
@@ -79,7 +84,7 @@ export const settingsStorePersist = {
       if (!raw) return;
       const parsed = JSON.parse(raw);
       useSettingsStore.setState({
-        uiLanguage: parsed.uiLanguage ?? 'fr',
+        uiLanguage: parsed.uiLanguage ? normalizeLocaleCode(parsed.uiLanguage) : DEFAULT_LANGUAGE,
         bibleTranslation: parsed.bibleTranslation ?? 'lsg',
         onboardingCompleted: parsed.onboardingCompleted ?? false,
       });
@@ -91,6 +96,10 @@ export const settingsStorePersist = {
     const { uiLanguage, bibleTranslation, onboardingCompleted } = useSettingsStore.getState();
     const value = JSON.stringify({ uiLanguage, bibleTranslation, onboardingCompleted });
     await storage.set('versyflow-settings-storage', value);
+    // Mirror the language to the localStorage key that main.tsx boot-time
+    // restore reads, so the persisted choice survives an app restart
+    // (single source of truth for 'versyflow:ui:language').
+    localStorage.setItem(STORAGE_KEYS.UI_LANGUAGE, uiLanguage);
   },
 };
 
@@ -103,10 +112,26 @@ export async function initializeSettingsStore(): Promise<void> {
   }
 
   try {
+    // Sync the i18next-active language into the store if the store is still
+    // on its default. This happens on first launch when the language
+    // detector picked a non-default language (e.g. navigator locale 'es')
+    // but no user action has yet persisted a choice — without this, a later
+    // settingsStorePersist.save() would mirror the stale default back to
+    // localStorage and clobber the detected language on the next launch.
+    // The detector can return compound tags (e.g. 'es-419'); normalize them
+    // to a supported bare code before persisting.
+    const detectedLang = normalizeLocaleCode(i18next.language);
+    if (detectedLang !== DEFAULT_LANGUAGE) {
+      const current = useSettingsStore.getState();
+      if (current.uiLanguage === DEFAULT_LANGUAGE) {
+        useSettingsStore.setState({ uiLanguage: detectedLang });
+      }
+    }
+
     const savedLang = await storage.get(STORAGE_KEYS.UI_LANGUAGE);
     if (savedLang) {
       const settingsStore = useSettingsStore.getState();
-      if (settingsStore.uiLanguage === 'fr' && savedLang !== 'fr') {
+      if (settingsStore.uiLanguage === DEFAULT_LANGUAGE && savedLang !== DEFAULT_LANGUAGE) {
         useSettingsStore.setState({ uiLanguage: savedLang });
       }
     }

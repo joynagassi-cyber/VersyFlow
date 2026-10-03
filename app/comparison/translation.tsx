@@ -8,6 +8,10 @@ import { EmptyState } from '@/components/ui/EmptyState';
 import { BibleTranslationRegistry, DEFAULT_BIBLE_TRANSLATIONS } from '@/domains/bible/registry';
 import { InMemoryBibleTextSource } from '@/domains/bible/repository-local';
 import { createTranslationComparisonService } from '@/services/translation-comparison-service';
+import {
+  downloadAndLoadTranslationData,
+  loadTranslationData,
+} from '@/services/bible-text-service';
 import type { TranslationComparisonResult } from '@/capabilities/comparison/translation-comparison';
 import { useSettingsStore } from '@/store/settings-store';
 
@@ -73,14 +77,38 @@ export default function TranslationComparisonScreen() {
     let cancelled = false;
     async function load() {
       try {
-        const registry = new BibleTranslationRegistry(DEFAULT_BIBLE_TRANSLATIONS);
-        let source: import('@/domains/bible/repository-local').IBibleTextSource;
-        if (typeof fetch === 'function') {
-          const { BibleJsonFileSource } = await import('@/infrastructure/bible/bible-json-source');
-          source = new BibleJsonFileSource({ dataDir: 'data/bible' });
-        } else {
-          source = new InMemoryBibleTextSource(SEED_SOURCE);
+        // Resolve each French dataset through the shared chain
+        // (bundled → download cache → Supabase bucket download in dev),
+        // never the raw JSON-file source (SPA-fallback 404 in dev).
+        const datasets: Record<string, unknown> = {};
+        for (const id of DEFAULT_BIBLE_TRANSLATIONS.filter((m) => m.language === 'fr' && m.available).map((m) => m.id)) {
+          if (cancelled) return;
+          try {
+            let data = await loadTranslationData(id);
+            if (!data) data = await downloadAndLoadTranslationData(id);
+            datasets[id] = data;
+          } catch {
+            // Unresolvable dataset → excluded (shown as unavailable).
+          }
         }
+        if (cancelled) return;
+        const manifests = DEFAULT_BIBLE_TRANSLATIONS.filter(
+          (m) => m.language === 'fr' && m.available && datasets[m.id] !== undefined,
+        );
+        if (manifests.length === 0) {
+          setError(t('comparison.noTranslations', 'Aucune traduction disponible'));
+          setLoading(false);
+          return;
+        }
+        const defaultId =
+          manifests.some((m) => m.id === bibleTranslation) && bibleTranslation
+            ? bibleTranslation
+            : manifests[0].id;
+        const registry = new BibleTranslationRegistry(manifests, defaultId);
+        const source =
+          typeof fetch === 'function'
+            ? new InMemoryBibleTextSource(Object.keys(datasets).length ? datasets : SEED_SOURCE)
+            : new InMemoryBibleTextSource(SEED_SOURCE);
         const engine = createTranslationComparisonService(source, registry);
         const translationIds = registry
           .getByLanguage('fr')

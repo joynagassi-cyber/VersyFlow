@@ -118,24 +118,30 @@ async function peekLocal(
   }
 }
 
-/** Load (once per session) the book corpus for a translation; null when unavailable. */
-export async function loadTranslationBooks(
+/** Load the full dataset for a translation; null when unavailable. */
+export async function loadTranslationData(
   translationId: string = 'lsg',
-): Promise<LoadResult> {
+): Promise<BibleTranslationData | null> {
   const entry = findRemoteDatasetEntry(translationId);
 
   // Dev: the real Supabase bucket is the source of truth. Serve from the
   // download cache when present; otherwise report "unavailable" so the caller
   // triggers a fresh fetch from the bucket (never reads the local mock files).
   if (preferRemoteSource() && entry) {
-    const data = await peekLocal(translationId, entry.checksum);
-    if (data) return data.books;
-    return null;
+    return peekLocal(translationId, entry.checksum);
   }
 
   // 1. Bundled local dataset (production / offline).
   try {
-    return await repo.getBooks(translationId);
+    return await repo.getBooks(translationId).then((books) => {
+      // Rebuild the minimal valid dataset shape from the books payload.
+      return {
+        id: translationId,
+        language: 'fr',
+        name: translationId,
+        books,
+      };
+    });
   } catch {
     // not bundled — fall through to the download cache.
   }
@@ -143,11 +149,19 @@ export async function loadTranslationBooks(
   // 2. Download-on-demand cache.
   if (entry) {
     const data = await peekLocal(translationId, entry.checksum);
-    if (data) return data.books;
+    if (data) return data;
   }
 
   // 3. Unavailable — caller may trigger an explicit download.
   return null;
+}
+
+/** Load (once per session) the book corpus for a translation; null when unavailable. */
+export async function loadTranslationBooks(
+  translationId: string = 'lsg',
+): Promise<LoadResult> {
+  const data = await loadTranslationData(translationId);
+  return data ? data.books : null;
 }
 
 /**
@@ -159,11 +173,11 @@ export async function loadTranslationBooks(
  * - `onProgress` reports 0 → 100; intermediate granularity would need a
  *   streaming reader and is not worth it for ~7 MB payloads.
  */
-export async function downloadAndLoadTranslationBooks(
+export async function downloadAndLoadTranslationData(
   translationId: string,
   onProgress?: (percent: number) => void,
   options: { fetchImpl?: typeof fetch; cacheOverride?: IBibleDatasetCache } = {},
-): Promise<BibleBookData[]> {
+): Promise<BibleTranslationData> {
   const entry = findRemoteDatasetEntry(translationId);
   if (!entry) {
     throw new Error(`No remote dataset registered for translation "${translationId}"`);
@@ -176,7 +190,7 @@ export async function downloadAndLoadTranslationBooks(
   const peek = options.cacheOverride ?? peekCache();
   const cached = await peek.get(translationId, entry.checksum);
   if (cached) {
-    return parseTranslationData(JSON.parse(cached.text)).books;
+    return parseTranslationData(JSON.parse(cached.text));
   }
 
   // `fetch` must keep its global receiver (detached calls throw
@@ -201,8 +215,35 @@ export async function downloadAndLoadTranslationBooks(
   });
 
   // The INSERT OR REPLACE above supersedes any stale checksum copy.
-  const data = parseTranslationData(JSON.parse(text));
-  return data.books;
+  return parseTranslationData(JSON.parse(text));
+}
+
+export async function downloadAndLoadTranslationBooks(
+  translationId: string,
+  onProgress?: (percent: number) => void,
+  options: { fetchImpl?: typeof fetch; cacheOverride?: IBibleDatasetCache } = {},
+): Promise<BibleBookData[]> {
+  return (await downloadAndLoadTranslationData(translationId, onProgress, options)).books;
+}
+
+/**
+ * Resolve a ready-to-use `IBibleTextSource` for a translation, following the
+ * full chain: bundled → download cache → Supabase bucket download.
+ *
+ * Use anywhere a source/repository is required (e.g. the memorization
+ * session engine) instead of building a `BibleJsonFileSource` directly —
+ * that raw file source 404/SPA-falls-back in dev and breaks with
+ * "Unexpected token '<'" when parsing index.html as JSON.
+ */
+export async function resolveBibleTextSource(
+  translationId: string,
+  onProgress?: (percent: number) => void,
+): Promise<IBibleTextSource> {
+  let data = await loadTranslationData(translationId);
+  if (!data) {
+    data = await downloadAndLoadTranslationData(translationId, onProgress);
+  }
+  return new InMemoryBibleTextSource({ [translationId]: data });
 }
 
 // Re-exports for tests that want to build a local source directly.

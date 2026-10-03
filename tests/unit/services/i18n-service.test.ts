@@ -1,6 +1,12 @@
 /**
  * Tests for I18nService — bridges to i18next instance
- * Tests singleton pattern, language methods, and RTL detection
+ * Tests singleton pattern, language methods, and RTL detection.
+ *
+ * After the i18n unification refactor, this service re-exports the canonical
+ * language registry from `@/domains/i18n/config` (single source of truth),
+ * so the assertions below mirror that domain shape: `SUPPORTED_LANGUAGES`
+ * is an array of `Language` objects (code, name, displayName, rtl), and
+ * `isRTL` follows the domain's RTL set (ar, he, ur, ps — Persian is LTR).
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
@@ -102,16 +108,22 @@ describe('I18nService', () => {
       expect(instance.isRTL()).toBe(true);
     });
 
-    it('returns true for Persian', () => {
-      (i18next as any).language = 'fa';
-      const instance = I18nService.getInstance();
-      expect(instance.isRTL()).toBe(true);
-    });
-
     it('returns true for Urdu', () => {
       (i18next as any).language = 'ur';
       const instance = I18nService.getInstance();
       expect(instance.isRTL()).toBe(true);
+    });
+
+    it('returns true for Pashto (ps) — RTL in the domain registry', () => {
+      (i18next as any).language = 'ps';
+      const instance = I18nService.getInstance();
+      expect(instance.isRTL()).toBe(true);
+    });
+
+    it('returns false for Persian (fa) — LTR in the domain registry', () => {
+      (i18next as any).language = 'fa';
+      const instance = I18nService.getInstance();
+      expect(instance.isRTL()).toBe(false);
     });
 
     it('returns false for French', () => {
@@ -135,24 +147,17 @@ describe('I18nService', () => {
 });
 
 describe('isRTL() standalone function', () => {
-  it('returns true for Arabic', () => {
+  it('returns true for the domain RTL set: ar, he, ur, ps', () => {
     expect(isRTL('ar')).toBe(true);
-  });
-
-  it('returns true for Hebrew', () => {
     expect(isRTL('he')).toBe(true);
-  });
-
-  it('returns true for Persian', () => {
-    expect(isRTL('fa')).toBe(true);
-  });
-
-  it('returns true for Urdu', () => {
     expect(isRTL('ur')).toBe(true);
+    expect(isRTL('ps')).toBe(true);
   });
 
-  it('returns false for French', () => {
+  it('returns false for LTR languages incl. Persian', () => {
     expect(isRTL('fr')).toBe(false);
+    expect(isRTL('en')).toBe(false);
+    expect(isRTL('fa')).toBe(false);
   });
 
   it('returns false for unknown languages', () => {
@@ -161,12 +166,27 @@ describe('isRTL() standalone function', () => {
 });
 
 describe('Constants', () => {
-  it('SUPPORTED_LANGUAGES contains expected values', () => {
-    expect(SUPPORTED_LANGUAGES).toContain('fr');
-    expect(SUPPORTED_LANGUAGES).toContain('en');
-    expect(SUPPORTED_LANGUAGES).toContain('ar');
-    expect(SUPPORTED_LANGUAGES).toContain('de');
-    expect(SUPPORTED_LANGUAGES).toContain('zh');
+  it('SUPPORTED_LANGUAGES is the domain registry (array of Language objects)', () => {
+    // Re-exported from @/domains/i18n/config — shape is { code, name, displayName, rtl }
+    const codes = SUPPORTED_LANGUAGES.map((l) => l.code);
+    expect(codes).toContain('fr');
+    expect(codes).toContain('en');
+    expect(codes).toContain('ar');
+    expect(codes).toContain('de');
+    expect(codes).toContain('zh');
+    expect(codes).toContain('es');
+    expect(codes).toContain('ja');
+    // Full registry — not the stale 5-language list
+    expect(codes.length).toBeGreaterThanOrEqual(45);
+  });
+
+  it('every entry carries code, name, displayName and rtl flags', () => {
+    for (const lang of SUPPORTED_LANGUAGES) {
+      expect(typeof lang.code).toBe('string');
+      expect(typeof lang.name).toBe('string');
+      expect(typeof lang.displayName).toBe('string');
+      expect(typeof lang.rtl).toBe('boolean');
+    }
   });
 
   it('DEFAULT_LANGUAGE is fr', () => {

@@ -8,16 +8,20 @@
  * 4. No literal keys are rendered at runtime
  */
 
-import { describe, it, expect, beforeAll, afterAll } from 'vitest';
+import { describe, it, expect, beforeAll, afterAll, beforeEach } from 'vitest';
 import i18next from 'i18next';
 import { initI18next } from '@/i18n/i18next-init';
+import { isRTL } from '@/domains/i18n/config';
 
 describe('i18next initialization', () => {
   beforeAll(async () => {
     if (!i18next.isInitialized) {
       await initI18next();
     }
-  });
+    // Pin to 'fr' after init so the whole suite runs with a known language,
+    // regardless of what i18next-browser-languagedetector resolved on this host.
+    i18next.changeLanguage('fr');
+  }, 60_000);
 
   afterAll(() => {
     // Reset to default state for other tests
@@ -406,9 +410,13 @@ describe('i18next initialization', () => {
     expect(i18next.t('family.invite')).toBe('Inviter');
   });
 
-  it('should report isRTL() as true for Arabic', () => {
-    const arLng = 'ar';
-    const isArabicRTL = arLng === 'ar' || arLng === 'he' || arLng === 'fa' || arLng === 'ur';
-    expect(isArabicRTL).toBe(true);
+  it('should report RTL per the domain registry for Arabic', () => {
+    // Delegate to the canonical domain function rather than re-implementing
+    // the RTL set locally — fa is intentionally LTR in this project
+    // (RTL_LANGUAGES = ['ar','he','ur','ps']), so a hard-coded check that
+    // includes fa would contradict the domain registry.
+    expect(isRTL('ar')).toBe(true);
+    expect(isRTL('fa')).toBe(false);
+    expect(isRTL('en')).toBe(false);
   });
 });

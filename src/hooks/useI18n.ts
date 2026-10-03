@@ -42,14 +42,6 @@ export type I18nHook = {
   getSupportedLanguages: () => typeof SUPPORTED_LANGUAGES;
 };
 
-const LANG_NAMES: Record<string, string> = {
-  fr: 'Français',
-  en: 'English',
-  ar: 'العربية',
-  de: 'Deutsch',
-  zh: '中文',
-};
-
 /**
  * Hook React pour accéder à la service de localisation (i18next via
  * I18nService). Fournit la traduction et la gestion de langue dans tous
@@ -86,10 +78,14 @@ export function useI18n(): I18nHook {
   // Obtenir l'info sur la langue courante
   const getLanguageInfo = useCallback((): LanguageInfo | undefined => {
     const langCode = i18n.getLanguage();
+    // Resolve name/displayName from the domain registry (single source of
+    // truth) rather than a hardcoded table, so all 45 languages report
+    // their native name + display name correctly.
+    const entry = SUPPORTED_LANGUAGES.find((l) => l.code === langCode);
     return {
       code: langCode,
-      name: LANG_NAMES[langCode] ?? langCode,
-      displayName: LANG_NAMES[langCode] ?? langCode,
+      name: entry?.name ?? langCode,
+      displayName: entry?.displayName ?? langCode,
       rtl: i18n.isRTL(),
     };
   }, []);
