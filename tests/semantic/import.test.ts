@@ -16,11 +16,14 @@ import {
 const REPO_ROOT = process.cwd();
 
 describe('stage A — import', () => {
-  it('loads the 35 built datasets and builds a verse universe', () => {
+  it('loads the built datasets and builds a verse universe', () => {
     const errors: string[] = [];
     const { datasets, universe } = loadVerseUniverse(`${REPO_ROOT}/data/bible`, errors);
     expect(errors).toEqual([]);
-    expect(datasets.length).toBe(35);
+    // 35 pre-existing + 2 newly-built free-access datasets (ASV, BSB).
+    // Keep the expectation a lower bound: `>= 37` — a future build-bible
+    // run can only add datasets, never remove these 37.
+    expect(datasets.length).toBeGreaterThanOrEqual(37);
     expect(universe.verses.length).toBeGreaterThan(30000);
     expect(universe.bookIds).toHaveLength(66);
     // Canonical verse keys: book:chapter:verse

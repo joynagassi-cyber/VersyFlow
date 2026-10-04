@@ -40,9 +40,33 @@ export interface BibleDatasetCatalogEntry {
   builtAt: string;
 }
 
-/** The static catalogue of downloadable datasets. */
+/**
+ * A catalogued dataset that is not yet built/deployed. `checksum` is the
+ * literal string `sha256:pending`; `sizeBytes` and `builtAt` are placeholders.
+ * Download-on-demand excludes these from `BIBLE_DATASET_CATALOG`.
+ */
+export interface PendingDatasetCatalogEntry {
+  id: string;
+  checksum: string; // 'sha256:pending'
+  sizeBytes: number;
+  builtAt: string;
+  status: 'pending';
+}
+
+type RawCatalogEntry = BibleDatasetCatalogEntry | PendingDatasetCatalogEntry;
+
+function isBuilt(entry: RawCatalogEntry): entry is BibleDatasetCatalogEntry {
+  return !/^sha256:pending$/.test(entry.checksum);
+}
+
+/**
+ * The static catalogue of **deployable** datasets. Pending stubs
+ * (`sha256:pending`) are excluded — they represent catalogued-but-not-yet-
+ * built datasets (e.g. `de-tkw`, `pt-brbsl`) that should not be listed as
+ * downloadable until `npm run bible:build` + `bible:deploy` complete.
+ */
 export const BIBLE_DATASET_CATALOG: BibleDatasetCatalogEntry[] =
-  datasetCatalogJson as unknown as BibleDatasetCatalogEntry[];
+  ((datasetCatalogJson as unknown as RawCatalogEntry[]).filter(isBuilt));
 
 /** Find the catalogue entry for a translation id, or null. */
 export function findRemoteDatasetEntry(
@@ -310,3 +334,95 @@ export async function resolveBibleTextSource(
 
 // Re-exports for tests that want to build a local source directly.
 export { InMemoryBibleTextSource };
+
+// =====================================================================
+// Translation stats (chapter / verse counts) — cached in localStorage
+// =====================================================================
+
+export interface TranslationStats {
+  chapters: number;
+  verses: number;
+  /** Year found in the dataset, when present. */
+  year?: number;
+}
+
+/**
+ * localStorage cache so the "Détail" UI reopens instantly without
+ * re-scanning ~30 MB of JSON: `{ [id]: { stats, at } }` keyed by
+ * translation id, expired after 24 h.
+ */
+const STATS_CACHE_KEY = 'versyflow-bible-stats-v1';
+const STATS_CACHE_TTL_MS = 24 * 60 * 60 * 1000;
+
+type StatsCache = Record<string, { stats: TranslationStats; at: number }>;
+
+function readStatsCache(): StatsCache {
+  try {
+    const raw = globalThis.localStorage?.getItem(STATS_CACHE_KEY);
+    return raw ? (JSON.parse(raw) as StatsCache) : {};
+  } catch {
+    return {};
+  }
+}
+
+function writeStatsCache(entry: Record<string, { stats: TranslationStats; at: number }>) {
+  try {
+    globalThis.localStorage?.setItem(STATS_CACHE_KEY, JSON.stringify(entry));
+  } catch {
+    /* localStorage unavailable / full — stats stay in-memory for the session */
+  }
+}
+
+function computeStats(data: BibleTranslationData): TranslationStats {
+  let chapters = 0;
+  let verses = 0;
+  for (const book of data.books) {
+    chapters += book.chapters.length;
+    for (const chapter of book.chapters) {
+      verses += chapter.verses.length;
+    }
+  }
+  return { chapters, verses, year: data.year };
+}
+
+/**
+ * Chapter + verse counts for a translation, cached 24 h in localStorage.
+ *
+ * Resolution order per id (first available source wins):
+ *   1. in-memory stats cache (same-session fast path)
+ *   2. localStorage 24 h cache
+ *   3. `loadTranslationData` (bundled JSON in prod / download cache)
+ *   4. explicit download from the Supabase bucket (dev, or when not cached)
+ *
+ * Returns `null` when the id has no dataset anywhere (unknown translation).
+ */
+const statsMemoryCache = new Map<string, TranslationStats>();
+
+export async function getTranslationStats(
+  translationId: string,
+): Promise<TranslationStats | null> {
+  const mem = statsMemoryCache.get(translationId);
+  if (mem) return mem;
+
+  const disk = readStatsCache();
+  const diskEntry = disk[translationId];
+  if (diskEntry && Date.now() - diskEntry.at < STATS_CACHE_TTL_MS) {
+    statsMemoryCache.set(translationId, diskEntry.stats);
+    return diskEntry.stats;
+  }
+
+  let data = await loadTranslationData(translationId);
+  if (!data) {
+    // Not resolvable locally — download it explicitly (the canonical dev path).
+    try {
+      data = await downloadAndLoadTranslationData(translationId);
+    } catch {
+      return null;
+    }
+  }
+  const stats = computeStats(data);
+  statsMemoryCache.set(translationId, stats);
+  const next = { ...disk, [translationId]: { stats, at: Date.now() } };
+  writeStatsCache(next);
+  return stats;
+}
