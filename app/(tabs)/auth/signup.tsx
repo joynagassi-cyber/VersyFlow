@@ -1,3 +1,4 @@
+// Fixed: A11y — skip button now carries a translated aria-label
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -110,7 +111,11 @@ export default function SignupScreen({ onSkip }: Props) {
           {t('auth.hasAccount', 'Deja un compte ? Connectez-vous')}
         </button>
         {onSkip && (
-          <button onClick={onSkip} className="text-sm text-text-muted underline">
+          <button
+            onClick={onSkip}
+            className="text-sm text-text-muted underline"
+            aria-label={t('common.skip', 'Passer')}
+          >
             {t('auth.skip', 'Continuer sans compte')}
           </button>
         )}

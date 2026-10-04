@@ -10,8 +10,9 @@
  * versets is resolved in the UI layer via the active translation.
  */
 
+// Fixed: Structure — semantic concept view now reads conceptId from the query string, matching the sibling verse/community views
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
   BrainCircuit,
@@ -32,7 +33,8 @@ function displayLabel(concept: { canonical_name: string; labels_by_language: Rec
 }
 
 export default function ConceptView() {
-  const { conceptId } = useParams<{ conceptId: string }>();
+  const [searchParams] = useSearchParams();
+  const conceptId = searchParams.get('conceptId') ?? undefined;
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
   const [verseTexts, setVerseTexts] = useState<Record<string, string>>({});

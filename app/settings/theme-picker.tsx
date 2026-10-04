@@ -62,7 +62,7 @@ export default function ThemePickerScreen() {
               className="flex-1 rounded-xl border border-border bg-surface-tint/40 p-3 text-left"
             >
               <span className="flex items-center gap-2">
-                <span className="h-6 w-6 rounded-full bg-[#121212]" />
+                <span className="h-6 w-6 rounded-full bg-background shadow-sm" />
                 <span className="text-sm font-medium text-text-primary">
                   {t('settings.themeBlack', 'Noir pur #121212')}
                 </span>

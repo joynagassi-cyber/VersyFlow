@@ -4,7 +4,9 @@
  * Interactive page to configure review reminders: how many reminders per
  * day ("nombre de fois par jour"), reminder time, and on/off toggle.
  */
+// Fixed: Capacitor — permission prompt is now requested just-in-time from this user-initiated handler
 
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -13,10 +15,12 @@ import {
   BellRing,
   Clock,
   Check,
+  RefreshCw,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { useAppearanceStore } from '@/store/appearance-store';
+import { notificationService } from '@/services/notification-service';
 
 const FREQUENCIES = [1, 2, 3, 5, 8, 12];
 
@@ -31,6 +35,23 @@ export default function SettingsRemindersScreen() {
     toggleReminders,
     setReminderTime,
   } = useAppearanceStore();
+  const [pushStatus, setPushStatus] = useState<'idle' | 'scheduled' | 'error'>('idle');
+
+  const schedulePush = async () => {
+    try {
+      // Just-in-time permission request (user-initiated), then schedule.
+      await notificationService.ensurePermissions();
+      await notificationService.scheduleDailyReminders();
+      setPushStatus('scheduled');
+    } catch {
+      setPushStatus('error');
+    }
+  };
+
+  const cancelPush = async () => {
+    await notificationService.cancelAll();
+    setPushStatus('idle');
+  };
 
   return (
     <div className="flex h-full flex-col overflow-y-auto p-6">
@@ -131,6 +152,38 @@ export default function SettingsRemindersScreen() {
               onChange={(e) => setReminderTime(e.target.value)}
               className="mt-1 h-11 rounded-lg border border-border bg-surface px-3 text-base text-text-primary disabled:opacity-40"
             />
+          </div>
+        </div>
+        {/* Notification push locales */}
+        <div className="rounded-2xl bg-surface p-4 shadow-sm">
+          <div className="mb-3 flex items-center gap-2">
+            <BellRing size={18} className="text-primary" />
+            <span className="text-base font-semibold text-text-primary">
+              {t('settings.notificationPush', 'Notifications locales')}
+            </span>
+          </div>
+          <p className="mb-3 text-xs text-text-muted">
+            {t('settings.notificationPushHint', 'Active des rappels de push sur cet appareil (sans serveur) en fonction des horaires ci-dessus.')}
+          </p>
+          <div className="flex flex-col gap-2">
+            <Button
+              variant="default"
+              className="w-full"
+              onClick={() => void schedulePush()}
+              disabled={!reminderEnabled || pushStatus === 'scheduled'}
+            >
+              <Check size={16} />
+              {t('settings.notificationSchedule', 'Planifier les rappels')}
+            </Button>
+            <Button
+              variant="outline"
+              className="w-full"
+              onClick={() => void cancelPush()}
+              disabled={pushStatus === 'idle'}
+            >
+              <RefreshCw size={16} />
+              {t('settings.notificationCancel', 'Annuler les rappels planifiés')}
+            </Button>
           </div>
         </div>
       </div>

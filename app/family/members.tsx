@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react';
+// Fixed: UX — member list hydrate failure now shows a visible error + retry instead of an empty list
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { UserPlus, CheckCircle2 } from 'lucide-react';
+import { UserPlus, CheckCircle2, AlertCircle } from 'lucide-react';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { useFamilySyncStore } from '@/store/family-sync-store';
@@ -18,24 +19,36 @@ export default function FamilyMembersScreen() {
 
   const [members, setMembers] = useState<MemberWithProfile[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const family = families.find((f) => f.id === activeFamilyId) || null;
+
+  const loadMembers = useCallback(
+    (familyId: string) => {
+      let cancelled = false;
+      setIsLoading(true);
+      setLoadError(null);
+      getMembersScoped(familyId)
+        .then((m) => {
+          if (!cancelled) setMembers(m);
+        })
+        .catch((e) => {
+          if (cancelled) return;
+          setLoadError(e instanceof Error ? e.message : t('errors.unknownError', 'Une erreur inattendue est survenue'));
+        })
+        .finally(() => {
+          if (!cancelled) setIsLoading(false);
+        });
+      return () => {
+        cancelled = true;
+      };
+    },
+    [getMembersScoped, t],
+  );
 
   useEffect(() => {
     if (!family) return;
-    let cancelled = false;
-    setIsLoading(true);
-    getMembersScoped(family.id)
-      .then((m) => {
-        if (!cancelled) setMembers(m);
-      })
-      .catch(() => {})
-      .finally(() => {
-        if (!cancelled) setIsLoading(false);
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [family, activeProfile?.id]);
+    return loadMembers(family.id);
+  }, [family, activeProfile?.id, loadMembers]);
 
   if (!family) {
     return (
@@ -82,6 +95,17 @@ export default function FamilyMembersScreen() {
           <p className="py-8 text-center text-sm text-text-muted">
             {t('common.loading', 'Chargement...')}
           </p>
+        ) : loadError ? (
+          <div className="flex flex-col items-center gap-3 rounded-2xl bg-surface p-6 text-center shadow-sm">
+            <AlertCircle size={28} className="text-error" />
+            <p className="text-sm text-error">{loadError}</p>
+            <button
+              onClick={() => loadMembers(family.id)}
+              className="rounded-full bg-primary px-5 py-2 text-sm font-semibold text-white active:opacity-90"
+            >
+              {t('common.retry', 'Réessayer')}
+            </button>
+          </div>
         ) : members.length === 0 ? (
           <EmptyState title={t('family.emptyMembers', 'Aucun membre')} />
         ) : (

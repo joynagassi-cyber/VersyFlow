@@ -1,8 +1,8 @@
+// Fixed: Structure — memorization flashcard screen now wrapped in FullScreenPage shell; icon-only buttons carry aria-labels
 import { useState, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
-  X,
   Settings2,
   Check,
   CheckCircle2,
@@ -11,6 +11,7 @@ import {
   RefreshCw,
   Hand,
 } from 'lucide-react';
+import FullScreenPage from '@/components/layout/FullScreenPage';
 
 interface Flashcard {
   id: string;
@@ -98,146 +99,140 @@ export default function FlashcardScreen() {
   };
 
   return (
-    <div className="flex h-full flex-col bg-background">
-      {/* Header */}
-      <div className="flex items-center justify-between px-5 pb-3 pt-4">
+    <FullScreenPage
+      title={t('session.flashcards', 'Flashcards')}
+      showBack
+      subtitle={`${currentIndex + 1} / ${cards.length}`}
+      right={
         <button
           onClick={() => navigate(-1)}
-          className="flex h-10 w-10 items-center justify-center rounded-full bg-surface shadow-sm"
+          className="flex h-9 w-9 items-center justify-center rounded-full bg-surface shadow-sm"
+          aria-label={t('common.close', 'Fermer')}
         >
-          <X size={20} className="text-text-secondary" />
+          <Settings2 size={18} className="text-text-secondary" />
         </button>
-        <div className="text-center">
-          <p className="text-lg font-bold text-text-primary">
-            {t('session.flashcards', 'Flashcards')}
-          </p>
-          <p className="text-sm text-text-muted">
-            {currentIndex + 1} / {cards.length}
-          </p>
+      }
+    >
+      <div className="flex min-h-full flex-col">
+        {/* Progress */}
+        <div className="px-5">
+          <div className="h-1.5 overflow-hidden rounded-full bg-[color:var(--color-divider)]">
+            <div
+              className="h-full rounded-full bg-primary"
+              style={{ width: progress + '%' }}
+            />
+          </div>
         </div>
-        <button className="flex h-10 w-10 items-center justify-center rounded-full bg-surface shadow-sm">
-          <Settings2 size={20} className="text-text-secondary" />
-        </button>
-      </div>
 
-      {/* Progress */}
-      <div className="px-5">
-        <div className="h-1.5 overflow-hidden rounded-full bg-[color:var(--color-divider)]">
+        {/* Card stack */}
+        <div className="relative flex flex-1 items-center justify-center overflow-hidden px-6">
+          {cards.slice(currentIndex + 1, currentIndex + 3).map((_, idx) => (
+            <div
+              key={'bg-' + idx}
+              className="absolute h-[400px] w-[min(92vw,520px)] rounded-3xl bg-surface shadow-lg"
+              style={{ zIndex: 10 - idx, transform: 'scale(' + (1 - idx * 0.04) + ')' }}
+            />
+          ))}
           <div
-            className="h-full rounded-full bg-primary"
-            style={{ width: progress + '%' }}
-          />
-        </div>
-      </div>
-
-      {/* Card stack */}
-      <div className="relative flex flex-1 items-center justify-center overflow-hidden px-6">
-        {cards.slice(currentIndex + 1, currentIndex + 3).map((_, idx) => (
-          <div
-            key={'bg-' + idx}
-            className="absolute h-[400px] w-[min(92vw,520px)] rounded-3xl bg-surface shadow-lg"
-            style={{ zIndex: 10 - idx, transform: 'scale(' + (1 - idx * 0.04) + ')' }}
-          />
-        ))}
-        <div
-          className="relative h-[400px] w-[min(92vw,520px)] select-none rounded-3xl bg-surface shadow-2xl"
-          style={{ transform, opacity, transition: 'transform .28s ease, opacity .28s ease' }}
-          onPointerDown={onDown}
-          onPointerMove={onMove}
-          onPointerUp={onUp}
-        >
-          <button
-            onClick={() => setIsFlipped((f) => !f)}
-            className="flex h-full w-full flex-col justify-between p-6 text-left"
+            className="relative h-[400px] w-[min(92vw,520px)] select-none rounded-3xl bg-surface shadow-2xl"
+            style={{ transform, opacity, transition: 'transform .28s ease, opacity .28s ease' }}
+            onPointerDown={onDown}
+            onPointerMove={onMove}
+            onPointerUp={onUp}
           >
-            {!isFlipped ? (
-              <>
-                <span
-                  className={
-                    'inline-flex items-center gap-2 self-start rounded-full px-3 py-1.5 text-xs font-semibold ' +
-                    (currentCard.mastered
-                      ? 'bg-success/15 text-success'
-                      : 'bg-surface-tint text-primary')
-                  }
-                >
-                  {currentCard.mastered ? (
-                    <CheckCircle2 size={14} />
-                  ) : (
-                    <HelpCircle size={14} />
-                  )}
-                  {currentCard.mastered
-                    ? t('session.mastered', 'Maitrise')
-                    : t('session.toMemorize', 'A memoriser')}
-                </span>
-                <div>
-                  <p className="text-xl font-bold text-text-primary">
-                    {currentCard.reference}
+            <button
+              onClick={() => setIsFlipped((f) => !f)}
+              className="flex h-full w-full flex-col justify-between p-6 text-left"
+            >
+              {!isFlipped ? (
+                <>
+                  <span
+                    className={
+                      'inline-flex items-center gap-2 self-start rounded-full px-3 py-1.5 text-xs font-semibold ' +
+                      (currentCard.mastered
+                        ? 'bg-success/15 text-success'
+                        : 'bg-surface-tint text-primary')
+                    }
+                  >
+                    {currentCard.mastered ? (
+                      <CheckCircle2 size={14} />
+                    ) : (
+                      <HelpCircle size={14} />
+                    )}
+                    {currentCard.mastered
+                      ? t('session.mastered', 'Maitrise')
+                      : t('session.toMemorize', 'A memoriser')}
+                  </span>
+                  <div>
+                    <p className="text-xl font-bold text-text-primary">
+                      {currentCard.reference}
+                    </p>
+                    <p className="mt-2 text-sm text-text-muted">
+                      {t('session.completePrompt', 'Complete ce verset:')}
+                    </p>
+                    <p className="mt-3 text-2xl font-medium text-text-secondary">
+                      {currentCard.front}
+                    </p>
+                  </div>
+                  <p className="flex items-center gap-2 text-xs text-text-muted">
+                    <RefreshCw size={14} />
+                    {t('session.tapToFlip', 'Tape pour voir la suite')}
                   </p>
-                  <p className="mt-2 text-sm text-text-muted">
-                    {t('session.completePrompt', 'Complete ce verset:')}
+                </>
+              ) : (
+                <>
+                  <span className="inline-flex items-center gap-2 self-start rounded-full bg-surface-tint px-3 py-1.5 text-xs font-semibold text-primary">
+                    <BookOpen size={14} />
+                    {t('session.fullVerse', 'Verset complet')}
+                  </span>
+                  <div>
+                    <p className="text-xl font-bold text-text-primary">
+                      {currentCard.reference}
+                    </p>
+                    <p className="mt-3 flex-1 text-lg leading-relaxed text-text-secondary">
+                      {currentCard.back}
+                    </p>
+                  </div>
+                  <p className="flex items-center gap-2 text-xs text-text-muted">
+                    <RefreshCw size={14} />
+                    {t('session.tapToBack', 'Tape pour revenir')}
                   </p>
-                  <p className="mt-3 text-2xl font-medium text-text-secondary">
-                    {currentCard.front}
-                  </p>
-                </div>
-                <p className="flex items-center gap-2 text-xs text-text-muted">
-                  <RefreshCw size={14} />
-                  {t('session.tapToFlip', 'Tape pour voir la suite')}
-                </p>
-              </>
-            ) : (
-              <>
-                <span className="inline-flex items-center gap-2 self-start rounded-full bg-surface-tint px-3 py-1.5 text-xs font-semibold text-primary">
-                  <BookOpen size={14} />
-                  {t('session.fullVerse', 'Verset complet')}
-                </span>
-                <div>
-                  <p className="text-xl font-bold text-text-primary">
-                    {currentCard.reference}
-                  </p>
-                  <p className="mt-3 flex-1 text-lg leading-relaxed text-text-secondary">
-                    {currentCard.back}
-                  </p>
-                </div>
-                <p className="flex items-center gap-2 text-xs text-text-muted">
-                  <RefreshCw size={14} />
-                  {t('session.tapToBack', 'Tape pour revenir')}
-                </p>
-              </>
-            )}
+                </>
+              )}
+            </button>
+          </div>
+        </div>
+
+        {/* Hints */}
+        <div className="flex justify-around px-10 py-3 text-xs text-text-muted">
+          <span className="flex items-center gap-2">
+            <Hand size={18} />
+            {t('session.swipeLeft', 'Glisser gauche: A revoir')}
+          </span>
+          <span className="flex items-center gap-2">
+            <Hand size={18} className="-scale-x-100" />
+            {t('session.swipeRight', 'Glisser droite: Maitrise')}
+          </span>
+        </div>
+
+        {/* Actions */}
+        <div className="flex gap-4 px-10 pb-8">
+          <button
+            onClick={() => advance('left')}
+            className="flex flex-1 items-center justify-center gap-2 rounded-2xl border-2 border-error py-4 font-bold text-error active:scale-[0.99]"
+          >
+            <RefreshCw size={20} />
+            {t('session.review', 'A revoir')}
+          </button>
+          <button
+            onClick={() => advance('right')}
+            className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-success py-4 font-bold text-white active:scale-[0.99]"
+          >
+            <Check size={20} />
+            {t('session.mastered', 'Maitrise')}
           </button>
         </div>
       </div>
-
-      {/* Hints */}
-      <div className="flex justify-around px-10 py-3 text-xs text-text-muted">
-        <span className="flex items-center gap-2">
-          <Hand size={18} />
-          {t('session.swipeLeft', 'Glisser gauche: A revoir')}
-        </span>
-        <span className="flex items-center gap-2">
-          <Hand size={18} className="-scale-x-100" />
-          {t('session.swipeRight', 'Glisser droite: Maitrise')}
-        </span>
-      </div>
-
-      {/* Actions */}
-      <div className="flex gap-4 px-10 pb-8">
-        <button
-          onClick={() => advance('left')}
-          className="flex flex-1 items-center justify-center gap-2 rounded-2xl border-2 border-error py-4 font-bold text-error active:scale-[0.99]"
-        >
-          <RefreshCw size={20} />
-          {t('session.review', 'A revoir')}
-        </button>
-        <button
-          onClick={() => advance('right')}
-          className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-success py-4 font-bold text-white active:scale-[0.99]"
-        >
-          <Check size={20} />
-          {t('session.mastered', 'Maitrise')}
-        </button>
-      </div>
-    </div>
+    </FullScreenPage>
   );
 }

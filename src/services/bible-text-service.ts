@@ -359,7 +359,13 @@ type StatsCache = Record<string, { stats: TranslationStats; at: number }>;
 function readStatsCache(): StatsCache {
   try {
     const raw = globalThis.localStorage?.getItem(STATS_CACHE_KEY);
-    return raw ? (JSON.parse(raw) as StatsCache) : {};
+    const parsed: unknown = raw ? JSON.parse(raw) : {};
+    // A stored payload that is not a plain object (e.g. the literal `null`
+    // string, or a stray array/primitive) is treated as "no cache" — the
+    // caller indexes the result, so it must never be `null`/`undefined`.
+    return parsed && typeof parsed === 'object' && !Array.isArray(parsed)
+      ? (parsed as StatsCache)
+      : {};
   } catch {
     return {};
   }
@@ -399,10 +405,15 @@ function computeStats(data: BibleTranslationData): TranslationStats {
 const statsMemoryCache = new Map<string, TranslationStats>();
 
 export async function getTranslationStats(
-  translationId: string,
+  translationId: string | null,
 ): Promise<TranslationStats | null> {
-  const mem = statsMemoryCache.get(translationId);
+  const mem = statsMemoryCache.get(translationId as string);
   if (mem) return mem;
+
+  // `null` id is a deliberate "no dataset" probe → return null before touching
+  // any storage: localStorage may be unavailable in SSR, and there is nothing
+  // to compute for an id that does not exist.
+  if (translationId === null) return null;
 
   const disk = readStatsCache();
   const diskEntry = disk[translationId];

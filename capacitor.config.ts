@@ -11,6 +11,10 @@ const config: CapacitorConfig = {
     SplashScreen: {
       launchShowDuration: 2000,
       launchAutoHide: true,
+      // Native-context hex values (documented exception to the design-token
+      // rule): the splash/status bar colors are baked into native resources
+      // at build time, so CSS vars / Tailwind tokens are not available here.
+      // #FFF0F6 = surface-tint light; #E91E8C = primary-dark.
       backgroundColor: '#FFF0F6',
       androidSplashResourceName: 'splash',
       androidScaleType: 'CENTER_CROP',

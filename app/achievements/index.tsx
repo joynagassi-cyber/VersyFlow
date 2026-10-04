@@ -53,22 +53,29 @@ const ICON_MAP: Record<string, typeof Star> = {
   globe: Globe,
 };
 
+// Achievement accent colors map to semantic design tokens (defined in
+// src/styles/globals.css) so achievements adapt to light/dark themes.
 const ACHIEVEMENTS: Achievement[] = [
-  { id: 'first_verse', title: 'Premier pas', description: "Memorisez votre premier verset", icon: 'book', color: '#D81B97', unlocked: false, progress: 0, requirement: '1 verset', category: 'memorization' },
-  { id: 'ten_verses', title: 'Collectionneur', description: 'Memorisez 10 versets', icon: 'bookmarks', color: '#3F51B5', unlocked: false, progress: 0, requirement: '10 versets', category: 'memorization' },
-  { id: 'fifty_verses', title: 'Erudit', description: 'Memorisez 50 versets', icon: 'school', color: '#FF9500', unlocked: false, progress: 0, requirement: '50 versets', category: 'memorization' },
-  { id: 'hundred_verses', title: "Maitre bibliste", description: 'Memorisez 100 versets', icon: 'trophy', color: '#008733', unlocked: false, progress: 0, requirement: '100 versets', category: 'memorization' },
-  { id: 'streak_7', title: 'Hebdomadaire', description: '7 jours de suite', icon: 'flame', color: '#FF5722', unlocked: false, progress: 0, requirement: '7 jours', category: 'streak' },
-  { id: 'streak_30', title: 'Mensuel', description: '30 jours de suite', icon: 'fire', color: '#FF9500', unlocked: false, progress: 0, requirement: '30 jours', category: 'streak' },
-  { id: 'streak_100', title: 'Dedie', description: '100 jours de suite', icon: 'star', color: '#D81B97', unlocked: false, progress: 0, requirement: '100 jours', category: 'streak' },
-  { id: 'first_review', title: 'Revisionne', description: "Revisez votre premier verset", icon: 'refresh', color: '#7B1FA2', unlocked: false, progress: 0, requirement: '1 revision', category: 'review' },
-  { id: 'fifty_reviews', title: 'Assidu', description: '50 revisions complétees', icon: 'checkmark-done', color: '#008733', unlocked: false, progress: 0, requirement: '50 revisions', category: 'review' },
-  { id: 'hundred_reviews', title: 'Perseverant', description: '100 revisions complétees', icon: 'star', color: '#D81B97', unlocked: false, progress: 0, requirement: '100 revisions', category: 'review' },
-  { id: 'first_collection', title: 'Organisateur', description: "Creez votre premiere collection", icon: 'folder', color: '#3F51B5', unlocked: false, progress: 0, requirement: '1 collection', category: 'collection' },
-  { id: 'five_collections', title: 'Archiviste', description: 'Creez 5 collections', icon: 'folders', color: '#3F51B5', unlocked: false, progress: 0, requirement: '5 collections', category: 'collection' },
-  { id: 'patriarch', title: 'Patriarche', description: "Maitrisez tous les Psaumes", icon: 'medal', color: '#FFD700', unlocked: false, progress: 0, requirement: '150 versets Psaumes', category: 'special' },
-  { id: 'gospel', title: 'Evangéliste', description: "Maitrisez tous les Evangiles", icon: 'globe', color: '#D81B97', unlocked: false, progress: 0, requirement: '91 versets Evangiles', category: 'special' },
+  { id: 'first_verse', title: 'Premier pas', description: "Memorisez votre premier verset", icon: 'book', color: 'var(--color-primary)', unlocked: false, progress: 0, requirement: '1 verset', category: 'memorization' },
+  { id: 'ten_verses', title: 'Collectionneur', description: 'Memorisez 10 versets', icon: 'bookmarks', color: 'var(--color-info)', unlocked: false, progress: 0, requirement: '10 versets', category: 'memorization' },
+  { id: 'fifty_verses', title: 'Erudit', description: 'Memorisez 50 versets', icon: 'school', color: 'var(--color-warning)', unlocked: false, progress: 0, requirement: '50 versets', category: 'memorization' },
+  { id: 'hundred_verses', title: "Maitre bibliste", description: 'Memorisez 100 versets', icon: 'trophy', color: 'var(--color-success)', unlocked: false, progress: 0, requirement: '100 versets', category: 'memorization' },
+  { id: 'streak_7', title: 'Hebdomadaire', description: '7 jours de suite', icon: 'flame', color: 'var(--color-accent)', unlocked: false, progress: 0, requirement: '7 jours', category: 'streak' },
+  { id: 'streak_30', title: 'Mensuel', description: '30 jours de suite', icon: 'fire', color: 'var(--color-warning)', unlocked: false, progress: 0, requirement: '30 jours', category: 'streak' },
+  { id: 'streak_100', title: 'Dedie', description: '100 jours de suite', icon: 'star', color: 'var(--color-primary)', unlocked: false, progress: 0, requirement: '100 jours', category: 'streak' },
+  { id: 'first_review', title: 'Revisionne', description: "Revisez votre premier verset", icon: 'refresh', color: 'var(--color-primary-dark)', unlocked: false, progress: 0, requirement: '1 revision', category: 'review' },
+  { id: 'fifty_reviews', title: 'Assidu', description: '50 revisions complétees', icon: 'checkmark-done', color: 'var(--color-success)', unlocked: false, progress: 0, requirement: '50 revisions', category: 'review' },
+  { id: 'hundred_reviews', title: 'Perseverant', description: '100 revisions complétees', icon: 'star', color: 'var(--color-primary)', unlocked: false, progress: 0, requirement: '100 revisions', category: 'review' },
+  { id: 'first_collection', title: 'Organisateur', description: "Creez votre premiere collection", icon: 'folder', color: 'var(--color-info)', unlocked: false, progress: 0, requirement: '1 collection', category: 'collection' },
+  { id: 'five_collections', title: 'Archiviste', description: 'Creez 5 collections', icon: 'folders', color: 'var(--color-info)', unlocked: false, progress: 0, requirement: '5 collections', category: 'collection' },
+  { id: 'patriarch', title: 'Patriarche', description: "Maitrisez tous les Psaumes", icon: 'medal', color: 'var(--color-warning)', unlocked: false, progress: 0, requirement: '150 versets Psaumes', category: 'special' },
+  { id: 'gospel', title: 'Evangéliste', description: "Maitrisez tous les Evangiles", icon: 'globe', color: 'var(--color-primary)', unlocked: false, progress: 0, requirement: '91 versets Evangiles', category: 'special' },
 ];
+
+/** 12% translucent tint of a token color, for soft circular backgrounds. */
+const achievementTint = (color: string) => `color-mix(in srgb, ${color} 12%, transparent)`;
+/** 25% translucent tint of a token color, for card outline accents. */
+const achievementTintBorder = (color: string) => `color-mix(in srgb, ${color} 25%, transparent)`;
 
 const CATEGORIES: { id: 'all' | Cat; label: string }[] = [
   { id: 'all', label: 'Tous' },
@@ -228,7 +235,7 @@ export default function AchievementScreen() {
                   className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full"
                   style={{
                     color: a.unlocked ? a.color : 'var(--color-text-muted)',
-                    backgroundColor: a.color + '20',
+                    backgroundColor: achievementTint(a.color),
                   }}
                 >
                   <Icon size={26} />
@@ -269,7 +276,7 @@ export default function AchievementScreen() {
         {selected && (
           <div
             className="rounded-2xl bg-surface p-4 shadow-sm"
-            style={{ borderColor: selected.color + '40' }}
+            style={{ borderColor: achievementTintBorder(selected.color) }}
           >
             <p className="text-base font-bold" style={{ color: selected.color }}>
               {selected.title}

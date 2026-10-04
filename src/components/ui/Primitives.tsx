@@ -1320,10 +1320,35 @@ export { Platform };
 
 
 // ─── Keyboard (web compatible) ──────────────────────────────────────────────
+// On native (Capacitor) platforms, `document.activeElement.blur()` does NOT
+// close the on-screen keyboard; we must call the @capacitor/keyboard plugin's
+// hide() method. On web, we fall back to blurring the active element.
+// Follows the same dynamic-import + isNativePlatform() guard pattern used by
+// src/services/notification-service.ts for @capacitor/local-notifications.
+function isNativePlatform(): boolean {
+  if (typeof window === 'undefined') return false;
+  const cap = (window as unknown as { Capacitor?: { isNativePlatform?: () => boolean } }).Capacitor;
+  return cap?.isNativePlatform?.() === true;
+}
+
 export const Keyboard = {
   dismiss: () => {
-    if (document.activeElement instanceof HTMLElement) {
-      document.activeElement.blur();
+    if (isNativePlatform()) {
+      // Native: ask the Capacitor keyboard plugin to hide the on-screen
+      // keyboard. The dynamic import keeps the native-only plugin out of the
+      // web bundle's hot path; on failure we fall back to blurring the active
+      // element so at least focus is released.
+      import('@capacitor/keyboard')
+        .then(({ Keyboard: CapacitorKeyboard }) => CapacitorKeyboard.hide())
+        .catch(() => {
+          if (document.activeElement instanceof HTMLElement) {
+            document.activeElement.blur();
+          }
+        });
+    } else {
+      if (document.activeElement instanceof HTMLElement) {
+        document.activeElement.blur();
+      }
     }
   },
   addListener: (_type: string, _listener: () => void) => () => {},

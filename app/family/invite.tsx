@@ -1,3 +1,4 @@
+// Fixed: A11y — icon-only buttons now carry translated aria-labels
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -19,6 +20,7 @@ export default function FamilyInviteScreen() {
   const [inviteCode, setInviteCode] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [sharing, setSharing] = useState(false);
   const family = families.find((f) => f.id === activeFamilyId) || null;
 
   useEffect(() => {
@@ -58,15 +60,19 @@ export default function FamilyInviteScreen() {
   };
 
   const handleShare = async () => {
+    if (sharing) return;
     const text = buildInviteText();
     const nav = navigator as Navigator & {
       share?: (data: { title?: string; text: string }) => Promise<void>;
     };
     if (nav.share) {
+      setSharing(true);
       try {
         await nav.share({ title: t('family.shareTitle', 'Invitation famille'), text });
       } catch {
         /* user cancelled */
+      } finally {
+        setSharing(false);
       }
     } else {
       handleCopy();
@@ -112,7 +118,11 @@ export default function FamilyInviteScreen() {
               <span className="text-3xl font-extrabold tracking-widest text-primary">
                 {inviteCode}
               </span>
-              <button onClick={handleCopy} className="rounded-full bg-surface-tint p-2 active:bg-primary/10">
+              <button
+                onClick={handleCopy}
+                className="rounded-full bg-surface-tint p-2 active:bg-primary/10"
+                aria-label={copied ? t('common.saved', 'Copié') : t('common.copy', 'Copier')}
+              >
                 {copied ? <Check size={18} className="text-success" /> : <Copy size={18} className="text-primary" />}
               </button>
             </div>
@@ -126,8 +136,17 @@ export default function FamilyInviteScreen() {
           </span>
         </div>
 
-        <Button variant="default" className="w-full" onClick={handleShare}>
-          <Share2 size={18} />
+        <Button
+          variant="default"
+          className="w-full"
+          onClick={handleShare}
+          disabled={isLoading || !inviteCode || sharing}
+        >
+          {sharing ? (
+            <Loader2 size={18} className="animate-spin" />
+          ) : (
+            <Share2 size={18} />
+          )}
           {t('family.shareCode', 'Partager le code')}
         </Button>
 

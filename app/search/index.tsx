@@ -1,7 +1,8 @@
+// Fixed: UX — search-index load failure now shows a visible error hint + retry
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Search, X, Clock, GraduationCap, Bookmark } from 'lucide-react';
+import { Search, X, Clock, GraduationCap, Bookmark, AlertCircle } from 'lucide-react';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { loadTranslationBooks } from '@/services/bible-text-service';
@@ -38,6 +39,7 @@ export default function SearchScreen() {
   const [results, setResults] = useState<SearchResult[]>([]);
   const [showHistory, setShowHistory] = useState(true);
   const [index, setIndex] = useState<SearchResult[]>([]);
+  const [indexError, setIndexError] = useState<string | null>(null);
   const [searchHistory, setSearchHistory] = useState<string[]>(() => {
     try {
       const raw = localStorage.getItem(HISTORY_KEY);
@@ -48,28 +50,42 @@ export default function SearchScreen() {
     }
   });
 
-  useEffect(() => {
-    let cancelled = false;
-    const translationId = useSettingsStore.getState().bibleTranslation || 'lsg';
-    void loadTranslationBooks(translationId).then((booksData) => {
-      if (cancelled || !booksData) return;
-      const rows: SearchResult[] = [];
-      for (const book of booksData) {
-        for (const ch of book.chapters ?? []) {
-          for (const v of ch.verses ?? []) {
-            rows.push({
-              id: book.id + '-' + ch.number + '-' + v.number,
-              reference: book.name.fr + ' ' + ch.number + ':' + v.number,
-              book: book.name.fr,
-              chapter: ch.number,
-              verse: v.number,
-              text: v.text,
-              relevance: 0,
-            });
-          }
+  const buildIndex = (booksData: Awaited<ReturnType<typeof loadTranslationBooks>>) => {
+    if (!booksData) return;
+    const rows: SearchResult[] = [];
+    for (const book of booksData) {
+      for (const ch of book.chapters ?? []) {
+        for (const v of ch.verses ?? []) {
+          rows.push({
+            id: book.id + '-' + ch.number + '-' + v.number,
+            reference: book.name.fr + ' ' + ch.number + ':' + v.number,
+            book: book.name.fr,
+            chapter: ch.number,
+            verse: v.number,
+            text: v.text,
+            relevance: 0,
+          });
         }
       }
-      setIndex(rows);
+    }
+    setIndex(rows);
+  };
+
+  useEffect(() => {
+    let cancelled = false;
+    setIndexError(null);
+    const translationId = useSettingsStore.getState().bibleTranslation || 'lsg';
+    void loadTranslationBooks(translationId).then((booksData) => {
+      if (cancelled) return;
+      if (!booksData) {
+        setIndexError(t('errors.unknownError', 'Impossible de charger la recherche'));
+        return;
+      }
+      buildIndex(booksData);
+    }).catch(() => {
+      if (!cancelled) {
+        setIndexError(t('errors.unknownError', 'Impossible de charger la recherche'));
+      }
     });
     return () => {
       cancelled = true;
@@ -143,11 +159,29 @@ export default function SearchScreen() {
             autoCapitalize="sentences"
           />
           {query && (
-            <button onClick={() => handleSearch('')} aria-label="clear">
+            <button onClick={() => handleSearch('')} aria-label={t('common.clear', 'Effacer')}>
               <X size={18} className="text-text-muted" />
             </button>
           )}
         </div>
+
+        {/* Index load failure hint */}
+        {indexError && (
+          <div className="mt-4 flex items-center gap-3 rounded-2xl bg-surface p-4 shadow-sm">
+            <AlertCircle size={20} className="shrink-0 text-error" />
+            <p className="flex-1 text-sm text-error">{indexError}</p>
+            <button
+              onClick={() => {
+                setIndexError(null);
+                setIndex([]);
+                window.location.reload();
+              }}
+              className="rounded-full bg-primary px-3 py-1.5 text-xs font-semibold text-white active:opacity-90"
+            >
+              {t('common.retry', 'Réessayer')}
+            </button>
+          </div>
+        )}
 
         {/* Suggestions */}
         {!query && showHistory && (

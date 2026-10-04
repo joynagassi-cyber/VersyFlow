@@ -12,12 +12,22 @@ import {
   BookOpen,
   LogOut,
   ChevronRight,
+  Sparkles,
+  LayoutGrid,
+  Layers,
+  Star,
+  BookText,
+  SlidersHorizontal,
+  type LucideIcon,
 } from 'lucide-react';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { Button } from '@/components/ui/button';
+import { ProfileAvatar } from '@/components/profile/ProfileAvatar';
 import { useAuthStore } from '@/store/auth-store';
+import { useSettingsStore } from '@/store/settings-store';
+import { getTranslationDisplayInfo } from '@/services/bible-translation-names';
 
-type Row = { label: string; icon: typeof User; to: string };
+type Row = { label: string; icon: LucideIcon; to: string };
 
 export default function SettingsScreen() {
   const navigate = useNavigate();
@@ -30,71 +40,127 @@ export default function SettingsScreen() {
     navigate('/auth/login');
   };
 
-  const groups: { title: string; items: Row[] }[] = [
+  const displayName = user?.display_name || t('settings.localUser', 'Utilisateur');
+  const { bibleTranslation } = useSettingsStore();
+  const translationInfo = getTranslationDisplayInfo(bibleTranslation);
+
+  // Settings reorganized into clearly divided vertical sections. Each group
+  // is a distinct user concern: Bible, App, Appearance, Learning, Sync,
+  // New features, and Bottom-nav page toggles.
+  const groups: { title: string; icon: LucideIcon; items: Row[] }[] = [
     {
-      title: t('settings.compte', 'Compte'),
+      title: t('settings.bibleSection', 'Bible'),
+      icon: BookText,
       items: [
-        { label: t('settings.profil', 'Profil'), icon: User, to: '/profile' },
-        ...(isAuthenticated
-          ? [{ label: t('settings.sync', 'Synchronisation'), icon: Cloud, to: '/settings/backup' }]
-          : []),
+        {
+          label: t('settings.bibleTranslation', 'Traduction biblique'),
+          icon: BookText,
+          to: '/settings/available-translations',
+        },
       ],
     },
     {
-      title: t('settings.apparence', 'Apparence'),
+      title: t('settings.appSection', 'Application'),
+      icon: LayoutGrid,
       items: [
-        { label: t('settings.theme', 'Theme'), icon: Palette, to: '/settings/appearance' },
-        { label: t('settings.uiLanguage', 'Langue'), icon: Languages, to: '/settings/languages' },
+        { label: t('settings.uiLanguage', 'Langue de l’interface'), icon: Languages, to: '/settings/languages' },
+        { label: t('settings.session', 'Session de mémorisation'), icon: Calendar, to: '/settings/session' },
+        { label: t('settings.reminders', 'Rappels & notifications'), icon: Bell, to: '/settings/reminders' },
       ],
     },
     {
-      title: t('settings.sessionReminders', 'Session & Rappels'),
+      title: t('settings.appearanceSection', 'Apparence & Lecture'),
+      icon: Palette,
       items: [
-        { label: t('settings.session', 'Session'), icon: Calendar, to: '/settings/session' },
-        { label: t('settings.reminders', 'Rappels'), icon: Bell, to: '/settings/reminders' },
+        { label: t('settings.theme', 'Thème, couleurs & Lecture'), icon: Palette, to: '/settings/appearance' },
+        { label: t('settings.themeImage', "Thèmes d'image"), icon: Layers, to: '/settings/theme-picker' },
       ],
     },
     {
-      title: t('settings.confidentialite', 'Confidentialite'),
+      title: t('settings.learningSection', 'Apprentissage sémantique'),
+      icon: Star,
       items: [
-        { label: t('settings.data', 'Donnees'), icon: Shield, to: '/settings/privacy' },
-        { label: t('settings.backup', 'Sauvegarde'), icon: Cloud, to: '/settings/backup' },
+        {
+          label: t('settings.semanticTree', 'Arbre sémantique & modes'),
+          icon: Star,
+          to: '/semantic',
+        },
       ],
     },
     {
-      title: t('settings.aide', 'Aide'),
-      items: [{ label: t('settings.about', "A propos"), icon: BookOpen, to: '/settings/about' }],
+      title: t('settings.navigationSection', 'Navigation & Pages'),
+      icon: LayoutGrid,
+      items: [
+        {
+          label: t('settings.navigationSettings', 'Pages visibles & menu'),
+          icon: SlidersHorizontal,
+          to: '/settings/navigation',
+        },
+      ],
+    },
+    {
+      title: t('settings.dataSection', 'Données & Synchronisation'),
+      icon: Cloud,
+      items: [
+        { label: t('settings.backup', 'Sauvegarde & export'), icon: Cloud, to: '/settings/backup' },
+        { label: t('settings.privacy', 'Confidentialité & données'), icon: Shield, to: '/settings/privacy' },
+      ],
+    },
+    {
+      title: t('settings.newFeaturesSection', 'Nouveautés'),
+      icon: Sparkles,
+      items: [
+        { label: t('settings.versions', 'Versions de la Bible'), icon: BookText, to: '/settings/available-translations' },
+      ],
     },
   ];
 
   return (
     <FullScreenPage title={t('nav.settings', 'Parametres')} showBack>
       <div className="mx-auto max-w-md space-y-5">
-        {/* Profile card */}
+        {/* Profile card — premium avatar (photo → vector illustration fallback) */}
         <button
           onClick={() => navigate('/profile')}
           className="flex w-full items-center gap-4 rounded-3xl bg-surface p-4 text-left shadow-sm"
         >
-          <span className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-xl font-bold text-white">
-            {(user?.display_name || 'U').charAt(0).toUpperCase()}
-          </span>
-          <span className="flex-1">
-            <span className="block text-base font-semibold text-text-primary">
-              {user?.display_name || t('settings.localUser', 'Utilisateur')}
+          <ProfileAvatar name={displayName} size={48} />
+          <span className="min-w-0 flex-1">
+            <span className="text-gradient-hero block truncate text-base font-extrabold">
+              {displayName}
             </span>
-            <span className="text-sm text-text-muted">
-              {isAuthenticated
-                ? t('settings.connected', 'Connecte')
-                : t('settings.localMode', 'Mode local')}
+            <span className="block truncate text-sm text-text-muted">
+              {isAuthenticated ? t('settings.connected', 'Connecte') : t('settings.localMode', 'Mode local')}
             </span>
           </span>
           <ChevronRight size={18} className="text-text-muted" />
         </button>
 
-        {/* Groups */}
+        {/* Active translation pill (abbreviation + full name, subtitle). */}
+        <div className="flex items-center gap-3 rounded-2xl bg-surface p-4 shadow-sm">
+          <span className="flex h-10 w-10 items-center justify-center rounded-full bg-surface-tint text-primary">
+            <BookText size={18} />
+          </span>
+          <div className="min-w-0 flex-1">
+            <p className="truncate text-sm font-bold text-text-primary">
+              {translationInfo.abbreviation}
+              {translationInfo.abbreviation !== translationInfo.name && (
+                <span className="ml-2 font-medium text-text-muted">· {translationInfo.name}</span>
+              )}
+            </p>
+            <p className="text-xs text-text-muted">{translationInfo.language}</p>
+          </div>
+          <ChevronRight
+            size={18}
+            className="cursor-pointer text-text-muted"
+            onClick={() => navigate('/settings/available-translations')}
+          />
+        </div>
+
+        {/* Divided vertical sections */}
         {groups.map((group, gi) => (
           <div key={gi}>
-            <p className="mb-2 px-1 text-xs font-bold uppercase tracking-wide text-text-muted">
+            <p className="mb-2 flex items-center gap-2 px-1 text-xs font-bold uppercase tracking-wide text-text-muted">
+              <group.icon size={13} className="text-primary" />
               {group.title}
             </p>
             <div className="overflow-hidden rounded-2xl bg-surface shadow-sm">

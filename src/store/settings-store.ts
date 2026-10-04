@@ -22,13 +22,25 @@ const STORAGE_KEYS = {
 export interface SettingsState {
   uiLanguage: string;
   bibleTranslation: string;
+  /** The style of Bible text the user wants to read (type de version). */
+  bibleVersionType: BibleVersionType;
   onboardingCompleted: boolean;
 
   setUiLanguage: (lang: string) => void;
   setBibleTranslation: (id: string) => void;
+  setBibleVersionType: (type: BibleVersionType) => void;
   completeOnboarding: () => void;
   resetToDefaults: () => void;
 }
+
+/**
+ * "Type de version" — the reading style a user prefers. This is a
+ * filter/label over the catalogue, not a separate dataset:
+ *   - `classical`  : older scholarly / traditional editions (LSG, KJV, Luther…)
+ *   - `modern`     : current, plain-language editions (NBV, God's Word, ULB…)
+ *   - `revised`    : revision / update of an older edition
+ */
+export type BibleVersionType = 'classical' | 'modern' | 'revised';
 
 // `persist` with an async JSON storage adapter widens the state to
 // `SettingsState | null` (to represent "not yet rehydrated").
@@ -37,9 +49,13 @@ export interface SettingsState {
 export type SettingsPersistState = SettingsState | null;
 
 // Initial state defaults
-const DEFAULTS: Pick<SettingsState, 'uiLanguage' | 'bibleTranslation' | 'onboardingCompleted'> = {
+const DEFAULTS: Pick<
+  SettingsState,
+  'uiLanguage' | 'bibleTranslation' | 'bibleVersionType' | 'onboardingCompleted'
+> = {
   uiLanguage: DEFAULT_LANGUAGE,
   bibleTranslation: 'lsg',
+  bibleVersionType: 'classical',
   onboardingCompleted: false,
 };
 
@@ -61,6 +77,11 @@ export const useSettingsStore = create<SettingsState>(() => ({
 
   setBibleTranslation(id: string) {
     useSettingsStore.setState({ bibleTranslation: id });
+    void settingsStorePersist.save();
+  },
+
+  setBibleVersionType(type: BibleVersionType) {
+    useSettingsStore.setState({ bibleVersionType: type });
     void settingsStorePersist.save();
   },
 
@@ -86,6 +107,7 @@ export const settingsStorePersist = {
       useSettingsStore.setState({
         uiLanguage: parsed.uiLanguage ? normalizeLocaleCode(parsed.uiLanguage) : DEFAULT_LANGUAGE,
         bibleTranslation: parsed.bibleTranslation ?? 'lsg',
+        bibleVersionType: parsed.bibleVersionType ?? 'classical',
         onboardingCompleted: parsed.onboardingCompleted ?? false,
       });
     } catch {
@@ -93,8 +115,9 @@ export const settingsStorePersist = {
     }
   },
   save: async () => {
-    const { uiLanguage, bibleTranslation, onboardingCompleted } = useSettingsStore.getState();
-    const value = JSON.stringify({ uiLanguage, bibleTranslation, onboardingCompleted });
+    const { uiLanguage, bibleTranslation, bibleVersionType, onboardingCompleted } =
+      useSettingsStore.getState();
+    const value = JSON.stringify({ uiLanguage, bibleTranslation, bibleVersionType, onboardingCompleted });
     await storage.set('versyflow-settings-storage', value);
     // Mirror the language to the localStorage key that main.tsx boot-time
     // restore reads, so the persisted choice survives an app restart

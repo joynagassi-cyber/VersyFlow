@@ -5,6 +5,7 @@ import { Pencil, LogOut, Users, Globe, BookText, Download, UsersRound } from 'lu
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { ListItem } from '@/components/ui/ListItem';
 import { Button } from '@/components/ui/button';
+import { ProfileAvatar } from '@/components/profile/ProfileAvatar';
 import { useAuthStore } from '@/store/auth-store';
 import { useSettingsStore } from '@/store/settings-store';
 import { useActiveProfile } from '@/hooks/useActiveProfile';
@@ -14,7 +15,7 @@ import { ProgressService } from '@/services/progress-service';
 import type { ProgressStats } from '@/services/stats-calculator';
 import { cn } from '@/lib/utils';
 
-import { bibleTranslationDisplayName } from '@/services/bible-translation-names';
+import { bibleTranslationDisplayName, getTranslationDisplayInfo } from '@/services/bible-translation-names';
 
 function StatTile({ value, label }: { value: number; label: string }) {
   return (
@@ -55,7 +56,7 @@ export default function ProfileScreen() {
   }, [profileId]);
 
   const displayName = name || user?.display_name || activeProfile?.displayName || '';
-  const initial = (displayName || 'U').charAt(0).toUpperCase();
+  const translationInfo = getTranslationDisplayInfo(bibleTranslation);
 
   const toggleTranslation = () =>
     setBibleTranslation(bibleTranslation === 'lsg' ? 'ostervald' : 'lsg');
@@ -70,41 +71,52 @@ export default function ProfileScreen() {
   return (
     <FullScreenPage title={t('common.profil', 'Profil')} showBack>
       <div className="mx-auto max-w-md space-y-5">
-        {/* Header card */}
-        <div className="gradient-hero glow-primary rounded-3xl p-5 text-white">
+        {/* ── Header card: gradient name (very large) + photo on the right ── */}
+        <div className="gradient-hero glow-primary overflow-hidden rounded-3xl p-5 text-white">
           <div className="flex items-center gap-4">
-            <span className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-white/25 text-2xl font-extrabold">
-              {initial}
-            </span>
             <div className="min-w-0 flex-1">
-              {editing ? (
-                <input
-                  value={name}
-                  autoFocus
-                  onChange={(e) => setName(e.target.value)}
-                  onBlur={() => setEditing(false)}
-                  onKeyDown={(e) => e.key === 'Enter' && setEditing(false)}
-                  className="w-full rounded-lg bg-white/20 px-2 py-1 text-lg font-bold text-white outline-none"
-                />
-              ) : (
-                <p className="truncate text-lg font-bold">{displayName || t('profile.setName', 'Definir un nom')}</p>
-              )}
-              <p className="truncate text-sm text-white/80">{user?.userId || 'Mode local'}</p>
+              {/* Big gradient display name — the name is the hero. */}
+              <div className="flex items-center gap-2">
+                {editing ? (
+                  <input
+                    value={name}
+                    autoFocus
+                    onChange={(e) => setName(e.target.value)}
+                    onBlur={() => setEditing(false)}
+                    onKeyDown={(e) => e.key === 'Enter' && setEditing(false)}
+                    className="w-full rounded-lg bg-white/20 px-2 py-1 text-2xl font-extrabold text-white outline-none"
+                  />
+                ) : (
+                  <h1 className="text-gradient-hero truncate text-3xl font-extrabold leading-tight">
+                    {displayName || t('profile.setName', 'Definir un nom')}
+                  </h1>
+                )}
+                <button
+                  onClick={() => setEditing(true)}
+                  className="shrink-0 rounded-full bg-white/20 p-1.5 active:bg-white/30"
+                  aria-label={t('common.edit', 'Modifier')}
+                >
+                  <Pencil size={14} />
+                </button>
+              </div>
+
+              <p className="mt-1 truncate text-sm text-white/80">
+                {user?.userId || t('profile.localMode', 'Mode local')}
+              </p>
               <span className="mt-2 inline-block rounded-full bg-white/20 px-2.5 py-0.5 text-xs font-semibold">
-                {isAuthenticated ? t('profile.connected', 'Connecte') : t('profile.local', 'Local')}
+                {isAuthenticated
+                  ? t('profile.connected', 'Connecte')
+                  : t('profile.local', 'Local')}
               </span>
             </div>
-            <button
-              onClick={() => setEditing(true)}
-              className="rounded-full bg-white/20 p-2 active:bg-white/30"
-              aria-label="edit"
-            >
-              <Pencil size={16} />
-            </button>
+
+            {/* Photo on the right — a real image if set, otherwise a vector
+                illustration (theme catalog) as the default fallback. */}
+            <ProfileAvatar name={displayName} size={72} className="shadow-lg" />
           </div>
         </div>
 
-        {/* Stats band */}
+        {/* ── Stats band ── */}
         <div className="grid grid-cols-2 gap-3">
           <StatTile value={stats?.streakCount ?? 0} label={t('progress.streak', 'Serie')} />
           <StatTile value={stats?.masteredVerses ?? 0} label={t('progress.mastered', 'Maitres')} />
@@ -112,7 +124,7 @@ export default function ProfileScreen() {
           <StatTile value={stats?.dueForReview ?? 0} label={t('progress.toReview', 'A reviser')} />
         </div>
 
-        {/* Preferences */}
+        {/* ── Preferences ── */}
         <div className="overflow-hidden rounded-2xl bg-surface shadow-sm">
           <h2 className="px-4 pt-4 text-xs font-bold uppercase tracking-wide text-text-muted">
             {t('profile.preferences', 'Preferences')}
@@ -121,7 +133,7 @@ export default function ProfileScreen() {
             <ListItem
               icon={BookText}
               label={t('settings.bibleTranslation', 'Traduction')}
-              value={bibleTranslationDisplayName(bibleTranslation)}
+              value={`${translationInfo.abbreviation} · ${translationInfo.name}`}
               onClick={toggleTranslation}
             />
             <ListItem
@@ -152,7 +164,7 @@ export default function ProfileScreen() {
           </div>
         </div>
 
-        {/* Actions */}
+        {/* ── Actions ── */}
         <div className="flex flex-col gap-3">
           <Button variant="outline" onClick={() => navigate('/settings/backup')}>
             <Download size={18} />

@@ -10,7 +10,7 @@
 import { useState, useMemo } from 'react';
 import { useSearchParams, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Download, Loader2, AlertCircle } from 'lucide-react';
+import { Download, Loader2, AlertCircle, X } from 'lucide-react';
 import FullScreenPage from '@/components/layout/FullScreenPage';
 import { BIBLE_BOOKS } from '@/domains/bible/entities';
 import { useChapterSemanticTags } from '@/hooks/useSemanticTags';
@@ -37,8 +37,17 @@ export default function ChapterScreen() {
 
   const [selectedVerse, setSelectedVerse] = useState<number | null>(null);
 
-  const { books, status, error, remoteEntry, translationId, downloadPercent, download } =
-    useBibleData();
+  const {
+    books,
+    status,
+    error,
+    remoteEntry,
+    translationId,
+    downloadPercent,
+    downloadBytes,
+    download,
+    cancelDownload,
+  } = useBibleData();
 
   const { tags } = useChapterSemanticTags(book.id, chapter);
 
@@ -87,13 +96,23 @@ export default function ChapterScreen() {
                 </p>
                 <p className="text-xs text-text-muted">
                   {translationId.toUpperCase()} · {formatBytes(remoteEntry.sizeBytes)}
+                  {status === 'downloading' && downloadBytes != null && (
+                    <span className="tabular-nums">
+                      {' '}· {formatBytes(downloadBytes)}
+                    </span>
+                  )}
                 </p>
                 {status === 'downloading' && downloadPercent != null && (
-                  <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-surface-tint">
-                    <div
-                      className="h-full rounded-full bg-primary transition-all"
-                      style={{ width: `${downloadPercent}%` }}
-                    />
+                  <div>
+                    <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-surface-tint">
+                      <div
+                        className="h-full rounded-full bg-primary transition-[width] duration-200 ease-out"
+                        style={{ width: `${Math.max(2, downloadPercent)}%` }}
+                      />
+                    </div>
+                    <p className="mt-1 text-right text-[11px] font-semibold tabular-nums text-primary">
+                      {Math.round(downloadPercent)} %
+                    </p>
                   </div>
                 )}
                 {status === 'error' && (
@@ -102,7 +121,15 @@ export default function ChapterScreen() {
                   </p>
                 )}
               </div>
-              {status !== 'downloading' && (
+              {status === 'downloading' ? (
+                <button
+                  onClick={cancelDownload}
+                  className="flex shrink-0 items-center gap-1.5 rounded-full bg-surface-tint px-4 py-2 text-sm font-semibold text-text-secondary"
+                >
+                  <X size={15} />
+                  {t('common.cancel', 'Annuler')}
+                </button>
+              ) : (
                 <button
                   onClick={handleDownload}
                   className="shrink-0 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-white shadow-sm"

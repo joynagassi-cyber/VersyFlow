@@ -18,6 +18,8 @@
  * `/memorization/workspace?reference=...` or explicit coordinates.
  */
 
+// Fixed: Structure — memorization workspace now wrapped in FullScreenPage shell (showBack=false keeps its custom ShellHeader)
+
 import { useMemo, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -31,6 +33,7 @@ import { ModeMask } from '@/components/memorization/ModeMask';
 import { ModeCards } from '@/components/memorization/ModeCards';
 import { ModeWrite } from '@/components/memorization/ModeWrite';
 import { TranslationMenu } from '@/components/memorization/TranslationMenu';
+import { FullScreenPage } from '@/components/layout/FullScreenPage';
 
 type StatusTone = 'new' | 'due' | 'consolidated';
 
@@ -137,12 +140,11 @@ export default function MemorizationWorkspace() {
 
   if (!coords) {
     return (
-      <div className="flex min-h-full flex-col bg-background p-6">
-        <ShellHeader
-          title={referenceLabel || t('workspace.title', 'Mémorisation')}
-          subtitle={statusLabel(tone, t)}
-          onBack={() => navigate('/tabs/home')}
-        />
+      <FullScreenPage
+        title={referenceLabel || t('workspace.title', 'Mémorisation')}
+        subtitle={statusLabel(tone, t)}
+        backPath="/tabs/home"
+      >
         <div className="flex flex-1 flex-col items-center justify-center py-12 text-center">
           <p className="text-base text-error">
             {t('errors.verseNotFound', 'Verset non disponible')}
@@ -154,7 +156,7 @@ export default function MemorizationWorkspace() {
             {t('workspace.openBible', 'Ouvrir la Bible')}
           </button>
         </div>
-      </div>
+      </FullScreenPage>
     );
   }
 
@@ -168,62 +170,64 @@ export default function MemorizationWorkspace() {
   };
 
   return (
-    <div className="flex min-h-[100dvh] flex-col bg-background">
-      {/* Top app bar (mirrors the croquis D/E/F) */}
-      <ShellHeader
-        title={referenceLabel}
-        subtitle={`${statusLabel(tone, t)}${dueLabel ? ` · ${dueLabel}` : ''}`}
-        onBack={() => navigate(-1)}
-        right={
-          <button
-            onClick={() => navigate(`/comparison/translation?bookId=${coords.bookId}&chapter=${coords.chapter}&verse=${coords.verse}`)}
-            className="flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-surface text-text-primary shadow-sm active:scale-95"
-            aria-label={t('workspace.compare', 'Comparer')}
-          >
-            <ArrowLeftRight size={18} />
-          </button>
-        }
-        subtitleExtra={
-          <TranslationMenu translationId={coords.translationId} onSelect={changeTranslation} />
-        }
-      />
+    <FullScreenPage showBack={false} className="p-0">
+      <div className="flex min-h-full flex-col">
+        {/* Top app bar (mirrors the croquis D/E/F) */}
+        <ShellHeader
+          title={referenceLabel}
+          subtitle={`${statusLabel(tone, t)}${dueLabel ? ` · ${dueLabel}` : ''}`}
+          onBack={() => navigate(-1)}
+          right={
+            <button
+              onClick={() => navigate(`/comparison/translation?bookId=${coords.bookId}&chapter=${coords.chapter}&verse=${coords.verse}`)}
+              className="flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-surface text-text-primary shadow-sm active:scale-95"
+              aria-label={t('workspace.compare', 'Comparer')}
+            >
+              <ArrowLeftRight size={18} />
+            </button>
+          }
+          subtitleExtra={
+            <TranslationMenu translationId={coords.translationId} onSelect={changeTranslation} />
+          }
+        />
 
-      {/* Body */}
-      <div className="flex-1 overflow-y-auto px-4 pb-40">
-        {status === 'loading' && (
-          <div className="flex flex-col items-center py-16">
-            <Loader2 size={28} className="animate-spin text-primary" />
-            <p className="mt-3 text-sm text-text-tertiary">
-              {t('workspace.loading', 'Chargement du verset...')}
-            </p>
-          </div>
-        )}
+        {/* Body */}
+        <div className="flex-1 overflow-y-auto px-4 pb-40">
+          {status === 'loading' && (
+            <div className="flex flex-col items-center py-16">
+              <Loader2 size={28} className="animate-spin text-primary" />
+              <p className="mt-3 text-sm text-text-tertiary">
+                {t('workspace.loading', 'Chargement du verset...')}
+              </p>
+            </div>
+          )}
 
-        {status === 'error' && (
-          <div className="rounded-3xl bg-surface p-6 text-center shadow-sm">
-            <p className="text-sm text-error">
-              {statusMessage ?? t('errors.verseNotFound', 'Verset non disponible')}
-            </p>
-          </div>
-        )}
+          {status === 'error' && (
+            <div className="rounded-3xl bg-surface p-6 text-center shadow-sm">
+              <p className="text-sm text-error">
+                {statusMessage ?? t('errors.verseNotFound', 'Verset non disponible')}
+              </p>
+            </div>
+          )}
 
-        {status === 'ready' && (
-          <div className="space-y-3 pt-2">
-            {mode === 'reveal' && <ModeReveal {...modeProps} />}
-            {mode === 'mask' && <ModeMask {...modeProps} />}
-            {mode === 'cards' && <ModeCards {...modeProps} />}
-            {mode === 'write' && <ModeWrite {...modeProps} />}
-          </div>
-        )}
+          {status === 'ready' && (
+            <div className="space-y-3 pt-2">
+              {mode === 'reveal' && <ModeReveal {...modeProps} />}
+              {mode === 'mask' && <ModeMask {...modeProps} />}
+              {mode === 'cards' && <ModeCards {...modeProps} />}
+              {mode === 'write' && <ModeWrite {...modeProps} />}
+            </div>
+          )}
+        </div>
+
+        {/* Floating 4-mode switcher (collapsed by default) */}
+        <ModeSwitcher
+          active={mode}
+          onChange={setMode}
+          recommendedNext={recommendedNext}
+        />
       </div>
-
-      {/* Floating 4-mode switcher (collapsed by default) */}
-      <ModeSwitcher
-        active={mode}
-        onChange={setMode}
-        recommendedNext={recommendedNext}
-      />
-    </div>
+    </FullScreenPage>
   );
 }
 

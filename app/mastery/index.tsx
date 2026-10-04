@@ -44,13 +44,18 @@ interface LiveStats {
   totalReviews: number;
 }
 
+// Level accent colors map to semantic design tokens (defined in
+// src/styles/globals.css) so mastery levels adapt to light/dark themes.
 const MASTERY_LEVELS: MasteryLevel[] = [
-  { id: 'novice', name: 'Novice', description: 'Premiers pas dans la memorisation', icon: 'leaf', color: '#A0A0A0', requiredStability: 0 },
-  { id: 'learner', name: 'Apprenti', description: 'Debutant avec des bases solides', icon: 'book', color: '#007AFF', requiredStability: 2 },
-  { id: 'memorizer', name: 'Memorisateur', description: 'Maitrise reguliere des versets', icon: 'leaf', color: '#D81B97', requiredStability: 5 },
-  { id: 'scholar', name: 'Erudit', description: 'Profonde connaissance des Ecritures', icon: 'school', color: '#FF9500', requiredStability: 10 },
-  { id: 'master', name: "Maitre", description: 'Maitrise exceptionnelle', icon: 'trophy', color: '#008733', requiredStability: 20 },
+  { id: 'novice', name: 'Novice', description: 'Premiers pas dans la memorisation', icon: 'leaf', color: 'var(--color-text-muted)', requiredStability: 0 },
+  { id: 'learner', name: 'Apprenti', description: 'Debutant avec des bases solides', icon: 'book', color: 'var(--color-info)', requiredStability: 2 },
+  { id: 'memorizer', name: 'Memorisateur', description: 'Maitrise reguliere des versets', icon: 'leaf', color: 'var(--color-primary)', requiredStability: 5 },
+  { id: 'scholar', name: 'Erudit', description: 'Profonde connaissance des Ecritures', icon: 'school', color: 'var(--color-warning)', requiredStability: 10 },
+  { id: 'master', name: "Maitre", description: 'Maitrise exceptionnelle', icon: 'trophy', color: 'var(--color-success)', requiredStability: 20 },
 ];
+
+/** 12% translucent tint of a token color, for soft circular backgrounds. */
+const levelTint = (color: string) => `color-mix(in srgb, ${color} 12%, transparent)`;
 
 export default function MasteryScreen() {
   const { t } = useTranslation();
@@ -216,7 +221,7 @@ export default function MasteryScreen() {
                     className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full"
                     style={{
                       color: isUnlocked ? level.color : 'var(--color-text-muted)',
-                      backgroundColor: level.color + '20',
+                      backgroundColor: levelTint(level.color),
                     }}
                   >
                     <Icon size={22} />

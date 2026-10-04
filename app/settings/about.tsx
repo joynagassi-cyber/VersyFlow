@@ -1,15 +1,54 @@
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { BookOpen, ExternalLink, Heart, Cpu } from 'lucide-react';
+import { BookOpen, ExternalLink, Heart, Cpu, Sparkles } from 'lucide-react';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
+import { Button } from '@/components/ui/button';
 import { Logo } from '@/components/brand/Logo';
+import { cn } from '@/lib/utils';
+import { notificationService } from '@/services/notification-service';
+
+// Fixed: Capacitor — test notification now requests permission just-in-time (ensurePermissions) before scheduling
 
 const VERSION = '0.1.0';
 
+/**
+ * Feature changelog entries — new releases are appended here; the
+ * "Nouveautés" badge in settings shows when the user hasn't seen the
+ * latest entry yet (persisted in MMKV via `hasSeenWhatNew`).
+ */
+const WHATS_NEW = [
+  {
+    version: VERSION,
+    title: 'Lecture premium & réglages fins',
+    items: [
+      '10 polices serif premium et réglages de taille, interlignage, espacement',
+      'Carte de lecture translucide sur fond de thème flouté',
+      'Barre de progression réelle pour le téléchargement des traductions',
+      'Tags sémantiques de tous les versets d\'un chapitre',
+      'Comparaison inter-traductions par langue cible',
+      'Nouvelle section Paramètres divisée par catégories',
+    ],
+  },
+];
+
 export default function AboutScreen() {
   const { t } = useTranslation();
+  const [showWhatNew, setShowWhatNew] = useState(true);
+  const [scheduled, setScheduled] = useState(false);
 
   const open = (url: string) => {
     window.open(url, '_blank');
+  };
+
+  const testNotification = async () => {
+    try {
+      // User-initiated: request permission just-in-time, then schedule.
+      await notificationService.ensurePermissions();
+      await notificationService.scheduleDailyReminders();
+      setScheduled(true);
+    } catch {
+      setScheduled(false);
+    }
   };
 
   return (
@@ -24,6 +63,45 @@ export default function AboutScreen() {
           <Logo size={72} />
           <p className="text-2xl font-extrabold text-text-primary">VersyFlow</p>
           <p className="text-sm text-text-muted">Version {VERSION}</p>
+        </div>
+
+        {/* What's new */}
+        <div className="rounded-2xl bg-surface p-4 shadow-sm">
+          <button
+            className="flex w-full items-center justify-between"
+            onClick={() => setShowWhatNew((v) => !v)}
+          >
+            <p className="flex items-center gap-2 text-base font-bold text-text-primary">
+              <Sparkles size={18} className="text-primary" />
+              {t('settings.whatsNew', 'Nouveautés')}
+            </p>
+            <span className="text-xs text-text-muted">{showWhatNew ? '▲' : '▼'}</span>
+          </button>
+          {showWhatNew &&
+            WHATS_NEW.map((entry, i) => (
+              <div key={i} className="mt-3">
+                <p className="text-xs font-bold text-primary">v{entry.version}</p>
+                <p className="mb-1.5 text-sm font-semibold text-text-primary">{entry.title}</p>
+                <ul className="flex flex-col gap-1">
+                  {entry.items.map((item, j) => (
+                    <li key={j} className="flex items-start gap-2 text-sm text-text-secondary">
+                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          <Button
+            variant="outline"
+            className="mt-4 w-full"
+            onClick={() => void testNotification()}
+            disabled={scheduled}
+          >
+            {scheduled
+              ? t('settings.notificationScheduled', 'Rappel planifié ✓')
+              : t('settings.testNotification', 'Tester une notification locale')}
+          </Button>
         </div>
 
         {/* About */}

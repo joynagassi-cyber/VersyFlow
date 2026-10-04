@@ -82,6 +82,7 @@ const SettingsReminders = lazy(() => import('../app/settings/reminders'));
 const SettingsIndex = lazy(() => import('../app/settings/index'));
 const SettingsAvailableTranslations = lazy(() => import('../app/settings/available-translations'));
 const SettingsThemePicker = lazy(() => import('../app/settings/theme-picker'));
+const SettingsNavigation = lazy(() => import('../app/settings/navigation'));
 
 // Misc deep pages
 const SearchPage = lazy(() => import('../app/search/index'));
@@ -98,7 +99,6 @@ const ComparisonResult = lazy(() => import('../app/comparison/result'));
 const MemoryStart = lazy(() => import('../app/memory/start'));
 const MemoryFlashcard = lazy(() => import('../app/memory/flashcard'));
 const MemoryRecallWriting = lazy(() => import('../app/memory/recall-writing'));
-
 // Semantic tree views (LOCAL_ONLY semantic store, tree UI — P0.2)
 const SemanticIndex = lazy(() => import('../app/semantic/index'));
 const SemanticConcept = lazy(() => import('../app/semantic/concept'));
@@ -111,12 +111,14 @@ import { initializeAppearanceStore } from '@/store/appearance-store';
 import { initializeUiStore } from '@/store/ui-store';
 import { ThemeManager } from '@/components/ThemeManager';
 import ErrorBoundary from '@/components/ErrorBoundary';
+import { ToastProvider } from '@/components/ui/toast';
 import { useAuthStore } from '@/store/auth-store';
 import { useFamilySyncBridge } from '@/hooks/useFamilySyncBridge';
 import { useProfileSyncBridge } from '@/hooks/useProfileSyncBridge';
 import { attachSyncCompletionHandlers } from '@/services/sync-completion-service';
 import { wireAppTelemetry } from '@/services/app-telemetry-wiring';
 import { wireStreakCoordinator } from '@/services/streak-wiring';
+import { notificationService } from '@/services/notification-service';
 import type { MemorizationRecord } from '@/domains/memorization/entities';
 import { isRTL, DEFAULT_LANGUAGE, normalizeLocaleCode } from '@/domains/i18n/config';
 
@@ -142,6 +144,9 @@ import { isRTL, DEFAULT_LANGUAGE, normalizeLocaleCode } from '@/domains/i18n/con
   wireAppTelemetry();
   wireStreakCoordinator();
   wireSessionRefresh();
+  // Schedule local push notifications for daily review reminders (no-op on
+  // Web where the Capacitor plugin is unavailable).
+  void notificationService.scheduleDailyReminders();
 })();
 
 /** SPA equivalent of the Supabase "session refresh" middleware: re-checks and
@@ -328,6 +333,7 @@ function App() {
               <Route path="/settings/reminders" element={<SettingsReminders />} />
               <Route path="/settings/available-translations" element={<SettingsAvailableTranslations />} />
               <Route path="/settings/theme-picker" element={<SettingsThemePicker />} />
+              <Route path="/settings/navigation" element={<SettingsNavigation />} />
 
               {/* Misc */}
               <Route path="/search" element={<SearchPage />} />
@@ -357,6 +363,7 @@ function App() {
             <Route path="*" element={<NotFound />} />
             </Routes>
           </ErrorBoundary>
+          <ToastProvider />
         </IonApp>
       </BrowserRouter>
     </StrictMode>

@@ -1,3 +1,4 @@
+// Fixed: UX — collection load/save failures now surface a visible error state with retry instead of empty catch blocks
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -9,6 +10,7 @@ import {
   Music,
   Lightbulb,
   Clock,
+  AlertCircle,
 } from 'lucide-react';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { EmptyState } from '@/components/ui/EmptyState';
@@ -24,15 +26,28 @@ interface Collection {
   verses: string[];
 }
 
+// Seed color accents map to semantic design tokens (defined in
+// src/styles/globals.css) so collections adapt to light/dark themes.
+// Legacy localStorage data may still hold raw hex values — both render fine
+// since the consumers use color-mix() and plain `color` styles.
 const SAMPLE_COLLECTIONS: Collection[] = [
-  { id: '1', name: 'Mes favoris', description: 'Versets sauvegardes', verseCount: 12, lastUpdated: "Aujourd'hui", color: '#D81B97', icon: 'heart', verses: ['Jean 3:16', 'Psaume 23:1', 'Romains 8:28'] },
-  { id: '2', name: 'Psaumes', description: 'Collection de psaumes', verseCount: 8, lastUpdated: 'Hier', color: '#007AFF', icon: 'musicalNotes', verses: ['Psaume 23', 'Psaume 91', 'Psaume 119'] },
-  { id: '3', name: 'Evangiles', description: 'Paroles de Jesus', verseCount: 15, lastUpdated: 'Il y a 3 jours', color: '#008733', icon: 'book', verses: ['Matthieu 5:3', 'Jean 14:6'] },
-  { id: '4', name: 'Memorises', description: 'Verset en cours de memorisation', verseCount: 5, lastUpdated: "Aujourd'hui", color: '#FF9500', icon: 'bulb', verses: ['Jean 3:16', 'Philippiens 4:13'] },
+  { id: '1', name: 'Mes favoris', description: 'Versets sauvegardes', verseCount: 12, lastUpdated: "Aujourd'hui", color: 'var(--color-primary)', icon: 'heart', verses: ['Jean 3:16', 'Psaume 23:1', 'Romains 8:28'] },
+  { id: '2', name: 'Psaumes', description: 'Collection de psaumes', verseCount: 8, lastUpdated: 'Hier', color: 'var(--color-info)', icon: 'musicalNotes', verses: ['Psaume 23', 'Psaume 91', 'Psaume 119'] },
+  { id: '3', name: 'Evangiles', description: 'Paroles de Jesus', verseCount: 15, lastUpdated: 'Il y a 3 jours', color: 'var(--color-success)', icon: 'book', verses: ['Matthieu 5:3', 'Jean 14:6'] },
+  { id: '4', name: 'Memorises', description: 'Verset en cours de memorisation', verseCount: 5, lastUpdated: "Aujourd'hui", color: 'var(--color-warning)', icon: 'bulb', verses: ['Jean 3:16', 'Philippiens 4:13'] },
 ];
 
 const STORAGE_KEY = 'versyflow:collections';
-const NEW_COLLECTION_COLORS = ['#D81B97', '#007AFF', '#008733', '#FF9500', '#3F51B5'];
+const NEW_COLLECTION_COLORS = [
+  'var(--color-primary)',
+  'var(--color-info)',
+  'var(--color-success)',
+  'var(--color-warning)',
+  'var(--color-accent)',
+];
+
+/** 12% translucent tint of a color value, for soft circular backgrounds. */
+const collectionTint = (color: string) => `color-mix(in srgb, ${color} 12%, transparent)`;
 
 const ICONS: Record<Collection['icon'], typeof Heart> = {
   heart: Heart,
@@ -56,6 +71,18 @@ export default function CollectionsScreen() {
     }
     return SAMPLE_COLLECTIONS;
   });
+  const [loadError, setLoadError] = useState<string | null>(() => {
+    // localStorage read itself cannot throw a typed error we need to
+    // surface, but JSON corruption does — mark it so the user sees a
+    // recoverable state.
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) JSON.parse(raw);
+    } catch {
+      return t('errors.unknownError', 'Impossible de charger les collections');
+    }
+    return null;
+  });
   const [selected, setSelected] = useState<'all' | 'memorized' | 'favorites'>('all');
   const [creating, setCreating] = useState(false);
   const [newName, setNewName] = useState('');
@@ -70,6 +97,7 @@ export default function CollectionsScreen() {
 
   const persist = (next: Collection[]) => {
     setCollections(next);
+    setLoadError(null);
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
     } catch {
@@ -116,6 +144,22 @@ export default function CollectionsScreen() {
       }
     >
       <div className="mx-auto max-w-md space-y-4">
+        {loadError && (
+          <div className="flex flex-col items-center gap-3 rounded-2xl bg-surface p-4 text-center shadow-sm">
+            <AlertCircle size={24} className="text-error" />
+            <p className="text-sm text-error">{loadError}</p>
+            <button
+              onClick={() => {
+                setCollections(SAMPLE_COLLECTIONS);
+                setLoadError(null);
+              }}
+              className="rounded-full bg-primary px-5 py-2 text-sm font-semibold text-white active:opacity-90"
+            >
+              {t('common.retry', 'Réessayer')}
+            </button>
+          </div>
+        )}
+
         {/* Filter */}
         <div className="flex gap-2">
           {categories.map((cat) => (
@@ -157,7 +201,7 @@ export default function CollectionsScreen() {
               >
                 <span
                   className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full"
-                  style={{ color: collection.color, backgroundColor: collection.color + '20' }}
+                  style={{ color: collection.color, backgroundColor: collectionTint(collection.color) }}
                 >
                   <Icon size={26} />
                 </span>

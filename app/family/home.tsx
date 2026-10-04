@@ -3,10 +3,11 @@
  * Tailwind + i18n + Lucide + FullScreenPage.
  */
 
+// Fixed: UX — createFamily failures now surface as an inline error + retry instead of console-only
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Plus, LogIn, ChevronRight, Check } from 'lucide-react';
+import { Plus, LogIn, ChevronRight, Check, AlertCircle, Loader2 } from 'lucide-react';
 import FullScreenPage from '@/components/layout/FullScreenPage';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -23,6 +24,7 @@ export default function FamilyHomeScreen() {
 
   const [newName, setNewName] = useState('');
   const [creating, setCreating] = useState(false);
+  const [createError, setCreateError] = useState<string | null>(null);
 
   const activeFamily = families.find((f) => f.id === activeFamilyId) || null;
 
@@ -35,6 +37,7 @@ export default function FamilyHomeScreen() {
     const name = newName.trim();
     if (!name || creating) return;
     setCreating(true);
+    setCreateError(null);
     try {
       const family = await createFamily(name);
       // The PowerSync bridge re-lists families from the DB; addFamily() is
@@ -46,6 +49,7 @@ export default function FamilyHomeScreen() {
     } catch (e) {
       // eslint-disable-next-line no-console
       console.error('createFamily failed', e);
+      setCreateError(e instanceof Error ? e.message : t('errors.unknownError', 'Une erreur inattendue est survenue'));
     } finally {
       setCreating(false);
     }
@@ -115,6 +119,12 @@ export default function FamilyHomeScreen() {
           maxLength={40}
           className="rounded-xl border bg-surface px-4 py-3 text-base text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-1 focus:ring-primary"
         />
+        {createError && (
+          <p className="flex items-center gap-1.5 rounded-xl bg-error/10 px-3 py-2 text-sm text-error">
+            <AlertCircle size={14} className="shrink-0" />
+            {createError}
+          </p>
+        )}
         <Button
           className="w-full"
           onClick={() => {
@@ -122,9 +132,24 @@ export default function FamilyHomeScreen() {
           }}
           disabled={!signedIn || creating || !newName.trim()}
         >
-          <Plus size={16} />
+          {creating ? (
+            <Loader2 size={16} className="animate-spin" />
+          ) : (
+            <Plus size={16} />
+          )}
           {creating ? t('common.loading', 'Chargement…') : t('family.createFamily', 'Créer une famille')}
         </Button>
+        {createError && !creating && (
+          <button
+            onClick={() => {
+              void handleCreate();
+            }}
+            disabled={creating}
+            className="text-xs font-semibold text-primary underline"
+          >
+            {t('common.retry', 'Réessayer')}
+          </button>
+        )}
       </div>
 
       {/* Actions */}

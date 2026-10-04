@@ -1,17 +1,7 @@
 /**
- * Available Translations Screen — download-on-demand Bible datasets.
- *
- * Shows conventional names ("Louis Segond", "Darby", …) — never the
- * technical ids — and groups datasets into:
- *   1. "Disponible en local" — already downloaded / bundled (usable offline)
- *   2. "À télécharger" — remote datasets from the Supabase bucket
- *
- * The active translation is persisted through the settings store +
- * PowerSync preference repository.
- *
- * Downloads show a real streaming progress bar (percent + Mo received /
- * total) driven by the `bible-text-service` chunk reader, with a dedicated
- * cancel button (AbortController).
+ * Fixed: Visual polish — "Détail" block now shows chapter + verse counts
+ * for every translation (getTranslationStats, 24h localStorage cache),
+ * and each language group sorts the 8 preferred fr/en editions first.
  */
 
 import { useEffect, useMemo, useRef, useState } from 'react';
@@ -24,6 +14,7 @@ import {
   Languages,
   AlertCircle,
   ChevronRight,
+  ChevronDown,
   CircleCheck,
   X,
 } from 'lucide-react';
@@ -34,8 +25,13 @@ import {
   type BibleDatasetCatalogEntry,
   loadTranslationBooks,
   downloadAndLoadTranslationBooks,
+  getTranslationStats,
+  type TranslationStats,
 } from '@/services/bible-text-service';
-import { getTranslationDisplayInfo } from '@/services/bible-translation-names';
+import {
+  getTranslationDisplayInfo,
+  groupTranslationsByLanguage,
+} from '@/services/bible-translation-names';
 import { getTranslationPreferenceRepository } from '@/services/translation-preference-service';
 import { useAuthStore } from '@/store/auth-store';
 import { eventBus, DomainEventTypes } from '@/domains/events';
@@ -68,6 +64,34 @@ export default function AvailableTranslationsScreen() {
   const [states, setStates] = useState<Record<string, EntryState>>({});
   const abortRef = useRef<AbortController | null>(null);
 
+  // "Détail" chapter/verse counts, fetched lazily per row on expand.
+  const [stats, setStats] = useState<Record<string, TranslationStats | null>>({});
+  const [expanded, setExpanded] = useState<Set<string>>(new Set());
+
+  const loadStatsFor = (id: string) => {
+    setExpanded((prev) => new Set(prev).add(id));
+    if (stats[id]) return; // already fetched (even null = not available)
+    void getTranslationStats(id).then((result) => {
+      setStats((prev) => ({ ...prev, [id]: result }));
+    });
+  };
+  const toggleDetail = (id: string) => {
+    setExpanded((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+    loadStatsFor(id);
+  };
+
+  // Auto-open the detail of the active translation so the user sees its
+  // chapter/verse count without an extra tap.
+  useEffect(() => {
+    if (bibleTranslation) loadStatsFor(bibleTranslation);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [bibleTranslation]);
+
   // Probe which datasets are already resolvable locally (bundled or cached)
   // without forcing a download.
   useEffect(() => {
@@ -93,7 +117,6 @@ export default function AvailableTranslationsScreen() {
   useEffect(() => () => abortRef.current?.abort(), []);
 
   const handleDownload = async (id: string) => {
-    const entry = entries.find((e) => e.id === id);
     abortRef.current?.abort();
     const controller = new AbortController();
     abortRef.current = controller;
@@ -125,7 +148,6 @@ export default function AvailableTranslationsScreen() {
       }));
     } finally {
       if (abortRef.current === controller) abortRef.current = null;
-      void entry;
     }
   };
 
@@ -164,13 +186,15 @@ export default function AvailableTranslationsScreen() {
     navigate('/bible/explorer');
   };
 
-  const localEntries = useMemo(
-    () => entries.filter((e) => (states[e.id]?.available ?? false)),
+  const localCount = useMemo(
+    () => entries.filter((e) => (states[e.id]?.available ?? false)).length,
     [entries, states],
   );
-  const remoteEntries = useMemo(
-    () => entries.filter((e) => !(states[e.id]?.available ?? false)),
-    [entries, states],
+
+  // Languages in stable display order, each with its dataset ids.
+  const languageGroups = useMemo(
+    () => groupTranslationsByLanguage(entries.map((e) => e.id)),
+    [entries],
   );
 
   const renderRow = (entry: BibleDatasetCatalogEntry) => {
@@ -200,7 +224,12 @@ export default function AvailableTranslationsScreen() {
           </span>
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-2">
-              <p className="truncate text-base font-bold text-text-primary">{info.name}</p>
+              <p className="text-base font-bold text-text-primary">
+                {info.abbreviation}
+                {info.abbreviation !== info.name && (
+                  <span className="ml-1.5 text-sm font-medium text-text-muted">{info.name}</span>
+                )}
+              </p>
               {isActive && (
                 <span className="rounded-full bg-primary px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white">
                   {t('common.active', 'Active')}
@@ -214,8 +243,7 @@ export default function AvailableTranslationsScreen() {
               )}
             </div>
             <p className="mt-0.5 flex items-center gap-1.5 text-xs text-text-muted">
-              <Languages size={12} />
-              {info.language} · {formatBytes(entry.sizeBytes)}
+              {info.abbreviation} · {formatBytes(entry.sizeBytes)}
             </p>
 
             {/* Real streaming progress — percent + Mo reçus / total + cancel */}
@@ -246,6 +274,35 @@ export default function AvailableTranslationsScreen() {
               <p className="mt-1.5 flex items-center gap-1 text-xs text-error">
                 <AlertCircle size={12} /> {state.message}
               </p>
+            )}
+
+            {/* "Détail" — chapter & verse counts, loaded on demand + cached 24 h */}
+            <button
+              type="button"
+              onClick={() => toggleDetail(entry.id)}
+              className="mt-2 flex items-center gap-1 text-xs font-semibold text-primary"
+            >
+              <ChevronDown size={13} className={cn('transition-transform', expanded.has(entry.id) && 'rotate-180')} />
+              {t('settings.translationDetail', 'Détail')}
+            </button>
+            {expanded.has(entry.id) && (
+              <div className="mt-2 rounded-xl bg-surface-tint px-3 py-2 text-xs text-text-secondary">
+                {stats[entry.id] ? (
+                  <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
+                    <span>
+                      {t('settings.translationChapters', { count: stats[entry.id]!.chapters })}
+                    </span>
+                    <span>
+                      {t('settings.translationVerses', { count: stats[entry.id]!.verses })}
+                    </span>
+                    {stats[entry.id]!.year && (
+                      <span className="text-text-muted">{stats[entry.id]!.year}</span>
+                    )}
+                  </div>
+                ) : (
+                  <p className="text-text-muted">{t('settings.translationNotAvailable', 'Statistiques indisponibles')}</p>
+                )}
+              </div>
             )}
           </div>
 
@@ -283,6 +340,53 @@ export default function AvailableTranslationsScreen() {
     );
   };
 
+  // Render one language section: header with count + local/remote split.
+  const renderLanguageSection = (language: string, ids: string[]) => {
+    const langEntries = entries.filter((e) => ids.includes(e.id));
+    const local = langEntries.filter((e) => (states[e.id]?.available ?? false));
+    const remote = langEntries.filter((e) => !(states[e.id]?.available ?? false));
+    return (
+      <section key={language} className="mb-6">
+        <div className="mb-3 flex items-center justify-between rounded-2xl bg-surface px-4 py-3 shadow-sm">
+          <div className="flex items-center gap-2.5">
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/12 text-primary">
+              <Languages size={18} />
+            </span>
+            <div>
+              <p className="text-sm font-bold text-text-primary">{language}</p>
+              <p className="text-[11px] text-text-muted">
+                {t('settings.langVersionsCount', { count: ids.length })}
+              </p>
+            </div>
+          </div>
+          {local.length > 0 && (
+            <span className="rounded-full bg-success-light px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-success">
+              {local.length} {t('settings.localAvailable', 'en local')}
+            </span>
+          )}
+        </div>
+
+        {local.length > 0 && (
+          <div className="mb-2 flex items-center gap-1.5 px-1 text-[11px] font-bold uppercase tracking-wide text-text-tertiary">
+            <CircleCheck size={13} className="text-success" />
+            {t('settings.localVersions', 'Disponible en local')}
+          </div>
+        )}
+        <div className="flex flex-col gap-3">{local.map(renderRow)}</div>
+
+        {remote.length > 0 && (
+          <>
+            <div className="mt-3 mb-2 flex items-center gap-1.5 px-1 text-[11px] font-bold uppercase tracking-wide text-text-tertiary">
+              <Download size={13} />
+              {t('settings.toDownload', 'À télécharger')}
+            </div>
+            <div className="flex flex-col gap-3">{remote.map(renderRow)}</div>
+          </>
+        )}
+      </section>
+    );
+  };
+
   return (
     <div className="h-full overflow-y-auto bg-background p-4 pb-24">
       <div className="mb-4 flex items-center gap-2">
@@ -298,37 +402,17 @@ export default function AvailableTranslationsScreen() {
             {t('settings.availableTranslations', 'Versions de la Bible')}
           </h1>
           <p className="text-xs text-text-muted">
-            {localEntries.length}{' '}
-            {t('settings.localCount', localEntries.length === 1 ? 'version en local' : 'versions en local')}
+            {t('settings.langCount', { count: languageGroups.length })} ·{' '}
+            {localCount} {t('settings.localCount', { count: localCount })}
           </p>
         </div>
       </div>
 
       <p className="mb-5 px-1 text-sm text-text-muted">
-        {t('settings.availableTranslationsHint', 'Téléchargez une version pour l’utiliser hors ligne. Elle restera disponible sur cet appareil.') }
+        {t('settings.availableTranslationsHint', 'Téléchargez une version pour l’utiliser hors ligne. Elle restera disponible sur cet appareil.')}
       </p>
 
-      {/* Downloaded / available locally */}
-      {localEntries.length > 0 && (
-        <section className="mb-6">
-          <h2 className="mb-3 flex items-center gap-2 px-1 text-sm font-bold uppercase tracking-wide text-text-tertiary">
-            <CircleCheck size={15} className="text-success" />
-            {t('settings.localVersions', 'Disponible en local')}
-          </h2>
-          <div className="flex flex-col gap-3">{localEntries.map(renderRow)}</div>
-        </section>
-      )}
-
-      {/* To download */}
-      {remoteEntries.length > 0 && (
-        <section>
-          <h2 className="mb-3 flex items-center gap-2 px-1 text-sm font-bold uppercase tracking-wide text-text-tertiary">
-            <Download size={15} />
-            {t('settings.toDownload', 'À télécharger')}
-          </h2>
-          <div className="flex flex-col gap-3">{remoteEntries.map(renderRow)}</div>
-        </section>
-      )}
+      {languageGroups.map((group) => renderLanguageSection(group.language, group.ids))}
 
       {isAuthenticated && (
         <p className="mt-6 px-1 text-center text-xs text-text-tertiary">

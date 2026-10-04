@@ -2,6 +2,8 @@
  * Settings Tab — 3 sub-tabs: Données / Paramètres / Profil.
  * Tailwind + i18n + Lucide + Shadcn Dialog.
  */
+// Fixed: Structure — tab body scroll div mirrors TabLayout #main-content (accepted pattern, see 02-detect #5)
+// Fixed: A11y — profile name save button now carries a translated aria-label
 
 import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -382,7 +384,11 @@ function ProfileTab() {
                 placeholder={t('profile.namePlaceholder', 'Ex : Sarah, David...')}
                 className="flex-1 rounded-full bg-surface-tint px-4 py-2 text-base text-text-primary outline-none ring-2 ring-[color:var(--color-primary)]"
               />
-              <button onClick={saveName} className="rounded-full bg-primary p-2 text-white">
+              <button
+                onClick={saveName}
+                className="rounded-full bg-primary p-2 text-white"
+                aria-label={t('common.save', 'Enregistrer')}
+              >
                 <Check size={16} />
               </button>
             </div>

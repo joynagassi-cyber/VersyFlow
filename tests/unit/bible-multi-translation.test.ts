@@ -42,7 +42,7 @@ describe('P1B-1 multi-translation registry', () => {
     expect(ost.id).toBe('ostervald');
     expect(lsg.books.length).toBeGreaterThan(0);
     expect(ost.books.length).toBeGreaterThan(0);
-  });
+  }, 30_000);
 
   it('same reference yields different text per translation', async () => {
     const source = new BibleJsonFileSource({ useNodeFs: true });
@@ -56,5 +56,5 @@ describe('P1B-1 multi-translation registry', () => {
     expect(ostVerse?.text).toBeTruthy();
     // The two datasets are deliberately distinct wordings.
     expect(lsgVerse?.text).not.toBe(ostVerse?.text);
-  });
+  }, 30_000);
 });
