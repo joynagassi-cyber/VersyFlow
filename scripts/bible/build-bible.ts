@@ -503,6 +503,14 @@ const WORLD_CORPUS_DATASETS: BibleDatasetManifest[] = [
   // UK — 2
   { id: 'uk-bju1996', language: 'uk', name: 'Ukrainian Bible, BJU 1996', year: 1996, license: 'VERIFIED_FREE', available: true, canon: 'PROTESTANT_66', completeness: 'FULL_BIBLE', source: { rawPath: 'uk/ukr1996_usfm'} },
   { id: 'uk-kulish1871', language: 'uk', name: 'Ukrainian Bible by P. Kulish', year: 1871, license: 'VERIFIED_FREE', available: true, canon: 'PROTESTANT_66', completeness: 'FULL_BIBLE', source: { rawPath: 'uk/ukr1871_usfm'} },
+  // UK — Freedom Bible (Ukrainian, CC-BY, 66/66) — 2026-10-04
+  { id: 'uk-freedom', language: 'uk', name: 'Ukrainian Freedom Bible (ulb-ukr, 66/66 CC-BY)', license: 'VERIFIED_FREE', available: true, canon: 'PROTESTANT_66', completeness: 'FULL_BIBLE', source: { rawPath: 'uk/uk_freedom_usfm'} },
+  // DE — Textbibel 1906 (Kautzsch-Weizsäcker, PD 1906, 66/66)
+  { id: 'de-tkw', language: 'de', name: 'Textbibel (Kautzsch-Weizsäcker 1906)', year: 1906, license: 'VERIFIED_FREE', available: true, canon: 'PROTESTANT_66', completeness: 'FULL_BIBLE', source: { rawPath: 'de/deutkw_usfm'} },
+  // PT — Bíblia Livre (pt-brbsl, 66/66, libre accès — vérifier PD/CC)
+  { id: 'pt-brbsl', language: 'pt', name: 'Bíblia Livre (2022, pt-BR, libre)', year: 2022, license: 'VERIFIED_FREE', available: true, canon: 'PROTESTANT_66', completeness: 'FULL_BIBLE', source: { rawPath: 'pt/porbrbsl_usfm'} },
+  // SV — Folkbibeln 1917 (PD 1917, 66/66)
+  { id: 'sv-folk', language: 'sv', name: 'Folkbibeln 1917 (Svenska, PD)', year: 1917, license: 'VERIFIED_FREE', available: true, canon: 'PROTESTANT_66', completeness: 'FULL_BIBLE', source: { rawPath: 'sv/swef_usfm'} },
   // IT — 2
   { id: 'it-diodati1885', language: 'it', name: 'Italian Diodati Bible 1885', year: 1885, license: 'VERIFIED_FREE', available: true, canon: 'PROTESTANT_66', completeness: 'FULL_BIBLE', source: { rawPath: 'it/ita1885_usfm'} },
   { id: 'it-riveduta1927', language: 'it', name: 'Italian Riveduta Bible 1927', year: 1927, license: 'VERIFIED_FREE', available: true, canon: 'PROTESTANT_66', completeness: 'FULL_BIBLE', source: { rawPath: 'it/ita1927_usfm'} },

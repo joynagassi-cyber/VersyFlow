@@ -1,10 +1,10 @@
 [
   {
-    "datasetId": "en-ylt",
+    "datasetId": "uk-freedom",
     "status": "BUILT",
-    "datasetPath": "data/bible/en-ylt.json",
-    "checksum": "7b1eada1090cd3afa768cb31b3966146f881b1a42549372ae6159aab2ea11555",
-    "verseCount": 31102,
+    "datasetPath": "data/bible/uk-freedom.json",
+    "checksum": "aff0c8910b43c080845d94166ae2366990c86a8cc1b9832ddaf0343fc92e009b",
+    "verseCount": 31082,
     "validation": {
       "pass": true,
       "totalIssues": 0,
@@ -12,11 +12,11 @@
     }
   },
   {
-    "datasetId": "en-beb",
+    "datasetId": "de-tkw",
     "status": "BUILT",
-    "datasetPath": "data/bible/en-beb.json",
-    "checksum": "63ae99984541d9868a54c0db4d521fa62dca1adcca47cdcacc7ff00a2af467f8",
-    "verseCount": 31102,
+    "datasetPath": "data/bible/de-tkw.json",
+    "checksum": "9f512829ecfe6e43efb71b2c1a0bb106d0c0ae5a747459eb458d0f6b188d8842",
+    "verseCount": 31157,
     "validation": {
       "pass": true,
       "totalIssues": 0,
@@ -24,11 +24,82 @@
     }
   },
   {
-    "datasetId": "en-webster",
+    "datasetId": "pt-brbsl",
     "status": "BUILT",
-    "datasetPath": "data/bible/en-webster.json",
-    "checksum": "53b6c52429360f78db58a79947c60277ceedb38ef3945516d3efaccd9e26fa16",
-    "verseCount": 31102,
+    "datasetPath": "data/bible/pt-brbsl.json",
+    "checksum": "da28b692ed1e37ae3f4fda4ecc36680ecc73ce3411d7b9600acef2bceec03dbb",
+    "verseCount": 32762,
+    "validation": {
+      "pass": true,
+      "totalIssues": 8,
+      "issues": [
+        {
+          "code": "EXTRA_BOOK",
+          "severity": "warning",
+          "message": "Book \"esg\" not in the expected canon list.",
+          "bookId": "esg"
+        },
+        {
+          "code": "EXTRA_BOOK",
+          "severity": "warning",
+          "message": "Book \"1ma\" not in the expected canon list.",
+          "bookId": "1ma"
+        },
+        {
+          "code": "EXTRA_BOOK",
+          "severity": "warning",
+          "message": "Book \"dag\" not in the expected canon list.",
+          "bookId": "dag"
+        },
+        {
+          "code": "EMPTY_VERSE",
+          "severity": "warning",
+          "message": "Book \"luk\" ch. 17 verse 36 is empty.",
+          "bookId": "luk",
+          "chapterNumber": 17,
+          "verseNumber": 36
+        },
+        {
+          "code": "EMPTY_VERSE",
+          "severity": "warning",
+          "message": "Book \"act\" ch. 8 verse 37 is empty.",
+          "bookId": "act",
+          "chapterNumber": 8,
+          "verseNumber": 37
+        },
+        {
+          "code": "EMPTY_VERSE",
+          "severity": "warning",
+          "message": "Book \"act\" ch. 15 verse 34 is empty.",
+          "bookId": "act",
+          "chapterNumber": 15,
+          "verseNumber": 34
+        },
+        {
+          "code": "EMPTY_VERSE",
+          "severity": "warning",
+          "message": "Book \"act\" ch. 24 verse 7 is empty.",
+          "bookId": "act",
+          "chapterNumber": 24,
+          "verseNumber": 7
+        },
+        {
+          "code": "EMPTY_VERSE",
+          "severity": "warning",
+          "message": "Book \"rom\" ch. 16 verse 25 is empty.",
+          "bookId": "rom",
+          "chapterNumber": 16,
+          "verseNumber": 25
+        }
+      ]
+    }
+  },
+  {
+    "datasetId": "sv-folk",
+    "status": "BUILT",
+    "datasetPath": "data/bible/sv-folk.json",
+    "checksum": "33d862726e2a83638ad0b6180778935b2f29432efbc7210ce245280f540b50fb",
+    "verseCount": 31153,
     "validation": {
       "pass": true,
       "totalIssues": 0,

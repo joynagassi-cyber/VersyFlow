@@ -1,10 +1,11 @@
 # Bible Build Report
 
-Generated: 2026-10-04T18:06:15.020Z
+Generated: 2026-10-04T19:18:43.614Z
 
 | Dataset | Status | Verses | Checksum |
 |---------|--------|--------|----------|
-| en-ylt | BUILT | 31102 | 7b1eada1090c… |
-| en-beb | BUILT | 31102 | 63ae99984541… |
-| en-webster | BUILT | 31102 | 53b6c5242936… |
+| uk-freedom | BUILT | 31082 | aff0c8910b43… |
+| de-tkw | BUILT | 31157 | 9f512829ecfe… |
+| pt-brbsl | BUILT | 32762 | da28b692ed1e… |
+| sv-folk | BUILT | 31153 | 33d862726e2a… |
 
