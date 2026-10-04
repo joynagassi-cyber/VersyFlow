@@ -25,7 +25,10 @@ function loadEnv(): Record<string, string> {
   const vars: Record<string, string> = {};
   const envPath = path.resolve(__dirname, '../../.env.local');
   try {
-    for (const line of readFileSync(envPath, 'utf8').split('\n')) {
+    // .env.local is CRLF on Windows; strip \r before matching so `.*`
+    // does not swallow the trailing \r and fail the anchor.
+    const content = readFileSync(envPath, 'utf8').replace(/\r\n/g, '\n');
+    for (const line of content.split('\n')) {
       const match = line.match(/^\s*([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.*)$/);
       if (match) vars[match[1]] = match[2].replace(/^["']|["']$/g, '');
     }
