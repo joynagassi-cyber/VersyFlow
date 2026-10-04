@@ -106,6 +106,17 @@ const INFO: Record<string, TranslationDisplayInfo> = {
   'so-bible': { name: 'Bible en somali', abbreviation: 'SO', language: 'Somali' },
   'sw-ulb': { name: 'ULB (swahili)', abbreviation: 'ULB', language: 'Swahili' },
   'tl-ulb': { name: 'ULB (tagalog)', abbreviation: 'ULB', language: 'Tagalog' },
+
+  // ── Vague 2 (CC-BY-SA) — Asie du Sud + Afrique + kurde ─────
+  'urd-irv': { name: 'Indian Revised Version (ourdou)', abbreviation: 'IRV', language: 'Ourdou' },
+  'ta-irv': { name: 'Indian Revised Version (tamoul)', abbreviation: 'IRV', language: 'Tamoul' },
+  'te-irv': { name: 'Indian Revised Version (télougou)', abbreviation: 'IRV', language: 'Télougou' },
+  'bn-irv': { name: 'Indian Revised Version (bengali)', abbreviation: 'IRV', language: 'Bengali' },
+  'yo-ulb': { name: 'ULB (yoruba)', abbreviation: 'ULB', language: 'Yoruba' },
+  'ig-ulb': { name: 'ULB (igbo)', abbreviation: 'ULB', language: 'Igbo' },
+  'ha-ulb': { name: 'ULB (haoussa)', abbreviation: 'ULB', language: 'Haoussa' },
+  'st-hone': { name: 'Sotho Hone (sesotho)', abbreviation: 'Hone', language: 'Sotho' },
+  'ku-sorani': { name: 'Bible kurde (sorani)', abbreviation: 'Kurde', language: 'Kurde' },
 };
 
 /** A translation id grouped under its reader-language label. */

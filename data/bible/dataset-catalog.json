@@ -12,6 +12,12 @@
     "builtAt": "2026-10-04T07:54:54.807Z"
   },
   {
+    "id": "bn-irv",
+    "checksum": "sha256:0876b3f3e840974a785149a56f00316a3a4bdb42fd4e83d85a22183942c66421",
+    "sizeBytes": 12486304,
+    "builtAt": "2026-10-04T21:54:15.683Z"
+  },
+  {
     "id": "bsb",
     "checksum": "sha256:1d3104de6b99cb53d7941b6fbe0496f5bd4fcd675692b41ba62dfd6bff677c43",
     "sizeBytes": 6433419,
@@ -102,6 +108,12 @@
     "builtAt": "2026-09-13T23:37:46.343Z"
   },
   {
+    "id": "ha-ulb",
+    "checksum": "sha256:9901adae185f00074686e8c1e56daea4c950c8456cf46964c39f90ad0c0ccde4",
+    "sizeBytes": 6525031,
+    "builtAt": "2026-10-04T21:53:42.569Z"
+  },
+  {
     "id": "heb",
     "checksum": "sha256:692492e6c2b004e62ca686aae00d1c463d9d40ea67a4131d2fce7c8dedea3204",
     "sizeBytes": 6343421,
@@ -112,6 +124,12 @@
     "checksum": "sha256:cee8774675808dfceef360543c86ff11095a0ca4709cfb27bb332e104f19ef87",
     "sizeBytes": 12189465,
     "builtAt": "2026-09-13T23:37:46.740Z"
+  },
+  {
+    "id": "ig-ulb",
+    "checksum": "sha256:5f8307a804e862c9b7eb38081d8f4b0f1842d41b81cdf95eaed81eda92b29fd6",
+    "sizeBytes": 7615762,
+    "builtAt": "2026-10-04T21:53:31.749Z"
   },
   {
     "id": "it-diodati1885",
@@ -136,6 +154,12 @@
     "checksum": "sha256:564c1bec1f1923eee12b91afa922571a99eb818444f357a017e7f8d27b5a218c",
     "sizeBytes": 7048700,
     "builtAt": "2026-09-13T23:37:47.768Z"
+  },
+  {
+    "id": "ku-sorani",
+    "checksum": "sha256:9544c03d7877757f83f5b8f2219ec61135bf92e722c9f253adaa8072b41d52ba",
+    "sizeBytes": 8927920,
+    "builtAt": "2026-10-04T21:54:06.048Z"
   },
   {
     "id": "kujv",
@@ -228,6 +252,12 @@
     "builtAt": "2026-09-13T23:31:58.452Z"
   },
   {
+    "id": "st-hone",
+    "checksum": "sha256:dfe3b5bfe16f2dc71a50799666dffc69dc7226bca0df2b4ef40bc4bc45978f87",
+    "sizeBytes": 6445859,
+    "builtAt": "2026-10-04T21:53:52.645Z"
+  },
+  {
     "id": "sv-folk",
     "checksum": "sha256:33d862726e2a83638ad0b6180778935b2f29432efbc7210ce245280f540b50fb",
     "sizeBytes": 6475130,
@@ -244,6 +274,18 @@
     "checksum": "sha256:5b913101411b6423410805415298dbcd1ff3e386063cc6791fa42d1c99f216a7",
     "sizeBytes": 6443553,
     "builtAt": "2026-09-13T23:31:59.318Z"
+  },
+  {
+    "id": "ta-irv",
+    "checksum": "sha256:171a0bfd229695e9e976b4f5bf9758e0fca9b1230600bfcef95c6a004dff244e",
+    "sizeBytes": 15120546,
+    "builtAt": "2026-10-04T21:52:00.906Z"
+  },
+  {
+    "id": "te-irv",
+    "checksum": "sha256:22ded8ce8d67ba14887075602e87ab89859cc40e20dd930f66aa5aef7d81aac2",
+    "sizeBytes": 12848954,
+    "builtAt": "2026-10-04T21:52:17.600Z"
   },
   {
     "id": "tl-ulb",
@@ -270,6 +312,12 @@
     "builtAt": "2026-09-13T23:32:01.278Z"
   },
   {
+    "id": "urd-irv",
+    "checksum": "sha256:63cec4f053053f5869f25e8acd88c76ee8eff3a4d72060a5f0b999d09ee2e163",
+    "sizeBytes": 12157255,
+    "builtAt": "2026-10-04T21:51:50.056Z"
+  },
+  {
     "id": "vie1934",
     "checksum": "sha256:3b1c73e41f12b3a16a3bf2ea0c7079de59f6017f7ebb739f6bad067b96ae9c66",
     "sizeBytes": 7732469,
@@ -286,5 +334,11 @@
     "checksum": "sha256:3fd3c72fc66069fe977cb0000c28b145d248b517b6e1e620da7f41cecc9505d4",
     "sizeBytes": 6973367,
     "builtAt": "2026-09-13T23:32:01.957Z"
+  },
+  {
+    "id": "yo-ulb",
+    "checksum": "sha256:8853170ba31217271edec244ab8fdd9387c1a921006d263743e4d682db6767d9",
+    "sizeBytes": 7890149,
+    "builtAt": "2026-10-04T21:53:14.821Z"
   }
 ]

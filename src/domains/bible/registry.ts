@@ -25,6 +25,7 @@
  */
 export type LicenseStatus =
   | 'VERIFIED_FREE'
+  | 'CC-BY-SA'
   | 'LICENSE_REQUIRED'
   | 'LEGAL_REVIEW_REQUIRED'
   | 'UNVERIFIED';

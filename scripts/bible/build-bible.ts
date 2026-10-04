@@ -551,6 +551,33 @@ const WORLD_CORPUS_DATASETS: BibleDatasetManifest[] = [
   // HE — 0 (heb-living dropped: NT-only Hebrew corpus)
   // LA — 1
   { id: 'la-vulgate', language: 'la', name: 'Clementine Vulgate 1598', year: 1598, license: 'VERIFIED_FREE', available: true, canon: 'PROTESTANT_66', completeness: 'FULL_BIBLE', source: { rawPath: 'la/latVUC_usfm' } },
+
+  // WAVE 2 CC-BY-SA (2026-10-04) — 9 datasets 66/66, licence CC-BY-SA.
+  // SCRAPE_PLAN.md exclut formellement le CC-BY-SA (share-alike → incompatible
+  // commerciale). Par réorientation utilisateur (app 100 % gratuite, aucune
+  // redistribution commerciale du dataset local) la politique est relâchée :
+  // intégrés comme exception, licence marquée 'CC-BY-SA'. Attribution requise
+  // (Creative Commons BY-SA) — à afficher dans le catalogue.
+  //   ur (urd_irv) = Urdu IRV (2017)
+  //   ta (tam_irv2017) = Tamil IRV (2017)
+  //   te (tel2017) = Telugu (2017)
+  //   yo (yor_ulb) = Yoruba ULB
+  //   ig (ibo_ulb) = Igbo ULB
+  //   ha (hau_ulb) = Hausa ULB
+  //   st (swhonen) = Sotho Hone (Sesotho)
+  //   ku (ckb) = Kurdish (Sorani)
+  //   bn (benirv) = Bengali IRV
+  // (tsn Tswana NT seul 27/66 = INELIGIBLE, §53 rejette — conservé en raw,
+  //  non construit.)
+  { id: 'urd-irv', language: 'ur', name: 'Urdu Indian Revised Version (IRV 2017)', year: 2017, license: 'CC-BY-SA', available: true, canon: 'PROTESTANT_66', completeness: 'FULL_BIBLE', source: { rawPath: 'ur/urd_irv_usfm' } },
+  { id: 'ta-irv', language: 'ta', name: 'Tamil Indian Revised Version (IRV 2017)', year: 2017, license: 'CC-BY-SA', available: true, canon: 'PROTESTANT_66', completeness: 'FULL_BIBLE', source: { rawPath: 'ta/tam_irv2017_usfm' } },
+  { id: 'te-irv', language: 'te', name: 'Telugu Indian Revised Version (2017)', year: 2017, license: 'CC-BY-SA', available: true, canon: 'PROTESTANT_66', completeness: 'FULL_BIBLE', source: { rawPath: 'te/tel2017_usfm' } },
+  { id: 'yo-ulb', language: 'yo', name: 'Yoruba Unlocked Literal Bible', license: 'CC-BY-SA', available: true, canon: 'PROTESTANT_66', completeness: 'FULL_BIBLE', source: { rawPath: 'yo/yor_ulb_usfm' } },
+  { id: 'ig-ulb', language: 'ig', name: 'Igbo Unlocked Literal Bible', license: 'CC-BY-SA', available: true, canon: 'PROTESTANT_66', completeness: 'FULL_BIBLE', source: { rawPath: 'ig/ibo_ulb_usfm' } },
+  { id: 'ha-ulb', language: 'ha', name: 'Hausa Unlocked Literal Bible', license: 'CC-BY-SA', available: true, canon: 'PROTESTANT_66', completeness: 'FULL_BIBLE', source: { rawPath: 'ha/hau_ulb_usfm' } },
+  { id: 'st-hone', language: 'st', name: 'Sotho Hone Bible', license: 'CC-BY-SA', available: true, canon: 'PROTESTANT_66', completeness: 'FULL_BIBLE', source: { rawPath: 'st/swhonen_usfm' } },
+  { id: 'ku-sorani', language: 'ku', name: 'Kurdish (Sorani) Bible', license: 'CC-BY-SA', available: true, canon: 'PROTESTANT_66', completeness: 'FULL_BIBLE', source: { rawPath: 'ku/ckb_usfm' } },
+  { id: 'bn-irv', language: 'bn', name: 'Bengali Indian Revised Version (IRV)', license: 'CC-BY-SA', available: true, canon: 'PROTESTANT_66', completeness: 'FULL_BIBLE', source: { rawPath: 'bn/benirv_usfm' } },
 ];
 
 /**

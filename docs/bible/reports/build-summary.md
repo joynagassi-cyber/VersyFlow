@@ -1,11 +1,16 @@
 # Bible Build Report
 
-Generated: 2026-10-04T19:18:43.614Z
+Generated: 2026-10-04T21:54:15.998Z
 
 | Dataset | Status | Verses | Checksum |
 |---------|--------|--------|----------|
-| uk-freedom | BUILT | 31082 | aff0c8910b43… |
-| de-tkw | BUILT | 31157 | 9f512829ecfe… |
-| pt-brbsl | BUILT | 32762 | da28b692ed1e… |
-| sv-folk | BUILT | 31153 | 33d862726e2a… |
+| urd-irv | BUILT | 31104 | 63cec4f05305… |
+| ta-irv | BUILT | 31104 | 171a0bfd2296… |
+| te-irv | BUILT | 31104 | 22ded8ce8d67… |
+| yo-ulb | BUILT | 31087 | 8853170ba312… |
+| ig-ulb | BUILT | 31103 | 5f8307a804e8… |
+| ha-ulb | BUILT | 31087 | 9901adae185f… |
+| st-hone | BUILT | 31103 | dfe3b5bfe16f… |
+| ku-sorani | BUILT | 31103 | 9544c03d7877… |
+| bn-irv | BUILT | 31104 | 0876b3f3e840… |
 

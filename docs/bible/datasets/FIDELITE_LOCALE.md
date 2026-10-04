@@ -170,10 +170,13 @@ Documenté pour le prochain lot si la politique licence évolue.
 5 datasets **CC-BY-SA** intégrés historiquement comme exception (app 100 % gratuite,
 pas de redistribution commerciale du dataset local) : `hi-irv`, `ml-irv`, `sw-ulb`,
 `tl-ulb`, `so-bible`. La politique `SCRAPE_PLAN.md` exclut formellement le CC-BY-SA.
-**Ce diagnostic n'a pas tranché la politique** — les 5 datasets sont marqués `VERIFIED_FREE`
-dans `build-bible.ts` et conservés. À trancher par l'utilisateur : maintenir l'exclusion
-SA (plus aucun dataset SA créé) ou la relâcher (libère ~10 datasets 66/66 de la Vague 2
-: `urd`, `tam2017`, `tel2017`, `yor`, `ibo`, `hausa`, `swhonen`, `tsn`, `ckb`, `npiulb`, `benirv`).
+**Trait final (2026-10-04, utilisateur) : la politique est RELÂCHÉE.** L'app est 100 %
+gratuite (aucune publicité, aucune redistribution commerciale du dataset local), donc le
+partage-aux-mêmes (SA) ne crée pas de coût. Les 9 datasets 66/66 de la Vague 2 sont
+intégrés : `urd-irv`, `ta-irv`, `te-irv`, `yo-ulb`, `ig-ulb`, `ha-ulb`, `st-hone`,
+`ku-sorani`, `bn-irv` — marqués `license: 'CC-BY-SA'` dans `build-bible.ts`.
+`tsw` (Tswana NT seul 27/66) n'est pas intégrable (§53 rejette) ; `tsn` est conservé en
+`raw/` sans être construit.
 
 ---
 
