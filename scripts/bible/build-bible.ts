@@ -179,6 +179,8 @@ export function ebibleHtmlUrl(slug: string): string {
 const EBIBLE_NON_CANONICAL = new Set([
   'FRT', 'GLO', 'TOB', 'BAR', 'JDT', 'SIR', 'WIS', 'MAN', 'PS2',
   '2MA', '3MA', '4MA', '1ES', '2ES',
+  // eBible front matter (`01-INT…usfm` — introductions, NOT a book).
+  'INT',
 ]);
 
 /**
@@ -457,6 +459,12 @@ const WORLD_CORPUS_DATASETS: BibleDatasetManifest[] = [
   { id: 'web', language: 'en', name: 'World English Bible', license: 'VERIFIED_FREE', available: true, canon: 'PROTESTANT_66', completeness: 'FULL_BIBLE', source: { rawPath: 'en/engwebp_usfm'} },
   { id: 'webu', language: 'en', name: 'World English Bible Updated', license: 'VERIFIED_FREE', available: true, canon: 'PROTESTANT_66', completeness: 'FULL_BIBLE', source: { rawPath: 'en/engwebu_usfm'} },
   { id: 'kujv', language: 'en', name: 'KJV Cambridge Paragraph Bible', license: 'VERIFIED_FREE', available: true, canon: 'PROTESTANT_66', completeness: 'FULL_BIBLE', source: { rawPath: 'en/engkjvcpb_usfm'} },
+  // EN — ASV + BSB (eBible slugs `eng-asv` / `engbsb`, verified 2026-10-04:
+  // 66/66 canonical book codes, `00-FRT`/`01-INT` extra files filtered by
+  // EBIBLE_NON_CANONICAL). ASV = American Standard Version 1901, public
+  // domain. BSB = Berean Standard Bible, CC-BY (Berean Bible).
+  { id: 'asv', language: 'en', name: 'American Standard Version (1901)', year: 1901, license: 'VERIFIED_FREE', available: true, canon: 'PROTESTANT_66', completeness: 'FULL_BIBLE', source: { rawPath: 'en/asv_usfm'} },
+  { id: 'bsb', language: 'en', name: 'Berean Standard Bible', year: 2020, license: 'VERIFIED_FREE', available: true, canon: 'PROTESTANT_66', completeness: 'FULL_BIBLE', source: { rawPath: 'en/bsb_usfm'} },
   // ES — 3 (slugs verified 2026-09-13)
   { id: 'rv1909', language: 'es', name: 'Reina-Valera 1909', year: 1909, license: 'VERIFIED_FREE', available: true, canon: 'PROTESTANT_66', completeness: 'FULL_BIBLE', source: { rawPath: 'es/spaRV1909_usfm'} },
   { id: 'es-onbv', language: 'es', name: 'Spanish ONBV', license: 'VERIFIED_FREE', available: true, canon: 'PROTESTANT_66', completeness: 'FULL_BIBLE', source: { rawPath: 'es/spaonbv_usfm'} },

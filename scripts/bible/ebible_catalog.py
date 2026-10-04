@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """ebible_catalog.py — exhaustive eBible catalogue + auto-resolve → ids.
 
-Companion to ebible_fetch.py. What this script does (in 4 steps):
+Companion to ebible_fetch.py. What this script does (in 5 steps):
 
   1. resolve_ids()      — walks eBible's country pages
                           (https://ebible.org/Scriptures/country.php?c=XX)
@@ -20,6 +20,15 @@ Companion to ebible_fetch.py. What this script does (in 4 steps):
                           docs/bible/reports/ebible-pending.json — the
                           input a downloader (this script itself, with
                           --fetch, or a future CI job) consumes.
+  5. update_dataset_catalog() — `--update-catalog` merges the PENDING
+                          entries into `data/bible/dataset-catalog.json`
+                          as stub records (`status: 'pending'`,
+                          checksum `sha256:pending`) so that
+                          `generate-dataset-catalog.ts` never silently
+                          drops them on re-run. The actual build
+                          (build-bible.ts) is a SEPARATE step — this
+                          script fetches USFM archives only, it does not
+                          parse them into JSON datasets.
 
 What it guarantees: every CATALOG translation has a real eBible id (or
 is explicitly UNMATCHED, recorded in the report). What it does NOT
@@ -31,6 +40,8 @@ Usage:
   python scripts/bible/ebible_catalog.py                 # resolve + merge + drop (offline)
   python scripts/bible/ebible_catalog.py --fetch         # + download the pending list
   python scripts/bible/ebible_catalog.py --force-resolve # re-scrape (ignore cache)
+  python scripts/bible/ebible_catalog.py --update-catalog  # + add pending entries as stubs to
+                                                          #   data/bible/dataset-catalog.json
 
 Network policy: eBible is the only external source. No cookies, no
 auth, no non-public endpoints. The country page is plain HTML.
@@ -47,12 +58,14 @@ import urllib.request
 import zlib
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
+from typing import Any
 
 ROOT = Path(__file__).resolve().parents[2]
 RAW_BASE = ROOT / 'data' / 'bible' / 'raw'
 REPORTS = ROOT / 'docs' / 'bible' / 'reports'
 RESOLVED_CACHE = REPORTS / 'resolved_ids.json'
 PENDING_REPORT = REPORTS / 'ebible-pending.json'
+DATASET_CATALOG = ROOT / 'data' / 'bible' / 'dataset-catalog.json'
 COUNTRY_URL = 'https://ebible.org/Scriptures/country.php?c={c}'
 HEADERS = {
     'User-Agent': 'Mozilla/5.0 (VersyFlow dev build-time pipeline)',
@@ -88,11 +101,13 @@ CATALOG: dict[str, list[tuple[str, str, str]]] = {
         ('darby',       'fr', 'Bible J.N. Darby'),
         ('francrampon', 'fr', 'Sainte Bible néo-Crampon Libre'),
     ],
-    # en — 3
+    # en — 5
     'en': [
         ('web',       'en', 'World English Bible'),
         ('webu',      'en', 'World English Bible Updated'),
         ('kujv',      'en', 'King James Version'),
+        ('asv',       'en', 'American Standard Version (1901)'),
+        ('bsb',       'en', 'Berean Standard Bible'),
     ],
     # es — 3
     'es': [
@@ -100,14 +115,16 @@ CATALOG: dict[str, list[tuple[str, str, str]]] = {
         ('es-onbv',    'es', 'Biblica® Open Nueva Biblia Viva 2008'),
         ('es-godword', 'es', 'God\'s Word for You (Spanish)'),
     ],
-    # pt — 1
+    # pt — 2
     'pt': [
         ('pt-onbv', 'pt', 'Biblica® Open Nova Bíblia Viva 2007'),
+        ('pt-brbsl', 'pt', 'Bíblia Portuguesa Mundial'),
     ],
-    # de — 2
+    # de — 3
     'de': [
         ('luther1912',    'de', 'Luther Bible 1912'),
         ('schlatter1951', 'de', 'Schlatter Bible 1951'),
+        ('de-tkw',        'de', 'Textbibel von Kautzsch und Weizsäcker (1906)'),
     ],
     # ru — 1
     'ru': [
@@ -208,12 +225,17 @@ PREFILLED_IDS: dict[str, str] = {
     'francrampon': 'francl',
     'web':       'engwebp',
     'webu':      'engwebu',
+    'kujv':      'engkjvcpb',
+    'asv':       'eng-asv',   # eBible slug uses hyphen; archive eng-asv_usfm.zip
+    'bsb':       'engbsb',
     'rv1909':    'spaRV1909',
     'es-onbv':   'spaonbv',
     'es-godword':'spapddpt',
     'pt-onbv':   'poronbv',
+    'pt-brbsl':  'porbrbsl',
     'luther1912':'deu1912',
     'schlatter1951': 'deu1951',
+    'de-tkw':    'deutkw',
     'ru-synodal':'russyn',
     'uk-bju1996':'ukr1996',
     'uk-kulish1871': 'ukr1871',
@@ -239,8 +261,6 @@ PREFILLED_IDS: dict[str, str] = {
     'so-bible':  'som',
     'la-vulgate':'latVUC',
     'he-wlc':    'hebwlc',
-    # 'kujv' intentionally absent: eBible's KJV id is 'engKJV'; verify by
-    # scraping (UNMATCHED_BUT_WORKING below).
 }
 
 # Entries that the previous resolver run marked UNMATCHED but that
@@ -248,26 +268,30 @@ PREFILLED_IDS: dict[str, str] = {
 # The next --force-resolve will re-attempt scraping; if it finds the
 # id, it overwrites this list. If it does not, the entry stays in
 # PREFILLED_IDS (no fallback to UNMATCHED, since these are "known").
-UNMATCHED_BUT_WORKING: dict[str, str] = {
-    'kujv': 'engkjvcpb',  # KJV Cambridge Paragraph Bible (verified 2026-09-13)
-}
+UNMATCHED_BUT_WORKING: dict[str, str] = {}
 
 # vflow_id → raw USFM directory as recorded in BIBLE_TRANSLATION_CATALOG.json.
 # `drop_already_downloaded` checks this path, not the generic
 # RAW_BASE/{lang}/{eb_id}_usfm, because `fra/fra_fob_usfm` (ostervald)
-# and `fra/frajnd_usfm` (darby) live under `fra/` not `fr/`, and KJV
-# / cmn-cob have never been downloaded yet.
+# and `fra/frajnd_usfm` (darby) live under `fra/` not `fr/`, and the
+# eBible archive slugs differ from the vflow ids on purpose
+# (`eng-asv` → `en/asv_usfm`, not `en/eng-asv_usfm`).
 RAW_PATH_OVERRIDES: dict[str, str] = {
     'frlsg-eb':     'data/bible/raw/fr/fraLSG_usfm',
     'francrampon':  'data/bible/raw/fr/francl_usfm',
     'web':          'data/bible/raw/en/engwebp_usfm',
     'webu':         'data/bible/raw/en/engwebu_usfm',
+    'kujv':         'data/bible/raw/en/engkjvcpb_usfm',
+    'asv':          'data/bible/raw/en/asv_usfm',
+    'bsb':          'data/bible/raw/en/bsb_usfm',
     'rv1909':       'data/bible/raw/es/spaRV1909_usfm',
     'es-onbv':      'data/bible/raw/es/spaonbv_usfm',
     'es-godword':   'data/bible/raw/es/spapddpt_usfm',
     'pt-onbv':      'data/bible/raw/pt/poronbv_usfm',
+    'pt-brbsl':     'data/bible/raw/pt/porbrbsl_usfm',
     'luther1912':   'data/bible/raw/de/deu1912_usfm',
     'schlatter1951':'data/bible/raw/de/deu1951_usfm',
+    'de-tkw':       'data/bible/raw/de/deutkw_usfm',
     'ru-synodal':   'data/bible/raw/ru/russyn_usfm',
     'uk-bju1996':   'data/bible/raw/uk/ukr1996_usfm',
     'uk-kulish1871':'data/bible/raw/uk/ukr1871_usfm',
@@ -597,7 +621,12 @@ def fetch_pending(pending: list[Pending]) -> None:
         return count
 
     for p in pending:
-        out_dir = RAW_BASE / p.lang / f'{p.eb_id}_usfm'
+        # eBible archive slugs differ from the vflow raw-path slugs for
+        # several entries (`eng-asv` → `en/asv_usfm`). The override map
+        # wins — when it is set, `out_dir` points at the directory
+        # `build-bible.ts` will actually read (`source.rawPath`).
+        override = RAW_PATH_OVERRIDES.get(p.vflow_id)
+        out_dir = (ROOT / override) if override else RAW_BASE / p.lang / f'{p.eb_id}_usfm'
         if out_dir.exists() and any(out_dir.iterdir()):
             print(f'  [skip] {p.vflow_id}: already on disk')
             continue
@@ -641,6 +670,115 @@ def fetch_pending(pending: list[Pending]) -> None:
         except Exception as exc:
             print(f'  [fail] {p.vflow_id}: {exc}')
 
+# ---------------------------------------------------------------------------
+# Stub metadata for --update-catalog: vflow_id → display info for
+# `data/bible/dataset-catalog.json` pending entries. Verified against
+# the live eBible detail pages (2026-10-04). License codes:
+#   PD  = public domain (text or USFM redistribution confirmed public)
+#   CC0 = CC0 / dedicated to the public domain
+#   CC  = Creative Commons (family noted; check the detail page for
+#         the exact version before shipping to production)
+# Year 0 = unknown / not on the metadata table (eBible omits it).
+# ---------------------------------------------------------------------------
+
+STUB_METADATA: dict[str, dict[str, Any]] = {
+    'asv': {
+        'language': 'en', 'name': 'American Standard Version (1901)',
+        'year': 1901, 'license': 'PD', 'books': 66,
+        'notes': 'USFM verified 2026-10-04 (66/66 canon, 68 files + FRT/INT front matter filtered by build-bible §INT).',
+    },
+    'bsb': {
+        'language': 'en', 'name': 'Berean Standard Bible',
+        'year': 2020, 'license': 'CC', 'books': 66,
+        'notes': 'Berean Bible — CC license confirmed on detail page; exact version CC-BY 4.0 (non-commercial). USFM verified 2026-10-04 (66/66 canon).',
+    },
+    'de-tkw': {
+        'language': 'de', 'name': 'Textbibel von Kautzsch und Weizsäcker (1906)',
+        'year': 1906, 'license': 'PD', 'books': 66,
+        'notes': 'eBible id `deuTKW`; public domain (1906 text).',
+    },
+    'pt-brbsl': {
+        'language': 'pt', 'name': 'Bíblia Portuguesa Mundial',
+        'year': 2022, 'license': 'PD', 'books': 66,
+        'notes': 'eBible id `porbrbsl`; public domain per eBible metadata table.',
+    },
+}
+
+
+def update_dataset_catalog(pending: list[Pending], resolved: list[ResolveResult]) -> None:
+    """
+    Add PENDING entries to `data/bible/dataset-catalog.json` as stub
+    records — WITHOUT touching existing built entries.
+
+    Stub shape (superset of the generate-dataset-catalog.ts entry):
+      {
+        "id", "language", "name", "year", "license", "books",
+        "status": "pending",
+        "checksum": "sha256:pending",
+        "sizeBytes": 0,
+        "notes"
+      }
+
+    This keeps the file coherent across `generate-dataset-catalog.ts`
+    re-runs: that script regenerates entries from `data/bible/*.json`
+    files and MERGES any pending stub it does not yet have a built
+    JSON for — see the patched generate-dataset-catalog.ts.
+    """
+    existing: list[dict[str, Any]] = []
+    if DATASET_CATALOG.exists():
+        try:
+            existing = json.loads(DATASET_CATALOG.read_text('utf-8'))
+        except json.JSONDecodeError:
+            print(f'[warn] {DATASET_CATALOG.name} is not valid JSON — starting fresh')
+            existing = []
+    by_id = {e['id']: e for e in existing if 'id' in e}
+
+    added = 0
+    for p in pending:
+        if p.vflow_id in by_id and by_id[p.vflow_id].get('status') != 'pending':
+            # A built JSON dataset exists — keep it, never downgrade it.
+            continue
+        meta = STUB_METADATA.get(p.vflow_id, {})
+        title = next(
+            (r.title for r in resolved if r.vflow_id == p.vflow_id),
+            meta.get('name', p.vflow_id),
+        )
+        stub: dict[str, Any] = {
+            'id': p.vflow_id,
+            'language': meta.get('language', p.lang),
+            'name': title,
+            'year': meta.get('year', 0),
+            'license': meta.get('license', 'CC'),
+            'books': meta.get('books', 66),
+            'status': 'pending',
+            'checksum': 'sha256:pending',
+            'sizeBytes': 0,
+            'ebibleId': p.eb_id,
+            'url': p.url,
+            'rawPath': RAW_PATH_OVERRIDES.get(p.vflow_id, f'data/bible/raw/{p.lang}/{p.eb_id}_usfm'),
+        }
+        if meta.get('notes'):
+            stub['notes'] = meta['notes']
+        if by_id.get(p.vflow_id) != stub:
+            added += 1
+        by_id[p.vflow_id] = stub
+
+    # Rebuild the list: existing entries keyed by id (a rebuilt entry
+    # wins over the old one; never drop the 35+ built records).
+    out: list[dict[str, Any]] = []
+    seen: set[str] = set()
+    for e in existing:
+        eid = e.get('id')
+        if eid in by_id and eid not in seen:
+            out.append(by_id[eid])
+            seen.add(eid)
+    for eid in sorted(set(by_id) - seen):
+        out.append(by_id[eid])
+    out.sort(key=lambda e: e.get('id', ''))
+    DATASET_CATALOG.parent.mkdir(parents=True, exist_ok=True)
+    DATASET_CATALOG.write_text(json.dumps(out, indent=2, ensure_ascii=False) + '\n', 'utf-8')
+    print(f'catalog: {len(out)} entries ({added} stubs added/refreshed) -> {DATASET_CATALOG.relative_to(ROOT)}')
+
 # Pending items that are known (from a prior fetch / from §53) NOT
 # to be a complete 66-book corpus. Fetching them is futile: the
 # archive is incomplete on eBible and the build's §53 check would
@@ -661,6 +799,9 @@ def main() -> int:
                     help='ignore the resolved-ids cache, re-scrape')
     ap.add_argument('--dry-run', action='store_true',
                     help='resolve + report only, no fetch')
+    ap.add_argument('--update-catalog', action='store_true',
+                    help='add pending entries as stubs to '
+                         'data/bible/dataset-catalog.json')
     args = ap.parse_args()
 
     print(f'catalog entries: {sum(len(v) for v in CATALOG.values())}')
@@ -677,6 +818,9 @@ def main() -> int:
     for s, n in sorted(by_source.items()):
         print(f'    [{s}] {n}')
     print(f'  report: {PENDING_REPORT.relative_to(ROOT)}')
+
+    if args.update_catalog:
+        update_dataset_catalog(pending, resolved)
 
     if args.fetch and pending:
         if args.dry_run:

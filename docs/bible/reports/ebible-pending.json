@@ -59,9 +59,27 @@
       "country_code": "en",
       "title": "King James Version",
       "eb_id": "engkjvcpb",
-      "source": "unmatched-verified",
+      "source": "prefilled",
       "country_url": "https://ebible.org/Scriptures/country.php?c=en",
-      "match_type": "unknown"
+      "match_type": "exact"
+    },
+    {
+      "vflow_id": "asv",
+      "country_code": "en",
+      "title": "American Standard Version (1901)",
+      "eb_id": "eng-asv",
+      "source": "prefilled",
+      "country_url": "https://ebible.org/Scriptures/country.php?c=en",
+      "match_type": "exact"
+    },
+    {
+      "vflow_id": "bsb",
+      "country_code": "en",
+      "title": "Berean Standard Bible",
+      "eb_id": "engbsb",
+      "source": "prefilled",
+      "country_url": "https://ebible.org/Scriptures/country.php?c=en",
+      "match_type": "exact"
     },
     {
       "vflow_id": "rv1909",
@@ -100,6 +118,15 @@
       "match_type": "exact"
     },
     {
+      "vflow_id": "pt-brbsl",
+      "country_code": "pt",
+      "title": "Bíblia Portuguesa Mundial",
+      "eb_id": "porbrbsl",
+      "source": "prefilled",
+      "country_url": "https://ebible.org/Scriptures/country.php?c=pt",
+      "match_type": "exact"
+    },
+    {
       "vflow_id": "luther1912",
       "country_code": "de",
       "title": "Luther Bible 1912",
@@ -113,6 +140,15 @@
       "country_code": "de",
       "title": "Schlatter Bible 1951",
       "eb_id": "deu1951",
+      "source": "prefilled",
+      "country_url": "https://ebible.org/Scriptures/country.php?c=de",
+      "match_type": "exact"
+    },
+    {
+      "vflow_id": "de-tkw",
+      "country_code": "de",
+      "title": "Textbibel von Kautzsch und Weizsäcker (1906)",
+      "eb_id": "deutkw",
       "source": "prefilled",
       "country_url": "https://ebible.org/Scriptures/country.php?c=de",
       "match_type": "exact"
@@ -345,10 +381,17 @@
   ],
   "pending": [
     {
-      "vflow_id": "kujv",
-      "eb_id": "engkjvcpb",
-      "lang": "en",
-      "url": "https://ebible.org/Scriptures/engkjvcpb_usfm.zip",
+      "vflow_id": "pt-brbsl",
+      "eb_id": "porbrbsl",
+      "lang": "pt",
+      "url": "https://ebible.org/Scriptures/porbrbsl_usfm.zip",
+      "reason": ""
+    },
+    {
+      "vflow_id": "de-tkw",
+      "eb_id": "deutkw",
+      "lang": "de",
+      "url": "https://ebible.org/Scriptures/deutkw_usfm.zip",
       "reason": ""
     }
   ]

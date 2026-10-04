@@ -6,6 +6,18 @@
     "builtAt": "2026-09-20T15:26:32.366Z"
   },
   {
+    "id": "asv",
+    "checksum": "sha256:542789fc833246f4d371b881f950c38396e3a90601874c8c918d430b618b93e2",
+    "sizeBytes": 6750452,
+    "builtAt": "2026-10-04T07:54:54.807Z"
+  },
+  {
+    "id": "bsb",
+    "checksum": "sha256:1d3104de6b99cb53d7941b6fbe0496f5bd4fcd675692b41ba62dfd6bff677c43",
+    "sizeBytes": 6433419,
+    "builtAt": "2026-10-04T07:55:08.521Z"
+  },
+  {
     "id": "cmn-uvs",
     "checksum": "sha256:cd442dabf0d6d21d71bf74f4802d1f3e3722c813f7958c5164e888208aec6294",
     "sizeBytes": 6103933,
@@ -28,6 +40,22 @@
     "checksum": "sha256:cbc2ddbccc696f41ad3dbf84d135f9fc3bd90cd88fdd25ca165801183058a1ea",
     "sizeBytes": 7098451,
     "builtAt": "2026-09-13T00:06:50.020Z"
+  },
+  {
+    "id": "de-tkw",
+    "language": "de",
+    "name": "Textbibel von Kautzsch und Weizsäcker (1906)",
+    "year": 1906,
+    "license": "PD",
+    "books": 66,
+    "status": "pending",
+    "checksum": "sha256:pending",
+    "sizeBytes": 0,
+    "ebibleId": "deutkw",
+    "url": "https://ebible.org/Scriptures/deutkw_usfm.zip",
+    "rawPath": "data/bible/raw/de/deutkw_usfm",
+    "notes": "eBible id `deuTKW`; public domain (1906 text).",
+    "builtAt": "de-tkw"
   },
   {
     "id": "es-godword",
@@ -136,6 +164,22 @@
     "checksum": "sha256:72766156e213aad5d9d0a5f8f083415bbc832075e34f10b2f62c43b0593bddbb",
     "sizeBytes": 7042710,
     "builtAt": "2026-09-13T22:00:17.279Z"
+  },
+  {
+    "id": "pt-brbsl",
+    "language": "pt",
+    "name": "Bíblia Portuguesa Mundial",
+    "year": 2022,
+    "license": "PD",
+    "books": 66,
+    "status": "pending",
+    "checksum": "sha256:pending",
+    "sizeBytes": 0,
+    "ebibleId": "porbrbsl",
+    "url": "https://ebible.org/Scriptures/porbrbsl_usfm.zip",
+    "rawPath": "data/bible/raw/pt/porbrbsl_usfm",
+    "notes": "eBible id `porbrbsl`; public domain per eBible metadata table.",
+    "builtAt": "pt-brbsl"
   },
   {
     "id": "pt-onbv",
