@@ -94,20 +94,33 @@ HEADERS = {
 
 CATALOG: dict[str, list[tuple[str, str, str]]] = {
     # (vflow_id, country_code, eBible title)
-# fr — 4
+# fr — 4 (Martin/Tournade/Rambert: not in the eBible catalogue — no
+# public USFM corpus found on eBible, GitHub (unfda) or archive.org in
+# 66/66 form; tracked as exclusions, see the FR exclusion notes below).
     'fr': [
         ('frlsg-eb',    'fr', 'Louis Segond 1910'),
         ('ostervald',   'fr', 'La Sainte Bible'),            # eBible id fra_fob
         ('darby',       'fr', 'Bible J.N. Darby'),
         ('francrampon', 'fr', 'Sainte Bible néo-Crampon Libre'),
     ],
-    # en — 5
+    # en — 9 (6 existing + 3 free-access additions 2026-10-04:
+    #   en-ylt (engylt, YLT 1862, PD), en-beb (engBBE, Basic English 1947, PD),
+    #   en-webster (engwebster, Webster 1833, PD).
+    #   Excluded: engwyc2018/engwyc2017 (Wycliffe 2018 modern-spelling
+    #   derivative = CC-BY-4.0, not pure PD), enggnv (Geneva 1599 — eBible
+    #   archive is a modern English re-typing, not the historical GNV),
+    #   eng-rv (RV 1895 = US copyrighted 1901 revision, not PD),
+    #   engDRA (Douay-Rheims — Catholic deuterocanon corpus, not the
+    #   Protestant 66-book version recited in English-speaking contexts).
     'en': [
         ('web',       'en', 'World English Bible'),
         ('webu',      'en', 'World English Bible Updated'),
         ('kujv',      'en', 'King James Version'),
         ('asv',       'en', 'American Standard Version (1901)'),
         ('bsb',       'en', 'Berean Standard Bible'),
+        ('en-ylt',    'en', 'Young\'s Literal Translation'),
+        ('en-beb',    'en', 'Bible in Basic English'),
+        ('en-webster', 'en', 'Noah Webster Bible'),
     ],
     # es — 3
     'es': [
@@ -228,6 +241,9 @@ PREFILLED_IDS: dict[str, str] = {
     'kujv':      'engkjvcpb',
     'asv':       'eng-asv',   # eBible slug uses hyphen; archive eng-asv_usfm.zip
     'bsb':       'engbsb',
+    'en-ylt':    'engylt',
+    'en-beb':    'engBBE',
+    'en-webster': 'engwebster',
     'rv1909':    'spaRV1909',
     'es-onbv':   'spaonbv',
     'es-godword':'spapddpt',
@@ -284,6 +300,9 @@ RAW_PATH_OVERRIDES: dict[str, str] = {
     'kujv':         'data/bible/raw/en/engkjvcpb_usfm',
     'asv':          'data/bible/raw/en/asv_usfm',
     'bsb':          'data/bible/raw/en/bsb_usfm',
+    'en-ylt':       'data/bible/raw/en/en-ylt_usfm',
+    'en-beb':       'data/bible/raw/en/en-beb_usfm',
+    'en-webster':   'data/bible/raw/en/en-webster_usfm',
     'rv1909':       'data/bible/raw/es/spaRV1909_usfm',
     'es-onbv':      'data/bible/raw/es/spaonbv_usfm',
     'es-godword':   'data/bible/raw/es/spapddpt_usfm',
@@ -691,6 +710,21 @@ STUB_METADATA: dict[str, dict[str, Any]] = {
         'language': 'en', 'name': 'Berean Standard Bible',
         'year': 2020, 'license': 'CC', 'books': 66,
         'notes': 'Berean Bible — CC license confirmed on detail page; exact version CC-BY 4.0 (non-commercial). USFM verified 2026-10-04 (66/66 canon).',
+    },
+    'en-ylt': {
+        'language': 'en', 'name': "Young's Literal Translation (1862)",
+        'year': 1862, 'license': 'PD', 'books': 66,
+        'notes': 'eBible id `engylt`; public domain (1862 text, CC-licensed re-typeset not claimed). USFM verified 2026-10-04 (66/66 canon, 31102 verses).',
+    },
+    'en-beb': {
+        'language': 'en', 'name': 'Bible in Basic English (1947)',
+        'year': 1947, 'license': 'PD', 'books': 66,
+        'notes': 'eBible id `engBBE`; public domain per eBible detail page. USFM verified 2026-10-04 (66/66 canon, 31102 verses).',
+    },
+    'en-webster': {
+        'language': 'en', 'name': 'Noah Webster Bible (1833)',
+        'year': 1833, 'license': 'PD', 'books': 66,
+        'notes': 'eBible id `engwebster`; public domain per eBible detail page. USFM verified 2026-10-04 (66/66 canon, 31102 verses).',
     },
     'de-tkw': {
         'language': 'de', 'name': 'Textbibel von Kautzsch und Weizsäcker (1906)',

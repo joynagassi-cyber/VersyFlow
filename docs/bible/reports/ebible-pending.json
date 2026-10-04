@@ -82,6 +82,33 @@
       "match_type": "exact"
     },
     {
+      "vflow_id": "en-ylt",
+      "country_code": "en",
+      "title": "Young's Literal Translation",
+      "eb_id": "engylt",
+      "source": "prefilled",
+      "country_url": "https://ebible.org/Scriptures/country.php?c=en",
+      "match_type": "exact"
+    },
+    {
+      "vflow_id": "en-beb",
+      "country_code": "en",
+      "title": "Bible in Basic English",
+      "eb_id": "engBBE",
+      "source": "prefilled",
+      "country_url": "https://ebible.org/Scriptures/country.php?c=en",
+      "match_type": "exact"
+    },
+    {
+      "vflow_id": "en-webster",
+      "country_code": "en",
+      "title": "Noah Webster Bible",
+      "eb_id": "engwebster",
+      "source": "prefilled",
+      "country_url": "https://ebible.org/Scriptures/country.php?c=en",
+      "match_type": "exact"
+    },
+    {
       "vflow_id": "rv1909",
       "country_code": "es",
       "title": "Santa Biblia Reina Valera 1909",
@@ -380,6 +407,27 @@
     }
   ],
   "pending": [
+    {
+      "vflow_id": "en-ylt",
+      "eb_id": "engylt",
+      "lang": "en",
+      "url": "https://ebible.org/Scriptures/engylt_usfm.zip",
+      "reason": ""
+    },
+    {
+      "vflow_id": "en-beb",
+      "eb_id": "engBBE",
+      "lang": "en",
+      "url": "https://ebible.org/Scriptures/engBBE_usfm.zip",
+      "reason": ""
+    },
+    {
+      "vflow_id": "en-webster",
+      "eb_id": "engwebster",
+      "lang": "en",
+      "url": "https://ebible.org/Scriptures/engwebster_usfm.zip",
+      "reason": ""
+    },
     {
       "vflow_id": "pt-brbsl",
       "eb_id": "porbrbsl",

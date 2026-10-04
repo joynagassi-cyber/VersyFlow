@@ -37,6 +37,9 @@ const INFO: Record<string, TranslationDisplayInfo> = {
   webu: { name: 'World English Bible (Updated)', abbreviation: 'WEBU', language: 'Anglais' },
   asv: { name: 'American Standard Version (1901)', abbreviation: 'ASV', language: 'Anglais' },
   bsb: { name: 'Berean Standard Bible', abbreviation: 'BSB', language: 'Anglais' },
+  'en-ylt': { name: "Young's Literal Translation (1862)", abbreviation: 'YLT', language: 'Anglais' },
+  'en-beb': { name: 'Bible in Basic English (1947)', abbreviation: 'BBE', language: 'Anglais' },
+  'en-webster': { name: 'Noah Webster Bible (1833)', abbreviation: 'Webster', language: 'Anglais' },
 
   // ── Allemand ───────────────────────────────────────────────
   luther1912: { name: 'Luther (1912)', abbreviation: 'Luther', language: 'Allemand' },

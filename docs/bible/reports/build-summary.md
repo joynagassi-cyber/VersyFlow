@@ -1,8 +1,10 @@
 # Bible Build Report
 
-Generated: 2026-10-04T16:33:52.530Z
+Generated: 2026-10-04T18:06:15.020Z
 
 | Dataset | Status | Verses | Checksum |
 |---------|--------|--------|----------|
-| myajvb | BUILT | 31102 | dc0a2ac34dd8… |
+| en-ylt | BUILT | 31102 | 7b1eada1090c… |
+| en-beb | BUILT | 31102 | 63ae99984541… |
+| en-webster | BUILT | 31102 | 53b6c5242936… |
 

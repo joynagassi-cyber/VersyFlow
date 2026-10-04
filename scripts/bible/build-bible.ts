@@ -468,6 +468,14 @@ const WORLD_CORPUS_DATASETS: BibleDatasetManifest[] = [
   // domain. BSB = Berean Standard Bible, CC-BY (Berean Bible).
   { id: 'asv', language: 'en', name: 'American Standard Version (1901)', year: 1901, license: 'VERIFIED_FREE', available: true, canon: 'PROTESTANT_66', completeness: 'FULL_BIBLE', source: { rawPath: 'en/asv_usfm'} },
   { id: 'bsb', language: 'en', name: 'Berean Standard Bible', year: 2020, license: 'VERIFIED_FREE', available: true, canon: 'PROTESTANT_66', completeness: 'FULL_BIBLE', source: { rawPath: 'en/bsb_usfm'} },
+  // EN — free-access historical additions (2026-10-04, §53 verified 66/66
+  // canonical book codes on eBible):
+  //  - en-ylt (Young's Literal Translation 1862, PD — eBible `engylt`)
+  //  - en-beb (Bible in Basic English 1947, PD — eBible `engBBE`)
+  //  - en-webster (Noah Webster Bible 1833, PD — eBible `engwebster`)
+  { id: 'en-ylt', language: 'en', name: "Young's Literal Translation (1862)", year: 1862, license: 'VERIFIED_FREE', available: true, canon: 'PROTESTANT_66', completeness: 'FULL_BIBLE', source: { rawPath: 'en/en-ylt_usfm'} },
+  { id: 'en-beb', language: 'en', name: 'Bible in Basic English (1947)', year: 1947, license: 'VERIFIED_FREE', available: true, canon: 'PROTESTANT_66', completeness: 'FULL_BIBLE', source: { rawPath: 'en/en-beb_usfm'} },
+  { id: 'en-webster', language: 'en', name: 'Noah Webster Bible (1833)', year: 1833, license: 'VERIFIED_FREE', available: true, canon: 'PROTESTANT_66', completeness: 'FULL_BIBLE', source: { rawPath: 'en/en-webster_usfm'} },
   // WAVE 1 (2026-10-04) — 4 datasets P1/P3 66/66 PD, licence vérifiée :
   //  - cmn-cu89t (CUV 和合本 1919, PD) → zh-Hant : version récitée dominante
   //    en Chine/Taïwan/Hong Kong (~230 M).
