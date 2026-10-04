@@ -66,6 +66,44 @@ streams:
     auto_subscribe: true
     query: SELECT * FROM settings WHERE user_id = auth.user_id()
 
+  # ---- Telemetry (append-only, user-scoped) ----
+  # `telemetry_events` (migration 008) is append-only: the client declares it
+  # insert-only (`Table.createInsertOnly` in `powersync-schema.ts`), so only
+  # INSERTs cross the wire — no UPDATE/DELETE is ever replayed by the stream.
+
+  my_telemetry_events:
+    auto_subscribe: true
+    query: SELECT * FROM telemetry_events WHERE user_id = auth.user_id()
+
+  # ---- Semantic memory graph (global reference data) ----
+  # The Stage-B semantic alignment layer (concepts / communities / verse
+  # relations) is shared reference data — built once server-side and read-only
+  # for every user — so these streams are global (no auth.user_id() filter).
+  # Volumes are bounded: the pipeline emits thousands of rows, not millions,
+  # and every client downloads the same set once (then streams deltas only).
+  # `concepts.created_by` is an authoring attribution, not a row ownership, so
+  # global sync is the correct scope (client schema registers all five tables).
+
+  semantic_concepts:
+    auto_subscribe: true
+    query: SELECT * FROM concepts
+
+  semantic_communities:
+    auto_subscribe: true
+    query: SELECT * FROM communities
+
+  semantic_concept_relations:
+    auto_subscribe: true
+    query: SELECT * FROM concept_relations
+
+  semantic_verse_concepts:
+    auto_subscribe: true
+    query: SELECT * FROM verse_concepts
+
+  semantic_verse_relations:
+    auto_subscribe: true
+    query: SELECT * FROM verse_relations
+
   # ---- Family-scoped: everything the user is an active member of ----
   # A user with no active membership sees no families (by design — the stream
   # filter and the RLS read policy agree, so the stream never diverges from

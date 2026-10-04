@@ -12,7 +12,7 @@
     "test": "vitest run",
     "postinstall": "node scripts/patch-powersync-worker.cjs",
     "powersync:wire": "tsx -r tsconfig-paths/register scripts/powersync-wire-check.ts",
-    "powersync:wire:live": "cross-env TS_NODE_PROJECT=tsconfig.app.json tsx -r tsconfig-paths/register scripts/powersync-wire-check.ts --live",
+    "powersync:wire:live": "node scripts/powersync-wire-live.mjs",
     "bible:build": "tsx -r ./scripts/tsconfig-alias-hook.cjs scripts/bible/build-bible.ts",
     "bible:catalog": "npx tsx scripts/bible/generate-dataset-catalog.ts",
     "bible:deploy": "cross-env TS_NODE_PROJECT=tsconfig.app.json tsx scripts/supabase/setup-bible-datasets.ts",
