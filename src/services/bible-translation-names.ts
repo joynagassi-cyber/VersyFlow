@@ -69,10 +69,16 @@ const INFO: Record<string, TranslationDisplayInfo> = {
   'pt-brbsl': { name: 'Bíblia Portuguesa Mundial', abbreviation: 'BPM', language: 'Portugais' },
 
   // ── Néerlandais / Danois / Suédois ────────────────────────
-  'nl-1917': { name: 'Édition 1917', abbreviation: 'Édition 1917', language: 'Néerlandais' },
+  // Descriptive names (no official edition name is publicly stable for
+  // these datasets — we label by language + year rather than invent a name).
+  'nl-1917': { name: 'Bible néerlandaise (1917)', abbreviation: 'NL 1917', language: 'Néerlandais' },
   'nl-nbg1951': { name: 'NBG (1951)', abbreviation: 'NBG', language: 'Néerlandais' },
-  'da-1931': { name: 'Édition 1931', abbreviation: 'Édition 1931', language: 'Danois' },
-  'sv-ntplus': { name: 'Nouveau Testament Plus', abbreviation: 'NT+', language: 'Suédois' },
+  'da-1931': { name: 'Bible danoise (1931)', abbreviation: 'DA 1931', language: 'Danois' },
+  'sv-ntplus': { name: 'Nouveau Testament plus (suédois)', abbreviation: 'NT+', language: 'Suédois' },
+  'sv-folk': { name: 'Folkbibeln (1917)', abbreviation: 'Folkbibeln', language: 'Suédois' },
+
+  // ── Ukrainien ──────────────────────────────────────────────
+  'uk-freedom': { name: 'Ukrainian Freedom Bible (ulb-ukr)', abbreviation: 'Freedom (uk)', language: 'Ukrainien' },
 
   // ── Arabe / Persan ────────────────────────────────────────
   'ar-nav': { name: 'Bible en arabe (NAV)', abbreviation: 'NAV', language: 'Arabe' },
@@ -82,8 +88,8 @@ const INFO: Record<string, TranslationDisplayInfo> = {
   'cmn-uvs': { name: 'Version unifiée (chinois simplifié)', abbreviation: 'UVS', language: 'Chinois' },
   cmnswcb: { name: 'Bible standard (chinois simplifié)', abbreviation: 'SWCB', language: 'Chinois' },
   'cmn-cu89t': { name: '和合本 / Union Version (CUV 1919, chinois traditionnel)', abbreviation: 'CUV', language: 'Chinois' },
-  'jp-freedom': { name: 'Freedom Bible', abbreviation: 'Freedom', language: 'Japonais' },
-  'ko-1910': { name: 'Édition 1910', abbreviation: 'Édition 1910', language: 'Coréen' },
+  'jp-freedom': { name: 'Bible Freedom (japonaise)', abbreviation: 'Freedom', language: 'Japonais' },
+  'ko-1910': { name: 'Bible coréenne (1910)', abbreviation: 'KO 1910', language: 'Coréen' },
 
   // ── Asie du Sud / Sud-Est ──────────────────────────────────
   'vie1934': { name: 'Kinh Thánh (1925)', abbreviation: 'Kinh Thánh', language: 'Vietnamien' },
@@ -93,11 +99,13 @@ const INFO: Record<string, TranslationDisplayInfo> = {
   heb: { name: 'Tanakh (hébreu)', abbreviation: 'Tanakh', language: 'Hébreu' },
 
   // ── Autres langues ─────────────────────────────────────────
-  'hi-irv': { name: 'Indian Revised Version', abbreviation: 'IRV', language: 'Hindi' },
-  'ml-irv': { name: 'Indian Revised Version', abbreviation: 'IRV', language: 'Malayalam' },
-  'so-bible': { name: 'Bible en somali', abbreviation: 'Somali', language: 'Somali' },
-  'sw-ulb': { name: 'ULB (Langue unifiée)', abbreviation: 'ULB', language: 'Swahili' },
-  'tl-ulb': { name: 'ULB (Langue unifiée)', abbreviation: 'ULB', language: 'Tagalog' },
+  // IRV appears in two reader-languages — the name keeps the language
+  // qualifier so the two rows stay unambiguous in the picker.
+  'hi-irv': { name: 'Indian Revised Version (hindi)', abbreviation: 'IRV', language: 'Hindi' },
+  'ml-irv': { name: 'Indian Revised Version (malayalam)', abbreviation: 'IRV', language: 'Malayalam' },
+  'so-bible': { name: 'Bible en somali', abbreviation: 'SO', language: 'Somali' },
+  'sw-ulb': { name: 'ULB (swahili)', abbreviation: 'ULB', language: 'Swahili' },
+  'tl-ulb': { name: 'ULB (tagalog)', abbreviation: 'ULB', language: 'Tagalog' },
 };
 
 /** A translation id grouped under its reader-language label. */
@@ -166,10 +174,18 @@ export function groupTranslationsByLanguage(ids: string[]): TranslationByLanguag
 }
 
 export function getTranslationDisplayInfo(id: string): TranslationDisplayInfo {
-  return INFO[id] ?? { name: id, abbreviation: id.toUpperCase(), language: 'Bible' };
+  // Unknown-id catch-all: the technical id itself is the safest public
+  // label (never invent a name). `language` is EMPTY, not "Bible", so UI
+  // call-sites can suppress the language line entirely instead of showing
+  // a fake language next to an unknown translation.
+  return INFO[id] ?? { name: id, abbreviation: id.toUpperCase(), language: '' };
 }
 
-/** "KJV — King James Version" or just the abbreviation for compact places. */
+/**
+ * "KJV — King James Version" or just the abbreviation for compact places.
+ * When no reader-language is known (fallback) the language segment is
+ * omitted so an unknown id never renders "KJV — " with a dangling dash.
+ */
 export function bibleTranslationDisplayName(
   id: string,
   includeLanguage = false,
@@ -178,5 +194,5 @@ export function bibleTranslationDisplayName(
   // Abbreviation is the main label; full name is the subtitle. When they are
   // identical (no stable public abbreviation) there is no redundancy to hide.
   const main = info.abbreviation === info.name ? info.name : info.abbreviation;
-  return includeLanguage ? `${main} — ${info.language}` : main;
+  return includeLanguage && info.language ? `${main} — ${info.language}` : main;
 }

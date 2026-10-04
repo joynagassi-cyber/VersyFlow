@@ -20,6 +20,7 @@ interface LearnerProfileRow {
   user_id: string;
   display_name: string;
   avatar_url: string | null;
+  slogan: string | null;
   status: string;
   created_at: string;
   updated_at: string;
@@ -36,6 +37,7 @@ function rowToEntity(row: LearnerProfileRow): LearnerProfile {
     accountId: row.user_id,
     displayName: row.display_name,
     avatar: row.avatar_url ?? undefined,
+    slogan: row.slogan ?? undefined,
     status: (row.status === 'inactive' ? 'inactive' : 'active') as LearnerProfile['status'],
     createdAt: ms(row.created_at),
     updatedAt: ms(row.updated_at),
@@ -77,13 +79,14 @@ export class LearnerProfileRepositoryPowerSync implements ILearnerProfileReposit
     await db.writeTransaction(async (tx) => {
       await tx.execute(
         `INSERT INTO learner_profiles (
-          id, user_id, display_name, avatar_url, status, created_at, updated_at
-        ) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+          id, user_id, display_name, avatar_url, slogan, status, created_at, updated_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
         [
           id,
           profile.accountId,
           profile.displayName,
           profile.avatar ?? null,
+          profile.slogan ?? null,
           profile.status,
           nowIso,
           nowIso,
@@ -119,11 +122,12 @@ export class LearnerProfileRepositoryPowerSync implements ILearnerProfileReposit
     await db.writeTransaction(async (tx) => {
       await tx.execute(
         `UPDATE learner_profiles SET
-          display_name = ?, avatar_url = ?, status = ?, updated_at = ?
+          display_name = ?, avatar_url = ?, slogan = ?, status = ?, updated_at = ?
          WHERE id = ?`,
         [
           merged.displayName,
           merged.avatar ?? null,
+          merged.slogan ?? null,
           merged.status,
           new Date(merged.updatedAt).toISOString(),
           id,

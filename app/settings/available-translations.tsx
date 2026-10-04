@@ -243,7 +243,8 @@ export default function AvailableTranslationsScreen() {
               )}
             </div>
             <p className="mt-0.5 flex items-center gap-1.5 text-xs text-text-muted">
-              {info.abbreviation} · {formatBytes(entry.sizeBytes)}
+              {info.abbreviation}
+              {info.language ? ` · ${info.language}` : ''} · {formatBytes(entry.sizeBytes)}
             </p>
 
             {/* Real streaming progress — percent + Mo reçus / total + cancel */}
@@ -341,19 +342,22 @@ export default function AvailableTranslationsScreen() {
   };
 
   // Render one language section: header with count + local/remote split.
+  // An empty language (unknown translation id fallback) is shown as a plain
+  // "Autres" group so a row is never filed under a fake "Bible" language.
   const renderLanguageSection = (language: string, ids: string[]) => {
     const langEntries = entries.filter((e) => ids.includes(e.id));
     const local = langEntries.filter((e) => (states[e.id]?.available ?? false));
     const remote = langEntries.filter((e) => !(states[e.id]?.available ?? false));
+    const groupLabel = language || t('settings.unknownLanguageGroup', 'Autres versions');
     return (
-      <section key={language} className="mb-6">
+      <section key={language || 'unknown'} className="mb-6">
         <div className="mb-3 flex items-center justify-between rounded-2xl bg-surface px-4 py-3 shadow-sm">
           <div className="flex items-center gap-2.5">
             <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/12 text-primary">
               <Languages size={18} />
             </span>
             <div>
-              <p className="text-sm font-bold text-text-primary">{language}</p>
+              <p className="text-sm font-bold text-text-primary">{groupLabel}</p>
               <p className="text-[11px] text-text-muted">
                 {t('settings.langVersionsCount', { count: ids.length })}
               </p>

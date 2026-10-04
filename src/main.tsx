@@ -83,6 +83,7 @@ const SettingsIndex = lazy(() => import('../app/settings/index'));
 const SettingsAvailableTranslations = lazy(() => import('../app/settings/available-translations'));
 const SettingsThemePicker = lazy(() => import('../app/settings/theme-picker'));
 const SettingsNavigation = lazy(() => import('../app/settings/navigation'));
+const SettingsData = lazy(() => import('../app/settings/data'));
 
 // Misc deep pages
 const SearchPage = lazy(() => import('../app/search/index'));
@@ -107,7 +108,7 @@ const SemanticCommunity = lazy(() => import('../app/semantic/community'));
 
 import i18next, { initI18next } from '@/i18n/i18next-init';
 import { initializeSettingsStore, useSettingsStore } from '@/store/settings-store';
-import { initializeAppearanceStore } from '@/store/appearance-store';
+import { initializeAppearanceStore, useAppearanceStore } from '@/store/appearance-store';
 import { initializeUiStore } from '@/store/ui-store';
 import { ThemeManager } from '@/components/ThemeManager';
 import ErrorBoundary from '@/components/ErrorBoundary';
@@ -145,9 +146,25 @@ import { isRTL, DEFAULT_LANGUAGE, normalizeLocaleCode } from '@/domains/i18n/con
   wireStreakCoordinator();
   wireSessionRefresh();
   // Schedule local push notifications for daily review reminders (no-op on
-  // Web where the Capacitor plugin is unavailable).
-  void notificationService.scheduleDailyReminders();
+  // Web where the Capacitor plugin is unavailable). The service is
+  // store/i18n-free: read the reminder config + translate the body here.
+  void scheduleBootReminders();
 })();
+
+/** Boot-time reminder scheduling with the notification body translated in
+ *  the active UI language and the reminder config read from the store —
+ *  the service itself stays dependency-injected (no store/i18next access). */
+async function scheduleBootReminders() {
+  const {
+    reminderEnabled,
+    reminderFrequency,
+    reminderTime,
+  } = useAppearanceStore.getState();
+  await notificationService.scheduleDailyReminders(
+    { enabled: reminderEnabled, frequency: reminderFrequency, time: reminderTime },
+    i18next.t('reminders.notificationBody', 'Temps de révision !'),
+  );
+}
 
 /** SPA equivalent of the Supabase "session refresh" middleware: re-checks and
  *  refreshes the auth session periodically so long-lived webview/native
@@ -334,6 +351,7 @@ function App() {
               <Route path="/settings/available-translations" element={<SettingsAvailableTranslations />} />
               <Route path="/settings/theme-picker" element={<SettingsThemePicker />} />
               <Route path="/settings/navigation" element={<SettingsNavigation />} />
+              <Route path="/settings/data" element={<SettingsData />} />
 
               {/* Misc */}
               <Route path="/search" element={<SearchPage />} />

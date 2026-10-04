@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { EmptyState } from '@/components/ui/EmptyState';
+import { colorTintAlpha } from '@/lib/platform';
 
 interface Collection {
   id: string;
@@ -47,7 +48,7 @@ const NEW_COLLECTION_COLORS = [
 ];
 
 /** 12% translucent tint of a color value, for soft circular backgrounds. */
-const collectionTint = (color: string) => `color-mix(in srgb, ${color} 12%, transparent)`;
+const collectionTint = (color: string) => colorTintAlpha(color, 12);
 
 const ICONS: Record<Collection['icon'], typeof Heart> = {
   heart: Heart,

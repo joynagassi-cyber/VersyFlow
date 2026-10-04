@@ -3,11 +3,16 @@
  *
  * Uses Capacitor Local Notifications on native platforms and falls back to
  * in-app toasts on the Web so that reminders stay functional everywhere.
+ *
+ * Fixed: dependency injection — this service no longer reads the appearance
+ * store nor i18next. Callers (reminders screen, about screen, app boot) read
+ * their own stores and translate the notification body themselves, then pass
+ * the concrete values as arguments. This keeps the service pure and
+ * testable, and avoids stale-cache races around reminder state changes.
  */
 // Fixed: Capacitor — notification permission request is now just-in-time (user-initiated), not fired at app launch
 
-import { useAppearanceStore } from '@/store/appearance-store';
-import i18next from 'i18next';
+import { isNativePlatform } from '@/lib/platform';
 
 export interface ScheduledReminder {
   id: number;
@@ -15,18 +20,24 @@ export interface ScheduledReminder {
   frequency: number; // times per day
 }
 
+export interface ReminderConfig {
+  enabled: boolean;
+  frequency: number;
+  time: string;
+}
+
 const NOTIFICATION_CHANNEL = 'versyflow-reminders';
 
-/** Cached permission state so we don't re-prompt / re-query on every call. */
+/**
+ * Cached permission state so we don't re-prompt / re-query on every call.
+ * The cache is invalidated on `cancelAll()` so that a reminder state
+ * change (on/off, reschedule) forces a fresh permission re-check on the
+ * next `ensurePermissions()` call — this guards against the off/on race
+ * where a stale `granted`/`denied` result could survive a cycle.
+ */
 let permissionGranted: boolean | null = null;
 let permissionChecked = false;
 let permissionRequestInFlight: Promise<void> | null = null;
-
-function isNativePlatform(): boolean {
-  if (typeof window === 'undefined') return false;
-  const cap = (window as unknown as { Capacitor?: { isNativePlatform?: () => boolean } }).Capacitor;
-  return cap?.isNativePlatform?.() === true;
-}
 
 export class NotificationService {
   /**
@@ -64,11 +75,14 @@ export class NotificationService {
   /**
    * Request notification permission just-in-time (user-initiated).
    * Safe to call from user actions such as "Planifier les rappels" —
-   * it will NOT trigger the system prompt when the user hasn't enabled
-   * reminders or when permission was already granted/denied.
+   * it will NOT trigger the system prompt when reminders are disabled
+   * (caller passes `reminderEnabled = false`) or when permission was
+   * already granted/denied.
+   *
+   * The reminder-enabled state is passed in by the caller rather than read
+   * from the appearance store, keeping this service store-free.
    */
-  async ensurePermissions(): Promise<boolean> {
-    const { reminderEnabled } = useAppearanceStore.getState();
+  async ensurePermissions(reminderEnabled: boolean): Promise<boolean> {
     if (!reminderEnabled) {
       // Reminders are off — no reason to prompt the OS.
       return false;
@@ -100,7 +114,12 @@ export class NotificationService {
   }
 
   /**
-   * Schedule all pending daily reminders using the current appearance store.
+   * Schedule all pending daily reminders.
+   *
+   * The caller passes the current reminder configuration and the (already
+   * translated) notification body — the service never reads the store or
+   * i18next itself.
+   *
    * Returns an array of reminder descriptions so the UI can show them.
    *
    * Safe to call at boot: when reminders are enabled but permissions were
@@ -108,16 +127,18 @@ export class NotificationService {
    * the OS permission prompt — the prompt happens just-in-time via
    * `ensurePermissions()` from user-initiated handlers.
    */
-  async scheduleDailyReminders(): Promise<ScheduledReminder[]> {
-    const { reminderEnabled, reminderFrequency, reminderTime } =
-      useAppearanceStore.getState();
+  async scheduleDailyReminders(
+    reminders: ReminderConfig,
+    body: string,
+  ): Promise<ScheduledReminder[]> {
+    const { enabled, frequency, time } = reminders;
 
-    if (!reminderEnabled) return [];
+    if (!enabled) return [];
 
-    const reminders: ScheduledReminder[] = Array.from({ length: reminderFrequency }, (_, i) => ({
+    const scheduled: ScheduledReminder[] = Array.from({ length: frequency }, (_, i) => ({
       id: i + 1,
-      time: this.offsetTime(reminderTime, i, reminderFrequency),
-      frequency: reminderFrequency,
+      time: this.offsetTime(time, i, frequency),
+      frequency,
     }));
 
     // On native Capacitor, schedule via the plugin. Permission is requested
@@ -130,23 +151,23 @@ export class NotificationService {
           // Permission not granted yet — do NOT prompt here (that happens on
           // user action). The in-app fallback still returns the schedule so
           // the UI can surface reminder banners.
-          return reminders;
+          return scheduled;
         }
         const { LocalNotifications } = await import('@capacitor/local-notifications');
         await LocalNotifications.createChannel({ id: NOTIFICATION_CHANNEL, name: 'VersyFlow' });
-        for (const reminder of reminders) {
+        for (const reminder of scheduled) {
           await LocalNotifications.schedule({
             notifications: [
               {
                 id: reminder.id,
                 title: 'VersyFlow',
-                body: i18next.t('reminders.notificationBody', 'Temps de revision !'),
+                body,
                 channelId: NOTIFICATION_CHANNEL,
               },
             ],
           });
         }
-        return reminders;
+        return scheduled;
       }
     } catch {
       // Web / no plugin — fall back silently.
@@ -154,10 +175,17 @@ export class NotificationService {
 
     // Web fallback: no system notification, but we still return the schedule
     // so the UI can surface in-app reminder banners.
-    return reminders;
+    return scheduled;
   }
 
-  /** Cancel all scheduled local reminders. */
+  /**
+   * Cancel all scheduled local reminders and reset the cached permission
+   * state so a later user-initiated request re-queries the OS.
+   *
+   * Resetting the cache here is deliberate: a reminder off/on cycle can
+   * otherwise leave a stale `granted`/`denied` result in place, and the
+   * next `ensurePermissions()` call would trust it without re-checking.
+   */
   async cancelAll(): Promise<void> {
     try {
       if (isNativePlatform()) {

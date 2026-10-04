@@ -24,9 +24,9 @@ export function useLearnerProfile() {
   const service = getService();
 
   const createProfile = useCallback(
-    (displayName: string, avatar?: string) => {
+    (displayName: string, avatar?: string, slogan?: string) => {
       if (!accountId) throw new Error('Not authenticated');
-      return service.create(accountId, displayName, avatar);
+      return service.create(accountId, displayName, avatar, slogan);
     },
     [accountId, service],
   );

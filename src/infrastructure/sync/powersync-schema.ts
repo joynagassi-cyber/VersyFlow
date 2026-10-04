@@ -38,6 +38,7 @@ export function buildPowerSyncSchema(): Schema {
       user_id: column.text,
       display_name: column.text,
       avatar_url: column.text,
+      slogan: column.text,
       status: column.text,
       created_at: column.text,
       updated_at: column.text,

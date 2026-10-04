@@ -1325,11 +1325,7 @@ export { Platform };
 // hide() method. On web, we fall back to blurring the active element.
 // Follows the same dynamic-import + isNativePlatform() guard pattern used by
 // src/services/notification-service.ts for @capacitor/local-notifications.
-function isNativePlatform(): boolean {
-  if (typeof window === 'undefined') return false;
-  const cap = (window as unknown as { Capacitor?: { isNativePlatform?: () => boolean } }).Capacitor;
-  return cap?.isNativePlatform?.() === true;
-}
+import { isNativePlatform } from '@/lib/platform';
 
 export const Keyboard = {
   dismiss: () => {

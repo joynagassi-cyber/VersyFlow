@@ -16,6 +16,7 @@ import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { useActiveProfile } from '@/hooks/useActiveProfile';
 import { getMemorizationService } from '@/services/memorization-service-factory';
 import { StreakService } from '@/services/streak-service';
+import { colorTintAlpha } from '@/lib/platform';
 
 type LvlIcon = 'leaf' | 'book' | 'brain' | 'school' | 'trophy';
 const ICON_MAP: Record<LvlIcon, typeof Leaf> = {
@@ -55,7 +56,7 @@ const MASTERY_LEVELS: MasteryLevel[] = [
 ];
 
 /** 12% translucent tint of a token color, for soft circular backgrounds. */
-const levelTint = (color: string) => `color-mix(in srgb, ${color} 12%, transparent)`;
+const levelTint = (color: string) => colorTintAlpha(color, 12);
 
 export default function MasteryScreen() {
   const { t } = useTranslation();

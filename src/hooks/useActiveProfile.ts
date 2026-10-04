@@ -24,8 +24,8 @@ export function useActiveProfile() {
   );
 
   const handleCreateProfile = useCallback(
-    async (displayName: string, avatar?: string) => {
-      const newProfile = await createProfile(displayName, avatar);
+    async (displayName: string, avatar?: string, slogan?: string) => {
+      const newProfile = await createProfile(displayName, avatar, slogan);
       addProfile(newProfile);
       return newProfile;
     },

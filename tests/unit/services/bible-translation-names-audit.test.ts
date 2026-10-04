@@ -25,13 +25,12 @@ import {
 const CATALOG_IDS = BIBLE_DATASET_CATALOG.map((e) => e.id);
 
 describe('groupTranslationsByLanguage — audit on the real catalogue', () => {
-  it('works on exactly the 37 built dataset ids (37 pending stubs excluded)', () => {
-    // Ground truth: data/bible/dataset-catalog.json has 39 entries, of which
-    // 2 are pending stubs (de-tkw, pt-brbsl — checksum "sha256:pending")
-    // filtered out by `isBuilt` in bible-text-service.ts → 37 built ids.
-    expect(CATALOG_IDS).toHaveLength(37);
-    expect(CATALOG_IDS).not.toContain('de-tkw');
-    expect(CATALOG_IDS).not.toContain('pt-brbsl');
+  it('works on exactly the 48 built dataset ids (pending stubs excluded)', () => {
+    // Ground truth: data/bible/dataset-catalog.json has 48 entries, all
+    // built (the de-tkw / pt-brbsl stubs were built with real checksums,
+    // so `isBuilt` in bible-text-service.ts no longer filters any out)
+    // → 48 built ids.
+    expect(CATALOG_IDS).toHaveLength(48);
   });
 
   it('(1) the 8 preferred editions lead their language group, rest is alphabetical', () => {
@@ -40,7 +39,7 @@ describe('groupTranslationsByLanguage — audit on the real catalogue', () => {
     const en = groups.find((g) => g.language === 'Anglais');
 
     expect(fr?.ids).toEqual(['lsg', 'frlsg-eb', 'ostervald', 'darby', 'francrampon']);
-    expect(en?.ids).toEqual(['kujv', 'web', 'webu', 'asv', 'bsb']);
+    expect(en?.ids).toEqual(['kujv', 'web', 'webu', 'asv', 'bsb', 'en-beb', 'en-webster', 'en-ylt']);
 
     // Preferred prefix = exactly the 8 PREFERRED_TRANSLATION_ORDER entries that
     // belong to the group, in that order.
@@ -78,10 +77,12 @@ describe('groupTranslationsByLanguage — audit on the real catalogue', () => {
     expect(tail).toEqual([
       'Allemand',
       'Arabe',
+      'Birman',
       'Chinois',
       'Coréen',
       'Danois',
       'Espagnol',
+      'Hébreu',
       'Hindi',
       'Italien',
       'Japonais',
@@ -96,6 +97,7 @@ describe('groupTranslationsByLanguage — audit on the real catalogue', () => {
       'Swahili',
       'Tagalog',
       'Ukrainien',
+      'Vietnamien',
     ]);
   });
 
@@ -105,7 +107,7 @@ describe('groupTranslationsByLanguage — audit on the real catalogue', () => {
     // Every singleton must keep its only id as-is.
     for (const g of singletons) {
       expect(g.ids).toHaveLength(1);
-      expect(g.ids[0]).toBe(g.ids[0] as string);
+      expect(g.ids[0]).toBe(g.ids[0]);
     }
     // At least one true singleton exists in the catalogue (Russe, Latin…).
     expect(singletons.length).toBeGreaterThanOrEqual(1);

@@ -31,6 +31,8 @@ export interface LearnerProfile {
   displayName: string;
   /** Optional avatar URL or emoji */
   avatar?: string;
+  /** Optional personal slogan (max 60 chars) shown under the display name. */
+  slogan?: string;
   /** Creation timestamp (Unix ms) */
   createdAt: number;
   /** Last update timestamp (Unix ms) */

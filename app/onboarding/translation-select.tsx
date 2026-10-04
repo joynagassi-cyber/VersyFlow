@@ -31,7 +31,11 @@ const VERSION_TYPES: { id: BibleVersionType; i18nKey: string; label: string }[] 
 // The default two bundled translations plus a few popular remote ones,
 // grouped by the user's chosen type. Every entry uses the public name
 // (abbreviation) as its main label and the full name as a subtitle.
-const TRANSLATION_CHOICES: { id: string; versionTypes: BibleVersionType[] }[] = [
+//
+// Exported because the settings screen (Bible group) needs the SAME list to
+// decide whether its version-type control actually filters a translation
+// picker — today only this onboarding screen consumes `bibleVersionType`.
+export const TRANSLATION_CHOICES: { id: string; versionTypes: BibleVersionType[] }[] = [
   { id: 'lsg', versionTypes: ['classical', 'revised'] },
   { id: 'ostervald', versionTypes: ['classical'] },
   { id: 'kujv', versionTypes: ['classical', 'revised'] },
@@ -108,7 +112,9 @@ export default function TranslationPickerScreen() {
                 )}
               </p>
               <p className="text-xs text-text-muted">
-                {t('onboarding.byLanguageSubtitle', { language: info.language })}
+                {info.language
+                  ? t('onboarding.byLanguageSubtitle', { language: info.language })
+                  : ''}
               </p>
             </div>
           </div>

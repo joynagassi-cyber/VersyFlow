@@ -32,6 +32,8 @@ export default function ProfileScreen() {
   const { user, isAuthenticated, signOut } = useAuthStore();
   const { bibleTranslation, setBibleTranslation } = useSettingsStore();
   const { activeProfile, profiles } = useActiveProfile();
+  // Optional personal slogan (entity field, synced via PowerSync).
+  const slogan = activeProfile?.slogan;
   const [editing, setEditing] = useState(false);
   const [name, setName] = useState(user?.display_name || activeProfile?.displayName || '');
   const [stats, setStats] = useState<ProgressStats | null>(null);
@@ -100,8 +102,11 @@ export default function ProfileScreen() {
                 </button>
               </div>
 
+              {/* Optional user slogan (set at profile creation) as the
+                  subtitle under the display name; falls back to the
+                  account id / local-mode label when unset. */}
               <p className="mt-1 truncate text-sm text-white/80">
-                {user?.userId || t('profile.localMode', 'Mode local')}
+                {slogan || user?.userId || t('profile.localMode', 'Mode local')}
               </p>
               <span className="mt-2 inline-block rounded-full bg-white/20 px-2.5 py-0.5 text-xs font-semibold">
                 {isAuthenticated

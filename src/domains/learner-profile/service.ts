@@ -14,13 +14,19 @@ export class LearnerProfileDomainService {
 
   constructor(private repository: ILearnerProfileRepository) {}
 
-  async create(accountId: string, displayName: string, avatar?: string): Promise<LearnerProfile> {
+  async create(
+    accountId: string,
+    displayName: string,
+    avatar?: string,
+    slogan?: string,
+  ): Promise<LearnerProfile> {
     // The repository assigns id/createdAt/updatedAt; the service only supplies
     // the business fields and emits the lifecycle event with a fresh timestamp.
     const profile: Omit<LearnerProfile, 'id' | 'createdAt' | 'updatedAt'> = {
       accountId,
       displayName,
       avatar,
+      slogan,
       status: 'active' as ProfileStatus,
     };
 

@@ -16,8 +16,13 @@ export class LearnerProfileService {
     this.domainService = new LearnerProfileDomainService(repository);
   }
 
-  async create(accountId: string, displayName: string, avatar?: string): Promise<LearnerProfile> {
-    return this.domainService.create(accountId, displayName, avatar);
+  async create(
+    accountId: string,
+    displayName: string,
+    avatar?: string,
+    slogan?: string,
+  ): Promise<LearnerProfile> {
+    return this.domainService.create(accountId, displayName, avatar, slogan);
   }
 
   async findById(id: string, accountId?: string): Promise<LearnerProfile | null> {

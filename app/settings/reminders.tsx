@@ -40,8 +40,17 @@ export default function SettingsRemindersScreen() {
   const schedulePush = async () => {
     try {
       // Just-in-time permission request (user-initiated), then schedule.
-      await notificationService.ensurePermissions();
-      await notificationService.scheduleDailyReminders();
+      // The service is store/i18n-free: read the reminder config from the
+      // store and translate the body here, then pass both as arguments.
+      await notificationService.ensurePermissions(reminderEnabled);
+      await notificationService.scheduleDailyReminders(
+        {
+          enabled: reminderEnabled,
+          frequency: reminderFrequency,
+          time: reminderTime,
+        },
+        t('reminders.notificationBody', 'Temps de révision !'),
+      );
       setPushStatus('scheduled');
     } catch {
       setPushStatus('error');
@@ -49,6 +58,9 @@ export default function SettingsRemindersScreen() {
   };
 
   const cancelPush = async () => {
+    // cancelAll() also invalidates the service's cached permission state,
+    // so the next "Planifier" tap re-queries the OS instead of trusting a
+    // stale result from a previous on/off cycle.
     await notificationService.cancelAll();
     setPushStatus('idle');
   };

@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { BookOpen, ExternalLink, Heart, Cpu, Sparkles } from 'lucide-react';
+import { BookOpen, ExternalLink, Heart, Cpu, Sparkles, ChevronDown } from 'lucide-react';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { Button } from '@/components/ui/button';
 import { Logo } from '@/components/brand/Logo';
 import { cn } from '@/lib/utils';
+import { useAppearanceStore } from '@/store/appearance-store';
 import { notificationService } from '@/services/notification-service';
 
 // Fixed: Capacitor — test notification now requests permission just-in-time (ensurePermissions) before scheduling
@@ -12,9 +13,11 @@ import { notificationService } from '@/services/notification-service';
 const VERSION = '0.1.0';
 
 /**
- * Feature changelog entries — new releases are appended here; the
- * "Nouveautés" badge in settings shows when the user hasn't seen the
- * latest entry yet (persisted in MMKV via `hasSeenWhatNew`).
+ * Feature changelog — a static list kept in this file. The "Nouveautés"
+ * section below always shows the entries for the app version in use; new
+ * releases append their entry to this array. (There is no per-user
+ * "seen what's new" persistence — the section is a static changelog, not a
+ * badge.)
  */
 const WHATS_NEW = [
   {
@@ -33,6 +36,11 @@ const WHATS_NEW = [
 
 export default function AboutScreen() {
   const { t } = useTranslation();
+  const {
+    reminderEnabled,
+    reminderFrequency,
+    reminderTime,
+  } = useAppearanceStore();
   const [showWhatNew, setShowWhatNew] = useState(true);
   const [scheduled, setScheduled] = useState(false);
 
@@ -43,8 +51,17 @@ export default function AboutScreen() {
   const testNotification = async () => {
     try {
       // User-initiated: request permission just-in-time, then schedule.
-      await notificationService.ensurePermissions();
-      await notificationService.scheduleDailyReminders();
+      // The service is store/i18n-free — read the reminder config from the
+      // store and translate the body here, then pass both as arguments.
+      await notificationService.ensurePermissions(reminderEnabled);
+      await notificationService.scheduleDailyReminders(
+        {
+          enabled: reminderEnabled,
+          frequency: reminderFrequency,
+          time: reminderTime,
+        },
+        t('reminders.notificationBody', 'Temps de révision !'),
+      );
       setScheduled(true);
     } catch {
       setScheduled(false);
@@ -70,12 +87,17 @@ export default function AboutScreen() {
           <button
             className="flex w-full items-center justify-between"
             onClick={() => setShowWhatNew((v) => !v)}
+            aria-expanded={showWhatNew}
           >
             <p className="flex items-center gap-2 text-base font-bold text-text-primary">
               <Sparkles size={18} className="text-primary" />
               {t('settings.whatsNew', 'Nouveautés')}
             </p>
-            <span className="text-xs text-text-muted">{showWhatNew ? '▲' : '▼'}</span>
+            <ChevronDown
+              size={18}
+              aria-label={t('common.expandCollapse', 'Déplier / replier')}
+              className={'text-text-muted transition-transform ' + (showWhatNew ? 'rotate-180' : '')}
+            />
           </button>
           {showWhatNew &&
             WHATS_NEW.map((entry, i) => (

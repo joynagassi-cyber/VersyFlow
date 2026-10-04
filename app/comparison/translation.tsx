@@ -239,9 +239,11 @@ export default function TranslationComparisonScreen() {
               <div className="mb-2 flex items-center justify-between">
                 <div className="flex min-w-0 items-center gap-2">
                   <span className="truncate text-sm font-bold text-text-primary">{r.name}</span>
-                  <span className="rounded-full bg-surface-tint px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-text-muted">
-                    {r.language}
-                  </span>
+                  {r.language && (
+                    <span className="rounded-full bg-surface-tint px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-text-muted">
+                      {r.language}
+                    </span>
+                  )}
                   {r.id === bibleTranslation && (
                     <span className="flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-bold text-primary">
                       <Check size={10} /> {t('comparison.active', 'Active')}
@@ -315,9 +317,11 @@ export default function TranslationComparisonScreen() {
                         <span className="truncate text-sm font-medium text-text-primary">
                           {m.name}
                         </span>
-                        <span className="rounded-full bg-surface-tint px-2 py-0.5 text-[10px] font-bold uppercase text-text-muted">
-                          {m.language}
-                        </span>
+                        {m.language && (
+                          <span className="rounded-full bg-surface-tint px-2 py-0.5 text-[10px] font-bold uppercase text-text-muted">
+                            {m.language}
+                          </span>
+                        )}
                       </span>
                       <Plus size={16} className="shrink-0 text-primary" />
                     </button>

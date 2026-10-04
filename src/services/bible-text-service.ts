@@ -405,15 +405,10 @@ function computeStats(data: BibleTranslationData): TranslationStats {
 const statsMemoryCache = new Map<string, TranslationStats>();
 
 export async function getTranslationStats(
-  translationId: string | null,
+  translationId: string,
 ): Promise<TranslationStats | null> {
-  const mem = statsMemoryCache.get(translationId as string);
+  const mem = statsMemoryCache.get(translationId);
   if (mem) return mem;
-
-  // `null` id is a deliberate "no dataset" probe → return null before touching
-  // any storage: localStorage may be unavailable in SSR, and there is nothing
-  // to compute for an id that does not exist.
-  if (translationId === null) return null;
 
   const disk = readStatsCache();
   const diskEntry = disk[translationId];

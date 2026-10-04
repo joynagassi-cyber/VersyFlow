@@ -9,6 +9,9 @@ import { ProfileAvatar } from '@/components/profile/ProfileAvatar';
 import { useActiveProfile } from '@/hooks/useActiveProfile';
 import { cn } from '@/lib/utils';
 
+/** Max length of the optional personal slogan (matches the DB column). */
+const SLOGAN_MAX_LENGTH = 60;
+
 const NAME_SCHEMA = z.string().trim().min(2).max(30);
 
 export default function CreateProfileScreen() {
@@ -16,6 +19,7 @@ export default function CreateProfileScreen() {
   const { t } = useTranslation();
   const { createProfile, selectProfile } = useActiveProfile();
   const [displayName, setDisplayName] = useState('');
+  const [sloganText, setSloganText] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
@@ -31,7 +35,9 @@ export default function CreateProfileScreen() {
     }
     setSubmitting(true);
     try {
-      const profile = await createProfile(parsed.data);
+      // Slogan is persisted on the profile entity itself (LearnerProfile.slogan)
+      // and synced via PowerSync; no separate store is needed.
+      const profile = await createProfile(parsed.data, undefined, sloganText.trim() || undefined);
       selectProfile(profile.id);
       navigate('/tabs');
     } catch {
@@ -60,6 +66,23 @@ export default function CreateProfileScreen() {
           {error && <p className="mt-1 text-sm text-error">{error}</p>}
           <p className="mt-2 text-xs text-text-muted">
             {t('profile.avatarHint', 'Sans photo, une illustration est choisie automatiquement à partir de votre nom.')}
+          </p>
+        </div>
+
+        {/* Optional slogan — shown under the display name on the profile
+            screen. Free-form (no zod name constraints apply). */}
+        <div className="w-full">
+          <label className="mb-2 block text-sm font-semibold text-text-secondary">
+            {t('profile.slogan', 'Votre slogan')}
+          </label>
+          <Input
+            value={sloganText}
+            onChange={(e) => setSloganText(e.target.value.slice(0, SLOGAN_MAX_LENGTH))}
+            placeholder={t('profile.sloganPlaceholder', 'Ex. « Mémoire vive, foi forte »')}
+            maxLength={SLOGAN_MAX_LENGTH}
+          />
+          <p className="mt-2 text-xs text-text-muted">
+            {t('profile.sloganHint', 'Optionnel — affiché sous votre nom sur votre profil (60 caractères max).')}
           </p>
         </div>
 

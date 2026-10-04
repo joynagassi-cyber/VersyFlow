@@ -1,5 +1,4 @@
 import { useState, useEffect, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
   BookOpen,
@@ -22,6 +21,7 @@ import { useActiveProfile } from '@/hooks/useActiveProfile';
 import { getMemorizationService } from '@/services/memorization-service-factory';
 import { getFsrsEngine } from '@/services/fsrs-factory';
 import { ProgressService } from '@/services/progress-service';
+import { colorTintAlpha, colorTintSurface } from '@/lib/platform';
 
 type Cat = 'memorization' | 'review' | 'streak' | 'collection' | 'special';
 interface Achievement {
@@ -73,9 +73,9 @@ const ACHIEVEMENTS: Achievement[] = [
 ];
 
 /** 12% translucent tint of a token color, for soft circular backgrounds. */
-const achievementTint = (color: string) => `color-mix(in srgb, ${color} 12%, transparent)`;
-/** 25% translucent tint of a token color, for card outline accents. */
-const achievementTintBorder = (color: string) => `color-mix(in srgb, ${color} 25%, transparent)`;
+const achievementTint = (color: string) => colorTintAlpha(color, 12);
+/** 25% surface-blended tint of a token color, for card outline accents. */
+const achievementTintBorder = (color: string) => colorTintSurface(color, 25);
 
 const CATEGORIES: { id: 'all' | Cat; label: string }[] = [
   { id: 'all', label: 'Tous' },
@@ -87,7 +87,6 @@ const CATEGORIES: { id: 'all' | Cat; label: string }[] = [
 ];
 
 export default function AchievementScreen() {
-  const navigate = useNavigate();
   const { t } = useTranslation();
   const [selectedCategory, setSelectedCategory] = useState<'all' | Cat>('all');
   const [showAll, setShowAll] = useState(false);

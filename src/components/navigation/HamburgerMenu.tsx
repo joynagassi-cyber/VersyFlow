@@ -3,24 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { X } from 'lucide-react';
 import { Logo } from '@/components/brand/Logo';
 import { useAuthStore } from '@/store/auth-store';
-import { useUiStore } from '@/store/ui-store';
+import { useUiStore, ALL_MENU_ITEMS } from '@/store/ui-store';
 import { cn } from '@/lib/utils';
-
-const NAV: [string, string, string][] = [
-  ['/bible/explorer', 'nav.explore', 'Bible'],
-  ['/memorization/session', 'nav.memorize', 'Memorisation'],
-  ['/review/queue', 'nav.review', 'Revisions'],
-  ['/semantic', 'nav.semantic', 'Semantique'],
-  ['/analytics/dashboard', 'nav.analytics', 'Analytics'],
-  ['/collections', 'nav.collections', 'Collections'],
-  ['/achievements', 'nav.achievements', 'Succes'],
-  ['/search', 'nav.search', 'Recherche'],
-  ['/mastery', 'nav.mastery', 'Mastery'],
-  ['/notifications', 'nav.notifications', 'Notifications'],
-  ['/review/history', 'nav.history', 'Review history'],
-  ['/comparison/translation', 'nav.compare', 'Compare'],
-  ['/family/home', 'nav.family', 'Famille'],
-];
 
 const itemClass =
   'rounded-xl px-4 py-3 text-start text-sm font-medium text-text-primary transition active:bg-surface-tint';
@@ -29,8 +13,14 @@ const itemClass =
 export function HamburgerMenu() {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const { menuOpen, closeMenu } = useUiStore();
+  const { menuOpen, closeMenu, visibleMenuPaths } = useUiStore();
   const { signOut, isAuthenticated, user } = useAuthStore();
+
+  // The Navigation section is filtered by the user's per-page visibility
+  // toggles (app/settings/navigation). The Account section below is always
+  // shown so settings/sign-out stay reachable even when everything else
+  // is hidden.
+  const visibleItems = ALL_MENU_ITEMS.filter((item) => visibleMenuPaths.includes(item.path));
 
   const go = (p: string) => {
     closeMenu();
@@ -74,9 +64,9 @@ export function HamburgerMenu() {
             {t('nav.menu', 'Navigation')}
           </p>
           <div className="mt-1 flex flex-col gap-1">
-            {NAV.map(([path, key, label]) => (
+            {visibleItems.map(({ path, labelKey, label }) => (
               <button key={path} onClick={() => go(path)} className={itemClass}>
-                {t(key, label)}
+                {t(labelKey, label)}
               </button>
             ))}
           </div>

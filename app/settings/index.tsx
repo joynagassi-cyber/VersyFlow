@@ -18,16 +18,25 @@ import {
   Star,
   BookText,
   SlidersHorizontal,
+  ListChecks,
   type LucideIcon,
 } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { Button } from '@/components/ui/button';
 import { ProfileAvatar } from '@/components/profile/ProfileAvatar';
 import { useAuthStore } from '@/store/auth-store';
-import { useSettingsStore } from '@/store/settings-store';
+import { useSettingsStore, type BibleVersionType } from '@/store/settings-store';
 import { getTranslationDisplayInfo } from '@/services/bible-translation-names';
 
 type Row = { label: string; icon: LucideIcon; to: string };
+
+/** The three version types, with their i18n keys (shared with onboarding). */
+const VERSION_TYPES: { id: BibleVersionType; i18nKey: string; label: string }[] = [
+  { id: 'classical', i18nKey: 'onboarding.versionTypeClassical', label: 'Classique' },
+  { id: 'modern', i18nKey: 'onboarding.versionTypeModern', label: 'Moderne' },
+  { id: 'revised', i18nKey: 'onboarding.versionTypeRevised', label: 'Révisée' },
+];
 
 export default function SettingsScreen() {
   const navigate = useNavigate();
@@ -41,7 +50,7 @@ export default function SettingsScreen() {
   };
 
   const displayName = user?.display_name || t('settings.localUser', 'Utilisateur');
-  const { bibleTranslation } = useSettingsStore();
+  const { bibleTranslation, bibleVersionType, setBibleVersionType } = useSettingsStore();
   const translationInfo = getTranslationDisplayInfo(bibleTranslation);
 
   // Settings reorganized into clearly divided vertical sections. Each group
@@ -56,6 +65,17 @@ export default function SettingsScreen() {
           label: t('settings.bibleTranslation', 'Traduction biblique'),
           icon: BookText,
           to: '/settings/available-translations',
+        },
+      ],
+    },
+    {
+      title: t('settings.activitiesSection', 'Activités & Données personnelles'),
+      icon: ListChecks,
+      items: [
+        {
+          label: t('settings.dataRow', 'Mes activités, tags & highlights'),
+          icon: ListChecks,
+          to: '/settings/data',
         },
       ],
     },
@@ -147,7 +167,38 @@ export default function SettingsScreen() {
                 <span className="ml-2 font-medium text-text-muted">· {translationInfo.name}</span>
               )}
             </p>
-            <p className="text-xs text-text-muted">{translationInfo.language}</p>
+            <p className="text-xs text-text-muted">
+              {translationInfo.language ? (
+                <>
+                  {translationInfo.abbreviation} — {translationInfo.language}
+                </>
+              ) : (
+                translationInfo.abbreviation
+              )}
+            </p>
+            {/* Compact version-type switch — writes bibleVersionType, which
+                filters the onboarding translation picker. */}
+            <div className="mt-2 flex items-center gap-1.5">
+              <span className="text-[10px] font-semibold uppercase tracking-wide text-text-muted">
+                {t('settings.versionTypeBadge', 'Type de version')}
+              </span>
+              <div className="flex gap-1">
+                {VERSION_TYPES.map((v) => (
+                  <button
+                    key={v.id}
+                    onClick={() => setBibleVersionType(v.id)}
+                    className={cn(
+                      'rounded-full px-2 py-0.5 text-[11px] font-semibold transition',
+                      bibleVersionType === v.id
+                        ? 'bg-primary text-white'
+                        : 'bg-surface-tint text-text-secondary',
+                    )}
+                  >
+                    {t(v.i18nKey, v.label)}
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
           <ChevronRight
             size={18}
