@@ -77,7 +77,9 @@ describe('normalizeDocument', () => {
       year: 1910,
       author: 'Test',
     });
-    const parsed = parseTranslationData(data as unknown as Record<string, unknown>);
+    const parsed = parseTranslationData(data as unknown as Record<string, unknown>, {
+      canonicalOnly: false,
+    });
     expect(parsed.books).toHaveLength(2);
     expect(parsed.books[0].chapters[0].verses[0].text).toContain('commencement');
   });

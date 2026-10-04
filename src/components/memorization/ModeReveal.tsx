@@ -14,7 +14,7 @@
  * success CTA (.mw-cta-success) on completion.
  */
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ArrowRight, Check, Play } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -97,9 +97,53 @@ export function ModeReveal({
   const blocks = useMemo(() => toBlocks(text), [text]);
   const [revealed, setRevealed] = useState(0);
 
+  /**
+   * F-005-C: auto-advance the next block after 30 s of inactivity.
+   * Presentation-only timer (component layer, not the domain).
+   */
+  const autoRevealTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [autoRevealLeft, setAutoRevealLeft] = useState<number | null>(null);
+  useEffect(() => {
+    if (autoRevealTimer.current) {
+      clearTimeout(autoRevealTimer.current);
+      autoRevealTimer.current = null;
+    }
+    setAutoRevealLeft(null);
+    if (revealed >= blocks.length) return;
+    let remaining = 30;
+    setAutoRevealLeft(remaining);
+    const tick = () => {
+      remaining -= 1;
+      setAutoRevealLeft(remaining);
+      if (remaining <= 0) {
+        autoRevealTimer.current = null;
+        setRevealed((r) => Math.min(r + 1, blocks.length));
+        return;
+      }
+      autoRevealTimer.current = setTimeout(tick, 1000);
+    };
+    autoRevealTimer.current = setTimeout(tick, 1000);
+    return () => {
+      if (autoRevealTimer.current) {
+        clearTimeout(autoRevealTimer.current);
+        autoRevealTimer.current = null;
+      }
+    };
+  }, [revealed, blocks.length]);
+
   const allRevealed = revealed >= blocks.length;
 
+  /** User interaction cancels the pending auto-advance. */
+  const cancelAutoReveal = () => {
+    if (autoRevealTimer.current) {
+      clearTimeout(autoRevealTimer.current);
+      autoRevealTimer.current = null;
+    }
+    setAutoRevealLeft(null);
+  };
+
   const advance = () => {
+    cancelAutoReveal();
     if (allRevealed) return;
     const next = revealed + 1;
     setRevealed(next);
@@ -111,7 +155,10 @@ export function ModeReveal({
     }
   };
 
-  const goBack = () => setRevealed((r) => Math.max(0, r - 1));
+  const goBack = () => {
+    cancelAutoReveal();
+    setRevealed((r) => Math.max(0, r - 1));
+  };
 
   return (
     <div className="space-y-3">
@@ -178,6 +225,11 @@ export function ModeReveal({
                       <span className="mw-hint">
                         <ArrowRight size={11} />
                         {t('workspace.tapToReveal', 'Touchez pour révéler')}
+                        {autoRevealLeft !== null && autoRevealLeft > 0 && (
+                          <span className="ml-2 tabular-nums text-text-tertiary">
+                            ({autoRevealLeft}s)
+                          </span>
+                        )}
                       </span>
                     )}
                   </>

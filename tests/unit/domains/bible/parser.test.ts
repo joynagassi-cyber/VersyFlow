@@ -121,6 +121,39 @@ describe('parseReference()', () => {
     expect(result).not.toBeNull();
     expect(result!.bookId).toBe('rev');
   });
+
+  it('parses numeric-prefixed book "1 Jean 1:1"', () => {
+    const result = parseReference('1 Jean 1:1');
+    expect(result).not.toBeNull();
+    expect(result!.bookId).toBe('1joh');
+    expect(result!.chapter).toBe(1);
+    expect(result!.verse).toBe(1);
+  });
+
+  it('parses range "1 Co 12:3-11"', () => {
+    const result = parseReference('1 Co 12:3-11');
+    expect(result).not.toBeNull();
+    expect(result!.bookId).toBe('1cor');
+    expect(result!.chapter).toBe(12);
+    expect(result!.verse).toBe(3);
+    expect(result!.verseEnd).toBe(11);
+  });
+
+  it('parses "2 Tim 3:16"', () => {
+    const result = parseReference('2 Tim 3:16');
+    expect(result).not.toBeNull();
+    expect(result!.bookId).toBe('2tim');
+    expect(result!.chapter).toBe(3);
+    expect(result!.verse).toBe(16);
+  });
+
+  it('parses chapter-only numeric book "2 Chron 34"', () => {
+    const result = parseReference('2 Chron 34');
+    expect(result).not.toBeNull();
+    expect(result!.bookId).toBe('2chron');
+    expect(result!.chapter).toBe(34);
+    expect(result!.verse).toBeUndefined();
+  });
 });
 
 describe('buildReference()', () => {
@@ -193,5 +226,43 @@ describe('resolveBookId()', () => {
 
   it('resolves "apc" to "rev"', () => {
     expect(resolveBookId('apc')).toBe('rev');
+  });
+
+  it('resolves all numeric-prefixed French aliases', () => {
+    expect(resolveBookId('1 samuel')).toBe('1sam');
+    expect(resolveBookId('2 sam')).toBe('2sam');
+    expect(resolveBookId('1 rois')).toBe('1roi');
+    expect(resolveBookId('2 ro')).toBe('2roi');
+    expect(resolveBookId('1 chroniques')).toBe('1chron');
+    expect(resolveBookId('2 chron')).toBe('2chron');
+    expect(resolveBookId('1 corinthiens')).toBe('1cor');
+    expect(resolveBookId('2 cor')).toBe('2cor');
+    expect(resolveBookId('1 thessaloniciens')).toBe('1thes');
+    expect(resolveBookId('2 thessaloniciens')).toBe('2thes');
+    expect(resolveBookId('1 timothée')).toBe('1tim');
+    expect(resolveBookId('2 tim')).toBe('2tim');
+    expect(resolveBookId('1 pierre')).toBe('1pet');
+    expect(resolveBookId('2 pier')).toBe('2pet');
+    expect(resolveBookId('1 jean')).toBe('1joh');
+    expect(resolveBookId('2 je')).toBe('2joh');
+    expect(resolveBookId('3 jean')).toBe('3joh');
+  });
+
+  it('resolves all numeric-prefixed English aliases', () => {
+    expect(resolveBookId('1 samuel')).toBe('1sam');
+    expect(resolveBookId('2 kings')).toBe('2roi');
+    expect(resolveBookId('1 chronicles')).toBe('1chron');
+    expect(resolveBookId('2 chron')).toBe('2chron');
+    expect(resolveBookId('1 corinthians')).toBe('1cor');
+    expect(resolveBookId('2 cor')).toBe('2cor');
+    expect(resolveBookId('1 thessalonians')).toBe('1thes');
+    expect(resolveBookId('2 thessaloniciens')).toBe('2thes');
+    expect(resolveBookId('1 timothy')).toBe('1tim');
+    expect(resolveBookId('2 tim')).toBe('2tim');
+    expect(resolveBookId('1 peter')).toBe('1pet');
+    expect(resolveBookId('2 peter')).toBe('2pet');
+    expect(resolveBookId('1 john')).toBe('1joh');
+    expect(resolveBookId('2 john')).toBe('2joh');
+    expect(resolveBookId('3 john')).toBe('3joh');
   });
 });

@@ -83,21 +83,112 @@ export const BIBLE_BOOKS: BibleBook[] = [
   { id: 'rev', name: { fr: 'Apocalypse', en: 'Revelation' }, testament: 'new', chapterCount: 22, orderIndex: 66 },
 ];
 
-/** Book name alias mapping for reference search resolution */
+/**
+ * The 66 canonical book ids (39 OT + 27 NT, PROTESTANT_66).
+ * Source of truth for the canonical filter: datasets that carry extra
+ * (apocryphal or introductory) book slots are trimmed to this set at the
+ * service/repository layer — the JSON files themselves stay untouched.
+ */
+export const CANONICAL_BOOK_IDS: ReadonlySet<string> = new Set(
+  BIBLE_BOOKS.map((b) => b.id),
+);
+
+/**
+ * Book name alias mapping for reference search resolution.
+ *
+ * Every canonical book is covered (FR + EN names, common abbreviations and
+ * the VersyFlow id itself), so reference strings such as "1 Jean 1:1",
+ * "2 Tim 3:16", "Ps 23" or "Jn 3:16" all resolve through `resolveBookId`.
+ * Alias keys/values are lowercase; matching is case-insensitive.
+ */
 export const BOOK_ALIASES: Record<string, string[]> = {
-  'gen': ['genèse', 'genesis', 'gn'],
-  'exo': ['exode', 'ex', 'exc'],
-  'num': ['nombres', 'numbers', 'num', 'nb'],
-  'psa': ['psaumes', 'psalm', 'ps', 'psz'],
-  'joh': ['jean', 'john', 'jn', 'joh'],
-  'mat': ['matthieu', 'matthew', 'mt'],
-  'rev': ['apocalypse', 'revelation', 'apc', 'rv'],
-  // Add more aliases as needed
+  // Old Testament — Pentateuch
+  gen: ['genèse', 'genesis', 'gn', 'ge'],
+  exo: ['exode', 'exodus', 'ex', 'eo'],
+  lev: ['lévitique', 'leviticus', 'lev'],
+  num: ['nombres', 'numbers', 'num', 'nb'],
+  deb: ['deutéronome', 'deuteronomy', 'deu', 'dt'],
+  // Old Testament — History
+  jos: ['josué', 'joshua', 'jos', 'js'],
+  jug: ['juges', 'judges', 'jgd', 'jg'],
+  rut: ['ruth', 'rut', 'ru'],
+  '1sam': ['1 samuel', '1 sam', 'samuel 1', '1 sa', '1sa', '1sam'],
+  '2sam': ['2 samuel', '2 sam', 'samuel 2', '2 sa', '2sa', '2sam'],
+  '1roi': ['1 rois', '1 roi', '1 ro', 'rois 1', '1ki', '1 king', 'kings 1', '1 kings', '1roi'],
+  '2roi': ['2 rois', '2 roi', '2 ro', 'rois 2', '2ki', '2 king', 'kings 2', '2 kings', '2roi'],
+  '1chron': ['1 chroniques', '1 chron', 'chroniques 1', '1chr', '1ch', '1 chronicles', '1chron'],
+  '2chron': ['2 chroniques', '2 chron', 'chroniques 2', '2chr', '2ch', '2 chronicles', '2chron'],
+  esai: ['esdras', 'ezra', 'esd', 'ezr'],
+  neh: ['néhémie', 'nehemiah', 'neh', 'ne'],
+  est: ['esther', 'est'],
+  // Old Testament — Wisdom / poetry
+  job: ['job', 'jb'],
+  psa: ['psaumes', 'psalms', 'psalm', 'ps', 'psz'],
+  prov: ['proverbes', 'proverbs', 'pr', 'pv'],
+  eccl: ['ecclésiaste', 'ecclésiastes', 'ecclesiastes', 'précheur', 'eccl'],
+  cant: ['cantique des cantiques', 'cantique', 'song of solomon', 'song of songs', 'cantiques', 'cant'],
+  // Old Testament — Prophets
+  isa: ['ésaïe', 'isaïe', 'isaiah', 'is'],
+  jer: ['jérémie', 'jeremiah', 'jr'],
+  lament: ['lamentations', 'lam', 'lm'],
+  ezek: ['ézéchiel', 'ezéchiel', 'ezechiel', 'ezekiel', 'ezek'],
+  dan: ['daniel', 'dan', 'da'],
+  os: ['osée', 'hosea', 'hos'],
+  joel: ['joël', 'joel', 'joe'],
+  amos: ['amos', 'amo'],
+  abdj: ['abdias', 'abdiás', 'obadiah', 'oba'],
+  jon: ['jonas', 'jonah', 'jo'],
+  mich: ['michée', 'micah', 'mi'],
+  nah: ['nahum', 'na'],
+  hab: ['habacuc', 'habakkuk', 'hab'],
+  sep: ['sophonie', 'zephaniah', 'zep'],
+  ag: ['aggée', 'haggai', 'agg'],
+  zach: ['zacharie', 'zechariah', 'zec', 'za'],
+  mal: ['malachie', 'malachi', 'ml'],
+  // New Testament — Gospels / Acts
+  mat: ['matthieu', 'matthew', 'mt'],
+  mar: ['marc', 'mark', 'mr', 'mc'],
+  luk: ['luc', 'luke', 'lk'],
+  joh: ['jean', 'john', 'jn', 'joh'],
+  act: ['actes', 'acts', 'ac'],
+  // New Testament — Pauline epistles
+  rom: ['romains', 'romans', 'rm', 'ro'],
+  '1cor': ['1 corinthiens', '1 cor', 'corinthiens 1', '1 co', '1 co.', '1co', '1cor', '1 corinthians'],
+  '2cor': ['2 corinthiens', '2 cor', 'corinthiens 2', '2 co', '2 co.', '2co', '2cor', '2 corinthians'],
+  gal: ['galates', 'galatians', 'ga'],
+  eph: ['éphésiens', 'ephesiens', 'ephesians', 'ep'],
+  phil: ['philippiens', 'philipiens', 'philippians', 'phl', 'pp'],
+  col: ['colossiens', 'colossians', 'cl'],
+  '1thes': ['1 thessaloniciens', '1 thess', 'thessaloniciens 1', '1th', '1tes', '1 thessalonians', '1thes'],
+  '2thes': ['2 thessaloniciens', '2 thess', 'thessaloniciens 2', '2th', '2tes', '2 thessalonians', '2thes'],
+  '1tim': ['1 timothée', '1 tim', 'timothée 1', '1tm', '1 timothy', '1tim'],
+  '2tim': ['2 timothée', '2 tim', 'timothée 2', '2tm', '2 timothy', '2tim'],
+  tit: ['tite', 'titus', 'ti'],
+  philem: ['philémon', 'philemon', 'phlm', 'phm'],
+  // New Testament — General epistles
+  heb: ['hébreux', 'hebreux', 'hebrews', 'hb'],
+  jac: ['jacques', 'james', 'jm', 'jas'],
+  '1pet': ['1 pierre', '1 pier', 'pierre 1', '1pi', '1 peter', '1pet'],
+  '2pet': ['2 pierre', '2 pier', 'pierre 2', '2pi', '2 peter', '2pet'],
+  '1joh': ['1 jean', '1 je', 'jean 1', '1jn', '1 john', '1joh'],
+  '2joh': ['2 jean', '2 je', 'jean 2', '2jn', '2 john', '2joh'],
+  '3joh': ['3 jean', '3 je', 'jean 3', '3jn', '3 john', '3joh'],
+  jud: ['jude', 'judas', 'ju'],
+  rev: ['apocalypse', 'revelation', 'apc', 'rv'],
 };
 
-/** Resolve a book ID from any alias (case-insensitive) */
+/**
+ * Resolve a book ID from any alias (case-insensitive).
+ *
+ * Multi-word aliases ("1 jean", "rois 2", "jean 1") are matched after
+ * whitespace is collapsed and lowercased, so `resolveBookId(' 1 Jean ')`
+ * and `resolveBookId('1 jean')` both resolve to `1joh`.
+ */
 export function resolveBookId(alias: string): string | null {
-  const lower = alias.toLowerCase().trim();
+  const lower = alias
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, ' ');
   if (BIBLE_BOOKS.some(b => b.id === lower)) return lower;
   for (const [id, aliases] of Object.entries(BOOK_ALIASES)) {
     if (aliases.includes(lower)) return id;

@@ -24,10 +24,14 @@ export function parseReference(refString: string): ParsedReference | null {
   try {
     const trimmed = refString.trim();
 
-    // Pattern: BookName Chapter:Verse or BookName Chapter:Verse-VerseEnd
-    const rangePattern = /^([a-zÀ-ÿ\s-]+)\s+(\d+):(\d+)\s*-\s*(\d+)$/i;
-    const singlePattern = /^([a-zÀ-ÿ\s-]+)\s+(\d+):(\d+)$/i;
-    const chapterOnlyPattern = /^([a-zÀ-ÿ\s-]+)\s+(\d+)$/i;
+    // Pattern: BookName Chapter:Verse or BookName Chapter:Verse-VerseEnd.
+    // The book-name class admits digits so numeric-prefixed books resolve
+    // ("1 Jean 1:1", "2 Tim 3:16", "1 Co 12:3-11" → 17 books). `\w` +
+    // À-ÿ covers accented French names; the `-` keeps "1 Chroniques" style
+    // spaced aliases working.
+    const rangePattern = /^([\d\wÀ-ÿ\s-]+)\s+(\d+):(\d+)\s*-\s*(\d+)$/i;
+    const singlePattern = /^([\d\wÀ-ÿ\s-]+)\s+(\d+):(\d+)$/i;
+    const chapterOnlyPattern = /^([\d\wÀ-ÿ\s-]+)\s+(\d+)$/i;
 
     let match = trimmed.match(rangePattern);
     if (match) {

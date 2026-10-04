@@ -332,4 +332,35 @@ describe('ComparisonEngine', () => {
       expect(engine.lcsLength([], ['x'])).toBe(0);
     });
   });
+
+  describe('Apostrophe normalisation (FR LSG verses, USFM adapter U+2019)', () => {
+    it('compareWrittenRecall("l\'homme", "L\'homme") should give a 100% score', () => {
+      const result = engine.compareWrittenRecall("l'homme", "L'homme");
+      expect(result.matchScore).toBe(1.0);
+      expect(result.wordDiffs.every((d) => d.type === 'correct')).toBe(true);
+    });
+
+    it('handles the typographic apostrophe (U+2019) from the USFM adapter', () => {
+      // The adapter normalises every apostrophe to ’ (U+2019); the user
+      // may type the ASCII version. Both must align word-for-word.
+      const result = engine.compareWrittenRecall("l’eternel", "l'eternel");
+      expect(result.matchScore).toBe(1.0);
+      expect(result.wordDiffs).toEqual([
+        { word: 'l', type: 'correct', position: 0 },
+        { word: 'eternel', type: 'correct', position: 1 },
+      ]);
+    });
+
+    it('keeps "l\'homme" as two tokens (l + homme), never lhomme', () => {
+      const normalized = engine.normalize("L'homme");
+      expect(normalized).toBe('l homme');
+      expect(engine.tokenize(normalized)).toEqual(['l', 'homme']);
+    });
+
+    it('removes French guillemets (« ») and curly quotes as punctuation', () => {
+      const normalized = engine.normalize('« L’Éternel » dit');
+      expect(normalized).toBe('l éternel dit');
+      expect(engine.compareWrittenRecall('L’Éternel dit', '« L’Éternel » dit').matchScore).toBe(1.0);
+    });
+  });
 });

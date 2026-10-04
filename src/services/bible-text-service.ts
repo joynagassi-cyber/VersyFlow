@@ -21,6 +21,7 @@ import {
   type BibleBookData,
   type BibleTranslationData,
   parseTranslationData,
+  filterCanonicalBooks,
 } from '@/domains/bible/repository-local';
 import { BibleJsonFileSource } from '@/infrastructure/bible/bible-json-source';
 import {
@@ -102,6 +103,12 @@ function peekCache(): IBibleDatasetCache {
   return cache;
 }
 
+function applyCanon(
+  books: BibleTranslationData['books'],
+): BibleTranslationData['books'] {
+  return filterCanonicalBooks(books as unknown as BibleBookData[]) as unknown as BibleTranslationData['books'];
+}
+
 /** Load a translation from the local dataset cache only; null on miss. */
 async function peekLocal(
   translationId: string,
@@ -112,7 +119,12 @@ async function peekLocal(
   const cached = await peekCache().get(translationId, expected);
   if (!cached) return null;
   try {
-    return parseTranslationData(JSON.parse(cached.text));
+    // Canon is the source of truth: trim any apocryphal/intro book slots
+    // before the data reaches the UI (`parseTranslationData` already
+    // filters, re-applying here covers caches written before that fix).
+    const data = parseTranslationData(JSON.parse(cached.text));
+    data.books = applyCanon(data.books);
+    return data;
   } catch {
     return null;
   }
@@ -199,7 +211,9 @@ export async function downloadAndLoadTranslationData(
   const cached = await peek.get(translationId, entry.checksum);
   if (cached) {
     onProgress?.(100, cached.text.length);
-    return parseTranslationData(JSON.parse(cached.text));
+    const data = parseTranslationData(JSON.parse(cached.text));
+    data.books = applyCanon(data.books);
+    return data;
   }
 
   if (options.signal?.aborted) {
@@ -241,7 +255,9 @@ export async function downloadAndLoadTranslationData(
       downloadedAt: Date.now(),
     });
     // The INSERT OR REPLACE above supersedes any stale checksum copy.
-    return parseTranslationData(JSON.parse(buf));
+    const data = parseTranslationData(JSON.parse(buf));
+    data.books = applyCanon(data.books);
+    return data;
   }
 
   // Fallback: no readable body or unknown size — one-shot read.
@@ -255,7 +271,9 @@ export async function downloadAndLoadTranslationData(
   });
 
   // The INSERT OR REPLACE above supersedes any stale checksum copy.
-  return parseTranslationData(JSON.parse(text));
+  const data = parseTranslationData(JSON.parse(text));
+  data.books = applyCanon(data.books);
+  return data;
 }
 
 export async function downloadAndLoadTranslationBooks(

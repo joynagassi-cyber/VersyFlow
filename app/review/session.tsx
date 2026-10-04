@@ -5,7 +5,7 @@
  * Tailwind + i18n + Lucide.
  */
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Loader2, Bookmark, Hand, RefreshCw, RotateCcw, Star, Check, X } from 'lucide-react';
@@ -27,6 +27,9 @@ interface ReviewItem {
   words: string[];
 }
 
+/** F-005-C: auto-reveal after this many seconds without a response. */
+const AUTO_REVEAL_MS = 30_000;
+
 export default function ReviewSessionScreen() {
   const navigate = useNavigate();
   const [params] = useSearchParams();
@@ -42,6 +45,52 @@ export default function ReviewSessionScreen() {
   const [loading, setLoading] = useState(true);
   const [feedback, setFeedback] = useState<{ scheduledDays: number; label: string } | null>(null);
   const [ratingsAccum, setRatingsAccum] = useState<{ again: number; hard: number; good: number; easy: number }>({ again: 0, hard: 0, good: 0, easy: 0 });
+  /** F-005-C — countdown seconds to the auto-reveal (null once revealed/rated). */
+  const [autoRevealLeft, setAutoRevealLeft] = useState<number | null>(null);
+  const autoRevealTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const current = items[index];
+  const progress = items.length > 0 ? ((index + 1) / items.length) * 100 : 0;
+
+  /** Cancel the pending auto-reveal timer. */
+  const cancelAutoReveal = () => {
+    if (autoRevealTimer.current) {
+      clearTimeout(autoRevealTimer.current);
+      autoRevealTimer.current = null;
+    }
+    setAutoRevealLeft(null);
+  };
+
+  /**
+   * F-005-C: start a 30 s auto-reveal for the current verse.
+   *
+   * Runs once per verse card (keyed by `index` + `revealed`), so the timer
+   * restarts on every new verse and stops as soon as the card is revealed
+   * (manual tap, rating, or auto). Presentation-only — no Date.now() in
+   * the domain layer.
+   */
+  useEffect(() => {
+    cancelAutoReveal();
+    if (loading || !current || revealed) return;
+    setAutoRevealLeft(30);
+    const startedAt = Date.now();
+    const tick = () => {
+      const remaining = Math.max(0, Math.ceil((AUTO_REVEAL_MS - (Date.now() - startedAt)) / 1000));
+      setAutoRevealLeft(remaining);
+      if (remaining <= 0) {
+        autoRevealTimer.current = null;
+        setRevealed(true); // Auto-revealed — NOT counted as an error (no rating applied)
+        return;
+      }
+      autoRevealTimer.current = setTimeout(tick, 1000);
+    };
+    autoRevealTimer.current = setTimeout(tick, 1000);
+    return () => {
+      if (autoRevealTimer.current) {
+        clearTimeout(autoRevealTimer.current);
+        autoRevealTimer.current = null;
+      }
+    };
+  }, [index, revealed, loading, current]);
 
   useEffect(() => {
     let cancelled = false;
@@ -91,9 +140,6 @@ export default function ReviewSessionScreen() {
     };
 }, [profileId]);
 
-  const current = items[index];
-  const progress = items.length > 0 ? ((index + 1) / items.length) * 100 : 0;
-
   const resetCard = () => {
     setRevealed(false);
     setShowRating(false);
@@ -102,6 +148,7 @@ export default function ReviewSessionScreen() {
   };
 
   const goNext = () => {
+    cancelAutoReveal();
     if (index < items.length - 1) {
       setIndex((i) => i + 1);
       resetCard();
@@ -124,6 +171,7 @@ export default function ReviewSessionScreen() {
 
   const rate = async (rating: Rating) => {
     if (!current) return;
+    cancelAutoReveal();
     setSelected(rating);
     setShowRating(true);
     try {
@@ -228,7 +276,10 @@ export default function ReviewSessionScreen() {
 
         {!revealed ? (
           <button
-            onClick={() => setRevealed(true)}
+            onClick={() => {
+              cancelAutoReveal();
+              setRevealed(true);
+            }}
             className="flex w-full flex-col items-center gap-4 rounded-xl py-8"
           >
             <div className="flex flex-wrap justify-center gap-2">
@@ -245,6 +296,11 @@ export default function ReviewSessionScreen() {
               <Hand size={16} className="text-primary" />
               {t('session.tapToReveal', 'Tape pour révéler le verset')}
             </span>
+            {autoRevealLeft !== null && autoRevealLeft > 0 && (
+              <span className="text-xs tabular-nums text-text-tertiary">
+                {t('review.autoRevealIn', 'Révélation auto dans {{seconds}}s', { seconds: autoRevealLeft })}
+              </span>
+            )}
           </button>
         ) : (
           <div className="flex flex-col items-center gap-4 py-4">

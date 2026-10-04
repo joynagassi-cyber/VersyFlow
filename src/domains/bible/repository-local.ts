@@ -14,12 +14,35 @@
  */
 
 import { z } from 'zod';
-import { BIBLE_BOOKS } from './entities';
+import { BIBLE_BOOKS, CANONICAL_BOOK_IDS } from './entities';
 
 // A canonical book code → its order index (1..66), for normalisation.
 const CANON_ORDER: Record<string, number> = Object.fromEntries(
   BIBLE_BOOKS.map((b) => [b.id, b.orderIndex]),
 );
+
+/**
+ * Trim a dataset's book list down to the 66-book Protestant canon.
+ *
+ * Some bundled datasets (KJV, WEBU, Vulgate, Rhampon, ES-GodWord…) carry
+ * extra book slots — apocrypha, introductory material, duplicate variants
+ * (`int`, `esg`, `s3y`, `sus`, `bel`, `1ma`, `oth`, `dag`…). Those slots are
+ * correct *content*, not errors in the JSON: they must never be removed from
+ * the files. The trimming happens here, at the repository layer, so every
+ * consumer (`getBooks`, `getBook`, verse lookups, verse counts) sees at most
+ * the 66 canonical books.
+ *
+ * Books that are already canonical pass through untouched (the array is
+ * returned as-is when nothing has to be dropped — zero allocation for the
+ * clean 66-book datasets such as `lsg`).
+ */
+export function filterCanonicalBooks(books: BibleBookData[]): BibleBookData[] {
+  if (books.length === CANONICAL_BOOK_IDS.size) {
+    // Fast path: the dataset is already exactly the canon (common case).
+    return books;
+  }
+  return books.filter((b) => CANONICAL_BOOK_IDS.has(b.id));
+}
 
 // =====================================================================
 // Pure value objects (validated shapes, no I/O)
@@ -66,20 +89,36 @@ export const BibleTranslationDataSchema = z.object({
 export type BibleTranslationData = z.infer<typeof BibleTranslationDataSchema>;
 
 /**
- * Normalises a book so `orderIndex` is always present, deriving it from the
- * canonical book list when the source omits it. Unknown codes keep their
- * given index (or 0 if absent) — they are out-of-canon and sorted last.
+ * Normalises a book so `orderIndex` is always present and `chapterCount`
+ * always equals `chapters.length`. The `chapters` array is the source of
+ * truth — a drifted counter (in fixtures or hand-edited datasets) is
+ * silently corrected so downstream code can rely on the invariant without
+ * its own checks.
  */
 function normalizeBook(book: BibleBookData): BibleBookData {
-  if (book.orderIndex !== undefined) return book;
-  return { ...book, orderIndex: CANON_ORDER[book.id] ?? 0 };
+  const orderIndex = book.orderIndex ?? CANON_ORDER[book.id] ?? 0;
+  const chapterCount = book.chapters.length;
+  if (book.orderIndex === orderIndex && book.chapterCount === chapterCount) return book;
+  return { ...book, orderIndex, chapterCount };
 }
 
 /**
  * Validates a raw payload and returns typed, normalised data. Throws on
  * invalid input.
+ *
+ * The 66-book canonical filter is applied HERE by default so that every
+ * consumer of `parseTranslationData` (repositories, in-memory sources, the
+ * service layer, tests) sees at most the canonical books — apocryphal /
+ * introductory slots carried by some datasets are trimmed without touching
+ * the JSON files. Pass `{ canonicalOnly: false }` to keep a dataset as-is
+ * (used by tests with partial fixtures and by any consumer that explicitly
+ * wants the raw book set).
  */
-export function parseTranslationData(raw: unknown): BibleTranslationData {
+export function parseTranslationData(
+  raw: unknown,
+  options: { canonicalOnly?: boolean } = {},
+): BibleTranslationData {
+  const canonicalOnly = options.canonicalOnly ?? true;
   const result = BibleTranslationDataSchema.safeParse(raw);
   if (!result.success) {
     const issues = result.error.issues
@@ -91,13 +130,19 @@ export function parseTranslationData(raw: unknown): BibleTranslationData {
   // would preserve it, which is not assignable to `BibleTranslationData`
   // (a plain array). Build the return explicitly to coerce the tuple back.
   const normalizedBooks: BibleBookData[] = result.data.books.map(normalizeBook);
+  // The 66-book canon is the source of truth: datasets that carry extra
+  // book slots (apocrypha, intro matter…) are trimmed here so every
+  // consumer of `parseTranslationData` sees at most the canonical books.
+  const finalBooks = canonicalOnly
+    ? filterCanonicalBooks(normalizedBooks)
+    : normalizedBooks;
   return {
     id: result.data.id,
     language: result.data.language,
     name: result.data.name,
     year: result.data.year,
     author: result.data.author,
-    books: normalizedBooks,
+    books: finalBooks,
   } as BibleTranslationData;
 }
 
@@ -121,7 +166,11 @@ export interface IBibleTextSource {
 
 /** Read-only, multi-translation local Bible repository. */
 export interface ILocalBibleRepository {
-  /** All books (canon structure) of a translation. */
+  /**
+   * All canonical books (canon structure, max 66) of a translation.
+   * Apocryphal/introductory book slots present in some datasets are
+   * trimmed by the canonical filter (see `filterCanonicalBooks`).
+   */
   getBooks(translationId: string): Promise<BibleBookData[]>;
   /** One book by code, or null. */
   getBook(translationId: string, bookId: string): Promise<BibleBookData | null>;
@@ -147,7 +196,10 @@ export interface ILocalBibleRepository {
     bookId: string,
     chapterNumber: number,
   ): Promise<BibleVerseData[]>;
-  /** Total verse count of a loaded translation. */
+  /**
+   * Total verse count of a loaded translation — canonical books only
+   * (the filter is applied before counting, matching `getBooks`).
+   */
   getVerseCount(translationId: string): Promise<number>;
 }
 
@@ -157,18 +209,33 @@ export interface ILocalBibleRepository {
  * Datasets are cached per-translation in memory after the first load —
  * the corpus is LOCAL_ONLY and immutable for the lifetime of the app
  * session, so caching is safe and makes `getVerse` O(1) lookups.
+ *
+ * The canonical 66-book filter is ON by default (`canonicalOnly: true`):
+ * `getBooks`/`getBook`/verse lookups/verse counts all see at most the 66
+ * canonical books, whatever the raw dataset carries (apocrypha, intro
+ * matter…). Pass `canonicalOnly: false` to consume a dataset as-is.
  */
 export class LocalBibleRepository implements ILocalBibleRepository {
   private readonly cache = new Map<string, BibleTranslationData>();
 
-  constructor(private readonly source: IBibleTextSource) {}
+  constructor(
+    private readonly source: IBibleTextSource,
+    private readonly canonicalOnly: boolean = true,
+  ) {}
 
   private async resolve(translationId: string): Promise<BibleTranslationData> {
     const cached = this.cache.get(translationId);
     if (cached) return cached;
+    // `parseTranslationData` already applies the 66-book canonical filter
+    // (on by default, ON for the repository's source of truth). The extra
+    // pass is the belt-and-suspenders guard for sources that bypass it
+    // (hand-rolled `IBibleTextSource` implementations, raw JSON).
     const data = await this.source.load(translationId);
-    this.cache.set(translationId, data);
-    return data;
+    const normalized: BibleTranslationData = this.canonicalOnly
+      ? { ...data, books: filterCanonicalBooks(data.books) } as BibleTranslationData
+      : data;
+    this.cache.set(translationId, normalized);
+    return normalized;
   }
 
   async getBooks(translationId: string): Promise<BibleBookData[]> {

@@ -115,24 +115,56 @@ describe('BibleTranslationRegistry', () => {
 });
 
 describe('parseTranslationData', () => {
+  // Partial fixtures are NOT canonical datasets: they are validated as-is
+  // (`canonicalOnly: false`) so the 66-book filter doesn't wipe them.
   it('derives orderIndex from the canon when missing', () => {
-    const data = parseTranslationData(makeDataset());
+    const data = parseTranslationData(makeDataset(), { canonicalOnly: false });
     const gen = data.books.find((b) => b.id === 'gen');
     const joh = data.books.find((b) => b.id === 'joh');
     expect(gen?.orderIndex).toBe(1); // canonical position of gen
     expect(joh?.orderIndex).toBe(43); // canonical position of joh
   });
 
-  it('rejects a dataset with empty verse text', () => {
-    const bad = makeDataset();
-    (bad.books[0].chapters[0].verses[0] as { text: string }).text = '';
-    expect(() => parseTranslationData(bad)).toThrow(/Invalid Bible translation dataset/);
+  it('tolerates an empty verse slot (text is a valid empty string, e.g. Darby / WEB)', () => {
+    const ok = makeDataset();
+    (ok.books[0].chapters[0].verses[0] as { text: string }).text = '';
+    expect(() => parseTranslationData(ok, { canonicalOnly: false })).not.toThrow();
   });
 
-  it('rejects a dataset with a missing book list', () => {
-    expect(() => parseTranslationData({ id: 'x' })).toThrow(
+  it('rejects a book whose chapterCount disagrees with its chapters array', () => {
+    const bad = makeDataset();
+    (bad.books[0] as { chapterCount: number }).chapterCount = 5;
+    // A drifted counter is silently normalized to the real array length.
+    const data = parseTranslationData(bad, { canonicalOnly: false });
+    expect(data.books[0].chapterCount).toBe(2);
+  });
+
+  it('rejects a book id longer than 12 characters', () => {
+    const bad = makeDataset();
+    (bad.books[0] as { id: string }).id = 'waytoolongbookid';
+    expect(() => parseTranslationData(bad, { canonicalOnly: false })).toThrow(
       /Invalid Bible translation dataset/,
     );
+  });
+
+  it('accepts long translation ids (up to 16 chars, e.g. it-diodati1885)', () => {
+    const ok = makeDataset({ id: 'it-diodati1885' });
+    expect(() => parseTranslationData(ok, { canonicalOnly: false })).not.toThrow();
+  });
+
+  it('filters a canonical dataset down to the 66 books by default', () => {
+    // A full 66-book fixture with one extra (apocryphal) slot trims to 66.
+    const ok = makeDataset();
+    (ok.books as unknown[]).push({
+      id: 'esg',
+      name: { fr: 'Esdras (apocryphe)' },
+      testament: 'old',
+      chapterCount: 0,
+      chapters: [],
+    });
+    const data = parseTranslationData(ok);
+    expect(data.books.map((b) => b.id)).not.toContain('esg');
+    expect(data.books.length).toBe(2); // the 2 canonical books survive
   });
 });
 

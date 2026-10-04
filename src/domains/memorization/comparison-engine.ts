@@ -278,11 +278,20 @@ export class ComparisonEngine {
   /**
    * Normalize text: lowercase, trim, remove punctuation, normalize whitespace
    * Public for unit testing.
+   *
+   * Apostrophes (ASCII `'` and typographic U+2018/U+2019) are replaced by a
+   * space — not removed — so `l'homme` and `L'Éternel` stay two tokens
+   * (`l homme`) instead of merging into `lhomme`/`l’eternel`, which would
+   * break the LCS word alignment and inflate false negatives. The USFM
+   * adapter normalises every apostrophe to U+2019 (`’`), which is why the
+   * typographic variants are part of the class.
    */
   normalize(text: string): string {
     return text.toLowerCase().trim()
-      .replace(/[.,;:'!?"]/g, '')  // Remove common punctuation
-      .replace(/\s+/g, ' ');        // Normalize multiple spaces to single space
+      .replace(/['‘’]/g, ' ')  // Apostrophes (ASCII + typographic) → space
+      .replace(/[.,;:!?"«»“”]/g, '')  // Remove remaining punctuation
+      .replace(/\s+/g, ' ')        // Normalize multiple spaces to single space
+      .trim();                      // Drop the leading space left by «/’ at start
   }
 
   /**

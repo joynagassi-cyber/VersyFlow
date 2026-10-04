@@ -14,7 +14,7 @@
  * and a "PROCHAIN" outline on the recommended next mode.
  */
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Check, Maximize2, Minimize2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -65,6 +65,42 @@ export function ModeCards({
   const [fullscreen, setFullscreen] = useState(false);
   const [cardIndex, setCardIndex] = useState(0);
   const [lastScore, setLastScore] = useState<number | null>(null);
+  /** F-005-C — countdown seconds to the auto-flip (null once flipped). */
+  const [autoFlipLeft, setAutoFlipLeft] = useState<number | null>(null);
+  const autoFlipTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  /**
+   * F-005-C: auto-flip the card after 30 s of inactivity (spec
+   * "auto-révélation 30s sans réponse"). Presentation-only: the timer
+   * lives in the component, never in the domain layer.
+   */
+  useEffect(() => {
+    if (autoFlipTimer.current) {
+      clearTimeout(autoFlipTimer.current);
+      autoFlipTimer.current = null;
+    }
+    setAutoFlipLeft(null);
+    if (flipped) return;
+    let remaining = 30;
+    setAutoFlipLeft(remaining);
+    autoFlipTimer.current = setTimeout(function tick() {
+      remaining -= 1;
+      if (remaining <= 0) {
+        autoFlipTimer.current = null;
+        setFlipped(true);
+        setAutoFlipLeft(null);
+        return;
+      }
+      setAutoFlipLeft(remaining);
+      autoFlipTimer.current = setTimeout(tick, 1000);
+    }, 1000);
+    return () => {
+      if (autoFlipTimer.current) {
+        clearTimeout(autoFlipTimer.current);
+        autoFlipTimer.current = null;
+      }
+    };
+  }, [flipped, cardIndex]);
 
   const verses = useMemo(
     () =>
@@ -106,6 +142,11 @@ export function ModeCards({
             <p className="hint">
               {t('workspace.cardsHint', 'Touchez pour retourner · glissez pour passer')}
             </p>
+            {autoFlipLeft !== null && autoFlipLeft > 0 && (
+              <p className="hint text-xs tabular-nums">
+                {t('workspace.autoFlipIn', 'Retour auto dans {{seconds}}s', { seconds: autoFlipLeft })}
+              </p>
+            )}
             <button
               type="button"
               onClick={() => setFlipped(true)}
