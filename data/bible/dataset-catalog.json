@@ -18,6 +18,12 @@
     "builtAt": "2026-10-04T07:55:08.521Z"
   },
   {
+    "id": "cmn-cu89t",
+    "checksum": "sha256:021719b6f19c1ffbc3d2fe3e63a1cb5599625c8ef3db2021f1d34821ed862cd5",
+    "sizeBytes": 6212406,
+    "builtAt": "2026-10-04T16:30:15.983Z"
+  },
+  {
     "id": "cmn-uvs",
     "checksum": "sha256:cd442dabf0d6d21d71bf74f4802d1f3e3722c813f7958c5164e888208aec6294",
     "sizeBytes": 6103933,
@@ -88,6 +94,12 @@
     "builtAt": "2026-09-13T23:37:46.343Z"
   },
   {
+    "id": "heb",
+    "checksum": "sha256:692492e6c2b004e62ca686aae00d1c463d9d40ea67a4131d2fce7c8dedea3204",
+    "sizeBytes": 6343421,
+    "builtAt": "2026-10-04T16:30:29.882Z"
+  },
+  {
     "id": "hi-irv",
     "checksum": "sha256:cee8774675808dfceef360543c86ff11095a0ca4709cfb27bb332e104f19ef87",
     "sizeBytes": 12189465,
@@ -146,6 +158,12 @@
     "checksum": "sha256:04bdc1c94c78f6c8f824458b954bcaeba23a0df85bfc99da5498fbd1d829db46",
     "sizeBytes": 13834467,
     "builtAt": "2026-09-13T23:37:48.611Z"
+  },
+  {
+    "id": "myajvb",
+    "checksum": "sha256:dc0a2ac34dd8fb44ea23c8ab7a0256a840fd90bdf7c37dee4df2234e45d872a6",
+    "sizeBytes": 14656491,
+    "builtAt": "2026-10-04T16:33:52.358Z"
   },
   {
     "id": "nl-1917",
@@ -240,6 +258,12 @@
     "checksum": "sha256:abc61716d3ded5a9d859bf0966b0f26ace238a9480765a1042a45a24849cc193",
     "sizeBytes": 8644581,
     "builtAt": "2026-09-13T23:32:01.278Z"
+  },
+  {
+    "id": "vie1934",
+    "checksum": "sha256:3b1c73e41f12b3a16a3bf2ea0c7079de59f6017f7ebb739f6bad067b96ae9c66",
+    "sizeBytes": 7732469,
+    "builtAt": "2026-10-04T16:30:20.150Z"
   },
   {
     "id": "web",

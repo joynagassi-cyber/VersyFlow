@@ -181,6 +181,9 @@ const EBIBLE_NON_CANONICAL = new Set([
   '2MA', '3MA', '4MA', '1ES', '2ES',
   // eBible front matter (`01-INT…usfm` — introductions, NOT a book).
   'INT',
+  // `TDX` = USFM "Table of Contents" front-matter slot (0 chapters, 0 verses),
+  // ships inside some Bible translation archives (e.g. myajvb = Judson Burmese).
+  'TDX',
 ]);
 
 /**
@@ -465,6 +468,19 @@ const WORLD_CORPUS_DATASETS: BibleDatasetManifest[] = [
   // domain. BSB = Berean Standard Bible, CC-BY (Berean Bible).
   { id: 'asv', language: 'en', name: 'American Standard Version (1901)', year: 1901, license: 'VERIFIED_FREE', available: true, canon: 'PROTESTANT_66', completeness: 'FULL_BIBLE', source: { rawPath: 'en/asv_usfm'} },
   { id: 'bsb', language: 'en', name: 'Berean Standard Bible', year: 2020, license: 'VERIFIED_FREE', available: true, canon: 'PROTESTANT_66', completeness: 'FULL_BIBLE', source: { rawPath: 'en/bsb_usfm'} },
+  // WAVE 1 (2026-10-04) — 4 datasets P1/P3 66/66 PD, licence vérifiée :
+  //  - cmn-cu89t (CUV 和合本 1919, PD) → zh-Hant : version récitée dominante
+  //    en Chine/Taïwan/Hong Kong (~230 M).
+  //  - vie1934 (Kinh Thánh 1925, PD depuis 2019/2021) → vi : version
+  //    protestante récitée au Vietnam (~100 M).
+  //  - myajvb (Judson 1956, PD) → my : version birmane la plus récitée
+  //    (~45 M).
+  //  - heb (Tanakh / Hebrew, PD) → he : version hébraïque moderne
+  //    récitation judéo-chrétienne (~9 M).
+  { id: 'cmn-cu89t', language: 'zh', name: 'Chinezh Union Version (和合本, CUV 1919)', year: 1919, license: 'VERIFIED_FREE', available: true, canon: 'PROTESTANT_66', completeness: 'FULL_BIBLE', source: { rawPath: 'zh-hant/cmn-cu89t_usfm'} },
+  { id: 'vie1934', language: 'vi', name: 'Kinh Thánh (1925, Vietnamese Bible)', year: 1925, license: 'VERIFIED_FREE', available: true, canon: 'PROTESTANT_66', completeness: 'FULL_BIBLE', source: { rawPath: 'vi/vie1934_usfm'} },
+  { id: 'myajvb', language: 'my', name: 'Judson Burmese Bible (1956)', year: 1956, license: 'VERIFIED_FREE', available: true, canon: 'PROTESTANT_66', completeness: 'FULL_BIBLE', source: { rawPath: 'my/myajvb_usfm'} },
+  { id: 'heb', language: 'he', name: 'Tanakh (Hébreu moderne)', license: 'VERIFIED_FREE', available: true, canon: 'PROTESTANT_66', completeness: 'FULL_BIBLE', source: { rawPath: 'he/heb_usfm'} },
   // ES — 3 (slugs verified 2026-09-13)
   { id: 'rv1909', language: 'es', name: 'Reina-Valera 1909', year: 1909, license: 'VERIFIED_FREE', available: true, canon: 'PROTESTANT_66', completeness: 'FULL_BIBLE', source: { rawPath: 'es/spaRV1909_usfm'} },
   { id: 'es-onbv', language: 'es', name: 'Spanish ONBV', license: 'VERIFIED_FREE', available: true, canon: 'PROTESTANT_66', completeness: 'FULL_BIBLE', source: { rawPath: 'es/spaonbv_usfm'} },

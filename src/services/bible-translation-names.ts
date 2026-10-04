@@ -78,8 +78,16 @@ const INFO: Record<string, TranslationDisplayInfo> = {
   // ── Chinois / Japonais / Coréen ───────────────────────────
   'cmn-uvs': { name: 'Version unifiée (chinois simplifié)', abbreviation: 'UVS', language: 'Chinois' },
   cmnswcb: { name: 'Bible standard (chinois simplifié)', abbreviation: 'SWCB', language: 'Chinois' },
+  'cmn-cu89t': { name: '和合本 / Union Version (CUV 1919, chinois traditionnel)', abbreviation: 'CUV', language: 'Chinois' },
   'jp-freedom': { name: 'Freedom Bible', abbreviation: 'Freedom', language: 'Japonais' },
   'ko-1910': { name: 'Édition 1910', abbreviation: 'Édition 1910', language: 'Coréen' },
+
+  // ── Asie du Sud / Sud-Est ──────────────────────────────────
+  'vie1934': { name: 'Kinh Thánh (1925)', abbreviation: 'Kinh Thánh', language: 'Vietnamien' },
+  'myajvb': { name: 'Judson Burmese Bible (1956)', abbreviation: 'Judson 1956', language: 'Birman' },
+
+  // ── Hébreu ─────────────────────────────────────────────────
+  heb: { name: 'Tanakh (hébreu)', abbreviation: 'Tanakh', language: 'Hébreu' },
 
   // ── Autres langues ─────────────────────────────────────────
   'hi-irv': { name: 'Indian Revised Version', abbreviation: 'IRV', language: 'Hindi' },
@@ -98,9 +106,37 @@ export interface TranslationByLanguage {
 }
 
 /**
+ * Sort order within a language group for the "Versions de la Bible" UI:
+ * French and English translations first (the 8 most-used editions),
+ * then every other dataset alphabetically by id.
+ */
+export const PREFERRED_TRANSLATION_ORDER: string[] = [
+  'lsg',
+  'frlsg-eb',
+  'ostervald',
+  'darby',
+  'francrampon',
+  'kujv',
+  'web',
+  'webu',
+];
+
+export function sortTranslationsInLanguage(ids: string[]): string[] {
+  const preferredIndex = new Map(PREFERRED_TRANSLATION_ORDER.map((id, i) => [id, i]));
+  return [...ids].sort((a, b) => {
+    const pa = preferredIndex.get(a);
+    const pb = preferredIndex.get(b);
+    if (pa !== undefined && pb !== undefined) return pa - pb;
+    if (pa !== undefined) return -1;
+    if (pb !== undefined) return 1;
+    return a.localeCompare(b);
+  });
+}
+
+/**
  * Group translation ids by their reader-language, keeping a stable display
  * order: French and English first (the most common), then alphabetical.
- * Unknown languages fall back to the id itself.
+ * Within each language, the 8 preferred editions (fr + en) come first.
  */
 export function groupTranslationsByLanguage(ids: string[]): TranslationByLanguage[] {
   const byLanguage = new Map<string, string[]>();
@@ -115,7 +151,7 @@ export function groupTranslationsByLanguage(ids: string[]): TranslationByLanguag
   preferred.set('Anglais', 1);
   const groups = Array.from(byLanguage, ([language, groupIds]) => ({
     language,
-    ids: groupIds,
+    ids: sortTranslationsInLanguage(groupIds),
   }));
   groups.sort((a, b) => {
     const pa = preferred.get(a.language) ?? 100;
