@@ -93,7 +93,7 @@ export function HamburgerMenu() {
                 onClick={() => {
                   closeMenu();
                   signOut();
-                  navigate('/auth/login');
+                  navigate('/auth');
                 }}
                 className={cn(itemClass, 'text-error')}
               >

@@ -46,7 +46,7 @@ export default function SettingsScreen() {
 
   const handleSignOut = () => {
     signOut();
-    navigate('/auth/login');
+    navigate('/auth');
   };
 
   const displayName = user?.display_name || t('settings.localUser', 'Utilisateur');

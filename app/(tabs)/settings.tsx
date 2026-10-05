@@ -152,7 +152,7 @@ function ParamsTab() {
 
   const handleSignOut = async () => {
     await signOut();
-    navigate('/auth/login');
+    navigate('/auth');
   };
 
   const groups = [
@@ -344,7 +344,7 @@ function ProfileTab() {
 
   const handleSignOut = async () => {
     await signOut();
-    navigate('/auth/login');
+    navigate('/auth');
   };
 
   const actions = [

@@ -66,7 +66,7 @@ export default function ProfileScreen() {
   const handleSignOut = async () => {
     if (window.confirm(t('profile.confirmSignOut', 'Se deconnecter ?'))) {
       await signOut();
-      navigate('/auth/login');
+      navigate('/auth');
     }
   };
 
