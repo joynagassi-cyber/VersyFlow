@@ -227,11 +227,7 @@ function SyncBridges() {
 function AuthGateRoute() {
   const navigate = useNavigate();
   return (
-    <AuthIndex
-      onLogin={() => navigate('/auth/login')}
-      onSignup={() => navigate('/auth/signup')}
-      onSkip={() => navigate('/tabs/home')}
-    />
+    <AuthIndex onSkip={() => navigate('/tabs/home')} />
   );
 }
 

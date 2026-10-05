@@ -151,6 +151,15 @@ export class SupabaseAuthService {
     }
   }
 
+  /** Clear the locally-identified user (called on sign-out). */
+  clearLocalIdentity(): void {
+    try {
+      localStorage.removeItem('versyflow:local-identity');
+    } catch {
+      /* ignore */
+    }
+  }
+
   async getUserProfile(userId: string): Promise<UserProfile | null> {
     const { data, error } = await this.supabase
       .from('users')

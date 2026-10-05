@@ -90,6 +90,9 @@ export const useAuthStore = create<AuthState>()(
             isLoading: false,
             error: null,
           });
+          // Clear the local (email + name, no-validation) identity so the gate
+          // re-prompts on the next session.
+          authService.clearLocalIdentity();
           // Reset the MMKV → PowerSync migration flag so the next login
           // re-runs it for the new user.
           useSyncStore.getState().invalidateMigration();
