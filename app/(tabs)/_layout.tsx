@@ -1,6 +1,6 @@
 import { IonPage, IonFab, IonFabButton } from '@ionic/react';
 import { Outlet, useNavigate } from 'react-router-dom';
-import { Plus, Menu } from 'lucide-react';
+import { Plus, LayoutGrid } from 'lucide-react';
 import SyncStatusIndicator from '@/components/common/SyncStatusIndicator';
 import { BottomTabs } from '@/components/navigation/BottomTabs';
 import { QuickDock } from '@/components/navigation/QuickDock';
@@ -27,7 +27,7 @@ export default function TabLayout() {
               className="rounded-full p-1.5 active:bg-surface-tint"
               aria-label="Ouvrir le menu"
             >
-              <Menu size={22} className="text-text-primary" />
+              <LayoutGrid size={22} className="text-text-primary" />
             </button>
             <div className="flex items-center gap-2">
               <Logo size={24} />
