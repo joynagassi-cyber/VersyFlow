@@ -603,6 +603,10 @@ export const fr = {
     notFound: 'Cette page n\'existe pas',
   },
   auth: {
+    identify: 'Qui êtes-vous ?',
+    identifySubtitle: 'Entrez votre e-mail et votre nom pour continuer',
+    name: 'Votre nom',
+    continue: 'Continuer',
     login: 'Se connecter',
     loginSubtitle: 'Accédez à votre tableau de bord',
     email: 'Adresse e-mail',

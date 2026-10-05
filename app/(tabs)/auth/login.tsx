@@ -11,7 +11,7 @@ import { SupabaseAuthService } from '@/auth';
 
 const LOGIN = z.object({
   email: z.string().min(1).email(),
-  password: z.string().min(1),
+  name: z.string().min(1),
 });
 
 interface Props {
@@ -22,14 +22,14 @@ export default function LoginScreen({ onSkip }: Props) {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const auth = new SupabaseAuthService();
 
   const handleLogin = async () => {
-    const parsed = LOGIN.safeParse({ email, password });
+    const parsed = LOGIN.safeParse({ email, name });
     if (!parsed.success) {
       setError(t('auth.fillFields', 'Veuillez remplir tous les champs'));
       return;
@@ -37,10 +37,12 @@ export default function LoginScreen({ onSkip }: Props) {
     setLoading(true);
     setError(null);
     try {
-      await auth.signIn(email, password);
+      // Identical to "no validation": just save the local identity, no call
+      // to Supabase, no code, no CNI — email + name only.
+      await auth.identifyLocal(email, name);
       navigate('/tabs/home');
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : t('auth.loginError', 'Echec de la connexion'));
+      setError(err instanceof Error ? err.message : t('auth.loginError', "Échec de l'identification"));
     } finally {
       setLoading(false);
     }
@@ -52,10 +54,10 @@ export default function LoginScreen({ onSkip }: Props) {
         <Logo size={72} />
         <div className="text-center">
           <h1 className="text-2xl font-extrabold text-text-primary">
-            {t('auth.login', 'Se connecter')}
+            {t('auth.identify', "Qui êtes-vous ?")}
           </h1>
           <p className="mt-1 text-sm text-text-muted">
-            {t('auth.loginSubtitle', "Accedez a votre tableau de bord")}
+            {t('auth.identifySubtitle', 'Entrez votre e-mail et votre nom pour continuer')}
           </p>
         </div>
         <div className="flex w-full flex-col gap-3">
@@ -70,26 +72,20 @@ export default function LoginScreen({ onSkip }: Props) {
             autoComplete="email"
           />
           <Input
-            type="password"
-            placeholder={t('auth.password', 'Mot de passe')}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            autoComplete="current-password"
+            type="text"
+            placeholder={t('auth.name', 'Votre nom')}
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            autoComplete="name"
           />
           <Button variant="default" onClick={handleLogin} disabled={loading}>
             {loading ? (
               <Loader2 size={18} className="animate-spin" />
             ) : (
-              t('auth.loginCta', 'Se connecter')
+              t('auth.continue', 'Continuer')
             )}
           </Button>
         </div>
-        <button
-          onClick={() => navigate('/auth/signup')}
-          className="text-sm font-medium text-primary"
-        >
-          {t('auth.noAccount', "Pas encore de compte ? S'inscrire")}
-        </button>
         {onSkip && (
           <button
             onClick={onSkip}
@@ -99,7 +95,7 @@ export default function LoginScreen({ onSkip }: Props) {
           </button>
         )}
         <p className="text-xs text-text-muted">
-          {t('auth.localNote', 'Votre progression est sauvegardee localement')}
+          {t('auth.localNote', 'Votre progression est sauvegardée localement')}
         </p>
       </div>
     </FullScreenPage>

@@ -117,6 +117,40 @@ export class SupabaseAuthService {
     return { user: data.session?.user ?? null, error: null };
   }
 
+  /**
+   * Local, unvalidated identification: persist the user's chosen identity
+   * (email + display name) without contacting Supabase, sending any email,
+   * or verifying a code. Used for the frictionless "just enter your email
+   * and name" onboarding — the value is a stable display name and a
+   * placeholder account id; no cloud account is created.
+   */
+  async identifyLocal(email: string, displayName: string): Promise<{ error: AuthError | null }> {
+    try {
+      const identity = {
+        email: email.trim(),
+        display_name: displayName.trim(),
+        identifiedAt: Date.now(),
+      };
+      localStorage.setItem('versyflow:local-identity', JSON.stringify(identity));
+      return { error: null };
+    } catch (e) {
+      return { error: new AuthError(e instanceof Error ? e.message : 'Failed to save identity') };
+    }
+  }
+
+  /** Load the locally-identified user (if any) without a network call. */
+  getLocalIdentity(): { email: string; display_name: string; identifiedAt: number } | null {
+    try {
+      const raw = localStorage.getItem('versyflow:local-identity');
+      if (!raw) return null;
+      const parsed = JSON.parse(raw);
+      if (typeof parsed?.email !== 'string' || typeof parsed?.display_name !== 'string') return null;
+      return parsed;
+    } catch {
+      return null;
+    }
+  }
+
   async getUserProfile(userId: string): Promise<UserProfile | null> {
     const { data, error } = await this.supabase
       .from('users')

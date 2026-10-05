@@ -12,7 +12,7 @@ import { SupabaseAuthService } from '@/auth';
 
 const SIGNUP = z.object({
   email: z.string().min(1).email(),
-  password: z.string().min(6, '6 caracteres minimum'),
+  name: z.string().min(1),
 });
 
 interface Props {
@@ -23,7 +23,7 @@ export default function SignupScreen({ onSkip }: Props) {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
@@ -31,7 +31,7 @@ export default function SignupScreen({ onSkip }: Props) {
   const auth = new SupabaseAuthService();
 
   const handleSignup = async () => {
-    const parsed = SIGNUP.safeParse({ email, password });
+    const parsed = SIGNUP.safeParse({ email, name });
     if (!parsed.success) {
       setError(parsed.error.issues[0].message);
       return;
@@ -39,11 +39,13 @@ export default function SignupScreen({ onSkip }: Props) {
     setLoading(true);
     setError(null);
     try {
-      await auth.signUp(email, password);
+      // No account creation, no verification code, no CNI: store the local
+      // identity (email + name) only.
+      await auth.identifyLocal(email, name);
       setSuccess(true);
-      setTimeout(() => navigate('/auth/verify'), 1200);
+      setTimeout(() => navigate('/tabs/home'), 1200);
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : t('auth.signupError', 'Echec de l\'inscription'));
+      setError(err instanceof Error ? err.message : t('auth.signupError', "Échec de l'inscription"));
     } finally {
       setLoading(false);
     }
@@ -55,10 +57,10 @@ export default function SignupScreen({ onSkip }: Props) {
         <div className="flex w-full flex-col items-center gap-4 text-center">
           <CheckCircle2 size={56} className="text-success" />
           <h1 className="text-2xl font-bold text-text-primary">
-            {t('auth.signupSuccess', 'Inscription reussie !')}
+            {t('auth.signupSuccess', 'Inscription réussie !')}
           </h1>
           <p className="text-sm text-text-muted">
-            {t('auth.signupSuccessHint', 'Un e-mail de verification a ete envoye.')}
+            {t('auth.signupSuccessHint', 'Vous êtes identifié(e) sur cet appareil.')}
           </p>
           <Loader2 size={24} className="animate-spin text-primary" />
         </div>
@@ -72,10 +74,10 @@ export default function SignupScreen({ onSkip }: Props) {
         <Logo size={72} />
         <div className="text-center">
           <h1 className="text-2xl font-extrabold text-text-primary">
-            {t('auth.signup', 'Creer un compte')}
+            {t('auth.identify', 'Qui êtes-vous ?')}
           </h1>
           <p className="mt-1 text-sm text-text-muted">
-            {t('auth.signupSubtitle', 'Rejoignez-nous pour commencer')}
+            {t('auth.identifySubtitle', "Entrez votre e-mail et votre nom pour continuer")}
           </p>
         </div>
         <div className="flex w-full flex-col gap-3">
@@ -90,17 +92,17 @@ export default function SignupScreen({ onSkip }: Props) {
             autoComplete="email"
           />
           <Input
-            type="password"
-            placeholder={t('auth.password', 'Mot de passe')}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            autoComplete="new-password"
+            type="text"
+            placeholder={t('auth.name', 'Votre nom')}
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            autoComplete="name"
           />
           <Button variant="default" onClick={handleSignup} disabled={loading}>
             {loading ? (
               <Loader2 size={18} className="animate-spin" />
             ) : (
-              t('auth.signupCta', 'S\'inscrire')
+              t('auth.continue', 'Continuer')
             )}
           </Button>
         </div>
@@ -108,7 +110,7 @@ export default function SignupScreen({ onSkip }: Props) {
           onClick={() => navigate('/auth/login')}
           className="text-sm font-medium text-primary"
         >
-          {t('auth.hasAccount', 'Deja un compte ? Connectez-vous')}
+          {t('auth.hasAccount', 'Déjà identifié(e) ? Se connecter')}
         </button>
         {onSkip && (
           <button
