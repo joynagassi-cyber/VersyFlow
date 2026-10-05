@@ -33,7 +33,6 @@ const ProgressPage = lazy(() => import('../app/(tabs)/progress'));
 const SettingsPage = lazy(() => import('../app/(tabs)/settings'));
 const AuthLogin = lazy(() => import('../app/(tabs)/auth/login'));
 const AuthSignup = lazy(() => import('../app/(tabs)/auth/signup'));
-const AuthVerify = lazy(() => import('../app/(tabs)/auth/verify'));
 const AuthIndex = lazy(() => import('../app/(tabs)/auth'));
 const SplashScreen = lazy(() => import('../app/splash'));
 const NotFound = lazy(() => import('../app/+not-found'));
@@ -305,7 +304,6 @@ function App() {
               <Route path="/auth" element={<AuthGateRoute />} />
               <Route path="/auth/login" element={<AuthLogin />} />
               <Route path="/auth/signup" element={<AuthSignup />} />
-              <Route path="/auth/verify" element={<AuthVerify />} />
 
               {/* Bible — the explorer is URL-driven: each view is a route */}
               <Route path="/bible/explorer" element={<BibleExplorer />} />

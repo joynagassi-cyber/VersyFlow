@@ -61,28 +61,6 @@ export class SupabaseAuthService {
     return { user: data.user, error: null };
   }
 
-  /** Send an email-confirmation / sign-in code to the given address. */
-  async sendVerificationCode(email: string): Promise<{ error: AuthError | null }> {
-    const { error } = await this.supabase.auth.signInWithOtp({ email });
-    if (error) {
-      return { error: new AuthError(error.message, error.code) };
-    }
-    return { error: null };
-  }
-
-  /** Confirm a 6-digit email code (creates the session when valid). */
-  async verifyEmailCode(email: string, code: string): Promise<{ user: User | null; error: AuthError | null }> {
-    const { data, error } = await this.supabase.auth.verifyOtp({
-      email,
-      token: code,
-      type: 'email',
-    });
-    if (error) {
-      return { user: null, error: new AuthError(error.message, error.code) };
-    }
-    return { user: data.user, error: null };
-  }
-
   async signOut(): Promise<{ error: AuthError | null }> {
     const { error } = await this.supabase.auth.signOut();
 
