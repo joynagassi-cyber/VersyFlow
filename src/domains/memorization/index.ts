@@ -41,7 +41,7 @@ export type {
 export type { IWordFailureTracker } from './tracker';
 export type { MemorizationStorageAdapter } from './storage-adapter';
 export type { IFatigueDetector } from './fatigue-detector';
-export type { IStrategyRecommendor, Recommendation, RecommendationContext } from './strategy-recommendor';
+export type { IStrategyRecommendor, Recommendation, RecommendationContext } from './strategy-recommender-port';
 export type { IFsrsEngine } from '../fsrs/engine';
 export { Rating } from '../fsrs/engine';
 export { ComparisonEngine } from './comparison-engine';

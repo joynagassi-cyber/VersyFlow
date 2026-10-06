@@ -9,7 +9,7 @@ import { IFsrsEngine } from '@/domains/fsrs';
 import { FsrsState } from '@/domains/fsrs';
 import { MemorizationService, MemorizationRecord } from '@/domains/memorization';
 import { IFatigueDetector } from '@/domains/memorization/fatigue-detector';
-import { IStrategyRecommendor } from '@/domains/memorization/strategy-recommendor';
+import { IStrategyRecommendor } from '@/domains/memorization/strategy-recommender-port';
 import { FatigueDetector } from '@/services/fatigue-detector';
 import { StrategyRecommendor } from '@/services/strategy-recommender';
 import { ExerciseStrategy } from '@/domains/memorization/entities';

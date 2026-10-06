@@ -7,7 +7,7 @@ import type { VerificationResult } from '@/domains/memorization/entities';
 import { ExerciseStrategy } from '@/domains/memorization/entities';
 import type { IFatigueDetector } from '@/domains/memorization/fatigue-detector';
 import { FatigueDetector } from '@/services/fatigue-detector';
-import type { IStrategyRecommendor, Recommendation, RecommendationContext } from '@/domains/memorization/strategy-recommendor';
+import type { IStrategyRecommendor, Recommendation, RecommendationContext } from '@/domains/memorization/strategy-recommender-port';
 import { WordFailureTracker } from '@/services/word-failure-tracker';
 
 export class StrategyRecommendor implements IStrategyRecommendor {
