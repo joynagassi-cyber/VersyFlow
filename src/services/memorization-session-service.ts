@@ -82,14 +82,6 @@ export const RATING_EASY: number = Rating.EASY;
 export const DEFAULT_SESSION_STRATEGY = DEFAULT_MVP_STRATEGY;
 
 /**
- * The FSRS "AGAIN" rating value, exposed through the service layer so
- * hooks (which import no domain values, docs/29 §1 Exception 4) can
- * branch on the rating without importing the `Rating` enum as a value.
- * Mirrors `Rating.AGAIN` (numeric 1, see domains/fsrs/engine.ts).
- */
-export const RATING_AGAIN: number = Rating.AGAIN;
-
-/**
  * Create a session engine for a single verse.
  * The caller is expected to call `startPreview()` / `initPassage(...)`
  * immediately after construction (mirrors the previous hook behaviour).
