@@ -19,7 +19,7 @@ import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ArrowRight, Check, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { ComparisonEngine } from '@/domains/memorization/comparison-engine';
+import { getComparisonEngine } from '@/services/recall-comparison-service';
 import type { WrittenRecallResult } from '@/domains/memorization/comparison-engine';
 import type { MemorizationRecord } from '@/domains/memorization/entities';
 
@@ -88,7 +88,7 @@ export function ModeMask({
     const userString = words
       .map((w, i) => (activeMasked.has(i) ? '' : w))
       .join(' ');
-    const result = new ComparisonEngine().compareWrittenRecall(userString, expected);
+    const result = getComparisonEngine().compareWrittenRecall(userString, expected);
     setVerified(result);
     // The "score" here is how much of the verse the user got right in one
     // pass. Drives the recommendation for the next mode.

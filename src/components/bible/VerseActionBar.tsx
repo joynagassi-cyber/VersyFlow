@@ -25,8 +25,8 @@ import {
   Tag,
   ArrowLeftRight,
 } from 'lucide-react';
-import { BIBLE_BOOKS } from '@/domains/bible/entities';
-import { eventBus, DomainEventTypes } from '@/domains/events';
+import { BIBLE_BOOKS_LIST as BIBLE_BOOKS } from '@/services/memorization-session-service';
+import { eventBus, DomainEventTypes } from '@/services/events-service';
 import { getVerseNote, saveVerseNote } from '@/services/verse-note-service';
 import { getSemanticService } from '@/services/semantic-query-service';
 import { useHighlightStore, type HighlightState } from '@/store/highlight-store';

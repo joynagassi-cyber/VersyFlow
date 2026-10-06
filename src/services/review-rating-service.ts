@@ -8,8 +8,9 @@
  * Offline-first: mapping is pure and always works offline.
  */
 
-import { IFsrsEngine, Rating } from '@/domains/fsrs';
+import { IFsrsEngine } from '@/domains/fsrs';
 import {
+  Rating,
   ReviewRatingButton,
   REVIEW_RATING_BUTTONS,
   ratingButtonToFsrsRating,
@@ -17,6 +18,15 @@ import {
   ratingButtonI18nKey,
   buildReviewCompletedPayload,
 } from '@/domains/fsrs';
+
+/**
+ * Re-exports of the domain rating constants/types, kept in the service
+ * layer so UI screens (which import no domain values, docs/29 §1
+ * Exception 4) can reference `Rating`/`ReviewRatingButton` without a
+ * direct `@/domains/fsrs` value import.
+ */
+export { Rating, ReviewRatingButton };
+export type { Rating as RatingType };
 
 export interface ReviewRatingResult {
   /** The button the user tapped */

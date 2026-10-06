@@ -41,8 +41,8 @@ import { useAuthStore } from '@/store/auth-store';
 import { ALL_TABS, useUiStore } from '@/store/ui-store';
 import { useSettingsStore } from '@/store/settings-store';
 import { useFamilyStore } from '@/store/family-store';
-import { eventBus, DomainEventTypes } from '@/domains/events';
-import { SUPPORTED_LANGUAGES, isRTL } from '@/domains/i18n/config';
+import { eventBus, DomainEventTypes } from '@/services/events-service';
+import { SUPPORTED_LANGUAGES, isRTL } from '@/services/i18n-service';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 type SettingsTab = 'data' | 'params' | 'profile';

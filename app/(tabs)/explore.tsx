@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Search, BookOpen, ChevronRight, Network } from 'lucide-react';
 import { Input } from '@/components/ui/input';
-import { BIBLE_BOOKS } from '@/domains/bible/entities';
+import { BIBLE_BOOKS_LIST as BIBLE_BOOKS } from '@/services/memorization-session-service';
 import type { BibleBook } from '@/domains/bible/entities';
 
 export default function ExploreScreen() {

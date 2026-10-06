@@ -251,14 +251,43 @@
   isolation (file total ~8.4 s, vs. prior flaky ~49–98 s under load).
 
 ### Still open (lower priority, tracked here for the next pass)
-- **P2-doc-drift** (High): ~26 `app/` + `src/components/` value-imports from
-  `src/domains/` remain (hooks are now Exception-4 clean). Several facades
-  already exist to route through (`recall-comparison-service.ts`,
-  `memorization-session-service.ts`, `i18n-service.ts`,
-  `review-rating-service.ts`, `translation-comparison-service.ts`); the
-  remaining `app/` pages import domain values directly and need to be
-  routed through those existing services (do NOT create `useBibleBooks()`
-  hooks — that would just relocate the violation).
+- **P2-doc-drift — DONE (this pass)**: all ~26 `app/` + `src/components/`
+  value-imports from `src/domains/` are now routed through service
+  facades (0 remaining value-imports; 16 type-only imports stay legal
+  per docs/29 §6 Exception 4). New/extended facades:
+  - `src/services/events-service.ts` (NEW) — re-exports `eventBus` +
+    `DomainEventTypes` + `type DomainEvent` (was: 7 UI files value-imported
+    `@/domains/events` / `@/domains` barrel directly).
+  - `src/services/i18n-service.ts` — already re-exported
+    `SUPPORTED_LANGUAGES`/`isRTL`/`DEFAULT_LANGUAGE`/`FALLBACK_LANGUAGE`/
+    `normalizeLocaleCode`; now the legal entry point for the 3 UI files
+    that used to import `@/domains/i18n/config` directly.
+  - `src/services/memorization-session-service.ts` — added
+    `createLocalBibleRepository(source)` (concrete repo constructor
+    injection, docs/29 §4) + `export { Rating }` / `RATING_HARD`/`GOOD`/
+    `EASY` numeric constants + `type MemorizationSessionEngine` /
+    `SessionEngine` re-exports (was: `app/memorization/session.tsx`
+    value-imported 4 domain symbols directly).
+  - `src/services/review-rating-service.ts` — added `export { Rating,
+    ReviewRatingButton }` + `type Rating as RatingType` (was: 4 UI files
+    value-imported `@/domains/fsrs`'s `Rating` enum directly; also fixed a
+    pre-existing duplicate `ReviewRatingButton` import in this file).
+  - `src/services/translation-preference-service.ts` — added
+    `BIBLE_TRANSLATION_REGISTRY` re-export (was: `app/comparison/
+    translation.tsx` value-imported `DEFAULT_BIBLE_TRANSLATIONS` directly;
+    also repaired a broken edit that had orphaned
+    `getKnownTranslationIds()`'s function body).
+  - `src/services/recall-comparison-service.ts` — existing
+    `getComparisonEngine()` facade now also serves `src/components/
+    memorization/ModeWrite.tsx` + `ModeMask.tsx` (was: both instantiated
+    `new ComparisonEngine()` directly, importing the class as a value).
+  15 files touched in `app/` + `src/components/`: `(tabs)/settings`,
+  `(tabs)/explore`, `settings/languages`, `settings/available-
+  translations`, `notifications`, `review/session`, `review/History`,
+  `bible/explorer`, `bible/chapter`, `bible/book`, `onboarding/
+  language-select`, `comparison/translation`, `memorization/session`,
+  `components/bible/VerseActionBar`, `components/memorization/ModeCards` +
+  `ModeWrite` + `ModeMask`. tsc 0.
 - **P3-doc-drift** (Medium): add `index.ts` barrels to
   `domains/streaks/`, `domains/telemetry/`, `domains/i18n/`; rename
   `domains/memorization/strategy-recommendor.ts` (typo, port interface
@@ -272,7 +301,11 @@
   obsolete Expo/Expo-RoR layout.
 - **Test-coverage** (High): `domains/streaks/` and `domains/telemetry/` have
   no direct unit tests; `fsrs/rating.ts` 4 functions untested.
-- **Perf P1** (High): `app/search/index.tsx` full-corpus filter+sort on every
-  keystroke, no debounce. P4 (Medium): 0 `React.memo` in the app. P5
-  (Medium): `ManuscriptView` O(n·m) `Array.includes`. P7 (Low): ~30
+- **Perf P1 — DONE (this pass)**: `app/search/index.tsx` now debounces the
+  full-corpus filter (250 ms), precomputes lowercased `refLower`/`bookLower`/
+  `textLower` once at index-build time (no per-keystroke `toLowerCase()`
+  over ~35k verses), and drops the O(n log n) sort in favor of a two-way
+  reference-prefix partition (the relevance score only ever had two
+  values). `c8d936e`. Still open: P4 (Medium): 0 `React.memo` in the app.
+  P5 (Medium): `ManuscriptView` O(n·m) `Array.includes`. P7 (Low): ~30
   Zustand whole-store call sites without selectors.

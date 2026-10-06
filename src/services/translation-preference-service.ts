@@ -36,3 +36,8 @@ export function getTranslationPreferenceRepository(): ITranslationPreferenceRepo
 export function getKnownTranslationIds(): readonly string[] {
   return DEFAULT_BIBLE_TRANSLATIONS.map((t) => t.id);
 }
+
+/** Default translation registry exposed to UI screens via the service
+ *  layer (docs/29 §1 Exception 4): UI must not import
+ *  `@/domains/bible/registry` values directly. */
+export const BIBLE_TRANSLATION_REGISTRY = DEFAULT_BIBLE_TRANSLATIONS;

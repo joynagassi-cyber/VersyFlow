@@ -7,7 +7,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { ChevronRight, BookOpen } from 'lucide-react';
 import FullScreenPage from '@/components/layout/FullScreenPage';
-import { BIBLE_BOOKS } from '@/domains/bible/entities';
+import { BIBLE_BOOKS_LIST as BIBLE_BOOKS } from '@/services/memorization-session-service';
 
 export default function BookScreen() {
   const { bookId } = useParams();

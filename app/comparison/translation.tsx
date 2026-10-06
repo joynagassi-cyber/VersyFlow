@@ -15,7 +15,7 @@ import { useTranslation } from 'react-i18next';
 import i18next from 'i18next';
 import { Plus, X, Loader2, Languages, Check, Globe } from 'lucide-react';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
-import { BibleTranslationRegistry, DEFAULT_BIBLE_TRANSLATIONS } from '@/domains/bible/registry';
+import { BIBLE_TRANSLATION_REGISTRY as DEFAULT_BIBLE_TRANSLATIONS } from '@/services/translation-preference-service';
 import { bibleTranslationDisplayName, getTranslationDisplayInfo } from '@/services/bible-translation-names';
 import {
   downloadAndLoadTranslationData,

@@ -23,7 +23,7 @@ import {
 import FullScreenPage from '@/components/layout/FullScreenPage';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
-import { BIBLE_BOOKS } from '@/domains/bible/entities';
+import { BIBLE_BOOKS_LIST as BIBLE_BOOKS } from '@/services/memorization-session-service';
 import { bibleTranslationDisplayName } from '@/services/bible-translation-names';
 import { useChapterSemanticTags } from '@/hooks/useSemanticTags';
 import { useBibleData } from '@/hooks/useBibleData';

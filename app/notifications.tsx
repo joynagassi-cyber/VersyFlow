@@ -17,7 +17,7 @@ import { getFsrsEngine } from '@/services/fsrs-factory';
 import { StreakService } from '@/services/streak-service';
 import { ReviewQueueService } from '@/services/review-queue-service';
 import { MilestoneService } from '@/services/milestone-service';
-import { eventBus, DomainEventTypes, type DomainEvent } from '@/domains/events';
+import { eventBus, DomainEventTypes, type DomainEvent } from '@/services/events-service';
 
 interface Notification {
   id: string;

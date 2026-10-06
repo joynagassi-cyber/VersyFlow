@@ -19,9 +19,9 @@ import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Check, PenLine } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { ComparisonEngine } from '@/domains/memorization/comparison-engine';
+import { getComparisonEngine } from '@/services/recall-comparison-service';
 import type { WrittenRecallResult } from '@/domains/memorization/comparison-engine';
-import { Rating as FsrsRating } from '@/domains/fsrs';
+import { Rating as FsrsRating } from '@/services/review-rating-service';
 import { RatingBar } from '@/components/ui/RatingBar';
 
 export interface ModeWriteProps {
@@ -50,7 +50,7 @@ export function ModeWrite({
 
   const handleVerify = () => {
     if (!written.trim()) return;
-    const result = new ComparisonEngine().compareWrittenRecall(written, text);
+    const result = getComparisonEngine().compareWrittenRecall(written, text);
     setVerified(result);
     onRecommendNext?.(result.matchScore);
   };

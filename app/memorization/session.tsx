@@ -10,17 +10,17 @@ import { X, Loader2, ArrowLeft, ArrowRight, CheckCircle } from 'lucide-react';
 import FullScreenPage from '@/components/layout/FullScreenPage';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { LocalBibleRepository } from '@/domains/bible/repository-local';
+
 import { resolveBibleTextSource } from '@/services/bible-text-service';
 import { getFsrsEngine } from '@/services/fsrs-factory';
-import { MemorizationSessionEngine } from '@/domains/memorization/session-engine';
-import { Rating } from '@/domains/fsrs';
-import { resolveBookId } from '@/domains/bible/entities';
+import { createLocalBibleRepository, createWorkspaceEngine, Rating, type MemorizationSessionEngine } from '@/services/memorization-session-service';
+
+import { resolveBookIdFromText as resolveBookId } from '@/services/memorization-session-service';
 import { useActiveProfile } from '@/hooks/useActiveProfile';
 import { useSettingsStore } from '@/store/settings-store';
 import { getMemorizationRepository, getSyncUserIdProvider } from '@/infrastructure/repository/powersync-repositories';
 import type { MemorizationRecord } from '@/domains/memorization/entities';
-import { eventBus, DomainEventTypes } from '@/domains/events';
+import { eventBus, DomainEventTypes } from '@/services/events-service';
 
 /** Resolve the authenticated user id (or null when not signed in). */
 const resolveUserId = async (): Promise<string | null> =>
@@ -102,9 +102,9 @@ export default function MemorizationSession() {
         const source = await resolveBibleTextSource(translationId, (p) =>
           setDownloadPercent(p),
         );
-        const bibleRepo = new LocalBibleRepository(source);
+        const bibleRepo = createLocalBibleRepository(source);
         const fsrsEngine = getFsrsEngine();
-        const memorizationEngine = new MemorizationSessionEngine(bibleRepo, fsrsEngine);
+        const memorizationEngine = createWorkspaceEngine(bibleRepo, fsrsEngine);
 
         await memorizationEngine.startPassage({
           bookId,

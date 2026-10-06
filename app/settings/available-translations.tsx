@@ -34,7 +34,7 @@ import {
 } from '@/services/bible-translation-names';
 import { getTranslationPreferenceRepository } from '@/services/translation-preference-service';
 import { useAuthStore } from '@/store/auth-store';
-import { eventBus, DomainEventTypes } from '@/domains/events';
+import { eventBus, DomainEventTypes } from '@/services/events-service';
 
 type DownloadState =
   | { status: 'idle' }

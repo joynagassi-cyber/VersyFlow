@@ -18,7 +18,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Check, Maximize2, Minimize2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { Rating as FsrsRating } from '@/domains/fsrs';
+import { Rating as FsrsRating } from '@/services/review-rating-service';
 import { RatingBar } from '@/components/ui/RatingBar';
 import type { MemorizationRecord } from '@/domains/memorization/entities';
 

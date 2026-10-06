@@ -32,6 +32,8 @@ import {
   MemorizationSessionEngine,
   SessionEngine,
 } from '@/domains/memorization/session-engine';
+import type { IFsrsEngine } from '@/domains/fsrs';
+export type { MemorizationSessionEngine, SessionEngine };
 import {
   MemorizationService,
 } from '@/domains/memorization/service';
@@ -47,9 +49,34 @@ import {
   type WrittenRecallResult,
 } from '@/domains/memorization/comparison-engine';
 import { Rating } from '@/domains/fsrs';
-import type { IFsrsEngine } from '@/domains/fsrs';
 import type { ILocalBibleRepository } from '@/domains/bible/repository-local';
 import type { IStorage } from '@/infrastructure/storage/storage-types';
+import { LocalBibleRepository } from '@/domains/bible/repository-local';
+import type { IBibleTextSource } from '@/domains/bible/repository-local';
+
+/**
+ * Concrete local bible repository (constructor-injected per docs/29 §4),
+ * exposed through the service layer so UI screens don't value-import
+ * `@/domains/bible/repository-local` directly.
+ */
+export function createLocalBibleRepository(
+  source: IBibleTextSource,
+): ILocalBibleRepository {
+  return new LocalBibleRepository(source);
+}
+
+/**
+ * The domain `Rating` enum (numeric: AGAIN=1…EASY=4), re-exported through
+ * the service layer so UI screens don't value-import `@/domains/fsrs`
+ * directly (docs/29 §1 Exception 4 — value imports must route through
+ * services). The `RATING_*` constants below mirror the enum's numeric
+ * values for the subset of ratings UI screens branch on.
+ */
+export { Rating };
+export const RATING_AGAIN: number = Rating.AGAIN;
+export const RATING_HARD: number = Rating.HARD;
+export const RATING_GOOD: number = Rating.GOOD;
+export const RATING_EASY: number = Rating.EASY;
 
 /** Default exercise strategy for single-verse sessions. */
 export const DEFAULT_SESSION_STRATEGY = DEFAULT_MVP_STRATEGY;

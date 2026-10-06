@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { Check, ArrowLeft, ArrowRight, Languages } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import { SUPPORTED_LANGUAGES, isRTL } from '@/domains/i18n/config';
+import { SUPPORTED_LANGUAGES, isRTL } from '@/services/i18n-service';
 import { I18nService } from '@/services/i18n-service';
 import { useSettingsStore } from '@/store/settings-store';
 

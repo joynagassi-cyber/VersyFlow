@@ -16,9 +16,9 @@ import { useActiveProfile } from '@/hooks/useActiveProfile';
 import { getMemorizationService } from '@/services/memorization-service-factory';
 import { getFsrsEngine } from '@/services/fsrs-factory';
 import { ReviewQueueService } from '@/services/review-queue-service';
-import { Rating } from '@/domains/fsrs';
+import { Rating } from '@/services/review-rating-service';
 import type { MemorizationRecord } from '@/domains/memorization/entities';
-import { eventBus, DomainEventTypes } from '@/domains/events';
+import { eventBus, DomainEventTypes } from '@/services/events-service';
 
 interface ReviewItem {
   record: MemorizationRecord;

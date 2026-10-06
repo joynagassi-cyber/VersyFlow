@@ -12,7 +12,7 @@ import { useSearchParams, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Download, Loader2, AlertCircle, X } from 'lucide-react';
 import FullScreenPage from '@/components/layout/FullScreenPage';
-import { BIBLE_BOOKS } from '@/domains/bible/entities';
+import { BIBLE_BOOKS_LIST as BIBLE_BOOKS } from '@/services/memorization-session-service';
 import { useChapterSemanticTags } from '@/hooks/useSemanticTags';
 import { useBibleData } from '@/hooks/useBibleData';
 import ManuscriptView from '@/components/bible/ManuscriptView';

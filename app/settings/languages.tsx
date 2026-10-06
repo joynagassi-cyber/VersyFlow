@@ -1,9 +1,9 @@
 import { useTranslation } from 'react-i18next';
 import { Check } from 'lucide-react';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
-import { SUPPORTED_LANGUAGES } from '@/domains/i18n/config';
+import { SUPPORTED_LANGUAGES } from '@/services/i18n-service';
 import { useSettingsStore } from '@/store/settings-store';
-import { eventBus, DomainEventTypes } from '@/domains';
+import { eventBus, DomainEventTypes } from '@/services/events-service';
 
 export default function LanguageSettingsScreen() {
   const { t } = useTranslation();
