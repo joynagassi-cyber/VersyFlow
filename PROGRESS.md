@@ -129,3 +129,53 @@
     - P5 (Low) migration 034 commitée + appliquée live (confirmée). À noter :
       30+ migrations CLI-générées sur l'instance partagée absentes de
       `supabase/migrations/` — à arbitrer (back-fill ou documenter).
+
+### Fixed after audit (commits)
+- **`02622d5`** — arch: route hooks through services for domain access
+  (docs/29 Exception 4) + WordFailure domain-owned + 4 tsbuildinfo untracked
+  + `.audit-tmp/` gitignored + CI apk-artifact output fix. 15 files,
+  tsc 0, targeted vitest 25/25.
+- **`dc3b9b3`** — fix(sync): `auth-store.signOut` dispose PowerSync
+  (`syncService.dispose()` + `detachSyncCompletionHandlers()`) → leak
+  cross-user résolu (audit P3-perf, High); `PowerSyncSyncService.startStream`
+  now unsubscribes the prior subscription before re-subscribing
+  (audit P2-perf, High). 2 files, tsc clean.
+- **`2f1c8f4`** (or equivalent, dead-code commit) — delete 7 unreachable
+  legacy components + unused `memorization-store.ts`:
+  `bible/VerseCard`, `bible/WordChip`, `common/HeaderBar`,
+  `common/TabNavigation`, `common/EmptyState`,
+  `bible/ReferenceSearchInput`, `store/memorization-store`. No external
+  consumers (verified by grep; only the two barrels re-exported them and
+  no bare-barrel import exists in app/, src/ or tests/). Barrel exports
+  updated. tsc clean after removal; targeted vitest (3 files, 32 tests)
+  green. This also closes audit P4-doc-drift (31 hardcoded hex literals,
+  2 of them off-palette vs the existing `src/theme/tokens.ts` status
+  colors) — the honest fix is to delete the dead files rather than
+  token-ify them.
+
+### Still open (lower priority, tracked here for the next pass)
+- **P2-doc-drift** (High): ~26 `app/` + `src/components/` value-imports from
+  `src/domains/` remain (hooks are now Exception-4 clean). Several facades
+  already exist to route through (`recall-comparison-service.ts`,
+  `memorization-session-service.ts`, `i18n-service.ts`,
+  `review-rating-service.ts`, `translation-comparison-service.ts`); the
+  remaining `app/` pages import domain values directly and need to be
+  routed through those existing services (do NOT create `useBibleBooks()`
+  hooks — that would just relocate the violation).
+- **P3-doc-drift** (Medium): add `index.ts` barrels to
+  `domains/streaks/`, `domains/telemetry/`, `domains/i18n/`; rename
+  `domains/memorization/strategy-recommendor.ts` (typo, port interface
+  only — not a duplication); amend `docs/30-domain-rulebook.md` to accept
+  the centralized `src/domains/events.ts` barrel instead of per-domain
+  `events.ts`.
+- **P5-doc-drift** (Medium): `docs/05-features.md` gaps (F-002-F favorite
+  toggle UI missing; F-004 Rust WASM is mocked, `src/infrastructure/rust/`
+  doesn't exist; F-006-C 7-day bar chart missing).
+- **P6-doc-drift** (Low): `docs/14-folder-structure.md` still describes the
+  obsolete Expo/Expo-RoR layout.
+- **Test-coverage** (High): `domains/streaks/` and `domains/telemetry/` have
+  no direct unit tests; `fsrs/rating.ts` 4 functions untested.
+- **Perf P1** (High): `app/search/index.tsx` full-corpus filter+sort on every
+  keystroke, no debounce. P4 (Medium): 0 `React.memo` in the app. P5
+  (Medium): `ManuscriptView` O(n·m) `Array.includes`. P7 (Low): ~30
+  Zustand whole-store call sites without selectors.
