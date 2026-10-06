@@ -28,6 +28,14 @@ vi.mock('@/infrastructure/sync/powersync-database', () => ({
   getPowerSyncDatabase: vi.fn(),
 }));
 
+// `getTranslationStats` falls back to a real `fetch()` of the Supabase
+// bucket whenever the seeded dataset cache misses (checksum mismatch / no
+// entry) in dev mode. These are unit tests, not integration tests: keep the
+// process hermetic by stubbing `fetch` to reject immediately so no real
+// network I/O happens and the 5000 ms Vitest default timeout can't be hit
+// waiting on a slow/stale connection.
+vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('network disabled in unit test')));
+
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 type SvcModule = typeof import('@/services/bible-text-service');
 
@@ -137,12 +145,16 @@ describe('getTranslationStats — audit', () => {
   describe('localStorage cache (versyflow-bible-stats-v1, 24h TTL)', () => {
     it('reads a fresh (< 24h) cache entry and returns it without network', async () => {
       const seeded = { chapters: 42, verses: 999, year: 1500 };
-      seedStatsCache('ghost-seeded', seeded, Date.now() - 60_000);
+      seedStatsCache(KNOWN_ID, seeded, Date.now() - 60_000);
+      // Seed a matching dataset cache so the fresh stats entry can actually be
+      // read back (dev mode short-circuits uncatalogued ids before reaching
+      // the stats-cache lookup — see `preferRemoteSource()` above).
+      seedDatasetCache(KNOWN_ID, makeSmallDataset(KNOWN_ID));
 
       const svc = await freshService();
-      const stats = await svc.getTranslationStats('ghost-seeded');
+      const stats = await svc.getTranslationStats(KNOWN_ID);
       expect(stats).toEqual(seeded);
-    });
+    }, 15_000);
 
     it('ignores a stale (> 24h) entry and re-resolves instead', async () => {
       const stale = { chapters: 1, verses: 1 };
@@ -155,7 +167,7 @@ describe('getTranslationStats — audit', () => {
       // returned instead (here the small seeded fixture: 4 chapters, 6 verses).
       expect(stats).not.toEqual(stale);
       expect(stats).toEqual(SMALL_STATS);
-    });
+    }, 15_000);
 
     it('writes a fresh entry to the cache after resolving', async () => {
       seedDatasetCache(KNOWN_ID, makeSmallDataset(KNOWN_ID));
@@ -168,7 +180,7 @@ describe('getTranslationStats — audit', () => {
       const parsed = JSON.parse(raw!) as Record<string, { stats: TranslationStats; at: number }>;
       expect(parsed[KNOWN_ID].stats).toEqual(SMALL_STATS);
       expect(parsed[KNOWN_ID].at).toBeGreaterThan(Date.now() - 60_000);
-    });
+    }, 15_000);
 
     it('survives a corrupted / non-object localStorage payload (SSR-safe)', async () => {
       // `null` is valid JSON that parses to `null`; the reader must treat it

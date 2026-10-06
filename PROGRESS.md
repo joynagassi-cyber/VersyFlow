@@ -225,17 +225,32 @@
   colors) — the honest fix is to delete the dead files rather than
   token-ify them.
 
+### Fixed after audit (commits)
+- **dead-code round 2 commit (`36c4fc1`)** — 8 additional unreachable
+  component files deleted (barrel `src/components/index.ts`, entire
+  `shared/index.tsx` tree, `ui/Text`/`ui/ButtonPrimary`/`ui/ButtonSecondary`/
+  `common/StatCard` + orphan `common/ContextSwitcher`/`common/LearnerSwitcher`),
+  all confirmed `isReal: true` by the re-launched 6-dim audit's verify
+  agents (journal `wf_569d1fc2-8a3`). tsc 0, targeted vitest 80/80, prod
+  build PASS (6m20s).
+- **`bible-text-service-stats.test.ts` — 2 tests hit the 5000 ms Vitest
+  timeout** — root cause was NOT a network fetch (that fallback is already
+  caught-and-swallowed by the service), but `freshService()` (a full
+  `vi.resetModules()` + re-import of the service module, which re-runs the
+  57-dataset `dataset-catalog.json` filter) occasionally taking >5 s on a
+  heavily loaded machine. Fix: (a) stub `globalThis.fetch` to reject
+  immediately so no real network I/O can ever sneak in; (b) rewire the
+  "reads a fresh" test to use `KNOWN_ID` (`ar-nav`, a real catalogued
+  dataset) + a valid `seedDatasetCache` so the stats-cache read path is
+  actually exercised in dev mode (the original used an uncatalogued
+  `ghost-seeded` id, which `preferRemoteSource()` short-circuits before
+  ever reaching the stats-cache lookup — so that test was silently
+  untesting what it claimed to test); (c) raise those 3 tests' per-test
+  timeout to 15 s (the default 5 s was below the cold-cache re-import
+  floor observed: ~5.4 s on a calm machine). Verified: 11/11 green in
+  isolation (file total ~8.4 s, vs. prior flaky ~49–98 s under load).
+
 ### Still open (lower priority, tracked here for the next pass)
-- **`bible-text-service-stats.test.ts` — 2 tests hit the 5000 ms Vitest timeout**
-  ("reads a fresh (< 24h) cache entry and returns it without network" +
-  "ignores a stale (> 24h) entry and re-resolves instead"), both calling
-  `getTranslationStats` on an id whose seeded localStorage dataset cache
-  misses its checksum → falls back to a real `fetch` of a network URL inside
-  a unit test. Confirmed flaky under concurrent load (1187/1187 in prior
-  isolated full-suite runs); fails 3/3 in isolation on a heavily loaded
-  machine. Proper fix: mock `globalThis.fetch` in the test file (or raise the
-  per-test timeout) so the network path never actually runs. Tracked, not
-  fixed yet — out of scope for the dead-code round 2 commit.
 - **P2-doc-drift** (High): ~26 `app/` + `src/components/` value-imports from
   `src/domains/` remain (hooks are now Exception-4 clean). Several facades
   already exist to route through (`recall-comparison-service.ts`,
