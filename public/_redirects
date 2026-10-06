@@ -1,6 +1,1 @@
-<rules>
-  <rule>
-    <from>/*</from>
-    <to>/index.html</to>
-  </rule>
-</rules>
+/*    /index.html   200
