@@ -1,9 +1,9 @@
 /**
  * groupTranslationsByLanguage / sortTranslationsInLanguage — exhaustive audit.
  *
- * Simulates the grouping over the 35 real dataset ids of
- * BIBLE_DATASET_CATALOG (pending stubs de-tkw / pt-brbsl excluded) and
- * verifies:
+ * Simulates the grouping over the 57 real dataset ids of
+ * BIBLE_DATASET_CATALOG (all entries built — no `sha256:pending` stubs
+ * remain) and verifies:
  *  (1) the 8 preferred editions (lsg, frlsg-eb, ostervald, darby,
  *      francrampon, kujv, web, webu) lead their language group, the rest
  *      of each group is alphabetical by id;
@@ -25,12 +25,12 @@ import {
 const CATALOG_IDS = BIBLE_DATASET_CATALOG.map((e) => e.id);
 
 describe('groupTranslationsByLanguage — audit on the real catalogue', () => {
-  it('works on exactly the 48 built dataset ids (pending stubs excluded)', () => {
-    // Ground truth: data/bible/dataset-catalog.json has 48 entries, all
-    // built (the de-tkw / pt-brbsl stubs were built with real checksums,
-    // so `isBuilt` in bible-text-service.ts no longer filters any out)
-    // → 48 built ids.
-    expect(CATALOG_IDS).toHaveLength(48);
+  it('works on exactly the 57 built dataset ids (no pending stubs remain)', () => {
+    // Ground truth: data/bible/dataset-catalog.json has 57 entries, all
+    // built (the Vague 1 + Vague 2 CC-BY-SA datasets all shipped with real
+    // checksums, so `isBuilt` in bible-text-service.ts no longer filters
+    // any out) → 57 built ids.
+    expect(CATALOG_IDS).toHaveLength(57);
   });
 
   it('(1) the 8 preferred editions lead their language group, rest is alphabetical', () => {
@@ -77,27 +77,36 @@ describe('groupTranslationsByLanguage — audit on the real catalogue', () => {
     expect(tail).toEqual([
       'Allemand',
       'Arabe',
+      'Bengali',
       'Birman',
       'Chinois',
       'Coréen',
       'Danois',
       'Espagnol',
+      'Haoussa',
       'Hébreu',
       'Hindi',
+      'Igbo',
       'Italien',
       'Japonais',
+      'Kurde',
       'Latin',
       'Malayalam',
       'Néerlandais',
+      'Ourdou',
       'Persan',
       'Portugais',
       'Russe',
       'Somali',
+      'Sotho',
       'Suédois',
       'Swahili',
       'Tagalog',
+      'Tamoul',
+      'Télougou',
       'Ukrainien',
       'Vietnamien',
+      'Yoruba',
     ]);
   });
 

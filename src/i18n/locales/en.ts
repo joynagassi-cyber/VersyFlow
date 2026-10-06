@@ -600,6 +600,12 @@ export const en = {
     notFound: 'This page does not exist',
   },
   auth: {
+    identify: 'Who are you?',
+    identifySubtitle: 'Enter your email and your name to continue',
+    name: 'Your name',
+    continue: 'Continue',
+    ready: "You're identified",
+    readySubtitle: 'You can continue directly.',
     login: 'Sign in',
     loginSubtitle: 'Access your VersyFlow dashboard',
     email: 'Email address',
