@@ -23,6 +23,9 @@ export default defineConfig({
         target: 'esnext',
         minify: true,
         rollupOptions: {
+            // Explicit single entry (index.html) so entry discovery is
+            // deterministic — matches the .ts config's pinned entry.
+            input: resolve(__dirname, 'index.html'),
             output: {
                 manualChunks: {
                     // Vendor chunks
@@ -31,8 +34,6 @@ export default defineConfig({
                     'vendor-react': ['react', 'react-dom', 'react-router-dom'],
                     'vendor-zustand': ['zustand'],
                     'vendor-i18n': ['i18next', 'react-i18next'],
-                    // InsForge SDK isolated
-                    'vendor-insforge': ['@insforge/sdk'],
                     // Icon library
                     'vendor-ionicons': ['ionicons'],
                 },
