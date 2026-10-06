@@ -1,3 +1,6 @@
-// Serve index.html for client-side SPA routes (history API fallback).
-// Render Static Site honours _redirects at the publish root.
-* /index.html 200
+<rules>
+  <rule>
+    <from>/*</from>
+    <to>/index.html</to>
+  </rule>
+</rules>
