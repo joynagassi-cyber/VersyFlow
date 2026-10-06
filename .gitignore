@@ -119,3 +119,7 @@ android/app/src/main/assets/public/worker/
 vite.config.d.ts
 *.tsbuildinfo
 tsconfig.build.tsbuildinfo
+
+# Senior-rescue P4 (2026-10-06): build/debris artifacts
+/out/
+scripts/bible/__pycache__/

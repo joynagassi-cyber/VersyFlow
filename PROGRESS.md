@@ -46,7 +46,8 @@
 - P1 i18n parity — [x] 3a488ff
 - P2 catalog audit — [x] 3a488ff
 - P3 migration 034 — [x] 51a0299
-- P4 .gitignore: `out/`, `__pycache__/`, `tsconfig.build.tsbuildinfo` — [ ]
+- P4 .gitignore: `out/`, `__pycache__/`, `tsconfig.build.tsbuildinfo` — [x] (added `/out/` +
+  `scripts/bible/__pycache__/`; `*.tsbuildinfo` already covered since 2026-09 root cleanup)
 - P5 senior-rescue 6-dimension audit (dead-code / doc-drift / security /
   test-coverage / perf / ops) — [ ] **BLOCKED: subagent API ECONNREFUSED
   all 6 audit agents (workflow wf_4f83b20b-5fb, 0/6 completed); re-run when
