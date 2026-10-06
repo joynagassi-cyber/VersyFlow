@@ -251,61 +251,71 @@
   isolation (file total ~8.4 s, vs. prior flaky ~49–98 s under load).
 
 ### Still open (lower priority, tracked here for the next pass)
-- **P2-doc-drift — DONE (this pass)**: all ~26 `app/` + `src/components/`
-  value-imports from `src/domains/` are now routed through service
-  facades (0 remaining value-imports; 16 type-only imports stay legal
-  per docs/29 §6 Exception 4). New/extended facades:
-  - `src/services/events-service.ts` (NEW) — re-exports `eventBus` +
-    `DomainEventTypes` + `type DomainEvent` (was: 7 UI files value-imported
-    `@/domains/events` / `@/domains` barrel directly).
-  - `src/services/i18n-service.ts` — already re-exported
-    `SUPPORTED_LANGUAGES`/`isRTL`/`DEFAULT_LANGUAGE`/`FALLBACK_LANGUAGE`/
-    `normalizeLocaleCode`; now the legal entry point for the 3 UI files
-    that used to import `@/domains/i18n/config` directly.
-  - `src/services/memorization-session-service.ts` — added
-    `createLocalBibleRepository(source)` (concrete repo constructor
-    injection, docs/29 §4) + `export { Rating }` / `RATING_HARD`/`GOOD`/
-    `EASY` numeric constants + `type MemorizationSessionEngine` /
-    `SessionEngine` re-exports (was: `app/memorization/session.tsx`
-    value-imported 4 domain symbols directly).
-  - `src/services/review-rating-service.ts` — added `export { Rating,
-    ReviewRatingButton }` + `type Rating as RatingType` (was: 4 UI files
-    value-imported `@/domains/fsrs`'s `Rating` enum directly; also fixed a
-    pre-existing duplicate `ReviewRatingButton` import in this file).
-  - `src/services/translation-preference-service.ts` — added
-    `BIBLE_TRANSLATION_REGISTRY` re-export (was: `app/comparison/
-    translation.tsx` value-imported `DEFAULT_BIBLE_TRANSLATIONS` directly;
-    also repaired a broken edit that had orphaned
-    `getKnownTranslationIds()`'s function body).
-  - `src/services/recall-comparison-service.ts` — existing
-    `getComparisonEngine()` facade now also serves `src/components/
-    memorization/ModeWrite.tsx` + `ModeMask.tsx` (was: both instantiated
-    `new ComparisonEngine()` directly, importing the class as a value).
-  15 files touched in `app/` + `src/components/`: `(tabs)/settings`,
-  `(tabs)/explore`, `settings/languages`, `settings/available-
-  translations`, `notifications`, `review/session`, `review/History`,
-  `bible/explorer`, `bible/chapter`, `bible/book`, `onboarding/
-  language-select`, `comparison/translation`, `memorization/session`,
-  `components/bible/VerseActionBar`, `components/memorization/ModeCards` +
-  `ModeWrite` + `ModeMask`. tsc 0.
-- **P3-doc-drift** (Medium): add `index.ts` barrels to
-  `domains/streaks/`, `domains/telemetry/`, `domains/i18n/`; rename
-  `domains/memorization/strategy-recommendor.ts` (typo, port interface
-  only — not a duplication); amend `docs/30-domain-rulebook.md` to accept
-  the centralized `src/domains/events.ts` barrel instead of per-domain
-  `events.ts`.
-- **P5-doc-drift** (Medium): `docs/05-features.md` gaps (F-002-F favorite
-  toggle UI missing; F-004 Rust WASM is mocked, `src/infrastructure/rust/`
-  doesn't exist; F-006-C 7-day bar chart missing).
-- **P6-doc-drift** (Low): `docs/14-folder-structure.md` still describes the
-  obsolete Expo/Expo-RoR layout.
-- **Test-coverage** (High): `domains/streaks/` and `domains/telemetry/` have
-  no direct unit tests; `fsrs/rating.ts` 4 functions untested.
-- **Perf P1 — DONE (this pass)**: `app/search/index.tsx` now debounces the
-  full-corpus filter (250 ms), precomputes lowercased `refLower`/`bookLower`/
-  `textLower` once at index-build time (no per-keystroke `toLowerCase()`
-  over ~35k verses), and drops the O(n log n) sort in favor of a two-way
-  reference-prefix partition (the relevance score only ever had two
-  values). `c8d936e`. Still open: P4 (Medium): 0 `React.memo` in the app.
-  P5 (Medium): `ManuscriptView` O(n·m) `Array.includes`. P7 (Low): ~30
-  Zustand whole-store call sites without selectors.
+- **P2-doc-drift — DONE**: all ~26 `app/` + `src/components/` value-imports
+  routed through service facades (commit `9bda773`). 0 value-imports of
+  `@/domains/` remaining in `app/` + `src/components/` (16 type-only stay
+  legal per docs/29 §6 Exception 4). `470ca25` deduped a stale
+  `RATING_AGAIN` redeclaration introduced by that commit.
+- **P3-doc-drift — DONE** (commit `a5baf41`):
+  - `index.ts` barrels added to `src/domains/streaks/`,
+    `src/domains/telemetry/`, `src/domains/i18n/` (all 3 previously
+    missing — `bible`, `family`, `fsrs`, `memorization`, `progress`,
+    `semantic-memory`, `learner-profile`, `family-invitation` already had
+    their own `index.ts`, confirmed by `ls`).
+  - `src/domains/memorization/strategy-recommendor.ts` → renamed
+    `strategy-recommender-port.ts` (typo in the port-interface filename;
+    the concrete `src/services/strategy-recommender.ts` keeps its correct
+    spelling, so the pair now reads `strategy-recommender` (service) /
+    `strategy-recommender-port` (domain port) with no visual collision).
+    2 import sites updated (`src/services/review-queue-service.ts`,
+    `src/services/strategy-recommender.ts`) + `src/domains/memorization/
+    index.ts` re-export + `tests/unit/services/strategy-recommender.test.ts`.
+    tsc 0, 59/59 targeted tests green.
+- **P5-doc-drift — PARTIALLY DONE** (commit `d118d68`):
+  - `docs/05-features.md` F-002-F "Versets favoris" now explicitly
+    annotated as **defined but toggle UI absent** — the `FAVORITE_TOGGLED`
+    domain event is declared in `src/domains/events.ts` but no UI component
+    ever emits it; `MemorizationRecord.favorite` is never read back. The
+    doc now names `VerseActionBar` as the place to implement the toggle
+    and `app/collections/` as the filter surface.
+  - F-006-C "Graphique hebdomadaire" closed: `app/analytics/dashboard.tsx`
+    already renders a weekly-trend card (`thisWeek`/`lastWeek`/
+    `changePercentage`, `stats.weeklyTrend`) — the audit's "bar chart 7
+    jours manquant" was a false positive.
+  - **Still open**: F-004 "Rust WASM" — `src/infrastructure/rust/`
+    doesn't exist in the tree; `rust/fsrs-wasm/` holds the Rust source
+    but `src/domains/fsrs/wasm-engine.ts` is the loader and
+    `fallback-engine.ts` (SM-2) is what actually ships. Doc should note
+    the WASM build pipeline is not wired into the Vite bundle yet.
+- **P6-doc-drift — DONE** (commit `d118d68`): `docs/14-folder-structure.md`
+  §1 arborescence fully rewritten to match the real Vite/Capacitor layout
+  (React Router v6, `data/bible/*.json`, `rust/fsrs-wasm/`, `powersync/`,
+  `supabase/migrations/`, `scripts/`, `tests/` Vitest, `.github/
+  workflows/ci-cd.yml`). Old section described an obsolete Expo Router /
+  Metro / Detox / 5-locale layout. A ⚠️ banner at the top of §2 makes the
+  2026-10-07 update explicit so no one reads the pre-update tree as SSoT.
+- **Test-coverage — PARTIALLY DONE**:
+  - `src/domains/streaks/` (port-only, no testable rule) — covered by
+    `tests/unit/services/streak-service.test.ts` (17 tests) and the new
+    `tests/unit/services/streak-coordinator.test.ts` (6 tests, added in
+    `a5baf41`, exercises `startStreakCoordinator` wiring +
+    fire-and-forget semantics + disposer).
+  - `src/domains/telemetry/` — `redact()` covered by `tests/unit/domains/
+    telemetry/redaction.test.ts` (3 tests: nested stripping, passthrough,
+    deep nesting). Port `ITelemetry` has no standalone test; concrete
+    `TelemetryService` is covered by `tests/unit/services/telemetry-
+    service.test.ts`. No standalone `ITelemetry` test needed (interface
+    files have no logic).
+  - `src/domains/fsrs/rating.ts` — covered by `tests/unit/review-
+    rating.test.ts` (44 tests, all 4 functions + the button-list
+    invariant). The "4 functions untested" claim in the original audit
+    was stale — the file was already wired to `tests/unit/review-rating.
+    test.ts` (which imports from `@/domains/fsrs` barrel, not the path
+    directly).
+- **Perf P1 — DONE** (commit `c8d936e`): `app/search/index.tsx` now
+  debounces the full-corpus filter (250 ms), precomputes lowercased
+  `refLower`/`bookLower`/`textLower` once at index-build time, and
+  drops the O(n log n) sort for a two-way reference-prefix partition.
+  Still open: P4 (Medium): 0 `React.memo` in the app. P5 (Medium):
+  `ManuscriptView` O(n·m) `Array.includes`. P7 (Low): ~30 Zustand
+  whole-store call sites without selectors.

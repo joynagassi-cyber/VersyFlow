@@ -88,7 +88,7 @@
 |----|---------------|-------------|
 | F-004-A | Calcul FSRS complet |稳定性, difficulté, intervalle, recall probability via Rust WASM |
 | F-004-B | Interface d'abstraction | IFsrsEngine TypeScript port — swap implémentation transparent |
-| F-004-C | Bridge WASM | Chargement asynchrone du .wasm avec health check |
+| F-004-C | Bridge WASM | Chargement asynchrone du .wasm avec health check. **Statut : pipeline build non câblé dans le bundle Vite** — le `rust/fsrs-wasm/` source existe mais aucune règle `vite-plugin-rust-wasm`/npm script `wasm-pack` n'est branchée sur le build. Le `wasm-engine.ts` du domaine reste inactif et le `fallback-engine.ts` (SM-2 JS) est ce qui shippe. Brancher la pipeline WASM avant d'activer ce sub-item en prod. |
 | F-004-D | Fallback SM-2 JS | Algorithme classique si WASM échoue |
 | F-004-E | Historique révision | Chaque révision enregistrée dans ReviewLog |
 | F-004-F | Prédiction prochain rappel | Affiché à l'utilisateur après chaque session |
