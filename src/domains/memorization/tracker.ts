@@ -3,9 +3,17 @@
  *
  * Defines the seam between SessionEngine (domain) and WordFailureTracker (service).
  * Allows injection of mock or alternative implementations for testing.
+ *
+ * `WordFailure` is defined here (domain-owned data type), the service
+ * layer re-exports it for consumer convenience.
  */
 
-import type { WordFailure } from '@/services/word-failure-tracker';
+export interface WordFailure {
+  word: string;
+  failCount: number;
+  lastFailedAt: number;
+  position: number; // Position in the verse
+}
 
 export interface IWordFailureTracker {
   /**

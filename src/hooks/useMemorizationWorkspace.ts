@@ -12,23 +12,29 @@
  *   - review log of past sessions.
  *
  * No business logic here: the domain services (MemorizationSessionEngine,
- * ComparisonEngine, PowerSyncMemorizationService) do the work.
+ * ComparisonEngine, PowerSyncMemorizationService) do the work, routed
+ * through `@/services/` (docs/29 §1 Exception 4 — hooks import domain
+ * types only, no domain values).
  */
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { BIBLE_BOOKS, resolveBookId } from '@/domains/bible/entities';
 import { LocalBibleRepository } from '@/domains/bible/repository-local';
 import { resolveBibleTextSource } from '@/services/bible-text-service';
 import { getFsrsEngine } from '@/services/fsrs-factory';
-import { MemorizationSessionEngine } from '@/domains/memorization/session-engine';
-import { ComparisonEngine } from '@/domains/memorization/comparison-engine';
+import type { MemorizationSessionEngine } from '@/domains/memorization/session-engine';
 import type { WrittenRecallResult } from '@/domains/memorization/comparison-engine';
 import { getMemorizationService } from '@/services/memorization-service-factory';
 import { useActiveProfile } from '@/hooks/useActiveProfile';
 import { useSettingsStore } from '@/store/settings-store';
 import type { MemorizationRecord } from '@/domains/memorization/entities';
-import { Rating as FsrsRating } from '@/domains/fsrs';
+import type { Rating as FsrsRating } from '@/domains/fsrs';
+import {
+  createWorkspaceEngine,
+  compareWrittenRecall,
+  resolveBookIdFromText,
+  BIBLE_BOOKS_LIST,
+} from '@/services/memorization-session-service';
 
 export interface WorkspaceCoords {
   bookId: string;
@@ -83,7 +89,7 @@ export function useMemorizationWorkspace(
   const [revealed, setRevealed] = useState(0);
   const [reviewLogCount, setReviewLogCount] = useState(0);
 
-  const bookName = BIBLE_BOOKS.find((b) => b.id === coords.bookId)?.name.fr ?? coords.bookId;
+  const bookName = BIBLE_BOOKS_LIST.find((b) => b.id === coords.bookId)?.name.fr ?? coords.bookId;
   const referenceLabel = `${bookName} ${coords.chapter}:${coords.verse}`;
 
   // Load the verse text + existing record once per coordinate set.
@@ -123,7 +129,7 @@ export function useMemorizationWorkspace(
         }
 
         const fsrsEngine = getFsrsEngine();
-        const engineInstance = new MemorizationSessionEngine(repo, fsrsEngine);
+        const engineInstance = createWorkspaceEngine(repo, fsrsEngine);
         await engineInstance.startPassage({
           bookId: coords.bookId,
           chapter: coords.chapter,
@@ -199,7 +205,7 @@ export function useMemorizationWorkspace(
   const compareWriting = useCallback(
     (written: string): WrittenRecallResult | null => {
       if (!verseText.trim() || !written.trim()) return null;
-      return new ComparisonEngine().compareWrittenRecall(written, verseText);
+      return compareWrittenRecall(written, verseText);
     },
     [verseText],
   );
@@ -238,7 +244,7 @@ export function useMemorizationWorkspace(
 export function parseWorkspaceReference(reference: string): WorkspaceCoords | null {
   const match = reference.match(/^(.+?)\s*(\d+)(?::(\d+))?$/i);
   if (!match) return null;
-  const bookId = resolveBookId(match[1]);
+  const bookId = resolveBookIdFromText(match[1]);
   if (!bookId) return null;
   const chapter = parseInt(match[2], 10);
   const verse = match[3] ? parseInt(match[3], 10) : 1;

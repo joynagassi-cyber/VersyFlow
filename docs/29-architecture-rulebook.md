@@ -131,6 +131,17 @@ Les mocks peuvent violer les règles d'injection pour faciliter les tests.
 ### Exception 3: Static Mappings
 Mapping statiques de couleurs ou de labels sont autorisés dans les composants.
 
+### Exception 4: Domain Imports from Hooks (Senior-rescue, 2026-10-06)
+
+Les imports **type-only** (`import type { ... } from '@/domains/...'`) dans
+`src/hooks/` sont autorisés : ils ne couplent rien à l'exécution (effacés à
+la compilation). Les imports **value** (classes d'engins, constantes
+exécutables) restent interdits : le hook doit passer par un
+`src/services/` qui orchestre le domaine.
+Règle d'application : si un hook importe une *valeur* (pas seulement un
+type) depuis `src/domains/`, extraire la logique dans un service et
+routiser le hook vers ce service.
+
 ---
 
 *Cette règlebook est immuable. Toute modification nécessite une mise à jour de docs/02-principes-produit.md et docs/09-architecture.md.*

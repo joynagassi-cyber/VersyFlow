@@ -123,3 +123,6 @@ tsconfig.build.tsbuildinfo
 # Senior-rescue P4 (2026-10-06): build/debris artifacts
 /out/
 scripts/bible/__pycache__/
+
+# Senior-rescue P5/ops (2026-10-06): scratch audit scripts
+/.audit-tmp/

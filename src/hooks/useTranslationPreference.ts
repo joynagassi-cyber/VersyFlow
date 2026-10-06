@@ -22,10 +22,12 @@
 
 import { useEffect } from 'react';
 import { useSettingsStore } from '@/store/settings-store';
-import { getTranslationPreferenceRepository } from '@/services/translation-preference-service';
-import { DEFAULT_BIBLE_TRANSLATIONS } from '@/domains/bible/registry';
+import {
+  getKnownTranslationIds,
+  getTranslationPreferenceRepository,
+} from '@/services/translation-preference-service';
 
-const CATALOG: readonly string[] = DEFAULT_BIBLE_TRANSLATIONS.map((t) => t.id);
+const CATALOG: readonly string[] = getKnownTranslationIds();
 
 /**
  * Expose the current translation preference and a setter.

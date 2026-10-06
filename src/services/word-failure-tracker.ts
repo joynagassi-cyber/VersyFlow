@@ -3,14 +3,7 @@
  * Helps identify which words the user consistently forgets
  */
 
-import type { IWordFailureTracker } from '@/domains/memorization/tracker';
-
-export interface WordFailure {
-  word: string;
-  failCount: number;
-  lastFailedAt: number;
-  position: number; // Position in the verse
-}
+import type { IWordFailureTracker, WordFailure } from '@/domains/memorization/tracker';
 
 export class WordFailureTracker implements IWordFailureTracker {
   private failures: Map<string, WordFailure> = new Map(); // word -> failure record
@@ -65,3 +58,10 @@ export class WordFailureTracker implements IWordFailureTracker {
     return this.failures.size;
   }
 }
+
+/**
+ * Re-export of the domain data type — keep this path so existing
+ * consumers that import `WordFailure` from the service layer keep
+ * working (single source of truth remains in the domain).
+ */
+export type { WordFailure } from '@/domains/memorization/tracker';

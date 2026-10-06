@@ -5,18 +5,30 @@
  *
  * Dépendances injectées via `deps` paramètre (defaults: MmkvStorage + fsrs-factory).
  * Testable en injectant des mocks: useMemorizationSession({ storage: mockStorage, fsrsEngine: mockFsrs })
+ *
+ * Architecture (docs/29 §1 Exception 4, senior-rescue 2026-10-06):
+ * Les valeur-domaine (SessionEngine, DEFAULT_MVP_STRATEGY, MemorizationService)
+ * passent via `@/services/memorization-session-service` — le hook n'importe
+ * plus aucune valeur depuis `src/domains/`, uniquement des types.
  */
 
 import { useState, useCallback, useEffect, useRef } from 'react';
-import type { IFsrsEngine} from '@/domains/fsrs';
-import { Rating } from '@/domains/fsrs';
+import type { IFsrsEngine, Rating } from '@/domains/fsrs';
 import { getFsrsEngine } from '@/services/fsrs-factory';
 import type { IStorage } from '@/infrastructure/storage/storage-types';
-import { MemorizationService } from '@/domains/memorization/service';
-import type { ExerciseStrategy, MemorizationTarget, MemorizationTargetType } from '@/domains/memorization/entities';
-import { DEFAULT_MVP_STRATEGY } from '@/domains/memorization/entities';
+import type {
+  ExerciseStrategy,
+  MemorizationTarget,
+  MemorizationTargetType,
+} from '@/domains/memorization/entities';
 import { useSettingsStore } from '@/store/settings-store';
-import { SessionEngine } from '@/domains/memorization/session-engine';
+import type { SessionEngine } from '@/domains/memorization/session-engine';
+import type { MemorizationService } from '@/domains/memorization/service';
+import {
+  RATING_AGAIN,
+  createSessionEngine,
+  createMemorizationService,
+} from '@/services/memorization-session-service';
 
 /**
  * Dépendances injectables pour le hook
@@ -43,7 +55,7 @@ export function useMemorizationSession(deps?: MemorizationSessionDeps) {
   useEffect(() => {
     const storage = deps?.storage;
     const fsrsEngine = deps?.fsrsEngine ?? getFsrsEngine();
-    serviceRef.current = new MemorizationService(storage!, fsrsEngine);
+    serviceRef.current = createMemorizationService(storage!, fsrsEngine);
     setIsLoaded(true);
   }, []);
 
@@ -52,7 +64,7 @@ export function useMemorizationSession(deps?: MemorizationSessionDeps) {
    * Signature legacy: startSession(bookId, chapter, verse, text, reference)
    */
   const startSession = useCallback((bookId: string, chapter: number, verse: number, text: string, reference: string) => {
-    const engine = new SessionEngine(text, DEFAULT_MVP_STRATEGY);
+    const engine = createSessionEngine(text);
     sessionEngineRef.current = engine;
 
     const words = text.split(/\s+/).filter(w => w.length > 0);
@@ -87,7 +99,7 @@ export function useMemorizationSession(deps?: MemorizationSessionDeps) {
    * Accepte un MemorizationTarget et les textes de tous les versets du passage
    */
   const startSessionForTarget = useCallback((target: MemorizationTarget, verseTexts: string[]) => {
-    const engine = new SessionEngine(verseTexts[0], DEFAULT_MVP_STRATEGY);
+    const engine = createSessionEngine(verseTexts[0]);
     engine.initPassage(verseTexts, target.id, target.type);
     sessionEngineRef.current = engine;
 
@@ -251,16 +263,18 @@ export function useMemorizationSession(deps?: MemorizationSessionDeps) {
 
     const isComplete = sessionState.revealedWords.size >= sessionState.words.length;
 
-    if (!isComplete && rating !== Rating.AGAIN) {
+    // Forcer AGAIN si la session n'est pas complète
+    let effectiveRating = rating;
+    if (!isComplete && rating !== RATING_AGAIN) {
       console.warn('Session pas complète, rating forcé à AGAIN');
-      rating = Rating.AGAIN;
+      effectiveRating = RATING_AGAIN as unknown as Rating;
     }
 
     // Dans une version complète, appellerait service.memorizeVerse()
     // Pour le MVP, on met juste à jour l'état local
     const completedState = {
       ...sessionState,
-      rating,
+      rating: effectiveRating,
       completedAt: Date.now(),
       phase: 'confirmed',
     };

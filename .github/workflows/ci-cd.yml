@@ -245,7 +245,7 @@ jobs:
       contents: read
       actions: read
     outputs:
-      apk-artifact: versyflow-release-${{ needs.resolve.outputs.version }}.apk
+      apk-artifact: ${{ needs.resolve.outputs.version }}-android-release.apk
     steps:
       - uses: actions/checkout@v4
 
