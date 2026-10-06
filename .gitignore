@@ -15,6 +15,9 @@ yarn-debug.log
 
 # Testing
 /coverage
+/cypress/videos/
+/cypress/screenshots/
+/cypress/tmp-persistence.log
 
 # Log files
 *.log
