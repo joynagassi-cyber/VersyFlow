@@ -19,7 +19,10 @@
 |---|---|
 | typecheck (`npx tsc --noEmit`) | ✅ 0 errors |
 | lint (`npx eslint app src --ext .ts,.tsx`) | ✅ 0 errors (exit 0) |
-| tests (`npx vitest run`) | ✅ **1187/1187 passed (110 files)** after P1+P2 fixes |
+| tests (`npx vitest run`) | ✅ **1187/1187 passed (110 files)** — re-confirmé **2×** (run sous
+  charge 14:35 + run calme final 14:44, ~4 min 21 s). Note : la ligne
+  `Errors: 1 error` du rapport vitest est un artefact de la
+  `window.close()` teardown du worker PowerSync — 0 test échoué. |
 | prod build (`vite build`) | ✅ **PASS 3 min 58 s (2026-10-06, 4e vérif post-fixes)** — chunk `index.js` 642.74 kB (gzip 178.21 kB), avertissement >500 kB préexistant, non bloquant |
 
 ### Fixed (commits)
