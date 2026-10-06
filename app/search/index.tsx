@@ -1,5 +1,5 @@
 // Fixed: UX — search-index load failure now shows a visible error hint + retry
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Search, X, Clock, GraduationCap, Bookmark, AlertCircle } from 'lucide-react';

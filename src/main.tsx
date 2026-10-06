@@ -122,31 +122,36 @@ import { notificationService } from '@/services/notification-service';
 import type { MemorizationRecord } from '@/domains/memorization/entities';
 import { isRTL, DEFAULT_LANGUAGE, normalizeLocaleCode } from '@/domains/i18n/config';
 
-// Initialize i18n (async — runs on import; app renders after ready)
-(async () => {
+// Initialize i18n + boot-time one-shot wiring (PowerSync lifecycle,
+// telemetry listener + periodic flush, streak event-driven writer).
+//
+// The three `initialize*Store()` calls below hydrate the settings,
+// appearance and ui Zustand stores asynchronously (MmkvStorage →
+// localStorage reads) BEFORE React's first render. This is required
+// for `RootRedirect` to read the persisted `versyflow:onboarding:completed`
+// flag before the first route evaluation: otherwise the router always
+// lands on `/onboarding/welcome` on a hard reload, because the Zustand
+// store still holds its default `onboardingCompleted: false` at the
+// moment `Navigate` fires, and the router does not re-evaluate the `/`
+// redirect after it has pushed to a sub-route. The reads are
+// localStorage-backed (MmkvStorage), so they resolve in <1 ms on the
+// deployed SPA host and add no perceptible startup cost.
+const bootStoresPromise = (async () => {
   await initI18next();
-  // Language resolution order:
-  //  1. Explicit user choice persisted in localStorage ('versyflow:ui:language')
-  //     — written by the settings store on every language change.
-  //  2. Otherwise the i18next detector already applied the device/browser
-  //     locale at init time (first launch).
-  // We read the *final* i18next language so RTL is computed from the value
-  // that actually won, not from a stale guess. Normalize in case the
-  // detector returned a compound tag (e.g. 'es-419').
   const activeLanguage = normalizeLocaleCode(i18next.language ?? DEFAULT_LANGUAGE);
   document.documentElement.dir = isRTL(activeLanguage) ? 'rtl' : 'ltr';
-  initializeSettingsStore();
-  initializeAppearanceStore();
-  initializeUiStore();
-  // Boot-time one-shot wiring: PowerSync lifecycle → sync stores,
-  // telemetry listener + periodic flush, streak event-driven writer.
+  await Promise.all([
+    initializeSettingsStore(),
+    initializeAppearanceStore(),
+    initializeUiStore(),
+  ]);
+  // Sync-side wiring runs after the stores are hydrated so the
+  // `initializeSettingsStore()` side-effects above (language sync,
+  // persisted flag restore) have already landed in the Zustand state.
   attachSyncCompletionHandlers();
   wireAppTelemetry();
   wireStreakCoordinator();
   wireSessionRefresh();
-  // Schedule local push notifications for daily review reminders (no-op on
-  // Web where the Capacitor plugin is unavailable). The service is
-  // store/i18n-free: read the reminder config + translate the body here.
   void scheduleBootReminders();
 })();
 
@@ -385,10 +390,42 @@ function App() {
 const rootElement = document.getElementById('root');
 if (!rootElement) throw new Error('Root element not found');
 const root = createRoot(rootElement);
-root.render(
-  <I18nextProvider i18n={i18next}>
-    <Suspense fallback={null}>
-      <App />
-    </Suspense>
-  </I18nextProvider>,
+
+/**
+ * Gate React's first render on the boot-time store hydration
+ * (`initializeSettingsStore` / `initializeAppearanceStore` /
+ * `initializeUiStore`, awaited inside `bootStoresPromise`).
+ *
+ * Without this gate the router evaluates `/` before the persisted
+ * `versyflow:onboarding:completed` flag has reached the Zustand store,
+ * so `RootRedirect` always fires `Navigate` to `/onboarding/welcome`
+ * on a hard reload — and the router never re-evaluates the `/` route
+ * afterwards, so the screen is stuck on onboarding even when the user
+ * has already completed it. i18next resources also finish loading in
+ * the same async block, so deferring the render there guarantees both
+ * the store and the translations are ready before the first paint.
+ */
+bootStoresPromise.then(
+  () => {
+    root.render(
+      <I18nextProvider i18n={i18next}>
+        <Suspense fallback={null}>
+          <App />
+        </Suspense>
+      </I18nextProvider>,
+    );
+  },
+  (error: unknown) => {
+    console.error('Failed to initialise i18n/stores at boot:', error);
+    // Still render the app — a i18n failure must not leave the user
+    // on a blank screen; components fall back to their English
+    // literals when i18next is not ready.
+    root.render(
+      <I18nextProvider i18n={i18next}>
+        <Suspense fallback={null}>
+          <App />
+        </Suspense>
+      </I18nextProvider>,
+    );
+  },
 );
