@@ -134,6 +134,75 @@
       `supabase/migrations/` — à arbitrer (back-fill ou documenter).
 
 ### Fixed after audit (commits)
+- **`815f9c2`-equivalent (this commit)** — **dead-code round 2** : after
+  `7ded187` deleted 7 legacy components + `memorization-store.ts`, the
+  re-launched 6-dimension audit (workflow `wf_569d1fc2-8a3`, 25 agents)
+  confirmed two more dead trees via adversarial verify agents
+  (`isReal: true`, journal at `subagents/workflows/wf_569d1fc2-8a3/journal.jsonl`):
+
+  **Baril `src/components/index.ts` (entier mort)** — 0 importeur n'importe pas
+  `from '@/components'` (ni `'src/components/index'` ni relatif) dans
+  `app/` + `src/` + `cypress/` + `tests/`. Sa seule raison d'être était de
+  re-exporter 4 composants qui sont eux-mêmes morts :
+  - `ui/ButtonPrimary.tsx` — 0 importeur non-baril
+  - `ui/ButtonSecondary.tsx` — 0 importeur non-baril
+  - `ui/Text.tsx` — 0 importeur non-baril (ne sert que de petit wrapper sur
+    `Primitives` sans client vivant)
+  - `common/StatCard.tsx` — 0 importeur non-baril ; le `shared/index.tsx`
+    définit son **propre** `StatCard` interne (`Primitives/Card` à la ligne
+    288), donc ce n'est PAS le même composant
+  - L'e2e `tests/e2e/theme-ui-flow.test.ts` (ligne 145–170) qui prétend
+    « protéger » ces composants est un stub `const componentExists = true`
+    sans import ni rendu réel — il ne protège rien, donc la suppression
+    ne casse pas le test (re-run 18/18 green confirmé).
+
+  **Arbre `src/components/shared/index.tsx` (entier mort, caveat du verify
+  agent exploité)** — le verify avait signalé que `shared/index.tsx` lui
+    même avait 0 importeurs. Confirmé par grep : aucun import littéral
+    `components/shared` / `components/shared/` nulle part dans
+    `app/` + `src/` + `cypress/` + `tests/`. Ses 11 exports
+    (`ScreenWrapper`, `HeaderBar`, `PrimaryButton`, `SecondaryButton`,
+    `IconButton`, `SectionTitle`, `Card`, `StatCard`, `EmptyState`,
+    `LoadingState` + `IonIcon` re-export) ne sont consommés que par
+    l'e2e stub `theme-ui-flow.test.ts` (mesures `const componentExists =
+    true`), qui n'importe rien de réel. Le `app/` réel a ses propres
+    écrans qui utilisent `FullScreenPage.tsx` + `Primitives` directement,
+    jamais `shared/index.tsx`.
+
+  **2 composants `common/` orphelins (non détectés par le round 1,
+  confirmés par grep)** — `common/ContextSwitcher.tsx` +
+  `common/LearnerSwitcher.tsx` : 0 importeur `from '...ContextSwitcher'`
+  / `LearnerSwitcher` dans `app/`+`src/`+`cypress/`+`tests/` (uniquement
+  référencés par des **commentaires** de l'e2e i18n
+  `tests/unit/i18n/i18next-initialization.test.ts` lignes 195/237, qui
+  spot-checke des clés i18next sans import réel des composants). Morts.
+
+  Fichiers supprimés (8 au total) :
+  - `src/components/index.ts` (baril)
+  - `src/components/ui/Text.tsx`
+  - `src/components/ui/ButtonPrimary.tsx`
+  - `src/components/ui/ButtonSecondary.tsx`
+  - `src/components/common/StatCard.tsx`
+  - `src/components/common/ContextSwitcher.tsx`
+  - `src/components/common/LearnerSwitcher.tsx`
+  - `src/components/shared/index.tsx` (arbre entier)
+
+  **Vérifications** : `tsc --noEmit` → 0 erreur. Vitest ciblé
+  (`theme-ui-flow` + `i18next-initialization` + `semantic/import`) →
+  80/80 green (le seul « Errors: 1 error » du rapport vitest est le
+  `window.close()` teardown du worker PowerSync déjà tracé, non un test
+  qui échoue — 0 test échoué, exit 0). La suite full (hors
+  `semantic/import.test.ts` qui fait déjà 98 s) est en cours de
+  re-confirmation en fond (task `bh4x2hia8`).
+
+  **Note de sécurité** : le grep a confirmé qu'aucun de ces 8 fichiers
+  n'a d'importeur vivant dans `app/` ni `src/` (hors baril mort lui-même
+  et hors self-reference). `Primitives.tsx` (dont `shared/index.tsx`
+  dépendait en lecture) est **indépendant** — il reste importé par
+  `ThemeProvider.tsx`, `tokens.ts`, `useSessionSafety.ts` + 5 autres
+  composants live — donc rien de vivant n'a été cassé. `SyncStatusIndicator.tsx`
+  (le dernier survivant de `common/`) reste en place et est importé par
+  `app/(tabs)/_layout.tsx`.
 - **`02622d5`** — arch: route hooks through services for domain access
   (docs/29 Exception 4) + WordFailure domain-owned + 4 tsbuildinfo untracked
   + `.audit-tmp/` gitignored + CI apk-artifact output fix. 15 files,
