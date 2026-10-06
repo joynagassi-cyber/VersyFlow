@@ -8,9 +8,6 @@ export type { SettingsState } from './settings-store';
 export { useAppearanceStore, initializeAppearanceStore } from './appearance-store';
 export type { AppearanceState, ThemeMode } from './appearance-store';
 
-export { useMemorizationStore } from './memorization-store';
-export type { MemorizationState } from './memorization-store';
-
 export { useReviewStore } from './review-store';
 export type { ReviewState, ReviewQueueItem } from './review-store';
 
