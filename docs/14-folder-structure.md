@@ -9,195 +9,185 @@
 ```
 versyflow/
 │
-├── app/                              # Expo Router (file-based routing)
-│   ├── (tabs)/                       # Tab navigator screens
-│   │   ├── _layout.tsx               # Tab layout shell
+├── app/                              # Écrans (React Router v6 + Ionic — pas de file-based routing)
+│   ├── _layout.tsx                   # Root layout (i18n, ThemeProvider, gate sur store hydration)
+│   ├── +not-found.tsx                # 404 fallback
+│   ├── splash.tsx                    # Splash screen native
+│   ├── notifications.tsx
+│   ├── (tabs)/                       # Tab navigator
+│   │   ├── _layout.tsx               # Tab shell
+│   │   ├── auth/                     # Frictionless identify (email + name)
 │   │   ├── index.tsx                 # Home tab
 │   │   ├── explore.tsx               # Bible explorer tab
 │   │   ├── progress.tsx              # Progress tab
 │   │   └── settings.tsx              # Settings tab
-│   ├── _layout.tsx                   # Root layout (i18n, theme provider)
-│   ├── +not-found.tsx                # 404 fallback
 │   ├── onboarding/
-│   │   ├── _layout.tsx               # Full-screen modal layout
+│   │   ├── _layout.tsx
 │   │   ├── welcome.tsx
 │   │   ├── language-select.tsx
-│   │   └── translation-select.tsx
+│   │   ├── translation-select.tsx
+│   │   ├── session-config.tsx
+│   │   ├── fsrs-introduction.tsx
+│   │   └── reminder-config.tsx
 │   ├── memorization/
-│   │   ├── session.tsx               # MemorizationSessionScreen
-│   │   └── confirm.tsx               # MemorizationConfirmScreen
-│   └── review/
-│       ├── queue.tsx                 # ReviewQueueScreen
-│       ├── session.tsx               # ReviewSessionScreen
-│       └── summary.tsx               # ReviewSummaryScreen
+│   │   ├── session.tsx               # MemorizationSessionScreen (workspace)
+│   │   ├── confirm.tsx
+│   │   ├── workspace.tsx
+│   │   └── flashcard.tsx
+│   ├── review/
+│   │   ├── queue.tsx
+│   │   ├── session.tsx
+│   │   ├── summary.tsx
+│   │   ├── calendar.tsx
+│   │   └── History.tsx
+│   ├── bible/
+│   │   ├── explorer.tsx
+│   │   ├── book.tsx
+│   │   └── chapter.tsx
+│   ├── search/                       # Plein-corpus (debounced)
+│   │   └── index.tsx
+│   ├── comparison/                   # Comparaison multi-traductions
+│   │   ├── index.tsx
+│   │   └── translation.tsx
+│   ├── semantic/                     # Vues sémantiques (5 tabs)
+│   ├── achievements/
+│   ├── analytics/                    # Dashboard + courbes rétention
+│   │   └── dashboard.tsx
+│   ├── collections/
+│   ├── family/
+│   ├── mastery/
+│   ├── memory/
+│   ├── profile/
+│   └── settings/                     # Sous-écrans settings
+│       ├── navigation.tsx
+│       ├── languages.tsx
+│       ├── data.tsx
+│       └── available-translations.tsx
 │
 ├── src/
 │   ├── components/                   # UI components (presentation ONLY)
-│   │   ├── ui/                       # Base primitives
-│   │   │   ├── ButtonPrimary.tsx
-│   │   │   ├── ButtonSecondary.tsx
-│   │   │   ├── Text.tsx
-│   │   │   ├── Icon.tsx
-│   │   │   ├── Input.tsx
-│   │   │   ├── ScrollView.tsx
-│   │   │   ├── Modal.tsx
-│   │   │   └── Skeleton.tsx          # Loading shimmer
-│   │   ├── common/                   # Shared compound components
-│   │   │   ├── HeaderBar.tsx
-│   │   │   ├── TabNavigation.tsx
-│   │   │   ├── EmptyState.tsx
-│   │   │   ├── ToastNotification.tsx
-│   │   │   ├── SearchBar.tsx
-│   │   │   ├── StatCard.tsx
-│   │   │   └── LoadingSpinner.tsx
-│   │   └── bible/                    # Bible-specific UI
-│   │       ├── BookCard.tsx
-│   │       ├── ChapterGrid.tsx
-│   │       ├── VerseCard.tsx
-│   │       ├── WordChip.tsx
-│   │       └── ReferenceSearchInput.tsx
+│   │   ├── ui/                       # Primitives de base (button, card, dialog, input, EmptyState, Primitives.tsx)
+│   │   ├── common/                   # SyncStatusIndicator
+│   │   ├── layout/                   # FullScreenPage
+│   │   ├── navigation/               # BottomTabs, HamburgerMenu, QuickDock
+│   │   ├── bible/                    # ManuscriptView, VerseActionBar
+│   │   ├── memorization/             # ModeCards, ModeMask, ModeReveal, ModeWrite, ModeSwitcher, TranslationMenu
+│   │   ├── profile/                  # ProfileAvatar
+│   │   ├── semantic/                 # VerseSemanticTags
+│   │   ├── brand/                    # AppIcon, Logo
+│   │   ├── shared/                   # (tree mort, à supprimer)
+│   │   ├── ThemeManager.tsx
+│   │   └── ErrorBoundary.tsx
 │   │
-│   ├── domains/                      # Domain layer (pure business logic)
-│   │   ├── bible/                    # Bible domain
-│   │   │   ├── entities.ts           # BibleBook, BibleChapter, BibleVerse
-│   │   │   ├── parser.ts             # ReferenceResolver
-│   │   │   ├── translator.ts         # TranslationRegistry
-│   │   │   ├── repository.ts         # IBibleRepository interface
-│   │   │   └── index.ts
-│   │   ├── fsrs/                     # FSRS domain
-│   │   │   ├── entities.ts           # FsrsState, Rating enum
-│   │   │   ├── engine.ts             # IFsrsEngine interface
-│   │   │   ├── rust-engine.ts        # WasmFsrsEngine impl
-│   │   │   ├── fallback-engine.ts    # SM2FallbackEngine impl
-│   │   │   ├── calculator.ts         # Pure math helpers
-│   │   │   └── index.ts
-│   │   ├── i18n/                     # Internationalization domain
-│   │   │   ├── locales/              # Language files
-│   │   │   │   ├── fr.json
-│   │   │   │   ├── en.json
-│   │   │   │   ├── ar.json
-│   │   │   │   ├── de.json
-│   │   │   │   └── zh.json
-│   │   │   ├── config.ts             # Supported languages, defaults
-│   │   │   ├── directions.ts         # RTL/LTR detection
-│   │   │   ├── hooks.ts              # useI18n hook
-│   │   │   ├── i18n-service.ts       # I18nService class
-│   │   │   └── index.ts
-│   │   ├── memorization/             # Memorization domain
-│   │   │   ├── entities.ts           # MemorizationRecord
-│   │   │   ├── session.ts            # Session management logic
-│   │   │   ├── validator.ts          # Answer validation
-│   │   │   └── index.ts
+│   ├── domains/                      # Domain layer (pure business logic, no I/O)
+│   │   ├── bible/                    # entities, parser, registry, repository, repository-local, canon-maps, schema, document
+│   │   ├── fsrs/                     # engine (IFsrsEngine + Rating), entities, fallback-engine, rating, ts-fsrs-engine, wasm-engine
+│   │   ├── memorization/             # entities, service, session-engine, comparison-engine, tracker, fatigue-detector, strategy-recommender-port, storage-adapter
+│   │   ├── streaks/                  # repository (IStreakRepository) + index.ts
+│   │   ├── telemetry/                # entities, it-telemetry + index.ts
+│   │   ├── i18n/                     # config + index.ts
+│   │   ├── progress/                 # mastery calculation
+│   │   ├── semantic-memory/          # semantic nodes / graph
+│   │   ├── family/ family-invitation/ learner-profile/
+│   │   ├── events.ts                 # eventBus + DomainEventTypes (partagé)
 │   │   └── index.ts                  # Domain barrel
 │   │
-│   ├── services/                     # Application layer (orchestration)
-│   │   ├── bible-service.ts          # Orchestrate Bible domain + storage
-│   │   ├── fsrs-service.ts           # Orchestrate FSRS domain + records
-│   │   ├── settings-service.ts       # User settings persistence
-│   │   ├── progress-service.ts       # Aggregated statistics
-│   │   └── index.ts
+│   ├── services/                     # Application layer (orchestration + composition root)
+│   │   ├── events-service.ts         # Re-export eventBus/DomainEventTypes pour la UI
+│   │   ├── i18n-service.ts           # Re-export SUPPORTED_LANGUAGES/isRTL
+│   │   ├── memorization-session-service.ts   # composition root: createWorkspaceEngine, BIBLE_BOOKS_LIST, Rating, RATING_*
+│   │   ├── review-rating-service.ts  # re-export Rating/ReviewRatingButton
+│   │   ├── translation-preference-service.ts # re-export DEFAULT_BIBLE_TRANSLATIONS
+│   │   ├── recall-comparison-service.ts      # getComparisonEngine()
+│   │   ├── progress-service.ts       # StreakService orchestrator
+│   │   ├── streak-service.ts, streak-coordinator.ts, streak-wiring.ts
+│   │   ├── powersync-memorization-service.ts
+│   │   ├── semantic-query-service.ts
+│   │   ├── (bible-service, fsrs-factory, milestone, notification, sync-completion, qr-generator, …)
 │   │
-│   ├── store/                        # State management (Zustand)
-│   │   ├── settings-store.ts         # User settings state
-│   │   ├── bible-store.ts            # Bible navigation state
-│   │   ├── memorization-store.ts     # Current session state
-│   │   ├── review-store.ts           # Review queue state
+│   ├── store/                        # Zustand v5 (un store par domaine)
+│   │   ├── settings-store, auth-store, bible-store, profile-store, family-store, review-store, sync-store, appearance-store, ui-store, highlight-store, context-store, profile-sync-store, family-sync-store
 │   │   └── index.ts
 │   │
 │   ├── hooks/                        # Custom React hooks (UI glue only)
-│   │   ├── useI18n.ts
-│   │   ├── useTheme.ts
-│   │   ├── useSettings.ts
-│   │   ├── useBibleNavigation.ts
-│   │   ├── useMemorizationSession.ts
-│   │   └── useReviewQueue.ts
+│   │   ├── useI18n, useIonicNavigation, useMemorizationSession, useMemorizationWorkspace,
+│   │   ├── useBibleData, useTranslationPreference, useSemanticTags, useSemanticViews,
+│   │   ├── useSessionSafety, useSyncStatus, useActiveProfile, useLearnerProfile,
+│   │   ├── useFamilyService, useFamilyInvitation, useProfileSyncBridge, useFamilySyncBridge
 │   │
-│   ├── infrastructure/               # Infrastructure layer
-│   │   ├── storage/                  # Storage adapters
-│   │   │   ├── mmkv-storage.ts       # MMKV implementation
-│   │   │   ├── async-storage.ts      # AsyncStorage fallback
-│   │   │   └── storage-types.ts      # IStorage interface
-│   │   ├── rust/                     # Rust integration
-│   │   │   ├── wasm-loader.ts        # WASM module loader
-│   │   │   └── fsrs-wasm-bindings.ts # WebAssembly bindings
-│   │   └── logging/
-│   │       └── logger.ts
+│   ├── capabilities/                 # High-level features composant les stores
+│   │   ├── analytics/ (store + hooks), comparison/, memory/
+│   │   └── index.ts
 │   │
-│   ├── utils/                        # Pure utility functions
-│   │   ├── date-utils.ts
-│   │   ├── string-utils.ts
-│   │   ├── hash-utils.ts
-│   │   └── format-utils.ts
+│   ├── infrastructure/               # Infrastructure layer (I/O)
+│   │   ├── storage/                  # mmkv, capacitor, async-storage, local-storage, storage-types
+│   │   ├── sync/                     # PowerSync (powersync-database, powersync-schema, supabase-power-sync-connector, memorization-mapper, family-mapper, …)
+│   │   ├── repository/               # PowerSync repositories
+│   │   ├── bible/                    # Bible text sources (dataset loader)
+│   │   ├── semantic/                 # Semantic memory adapter
+│   │   ├── migration/
+│   │   ├── logging/
+│   │   └── telemetry/                # ITelemetryUploadPort + NoOp adapter
 │   │
-│   ├── types/                        # Global TypeScript types
-│   │   ├── globals.d.ts
-│   │   └── navigation.d.ts
+│   ├── auth/                         # SupabaseAuth (email + name, aucune validation)
 │   │
-│   └── index.ts                      # Barrel exports
+│   ├── lib/                          # platform.ts (shared helpers), utils.ts
+│   │
+│   └── i18n/                         # i18next + 45 locales (`.ts`)
+│       ├── config.ts, i18next-init.ts, index.ts
+│       └── locales/                  # am, ar, bn, de, dz, en, es, fa, fil, fr, ha, he, hi, id, ig, it, ja, km, ko, ku, lo, ml, ms, my, ne, nl, pl, ps, pt, ru, sd, si, so, st, sw, ta, te, th, tr, tw, ur, vi, yo, zh, zh-Hant
 │
-├── rust/                             # Rust source code (FSRS engine)
-│   ├── Cargo.toml
-│   ├── src/
-│   │   ├── lib.rs                    # Main library entry, #[wasm_bindgen]
-│   │   ├── fsrs_adapter.rs           # WASM-exposed FSRS functions
-│   │   └── utils.rs                  # Rust utilities
-│   └── pkg/                          # Compiled WASM output (.gitignored)
+├── rust/
+│   └── fsrs-wasm/                    # FSRS engine (Rust → WASM) — fallback SM-2 JS en prod
+│       ├── Cargo.toml, Cargo.lock
+│       ├── src/
+│       └── pkg/                      # Compiled .wasm (généré)
 │
-├── data/                             # Static data files
-│   ├── bible/
-│   │   ├── lsg.json                  # Louis Segond 1910 (MVP default)
-│   │   └── .gitkeep
-│   └── .gitkeep
+├── data/
+│   └── bible/
+│       ├── *.json                    # 35 datasets multi-traductions (ar-nav, asv, lsg, …)
+│       └── raw/                      # USFM sources bruts (build inputs, gitignored)
 │
-├── tests/                            # Test files
-│   ├── unit/                         # Unit tests (matching src/ structure)
-│   ├── integration/                  # Integration tests
-│   └── e2e/                          # End-to-end tests (Detox)
+├── powersync/                        # PowerSync Cloud service definition
+│   ├── cli.yaml, service.yaml, sync-config.yaml
+│   └── relay.sql, schema.json
 │
-├── assets/                           # Static assets
-│   ├── images/
-│   │   ├── logo.png
-│   │   └── onboarding/
-│   └── fonts/
+├── supabase/                         # Backend (Postgres + RLS + storage)
+│   ├── config.toml, MIGRATION_GUIDE.md
+│   └── migrations/                   # 0000–00xx_*.sql (SSoT des tables Aurora)
 │
-├── docs/                             # Complete project documentation
-│   ├── 01-vision-produit.md
-│   ├── 02-principes-produit.md
-│   ├── 03-prd.md
-│   ├── 04-user-flows.md
-│   ├── 05-features.md
-│   ├── 06-design-system.md
-│   ├── 07-design-tokens.md
-│   ├── 08-ui-screens.md
-│   ├── 09-architecture.md
-│   ├── 10-data-model.md
-│   ├── 11-bible-domain.md
-│   ├── 12-internationalization.md
-│   ├── 13-fsrs-domain.md
-│   ├── 14-folder-structure.md
-│   ├── 15-implementation-plan.md
-│   ├── 16-ai-dev-guide.md
-│   └── 17-workflows-systeme.md
+├── scripts/                          # Outils de build (bible, i18n, powersync-wire, semantic:build)
 │
-├── .github/
-│   └── workflows/
-│       ├── ci.yml
-│       └── cd.yml
+├── tests/                            # Vitest (pas Jest, plus de Detox)
+│   ├── unit/, integration/, e2e/, sync/, semantic/, auth/, api/, fixtures/
+│   ├── setup.ts, jest-polyfill.ts, global-jest-globals.d.ts
+│   └── test-summary.md
 │
-├── .eslintrc.js
-├── .prettierrc
-├── app.json
-├── babel.config.js
-├── package.json
-├── tsconfig.json
-├── metro.config.js
-├── README.md
-└── .gitignore
+├── assets/                           # Images + polices (@fontsource, bundle offline)
+│
+├── docs/                             # Documentation complète
+│   ├── 01-vision-produit.md  … 33-quality-gates.md
+│   ├── 28-constitution.md, 29-architecture-rulebook.md, 30-domain-rulebook.md, 31-ui-rulebook.md, 32-ai-agent-rulebook.md
+│   └── MEMO.md                       # Index + guide de lecture par agent
+│
+├── .github/workflows/ci-cd.yml       # Pipeline CI/CD (gates → build-web → APK + .ipa signés)
+│
+├── .eslintrc.js, .prettierrc
+├── ionic.config.json, components.json, tailwind.config.js, postcss.config.js, vite.config.js
+├── tsconfig.json, tsconfig.app.json, tsconfig.build.json, tsconfig.node.json, tsconfig.test.json, tsconfig.scripts.json, tsconfig.eslint.json
+├── package.json, package-lock.json
+└── README.md
 ```
 
 ---
 
 ## 2. Règles de Structuration
+
+> ⚠️ **Mise à jour 2026-10-07** : la section 1 (arborescence) décrit le
+> layout **réel** du projet (Vite/React 18 empaqueté dans Capacitor WebView,
+> React Router v6, `data/bible/` 35 datasets, `rust/fsrs-wasm/`,
+> `powersync/`, `supabase/migrations/`). L'ancienne version décrivait un
+> layout Expo Router obsolète — ne pas s'y référer.
 
 ### Règle de DIRECTIONNELLE des dépendances
 

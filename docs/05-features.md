@@ -46,7 +46,7 @@
 | F-002-C | Liste des versets | Verse par verse avec texte complet et status indicator |
 | F-002-D | Recherche par référence | Input qui accepte "Jean 3:16", "Jn 3:16", "Genèse 1:1" → resolution auto |
 | F-002-E | Indicateur statut mémorisation | Chip coloré sur chaque verset: Nouveau (gris), En cours (rose), Maîtrisé (vert) |
-| F-002-F | Versets favoris | Marquer/démarquer un verset comme favori — stocké dans MemorizationRecord.favorite |
+| F-002-F | Versets favoris | Marquer/démarquer un verset comme favori — stocké dans `MemorizationRecord.favorite`. **Statut : défini mais toggle UI absent** (l'événement domaine `FAVORITE_TOGGLED` existe mais aucun composant ne l'émet ; le champ `favorite` n'est jamais retourné). Implémenter un toggle dans `VerseActionBar` + filtrer les favoris dans `app/collections/`. |
 
 ---
 
