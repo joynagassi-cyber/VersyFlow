@@ -8,9 +8,13 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import type { UserProfile } from '@/auth';
 import { SupabaseAuthService, AuthError } from '@/auth';
-import { useSyncStore } from '@/store/sync-store';
+import { useSyncStore, syncService } from '@/store/sync-store';
 import { getSyncUserIdProvider } from '@/infrastructure/repository/powersync-repositories';
 import { invalidateSyncUserIdProvider } from '@/infrastructure/repository/powersync-repositories';
+import {
+  detachSyncCompletionHandlers,
+  attachSyncCompletionHandlers,
+} from '@/services/sync-completion-service';
 
 interface AuthState {
   user: UserProfile | null;
@@ -93,6 +97,14 @@ export const useAuthStore = create<AuthState>()(
           // Clear the local (email + name, no-validation) identity so the gate
           // re-prompts on the next session.
           authService.clearLocalIdentity();
+          // Dispose the PowerSync singleton so the previous user's streams,
+          // DB listener, and poll timer do not survive into the next user's
+          // session (cross-user data leak, audit P3-perf). `dispose()` stops
+          // every on-demand stream and closes the local DB; `detach` stops the
+          // permanent lifecycle listeners. Re-attach on the next sign-in.
+          await (syncService as unknown as { dispose?: () => Promise<void> })
+            .dispose?.();
+          detachSyncCompletionHandlers();
           // Reset the MMKV → PowerSync migration flag so the next login
           // re-runs it for the new user.
           useSyncStore.getState().invalidateMigration();

@@ -166,6 +166,15 @@ export class PowerSyncSyncService implements ISyncService {
    * table changes. The SDK reuses the stream if it is already started.
    */
   async startStream(name: string, params: Record<string, unknown> = {}): Promise<void> {
+    // Idempotent re-subscription: drop the prior subscription first so a
+    // repeated startUserStreams (e.g. syncNow on every write) cannot leak a
+    // stack of live SyncStreamSubscription instances under the same key
+    // (audit P2-perf).
+    const existing = this.streams.get(name);
+    if (existing) {
+      existing.unsubscribe();
+      this.streams.delete(name);
+    }
     await this.ensureStream();
     const db = peekPowerSyncDatabase();
     if (!db) return;
