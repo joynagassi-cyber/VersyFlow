@@ -226,6 +226,16 @@
   token-ify them.
 
 ### Still open (lower priority, tracked here for the next pass)
+- **`bible-text-service-stats.test.ts` — 2 tests hit the 5000 ms Vitest timeout**
+  ("reads a fresh (< 24h) cache entry and returns it without network" +
+  "ignores a stale (> 24h) entry and re-resolves instead"), both calling
+  `getTranslationStats` on an id whose seeded localStorage dataset cache
+  misses its checksum → falls back to a real `fetch` of a network URL inside
+  a unit test. Confirmed flaky under concurrent load (1187/1187 in prior
+  isolated full-suite runs); fails 3/3 in isolation on a heavily loaded
+  machine. Proper fix: mock `globalThis.fetch` in the test file (or raise the
+  per-test timeout) so the network path never actually runs. Tracked, not
+  fixed yet — out of scope for the dead-code round 2 commit.
 - **P2-doc-drift** (High): ~26 `app/` + `src/components/` value-imports from
   `src/domains/` remain (hooks are now Exception-4 clean). Several facades
   already exist to route through (`recall-comparison-service.ts`,
