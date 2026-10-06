@@ -9,6 +9,7 @@ import { loadTranslationBooks } from '@/services/bible-text-service';
 import { useSettingsStore } from '@/store/settings-store';
 
 const HISTORY_KEY = 'versyflow:search:history';
+const DEBOUNCE_MS = 250;
 
 interface SearchResult {
   id: string;
@@ -20,15 +21,33 @@ interface SearchResult {
   relevance: number;
 }
 
-function quickMatch(row: SearchResult, q: string): boolean {
+/**
+ * Pre-lowercased row shape: everything `handleSearch`/`quickMatch` need is
+ * already in lowercase, so the per-keystroke filter runs a plain
+ * `String.prototype.includes` over flat strings with zero per-row
+ * case-conversion (the old code called `toLowerCase()` 4× per candidate
+ * verse on every keystroke over the whole corpus).
+ */
+interface SearchRow {
+  id: string;
+  reference: string;
+  refLower: string;
+  book: string;
+  bookLower: string;
+  chapter: number;
+  verse: number;
+  text: string;
+  textLower: string;
+  relevance: number;
+}
+
+function quickMatch(row: SearchRow, q: string): boolean {
+  // `q` is expected to arrive lowercased (callers pass it through .toLowerCase()).
   const m = q.match(/^(.*?)\s*(\d.*)?$/);
-  const bookPart = (m?.[1] ?? q).trim().toLowerCase();
-  const refPart = (m?.[2] ?? '').toLowerCase().replace(/^:+/, '');
-  const bookHit =
-    !bookPart ||
-    row.book.toLowerCase().startsWith(bookPart) ||
-    row.book.toLowerCase().includes(bookPart);
-  const refHit = !refPart || String(row.chapter + ':' + row.verse).includes(refPart);
+  const bookPart = (m?.[1] ?? q).trim();
+  const refPart = (m?.[2] ?? '').replace(/^:+/, '');
+  const bookHit = !bookPart || row.bookLower.startsWith(bookPart) || row.bookLower.includes(bookPart);
+  const refHit = !refPart || `${row.chapter}:${row.verse}`.includes(refPart);
   return bookHit && refHit;
 }
 
@@ -38,7 +57,7 @@ export default function SearchScreen() {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<SearchResult[]>([]);
   const [showHistory, setShowHistory] = useState(true);
-  const [index, setIndex] = useState<SearchResult[]>([]);
+  const [index, setIndex] = useState<SearchRow[]>([]);
   const [indexError, setIndexError] = useState<string | null>(null);
   const [searchHistory, setSearchHistory] = useState<string[]>(() => {
     try {
@@ -52,17 +71,23 @@ export default function SearchScreen() {
 
   const buildIndex = (booksData: Awaited<ReturnType<typeof loadTranslationBooks>>) => {
     if (!booksData) return;
-    const rows: SearchResult[] = [];
+    const rows: SearchRow[] = [];
     for (const book of booksData) {
+      const bookName = book.name.fr;
+      const bookLower = bookName.toLowerCase();
       for (const ch of book.chapters ?? []) {
         for (const v of ch.verses ?? []) {
+          const reference = `${bookName} ${ch.number}:${v.number}`;
           rows.push({
             id: book.id + '-' + ch.number + '-' + v.number,
-            reference: book.name.fr + ' ' + ch.number + ':' + v.number,
-            book: book.name.fr,
+            reference,
+            refLower: reference.toLowerCase(),
+            book: bookName,
+            bookLower,
             chapter: ch.number,
             verse: v.number,
             text: v.text,
+            textLower: v.text.toLowerCase(),
             relevance: 0,
           });
         }
@@ -104,35 +129,79 @@ export default function SearchScreen() {
     });
   };
 
+  /**
+   * Filter the pre-lowercased index for a query, bucket reference-prefix
+   * matches first (the only meaningful relevance split — full-text hits are
+   * all equally "good"), and cap the result set. Returns `null` when the
+   * query is too short to bother searching (same threshold as before: 2+
+   * chars) so callers can treat `null` as "no search performed yet".
+   */
+  const filterIndex = (raw: string): SearchResult[] | null => {
+    const q = raw.trim().toLowerCase();
+    if (q.length < 2) return null;
+    const matches = index
+      .filter((r) => r.refLower.includes(q) || r.bookLower.includes(q) || r.textLower.includes(q))
+      .sort((a, b) =>
+        (b.refLower.startsWith(q) ? 1 : 0) - (a.refLower.startsWith(q) ? 1 : 0),
+      )
+      .slice(0, 25)
+      .map((r) => ({ ...r, relevance: r.refLower.startsWith(q) ? 100 : 60 }))
+      .map(({ id, reference, book, chapter, verse, text, relevance }) => ({
+        id, reference, book, chapter, verse, text, relevance,
+      }));
+    return matches;
+  };
+
+  /**
+   * Debounced "run a search" trigger. `query` is what the input box shows
+   * (instant); `debouncedQuery` is what actually drives the index filter,
+   * so a fast typer only triggers a full-corpus scan on the last pause,
+   * not on every intermediate keystroke.
+   */
+  const [debouncedQuery, setDebouncedQuery] = useState('');
+  const debouncedQueryRef = useRef('');
+  useEffect(() => {
+    debouncedQueryRef.current = query;
+    const handle = setTimeout(() => setDebouncedQuery(query), DEBOUNCE_MS);
+    return () => clearTimeout(handle);
+  }, [query]);
+
   const handleSearch = (text: string) => {
     setQuery(text);
     setShowHistory(false);
-    if (text.length < 2) {
+    // No synchronous filter here anymore — the debounced value below is
+    // what triggers the actual full-corpus scan, and it runs only after
+    // the user pauses typing.
+  };
+
+  useEffect(() => {
+    if (debouncedQuery.length < 2) {
       setResults([]);
       return;
     }
-    const q = text.trim().toLowerCase();
-    const matches = index
-      .filter(
-        (r) =>
-          r.reference.toLowerCase().includes(q) ||
-          r.book.toLowerCase().includes(q) ||
-          r.text.toLowerCase().includes(q),
-      )
-      .map((r) => ({ ...r, relevance: r.reference.toLowerCase().startsWith(q) ? 100 : 60 }))
-      .sort((a, b) => b.relevance - a.relevance)
-      .slice(0, 25);
-    setResults(matches);
-    if (matches.length > 0) recordHistory(text.trim());
-  };
+    const matches = filterIndex(debouncedQuery);
+    setResults(matches ?? []);
+    if (matches && matches.length > 0) recordHistory(debouncedQuery.trim());
+    // `filterIndex` is intentionally re-created each render (depends on the
+    // live `index`); re-running on `index` changes is correct — a freshly
+    // loaded corpus should re-filter the in-flight query.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [debouncedQuery, index]);
 
   const handleQuickSearch = (reference: string) => {
     setQuery(reference);
     setShowHistory(false);
+    // Quick-search is a deliberate, full-corpus lookup (user clicked a
+    // concrete reference, not typing free text) — run it immediately,
+    // bypassing the debounce.
+    const q = reference.toLowerCase();
     const matches = index
-      .filter((r) => quickMatch(r, reference.toLowerCase()))
+      .filter((r) => quickMatch(r, q))
+      .slice(0, 25)
       .map((r) => ({ ...r, relevance: 100 }))
-      .slice(0, 25);
+      .map(({ id, reference: ref, book, chapter, verse, text, relevance }) => ({
+        id, reference: ref, book, chapter, verse, text, relevance,
+      }));
     setResults(matches);
     if (matches.length > 0) recordHistory(reference);
   };
