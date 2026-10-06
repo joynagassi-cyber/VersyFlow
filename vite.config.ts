@@ -54,6 +54,10 @@ export default defineConfig({
     target: 'esnext',
     minify: true,
     chunkSizeWarningLimit: 500,
+    // Explicit single entry (index.html) so entry discovery is deterministic.
+    rollupOptions: {
+      input: resolve(__dirname, 'index.html'),
+    },
   },
   worker: {
     format: 'es',
