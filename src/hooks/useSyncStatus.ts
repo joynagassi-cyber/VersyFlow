@@ -65,5 +65,8 @@ export function useSyncStatus(): SyncStatus {
   const now = Date.now();
   const elapsedMs = lastSyncAt ? now - lastSyncAt : null;
 
-  return { phase, lastSyncAt, error, elapsedMs, isReady: dbReady };
+  return useMemo(
+    () => ({ phase, lastSyncAt, error, elapsedMs, isReady: dbReady }),
+    [phase, lastSyncAt, error, elapsedMs, dbReady],
+  );
 }
