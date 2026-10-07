@@ -100,7 +100,7 @@ export function ManuscriptView({
                     e.stopPropagation();
                     onSelectVerse(verse.number);
                   }}
-                  aria-label={`Sélectionner le verset ${verse.number}`}
+                  aria-label={t('bible.selectVerseAria', { n: verse.number, defaultValue: `Sélectionner le verset ${verse.number}` })}
                 >
                   {verse.number}
                 </sup>

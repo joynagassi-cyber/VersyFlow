@@ -35,7 +35,9 @@ export default function ChapterScreen() {
   // display names or chapter counts.
   const bookId = urlParams.bookId ?? params.get('book') ?? 'gen';
   const chapter = Number(urlParams.chapterNumber ?? params.get('chapter') ?? '1');
-  const book = byId.get(bookId) ?? byId.get('gen') ?? byId.get('mat');
+  // The static structure (BIBLE_BOOKS, 66 books) guarantees at least `gen`
+  // and `mat` resolve; `byId.get()` therefore never returns undefined here.
+  const book = byId.get(bookId) ?? byId.get('gen')!;
 
   const [selectedVerse, setSelectedVerse] = useState<number | null>(null);
 

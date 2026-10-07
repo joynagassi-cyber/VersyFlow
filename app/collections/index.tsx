@@ -16,7 +16,7 @@ import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { colorTintAlpha } from '@/lib/platform';
 import { getMemorizationService } from '@/services/memorization-service-factory';
-import { BIBLE_BOOKS_LIST as BIBLE_BOOKS } from '@/services/memorization-session-service';
+import { useBibleBooks } from '@/hooks/useBibleBooks';
 import { eventBus, DomainEventTypes } from '@/services/events-service';
 import type { MemorizationRecord } from '@/domains/memorization/entities';
 
@@ -64,6 +64,7 @@ const ICONS: Record<Collection['icon'], typeof Heart> = {
 export default function CollectionsScreen() {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const { byId } = useBibleBooks();
   const [collections, setCollections] = useState<Collection[]>(() => {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
@@ -119,8 +120,8 @@ export default function CollectionsScreen() {
   }, []);
 
   const favoriteRefs = favorites.map((r) => {
-    const book = BIBLE_BOOKS.find((b) => b.id === r.bookId);
-    const name = book?.name?.fr ?? r.bookId;
+    const book = byId.get(r.bookId);
+    const name = book?.displayName ?? r.bookId;
     return `${name} ${r.chapterNumber}:${r.verseNumber}`;
   });
 
@@ -228,8 +229,8 @@ export default function CollectionsScreen() {
               />
             ) : (
               favorites.map((rec) => {
-                const book = BIBLE_BOOKS.find((b) => b.id === rec.bookId);
-                const name = book?.name?.fr ?? rec.bookId;
+                const book = byId.get(rec.bookId);
+                const name = book?.displayName ?? rec.bookId;
                 const ref = `${name} ${rec.chapterNumber}:${rec.verseNumber}`;
                 return (
                   <button

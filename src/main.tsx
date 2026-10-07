@@ -316,7 +316,7 @@ function App() {
               <Route path="/bible/explorer/:bookId/:chapter" element={<BibleExplorer />} />
               <Route path="/bible/book/:bookId" element={<BibleBook />} />
               <Route path="/bible/book" element={<Navigate to="/bible/explorer" replace />} />
-              <Route path="/bible/chapter" element={<Navigate to="/bible/chapter/gen/1" replace />} />
+              <Route path="/bible/chapter" element={<Navigate to="/bible/explorer" replace />} />
               <Route path="/bible/chapter/:bookId/:chapterNumber" element={<BibleChapter />} />
 
               {/* Memorization */}

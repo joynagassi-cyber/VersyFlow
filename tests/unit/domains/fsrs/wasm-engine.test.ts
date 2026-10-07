@@ -68,7 +68,9 @@ type FsrsState = import('@/domains/fsrs').FsrsState;
 void fsrsModule;
 
 describe('WasmFsrsEngine', () => {
-  let engine: WasmFsrsEngine;
+  // `WasmFsrsEngine` is a class (value): the instance type is
+  // `InstanceType<typeof WasmFsrsEngine>`, not the constructor itself.
+  let engine: InstanceType<typeof WasmFsrsEngine>;
 
   beforeEach(() => {
     mockWasmEngineClass.mockClear();

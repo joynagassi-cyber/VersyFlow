@@ -19,6 +19,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { LocalBibleRepository } from '@/domains/bible/repository-local';
 import { resolveBibleTextSource } from '@/services/bible-text-service';
 import { getFsrsEngine } from '@/services/fsrs-factory';
@@ -33,8 +34,8 @@ import {
   createWorkspaceEngine,
   compareWrittenRecall,
   resolveBookIdFromText,
-  BIBLE_BOOKS_LIST,
 } from '@/services/memorization-session-service';
+import { BIBLE_BOOKS } from '@/domains/bible/entities';
 
 export interface WorkspaceCoords {
   bookId: string;
@@ -78,6 +79,7 @@ export function useMemorizationWorkspace(
   coords: WorkspaceCoords,
 ): MemorizationWorkspaceApi {
   const navigate = useNavigate();
+  const { i18n } = useTranslation();
   const { activeProfile } = useActiveProfile();
   const profileId = activeProfile?.id ?? 'default';
 
@@ -89,7 +91,11 @@ export function useMemorizationWorkspace(
   const [revealed, setRevealed] = useState(0);
   const [reviewLogCount, setReviewLogCount] = useState(0);
 
-  const bookName = BIBLE_BOOKS_LIST.find((b) => b.id === coords.bookId)?.name.fr ?? coords.bookId;
+  const lang = i18n.language?.split('-')[0] ?? 'fr';
+  const bookName =
+    BIBLE_BOOKS.find((b) => b.id === coords.bookId)?.name[lang] ??
+    BIBLE_BOOKS.find((b) => b.id === coords.bookId)?.name.fr ??
+    coords.bookId;
   const referenceLabel = `${bookName} ${coords.chapter}:${coords.verse}`;
 
   // Load the verse text + existing record once per coordinate set.
