@@ -207,6 +207,7 @@ export const my = {
     downloadFailed: 'ဒေါင်းလုဒ်တန်ဖိုးမအောင်မြင်',
     downloadNeeded: 'ဘာသာပြန်ကိုအွန်လိုင်း မဖြစ်တော့မီမရရှိနိုင်',
     emptyVerse: 'ဤဘာသာပြန်တွင်ဝါက်ပေါ်လွင်နေသည်',
+    selectVerseAria: 'Sélectionner le verset {n}',
     notePlaceholder: 'ဤဝါက်အတွက်မှတ်ချက်ကိုရေးရန်...',
     noteTitle: 'ကိုယ်ပိုင်မှတ်ချက်',
     verses: 'ဝါက်များ'

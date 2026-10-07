@@ -207,6 +207,7 @@ export const tw = {
     downloadFailed: 'Tsayula kosaonekera',
     downloadNeeded: 'Mawu a mʼBaibulo osatovewa popanda intaneti',
     emptyVerse: 'Mawu osasokera mawu awa',
+    selectVerseAria: 'Sélectionner le verset {n}',
     notePlaceholder: 'Lembani zolemba pa mawu awa…',
     noteTitle: 'Zolemba zamʼmʼmʼmʼmʼmʼmʼmwina',
     verses: 'mawu'

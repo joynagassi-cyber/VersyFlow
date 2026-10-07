@@ -207,6 +207,7 @@ export const st = {
     downloadFailed: 'Ho jarolla ho khatlile',
     downloadNeeded: 'Phetho ha e fumanehe kantle ho inthanete',
     emptyVerse: 'Lentšu le potiloe ka phetho ena',
+    selectVerseAria: 'Sélectionner le verset {n}',
     notePlaceholder: 'Ngola tlaleho ka lentšu lena…',
     noteTitle: 'Tlaleho ea hau',
     verses: 'Lentsu'

@@ -207,6 +207,7 @@ export const si = {
     downloadFailed: 'බාගැනීම අසාර්ථකයි',
     downloadNeeded: 'පරිවර්තනය නිසිතර්කරණය අතිරේක නොවේ',
     emptyVerse: 'මෙම පරිවර්තනයේ සූන්‍ය පාඨයකි',
+    selectVerseAria: 'Sélectionner le verset {n}',
     notePlaceholder: 'මෙම පාඨය පිළිබඳ සටහනක් ලියන්න...',
     noteTitle: 'පුද්ගලික සටහන',
     verses: 'පාඨ'

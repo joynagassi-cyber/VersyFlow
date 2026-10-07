@@ -207,6 +207,7 @@ export const ps = {
     downloadFailed: 'ښکته کول ناکام شو',
     downloadNeeded: 'ترجمه په off-line حالت کې درته نشته',
     emptyVerse: 'په دې ترجمه کې بل آیت نشته',
+    selectVerseAria: 'Sélectionner le verset {n}',
     notePlaceholder: 'په دې ایت کې یوه یادښت ولیکئ...',
     noteTitle: 'Note personnelle',
     verses: 'versets'

@@ -207,6 +207,7 @@ export const bn = {
     downloadFailed: 'ডাউনলোড ব্যর্থ হয়েছে',
     downloadNeeded: 'অফলাইনে অনুবাদটি উপলব্ধ নয়',
     emptyVerse: 'এই অনুবাদে বাস্তিটি খালি',
+    selectVerseAria: 'Sélectionner le verset {n}',
     notePlaceholder: 'এই বাস্তির সম্পর্কে একটি নোট লিখুন...',
     noteTitle: 'ব্যক্তিগত নোট',
     verses: 'বাস্তি'

@@ -207,6 +207,7 @@ export const ko = {
     downloadFailed: '다운로드 실패',
     downloadNeeded: '오프라인에서 사용할 수 없는 번역',
     emptyVerse: '이 번역에는 말씀이 없습니다',
+    selectVerseAria: 'Sélectionner le verset {n}',
     notePlaceholder: '이 말씀에 메모를 쓰세요...',
     noteTitle: '개인 메모',
     verses: '말씀'

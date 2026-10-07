@@ -106,6 +106,7 @@ export const ms = {
     downloadFailed: 'Échec du téléchargement',
     downloadNeeded: 'Traduction non disponible hors ligne',
     emptyVerse: 'Verset vide dans cette traduction',
+    selectVerseAria: 'Sélectionner le verset {n}',
     notePlaceholder: 'Écrivez une note sur ce verset...',
     noteTitle: 'Note personnelle',
     verses: 'versets'

@@ -207,6 +207,7 @@ export const fa = {
     downloadFailed: 'دانلود ناموفق بود',
     downloadNeeded: 'ترجمه در حالت آفلاین موجود نیست',
     emptyVerse: 'آیه خالی در این ترجمه',
+    selectVerseAria: 'Sélectionner le verset {n}',
     notePlaceholder: 'یادداشتی درباره این آیه بنویسید...',
     noteTitle: 'یادداشت شخصی',
     verses: 'آیات'

@@ -207,6 +207,7 @@ export const sw = {
     downloadFailed: 'Kupakua kumeshindwa',
     downloadNeeded: 'Tafsiri haipatikani nje ya mtandao',
     emptyVerse: 'Aya tupu katika tafsiri hii',
+    selectVerseAria: 'Sélectionner le verset {n}',
     notePlaceholder: 'Andika nadhabili kuhusu aya hii…',
     noteTitle: 'Nadhabili ya kibinafsi',
     verses: 'Aya'

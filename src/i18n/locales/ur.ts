@@ -199,6 +199,7 @@ export const ur = {
     downloadFailed: 'ڈاؤن لوڈ نامیاسپ',
     downloadNeeded: 'ترجمہ آف لائن دستیاب نہیں',
     emptyVerse: 'اس ترجمے میں خالی آیت',
+    selectVerseAria: 'Sélectionner le verset {n}',
     notePlaceholder: 'اس آیت پر نوٹ لکھیں...',
     noteTitle: 'ذاتی نوٹ',
     verses: 'آئیں'

@@ -207,6 +207,7 @@ export const it = {
     downloadFailed: 'Download fallito',
     downloadNeeded: 'Traduzione non disponibile offline',
     emptyVerse: 'Versetto vuoto in questa traduzione',
+    selectVerseAria: 'Sélectionner le verset {n}',
     notePlaceholder: 'Scrivi una nota su questo versetto...',
     noteTitle: 'Nota personale',
     verses: 'versetti'

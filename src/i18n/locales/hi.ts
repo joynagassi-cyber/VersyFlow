@@ -207,6 +207,7 @@ export const hi = {
     downloadFailed: 'डाउनलोड असफल',
     downloadNeeded: 'अनुवाद ऑफ़लाइन उपलब्ध नहीं',
     emptyVerse: 'इस अनुवाद में खाली आयत',
+    selectVerseAria: 'Sélectionner le verset {n}',
     notePlaceholder: 'इस आयत पर नोट लिखें…',
     noteTitle: 'निजी नोट',
     verses: 'श्लोक'

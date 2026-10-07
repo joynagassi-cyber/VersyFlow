@@ -207,6 +207,7 @@ export const so = {
     downloadFailed: 'Soo-daahasho fashilmay',
     downloadNeeded: "Turjumaad la'aan markii la saaray",
     emptyVerse: 'Maqal madhan turjumaadan',
+    selectVerseAria: 'Sélectionner le verset {n}',
     notePlaceholder: 'Fiiro maqalkan ku qor...',
     noteTitle: 'Fiiro shakhsi ah',
     verses: 'maqaal'

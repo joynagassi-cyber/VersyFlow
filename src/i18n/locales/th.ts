@@ -207,6 +207,7 @@ export const th = {
     downloadFailed: 'ดาวน์โหลดล้มเหลว',
     downloadNeeded: 'คำแปลไม่พร้อมใช้งานแบบออฟไลน์',
     emptyVerse: 'พระคัมภีร์บทว่างในคำแปลนี้',
+    selectVerseAria: 'Sélectionner le verset {n}',
     notePlaceholder: 'เขียนโน้ตเกี่ยวกับพระคัมภีร์บทนี้...',
     noteTitle: 'โน้ตส่วนตัว',
     verses: 'พระคัมภีร์บท'

@@ -207,6 +207,7 @@ export const he = {
     downloadFailed: 'הורדה נכשלה',
     downloadNeeded: 'התרגום אינו זמין במצב אופליין',
     emptyVerse: 'פסוק ריק בתרגום זה',
+    selectVerseAria: 'Sélectionner le verset {n}',
     notePlaceholder: 'כתוב הערה על פסוק זה…',
     noteTitle: 'הערה אישית',
     verses: 'פסוקים'

@@ -216,6 +216,7 @@ export const en = {
     downloadFailed: 'Download failed',
     downloadNeeded: 'Translation not available offline',
     emptyVerse: 'Empty verse in this translation',
+    selectVerseAria: 'Sélectionner le verset {n}',
     notePlaceholder: 'Write a note on this verse...',
     noteTitle: 'Personal note',
     verses: 'verses',

@@ -207,6 +207,7 @@ export const ml = {
     downloadFailed: ' ഡൗൺലോഡ് തോൽവി',
     downloadNeeded: 'ഓഫ്‌ലൈനിൽ പരിഭാഷ ലഭ്യമല്ല',
     emptyVerse: 'ഈ പരിഭാഷയിൽ ശൂന്യമായ വചനം',
+    selectVerseAria: 'Sélectionner le verset {n}',
     notePlaceholder: 'ഈ വചനത്തെക്കുറിച്ച് ഒരു കുറിപ്പ് എഴുതുക...',
     noteTitle: ' സ്വകാര്യ കുറിപ്പ്',
     verses: 'വചനങ്ങൾ'

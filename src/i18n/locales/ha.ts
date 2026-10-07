@@ -207,6 +207,7 @@ export const ha = {
     downloadFailed: 'Sauken ya guje',
     downloadNeeded: 'Fassarar ba ta sami ba a ba tare da_internet ba',
     emptyVerse: 'Ayati mara a cikin wannan fassara',
+    selectVerseAria: 'Sélectionner le verset {n}',
     notePlaceholder: 'Rubuta bayanin kan wannan ayati…',
     noteTitle: 'Bayanin nan gaba',
     verses: 'ayati'

@@ -207,6 +207,7 @@ export const fil = {
     downloadFailed: 'Hindi matagumpay ang pag-download',
     downloadNeeded: 'Ang bersyon ay hindi available offline',
     emptyVerse: 'Walang laman ang talata sa bersyong ito',
+    selectVerseAria: 'Sélectionner le verset {n}',
     notePlaceholder: 'Magtala tungkol sa talatang ito...',
     noteTitle: 'Pribadong tala',
     verses: 'mga talata'

@@ -207,6 +207,7 @@ export const vi = {
     downloadFailed: 'Tải xuống thất bại',
     downloadNeeded: 'Bản dịch không khả dụng ngoại tuyến',
     emptyVerse: 'Câu thơ trống trong bản dịch này',
+    selectVerseAria: 'Sélectionner le verset {n}',
     notePlaceholder: 'Viết ghi chú về câu thơ này…',
     noteTitle: 'Ghi chú cá nhân',
     verses: 'câu thơ'

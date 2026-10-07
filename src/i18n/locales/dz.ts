@@ -207,6 +207,7 @@ export const dz = {
     downloadFailed: 'འདོན་ལེན་གནོད་བརྗེད།',
     downloadNeeded: 'གཞན་ལ་བརྗོད་པ་ཉམས་བཞིན་མེད',
     emptyVerse: 'ཉིན་འདིར་རྣམ་ཐར་མེད',
+    selectVerseAria: 'Sélectionner le verset {n}',
     notePlaceholder: 'རྣམ་ཐར་འདིར་ལག་ཁ་བྲིས...',
     noteTitle: 'སྡོད་འགྲེལ་བ།',
     verses: 'རྣམ་ཐར་'

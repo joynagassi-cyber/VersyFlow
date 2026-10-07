@@ -207,6 +207,7 @@ export const ne = {
     downloadFailed: 'डाउनलोड असफल भयो',
     downloadNeeded: 'अनलाइन अनुवाद उपलब्ध छैन',
     emptyVerse: 'यस अनुवादमा शून्य वचन',
+    selectVerseAria: 'Sélectionner le verset {n}',
     notePlaceholder: 'यस वचनबारे नोट लेख्नुहोस्...',
     noteTitle: 'व्यक्तिगत नोट',
     verses: 'वचनहरू'

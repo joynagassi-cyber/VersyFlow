@@ -207,6 +207,7 @@ export const ar = {
     downloadFailed: 'فشل التنزيل',
     downloadNeeded: 'الترجمة غير متاحة دون اتصال',
     emptyVerse: 'آية فارغة في هذه الترجمة',
+    selectVerseAria: 'Sélectionner le verset {n}',
     notePlaceholder: 'اكتب ملاحظة عن هذه الآية...',
     noteTitle: 'ملاحظة شخصية',
     verses: 'آية'

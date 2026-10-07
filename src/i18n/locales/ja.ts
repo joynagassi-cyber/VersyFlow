@@ -207,6 +207,7 @@ export const ja = {
     downloadFailed: 'ダウンロードに失敗しました',
     downloadNeeded: 'この訳はオフラインでは利用できません',
     emptyVerse: 'この訳には空の節があります',
+    selectVerseAria: 'Sélectionner le verset {n}',
     notePlaceholder: 'この節についてのメモを書いてください...',
     noteTitle: '個人メモ',
     verses: '節'

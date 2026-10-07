@@ -207,6 +207,7 @@ export const tr = {
     downloadFailed: 'İndirme başarısız',
     downloadNeeded: 'Çeviri çevrimdışı olarak mevcut değil',
     emptyVerse: 'Bu çeviride ayet boş',
+    selectVerseAria: 'Sélectionner le verset {n}',
     notePlaceholder: 'Bu ayet hakkında bir not yazın...',
     noteTitle: 'Kişisel not',
     verses: 'ayet'

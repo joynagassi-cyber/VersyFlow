@@ -207,6 +207,7 @@ export const ku = {
     downloadFailed: 'Xetaya dakirinê',
     downloadNeeded: 'Wergera li xarab a offline',
     emptyVerse: 'Vergik li vê wergerê tune ye',
+    selectVerseAria: 'Sélectionner le verset {n}',
     notePlaceholder: 'Not li ser vê vergika nivîsîne...',
     noteTitle: 'Noteke kexkî',
     verses: 'Vergik'

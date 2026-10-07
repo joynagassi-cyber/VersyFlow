@@ -207,6 +207,7 @@ export const yo = {
     downloadFailed: 'Ìfọwọ́sókè tí kò tọ́ra',
     downloadNeeded: 'Ìtúmọ̀ tí kò kún rí ní ìṣìṣẹ́ kúrò lórè',
     emptyVerse: 'Ọ̀rọ̀-ọ̀nà tí kò kún rí nínú ìtúmọ̀ yìí',
+    selectVerseAria: 'Sélectionner le verset {n}',
     notePlaceholder: 'Kọ́ àkọ́sílẹ̀ nípá ọ̀rọ̀-ọ̀nà yìí…',
     noteTitle: 'Àkọ́sílẹ̀ àra ẹni',
     verses: 'ọ̀rọ̀-ọ̀nà'

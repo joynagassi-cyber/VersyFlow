@@ -207,6 +207,7 @@ export const id = {
     downloadFailed: 'Gagal mengunduh',
     downloadNeeded: 'Terjemahan tidak tersedia secara luring',
     emptyVerse: 'Ayat kosong dalam terjemahan ini',
+    selectVerseAria: 'Sélectionner le verset {n}',
     notePlaceholder: 'Tulis catatan tentang ayat ini…',
     noteTitle: 'Catatan pribadi',
     verses: 'ayat'

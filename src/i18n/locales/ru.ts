@@ -207,6 +207,7 @@ export const ru = {
     downloadFailed: 'Не удалось скачать',
     downloadNeeded: 'Перевод недоступен в автономном режиме',
     emptyVerse: 'Пустой стих в этом переводе',
+    selectVerseAria: 'Sélectionner le verset {n}',
     notePlaceholder: 'Напишите заметку к этому стиху...',
     noteTitle: 'Личная заметка',
     verses: 'стихов'

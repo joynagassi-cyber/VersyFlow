@@ -207,6 +207,7 @@ export const ta = {
     downloadFailed: 'பதிவிறக்க தோல்வி',
     downloadNeeded: 'மொழிபெயர்ப்பு தடவி இல்லை',
     emptyVerse: 'இந்த மொழிபெயர்ப்பில் கால வசனம்',
+    selectVerseAria: 'Sélectionner le verset {n}',
     notePlaceholder: 'இந்த வசனம் குறித்து குறிப்பை எழுதுங்கள்…',
     noteTitle: 'தனிப்பட்ட குறிப்பு',
     verses: 'வசனங்கள்'

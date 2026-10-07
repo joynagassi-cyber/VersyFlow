@@ -207,6 +207,7 @@ export const km = {
     downloadFailed: 'បរាជ័យក្នុងការទាញយក',
     downloadNeeded: 'ការបកប្រែមិនមានផ្ទែកម៉ាស៊ីនទេ',
     emptyVerse: 'ពាក្យរូបទទេក្នុងការបកប្រែនេះ',
+    selectVerseAria: 'Sélectionner le verset {n}',
     notePlaceholder: 'សរសេរចំណាំអំពីពាក្យរូបនេះ...',
     noteTitle: 'ចំណាំផ្ទាល់ខ្លួន',
     verses: 'ពាក្យរូប'

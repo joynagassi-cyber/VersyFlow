@@ -207,6 +207,7 @@ export const ig = {
     downloadFailed: 'Echeteghị ị budata',
     downloadNeeded: "Enweghị ntụgharị a n'oge ị na-achọ",
     emptyVerse: "Okwu a ezi n'etiti ntụgharị a",
+    selectVerseAria: 'Sélectionner le verset {n}',
     notePlaceholder: 'Dee akara gbasara okwu a...',
     noteTitle: 'Akara onwe gị',
     verses: 'okwu'

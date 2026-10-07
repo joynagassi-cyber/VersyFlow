@@ -207,6 +207,7 @@ export const lo = {
     downloadFailed: 'ການດາວໂຫຼດສູນເສຍຄວາມສຳເຊັດ',
     downloadNeeded: 'ການແປພາສາບໍ່ມີໃນທາງຍ້ອນການ',
     emptyVerse: 'ຫົວຂໍ້ຫວ່າງໆໃນການແປພາສານີ້',
+    selectVerseAria: 'Sélectionner le verset {n}',
     notePlaceholder: 'ຂຽນໝາຍເຫດກ່ຽວກັບຫົວຂໍ້ນີ້...',
     noteTitle: 'ໝາຍເຫດສ່ວນຕົວ',
     verses: 'ຫົວຂໍ້'

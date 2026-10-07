@@ -207,6 +207,7 @@ export const zh = {
     downloadFailed: '下载失败',
     downloadNeeded: '此译本离线不可用',
     emptyVerse: '此译本中该节为空',
+    selectVerseAria: 'Sélectionner le verset {n}',
     notePlaceholder: '在此写下关于这节经文的笔记...',
     noteTitle: '个人笔记',
     verses: '节经文'

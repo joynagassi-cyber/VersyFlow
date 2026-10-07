@@ -207,6 +207,7 @@ export const am = {
     downloadFailed: 'ውራ ዘገበ',
     downloadNeeded: 'ትርጉም ያለ ኢነርት አይገኝም',
     emptyVerse: 'በዚህ ትርጉም ባዶ ማጣሪያ',
+    selectVerseAria: 'Sélectionner le verset {n}',
     notePlaceholder: 'ስለዚህ ማጣሪያ ማስታወሻ ይጻፉ...',
     noteTitle: 'የገዛዎ ማስታወሻ',
     verses: 'ማጣሪያዎች'

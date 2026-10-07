@@ -207,6 +207,7 @@ export const nl = {
     downloadFailed: 'Download mislukt',
     downloadNeeded: 'Vertaling niet beschikbaar offline',
     emptyVerse: 'Geen vers in deze vertaling',
+    selectVerseAria: 'Sélectionner le verset {n}',
     notePlaceholder: 'Schrijf een notitie over dit vers...',
     noteTitle: 'Persoonlijke notitie',
     verses: 'versen'

@@ -207,6 +207,7 @@ export const zhHant = {
     downloadFailed: '下載失敗',
     downloadNeeded: '此譯本未可供離線使用',
     emptyVerse: '此譯本中此節經文為空',
+    selectVerseAria: 'Sélectionner le verset {n}',
     notePlaceholder: '對這節經文寫筆記...',
     noteTitle: '個人筆記',
     verses: '節'

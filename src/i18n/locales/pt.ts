@@ -207,6 +207,7 @@ export const pt = {
     downloadFailed: 'Falha no download',
     downloadNeeded: 'Tradução não disponível offline',
     emptyVerse: 'Versículo vazio nesta tradução',
+    selectVerseAria: 'Sélectionner le verset {n}',
     notePlaceholder: 'Escreva uma nota sobre este versículo...',
     noteTitle: 'Nota pessoal',
     verses: 'versículos'

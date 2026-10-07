@@ -207,6 +207,7 @@ export const es = {
     downloadFailed: 'Falló la descarga',
     downloadNeeded: 'Traducción no disponible sin conexión',
     emptyVerse: 'Versículo vacío en esta traducción',
+    selectVerseAria: 'Sélectionner le verset {n}',
     notePlaceholder: 'Escribe una nota sobre este versículo...',
     noteTitle: 'Nota personal',
     verses: 'versículos'

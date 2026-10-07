@@ -207,6 +207,7 @@ export const sd = {
     downloadFailed: 'ڊائونلوڊ ناهي ٿي سگهيو',
     downloadNeeded: 'هي ترجمو آف لائين موجود ناهي',
     emptyVerse: 'هن ترجمي ۾ هي آيت خالي آهي',
+    selectVerseAria: 'Sélectionner le verset {n}',
     notePlaceholder: 'هن آيت بابت نوٽ لکو...',
     noteTitle: 'ذاتي نوٽ',
     verses: 'آيتون'

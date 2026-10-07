@@ -207,6 +207,7 @@ export const te = {
     downloadFailed: 'డౌన్‌లోడ్ సరళి',
     downloadNeeded: 'ఆఫ్‌లైన్‌లో అనుబంధం అందుబాటులో లేదు',
     emptyVerse: 'ఈ అనువాదంలో తుచ్ఛ వాక్యం',
+    selectVerseAria: 'Sélectionner le verset {n}',
     notePlaceholder: 'ఈ వాక్యంపై ఒక గమనిక రాయండి...',
     noteTitle: 'నిజపరవైన గమనిక',
     verses: 'వాక్యాలను'
