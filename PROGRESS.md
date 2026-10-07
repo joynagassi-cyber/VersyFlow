@@ -271,13 +271,16 @@
     `src/services/strategy-recommender.ts`) + `src/domains/memorization/
     index.ts` re-export + `tests/unit/services/strategy-recommender.test.ts`.
     tsc 0, 59/59 targeted tests green.
-- **P5-doc-drift — PARTIALLY DONE** (commit `d118d68`):
-  - `docs/05-features.md` F-002-F "Versets favoris" now explicitly
-    annotated as **defined but toggle UI absent** — the `FAVORITE_TOGGLED`
-    domain event is declared in `src/domains/events.ts` but no UI component
-    ever emits it; `MemorizationRecord.favorite` is never read back. The
-    doc now names `VerseActionBar` as the place to implement the toggle
-    and `app/collections/` as the filter surface.
+- **P5-doc-drift — DONE** (commits `d118d68`, `b9c20c8`):
+  - `docs/05-features.md` F-002-F "Versets favoris" — now **implemented**
+    (commit `b9c20c8`), not just documented: `VerseActionBar` gained a
+    Heart `ActionButton` + `toggleFavoriteAction()` (handles both
+    already-memorized and not-yet-memorized verses, emits
+    `FAVORITE_TOGGLED`), `PowerSyncMemorizationService.toggleFavorite()`
+    is the single write path, and `app/collections/index.tsx`'s
+    "Favoris" tab is now backed by real `MemorizationRecord.favorite`
+    rows (eventBus-subscribed, not the old cosmetic `icon === 'heart'`
+    localStorage filter). i18n keys added to all 45 locales.
   - F-006-C "Graphique hebdomadaire" closed: `app/analytics/dashboard.tsx`
     already renders a weekly-trend card (`thisWeek`/`lastWeek`/
     `changePercentage`, `stats.weeklyTrend`) — the audit's "bar chart 7
@@ -300,7 +303,7 @@
   workflows/ci-cd.yml`). Old section described an obsolete Expo Router /
   Metro / Detox / 5-locale layout. A ⚠️ banner at the top of §2 makes the
   2026-10-07 update explicit so no one reads the pre-update tree as SSoT.
-- **Test-coverage — PARTIALLY DONE**:
+- **Test-coverage — DONE**:
   - `src/domains/streaks/` (port-only, no testable rule) — covered by
     `tests/unit/services/streak-service.test.ts` (17 tests) and the new
     `tests/unit/services/streak-coordinator.test.ts` (6 tests, added in
