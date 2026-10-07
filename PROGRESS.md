@@ -342,3 +342,91 @@
   per-field selector call, so each component only re-renders when a
   field it actually reads changes. No `useXStore()` (no-arg whole-store)
   call sites remain.
+
+## Phase B — Module Bible « propre » (2026-10-07)
+
+Demande utilisateur (senior-rescue) : rendre le module Bible propre —
+rendu cassé, traduction non modifiable à volonté, livres/chapitres
+hardcodés, thème incohérent sur toute l'app. Périmètre choisi :
+« Tout » + co-bundling `lsg` seul.
+
+### P-B1 + P-B2 — DONE (commits `894522c`, `8b6d9c9`, `d89cd96`)
+- **Rendu** : `data/bible/lsg.json` (6.98 Mo) copié dans
+  `public/data/bible/` par `scripts/copy-bible-bundled.mjs` (exécuté
+  avant `vite build`), servi en prod/Capacitor à
+  `data/bible/lsg.json` → le dataset par défaut se charge 100 %
+  offline. Les 56 autres traductions restent download-on-demand
+  (bucket Supabase `bible-datasets`).
+- **Ordre de résolution** (`loadTranslationData`) : bundled local →
+  download cache → null. Suppression du court-circuit dev-only
+  `preferRemoteSource()` (le bundled est la source de vérité en dev
+  ET prod).
+- **Changement de traduction** : déjà piloté par l'ecran
+  `app/settings/available-translations.tsx` (download →
+  settings-store.translationId) ; rien à ajouter, le flux fonctionne
+  désormais sans réseau pour le défaut.
+
+### P-B3 — DONE (commits `894522c`, `8b6d9c9`)
+- Nouveau hook `src/hooks/useBibleBooks.ts` : `byId` (Map id →
+  BookMeta {chapterCount, testament, orderIndex, displayName})
+  construit depuis `BIBLE_BOOKS` (structure statique, fallback de
+  navigation) puis **overlay** des livres du dataset réellement
+  chargé (chapterCount = `chapters.length` du dataset, nom localisé
+  `name[lang] → fr → en → id`). `displayName` supprime le hardcode
+  `book.name.fr` de l'UI.
+- Migrate vers `useBibleBooks()` : `app/bible/book.tsx`,
+  `app/bible/chapter.tsx` (fallback `byId.get(bookId) ?? byId.get('gen')!`,
+  plus de `BIBLE_BOOKS[0]`), `app/bible/explorer.tsx` (liste +
+  recherche sur `displayName`), `app/(tabs)/explore.tsx`,
+  `app/collections/index.tsx`, `src/hooks/useMemorizationWorkspace.ts`
+  (nom de livre localisé, import `BIBLE_BOOKS` depuis le domain
+  plutôt que la façade service), `src/components/bible/VerseActionBar.tsx`
+  (fallback `DEFAULT_TRANSLATION_ID` au lieu du littéral `'lsg'`
+  dupliqué 2×).
+- `src/main.tsx:319` : `/bible/chapter` (sans param) → redirect
+  `/bible/explorer` au lieu du hardcode `/bible/chapter/gen/1`.
+
+### P-B4 — DONE (commit `1337718`)
+- Split-brain thème résolu : suppression de
+  `src/theme/ThemeProvider.tsx`, `IonicThemeProvider.tsx`,
+  `ionic-variables.ts`, `useColorScheme.ts` (0 importeur actif,
+  vérifié par grep). Pilote unique du thème : `useTheme.ts`
+  (`data-theme` + vars Ionic) + `ThemeManager.tsx` (accent presets,
+  `--reading-*`, lazy-load @fontsource) monté dans `main.tsx`,
+  variables CSS dans `globals.css` consommées par Tailwind
+  (`tailwind.config.js`). `tokens.ts` reste le seul référentiel de
+  tokens JS (typographie/espacement/ombrages) utilisé par `useTheme`.
+
+### P-B5 — DONE (commit `1337718`)
+- i18n : `ManuscriptView` aria-label `Sélectionner le verset N`
+  (littéral français en dur, violation règle 2) → clé
+  `bible.selectVerseAria` ('Sélectionner le verset {n}') ajoutée
+  dans les 45 fichiers de locale.
+- `tests/unit/domains/fsrs/wasm-engine.test.ts` corrigé (TS2749 :
+  le nom de classe ne s'utilise pas comme type →
+  `InstanceType<typeof WasmFsrsEngine>`).
+
+### P-B6 — Vérifications (2026-10-07)
+- `tsc -p tsconfig.app.json --noEmit` → 0 erreur.
+- `vite build` → PASS (~2 min 24 s, chunk index 644 kB —
+  avertissement >500 kB préexistant, non bloquant).
+- `vite preview` + curl : `/data/bible/lsg.json` → HTTP 200,
+  6 986 748 bytes ; `/` → HTTP 200. Le dataset embarqué est bien
+  servi par le build prod.
+- vitest ciblé : `bible-text-service-stats` 11/11, hooks 17/17
+  green.
+
+### Décisions Phase B
+- **B1** — co-bundling limité à `lsg.json` (le dataset par défaut) :
+  +7 Mo dans le bundle, mais le rendu par défaut ne dépend plus du
+  réseau (c'était LA cause du « la Bible ne s'affiche pas » en
+  prod). Les 56 autres restent download-on-demand avec cache.
+- **B2** — `BIBLE_BOOKS` (66 livres) reste le squelette de
+  navigation (ids, testament, ordre) ; le dataset overlay
+  corrige chapterCount/noms. Jamais de liste de chapitres dérivée
+  du seul dataset : si le dataset n'est pas chargé, la navigation
+  reste utilisable.
+- **B3** — le redirect `/bible/chapter` (route sans param) pointe
+  vers l'explorateur plutôt qu'un chapitre arbitraire : aucun
+  paramètre durci.
+
