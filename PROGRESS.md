@@ -282,11 +282,17 @@
     already renders a weekly-trend card (`thisWeek`/`lastWeek`/
     `changePercentage`, `stats.weeklyTrend`) — the audit's "bar chart 7
     jours manquant" was a false positive.
-  - **Still open**: F-004 "Rust WASM" — `src/infrastructure/rust/`
-    doesn't exist in the tree; `rust/fsrs-wasm/` holds the Rust source
-    but `src/domains/fsrs/wasm-engine.ts` is the loader and
-    `fallback-engine.ts` (SM-2) is what actually ships. Doc should note
-    the WASM build pipeline is not wired into the Vite bundle yet.
+  - F-004 "Rust WASM" — **WON** (commit `5a455f3`): real Rust/WASM FSRS
+    pipeline wired into the Vite bundle. `rust/fsrs-wasm/` rewritten
+    against the actual `fsrs` 6.6 crate API, compiled with `wasm-pack`
+    (devDependency, real `.wasm` checked into `src/infrastructure/wasm/`),
+    `src/domains/fsrs/wasm-engine.ts` is now a real bridge (lazy `init()`,
+    no more mock), `isWasmAvailable()` reflects the artifact's actual
+    presence. `TsFsrsEngine` remains the default engine in
+    `fsrs-factory.ts`; `WasmFsrsEngine` is now loadable on demand.
+    `docs/05-features.md` F-004-C updated accordingly. Test rewritten to
+    mock the WASM module deterministically (bridge-layer coverage without
+    needing a real WebAssembly runtime in jsdom).
 - **P6-doc-drift — DONE** (commit `d118d68`): `docs/14-folder-structure.md`
   §1 arborescence fully rewritten to match the real Vite/Capacitor layout
   (React Router v6, `data/bible/*.json`, `rust/fsrs-wasm/`, `powersync/`,
@@ -316,6 +322,16 @@
   debounces the full-corpus filter (250 ms), precomputes lowercased
   `refLower`/`bookLower`/`textLower` once at index-build time, and
   drops the O(n log n) sort for a two-way reference-prefix partition.
-  Still open: P4 (Medium): 0 `React.memo` in the app. P5 (Medium):
-  `ManuscriptView` O(n·m) `Array.includes`. P7 (Low): ~30 Zustand
-  whole-store call sites without selectors.
+- **Perf P4 — DONE** (commit `5b4884d`): `React.memo` added to the 4
+  pure-leaf UI primitives that re-render most often inside lists
+  (`Chip`, `ListItem`, `ProgressRing`, `RatingBar`) so a parent's
+  re-render no longer cascades to every row/chip/ring.
+- **Perf P5 — DONE** (commit `5b4884d`): `ManuscriptView` now builds a
+  `Set` from `useHighlightStore().keys` once per render instead of
+  calling `Array.includes` O(n·m) per verse.
+- **Perf P7 — DONE** (commit `667eebf`): all ~33 whole-store Zustand
+  destructuring call sites (`useXStore()` across `app/`,
+  `src/components/navigation/`, `src/hooks/`) rewritten to one
+  per-field selector call, so each component only re-renders when a
+  field it actually reads changes. No `useXStore()` (no-arg whole-store)
+  call sites remain.
