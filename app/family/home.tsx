@@ -18,7 +18,10 @@ import { useAuthStore } from '@/store/auth-store';
 export default function FamilyHomeScreen() {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const { families, activeFamilyId, setActiveFamily, addFamily } = useFamilySyncStore();
+  const families = useFamilySyncStore((s) => s.families);
+  const activeFamilyId = useFamilySyncStore((s) => s.activeFamilyId);
+  const setActiveFamily = useFamilySyncStore((s) => s.setActiveFamily);
+  const addFamily = useFamilySyncStore((s) => s.addFamily);
   const { createFamily } = useFamilyService();
   const signedIn = Boolean(useAuthStore((s) => s.user?.userId));
 

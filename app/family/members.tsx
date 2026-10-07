@@ -13,7 +13,8 @@ import type { MemberWithProfile } from '@/services/family-service';
 export default function FamilyMembersScreen() {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const { activeFamilyId, families } = useFamilySyncStore();
+  const activeFamilyId = useFamilySyncStore((s) => s.activeFamilyId);
+  const families = useFamilySyncStore((s) => s.families);
   const { activeProfile } = useActiveProfile();
   const { getMembersScoped } = useFamilyService();
 

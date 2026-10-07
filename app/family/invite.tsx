@@ -13,7 +13,8 @@ import { useAuthStore } from '@/store/auth-store';
 export default function FamilyInviteScreen() {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const { activeFamilyId, families } = useFamilySyncStore();
+  const activeFamilyId = useFamilySyncStore((s) => s.activeFamilyId);
+  const families = useFamilySyncStore((s) => s.families);
   const { createInvitation } = useFamilyService();
   const signedIn = Boolean(useAuthStore((s) => s.user?.userId));
 

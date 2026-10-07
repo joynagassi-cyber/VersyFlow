@@ -41,7 +41,9 @@ const VERSION_TYPES: { id: BibleVersionType; i18nKey: string; label: string }[] 
 export default function SettingsScreen() {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const { user, isAuthenticated, signOut } = useAuthStore();
+  const user = useAuthStore((s) => s.user);
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const signOut = useAuthStore((s) => s.signOut);
   const [showConfirm, setShowConfirm] = useState(false);
 
   const handleSignOut = () => {
@@ -50,7 +52,9 @@ export default function SettingsScreen() {
   };
 
   const displayName = user?.display_name || t('settings.localUser', 'Utilisateur');
-  const { bibleTranslation, bibleVersionType, setBibleVersionType } = useSettingsStore();
+  const bibleTranslation = useSettingsStore((s) => s.bibleTranslation);
+  const bibleVersionType = useSettingsStore((s) => s.bibleVersionType);
+  const setBibleVersionType = useSettingsStore((s) => s.setBibleVersionType);
   const translationInfo = getTranslationDisplayInfo(bibleTranslation);
 
   // Settings reorganized into clearly divided vertical sections. Each group

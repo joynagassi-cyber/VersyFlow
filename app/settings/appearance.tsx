@@ -81,29 +81,27 @@ function SliderRow({
 export default function AppearanceScreen() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const {
-    themeMode,
-    accent,
-    colorThemeId,
-    fontSize,
-    showVerseNumbers,
-    focusMode,
-    bibleFontFamily,
-    bibleFontSize,
-    bibleLineHeight,
-    bibleLetterSpacing,
-    bibleLineLength,
-    setThemeMode,
-    setColorTheme,
-    setFontSize,
-    toggleVerseNumbers,
-    setFocusMode,
-    setBibleFontFamily,
-    setBibleFontSize,
-    setBibleLineHeight,
-    setBibleLetterSpacing,
-    setBibleLineLength,
-  } = useAppearanceStore();
+  const themeMode = useAppearanceStore((s) => s.themeMode);
+  const accent = useAppearanceStore((s) => s.accent);
+  const colorThemeId = useAppearanceStore((s) => s.colorThemeId);
+  const fontSize = useAppearanceStore((s) => s.fontSize);
+  const showVerseNumbers = useAppearanceStore((s) => s.showVerseNumbers);
+  const focusMode = useAppearanceStore((s) => s.focusMode);
+  const bibleFontFamily = useAppearanceStore((s) => s.bibleFontFamily);
+  const bibleFontSize = useAppearanceStore((s) => s.bibleFontSize);
+  const bibleLineHeight = useAppearanceStore((s) => s.bibleLineHeight);
+  const bibleLetterSpacing = useAppearanceStore((s) => s.bibleLetterSpacing);
+  const bibleLineLength = useAppearanceStore((s) => s.bibleLineLength);
+  const setThemeMode = useAppearanceStore((s) => s.setThemeMode);
+  const setColorTheme = useAppearanceStore((s) => s.setColorTheme);
+  const setFontSize = useAppearanceStore((s) => s.setFontSize);
+  const toggleVerseNumbers = useAppearanceStore((s) => s.toggleVerseNumbers);
+  const setFocusMode = useAppearanceStore((s) => s.setFocusMode);
+  const setBibleFontFamily = useAppearanceStore((s) => s.setBibleFontFamily);
+  const setBibleFontSize = useAppearanceStore((s) => s.setBibleFontSize);
+  const setBibleLineHeight = useAppearanceStore((s) => s.setBibleLineHeight);
+  const setBibleLetterSpacing = useAppearanceStore((s) => s.setBibleLetterSpacing);
+  const setBibleLineLength = useAppearanceStore((s) => s.setBibleLineLength);
 
   const themeOptions: { value: ThemeMode; label: string; Icon: typeof Sun }[] = [
     { value: 'light', label: t('settings.themeLight', 'Clair'), Icon: Sun },

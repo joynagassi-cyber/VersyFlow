@@ -7,7 +7,8 @@ import { eventBus, DomainEventTypes } from '@/services/events-service';
 
 export default function LanguageSettingsScreen() {
   const { t } = useTranslation();
-  const { uiLanguage, setUiLanguage } = useSettingsStore();
+  const uiLanguage = useSettingsStore((s) => s.uiLanguage);
+  const setUiLanguage = useSettingsStore((s) => s.setUiLanguage);
   const selected = uiLanguage || 'fr';
 
   return (

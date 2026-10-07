@@ -56,7 +56,7 @@ function formatBytes(bytes: number): string {
 export default function AvailableTranslationsScreen() {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const { isAuthenticated } = useAuthStore();
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   const bibleTranslation = useSettingsStore((s) => s.bibleTranslation);
   const setBibleTranslation = useSettingsStore((s) => s.setBibleTranslation);
 

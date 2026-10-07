@@ -135,8 +135,10 @@ function DataTab() {
 function ParamsTab() {
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
-  const { user, isAuthenticated, signOut } = useAuthStore();
-  const { bibleTranslation } = useSettingsStore();
+  const user = useAuthStore((s) => s.user);
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const signOut = useAuthStore((s) => s.signOut);
+  const bibleTranslation = useSettingsStore((s) => s.bibleTranslation);
   const [languageModalOpen, setLanguageModalOpen] = useState(false);
   const visibleTabs = useUiStore((s) => s.visibleTabs);
   const setVisibleTab = useUiStore((s) => s.setVisibleTab);
@@ -311,8 +313,11 @@ function ParamsTab() {
 function ProfileTab() {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const { user, isAuthenticated, signOut } = useAuthStore();
-  const { families, activeFamilyId } = useFamilyStore();
+  const user = useAuthStore((s) => s.user);
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const signOut = useAuthStore((s) => s.signOut);
+  const families = useFamilyStore((s) => s.families);
+  const activeFamilyId = useFamilyStore((s) => s.activeFamilyId);
   const fileRef = useRef<HTMLInputElement>(null);
 
   const [avatar, setAvatar] = useState<string>(() => localStorage.getItem(AVATAR_KEY) ?? '');

@@ -16,7 +16,8 @@ import { useSettingsStore } from '@/store/settings-store';
 export default function LanguagePickerScreen() {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
-  const { setUiLanguage, uiLanguage } = useSettingsStore();
+  const setUiLanguage = useSettingsStore((s) => s.setUiLanguage);
+  const uiLanguage = useSettingsStore((s) => s.uiLanguage);
   const [selected, setSelected] = useState(uiLanguage || 'fr');
 
   const selectLanguage = (code: string) => {

@@ -11,7 +11,7 @@ import type { MemorizationRecord } from '@/domains/memorization/entities';
 
 export default function BackupScreen() {
   const { t } = useTranslation();
-  const { isAuthenticated } = useAuthStore();
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   const { activeProfile } = useActiveProfile();
   const [autoBackup, setAutoBackup] = useState(false);
   const [syncEnabled, setSyncEnabled] = useState(isAuthenticated);

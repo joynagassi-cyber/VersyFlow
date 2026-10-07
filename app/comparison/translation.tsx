@@ -37,7 +37,7 @@ interface Row {
 
 export default function TranslationComparisonScreen() {
   const { t, i18n } = useTranslation();
-  const { bibleTranslation } = useSettingsStore();
+  const bibleTranslation = useSettingsStore((s) => s.bibleTranslation);
   const [searchParams] = useSearchParams();
   const bookId = searchParams.get('bookId') ?? '';
   const chapter = Number(searchParams.get('chapter') ?? 0);

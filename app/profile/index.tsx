@@ -29,8 +29,11 @@ function StatTile({ value, label }: { value: number; label: string }) {
 export default function ProfileScreen() {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const { user, isAuthenticated, signOut } = useAuthStore();
-  const { bibleTranslation, setBibleTranslation } = useSettingsStore();
+  const user = useAuthStore((s) => s.user);
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const signOut = useAuthStore((s) => s.signOut);
+  const bibleTranslation = useSettingsStore((s) => s.bibleTranslation);
+  const setBibleTranslation = useSettingsStore((s) => s.setBibleTranslation);
   const { activeProfile, profiles } = useActiveProfile();
   // Optional personal slogan (entity field, synced via PowerSync).
   const slogan = activeProfile?.slogan;

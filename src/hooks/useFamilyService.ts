@@ -27,7 +27,7 @@ function getService(): FamilyService {
 }
 
 export function useFamilyService() {
-  const { user } = useAuthStore();
+  const user = useAuthStore((s) => s.user);
   const accountId = user?.userId ?? null;
 
   const service = getService();

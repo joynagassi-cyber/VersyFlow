@@ -19,7 +19,7 @@ function getService(): LearnerProfileService {
 }
 
 export function useLearnerProfile() {
-  const { user } = useAuthStore();
+  const user = useAuthStore((s) => s.user);
   const accountId = user?.userId ?? null;
   const service = getService();
 

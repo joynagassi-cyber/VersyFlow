@@ -17,12 +17,10 @@ const GOALS = [1, 3, 5, 7, 10];
 export default function OnboardingSessionConfig() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const {
-    sessionGoal,
-    focusMode,
-    setSessionGoal,
-    setFocusMode,
-  } = useAppearanceStore();
+  const sessionGoal = useAppearanceStore((s) => s.sessionGoal);
+  const focusMode = useAppearanceStore((s) => s.focusMode);
+  const setSessionGoal = useAppearanceStore((s) => s.setSessionGoal);
+  const setFocusMode = useAppearanceStore((s) => s.setFocusMode);
 
   return (
     <div className="flex min-h-full flex-col p-6">

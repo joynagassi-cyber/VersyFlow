@@ -12,7 +12,8 @@ import { useTranslation } from 'react-i18next';
 
 export function useSessionSafety() {
   const { sessionState } = useMemoryCapability();
-  const { switchToFamily, switchToPersonal } = useContextStore();
+  const switchToFamily = useContextStore((s) => s.switchToFamily);
+  const switchToPersonal = useContextStore((s) => s.switchToPersonal);
   const { t } = useTranslation();
 
   /**

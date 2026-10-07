@@ -57,12 +57,10 @@ export const TRANSLATION_CHOICES: { id: string; versionTypes: BibleVersionType[]
 export default function TranslationPickerScreen() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const {
-    setBibleTranslation,
-    bibleTranslation,
-    setBibleVersionType,
-    bibleVersionType,
-  } = useSettingsStore();
+  const setBibleTranslation = useSettingsStore((s) => s.setBibleTranslation);
+  const bibleTranslation = useSettingsStore((s) => s.bibleTranslation);
+  const setBibleVersionType = useSettingsStore((s) => s.setBibleVersionType);
+  const bibleVersionType = useSettingsStore((s) => s.bibleVersionType);
   const { setPreference } = useTranslationPreference();
 
   const [selected, setSelected] = useState(bibleTranslation || 'lsg');

@@ -56,7 +56,8 @@ export default function HomeScreen() {
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
   const { activeProfile } = useActiveProfile();
-  const { families, activeFamilyId } = useFamilyStore();
+  const families = useFamilyStore((s) => s.families);
+  const activeFamilyId = useFamilyStore((s) => s.activeFamilyId);
 
   const [streak, setStreak] = useState<number | null>(null);
   const [reviewsDue, setReviewsDue] = useState<number | null>(null);

@@ -13,7 +13,9 @@ export default function FamilyJoinScreen() {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { acceptInvitation } = useFamilyService();
-  const { addFamily, addMembership, setActiveFamily } = useFamilySyncStore();
+  const addFamily = useFamilySyncStore((s) => s.addFamily);
+  const addMembership = useFamilySyncStore((s) => s.addMembership);
+  const setActiveFamily = useFamilySyncStore((s) => s.setActiveFamily);
   const signedIn = Boolean(useAuthStore((s) => s.user?.userId));
 
   const [code, setCode] = useState('');

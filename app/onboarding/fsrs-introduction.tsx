@@ -12,7 +12,7 @@ import { useSettingsStore } from '@/store/settings-store';
 export default function FSRSIntroductionScreen() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { completeOnboarding } = useSettingsStore();
+  const completeOnboarding = useSettingsStore((s) => s.completeOnboarding);
 
   const handleStartMemorization = () => {
     void completeOnboarding();

@@ -25,14 +25,12 @@ const FREQUENCIES = [1, 2, 3, 5];
 export default function OnboardingReminderConfig() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const {
-    reminderFrequency,
-    reminderEnabled,
-    reminderTime,
-    setReminderFrequency,
-    toggleReminders,
-    setReminderTime,
-  } = useAppearanceStore();
+  const reminderFrequency = useAppearanceStore((s) => s.reminderFrequency);
+  const reminderEnabled = useAppearanceStore((s) => s.reminderEnabled);
+  const reminderTime = useAppearanceStore((s) => s.reminderTime);
+  const setReminderFrequency = useAppearanceStore((s) => s.setReminderFrequency);
+  const toggleReminders = useAppearanceStore((s) => s.toggleReminders);
+  const setReminderTime = useAppearanceStore((s) => s.setReminderTime);
 
   const finish = () => navigate('/onboarding/fsrs-introduction');
 

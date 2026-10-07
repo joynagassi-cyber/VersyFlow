@@ -36,11 +36,9 @@ const WHATS_NEW = [
 
 export default function AboutScreen() {
   const { t } = useTranslation();
-  const {
-    reminderEnabled,
-    reminderFrequency,
-    reminderTime,
-  } = useAppearanceStore();
+  const reminderEnabled = useAppearanceStore((s) => s.reminderEnabled);
+  const reminderFrequency = useAppearanceStore((s) => s.reminderFrequency);
+  const reminderTime = useAppearanceStore((s) => s.reminderTime);
   const [showWhatNew, setShowWhatNew] = useState(true);
   const [scheduled, setScheduled] = useState(false);
 

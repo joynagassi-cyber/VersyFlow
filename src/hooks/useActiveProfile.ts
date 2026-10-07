@@ -9,8 +9,14 @@ import { useAuthStore } from '@/store/auth-store';
 import { useLearnerProfile } from './useLearnerProfile';
 
 export function useActiveProfile() {
-  const { activeProfileId, profiles, selectProfile, addProfile, removeProfile, autoSelectIfSingle } = useProfileStore();
-  const { isAuthenticated, user } = useAuthStore();
+  const activeProfileId = useProfileStore((s) => s.activeProfileId);
+  const profiles = useProfileStore((s) => s.profiles);
+  const selectProfile = useProfileStore((s) => s.selectProfile);
+  const addProfile = useProfileStore((s) => s.addProfile);
+  const removeProfile = useProfileStore((s) => s.removeProfile);
+  const autoSelectIfSingle = useProfileStore((s) => s.autoSelectIfSingle);
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const user = useAuthStore((s) => s.user);
   const { createProfile, getProfiles, deleteProfile, setActiveProfile } = useLearnerProfile();
 
   const activeProfile = profiles.find((p) => p.id === activeProfileId) || null;

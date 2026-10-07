@@ -13,8 +13,12 @@ const itemClass =
 export function HamburgerMenu() {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const { menuOpen, closeMenu, visibleMenuPaths } = useUiStore();
-  const { signOut, isAuthenticated, user } = useAuthStore();
+  const menuOpen = useUiStore((s) => s.menuOpen);
+  const closeMenu = useUiStore((s) => s.closeMenu);
+  const visibleMenuPaths = useUiStore((s) => s.visibleMenuPaths);
+  const signOut = useAuthStore((s) => s.signOut);
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const user = useAuthStore((s) => s.user);
 
   // The Navigation section is filtered by the user's per-page visibility
   // toggles (app/settings/navigation). The Account section below is always
