@@ -559,7 +559,9 @@ export const ur = {
     custom: 'کسٹم مجموعہ',
     verses: 'آئیں',
     noVerses: 'اس مجموعے میں ابھی کوئی آیت نہیں',
-    namePlaceholder: 'مجموعے کا نام'
+    namePlaceholder: 'مجموعے کا نام',
+    emptyFavorites: 'کچھ پسندیدہ نہیں',
+    emptyFavoritesHint: 'آپ کے پسندیدہ جملے یہیں دکھائی دیں گے جب آپ جملے کی بار پر دل پر ٹھپیں گے',
   },
   achievements: {
     overall: 'اداری پیش رفت',

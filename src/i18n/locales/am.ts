@@ -567,7 +567,9 @@ export const am = {
     custom: 'የራስ-ሰር ስብስብ',
     verses: 'ማጣሪያዎች',
     noVerses: 'በእዚፉ በዚህ ስብስብ ያለ ማጣሪያ የለም',
-    namePlaceholder: 'የስብስብ ማኅረ'
+    namePlaceholder: 'የስብስብ ማኅረ',
+    emptyFavorites: 'ፈጽሞ ወላምን',
+    emptyFavoritesHint: 'ምርጥ ግጾቻችን ምስል ልብ ተንክል ሲያደርጉ እዚህ ይታወቃሉ',
   },
   achievements: {
     overall: 'አጠቃላይ ግምት',

@@ -567,7 +567,9 @@ export const ar = {
     custom: 'مجموعة مخصصة',
     verses: 'آية',
     noVerses: 'لا توجد آيات في هذه المجموعة حاليًا',
-    namePlaceholder: 'اسم المجموعة'
+    namePlaceholder: 'اسم المجموعة',
+    emptyFavorites: 'لا مفضلات بعد',
+    emptyFavoritesHint: 'تظهر مفضلاتك هنا عند النقر على القلب في شريط الأيات',
   },
   achievements: {
     overall: 'التقدم الكلي',

@@ -567,7 +567,9 @@ export const ne = {
     custom: 'व्यक्तिगत सङ्कलन',
     verses: 'वचनहरू',
     noVerses: 'यस सङ्कलनमा हिले कुनै वचन छैन',
-    namePlaceholder: 'सङ्कलनको नाम'
+    namePlaceholder: 'सङ्कलनको नाम',
+    emptyFavorites: 'कसै मनपरने छैनन',
+    emptyFavoritesHint: 'तपाईंको मनपरने यहाँ देखिन्छन जब तपाईं वाक्य पट्टीमा हृदय थिचनुहुन्छ',
   },
   achievements: {
     overall: 'सम्पूर्ण प्रगति',

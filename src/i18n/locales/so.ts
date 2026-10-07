@@ -567,7 +567,9 @@ export const so = {
     custom: 'Urur shakhsi ah',
     verses: 'maqaal',
     noVerses: "Maqaal la'aan ururkan weli",
-    namePlaceholder: 'Magaca ururka'
+    namePlaceholder: 'Magaca ururka',
+    emptyFavorites: 'Ma jira kuwa cabsiis',
+    emptyFavoritesHint: 'Kuwa aad jeceshahay waxay u muuqdaan halkan adigoo taaganaya walaalka',
   },
   achievements: {
     overall: 'Horumarka dhammaan',

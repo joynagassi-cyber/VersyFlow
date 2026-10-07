@@ -567,7 +567,9 @@ export const th = {
     custom: 'คอลเลกชันแบบกำหนดเอง',
     verses: 'พระคัมภีร์บท',
     noVerses: 'ยังไม่มีพระคัมภีร์บทในคอลเลกชันนี้',
-    namePlaceholder: 'ชื่อกอลเลกชัน'
+    namePlaceholder: 'ชื่อกอลเลกชัน',
+    emptyFavorites: 'ยังไม่มีรายการโปรด',
+    emptyFavoritesHint: 'รายการโปรดของคุณจะแสดงที่นั่นเมื่อคุณแตะหัวใจในแถบอุบาสก',
   },
   achievements: {
     overall: 'ความก้างหน้าทั้งหมด',

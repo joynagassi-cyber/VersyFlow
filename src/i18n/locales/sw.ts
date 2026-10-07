@@ -567,7 +567,9 @@ export const sw = {
     custom: 'Mkusanyo wa kibinafsi',
     verses: 'Aya',
     noVerses: 'Hakuna aya katika mkusanyo huu kwa wakati huu',
-    namePlaceholder: 'Jina la mkusanyo'
+    namePlaceholder: 'Jina la mkusanyo',
+    emptyFavorites: 'Hakuna ya kipekee bado',
+    emptyFavoritesHint: 'Yale ya kupendwa yanaonekana hapa unapogusa moyo kwenye kipande',
   },
   achievements: {
     overall: 'Maendeleo yote',

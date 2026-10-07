@@ -567,7 +567,9 @@ export const km = {
     custom: 'កាណូនបង្រួបផ្ទាល់ខ្លួន',
     verses: 'ពាក្យរូប',
     noVerses: 'មិនទាន់មានពាក្យរូបក្នុងកាណូនបង្រួបនេះទេ',
-    namePlaceholder: 'ឈ្មោះកាណូនបង្រួប'
+    namePlaceholder: 'ឈ្មោះកាណូនបង្រួប',
+    emptyFavorites: 'មិនទាន់មានបុណ្យ',
+    emptyFavoritesHint: 'ចំណូលចិត្តរបស់អ្នកបង្ហាញនៅទីនេះពេលអ្នកចុចចិត្តនៅក្នរបារ',
   },
   achievements: {
     overall: 'ការរីកចម្រើនសរុប',

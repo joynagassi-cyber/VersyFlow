@@ -567,7 +567,9 @@ export const zhHant = {
     custom: '自訂收藏集',
     verses: '節',
     noVerses: '此收藏集目前沒有經文',
-    namePlaceholder: '收藏集名稱'
+    namePlaceholder: '收藏集名稱',
+    emptyFavorites: '沒有收藏',
+    emptyFavoritesHint: '點選經文欄中的愛心後,您的收藏將顯示在此處',
   },
   achievements: {
     overall: '整體進度',

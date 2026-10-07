@@ -567,7 +567,9 @@ export const fa = {
     custom: 'مجموعه شخصی',
     verses: 'آیات',
     noVerses: 'هنوز آیه‌ای در این مجموعه وجود ندارد',
-    namePlaceholder: 'نام مجموعه'
+    namePlaceholder: 'نام مجموعه',
+    emptyFavorites: 'فاوریتهای شما',
+    emptyFavoritesHint: 'هنگامی که روی قلب نوار آیه ضربه بزنید در اینجا نمایش داده می‌شود',
   },
   achievements: {
     overall: 'پیشرفت کلی',

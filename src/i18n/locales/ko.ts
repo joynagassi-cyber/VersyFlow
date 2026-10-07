@@ -567,7 +567,9 @@ export const ko = {
     custom: '사용자 지정 컬렉션',
     verses: '말씀',
     noVerses: '아직 이 컬렉션에 말씀이 없습니다',
-    namePlaceholder: '컬렉션 이름'
+    namePlaceholder: '컬렉션 이름',
+    emptyFavorites: '마음에 드는 성경절이 없습니다',
+    emptyFavoritesHint: '성경절 바의 하트를 누르면 여기에 표시',
   },
   achievements: {
     overall: '전체 진행 상황',

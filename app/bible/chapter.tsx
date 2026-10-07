@@ -170,6 +170,7 @@ export default function ChapterScreen() {
             chapter={chapter}
             verse={selectedVerse}
             verseText={verseTexts[selectedVerse]}
+            translationId={translationId}
           />
         )}
       </div>

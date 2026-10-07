@@ -567,7 +567,9 @@ export const vi = {
     custom: 'Bộ sưu tập tùy chỉnh',
     verses: 'câu thơ',
     noVerses: 'Bộ sưu tập này chưa có câu thơ nào',
-    namePlaceholder: 'Tên bộ sưu tập'
+    namePlaceholder: 'Tên bộ sưu tập',
+    emptyFavorites: 'Chưa có mục yêu thích',
+    emptyFavoritesHint: 'Mục yêu thích của bạn sẽ hiển thị ở đây khi bạn chạm vào hình trái tim trên thanh câu',
   },
   achievements: {
     overall: 'Tiến độ tổng thể',

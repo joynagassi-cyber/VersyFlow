@@ -567,7 +567,9 @@ export const fil = {
     custom: 'Pasadyang koleksyon',
     verses: 'mga talata',
     noVerses: 'Wala pang talata sa koleksyong ito',
-    namePlaceholder: 'Pangalan ng koleksyon'
+    namePlaceholder: 'Pangalan ng koleksyon',
+    emptyFavorites: 'Wala pang paborito',
+    emptyFavoritesHint: 'Lalabas ang iyong mga paborito dito kapag pinindot ang puso sa verse bar',
   },
   achievements: {
     overall: 'Kabuuang pag-unlad',

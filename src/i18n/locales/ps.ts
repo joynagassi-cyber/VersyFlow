@@ -567,7 +567,9 @@ export const ps = {
     custom: 'ځانګړی کلهکشن',
     verses: 'آیتونه',
     noVerses: 'هالنې د دې کلیکشن کې آیتونه نشته',
-    namePlaceholder: 'د کلیکشن نوم'
+    namePlaceholder: 'د کلیکشن نوم',
+    emptyFavorites: 'دویا',
+    emptyFavoritesHint: 'ستونګ پسنده شونې پوړ په دې ځای کې ښکاره کیږي',
   },
   achievements: {
     overall: 'عمومي پرمختګ',

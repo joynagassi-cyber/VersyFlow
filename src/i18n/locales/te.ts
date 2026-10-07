@@ -567,7 +567,9 @@ export const te = {
     custom: 'నిజపరవైన సంకలనం',
     verses: 'వాక్యాలు',
     noVerses: 'ఈ సంకలనంలో ఇంకా వాక్యం లేదు',
-    namePlaceholder: 'సంకలనం పేరు'
+    namePlaceholder: 'సంకలనం పేరు',
+    emptyFavorites: 'దీవలు',
+    emptyFavoritesHint: 'వేనక సాధనముల మీరు సౌండ్ క్లక్్ కరె',
   },
   achievements: {
     overall: 'మొత్తం ప్రగతి',

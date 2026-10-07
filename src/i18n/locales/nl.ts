@@ -567,7 +567,9 @@ export const nl = {
     custom: 'Persoonlijke collectie',
     verses: 'versen',
     noVerses: 'Geen versen in deze collectie',
-    namePlaceholder: 'Naam van de collectie'
+    namePlaceholder: 'Naam van de collectie',
+    emptyFavorites: 'Geen favorieten',
+    emptyFavoritesHint: 'Je favorieten verschijnen hier wanneer je op het hart in de versbalk tikt',
   },
   achievements: {
     overall: 'Totale voortgang',

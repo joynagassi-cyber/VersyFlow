@@ -567,7 +567,9 @@ export const es = {
     custom: 'Colección personalizada',
     verses: 'versículos',
     noVerses: 'No hay versículos en esta colección por el momento',
-    namePlaceholder: 'Nombre de la colección'
+    namePlaceholder: 'Nombre de la colección',
+    emptyFavorites: 'Sin favoritos',
+    emptyFavoritesHint: 'Tus favoritos aparecen aquí cuando tocas el corazón en la barra del versículo',
   },
   achievements: {
     overall: 'Progreso general',

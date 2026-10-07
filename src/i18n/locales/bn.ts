@@ -567,7 +567,9 @@ export const bn = {
     custom: 'পার্সোনালাইজড সংগ্রহ',
     verses: 'বাস্তি',
     noVerses: 'এই সংগ্রহে এখনো কোনো বাস্তি নেই',
-    namePlaceholder: 'সংগ্রহের নাম'
+    namePlaceholder: 'সংগ্রহের নাম',
+    emptyFavorites: 'কোন পছন্দ নেই',
+    emptyFavoritesHint: 'শিরোনাম বারের হৃদয় ট্যাপ করলেই আপনার পছন্দ এখানে দেখাবে',
   },
   achievements: {
     overall: 'সম্মিলিত গ্রতি',

@@ -567,7 +567,9 @@ export const sd = {
     custom: 'پسنديده ڪوليڪشن',
     verses: 'آيتون',
     noVerses: 'هن ڪوليڪشن ۾ هاڻي ڪا به آيت ناهي',
-    namePlaceholder: 'ڪوليڪشن جو نالو'
+    namePlaceholder: 'ڪوليڪشن جو نالو',
+    emptyFavorites: 'ڪو ڏاڍو',
+    emptyFavoritesHint: 'جئو پسنديده جائي ڏسند جيڪو ڌڙا جوڙ پڙند ڪري',
   },
   achievements: {
     overall: 'آمڙن پروگريس',

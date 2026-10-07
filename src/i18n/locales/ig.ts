@@ -559,15 +559,17 @@ export const ig = {
   collections: {
     all: 'Niile',
     memorized: 'Na-acheta',
-    favorites: "Nke ị hụrịrị n'anya",
+    favorites: "Nke ị hụrịrị n’anya",
     empty: 'Enweghị nzukọ',
     emptyHint: 'Mepụta nzukọ ị ga-achọpụta nke mbụ.',
     create: 'Mepụta nzukọ',
-    createHint: "Kekọrịta okwu ị hụrịrị n'anya",
+    createHint: "Kekọrịta okwu ị hụrịrị n’anya",
     custom: 'Nzukọ onwe gị',
     verses: 'okwu',
     noVerses: "Enweghị okwu n'akụkụ nzukọ a ruo taa",
-    namePlaceholder: 'Aha nke nzukọ'
+    namePlaceholder: 'Aha nke nzukọ',
+    emptyFavorites: 'Enweghị isiokwu a họrọ',
+    emptyFavoritesHint: 'Isiokwu ndị ị hụrị n’anya na-egosi ebe a mgbe ị na-eti obi na ngukọta',
   },
   achievements: {
     overall: 'Nsonaazụ zuru ezu',

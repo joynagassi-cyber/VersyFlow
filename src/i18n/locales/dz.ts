@@ -567,7 +567,9 @@ export const dz = {
     custom: 'བརྟགས་པ་གཏོར་བའི་ཚོགས་བྱས།',
     verses: 'རྣམ་ཐར་',
     noVerses: 'ཚོགས་བྱས་འདིར་རྣམ་ཐར་མེད།',
-    namePlaceholder: 'ཚོགས་བྱས་ཀྱི་མིང་།'
+    namePlaceholder: 'ཚོགས་བྱས་ཀྱི་མིང་།',
+    emptyFavorites: 'ཁག་མི་འདུག',
+    emptyFavoritesHint: 'ཁག་གི་རིགས་བསྒྱུར་བསྐྱར་བར་ལ་མིག་མཆན་བཀོད་དགོས',
   },
   achievements: {
     overall: 'རྒྱུད་ལ་འགྲུལ་བའི་ཆ་རྐྱེན།',

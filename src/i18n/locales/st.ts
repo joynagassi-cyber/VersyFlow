@@ -567,7 +567,9 @@ export const st = {
     custom: 'Pepetoho e bohlale',
     verses: 'lentšu',
     noVerses: 'Ha ho lentšu le e leng kapa pele ho tsoang ha tsoe ho pepetoho ena',
-    namePlaceholder: 'Lebitso la pepetoho'
+    namePlaceholder: 'Lebitso la pepetoho',
+    emptyFavorites: 'Ha na tse di ratwang',
+    emptyFavoritesHint: 'Tse di ratwang ha di bonahala mona u tobetsa pelo ka letenya ha makhubu',
   },
   achievements: {
     overall: 'Tsoelo-pele e kholo',

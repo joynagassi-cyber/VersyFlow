@@ -545,6 +545,7 @@ export const fr = {
       tagHint: 'Ajouté immédiatement à votre arbre sémantique',
       tagSaved: 'Tagué — concept ajouté à votre arbre sémantique',
       compare: 'Comparer',
+      favorite: 'Favori',
       highlight: 'Surligner',
       highlightCleared: 'Surlignage retiré',
     },
@@ -669,6 +670,8 @@ export const fr = {
     verses: 'versets',
     noVerses: 'Aucun verset dans cette collection pour le moment',
     namePlaceholder: 'Nom de la collection',
+    emptyFavorites: 'Aucun favori',
+    emptyFavoritesHint: 'Vos favoris apparaissent ici quand vous touchez le cœur dans la barre de versets.',
   },
   achievements: {
     overall: 'Progression globale',

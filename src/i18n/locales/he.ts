@@ -567,7 +567,9 @@ export const he = {
     custom: 'אוסף מותאם',
     verses: 'פסוקים',
     noVerses: 'אין פסוקים באוסף הזה כרגע',
-    namePlaceholder: 'שם האוסף'
+    namePlaceholder: 'שם האוסף',
+    emptyFavorites: 'אין מעדיפים',
+    emptyFavoritesHint: 'המעדיפים שלך מופיעים כאן כשהלחצת על הלב בפסוק',
   },
   achievements: {
     overall: 'התקדמות כללית',

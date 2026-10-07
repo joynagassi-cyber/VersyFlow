@@ -567,7 +567,9 @@ export const ha = {
     custom: 'Maɓi na gaba',
     verses: 'ayati',
     noVerses: 'Babu ayati a cikin wannan maɓi a halin yanzu',
-    namePlaceholder: 'Sunan maɓi'
+    namePlaceholder: 'Sunan maɓi',
+    emptyFavorites: 'Kowa abin da a son su',
+    emptyFavoritesHint: 'Abin da ka so ya bayyana nan lokacin ka danna zuciya a juyin ayyo',
   },
   achievements: {
     overall: 'Tafiya gaba ɗaya',

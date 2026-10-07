@@ -567,7 +567,9 @@ export const it = {
     custom: 'Collezione personalizzata',
     verses: 'versetti',
     noVerses: 'Nessun versetto in questa collezione per ora',
-    namePlaceholder: 'Nome collezione'
+    namePlaceholder: 'Nome collezione',
+    emptyFavorites: 'Nessun preferito',
+    emptyFavoritesHint: 'I tuoi preferiti compaiono qui quando tocchi il cuore nella barra del versetto',
   },
   achievements: {
     overall: 'Progressione globale',

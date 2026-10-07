@@ -581,7 +581,9 @@ export const ru = {
     custom: 'Собственная коллекция',
     verses: 'стихов',
     noVerses: 'В этой коллекции пока нет стихов',
-    namePlaceholder: 'Название коллекции'
+    namePlaceholder: 'Название коллекции',
+    emptyFavorites: 'Нет избранных',
+    emptyFavoritesHint: 'Ваши избранные появляются здесь, когда вы нажимаете сердце в строке стиха',
   },
   achievements: {
     overall: 'Общий прогресс',

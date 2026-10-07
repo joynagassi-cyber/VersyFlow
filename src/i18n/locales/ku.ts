@@ -567,7 +567,9 @@ export const ku = {
     custom: 'Koleksiyona kexkî',
     verses: 'Vergik',
     noVerses: 'Hîn tu vergika li vê koleksiyonê tune ye',
-    namePlaceholder: 'Navê koleksiyonê'
+    namePlaceholder: 'Navê koleksiyonê',
+    emptyFavorites: 'hevnasî nayî ye',
+    emptyFavoritesHint: 'Peymalên we li vir xuya dibin dema ku tu ser dilê di barê peyam têr dikî',
   },
   achievements: {
     overall: 'Pêşveçûna giştî',

@@ -567,7 +567,9 @@ export const de = {
     custom: 'Benutzerdefinierte Sammlung',
     verses: 'Verse',
     noVerses: 'Diese Sammlung enthält noch keine Verse',
-    namePlaceholder: 'Name der Sammlung'
+    namePlaceholder: 'Name der Sammlung',
+    emptyFavorites: 'Keine Favoriten',
+    emptyFavoritesHint: 'Deine Favoriten erscheinen hier, wenn du das Herz in der Verszeile antippst',
   },
   achievements: {
     overall: 'Gesamter Fortschritt',

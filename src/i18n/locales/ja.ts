@@ -567,7 +567,9 @@ export const ja = {
     custom: 'カスタムコレクション',
     verses: '節',
     noVerses: 'このコレクションにはまだ聖句がありません',
-    namePlaceholder: 'コレクション名'
+    namePlaceholder: 'コレクション名',
+    emptyFavorites: 'お気に入りはありません',
+    emptyFavoritesHint: 'バーのハートを押すとここにあなたの好きな聖書の一節が表示されます',
   },
   achievements: {
     overall: '全体進捗',

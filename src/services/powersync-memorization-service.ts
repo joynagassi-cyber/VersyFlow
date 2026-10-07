@@ -149,11 +149,34 @@ export class PowerSyncMemorizationService extends MemorizationService {
 
   // ---- ReviewQueueSource surface ----
 
+  /**
+   * Normalize a record returned by the repository stub/implementation to
+   * the canonical `MemorizationRecord` shape. The repository contract
+   * (docs/10-data-model.md) requires `learnerProfileId` to be present on
+   * every record, but the read-only view + deterministic id can produce
+   * rows with the field missing (e.g. when the mapper's reconstruction
+   * hasn't round-tripped through a write yet). Filling it with the
+   * service's own profile id keeps the record shape stable for callers
+   * and matches what the write path (`saveMemorizedRecord`) stores.
+   */
+  private normalizeRecord(
+    record: MemorizationRecord,
+  ): MemorizationRecord {
+    if (record.learnerProfileId !== undefined && record.learnerProfileId !== '') {
+      return record;
+    }
+    return { ...record, learnerProfileId: this.myProfileId };
+  }
+
+  private normalizeRecords(records: MemorizationRecord[]): MemorizationRecord[] {
+    return records.map((r) => this.normalizeRecord(r));
+  }
+
   async getDueRecords(profileId?: string): Promise<MemorizationRecord[]> {
     void profileId;
     const userId = await this.userIdProvider();
     if (!userId) return []; // offline + not signed in → nothing to review
-    return this.repo.listDueByUser(userId);
+    return this.normalizeRecords(await this.repo.listDueByUser(userId));
   }
 
   /** All records for the current user (newest first), or [] when signed out. */
@@ -161,7 +184,7 @@ export class PowerSyncMemorizationService extends MemorizationService {
     void profileId;
     const userId = await this.userIdProvider();
     if (!userId) return [];
-    return this.repo.listByUser(userId);
+    return this.normalizeRecords(await this.repo.listByUser(userId));
   }
 
   /** Review logs for a record, read from the PowerSync review_logs table. */
@@ -186,7 +209,8 @@ export class PowerSyncMemorizationService extends MemorizationService {
     const userId = await this.userIdProvider();
     if (!userId) return null;
     const recordId = `${bookId}:${chapter}:${verse}:${translationId}`;
-    return this.repo.getById(userId, recordId);
+    const found = await this.repo.getById(userId, recordId);
+    return found ? this.normalizeRecord(found) : null;
   }
 
   // ---- Persistence (single PowerSync write path) ----
@@ -203,6 +227,34 @@ export class PowerSyncMemorizationService extends MemorizationService {
       learnerProfileId: profileId ?? this.myProfileId,
     };
     await this.repo.upsert(userId, this.toRepoRecord(full));
+  }
+
+  /**
+   * Toggle a record's favorite flag without touching its FSRS state.
+   * Used by the VerseActionBar "Favori" button (F-002-F) and any other
+   * UI that needs to flip the flag. Offline-safe: no user session → no-op.
+   *
+   * Emits `FAVORITE_TOGGLED` on the shared eventBus so other screens can
+   * react (e.g. the collections filter, dashboard counters).
+   */
+  async toggleFavorite(recordId: string, favorite: boolean): Promise<boolean> {
+    const userId = await this.ownerOrThrow();
+    const existing = await this.repo.getById(userId, recordId);
+    if (!existing) return false;
+
+    existing.favorite = favorite;
+    await this.repo.upsert(userId, this.toRepoRecord(existing));
+
+    import('@/domains/events').then(({ eventBus, DomainEventTypes }) => {
+      eventBus.emit({
+        id: crypto.randomUUID(),
+        type: DomainEventTypes.FAVORITE_TOGGLED,
+        timestamp: Date.now(),
+        payload: { recordId, favorite },
+      });
+    });
+
+    return true;
   }
 
   async updateRecordAfterReview(

@@ -567,7 +567,9 @@ export const hi = {
     custom: 'कस्टम संग्रह',
     verses: 'आयत',
     noVerses: 'इस संग्रह में अभी कोई आयत नहीं',
-    namePlaceholder: 'संग्रह का नाम'
+    namePlaceholder: 'संग्रह का नाम',
+    emptyFavorites: 'कोई पसंद नहीं',
+    emptyFavoritesHint: 'आपके पसंदीदा इसमें दिखते हैं जब आप वाक्य बार में दिल दबाते हैं',
   },
   achievements: {
     overall: 'समग्र प्रगति',

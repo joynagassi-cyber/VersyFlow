@@ -567,7 +567,9 @@ export const ml = {
     custom: 'പേരികളുള്ള കളക്ഷൻ',
     verses: 'വചനങ്ങൾ',
     noVerses: 'ഈ കളക്ഷനിൽ ഇപ്പോൾ വചനങ്ങൾ ഇല്ല',
-    namePlaceholder: 'കളക്ഷൻ പേര്'
+    namePlaceholder: 'കളക്ഷൻ പേര്',
+    emptyFavorites: 'പ്രിയപ്പെട്റ്റവ ഇല്ല',
+    emptyFavoritesHint: 'വാക്യ ബാറിൽ ഹൃദയം നോക്കുമ്പോൾ നിങ്ങളുടെ പ്രിയപ്പെട്ടവ ഇവിടെ പ്രത്യക്ഷപ്പെടുന്നു',
   },
   achievements: {
     overall: 'സാധാരണ പുരോഗതി',

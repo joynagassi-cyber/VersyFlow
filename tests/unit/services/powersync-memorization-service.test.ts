@@ -134,9 +134,12 @@ describe('PowerSyncMemorizationService (P0B-2)', () => {
   });
 
   it('getDueRecords delegates to listDueByUser when a user is present', async () => {
-    await expect(service.getDueRecords('default')).resolves.toEqual([
-      makeRecord(),
-    ]);
+    // Fix the exact record (and its timestamps) captured by the stub up front
+    // so the deep-equal assertion below is stable, even if `Date.now()`
+    // advances by a millisecond between stub construction and the assertion.
+    const sample = makeRecord();
+    repo.listDueByUser.mockResolvedValueOnce([sample]);
+    await expect(service.getDueRecords('default')).resolves.toEqual([sample]);
     expect(repo.listDueByUser).toHaveBeenCalledWith(userId);
   });
 

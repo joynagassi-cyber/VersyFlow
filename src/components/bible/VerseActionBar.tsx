@@ -20,6 +20,7 @@ import {
   BrainCircuit,
   Check,
   Copy,
+  Heart,
   Highlighter,
   PenLine,
   Tag,
@@ -29,6 +30,7 @@ import { BIBLE_BOOKS_LIST as BIBLE_BOOKS } from '@/services/memorization-session
 import { eventBus, DomainEventTypes } from '@/services/events-service';
 import { getVerseNote, saveVerseNote } from '@/services/verse-note-service';
 import { getSemanticService } from '@/services/semantic-query-service';
+import { getMemorizationService } from '@/services/memorization-service-factory';
 import { useHighlightStore, type HighlightState } from '@/store/highlight-store';
 import { cn } from '@/lib/utils';
 
@@ -37,6 +39,7 @@ interface VerseActionBarProps {
   chapter: number;
   verse: number;
   verseText?: string;
+  translationId?: string;
 }
 
 function ActionButton({
@@ -69,6 +72,7 @@ export default function VerseActionBar({
   chapter,
   verse,
   verseText,
+  translationId,
 }: VerseActionBarProps) {
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -88,7 +92,28 @@ export default function VerseActionBar({
   const [tagName, setTagName] = useState('');
   const [tagSaving, setTagSaving] = useState(false);
   const [tagged, setTagged] = useState(false);
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [favLoading, setFavLoading] = useState(false);
   const noteLoadedFor = useRef<string>('');
+
+  // Load the favorite flag when the verse changes (only for already-memorized
+  // verses; otherwise the record doesn't exist yet and the flag is false).
+  useEffect(() => {
+    let cancelled = false;
+    const translation = translationId ?? 'lsg';
+    getMemorizationService()
+      .getMemorizedRecord(bookId, chapter, verse, translation)
+      .then((rec) => {
+        if (cancelled) return;
+        setIsFavorite(rec?.favorite ?? false);
+      })
+      .catch(() => {
+        if (!cancelled) setIsFavorite(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [bookId, chapter, verse, translationId]);
 
   useEffect(() => {
     eventBus.emit({
@@ -175,6 +200,76 @@ export default function VerseActionBar({
     toggleHighlight(verseKey);
   };
 
+  /**
+   * Toggle the favorite flag on the current verse's memorization record.
+   * Creates a new record when one doesn't exist yet (via the
+   * MemorizationService.memorize flow would be overkill — we just
+   * upsert the minimal row through `saveMemorizedRecord` so the user can
+   * star a verse before starting to memorize it). Emits `FAVORITE_TOGGLED`
+   * through the service so downstream consumers (collections, dashboard)
+   * can react.
+   */
+  const toggleFavoriteAction = async () => {
+    if (favLoading) return;
+    setFavLoading(true);
+    const next = !isFavorite;
+    setIsFavorite(next); // optimistic — reverts on failure
+    try {
+      const svc = getMemorizationService();
+      const translation = translationId ?? 'lsg';
+      const existing = await svc.getMemorizedRecord(
+        bookId,
+        chapter,
+        verse,
+        translation,
+      );
+      if (existing) {
+        await svc.toggleFavorite(existing.id, next);
+      } else {
+        // Star a not-yet-memorized verse: write a new record with the
+        // favorite flag set. The FSRS state stays at the default so the
+        // record is not yet reviewable.
+        const { getFsrsEngine } = await import('@/services/fsrs-factory');
+        const fsrs = getFsrsEngine();
+        const fsrsState = await fsrs.newState(0);
+        await svc.saveMemorizedRecord({
+          bookId,
+          chapterNumber: chapter,
+          verseNumber: verse,
+          endVerse: verse,
+          translationId: translation,
+          bibleVerseReference: `${bookId} ${chapter}:${verse}`,
+          bibleVerseText: verseText ?? '',
+          verseTexts: verseText ? [verseText] : [],
+          status: 'new',
+          fsrsState,
+          nextReviewAt: 0,
+          createdAt: Date.now(),
+          lastReviewedAt: null,
+          reviewCount: 0,
+          totalReviewMinutes: 0,
+          wordPerformance: [],
+          favorite: next,
+          tags: [],
+        });
+      }
+      eventBus.emit({
+        id: crypto.randomUUID(),
+        type: DomainEventTypes.FAVORITE_TOGGLED,
+        timestamp: Date.now(),
+        payload: {
+          recordId: `${bookId}:${chapter}:${verse}:${translation}`,
+          favorite: next,
+        },
+      });
+    } catch (e) {
+      setIsFavorite(!next); // revert
+      console.error('[VerseActionBar] favorite toggle failed:', e);
+    } finally {
+      setFavLoading(false);
+    }
+  };
+
   return (
     <>
       <div className="sticky bottom-3 z-30 mx-auto w-fit max-w-full rounded-2xl border border-border bg-surface/95 shadow-lg backdrop-blur-md">
@@ -218,6 +313,12 @@ export default function VerseActionBar({
                 `/comparison/translation?bookId=${bookId}&chapter=${chapter}&verse=${verse}`,
               )
             }
+          />
+          <ActionButton
+            icon={Heart}
+            label={t('settings.verseBar.favorite', 'Favori')}
+            active={isFavorite}
+            onClick={() => void toggleFavoriteAction()}
           />
           <ActionButton
             icon={Highlighter}

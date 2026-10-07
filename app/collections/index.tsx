@@ -1,5 +1,5 @@
 // Fixed: UX — collection load/save failures now surface a visible error state with retry instead of empty catch blocks
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
@@ -15,6 +15,10 @@ import {
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { colorTintAlpha } from '@/lib/platform';
+import { getMemorizationService } from '@/services/memorization-service-factory';
+import { BIBLE_BOOKS_LIST as BIBLE_BOOKS } from '@/services/memorization-session-service';
+import { eventBus, DomainEventTypes } from '@/services/events-service';
+import type { MemorizationRecord } from '@/domains/memorization/entities';
 
 interface Collection {
   id: string;
@@ -89,6 +93,37 @@ export default function CollectionsScreen() {
   const [newName, setNewName] = useState('');
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
+  // Real favorite records (flag `favorite=true` on MemorizationRecord)
+  // refresh on mount AND on every FAVORITE_TOGGLED event, so the
+  // "Favoris" tab reflects the live toggle from VerseActionBar.
+  const [favorites, setFavorites] = useState<MemorizationRecord[]>([]);
+  useEffect(() => {
+    let cancelled = false;
+    const loadFavorites = async () => {
+      try {
+        const svc = getMemorizationService();
+        const all = await svc.getAllMemorized();
+        const favs = all.filter((r) => r.favorite);
+        if (!cancelled) setFavorites(favs);
+      } catch {
+        /* offline or not signed in — favorites stay empty */
+      }
+    };
+    void loadFavorites();
+    const onToggled = () => void loadFavorites();
+    eventBus.on(DomainEventTypes.FAVORITE_TOGGLED, onToggled);
+    return () => {
+      cancelled = true;
+      eventBus.off(DomainEventTypes.FAVORITE_TOGGLED, onToggled);
+    };
+  }, []);
+
+  const favoriteRefs = favorites.map((r) => {
+    const book = BIBLE_BOOKS.find((b) => b.id === r.bookId);
+    const name = book?.name?.fr ?? r.bookId;
+    return `${name} ${r.chapterNumber}:${r.verseNumber}`;
+  });
+
   const filtered =
     selected === 'all'
       ? collections
@@ -128,7 +163,7 @@ export default function CollectionsScreen() {
   const categories = [
     { id: 'all' as const, label: t('collections.all', 'Toutes'), count: collections.length },
     { id: 'memorized' as const, label: t('collections.memorized', 'En memorisation'), count: collections.filter((c) => c.icon === 'bulb').length },
-    { id: 'favorites' as const, label: t('collections.favorites', 'Favoris'), count: collections.filter((c) => c.icon === 'heart').length },
+    { id: 'favorites' as const, label: t('collections.favorites', 'Favoris'), count: favorites.length },
   ];
 
   return (
@@ -179,7 +214,52 @@ export default function CollectionsScreen() {
           ))}
         </div>
 
-        {filtered.length === 0 && (
+        {selected === 'favorites' ? (
+          /* Real favorite verses (flag `favorite=true` on MemorizationRecord).
+             Rendered separately from the user-created collections list
+             because the source is the synced memorization database, not
+             the localStorage `vs_flow` shape. */
+          <div className="space-y-2">
+            {favorites.length === 0 ? (
+              <EmptyState
+                title={t('collections.emptyFavorites', 'Aucun favori')}
+                description={t('collections.emptyFavoritesHint', 'Vos favoris apparaissent ici quand vous cochez le bouton dans la barre de versets.')}
+                showLogo={false}
+              />
+            ) : (
+              favorites.map((rec) => {
+                const book = BIBLE_BOOKS.find((b) => b.id === rec.bookId);
+                const name = book?.name?.fr ?? rec.bookId;
+                const ref = `${name} ${rec.chapterNumber}:${rec.verseNumber}`;
+                return (
+                  <button
+                    key={rec.id}
+                    onClick={() =>
+                      navigate(
+                        `/bible/chapter?book=${encodeURIComponent(rec.bookId)}&chapter=${rec.chapterNumber}&verse=${rec.verseNumber}`,
+                      )
+                    }
+                    className="flex w-full items-center gap-3 rounded-xl bg-surface p-3 text-left shadow-sm active:bg-surface-tint"
+                  >
+                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-error/10">
+                      <Heart size={16} className="text-error" />
+                    </span>
+                    <span className="min-w-0 flex-1">
+                      <span className="block truncate text-sm font-semibold text-text-primary">
+                        {ref}
+                      </span>
+                      {rec.bibleVerseText ? (
+                        <span className="mt-0.5 line-clamp-2 block text-xs text-text-muted">
+                          {rec.bibleVerseText}
+                        </span>
+                      ) : null}
+                    </span>
+                  </button>
+                );
+              })
+            )}
+          </div>
+        ) : filtered.length === 0 ? (
           <EmptyState
             title={t('collections.empty', 'Aucune collection')}
             description={t('collections.emptyHint', 'Créez votre premiere collection.')}
@@ -187,12 +267,13 @@ export default function CollectionsScreen() {
             onAction={() => setCreating(true)}
             showLogo={false}
           />
-        )}
+        ) : null}
 
-        {filtered.map((collection) => {
-          const Icon = ICONS[collection.icon];
-          const expanded = expandedId === collection.id;
-          return (
+        {selected !== 'favorites' &&
+          filtered.map((collection) => {
+            const Icon = ICONS[collection.icon];
+            const expanded = expandedId === collection.id;
+            return (
             <div key={collection.id}>
               <button
                 onClick={() =>

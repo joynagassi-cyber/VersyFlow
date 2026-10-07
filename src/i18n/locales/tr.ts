@@ -567,7 +567,9 @@ export const tr = {
     custom: 'Kişiselleştirilmiş koleksiyon',
     verses: 'ayet',
     noVerses: 'Bu koleksiyonda şimdilik ayet yok',
-    namePlaceholder: 'Koleksiyon adı'
+    namePlaceholder: 'Koleksiyon adı',
+    emptyFavorites: 'Henüz favori yok',
+    emptyFavoritesHint: 'Ayet çubuğundaki kalbe dokunduğunuzda favorileriniz burada görünür',
   },
   achievements: {
     overall: 'Genel ilerleme',

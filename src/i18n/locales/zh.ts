@@ -567,7 +567,9 @@ export const zh = {
     custom: '自定义收藏集',
     verses: '节经文',
     noVerses: '此收藏集暂无经文',
-    namePlaceholder: '收藏集名称'
+    namePlaceholder: '收藏集名称',
+    emptyFavorites: '没有收藏',
+    emptyFavoritesHint: '点击经文栏中的爱心后,您的收藏将显示在此处',
   },
   achievements: {
     overall: '总体进度',

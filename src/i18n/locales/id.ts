@@ -567,7 +567,9 @@ export const id = {
     custom: 'Koleksi kustom',
     verses: 'ayat',
     noVerses: 'Belum ada ayat dalam koleksi ini',
-    namePlaceholder: 'Nama koleksi'
+    namePlaceholder: 'Nama koleksi',
+    emptyFavorites: 'Belum ada favorit',
+    emptyFavoritesHint: 'Favorit Anda muncul di sini saat Anda mengetuk hati di bilah ayat',
   },
   achievements: {
     overall: 'Kemajuan keseluruhan',

@@ -567,7 +567,9 @@ export const yo = {
     custom: 'Àkójú àra-ẹni',
     verses: 'ọ̀rọ̀-ọ̀nà',
     noVerses: 'Kò sí ọ̀rọ̀-ọ̀nà nínú àkójú yìí fún báyèí',
-    namePlaceholder: 'Orúkọ àkójú'
+    namePlaceholder: 'Orúkọ àkójú',
+    emptyFavorites: 'Kò jẹ́ kọ́ ọ̀pọ̀',
+    emptyFavoritesHint: 'Awọn ohun tí ọ ń fẹ́ yóò hàn níhì ó tí ọ bá sọ dáhùn àmì ọkàn',
   },
   achievements: {
     overall: 'Ìtútmọ gbogbogbò',

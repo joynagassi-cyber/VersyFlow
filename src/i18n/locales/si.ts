@@ -567,7 +567,9 @@ export const si = {
     custom: 'පුරව්වා සංයෝජනය',
     verses: 'පාඨ',
     noVerses: 'දැනට මෙම එකතුවේ පාඨ නැත',
-    namePlaceholder: 'එකතුවේ නාමය'
+    namePlaceholder: 'එකතුවේ නාමය',
+    emptyFavorites: 'ප්‍රියතම තිබෙනේ නැත',
+    emptyFavoritesHint: 'ඔබේ ප්‍රියතමයන් මෙහි පෙනෙනු ඇත ඔබ වාක්‍ය පටිකාවේ හිත තට්ටු කළ විට',
   },
   achievements: {
     overall: 'සම්පූර්ණ සම්ප්‍රය',

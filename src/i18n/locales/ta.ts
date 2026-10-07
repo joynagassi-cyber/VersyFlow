@@ -567,7 +567,9 @@ export const ta = {
     custom: 'தனிப்பயன் கலெக்சன்',
     verses: 'வசனங்கள்',
     noVerses: 'இந்தக் கலெக்சனில் தற்போதைய வசனம் இல்லை',
-    namePlaceholder: 'கலெக்சனின் பெயர்'
+    namePlaceholder: 'கலெக்சனின் பெயர்',
+    emptyFavorites: 'பிரியமானவை இல்லை',
+    emptyFavoritesHint: 'விளக்கப்படட்டு இதயத்தை அழுத்தினால் உங்கள் பிரியமானவைகள் இங்கே பட்டியில்',
   },
   achievements: {
     overall: 'மொத்த முன்னேற்றம்',

@@ -542,6 +542,7 @@ export const en = {
       tagHint: 'Added immediately to your semantic tree',
       tagSaved: 'Tagged — concept added to your semantic tree',
       compare: 'Compare',
+      favorite: 'Favorite',
       highlight: 'Highlight',
       highlightCleared: 'Highlight removed',
     },
@@ -666,6 +667,8 @@ export const en = {
     verses: 'verses',
     noVerses: 'No verses in this collection yet',
     namePlaceholder: 'Collection name',
+    emptyFavorites: 'No favorites yet',
+    emptyFavoritesHint: 'Your favorites appear here when you tap the heart in the verse bar.',
   },
   achievements: {
     overall: 'Overall progress',

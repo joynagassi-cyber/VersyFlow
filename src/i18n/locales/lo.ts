@@ -567,7 +567,9 @@ export const lo = {
     custom: 'ຊຸດຂໍ້ມູນສ່ວນຕົວ',
     verses: 'ຫົວຂໍ້',
     noVerses: 'ບໍ່ມີຫົວຂໍ້ໃນຊຸດນີ້ປັດຈຸບັນ',
-    namePlaceholder: 'ຊື່ຂອງຊຸດຂໍ້ມູນ'
+    namePlaceholder: 'ຊື່ຂອງຊຸດຂໍ້ມູນ',
+    emptyFavorites: 'ບໍ່ມີ',
+    emptyFavoritesHint: 'ບັນຊີທີ່ເຮົາເພັນປະກາດກ່ຽວກັບແມ່ນຂອງໃຜ',
   },
   achievements: {
     overall: 'ການກ້າວໜ້າລວມ',

@@ -338,6 +338,7 @@ export default function BibleExplorerScreen() {
               chapter={selectedChapter}
               verse={selectedVerse}
               verseText={verseTexts[selectedVerse]}
+              translationId={translationId}
             />
           )}
         </div>

@@ -566,7 +566,9 @@ export const ms = {
     custom: 'Collection personnalisée',
     verses: 'versets',
     noVerses: 'Aucun verset dans cette collection pour le moment',
-    namePlaceholder: 'Nom de la collection'
+    namePlaceholder: 'Nom de la collection',
+    emptyFavorites: 'Hakuna ya kipekee',
+    emptyFavoritesHint: 'Ya kipekee yako inaonekana hapa ulichochuja yule katika kipande',
   },
   achievements: {
     overall: 'Progression globale',

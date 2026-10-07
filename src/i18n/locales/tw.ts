@@ -567,7 +567,9 @@ export const tw = {
     custom: 'Zokonda zamʼmʼmʼmʼmʼmʼmwina',
     verses: 'mawu',
     noVerses: 'Palibe mawu pa zokonda pano',
-    namePlaceholder: 'Dzina la zokonda'
+    namePlaceholder: 'Dzina la zokonda',
+    emptyFavorites: 'Ata ebiase',
+    emptyFavoritesHint: 'Ebiase benu kɛ seŋi nna wo dea maa',
   },
   achievements: {
     overall: 'Kutuloza konse',
