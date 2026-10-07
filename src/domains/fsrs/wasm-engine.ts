@@ -17,8 +17,13 @@
 
 import init, { WasmFsrsEngine as WasmFsrsEngineWasm } from '@/infrastructure/wasm/fsrs_wasm.js';
 import type { IFsrsEngine, Rating, FsrsState, FsrsReview } from './engine';
+import type { InitOutput } from '@/infrastructure/wasm/fsrs_wasm.js';
 
-let wasmReady: Promise<void> | null = null;
+// The wasm-pack default export `init` resolves to `Promise<InitOutput>`
+// (module + memory handles); we only care that it settled, so the cache
+// is typed as the native return of `init` — `Promise<InitOutput>`, not
+// `Promise<void>` — which is what the TS2322 flagged on Render.
+let wasmReady: Promise<InitOutput> | null = null;
 
 async function ensureWasm(): Promise<void> {
   if (!wasmReady) {
