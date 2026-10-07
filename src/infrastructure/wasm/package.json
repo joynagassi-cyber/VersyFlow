@@ -1,0 +1,15 @@
+{
+  "name": "fsrs-wasm",
+  "type": "module",
+  "version": "0.1.0",
+  "files": [
+    "fsrs_wasm_bg.wasm",
+    "fsrs_wasm.js",
+    "fsrs_wasm.d.ts"
+  ],
+  "main": "fsrs_wasm.js",
+  "types": "fsrs_wasm.d.ts",
+  "sideEffects": [
+    "./snippets/*"
+  ]
+}

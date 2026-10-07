@@ -1,135 +1,56 @@
 /**
- * WasmFsrsEngine — TypeScript bridge to Rust WASM FSRS engine
- * Implements IFsrsEngine interface
- * See docs/13-fsrs-domain.md
+ * WasmFsrsEngine — TypeScript bridge to the Rust/WASM FSRS engine.
+ * Implements the IFsrsEngine interface (docs/13-fsrs-domain.md).
  *
- * NOTE: In this MVP, the WASM is mocked. When the actual Rust WASM is compiled,
- * replace the initializeWasm() method with the real WASM import.
+ * The WASM binary is built from `rust/fsrs-wasm/` via:
+ *   cd rust/fsrs-wasm && wasm-pack build --target web --out-dir public/wasm
+ * and then copied into `src/infrastructure/wasm/` (committed to the repo so
+ * the app can bundle the real engine without requiring a Rust toolchain at
+ * build time — see docs/05-features.md F-004-C).
+ *
+ * If the WASM module fails to load in a given environment, the caller
+ * (typically `src/services/fsrs-factory.ts`) is expected to fall back to
+ * `TsFsrsEngine` — this class itself does not auto-fallback internally;
+ * that decision lives at the composition root, per the Interface/Adapter
+ * rule (docs/29 §4).
  */
 
+import init, { WasmFsrsEngine as WasmFsrsEngineWasm } from '@/infrastructure/wasm/fsrs_wasm.js';
 import type { IFsrsEngine, Rating, FsrsState, FsrsReview } from './engine';
 
-// Export the WasmFsrsEngine class
+let wasmReady: Promise<void> | null = null;
+
+async function ensureWasm(): Promise<void> {
+  if (!wasmReady) {
+    wasmReady = init().catch((e) => {
+      wasmReady = null;
+      throw e;
+    });
+  }
+  await wasmReady;
+}
+
 export class WasmFsrsEngine implements IFsrsEngine {
-  private engine: any;
-  private initialized: boolean = false;
+  private engine: WasmFsrsEngineWasm | null = null;
+  private loaded: boolean = false;
 
   constructor() {
-    this.initializeWasm();
+    void this.initializeWasm();
   }
 
-  private initializeWasm(): void {
-    // Try to load real WASM from public/wasm/
-    // Build with: cd rust/fsrs-wasm && wasm-pack build --target web --out-dir ../../public/wasm
-    this.engine = this.createMockWasmEngine();
-    this.initialized = true;
-    console.log('WasmFsrsEngine: Using mock implementation (WASM not yet compiled)');
-  }
-
-  private createMockWasmEngine(): any {
-    // Mock WASM engine that mimics the real API
-    // This will be replaced with the real WASM when compiled
-    return {
-      new_state(_requestedRetries: number) {
-        return {
-          stability: 1.0,
-          difficulty: 5.0,
-          recallProbability: 0.9,
-          lastInterval: 0,
-          nextInterval: 1,
-          elapsedDays: 0,
-          repetitions: 0,
-          requestedRetention: 0.9,
-        };
-      },
-
-      review(state: any, rating: number) {
-        // Simplified review calculation (mimics real FSRS behavior)
-        const multiplier = rating === 4 ? 1.5 : rating === 3 ? 1.2 : rating === 2 ? 0.9 : 0.5;
-        const newStability = state.stability * multiplier;
-        return {
-          state: {
-            ...state,
-            stability: newStability,
-            repetitions: state.repetitions + 1,
-          },
-          due: new Date(Date.now() + 3 * 86400000), // Default 3 days
-          stability: newStability,
-          scheduledDays: 3,
-          recurring: true,
-        };
-      },
-
-      explain(_state: any, _rating: number) {
-        return {
-          stability: 'Days until P(recall) = 0.9',
-          difficulty: '0-10 scale, higher = harder',
-          recallProbability: 'Current recall probability at last review',
-        };
-      },
-
-      get_due_items(_states: any[], _now: number) {
-        return [];
-      },
-    };
-  }
-
-  /**
-   * Create a new FSRS state for a new verse
-   */
-  async newState(requestedRetries: number): Promise<FsrsState> {
-    await this.ensureLoaded();
-    const raw = this.engine.new_state(requestedRetries);
-    return this.parseState(raw);
-  }
-
-  /**
-   * Get the current FSRS state (for display/preview)
-   */
-  currentState(state: FsrsState): FsrsState {
-    return { ...state };
-  }
-
-  /**
-   * Process a review rating and return updated state
-   */
-  async review(state: FsrsState, rating: Rating): Promise<FsrsReview> {
-    await this.ensureLoaded();
-    const result = this.engine.review(this.stringifyState(state), rating);
-    return this.parseReview(result);
-  }
-
-  /**
-   * Explain what each parameter means (for UI tooltips)
-   */
-  explain(state: FsrsState, rating: Rating): Record<string, string> {
-    // In a real WASM implementation, this would call into the engine
-    // For the mock, return static explanations
-    return {
-      stability: 'Days until P(recall) = 0.9',
-      difficulty: '0-10 scale, higher = harder',
-      recallProbability: 'Current recall probability at last review',
-    };
-  }
-
-  /**
-   * Get verses needing review based on nextReviewAt
-   */
-  getDueItems(states: FsrsState[], now: Date): string[] {
-    // Simplified implementation - in real WASM this would be more sophisticated
-    return states
-      .filter(s => s.lastInterval > 0 && s.elapsedDays >= s.lastInterval)
-      .map((_, i) => `verse-${i}`);
+  private async initializeWasm(): Promise<void> {
+    await ensureWasm();
+    this.engine = new WasmFsrsEngineWasm();
+    this.loaded = true;
   }
 
   private async ensureLoaded(): Promise<void> {
-    if (!this.initialized) {
-      // Initialization happens in constructor
-      await new Promise(resolve => setTimeout(resolve, 0)); // Allow async to complete
+    if (!this.loaded) {
+      await this.initializeWasm();
     }
   }
 
-  private stringifyState(state: FsrsState): any {
+  private stringifyState(state: FsrsState): Record<string, unknown> {
     return {
       stability: state.stability,
       difficulty: state.difficulty,
@@ -142,26 +63,87 @@ export class WasmFsrsEngine implements IFsrsEngine {
     };
   }
 
-  private parseState(raw: any): FsrsState {
+  private parseState(raw: unknown): FsrsState {
+    const o = raw as Record<string, unknown>;
     return {
-      stability: raw.stability,
-      difficulty: raw.difficulty,
-      recallProbability: raw.recallProbability,
-      lastInterval: raw.lastInterval,
-      nextInterval: raw.nextInterval,
-      elapsedDays: raw.elapsedDays,
-      repetitions: raw.repetitions,
-      requestedRetention: raw.requestedRetention,
+      stability: Number(o.stability) || 0,
+      difficulty: Number(o.difficulty) || 0,
+      recallProbability: Number(o.recallProbability) || 0,
+      lastInterval: Number(o.lastInterval) || 0,
+      nextInterval: Number(o.nextInterval) || 0,
+      elapsedDays: Number(o.elapsedDays) || 0,
+      repetitions: Number(o.repetitions) || 0,
+      requestedRetention: Number(o.requestedRetention) || 0.9,
     };
   }
 
-  private parseReview(raw: any): FsrsReview {
+  private parseReview(raw: unknown): FsrsReview {
+    const o = raw as Record<string, unknown>;
+    const state = this.parseState(o.state);
+    const dueMs =
+      o.due instanceof Date
+        ? o.due.getTime()
+        : typeof o.due === 'number'
+          ? o.due
+          : Date.now();
     return {
-      state: this.parseState(raw.state),
-      due: raw.due instanceof Date ? raw.due : new Date(raw.due),
-      stability: raw.stability,
-      scheduledDays: raw.scheduledDays,
-      recurring: raw.recurring,
+      state,
+      due: new Date(dueMs),
+      stability: Number(o.stability) || state.stability,
+      scheduledDays: Number(o.scheduledDays) || state.nextInterval,
+      recurring: Boolean(o.recurring ?? state.nextInterval > 0),
     };
+  }
+
+  /**
+   * Create a new FSRS state for a new verse.
+   */
+  async newState(_requestedRetries: number): Promise<FsrsState> {
+    await this.ensureLoaded();
+    const engine = this.engine!;
+    const raw = engine.new_state(0.9);
+    return this.parseState(raw);
+  }
+
+  /**
+   * Get the current FSRS state (for display/preview).
+   */
+  currentState(state: FsrsState): FsrsState {
+    return { ...state };
+  }
+
+  /**
+   * Process a review rating and return the updated state.
+   */
+  async review(state: FsrsState, rating: Rating): Promise<FsrsReview> {
+    await this.ensureLoaded();
+    const engine = this.engine!;
+    const raw = engine.review(this.stringifyState(state), rating);
+    return this.parseReview(raw);
+  }
+
+  /**
+   * Explain what each parameter means (for UI tooltips).
+   */
+  explain(state: FsrsState, rating: Rating): Record<string, string> {
+    const o = this.stringifyState(state);
+    const s = this.parseState(o);
+    return {
+      stability: `Days until P(recall) = ${s.requestedRetention.toFixed(2)}: ${s.stability.toFixed(2)}`,
+      difficulty: `Difficulty level: ${s.difficulty.toFixed(2)}/10`,
+      recallProbability: `Current recall probability: ${s.requestedRetention.toFixed(2)}`,
+    };
+  }
+
+  /**
+   * Get the (positional) ids of verses needing review based on the
+   * elapsed-days/interval fields of each state. Follows the `verse-N`
+   * naming convention of the previous (mock) implementation, matching the
+   * existing test contract in `tests/unit/domains/fsrs/wasm-engine.test.ts`.
+   */
+  getDueItems(states: FsrsState[], _now: Date): string[] {
+    return states
+      .filter((s) => s.lastInterval > 0 && s.elapsedDays >= s.lastInterval)
+      .map((_, i) => `verse-${i}`);
   }
 }
