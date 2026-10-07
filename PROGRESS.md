@@ -212,6 +212,10 @@
   cross-user résolu (audit P3-perf, High); `PowerSyncSyncService.startStream`
   now unsubscribes the prior subscription before re-subscribing
   (audit P2-perf, High). 2 files, tsc clean.
+- **`358e909`** — perf(P12): `useSyncStatus` stabilized with `useMemo` so the
+  returned `SyncStatus` object has stable identity across renders — closes
+  audit Perf P5-P9 finding "useSyncStatus retourne un objet frais par
+  appel". 1 file, tsc clean.
 - **`2f1c8f4`** (or equivalent, dead-code commit) — delete 7 unreachable
   legacy components + unused `memorization-store.ts`:
   `bible/VerseCard`, `bible/WordChip`, `common/HeaderBar`,
