@@ -1,3 +1,4 @@
+import * as React from 'react';
 import { cn } from '@/lib/utils';
 
 export interface RatingOption {
@@ -19,7 +20,7 @@ interface RatingBarProps {
  * Again / Hard / Good / Easy). Colors are supplied per option so the caller
  * stays decoupled from the FSRS domain.
  */
-export function RatingBar({ options, onSelect, disabled, className }: RatingBarProps) {
+export const RatingBar = React.memo(function RatingBar({ options, onSelect, disabled, className }: RatingBarProps) {
   return (
     <div className={cn('grid grid-cols-4 gap-2', className)}>
       {options.map((o) => (
@@ -39,4 +40,4 @@ export function RatingBar({ options, onSelect, disabled, className }: RatingBarP
       ))}
     </div>
   );
-}
+});

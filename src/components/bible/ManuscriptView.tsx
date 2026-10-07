@@ -59,6 +59,12 @@ export function ManuscriptView({
 
   const highlightKeys = useHighlightStore((s: HighlightState) => s.keys);
 
+  // O(n) Set lookup instead of O(n·m) Array.includes per verse render.
+  const highlightKeySet = useMemo(
+    () => new Set(highlightKeys),
+    [highlightKeys],
+  );
+
   return (
     <div className="mx-auto w-full">
       {/* Continuous manuscript text — .bible-card gets the premium
@@ -76,7 +82,7 @@ export function ManuscriptView({
         <p className="verse-flow mt-6 text-text-primary">
           {verses.map((verse, i) => {
             const isSelected = selectedVerse === verse.number;
-            const isHighlighted = highlightKeys.includes(`${bookId}:${chapter}:${verse.number}`);
+            const isHighlighted = highlightKeySet.has(`${bookId}:${chapter}:${verse.number}`);
             return (
               <span
                 key={verse.number}

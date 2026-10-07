@@ -10,7 +10,13 @@ interface ChipProps {
 }
 
 /** Pill chip / toggle. Renders a button when `onClick` is provided. */
-export function Chip({ label, active, onClick, icon, className }: ChipProps) {
+export const Chip = React.memo(function Chip({
+  label,
+  active,
+  onClick,
+  icon,
+  className,
+}: ChipProps) {
   const cls = cn(
     'inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold transition',
     active ? 'bg-primary text-white shadow-rose' : 'bg-surface-tint text-primary',
@@ -30,4 +36,4 @@ export function Chip({ label, active, onClick, icon, className }: ChipProps) {
       {label}
     </span>
   );
-}
+});

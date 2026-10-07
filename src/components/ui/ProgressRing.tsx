@@ -12,7 +12,7 @@ interface ProgressRingProps {
 }
 
 /** Circular progress ring used on dashboards & home stats. */
-export function ProgressRing({
+export const ProgressRing = React.memo(function ProgressRing({
   value,
   size = 72,
   stroke = 8,
@@ -58,4 +58,4 @@ export function ProgressRing({
       )}
     </div>
   );
-}
+});

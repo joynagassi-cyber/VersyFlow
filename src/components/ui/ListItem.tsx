@@ -21,7 +21,7 @@ const baseClasses = (className?: string) =>
   );
 
 /** A grouped settings/list row: tinted icon + label + optional value/chevron. */
-export function ListItem({
+export const ListItem = React.memo(function ListItem({
   icon: Icon,
   label,
   value,
@@ -63,4 +63,4 @@ export function ListItem({
     );
   }
   return <div className={baseClasses(className)}>{content}</div>;
-}
+});
