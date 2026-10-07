@@ -90,17 +90,6 @@ type LoadResult = BibleBookData[] | null;
 const repo: ILocalBibleRepository = new LocalBibleRepository(new BibleJsonFileSource());
 let cache: IBibleDatasetCache | null = null;
 
-/**
- * In dev the app is expected to use the REAL Supabase Storage bucket as its
- * source of truth (not the bundled `data/bible/*.json` files, which are
- * treated as mock/offline fixtures). `import.meta.env.DEV` is true under
- * Vite's dev server.
- */
-function preferRemoteSource(): boolean {
-  const env = (import.meta as unknown as { env?: Record<string, unknown> }).env;
-  return env?.DEV === true;
-}
-
 /** Per-session in-memory mirror of the dataset cache (dev-fast, quota-free). */
 const memoryCache = new Map<string, import('@/infrastructure/bible/bible-dataset-cache').CachedBibleDataset>();
 
@@ -154,37 +143,44 @@ async function peekLocal(
   }
 }
 
-/** Load the full dataset for a translation; null when unavailable. */
+/**
+ * Load the full dataset for a translation; null when unavailable.
+ *
+ * Resolution order (first source that has the data wins):
+ *   1. Bundled local dataset (`public/data/bible/<id>.json`, copied by
+ *      `scripts/copy-bible-bundled.mjs` at build time — `lsg.json` ships
+ *      by default). Works in dev AND in the production / Capacitor WebView,
+ *      fully offline, so the default translation renders immediately.
+ *   2. Download-on-demand cache (only for the 56 remote-only translations).
+ *   3. null — the dataset is not available locally; the caller may trigger
+ *      an explicit download from the Supabase bucket.
+ *
+ * In dev the bundled default is the source of truth; the Supabase bucket is
+ * only the fallback for the non-bundled translations, so "la Bible" never
+ * depends on the network to display the default translation.
+ */
 export async function loadTranslationData(
   translationId: string = 'lsg',
 ): Promise<BibleTranslationData | null> {
   const entry = findRemoteDatasetEntry(translationId);
 
-  // Dev: the real Supabase bucket is the source of truth. Serve from the
-  // download cache when present; otherwise report "unavailable" so the caller
-  // triggers a fresh fetch from the bucket (never reads the local mock files).
-  if (preferRemoteSource() && entry) {
-    return peekLocal(translationId, entry.checksum);
-  }
-
-  // 1. Bundled local dataset (production / offline).
+  // 1. Bundled local dataset (the `lsg` default ships in the build; every
+  //    other id 404s here on purpose and falls through to the cache).
   try {
-    return await repo.getBooks(translationId).then((books) => {
-      // Rebuild the minimal valid dataset shape from the books payload.
-      return {
-        id: translationId,
-        language: 'fr',
-        name: translationId,
-        // The canonical 66-book structure (Zod tuple); the repository
-        // returns the same canon, cast for the fixed shape.
-        books: books as unknown as BibleTranslationData['books'],
-      };
-    });
+    const books = await repo.getBooks(translationId);
+    return {
+      id: translationId,
+      language: 'fr',
+      name: translationId,
+      // The canonical 66-book structure (Zod tuple); the repository
+      // returns the same canon, cast for the fixed shape.
+      books: books as unknown as BibleTranslationData['books'],
+    };
   } catch {
     // not bundled — fall through to the download cache.
   }
 
-  // 2. Download-on-demand cache.
+  // 2. Download-on-demand cache (the non-bundled translations).
   if (entry) {
     const data = await peekLocal(translationId, entry.checksum);
     if (data) return data;

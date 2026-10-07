@@ -7,14 +7,15 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { ChevronRight, BookOpen } from 'lucide-react';
 import FullScreenPage from '@/components/layout/FullScreenPage';
-import { BIBLE_BOOKS_LIST as BIBLE_BOOKS } from '@/services/memorization-session-service';
+import { useBibleBooks } from '@/hooks/useBibleBooks';
 
 export default function BookScreen() {
   const { bookId } = useParams();
   const navigate = useNavigate();
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
-  const book = BIBLE_BOOKS.find((b) => b.id === bookId);
+  const { byId } = useBibleBooks();
+  const book = bookId ? byId.get(bookId) : undefined;
   if (!book) {
     return (
       <FullScreenPage title={t('bible.explorer', 'Bible')} backPath="/tabs/explore">
@@ -25,11 +26,9 @@ export default function BookScreen() {
     );
   }
 
-  const lang = i18n.language ?? 'fr';
-
   return (
     <FullScreenPage
-      title={book.name[lang] || book.name.fr}
+      title={book.displayName}
       subtitle={t('bible.chapterCount', { count: book.chapterCount })}
       backPath="/tabs/explore"
     >

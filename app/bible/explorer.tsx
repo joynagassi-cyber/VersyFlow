@@ -23,7 +23,7 @@ import {
 import FullScreenPage from '@/components/layout/FullScreenPage';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
-import { BIBLE_BOOKS_LIST as BIBLE_BOOKS } from '@/services/memorization-session-service';
+import { useBibleBooks, type BookMeta } from '@/hooks/useBibleBooks';
 import { bibleTranslationDisplayName } from '@/services/bible-translation-names';
 import { useChapterSemanticTags } from '@/hooks/useSemanticTags';
 import { useBibleData } from '@/hooks/useBibleData';
@@ -46,12 +46,14 @@ function formatBytes(bytes: number): string {
 export default function BibleExplorerScreen() {
   const navigate = useNavigate();
   const params = useParams();
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const [query, setQuery] = useState('');
   const [selectedVerse, setSelectedVerse] = useState<number | null>(null);
 
+  const { byId, oldTestament, newTestament, translationId } = useBibleBooks();
+
   const rawBookId = params.bookId ?? null;
-  const selectedBookId = BIBLE_BOOKS.some((b) => b.id === rawBookId) ? rawBookId : null;
+  const selectedBookId = rawBookId != null && byId.has(rawBookId) ? rawBookId : null;
   const chapterParam = Number(params.chapter);
   const selectedChapter =
     selectedBookId && Number.isInteger(chapterParam) && chapterParam > 0 ? chapterParam : null;
@@ -59,11 +61,10 @@ export default function BibleExplorerScreen() {
   const viewMode: ViewMode =
     selectedBookId && selectedChapter != null ? 'verses' : selectedBookId ? 'chapters' : 'books';
 
-  const lang = i18n.language ?? 'fr';
-  const selectedBook = BIBLE_BOOKS.find((b) => b.id === selectedBookId) || null;
+  const selectedBook: BookMeta | null =
+    selectedBookId != null ? byId.get(selectedBookId) ?? null : null;
 
-  const { books, status, error, remoteEntry, translationId, downloadPercent, download } =
-    useBibleData();
+  const { books, status, error, remoteEntry, downloadPercent, download } = useBibleData();
 
   // Reset the verse selection whenever the route (book/chapter) changes.
   useEffect(() => {
@@ -89,15 +90,15 @@ export default function BibleExplorerScreen() {
 
   const filteredBooks = useMemo(() => {
     const q = query.trim().toLowerCase();
-    if (!q) return BIBLE_BOOKS;
-    return BIBLE_BOOKS.filter((b) => {
-      const names = [b.name.fr, b.name.en, b.id];
-      return names.some((n) => n?.toLowerCase().includes(q));
-    });
-  }, [query]);
+    const all = [...byId.values()];
+    if (!q) return all;
+    return all.filter((b) =>
+      [b.displayName, b.id].some((n) => n?.toLowerCase().includes(q)),
+    );
+  }, [query, byId]);
 
-  const oldTestament = filteredBooks.filter((b) => b.testament === 'old');
-  const newTestament = filteredBooks.filter((b) => b.testament === 'new');
+  const oldTestamentFiltered = filteredBooks.filter((b) => b.testament === 'old');
+  const newTestamentFiltered = filteredBooks.filter((b) => b.testament === 'new');
 
   const openBook = (id: string) => {
     navigate(`/bible/explorer/${id}`);
@@ -129,9 +130,9 @@ export default function BibleExplorerScreen() {
     viewMode === 'books'
       ? t('bible.explorer', 'Explorer la Bible')
       : viewMode === 'chapters' && selectedBook
-        ? selectedBook.name[lang] || selectedBook.name.fr
+        ? selectedBook.displayName
         : viewMode === 'verses' && selectedBook && selectedChapter
-          ? `${selectedBook.name[lang] || selectedBook.name.fr} ${selectedChapter}`
+          ? `${selectedBook.displayName} ${selectedChapter}`
           : t('bible.explorer', 'Bible');
 
   return (
@@ -188,14 +189,14 @@ export default function BibleExplorerScreen() {
             {
               key: 'old',
               label: t('bible.oldTestament', 'Ancien Testament'),
-              list: oldTestament,
+              list: oldTestamentFiltered,
               icon: <BookOpen size={16} className="text-primary" />,
               iconBg: 'bg-surface-tint',
             },
             {
               key: 'new',
               label: t('bible.newTestament', 'Nouveau Testament'),
-              list: newTestament,
+              list: newTestamentFiltered,
               icon: <Cross size={16} className="text-white" />,
               iconBg: 'bg-success',
             },
@@ -227,7 +228,7 @@ export default function BibleExplorerScreen() {
                     >
                       <div>
                         <p className="text-base font-semibold text-text-primary">
-                          {book.name[lang] || book.name.fr}
+                          {book.displayName}
                         </p>
                         <p className="text-sm text-text-muted">
                           {t('bible.chapterCount', { count: book.chapterCount })}

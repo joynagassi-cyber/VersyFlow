@@ -147,8 +147,8 @@ describe('getTranslationStats — audit', () => {
       const seeded = { chapters: 42, verses: 999, year: 1500 };
       seedStatsCache(KNOWN_ID, seeded, Date.now() - 60_000);
       // Seed a matching dataset cache so the fresh stats entry can actually be
-      // read back (dev mode short-circuits uncatalogued ids before reaching
-      // the stats-cache lookup — see `preferRemoteSource()` above).
+      // read back (the bundled/remote fallback path — see `loadTranslationData`
+      // resolution order above).
       seedDatasetCache(KNOWN_ID, makeSmallDataset(KNOWN_ID));
 
       const svc = await freshService();

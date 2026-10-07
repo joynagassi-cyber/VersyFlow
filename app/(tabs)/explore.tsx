@@ -9,29 +9,28 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Search, BookOpen, ChevronRight, Network } from 'lucide-react';
 import { Input } from '@/components/ui/input';
-import { BIBLE_BOOKS_LIST as BIBLE_BOOKS } from '@/services/memorization-session-service';
-import type { BibleBook } from '@/domains/bible/entities';
+import { useBibleBooks, type BookMeta } from '@/hooks/useBibleBooks';
 
 export default function ExploreScreen() {
   const navigate = useNavigate();
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const [query, setQuery] = useState('');
 
-  const lang = i18n.language;
+  const { byId, oldTestament, newTestament } = useBibleBooks();
 
   const books = useMemo(() => {
     const q = query.trim().toLowerCase();
-    if (!q) return BIBLE_BOOKS;
-    return BIBLE_BOOKS.filter((b) => {
-      const names = [b.name.fr, b.name.en, b.id];
-      return names.some((n) => n?.toLowerCase().includes(q));
-    });
-  }, [query]);
+    const all = [...byId.values()];
+    if (!q) return all;
+    return all.filter((b) =>
+      [b.displayName, b.id].some((n) => n?.toLowerCase().includes(q)),
+    );
+  }, [query, byId]);
 
-  const oldTestament = books.filter((b) => b.testament === 'old');
-  const newTestament = books.filter((b) => b.testament === 'new');
+  const oldTestamentFiltered = books.filter((b) => b.testament === 'old');
+  const newTestamentFiltered = books.filter((b) => b.testament === 'new');
 
-  const renderSection = (title: string, list: BibleBook[]) =>
+  const renderSection = (title: string, list: BookMeta[]) =>
     list.length > 0 ? (
       <section className="mb-6">
         <h2 className="mb-3 px-1 text-lg font-semibold text-text-primary">{title}</h2>
@@ -48,7 +47,7 @@ export default function ExploreScreen() {
                 </span>
                 <div>
                   <p className="text-base font-semibold text-text-primary">
-                    {book.name[lang] || book.name.fr}
+                    {book.displayName}
                   </p>
                   <p className="text-sm text-text-muted">
                     {t('bible.chapterCount', { count: book.chapterCount })}
@@ -103,7 +102,7 @@ export default function ExploreScreen() {
         <ChevronRight size={18} className="text-primary" />
       </button>
 
-      {oldTestament.length === 0 && newTestament.length === 0 ? (
+      {oldTestamentFiltered.length === 0 && newTestamentFiltered.length === 0 ? (
         <div className="rounded-xl border border-dashed border-border p-8 text-center">
           <p className="text-sm text-text-muted">
             {t('bible.verse', 'Aucun résultat pour')} « {query} »
@@ -111,8 +110,8 @@ export default function ExploreScreen() {
         </div>
       ) : (
         <>
-          {renderSection(t('bible.oldTestament', 'Ancien Testament'), oldTestament)}
-          {renderSection(t('bible.newTestament', 'Nouveau Testament'), newTestament)}
+          {renderSection(t('bible.oldTestament', 'Ancien Testament'), oldTestamentFiltered)}
+          {renderSection(t('bible.newTestament', 'Nouveau Testament'), newTestamentFiltered)}
         </>
       )}
     </div>

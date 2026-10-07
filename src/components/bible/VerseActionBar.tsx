@@ -33,6 +33,7 @@ import { getSemanticService } from '@/services/semantic-query-service';
 import { getMemorizationService } from '@/services/memorization-service-factory';
 import { useHighlightStore, type HighlightState } from '@/store/highlight-store';
 import { cn } from '@/lib/utils';
+import { DEFAULT_TRANSLATION_ID } from '@/domains/bible/registry';
 
 interface VerseActionBarProps {
   bookId: string;
@@ -77,9 +78,15 @@ export default function VerseActionBar({
   const navigate = useNavigate();
   const { t } = useTranslation();
   const book = BIBLE_BOOKS.find((b) => b.id === bookId);
-  const bookName = book?.name?.fr ?? bookId;
+  // Localized display name for the active UI language (never raw `fr`):
+  // `name[lang] → fr → en → bookId` fallback chain.
+  const lang = i18next.language?.split('-')[0] ?? 'fr';
+  const bookName = book?.name?.[lang] ?? book?.name?.fr ?? bookId;
   const reference = `${bookName} ${chapter}:${verse}`;
   const verseKey = `${bookId}:${chapter}:${verse}`;
+  // The active translation falls back to the app default (`lsg`), not a
+  // literal duplicated in two places.
+  const translation = translationId ?? DEFAULT_TRANSLATION_ID;
 
   const isHighlighted = useHighlightStore((s: HighlightState) => s.keys.includes(verseKey));
   const toggleHighlight = useHighlightStore((s: HighlightState) => s.toggle);
@@ -100,7 +107,6 @@ export default function VerseActionBar({
   // verses; otherwise the record doesn't exist yet and the flag is false).
   useEffect(() => {
     let cancelled = false;
-    const translation = translationId ?? 'lsg';
     getMemorizationService()
       .getMemorizedRecord(bookId, chapter, verse, translation)
       .then((rec) => {
@@ -113,7 +119,7 @@ export default function VerseActionBar({
     return () => {
       cancelled = true;
     };
-  }, [bookId, chapter, verse, translationId]);
+  }, [bookId, chapter, verse, translation]);
 
   useEffect(() => {
     eventBus.emit({
@@ -216,7 +222,6 @@ export default function VerseActionBar({
     setIsFavorite(next); // optimistic — reverts on failure
     try {
       const svc = getMemorizationService();
-      const translation = translationId ?? 'lsg';
       const existing = await svc.getMemorizedRecord(
         bookId,
         chapter,

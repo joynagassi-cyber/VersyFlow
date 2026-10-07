@@ -12,7 +12,7 @@ import { useSearchParams, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Download, Loader2, AlertCircle, X } from 'lucide-react';
 import FullScreenPage from '@/components/layout/FullScreenPage';
-import { BIBLE_BOOKS_LIST as BIBLE_BOOKS } from '@/services/memorization-session-service';
+import { useBibleBooks } from '@/hooks/useBibleBooks';
 import { useChapterSemanticTags } from '@/hooks/useSemanticTags';
 import { useBibleData } from '@/hooks/useBibleData';
 import ManuscriptView from '@/components/bible/ManuscriptView';
@@ -26,14 +26,16 @@ function formatBytes(bytes: number): string {
 export default function ChapterScreen() {
   const [params] = useSearchParams();
   const urlParams = useParams();
-  const { t, i18n } = useTranslation();
-  const lang = i18n.language ?? 'fr';
+  const { t } = useTranslation();
+  const { byId } = useBibleBooks();
 
   // URL params (canon route /bible/chapter/:bookId/:chapterNumber) win,
-  // query params kept as a migration fallback.
+  // query params kept as a migration fallback. `gen` is the static-structure
+  // default when the param is absent — a known book id, never a hardcode of
+  // display names or chapter counts.
   const bookId = urlParams.bookId ?? params.get('book') ?? 'gen';
   const chapter = Number(urlParams.chapterNumber ?? params.get('chapter') ?? '1');
-  const book = BIBLE_BOOKS.find((b) => b.id === bookId) || BIBLE_BOOKS[0];
+  const book = byId.get(bookId) ?? byId.get('gen') ?? byId.get('mat');
 
   const [selectedVerse, setSelectedVerse] = useState<number | null>(null);
 
@@ -72,7 +74,7 @@ export default function ChapterScreen() {
 
   return (
     <FullScreenPage
-      title={`${book.name[lang] || book.name.fr} ${chapter}`}
+      title={`${book.displayName} ${chapter}`}
       subtitle={t('bible.chapter', 'Chapitre')}
       backPath={`/bible/book/${book.id}`}
     >
