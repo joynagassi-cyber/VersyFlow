@@ -1,0 +1,241 @@
+<!DOCTYPE html><html lang="fr" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+<title>Famille Étoile — Hub</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&amp;family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&amp;family=Playfair+Display:ital,wght@0,600;0,700;1,400&amp;family=Newsreader:ital,opsz,wght@0,6..72,600;0,6..72,700;1,6..72,400;1,6..72,500&amp;display=swap" rel="stylesheet">
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            app: {
+              bg: '#FAF7F7',
+              pink: '#DC1478',
+              pinkLight: '#FDECF4',
+              pinkGlow: '#B80E62',
+              card: '#FFFFFF',
+              dark: '#1B141E',
+              subtle: '#786F7A',
+              muted: '#AFA9B1',
+              border: '#F0E8ED'
+            }
+          },
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+            serif: ['"Newsreader"', '"Playfair Display"', 'Georgia', 'serif'],
+          },
+          boxShadow: {
+            'card-soft': '0 4px 20px -2px rgba(184, 14, 98, 0.04), 0 2px 6px -1px rgba(0, 0, 0, 0.02)',
+            'hero': '0 12px 28px -6px rgba(220, 20, 120, 0.35)',
+            'nav': '0 -4px 16px -1px rgba(0, 0, 0, 0.03)'
+          }
+        }
+      }
+    }
+  </script>
+<style data-purpose="custom-radial-progress">
+    .progress-conic {
+      background: conic-gradient(#DC1478 0% 62%, #F3D3E2 62% 100%);
+    }
+  </style>
+<style data-purpose="mobile-frame">
+    body {
+      background-color: #E5E5E5;
+      font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+      -webkit-tap-highlight-color: transparent;
+    }
+    .hide-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .hide-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
+</head>
+<body class="flex justify-center items-center min-h-screen font-sans text-app-dark antialiased p-0 sm:py-8">
+<!-- BEGIN: PhoneWrapper -->
+<main class="w-full max-w-[390px] h-[844px] bg-[#FAF7F7] sm:rounded-[48px] shadow-2xl relative flex flex-col overflow-hidden border-0 sm:border-[8px] sm:border-black/5" data-purpose="mobile-viewport">
+<!-- BEGIN: iOSStatusBar -->
+<header class="w-full pt-3 px-7 flex justify-between items-center z-30 shrink-0 bg-[#FAF7F7]/90 backdrop-blur-md" data-purpose="status-bar">
+<!-- Heure -->
+<span class="text-[15px] font-semibold tracking-tight text-neutral-900">9:41</span>
+<!-- Icônes Réseau & Batterie -->
+<div class="flex items-center space-x-1.5 text-neutral-900">
+<span class="text-xs font-semibold tracking-tight text-neutral-900">5G</span>
+<!-- Réseau barres -->
+<div aria-hidden="true" class="flex items-end space-x-[2px] h-3 ml-0.5">
+<span class="w-[3px] h-1.5 bg-neutral-900 rounded-xs"></span>
+<span class="w-[3px] h-2 bg-neutral-900 rounded-xs"></span>
+<span class="w-[3px] h-2.5 bg-neutral-900 rounded-xs"></span>
+<span class="w-[3px] h-3 bg-neutral-900 rounded-xs"></span>
+</div>
+<!-- Batterie -->
+<div aria-hidden="true" class="w-5 h-2.5 ml-1 border border-neutral-900 rounded-[3px] p-[1px] flex items-center">
+<div class="h-full w-full bg-neutral-900 rounded-[1.5px]"></div>
+</div>
+</div>
+</header>
+<!-- END: iOSStatusBar -->
+<!-- BEGIN: ScrollableContent -->
+<div class="flex-1 overflow-y-auto hide-scrollbar px-4 pt-2 pb-24 space-y-4" data-purpose="main-scroll-area">
+<!-- BEGIN: NavigationHeader -->
+<nav class="flex items-center justify-between pt-1 pb-1" data-purpose="top-navigation"><button aria-label="Retour" class="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center text-neutral-800 hover:bg-neutral-50 active:scale-95 transition-transform" type="button"><svg class="w-5 h-5 ml-[-1px]" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"></path></svg></button><div class="text-center"><h1 class="font-serif font-bold text-xl text-neutral-900 tracking-tight leading-snug">Famille Étoile</h1><p class="text-xs text-[#7A727C] font-normal tracking-wide">5 membres</p></div><button aria-label="Plus d'options" class="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center text-neutral-800 hover:bg-neutral-50 active:scale-95 transition-transform" type="button"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><circle cx="6" cy="12" fill="currentColor" r="1.5"></circle><circle cx="12" cy="12" fill="currentColor" r="1.5"></circle><circle cx="18" cy="12" fill="currentColor" r="1.5"></circle></svg></button></nav>
+<!-- END: NavigationHeader -->
+<!-- BEGIN: ActiveProfileCard -->
+<section class="pt-1" data-purpose="active-profile-section">
+<p class="text-[13px] text-[#786F7A] font-medium mb-2 pl-1">Tu mémorises en tant que</p>
+<div class="bg-white rounded-3xl p-3.5 shadow-card-soft border border-white flex items-center justify-between">
+<div class="flex items-center space-x-3.5">
+<!-- Avatar Initiale Rose -->
+<div class="w-11 h-11 rounded-full bg-[#DC1478] flex items-center justify-center text-white font-bold text-base shadow-sm ring-2 ring-pink-100">
+              L
+            </div>
+<!-- Infos Membre -->
+<div>
+<p class="font-bold text-[16px] text-neutral-900 leading-tight">Léa</p>
+<p class="text-[12px] text-[#7A727C] italic font-serif leading-snug mt-0.5">Gardienne du Psaume 23</p>
+</div>
+</div>
+<!-- Sélecteur Changer -->
+<button class="bg-[#FCECF3] hover:bg-[#FADDE9] text-[#B80E62] px-3.5 py-1.5 rounded-full text-xs font-semibold flex items-center space-x-1 transition-colors" type="button">
+<span class="">Changer</span>
+<span class="text-[10px]">▼</span>
+</button>
+</div>
+</section>
+<!-- END: ActiveProfileCard -->
+<!-- BEGIN: StreakHeroCard -->
+<section class="rounded-[28px] bg-gradient-to-br from-[#D91574] via-[#D0126D] to-[#9B0A50] text-white p-5 shadow-hero relative overflow-hidden" data-purpose="streak-counter">
+<div class="relative z-10 flex justify-between items-start">
+<div>
+<h2 class="text-[11px] font-bold uppercase tracking-wider text-pink-100/90 leading-none">Série de la famille</h2>
+<div class="mt-1">
+<span class="font-serif font-bold text-4xl tracking-tight text-white">9 jours</span>
+</div>
+</div>
+<!-- Icône Éclair -->
+<div class="text-white pt-1"><svg class="w-8 h-8 stroke-[2] stroke-white fill-none" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg></div>
+</div>
+<!-- Avatars des 5 membres du jour -->
+<div class="relative z-10 flex items-center space-x-2 mt-4" data-purpose="family-avatars-streak">
+<!-- Léa (Actif) -->
+<div class="w-9 h-9 rounded-full bg-[#E31E80] border-2 border-white flex items-center justify-center text-xs font-bold text-white shadow-sm">
+            L
+          </div>
+<!-- Marc (Actif) -->
+<div class="w-9 h-9 rounded-full bg-[#1E88E5] border-2 border-white flex items-center justify-center text-xs font-bold text-white shadow-sm"><svg class="w-8 h-8 stroke-[2] stroke-white fill-none" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg></div>
+<!-- Ama (Actif) -->
+<div class="w-9 h-9 rounded-full bg-[#10B981] border-2 border-white flex items-center justify-center text-xs font-bold text-white shadow-sm">
+            A
+          </div>
+<!-- Membre Inactif D -->
+<div class="w-9 h-9 rounded-full bg-[#8A184D]/40 border border-white/20 flex items-center justify-center text-xs font-bold text-pink-200/60">
+            D
+          </div>
+<!-- Membre Inactif N -->
+<div class="w-9 h-9 rounded-full bg-[#8A184D]/40 border border-white/20 flex items-center justify-center text-xs font-bold text-pink-200/60">
+            N
+          </div>
+</div>
+<!-- Statut d'avancement du jour -->
+<p class="relative z-10 text-[12px] font-medium text-pink-100/95 mt-3">Aujourd’hui : 3 membres sur 5 ont révisé</p>
+<!-- Décoration fond éclat -->
+<div class="absolute -right-10 -bottom-10 w-44 h-44 bg-pink-400/20 rounded-full blur-2xl pointer-events-none"></div>
+</section>
+<!-- END: StreakHeroCard -->
+<!-- BEGIN: WeeklyGoalCard -->
+<section class="bg-white rounded-3xl p-4 shadow-card-soft border border-white/80 flex items-center space-x-4" data-purpose="weekly-goal-card">
+<!-- Anneau Circulaire 62% -->
+<div class="relative w-16 h-16 shrink-0 flex items-center justify-center">
+<div class="w-16 h-16 rounded-full progress-conic p-2 flex items-center justify-center shadow-sm">
+<div class="w-full h-full bg-white rounded-full flex items-center justify-center">
+<span class="text-xs font-bold text-neutral-900 leading-none">62 %</span>
+</div>
+</div>
+</div>
+<!-- Détails de l'objectif -->
+<div class="flex-1">
+<span class="text-[10px] font-bold tracking-wider uppercase text-[#DC1478]">Objectif de la semaine</span>
+<h3 class="font-serif font-bold text-base text-neutral-900 leading-snug">62 / 100 révisions</h3>
+<p class="text-[12px] text-[#7A727C] mt-0.5">Il reste 4 jours</p>
+</div>
+</section>
+<!-- END: WeeklyGoalCard -->
+<!-- BEGIN: CurrentChallengeCard -->
+<section class="bg-white rounded-3xl p-4 shadow-card-soft border border-white/80" data-purpose="challenge-card">
+<div class="flex items-center justify-between">
+<span class="text-[10px] font-bold tracking-wider uppercase text-[#DC1478]">Défi en cours</span>
+<span class="bg-[#FEF5E7] text-[#9A6014] text-[11px] font-bold px-2 py-0.5 rounded-full">J-9</span>
+</div>
+<h3 class="font-serif font-bold text-[17px] text-neutral-900 mt-1 mb-3">Psaume 23 en 14 jours</h3>
+<!-- Barre de progression 3/5 -->
+<div class="flex items-center space-x-3">
+<div class="flex-1 h-2 bg-neutral-100 rounded-full overflow-hidden">
+<div class="h-full bg-[#DC1478] rounded-full" style="width: 60%;"></div>
+</div>
+<span class="text-xs font-bold text-neutral-800 shrink-0">3/5</span>
+</div>
+</section>
+<!-- END: CurrentChallengeCard -->
+<!-- BEGIN: LeaderboardCard -->
+<section class="bg-white rounded-3xl p-4 shadow-card-soft border border-white/80" data-purpose="weekly-leaderboard">
+<div class="flex items-center justify-between pb-3 border-b border-neutral-100">
+<h3 class="font-bold text-[15px] text-neutral-900">Classement de la semaine</h3>
+<a class="text-xs font-medium text-[#7A727C] hover:text-neutral-900 flex items-center" href="#">
+            Voir tout <span class="ml-0.5 text-[10px]">›</span>
+</a>
+</div>
+<div class="divide-y divide-neutral-100">
+<!-- Rang 1 : Léa -->
+<div class="flex items-center justify-between py-2.5">
+<div class="flex items-center space-x-3">
+<span class="font-serif font-bold text-[15px] text-[#DC1478] w-4 text-center">1</span>
+<div class="w-8 h-8 rounded-full bg-[#DC1478] flex items-center justify-center text-white text-xs font-bold">
+                L
+              </div>
+<span class="font-bold text-[14px] text-neutral-900">Léa</span>
+</div>
+<span class="text-xs font-bold text-neutral-800">312 pts</span>
+</div>
+<!-- Rang 2 : Marc -->
+<div class="flex items-center justify-between py-2.5">
+<div class="flex items-center space-x-3">
+<span class="font-serif font-bold text-[15px] text-[#DC1478] w-4 text-center">2</span>
+<div class="w-8 h-8 rounded-full bg-[#1E88E5] flex items-center justify-center text-white text-xs font-bold">
+                M
+              </div>
+<span class="font-bold text-[14px] text-neutral-900">Marc</span>
+</div>
+<span class="text-xs font-bold text-neutral-800">268 pts</span>
+</div>
+<!-- Rang 3 : Ama -->
+<div class="flex items-center justify-between py-2.5">
+<div class="flex items-center space-x-3">
+<span class="font-serif font-bold text-[15px] text-[#DC1478] w-4 text-center">3</span>
+<div class="w-8 h-8 rounded-full bg-[#10B981] flex items-center justify-center text-white text-xs font-bold">
+                A
+              </div>
+<span class="font-bold text-[14px] text-neutral-900">Ama</span>
+</div>
+<span class="text-xs font-bold text-neutral-800">205 pts</span>
+</div>
+</div>
+</section>
+<!-- END: LeaderboardCard -->
+<!-- BEGIN: ActionButtons -->
+<section class="grid grid-cols-2 gap-3 pt-1 pb-2" data-purpose="hub-action-buttons"><button class="w-full bg-white hover:bg-neutral-50 active:scale-[0.98] transition-all py-3 px-4 rounded-full border border-neutral-200/80 shadow-sm flex items-center justify-center space-x-2 font-bold text-[14px] text-neutral-800" type="button"><svg class="w-4 h-4 text-[#DC1478]" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><circle cx="9" cy="7" r="4"></circle><path d="M3 21v-2a5 5 0 0 1 10 0v2"></path><circle cx="16.5" cy="9.5" r="3"></circle><path d="M15 15.5a4.5 4.5 0 0 1 6 4.5v1"></path></svg><span class="">Membres</span></button><button class="w-full bg-white hover:bg-neutral-50 active:scale-[0.98] transition-all py-3 px-4 rounded-full border border-neutral-200/80 shadow-sm flex items-center justify-center space-x-2 font-bold text-[14px] text-neutral-800" type="button"><svg class="w-4 h-4 text-[#DC1478]" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" x2="4" y1="22" y2="15"></line></svg><span class="">Défis d’équipe</span></button></section>
+<!-- END: ActionButtons -->
+</div>
+<!-- END: ScrollableContent -->
+<!-- BEGIN: BottomNavigation -->
+<footer class="absolute bottom-0 inset-x-0 bg-white/95 backdrop-blur-md border-t border-neutral-100 shadow-nav z-40 py-2.5 px-4" data-purpose="tab-bar"><div class="flex justify-around items-center"><a class="flex flex-col items-center group flex-1 text-neutral-700 hover:text-neutral-900" href="#accueil"><svg class="w-6 h-6 stroke-current fill-none stroke-[2]" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M3 10.5L12 3l9 7.5V20a1.5 1.5 0 0 1-1.5 1.5H15a1 1 0 0 1-1-1v-4a2 2 0 0 0-2-2 2 2 0 0 0-2 2v4a1 1 0 0 1-1 1H4.5A1.5 1.5 0 0 1 3 20V10.5z"></path></svg><span class="text-[11px] font-medium mt-1">Accueil</span></a><a class="flex flex-col items-center group flex-1 text-neutral-700 hover:text-neutral-900" href="#bible"><svg class="w-6 h-6 stroke-current fill-none stroke-[2]" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path><path d="M12 6v6M9 9h6"></path></svg><span class="text-[11px] font-medium mt-1">Bible</span></a><a class="flex flex-col items-center group flex-1 text-neutral-700 hover:text-neutral-900" href="#memoriser"><svg class="w-6 h-6 stroke-current fill-none stroke-[2]" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"></path><path d="M2 17l10 5 10-5"></path><path d="M2 12l10 5 10-5"></path></svg><span class="text-[11px] font-medium mt-1">Mémoriser</span></a><a class="flex flex-col items-center group flex-1 text-[#DC1478]" href="#famille"><svg class="w-6 h-6 stroke-[#DC1478] fill-none stroke-[2]" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="9" cy="7" r="4"></circle><path d="M3 21v-2a5 5 0 0 1 10 0v2"></path><circle cx="16.5" cy="9.5" r="3"></circle><path d="M15 15.5a4.5 4.5 0 0 1 6 4.5v1"></path></svg><span class="text-[11px] font-bold text-[#DC1478] mt-1">Famille</span></a><a class="flex flex-col items-center group flex-1 text-neutral-700 hover:text-neutral-900" href="#plus"><svg class="w-6 h-6 stroke-current fill-none stroke-[2]" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect height="12" rx="6" width="20" x="2" y="6"></rect><circle cx="7" cy="12" fill="currentColor" r="1"></circle><circle cx="12" cy="12" fill="currentColor" r="1"></circle><circle cx="17" cy="12" fill="currentColor" r="1"></circle></svg><span class="text-[11px] font-medium mt-1">Plus</span></a></div></footer>
+<!-- END: BottomNavigation -->
+</main>
+<!-- END: PhoneWrapper -->
+
+
+</body></html>

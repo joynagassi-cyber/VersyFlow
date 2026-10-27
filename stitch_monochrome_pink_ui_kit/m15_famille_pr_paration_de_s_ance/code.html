@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+
+<html lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+<title>Séance en famille - Préparation de séance</title>
+<!-- Tailwind CSS v3 with forms and container-queries -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts: Playfair Display & Inter -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Playfair+Display:wght@600;700;800&amp;display=swap" rel="stylesheet"/>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            serif: ['"Playfair Display"', 'Georgia', 'serif'],
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+          },
+          colors: {
+            pageBg: '#FAF7F7',
+            cardBg: '#FFFFFF',
+            primaryMagenta: '#D1126D',
+            magentaDark: '#B80D5E',
+            labelCategory: '#AF1756',
+            badgeBgGreen: '#E9F6ED',
+            badgeTextGreen: '#237844',
+            statusOnline: '#10B981',
+            statusOffline: '#F59E0B',
+            statusUninvited: '#D1D5DB',
+            tabInactiveBg: '#EFEAE9',
+          },
+          boxShadow: {
+            soft: '0 4px 20px rgba(0, 0, 0, 0.04)',
+            card: '0 2px 14px rgba(0, 0, 0, 0.03)',
+            buttonShadow: '0 10px 25px -4px rgba(209, 18, 109, 0.35)',
+            tabActive: '0 2px 6px rgba(0, 0, 0, 0.08)',
+          }
+        }
+      }
+    }
+  </script>
+<style data-purpose="custom-styling">
+    body {
+      background-color: #FAF7F7;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+    .custom-scroll-hidden::-webkit-scrollbar {
+      display: none;
+    }
+    .custom-scroll-hidden {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
+</head>
+<body class="bg-[#FAF7F7] font-sans text-neutral-800 antialiased min-h-screen flex justify-center selection:bg-pink-100">
+<!-- BEGIN: PhoneContainer -->
+<!-- Container sizing optimized for mobile display mimicry -->
+<div class="w-full max-w-[420px] min-h-screen bg-[#FAF7F7] flex flex-col justify-between px-5 pt-3 pb-8 relative shadow-2xl overflow-x-hidden">
+<!-- Top section container -->
+<div class="w-full flex flex-col">
+<!-- BEGIN: StatusBar -->
+<!-- Emulated iOS status bar -->
+<header class="w-full flex justify-between items-center text-black pt-1 pb-2 font-semibold text-sm">
+<span class="tracking-tight text-base font-medium pl-1">9:41</span>
+<div class="flex items-center space-x-1.5 text-xs pr-1">
+<span class="text-[13px] font-semibold tracking-tight">5G</span>
+<!-- Signal bars -->
+<div aria-label="Signal 3 sur 4" class="flex items-end space-x-[2px] h-3 ml-0.5">
+<span class="w-[3px] h-1.5 bg-black rounded-[1px]"></span>
+<span class="w-[3px] h-2 bg-black rounded-[1px]"></span>
+<span class="w-[3px] h-2.5 bg-black rounded-[1px]"></span>
+<span class="w-[3px] h-3 bg-neutral-300 rounded-[1px]"></span>
+</div>
+<!-- Battery icon -->
+<div class="w-5 h-2.5 border border-black rounded-[3px] p-[1px] ml-1 flex items-center">
+<div class="h-full w-full bg-black rounded-[1.5px]"></div>
+</div>
+</div>
+</header>
+<!-- END: StatusBar -->
+<!-- BEGIN: NavigationHeader -->
+<!-- Screen title and navigation buttons -->
+<nav aria-label="Navigation principale" class="flex items-center justify-between mt-3 mb-5">
+<!-- Back button -->
+<button aria-label="Retour" class="w-11 h-11 bg-white rounded-full flex items-center justify-center shadow-card hover:bg-neutral-50 active:scale-95 transition-all text-neutral-800 border border-neutral-100/60" type="button">
+<svg class="w-5 h-5 stroke-[2.5]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M15 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+<!-- Centered Header Titles -->
+<div class="text-center flex-1 mx-2">
+<h1 class="font-serif font-bold text-[22px] tracking-tight text-neutral-900 leading-tight">
+            Séance en famille
+          </h1>
+<p class="text-xs text-neutral-500 font-normal mt-0.5">
+            Chacun sur son appareil
+          </p>
+</div>
+<!-- Options Menu Button (...) -->
+<button aria-label="Options de séance" class="w-11 h-11 bg-white rounded-full flex items-center justify-center shadow-card hover:bg-neutral-50 active:scale-95 transition-all text-neutral-800 border border-neutral-100/60" type="button">
+<svg class="w-5 h-5" fill="currentColor" viewbox="0 0 24 24">
+<circle cx="5" cy="12" r="1.75"></circle>
+<circle cx="12" cy="12" r="1.75"></circle>
+<circle cx="19" cy="12" r="1.75"></circle>
+</svg>
+</button>
+</nav>
+<!-- END: NavigationHeader -->
+<!-- BEGIN: PassageCard -->
+<!-- Bible Passage selector card -->
+<section aria-labelledby="passage-label" class="mb-4">
+<button class="w-full bg-white rounded-[24px] p-4 px-5 text-left flex items-center justify-between shadow-card hover:bg-neutral-50/70 border border-neutral-100/70 transition-all group" type="button">
+<div>
+<span class="block text-[11px] font-bold tracking-wider uppercase text-labelCategory" id="passage-label">
+              PASSAGE
+            </span>
+<span class="block font-serif text-[21px] font-bold text-neutral-900 mt-0.5 leading-snug">
+              Psaumes 23:1-3
+            </span>
+</div>
+<!-- Chevron Right -->
+<div class="text-neutral-600 pl-2 group-hover:translate-x-0.5 transition-transform">
+<svg class="w-5 h-5 stroke-[2.5]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+</button>
+</section>
+<!-- END: PassageCard -->
+<!-- BEGIN: ModeTabs -->
+<!-- Session Mode Tabs selector -->
+<section aria-label="Mode de révision" class="mb-5">
+<div class="bg-[#ECE7E6] p-1 rounded-2xl flex items-center justify-between text-[13px] font-medium text-neutral-600">
+<!-- Active Tab: Parcours guidé -->
+<button class="flex-1 py-2 rounded-xl bg-white text-neutral-900 font-semibold shadow-tabActive transition-all text-center" type="button">
+            Parcours guidé
+          </button>
+<!-- Tab: Flashcard -->
+<button class="flex-1 py-2 rounded-xl text-neutral-600 hover:text-neutral-900 transition-colors text-center" type="button">
+            Flashcard
+          </button>
+<!-- Tab: Écriture -->
+<button class="flex-1 py-2 rounded-xl text-neutral-600 hover:text-neutral-900 transition-colors text-center" type="button">
+            Écriture
+          </button>
+</div>
+</section>
+<!-- END: ModeTabs -->
+<!-- BEGIN: ParticipantsSection -->
+<!-- Participants Card & Member listing -->
+<section aria-labelledby="participants-title" class="bg-white rounded-[24px] pt-4 pb-3 px-5 shadow-card border border-neutral-100/70 mb-5">
+<h2 class="text-[11px] font-bold tracking-wider uppercase text-labelCategory mb-3" id="participants-title">
+          PARTICIPANTS · 4 INVITÉS
+        </h2>
+<!-- Participants List -->
+<ul class="divide-y divide-neutral-100" role="list">
+<!-- Participant 1: Marc -->
+<li class="py-3 flex items-center justify-between first:pt-1">
+<div class="flex items-center space-x-3.5">
+<!-- Avatar -->
+<div class="w-10 h-10 rounded-full bg-[#2F80ED] text-white flex items-center justify-center font-bold text-base shadow-sm">
+                M
+              </div>
+<div>
+<div class="flex items-center space-x-1.5 leading-none">
+<span class="font-bold text-[15px] text-neutral-900">Marc</span>
+<span aria-label="En ligne" class="w-2 h-2 rounded-full bg-statusOnline inline-block"></span>
+</div>
+<p class="text-xs text-neutral-500 mt-1 font-normal">
+                  En ligne · prêt
+                </p>
+</div>
+</div>
+<!-- Badge: Invité -->
+<span class="px-3 py-1 bg-badgeBgGreen text-badgeTextGreen text-xs font-semibold rounded-full leading-snug">
+              Invité
+            </span>
+</li>
+<!-- Participant 2: Ama -->
+<li class="py-3 flex items-center justify-between">
+<div class="flex items-center space-x-3.5">
+<!-- Avatar -->
+<div class="w-10 h-10 rounded-full bg-[#27AE60] text-white flex items-center justify-center font-bold text-base shadow-sm">
+                A
+              </div>
+<div>
+<div class="flex items-center space-x-1.5 leading-none">
+<span class="font-bold text-[15px] text-neutral-900">Ama</span>
+<span aria-label="En ligne" class="w-2 h-2 rounded-full bg-statusOnline inline-block"></span>
+</div>
+<p class="text-xs text-neutral-500 mt-1 font-normal">
+                  En ligne · prêt
+                </p>
+</div>
+</div>
+<!-- Badge: Invité -->
+<span class="px-3 py-1 bg-badgeBgGreen text-badgeTextGreen text-xs font-semibold rounded-full leading-snug">
+              Invité
+            </span>
+</li>
+<!-- Participant 3: David -->
+<li class="py-3 flex items-center justify-between">
+<div class="flex items-center space-x-3.5">
+<!-- Avatar -->
+<div class="w-10 h-10 rounded-full bg-[#F2994A] text-white flex items-center justify-center font-bold text-base shadow-sm">
+                D
+              </div>
+<div>
+<div class="flex items-center space-x-1.5 leading-none">
+<span class="font-bold text-[15px] text-neutral-900">David</span>
+<span aria-label="Hors ligne" class="w-2 h-2 rounded-full bg-statusOffline inline-block"></span>
+</div>
+<p class="text-xs text-neutral-500 mt-1 font-normal">
+                  Hors ligne · rejoindra à la reconnexion
+                </p>
+</div>
+</div>
+<!-- Badge: Invité -->
+<span class="px-3 py-1 bg-badgeBgGreen text-badgeTextGreen text-xs font-semibold rounded-full leading-snug">
+              Invité
+            </span>
+</li>
+<!-- Participant 4: Noé -->
+<li class="py-3 flex items-center justify-between last:pb-1">
+<div class="flex items-center space-x-3.5">
+<!-- Avatar -->
+<div class="w-10 h-10 rounded-full bg-[#8E44AD] text-white flex items-center justify-center font-bold text-base shadow-sm">
+                N
+              </div>
+<div>
+<div class="flex items-center space-x-1.5 leading-none">
+<span class="font-bold text-[15px] text-neutral-900">Noé</span>
+<span aria-label="Pas invité" class="w-2 h-2 rounded-full bg-statusUninvited inline-block"></span>
+</div>
+<p class="text-xs text-neutral-500 mt-1 font-normal">
+                  Pas invité
+                </p>
+</div>
+</div>
+<!-- Button: Inviter -->
+<button class="px-3.5 py-1 text-primaryMagenta border border-primaryMagenta text-xs font-semibold rounded-full hover:bg-pink-50 active:scale-95 transition-all" type="button">
+              Inviter
+            </button>
+</li>
+</ul>
+</section>
+<!-- END: ParticipantsSection -->
+<!-- BEGIN: TimingSection -->
+<!-- Timing selector section 'QUAND ?' -->
+<section aria-labelledby="timing-title" class="mb-5">
+<h2 class="text-[11px] font-bold tracking-wider uppercase text-labelCategory mb-2.5 px-0.5" id="timing-title">
+          QUAND ?
+        </h2>
+<!-- Timing Segmented Buttons -->
+<div class="bg-[#ECE7E6] p-1 rounded-2xl flex items-center space-x-1 text-[13px] font-medium mb-3">
+<button class="flex-1 py-2.5 rounded-xl text-neutral-700 hover:text-neutral-900 font-medium text-center transition-colors" type="button">
+            En direct maintenant
+          </button>
+<button class="flex-1 py-2.5 rounded-xl bg-white text-neutral-900 font-semibold shadow-tabActive text-center border border-neutral-100/80 transition-all" type="button">
+            Ouverte jusqu’à ce soir
+          </button>
+</div>
+<!-- Note info with sync icon -->
+<div class="flex items-start space-x-2 text-[12px] text-neutral-500 leading-snug px-1">
+<!-- Refresh icon -->
+<svg class="w-3.5 h-3.5 text-neutral-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<p>
+            Chacun mémorise sur son appareil, en ligne ou non. Les résultats sont partagés en direct, ou dès la reconnexion.
+          </p>
+</div>
+</section>
+<!-- END: TimingSection -->
+</div>
+<!-- BEGIN: PrimaryAction -->
+<!-- Action button pinned at bottom -->
+<div class="w-full mt-4 pb-2">
+<button class="w-full py-4 bg-primaryMagenta hover:bg-magentaDark active:scale-[0.98] transition-all duration-150 rounded-full text-white font-bold text-base shadow-buttonShadow flex items-center justify-center tracking-wide" type="button">
+        Ouvrir la séance
+      </button>
+</div>
+<!-- END: PrimaryAction -->
+</div>
+<!-- END: PhoneContainer -->
+</body></html>

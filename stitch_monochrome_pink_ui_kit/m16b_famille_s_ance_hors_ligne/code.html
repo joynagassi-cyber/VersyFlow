@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+
+<html lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>M16b — Famille — Séance (hors ligne)</title>
+<!-- Tailwind CSS CDN with plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts: Newsreader / Playfair / Inter for exact typography -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&amp;family=Inter:wght@400;500;600;700&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&amp;display=swap" rel="stylesheet"/>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+            serif: ['Newsreader', 'Georgia', 'serif'],
+          },
+          colors: {
+            app: {
+              bg: '#FFF8F4',
+              cream: '#FFF9F5',
+              card: '#FFFFFF',
+              bannerBg: '#FEF3DB',
+              bannerText: '#7B4A0B',
+              bannerDot: '#C97D1A',
+              syncIconBg: '#FCEFD8',
+              tagBg: '#FCE7F0',
+              tagText: '#B82069',
+              greenBtn: '#03652D',
+              greenBtnHover: '#024D22',
+              pinkProgress: '#E0237C',
+              pinkProgressLight: '#F3D2DF',
+              darkText: '#1A1817',
+              grayMuted: '#686461',
+              lightBorder: '#F2ECE9',
+              avatarBlue: '#2574EB',
+              avatarGreen: '#26A66C',
+              avatarYellow: '#E7BD66',
+            }
+          },
+          boxShadow: {
+            'soft': '0 4px 20px -2px rgba(220, 185, 170, 0.15), 0 2px 6px -1px rgba(0, 0, 0, 0.03)',
+            'card': '0 8px 30px -4px rgba(235, 190, 175, 0.25)',
+          }
+        }
+      }
+    }
+  </script>
+<style data-purpose="custom-styling">
+    body {
+      background-color: #FAF4F0;
+      -webkit-font-smoothing: antialiased;
+      -webkit-tap-highlight-color: transparent;
+    }
+    /* iOS status bar & dynamic sizing */
+    .mobile-container {
+      max-width: 420px;
+      min-height: 100vh;
+    }
+  </style>
+</head>
+<body class="flex justify-center items-start min-h-screen text-[#1E1C1A]">
+<div class="mobile-container w-full min-h-screen flex flex-col justify-between px-5 pt-3 pb-8 select-none" data-purpose="screen-wrapper">
+<!-- Top Section Container -->
+<div class="w-full flex flex-col gap-3">
+<!-- BEGIN: IOSStatusBar -->
+<div class="w-full flex justify-between items-center px-1 pt-1 pb-1" data-purpose="ios-status-bar">
+<span class="text-[15px] font-semibold tracking-tight text-[#1A1817]">9:41</span>
+<div class="flex items-center space-x-1.5">
+<span class="text-xs font-semibold text-[#1A1817]">5G</span>
+<!-- Signal / Battery bars representation -->
+<div class="flex items-end gap-[2px] h-[10px] ml-0.5">
+<span class="w-[3px] h-[4px] bg-[#1A1817] rounded-xs"></span>
+<span class="w-[3px] h-[6px] bg-[#1A1817] rounded-xs"></span>
+<span class="w-[3px] h-[8px] bg-[#1A1817] rounded-xs"></span>
+<span class="w-[3px] h-[10px] bg-[#1A1817] rounded-xs"></span>
+</div>
+<!-- Battery icon -->
+<div class="w-5 h-2.5 border-[1.5px] border-[#1A1817] rounded-sm p-[1px] flex items-center ml-1">
+<div class="h-full w-full bg-[#1A1817] rounded-2xs"></div>
+</div>
+</div>
+</div>
+<!-- END: IOSStatusBar -->
+<!-- BEGIN: MainHeader -->
+<header class="flex items-center justify-between mt-1 mb-1">
+<!-- Close button -->
+<button aria-label="Fermer" class="w-11 h-11 rounded-full bg-white shadow-sm flex items-center justify-center text-gray-800 hover:bg-gray-50 active:scale-95 transition-transform" data-purpose="close-button" type="button">
+<svg class="w-4 h-4 stroke-[2.5]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M6 18L18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+<!-- Title & Subtitle -->
+<div class="text-center flex-1 px-2" data-purpose="header-title-block">
+<h1 class="font-serif font-bold text-[21px] leading-tight text-[#1A1817] tracking-tight">Psaumes 23:1-3</h1>
+<p class="text-xs text-[#706B67] font-normal mt-0.5">Séance en famille · carte 2 sur 3</p>
+</div>
+<!-- Menu / More button -->
+<button aria-label="Plus d'options" class="w-11 h-11 rounded-full bg-white shadow-sm flex items-center justify-center text-gray-800 hover:bg-gray-50 active:scale-95 transition-transform" data-purpose="options-button" type="button">
+<svg class="w-5 h-5 fill-current" viewbox="0 0 24 24">
+<circle cx="5" cy="12" r="1.75"></circle>
+<circle cx="12" cy="12" r="1.75"></circle>
+<circle cx="19" cy="12" r="1.75"></circle>
+</svg>
+</button>
+</header>
+<!-- END: MainHeader -->
+<!-- BEGIN: OfflineAlertBanner -->
+<div class="bg-app-bannerBg/90 border border-[#F3DFB7]/50 rounded-2xl py-2.5 px-4 flex items-center gap-2.5 text-[13px] leading-snug" data-purpose="offline-alert-banner">
+<span class="w-2.5 h-2.5 rounded-full bg-app-bannerDot shrink-0"></span>
+<p class="text-app-bannerText font-semibold">
+          Hors ligne · tu continues, tes stats seront partagées à la reconnexion
+        </p>
+</div>
+<!-- END: OfflineAlertBanner -->
+<!-- BEGIN: MainFlashcard -->
+<section class="bg-white rounded-3xl p-6 shadow-card border border-[#F5EBE6] flex flex-col items-center relative text-left" data-purpose="current-verse-card">
+<!-- Top row: Header tag & Counter badge -->
+<div class="w-full flex justify-between items-center mb-5">
+<span class="text-[11px] font-bold tracking-wider text-app-tagText uppercase">MA CARTE · LÉA</span>
+<span class="bg-app-tagBg text-app-tagText text-xs font-semibold px-2.5 py-0.5 rounded-full tracking-wide">2 / 3</span>
+</div>
+<!-- Verse body text in Serif style -->
+<div class="w-full text-left font-serif text-[21px] leading-[1.48] text-[#1D1B19] tracking-tight mb-7">
+          Il me fait reposer dans de verts pâturages, Il me dirige près des eaux paisibles.
+        </div>
+<!-- Tap to flip helper button -->
+<button class="flex items-center gap-2 text-xs font-medium text-[#4A4744] hover:text-black py-1 px-3 transition-colors" data-purpose="flip-action-button" type="button">
+<!-- Refresh / flip circular icon -->
+<svg class="w-4 h-4 text-[#4A4744]" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span>Touche pour retourner</span>
+</button>
+</section>
+<!-- END: MainFlashcard -->
+<!-- BEGIN: PendingSyncCard -->
+<section class="bg-white rounded-3xl p-4 shadow-soft border border-[#F5ECE8] flex items-center gap-3.5" data-purpose="pending-sync-status">
+<!-- Circular icon indicator -->
+<div class="w-12 h-12 rounded-2xl bg-[#FFF5E6] flex items-center justify-center shrink-0">
+<svg class="w-6 h-6 text-[#9E651D]" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+<!-- Descriptive labels -->
+<div class="flex-1">
+<h2 class="text-sm font-bold text-[#1C1A19] leading-tight">3 résultats en attente</h2>
+<p class="text-[12px] text-[#696562] leading-snug mt-0.5">
+            Ils partiront dès que la connexion revient, avec la date réelle de tes réponses.
+          </p>
+</div>
+</section>
+<!-- END: PendingSyncCard -->
+<!-- BEGIN: FamilyActivitySection -->
+<section class="bg-white rounded-3xl p-5 shadow-soft border border-[#F5ECE8] flex flex-col" data-purpose="family-activity-list">
+<!-- Header row -->
+<div class="flex justify-between items-baseline mb-4">
+<h3 class="font-bold text-[15px] text-[#1A1817]">Famille</h3>
+<span class="text-xs text-[#807B77]">Dernière synchro 09:41</span>
+</div>
+<!-- Members rows container -->
+<div class="flex flex-col space-y-4">
+<!-- Member 1: Marc -->
+<div class="flex items-center justify-between" data-purpose="family-member-row">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-app-avatarBlue text-white font-bold flex items-center justify-center text-sm shadow-xs">
+                M
+              </div>
+<div class="flex flex-col">
+<div class="flex items-center gap-1.5">
+<span class="text-[14px] font-bold text-[#1C1A19]">Marc</span>
+<span class="w-2 h-2 rounded-full bg-[#E5DFDA]"></span>
+</div>
+<span class="text-xs text-[#7A7470]">Dernière activité il y a 4 min</span>
+</div>
+</div>
+<!-- Progress bar (full) -->
+<div class="w-20 bg-[#F4E1EA] h-1.5 rounded-full overflow-hidden">
+<div class="bg-app-pinkProgress h-full rounded-full w-full"></div>
+</div>
+</div>
+<div class="h-[1px] bg-[#FAF5F2] w-full"></div>
+<!-- Member 2: Ama -->
+<div class="flex items-center justify-between" data-purpose="family-member-row">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-app-avatarGreen text-white font-bold flex items-center justify-center text-sm shadow-xs">
+                A
+              </div>
+<div class="flex flex-col">
+<div class="flex items-center gap-1.5">
+<span class="text-[14px] font-bold text-[#1C1A19]">Ama</span>
+<span class="w-2 h-2 rounded-full bg-[#E5DFDA]"></span>
+</div>
+<span class="text-xs text-[#7A7470]">Dernière activité il y a 6 min</span>
+</div>
+</div>
+<!-- Progress bar (half) -->
+<div class="w-20 bg-[#F4E1EA] h-1.5 rounded-full overflow-hidden">
+<div class="bg-app-pinkProgress h-full rounded-full w-[52%]"></div>
+</div>
+</div>
+<div class="h-[1px] bg-[#FAF5F2] w-full"></div>
+<!-- Member 3: David -->
+<div class="flex items-center justify-between" data-purpose="family-member-row">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-app-avatarYellow text-white font-bold flex items-center justify-center text-sm shadow-xs">
+                D
+              </div>
+<div class="flex flex-col">
+<div class="flex items-center gap-1.5">
+<span class="text-[14px] font-bold text-[#1C1A19]">David</span>
+<span class="w-2 h-2 rounded-full bg-[#E5DFDA]"></span>
+</div>
+<span class="text-xs text-[#7A7470]">Dernière activité hier</span>
+</div>
+</div>
+<!-- Progress bar (quarter) -->
+<div class="w-20 bg-[#F4E1EA] h-1.5 rounded-full overflow-hidden">
+<div class="bg-app-pinkProgress h-full rounded-full w-[30%]"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- END: FamilyActivitySection -->
+</div>
+<!-- BEGIN: BottomEvaluationActionButtons -->
+<footer class="w-full flex items-center gap-3 pt-6 pb-2" data-purpose="evaluation-actions">
+<!-- 'Pas su' Button -->
+<button class="flex-1 h-[54px] rounded-full border-[1.5px] border-[#A82618] bg-transparent text-[#9E2012] font-semibold text-[15px] hover:bg-red-50/50 active:scale-[0.98] transition-all flex items-center justify-center" data-purpose="btn-not-known" type="button">
+        Pas su
+      </button>
+<!-- 'Su' Button -->
+<button class="flex-1 h-[54px] rounded-full bg-app-greenBtn hover:bg-app-greenBtnHover text-white font-semibold text-[15px] shadow-sm active:scale-[0.98] transition-all flex items-center justify-center" data-purpose="btn-known" type="button">
+        Su
+      </button>
+</footer>
+<!-- END: BottomEvaluationActionButtons -->
+</div>
+</body></html>

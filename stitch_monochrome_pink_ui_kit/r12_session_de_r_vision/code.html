@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+
+<html class="h-full bg-neutral-100" lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>R12 — Session de révision</title>
+<!-- Tailwind CSS v3 CDN with plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts: Inter & Newsreader for elegant bible verse display -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&amp;family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;1,8..60,400&amp;display=swap" rel="stylesheet"/>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              DEFAULT: '#D1127C',
+              hover: '#B50E6B',
+              light: '#FCE7F3',
+              subtle: '#FDF2F7',
+              pill: '#FCE8F0',
+            },
+            neutral: {
+              50: '#FAF9FA',
+              100: '#F5F4F7',
+              150: '#EFECEE',
+              200: '#E7E4E7',
+              300: '#D5CFD5',
+              400: '#A49EA4',
+              500: '#756E75',
+              800: '#231F20',
+              900: '#141115',
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+            serif: ['Source Serif 4', 'Newsreader', 'Georgia', 'serif'],
+          },
+          boxShadow: {
+            'card': '0 8px 30px -4px rgba(0, 0, 0, 0.04), 0 2px 8px -2px rgba(0, 0, 0, 0.02)',
+            'btn-glow': '0 10px 25px -4px rgba(209, 18, 124, 0.35)',
+            'tab': '0 1px 3px rgba(0, 0, 0, 0.06)',
+          }
+        }
+      }
+    }
+  </script>
+<style data-purpose="base-styling">
+    body {
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+    /* Dynamic circle meter */
+    .conic-timer {
+      background: conic-gradient(#D1127C 0% 82%, #F3D2E4 82% 100%);
+    }
+  </style>
+</head>
+<body class="h-full flex items-center justify-center p-0 md:p-6 text-neutral-900 font-sans antialiased bg-neutral-200">
+<!-- BEGIN: MobileDeviceFrame -->
+<div class="w-full max-w-[400px] h-[100dvh] md:h-[844px] bg-[#FAF8FA] flex flex-col justify-between overflow-hidden relative shadow-2xl md:rounded-[48px] border-neutral-300 md:border-[7px]" data-purpose="device-viewport">
+<!-- Top Container: Status Bar + Header + Badges + Flashcard -->
+<div class="flex flex-col w-full">
+<!-- BEGIN: StatusBar -->
+<div class="w-full pt-3 px-8 flex justify-between items-center text-neutral-900 font-semibold tracking-tight text-[15px] select-none" data-purpose="ios-status-bar">
+<span>9:41</span>
+<div class="flex items-center space-x-1.5 text-xs">
+<span class="text-[13px] font-bold tracking-normal mr-0.5">5G</span>
+<!-- Signal strength icon -->
+<div class="flex items-end space-x-[2px] h-[11px] pb-[1px]">
+<div class="w-[3px] h-[3px] bg-neutral-900 rounded-xs"></div>
+<div class="w-[3px] h-[6px] bg-neutral-900 rounded-xs"></div>
+<div class="w-[3px] h-[9px] bg-neutral-900 rounded-xs"></div>
+<div class="w-[3px] h-[11px] bg-neutral-900 rounded-xs"></div>
+</div>
+</div>
+</div>
+<!-- END: StatusBar -->
+<!-- BEGIN: TopHeader -->
+<header class="px-5 pt-3 pb-1 flex items-center justify-between" data-purpose="revision-header">
+<!-- Close Button -->
+<button aria-label="Fermer" class="w-11 h-11 rounded-full bg-white flex items-center justify-center text-neutral-800 shadow-sm hover:bg-neutral-50 active:scale-95 transition-transform" type="button">
+<svg class="w-4 h-4 stroke-[2.5]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M6 18L18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+<!-- Segmented Progress & Step Counter -->
+<div class="flex-1 max-w-[210px] mx-2 flex flex-col items-center">
+<span class="text-[13px] font-semibold text-neutral-700 tracking-tight mb-2">Révision 2 / 5</span>
+<div class="w-full grid grid-cols-5 gap-1.5 px-0.5">
+<div class="h-1 bg-brand rounded-full"></div>
+<div class="h-1 bg-brand rounded-full"></div>
+<div class="h-1 bg-neutral-300/70 rounded-full"></div>
+<div class="h-1 bg-neutral-300/70 rounded-full"></div>
+<div class="h-1 bg-neutral-300/70 rounded-full"></div>
+</div>
+</div>
+<!-- Options Button -->
+<button aria-label="Options" class="w-11 h-11 rounded-full bg-white flex items-center justify-center text-neutral-800 shadow-sm hover:bg-neutral-50 active:scale-95 transition-transform" type="button">
+<svg class="w-5 h-5 fill-current" viewbox="0 0 24 24">
+<circle cx="5" cy="12" r="2"></circle>
+<circle cx="12" cy="12" r="2"></circle>
+<circle cx="19" cy="12" r="2"></circle>
+</svg>
+</button>
+</header>
+<!-- END: TopHeader -->
+<!-- BEGIN: StatusBadgesAndTimer -->
+<section class="px-5 pt-3 pb-2 flex items-center justify-between" data-purpose="status-indicators">
+<!-- Learning Mode Pill -->
+<div class="inline-flex items-center bg-[#FCE6F1] px-3.5 py-1.5 rounded-full">
+<span class="text-[12px] font-bold text-[#CD1578] tracking-tight">Rappel actif · Masquage conseillé</span>
+</div>
+<!-- Circular Countdown Timer Badge -->
+<div class="relative w-11 h-11 rounded-full conic-timer p-[3.5px] flex items-center justify-center shadow-xs">
+<div class="w-full h-full bg-white rounded-full flex items-center justify-center">
+<span class="text-[13px] font-extrabold text-neutral-900 leading-none">18</span>
+</div>
+</div>
+</section>
+<!-- END: StatusBadgesAndTimer -->
+<!-- BEGIN: Flashcard -->
+<main class="px-4 pt-1">
+<article class="bg-white rounded-[28px] p-6 pt-5 pb-9 shadow-card border border-neutral-100/80" data-purpose="scripture-card">
+<!-- Card Header / Meta info -->
+<div class="flex justify-between items-baseline mb-6">
+<span class="text-[13px] font-extrabold text-brand tracking-wider uppercase">Psaume 23:1</span>
+<span class="text-[13px] text-neutral-600 font-medium tracking-tight">Maîtrise 48 · en retard 1 j</span>
+</div>
+<!-- Scripture Text with Cloze Masking Placeholders -->
+<div class="text-[26px] leading-[2.1] font-serif text-neutral-900 select-none">
+<span>L’Éternel </span>
+<!-- First mask: Dashed pink outline box -->
+<span class="inline-block align-middle w-[66px] h-[30px] rounded-lg border-2 border-dashed border-[#D1127C] bg-[#FFF5FA] mx-0.5 -mt-1.5"></span>
+<span> mon </span>
+<!-- Second mask: Solid light gray block -->
+<span class="inline-block align-middle w-[74px] h-[30px] rounded-lg bg-[#EAE6EA] mx-0.5 -mt-1.5"></span>
+<span class="font-sans font-medium text-[22px]">:</span>
+<br/>
+<span>je ne </span>
+<!-- Third mask: Solid light gray block -->
+<span class="inline-block align-middle w-[76px] h-[30px] rounded-lg bg-[#EAE6EA] mx-0.5 -mt-1.5"></span>
+<span> de rien.</span>
+</div>
+</article>
+</main>
+<!-- END: Flashcard -->
+<!-- BEGIN: InteractionControls -->
+<section class="px-4 mt-3" data-purpose="revision-modes">
+<!-- Segmented Tab Switcher -->
+<div class="bg-[#ECE7EC] p-1 rounded-2xl flex items-center text-[13px] font-semibold text-neutral-600">
+<button class="flex-1 py-2 bg-white text-neutral-900 rounded-[12px] shadow-tab text-center transition-all" type="button">
+            Masquage
+          </button>
+<button class="flex-1 py-2 text-neutral-600 hover:text-neutral-900 rounded-[12px] text-center transition-all" type="button">
+            Écriture
+          </button>
+</div>
+<!-- Automatic Revelation Hint -->
+<p class="text-center text-[12px] text-neutral-600 font-normal mt-3 tracking-normal">
+          Auto-révélation dans 18 s
+        </p>
+</section>
+<!-- END: InteractionControls -->
+</div>
+<!-- BEGIN: BottomActionsArea -->
+<footer class="w-full px-4 pb-6 pt-2 flex flex-col space-y-3.5" data-purpose="bottom-rating-actions">
+<!-- Main Primary Action: Reveal Verset -->
+<button class="w-full h-[58px] bg-[#D1127C] hover:bg-[#B50E6B] active:scale-[0.985] text-white text-[17px] font-bold rounded-[22px] shadow-btn-glow transition-all flex items-center justify-center tracking-tight" type="button">
+        Révéler le verset
+      </button>
+<!-- FSRS Grading Buttons Bar -->
+<div class="grid grid-cols-4 gap-2">
+<!-- À revoir -->
+<button class="h-[62px] bg-white rounded-2xl border border-neutral-200/90 shadow-xs flex items-center justify-center text-[13px] font-medium text-neutral-700 active:bg-neutral-50 active:scale-95 transition-all" type="button">
+          À revoir
+        </button>
+<!-- Difficile -->
+<button class="h-[62px] bg-white rounded-2xl border border-neutral-200/90 shadow-xs flex items-center justify-center text-[13px] font-medium text-neutral-700 active:bg-neutral-50 active:scale-95 transition-all" type="button">
+          Difficile
+        </button>
+<!-- Bon -->
+<button class="h-[62px] bg-white rounded-2xl border border-neutral-200/90 shadow-xs flex items-center justify-center text-[13px] font-medium text-neutral-700 active:bg-neutral-50 active:scale-95 transition-all" type="button">
+          Bon
+        </button>
+<!-- Facile -->
+<button class="h-[62px] bg-white rounded-2xl border border-neutral-200/90 shadow-xs flex items-center justify-center text-[13px] font-medium text-neutral-700 active:bg-neutral-50 active:scale-95 transition-all" type="button">
+          Facile
+        </button>
+</div>
+</footer>
+<!-- END: BottomActionsArea -->
+</div>
+<!-- END: MobileDeviceFrame -->
+</body></html>

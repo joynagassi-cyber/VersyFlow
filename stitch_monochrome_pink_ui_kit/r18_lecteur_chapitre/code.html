@@ -1,0 +1,171 @@
+<!DOCTYPE html><html class="h-full bg-white" lang="fr"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+<title>R18 — Lecteur — chapitre</title>
+<!-- Tailwind CSS v3 -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts: Inter for UI, EB Garamond for Scripture reading -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style data-purpose="typography">
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    .font-bible {
+      font-family: 'EB Garamond', Georgia, Cambria, serif;
+    }
+  </style>
+<style data-purpose="reading-styles">
+    /* Precise dotted underline for highlighted/memorized verse */
+    .memorized-dotted {
+      text-decoration: underline dotted #d63384;
+      text-decoration-thickness: 1.5px;
+      text-underline-offset: 4.5px;
+    }
+    
+    /* Superscript verse number alignment */
+    .verse-num {
+      font-size: 0.68em;
+      line-height: 0;
+      position: relative;
+      vertical-align: baseline;
+      top: -0.45em;
+      color: #71717a;
+      font-weight: 500;
+      margin-right: 0.25rem;
+    }
+  </style>
+</head>
+<body class="h-full bg-white text-zinc-900 select-none flex justify-center">
+<!-- Mobile Screen Container -->
+<div class="relative w-full max-w-[430px] min-h-screen bg-white flex flex-col justify-between overflow-x-hidden">
+<!-- BEGIN: TopContainer -->
+<header class="sticky top-0 z-40 bg-white/95 backdrop-blur-sm">
+<!-- iOS Status Bar -->
+<div class="flex justify-between items-center px-7 pt-3.5 pb-2 text-[15px] font-semibold tracking-tight text-black" data-purpose="status-bar">
+<span class="font-semibold tracking-tight">9:41</span>
+<div class="flex items-center space-x-1.5">
+<span class="text-xs font-semibold mr-0.5">5G</span>
+<!-- Signal bars -->
+<div class="flex items-end space-x-[2.5px] h-3">
+<span class="w-[3px] h-1.5 bg-black rounded-xs"></span>
+<span class="w-[3px] h-2 bg-black rounded-xs"></span>
+<span class="w-[3px] h-2.5 bg-black rounded-xs"></span>
+<span class="w-[3px] h-3 bg-black rounded-xs"></span>
+</div>
+<!-- Battery icon -->
+<div class="w-6 h-[11px] border border-black rounded-[3px] p-[1px] ml-1 flex items-center">
+<div class="h-full w-full bg-black rounded-[1.5px]"></div>
+</div>
+</div>
+</div>
+<!-- Chapter Header Toolbar -->
+<nav class="flex items-center justify-between px-6 py-2.5" data-purpose="reader-header">
+<!-- Title Dropdown -->
+<button class="flex items-center space-x-1.5 active:opacity-60 transition-opacity focus:outline-none">
+<h1 class="text-[22px] font-bold tracking-tight text-zinc-900">Psaumes 23</h1>
+<svg class="w-4 h-4 text-zinc-800 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+<path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+<!-- Header Actions -->
+<div class="flex items-center space-x-3.5">
+<!-- Search Button -->
+<button aria-label="Recherche" class="p-1 text-zinc-900 hover:text-black active:scale-95 transition-transform">
+<svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+<path d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 1010.5 18a7.5 7.5 0 006.15-2.85z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+<!-- More Options Button -->
+<button aria-label="Options" class="p-1 text-zinc-900 hover:text-black active:scale-95 transition-transform"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.75"></circle><circle cx="12" cy="12" r="1.75"></circle><circle cx="19" cy="12" r="1.75"></circle></svg></button>
+<!-- Version Pill Badge (LSG) -->
+<button class="flex items-center space-x-1.5 bg-[#f1f2f4] hover:bg-zinc-200 active:scale-95 transition px-3 py-1.5 rounded-full text-zinc-900 font-semibold text-[13px]">
+<svg class="w-3.5 h-3.5 text-zinc-800" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+<circle cx="12" cy="12" r="10"></circle>
+<line x1="2" x2="22" y1="12" y2="12"></line>
+<path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+</svg>
+<span class="tracking-wide">LSG</span>
+</button>
+</div>
+</nav>
+</header>
+<!-- END: TopContainer -->
+<!-- BEGIN: ScriptureReaderBody -->
+<main class="flex-1 px-6 pt-5 pb-24 font-bible select-text" data-purpose="scripture-content">
+<!-- Chapter Hero Banner -->
+<div class="relative flex items-baseline mb-3">
+<!-- Giant Faint Chapter Number -->
+<span class="text-[120px] font-normal leading-none text-zinc-300/80 -ml-1 select-none pointer-events-none">
+          23
+        </span>
+<!-- Psalm Subtitle -->
+<h2 class="ml-4 text-[26px] font-normal text-zinc-800 self-center -mt-6 tracking-normal">
+          Psaume de David.
+        </h2>
+</div>
+<!-- Verses Stack -->
+<article class="space-y-6 text-[23px] leading-[1.48] text-zinc-900 font-normal">
+<!-- Verse 1 with Pink Memorized Dotted Underline -->
+<p class="leading-[1.5]">
+<sup class="verse-num">1</sup><span class="memorized-dotted">L’Éternel est mon berger : je ne manquerai de rien.</span>
+</p>
+<!-- Verse 2 -->
+<p class="">
+<sup class="verse-num">2</sup>Il me fait reposer dans de verts pâturages, Il me dirige près des eaux paisibles.
+        </p>
+<!-- Verse 3 -->
+<p class="">
+<sup class="verse-num">3</sup>Il restaure mon âme, Il me conduit dans les sentiers de la justice, À cause de son nom.
+        </p>
+<!-- Verse 4 -->
+<p class="">
+<sup class="verse-num">4</sup>Quand je marche dans la vallée de l’ombre de la mort, Je ne crains aucun mal, car tu es avec moi : Ta houlette et ton bâton me rassurent.
+        </p>
+<!-- Verse 5 (Partially cut-off / fading into bottom navigation) -->
+<p class="text-zinc-900/60 transition-opacity">
+<sup class="verse-num opacity-60">5</sup>Tu dresses devant moi une table, En face de mes adversaires ;
+        </p>
+</article>
+</main>
+<!-- END: ScriptureReaderBody -->
+<!-- BEGIN: BottomNavigation -->
+<footer class="fixed bottom-0 inset-x-0 mx-auto max-w-[430px] bg-white/95 backdrop-blur-md border-t border-zinc-200/80 px-2 pt-2 pb-6 z-50" data-purpose="tab-bar">
+<nav class="flex items-center justify-around">
+<!-- Tab 1: Accueil -->
+<button class="flex flex-col items-center justify-center flex-1 py-1 text-zinc-500 hover:text-zinc-800 transition">
+<svg class="w-6 h-6 stroke-[1.8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+<path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[11px] font-medium tracking-tight mt-1">Accueil</span>
+</button>
+<!-- Tab 2: Bible (Active: Pink) -->
+<button class="flex flex-col items-center justify-center flex-1 py-1 text-[#d81b60] transition"><svg class="w-6 h-6 stroke-[2]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" stroke-linecap="round" stroke-linejoin="round"></path></svg><span class="text-[11px] font-semibold tracking-tight mt-1">Bible</span></button>
+<!-- Tab 3: Mémoriser -->
+<button class="flex flex-col items-center justify-center flex-1 py-1 text-zinc-500 hover:text-zinc-800 transition">
+<svg class="w-6 h-6 stroke-[1.8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+<path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[11px] font-medium tracking-tight mt-1">Mémoriser</span>
+</button>
+<!-- Tab 4: Progrès -->
+<button class="flex flex-col items-center justify-center flex-1 py-1 text-zinc-500 hover:text-zinc-800 transition">
+<svg class="w-6 h-6 stroke-[1.8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+<path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[11px] font-medium tracking-tight mt-1">Progrès</span>
+</button>
+<!-- Tab 5: Réglages -->
+<button class="flex flex-col items-center justify-center flex-1 py-1 text-zinc-500 hover:text-zinc-800 transition"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><circle cx="5" cy="12" r="2"></circle><circle cx="12" cy="12" r="2"></circle><circle cx="19" cy="12" r="2"></circle></svg><span class="text-[11px] font-medium tracking-tight mt-1">Plus</span></button>
+</nav>
+<!-- Home Indicator bar -->
+<div class="w-32 h-1 bg-black rounded-full mx-auto mt-4 mb-0.5"></div>
+</footer>
+<!-- END: BottomNavigation -->
+</div>
+
+
+</body></html>

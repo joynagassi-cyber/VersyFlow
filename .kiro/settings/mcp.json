@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "insforge": {
+      "command": "uvx",
+      "args": [
+        "@insforge/mcp@latest"
+      ],
+      "env": {
+        "API_BASE_URL": "https://wypi8tgf.eu-central.insforge.app"
+      },
+      "disabled": false
+    }
+  }
+}

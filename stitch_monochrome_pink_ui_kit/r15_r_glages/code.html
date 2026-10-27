@@ -1,0 +1,288 @@
+<!DOCTYPE html><html lang="fr"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+<title>Réglages</title>
+<!-- Tailwind CSS v3 CDN with forms & container queries -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            appPink: '#D81B60',
+            appPinkLight: '#E91E63',
+            appBackground: '#FFFFFF',
+            appTextDark: '#1A1817',
+            appSubtext: '#757575',
+            appDivider: '#F0EFEF',
+            appHeaderBg: '#FAFAF9'
+          },
+          fontFamily: {
+            serifTitle: ['"Lora"', 'Georgia', 'serif'],
+            sans: ['-apple-system', 'BlinkMacSystemFont', '"SF Pro Text"', 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+<!-- Google Font for subtle editorial serif feeling in headings -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;0,700;1,400&amp;family=Playfair+Display:wght@600;700&amp;display=swap" rel="stylesheet">
+<!-- Custom Styles for Form Controls and UI fidelity -->
+<style data-purpose="toggle-switch">
+    /* iOS Styled Active Switch with checkmark inside knob */
+    .ios-switch {
+      position: relative;
+      display: inline-block;
+      width: 51px;
+      height: 30px;
+      flex-shrink: 0;
+    }
+    .ios-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #E2E2E2;
+      transition: .25s ease-in-out;
+      border-radius: 30px;
+    }
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 26px;
+      width: 26px;
+      left: 2px;
+      bottom: 2px;
+      background-color: white;
+      transition: .25s ease-in-out;
+      border-radius: 50%;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    input:checked + .slider {
+      background-color: #D81B60;
+    }
+    input:checked + .slider:before {
+      transform: translateX(21px);
+      /* Checkmark inside thumb knob */
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23D81B60' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: 14px 14px;
+    }
+  </style>
+<style data-purpose="bottom-nav">
+    /* Subtle touch interaction styling */
+    .nav-tab-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      letter-spacing: -0.2px;
+    }
+    .nav-tab-item.active {
+      color: #D81B60;
+    }
+  </style>
+</head>
+<body class="bg-white text-appTextDark antialiased font-sans select-none pb-24">
+<!-- BEGIN: StatusBar -->
+<header class="sticky top-0 z-30 bg-[#FAF9F6] border-b border-[#EAE9E5]" data-purpose="ios-top-bar">
+<!-- iOS 17 Status Bar Indicators -->
+<div class="h-11 px-7 flex items-center justify-between text-black text-[15px] font-semibold tracking-tight" data-purpose="status-indicators">
+<span class="font-semibold">9:41</span>
+<div class="flex items-center space-x-1.5 text-black">
+<span class="text-xs font-bold tracking-tighter">5G</span>
+<!-- Cellular Signal Bars -->
+<div aria-label="Signal" class="flex items-end space-x-[2px] h-3 ml-0.5">
+<span class="w-[3px] h-1.5 bg-black rounded-xs"></span>
+<span class="w-[3px] h-2 bg-black rounded-xs"></span>
+<span class="w-[3px] h-2.5 bg-black rounded-xs"></span>
+<span class="w-[3px] h-3 bg-black rounded-xs"></span>
+</div>
+</div>
+</div>
+<!-- Navigation Header -->
+<div class="h-12 px-4 flex items-center" data-purpose="screen-title-bar">
+<button aria-label="Retour" class="p-1 -ml-1 text-black flex items-center focus:outline-none" type="button"><svg class="w-6 h-6 stroke-[2]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round"></path></svg></button>
+<h1 class="ml-4 text-[21px] font-medium tracking-tight text-appTextDark font-serif">
+        Réglages
+      </h1>
+</div>
+</header>
+<!-- END: StatusBar -->
+<!-- BEGIN: MainContent -->
+<main class="px-5 pt-6 space-y-7 max-w-md mx-auto" data-purpose="settings-sections-list">
+<!-- BEGIN: BibleReadingSection -->
+<section class="space-y-4" data-purpose="section-lecture-bible">
+<h2 class="text-[19px] font-bold text-appTextDark tracking-tight font-sans">
+        Lecture de la Bible
+      </h2>
+<div class="space-y-5 pt-1">
+<!-- Police -->
+<div class="flex items-center justify-between py-1 cursor-pointer">
+<span class="text-[16px] text-appTextDark">Police</span>
+<span class="text-[15px] text-[#555555]">Georgia</span>
+</div>
+<!-- Notes de bas de page -->
+<div class="flex items-center justify-between py-0.5">
+<div class="flex flex-col pr-4">
+<span class="text-[16px] text-appTextDark">Afficher les notes de bas de page</span>
+<span class="text-[13px] text-[#787878] mt-0.5">Selon disponibilité</span>
+</div>
+<label class="ios-switch">
+<input aria-label="Afficher les notes de bas de page" checked="" type="checkbox">
+<span class="slider"></span>
+</label>
+</div>
+<!-- Lettres en rouge -->
+<div class="flex items-center justify-between py-0.5">
+<div class="flex flex-col pr-4">
+<span class="text-[16px] text-appTextDark">Lettres en rouge</span>
+<span class="text-[13px] text-[#787878] mt-0.5">Selon disponibilité</span>
+</div>
+<label class="ios-switch">
+<input aria-label="Lettres en rouge" checked="" type="checkbox">
+<span class="slider"></span>
+</label>
+</div>
+<!-- Gérer versions -->
+<div class="flex items-center justify-between py-1 cursor-pointer">
+<span class="text-[16px] text-appTextDark">Gérer les versions hors ligne</span>
+</div>
+</div>
+<!-- Section Separator Line -->
+<div class="border-b border-[#EEEEEE] pt-2"></div>
+</section>
+<!-- END: BibleReadingSection -->
+<!-- BEGIN: MemorizationSection -->
+<section class="space-y-4 pt-1" data-purpose="section-memorisation">
+<h2 class="text-[19px] font-bold text-appTextDark tracking-tight font-sans">
+        Mémorisation
+      </h2>
+<div class="space-y-5 pt-1">
+<!-- Mode de départ -->
+<div class="flex items-center justify-between py-1 cursor-pointer">
+<span class="text-[16px] text-appTextDark">Mode de départ</span>
+<span class="text-[15px] text-[#555555]">Révélation</span>
+</div>
+<!-- Unité de révélation -->
+<div class="flex items-center justify-between py-1 cursor-pointer">
+<span class="text-[16px] text-appTextDark">Unité de révélation</span>
+<span class="text-[15px] text-[#555555]">Phrase</span>
+</div>
+<!-- Tolérance aux accents -->
+<div class="flex items-center justify-between py-0.5">
+<span class="text-[16px] text-appTextDark pr-4">Tolérance aux accents</span>
+<label class="ios-switch">
+<input aria-label="Tolérance aux accents" checked="" type="checkbox">
+<span class="slider"></span>
+</label>
+</div>
+<!-- Ignorer la casse -->
+<div class="flex items-center justify-between py-0.5">
+<span class="text-[16px] text-appTextDark pr-4">Ignorer la casse</span>
+<label class="ios-switch">
+<input aria-label="Ignorer la casse" checked="" type="checkbox">
+<span class="slider"></span>
+</label>
+</div>
+<!-- Un champ par verset -->
+<div class="flex items-center justify-between py-0.5">
+<span class="text-[16px] text-appTextDark pr-4">Un champ par verset</span>
+<label class="ios-switch">
+<input aria-label="Un champ par verset" checked="" type="checkbox">
+<span class="slider"></span>
+</label>
+</div>
+<!-- Flashcard : sens -->
+<div class="flex items-center justify-between py-1 cursor-pointer">
+<span class="text-[16px] text-appTextDark">Flashcard : sens</span>
+<span class="text-[15px] text-[#555555]">Verset → Réf.</span>
+</div>
+<!-- Pondération de la note -->
+<div class="flex items-center justify-between py-1 cursor-pointer">
+<span class="text-[16px] text-appTextDark">Pondération de la note</span>
+<span class="text-[15px] text-[#555555]">40 / 60</span>
+</div>
+</div>
+<!-- Section Separator Line -->
+<div class="border-b border-[#EEEEEE] pt-2"></div>
+</section>
+<!-- END: MemorizationSection -->
+<!-- BEGIN: RemindersSection -->
+<section class="space-y-4 pt-1 pb-6" data-purpose="section-rappels">
+<h2 class="text-[19px] font-bold text-appTextDark tracking-tight font-sans">
+        Rappels
+      </h2>
+<!-- Notifications row with right chevron -->
+<div class="flex items-center justify-between py-1 cursor-pointer">
+<span class="text-[16px] text-appTextDark">Notifications</span>
+<!-- Small grey chevron -->
+<svg class="w-4 h-4 text-[#8E8E93] stroke-[2.2]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</div>
+</section>
+<!-- END: RemindersSection -->
+</main>
+<!-- END: MainContent -->
+<!-- BEGIN: BottomTabBar -->
+<nav class="fixed bottom-0 left-0 right-0 bg-[#FFFFFF]/95 backdrop-blur-md border-t border-[#E5E5E5] z-40 max-w-md mx-auto" data-purpose="main-bottom-navigation">
+<div class="flex justify-around items-center h-[58px] px-2">
+<!-- Tab: Accueil -->
+<a class="nav-tab-item text-[#4A4A4A] hover:text-black w-16 text-center" href="#accueil">
+<svg class="w-6 h-6 stroke-[1.8] mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+<path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="font-normal">Accueil</span>
+</a>
+<!-- Tab: Bible -->
+<a class="nav-tab-item text-[#4A4A4A] hover:text-black w-16 text-center" href="#bible">
+<svg class="w-6 h-6 stroke-[1.8] mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+<rect height="16" rx="2" stroke-linecap="round" stroke-linejoin="round" width="16" x="4" y="4"></rect>
+<path d="M9 4v16" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="font-normal">Bible</span>
+</a>
+<!-- Tab: Mémoriser -->
+<a class="nav-tab-item text-[#4A4A4A] hover:text-black w-16 text-center" href="#memoriser">
+<svg class="w-6 h-6 stroke-[1.8] mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+<path d="M12 2l9 4.9-9 4.9-9-4.9L12 2z" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M3 11.5l9 4.9 9-4.9" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M3 16.5l9 4.9 9-4.9" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="font-normal">Mémoriser</span>
+</a>
+<!-- Tab: Progrès -->
+<a class="nav-tab-item text-[#4A4A4A] hover:text-black w-16 text-center" href="#progres">
+<svg class="w-6 h-6 stroke-[1.8] mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+<path d="M4 19h16" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M8 19V11" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M12 19V6" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M16 19v-5" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="font-normal">Progrès</span>
+</a>
+<!-- Tab: Réglages (Active) -->
+<a class="nav-tab-item active text-appPink w-16 text-center" href="#plus"><svg class="w-6 h-6 stroke-[1.9] mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.5" fill="currentColor"></circle><circle cx="12" cy="12" r="1.5" fill="currentColor"></circle><circle cx="19" cy="12" r="1.5" fill="currentColor"></circle></svg><span class="font-semibold text-appPink">Plus</span></a>
+</div>
+<!-- Safe Area Bottom Bar for iPhone Home Indicator -->
+<div class="h-4 w-full flex justify-center items-end pb-1">
+<div class="w-32 h-1 bg-black/20 rounded-full"></div>
+</div>
+</nav>
+<!-- END: BottomTabBar -->
+
+
+</body></html>

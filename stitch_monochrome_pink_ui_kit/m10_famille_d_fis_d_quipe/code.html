@@ -1,0 +1,226 @@
+<!DOCTYPE html><html lang="fr"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+<title>Défis d’équipe</title>
+<!-- Tailwind CSS CDN with plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts: Inter for UI and Playfair Display / Cormorant Garamond for elegant serif titles -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=Source+Serif+4:ital,opsz,wght@0,8..60,600;0,8..60,700;1,8..60,600&amp;display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+            serif: ['"Source Serif 4"', 'Georgia', 'serif'],
+          },
+          colors: {
+            appPink: {
+              DEFAULT: '#cf1079',
+              light: '#fce7f3',
+              tag: '#fcebf3',
+              tagText: '#9d174d'
+            },
+            appNeutral: {
+              bg: '#faf8f7',
+              segmentBg: '#f2eae7',
+              pillBg: '#faebd7',
+              track: '#f1e2e9'
+            }
+          },
+          boxShadow: {
+            'card': '0 8px 30px -4px rgba(220, 180, 195, 0.22)',
+            'btn-pink': '0 10px 25px -4px rgba(207, 16, 121, 0.35)',
+            'nav': '0 -2px 10px rgba(0, 0, 0, 0.03)'
+          }
+        }
+      }
+    }
+  </script>
+<style data-purpose="custom-layout">
+    /* Custom styling for precise rendering and aesthetic match */
+    body {
+      background-color: #fbf9f8;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+  </style>
+</head>
+<body class="flex justify-center items-start min-h-screen text-slate-900 font-sans antialiased bg-[#f4f2f0]">
+<!-- BEGIN: MobileDeviceFrame -->
+<div class="relative w-full max-w-[430px] min-h-screen bg-[#fbf9f8] flex flex-col justify-between overflow-x-hidden shadow-2xl">
+<!-- BEGIN: TopContainer (Status Bar, Header, Segments) -->
+<div class="w-full pt-3 px-5">
+<!-- Status Bar (iOS standard recreation) -->
+<div class="w-full flex justify-between items-center text-xs font-semibold px-2 pt-1 pb-3 text-slate-800 tracking-tight" data-purpose="status-bar">
+<span class="text-sm font-semibold tracking-normal">9:41</span>
+<div class="flex items-center space-x-1.5">
+<span class="text-xs font-bold mr-0.5">5G</span>
+<!-- Signal bars -->
+<div class="flex items-end space-x-0.5 h-3">
+<span class="w-1 h-1.5 bg-slate-900 rounded-2xs"></span>
+<span class="w-1 h-2.5 bg-slate-900 rounded-2xs"></span>
+<span class="w-1 h-3 bg-slate-900 rounded-2xs"></span>
+</div>
+<!-- Battery icon -->
+<div class="w-5 h-2.5 ml-1 border border-slate-800 rounded-sm p-0.5 flex items-center">
+<div class="h-full w-full bg-slate-800 rounded-[1px]"></div>
+</div>
+</div>
+</div>
+<!-- BEGIN: NavigationHeader -->
+<header class="relative flex items-center justify-between mt-2 mb-4" data-purpose="page-header">
+<!-- Back Button -->
+<button aria-label="Retour" class="w-11 h-11 flex items-center justify-center rounded-full bg-white shadow-sm border border-stone-100 active:scale-95 transition-transform text-slate-800"><span class="material-symbols-outlined text-[20px]">arrow_back</span></button>
+<!-- Title & Subtitle -->
+<div class="text-center">
+<h1 class="text-xl font-bold font-serif text-[#1e1c24] tracking-tight">Défis d’équipe</h1>
+<p class="text-xs text-stone-500 font-medium mt-0.5">Famille Étoile</p>
+</div>
+<!-- More Options Button -->
+<button aria-label="Plus d'options" class="w-11 h-11 flex items-center justify-center rounded-full bg-white shadow-sm border border-stone-100 active:scale-95 transition-transform text-slate-800"><span class="material-symbols-outlined text-[22px]">more_horiz</span></button>
+</header>
+<!-- END: NavigationHeader -->
+<!-- BEGIN: TabSwitcher -->
+<nav class="p-1 bg-[#ede4e1] rounded-2xl flex items-center mb-6" data-purpose="challenge-filter-tabs">
+<button class="flex-1 py-2 text-center text-xs font-semibold text-slate-900 bg-white rounded-xl shadow-[0_2px_8px_rgba(0,0,0,0.06)] transition-all">
+          En cours
+        </button>
+<button class="flex-1 py-2 text-center text-xs font-medium text-stone-600 active:text-stone-900 transition-colors">
+          À venir
+        </button>
+<button class="flex-1 py-2 text-center text-xs font-medium text-stone-600 active:text-stone-900 transition-colors">
+          Terminés
+        </button>
+</nav>
+<!-- END: TabSwitcher -->
+<!-- BEGIN: ChallengesList -->
+<main class="flex flex-col space-y-5 pb-6">
+<!-- Card 1: Psaume 23 en 14 jours -->
+<article class="bg-white rounded-3xl p-5 border border-pink-50/60 shadow-card" data-purpose="challenge-card">
+<!-- Card Header (Tags & Countdown) -->
+<div class="flex items-center justify-between mb-3">
+<span class="inline-block px-3.5 py-1 text-xs font-bold text-[#b51268] bg-[#fbe7f0] rounded-full">
+              Passage commun
+            </span>
+<span class="inline-block px-3 py-1 text-xs font-bold text-[#966324] bg-[#fbf0df] rounded-full tracking-wide">
+              J-9
+            </span>
+</div>
+<!-- Title -->
+<h2 class="text-xl font-bold font-serif text-[#19161a] mb-4 tracking-tight">
+            Psaume 23 en 14 jours
+          </h2>
+<!-- Progress Bar & Percentage -->
+<div class="flex items-center gap-3 mb-5">
+<div class="flex-1 h-2 bg-[#f4e4eb] rounded-full overflow-hidden">
+<div class="h-full bg-[#d01078] rounded-full" style="width: 60%;"></div>
+</div>
+<span class="text-xs font-bold text-slate-800 min-w-[42px] text-right">
+              60 %
+            </span>
+</div>
+<!-- Bottom: Participant Avatars Stack & Count -->
+<div class="flex items-center justify-between pt-1">
+<div class="flex items-center -space-x-2">
+<!-- Avatar L -->
+<div class="w-8 h-8 rounded-full bg-[#e81977] text-white flex items-center justify-center font-bold text-xs ring-2 ring-white">
+                L
+              </div>
+<!-- Avatar M -->
+<div class="w-8 h-8 rounded-full bg-[#1e88e5] text-white flex items-center justify-center font-bold text-xs ring-2 ring-white">
+                M
+              </div>
+<!-- Avatar A -->
+<div class="w-8 h-8 rounded-full bg-[#1bb264] text-white flex items-center justify-center font-bold text-xs ring-2 ring-white">
+                A
+              </div>
+<!-- Avatar D -->
+<div class="w-8 h-8 rounded-full bg-[#ea9b24] text-white flex items-center justify-center font-bold text-xs ring-2 ring-white">
+                D
+              </div>
+<!-- Avatar N -->
+<div class="w-8 h-8 rounded-full bg-[#7048cf] text-white flex items-center justify-center font-bold text-xs ring-2 ring-white">
+                N
+              </div>
+</div>
+<span class="text-xs text-stone-500 font-medium">
+              5 participants
+            </span>
+</div>
+</article>
+<!-- Card 2: 100 révisions en 7 jours -->
+<article class="bg-white rounded-3xl p-5 border border-pink-50/60 shadow-card" data-purpose="challenge-card">
+<!-- Card Header (Tags & Countdown) -->
+<div class="flex items-center justify-between mb-3">
+<span class="inline-block px-3.5 py-1 text-xs font-bold text-[#b51268] bg-[#fbe7f0] rounded-full">
+              Objectif collectif
+            </span>
+<span class="inline-block px-3 py-1 text-xs font-bold text-[#b8382c] bg-[#fae8e6] rounded-full tracking-wide">
+              J-4
+            </span>
+</div>
+<!-- Title -->
+<h2 class="text-xl font-bold font-serif text-[#19161a] mb-4 tracking-tight">
+            100 révisions en 7 jours
+          </h2>
+<!-- Progress Bar & Percentage -->
+<div class="flex items-center gap-3 mb-5">
+<div class="flex-1 h-2 bg-[#f4e4eb] rounded-full overflow-hidden">
+<div class="h-full bg-[#d01078] rounded-full" style="width: 62%;"></div>
+</div>
+<span class="text-xs font-bold text-slate-800 min-w-[42px] text-right">
+              62 %
+            </span>
+</div>
+<!-- Bottom: Participant Avatars Stack & Count -->
+<div class="flex items-center justify-between pt-1">
+<div class="flex items-center -space-x-2">
+<!-- Avatar L -->
+<div class="w-8 h-8 rounded-full bg-[#e81977] text-white flex items-center justify-center font-bold text-xs ring-2 ring-white">
+                L
+              </div>
+<!-- Avatar M -->
+<div class="w-8 h-8 rounded-full bg-[#1e88e5] text-white flex items-center justify-center font-bold text-xs ring-2 ring-white">
+                M
+              </div>
+<!-- Avatar A -->
+<div class="w-8 h-8 rounded-full bg-[#1bb264] text-white flex items-center justify-center font-bold text-xs ring-2 ring-white">
+                A
+              </div>
+<!-- Avatar D -->
+<div class="w-8 h-8 rounded-full bg-[#ea9b24] text-white flex items-center justify-center font-bold text-xs ring-2 ring-white">
+                D
+              </div>
+<!-- Avatar N -->
+<div class="w-8 h-8 rounded-full bg-[#7048cf] text-white flex items-center justify-center font-bold text-xs ring-2 ring-white">
+                N
+              </div>
+</div>
+<span class="text-xs text-stone-500 font-medium">
+              5 participants
+            </span>
+</div>
+</article>
+</main>
+<!-- END: ChallengesList -->
+</div>
+<!-- END: TopContainer -->
+<!-- BEGIN: BottomPersistentSection -->
+<div class="w-full flex flex-col items-center mt-auto">
+<!-- Action Button Container -->
+<div class="w-full px-5 mb-5">
+<button class="w-full py-4 rounded-full bg-[#cb0f74] hover:bg-[#b80c68] active:scale-[0.98] transition-all text-white font-bold text-base shadow-btn-pink tracking-tight text-center"><span class="flex items-center justify-center gap-2"><span class="material-symbols-outlined text-[22px]">add_circle</span><span class="">Créer un défi</span></span></button>
+</div>
+<!-- Tab Navigation Bar -->
+<nav class="w-full bg-white border-t border-stone-200/60 pt-2 pb-6 px-3 flex justify-around items-center shadow-nav" data-purpose="bottom-tab-navigation"><a class="flex flex-col items-center justify-center w-14 py-1 text-stone-600 hover:text-stone-900 transition-colors" href="#"><span class="material-symbols-outlined text-[24px]">home</span><span class="text-[11px] font-medium mt-0.5">Accueil</span></a><a class="flex flex-col items-center justify-center w-14 py-1 text-stone-600 hover:text-stone-900 transition-colors" href="#"><span class="material-symbols-outlined text-[24px]">menu_book</span><span class="text-[11px] font-medium mt-0.5">Bible</span></a><a class="flex flex-col items-center justify-center w-16 py-1 text-stone-600 hover:text-stone-900 transition-colors" href="#"><span class="material-symbols-outlined text-[24px]">style</span><span class="text-[11px] font-medium mt-0.5">Mémoriser</span></a><a class="flex flex-col items-center justify-center w-14 py-1 text-[#d81b60]" href="#"><span class="material-symbols-outlined text-[24px]">diversity_3</span><span class="text-[11px] font-semibold mt-0.5">Famille</span></a><a class="flex flex-col items-center justify-center w-14 py-1 text-stone-600 hover:text-stone-900 transition-colors" href="#"><span class="material-symbols-outlined text-[24px]">more_horiz</span><span class="text-[11px] font-medium mt-0.5">Plus</span></a></nav>
+<!-- END: TabNavigation -->
+</div>
+<!-- END: BottomPersistentSection -->
+</div>
+<!-- END: MobileDeviceFrame -->
+
+
+</body></html>

@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+
+<html lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>Réviser : Pardon</title>
+<!-- Tailwind CSS v3 -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts: Newsreader / Playfair / Inter -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=Lora:ital,wght@0,600;0,700;1,400&amp;family=Newsreader:opsz,wght@6..72,600;6..72,700&amp;display=swap" rel="stylesheet"/>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              primary: '#cf107a',
+              hover: '#b50a68',
+              light: '#fdf2f8',
+              soft: '#fbe8f1',
+              pill: '#f7dbe8',
+              pilltext: '#831843',
+              dark: '#1c1917',
+              graybg: '#fbf9f9',
+              muted: '#78716c',
+              badgetext: '#4b454e',
+              badgebg: '#f1edf0'
+            }
+          },
+          fontFamily: {
+            serif: ['Lora', 'Newsreader', 'serif'],
+            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+          },
+          boxShadow: {
+            'soft-card': '0 10px 30px -4px rgba(220, 180, 200, 0.22), 0 4px 12px -2px rgba(0, 0, 0, 0.03)',
+            'btn-shadow': '0 8px 24px -2px rgba(207, 16, 122, 0.35)',
+            'nav-shadow': '0 -4px 20px rgba(0, 0, 0, 0.04)',
+            'round-btn': '0 2px 10px rgba(0, 0, 0, 0.05)'
+          }
+        }
+      }
+    }
+  </script>
+<style data-purpose="custom-resets">
+    /* Empêcher le défilement horizontal et configurer les hauteurs de sécurité iOS */
+    body {
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      background-color: #faf7f7;
+    }
+  </style>
+</head>
+<body class="bg-[#faf7f7] font-sans text-brand-dark flex justify-center min-h-screen">
+<!-- BEGIN: MobileContainer -->
+<div class="w-full max-w-[430px] min-h-screen flex flex-col justify-between relative bg-[#faf7f7] overflow-x-hidden pb-20">
+<div>
+<!-- BEGIN: iOSStatusBar -->
+<div class="w-full px-7 pt-3.5 pb-2 flex justify-between items-center text-sm font-semibold tracking-tight text-neutral-900" data-purpose="status-bar">
+<span>9:41</span>
+<div class="flex items-center space-x-1.5 text-xs">
+<span class="font-bold text-[13px] tracking-normal">5G</span>
+<!-- Signal Icon -->
+<div class="flex items-end space-x-[2px] h-3">
+<span class="w-[3px] h-1.5 bg-black rounded-sm"></span>
+<span class="w-[3px] h-2 bg-black rounded-sm"></span>
+<span class="w-[3px] h-2.5 bg-black rounded-sm"></span>
+<span class="w-[3px] h-3 bg-black rounded-sm"></span>
+</div>
+<!-- Battery Icon -->
+<div class="w-6 h-3 border border-black rounded-[4px] p-0.5 flex items-center ml-0.5 relative">
+<div class="h-full bg-black rounded-[2px] w-full"></div>
+<span class="w-0.5 h-1.5 bg-black absolute -right-1 rounded-r-sm top-[2.5px]"></span>
+</div>
+</div>
+</div>
+<!-- END: iOSStatusBar -->
+<!-- BEGIN: TopNavigation -->
+<header class="px-5 pt-2 pb-4 flex items-center justify-between" data-purpose="header">
+<!-- Back Button -->
+<button aria-label="Retour" class="w-11 h-11 bg-white rounded-full flex items-center justify-center shadow-round-btn active:scale-95 transition-transform">
+<svg class="w-5 h-5 text-neutral-700" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewbox="0 0 24 24">
+<path d="M15 19l-7-7 7-7"></path>
+</svg>
+</button>
+<!-- Header Title -->
+<div class="text-center flex-1 px-2">
+<h1 class="font-serif text-[21px] font-bold tracking-tight text-neutral-900 leading-tight">Réviser : Pardon</h1>
+<p class="text-xs text-neutral-500 font-normal mt-0.5">Branche de l’arbre Amour</p>
+</div>
+<!-- Options Button (...) -->
+<button aria-label="Plus d'options" class="w-11 h-11 bg-white rounded-full flex items-center justify-center shadow-round-btn active:scale-95 transition-transform">
+<svg class="w-5 h-5 text-neutral-700" fill="currentColor" viewbox="0 0 24 24">
+<circle cx="5" cy="12" r="2"></circle>
+<circle cx="12" cy="12" r="2"></circle>
+<circle cx="19" cy="12" r="2"></circle>
+</svg>
+</button>
+</header>
+<!-- END: TopNavigation -->
+<!-- BEGIN: MainContent -->
+<main class="px-5 space-y-4">
+<!-- BEGIN: SessionOverviewCard -->
+<section class="bg-white rounded-3xl p-5 shadow-soft-card flex items-center justify-between" data-purpose="session-summary-card">
+<div class="space-y-1">
+<span class="text-[11px] font-bold uppercase tracking-wider text-brand-primary block font-sans">SESSION</span>
+<h2 class="font-serif text-[28px] font-bold text-neutral-900 leading-none">5 versets</h2>
+<p class="text-[12.5px] text-neutral-500 font-normal pt-1">≈ 8 min · mode conseillé par verset</p>
+</div>
+<!-- Circular Progress Meter: 58% -->
+<div class="relative w-16 h-16 flex items-center justify-center shrink-0">
+<svg class="w-16 h-16 transform -rotate-90" viewbox="0 0 64 64">
+<!-- Background Ring -->
+<circle cx="32" cy="32" fill="transparent" r="26" stroke="#fce7f3" stroke-width="6"></circle>
+<!-- Progress Arc (58% of 163.36 ≈ 94.75 stroke-dasharray) -->
+<circle cx="32" cy="32" fill="transparent" r="26" stroke="#d91380" stroke-dasharray="163.36" stroke-dashoffset="68.6" stroke-linecap="round" stroke-width="6.2"></circle>
+</svg>
+<span class="absolute font-serif text-lg font-bold text-neutral-900 leading-none">58</span>
+</div>
+</section>
+<!-- END: SessionOverviewCard -->
+<!-- BEGIN: VersesCard -->
+<section class="bg-white rounded-3xl pt-5 pb-2 px-5 shadow-soft-card" data-purpose="branch-verses-card">
+<!-- Card Title -->
+<h3 class="text-[11px] font-bold uppercase tracking-wider text-brand-primary pb-3 font-sans border-b border-neutral-100">
+            VERSETS DE LA BRANCHE
+          </h3>
+<!-- Verses List -->
+<div class="divide-y divide-neutral-100">
+<!-- Verse Item 1 -->
+<div class="py-3.5 flex items-center justify-between" data-purpose="verse-item">
+<div class="flex items-center space-x-3.5">
+<!-- Mini Progress Gauge (62%) -->
+<div class="relative w-9 h-9 flex items-center justify-center shrink-0">
+<svg class="w-9 h-9 -rotate-90" viewbox="0 0 36 36">
+<circle cx="18" cy="18" fill="none" r="14" stroke="#fce7f3" stroke-width="3.5"></circle>
+<circle cx="18" cy="18" fill="none" r="14" stroke="#d91380" stroke-dasharray="87.96" stroke-dashoffset="33.42" stroke-linecap="round" stroke-width="3.8"></circle>
+</svg>
+</div>
+<div>
+<h4 class="font-serif text-[17px] font-bold text-neutral-900 leading-snug">Colossiens 3:13</h4>
+<p class="text-[12px] text-neutral-500 font-normal">Maîtrise 62</p>
+</div>
+</div>
+<span class="text-xs font-medium text-brand-badgetext bg-brand-badgebg/90 px-3 py-1 rounded-full">Écriture</span>
+</div>
+<!-- Verse Item 2 -->
+<div class="py-3.5 flex items-center justify-between" data-purpose="verse-item">
+<div class="flex items-center space-x-3.5">
+<!-- Mini Progress Gauge (55%) -->
+<div class="relative w-9 h-9 flex items-center justify-center shrink-0">
+<svg class="w-9 h-9 -rotate-90" viewbox="0 0 36 36">
+<circle cx="18" cy="18" fill="none" r="14" stroke="#fce7f3" stroke-width="3.5"></circle>
+<circle cx="18" cy="18" fill="none" r="14" stroke="#d91380" stroke-dasharray="87.96" stroke-dashoffset="39.58" stroke-linecap="round" stroke-width="3.8"></circle>
+</svg>
+</div>
+<div>
+<h4 class="font-serif text-[17px] font-bold text-neutral-900 leading-snug">Éphésiens 4:32</h4>
+<p class="text-[12px] text-neutral-500 font-normal">Maîtrise 55</p>
+</div>
+</div>
+<span class="text-xs font-medium text-brand-badgetext bg-brand-badgebg/90 px-3 py-1 rounded-full">Masquage</span>
+</div>
+<!-- Verse Item 3 -->
+<div class="py-3.5 flex items-center justify-between" data-purpose="verse-item">
+<div class="flex items-center space-x-3.5">
+<!-- Mini Progress Gauge (71%) -->
+<div class="relative w-9 h-9 flex items-center justify-center shrink-0">
+<svg class="w-9 h-9 -rotate-90" viewbox="0 0 36 36">
+<circle cx="18" cy="18" fill="none" r="14" stroke="#fce7f3" stroke-width="3.5"></circle>
+<circle cx="18" cy="18" fill="none" r="14" stroke="#d91380" stroke-dasharray="87.96" stroke-dashoffset="25.5" stroke-linecap="round" stroke-width="3.8"></circle>
+</svg>
+</div>
+<div>
+<h4 class="font-serif text-[17px] font-bold text-neutral-900 leading-snug">Matthieu 6:14</h4>
+<p class="text-[12px] text-neutral-500 font-normal">Maîtrise 71</p>
+</div>
+</div>
+<span class="text-xs font-medium text-brand-badgetext bg-brand-badgebg/90 px-3 py-1 rounded-full">Écriture</span>
+</div>
+<!-- Verse Item 4 -->
+<div class="py-3.5 flex items-center justify-between" data-purpose="verse-item">
+<div class="flex items-center space-x-3.5">
+<!-- Mini Progress Gauge (48%) -->
+<div class="relative w-9 h-9 flex items-center justify-center shrink-0">
+<svg class="w-9 h-9 -rotate-90" viewbox="0 0 36 36">
+<circle cx="18" cy="18" fill="none" r="14" stroke="#fce7f3" stroke-width="3.5"></circle>
+<circle cx="18" cy="18" fill="none" r="14" stroke="#d91380" stroke-dasharray="87.96" stroke-dashoffset="45.74" stroke-linecap="round" stroke-width="3.8"></circle>
+</svg>
+</div>
+<div>
+<h4 class="font-serif text-[17px] font-bold text-neutral-900 leading-snug">Luc 6:37</h4>
+<p class="text-[12px] text-neutral-500 font-normal">Maîtrise 48</p>
+</div>
+</div>
+<span class="text-xs font-medium text-brand-badgetext bg-brand-badgebg/90 px-3 py-1 rounded-full">Masquage</span>
+</div>
+<!-- Verse Item 5 -->
+<div class="py-3.5 flex items-center justify-between" data-purpose="verse-item">
+<div class="flex items-center space-x-3.5">
+<!-- Mini Progress Gauge (54%) -->
+<div class="relative w-9 h-9 flex items-center justify-center shrink-0">
+<svg class="w-9 h-9 -rotate-90" viewbox="0 0 36 36">
+<circle cx="18" cy="18" fill="none" r="14" stroke="#fce7f3" stroke-width="3.5"></circle>
+<circle cx="18" cy="18" fill="none" r="14" stroke="#d91380" stroke-dasharray="87.96" stroke-dashoffset="40.46" stroke-linecap="round" stroke-width="3.8"></circle>
+</svg>
+</div>
+<div>
+<h4 class="font-serif text-[17px] font-bold text-neutral-900 leading-snug">1 Jean 1:9</h4>
+<p class="text-[12px] text-neutral-500 font-normal">Maîtrise 54</p>
+</div>
+</div>
+<span class="text-xs font-medium text-brand-badgetext bg-brand-badgebg/90 px-3 py-1 rounded-full">Masquage</span>
+</div>
+</div>
+</section>
+<!-- END: VersesCard -->
+<!-- BEGIN: FragileOrderPill -->
+<div class="pt-2 flex justify-center" data-purpose="sorting-info">
+<span class="inline-flex items-center text-[13px] font-bold text-brand-pilltext bg-[#f7d6e4]/70 px-4 py-1.5 rounded-full">
+            Ordre : les plus fragiles d’abord
+          </span>
+</div>
+<!-- END: FragileOrderPill -->
+<!-- BEGIN: StartSessionButton -->
+<div class="pt-10 pb-4 px-2" data-purpose="cta-container">
+<button class="w-full py-4 rounded-full bg-[#d0117b] hover:bg-[#b80b6b] active:scale-[0.98] text-white text-[16px] font-bold tracking-normal shadow-btn-shadow transition duration-150">
+            Lancer la session
+          </button>
+</div>
+<!-- END: StartSessionButton -->
+</main>
+<!-- END: MainContent -->
+</div>
+<!-- BEGIN: BottomNavigation -->
+<nav class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] bg-white border-t border-neutral-100 px-3 py-2 flex items-center justify-around z-50 text-neutral-700 shadow-nav-shadow" data-purpose="tab-bar">
+<!-- Tab 1: Accueil (Actif) -->
+<a class="flex flex-col items-center justify-center flex-1 py-1 text-brand-primary" href="#">
+<svg class="w-6 h-6 stroke-[1.8]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M3 10.5l9-7.5 9 7.5v9a1.5 1.5 0 01-1.5 1.5h-15A1.5 1.5 0 013 19.5v-9z" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M9 21v-6a1 1 0 011-1h4a1 1 0 011 1v6" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[11px] font-semibold mt-1">Accueil</span>
+</a>
+<!-- Tab 2: Bible -->
+<a class="flex flex-col items-center justify-center flex-1 py-1 text-neutral-600 hover:text-neutral-900" href="#">
+<svg class="w-6 h-6 stroke-[1.8]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<rect height="16" rx="2" stroke-linecap="round" stroke-linejoin="round" width="14" x="5" y="4"></rect>
+<line stroke-linecap="round" stroke-linejoin="round" x1="9" x2="9" y1="4" y2="20"></line>
+</svg>
+<span class="text-[11px] font-medium mt-1">Bible</span>
+</a>
+<!-- Tab 3: Mémoriser -->
+<a class="flex flex-col items-center justify-center flex-1 py-1 text-neutral-600 hover:text-neutral-900" href="#">
+<svg class="w-6 h-6 stroke-[1.8]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M12 3l8 4.5-8 4.5-8-4.5L12 3z" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M4 12l8 4.5 8-4.5" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M4 16.5l8 4.5 8-4.5" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[11px] font-medium mt-1">Mémoriser</span>
+</a>
+<!-- Tab 4: Progrès -->
+<a class="flex flex-col items-center justify-center flex-1 py-1 text-neutral-600 hover:text-neutral-900" href="#">
+<svg class="w-6 h-6 stroke-[1.8]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<line stroke-linecap="round" stroke-linejoin="round" x1="6" x2="6" y1="20" y2="14"></line>
+<line stroke-linecap="round" stroke-linejoin="round" x1="12" x2="12" y1="20" y2="10"></line>
+<line stroke-linecap="round" stroke-linejoin="round" x1="18" x2="18" y1="20" y2="6"></line>
+</svg>
+<span class="text-[11px] font-medium mt-1">Progrès</span>
+</a>
+<!-- Tab 5: Réglages -->
+<a class="flex flex-col items-center justify-center flex-1 py-1 text-neutral-600 hover:text-neutral-900" href="#">
+<svg class="w-6 h-6 stroke-[1.8]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<circle cx="12" cy="12" r="3" stroke-linecap="round" stroke-linejoin="round"></circle>
+<path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41m11.32-11.32l1.41-1.41" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[11px] font-medium mt-1">Réglages</span>
+</a>
+</nav>
+<!-- END: BottomNavigation -->
+</div>
+<!-- END: MobileContainer -->
+</body></html>

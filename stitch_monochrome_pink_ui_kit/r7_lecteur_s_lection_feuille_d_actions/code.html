@@ -1,0 +1,176 @@
+<!DOCTYPE html><html class="h-full bg-white text-zinc-900 antialiased select-none" lang="fr"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport">
+<title>R7 — Lecteur — sélection + feuille d’actions</title>
+<!-- Tailwind CSS v3 CDN with plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts: Inter for iOS UI & Playfair Display / Serif for scripture -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600&amp;family=Lora:ital,wght@0,400;0,500;0,600;1,400&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<!-- BEGIN: Custom Font Config -->
+<style data-purpose="typography">
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .font-bible {
+      font-family: 'Lora', Georgia, Cambria, serif;
+    }
+    .font-chapter {
+      font-family: 'Lora', serif;
+    }
+  </style>
+<!-- END: Custom Font Config -->
+<!-- BEGIN: Highlight & Visual Styles -->
+<style data-purpose="highlight-styles">
+    /* Precise realistic multi-line text highlighter */
+    .bible-highlight-pink {
+      background-color: #fde6ec;
+      border-radius: 4px;
+      padding: 3px 5px;
+      box-decoration-break: clone;
+      -webkit-box-decoration-break: clone;
+      line-height: 1.85;
+    }
+
+    /* Modal shadow to match high-end iOS sheet */
+    .sheet-shadow {
+      box-shadow: 0 -12px 36px -6px rgba(0, 0, 0, 0.08), 0 -4px 14px -2px rgba(0, 0, 0, 0.04);
+    }
+  </style>
+<!-- END: Highlight & Visual Styles -->
+</head>
+<body class="h-full flex justify-center bg-zinc-100 sm:py-6 overflow-hidden">
+<!-- BEGIN: Mobile Frame Simulator -->
+<div class="relative w-full max-w-[412px] h-full sm:h-[860px] bg-white sm:rounded-[48px] shadow-2xl flex flex-col overflow-hidden border border-zinc-200/80">
+<!-- BEGIN: iOS Status Bar -->
+<header class="pt-3 px-7 pb-1 flex justify-between items-center text-[15px] font-semibold tracking-tight text-zinc-900 shrink-0 z-20">
+<span class="">9:41</span>
+<!-- Right Status Icons -->
+<div class="flex items-center space-x-1.5 text-zinc-900" data-purpose="status-icons">
+<span class="text-xs font-bold tracking-tighter">5G</span>
+<!-- Cellular Signal Strength -->
+<div aria-label="Signal 3 bars" class="flex items-end space-x-[2px] h-3 ml-0.5">
+<span class="w-[3px] h-1.5 bg-zinc-900 rounded-[0.5px]"></span>
+<span class="w-[3px] h-2 bg-zinc-900 rounded-[0.5px]"></span>
+<span class="w-[3px] h-3 bg-zinc-900 rounded-[0.5px]"></span>
+<span class="w-[3px] h-3 bg-zinc-900 rounded-[0.5px]"></span>
+</div>
+<!-- Battery Icon -->
+<div class="w-6 h-[11.5px] border-[1.2px] border-zinc-900 rounded-[3px] p-[1.5px] flex items-center ml-1">
+<div class="w-full h-full bg-zinc-900 rounded-[1px]"></div>
+</div>
+</div>
+</header>
+<!-- END: iOS Status Bar -->
+<!-- BEGIN: Top Navigation Bar -->
+<nav aria-label="Menu principal" class="px-5 py-2.5 flex items-center justify-between shrink-0 z-20">
+<!-- Chapter Selector -->
+<button class="flex items-center space-x-1.5 text-zinc-900 font-bold text-[20px] tracking-tight active:opacity-70 transition-opacity" type="button">
+<span class="">Psaumes 23</span>
+<svg class="w-5 h-5 stroke-[2.5] text-zinc-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+<path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+<!-- Action Buttons -->
+<div class="flex items-center space-x-2.5">
+<!-- Search Button -->
+<button aria-label="Rechercher" class="p-2 text-zinc-900 hover:text-zinc-600 transition-colors" type="button"><svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35m1.85-5.15a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg></button>
+<!-- More Options Button -->
+<button aria-label="Plus d'options" class="w-8 h-8 rounded-full border border-zinc-300 flex items-center justify-center text-zinc-800 hover:bg-zinc-100 transition-colors" type="button"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1" fill="currentColor"></circle><circle cx="12" cy="12" r="1" fill="currentColor"></circle><circle cx="19" cy="12" r="1" fill="currentColor"></circle></svg></button>
+<!-- Bible Version Badge -->
+<button class="h-8 px-3 rounded-full bg-zinc-100/90 hover:bg-zinc-200/80 text-zinc-800 text-xs font-bold tracking-wide flex items-center space-x-1.5 transition-colors" type="button">
+<svg class="w-3.5 h-3.5 stroke-[2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+<circle cx="12" cy="12" r="9"></circle>
+<path d="M3.6 9h16.8M3.6 15h16.8" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M12 3a15 15 0 010 18M12 3a15 15 0 000 18" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="">LSG</span>
+</button>
+</div>
+</nav>
+<!-- END: Top Navigation Bar -->
+<!-- BEGIN: Scripture Content Area -->
+<main class="flex-1 overflow-y-auto px-6 pt-2 pb-64 font-bible text-zinc-900 relative">
+<!-- Chapter Header Grid -->
+<div class="relative pt-2 pb-5 flex items-baseline">
+<!-- Giant Watermark Chapter Number -->
+<span aria-hidden="true" class="font-chapter text-[98px] leading-none text-zinc-300/80 font-normal select-none -ml-1 pr-6">
+          23
+        </span>
+<!-- Section Subtitle -->
+<h1 class="text-xl md:text-[22px] font-normal text-zinc-800 leading-snug">
+          Psaume de David.
+        </h1>
+</div>
+<!-- Scripture Verses Container -->
+<article class="text-[19px] leading-[2.1] tracking-normal space-y-4 pt-1">
+<!-- Verse 1 (Highlighted) -->
+<p class="inline">
+<sup class="text-[11px] font-semibold text-zinc-400 font-sans mr-0.5 select-none align-super">1</sup>
+<mark class="bible-highlight-pink text-zinc-950 font-normal">L’Éternel est mon berger&nbsp;: je ne manquerai de rien.</mark>
+</p>
+<!-- Verse 2 (Highlighted) -->
+<p class="inline ml-1.5">
+<sup class="text-[11px] font-semibold text-zinc-400 font-sans mr-0.5 select-none align-super">2</sup>
+<mark class="bible-highlight-pink text-zinc-950 font-normal">Il me fait reposer dans de verts pâturages, Il me dirige près des eaux paisibles.</mark>
+</p>
+<!-- Verse 3 (Highlighted) -->
+<p class="inline ml-1.5">
+<sup class="text-[11px] font-semibold text-zinc-400 font-sans mr-0.5 select-none align-super">3</sup>
+<mark class="bible-highlight-pink text-zinc-950 font-normal">Il restaure mon âme, Il me conduit dans les sentiers de la justice, À cause de son nom.</mark>
+</p>
+<!-- Verse 4 (Unselected preview) -->
+<p class="inline ml-1.5 text-zinc-800">
+<sup class="text-[11px] font-semibold text-zinc-400 font-sans mr-0.5 select-none align-super">4</sup>
+<span class="">Quand je marche dans la vallée de l’ombre de la mort, Je ne crains aucun mal, car tu es avec moi...</span>
+</p>
+</article>
+</main>
+<!-- END: Scripture Content Area -->
+<!-- BEGIN: Bottom Action Sheet -->
+<aside class="absolute inset-x-0 bottom-0 z-30 bg-white rounded-t-[32px] pt-3 pb-7 px-5 sheet-shadow border-t border-zinc-100 flex flex-col items-center" data-purpose="action-sheet">
+<!-- Drag Handle -->
+<div aria-hidden="true" class="w-11 h-1 bg-zinc-900 rounded-full mb-3 shrink-0"></div>
+<!-- Selected Reference Title -->
+<h2 class="text-center font-bold text-[15px] text-zinc-900 mb-4 tracking-tight">
+        Psaumes 23:1-3
+      </h2>
+<!-- Action Bar Controls -->
+<div class="w-full flex items-center justify-between gap-2.5 mb-5">
+<!-- Palette of Highlighter Swatches -->
+<div class="flex-1 bg-zinc-100/90 rounded-2xl p-2.5 flex items-center justify-between max-w-[210px] h-[58px]" data-purpose="color-picker">
+<!-- Light Cyan (Current/Selected Indicator Ring) -->
+<button aria-label="Couleur bleu ciel" class="relative w-8 h-8 rounded-full bg-[#8de4f5] flex items-center justify-center transition-transform active:scale-95 ring-2 ring-offset-2 ring-[#8de4f5]" type="button"></button>
+<!-- Soft Sky Blue -->
+<button aria-label="Couleur cyan" class="w-8 h-8 rounded-full bg-[#83dcf3] hover:opacity-90 active:scale-95 transition" type="button"></button>
+<!-- Soft Mint Green -->
+<button aria-label="Couleur vert d'eau" class="w-8 h-8 rounded-full bg-[#95e69e] hover:opacity-90 active:scale-95 transition" type="button"></button>
+<!-- Dual Tone Yellow / Pink -->
+<button aria-label="Couleur dégradée jaune et rose" class="w-8 h-8 rounded-full overflow-hidden flex relative active:scale-95 transition" type="button">
+<span class="w-1/2 h-full bg-[#fce05f]"></span>
+<span class="w-1/2 h-full bg-[#f89dc2]"></span>
+</button>
+</div>
+<!-- Memorize Primary Action Button -->
+<button class="h-[58px] px-3.5 bg-[#d81b60] hover:bg-[#c2185b] active:scale-[0.98] transition rounded-2xl flex flex-col items-center justify-center text-white shrink-0 min-w-[84px] shadow-sm shadow-[#d81b60]/20" data-purpose="memorize-button" type="button"><svg class="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 2L2 7l10 5 10-5-10-5z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M2 17l10 5 10-5"></path><path stroke-linecap="round" stroke-linejoin="round" d="M2 12l10 5 10-5"></path></svg><span class="text-[11px] font-semibold leading-tight">Mémoriser</span></button>
+<!-- Save Secondary Action Button -->
+<button class="h-[58px] px-3 bg-zinc-100 hover:bg-zinc-200/80 active:scale-[0.98] transition rounded-2xl flex flex-col items-center justify-center text-zinc-900 shrink-0 min-w-[84px]" data-purpose="save-button" type="button"><svg class="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path></svg><span class="text-[11px] font-semibold leading-tight">Sauvegarder</span></button>
+</div>
+<!-- Pull Hint / Footer Info -->
+<div class="flex items-center space-x-1.5 text-zinc-600 text-[12px] font-medium pt-0.5">
+<svg class="w-3.5 h-3.5 stroke-[2.2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+<path d="M5 15l7-7 7 7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="">Fais glisser vers le haut pour en savoir plus</span>
+</div>
+<!-- iOS Home Indicator -->
+<div aria-hidden="true" class="w-32 h-1 bg-zinc-900/30 rounded-full mt-4 -mb-2"></div>
+</aside>
+<!-- END: Bottom Action Sheet -->
+</div>
+<!-- END: Mobile Frame Simulator -->
+
+
+</body></html>

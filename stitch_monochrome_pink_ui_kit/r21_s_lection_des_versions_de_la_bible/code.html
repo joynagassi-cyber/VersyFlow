@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+
+<html class="h-full bg-neutral-100" lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>Versions de la Bible</title>
+<!-- Tailwind CSS CDN with plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration -->
+<script data-purpose="tailwind-config">
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              rose: '#e91e63',
+              'rose-dark': '#d81b60',
+              'rose-light': '#fdf2f4',
+              'rose-subtle': '#fce4ec',
+            },
+            neutral: {
+              850: '#1f1f1f',
+              950: '#0c0c0c',
+            }
+          },
+          fontFamily: {
+            serif: ['"Playfair Display"', 'Georgia', 'serif'],
+            sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+<!-- Typography styles -->
+<style data-purpose="typography">
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap');
+  </style>
+<!-- iOS-like custom utilities & scrollbar suppression -->
+<style data-purpose="layout-tweaks">
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    .safe-top {
+      padding-top: env(safe-area-inset-top, 44px);
+    }
+    .safe-bottom {
+      padding-bottom: env(safe-area-inset-bottom, 34px);
+    }
+  </style>
+</head>
+<body class="h-full font-sans antialiased text-neutral-900 bg-neutral-100 flex justify-center">
+<!-- BEGIN: MobileDeviceContainer -->
+<!-- Container mimicking an iPhone modern viewport layout -->
+<div class="relative w-full max-w-md h-full bg-white flex flex-col shadow-2xl overflow-hidden border-x border-neutral-200" data-purpose="mobile-viewport">
+<!-- BEGIN: iOSStatusBar -->
+<header class="w-full bg-white/95 backdrop-blur-md pt-3 px-6 pb-2 flex justify-between items-center text-xs font-semibold z-30 select-none" data-purpose="ios-status-bar">
+<span>9:41</span>
+<div class="flex items-center space-x-1.5">
+<!-- Cellular signal icon -->
+<svg class="w-3.5 h-3.5 fill-current" viewbox="0 0 16 16">
+<path d="M1 12h2v3H1v-3zm4-3h2v6H5V9zm4-3h2v9H9V6zm4-4h2v13h-2V2z"></path>
+</svg>
+<!-- Wi-Fi icon -->
+<svg class="w-3.5 h-3.5 fill-current" viewbox="0 0 16 16">
+<path d="M8 12a1.5 1.5 0 100 3 1.5 1.5 0 000-3zm-4.9-2.5a6.9 6.9 0 019.8 0 .8.8 0 001.1-1.1 8.5 8.5 0 00-12 0 .8.8 0 001.1 1.1zm-2.8-2.8a10.9 10.9 0 0115.4 0 .8.8 0 001.1-1.1 12.5 12.5 0 00-17.6 0 .8.8 0 001.1 1.1z"></path>
+</svg>
+<!-- Battery icon -->
+<div class="w-5 h-2.5 border border-current rounded-sm p-0.5 flex items-center">
+<div class="h-full w-full bg-current rounded-2xs"></div>
+</div>
+</div>
+</header>
+<!-- END: iOSStatusBar -->
+<!-- BEGIN: NavigationBar -->
+<div class="w-full bg-white border-b border-neutral-100 px-4 py-2.5 flex items-center justify-between sticky top-0 z-20" data-purpose="app-navigation">
+<div class="flex items-center space-x-3">
+<!-- Back navigation button -->
+<button aria-label="Retour" class="p-1 -ml-1 text-neutral-800 hover:text-neutral-600 active:scale-95 transition-transform" type="button">
+<svg class="w-6 h-6 stroke-2 stroke-current fill-none" viewbox="0 0 24 24">
+<path d="M15 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+<div>
+<h1 class="text-xl font-bold font-serif tracking-tight text-neutral-900 leading-none">Versions</h1>
+<p class="text-[11px] text-neutral-500 font-medium tracking-wide mt-0.5">3 864 versions en 2 462 langues</p>
+</div>
+</div>
+<div class="flex items-center space-x-1">
+<!-- Search icon toggle -->
+<button aria-label="Rechercher une version" class="p-2 text-neutral-800 hover:bg-neutral-50 rounded-full active:scale-90 transition-all" type="button">
+<svg class="w-5 h-5 stroke-[2.2] stroke-current fill-none" viewbox="0 0 24 24">
+<path d="M21 21l-4.35-4.35m1.85-5.65a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+</div>
+</div>
+<!-- END: NavigationBar -->
+<!-- BEGIN: MainContentScrollableArea -->
+<main class="flex-1 overflow-y-auto no-scrollbar bg-neutral-50 pb-20">
+<!-- BEGIN: SearchBarSection -->
+<section class="px-4 pt-3 pb-2 bg-white" data-purpose="search-versions">
+<div class="relative flex items-center">
+<div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+<svg class="h-4 w-4 text-neutral-400 stroke-2 fill-none stroke-current" viewbox="0 0 24 24">
+<path d="M21 21l-4.35-4.35m1.85-5.65a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+<input class="w-full pl-10 pr-10 py-2.5 text-xs bg-neutral-100/80 border-0 rounded-xl text-neutral-900 placeholder-neutral-400 focus:bg-white focus:ring-1.5 focus:ring-brand-rose transition-all outline-none" placeholder="Rechercher une version, sigle ou langue..." type="search"/>
+<button aria-label="Filtres" class="absolute inset-y-0 right-0 pr-3 flex items-center text-neutral-400 hover:text-brand-rose" type="button">
+<svg class="w-4 h-4 stroke-[1.8] stroke-current fill-none" viewbox="0 0 24 24">
+<path d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+</div>
+</section>
+<!-- END: SearchBarSection -->
+<!-- BEGIN: ActiveVersionCard -->
+<section class="px-4 py-3 bg-white border-b border-neutral-150" data-purpose="current-active-version">
+<div class="bg-gradient-to-r from-neutral-900 to-neutral-850 text-white rounded-2xl p-4 shadow-sm relative overflow-hidden">
+<!-- Subtle decorative background accent -->
+<div class="absolute -right-6 -bottom-6 w-24 h-24 rounded-full bg-brand-rose/20 blur-xl pointer-events-none"></div>
+<div class="flex items-start justify-between">
+<div>
+<div class="inline-flex items-center space-x-1.5 px-2 py-0.5 rounded-full bg-brand-rose text-white text-[10px] font-semibold tracking-wide uppercase">
+<span class="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
+<span>Active</span>
+</div>
+<h2 class="text-xl font-bold font-serif mt-2 tracking-wide text-white">LSG</h2>
+<p class="text-xs text-neutral-300 font-normal mt-0.5">La Sainte Bible par Louis Segond 1910</p>
+</div>
+<!-- Offline & Audio indicators -->
+<div class="flex flex-col items-end space-y-2">
+<div class="flex items-center space-x-1 text-[11px] text-neutral-300 bg-white/10 px-2 py-0.5 rounded-md backdrop-blur-sm">
+<svg class="w-3.5 h-3.5 text-brand-rose fill-current" viewbox="0 0 20 20">
+<path clip-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" fill-rule="evenodd"></path>
+</svg>
+<span class="font-medium text-[10px]">Hors-ligne (42 Mo)</span>
+</div>
+<div class="flex items-center text-[11px] text-neutral-400 space-x-1">
+<span>Audio synchronisé</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- END: ActiveVersionCard -->
+<!-- BEGIN: AccordionSection_French -->
+<!-- Language Group: French (Expanded/Open state) -->
+<section class="mt-2 bg-white border-y border-neutral-200" data-purpose="language-accordion-french">
+<!-- Accordion Header -->
+<button aria-expanded="true" class="w-full px-4 py-3.5 flex items-center justify-between text-left bg-white hover:bg-neutral-50/80 transition-colors" type="button">
+<div class="flex items-center space-x-2">
+<span class="text-sm font-bold uppercase tracking-wider text-neutral-900 font-serif">Français</span>
+<span class="px-2 py-0.5 text-[11px] font-semibold bg-neutral-100 text-neutral-600 rounded-full">12 versions</span>
+</div>
+<svg class="w-4 h-4 text-neutral-500 transform rotate-180 transition-transform duration-200" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path>
+</svg>
+</button>
+<!-- Version Items List for French -->
+<div class="divide-y divide-neutral-100 border-t border-neutral-100" data-purpose="french-versions-list">
+<!-- Item 1: LSG (Active & Downloaded) -->
+<div class="px-4 py-3 flex items-center justify-between hover:bg-neutral-50/70 transition-colors bg-brand-rose-subtle/25">
+<div class="flex-1 pr-3">
+<div class="flex items-center space-x-2">
+<span class="text-base font-bold font-serif text-neutral-950">LSG</span>
+<!-- Audio badge "2" matching screenshot -->
+<span class="inline-flex items-center px-1.5 py-0.5 rounded-full bg-neutral-100 text-neutral-700 text-[10px] font-medium space-x-1">
+<svg class="w-3 h-3 text-brand-rose fill-current" viewbox="0 0 24 24">
+<path d="M13.5 4.06c0-1.336-1.616-2.005-2.56-1.06l-4.5 4.5H4.5A2.25 2.25 0 002.25 9.75v4.5A2.25 2.25 0 004.5 16.5h1.94l4.5 4.5c.944.945 2.56.276 2.56-1.06V4.06zM18.584 5.106a.75.75 0 011.06 0c3.808 3.807 3.808 9.98 0 13.788a.75.75 0 11-1.06-1.06 8.25 8.25 0 000-11.668.75.75 0 010-1.06z"></path>
+</svg>
+<span class="text-[9px] font-bold text-neutral-800">2</span>
+</span>
+<span class="text-[10px] uppercase font-bold tracking-wider text-brand-rose bg-white border border-brand-rose/30 px-1.5 py-0.2 rounded">Actuelle</span>
+</div>
+<p class="text-xs text-neutral-600 mt-0.5">La Sainte Bible par Louis Segond 1910</p>
+</div>
+<div class="flex items-center space-x-2.5">
+<!-- Checkmark for downloaded version -->
+<span class="w-7 h-7 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-200">
+<svg class="w-4 h-4 stroke-[2.5] stroke-current fill-none" viewbox="0 0 24 24">
+<path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</span>
+<!-- More menu -->
+<button aria-label="Options LSG" class="text-neutral-500 hover:text-neutral-900 p-1" type="button">
+<svg class="w-4 h-4 fill-current" viewbox="0 0 16 16">
+<circle cx="8" cy="3" r="1.5"></circle><circle cx="8" cy="8" r="1.5"></circle><circle cx="8" cy="13" r="1.5"></circle>
+</svg>
+</button>
+</div>
+</div>
+<!-- Item 2: BDS (Bible du Semeur 2015 - Downloading state) -->
+<div class="px-4 py-3 flex items-center justify-between hover:bg-neutral-50/70 transition-colors">
+<div class="flex-1 pr-3">
+<div class="flex items-center space-x-2">
+<span class="text-base font-bold font-serif text-neutral-900">BDS</span>
+<span class="inline-flex items-center px-1.5 py-0.5 rounded-full bg-neutral-100 text-neutral-700 text-[10px]">
+<svg class="w-3 h-3 text-neutral-600 fill-current" viewbox="0 0 24 24">
+<path d="M13.5 4.06c0-1.336-1.616-2.005-2.56-1.06l-4.5 4.5H4.5A2.25 2.25 0 002.25 9.75v4.5A2.25 2.25 0 004.5 16.5h1.94l4.5 4.5c.944.945 2.56.276 2.56-1.06V4.06z"></path>
+</svg>
+</span>
+</div>
+<p class="text-xs text-neutral-600 mt-0.5">La Bible du Semeur 2015</p>
+</div>
+<div class="flex items-center space-x-2.5">
+<!-- Elegant downloading circular progress spinner -->
+<div class="relative w-7 h-7 flex items-center justify-center">
+<svg class="w-7 h-7 transform -rotate-90">
+<circle cx="14" cy="14" fill="none" r="11" stroke="#f0f0f0" stroke-width="2.5"></circle>
+<circle cx="14" cy="14" fill="none" r="11" stroke="#e91e63" stroke-dasharray="69" stroke-dashoffset="24" stroke-linecap="round" stroke-width="2.5"></circle>
+</svg>
+<span class="absolute text-[8px] font-bold text-brand-rose">65%</span>
+</div>
+<button aria-label="Options BDS" class="text-neutral-500 hover:text-neutral-900 p-1" type="button">
+<svg class="w-4 h-4 fill-current" viewbox="0 0 16 16">
+<circle cx="8" cy="3" r="1.5"></circle><circle cx="8" cy="8" r="1.5"></circle><circle cx="8" cy="13" r="1.5"></circle>
+</svg>
+</button>
+</div>
+</div>
+<!-- Item 3: BenFS -->
+<div class="px-4 py-3 flex items-center justify-between hover:bg-neutral-50/70 transition-colors">
+<div class="flex-1 pr-3">
+<span class="text-base font-bold font-serif text-neutral-900">BenFS</span>
+<p class="text-xs text-neutral-600 mt-0.5">Bible en Français Simple 2023</p>
+</div>
+<div class="flex items-center space-x-2.5">
+<button aria-label="Télécharger BenFS" class="w-7 h-7 rounded-full border border-neutral-300 text-neutral-700 hover:border-brand-rose hover:text-brand-rose flex items-center justify-center transition-colors" type="button">
+<svg class="w-3.5 h-3.5 stroke-[2.2] stroke-current fill-none" viewbox="0 0 24 24">
+<path d="M19 14l-7 7m0 0l-7-7m7 7V3" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+<button aria-label="Options BenFS" class="text-neutral-500 hover:text-neutral-900 p-1" type="button">
+<svg class="w-4 h-4 fill-current" viewbox="0 0 16 16">
+<circle cx="8" cy="3" r="1.5"></circle><circle cx="8" cy="8" r="1.5"></circle><circle cx="8" cy="13" r="1.5"></circle>
+</svg>
+</button>
+</div>
+</div>
+<!-- Item 4: NBS -->
+<div class="px-4 py-3 flex items-center justify-between hover:bg-neutral-50/70 transition-colors">
+<div class="flex-1 pr-3">
+<span class="text-base font-bold font-serif text-neutral-900">NBS</span>
+<p class="text-xs text-neutral-600 mt-0.5">Nouvelle Bible Segond</p>
+</div>
+<div class="flex items-center space-x-2.5">
+<button aria-label="Télécharger NBS" class="w-7 h-7 rounded-full border border-neutral-300 text-neutral-700 hover:border-brand-rose hover:text-brand-rose flex items-center justify-center transition-colors" type="button">
+<svg class="w-3.5 h-3.5 stroke-[2.2] stroke-current fill-none" viewbox="0 0 24 24">
+<path d="M19 14l-7 7m0 0l-7-7m7 7V3" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+<button aria-label="Options NBS" class="text-neutral-500 hover:text-neutral-900 p-1" type="button">
+<svg class="w-4 h-4 fill-current" viewbox="0 0 16 16">
+<circle cx="8" cy="3" r="1.5"></circle><circle cx="8" cy="8" r="1.5"></circle><circle cx="8" cy="13" r="1.5"></circle>
+</svg>
+</button>
+</div>
+</div>
+<!-- Item 5: NEG 1979 -->
+<div class="px-4 py-3 flex items-center justify-between hover:bg-neutral-50/70 transition-colors">
+<div class="flex-1 pr-3">
+<span class="text-base font-bold font-serif text-neutral-900">NEG 1979</span>
+<p class="text-xs text-neutral-600 mt-0.5">Version Segond Nouvelle Edition de Genève 1979</p>
+</div>
+<div class="flex items-center space-x-2.5">
+<button aria-label="Télécharger NEG 1979" class="w-7 h-7 rounded-full border border-neutral-300 text-neutral-700 hover:border-brand-rose hover:text-brand-rose flex items-center justify-center transition-colors" type="button">
+<svg class="w-3.5 h-3.5 stroke-[2.2] stroke-current fill-none" viewbox="0 0 24 24">
+<path d="M19 14l-7 7m0 0l-7-7m7 7V3" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+<button aria-label="Options NEG 1979" class="text-neutral-500 hover:text-neutral-900 p-1" type="button">
+<svg class="w-4 h-4 fill-current" viewbox="0 0 16 16">
+<circle cx="8" cy="3" r="1.5"></circle><circle cx="8" cy="8" r="1.5"></circle><circle cx="8" cy="13" r="1.5"></circle>
+</svg>
+</button>
+</div>
+</div>
+<!-- Item 6: NFC -->
+<div class="px-4 py-3 flex items-center justify-between hover:bg-neutral-50/70 transition-colors">
+<div class="flex-1 pr-3">
+<span class="text-base font-bold font-serif text-neutral-900">NFC</span>
+<p class="text-xs text-neutral-600 mt-0.5">Nouvelle Français courant</p>
+</div>
+<div class="flex items-center space-x-2.5">
+<button aria-label="Télécharger NFC" class="w-7 h-7 rounded-full border border-neutral-300 text-neutral-700 hover:border-brand-rose hover:text-brand-rose flex items-center justify-center transition-colors" type="button">
+<svg class="w-3.5 h-3.5 stroke-[2.2] stroke-current fill-none" viewbox="0 0 24 24">
+<path d="M19 14l-7 7m0 0l-7-7m7 7V3" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+<button aria-label="Options NFC" class="text-neutral-500 hover:text-neutral-900 p-1" type="button">
+<svg class="w-4 h-4 fill-current" viewbox="0 0 16 16">
+<circle cx="8" cy="3" r="1.5"></circle><circle cx="8" cy="8" r="1.5"></circle><circle cx="8" cy="13" r="1.5"></circle>
+</svg>
+</button>
+</div>
+</div>
+<!-- Item 7: S21 -->
+<div class="px-4 py-3 flex items-center justify-between hover:bg-neutral-50/70 transition-colors">
+<div class="flex-1 pr-3">
+<div class="flex items-center space-x-2">
+<span class="text-base font-bold font-serif text-neutral-900">S21</span>
+<span class="inline-flex items-center px-1.5 py-0.5 rounded-full bg-neutral-100 text-neutral-700 text-[10px]">
+<svg class="w-3 h-3 text-neutral-600 fill-current" viewbox="0 0 24 24">
+<path d="M13.5 4.06c0-1.336-1.616-2.005-2.56-1.06l-4.5 4.5H4.5A2.25 2.25 0 002.25 9.75v4.5A2.25 2.25 0 004.5 16.5h1.94l4.5 4.5c.944.945 2.56.276 2.56-1.06V4.06z"></path>
+</svg>
+</span>
+</div>
+<p class="text-xs text-neutral-600 mt-0.5">La Bible Segond 21</p>
+</div>
+<div class="flex items-center space-x-2.5">
+<button aria-label="Télécharger S21" class="w-7 h-7 rounded-full border border-neutral-300 text-neutral-700 hover:border-brand-rose hover:text-brand-rose flex items-center justify-center transition-colors" type="button">
+<svg class="w-3.5 h-3.5 stroke-[2.2] stroke-current fill-none" viewbox="0 0 24 24">
+<path d="M19 14l-7 7m0 0l-7-7m7 7V3" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+<button aria-label="Options S21" class="text-neutral-500 hover:text-neutral-900 p-1" type="button">
+<svg class="w-4 h-4 fill-current" viewbox="0 0 16 16">
+<circle cx="8" cy="3" r="1.5"></circle><circle cx="8" cy="8" r="1.5"></circle><circle cx="8" cy="13" r="1.5"></circle>
+</svg>
+</button>
+</div>
+</div>
+<!-- Item 8: PDV2017 -->
+<div class="px-4 py-3 flex items-center justify-between hover:bg-neutral-50/70 transition-colors">
+<div class="flex-1 pr-3">
+<div class="flex items-center space-x-2">
+<span class="text-base font-bold font-serif text-neutral-900">PDV2017</span>
+<span class="inline-flex items-center px-1.5 py-0.5 rounded-full bg-neutral-100 text-neutral-700 text-[10px] space-x-0.5 font-medium">
+<svg class="w-3 h-3 text-neutral-600 fill-current" viewbox="0 0 24 24">
+<path d="M13.5 4.06c0-1.336-1.616-2.005-2.56-1.06l-4.5 4.5H4.5A2.25 2.25 0 002.25 9.75v4.5A2.25 2.25 0 004.5 16.5h1.94l4.5 4.5c.944.945 2.56.276 2.56-1.06V4.06z"></path>
+</svg>
+<span class="text-[9px] font-bold">5</span>
+</span>
+</div>
+<p class="text-xs text-neutral-600 mt-0.5">Parole de Vie 2017</p>
+</div>
+<div class="flex items-center space-x-2.5">
+<button aria-label="Télécharger PDV2017" class="w-7 h-7 rounded-full border border-neutral-300 text-neutral-700 hover:border-brand-rose hover:text-brand-rose flex items-center justify-center transition-colors" type="button">
+<svg class="w-3.5 h-3.5 stroke-[2.2] stroke-current fill-none" viewbox="0 0 24 24">
+<path d="M19 14l-7 7m0 0l-7-7m7 7V3" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+<button aria-label="Options PDV2017" class="text-neutral-500 hover:text-neutral-900 p-1" type="button">
+<svg class="w-4 h-4 fill-current" viewbox="0 0 16 16">
+<circle cx="8" cy="3" r="1.5"></circle><circle cx="8" cy="8" r="1.5"></circle><circle cx="8" cy="13" r="1.5"></circle>
+</svg>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- END: AccordionSection_French -->
+<!-- BEGIN: AccordionSection_English -->
+<!-- Language Group: English (Collapsed/Closed state) -->
+<section class="mt-2.5 bg-white border-y border-neutral-200" data-purpose="language-accordion-english">
+<button aria-expanded="false" class="w-full px-4 py-3.5 flex items-center justify-between text-left hover:bg-neutral-50 transition-colors" type="button">
+<div>
+<div class="flex items-center space-x-2">
+<span class="text-sm font-bold uppercase tracking-wider text-neutral-900 font-serif">English</span>
+<span class="px-2 py-0.5 text-[11px] font-semibold bg-neutral-100 text-neutral-600 rounded-full">24 versions</span>
+</div>
+<p class="text-[11px] text-neutral-400 mt-0.5 font-normal">NIV, ESV, KJV, AMP, BSB, ASV, CEB...</p>
+</div>
+<svg class="w-4 h-4 text-neutral-400 transition-transform duration-200" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path>
+</svg>
+</button>
+</section>
+<!-- END: AccordionSection_English -->
+<!-- BEGIN: AccordionSection_Spanish -->
+<!-- Language Group: Spanish (Collapsed) -->
+<section class="mt-2.5 bg-white border-y border-neutral-200" data-purpose="language-accordion-spanish">
+<button aria-expanded="false" class="w-full px-4 py-3.5 flex items-center justify-between text-left hover:bg-neutral-50 transition-colors" type="button">
+<div>
+<div class="flex items-center space-x-2">
+<span class="text-sm font-bold uppercase tracking-wider text-neutral-900 font-serif">Español</span>
+<span class="px-2 py-0.5 text-[11px] font-semibold bg-neutral-100 text-neutral-600 rounded-full">18 versions</span>
+</div>
+<p class="text-[11px] text-neutral-400 mt-0.5 font-normal">RVR1960, NVI, DHH, NTV, LBLA...</p>
+</div>
+<svg class="w-4 h-4 text-neutral-400 transition-transform duration-200" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path>
+</svg>
+</button>
+</section>
+<!-- END: AccordionSection_Spanish -->
+<!-- BEGIN: AccordionSection_Portuguese -->
+<!-- Language Group: Portuguese (Collapsed) -->
+<section class="mt-2.5 bg-white border-y border-neutral-200" data-purpose="language-accordion-portuguese">
+<button aria-expanded="false" class="w-full px-4 py-3.5 flex items-center justify-between text-left hover:bg-neutral-50 transition-colors" type="button">
+<div>
+<div class="flex items-center space-x-2">
+<span class="text-sm font-bold uppercase tracking-wider text-neutral-900 font-serif">Português</span>
+<span class="px-2 py-0.5 text-[11px] font-semibold bg-neutral-100 text-neutral-600 rounded-full">11 versions</span>
+</div>
+<p class="text-[11px] text-neutral-400 mt-0.5 font-normal">ARC, NVI-PT, ARA, NAA, NVT...</p>
+</div>
+<svg class="w-4 h-4 text-neutral-400 transition-transform duration-200" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path>
+</svg>
+</button>
+</section>
+<!-- END: AccordionSection_Portuguese -->
+<!-- BEGIN: AccordionSection_OtherLanguages -->
+<!-- Language Group: All other languages -->
+<section class="mt-2.5 mb-6 bg-white border-y border-neutral-200" data-purpose="language-accordion-others">
+<button aria-expanded="false" class="w-full px-4 py-3.5 flex items-center justify-between text-left hover:bg-neutral-50 transition-colors" type="button">
+<div>
+<div class="flex items-center space-x-2">
+<span class="text-sm font-bold uppercase tracking-wider text-neutral-900 font-serif">Autres langues</span>
+<span class="px-2 py-0.5 text-[11px] font-semibold bg-neutral-100 text-neutral-600 rounded-full">2 400+</span>
+</div>
+<p class="text-[11px] text-neutral-400 mt-0.5 font-normal">Allemand, Italien, Grec, Hébreu, Latin...</p>
+</div>
+<div class="flex items-center space-x-2 text-neutral-400">
+<span class="text-xs font-medium text-brand-rose">Explorer</span>
+<svg class="w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+</button>
+</section>
+<!-- END: AccordionSection_OtherLanguages -->
+</main>
+<!-- END: MainContentScrollableArea -->
+<!-- BEGIN: BottomPersistentNavigationBar -->
+<!-- iOS bottom navigation bar with Bible section active -->
+<nav class="w-full bg-white/95 backdrop-blur-md border-t border-neutral-200 safe-bottom fixed bottom-0 max-w-md z-30" data-purpose="bottom-navigation-bar">
+<div class="flex justify-around items-center h-14 px-2">
+<!-- Tab: Accueil -->
+<button class="flex flex-col items-center justify-center w-full h-full text-neutral-400 hover:text-neutral-700 transition-colors" type="button">
+<svg class="w-5 h-5 stroke-[1.8] fill-none stroke-current" viewbox="0 0 24 24">
+<path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[10px] mt-1 font-medium">Accueil</span>
+</button>
+<!-- Tab: Bible (Active state with rose accent) -->
+<button class="flex flex-col items-center justify-center w-full h-full text-brand-rose" type="button">
+<svg class="w-5 h-5 stroke-[2.2] fill-none stroke-current" viewbox="0 0 24 24">
+<path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[10px] mt-1 font-bold">Bible</span>
+</button>
+<!-- Tab: Mémoriser -->
+<button class="flex flex-col items-center justify-center w-full h-full text-neutral-400 hover:text-neutral-700 transition-colors" type="button">
+<svg class="w-5 h-5 stroke-[1.8] fill-none stroke-current" viewbox="0 0 24 24">
+<path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[10px] mt-1 font-medium">Mémoriser</span>
+</button>
+<!-- Tab: Progrès -->
+<button class="flex flex-col items-center justify-center w-full h-full text-neutral-400 hover:text-neutral-700 transition-colors" type="button">
+<svg class="w-5 h-5 stroke-[1.8] fill-none stroke-current" viewbox="0 0 24 24">
+<path d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[10px] mt-1 font-medium">Progrès</span>
+</button>
+<!-- Tab: Réglages -->
+<button class="flex flex-col items-center justify-center w-full h-full text-neutral-400 hover:text-neutral-700 transition-colors" type="button">
+<svg class="w-5 h-5 stroke-[1.8] fill-none stroke-current" viewbox="0 0 24 24">
+<path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[10px] mt-1 font-medium">Réglages</span>
+</button>
+</div>
+<!-- iOS Home indicator bar -->
+<div class="w-full flex justify-center pb-1">
+<div class="w-32 h-1 bg-neutral-300 rounded-full"></div>
+</div>
+</nav>
+<!-- END: BottomPersistentNavigationBar -->
+</div>
+<!-- END: MobileDeviceContainer -->
+</body></html>

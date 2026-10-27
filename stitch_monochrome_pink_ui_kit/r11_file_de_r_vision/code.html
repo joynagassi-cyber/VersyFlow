@@ -1,0 +1,276 @@
+<!DOCTYPE html><html class="h-full bg-slate-50" lang="fr"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+<title>R11 — File de révision</title>
+<!-- Tailwind CSS v3 -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts: Playfair Display (Serif) & Plus Jakarta Sans (Sans) -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&amp;display=swap" rel="stylesheet">
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            serif: ['"Playfair Display"', 'Georgia', 'serif'],
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              magenta: '#c2185b',
+              vivid: '#d81b60',
+              deep: '#ad1457',
+              pill: '#fce4ec',
+            }
+          }
+        }
+      }
+    }
+  </script>
+<!-- Custom styles for fidelity & layout constraints -->
+<style data-purpose="custom-styling">
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .font-serif-title {
+      font-family: 'Playfair Display', Georgia, serif;
+    }
+    /* Hide scrollbars for pill overflow while keeping swipe ability */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-[#faf7f5] text-slate-900 flex justify-center selection:bg-pink-200">
+<!-- Device Screen Frame (Mobile iOS context max-w-md) -->
+<div class="w-full max-w-[430px] min-h-screen flex flex-col relative pb-28">
+<!-- BEGIN: StatusBar -->
+<header class="w-full pt-3 px-7 pb-2 flex justify-between items-center text-[15px] font-semibold tracking-tight text-neutral-900 select-none">
+<!-- iOS Clock -->
+<span class="">9:41</span>
+<!-- iOS Indicators: Signal, 5G, Battery -->
+<div class="flex items-center space-x-1.5 text-neutral-900">
+<span class="text-xs font-bold mr-0.5">5G</span>
+<!-- Cellular bars -->
+<svg class="w-4 h-3.5 fill-current" viewBox="0 0 17 12">
+<rect height="4" rx="0.8" width="3" x="0" y="8"></rect>
+<rect height="6.5" rx="0.8" width="3" x="4.5" y="5.5"></rect>
+<rect height="9" rx="0.8" width="3" x="9" y="3"></rect>
+<rect height="12" rx="0.8" width="3" x="13.5" y="0"></rect>
+</svg>
+<!-- Battery Icon -->
+<div class="w-6 h-3 rounded-md border border-neutral-900 p-0.5 flex items-center relative">
+<div class="h-full w-4 bg-neutral-900 rounded-sm"></div>
+<div class="w-0.5 h-1.5 bg-neutral-900 rounded-r-sm absolute -right-1 top-0.5"></div>
+</div>
+</div>
+</header>
+<!-- END: StatusBar -->
+<!-- BEGIN: TopBarTitle -->
+<section class="px-6 pt-3 pb-2 flex justify-between items-center" data-purpose="page-title-section">
+<h1 class="text-3xl font-extrabold tracking-tight font-serif-title text-[#1a1819]">Révisions</h1>
+<!-- Streak Pill Badge -->
+<div class="flex items-center space-x-1 bg-[#ede8e6] px-3.5 py-1 rounded-full text-slate-800 font-semibold text-sm"><svg class="w-4 h-4 text-amber-500 fill-current shrink-0" viewBox="0 0 24 24"><path d="M11 21h-1l1-7H7.5c-.58 0-.96-.47-.84-1.04.09-.43.34-.84.6-1.16L13.5 3h1l-1 7h3.5c.58 0 .96.47.84 1.04-.09.43-.34.84-.6 1.16L11 21z"></path><circle cx="19" cy="5" r="2.5" class="text-amber-500" fill="currentColor"></circle><path d="M19 3.5v3M17.5 5h3" stroke="white" stroke-width="1.2" stroke-linecap="round"></path></svg><span class="font-bold text-xs tracking-tight">12</span></div>
+</section>
+<!-- END: TopBarTitle -->
+<main class="flex-1 px-5 pt-2 space-y-4">
+<!-- BEGIN: HeroRevisionCard -->
+<section class="relative overflow-hidden rounded-[28px] bg-gradient-to-br from-[#d81b60] via-[#c2185b] to-[#ad1457] text-white p-6 shadow-xl shadow-pink-900/15" data-purpose="hero-revision-cta">
+<div class="flex justify-between items-start">
+<div class="space-y-1">
+<span class="text-[11px] font-bold tracking-wider uppercase text-pink-100 opacity-90">À RÉVISER AUJOURD’HUI</span>
+<h2 class="text-4xl font-serif-title font-bold tracking-tight mt-0.5">5 versets</h2>
+<p class="text-xs text-pink-100/90 font-medium pt-1">≈ 8 min · 2 en retard</p>
+</div>
+<!-- Circular Progress Indicator 0/5 -->
+<div class="relative w-16 h-16 flex items-center justify-center">
+<svg class="w-16 h-16 -rotate-90 transform" viewBox="0 0 64 64">
+<!-- Background circle -->
+<circle cx="32" cy="32" fill="transparent" r="27" stroke="rgba(255,255,255,0.22)" stroke-width="5"></circle>
+<!-- Small marker ring -->
+<circle cx="59" cy="32" fill="#ffffff" r="2.5"></circle>
+</svg>
+<span class="absolute text-sm font-bold tracking-tight text-white font-sans">0/5</span>
+</div>
+</div>
+<!-- Launch Session Button -->
+<button class="mt-5 w-full bg-white active:bg-pink-50 text-[#c2185b] font-bold py-3.5 px-6 rounded-full flex items-center justify-center space-x-2.5 shadow-sm transition-transform active:scale-[0.98]"><svg class="w-5 h-5 fill-current shrink-0" viewBox="0 0 24 24"><path d="M8 6.82v10.36c0 .79.87 1.27 1.54.84l8.14-5.18a1 1 0 000-1.69L9.54 5.98C8.87 5.55 8 6.03 8 6.82z"></path></svg><span class="text-[15px] font-extrabold tracking-tight">Lancer la session</span></button>
+</section>
+<!-- END: HeroRevisionCard -->
+<!-- BEGIN: FilterPills -->
+<nav aria-label="Filtres de révision" class="flex items-center space-x-2 overflow-x-auto no-scrollbar py-1" data-purpose="filter-pills">
+<!-- Active Pill (Tous · 5) -->
+<button class="shrink-0 bg-[#212121] text-white text-xs font-bold px-4 py-2 rounded-full shadow-sm">
+          Tous · 5
+        </button>
+<!-- Pill: En retard · 2 -->
+<button class="shrink-0 bg-[#fcece9] text-[#b8382c] border border-red-100 text-xs font-bold px-4 py-2 rounded-full">
+          En retard · 2
+        </button>
+<!-- Pill: Aujourd'hui · 2 -->
+<button class="shrink-0 bg-[#fef5e7] text-[#9a6416] border border-amber-100 text-xs font-bold px-4 py-2 rounded-full">
+          Aujourd’hui · 2
+        </button>
+<!-- Pill: À venir · 1 -->
+<button class="shrink-0 bg-[#ebf7f0] text-[#2c7744] border border-emerald-100 text-xs font-bold px-4 py-2 rounded-full">
+          À venir · 1
+        </button>
+</nav>
+<!-- END: FilterPills -->
+<!-- BEGIN: RevisionCardsList -->
+<section class="space-y-3.5 pt-1" data-purpose="revision-cards-list">
+<!-- Card 1: Jean 3:16 (Urgence rouge - 2 jours de retard) -->
+<article class="bg-white rounded-2xl p-4 shadow-sm relative overflow-hidden border border-neutral-100/80 flex flex-col justify-between" data-purpose="card-verse-item">
+<!-- Left Status Indicator Bar -->
+<div class="absolute left-0 top-0 bottom-0 w-1.5 bg-[#e53935] rounded-l-md"></div>
+<div class="pl-2">
+<!-- Header: Title & Delay Badge -->
+<div class="flex items-center justify-between">
+<h3 class="font-serif-title font-bold text-xl text-neutral-900">Jean 3:16</h3>
+<span class="bg-[#fee8e7] text-[#c62828] text-[11px] font-bold px-2.5 py-0.5 rounded-full">2 jours</span>
+</div>
+<!-- Masked Verse Text Preview -->
+<p class="text-[14px] text-neutral-700 font-normal mt-2 leading-relaxed flex flex-wrap items-center gap-1.5">
+<span class="">Car Dieu a</span>
+<span class="inline-block w-12 h-4 bg-[#e8e4e6] rounded-md align-middle"></span>
+<span class="">aimé le</span>
+<span class="inline-block w-14 h-4 bg-[#e8e4e6] rounded-md align-middle"></span>
+<span class="">qu’il a</span>
+<span class="">donné...</span>
+</p>
+<!-- Bottom Progress & Action -->
+<div class="flex items-center justify-between mt-4">
+<!-- Mastery Ring & Tip -->
+<div class="flex items-center space-x-3">
+<div class="relative w-9 h-9 flex items-center justify-center">
+<svg class="w-9 h-9 -rotate-90" viewBox="0 0 36 36">
+<circle cx="18" cy="18" fill="transparent" r="14" stroke="#f1e5ea" stroke-width="3"></circle>
+<circle cx="18" cy="18" fill="transparent" r="14" stroke="#d81b60" stroke-dasharray="88" stroke-dashoffset="33" stroke-linecap="round" stroke-width="3"></circle>
+</svg>
+</div>
+<div>
+<div class="text-xs font-bold text-neutral-900 leading-tight">Maîtrise 62</div>
+<div class="text-[11px] text-neutral-500 font-medium">Écriture conseillée</div>
+</div>
+</div>
+<!-- Chevron Action Circle -->
+<button aria-label="Réviser Jean 3:16" class="w-10 h-10 rounded-full bg-[#d81b60] text-white flex items-center justify-center shadow-md shadow-pink-600/20 active:scale-95 transition-transform"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"></path></svg></button>
+</div>
+</div>
+</article>
+<!-- Card 2: Psaume 23:1 (Urgence rouge - 1 jour de retard) -->
+<article class="bg-white rounded-2xl p-4 shadow-sm relative overflow-hidden border border-neutral-100/80 flex flex-col justify-between" data-purpose="card-verse-item">
+<!-- Left Status Indicator Bar -->
+<div class="absolute left-0 top-0 bottom-0 w-1.5 bg-[#e53935] rounded-l-md"></div>
+<div class="pl-2">
+<!-- Header: Title & Delay Badge -->
+<div class="flex items-center justify-between">
+<h3 class="font-serif-title font-bold text-xl text-neutral-900">Psaume 23:1</h3>
+<span class="bg-[#fee8e7] text-[#c62828] text-[11px] font-bold px-2.5 py-0.5 rounded-full">1 jour</span>
+</div>
+<!-- Masked Verse Text Preview -->
+<p class="text-[14px] text-neutral-700 font-normal mt-2 leading-relaxed flex flex-wrap items-center gap-1.5">
+<span class="">L’Éternel est</span>
+<span class="inline-block w-14 h-4 bg-[#e8e4e6] rounded-md align-middle"></span>
+<span class="">: je ne</span>
+<span class="inline-block w-16 h-4 bg-[#e8e4e6] rounded-md align-middle"></span>
+<span class="">de</span>
+<span class="">rien.</span>
+</p>
+<!-- Bottom Progress & Action -->
+<div class="flex items-center justify-between mt-4">
+<!-- Mastery Ring & Tip -->
+<div class="flex items-center space-x-3">
+<div class="relative w-9 h-9 flex items-center justify-center">
+<svg class="w-9 h-9 -rotate-90" viewBox="0 0 36 36">
+<circle cx="18" cy="18" fill="transparent" r="14" stroke="#f1e5ea" stroke-width="3"></circle>
+<circle cx="18" cy="18" fill="transparent" r="14" stroke="#d81b60" stroke-dasharray="88" stroke-dashoffset="45" stroke-linecap="round" stroke-width="3"></circle>
+</svg>
+</div>
+<div>
+<div class="text-xs font-bold text-neutral-900 leading-tight">Maîtrise 48</div>
+<div class="text-[11px] text-neutral-500 font-medium">Masquage conseillé</div>
+</div>
+</div>
+<!-- Chevron Action Circle -->
+<button aria-label="Réviser Psaume 23:1" class="w-10 h-10 rounded-full bg-[#d81b60] text-white flex items-center justify-center shadow-md shadow-pink-600/20 active:scale-95 transition-transform"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"></path></svg></button>
+</div>
+</div>
+</article>
+<!-- Card 3: Romains 8:28 (Urgence orange - Aujourd'hui) -->
+<article class="bg-white rounded-2xl p-4 shadow-sm relative overflow-hidden border border-neutral-100/80 flex flex-col justify-between" data-purpose="card-verse-item">
+<!-- Left Status Indicator Bar -->
+<div class="absolute left-0 top-0 bottom-0 w-1.5 bg-[#f59e0b] rounded-l-md"></div>
+<div class="pl-2">
+<!-- Header: Title & Delay Badge -->
+<div class="flex items-center justify-between">
+<h3 class="font-serif-title font-bold text-xl text-neutral-900">Romains 8:28</h3>
+<span class="bg-[#fef3c7] text-[#92400e] text-[11px] font-bold px-2.5 py-0.5 rounded-full">Aujourd’hui</span>
+</div>
+<!-- Masked Verse Text Preview -->
+<p class="text-[14px] text-neutral-700 font-normal mt-2 leading-relaxed flex flex-wrap items-center gap-1.5">
+<span class="">Nous savons, du</span>
+<span class="inline-block w-12 h-4 bg-[#e8e4e6] rounded-md align-middle"></span>
+<span class="">, que toutes</span>
+<span class="inline-block w-12 h-4 bg-[#e8e4e6] rounded-md align-middle"></span>
+<span class="">...</span>
+</p>
+<!-- Bottom Progress & Action -->
+<div class="flex items-center justify-between mt-4">
+<!-- Mastery Ring & Tip -->
+<div class="flex items-center space-x-3">
+<div class="relative w-9 h-9 flex items-center justify-center">
+<svg class="w-9 h-9 -rotate-90" viewBox="0 0 36 36">
+<circle cx="18" cy="18" fill="transparent" r="14" stroke="#f1e5ea" stroke-width="3"></circle>
+<circle cx="18" cy="18" fill="transparent" r="14" stroke="#d81b60" stroke-dasharray="88" stroke-dashoffset="25" stroke-linecap="round" stroke-width="3"></circle>
+</svg>
+</div>
+<div>
+<div class="text-xs font-bold text-neutral-900 leading-tight">Maîtrise 71</div>
+<div class="text-[11px] text-neutral-500 font-medium">Écriture conseillée</div>
+</div>
+</div>
+<!-- Chevron Action Circle -->
+<button aria-label="Réviser Romains 8:28" class="w-10 h-10 rounded-full bg-[#d81b60] text-white flex items-center justify-center shadow-md shadow-pink-600/20 active:scale-95 transition-transform"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"></path></svg></button>
+</div>
+</div>
+</article>
+<!-- Card 4: Philippiens 4:13 (Partiellement visible, bordure orange) -->
+<article class="bg-white rounded-2xl p-4 shadow-sm relative overflow-hidden border border-neutral-100/80 flex flex-col justify-between opacity-95" data-purpose="card-verse-item">
+<!-- Left Status Indicator Bar -->
+<div class="absolute left-0 top-0 bottom-0 w-1.5 bg-[#f59e0b] rounded-l-md"></div>
+<div class="pl-2">
+<!-- Header: Title & Delay Badge -->
+<div class="flex items-center justify-between">
+<h3 class="font-serif-title font-bold text-xl text-neutral-900">Philippiens 4:13</h3>
+<span class="bg-[#fef3c7] text-[#92400e] text-[11px] font-bold px-2.5 py-0.5 rounded-full">Aujourd’hui</span>
+</div>
+<!-- Masked Verse Text Preview -->
+<p class="text-[14px] text-neutral-700 font-normal mt-2 leading-relaxed flex flex-wrap items-center gap-1.5">
+<span class="">Je puis</span>
+<span class="inline-block w-14 h-4 bg-[#e8e4e6] rounded-md align-middle"></span>
+<span class="">par celui qui me</span>
+<span class="inline-block w-16 h-4 bg-[#e8e4e6] rounded-md align-middle"></span>
+<span class="">.</span>
+</p>
+</div>
+</article>
+</section>
+<!-- END: RevisionCardsList -->
+</main>
+<!-- BEGIN: BottomTabBar -->
+<nav class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] bg-white/95 backdrop-blur-md border-t border-neutral-200/80 px-4 py-2 flex justify-around items-center z-50 text-[11px] font-medium" data-purpose="mobile-tab-bar"><a class="flex flex-col items-center py-1 px-2 text-neutral-600 hover:text-neutral-900 group" href="#"><svg class="w-5 h-5 mb-1 shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg><span class="">Accueil</span></a><a class="flex flex-col items-center py-1 px-2 text-neutral-600 hover:text-neutral-900 group" href="#"><svg class="w-5 h-5 mb-1 shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg><span class="">Bible</span></a><a class="flex flex-col items-center py-1 px-2 text-[#d81b60] font-semibold group" href="#"><div class="relative w-10 h-6 flex items-center justify-center rounded-full bg-pink-100/60 mb-0.5"><svg class="w-5 h-5 text-[#d81b60] shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"></path><path d="M2 17l10 5 10-5"></path><path d="M2 12l10 5 10-5"></path></svg></div><span class="border-b-2 border-[#d81b60] pb-0.5 leading-none">Mémoriser</span></a><a class="flex flex-col items-center py-1 px-2 text-neutral-600 hover:text-neutral-900 group" href="#"><svg class="w-5 h-5 mb-1 shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg><span class="">Progrès</span></a><a class="flex flex-col items-center py-1 px-2 text-neutral-600 hover:text-neutral-900 group" href="#"><svg class="w-5 h-5 mb-1 shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg><span class="">Réglages</span></a></nav>
+<!-- END: BottomTabBar -->
+</div>
+
+
+
+
+</body></html>

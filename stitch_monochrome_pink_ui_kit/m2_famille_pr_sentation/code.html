@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+
+<html lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>M2 — Famille — Présentation</title>
+<!-- Tailwind CSS v3 -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts: Inter & Playfair Display / Fraunces for elegant editorial serif -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=Source+Serif+4:ital,opsz,wght@0,8..60,600;0,8..60,700;1,8..60,600&amp;display=swap" rel="stylesheet"/>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'system-ui', '-apple-system', 'sans-serif'],
+            serif: ['"Source Serif 4"', 'serif'],
+          },
+          colors: {
+            primary: {
+              magenta: '#d9177a',
+              hover: '#be1269',
+              light: '#fce7f1',
+            },
+            avatar: {
+              yellow: '#e5a329',
+              blue: '#3b82f6',
+              green: '#22a06b',
+              purple: '#8b5cf6',
+            }
+          },
+          boxShadow: {
+            card: '0 4px 20px -2px rgba(220, 100, 160, 0.08)',
+            cta: '0 12px 28px -6px rgba(217, 23, 122, 0.42)',
+          }
+        }
+      }
+    }
+  </script>
+<style data-purpose="base-styling">
+    body {
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+  </style>
+</head>
+<body class="bg-[#fcfbfc] text-slate-800 flex justify-center min-h-screen">
+<!-- Mobile screen container (iOS iPhone frame 390px) -->
+<div class="w-full max-w-[390px] min-h-screen flex flex-col justify-between px-6 pt-3 pb-8 select-none" data-purpose="screen-container">
+<!-- BEGIN: TopBarAndContent -->
+<div class="w-full flex flex-col items-center">
+<!-- BEGIN: IOSStatusBar -->
+<header class="w-full flex justify-between items-center text-[15px] font-semibold text-slate-900 tracking-tight pt-1 pb-3" data-purpose="status-bar">
+<!-- iOS Time -->
+<span class="pl-2">9:41</span>
+<!-- iOS Status Icons -->
+<div class="flex items-center space-x-2 pr-1">
+<span class="text-xs font-bold tracking-tight">5G</span>
+<div class="flex items-end space-x-[2px] h-3.5">
+<span class="w-[3.5px] h-1.5 bg-slate-900 rounded-xs"></span>
+<span class="w-[3.5px] h-2.5 bg-slate-900 rounded-xs"></span>
+<span class="w-[3.5px] h-3.5 bg-slate-900 rounded-xs"></span>
+</div>
+</div>
+</header>
+<!-- END: IOSStatusBar -->
+<!-- BEGIN: AvatarConstellation -->
+<!-- Visual composition of floating initials circles with centered large magenta L -->
+<section aria-label="Famille avatars" class="relative w-full h-[180px] mt-2 mb-2 flex items-center justify-center" data-purpose="avatar-constellation">
+<!-- Avatar D (Yellow) -->
+<div class="absolute top-2 left-6 w-14 h-14 rounded-full bg-[#d99426] text-white flex items-center justify-center text-2xl font-bold border-2 border-white shadow-sm">
+          D
+        </div>
+<!-- Avatar M (Blue) -->
+<div class="absolute bottom-3 left-14 w-16 h-16 rounded-full bg-[#357af6] text-white flex items-center justify-center text-2xl font-bold border-2 border-white shadow-sm">
+          M
+        </div>
+<!-- Central Avatar L (Primary Magenta) -->
+<div class="z-10 w-24 h-24 rounded-full bg-[#d81679] text-white flex items-center justify-center text-4xl font-bold border-[3px] border-white shadow-md">
+          L
+        </div>
+<!-- Avatar A (Green) -->
+<div class="absolute bottom-3 right-14 w-16 h-16 rounded-full bg-[#209e66] text-white flex items-center justify-center text-2xl font-bold border-2 border-white shadow-sm">
+          A
+        </div>
+<!-- Avatar N (Purple) -->
+<div class="absolute top-2 right-6 w-13 h-13 w-[52px] h-[52px] rounded-full bg-[#8256d0] text-white flex items-center justify-center text-xl font-bold border-2 border-white shadow-sm">
+          N
+        </div>
+</section>
+<!-- END: AvatarConstellation -->
+<!-- BEGIN: HeadingSection -->
+<section class="text-center mt-3 mb-6 px-2" data-purpose="intro-text">
+<h1 class="font-serif text-[32px] leading-tight font-bold text-slate-900 tracking-tight mb-2">
+          Mémorisez ensemble
+        </h1>
+<p class="text-[15px] text-slate-600 font-normal leading-snug">
+          Chacun garde son rythme, la famille garde le cap.
+        </p>
+</section>
+<!-- END: HeadingSection -->
+<!-- BEGIN: FeatureCards -->
+<section class="w-full space-y-3.5" data-purpose="features-list">
+<!-- Card 1: Chacun son rythme -->
+<article class="w-full bg-white rounded-2xl p-4 flex items-center shadow-card border border-pink-50/60" data-purpose="feature-card">
+<!-- Icon container -->
+<div class="w-12 h-12 rounded-xl bg-[#fde8f2] text-[#d81679] flex items-center justify-center flex-shrink-0 mr-4">
+<!-- Checkmark SVG -->
+<svg class="w-5 h-5 stroke-[2.5]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M4.5 12.75l6 6 9-13.5" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+<!-- Text details -->
+<div>
+<h2 class="text-base font-bold text-slate-900 leading-tight">Chacun son rythme</h2>
+<p class="text-xs text-slate-500 mt-0.5 font-normal">Une courbe de mémoire par personne</p>
+</div>
+</article>
+<!-- Card 2: Classement et défis -->
+<article class="w-full bg-white rounded-2xl p-4 flex items-center shadow-card border border-pink-50/60" data-purpose="feature-card">
+<!-- Icon container -->
+<div class="w-12 h-12 rounded-xl bg-[#fde8f2] text-[#d81679] flex items-center justify-center flex-shrink-0 mr-4">
+<!-- Lightning SVG -->
+<svg class="w-5 h-5 stroke-[2.2]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+<!-- Text details -->
+<div>
+<h2 class="text-base font-bold text-slate-900 leading-tight">Classement et défis</h2>
+<p class="text-xs text-slate-500 mt-0.5 font-normal">Motivez-vous à chaque révision</p>
+</div>
+</article>
+<!-- Card 3: Un seul appareil -->
+<article class="w-full bg-white rounded-2xl p-4 flex items-center shadow-card border border-pink-50/60" data-purpose="feature-card">
+<!-- Icon container -->
+<div class="w-12 h-12 rounded-xl bg-[#fde8f2] text-[#d81679] flex items-center justify-center flex-shrink-0 mr-4">
+<!-- Lock SVG -->
+<svg class="w-5 h-5 stroke-[2.2]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+<!-- Text details -->
+<div>
+<h2 class="text-base font-bold text-slate-900 leading-tight">Un seul appareil</h2>
+<p class="text-xs text-slate-500 mt-0.5 font-normal">Hors ligne, sans compte</p>
+</div>
+</article>
+</section>
+<!-- END: FeatureCards -->
+</div>
+<!-- END: TopBarAndContent -->
+<!-- BEGIN: BottomActions -->
+<footer class="w-full flex flex-col items-center space-y-4 pt-6" data-purpose="screen-footer">
+<!-- Main Action CTA Button -->
+<button class="w-full py-4 rounded-full bg-[#d81679] hover:bg-[#be1269] text-white font-semibold text-base transition-colors duration-150 shadow-cta tracking-wide text-center active:scale-[0.98]" data-purpose="primary-action-button" type="button">
+        Créer ma famille
+      </button>
+<!-- Secondary Plain Link -->
+<button class="text-[15px] font-medium text-slate-900 hover:text-slate-600 transition-colors py-1" data-purpose="secondary-action-link" type="button">
+        Plus tard
+      </button>
+</footer>
+<!-- END: BottomActions -->
+</div>
+</body></html>

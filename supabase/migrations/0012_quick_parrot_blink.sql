@@ -1,0 +1,1 @@
+create index if not exists idx_vr_b on public.verse_relations(verse_b);

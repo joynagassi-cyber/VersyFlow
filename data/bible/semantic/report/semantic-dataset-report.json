@@ -1,0 +1,33 @@
+{
+  "result": "PASS",
+  "ranAt": "2026-09-13T22:00:43.494Z",
+  "datasets": 35,
+  "verseUniverse": 32430,
+  "bookIds": 66,
+  "concepts": 56,
+  "conceptRelations": 59,
+  "verseConcepts": 56,
+  "verseRelations": 12,
+  "communities": 0,
+  "checks": {
+    "verse_ids_resolve": "pass",
+    "concept_ids_resolve": "pass",
+    "no_orphan_verse_concepts": "pass",
+    "no_self_relations": "pass",
+    "no_child_of_cycles": "pass",
+    "no_empty_communities": "pass",
+    "confidence_valid": "pass",
+    "unique_canonical_concepts": "pass",
+    "orphan_fk_verse_concepts": "pass",
+    "orphan_fk_concept_relations": "pass",
+    "orphan_fk_communities": "pass",
+    "confidence_in_range": "pass",
+    "no_self_loops": "pass",
+    "unique_verse_concept_role": "pass",
+    "unique_concept_relation_pair": "pass",
+    "unique_verse_relation": "pass",
+    "community_provenance": "pass",
+    "orphan_concept_ratio": "pass"
+  },
+  "details": {}
+}

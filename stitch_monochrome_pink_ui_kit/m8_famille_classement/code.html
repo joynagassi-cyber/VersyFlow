@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+
+<html lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>M8 — Famille — Classement</title>
+<!-- Tailwind CSS CDN with plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'page-bg': '#FAF8F7',
+            'brand-pink': '#BE185D',
+            'podium-pink': '#FCE7F3',
+            'badge-pink': '#DF1B78',
+            'navy-dark': '#1F2937',
+          },
+          fontFamily: {
+            serif: ['Georgia', 'Cambria', 'serif'],
+            sans: ['-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+<style data-purpose="custom-typography">
+    .font-serif-title {
+      font-family: 'Georgia', 'Playfair Display', serif;
+    }
+    .text-primary-pink {
+      color: #b91c69;
+    }
+    .bg-podium {
+      background-color: #FCE7F3;
+    }
+  </style>
+<style data-purpose="mobile-constraints">
+    body {
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+    /* Hide scrollbars */
+    ::-webkit-scrollbar {
+      display: none;
+    }
+  </style>
+</head>
+<body class="bg-stone-100 flex justify-center min-h-screen text-stone-800 antialiased font-sans">
+<!-- Mobile Screen Container -->
+<div class="w-full max-w-[420px] bg-[#FAF8F7] min-h-screen flex flex-col justify-between shadow-xl relative pb-20 overflow-x-hidden">
+<!-- Scrollable Main Content -->
+<div class="flex-1 flex flex-col px-4 pt-2">
+<!-- BEGIN: StatusBar -->
+<div class="flex justify-between items-center text-xs font-semibold px-3 pt-1 pb-2 tracking-tight text-neutral-900" data-purpose="ios-status-bar">
+<span>9:41</span>
+<div class="flex items-center space-x-1.5">
+<span class="text-[11px] font-bold">5G</span>
+<div class="flex items-end space-x-0.5 h-3">
+<span class="w-1 h-1.5 bg-black rounded-xs"></span>
+<span class="w-1 h-2.5 bg-black rounded-xs"></span>
+<span class="w-1 h-3 bg-black rounded-xs"></span>
+</div>
+</div>
+</div>
+<!-- END: StatusBar -->
+<!-- BEGIN: NavigationHeader -->
+<header class="flex items-center justify-between py-2 mb-2" data-purpose="navigation-header">
+<!-- Back button -->
+<button aria-label="Retour" class="w-10 h-10 rounded-full bg-white shadow-sm border border-stone-100 flex items-center justify-center text-stone-700 active:bg-stone-50" type="button">
+<svg class="w-5 h-5 stroke-[2.5]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M15 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+<!-- Title & Subtitle -->
+<div class="text-center">
+<h1 class="text-xl font-bold font-serif-title tracking-tight text-stone-900">Classement</h1>
+<p class="text-xs text-stone-500 font-normal mt-0.5">Famille Étoile</p>
+</div>
+<!-- Options menu button -->
+<button aria-label="Options" class="w-10 h-10 rounded-full bg-white shadow-sm border border-stone-100 flex items-center justify-center text-stone-700 active:bg-stone-50" type="button">
+<svg class="w-5 h-5" fill="currentColor" viewbox="0 0 24 24">
+<path d="M6 12a2 2 0 11-4 0 2 2 0 014 0zm8 0a2 2 0 11-4 0 2 2 0 014 0zm8 0a2 2 0 11-4 0 2 2 0 014 0z"></path>
+</svg>
+</button>
+</header>
+<!-- END: NavigationHeader -->
+<!-- BEGIN: PeriodSegmentedControl -->
+<!-- Time period filter (Semaine, Mois, Depuis le début) -->
+<section class="bg-[#F0ECE9] p-1 rounded-2xl flex items-center justify-between mb-3.5 text-xs font-medium text-stone-600" data-purpose="time-filter">
+<button class="flex-1 py-2 bg-white rounded-xl shadow-xs font-semibold text-stone-900 text-center transition-all" type="button">
+          Semaine
+        </button>
+<button class="flex-1 py-2 text-stone-600 text-center hover:text-stone-900 transition-all" type="button">
+          Mois
+        </button>
+<button class="flex-1 py-2 text-stone-600 text-center hover:text-stone-900 transition-all" type="button">
+          Depuis le début
+        </button>
+</section>
+<!-- END: PeriodSegmentedControl -->
+<!-- BEGIN: CategoryFilterPills -->
+<!-- Sub-category filter chips -->
+<section class="flex items-center space-x-2 mb-3.5 text-xs font-medium" data-purpose="category-pills">
+<button class="px-4 py-1.5 bg-[#1F1F1F] text-white rounded-full font-semibold" type="button">
+          Points
+        </button>
+<button class="px-3.5 py-1.5 bg-[#ECE7E4] text-stone-700 rounded-full font-medium active:bg-stone-200" type="button">
+          Série
+        </button>
+<button class="px-3.5 py-1.5 bg-[#ECE7E4] text-stone-700 rounded-full font-medium active:bg-stone-200" type="button">
+          Maîtrisés
+        </button>
+</section>
+<!-- END: CategoryFilterPills -->
+<!-- BEGIN: ResetBanner -->
+<!-- Countdown banner to reset -->
+<div class="bg-white rounded-2xl px-4 py-3 shadow-xs border border-stone-100/80 flex items-center justify-between text-xs mb-3.5" data-purpose="reset-countdown">
+<span class="text-stone-500 font-medium">Remise à zéro dans</span>
+<span class="font-bold text-[#b91c69] text-sm tracking-tight">3 jours</span>
+</div>
+<!-- END: ResetBanner -->
+<!-- BEGIN: PodiumSection -->
+<!-- Top 3 Podium Card -->
+<section class="bg-white rounded-3xl p-4 pt-6 shadow-sm border border-stone-100/60 mb-3" data-purpose="top-three-podium">
+<div class="flex items-end justify-center gap-2 pt-2">
+<!-- 2nd Place: Marc -->
+<div class="flex-1 flex flex-col items-center">
+<!-- Avatar -->
+<div class="w-13 h-13 w-12 h-12 rounded-full bg-[#3B82F6] text-white flex items-center justify-center font-bold text-lg shadow-xs mb-2">
+              M
+            </div>
+<!-- Name & Points -->
+<div class="text-center mb-2">
+<span class="block font-bold text-stone-900 text-xs">Marc</span>
+<span class="block text-[11px] text-stone-400">268 pts</span>
+</div>
+<!-- Podium Column -->
+<div class="w-full h-24 bg-[#FCE7F3] rounded-2xl flex items-center justify-center">
+<span class="font-serif-title font-bold text-xl text-[#b91c69]">2</span>
+</div>
+</div>
+<!-- 1st Place: Léa (Center & Elevated) -->
+<div class="flex-1 flex flex-col items-center -mt-6">
+<!-- Avatar -->
+<div class="w-16 h-16 rounded-full bg-[#E11D74] text-white flex items-center justify-center font-bold text-2xl shadow-xs mb-2">
+              L
+            </div>
+<!-- Name & Points -->
+<div class="text-center mb-2">
+<span class="block font-bold text-stone-900 text-xs">Léa</span>
+<span class="block text-[11px] text-stone-400">312 pts</span>
+</div>
+<!-- Podium Column -->
+<div class="w-full h-34 h-36 bg-[#FCE7F3] rounded-2xl flex items-start justify-center pt-4">
+<span class="font-serif-title font-bold text-2xl text-[#b91c69]">1</span>
+</div>
+</div>
+<!-- 3rd Place: Ama -->
+<div class="flex-1 flex flex-col items-center">
+<!-- Avatar -->
+<div class="w-12 h-12 rounded-full bg-[#10B981] text-white flex items-center justify-center font-bold text-lg shadow-xs mb-2">
+              A
+            </div>
+<!-- Name & Points -->
+<div class="text-center mb-2">
+<span class="block font-bold text-stone-900 text-xs">Ama</span>
+<span class="block text-[11px] text-stone-400">205 pts</span>
+</div>
+<!-- Podium Column -->
+<div class="w-full h-18 h-20 bg-[#FCE7F3] rounded-2xl flex items-center justify-center">
+<span class="font-serif-title font-bold text-xl text-[#b91c69]">3</span>
+</div>
+</div>
+</div>
+</section>
+<!-- END: PodiumSection -->
+<!-- BEGIN: RankedListSection -->
+<!-- Subsequent rankings (4th, 5th, etc.) -->
+<section class="bg-white rounded-3xl px-4 py-2 shadow-sm border border-stone-100/60 mb-3" data-purpose="subsequent-ranks-list">
+<!-- Rank 4: David -->
+<div class="flex items-center justify-between py-2.5 border-b border-stone-100">
+<div class="flex items-center space-x-3.5">
+<span class="w-4 font-bold text-[#b91c69] text-base text-center">4</span>
+<div class="w-9 h-9 rounded-full bg-[#EAB308] text-white flex items-center justify-center font-bold text-sm shadow-2xs">
+              D
+            </div>
+<span class="font-bold text-stone-900 text-xs">David</span>
+</div>
+<span class="font-semibold text-stone-600 text-xs tracking-tight">140 pts</span>
+</div>
+<!-- Rank 5: Noé -->
+<div class="flex items-center justify-between py-2.5">
+<div class="flex items-center space-x-3.5">
+<span class="w-4 font-bold text-[#b91c69] text-base text-center">5</span>
+<div class="w-9 h-9 rounded-full bg-[#8B5CF6] text-white flex items-center justify-center font-bold text-sm shadow-2xs">
+              N
+            </div>
+<span class="font-bold text-stone-900 text-xs">Noé</span>
+</div>
+<span class="font-semibold text-stone-600 text-xs tracking-tight">96 pts</span>
+</div>
+</section>
+<!-- END: RankedListSection -->
+<!-- BEGIN: Footnote -->
+<p class="text-center text-[11px] text-stone-500 font-normal pb-4" data-purpose="rule-footnote">
+        Égalité départagée par la régularité · Léa est 1re
+      </p>
+<!-- END: Footnote -->
+</div>
+<!-- BEGIN: BottomNavigation -->
+<nav class="fixed bottom-0 max-w-[420px] w-full bg-white/95 backdrop-blur-md border-t border-stone-200 py-2 px-3 z-30" data-purpose="bottom-tab-bar">
+<div class="flex justify-around items-center">
+<!-- Tab 1: Accueil (Active) -->
+<a class="flex flex-col items-center text-[#b91c69] space-y-1" href="#accueil">
+<svg class="w-5 h-5 stroke-[2]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[10px] font-semibold">Accueil</span>
+</a>
+<!-- Tab 2: Bible -->
+<a class="flex flex-col items-center text-stone-600 hover:text-stone-900 space-y-1" href="#bible">
+<svg class="w-5 h-5 stroke-[1.8]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[10px] font-medium">Bible</span>
+</a>
+<!-- Tab 3: Mémoriser -->
+<a class="flex flex-col items-center text-stone-600 hover:text-stone-900 space-y-1" href="#memoriser">
+<svg class="w-5 h-5 stroke-[1.8]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[10px] font-medium">Mémoriser</span>
+</a>
+<!-- Tab 4: Progrès -->
+<a class="flex flex-col items-center text-stone-600 hover:text-stone-900 space-y-1" href="#progres">
+<svg class="w-5 h-5 stroke-[1.8]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[10px] font-medium">Progrès</span>
+</a>
+<!-- Tab 5: Réglages -->
+<a class="flex flex-col items-center text-stone-600 hover:text-stone-900 space-y-1" href="#reglages">
+<svg class="w-5 h-5 stroke-[1.8]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[10px] font-medium">Réglages</span>
+</a>
+</div>
+</nav>
+<!-- END: BottomNavigation -->
+</div>
+</body></html>

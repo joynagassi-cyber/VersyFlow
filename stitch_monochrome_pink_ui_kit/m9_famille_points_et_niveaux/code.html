@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+
+<html lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>Points et niveaux</title>
+<!-- Tailwind CSS v3 with plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brandPink: '#D1127A',
+            brandPinkLight: '#FCE7F3',
+            brandDark: '#1E192B',
+            brandGrayBg: '#FDF7F9',
+            brandSubtle: '#6B7280',
+          },
+          fontFamily: {
+            serif: ['Georgia', 'Cambria', 'serif'],
+            sans: ['-apple-system', 'BlinkMacSystemFont', '"SF Pro Display"', '"SF Pro Text"', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'],
+          },
+          boxShadow: {
+            'card': '0 4px 20px -2px rgba(220, 180, 200, 0.25), 0 2px 6px -1px rgba(0, 0, 0, 0.04)',
+          }
+        }
+      }
+    }
+  </script>
+<!-- BEGIN: Custom Styles for Layout & Visual Details -->
+<style data-purpose="custom-styling">
+    body {
+      -webkit-font-smoothing: antialiased;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .circular-progress {
+      background: conic-gradient(#D1127A 0% 70%, #F5D6E5 70% 100%);
+    }
+  </style>
+<!-- END: Custom Styles -->
+</head>
+<body class="bg-[#FBF8FA] text-[#1E192B] font-sans antialiased min-h-screen flex justify-center selection:bg-pink-100">
+<!-- BEGIN: Mobile Container Device Wrapper -->
+<div class="w-full max-w-[430px] min-h-screen flex flex-col justify-between pb-24 relative overflow-x-hidden" data-purpose="mobile-viewport">
+<!-- BEGIN: Top Section -->
+<div>
+<!-- BEGIN: iOS Status Bar -->
+<div class="w-full pt-3 px-7 pb-2 flex justify-between items-center text-[15px] font-semibold tracking-tight" data-purpose="status-bar">
+<span>9:41</span>
+<div class="flex items-center space-x-1.5 text-xs font-bold">
+<span>5G</span>
+<!-- Signal / Battery Indicator Simulation -->
+<div class="flex items-end space-x-0.5 h-3 ml-0.5">
+<span class="w-[3px] h-1.5 bg-black rounded-xs"></span>
+<span class="w-[3px] h-2 bg-black rounded-xs"></span>
+<span class="w-[3px] h-3 bg-black rounded-xs"></span>
+</div>
+</div>
+</div>
+<!-- END: iOS Status Bar -->
+<!-- BEGIN: Navigation Header -->
+<header class="px-5 pt-2 pb-4 flex items-center justify-between" data-purpose="main-header">
+<!-- Back Button -->
+<button aria-label="Retour" class="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center text-gray-700 active:bg-gray-100 transition-colors" type="button">
+<svg class="w-5 h-5 -ml-0.5" fill="none" stroke="currentColor" stroke-width="2.5" viewbox="0 0 24 24">
+<path d="M15 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+<!-- Screen Title & Subtitle -->
+<div class="text-center">
+<h1 class="text-xl font-serif font-bold text-gray-900 tracking-tight">Points et niveaux</h1>
+<p class="text-[13px] text-gray-600 mt-0.5 font-normal">Comment ça marche</p>
+</div>
+<!-- Action / Options Button -->
+<button aria-label="Plus d'options" class="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center text-gray-700 active:bg-gray-100 transition-colors" type="button">
+<svg class="w-5 h-5" fill="currentColor" viewbox="0 0 24 24">
+<circle cx="5" cy="12" r="2"></circle>
+<circle cx="12" cy="12" r="2"></circle>
+<circle cx="19" cy="12" r="2"></circle>
+</svg>
+</button>
+</header>
+<!-- END: Navigation Header -->
+<!-- BEGIN: Main Content Container -->
+<main class="px-4 space-y-4 pt-1" data-purpose="content-area">
+<!-- BEGIN: Level Progress Card -->
+<section class="bg-white rounded-[24px] p-5 shadow-card flex items-center gap-5" data-purpose="user-level-card">
+<!-- Circular Ring Badge -->
+<div class="relative w-24 h-24 flex-shrink-0 flex items-center justify-center">
+<div class="w-full h-full rounded-full circular-progress flex items-center justify-center p-[9px]">
+<div class="w-full h-full bg-white rounded-full flex items-center justify-center">
+<span class="text-2xl font-serif font-bold text-gray-900">5</span>
+</div>
+</div>
+</div>
+<!-- Level Information & Next Threshold -->
+<div class="flex flex-col justify-center">
+<span class="text-[12px] font-extrabold tracking-wider text-[#D1127A] uppercase">NIVEAU 5</span>
+<div class="text-[26px] font-serif font-bold text-gray-900 leading-tight mt-0.5">
+              1 240 <span class="font-sans font-medium text-lg">points</span>
+</div>
+<p class="text-[13px] text-gray-600 mt-0.5 font-normal">Prochain palier : 1 400</p>
+</div>
+</section>
+<!-- END: Level Progress Card -->
+<!-- BEGIN: Rules / How to Earn Points Card -->
+<section class="bg-white rounded-[24px] p-5 pb-2 shadow-card" data-purpose="earn-points-rules">
+<h2 class="text-[11px] font-extrabold tracking-wider text-[#A0165B] uppercase mb-1">
+            COMMENT GAGNER DES POINTS
+          </h2>
+<div class="divide-y divide-gray-100">
+<!-- Row 1 -->
+<div class="py-3 flex justify-between items-center text-[15px]">
+<span class="text-gray-800 font-normal">Étape du parcours terminée</span>
+<span class="text-[#D1127A] font-bold tracking-tight text-[16px]">+10</span>
+</div>
+<!-- Row 2 -->
+<div class="py-3 flex justify-between items-center text-[15px]">
+<span class="text-gray-800 font-normal">Révision FSRS terminée</span>
+<span class="text-[#D1127A] font-bold tracking-tight text-[16px]">+10</span>
+</div>
+<!-- Row 3 -->
+<div class="py-3 flex justify-between items-center text-[15px]">
+<span class="text-gray-800 font-normal">Passage terminé</span>
+<span class="text-[#D1127A] font-bold tracking-tight text-[16px]">+30</span>
+</div>
+<!-- Row 4 -->
+<div class="py-3 flex justify-between items-center text-[15px]">
+<span class="text-gray-800 font-normal">Jour de série</span>
+<span class="text-[#D1127A] font-bold tracking-tight text-[16px]">+5 ×jours</span>
+</div>
+<!-- Row 5 -->
+<div class="py-3 flex justify-between items-center text-[15px]">
+<span class="text-gray-800 font-normal">Défi réussi</span>
+<span class="text-[#D1127A] font-bold tracking-tight text-[16px]">+50</span>
+</div>
+</div>
+</section>
+<!-- END: Rules / How to Earn Points Card -->
+<!-- BEGIN: Daily Cap Card -->
+<section class="bg-white rounded-[24px] p-5 shadow-card" data-purpose="daily-cap-status">
+<div class="flex justify-between items-baseline mb-2.5">
+<h2 class="text-lg font-serif font-bold text-gray-900 tracking-tight">Aujourd’hui</h2>
+<span class="text-sm text-gray-600 font-medium">70 / 100 pts</span>
+</div>
+<!-- Horizontal Progress Bar -->
+<div class="w-full bg-[#E5E0E4] h-2 rounded-full overflow-hidden mb-2">
+<div class="bg-[#D1127A] h-full rounded-full" style="width: 70%;"></div>
+</div>
+<p class="text-[12px] text-gray-600 leading-normal">
+            Plafond quotidien pour garder le jeu équitable
+          </p>
+</section>
+<!-- END: Daily Cap Card -->
+<!-- BEGIN: Recent History Card -->
+<section class="bg-white rounded-[24px] p-5 pb-2 shadow-card" data-purpose="recent-history">
+<h2 class="text-[11px] font-extrabold tracking-wider text-[#A0165B] uppercase mb-1">
+            HISTORIQUE RÉCENT
+          </h2>
+<div class="divide-y divide-gray-100">
+<!-- Item 1 -->
+<div class="py-3 flex justify-between items-center text-[15px]">
+<span class="text-gray-800 font-normal">Révision · Psaume 23:1</span>
+<span class="text-[#D1127A] font-bold tracking-tight text-[16px]">+10</span>
+</div>
+<!-- Item 2 -->
+<div class="py-3 flex justify-between items-center text-[15px]">
+<span class="text-gray-800 font-normal">Étape Flashcard · Jean 3:16</span>
+<span class="text-[#D1127A] font-bold tracking-tight text-[16px]">+10</span>
+</div>
+<!-- Item 3 -->
+<div class="py-3 flex justify-between items-center text-[15px]">
+<span class="text-gray-800 font-normal">Série du jour</span>
+<span class="text-[#D1127A] font-bold tracking-tight text-[16px]">+25</span>
+</div>
+</div>
+</section>
+<!-- END: Recent History Card -->
+</main>
+<!-- END: Main Content Container -->
+</div>
+<!-- END: Top Section -->
+<!-- BEGIN: Bottom Tab Navigation Bar -->
+<nav class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] bg-white/95 backdrop-blur-md border-t border-gray-200/80 px-2 pt-2.5 pb-6 flex justify-around items-center z-50 shadow-lg" data-purpose="bottom-navigation">
+<!-- Tab 1: Accueil (Active) -->
+<a class="flex flex-col items-center flex-1 text-[#D1127A]" data-purpose="nav-item" href="#">
+<svg class="w-6 h-6 stroke-[1.8]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[10px] mt-1 font-semibold tracking-tight">Accueil</span>
+</a>
+<!-- Tab 2: Bible -->
+<a class="flex flex-col items-center flex-1 text-gray-700 hover:text-gray-900" data-purpose="nav-item" href="#">
+<svg class="w-6 h-6 stroke-[1.8]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[10px] mt-1 font-medium tracking-tight">Bible</span>
+</a>
+<!-- Tab 3: Mémoriser -->
+<a class="flex flex-col items-center flex-1 text-gray-700 hover:text-gray-900" data-purpose="nav-item" href="#">
+<svg class="w-6 h-6 stroke-[1.8]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[10px] mt-1 font-medium tracking-tight">Mémoriser</span>
+</a>
+<!-- Tab 4: Progrès -->
+<a class="flex flex-col items-center flex-1 text-gray-700 hover:text-gray-900" data-purpose="nav-item" href="#">
+<svg class="w-6 h-6 stroke-[1.8]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[10px] mt-1 font-medium tracking-tight">Progrès</span>
+</a>
+<!-- Tab 5: Réglages -->
+<a class="flex flex-col items-center flex-1 text-gray-700 hover:text-gray-900" data-purpose="nav-item" href="#">
+<svg class="w-6 h-6 stroke-[1.8]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[10px] mt-1 font-medium tracking-tight">Réglages</span>
+</a>
+</nav>
+<!-- END: Bottom Tab Navigation Bar -->
+</div>
+<!-- END: Mobile Container Device Wrapper -->
+</body></html>

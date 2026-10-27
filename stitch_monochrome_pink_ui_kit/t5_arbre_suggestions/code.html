@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+
+<html lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>T5 — Arbre — Suggestions</title>
+<!-- Tailwind CSS v3 CDN -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts for Serif Title & Clean Sans Body -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&amp;family=Lora:ital,wght@0,600;0,700;1,400&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<script data-purpose="tailwind-config">
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            appPink: '#c8196e',
+            appPinkHover: '#b31360',
+            badgeBg: '#fce4ec',
+            badgeText: '#880e4f',
+            bgCanvas: '#faf9f8'
+          },
+          fontFamily: {
+            serif: ['Lora', 'serif'],
+            sans: ['Plus Jakarta Sans', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+          },
+          boxShadow: {
+            card: '0 8px 24px -4px rgba(0, 0, 0, 0.05), 0 2px 6px -2px rgba(0, 0, 0, 0.03)',
+            btnPink: '0 8px 18px -4px rgba(200, 25, 110, 0.4)'
+          }
+        }
+      }
+    }
+  </script>
+<style data-purpose="custom-layout">
+    body {
+      background-color: #f7f7f7;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    /* Hide scrollbar for category pills scroll */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
+</head>
+<body class="flex justify-center items-center min-h-screen text-stone-800">
+<!-- BEGIN: MobileContainer -->
+<!-- Container with mobile screen aspect ratio matching iOS viewport -->
+<div class="relative w-full max-w-[390px] h-[844px] bg-[#fbf9f9] overflow-hidden flex flex-col shadow-2xl rounded-[44px] border-[8px] border-black">
+<!-- BEGIN: StatusBar -->
+<!-- iOS Status Bar with Time and Network/Battery Indicators -->
+<header class="w-full pt-3 px-7 flex justify-between items-center z-20 shrink-0" data-purpose="status-bar">
+<span class="text-[15px] font-bold text-stone-900 tracking-tight">9:41</span>
+<div class="flex items-center space-x-1.5 text-stone-900 text-xs font-semibold">
+<span class="text-[12px] font-bold tracking-tight">5G</span>
+<!-- Signal / Cellular bars -->
+<div class="flex items-end space-x-0.5 h-3 ml-0.5">
+<span class="w-[3px] h-1.5 bg-stone-900 rounded-2xs"></span>
+<span class="w-[3px] h-2 bg-stone-900 rounded-2xs"></span>
+<span class="w-[3px] h-2.5 bg-stone-900 rounded-2xs"></span>
+<span class="w-[3px] h-3 bg-stone-900 rounded-2xs"></span>
+</div>
+</div>
+</header>
+<!-- END: StatusBar -->
+<!-- Scrollable Content Area -->
+<main class="flex-1 overflow-y-auto no-scrollbar pb-24" data-purpose="main-content">
+<!-- BEGIN: NavigationHeader -->
+<!-- Back button, Screen Title, Subtitle, and Context Menu -->
+<section class="px-5 pt-3 pb-2 flex items-center justify-between" data-purpose="page-header">
+<!-- Back button circle -->
+<button aria-label="Retour" class="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center border border-stone-100 hover:bg-stone-50 active:scale-95 transition-transform" type="button">
+<svg class="w-5 h-5 text-stone-800" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M15 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path>
+</svg>
+</button>
+<!-- Centered Titles -->
+<div class="text-center px-2">
+<h1 class="font-serif text-[21px] font-bold text-stone-900 leading-snug tracking-tight">Suggestions</h1>
+<p class="text-[12.5px] text-stone-500 font-medium tracking-tight mt-0.5">Prochaines branches à explorer</p>
+</div>
+<!-- More options circle button -->
+<button aria-label="Plus d'options" class="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center border border-stone-100 hover:bg-stone-50 active:scale-95 transition-transform" type="button">
+<svg class="w-5 h-5 text-stone-800" fill="currentColor" viewbox="0 0 24 24">
+<circle cx="5" cy="12" r="2"></circle>
+<circle cx="12" cy="12" r="2"></circle>
+<circle cx="19" cy="12" r="2"></circle>
+</svg>
+</button>
+</section>
+<!-- END: NavigationHeader -->
+<!-- BEGIN: FilterPills -->
+<!-- Horizontal filter categories: Tous, Amour, Prière, Combat -->
+<section class="px-5 mt-3 mb-4" data-purpose="filter-chips">
+<div class="flex items-center space-x-2 overflow-x-auto no-scrollbar py-1">
+<!-- Active Pill -->
+<button class="px-4 py-1.5 rounded-full bg-[#1e2329] text-white text-[13px] font-semibold tracking-wide shrink-0 shadow-sm">
+            Tous
+          </button>
+<!-- Inactive Pills -->
+<button class="px-4 py-1.5 rounded-full bg-[#ecebe8] text-stone-800 text-[13px] font-medium tracking-wide shrink-0 hover:bg-stone-200 transition-colors">
+            Amour
+          </button>
+<button class="px-4 py-1.5 rounded-full bg-[#ecebe8] text-stone-800 text-[13px] font-medium tracking-wide shrink-0 hover:bg-stone-200 transition-colors">
+            Prière
+          </button>
+<button class="px-4 py-1.5 rounded-full bg-[#ecebe8] text-stone-800 text-[13px] font-medium tracking-wide shrink-0 hover:bg-stone-200 transition-colors">
+            Combat
+          </button>
+</div>
+</section>
+<!-- END: FilterPills -->
+<!-- BEGIN: SuggestionsList -->
+<!-- List of cards containing recommended study topics -->
+<section class="px-4 space-y-4" data-purpose="suggestions-card-list">
+<!-- Suggestion Item 1: Bonté -->
+<article class="bg-white rounded-[24px] p-5 shadow-card border border-stone-100 flex flex-col justify-between" data-purpose="suggestion-card">
+<div>
+<!-- Header with Title & Verses Tag -->
+<div class="flex items-center justify-between">
+<h2 class="font-serif text-[22px] font-bold text-stone-900 tracking-tight">Bonté</h2>
+<span class="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-bold bg-[#fce4ec] text-[#a0145c] tracking-tight">
+                8 versets
+              </span>
+</div>
+<!-- Subtitle/Meta description -->
+<p class="text-[13px] text-stone-500 mt-1.5 font-normal">
+              Lié à Amour et Patience dans la base
+            </p>
+</div>
+<!-- Action Buttons -->
+<div class="grid grid-cols-2 gap-3 mt-5">
+<button class="w-full py-2.5 px-3 rounded-full border border-stone-200 text-stone-900 text-[13.5px] font-semibold bg-white hover:bg-stone-50 active:scale-[0.98] transition-all text-center">
+              Voir les versets
+            </button>
+<button class="w-full py-2.5 px-3 rounded-full bg-[#c8196e] text-white text-[13.5px] font-semibold shadow-btnPink hover:bg-[#b31360] active:scale-[0.98] transition-all text-center">
+              Explorer
+            </button>
+</div>
+</article>
+<!-- Suggestion Item 2: Miséricorde -->
+<article class="bg-white rounded-[24px] p-5 shadow-card border border-stone-100 flex flex-col justify-between" data-purpose="suggestion-card">
+<div>
+<!-- Header with Title & Verses Tag -->
+<div class="flex items-center justify-between">
+<h2 class="font-serif text-[22px] font-bold text-stone-900 tracking-tight">Miséricorde</h2>
+<span class="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-bold bg-[#fce4ec] text-[#a0145c] tracking-tight">
+                11 versets
+              </span>
+</div>
+<!-- Subtitle/Meta description -->
+<p class="text-[13px] text-stone-500 mt-1.5 font-normal">
+              Lié à Pardon et Grâce
+            </p>
+</div>
+<!-- Action Buttons -->
+<div class="grid grid-cols-2 gap-3 mt-5">
+<button class="w-full py-2.5 px-3 rounded-full border border-stone-200 text-stone-900 text-[13.5px] font-semibold bg-white hover:bg-stone-50 active:scale-[0.98] transition-all text-center">
+              Voir les versets
+            </button>
+<button class="w-full py-2.5 px-3 rounded-full bg-[#c8196e] text-white text-[13.5px] font-semibold shadow-btnPink hover:bg-[#b31360] active:scale-[0.98] transition-all text-center">
+              Explorer
+            </button>
+</div>
+</article>
+<!-- Suggestion Item 3: Persévérance -->
+<article class="bg-white rounded-[24px] p-5 shadow-card border border-stone-100 flex flex-col justify-between" data-purpose="suggestion-card">
+<div>
+<!-- Header with Title & Verses Tag -->
+<div class="flex items-center justify-between">
+<h2 class="font-serif text-[22px] font-bold text-stone-900 tracking-tight">Persévérance</h2>
+<span class="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-bold bg-[#fce4ec] text-[#a0145c] tracking-tight">
+                9 versets
+              </span>
+</div>
+<!-- Subtitle/Meta description -->
+<p class="text-[13px] text-stone-500 mt-1.5 font-normal">
+              Lié à Combat et Endurance
+            </p>
+</div>
+<!-- Action Buttons -->
+<div class="grid grid-cols-2 gap-3 mt-5">
+<button class="w-full py-2.5 px-3 rounded-full border border-stone-200 text-stone-900 text-[13.5px] font-semibold bg-white hover:bg-stone-50 active:scale-[0.98] transition-all text-center">
+              Voir les versets
+            </button>
+<button class="w-full py-2.5 px-3 rounded-full bg-[#c8196e] text-white text-[13.5px] font-semibold shadow-btnPink hover:bg-[#b31360] active:scale-[0.98] transition-all text-center">
+              Explorer
+            </button>
+</div>
+</article>
+</section>
+<!-- END: SuggestionsList -->
+<!-- Footnote explanation note -->
+<footer class="mt-6 mb-2 px-6 text-center" data-purpose="footnote">
+<p class="text-[12px] text-stone-500 font-medium">
+          Suggestions calculées à partir de la base et de tes tags
+        </p>
+</footer>
+</main>
+<!-- BEGIN: BottomNavigationBar -->
+<!-- 5 Standard iOS Tabs: Accueil, Bible, Mémoriser, Progrès, Réglages -->
+<nav class="absolute bottom-0 inset-x-0 bg-white/95 backdrop-blur-md border-t border-stone-200/80 px-3 pt-2 pb-5 flex justify-around items-center z-30" data-purpose="bottom-tab-bar">
+<!-- Tab 1: Accueil (Active) -->
+<a class="flex flex-col items-center flex-1 text-[#c8196e]" href="#accueil">
+<svg class="w-6 h-6 stroke-[1.8]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[10px] font-semibold mt-1">Accueil</span>
+</a>
+<!-- Tab 2: Bible -->
+<a class="flex flex-col items-center flex-1 text-stone-600 hover:text-stone-900 transition-colors" href="#bible">
+<svg class="w-6 h-6 stroke-[1.8]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[10px] font-medium mt-1">Bible</span>
+</a>
+<!-- Tab 3: Mémoriser -->
+<a class="flex flex-col items-center flex-1 text-stone-600 hover:text-stone-900 transition-colors" href="#memoriser">
+<svg class="w-6 h-6 stroke-[1.8]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[10px] font-medium mt-1">Mémoriser</span>
+</a>
+<!-- Tab 4: Progrès -->
+<a class="flex flex-col items-center flex-1 text-stone-600 hover:text-stone-900 transition-colors" href="#progres">
+<svg class="w-6 h-6 stroke-[1.8]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[10px] font-medium mt-1">Progrès</span>
+</a>
+<!-- Tab 5: Réglages -->
+<a class="flex flex-col items-center flex-1 text-stone-600 hover:text-stone-900 transition-colors" href="#reglages">
+<svg class="w-6 h-6 stroke-[1.8]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[10px] font-medium mt-1">Réglages</span>
+</a>
+</nav>
+<!-- END: BottomNavigationBar -->
+<!-- Home Indicator line for iPhone format -->
+<div class="absolute bottom-1.5 left-1/2 -translate-x-1/2 w-32 h-1 bg-stone-900/30 rounded-full z-40 pointer-events-none" data-purpose="home-indicator"></div>
+</div>
+<!-- END: MobileContainer -->
+</body></html>

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+
+<html lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>Créer ma famille</title>
+<!-- Tailwind CSS CDN with plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts: Playfair Display for serif headings, Plus Jakarta Sans for UI text -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&amp;family=Plus+Jakarta+Sans:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind Configuration -->
+<script data-purpose="tailwind-config">
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            serif: ['"Playfair Display"', 'Georgia', 'serif'],
+            sans: ['"Plus Jakarta Sans"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              magenta: '#d8137a',
+              pinkSoft: '#fdf2f7',
+              bgLight: '#fcf8fa',
+            }
+          },
+          boxShadow: {
+            card: '0 4px 20px -2px rgba(220, 38, 127, 0.05), 0 2px 6px -1px rgba(0, 0, 0, 0.03)',
+            action: '0 12px 24px -4px rgba(216, 19, 122, 0.35)',
+            circle: '0 2px 8px rgba(0,0,0,0.06)'
+          }
+        }
+      }
+    }
+  </script>
+<!-- BEGIN: Custom Styles -->
+<style data-purpose="base-layout">
+    body {
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+    /* Blinking cursor emulation */
+    .custom-cursor::after {
+      content: '|';
+      color: #d8137a;
+      font-weight: 300;
+      animation: blink 1s step-end infinite;
+      margin-left: 1px;
+    }
+    @keyframes blink {
+      from, to { opacity: 1; }
+      50% { opacity: 0; }
+    }
+  </style>
+<!-- END: Custom Styles -->
+</head>
+<body class="bg-[#faf6f7] min-h-screen flex justify-center items-start antialiased font-sans text-neutral-800">
+<!-- BEGIN: Mobile Container (iOS 390px spec) -->
+<main class="w-full max-w-[390px] min-h-screen flex flex-col justify-between px-6 pt-3 pb-8 relative box-border">
+<!-- Top Area Wrapper -->
+<div class="w-full flex flex-col">
+<!-- BEGIN: iOS Status Bar -->
+<section class="w-full flex justify-between items-center h-10 px-2 text-neutral-900 font-semibold text-[15px]" data-purpose="status-bar">
+<span>9:41</span>
+<div class="flex items-center space-x-1.5">
+<span class="text-xs font-bold tracking-tight">5G</span>
+<!-- Signal Icon Bars -->
+<div class="flex items-end space-x-[2px] h-3">
+<span class="w-[3px] h-2 bg-neutral-900 rounded-sm"></span>
+<span class="w-[3px] h-2.5 bg-neutral-900 rounded-sm"></span>
+<span class="w-[3px] h-3 bg-neutral-900 rounded-sm"></span>
+</div>
+</div>
+</section>
+<!-- END: iOS Status Bar -->
+<!-- BEGIN: MainHeader -->
+<header class="w-full flex items-center justify-between mt-1 mb-6">
+<!-- Back Button -->
+<button aria-label="Retour" class="w-11 h-11 bg-white rounded-full flex items-center justify-center shadow-sm border border-neutral-100 active:scale-95 transition-transform text-neutral-800" type="button">
+<svg class="h-5 w-5 stroke-[2.5]" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M15 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+<!-- Title & Step Counter -->
+<div class="text-center flex-1 px-2">
+<h1 class="font-serif font-bold text-[22px] tracking-tight leading-snug text-neutral-900">
+            Créer ma famille
+          </h1>
+<p class="text-xs text-neutral-500 font-medium tracking-normal mt-0.5">
+            Étape 1 sur 2
+          </p>
+</div>
+<!-- Options Button -->
+<button aria-label="Plus d'options" class="w-11 h-11 bg-white rounded-full flex items-center justify-center shadow-sm border border-neutral-100 active:scale-95 transition-transform text-neutral-800" type="button">
+<svg class="h-5 w-5 fill-neutral-800" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+<circle cx="4" cy="10" r="1.75"></circle>
+<circle cx="10" cy="10" r="1.75"></circle>
+<circle cx="16" cy="10" r="1.75"></circle>
+</svg>
+</button>
+</header>
+<!-- END: MainHeader -->
+<!-- BEGIN: Form Section -->
+<section class="flex flex-col space-y-4" data-purpose="form-cards">
+<!-- Card 1: Family Name Input -->
+<div class="bg-white rounded-3xl p-5 shadow-card border border-neutral-100/80">
+<label class="block text-[11px] font-bold tracking-wider text-brand-magenta uppercase mb-2" for="family-name">
+            Nom de la famille
+          </label>
+<div class="relative border-b-2 border-brand-magenta pb-1 pt-0.5">
+<div class="font-serif text-[23px] text-neutral-900 leading-none custom-cursor">
+              Famille Étoile
+            </div>
+<!-- Hidden input for semantics -->
+<input aria-label="Nom de la famille" class="sr-only" id="family-name" type="text" value="Famille Étoile"/>
+</div>
+</div>
+<!-- Card 2: Color Palette Picker -->
+<div class="bg-white rounded-3xl p-5 shadow-card border border-neutral-100/80">
+<span class="block text-[11px] font-bold tracking-wider text-brand-magenta uppercase mb-3">
+            Couleur
+          </span>
+<!-- Color Row -->
+<div aria-label="Sélection de couleur" class="flex items-center justify-between" role="radiogroup">
+<!-- Color Option 1: Selected Magenta -->
+<button aria-checked="true" class="p-[3px] rounded-full ring-2 ring-brand-magenta focus:outline-none transition-transform hover:scale-105" role="radio" type="button">
+<span class="block w-9 h-9 rounded-full bg-[#db127a]"></span>
+</button>
+<!-- Color Option 2: Blue -->
+<button aria-checked="false" class="p-[3px] rounded-full ring-2 ring-transparent focus:outline-none transition-transform hover:scale-105" role="radio" type="button">
+<span class="block w-9 h-9 rounded-full bg-[#357ee3]"></span>
+</button>
+<!-- Color Option 3: Green -->
+<button aria-checked="false" class="p-[3px] rounded-full ring-2 ring-transparent focus:outline-none transition-transform hover:scale-105" role="radio" type="button">
+<span class="block w-9 h-9 rounded-full bg-[#30a969]"></span>
+</button>
+<!-- Color Option 4: Amber/Yellow -->
+<button aria-checked="false" class="p-[3px] rounded-full ring-2 ring-transparent focus:outline-none transition-transform hover:scale-105" role="radio" type="button">
+<span class="block w-9 h-9 rounded-full bg-[#dc9a2c]"></span>
+</button>
+<!-- Color Option 5: Purple -->
+<button aria-checked="false" class="p-[3px] rounded-full ring-2 ring-transparent focus:outline-none transition-transform hover:scale-105" role="radio" type="button">
+<span class="block w-9 h-9 rounded-full bg-[#7959c9]"></span>
+</button>
+<!-- Color Option 6: Dark/Black -->
+<button aria-checked="false" class="p-[3px] rounded-full ring-2 ring-transparent focus:outline-none transition-transform hover:scale-105" role="radio" type="button">
+<span class="block w-9 h-9 rounded-full bg-[#202020]"></span>
+</button>
+</div>
+</div>
+<!-- Card 3: Preview -->
+<div class="bg-white rounded-3xl p-5 shadow-card border border-neutral-100/80">
+<span class="block text-[11px] font-bold tracking-wider text-brand-magenta uppercase mb-3">
+            Aperçu
+          </span>
+<div class="flex items-center space-x-3.5">
+<!-- Family Color Badge -->
+<div class="w-12 h-12 rounded-2xl bg-[#db127a] shrink-0 shadow-sm"></div>
+<!-- Family Name Preview -->
+<span class="font-serif font-bold text-[22px] text-neutral-900 tracking-tight leading-none">
+              Famille Étoile
+            </span>
+</div>
+</div>
+</section>
+<!-- END: Form Section -->
+</div>
+<!-- End Top Area Wrapper -->
+<!-- BEGIN: Bottom Action Area -->
+<footer class="w-full pt-8 pb-3">
+<button class="w-full bg-[#db127a] hover:bg-[#c40e6c] active:bg-[#b00c60] text-white font-sans font-bold text-[15px] py-4 rounded-full shadow-action transition-all transform active:scale-[0.98] flex items-center justify-center space-x-1" type="button">
+<span>Continuer · ajouter mon profil</span>
+</button>
+</footer>
+<!-- END: Bottom Action Area -->
+</main>
+<!-- END: Mobile Container -->
+</body></html>

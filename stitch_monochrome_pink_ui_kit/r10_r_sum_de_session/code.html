@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+
+<html lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>R10 — Résumé de session</title>
+<!-- Tailwind CSS CDN v3 -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              magenta: '#D8117A',
+              lightpink: '#FCE7F3',
+              tagred: '#FCECEB',
+              tagredtext: '#832822',
+              tagyellow: '#FEF6E6',
+              tagyellowtext: '#68480C',
+              tagpurple: '#F5E4F2',
+              tagpurpletext: '#761D5A',
+            },
+            neutral: {
+              bg: '#FAF9F8',
+            }
+          },
+          fontFamily: {
+            serif: ['Georgia', 'Cambria', '"Times New Roman"', 'Times', 'serif'],
+            sans: ['-apple-system', 'BlinkMacSystemFont', '"SF Pro Text"', '"SF Pro Display"', '"Segoe UI"', 'Roboto', 'sans-serif'],
+          },
+          boxShadow: {
+            'card': '0 4px 20px -2px rgba(220, 38, 127, 0.05), 0 2px 10px -1px rgba(0, 0, 0, 0.02)',
+            'check': '0 10px 25px -4px rgba(216, 17, 122, 0.45)',
+            'btn': '0 8px 20px -4px rgba(216, 17, 122, 0.4)',
+          }
+        }
+      }
+    }
+  </script>
+<!-- BEGIN: Custom Styles -->
+<style data-purpose="custom-layout">
+    body {
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      background-color: #FAF9F8;
+    }
+    /* Circular Progress Ring styling */
+    .progress-ring-circle {
+      transition: stroke-dashoffset 0.35s;
+      transform: rotate(-90deg);
+      transform-origin: 50% 50%;
+    }
+  </style>
+<!-- END: Custom Styles -->
+</head>
+<body class="bg-[#FAF9F8] text-[#1E1E24] min-h-screen flex justify-center font-sans antialiased">
+<!-- Mobile Frame Container (iPhone viewport standard 390px width proportion) -->
+<div class="w-full max-w-[414px] min-h-screen flex flex-col justify-between px-6 pt-3 pb-8 select-none relative" data-purpose="app-container">
+<!-- BEGIN: TopSection -->
+<div>
+<!-- BEGIN: iOSStatusBar -->
+<header class="flex justify-between items-center pt-1 pb-3 text-sm font-semibold tracking-tight text-neutral-900" data-purpose="status-bar">
+<span>9:41</span>
+<div class="flex items-center space-x-1.5">
+<span class="text-xs font-bold tracking-tight">5G</span>
+<!-- Signal bars -->
+<div class="flex items-end space-x-0.5 h-3">
+<span class="w-[3px] h-1.5 bg-neutral-900 rounded-2xs"></span>
+<span class="w-[3px] h-2 bg-neutral-900 rounded-2xs"></span>
+<span class="w-[3px] h-2.5 bg-neutral-900 rounded-2xs"></span>
+<span class="w-[3px] h-3 bg-neutral-900 rounded-2xs"></span>
+</div>
+</div>
+</header>
+<!-- END: iOSStatusBar -->
+<!-- BEGIN: HeroSuccess -->
+<section class="flex flex-col items-center mt-5 mb-6" data-purpose="hero-success-badge">
+<!-- Big Pink Circle Check Badge -->
+<div class="w-20 h-20 rounded-full bg-[#D8117A] flex items-center justify-center shadow-check mb-5 transition-transform active:scale-95 duration-150">
+<svg class="w-10 h-10 text-white stroke-[3.5]" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" viewbox="0 0 24 24">
+<polyline points="20 6 9 17 4 12"></polyline>
+</svg>
+</div>
+<!-- Main Title & Verse Reference -->
+<h1 class="font-serif text-[32px] font-bold text-neutral-900 tracking-tight text-center leading-tight">
+          Passage mémorisé
+        </h1>
+<p class="text-sm font-normal text-neutral-600 mt-1.5 tracking-normal">
+          Jean 3:16–18 · LSG
+        </p>
+</section>
+<!-- END: HeroSuccess -->
+<!-- BEGIN: MainStatisticsCard -->
+<section class="bg-white rounded-3xl p-5 mb-4 border border-[#F4EFF1] shadow-sm" data-purpose="session-stats-card">
+<div class="grid grid-cols-3 divide-neutral-100 text-center items-center">
+<!-- Column 1: Flashcards Score -->
+<div class="flex flex-col items-center">
+<div class="relative w-16 h-16 flex items-center justify-center">
+<svg class="w-16 h-16 transform -rotate-90">
+<circle cx="32" cy="32" fill="transparent" r="27" stroke="#FCE7F3" stroke-width="4.5"></circle>
+<circle cx="32" cy="32" fill="transparent" r="27" stroke="#D8117A" stroke-dasharray="169.6" stroke-dashoffset="0" stroke-linecap="round" stroke-width="4.5"></circle>
+</svg>
+<span class="absolute font-bold text-[13px] text-neutral-900">100 %</span>
+</div>
+<span class="text-xs text-neutral-500 font-medium mt-2">Flashcards</span>
+</div>
+<!-- Column 2: Writing Score -->
+<div class="flex flex-col items-center">
+<div class="relative w-16 h-16 flex items-center justify-center">
+<svg class="w-16 h-16 transform -rotate-90">
+<circle cx="32" cy="32" fill="transparent" r="27" stroke="#FCE7F3" stroke-width="4.5"></circle>
+<!-- 95% of 169.6 is ~161.12, offset = 8.5 -->
+<circle cx="32" cy="32" fill="transparent" r="27" stroke="#D8117A" stroke-dasharray="169.6" stroke-dashoffset="8.5" stroke-linecap="round" stroke-width="4.5"></circle>
+</svg>
+<span class="absolute font-bold text-[13px] text-neutral-900">95 %</span>
+</div>
+<span class="text-xs text-neutral-500 font-medium mt-2">Écriture</span>
+</div>
+<!-- Column 3: Duration -->
+<div class="flex flex-col items-center justify-center h-full">
+<div class="h-16 flex items-center justify-center">
+<span class="font-serif font-bold text-[22px] text-neutral-900">4 min</span>
+</div>
+<span class="text-xs text-neutral-500 font-medium mt-2">Durée</span>
+</div>
+</div>
+</section>
+<!-- END: MainStatisticsCard -->
+<!-- BEGIN: NextReminderCard -->
+<section class="bg-white rounded-3xl p-5 mb-4 border border-[#F4EFF1] shadow-sm flex items-center justify-between" data-purpose="next-reminder-card">
+<div>
+<span class="block text-[11px] font-bold tracking-wider text-[#A22064] uppercase mb-0.5">
+            PROCHAIN RAPPEL
+          </span>
+<h2 class="font-serif font-bold text-[21px] text-neutral-900 leading-tight">
+            Dans 3 jours
+          </h2>
+<p class="text-xs text-neutral-500 mt-0.5">
+            Dimanche 18 octobre
+          </p>
+</div>
+<!-- Score Rating Badge -->
+<div class="px-3 py-1.5 rounded-full bg-[#FCE7F3] text-[#D8117A] font-semibold text-xs leading-none">
+          Note : Bon
+        </div>
+</section>
+<!-- END: NextReminderCard -->
+<!-- BEGIN: ReviewWordsCard -->
+<section class="bg-white rounded-3xl p-5 mb-5 border border-[#F4EFF1] shadow-sm" data-purpose="words-to-review-card">
+<span class="block text-[11px] font-bold tracking-wider text-[#A22064] uppercase mb-2.5">
+          MOTS À RETRAVAILLER
+        </span>
+<div class="flex flex-wrap gap-2">
+<!-- Tag 1 -->
+<span class="px-3 py-1.5 rounded-full bg-[#FCECEB] text-[#832822] text-xs font-semibold">
+            appelé
+          </span>
+<!-- Tag 2 -->
+<span class="px-3 py-1.5 rounded-full bg-[#FEF6E6] text-[#68480C] text-xs font-semibold">
+            point
+          </span>
+<!-- Tag 3 -->
+<span class="px-3 py-1.5 rounded-full bg-[#F5E4F2] text-[#761D5A] text-xs font-semibold">
+            bien
+          </span>
+</div>
+</section>
+<!-- END: ReviewWordsCard -->
+<!-- BEGIN: StreakIndicator -->
+<div class="flex items-center justify-center space-x-1.5 text-xs font-semibold text-[#D8117A] tracking-tight py-1" data-purpose="streak-indicator">
+<!-- Flame Icon -->
+<svg class="w-4 h-4 fill-current" viewbox="0 0 24 24">
+<path d="M12 23c-4.97 0-9-3.956-9-8.835 0-4.041 2.87-7.618 6.096-10.428a1.27 1.27 0 0 1 1.942.365c.957 1.624 2.146 3.12 3.155 4.316.327-.923.633-1.895.894-2.887a1.27 1.27 0 0 1 2.164-.523C19.782 7.747 21 11.233 21 14.165 21 19.044 16.97 23 12 23zm-.088-4.717c2.378 0 4.195-1.748 4.195-3.829 0-1.898-1.558-3.486-2.528-4.757-.27.915-.658 1.83-1.168 2.723a1.144 1.144 0 0 1-1.89.155c-.783-.934-1.472-1.93-2.128-2.956-1.583 2.05-2.585 4.103-2.585 5.565 0 2.08 1.817 3.829 4.195 3.829z"></path>
+</svg>
+<span>Série prolongée : 13 jours</span>
+</div>
+<!-- END: StreakIndicator -->
+</div>
+<!-- END: TopSection -->
+<!-- BEGIN: BottomActions -->
+<footer class="pt-6 pb-2 space-y-3" data-purpose="actions-footer">
+<!-- Primary Action CTA -->
+<button class="w-full py-4 rounded-full bg-[#D8117A] text-white font-semibold text-[15px] shadow-btn active:opacity-90 active:scale-[0.99] transition transform duration-150" type="button">
+        Passage suivant
+      </button>
+<!-- Secondary Actions Row -->
+<div class="grid grid-cols-2 gap-3">
+<button class="py-3.5 px-4 rounded-full bg-white border border-[#E9E3E6] text-neutral-800 font-semibold text-[14px] hover:bg-neutral-50 active:bg-neutral-100 transition duration-150" type="button">
+          Voir le détail
+        </button>
+<button class="py-3.5 px-4 rounded-full bg-white border border-[#E9E3E6] text-neutral-800 font-semibold text-[14px] hover:bg-neutral-50 active:bg-neutral-100 transition duration-150" type="button">
+          Accueil
+        </button>
+</div>
+</footer>
+<!-- END: BottomActions -->
+</div>
+</body></html>

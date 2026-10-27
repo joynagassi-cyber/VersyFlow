@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+
+<html lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>M5 — Famille — Sélecteur de profil</title>
+<!-- Tailwind CSS CDN with plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration -->
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            serif: ['Georgia', 'Cambria', 'serif'],
+            sans: ['-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              magenta: '#c2185b',
+              fuchsia: '#db2777',
+              activeBorder: '#e81e6b',
+              activeBg: '#fff5f8',
+            }
+          }
+        }
+      }
+    }
+  </script>
+<!-- BEGIN: Custom Stylesheet -->
+<style data-purpose="base-layout">
+    body {
+      background-color: #1a1a1a;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    
+    /* Device frame wrapper for mobile iOS view */
+    .mobile-frame {
+      width: 100%;
+      max-width: 390px;
+      height: 844px;
+      overflow: hidden;
+      position: relative;
+      background-color: #f7f7f8;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+    }
+  </style>
+<style data-purpose="bottom-sheet-decorations">
+    .drag-pill {
+      width: 40px;
+      height: 4.5px;
+      background-color: #d1d5db;
+      border-radius: 9999px;
+    }
+    .custom-dashed-btn {
+      border: 1.5px dashed #d81b60;
+    }
+  </style>
+<!-- END: Custom Stylesheet -->
+</head>
+<body>
+<!-- BEGIN: MobileDeviceContainer -->
+<div class="mobile-frame flex flex-col justify-between select-none">
+<!-- BEGIN: BackgroundUnderlyingScreen -->
+<!-- Represents the dimmed 'Famille Étoile' screen beneath the modal -->
+<div class="absolute inset-0 bg-[#ebebeb] flex flex-col p-5 pointer-events-none" data-purpose="background-screen">
+<!-- iOS Status Bar Placeholder -->
+<div class="flex justify-between items-center pt-2 pb-3 px-2 text-black font-semibold text-xs tracking-tight">
+<span>9:41</span>
+<div class="flex items-center space-x-1.5">
+<span class="text-[10px] font-bold">5G</span>
+<div class="flex items-end space-x-[2px] h-3">
+<span class="w-[3px] h-1.5 bg-black rounded-xs"></span>
+<span class="w-[3px] h-2 bg-black rounded-xs"></span>
+<span class="w-[3px] h-3 bg-black rounded-xs"></span>
+</div>
+</div>
+</div>
+<!-- Background Screen Header -->
+<header class="flex items-center justify-between mt-2 mb-6">
+<button class="w-10 h-10 rounded-full bg-white/70 shadow-sm flex items-center justify-center text-gray-700" type="button">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M15 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path>
+</svg>
+</button>
+<div class="text-center">
+<h1 class="font-serif font-bold text-lg text-gray-900 leading-tight">Famille Étoile</h1>
+<p class="text-xs text-gray-500 font-medium">5 membres</p>
+</div>
+<button class="w-10 h-10 rounded-full bg-white/70 shadow-sm flex items-center justify-center text-gray-700" type="button">
+<svg class="w-5 h-5" fill="currentColor" viewbox="0 0 24 24">
+<circle cx="5" cy="12" r="2"></circle>
+<circle cx="12" cy="12" r="2"></circle>
+<circle cx="19" cy="12" r="2"></circle>
+</svg>
+</button>
+</header>
+<!-- Background Blurred Cards -->
+<div class="space-y-4 px-1 opacity-70">
+<div class="h-36 rounded-3xl bg-gray-300/80 w-full border border-gray-300"></div>
+<div class="h-36 rounded-3xl bg-gray-300/80 w-full border border-gray-300"></div>
+</div>
+<!-- Backdrop Overlay covering whole background with subtle darkening -->
+<div aria-hidden="true" class="absolute inset-0 bg-black/25 backdrop-blur-[1.5px]"></div>
+</div>
+<!-- END: BackgroundUnderlyingScreen -->
+<!-- Spacer to push the sheet to the bottom -->
+<div class="flex-1"></div>
+<!-- BEGIN: BottomSheetModal -->
+<main class="relative z-10 w-full bg-white rounded-t-[36px] px-6 pt-3 pb-8 shadow-[0_-10px_25px_-5px_rgba(0,0,0,0.15)] flex flex-col" data-purpose="profile-selector-modal">
+<!-- Drag handle / Indicator pill -->
+<div class="flex justify-center w-full pt-1 pb-4">
+<div class="drag-pill"></div>
+</div>
+<!-- Modal Title -->
+<h2 class="font-serif font-bold text-[27px] leading-tight text-gray-950 mb-5 px-1 tracking-tight">
+        Qui mémorise ?
+      </h2>
+<!-- BEGIN: ProfilesList -->
+<div class="space-y-3.5" data-purpose="profiles-container">
+<!-- Profile 1: Léa (Active Selected Card) -->
+<div class="flex items-center justify-between p-2.5 pr-4 rounded-3xl border-[1.5px] border-[#e91e63] bg-[#fff5f8] transition-all" data-purpose="profile-active">
+<div class="flex items-center space-x-3.5">
+<!-- Léa's Avatar -->
+<div class="w-12 h-12 rounded-full bg-[#f01a75] flex items-center justify-center text-white text-lg font-bold shadow-sm ring-4 ring-pink-100">
+              L
+            </div>
+<!-- Name & Role description -->
+<div class="flex flex-col">
+<span class="font-bold text-gray-900 text-[15px] leading-tight">Léa</span>
+<span class="text-xs text-gray-500 italic mt-0.5 font-normal">Gardienne du Psaume 23</span>
+</div>
+</div>
+<!-- Status Badge -->
+<span class="px-3 py-1 rounded-full bg-[#dcfce7] text-[#16a34a] text-[11px] font-semibold tracking-wide">
+            Actif
+          </span>
+</div>
+<!-- Profile 2: Marc -->
+<div class="flex items-center justify-between p-2.5 pr-4 rounded-2xl hover:bg-gray-50 transition-colors" data-purpose="profile-item">
+<div class="flex items-center space-x-3.5">
+<!-- Marc's Avatar -->
+<div class="w-12 h-12 rounded-full bg-[#3b82f6] flex items-center justify-center text-white text-lg font-bold shadow-sm">
+              M
+            </div>
+<!-- Name & Role description -->
+<div class="flex flex-col">
+<span class="font-bold text-gray-900 text-[15px] leading-tight">Marc</span>
+<span class="text-xs text-gray-500 italic mt-0.5 font-normal">Capitaine des révisions</span>
+</div>
+</div>
+<!-- Status Badge -->
+<span class="px-3 py-1 rounded-full bg-[#e8f5e9] text-[#2e7d32] text-[11px] font-semibold tracking-wide">
+            A révisé
+          </span>
+</div>
+<!-- Profile 3: Ama -->
+<div class="flex items-center justify-between p-2.5 pr-4 rounded-2xl hover:bg-gray-50 transition-colors" data-purpose="profile-item">
+<div class="flex items-center space-x-3.5">
+<!-- Ama's Avatar -->
+<div class="w-12 h-12 rounded-full bg-[#10b981] flex items-center justify-center text-white text-lg font-bold shadow-sm">
+              A
+            </div>
+<!-- Name & Role description -->
+<div class="flex flex-col">
+<span class="font-bold text-gray-900 text-[15px] leading-tight">Ama</span>
+<span class="text-xs text-gray-500 italic mt-0.5 font-normal">Reine des flashcards</span>
+</div>
+</div>
+<!-- Status Badge -->
+<span class="px-3 py-1 rounded-full bg-[#e8f5e9] text-[#2e7d32] text-[11px] font-semibold tracking-wide">
+            A révisé
+          </span>
+</div>
+<!-- Profile 4: David -->
+<div class="flex items-center justify-between p-2.5 pr-4 rounded-2xl hover:bg-gray-50 transition-colors" data-purpose="profile-item">
+<div class="flex items-center space-x-3.5">
+<!-- David's Avatar -->
+<div class="w-12 h-12 rounded-full bg-[#eab308] flex items-center justify-center text-white text-lg font-bold shadow-sm">
+              D
+            </div>
+<!-- Name & Role description -->
+<div class="flex flex-col">
+<span class="font-bold text-gray-900 text-[15px] leading-tight">David</span>
+<span class="text-xs text-gray-500 italic mt-0.5 font-normal">Le lève-tôt</span>
+</div>
+</div>
+<!-- Status Badge -->
+<span class="px-3 py-1 rounded-full bg-[#fce7f3] text-[#be185d] text-[11px] font-semibold tracking-wide">
+            Pas encore
+          </span>
+</div>
+<!-- Profile 5: Noé -->
+<div class="flex items-center justify-between p-2.5 pr-4 rounded-2xl hover:bg-gray-50 transition-colors" data-purpose="profile-item">
+<div class="flex items-center space-x-3.5">
+<!-- Noé's Avatar -->
+<div class="w-12 h-12 rounded-full bg-[#8b5cf6] flex items-center justify-center text-white text-lg font-bold shadow-sm">
+              N
+            </div>
+<!-- Name & Role description -->
+<div class="flex flex-col">
+<span class="font-bold text-gray-900 text-[15px] leading-tight">Noé</span>
+<span class="text-xs text-gray-500 italic mt-0.5 font-normal">Petit mais costaud</span>
+</div>
+</div>
+<!-- Status Badge -->
+<span class="px-3 py-1 rounded-full bg-[#fce7f3] text-[#be185d] text-[11px] font-semibold tracking-wide">
+            Pas encore
+          </span>
+</div>
+</div>
+<!-- END: ProfilesList -->
+<!-- BEGIN: ActionButtons -->
+<div class="mt-4 pt-1" data-purpose="actions">
+<!-- Add Member Button with pink dashed border -->
+<button class="w-full py-3.5 px-4 rounded-2xl custom-dashed-btn flex items-center justify-center space-x-2 text-[#be185d] font-bold text-[15px] active:scale-[0.98] transition-transform" type="button">
+<!-- Plus Icon -->
+<svg class="w-4 h-4 stroke-[2.5]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M12 4.5v15m7.5-7.5h-15" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span>Ajouter un membre</span>
+</button>
+</div>
+<!-- END: ActionButtons -->
+</main>
+<!-- END: BottomSheetModal -->
+</div>
+<!-- END: MobileDeviceContainer -->
+</body></html>

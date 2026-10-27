@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>R5 — Écriture — saisie</title>
+<!-- Tailwind CSS CDN v3 -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              DEFAULT: '#D11270',
+              hover: '#B50C5F',
+              light: '#FCE7F1',
+              dark: '#93094A',
+            },
+            neutral: {
+              surface: '#FBF9FA',
+              card: '#FFFFFF',
+              inputBg: '#FAF8F9',
+              muted: '#71717A',
+              subtle: '#A1A1AA',
+              darkText: '#18181B'
+            }
+          },
+          fontFamily: {
+            serif: ['Georgia', 'Cambria', 'serif'],
+            sans: ['-apple-system', 'BlinkMacSystemFont', '"SF Pro Text"', '"SF Pro Display"', 'Segoe UI', 'Roboto', 'sans-serif'],
+          },
+          boxShadow: {
+            'card': '0 2px 10px rgba(0, 0, 0, 0.04)',
+            'card-focus': '0 4px 16px rgba(209, 18, 112, 0.12)',
+            'float-bar': '0 8px 30px rgba(0, 0, 0, 0.1)',
+            'cta-pink': '0 8px 24px rgba(209, 18, 112, 0.35)',
+          }
+        }
+      }
+    }
+  </script>
+<!-- Custom styles for typography and blinking cursor -->
+<style data-purpose="custom-animations">
+    @keyframes cursor-blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+    .animate-blink {
+      animation: cursor-blink 1s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+    /* Hide native scrollbar for cleaner mobile look */
+    ::-webkit-scrollbar {
+      display: none;
+    }
+    * {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+  </style>
+</head>
+<body class="bg-[#F8F6F7] text-neutral-darkText font-sans h-full flex justify-center items-start antialiased select-none">
+<!-- BEGIN: Mobile Container (iOS viewport simulation) -->
+<div class="w-full max-w-[430px] min-h-screen bg-[#FBF9FA] flex flex-col relative pb-36 shadow-2xl">
+<!-- BEGIN: iOS Status Bar -->
+<header class="pt-3 px-7 pb-2 flex justify-between items-center text-neutral-darkText tracking-tight z-30" data-purpose="status-bar">
+<!-- Time -->
+<span class="text-[15px] font-semibold tracking-tight">9:41</span>
+<!-- Icons (5G, Signal, Battery) -->
+<div class="flex items-center space-x-1.5 text-neutral-darkText">
+<span class="text-[13px] font-semibold tracking-tight mr-1">5G</span>
+<!-- Cellular bars -->
+<div class="flex items-end space-x-[2px] h-3">
+<span class="w-[3px] h-1.5 bg-neutral-darkText rounded-[0.5px]"></span>
+<span class="w-[3px] h-2 bg-neutral-darkText rounded-[0.5px]"></span>
+<span class="w-[3px] h-2.5 bg-neutral-darkText rounded-[0.5px]"></span>
+<span class="w-[3px] h-3 bg-neutral-darkText rounded-[0.5px]"></span>
+</div>
+<!-- Battery icon -->
+<div class="w-[22px] h-[11.5px] border-[1.5px] border-neutral-darkText rounded-[3px] p-[1.5px] flex items-center relative ml-0.5">
+<div class="h-full w-full bg-neutral-darkText rounded-[1px]"></div>
+<div class="absolute -right-[3.5px] top-[2.5px] w-[2px] h-[4px] bg-neutral-darkText rounded-r-[1px]"></div>
+</div>
+</div>
+</header>
+<!-- END: iOS Status Bar -->
+<!-- BEGIN: Top Navigation Header -->
+<nav class="px-5 pt-1 pb-3 flex items-center justify-between" data-purpose="app-header">
+<!-- Close button -->
+<button aria-label="Fermer" class="w-10 h-10 rounded-full bg-white shadow-sm border border-neutral-100 flex items-center justify-center text-neutral-darkText active:scale-95 transition-transform">
+<svg class="w-4 h-4 stroke-[2.5]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M6 18L18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+<!-- Passage Title & Mode -->
+<div class="text-center flex-1 px-2">
+<h1 class="font-serif text-[21px] font-bold tracking-tight text-neutral-900 leading-tight">Jean 3:16–18</h1>
+<p class="text-[12.5px] text-neutral-muted font-normal mt-0.5">LSG · Mode Écriture</p>
+</div>
+<!-- More Options Button -->
+<button aria-label="Options" class="w-10 h-10 rounded-full bg-white shadow-sm border border-neutral-100 flex items-center justify-center text-neutral-darkText active:scale-95 transition-transform">
+<svg class="w-5 h-5 text-neutral-darkText" fill="currentColor" viewbox="0 0 24 24">
+<circle cx="5" cy="12" r="2"></circle>
+<circle cx="12" cy="12" r="2"></circle>
+<circle cx="19" cy="12" r="2"></circle>
+</svg>
+</button>
+</nav>
+<!-- END: Top Navigation Header -->
+<!-- BEGIN: Progress Trackers -->
+<div class="px-5 pt-1 pb-4" data-purpose="stepper">
+<!-- 4 Segmented Bars -->
+<div class="grid grid-cols-4 gap-2 mb-2">
+<div class="h-[3.5px] bg-[#D11270] rounded-full"></div>
+<div class="h-[3.5px] bg-[#D11270] rounded-full"></div>
+<div class="h-[3.5px] bg-[#D11270] rounded-full"></div>
+<div class="h-[3.5px] bg-[#D11270] rounded-full"></div>
+</div>
+<!-- Step labels -->
+<div class="grid grid-cols-4 text-[11px] font-medium leading-none tracking-tight">
+<div class="flex items-center text-neutral-muted truncate">
+<span class="text-[9px] mr-1 text-neutral-muted">✓</span>
+<span>Révélation</span>
+</div>
+<div class="flex items-center text-neutral-muted truncate">
+<span class="text-[9px] mr-1 text-neutral-muted">✓</span>
+<span>Masquage</span>
+</div>
+<div class="flex items-center text-neutral-muted truncate">
+<span class="text-[9px] mr-1 text-neutral-muted">✓</span>
+<span>Flashcard</span>
+</div>
+<div class="text-right text-[#D11270] font-semibold truncate">
+          Écriture
+        </div>
+</div>
+</div>
+<!-- END: Progress Trackers -->
+<!-- BEGIN: Context & Word Count Badges -->
+<div class="px-5 mb-4 flex items-center justify-between text-xs" data-purpose="mode-indicator">
+<!-- Rose Help Pill -->
+<div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FCE7F1] text-[#93094A] font-semibold text-[11.5px]">
+<svg class="w-3.5 h-3.5 stroke-[2.2]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span>Texte masqué · aucune aide</span>
+</div>
+<!-- Global word counter -->
+<span class="text-neutral-subtle font-medium text-[12px] tracking-tight">46 mots</span>
+</div>
+<!-- END: Context & Word Count Badges -->
+<!-- BEGIN: Verse Cards Container -->
+<main class="px-4 space-y-3.5 flex-1" data-purpose="verse-list">
+<!-- Verse Card 1 (Completed) -->
+<article class="bg-white rounded-[22px] p-5 shadow-card border border-neutral-100" data-purpose="verse-card-completed">
+<header class="flex justify-between items-center mb-2.5">
+<span class="text-[10.5px] font-bold tracking-wider text-[#D11270] uppercase">VERSET 16</span>
+<span class="text-[11.5px] text-neutral-subtle font-medium">26 mots</span>
+</header>
+<p class="font-serif text-[17.5px] text-neutral-800 leading-[1.48] tracking-normal">
+          Car Dieu a tant aimé le monde qu’il a donné son Fils unique, afin que quiconque croit en lui ne périsse point, mais qu’il ait la vie éternelle.
+        </p>
+</article>
+<!-- Verse Card 2 (In Progress - Active Pink Border) -->
+<article class="bg-white rounded-[22px] p-5 shadow-card-focus ring-2 ring-[#D11270] border-transparent transition-all" data-purpose="verse-card-active">
+<header class="flex justify-between items-center mb-2.5">
+<span class="text-[10.5px] font-bold tracking-wider text-[#D11270] uppercase">VERSET 17</span>
+<span class="text-[11px] font-medium text-neutral-muted">en cours</span>
+</header>
+<p class="font-serif text-[17.5px] text-neutral-900 leading-[1.48] tracking-normal inline">
+          Dieu, en effet, n’a pas envoyé son Fils dans le monde pour qu’il juge le monde<span class="inline-block w-[1.5px] h-[21px] bg-[#D11270] align-sub ml-[1px] animate-blink"></span>
+</p>
+</article>
+<!-- Verse Card 3 (Empty / Next) -->
+<article class="bg-white/80 rounded-[22px] p-5 border border-dashed border-neutral-200" data-purpose="verse-card-pending">
+<header class="flex justify-between items-center mb-2">
+<span class="text-[10.5px] font-bold tracking-wider text-[#D11270] uppercase opacity-90">VERSET 18</span>
+<span class="text-[11px] font-medium text-neutral-subtle">vide</span>
+</header>
+<p class="font-serif italic text-[17.5px] text-neutral-400 font-normal">
+          Écris le verset 18...
+        </p>
+</article>
+</main>
+<!-- END: Verse Cards Container -->
+<!-- BEGIN: Floating Action Area (CTA & Quick Modes) -->
+<section class="fixed bottom-[74px] w-full max-w-[430px] px-4 flex flex-col items-center pointer-events-none z-20" data-purpose="floating-actions">
+<!-- Main Check CTA Button -->
+<button class="w-full bg-[#D11270] hover:bg-[#B50C5F] text-white font-semibold py-3.5 px-6 rounded-full shadow-cta-pink pointer-events-auto active:scale-[0.98] transition-all text-[15.5px] tracking-wide mb-3 flex items-center justify-center">
+        Vérifier mon passage
+      </button>
+<!-- Pill Quick Action Bar -->
+<div class="bg-white/95 backdrop-blur-md rounded-full px-2 py-1.5 shadow-float-bar border border-neutral-100 flex items-center space-x-1 pointer-events-auto">
+<!-- Icon 1: Eye with Check -->
+<button aria-label="Mode Révélation terminé" class="relative p-2.5 text-neutral-700 hover:text-neutral-900 active:scale-95">
+<svg class="w-5 h-5 stroke-[1.8]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="absolute top-1.5 right-1.5 w-3.5 h-3.5 bg-emerald-700 text-white text-[8px] font-bold rounded-full flex items-center justify-center">✓</span>
+</button>
+<!-- Icon 2: Lines/Sliders with Check -->
+<button aria-label="Mode Masquage terminé" class="relative p-2.5 text-neutral-700 hover:text-neutral-900 active:scale-95">
+<svg class="w-5 h-5 stroke-[1.8]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M3 7h18M3 12h18M3 17h18" stroke-linecap="round" stroke-linejoin="round"></path>
+<circle cx="8" cy="7" fill="white" r="2.2" stroke="currentColor" stroke-width="1.8"></circle>
+<circle cx="16" cy="17" fill="white" r="2.2" stroke="currentColor" stroke-width="1.8"></circle>
+</svg>
+<span class="absolute top-1.5 right-1.5 w-3.5 h-3.5 bg-emerald-700 text-white text-[8px] font-bold rounded-full flex items-center justify-center">✓</span>
+</button>
+<!-- Icon 3: Flashcards with Check -->
+<button aria-label="Mode Flashcard terminé" class="relative p-2.5 text-neutral-700 hover:text-neutral-900 active:scale-95">
+<svg class="w-5 h-5 stroke-[1.8]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<rect height="15" rx="2" stroke-linecap="round" stroke-linejoin="round" width="13" x="7" y="4"></rect>
+<path d="M4 8v11a2 2 0 002 2h11" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="absolute top-1.5 right-1.5 w-3.5 h-3.5 bg-emerald-700 text-white text-[8px] font-bold rounded-full flex items-center justify-center">✓</span>
+</button>
+<!-- Active Mode: Écriture (Pink Pill) -->
+<button class="bg-[#D11270] text-white px-3.5 py-1.5 rounded-full flex items-center space-x-1.5 shadow-sm active:scale-95 transition-transform">
+<svg class="w-4 h-4 stroke-[2.2]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-xs font-semibold">Écriture</span>
+</button>
+<!-- Chevron Down -->
+<button aria-label="Plus d'actions" class="p-2 text-neutral-500 hover:text-neutral-700">
+<svg class="w-4 h-4 stroke-[2.5]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+</div>
+</section>
+<!-- END: Floating Action Area -->
+<!-- BEGIN: Bottom Tab Navigation Bar -->
+<nav class="fixed bottom-0 w-full max-w-[430px] bg-white/95 backdrop-blur-md border-t border-neutral-200 py-1.5 px-3 flex justify-between items-center z-30" data-purpose="tab-bar">
+<!-- Accueil -->
+<a class="flex flex-col items-center justify-center w-16 py-1 text-neutral-500 active:text-[#D11270]" href="#">
+<svg class="w-5 h-5 stroke-[2]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M3 9.75l9-7.5 9 7.5V20a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4a1 1 0 00-1-1h-2a1 1 0 00-1 1v4a1 1 0 01-1 1H4a1 1 0 01-1-1V9.75z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[10px] font-medium mt-1">Accueil</span>
+</a>
+<!-- Bible -->
+<a class="flex flex-col items-center justify-center w-16 py-1 text-neutral-500 active:text-[#D11270]" href="#">
+<svg class="w-5 h-5 stroke-[2]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[10px] font-medium mt-1">Bible</span>
+</a>
+<!-- Mémoriser (Active) -->
+<a class="flex flex-col items-center justify-center w-16 py-1 text-[#D11270]" href="#">
+<svg class="w-5 h-5 stroke-[2.2]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[10px] font-semibold mt-1">Mémoriser</span>
+</a>
+<!-- Progrès -->
+<a class="flex flex-col items-center justify-center w-16 py-1 text-neutral-500 active:text-[#D11270]" href="#">
+<svg class="w-5 h-5 stroke-[2]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M3 13.5l4-4 4 4 8-8m2 0v5m0-5h-5" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M4 20h16" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[10px] font-medium mt-1">Progrès</span>
+</a>
+<!-- Réglages -->
+<a class="flex flex-col items-center justify-center w-16 py-1 text-neutral-500 active:text-[#D11270]" href="#">
+<svg class="w-5 h-5 stroke-[2]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[10px] font-medium mt-1">Réglages</span>
+</a>
+</nav>
+<!-- END: Bottom Tab Navigation Bar -->
+</div>
+<!-- END: Mobile Container -->
+</body></html>

@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+
+<html lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>M17 — Famille — Résumé de session de groupe</title>
+<!-- Tailwind CSS v3 with Plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts: Inter & Newsreader / Playfair Display -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&amp;family=Playfair+Display:ital,wght@0,700;0,800;1,700&amp;display=swap" rel="stylesheet"/>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              magenta: '#C7136D',
+              lightPink: '#FCE7F1',
+              softBg: '#FDFBF9',
+              greenBadge: '#D2F5DC',
+              greenText: '#15803D',
+              scorePink: '#BE185D',
+              cardBorder: '#F3E8E8'
+            }
+          },
+          fontFamily: {
+            serif: ['"Playfair Display"', 'Georgia', 'serif'],
+            sans: ['"Plus Jakarta Sans"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+          },
+          boxShadow: {
+            card: '0 4px 20px -2px rgba(220, 180, 195, 0.18), 0 2px 6px -1px rgba(0, 0, 0, 0.03)',
+            button: '0 8px 18px -4px rgba(199, 19, 109, 0.35)',
+          }
+        }
+      }
+    }
+  </script>
+<style data-purpose="custom-utilities">
+    /* Custom circular progress indicator */
+    .conic-meter {
+      background: conic-gradient(#C7136D 0% 75%, #F3E8EC 75% 100%);
+    }
+  </style>
+</head>
+<body class="bg-[#FAF7F7] font-sans text-gray-900 antialiased min-h-screen flex justify-center selection:bg-pink-100 selection:text-brand-magenta">
+<!-- Main Mobile Container (Device Viewport Frame) -->
+<main class="w-full max-w-[430px] min-h-screen flex flex-col justify-between px-5 pt-3 pb-8 relative">
+<!-- BEGIN: TopBar -->
+<header class="w-full flex justify-between items-center px-2 pt-1 pb-4" data-purpose="ios-status-bar-spacer">
+<!-- Time -->
+<span class="text-sm font-semibold tracking-tight text-neutral-900 pl-2">9:41</span>
+<!-- Network / Battery Status Icons -->
+<div class="flex items-center space-x-1.5 pr-2">
+<span class="text-xs font-semibold tracking-tighter text-neutral-900 mr-0.5">5G</span>
+<!-- Signal strength bars -->
+<div class="flex items-end space-x-[2px] h-3">
+<div class="w-[3px] h-1.5 bg-neutral-900 rounded-2xs"></div>
+<div class="w-[3px] h-2 bg-neutral-900 rounded-2xs"></div>
+<div class="w-[3px] h-2.5 bg-neutral-900 rounded-2xs"></div>
+<div class="w-[3px] h-3 bg-neutral-900 rounded-2xs"></div>
+</div>
+</div>
+</header>
+<!-- END: TopBar -->
+<!-- BEGIN: HeaderSection -->
+<section class="flex flex-col items-center text-center mt-2" data-purpose="session-header">
+<!-- Header Badge Icon -->
+<div class="w-20 h-20 rounded-full bg-[#C7136D] flex items-center justify-center shadow-md mb-6 transition-transform active:scale-95">
+<!-- Group Icon SVG -->
+<svg class="w-10 h-10 text-white" fill="currentColor" viewbox="0 0 24 24">
+<path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"></path>
+<path d="M18 10c1.38 0 2.5-1.12 2.5-2.5S19.38 5 18 5c-.34 0-.66.07-.96.19.61.85.96 1.88.96 3.01 0 1.13-.35 2.16-.96 3.01.3.12.62.19.96.19zm2.5 4.5c1.47.74 2.5 1.95 2.5 3.5v2H20v-2c0-1.25-.62-2.34-1.63-3.07.72-.25 1.48-.43 2.13-.43z" opacity="0.8"></path>
+</svg>
+</div>
+<!-- Title -->
+<h1 class="font-serif text-[32px] leading-tight font-bold text-neutral-900 tracking-tight">
+        Session terminée
+      </h1>
+<!-- Subtitle -->
+<p class="text-[13px] font-medium text-neutral-500 mt-1.5 tracking-normal">
+        Psaumes 23:1-3 · Flashcard · 4 participants
+      </p>
+</section>
+<!-- END: HeaderSection -->
+<!-- Content Stack -->
+<div class="flex flex-col space-y-4 my-6">
+<!-- BEGIN: GlobalMetricsCard -->
+<section class="bg-white rounded-[26px] p-6 shadow-card border border-neutral-100 flex items-center justify-around" data-purpose="metrics-summary">
+<!-- Circle Progress Metric -->
+<div class="flex flex-col items-center">
+<div class="relative w-[78px] h-[78px] rounded-full conic-meter p-[7px] flex items-center justify-center">
+<div class="w-full h-full bg-white rounded-full flex items-center justify-center">
+<span class="font-serif font-bold text-[19px] text-neutral-900 tracking-tight">18/24</span>
+</div>
+</div>
+<span class="text-xs font-medium text-neutral-500 mt-2.5">Cartes sues</span>
+</div>
+<!-- Duration Metric -->
+<div class="flex flex-col items-center justify-center">
+<div class="h-[78px] flex items-center justify-center">
+<span class="font-serif font-bold text-[34px] text-neutral-900 tracking-tight">6 min</span>
+</div>
+<span class="text-xs font-medium text-neutral-500 mt-2.5">Durée</span>
+</div>
+</section>
+<!-- END: GlobalMetricsCard -->
+<!-- BEGIN: PointsListCard -->
+<section class="bg-white rounded-[26px] px-5 py-5 shadow-card border border-neutral-100" data-purpose="leaderboard-card">
+<!-- Header -->
+<div class="text-[11px] font-extrabold uppercase tracking-wider text-[#C7136D] pb-3 border-b border-neutral-100">
+          POINTS GAGNÉS
+        </div>
+<!-- Participant Rows -->
+<div class="divide-y divide-neutral-100">
+<!-- Row 1: Marc -->
+<div class="py-3.5 flex items-center justify-between" data-purpose="participant-item">
+<div class="flex items-center space-x-3">
+<div class="w-11 h-11 rounded-full bg-[#2A75D3] flex items-center justify-center text-white font-bold text-base shadow-sm">
+                M
+              </div>
+<div class="flex flex-col text-left">
+<span class="font-bold text-[15px] text-neutral-900">Marc</span>
+<span class="text-xs italic text-neutral-500 font-medium">Capitaine des révisions</span>
+</div>
+</div>
+<div class="flex items-center space-x-4">
+<span class="px-2.5 py-1 bg-[#FDE8EF] text-[#B0145D] text-[13px] font-bold rounded-full">
+                5/6
+              </span>
+<span class="font-bold text-[16px] text-[#B0145D] min-w-[32px] text-right">
+                +25
+              </span>
+</div>
+</div>
+<!-- Row 2: Ama -->
+<div class="py-3.5 flex items-center justify-between" data-purpose="participant-item">
+<div class="flex items-center space-x-3">
+<div class="w-11 h-11 rounded-full bg-[#2E9B5F] flex items-center justify-center text-white font-bold text-base shadow-sm">
+                A
+              </div>
+<div class="flex flex-col text-left">
+<span class="font-bold text-[15px] text-neutral-900">Ama</span>
+<span class="text-xs italic text-neutral-500 font-medium">Reine des flashcards</span>
+</div>
+</div>
+<div class="flex items-center space-x-4">
+<span class="px-2.5 py-1 bg-[#FDE8EF] text-[#B0145D] text-[13px] font-bold rounded-full">
+                6/6
+              </span>
+<span class="font-bold text-[16px] text-[#B0145D] min-w-[32px] text-right">
+                +30
+              </span>
+</div>
+</div>
+<!-- Row 3: David -->
+<div class="py-3.5 flex items-center justify-between" data-purpose="participant-item">
+<div class="flex items-center space-x-3">
+<div class="w-11 h-11 rounded-full bg-[#DEA329] flex items-center justify-center text-white font-bold text-base shadow-sm">
+                D
+              </div>
+<div class="flex flex-col text-left">
+<span class="font-bold text-[15px] text-neutral-900">David</span>
+<span class="text-xs italic text-neutral-500 font-medium">Le lève-tôt</span>
+</div>
+</div>
+<div class="flex items-center space-x-4">
+<span class="px-2.5 py-1 bg-[#FDE8EF] text-[#B0145D] text-[13px] font-bold rounded-full">
+                4/6
+              </span>
+<span class="font-bold text-[16px] text-[#B0145D] min-w-[32px] text-right">
+                +20
+              </span>
+</div>
+</div>
+<!-- Row 4: Noé -->
+<div class="py-3.5 flex items-center justify-between" data-purpose="participant-item">
+<div class="flex items-center space-x-3">
+<div class="w-11 h-11 rounded-full bg-[#7D52B7] flex items-center justify-center text-white font-bold text-base shadow-sm">
+                N
+              </div>
+<div class="flex flex-col text-left">
+<span class="font-bold text-[15px] text-neutral-900">Noé</span>
+<span class="text-xs italic text-neutral-500 font-medium">Petit mais costaud</span>
+</div>
+</div>
+<div class="flex items-center space-x-4">
+<span class="px-2.5 py-1 bg-[#FDE8EF] text-[#B0145D] text-[13px] font-bold rounded-full">
+                3/6
+              </span>
+<span class="font-bold text-[16px] text-[#B0145D] min-w-[32px] text-right">
+                +15
+              </span>
+</div>
+</div>
+</div>
+<!-- Team Bonus Footer -->
+<div class="pt-4 mt-1 border-t border-neutral-100 flex items-center justify-between" data-purpose="team-bonus">
+<span class="font-bold text-[15px] text-neutral-900 tracking-tight">
+            Bonus d’équipe
+          </span>
+<span class="px-3.5 py-1.5 bg-[#DCF5E3] text-[#1E7E34] text-[13px] font-bold rounded-full shadow-2xs">
+            +10 chacun
+          </span>
+</div>
+</section>
+<!-- END: PointsListCard -->
+<!-- BEGIN: InfoBadgeCard -->
+<section class="bg-white rounded-[22px] p-4 shadow-card border border-neutral-100 flex items-center space-x-3.5" data-purpose="highlight-card">
+<!-- Marc avatar clone -->
+<div class="w-11 h-11 min-w-[44px] rounded-full bg-[#2A75D3] flex items-center justify-center text-white font-bold text-base shadow-sm">
+          M
+        </div>
+<div class="flex flex-col text-left">
+<span class="font-bold text-[15px] text-neutral-900 leading-snug">
+            Marc passe 2e
+          </span>
+<span class="text-xs text-neutral-500 font-normal leading-relaxed">
+            Il dépasse Ama au classement de la semaine
+          </span>
+</div>
+</section>
+<!-- END: InfoBadgeCard -->
+</div>
+<!-- BEGIN: BottomActions -->
+<footer class="flex flex-col space-y-3 pt-2" data-purpose="cta-buttons">
+<!-- Primary Action -->
+<button class="w-full h-14 bg-[#C7136D] hover:bg-[#B01060] active:scale-[0.98] transition duration-150 rounded-full text-white font-bold text-base shadow-button flex items-center justify-center" type="button">
+        Nouvelle session
+      </button>
+<!-- Secondary Action -->
+<button class="w-full h-12 bg-transparent hover:bg-neutral-100 active:scale-[0.98] transition duration-150 rounded-full border border-neutral-200 text-neutral-800 font-semibold text-sm flex items-center justify-center" type="button">
+        Retour à la famille
+      </button>
+</footer>
+<!-- END: BottomActions -->
+</main>
+</body></html>

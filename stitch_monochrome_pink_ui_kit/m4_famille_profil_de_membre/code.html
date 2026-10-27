@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+
+<html lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>Mon profil - Famille</title>
+<!-- Tailwind CSS CDN with plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts: Newsreader / Playfair Display for serif headings & Inter for sans-serif text -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&amp;family=Lora:ital,wght@0,600;0,700;1,400;1,500&amp;display=swap" rel="stylesheet"/>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+            serif: ['Lora', 'Georgia', 'serif'],
+          },
+          colors: {
+            brand: {
+              magenta: '#d81b7a',
+              magentaDark: '#c2185b',
+              lightBg: '#fbf9f9',
+            }
+          },
+          boxShadow: {
+            'soft': '0 4px 20px -2px rgba(216, 27, 122, 0.08), 0 2px 6px -1px rgba(0, 0, 0, 0.03)',
+            'btn': '0 10px 25px -4px rgba(216, 27, 122, 0.45)',
+          }
+        }
+      }
+    }
+  </script>
+<style data-purpose="custom-styling">
+    body {
+      background-color: #f7f6f7;
+      -webkit-tap-highlight-color: transparent;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .cursor-blink {
+      display: inline-block;
+      width: 2px;
+      height: 1.15em;
+      background-color: #d81b7a;
+      vertical-align: middle;
+      margin-left: 1px;
+      animation: blink 1.1s infinite cubic-bezier(1, 0, 0, 1);
+    }
+    @keyframes blink {
+      0%, 49% { opacity: 1; }
+      50%, 100% { opacity: 0; }
+    }
+  </style>
+</head>
+<body class="flex justify-center min-h-screen text-slate-800 antialiased selection:bg-pink-100 selection:text-brand-magenta">
+<!-- BEGIN: MobileDeviceContainer -->
+<main class="w-full max-w-[390px] min-h-screen flex flex-col justify-between px-5 pt-3 pb-8 relative bg-[#fdfbfb]" data-purpose="mobile-screen-wrapper">
+<!-- BEGIN: TopSection -->
+<div class="w-full flex flex-col">
+<!-- BEGIN: StatusBar -->
+<header class="flex justify-between items-center text-xs font-semibold px-2 pt-1 pb-2 tracking-tight text-black" data-purpose="status-bar">
+<span>9:41</span>
+<div class="flex items-center space-x-1.5 text-black">
+<span class="text-[11px] font-bold tracking-tighter">5G</span>
+<!-- Signal Icon Bars -->
+<div class="flex items-end space-x-0.5 h-3">
+<span class="w-1 h-1.5 bg-black rounded-2xs"></span>
+<span class="w-1 h-2.5 bg-black rounded-2xs"></span>
+<span class="w-1 h-3 bg-black rounded-2xs"></span>
+</div>
+</div>
+</header>
+<!-- END: StatusBar -->
+<!-- BEGIN: NavigationBar -->
+<nav aria-label="Navigation supérieure" class="flex items-center justify-between mt-2 mb-4" data-purpose="app-bar">
+<!-- Back Button -->
+<button aria-label="Retour" class="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center text-slate-700 hover:bg-slate-50 transition-colors" type="button">
+<svg class="w-4 h-4 stroke-[2.5]" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M15 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+<!-- Screen Title & Progress Step -->
+<div class="text-center">
+<h1 class="font-serif text-[21px] font-bold tracking-tight text-slate-900 leading-tight">Mon profil</h1>
+<p class="text-[11.5px] font-medium text-slate-500 mt-0.5">Étape 2 sur 2</p>
+</div>
+<!-- Options More Menu Button -->
+<button aria-label="Options supplémentaires" class="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center text-slate-800 hover:bg-slate-50 transition-colors" type="button">
+<svg class="w-5 h-5" fill="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M6 12a2 2 0 11-4 0 2 2 0 014 0zm8 0a2 2 0 11-4 0 2 2 0 014 0zm8 0a2 2 0 11-4 0 2 2 0 014 0z"></path>
+</svg>
+</button>
+</nav>
+<!-- END: NavigationBar -->
+<!-- BEGIN: MainAvatarDisplay -->
+<section class="flex flex-col items-center justify-center my-2" data-purpose="avatar-preview-section">
+<div class="w-24 h-24 rounded-full bg-[#d81b7a] flex items-center justify-center shadow-md">
+<span class="text-white text-5xl font-bold font-sans select-none tracking-tight">L</span>
+</div>
+</section>
+<!-- END: MainAvatarDisplay -->
+<!-- BEGIN: ColorPickerRow -->
+<section aria-label="Choisir une couleur pour l'avatar" class="flex items-center justify-between px-2.5 my-3" data-purpose="avatar-palette">
+<!-- Magenta Active -->
+<button aria-label="Couleur Rose Magenta sélectionnée" class="w-11 h-11 rounded-full p-[2px] border-2 border-[#d81b7a] flex items-center justify-center focus:outline-none" type="button">
+<span class="w-full h-full rounded-full bg-[#d81b7a] block"></span>
+</button>
+<!-- Blue -->
+<button aria-label="Couleur Bleu" class="w-10 h-10 rounded-full bg-[#357be6] hover:opacity-90 transition-opacity focus:outline-none" type="button">
+</button>
+<!-- Green -->
+<button aria-label="Couleur Vert" class="w-10 h-10 rounded-full bg-[#27ae60] hover:opacity-90 transition-opacity focus:outline-none" type="button">
+</button>
+<!-- Yellow / Ochre -->
+<button aria-label="Couleur Ocre" class="w-10 h-10 rounded-full bg-[#dc9622] hover:opacity-90 transition-opacity focus:outline-none" type="button">
+</button>
+<!-- Purple -->
+<button aria-label="Couleur Violet" class="w-10 h-10 rounded-full bg-[#7952c4] hover:opacity-90 transition-opacity focus:outline-none" type="button">
+</button>
+<!-- Black / Charcoal -->
+<button aria-label="Couleur Noir" class="w-10 h-10 rounded-full bg-[#222324] hover:opacity-90 transition-opacity focus:outline-none" type="button">
+</button>
+</section>
+<!-- END: ColorPickerRow -->
+<!-- BEGIN: FormFieldsSection -->
+<section class="flex flex-col gap-3.5 mt-2" data-purpose="profile-details-form">
+<!-- Prénom Field Card -->
+<div class="bg-white rounded-[22px] px-5 py-4 shadow-soft border border-slate-100/70" data-purpose="first-name-card">
+<label class="block text-[11px] font-extrabold uppercase tracking-wider text-[#b82167]">
+            Prénom
+          </label>
+<div class="mt-1 text-slate-900 text-lg font-medium leading-tight">
+            Léa
+          </div>
+</div>
+<!-- Alias / Role Field Card -->
+<div class="bg-white rounded-[22px] px-5 pt-4 pb-4 shadow-soft border border-slate-100/70" data-purpose="role-card">
+<div class="flex justify-between items-center text-[11px]">
+<span class="font-extrabold uppercase tracking-wider text-[#b82167]">
+              Mon rôle (alias)
+            </span>
+<span class="text-slate-500 font-medium tracking-tight">
+              23 / 30
+            </span>
+</div>
+<!-- Input simulation with pink bottom border & blinking cursor -->
+<div class="mt-2 pb-1.5 border-b-[2px] border-[#d81b7a] flex items-center">
+<span class="font-serif italic text-[19px] text-slate-800 leading-normal tracking-tight">
+              Gardienne du Psaume 23
+            </span>
+<span class="cursor-blink"></span>
+</div>
+<!-- Helper description -->
+<p class="text-xs text-slate-500 mt-2.5 font-normal leading-relaxed">
+            Écris le rôle que tu veux : il apparaît sous ton prénom.
+          </p>
+</div>
+<!-- Profil Preview Card -->
+<div class="bg-white rounded-[22px] px-5 py-4 shadow-soft border border-slate-100/70" data-purpose="member-preview-card">
+<h2 class="text-[11px] font-extrabold uppercase tracking-wider text-[#b82167] mb-3">
+            Aperçu
+          </h2>
+<div class="flex items-center space-x-3.5">
+<!-- Small Avatar Badge -->
+<div class="w-12 h-12 rounded-full bg-[#d81b7a] flex items-center justify-center flex-shrink-0">
+<span class="text-white text-xl font-bold font-sans">L</span>
+</div>
+<!-- Profile Info Labels -->
+<div class="flex flex-col">
+<span class="text-[15px] font-bold text-slate-900 leading-tight">
+                Léa
+              </span>
+<span class="text-[13px] font-serif italic text-slate-500 mt-0.5">
+                Gardienne du Psaume 23
+              </span>
+</div>
+</div>
+</div>
+</section>
+<!-- END: FormFieldsSection -->
+</div>
+<!-- END: TopSection -->
+<!-- BEGIN: BottomActionSection -->
+<footer class="w-full pt-6 pb-2" data-purpose="primary-action-container">
+<button class="w-full bg-[#d81b7a] active:bg-[#c2185b] text-white font-bold text-base py-4 rounded-full shadow-btn transition duration-150 ease-in-out text-center focus:outline-none" type="button">
+        Enregistrer
+      </button>
+</footer>
+<!-- END: BottomActionSection -->
+</main>
+<!-- END: MobileDeviceContainer -->
+</body></html>

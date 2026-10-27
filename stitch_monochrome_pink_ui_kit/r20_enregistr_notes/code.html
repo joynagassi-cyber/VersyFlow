@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+
+<html class="h-full bg-[#fbf9f9]" lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>R20 — Enregistré — Notes</title>
+<!-- Tailwind CSS v3 with Plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts: Inter for UI & Playfair Display / Source Serif 4 for Scripture -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600&amp;family=Inter:wght@400;500;600;700&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&amp;display=swap" rel="stylesheet"/>
+<script data-purpose="tailwind-config">
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              rose: '#c81e5b',
+              roselight: '#fde8ef',
+              textRose: '#b71550',
+            },
+            ios: {
+              bg: '#fcfaf9',
+              pill: '#efeeea',
+              pillActive: '#e6e4df',
+              cardBg: '#ffffff',
+              noteBox: '#f5f4f0',
+              subtext: '#83827e',
+              border: '#eeede9',
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+            serif: ['Newsreader', 'Georgia', 'serif'],
+          }
+        }
+      }
+    };
+  </script>
+<style data-purpose="custom-styling">
+    /* Custom fine adjustments for iOS aesthetics */
+    body {
+      -webkit-tap-highlight-color: transparent;
+      -webkit-font-smoothing: antialiased;
+    }
+    .custom-shadow {
+      box-shadow: 0 4px 20px -2px rgba(220, 215, 210, 0.45), 0 1px 3px rgba(0, 0, 0, 0.03);
+    }
+  </style>
+</head>
+<body class="h-full font-sans text-neutral-900 bg-[#fbf9f9] flex justify-center selection:bg-brand-roselight">
+<!-- Mobile Screen Shell -->
+<div class="w-full max-w-[430px] min-h-screen bg-[#fcfaf9] flex flex-col relative pb-24 shadow-2xl">
+<!-- BEGIN: iOSStatusBar -->
+<header class="w-full pt-3 px-7 flex justify-between items-center text-[15px] font-semibold tracking-tight text-neutral-900 select-none" data-purpose="ios-status-bar">
+<span class="pl-1 font-semibold text-[15px]">9:41</span>
+<div class="flex items-center space-x-1.5 text-xs">
+<span class="text-[12px] font-bold tracking-tighter mr-0.5">5G</span>
+<!-- Cellular Signal Bars -->
+<div aria-label="Signal 3 bars" class="flex items-end space-x-[2px] h-3 mr-1">
+<span class="w-[3px] h-[4px] bg-neutral-900 rounded-[0.5px]"></span>
+<span class="w-[3px] h-[7px] bg-neutral-900 rounded-[0.5px]"></span>
+<span class="w-[3px] h-[10px] bg-neutral-900 rounded-[0.5px]"></span>
+<span class="w-[3px] h-[12px] bg-neutral-900 rounded-[0.5px]"></span>
+</div>
+<!-- Battery Icon -->
+<div class="w-[22px] h-[11px] border border-neutral-900 rounded-[3px] p-[1px] flex items-center">
+<div class="w-full h-full bg-neutral-900 rounded-[1.5px]"></div>
+</div>
+</div>
+</header>
+<!-- END: iOSStatusBar -->
+<!-- BEGIN: TopNavigationBar -->
+<nav class="px-5 pt-3 pb-1 flex items-center justify-between" data-purpose="top-navigation">
+<!-- Back button and section name -->
+<button aria-label="Retour" class="flex items-center space-x-2 text-neutral-900 active:opacity-60 transition" type="button">
+<svg class="w-5 h-5 stroke-[2.4]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M15 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[19px] font-medium tracking-tight">Enregistré</span>
+</button>
+<!-- Add Note Action -->
+<button aria-label="Ajouter une note" class="p-1 text-neutral-900 hover:opacity-70 active:scale-95 transition" type="button">
+<svg class="w-6 h-6 stroke-[2]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M12 4.5v15m7.5-7.5h-15" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+</nav>
+<!-- END: TopNavigationBar -->
+<!-- BEGIN: PageHeader -->
+<section class="px-5 pt-2 pb-3" data-purpose="header-title">
+<h1 class="text-[34px] font-bold tracking-tight text-neutral-900 leading-tight">Notes</h1>
+<!-- Filter Dropdowns / Pills -->
+<div class="flex items-center space-x-2.5 mt-3.5">
+<!-- Étiquette filter button -->
+<button class="flex items-center space-x-1.5 bg-[#eceae5] active:bg-[#e2e0da] transition rounded-full px-4 py-2 text-[14.5px] font-medium text-neutral-800" type="button">
+<span>Étiquette</span>
+<svg class="w-3.5 h-3.5 fill-current text-neutral-700 mt-0.5" viewbox="0 0 20 20">
+<path clip-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" fill-rule="evenodd"></path>
+</svg>
+</button>
+<!-- Livre filter button -->
+<button class="flex items-center space-x-1.5 bg-[#eceae5] active:bg-[#e2e0da] transition rounded-full px-4 py-2 text-[14.5px] font-medium text-neutral-800" type="button">
+<span>Livre</span>
+<svg class="w-3.5 h-3.5 fill-current text-neutral-700 mt-0.5" viewbox="0 0 20 20">
+<path clip-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" fill-rule="evenodd"></path>
+</svg>
+</button>
+</div>
+</section>
+<!-- END: PageHeader -->
+<!-- BEGIN: NotesList -->
+<main class="flex-1 px-4 space-y-4 pt-1" data-purpose="notes-feed">
+<!-- NOTE CARD 1: Psaumes 23:1 -->
+<article class="bg-white rounded-[26px] p-5 custom-shadow border border-neutral-100 flex flex-col space-y-4" data-purpose="note-card">
+<!-- Header: User Avatar, Title, Privacy, Timestamp -->
+<div class="flex items-start justify-between">
+<div class="flex items-center space-x-3">
+<!-- User Avatar Circle -->
+<div class="w-10 h-10 rounded-full border border-neutral-900 flex items-center justify-center font-sans font-medium text-[16px] text-neutral-900 bg-white">
+              J
+            </div>
+<div>
+<div class="text-[14.5px] text-neutral-900 leading-snug">
+<span class="text-neutral-700">Note ajoutée ·</span> <span class="font-bold">Psaumes 23:1</span>
+</div>
+<div class="flex items-center space-x-1 text-neutral-500 text-[12.5px] mt-0.5">
+<!-- Tiny Lock Icon -->
+<svg class="w-3 h-3 text-neutral-500" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span>Privé</span>
+</div>
+</div>
+</div>
+<!-- Relative Time -->
+<span class="text-[12.5px] text-neutral-500 font-normal pt-0.5">5 sem</span>
+</div>
+<!-- Scripture Quote with Left Vertical Line -->
+<div class="border-l-[2px] border-neutral-900 pl-3.5 py-0.5 space-y-2">
+<blockquote class="font-serif text-[18px] text-neutral-900 leading-[1.38] font-normal tracking-[-0.01em]">
+<sup class="text-[11px] font-sans font-medium top-[-0.4em] mr-0.5 text-neutral-700">1</sup> L’Éternel est mon berger : je ne manquerai de rien.
+          </blockquote>
+<div class="text-[13px] font-bold text-neutral-900 tracking-tight">
+            Psaumes 23:1 LSG
+          </div>
+</div>
+<!-- Note Text Container Box -->
+<div class="bg-[#f3f2ee] rounded-[18px] p-3.5 text-[14.5px] text-neutral-800 leading-relaxed font-normal">
+          Me rappeler qu’il pourvoit à tout, même quand je ne vois pas comment.
+        </div>
+<!-- Bottom Actions (Memorize Pill & More Options) -->
+<div class="flex items-center justify-between pt-0.5">
+<button class="inline-flex items-center space-x-1.5 bg-[#fae8ee] hover:bg-[#f6d7e2] active:scale-98 transition rounded-full px-3.5 py-1.5" type="button">
+<!-- Layers / Memorize Icon -->
+<svg class="w-3.5 h-3.5 text-brand-rose stroke-[2.2]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M12 3L2 8.5L12 14L22 8.5L12 3Z" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M2 12.5L12 18L22 12.5" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[13px] font-semibold text-brand-textRose tracking-tight">Mémoriser</span>
+</button>
+<!-- More Options "..." -->
+<button aria-label="Options" class="p-1 text-neutral-800 hover:text-black active:opacity-60 transition" type="button">
+<svg class="w-5 h-5 fill-current" viewbox="0 0 24 24">
+<circle cx="5" cy="12" r="2"></circle>
+<circle cx="12" cy="12" r="2"></circle>
+<circle cx="19" cy="12" r="2"></circle>
+</svg>
+</button>
+</div>
+</article>
+<!-- NOTE CARD 2: Philippiens 4:13 -->
+<article class="bg-white rounded-[26px] p-5 custom-shadow border border-neutral-100 flex flex-col space-y-4" data-purpose="note-card">
+<!-- Header: User Avatar, Title, Privacy, Timestamp -->
+<div class="flex items-start justify-between">
+<div class="flex items-center space-x-3">
+<div class="w-10 h-10 rounded-full border border-neutral-900 flex items-center justify-center font-sans font-medium text-[16px] text-neutral-900 bg-white">
+              J
+            </div>
+<div>
+<div class="text-[14.5px] text-neutral-900 leading-snug">
+<span class="text-neutral-700">Note ajoutée ·</span> <span class="font-bold">Philippiens 4:13</span>
+</div>
+<div class="flex items-center space-x-1 text-neutral-500 text-[12.5px] mt-0.5">
+<!-- Tiny Lock Icon -->
+<svg class="w-3 h-3 text-neutral-500" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span>Privé</span>
+</div>
+</div>
+</div>
+<span class="text-[12.5px] text-neutral-500 font-normal pt-0.5">9 sem</span>
+</div>
+<!-- Scripture Quote with Left Vertical Line -->
+<div class="border-l-[2px] border-neutral-900 pl-3.5 py-0.5 space-y-2">
+<blockquote class="font-serif text-[18px] text-neutral-900 leading-[1.38] font-normal tracking-[-0.01em]">
+<sup class="text-[11px] font-sans font-medium top-[-0.4em] mr-0.5 text-neutral-700">13</sup> Je puis tout par celui qui me fortifie.
+          </blockquote>
+<div class="text-[13px] font-bold text-neutral-900 tracking-tight">
+            Philippiens 4:13 LSG
+          </div>
+</div>
+<!-- Note Text Container Box -->
+<div class="bg-[#f3f2ee] rounded-[18px] p-3.5 text-[14.5px] text-neutral-800 leading-relaxed font-normal">
+          Verset du lundi matin.
+        </div>
+<!-- Bottom Actions (Memorize Pill & More Options) -->
+<div class="flex items-center justify-between pt-0.5">
+<button class="inline-flex items-center space-x-1.5 bg-[#fae8ee] hover:bg-[#f6d7e2] active:scale-98 transition rounded-full px-3.5 py-1.5" type="button">
+<!-- Layers / Memorize Icon -->
+<svg class="w-3.5 h-3.5 text-brand-rose stroke-[2.2]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M12 3L2 8.5L12 14L22 8.5L12 3Z" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M2 12.5L12 18L22 12.5" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[13px] font-semibold text-brand-textRose tracking-tight">Mémoriser</span>
+</button>
+<!-- More Options "..." -->
+<button aria-label="Options" class="p-1 text-neutral-800 hover:text-black active:opacity-60 transition" type="button">
+<svg class="w-5 h-5 fill-current" viewbox="0 0 24 24">
+<circle cx="5" cy="12" r="2"></circle>
+<circle cx="12" cy="12" r="2"></circle>
+<circle cx="19" cy="12" r="2"></circle>
+</svg>
+</button>
+</div>
+</article>
+</main>
+<!-- END: NotesList -->
+<!-- BEGIN: BottomTabBar -->
+<footer class="fixed bottom-0 max-w-[430px] w-full bg-white/95 backdrop-blur-md border-t border-neutral-200/70 z-50 px-2 pt-2 pb-6" data-purpose="tab-bar-navigation">
+<div class="grid grid-cols-5 text-center">
+<!-- Tab: Accueil -->
+<a class="flex flex-col items-center justify-center space-y-1 text-neutral-800 hover:opacity-80 active:scale-95 transition" href="#">
+<svg class="w-6 h-6 stroke-[1.8]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[10px] font-medium tracking-tight">Accueil</span>
+</a>
+<!-- Tab: Bible -->
+<a class="flex flex-col items-center justify-center space-y-1 text-neutral-800 hover:opacity-80 active:scale-95 transition" href="#">
+<svg class="w-6 h-6 stroke-[1.8]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<rect height="16" rx="2" stroke-linecap="round" stroke-linejoin="round" width="14" x="5" y="4"></rect>
+<line stroke-linecap="round" stroke-linejoin="round" x1="9" x2="9" y1="4" y2="20"></line>
+</svg>
+<span class="text-[10px] font-medium tracking-tight">Bible</span>
+</a>
+<!-- Tab: Mémoriser -->
+<a class="flex flex-col items-center justify-center space-y-1 text-neutral-800 hover:opacity-80 active:scale-95 transition" href="#">
+<svg class="w-6 h-6 stroke-[1.8]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M12 3L2 8.5L12 14L22 8.5L12 3Z" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M2 13L12 18.5L22 13" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[10px] font-medium tracking-tight">Mémoriser</span>
+</a>
+<!-- Tab: Progrès (Active) -->
+<a class="flex flex-col items-center justify-center space-y-1 text-brand-textRose active:scale-95 transition" href="#">
+<svg class="w-6 h-6 stroke-[2]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<line stroke-linecap="round" stroke-linejoin="round" x1="18" x2="18" y1="20" y2="10"></line>
+<line stroke-linecap="round" stroke-linejoin="round" x1="12" x2="12" y1="20" y2="4"></line>
+<line stroke-linecap="round" stroke-linejoin="round" x1="6" x2="6" y1="20" y2="14"></line>
+</svg>
+<span class="text-[10px] font-bold tracking-tight">Progrès</span>
+</a>
+<!-- Tab: Réglages -->
+<a class="flex flex-col items-center justify-center space-y-1 text-neutral-800 hover:opacity-80 active:scale-95 transition" href="#">
+<svg class="w-6 h-6 stroke-[1.8]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M12 3v2m0 14v2m9-9h-2M5 12H3m15.364 6.364l-1.414-1.414M7.05 7.05L5.636 5.636m12.728 0l-1.414 1.414M7.05 16.95l-1.414 1.414" stroke-linecap="round" stroke-linejoin="round"></path>
+<circle cx="12" cy="12" r="3"></circle>
+</svg>
+<span class="text-[10px] font-medium tracking-tight">Réglages</span>
+</a>
+</div>
+<!-- iOS Home Indicator bar -->
+<div class="w-32 h-1 bg-neutral-900 rounded-full mx-auto mt-4 mb-0.5 opacity-80"></div>
+</footer>
+<!-- END: BottomTabBar -->
+</div>
+</body></html>

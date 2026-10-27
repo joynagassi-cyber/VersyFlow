@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+
+<html class="h-full bg-[#fbf9fa]" lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>T4 — Arbre — Détail d’un nœud</title>
+<!-- Tailwind CSS CDN with plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration -->
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            app: {
+              bg: '#fbf9fa',
+              magenta: '#d41477',
+              lightPink: '#fce7f0',
+              borderPink: '#f3c4db',
+              textMain: '#1e1c24',
+              textMuted: '#6d6978',
+              badgeBg: '#f2eef1',
+              cardBg: '#ffffff',
+            }
+          },
+          fontFamily: {
+            serif: ['Georgia', 'Cambria', '"Times New Roman"', 'serif'],
+            sans: ['-apple-system', 'BlinkMacSystemFont', '"SF Pro Text"', '"SF Pro Display"', 'Helvetica Neue', 'Arial', 'sans-serif'],
+          }
+        }
+      }
+    };
+  </script>
+<!-- Lucide Icons -->
+<script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="h-full font-sans antialiased text-app-textMain bg-[#fbf9fa] flex flex-col justify-between selection:bg-pink-100 selection:text-app-magenta">
+<!-- BEGIN: MainContainer -->
+<div class="flex-1 flex flex-col max-w-md mx-auto w-full pb-24">
+<!-- BEGIN: StatusBar -->
+<div class="pt-3 px-7 flex justify-between items-center text-sm font-semibold select-none" data-purpose="status-bar">
+<span>9:41</span>
+<div class="flex items-center space-x-1.5 text-xs font-bold">
+<span>5G</span>
+<!-- Cellular Signal Icon -->
+<div class="flex items-end space-x-0.5 h-3">
+<div class="w-1 h-1.5 bg-black rounded-xs"></div>
+<div class="w-1 h-2 bg-black rounded-xs"></div>
+<div class="w-1 h-2.5 bg-black rounded-xs"></div>
+</div>
+</div>
+</div>
+<!-- END: StatusBar -->
+<!-- BEGIN: TopNavigation -->
+<header class="px-5 pt-3 pb-3 flex items-center justify-between" data-purpose="top-navigation">
+<!-- Back Button -->
+<button aria-label="Retour" class="w-10 h-10 rounded-full bg-white border border-gray-100 shadow-sm flex items-center justify-center text-gray-700 active:scale-95 transition-transform" type="button">
+<i class="w-5 h-5 -ml-0.5" data-lucide="chevron-left"></i>
+</button>
+<!-- Center Title -->
+<div class="text-center">
+<h1 class="font-serif font-bold text-2xl text-app-textMain leading-tight">Pardon</h1>
+<p class="text-xs text-app-textMuted tracking-tight mt-0.5">Dans l’arbre Amour</p>
+</div>
+<!-- Action Options Button -->
+<button aria-label="Options" class="w-10 h-10 rounded-full bg-white border border-gray-100 shadow-sm flex items-center justify-center text-gray-700 active:scale-95 transition-transform" type="button">
+<i class="w-5 h-5" data-lucide="more-horizontal"></i>
+</button>
+</header>
+<!-- END: TopNavigation -->
+<!-- BEGIN: BreadcrumbRelation -->
+<section class="px-5 py-2 flex items-center space-x-2 text-sm" data-purpose="node-relation-path">
+<span class="px-3.5 py-1 rounded-full bg-app-lightPink text-[#b51465] font-semibold text-xs tracking-wide">
+        Amour
+      </span>
+<span class="text-xs text-[#524e5d] font-normal">produit →</span>
+<span class="px-3.5 py-1 rounded-full bg-app-magenta text-white font-semibold text-xs tracking-wide shadow-xs">
+        Pardon
+      </span>
+</section>
+<!-- END: BreadcrumbRelation -->
+<!-- BEGIN: ContentCards -->
+<main class="px-4 space-y-3.5 mt-2 flex-1" data-purpose="node-details">
+<!-- BEGIN: SolidityCard -->
+<section class="bg-white rounded-3xl p-5 border border-pink-50/60 shadow-[0_4px_20px_-4px_rgba(230,220,230,0.5)] flex items-center justify-between" data-purpose="solidity-overview">
+<div>
+<span class="block text-[11px] font-bold tracking-wider text-app-magenta uppercase">
+            Solidité
+          </span>
+<h2 class="font-serif font-bold text-2xl text-app-textMain mt-0.5">
+            Branche
+          </h2>
+<p class="text-xs text-app-textMuted mt-1">
+            Score 8 · 2 versets à toi
+          </p>
+</div>
+<!-- Gauge Component -->
+<div class="relative w-16 h-16 flex items-center justify-center" data-purpose="score-gauge">
+<svg class="w-16 h-16 -rotate-90 transform" viewbox="0 0 64 64">
+<!-- Background track -->
+<circle cx="32" cy="32" fill="none" r="26" stroke="#fce7f0" stroke-width="5"></circle>
+<!-- Progress stroke (approx 80%) -->
+<circle cx="32" cy="32" fill="none" r="26" stroke="#d41477" stroke-dasharray="163.36" stroke-dashoffset="32.67" stroke-linecap="round" stroke-width="5"></circle>
+</svg>
+<span class="absolute font-bold text-lg text-app-textMain">8</span>
+</div>
+</section>
+<!-- END: SolidityCard -->
+<!-- BEGIN: ReasonsCard -->
+<section class="bg-white rounded-3xl p-5 border border-pink-50/60 shadow-[0_4px_20px_-4px_rgba(230,220,230,0.5)]" data-purpose="why-link-section">
+<h3 class="text-[11px] font-bold tracking-wider text-app-magenta uppercase pb-3 border-b border-gray-100">
+          Pourquoi ce lien
+        </h3>
+<!-- Reasons List -->
+<div class="divide-y divide-gray-100/80">
+<!-- Item 1 -->
+<div class="py-3 flex items-center justify-between gap-2">
+<span class="font-serif font-bold text-[17px] text-app-textMain">Colossiens 3:13</span>
+<span class="px-2.5 py-1 rounded-full bg-app-badgeBg text-stone-700 text-[11px] font-medium tracking-tight whitespace-nowrap">
+              Tes versets · lexique
+            </span>
+</div>
+<!-- Item 2 -->
+<div class="py-3 flex items-center justify-between gap-2">
+<span class="font-serif font-bold text-[17px] text-app-textMain">Éphésiens 4:32</span>
+<span class="px-2.5 py-1 rounded-full bg-app-badgeBg text-stone-700 text-[11px] font-medium tracking-tight whitespace-nowrap">
+              Tes versets
+            </span>
+</div>
+<!-- Item 3 -->
+<div class="py-3 flex items-center justify-between gap-2">
+<span class="font-serif font-bold text-[17px] text-app-textMain">Matthieu 6:14</span>
+<span class="px-2.5 py-1 rounded-full bg-app-badgeBg text-stone-700 text-[11px] font-medium tracking-tight whitespace-nowrap">
+              Référence croisée
+            </span>
+</div>
+<!-- Item 4 -->
+<div class="pt-3 flex items-center justify-between gap-2">
+<span class="font-serif font-bold text-[17px] text-app-textMain">Ontologie</span>
+<span class="px-2.5 py-1 rounded-full bg-app-badgeBg text-stone-700 text-[11px] font-medium tracking-tight whitespace-nowrap">
+              Amour produit Pardon
+            </span>
+</div>
+</div>
+</section>
+<!-- END: ReasonsCard -->
+<!-- BEGIN: SubBranchesCard -->
+<section class="bg-white rounded-3xl p-5 border border-pink-50/60 shadow-[0_4px_20px_-4px_rgba(230,220,230,0.5)]" data-purpose="sub-branches-section">
+<h3 class="text-[11px] font-bold tracking-wider text-app-magenta uppercase mb-3">
+          Sous-branches
+        </h3>
+<div class="flex flex-wrap gap-2.5">
+<span class="px-3.5 py-1.5 rounded-full border border-dashed border-[#b3abb0] text-app-textMain text-xs font-medium">
+            Grâce
+          </span>
+<span class="px-3.5 py-1.5 rounded-full border border-dashed border-[#b3abb0] text-app-textMain text-xs font-medium">
+            Réconciliation
+          </span>
+</div>
+</section>
+<!-- END: SubBranchesCard -->
+<!-- BEGIN: ActionButtons -->
+<section class="grid grid-cols-2 gap-3 pt-2" data-purpose="primary-actions">
+<!-- Secondary Button -->
+<button class="w-full py-3.5 px-3 rounded-full bg-white border border-gray-200 text-app-textMain font-medium text-[14px] text-center shadow-xs active:bg-gray-50 transition-colors" type="button">
+          Ajouter un verset
+        </button>
+<!-- Primary Button -->
+<button class="w-full py-3.5 px-3 rounded-full bg-app-magenta text-white font-semibold text-[14px] text-center shadow-[0_6px_20px_rgba(212,20,119,0.35)] active:opacity-90 transition-opacity" type="button">
+          Réviser ce nœud
+        </button>
+</section>
+<!-- END: ActionButtons -->
+</main>
+<!-- END: ContentCards -->
+</div>
+<!-- END: MainContainer -->
+<!-- BEGIN: BottomTabBar -->
+<nav class="fixed bottom-0 inset-x-0 bg-white/95 backdrop-blur-md border-t border-gray-100 z-50 py-2 pb-6 max-w-md mx-auto" data-purpose="tab-bar">
+<div class="grid grid-cols-5 text-center">
+<!-- Tab 1: Active -->
+<a class="flex flex-col items-center justify-center text-app-magenta py-1" href="#">
+<i class="w-5 h-5 mb-1 stroke-[2.2]" data-lucide="home"></i>
+<span class="text-[10px] font-semibold tracking-tight">Accueil</span>
+</a>
+<!-- Tab 2 -->
+<a class="flex flex-col items-center justify-center text-gray-700 py-1 hover:text-gray-900 transition-colors" href="#">
+<i class="w-5 h-5 mb-1 stroke-[1.8]" data-lucide="book-open"></i>
+<span class="text-[10px] font-medium tracking-tight">Bible</span>
+</a>
+<!-- Tab 3 -->
+<a class="flex flex-col items-center justify-center text-gray-700 py-1 hover:text-gray-900 transition-colors" href="#">
+<i class="w-5 h-5 mb-1 stroke-[1.8]" data-lucide="layers"></i>
+<span class="text-[10px] font-medium tracking-tight">Mémoriser</span>
+</a>
+<!-- Tab 4 -->
+<a class="flex flex-col items-center justify-center text-gray-700 py-1 hover:text-gray-900 transition-colors" href="#">
+<i class="w-5 h-5 mb-1 stroke-[1.8]" data-lucide="bar-chart-2"></i>
+<span class="text-[10px] font-medium tracking-tight">Progrès</span>
+</a>
+<!-- Tab 5 -->
+<a class="flex flex-col items-center justify-center text-gray-700 py-1 hover:text-gray-900 transition-colors" href="#">
+<i class="w-5 h-5 mb-1 stroke-[1.8]" data-lucide="sun"></i>
+<span class="text-[10px] font-medium tracking-tight">Réglages</span>
+</a>
+</div>
+</nav>
+<!-- END: BottomTabBar -->
+<!-- Initialize Lucide Icons -->
+<script data-purpose="icon-initialization">
+    lucide.createIcons();
+  </script>
+</body></html>

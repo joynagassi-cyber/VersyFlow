@@ -1,0 +1,1 @@
+create policy "semantic_concept_relations_manual_insert" on public.concept_relations for insert to authenticated with check (source = 'manual');

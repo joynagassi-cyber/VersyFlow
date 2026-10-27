@@ -1,0 +1,1235 @@
+<!DOCTYPE html>
+
+<html lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>VersyFlow — Système d'icônes officiel</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<style>
+  body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background-color: #fbfbfb;
+    color: #171717;
+  }
+  .font-serif-title {
+    font-family: 'Playfair Display', serif;
+  }
+  .dot-grid {
+    background-image: radial-gradient(#d4d4d8 1.2px, transparent 1.2px);
+    background-size: 20px 20px;
+  }
+</style>
+</head>
+<body class="dot-grid min-h-screen p-6 md:p-14 lg:p-20 text-neutral-900 selection:bg-[#d81b60]/10 selection:text-[#a21249]">
+<div class="max-w-7xl mx-auto space-y-16">
+<!-- 1. EN-TÊTE ÉDITORIAL & PRINCIPES FONDAMENTAUX -->
+<header class="space-y-8">
+<div>
+<h1 class="text-4xl md:text-5xl lg:text-[56px] font-serif-title font-bold tracking-tight text-neutral-950">
+          VersyFlow — système d'icônes
+        </h1>
+<p class="text-neutral-500 text-lg md:text-xl mt-3 font-normal">
+          73 icônes monochromes, bâties sur Lucide, relevées sur les 70 écrans de l'app et classées par usage.
+        </p>
+</div>
+<!-- Spécifications Cards -->
+<div class="space-y-3.5 max-w-5xl">
+<!-- Grille et trait -->
+<div class="bg-white/95 backdrop-blur-sm border border-neutral-200/90 rounded-2xl px-6 py-4 shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
+<h2 class="text-base font-bold text-neutral-900">Grille et trait</h2>
+<p class="text-neutral-600 text-sm mt-0.5 leading-relaxed">
+            24 × 24 px, marge de 2 px, trait de 2 px, bouts et angles arrondis. Tailles : 16 à 24 en interface, 32 en en-tête.
+          </p>
+</div>
+<!-- Monochrome -->
+<div class="bg-white/95 backdrop-blur-sm border border-neutral-200/90 rounded-2xl px-6 py-4 shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
+<h2 class="text-base font-bold text-neutral-900">Monochrome</h2>
+<p class="text-neutral-600 text-sm mt-0.5 leading-relaxed">
+            Une seule couleur (currentColor). L'état actif change la couleur, jamais le dessin.
+          </p>
+</div>
+<!-- Une idée par icône -->
+<div class="bg-white/95 backdrop-blur-sm border border-neutral-200/90 rounded-2xl px-6 py-4 shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
+<h2 class="text-base font-bold text-neutral-900">Une idée par icône</h2>
+<p class="text-neutral-600 text-sm mt-0.5 leading-relaxed">
+            Silhouette lisible à 16 px, pas de texte, pas de détail fin. Rayon de 2 px sur les rectangles.
+          </p>
+</div>
+<!-- Origine -->
+<div class="bg-white/95 backdrop-blur-sm border border-neutral-200/90 rounded-2xl px-6 py-4 shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
+<h2 class="text-base font-bold text-neutral-900">Origine</h2>
+<p class="text-neutral-600 text-sm mt-0.5 leading-relaxed">
+<span class="font-semibold text-neutral-800">Lucide</span> : repris tel quel. 
+            <span class="font-semibold text-[#d81b60]">Adapté</span> : Lucide simplifié ou recomposé. 
+            <span class="font-semibold text-[#a21249]">Original</span> : dessiné pour VersyFlow.
+          </p>
+</div>
+<!-- Nommage -->
+<div class="bg-white/95 backdrop-blur-sm border border-neutral-200/90 rounded-2xl px-6 py-4 shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
+<h2 class="text-base font-bold text-neutral-900">Nommage</h2>
+<p class="text-neutral-600 text-sm mt-0.5 leading-relaxed">
+            vf-nom-en-minuscules, un nom par fonction, une fonction = une seule icône dans toute l'app.
+          </p>
+</div>
+</div>
+</header>
+<main class="space-y-20 pt-4">
+<!-- SECTION 1 : NAVIGATION -->
+<section class="space-y-6">
+<div>
+<h2 class="text-3xl md:text-4xl font-serif-title font-bold text-neutral-950">Navigation</h2>
+<p class="text-neutral-500 text-sm md:text-base mt-1">Barre d'onglets, en-têtes d'écran, retours et menus.</p>
+</div>
+<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-x-6 gap-y-10 pt-2">
+<!-- vf-accueil -->
+<div class="flex flex-col items-center text-center group">
+<div class="w-12 h-12 flex items-center justify-center text-neutral-900 mb-3">
+<svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<path d="M3 10.5 12 3l9 7.5"></path>
+<path d="M5 9v11a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V9"></path>
+<path d="M9 21v-7a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v7"></path>
+</svg>
+</div>
+<span class="text-sm font-semibold text-neutral-900">Accueil</span>
+<span class="text-xs text-neutral-400 font-mono mt-0.5">vf-accueil</span>
+<span class="mt-2 text-[11px] font-medium px-2.5 py-0.5 rounded-full border border-[#d81b60] text-[#d81b60] bg-white">Adapté</span>
+</div>
+<!-- vf-bible -->
+<div class="flex flex-col items-center text-center group">
+<div class="w-12 h-12 flex items-center justify-center text-neutral-900 mb-3">
+<svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<rect height="18" rx="2" width="14" x="5" y="3"></rect>
+<path d="M12 7v8"></path>
+<path d="M8 10h8"></path>
+</svg>
+</div>
+<span class="text-sm font-semibold text-neutral-900">Bible</span>
+<span class="text-xs text-neutral-400 font-mono mt-0.5">vf-bible</span>
+<span class="mt-2 text-[11px] font-medium px-2.5 py-0.5 rounded-full border border-[#d81b60] text-[#d81b60] bg-white">Adapté</span>
+</div>
+<!-- vf-memoriser -->
+<div class="flex flex-col items-center text-center group">
+<div class="w-12 h-12 flex items-center justify-center text-neutral-900 mb-3">
+<svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<path d="M12 2 3 7l9 5 9-5-9-5Z"></path>
+<path d="m3 12 9 5 9-5"></path>
+<path d="m3 17 9 5 9-5"></path>
+<path d="M19 3v4"></path>
+<path d="M17 5h4"></path>
+</svg>
+</div>
+<span class="text-sm font-semibold text-neutral-900">Mémoriser</span>
+<span class="text-xs text-neutral-400 font-mono mt-0.5">vf-memoriser</span>
+<span class="mt-2 text-[11px] font-medium px-2.5 py-0.5 rounded-full bg-[#a21249] text-white">Original</span>
+</div>
+<!-- vf-progres -->
+<div class="flex flex-col items-center text-center group">
+<div class="w-12 h-12 flex items-center justify-center text-neutral-900 mb-3">
+<svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<path d="M3 3v18h18"></path>
+<path d="m7 14 5-5 4 4 5-6"></path>
+<path d="M17 7h4v4"></path>
+</svg>
+</div>
+<span class="text-sm font-semibold text-neutral-900">Progrès</span>
+<span class="text-xs text-neutral-400 font-mono mt-0.5">vf-progres</span>
+<span class="mt-2 text-[11px] font-medium px-2.5 py-0.5 rounded-full bg-[#a21249] text-white">Original</span>
+</div>
+<!-- vf-reglages -->
+<div class="flex flex-col items-center text-center group">
+<div class="w-12 h-12 flex items-center justify-center text-neutral-900 mb-3">
+<svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path>
+<circle cx="12" cy="12" r="3"></circle>
+</svg>
+</div>
+<span class="text-sm font-semibold text-neutral-900">Réglages</span>
+<span class="text-xs text-neutral-400 font-mono mt-0.5">vf-reglages</span>
+<span class="mt-2 text-[11px] font-medium px-2.5 py-0.5 rounded-full bg-[#a21249] text-white">Original</span>
+</div>
+<!-- vf-retour -->
+<div class="flex flex-col items-center text-center group">
+<div class="w-12 h-12 flex items-center justify-center text-neutral-900 mb-3">
+<svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<path d="m12 19-7-7 7-7"></path>
+<path d="M19 12H5"></path>
+</svg>
+</div>
+<span class="text-sm font-semibold text-neutral-900">Retour</span>
+<span class="text-xs text-neutral-400 font-mono mt-0.5">vf-retour</span>
+<span class="mt-2 text-[11px] font-medium px-2.5 py-0.5 rounded-full border border-[#d81b60] text-[#d81b60] bg-white">Adapté</span>
+</div>
+<!-- vf-suivant -->
+<div class="flex flex-col items-center text-center group">
+<div class="w-12 h-12 flex items-center justify-center text-neutral-900 mb-3">
+<svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<path d="M5 12h14"></path>
+<path d="m12 5 7 7-7 7"></path>
+</svg>
+</div>
+<span class="text-sm font-semibold text-neutral-900">Suivant</span>
+<span class="text-xs text-neutral-400 font-mono mt-0.5">vf-suivant</span>
+<span class="mt-2 text-[11px] font-medium px-2.5 py-0.5 rounded-full border border-[#d81b60] text-[#d81b60] bg-white">Adapté</span>
+</div>
+<!-- vf-deplier -->
+<div class="flex flex-col items-center text-center group">
+<div class="w-12 h-12 flex items-center justify-center text-neutral-900 mb-3">
+<svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<path d="m6 9 6 6 6-6"></path>
+</svg>
+</div>
+<span class="text-sm font-semibold text-neutral-900">Déplier</span>
+<span class="text-xs text-neutral-400 font-mono mt-0.5">vf-deplier</span>
+<span class="mt-2 text-[11px] font-medium px-2.5 py-0.5 rounded-full border border-[#d81b60] text-[#d81b60] bg-white">Adapté</span>
+</div>
+<!-- vf-fermer -->
+<div class="flex flex-col items-center text-center group">
+<div class="w-12 h-12 flex items-center justify-center text-neutral-900 mb-3">
+<svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<rect height="16" rx="3" width="16" x="4" y="4"></rect>
+<path d="m9 9 6 6"></path>
+<path d="m15 9-6 6"></path>
+</svg>
+</div>
+<span class="text-sm font-semibold text-neutral-900">Fermer</span>
+<span class="text-xs text-neutral-400 font-mono mt-0.5">vf-fermer</span>
+<span class="mt-2 text-[11px] font-medium px-2.5 py-0.5 rounded-full border border-[#d81b60] text-[#d81b60] bg-white">Adapté</span>
+</div>
+<!-- vf-options -->
+<div class="flex flex-col items-center text-center group">
+<div class="w-12 h-12 flex items-center justify-center text-neutral-900 mb-3">
+<svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<rect height="10" rx="5" width="18" x="3" y="7"></rect>
+<circle cx="8" cy="12" fill="currentColor" r="1"></circle>
+<circle cx="12" cy="12" fill="currentColor" r="1"></circle>
+<circle cx="16" cy="12" fill="currentColor" r="1"></circle>
+</svg>
+</div>
+<span class="text-sm font-semibold text-neutral-900">Plus d'options</span>
+<span class="text-xs text-neutral-400 font-mono mt-0.5">vf-options</span>
+<span class="mt-2 text-[11px] font-medium px-2.5 py-0.5 rounded-full border border-[#d81b60] text-[#d81b60] bg-white">Adapté</span>
+</div>
+<!-- vf-rechercher -->
+<div class="flex flex-col items-center text-center group">
+<div class="w-12 h-12 flex items-center justify-center text-neutral-900 mb-3">
+<svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<circle cx="11" cy="11" r="7"></circle>
+<path d="m21 21-4.35-4.35"></path>
+</svg>
+</div>
+<span class="text-sm font-semibold text-neutral-900">Rechercher</span>
+<span class="text-xs text-neutral-400 font-mono mt-0.5">vf-rechercher</span>
+<span class="mt-2 text-[11px] font-medium px-2.5 py-0.5 rounded-full border border-[#d81b60] text-[#d81b60] bg-white">Adapté</span>
+</div>
+</div>
+</section>
+<!-- SECTION 2 : PARCOURS DE MÉMORISATION -->
+<section class="space-y-6">
+<div>
+<h2 class="text-3xl md:text-4xl font-serif-title font-bold text-neutral-950">Parcours de mémorisation</h2>
+<p class="text-neutral-500 text-sm md:text-base mt-1">Les 4 étapes (révélation, masquage, flashcard, écriture), la notation et la révision.</p>
+</div>
+<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-x-6 gap-y-10 pt-2">
+<!-- vf-revelation -->
+<div class="flex flex-col items-center text-center group">
+<div class="w-12 h-12 flex items-center justify-center text-neutral-900 mb-3">
+<svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"></path>
+<circle cx="12" cy="12" r="3"></circle>
+</svg>
+</div>
+<span class="text-sm font-semibold text-neutral-900">Révélation</span>
+<span class="text-xs text-neutral-400 font-mono mt-0.5">vf-revelation</span>
+<span class="mt-2 text-[11px] font-medium px-2.5 py-0.5 rounded-full border border-[#d81b60] text-[#d81b60] bg-white">Adapté</span>
+</div>
+<!-- vf-masquage -->
+<div class="flex flex-col items-center text-center group">
+<div class="w-12 h-12 flex items-center justify-center text-neutral-900 mb-3">
+<svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<line x1="4" x2="20" y1="6" y2="6"></line>
+<line x1="4" x2="20" y1="18" y2="18"></line>
+<rect height="4" rx="1.5" width="10" x="7" y="10"></rect>
+</svg>
+</div>
+<span class="text-sm font-semibold text-neutral-900">Masquage</span>
+<span class="text-xs text-neutral-400 font-mono mt-0.5">vf-masquage</span>
+<span class="mt-2 text-[11px] font-medium px-2.5 py-0.5 rounded-full bg-[#a21249] text-white">Original</span>
+</div>
+<!-- vf-niveau-masquage -->
+<div class="flex flex-col items-center text-center group">
+<div class="w-12 h-12 flex items-center justify-center text-neutral-900 mb-3">
+<svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<line x1="3" x2="21" y1="7" y2="7"></line>
+<line x1="3" x2="21" y1="12" y2="12"></line>
+<line x1="3" x2="21" y1="17" y2="17"></line>
+<line x1="14" x2="14" y1="5" y2="9"></line>
+<line x1="8" x2="8" y1="10" y2="14"></line>
+<line x1="16" x2="16" y1="15" y2="19"></line>
+</svg>
+</div>
+<span class="text-sm font-semibold text-neutral-900">Niveau de masquage</span>
+<span class="text-xs text-neutral-400 font-mono mt-0.5">vf-niveau-masquage</span>
+<span class="mt-2 text-[11px] font-medium px-2.5 py-0.5 rounded-full border border-[#d81b60] text-[#d81b60] bg-white">Adapté</span>
+</div>
+<!-- vf-flashcard -->
+<div class="flex flex-col items-center text-center group">
+<div class="w-12 h-12 flex items-center justify-center text-neutral-900 mb-3">
+<svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<path d="M7 4h12a2 2 0 0 1 2 2v10"></path>
+<rect height="12" rx="2" width="14" x="3" y="8"></rect>
+<line x1="6" x2="11" y1="12" y2="12"></line>
+<line x1="6" x2="14" y1="15" y2="15"></line>
+</svg>
+</div>
+<span class="text-sm font-semibold text-neutral-900">Flashcard</span>
+<span class="text-xs text-neutral-400 font-mono mt-0.5">vf-flashcard</span>
+<span class="mt-2 text-[11px] font-medium px-2.5 py-0.5 rounded-full border border-[#d81b60] text-[#d81b60] bg-white">Adapté</span>
+</div>
+<!-- vf-ecriture -->
+<div class="flex flex-col items-center text-center group">
+<div class="w-12 h-12 flex items-center justify-center text-neutral-900 mb-3">
+<svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"></path>
+</svg>
+</div>
+<span class="text-sm font-semibold text-neutral-900">Écriture</span>
+<span class="text-xs text-neutral-400 font-mono mt-0.5">vf-ecriture</span>
+<span class="mt-2 text-[11px] font-medium px-2.5 py-0.5 rounded-full bg-[#a21249] text-white">Original</span>
+</div>
+<!-- vf-verrou -->
+<div class="flex flex-col items-center text-center group">
+<div class="w-12 h-12 flex items-center justify-center text-neutral-900 mb-3">
+<svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<rect height="10" rx="2" width="14" x="5" y="11"></rect>
+<path d="M8 11V7a4 4 0 0 1 8 0v4"></path>
+<circle cx="12" cy="16" fill="currentColor" r="1"></circle>
+</svg>
+</div>
+<span class="text-sm font-semibold text-neutral-900">Verrouillé</span>
+<span class="text-xs text-neutral-400 font-mono mt-0.5">vf-verrou</span>
+<span class="mt-2 text-[11px] font-medium px-2.5 py-0.5 rounded-full border border-[#d81b60] text-[#d81b60] bg-white">Adapté</span>
+</div>
+<!-- vf-indice -->
+<div class="flex flex-col items-center text-center group">
+<div class="w-12 h-12 flex items-center justify-center text-neutral-900 mb-3">
+<svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<path d="M9 18h6"></path>
+<path d="M10 22h4"></path>
+<path d="M12 2a7 7 0 0 0-7 7c0 2.5 1.2 4.6 3 5.8V16a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-1.2c1.8-1.2 3-3.3 3-5.8a7 7 0 0 0-7-7Z"></path>
+<line x1="12" x2="12" y1="2" y2="4"></line>
+</svg>
+</div>
+<span class="text-sm font-semibold text-neutral-900">Indice</span>
+<span class="text-xs text-neutral-400 font-mono mt-0.5">vf-indice</span>
+<span class="mt-2 text-[11px] font-medium px-2.5 py-0.5 rounded-full border border-[#d81b60] text-[#d81b60] bg-white">Adapté</span>
+</div>
+<!-- vf-retourner -->
+<div class="flex flex-col items-center text-center group">
+<div class="w-12 h-12 flex items-center justify-center text-neutral-900 mb-3">
+<svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<path d="M3 12a9 9 0 0 1 15-6.7L21 8"></path>
+<path d="M21 3v5h-5"></path>
+<rect height="7" rx="1.5" width="7" x="7" y="10"></rect>
+</svg>
+</div>
+<span class="text-sm font-semibold text-neutral-900">Retourner la carte</span>
+<span class="text-xs text-neutral-400 font-mono mt-0.5">vf-retourner</span>
+<span class="mt-2 text-[11px] font-medium px-2.5 py-0.5 rounded-full border border-[#d81b60] text-[#d81b60] bg-white">Adapté</span>
+</div>
+<!-- vf-lancer -->
+<div class="flex flex-col items-center text-center group">
+<div class="w-12 h-12 flex items-center justify-center text-neutral-900 mb-3">
+<svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<circle cx="12" cy="12" r="9"></circle>
+<polygon points="10 8 16 12 10 16 10 8"></polygon>
+</svg>
+</div>
+<span class="text-sm font-semibold text-neutral-900">Lancer la session</span>
+<span class="text-xs text-neutral-400 font-mono mt-0.5">vf-lancer</span>
+<span class="mt-2 text-[11px] font-medium px-2.5 py-0.5 rounded-full border border-[#d81b60] text-[#d81b60] bg-white">Adapté</span>
+</div>
+<!-- vf-revoir -->
+<div class="flex flex-col items-center text-center group">
+<div class="w-12 h-12 flex items-center justify-center text-neutral-900 mb-3">
+<svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<path d="m17 2 4 4-4 4"></path>
+<path d="M3 11v-1a4 4 0 0 1 4-4h14"></path>
+<path d="m7 22-4-4 4-4"></path>
+<path d="M21 13v1a4 4 0 0 1-4 4H3"></path>
+</svg>
+</div>
+<span class="text-sm font-semibold text-neutral-900">Réviser</span>
+<span class="text-xs text-neutral-400 font-mono mt-0.5">vf-revoir</span>
+<span class="mt-2 text-[11px] font-medium px-2.5 py-0.5 rounded-full border border-[#d81b60] text-[#d81b60] bg-white">Adapté</span>
+</div>
+<!-- vf-objectif -->
+<div class="flex flex-col items-center text-center group">
+<div class="w-12 h-12 flex items-center justify-center text-neutral-900 mb-3">
+<svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<circle cx="12" cy="12" r="7"></circle>
+<path d="M12 9v3l2 2"></path>
+<path d="m19 5 2-2"></path>
+<path d="M16 3h5v5"></path>
+</svg>
+</div>
+<span class="text-sm font-semibold text-neutral-900">Objectif</span>
+<span class="text-xs text-neutral-400 font-mono mt-0.5">vf-objectif</span>
+<span class="mt-2 text-[11px] font-medium px-2.5 py-0.5 rounded-full bg-[#a21249] text-white">Original</span>
+</div>
+<!-- vf-su -->
+<div class="flex flex-col items-center text-center group">
+<div class="w-12 h-12 flex items-center justify-center text-neutral-900 mb-3">
+<svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<circle cx="12" cy="12" r="9"></circle>
+<path d="m9 12 2 2 4-4"></path>
+</svg>
+</div>
+<span class="text-sm font-semibold text-neutral-900">Su</span>
+<span class="text-xs text-neutral-400 font-mono mt-0.5">vf-su</span>
+<span class="mt-2 text-[11px] font-medium px-2.5 py-0.5 rounded-full border border-stone-400 text-stone-700 bg-white">Lucide</span>
+</div>
+<!-- vf-pas-su -->
+<div class="flex flex-col items-center text-center group">
+<div class="w-12 h-12 flex items-center justify-center text-neutral-900 mb-3">
+<svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<circle cx="12" cy="12" r="9"></circle>
+<line x1="15" x2="9" y1="9" y2="15"></line>
+<line x1="9" x2="15" y1="9" y2="15"></line>
+</svg>
+</div>
+<span class="text-sm font-semibold text-neutral-900">Pas su</span>
+<span class="text-xs text-neutral-400 font-mono mt-0.5">vf-pas-su</span>
+<span class="mt-2 text-[11px] font-medium px-2.5 py-0.5 rounded-full border border-stone-400 text-stone-700 bg-white">Lucide</span>
+</div>
+<!-- vf-a-revoir -->
+<div class="flex flex-col items-center text-center group">
+<div class="w-12 h-12 flex items-center justify-center text-neutral-900 mb-3">
+<svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+<path d="M3 3v5h5"></path>
+<path d="M12 7v5l3 2"></path>
+</svg>
+</div>
+<span class="text-sm font-semibold text-neutral-900">À revoir</span>
+<span class="text-xs text-neutral-400 font-mono mt-0.5">vf-a-revoir</span>
+<span class="mt-2 text-[11px] font-medium px-2.5 py-0.5 rounded-full border border-[#d81b60] text-[#d81b60] bg-white">Adapté</span>
+</div>
+</div>
+</section>
+<!-- SECTION 3 : LECTURE BIBLIQUE -->
+<section class="space-y-6">
+<div>
+<h2 class="text-3xl md:text-4xl font-serif-title font-bold text-neutral-950">Lecture biblique</h2>
+<p class="text-neutral-500 text-sm md:text-base mt-1">Actions d'annotation, préférences typographiques et gestion des versions.</p>
+</div>
+<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-x-6 gap-y-10 pt-2">
+<!-- vf-sauvegarder -->
+<div class="flex flex-col items-center text-center group">
+<div class="w-12 h-12 flex items-center justify-center text-neutral-900 mb-3">
+<svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"></path>
+</svg>
+</div>
+<span class="text-sm font-semibold text-neutral-900">Sauvegarder</span>
+<span class="text-xs text-neutral-400 font-mono mt-0.5">vf-sauvegarder</span>
+<span class="mt-2 text-[11px] font-medium px-2.5 py-0.5 rounded-full border border-[#d81b60] text-[#d81b60] bg-white">Adapté</span>
+</div>
+<!-- vf-note -->
+<div class="flex flex-col items-center text-center group">
+<div class="w-12 h-12 flex items-center justify-center text-neutral-900 mb-3">
+<svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+<path d="M14 2v6h6"></path>
+<line x1="16" x2="8" y1="13" y2="13"></line>
+<line x1="16" x2="8" y1="17" y2="17"></line>
+</svg>
+</div>
+<span class="text-sm font-semibold text-neutral-900">Note</span>
+<span class="text-xs text-neutral-400 font-mono mt-0.5">vf-note</span>
+<span class="mt-2 text-[11px] font-medium px-2.5 py-0.5 rounded-full border border-[#d81b60] text-[#d81b60] bg-white">Adapté</span>
+</div>
+<!-- vf-surbrillance -->
+<div class="flex flex-col items-center text-center group">
+<div class="w-12 h-12 flex items-center justify-center text-neutral-900 mb-3">
+<svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<path d="m9 11-6 6v3h3l6-6"></path>
+<path d="m22 12-4.6 4.6a2 2 0 0 1-2.8 0l-5.2-5.2a2 2 0 0 1 0-2.8L14 4"></path>
+</svg>
+</div>
+<span class="text-sm font-semibold text-neutral-900">Surbrillance</span>
+<span class="text-xs text-neutral-400 font-mono mt-0.5">vf-surbrillance</span>
+<span class="mt-2 text-[11px] font-medium px-2.5 py-0.5 rounded-full border border-stone-400 text-stone-700 bg-white">Lucide</span>
+</div>
+<!-- vf-image -->
+<div class="flex flex-col items-center text-center group">
+<div class="w-12 h-12 flex items-center justify-center text-neutral-900 mb-3">
+<svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<rect height="18" rx="2" width="18" x="3" y="3"></rect>
+<circle cx="8.5" cy="8.5" r="1.5"></circle>
+<path d="m21 15-5-5L5 21"></path>
+</svg>
+</div>
+<span class="text-sm font-semibold text-neutral-900">Image</span>
+<span class="text-xs text-neutral-400 font-mono mt-0.5">vf-image</span>
+<span class="mt-2 text-[11px] font-medium px-2.5 py-0.5 rounded-full border border-stone-400 text-stone-700 bg-white">Lucide</span>
+</div>
+<!-- vf-priere -->
+<div class="flex flex-col items-center text-center group">
+<div class="w-12 h-12 flex items-center justify-center text-neutral-900 mb-3">
+<svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<path d="M12 4v16"></path>
+<path d="M7 9h10"></path>
+<circle cx="12" cy="12" r="9"></circle>
+</svg>
+</div>
+<span class="text-sm font-semibold text-neutral-900">Prière</span>
+<span class="text-xs text-neutral-400 font-mono mt-0.5">vf-priere</span>
+<span class="mt-2 text-[11px] font-medium px-2.5 py-0.5 rounded-full border border-[#d81b60] text-[#d81b60] bg-white">Adapté</span>
+</div>
+<!-- vf-langue -->
+<div class="flex flex-col items-center text-center group">
+<div class="w-12 h-12 flex items-center justify-center text-neutral-900 mb-3">
+<svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<circle cx="12" cy="12" r="9"></circle>
+<line x1="3.6" x2="20.4" y1="9" y2="9"></line>
+<line x1="3.6" x2="20.4" y1="15" y2="15"></line>
+<path d="M11.5 3a17 17 0 0 0 0 18"></path>
+<path d="M12.5 3a17 17 0 0 1 0 18"></path>
+</svg>
+</div>
+<span class="text-sm font-semibold text-neutral-900">Version / langue</span>
+<span class="text-xs text-neutral-400 font-mono mt-0.5">vf-langue</span>
+<span class="mt-2 text-[11px] font-medium px-2.5 py-0.5 rounded-full border border-stone-400 text-stone-700 bg-white">Lucide</span>
+</div>
+<!-- vf-police -->
+<div class="flex flex-col items-center text-center group">
+<div class="w-12 h-12 flex items-center justify-center text-neutral-900 mb-3">
+<svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<polyline points="4 7 4 4 20 4 20 7"></polyline>
+<line x1="9" x2="15" y1="20" y2="20"></line>
+<line x1="12" x2="12" y1="4" y2="20"></line>
+</svg>
+</div>
+<span class="text-sm font-semibold text-neutral-900">Police</span>
+<span class="text-xs text-neutral-400 font-mono mt-0.5">vf-police</span>
+<span class="mt-2 text-[11px] font-medium px-2.5 py-0.5 rounded-full border border-stone-400 text-stone-700 bg-white">Lucide</span>
+</div>
+<!-- vf-taille-texte -->
+<div class="flex flex-col items-center text-center group">
+<div class="w-12 h-12 flex items-center justify-center text-neutral-900 mb-3">
+<svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<path d="m3 19 6-14 6 14"></path>
+<path d="M5 14h8"></path>
+<path d="M17 19h5"></path>
+<path d="M19.5 14v5"></path>
+</svg>
+</div>
+<span class="text-sm font-semibold text-neutral-900">Taille du texte</span>
+<span class="text-xs text-neutral-400 font-mono mt-0.5">vf-taille-texte</span>
+<span class="mt-2 text-[11px] font-medium px-2.5 py-0.5 rounded-full border border-stone-400 text-stone-700 bg-white">Lucide</span>
+</div>
+<!-- vf-aligner -->
+<div class="flex flex-col items-center text-center group">
+<div class="w-12 h-12 flex items-center justify-center text-neutral-900 mb-3">
+<svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<line x1="4" x2="20" y1="6" y2="6"></line>
+<line x1="4" x2="14" y1="12" y2="12"></line>
+<line x1="4" x2="18" y1="18" y2="18"></line>
+</svg>
+</div>
+<span class="text-sm font-semibold text-neutral-900">Alignement</span>
+<span class="text-xs text-neutral-400 font-mono mt-0.5">vf-aligner</span>
+<span class="mt-2 text-[11px] font-medium px-2.5 py-0.5 rounded-full border border-[#d81b60] text-[#d81b60] bg-white">Adapté</span>
+</div>
+<!-- vf-etiquette -->
+<div class="flex flex-col items-center text-center group">
+<div class="w-12 h-12 flex items-center justify-center text-neutral-900 mb-3">
+<svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8 8a2 2 0 0 0 2.828 0l7.172-7.172a2 2 0 0 0 0-2.828l-8-8z"></path>
+<circle cx="7.5" cy="7.5" fill="currentColor" r="1.5"></circle>
+</svg>
+</div>
+<span class="text-sm font-semibold text-neutral-900">Ajouter une étiquette</span>
+<span class="text-xs text-neutral-400 font-mono mt-0.5">vf-etiquette</span>
+<span class="mt-2 text-[11px] font-medium px-2.5 py-0.5 rounded-full border border-[#d81b60] text-[#d81b60] bg-white">Adapté</span>
+</div>
+</div>
+</section>
+<!-- SECTION 4 : PROGRÈS ET JEU -->
+<section class="space-y-6">
+<div>
+<h2 class="text-3xl md:text-4xl font-serif-title font-bold text-neutral-950">Progrès et jeu</h2>
+<p class="text-neutral-500 text-sm md:text-base mt-1">Séries de flamme, récompenses, podiums et jalons d'apprentissage.</p>
+</div>
+<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-x-6 gap-y-10 pt-2">
+<!-- vf-serie -->
+<div class="flex flex-col items-center text-center group">
+<div class="w-12 h-12 flex items-center justify-center text-neutral-900 mb-3">
+<svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"></path>
+</svg>
+</div>
+<span class="text-sm font-semibold text-neutral-900">Série</span>
+<span class="text-xs text-neutral-400 font-mono mt-0.5">vf-serie</span>
+<span class="mt-2 text-[11px] font-medium px-2.5 py-0.5 rounded-full border border-[#d81b60] text-[#d81b60] bg-white">Adapté</span>
+</div>
+<!-- vf-trophee -->
+<div class="flex flex-col items-center text-center group">
+<div class="w-12 h-12 flex items-center justify-center text-neutral-900 mb-3">
+<svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
+<path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
+<path d="M4 4h16v5a8 8 0 0 1-16 0V4z"></path>
+<path d="M12 17v4"></path>
+<path d="M8 21h8"></path>
+</svg>
+</div>
+<span class="text-sm font-semibold text-neutral-900">Défi réussi</span>
+<span class="text-xs text-neutral-400 font-mono mt-0.5">vf-trophee</span>
+<span class="mt-2 text-[11px] font-medium px-2.5 py-0.5 rounded-full border border-[#d81b60] text-[#d81b60] bg-white">Adapté</span>
+</div>
+<!-- vf-badge -->
+<div class="flex flex-col items-center text-center group">
+<div class="w-12 h-12 flex items-center justify-center text-neutral-900 mb-3">
+<svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<circle cx="12" cy="9" r="6"></circle>
+<path d="m8.5 14.5-2.5 7.5 6-3 6 3-2.5-7.5"></path>
+</svg>
+</div>
+<span class="text-sm font-semibold text-neutral-900">Badge</span>
+<span class="text-xs text-neutral-400 font-mono mt-0.5">vf-badge</span>
+<span class="mt-2 text-[11px] font-medium px-2.5 py-0.5 rounded-full border border-[#d81b60] text-[#d81b60] bg-white">Adapté</span>
+</div>
+<!-- vf-classement -->
+<div class="flex flex-col items-center text-center group">
+<div class="w-12 h-12 flex items-center justify-center text-neutral-900 mb-3">
+<svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<path d="M4 21V11a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1v10"></path>
+<path d="M9 21V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v16"></path>
+<path d="M15 21v-7a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1v7"></path>
+<path d="M2 21h20"></path>
+</svg>
+</div>
+<span class="text-sm font-semibold text-neutral-900">Classement</span>
+<span class="text-xs text-neutral-400 font-mono mt-0.5">vf-classement</span>
+<span class="mt-2 text-[11px] font-medium px-2.5 py-0.5 rounded-full bg-[#a21249] text-white">Original</span>
+</div>
+<!-- vf-activite -->
+<div class="flex flex-col items-center text-center group">
+<div class="w-12 h-12 flex items-center justify-center text-neutral-900 mb-3">
+<svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+</svg>
+</div>
+<span class="text-sm font-semibold text-neutral-900">Fil d'activité</span>
+<span class="text-xs text-neutral-400 font-mono mt-0.5">vf-activite</span>
+<span class="mt-2 text-[11px] font-medium px-2.5 py-0.5 rounded-full border border-stone-400 text-stone-700 bg-white">Lucide</span>
+</div>
+<!-- vf-bravo -->
+<div class="flex flex-col items-center text-center group">
+<div class="w-12 h-12 flex items-center justify-center text-neutral-900 mb-3">
+<svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<path d="m12 3 2.5 5 5.5.8-4 3.9 1 5.3-5-2.6-5 2.6 1-5.3-4-3.9 5.5-.8z"></path>
+</svg>
+</div>
+<span class="text-sm font-semibold text-neutral-900">Bravo</span>
+<span class="text-xs text-neutral-400 font-mono mt-0.5">vf-bravo</span>
+<span class="mt-2 text-[11px] font-medium px-2.5 py-0.5 rounded-full border border-[#d81b60] text-[#d81b60] bg-white">Adapté</span>
+</div>
+</div>
+</section>
+<!-- SECTION 5 : FAMILLE ET SÉANCE -->
+<section class="space-y-6">
+<div>
+<h2 class="text-3xl md:text-4xl font-serif-title font-bold text-neutral-950">Famille et séance</h2>
+<p class="text-neutral-500 text-sm md:text-base mt-1">Séances collectives synchronisées, membres de foyer et connectivité.</p>
+</div>
+<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-x-6 gap-y-10 pt-2">
+<!-- vf-famille -->
+<div class="flex flex-col items-center text-center group">
+<div class="w-12 h-12 flex items-center justify-center text-neutral-900 mb-3">
+<svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+<circle cx="9" cy="7" r="4"></circle>
+<path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+<path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+</svg>
+</div>
+<span class="text-sm font-semibold text-neutral-900">Famille</span>
+<span class="text-xs text-neutral-400 font-mono mt-0.5">vf-famille</span>
+<span class="mt-2 text-[11px] font-medium px-2.5 py-0.5 rounded-full border border-stone-400 text-stone-700 bg-white">Lucide</span>
+</div>
+<!-- vf-membre -->
+<div class="flex flex-col items-center text-center group">
+<div class="w-12 h-12 flex items-center justify-center text-neutral-900 mb-3">
+<svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+<circle cx="12" cy="7" r="4"></circle>
+</svg>
+</div>
+<span class="text-sm font-semibold text-neutral-900">Membre</span>
+<span class="text-xs text-neutral-400 font-mono mt-0.5">vf-membre</span>
+<span class="mt-2 text-[11px] font-medium px-2.5 py-0.5 rounded-full border border-stone-400 text-stone-700 bg-white">Lucide</span>
+</div>
+<!-- vf-ajouter-membre -->
+<div class="flex flex-col items-center text-center group">
+<div class="w-12 h-12 flex items-center justify-center text-neutral-900 mb-3">
+<svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+<circle cx="9" cy="7" r="4"></circle>
+<line x1="19" x2="19" y1="8" y2="14"></line>
+<line x1="16" x2="22" y1="11" y2="11"></line>
+</svg>
+</div>
+<span class="text-sm font-semibold text-neutral-900">Ajouter un membre</span>
+<span class="text-xs text-neutral-400 font-mono mt-0.5">vf-ajouter-membre</span>
+<span class="mt-2 text-[11px] font-medium px-2.5 py-0.5 rounded-full border border-stone-400 text-stone-700 bg-white">Lucide</span>
+</div>
+<!-- vf-defi -->
+<div class="flex flex-col items-center text-center group">
+<div class="w-12 h-12 flex items-center justify-center text-neutral-900 mb-3">
+<svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<circle cx="12" cy="12" r="9"></circle>
+<path d="m9 12 2 2 4-4"></path>
+<path d="M12 3v3"></path>
+</svg>
+</div>
+<span class="text-sm font-semibold text-neutral-900">Défi d'équipe</span>
+<span class="text-xs text-neutral-400 font-mono mt-0.5">vf-defi</span>
+<span class="mt-2 text-[11px] font-medium px-2.5 py-0.5 rounded-full border border-[#d81b60] text-[#d81b60] bg-white">Adapté</span>
+</div>
+<!-- vf-appareil -->
+<div class="flex flex-col items-center text-center group">
+<div class="w-12 h-12 flex items-center justify-center text-neutral-900 mb-3">
+<svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<rect height="20" rx="3" width="14" x="5" y="2"></rect>
+<line x1="12" x2="12.01" y1="18" y2="18"></line>
+</svg>
+</div>
+<span class="text-sm font-semibold text-neutral-900">Appareil</span>
+<span class="text-xs text-neutral-400 font-mono mt-0.5">vf-appareil</span>
+<span class="mt-2 text-[11px] font-medium px-2.5 py-0.5 rounded-full border border-[#d81b60] text-[#d81b60] bg-white">Adapté</span>
+</div>
+<!-- vf-en-ligne -->
+<div class="flex flex-col items-center text-center group">
+<div class="w-12 h-12 flex items-center justify-center text-neutral-900 mb-3">
+<svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<path d="M5 12.55a11 11 0 0 1 14.08 0"></path>
+<path d="M1.42 9a16 16 0 0 1 21.16 0"></path>
+<path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path>
+<circle cx="12" cy="20" fill="currentColor" r="1"></circle>
+</svg>
+</div>
+<span class="text-sm font-semibold text-neutral-900">En ligne</span>
+<span class="text-xs text-neutral-400 font-mono mt-0.5">vf-en-ligne</span>
+<span class="mt-2 text-[11px] font-medium px-2.5 py-0.5 rounded-full border border-stone-400 text-stone-700 bg-white">Lucide</span>
+</div>
+<!-- vf-hors-ligne -->
+<div class="flex flex-col items-center text-center group">
+<div class="w-12 h-12 flex items-center justify-center text-neutral-900 mb-3">
+<svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<line x1="2" x2="22" y1="2" y2="22"></line>
+<path d="M8.5 16.5a6 6 0 0 1 7 0"></path>
+<path d="M5 12.5a11 11 0 0 1 6-2"></path>
+<path d="M19 12.5a11 11 0 0 0-4-2"></path>
+<circle cx="12" cy="20" fill="currentColor" r="1"></circle>
+</svg>
+</div>
+<span class="text-sm font-semibold text-neutral-900">Hors ligne</span>
+<span class="text-xs text-neutral-400 font-mono mt-0.5">vf-hors-ligne</span>
+<span class="mt-2 text-[11px] font-medium px-2.5 py-0.5 rounded-full border border-stone-400 text-stone-700 bg-white">Lucide</span>
+</div>
+</div>
+</section>
+<!-- SECTION 6 : ARBRE SÉMANTIQUE -->
+<section class="space-y-6">
+<div>
+<h2 class="text-3xl md:text-4xl font-serif-title font-bold text-neutral-950">Arbre sémantique</h2>
+<p class="text-neutral-500 text-sm md:text-base mt-1">Mes tags, arbre d'un concept, suggestions et rattachement.</p>
+</div>
+<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-x-6 gap-y-10 pt-2">
+<!-- vf-arbre -->
+<div class="flex flex-col items-center text-center group">
+<div class="w-12 h-12 flex items-center justify-center text-neutral-900 mb-3">
+<svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<rect height="5" rx="1.5" width="5" x="9.5" y="3"></rect>
+<rect height="5" rx="1.5" width="5" x="3.5" y="16"></rect>
+<rect height="5" rx="1.5" width="5" x="15.5" y="16"></rect>
+<path d="M12 8v4"></path>
+<path d="M6 12h12v4"></path>
+<path d="M6 16v-4"></path>
+</svg>
+</div>
+<span class="text-sm font-semibold text-neutral-900">Arbre</span>
+<span class="text-xs text-neutral-400 font-mono mt-0.5">vf-arbre</span>
+<span class="mt-2 text-[11px] font-medium px-2.5 py-0.5 rounded-full border border-stone-400 text-stone-700 bg-white">Lucide</span>
+</div>
+<!-- vf-tag -->
+<div class="flex flex-col items-center text-center group">
+<div class="w-12 h-12 flex items-center justify-center text-neutral-900 mb-3">
+<svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<path d="M12 2H4a2 2 0 0 0-2 2v8a2 2 0 0 0 .586 1.414l9 9a2 2 0 0 0 2.828 0l6-6a2 2 0 0 0 0-2.828l-9-9A2 2 0 0 0 12 2z"></path>
+<circle cx="7" cy="7" fill="currentColor" r="1.5"></circle>
+</svg>
+</div>
+<span class="text-sm font-semibold text-neutral-900">Tag</span>
+<span class="text-xs text-neutral-400 font-mono mt-0.5">vf-tag</span>
+<span class="mt-2 text-[11px] font-medium px-2.5 py-0.5 rounded-full border border-stone-400 text-stone-700 bg-white">Lucide</span>
+</div>
+<!-- vf-explorer -->
+<div class="flex flex-col items-center text-center group">
+<div class="w-12 h-12 flex items-center justify-center text-neutral-900 mb-3">
+<svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<circle cx="12" cy="12" r="9"></circle>
+<polygon points="15.5 8.5 13.5 13.5 8.5 15.5 10.5 10.5 15.5 8.5"></polygon>
+</svg>
+</div>
+<span class="text-sm font-semibold text-neutral-900">Explorer</span>
+<span class="text-xs text-neutral-400 font-mono mt-0.5">vf-explorer</span>
+<span class="mt-2 text-[11px] font-medium px-2.5 py-0.5 rounded-full border border-[#d81b60] text-[#d81b60] bg-white">Adapté</span>
+</div>
+<!-- vf-branche -->
+<div class="flex flex-col items-center text-center group">
+<div class="w-12 h-12 flex items-center justify-center text-neutral-900 mb-3">
+<svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<line x1="6" x2="6" y1="3" y2="18"></line>
+<circle cx="6" cy="18" r="2.5"></circle>
+<circle cx="18" cy="6" r="2.5"></circle>
+<path d="M18 8.5a6 6 0 0 1-6 6H6"></path>
+</svg>
+</div>
+<span class="text-sm font-semibold text-neutral-900">Branche</span>
+<span class="text-xs text-neutral-400 font-mono mt-0.5">vf-branche</span>
+<span class="mt-2 text-[11px] font-medium px-2.5 py-0.5 rounded-full border border-stone-400 text-stone-700 bg-white">Lucide</span>
+</div>
+<!-- vf-recentrer -->
+<div class="flex flex-col items-center text-center group">
+<div class="w-12 h-12 flex items-center justify-center text-neutral-900 mb-3">
+<svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<path d="M4 8V5a1 1 0 0 1 1-1h3"></path>
+<path d="M16 4h3a1 1 0 0 1 1 1v3"></path>
+<path d="M20 16v3a1 1 0 0 1-1 1h-3"></path>
+<path d="M8 20H5a1 1 0 0 1-1-1v-3"></path>
+<circle cx="12" cy="12" r="2"></circle>
+</svg>
+</div>
+<span class="text-sm font-semibold text-neutral-900">Recentrer</span>
+<span class="text-xs text-neutral-400 font-mono mt-0.5">vf-recentrer</span>
+<span class="mt-2 text-[11px] font-medium px-2.5 py-0.5 rounded-full border border-[#d81b60] text-[#d81b60] bg-white">Adapté</span>
+</div>
+</div>
+</section>
+<!-- SECTION 7 : ACTIONS -->
+<section class="space-y-6">
+<div>
+<h2 class="text-3xl md:text-4xl font-serif-title font-bold text-neutral-950">Actions</h2>
+<p class="text-neutral-500 text-sm md:text-base mt-1">Opérations universelles, ajout, partage, export et synchronisation.</p>
+</div>
+<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-x-6 gap-y-10 pt-2">
+<!-- vf-ajouter -->
+<div class="flex flex-col items-center text-center group">
+<div class="w-12 h-12 flex items-center justify-center text-neutral-900 mb-3">
+<svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<circle cx="12" cy="12" r="9"></circle>
+<line x1="12" x2="12" y1="8" y2="16"></line>
+<line x1="8" x2="16" y1="12" y2="12"></line>
+</svg>
+</div>
+<span class="text-sm font-semibold text-neutral-900">Ajouter</span>
+<span class="text-xs text-neutral-400 font-mono mt-0.5">vf-ajouter</span>
+<span class="mt-2 text-[11px] font-medium px-2.5 py-0.5 rounded-full border border-[#d81b60] text-[#d81b60] bg-white">Adapté</span>
+</div>
+<!-- vf-retirer -->
+<div class="flex flex-col items-center text-center group">
+<div class="w-12 h-12 flex items-center justify-center text-neutral-900 mb-3">
+<svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<circle cx="12" cy="12" r="9"></circle>
+<line x1="8" x2="16" y1="12" y2="12"></line>
+</svg>
+</div>
+<span class="text-sm font-semibold text-neutral-900">Retirer</span>
+<span class="text-xs text-neutral-400 font-mono mt-0.5">vf-retirer</span>
+<span class="mt-2 text-[11px] font-medium px-2.5 py-0.5 rounded-full border border-[#d81b60] text-[#d81b60] bg-white">Adapté</span>
+</div>
+<!-- vf-valider -->
+<div class="flex flex-col items-center text-center group">
+<div class="w-12 h-12 flex items-center justify-center text-neutral-900 mb-3">
+<svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<path d="M20 6 9 17l-5-5"></path>
+</svg>
+</div>
+<span class="text-sm font-semibold text-neutral-900">Valider</span>
+<span class="text-xs text-neutral-400 font-mono mt-0.5">vf-valider</span>
+<span class="mt-2 text-[11px] font-medium px-2.5 py-0.5 rounded-full border border-[#d81b60] text-[#d81b60] bg-white">Adapté</span>
+</div>
+<!-- vf-copier -->
+<div class="flex flex-col items-center text-center group">
+<div class="w-12 h-12 flex items-center justify-center text-neutral-900 mb-3">
+<svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<rect height="12" rx="2" width="12" x="9" y="9"></rect>
+<path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+</svg>
+</div>
+<span class="text-sm font-semibold text-neutral-900">Copier</span>
+<span class="text-xs text-neutral-400 font-mono mt-0.5">vf-copier</span>
+<span class="mt-2 text-[11px] font-medium px-2.5 py-0.5 rounded-full border border-[#d81b60] text-[#d81b60] bg-white">Adapté</span>
+</div>
+<!-- vf-partager -->
+<div class="flex flex-col items-center text-center group">
+<div class="w-12 h-12 flex items-center justify-center text-neutral-900 mb-3">
+<svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<circle cx="18" cy="5" r="3"></circle>
+<circle cx="6" cy="12" r="3"></circle>
+<circle cx="18" cy="19" r="3"></circle>
+<line x1="8.59" x2="15.42" y1="13.51" y2="17.49"></line>
+<line x1="15.41" x2="8.59" y1="6.51" y2="10.49"></line>
+</svg>
+</div>
+<span class="text-sm font-semibold text-neutral-900">Partager</span>
+<span class="text-xs text-neutral-400 font-mono mt-0.5">vf-partager</span>
+<span class="mt-2 text-[11px] font-medium px-2.5 py-0.5 rounded-full border border-stone-400 text-stone-700 bg-white">Lucide</span>
+</div>
+<!-- vf-lien -->
+<div class="flex flex-col items-center text-center group">
+<div class="w-12 h-12 flex items-center justify-center text-neutral-900 mb-3">
+<svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+<path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+</svg>
+</div>
+<span class="text-sm font-semibold text-neutral-900">Copier le lien</span>
+<span class="text-xs text-neutral-400 font-mono mt-0.5">vf-lien</span>
+<span class="mt-2 text-[11px] font-medium px-2.5 py-0.5 rounded-full border border-stone-400 text-stone-700 bg-white">Lucide</span>
+</div>
+<!-- vf-code-qr -->
+<div class="flex flex-col items-center text-center group">
+<div class="w-12 h-12 flex items-center justify-center text-neutral-900 mb-3">
+<svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<rect height="7" rx="1.5" width="7" x="3" y="3"></rect>
+<rect height="7" rx="1.5" width="7" x="14" y="3"></rect>
+<rect height="7" rx="1.5" width="7" x="3" y="14"></rect>
+<path d="M14 14h3v3h-3z"></path>
+<path d="M20 14v6h-3"></path>
+<path d="M14 20h3"></path>
+</svg>
+</div>
+<span class="text-sm font-semibold text-neutral-900">Code QR</span>
+<span class="text-xs text-neutral-400 font-mono mt-0.5">vf-code-qr</span>
+<span class="mt-2 text-[11px] font-medium px-2.5 py-0.5 rounded-full border border-[#d81b60] text-[#d81b60] bg-white">Adapté</span>
+</div>
+<!-- vf-telecharger -->
+<div class="flex flex-col items-center text-center group">
+<div class="w-12 h-12 flex items-center justify-center text-neutral-900 mb-3">
+<svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+<polyline points="7 10 12 15 17 10"></polyline>
+<line x1="12" x2="12" y1="15" y2="3"></line>
+</svg>
+</div>
+<span class="text-sm font-semibold text-neutral-900">Télécharger</span>
+<span class="text-xs text-neutral-400 font-mono mt-0.5">vf-telecharger</span>
+<span class="mt-2 text-[11px] font-medium px-2.5 py-0.5 rounded-full border border-[#d81b60] text-[#d81b60] bg-white">Adapté</span>
+</div>
+<!-- vf-supprimer -->
+<div class="flex flex-col items-center text-center group">
+<div class="w-12 h-12 flex items-center justify-center text-neutral-900 mb-3">
+<svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<path d="M3 6h18"></path>
+<path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+<path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+<line x1="10" x2="10" y1="11" y2="17"></line>
+<line x1="14" x2="14" y1="11" y2="17"></line>
+</svg>
+</div>
+<span class="text-sm font-semibold text-neutral-900">Supprimer</span>
+<span class="text-xs text-neutral-400 font-mono mt-0.5">vf-supprimer</span>
+<span class="mt-2 text-[11px] font-medium px-2.5 py-0.5 rounded-full border border-[#d81b60] text-[#d81b60] bg-white">Adapté</span>
+</div>
+<!-- vf-synchroniser -->
+<div class="flex flex-col items-center text-center group">
+<div class="w-12 h-12 flex items-center justify-center text-neutral-900 mb-3">
+<svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<path d="M21.5 2v6h-6"></path>
+<path d="M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.19"></path>
+</svg>
+</div>
+<span class="text-sm font-semibold text-neutral-900">Synchroniser</span>
+<span class="text-xs text-neutral-400 font-mono mt-0.5">vf-synchroniser</span>
+<span class="mt-2 text-[11px] font-medium px-2.5 py-0.5 rounded-full border border-stone-400 text-stone-700 bg-white">Lucide</span>
+</div>
+</div>
+</section>
+<!-- SECTION 8 : RÉGLAGES ET SYSTÈME -->
+<section class="space-y-6">
+<div>
+<h2 class="text-3xl md:text-4xl font-serif-title font-bold text-neutral-950">Réglages et système</h2>
+<p class="text-neutral-500 text-sm md:text-base mt-1">Préférences globales, sécurité, modes sombre/clair et support utilisateur.</p>
+</div>
+<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-x-6 gap-y-10 pt-2">
+<!-- vf-apparence -->
+<div class="flex flex-col items-center text-center group">
+<div class="w-12 h-12 flex items-center justify-center text-neutral-900 mb-3">
+<svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<circle cx="12" cy="12" r="9"></circle>
+<path d="M12 3v18"></path>
+<path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"></path>
+</svg>
+</div>
+<span class="text-sm font-semibold text-neutral-900">Apparence</span>
+<span class="text-xs text-neutral-400 font-mono mt-0.5">vf-apparence</span>
+<span class="mt-2 text-[11px] font-medium px-2.5 py-0.5 rounded-full bg-[#a21249] text-white">Original</span>
+</div>
+<!-- vf-clair -->
+<div class="flex flex-col items-center text-center group">
+<div class="w-12 h-12 flex items-center justify-center text-neutral-900 mb-3">
+<svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<circle cx="12" cy="12" r="5"></circle>
+<line x1="12" x2="12" y1="1" y2="3"></line>
+<line x1="12" x2="12" y1="21" y2="23"></line>
+<line x1="4.22" x2="5.64" y1="4.22" y2="5.64"></line>
+<line x1="18.36" x2="19.78" y1="18.36" y2="19.78"></line>
+<line x1="1" x2="3" y1="12" y2="12"></line>
+<line x1="21" x2="23" y1="12" y2="12"></line>
+<line x1="4.22" x2="5.64" y1="19.78" y2="18.36"></line>
+<line x1="18.36" x2="19.78" y1="5.64" y2="4.22"></line>
+</svg>
+</div>
+<span class="text-sm font-semibold text-neutral-900">Thème clair</span>
+<span class="text-xs text-neutral-400 font-mono mt-0.5">vf-clair</span>
+<span class="mt-2 text-[11px] font-medium px-2.5 py-0.5 rounded-full border border-stone-400 text-stone-700 bg-white">Lucide</span>
+</div>
+<!-- vf-sombre -->
+<div class="flex flex-col items-center text-center group">
+<div class="w-12 h-12 flex items-center justify-center text-neutral-900 mb-3">
+<svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+</svg>
+</div>
+<span class="text-sm font-semibold text-neutral-900">Thème sombre</span>
+<span class="text-xs text-neutral-400 font-mono mt-0.5">vf-sombre</span>
+<span class="mt-2 text-[11px] font-medium px-2.5 py-0.5 rounded-full border border-[#d81b60] text-[#d81b60] bg-white">Adapté</span>
+</div>
+<!-- vf-accessibilite -->
+<div class="flex flex-col items-center text-center group">
+<div class="w-12 h-12 flex items-center justify-center text-neutral-900 mb-3">
+<svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<circle cx="12" cy="5" r="2"></circle>
+<path d="m4 9 8 2 8-2"></path>
+<path d="M12 11v6l-4 4"></path>
+<path d="m12 17 4 4"></path>
+</svg>
+</div>
+<span class="text-sm font-semibold text-neutral-900">Accessibilité</span>
+<span class="text-xs text-neutral-400 font-mono mt-0.5">vf-accessibilite</span>
+<span class="mt-2 text-[11px] font-medium px-2.5 py-0.5 rounded-full bg-[#a21249] text-white">Original</span>
+</div>
+<!-- vf-stockage -->
+<div class="flex flex-col items-center text-center group">
+<div class="w-12 h-12 flex items-center justify-center text-neutral-900 mb-3">
+<svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
+<path d="M3 5V19A9 3 0 0 0 21 19V5"></path>
+<path d="M3 12A9 3 0 0 0 21 12"></path>
+</svg>
+</div>
+<span class="text-sm font-semibold text-neutral-900">Données et stockage</span>
+<span class="text-xs text-neutral-400 font-mono mt-0.5">vf-stockage</span>
+<span class="mt-2 text-[11px] font-medium px-2.5 py-0.5 rounded-full border border-stone-400 text-stone-700 bg-white">Lucide</span>
+</div>
+<!-- vf-notifications -->
+<div class="flex flex-col items-center text-center group">
+<div class="w-12 h-12 flex items-center justify-center text-neutral-900 mb-3">
+<svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path>
+<path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path>
+</svg>
+</div>
+<span class="text-sm font-semibold text-neutral-900">Rappels</span>
+<span class="text-xs text-neutral-400 font-mono mt-0.5">vf-notifications</span>
+<span class="mt-2 text-[11px] font-medium px-2.5 py-0.5 rounded-full border border-[#d81b60] text-[#d81b60] bg-white">Adapté</span>
+</div>
+<!-- vf-confidentialite -->
+<div class="flex flex-col items-center text-center group">
+<div class="w-12 h-12 flex items-center justify-center text-neutral-900 mb-3">
+<svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+</svg>
+</div>
+<span class="text-sm font-semibold text-neutral-900">Confidentialité</span>
+<span class="text-xs text-neutral-400 font-mono mt-0.5">vf-confidentialite</span>
+<span class="mt-2 text-[11px] font-medium px-2.5 py-0.5 rounded-full border border-[#d81b60] text-[#d81b60] bg-white">Adapté</span>
+</div>
+<!-- vf-info -->
+<div class="flex flex-col items-center text-center group">
+<div class="w-12 h-12 flex items-center justify-center text-neutral-900 mb-3">
+<svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<circle cx="12" cy="12" r="9"></circle>
+<line x1="12" x2="12" y1="16" y2="12"></line>
+<line x1="12" x2="12.01" y1="8" y2="8"></line>
+</svg>
+</div>
+<span class="text-sm font-semibold text-neutral-900">À propos</span>
+<span class="text-xs text-neutral-400 font-mono mt-0.5">vf-info</span>
+<span class="mt-2 text-[11px] font-medium px-2.5 py-0.5 rounded-full border border-stone-400 text-stone-700 bg-white">Lucide</span>
+</div>
+<!-- vf-aide -->
+<div class="flex flex-col items-center text-center group">
+<div class="w-12 h-12 flex items-center justify-center text-neutral-900 mb-3">
+<svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<circle cx="12" cy="12" r="9"></circle>
+<path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+<line x1="12" x2="12.01" y1="17" y2="17"></line>
+</svg>
+</div>
+<span class="text-sm font-semibold text-neutral-900">Aide</span>
+<span class="text-xs text-neutral-400 font-mono mt-0.5">vf-aide</span>
+<span class="mt-2 text-[11px] font-medium px-2.5 py-0.5 rounded-full border border-stone-400 text-stone-700 bg-white">Lucide</span>
+</div>
+<!-- vf-signaler -->
+<div class="flex flex-col items-center text-center group">
+<div class="w-12 h-12 flex items-center justify-center text-neutral-900 mb-3">
+<svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path>
+<line x1="4" x2="4" y1="22" y2="15"></line>
+</svg>
+</div>
+<span class="text-sm font-semibold text-neutral-900">Signaler un problème</span>
+<span class="text-xs text-neutral-400 font-mono mt-0.5">vf-signaler</span>
+<span class="mt-2 text-[11px] font-medium px-2.5 py-0.5 rounded-full border border-stone-400 text-stone-700 bg-white">Lucide</span>
+</div>
+</div>
+</section>
+<!-- SECTION 9 : TEST DE LISIBILITÉ OPTIQUE (IMAGE_5) -->
+<section class="pt-8 border-t border-neutral-200">
+<div class="space-y-6">
+<div>
+<h2 class="text-2xl md:text-3xl font-serif-title font-bold text-neutral-950">Test de lisibilité</h2>
+<p class="text-neutral-500 text-sm mt-1">Échantillons d'affichage comparatif en 16 px, 20 px et 24 px pour valider la clarté optique du trait de 2 px.</p>
+</div>
+<div class="bg-white/95 backdrop-blur-sm border border-neutral-200/90 rounded-3xl p-6 md:p-8 shadow-sm">
+<div class="overflow-x-auto">
+<table class="w-full text-left text-sm">
+<thead>
+<tr class="border-b border-neutral-100 text-neutral-400 font-mono text-xs uppercase tracking-wider">
+<th class="pb-4 font-semibold text-neutral-600">Glyphe Source</th>
+<th class="pb-4 font-semibold">Identifiant</th>
+<th class="pb-4 text-center font-semibold">16 × 16 px</th>
+<th class="pb-4 text-center font-semibold">20 × 20 px</th>
+<th class="pb-4 text-center font-semibold">24 × 24 px</th>
+<th class="pb-4 font-semibold text-right">Statut Optique</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-neutral-100">
+<!-- Row 1: vf-accueil -->
+<tr>
+<td class="py-4 font-medium text-neutral-900">Accueil</td>
+<td class="py-4 text-neutral-400 font-mono text-xs">vf-accueil</td>
+<td class="py-4 text-center">
+<div class="inline-flex items-center justify-center p-2 rounded-lg bg-neutral-50">
+<svg class="w-4 h-4 text-neutral-900" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5"></path><path d="M5 9v11a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V9"></path></svg>
+</div>
+</td>
+<td class="py-4 text-center">
+<div class="inline-flex items-center justify-center p-2 rounded-lg bg-neutral-50">
+<svg class="w-5 h-5 text-neutral-900" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5"></path><path d="M5 9v11a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V9"></path></svg>
+</div>
+</td>
+<td class="py-4 text-center">
+<div class="inline-flex items-center justify-center p-2 rounded-lg bg-neutral-50">
+<svg class="w-6 h-6 text-neutral-900" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5"></path><path d="M5 9v11a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V9"></path></svg>
+</div>
+</td>
+<td class="py-4 text-right">
+<span class="inline-flex items-center text-xs font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">Parfait</span>
+</td>
+</tr>
+<!-- Row 2: vf-bible -->
+<tr>
+<td class="py-4 font-medium text-neutral-900">Bible</td>
+<td class="py-4 text-neutral-400 font-mono text-xs">vf-bible</td>
+<td class="py-4 text-center">
+<div class="inline-flex items-center justify-center p-2 rounded-lg bg-neutral-50">
+<svg class="w-4 h-4 text-neutral-900" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><rect height="18" rx="2" width="14" x="5" y="3"></rect><path d="M12 7v8"></path><path d="M8 10h8"></path></svg>
+</div>
+</td>
+<td class="py-4 text-center">
+<div class="inline-flex items-center justify-center p-2 rounded-lg bg-neutral-50">
+<svg class="w-5 h-5 text-neutral-900" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><rect height="18" rx="2" width="14" x="5" y="3"></rect><path d="M12 7v8"></path><path d="M8 10h8"></path></svg>
+</div>
+</td>
+<td class="py-4 text-center">
+<div class="inline-flex items-center justify-center p-2 rounded-lg bg-neutral-50">
+<svg class="w-6 h-6 text-neutral-900" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><rect height="18" rx="2" width="14" x="5" y="3"></rect><path d="M12 7v8"></path><path d="M8 10h8"></path></svg>
+</div>
+</td>
+<td class="py-4 text-right">
+<span class="inline-flex items-center text-xs font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">Parfait</span>
+</td>
+</tr>
+<!-- Row 3: vf-arbre -->
+<tr>
+<td class="py-4 font-medium text-neutral-900">Arbre Sémantique</td>
+<td class="py-4 text-neutral-400 font-mono text-xs">vf-arbre</td>
+<td class="py-4 text-center">
+<div class="inline-flex items-center justify-center p-2 rounded-lg bg-neutral-50">
+<svg class="w-4 h-4 text-neutral-900" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><rect height="5" rx="1.5" width="5" x="9.5" y="3"></rect><rect height="5" rx="1.5" width="5" x="3.5" y="16"></rect><rect height="5" rx="1.5" width="5" x="15.5" y="16"></rect><path d="M12 8v4"></path><path d="M6 12h12v4"></path></svg>
+</div>
+</td>
+<td class="py-4 text-center">
+<div class="inline-flex items-center justify-center p-2 rounded-lg bg-neutral-50">
+<svg class="w-5 h-5 text-neutral-900" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><rect height="5" rx="1.5" width="5" x="9.5" y="3"></rect><rect height="5" rx="1.5" width="5" x="3.5" y="16"></rect><rect height="5" rx="1.5" width="5" x="15.5" y="16"></rect><path d="M12 8v4"></path><path d="M6 12h12v4"></path></svg>
+</div>
+</td>
+<td class="py-4 text-center">
+<div class="inline-flex items-center justify-center p-2 rounded-lg bg-neutral-50">
+<svg class="w-6 h-6 text-neutral-900" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><rect height="5" rx="1.5" width="5" x="9.5" y="3"></rect><rect height="5" rx="1.5" width="5" x="3.5" y="16"></rect><rect height="5" rx="1.5" width="5" x="15.5" y="16"></rect><path d="M12 8v4"></path><path d="M6 12h12v4"></path></svg>
+</div>
+</td>
+<td class="py-4 text-right">
+<span class="inline-flex items-center text-xs font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">Parfait</span>
+</td>
+</tr>
+<!-- Row 4: vf-serie -->
+<tr>
+<td class="py-4 font-medium text-neutral-900">Série</td>
+<td class="py-4 text-neutral-400 font-mono text-xs">vf-serie</td>
+<td class="py-4 text-center">
+<div class="inline-flex items-center justify-center p-2 rounded-lg bg-neutral-50">
+<svg class="w-4 h-4 text-neutral-900" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"></path></svg>
+</div>
+</td>
+<td class="py-4 text-center">
+<div class="inline-flex items-center justify-center p-2 rounded-lg bg-neutral-50">
+<svg class="w-5 h-5 text-neutral-900" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"></path></svg>
+</div>
+</td>
+<td class="py-4 text-center">
+<div class="inline-flex items-center justify-center p-2 rounded-lg bg-neutral-50">
+<svg class="w-6 h-6 text-neutral-900" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"></path></svg>
+</div>
+</td>
+<td class="py-4 text-right">
+<span class="inline-flex items-center text-xs font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">Parfait</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- PIED DE DOCUMENTATION -->
+<footer class="pt-10 pb-16 border-t border-neutral-200 flex flex-col md:flex-row items-center justify-between text-xs text-neutral-400 gap-4">
+<p>Système de design VersyFlow · Référentiel SVG 24×24 · Tous droits réservés.</p>
+<div class="flex items-center gap-4">
+<span class="inline-flex items-center gap-1.5"><span class="w-2 h-2 rounded-full border border-stone-400"></span> Lucide</span>
+<span class="inline-flex items-center gap-1.5"><span class="w-2 h-2 rounded-full border border-[#d81b60]"></span> Adapté</span>
+<span class="inline-flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-[#a21249]"></span> Original VersyFlow</span>
+</div>
+</footer>
+</div>
+</body></html>

@@ -1,0 +1,262 @@
+/**
+ * Bible Domain — Multi-translation Registry (pure)
+ *
+ * A registry is a *catalogue*: it describes which translations exist, in
+ * which language, under which licence, and whether a dataset is actually
+ * bundled. It performs NO I/O — it only reads the manifest list it is
+ * constructed with. Reading texts is the job of a repository
+ * (`repository-local.ts`).
+ *
+ * This is the extensibility point required by the product: adding a new
+ * translation = adding one manifest entry. No `if (language === 'fr')`
+ * anywhere.
+ *
+ * Orthogonality (non-negotiable):
+ *   UI language  ≠  Bible language  ≠  Bible translation  ≠  Bible dataset
+ * The registry keys off the *Bible language* (ISO 639-1), never the UI language.
+ *
+ * See: docs/11-bible-domain.md, system prompt §7 (Bible multi-traductions).
+ */
+
+/**
+ * Licence status for a translation dataset. A translation may only be
+ * shipped in production when `VERIFIED_FREE` (or an explicit authorisation).
+ * `UNVERIFIED` must NOT be used in production.
+ */
+export type LicenseStatus =
+  | 'VERIFIED_FREE'
+  | 'CC-BY-SA'
+  | 'LICENSE_REQUIRED'
+  | 'LEGAL_REVIEW_REQUIRED'
+  | 'UNVERIFIED';
+
+export type TextDirection = 'ltr' | 'rtl';
+
+/** How the bundled dataset is stored locally (LOCAL_ONLY). */
+export type BibleDataFormat = 'json' | 'sqlite' | 'sqlite-bundled' | 'pdf';
+
+/**
+ * Metadata describing one Bible translation (the manifest entry).
+ * This is deliberately *not* the full text — text lives in a dataset.
+ */
+export interface BibleTranslationManifest {
+  /** Stable translation id, e.g. `lsg`, `kujv`, `web`. */
+  id: string;
+  /** Bible language (ISO 639-1), e.g. `fr`, `en`, `ar`. NOT the UI language. */
+  language: string;
+  /** Human-readable display name, e.g. "Louis Segond (1910)". */
+  name: string;
+  /** Edition year, when known. */
+  year?: number;
+  /** Author / translator name, when known. */
+  author?: string;
+  /** Licence posture — governs whether the dataset may ship to production. */
+  license: LicenseStatus;
+  /** Optional source URL used to (re-)verify the licence/download. */
+  sourceUrl?: string;
+  /** Reading direction for the target language. */
+  direction?: TextDirection;
+  /** Versification, e.g. `protestant-1189`. */
+  versification?: string;
+  /** Local storage format of the bundled dataset. */
+  format?: BibleDataFormat;
+  /**
+   * Whether a dataset for this translation is currently bundled and loadable.
+   * `false` = listed for the future / legal-review pending.
+   */
+  available: boolean;
+}
+
+/**
+ * Port for a read-only multi-translation catalogue.
+ */
+export interface IBibleTranslationRegistry {
+  /** Every registered translation. */
+  listTranslations(): BibleTranslationManifest[];
+  /** Translations for a given *Bible* language. */
+  getByLanguage(language: string): BibleTranslationManifest[];
+  /** A single translation by id. */
+  getById(id: string): BibleTranslationManifest | undefined;
+  /** True when a bundled dataset can be loaded for this id. */
+  isAvailable(id: string): boolean;
+  /** The default translation id used when none is requested. */
+  defaultTranslation(): string;
+}
+
+/**
+ * Canon model (§47) — the book set the corpus is expected to cover.
+ */
+export type Canon = 'PROTESTANT_66';
+
+/**
+ * Completeness level a dataset is expected to reach (§53).
+ */
+export type Completeness = 'FULL_BIBLE' | 'OLD_TESTAMENT' | 'NEW_TESTAMENT';
+
+/**
+ * Source description for a dataset (§43) — all the URLs / files needed to
+ * resolve a dataset without re-discovering it.
+ */
+export interface DatasetSource {
+  /** eBible.org source page URL. */
+  sourcePage?: string;
+  /** eBible.org download page URL. */
+  downloadPage?: string;
+  /** Licence page URL. */
+  licenseUrl?: string;
+  /** Local raw USFM source path (skips download when present, §72). */
+  rawPath?: string;
+  /** Individual files in the source archive. */
+  files?: Array<{
+    name: string;
+    url?: string;
+    format?: string;
+    sizeBytes?: number;
+  }>;
+}
+
+/**
+ * Extended manifest describing a *concrete dataset* (a built artifact) that
+ * is registered by the ingestion orchestrator. Extends the catalogue manifest
+ * with canon, completeness, checksum, source, and build metadata (§47, §49).
+ */
+export interface BibleDatasetManifest extends BibleTranslationManifest {
+  /** Which canon this dataset covers. */
+  canon: Canon;
+  /** Whether the dataset covers the full Bible or only one testament. */
+  completeness: Completeness;
+  /** SHA-256 checksum of the built runtime JSON dataset. */
+  checksum?: string;
+  /** Source description (URLs + local raw path). */
+  source?: DatasetSource;
+  /** Paths where the built dataset artifacts live (§65). */
+  datasetPaths?: {
+    raw?: string;
+    normalized?: string;
+    runtime?: string;
+  };
+  /** Expected verse count for this dataset (injected, not hardcoded per translation). */
+  expectedVerseCount?: number;
+}
+
+/**
+ * Default translation when the user has not chosen one.
+ */
+export const DEFAULT_TRANSLATION_ID = 'lsg';
+
+/**
+ * In-memory registry. Pure: behaviour derives only from the manifest list.
+ *
+ * The constructor is seeded with a conservative catalogue: only translations
+ * we can defend as free to ship are `available: true`; the rest are listed as
+ * placeholders (`available: false`) so the UI can render them without us
+ * asserting an unverified licence.
+ */
+export class BibleTranslationRegistry implements IBibleTranslationRegistry {
+  private readonly byId: Map<string, BibleTranslationManifest>;
+  private readonly defaultId: string;
+
+  constructor(
+    translations: BibleTranslationManifest[],
+    defaultId: string = DEFAULT_TRANSLATION_ID,
+  ) {
+    this.byId = new Map(translations.map((t) => [t.id, t]));
+    this.defaultId = defaultId;
+    if (!this.byId.has(defaultId)) {
+      // The default must always be resolvable.
+      throw new Error(
+        `[BibleRegistry] default translation "${defaultId}" is not in the catalogue`,
+      );
+    }
+  }
+
+  listTranslations(): BibleTranslationManifest[] {
+    return [...this.byId.values()];
+  }
+
+  getByLanguage(language: string): BibleTranslationManifest[] {
+    const lang = language.toLowerCase();
+    return [...this.byId.values()].filter((t) => t.language.toLowerCase() === lang);
+  }
+
+  getById(id: string): BibleTranslationManifest | undefined {
+    return this.byId.get(id);
+  }
+
+  isAvailable(id: string): boolean {
+    return this.byId.get(id)?.available === true;
+  }
+
+  defaultTranslation(): string {
+    return this.defaultId;
+  }
+}
+
+/**
+ * The app's default seeded catalogue.
+ *
+ * LSG and Ostervald (1930) are asserted `available` + `VERIFIED_FREE` — both
+ * French datasets are bundled locally under `data/bible/`.
+ *
+ * `kujv` (KJV Cambridge Paragraph Bible) is asserted `available` + `VERIFIED_FREE`:
+ *   - Source: eBible `engkjvcpb` (86 USFM files / 66 canonical codes).
+ *   - Licence: public domain in the US/UK. The King James Version text was
+ *     published in 1611; copyright expired centuries ago. The Cambridge
+ *     Paragraph edition is a scholarly typography of the same text, not a
+ *     new copyrighted work. See eBible.org source: no licence restrictions
+ *     apply for non-commercial use. Verified via `npm run bible:deploy`
+ *     (dataset is in Supabase Storage bucket `bible-datasets`, HTTP 200).
+ *   - No known restrictive licence for non-commercial distribution.
+ *   - Name intentionally reflects the Cambridge Paragraph edition, not the
+ *     1611 original, to distinguish this specific source from other KJV
+ *     derivatives.
+ *
+ * `web` / `webu` (World English Bible / WEB Updated) are listed elsewhere
+ * (`scripts/bible/build-bible.ts`) and are not part of this default seed.
+ * `darby` is `LICENSE_REQUIRED` (proprietary) and `available: false`.
+ */
+export const DEFAULT_BIBLE_TRANSLATIONS: BibleTranslationManifest[] = [
+  {
+    id: 'lsg',
+    language: 'fr',
+    name: 'Louis Segond (1910)',
+    year: 1910,
+    author: 'Louis Segond',
+    license: 'VERIFIED_FREE',
+    direction: 'ltr',
+    versification: 'protestant-1189',
+    format: 'json',
+    available: true,
+  },
+  {
+    id: 'kujv',
+    language: 'en',
+    name: 'King James Version (Cambridge Paragraph Bible)',
+    license: 'VERIFIED_FREE',
+    sourceUrl: 'https://www.biblegateway.com/passage/?search=John+3:16&version=KJV',
+    direction: 'ltr',
+    versification: 'protestant-1189',
+    format: 'json',
+    available: true,
+  },
+  {
+    id: 'ostervald',
+    language: 'fr',
+    name: 'Ostervald (1930)',
+    year: 1930,
+    license: 'VERIFIED_FREE',
+    direction: 'ltr',
+    format: 'json',
+    available: true,
+  },
+  {
+    id: 'darby',
+    language: 'fr',
+    name: 'Darby (1865)',
+    year: 1865,
+    license: 'LICENSE_REQUIRED',
+    direction: 'ltr',
+    format: 'json',
+    available: false,
+  },
+];

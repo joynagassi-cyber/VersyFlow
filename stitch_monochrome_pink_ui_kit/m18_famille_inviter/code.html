@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+
+<html lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>M18 — Famille — Inviter</title>
+<!-- Tailwind CSS v3 with forms and container queries plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts: Inter & Newsreader / Playfair Display -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=Playfair+Display:wght@700;800;900&amp;display=swap" rel="stylesheet"/>
+<!-- BEGIN: Custom Configuration & Fonts -->
+<script data-purpose="tailwind-config">
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'system-ui', '-apple-system', 'sans-serif'],
+            serif: ['"Playfair Display"', 'Georgia', 'serif'],
+          },
+          colors: {
+            brand: {
+              magenta: '#A81358',
+              accentPink: '#FFE5EE',
+              lightPink: '#FDF2F5',
+              darkText: '#181216',
+              bodyText: '#635B62',
+              bgLight: '#FAF8F9',
+              borderLight: '#ECE7E9',
+              purpleAvatar: '#B9A6DE'
+            }
+          }
+        }
+      }
+    };
+  </script>
+<!-- END: Custom Configuration & Fonts -->
+<style data-purpose="global-layout">
+    /* Remove default scrollbar and configure canvas */
+    body {
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      background-color: #FAF8F9;
+      color: #181216;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between select-none">
+<!-- BEGIN: Mobile Top Status Bar -->
+<header class="w-full pt-3 px-7 flex justify-between items-center text-xs font-semibold tracking-tight text-neutral-900 select-none z-20">
+<span>9:41</span>
+<div aria-label="État réseau et batterie" class="flex items-center space-x-1.5">
+<span class="text-[11px] font-bold tracking-tight">5G</span>
+<div class="flex space-x-0.5 items-end h-3">
+<span class="w-[3px] h-[4px] bg-black rounded-xs"></span>
+<span class="w-[3px] h-[7px] bg-black rounded-xs"></span>
+<span class="w-[3px] h-[10px] bg-black rounded-xs"></span>
+</div>
+<!-- Battery icon -->
+<div class="w-5 h-2.5 ml-1 border border-black rounded-[3px] p-0.5 flex items-center">
+<div class="w-full h-full bg-black rounded-2xs"></div>
+</div>
+</div>
+</header>
+<!-- END: Mobile Top Status Bar -->
+<!-- BEGIN: Header Navigation Bar -->
+<div class="w-full px-5 pt-3 pb-3 flex items-center justify-between z-10" data-purpose="screen-header">
+<!-- Back Button -->
+<button aria-label="Retour" class="w-11 h-11 rounded-full bg-white shadow-xs border border-brand-borderLight flex items-center justify-center text-brand-darkText active:scale-95 transition-transform" type="button">
+<svg class="w-4 h-4 stroke-[2.5]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M15 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+<!-- Title & Subtitle -->
+<div class="text-center">
+<h1 class="font-serif font-black text-[22px] tracking-tight leading-tight text-brand-darkText">Inviter</h1>
+<p class="text-[13px] text-brand-bodyText font-medium mt-0.5">Famille connectée</p>
+</div>
+<!-- More Options Button (...) -->
+<button aria-label="Options" class="w-11 h-11 rounded-full bg-white shadow-xs border border-brand-borderLight flex items-center justify-center text-brand-darkText active:scale-95 transition-transform" type="button">
+<svg class="w-5 h-5 text-brand-darkText fill-current" viewbox="0 0 24 24">
+<circle cx="5" cy="12" r="2"></circle>
+<circle cx="12" cy="12" r="2"></circle>
+<circle cx="19" cy="12" r="2"></circle>
+</svg>
+</button>
+</div>
+<!-- END: Header Navigation Bar -->
+<!-- BEGIN: Main Screen Content -->
+<main class="w-full max-w-md mx-auto px-5 pb-24 flex-1 flex flex-col justify-start">
+<!-- BEGIN: Invitation Card with Code & QR -->
+<section class="w-full bg-white rounded-3xl p-6 shadow-sm border border-brand-borderLight/80 flex flex-col items-center text-center mt-1" data-purpose="invitation-card">
+<span class="text-[11px] font-bold tracking-widest text-[#B0145A] uppercase">CODE D’INVITATION</span>
+<!-- Big Serif Code -->
+<h2 class="font-serif font-bold text-[38px] tracking-wide text-brand-darkText mt-1.5 mb-5 leading-none">
+        7K4-MP2
+      </h2>
+<!-- QR Code Canvas Display -->
+<div class="relative p-2 flex items-center justify-center bg-white" data-purpose="qr-code-wrapper">
+<canvas class="w-44 h-44 aspect-square" height="180" id="qrCanvas" width="180"></canvas>
+</div>
+<!-- Expiration Note -->
+<p class="text-xs text-brand-bodyText/80 font-normal mt-5 tracking-tight">
+        Valable 24 h · une personne à la fois
+      </p>
+</section>
+<!-- END: Invitation Card with Code & QR -->
+<!-- BEGIN: Quick Action Buttons -->
+<div class="w-full grid grid-cols-2 gap-3.5 mt-4" data-purpose="share-actions">
+<!-- Copy Link Button -->
+<button class="h-12 bg-white hover:bg-neutral-50 active:scale-[0.98] transition rounded-full border border-brand-borderLight text-brand-darkText font-semibold text-[15px] flex items-center justify-center shadow-xs" type="button">
+        Copier le lien
+      </button>
+<!-- Share Button -->
+<button class="h-12 bg-white hover:bg-neutral-50 active:scale-[0.98] transition rounded-full border border-brand-borderLight text-brand-darkText font-semibold text-[15px] flex items-center justify-center shadow-xs" type="button">
+        Partager
+      </button>
+</div>
+<!-- END: Quick Action Buttons -->
+<!-- BEGIN: Pending Member Card -->
+<section class="w-full bg-white rounded-3xl p-4 shadow-sm border border-brand-borderLight/80 mt-4 flex flex-col justify-start" data-purpose="pending-members-card">
+<span class="text-[11px] font-bold tracking-wider text-[#B0145A] uppercase pl-1 pt-1 mb-2">EN ATTENTE</span>
+<div class="flex items-center justify-between">
+<div class="flex items-center space-x-3.5">
+<!-- Member Avatar Initial 'N' -->
+<div class="w-12 h-12 rounded-full bg-[#B6A2DE] text-white flex items-center justify-center font-bold text-lg shadow-inner">
+            N
+          </div>
+<!-- Member Info -->
+<div class="text-left">
+<h3 class="font-bold text-base text-brand-darkText leading-snug">Noé</h3>
+<p class="text-[13px] text-brand-bodyText">Pas encore rejoint</p>
+</div>
+</div>
+<!-- Relancer Button -->
+<button class="px-4 py-2 bg-[#FDE9F1] hover:bg-[#FCD8E7] active:scale-95 transition rounded-full text-[#A81358] font-bold text-[13px]" type="button">
+          Relancer
+        </button>
+</div>
+</section>
+<!-- END: Pending Member Card -->
+<!-- BEGIN: Offline Security Info Note -->
+<div class="flex items-start space-x-2.5 mt-4 px-2" data-purpose="offline-notice">
+<!-- Tiny Padlock Icon -->
+<svg class="w-3.5 h-3.5 text-brand-bodyText/80 mt-0.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<rect height="11" rx="2" ry="2" width="18" x="3" y="11"></rect>
+<path d="M7 11V7a5 5 0 0110 0v4"></path>
+</svg>
+<p class="text-[12.5px] leading-relaxed text-brand-bodyText">
+        Internet n’est requis qu’une première fois, pour lier les appareils. Ensuite, tout fonctionne hors ligne.
+      </p>
+</div>
+<!-- END: Offline Security Info Note -->
+</main>
+<!-- END: Main Screen Content -->
+<!-- BEGIN: Bottom Tab Navigation Bar -->
+<nav class="fixed bottom-0 inset-x-0 bg-white border-t border-neutral-100 py-2.5 px-6 flex justify-between items-center z-30" data-purpose="tab-navigation">
+<!-- Tab: Accueil (Active) -->
+<button class="flex flex-col items-center justify-center text-[#A81358] w-14" type="button">
+<svg class="w-6 h-6 stroke-[2]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[11px] font-semibold mt-1">Accueil</span>
+</button>
+<!-- Tab: Bible -->
+<button class="flex flex-col items-center justify-center text-neutral-600 hover:text-black w-14" type="button">
+<svg class="w-6 h-6 stroke-[1.8]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[11px] font-medium mt-1">Bible</span>
+</button>
+<!-- Tab: Mémoriser -->
+<button class="flex flex-col items-center justify-center text-neutral-600 hover:text-black w-14" type="button">
+<svg class="w-6 h-6 stroke-[1.8]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[11px] font-medium mt-1">Mémoriser</span>
+</button>
+<!-- Tab: Progrès -->
+<button class="flex flex-col items-center justify-center text-neutral-600 hover:text-black w-14" type="button">
+<svg class="w-6 h-6 stroke-[1.8]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[11px] font-medium mt-1">Progrès</span>
+</button>
+<!-- Tab: Réglages -->
+<button class="flex flex-col items-center justify-center text-neutral-600 hover:text-black w-14" type="button">
+<svg class="w-6 h-6 stroke-[1.8]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[11px] font-medium mt-1">Réglages</span>
+</button>
+</nav>
+<!-- END: Bottom Tab Navigation Bar -->
+<!-- BEGIN: QR Code Generation Script -->
+<script data-purpose="qr-generator">
+    document.addEventListener("DOMContentLoaded", function () {
+      const canvas = document.getElementById("qrCanvas");
+      if (!canvas) return;
+      const ctx = canvas.getContext("2d");
+      const size = 180;
+      canvas.width = size;
+      canvas.height = size;
+
+      // QR Code grid pattern reproduction matching the visual structure
+      // 21x21 matrix standard for version 1 QR
+      const modules = 21;
+      const cellSize = size / modules;
+
+      // Initialize empty grid (0: white, 1: black)
+      const grid = Array.from({ length: modules }, () => Array(modules).fill(0));
+
+      // Finder patterns builder function
+      function drawFinder(row, col) {
+        for (let r = 0; r < 7; r++) {
+          for (let c = 0; c < 7; c++) {
+            if (
+              r === 0 || r === 6 || c === 0 || c === 6 ||
+              (r >= 2 && r <= 4 && c >= 2 && c <= 4)
+            ) {
+              grid[row + r][col + c] = 1;
+            }
+          }
+        }
+      }
+
+      // Draw standard three corners finder patterns
+      drawFinder(0, 0);                 // Top-left
+      drawFinder(0, modules - 7);        // Top-right
+      drawFinder(modules - 7, 0);        // Bottom-left
+
+      // Timing patterns & alignment specs
+      for (let i = 8; i < modules - 8; i += 2) {
+        grid[6][i] = 1;
+        grid[i][6] = 1;
+      }
+
+      // High density pseudo-random deterministic filling for the visual pattern
+      const dataSeeds = [
+        [0, 8], [1, 9], [2, 11], [3, 9], [4, 10], [5, 8],
+        [7, 1], [7, 3], [7, 5], [7, 8], [7, 10], [7, 12],
+        [8, 2], [8, 4], [8, 6], [8, 8], [8, 10], [8, 12], [8, 14], [8, 16], [8, 18],
+        [9, 1], [9, 3], [9, 5], [9, 7], [9, 9], [9, 11], [9, 13], [9, 15], [9, 17], [9, 19],
+        [10, 8], [10, 10], [10, 12], [10, 14], [10, 16], [10, 18],
+        [11, 3], [11, 7], [11, 9], [11, 11], [11, 13], [11, 15], [11, 17],
+        [12, 8], [12, 10], [12, 12], [12, 14], [12, 16], [12, 18],
+        [13, 1], [13, 3], [13, 5], [13, 7], [13, 9], [13, 11], [13, 15], [13, 19],
+        [14, 8], [14, 10], [14, 12], [14, 14], [14, 18],
+        [15, 9], [15, 11], [15, 13], [15, 17],
+        [16, 8], [16, 12], [16, 14], [16, 16],
+        [17, 9], [17, 11], [17, 13], [17, 15], [17, 17], [17, 19],
+        [18, 8], [18, 10], [18, 12], [18, 14], [18, 16], [18, 18],
+        [19, 7], [19, 9], [19, 13], [19, 15], [19, 17],
+        [20, 8], [20, 10], [20, 12], [20, 14], [20, 16], [20, 18]
+      ];
+
+      dataSeeds.forEach(([r, c]) => {
+        if (r < modules && c < modules) grid[r][c] = 1;
+      });
+
+      // Clear Canvas
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, size, size);
+
+      // Render crisp sharp pixels
+      ctx.fillStyle = "#111111";
+      for (let r = 0; r < modules; r++) {
+        for (let c = 0; c < modules; c++) {
+          if (grid[r][c] === 1) {
+            ctx.fillRect(
+              Math.round(c * cellSize),
+              Math.round(r * cellSize),
+              Math.ceil(cellSize),
+              Math.ceil(cellSize)
+            );
+          }
+        }
+      }
+    });
+  </script>
+<!-- END: QR Code Generation Script -->
+</body></html>

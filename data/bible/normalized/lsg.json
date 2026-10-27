@@ -1,0 +1,671 @@
+{
+ "id": "lsg",
+ "name": "Louis Segond (1910)",
+ "year": 1910,
+ "language": "fr",
+ "style": "classique",
+ "publicDomain": true,
+ "author": "Louis Segond",
+ "books": [
+  {
+   "id": "gen",
+   "name": {
+    "fr": "Genèse",
+    "en": "Genèse"
+   },
+   "testament": "old",
+   "chapterCount": 0,
+   "chapters": []
+  },
+  {
+   "id": "exo",
+   "name": {
+    "fr": "Exode",
+    "en": "Exode"
+   },
+   "testament": "old",
+   "chapterCount": 0,
+   "chapters": []
+  },
+  {
+   "id": "lev",
+   "name": {
+    "fr": "Lévitique",
+    "en": "Lévitique"
+   },
+   "testament": "old",
+   "chapterCount": 0,
+   "chapters": []
+  },
+  {
+   "id": "num",
+   "name": {
+    "fr": "Nombres",
+    "en": "Nombres"
+   },
+   "testament": "old",
+   "chapterCount": 0,
+   "chapters": []
+  },
+  {
+   "id": "deb",
+   "name": {
+    "fr": "Deutéronome",
+    "en": "Deutéronome"
+   },
+   "testament": "old",
+   "chapterCount": 0,
+   "chapters": []
+  },
+  {
+   "id": "jos",
+   "name": {
+    "fr": "Josué",
+    "en": "Josué"
+   },
+   "testament": "old",
+   "chapterCount": 0,
+   "chapters": []
+  },
+  {
+   "id": "jug",
+   "name": {
+    "fr": "Juges",
+    "en": "Juges"
+   },
+   "testament": "old",
+   "chapterCount": 0,
+   "chapters": []
+  },
+  {
+   "id": "rut",
+   "name": {
+    "fr": "Ruth",
+    "en": "Ruth"
+   },
+   "testament": "old",
+   "chapterCount": 0,
+   "chapters": []
+  },
+  {
+   "id": "1sam",
+   "name": {
+    "fr": "1 Samuel",
+    "en": "Premier livre de Samuel"
+   },
+   "testament": "old",
+   "chapterCount": 0,
+   "chapters": []
+  },
+  {
+   "id": "2sam",
+   "name": {
+    "fr": "2 Samuel",
+    "en": "Deuxième livre de Samuel"
+   },
+   "testament": "old",
+   "chapterCount": 0,
+   "chapters": []
+  },
+  {
+   "id": "1roi",
+   "name": {
+    "fr": "1 Rois",
+    "en": "Premier livre des Rois"
+   },
+   "testament": "old",
+   "chapterCount": 0,
+   "chapters": []
+  },
+  {
+   "id": "2roi",
+   "name": {
+    "fr": "2 Rois",
+    "en": "Second livre des Rois"
+   },
+   "testament": "old",
+   "chapterCount": 0,
+   "chapters": []
+  },
+  {
+   "id": "1chron",
+   "name": {
+    "fr": "1 Chroniques",
+    "en": "Premier livre des Chroniques"
+   },
+   "testament": "old",
+   "chapterCount": 0,
+   "chapters": []
+  },
+  {
+   "id": "2chron",
+   "name": {
+    "fr": "2 Chroniques",
+    "en": "Second livre des Chroniques"
+   },
+   "testament": "old",
+   "chapterCount": 0,
+   "chapters": []
+  },
+  {
+   "id": "esai",
+   "name": {
+    "fr": "Esdras",
+    "en": "Esdras"
+   },
+   "testament": "old",
+   "chapterCount": 0,
+   "chapters": []
+  },
+  {
+   "id": "neh",
+   "name": {
+    "fr": "Néhémie",
+    "en": "Néhémie"
+   },
+   "testament": "old",
+   "chapterCount": 0,
+   "chapters": []
+  },
+  {
+   "id": "est",
+   "name": {
+    "fr": "Esther",
+    "en": "Esther"
+   },
+   "testament": "old",
+   "chapterCount": 0,
+   "chapters": []
+  },
+  {
+   "id": "job",
+   "name": {
+    "fr": "Job",
+    "en": "Job"
+   },
+   "testament": "old",
+   "chapterCount": 0,
+   "chapters": []
+  },
+  {
+   "id": "psa",
+   "name": {
+    "fr": "Psaumes",
+    "en": "Psaumes"
+   },
+   "testament": "old",
+   "chapterCount": 0,
+   "chapters": []
+  },
+  {
+   "id": "prov",
+   "name": {
+    "fr": "Proverbes",
+    "en": "Proverbes"
+   },
+   "testament": "old",
+   "chapterCount": 0,
+   "chapters": []
+  },
+  {
+   "id": "eccl",
+   "name": {
+    "fr": "Ecclésiaste",
+    "en": "L'Ecclésiaste"
+   },
+   "testament": "old",
+   "chapterCount": 0,
+   "chapters": []
+  },
+  {
+   "id": "cant",
+   "name": {
+    "fr": "Cantique des Cantiques",
+    "en": "Cantique des Cantiques"
+   },
+   "testament": "old",
+   "chapterCount": 0,
+   "chapters": []
+  },
+  {
+   "id": "isa",
+   "name": {
+    "fr": "Ésaïe",
+    "en": "Ésaïe"
+   },
+   "testament": "old",
+   "chapterCount": 0,
+   "chapters": []
+  },
+  {
+   "id": "jer",
+   "name": {
+    "fr": "Jérémie",
+    "en": "Jérémie"
+   },
+   "testament": "old",
+   "chapterCount": 0,
+   "chapters": []
+  },
+  {
+   "id": "lament",
+   "name": {
+    "fr": "Lamentations",
+    "en": "Lamentations"
+   },
+   "testament": "old",
+   "chapterCount": 0,
+   "chapters": []
+  },
+  {
+   "id": "ezek",
+   "name": {
+    "fr": "Ézéchiel",
+    "en": "Ézékiel"
+   },
+   "testament": "old",
+   "chapterCount": 0,
+   "chapters": []
+  },
+  {
+   "id": "dan",
+   "name": {
+    "fr": "Daniel",
+    "en": "Daniel"
+   },
+   "testament": "old",
+   "chapterCount": 0,
+   "chapters": []
+  },
+  {
+   "id": "os",
+   "name": {
+    "fr": "Osée",
+    "en": "Osée"
+   },
+   "testament": "old",
+   "chapterCount": 0,
+   "chapters": []
+  },
+  {
+   "id": "joel",
+   "name": {
+    "fr": "Joël",
+    "en": "Joël"
+   },
+   "testament": "old",
+   "chapterCount": 0,
+   "chapters": []
+  },
+  {
+   "id": "amos",
+   "name": {
+    "fr": "Amos",
+    "en": "Amos"
+   },
+   "testament": "old",
+   "chapterCount": 0,
+   "chapters": []
+  },
+  {
+   "id": "abdj",
+   "name": {
+    "fr": "Abdias",
+    "en": "Abdias"
+   },
+   "testament": "old",
+   "chapterCount": 0,
+   "chapters": []
+  },
+  {
+   "id": "jon",
+   "name": {
+    "fr": "Jonas",
+    "en": "Jonas"
+   },
+   "testament": "old",
+   "chapterCount": 0,
+   "chapters": []
+  },
+  {
+   "id": "mich",
+   "name": {
+    "fr": "Michée",
+    "en": "Michée"
+   },
+   "testament": "old",
+   "chapterCount": 0,
+   "chapters": []
+  },
+  {
+   "id": "nah",
+   "name": {
+    "fr": "Nahum",
+    "en": "Nahum"
+   },
+   "testament": "old",
+   "chapterCount": 0,
+   "chapters": []
+  },
+  {
+   "id": "hab",
+   "name": {
+    "fr": "Habacuc",
+    "en": "Habacuc"
+   },
+   "testament": "old",
+   "chapterCount": 0,
+   "chapters": []
+  },
+  {
+   "id": "sep",
+   "name": {
+    "fr": "Sophonie",
+    "en": "Sophonie"
+   },
+   "testament": "old",
+   "chapterCount": 0,
+   "chapters": []
+  },
+  {
+   "id": "ag",
+   "name": {
+    "fr": "Aggée",
+    "en": "Aggée"
+   },
+   "testament": "old",
+   "chapterCount": 0,
+   "chapters": []
+  },
+  {
+   "id": "zach",
+   "name": {
+    "fr": "Zacharie",
+    "en": "Zacharie"
+   },
+   "testament": "old",
+   "chapterCount": 0,
+   "chapters": []
+  },
+  {
+   "id": "mal",
+   "name": {
+    "fr": "Malachie",
+    "en": "Malachie"
+   },
+   "testament": "old",
+   "chapterCount": 0,
+   "chapters": []
+  },
+  {
+   "id": "mat",
+   "name": {
+    "fr": "Matthieu",
+    "en": "Évangile selon Matthieu"
+   },
+   "testament": "new",
+   "chapterCount": 0,
+   "chapters": []
+  },
+  {
+   "id": "mar",
+   "name": {
+    "fr": "Marc",
+    "en": "Évangile selon Marc"
+   },
+   "testament": "new",
+   "chapterCount": 0,
+   "chapters": []
+  },
+  {
+   "id": "luk",
+   "name": {
+    "fr": "Luc",
+    "en": "Évangile selon Luc"
+   },
+   "testament": "new",
+   "chapterCount": 0,
+   "chapters": []
+  },
+  {
+   "id": "joh",
+   "name": {
+    "fr": "Jean",
+    "en": "Évangile selon Jean"
+   },
+   "testament": "new",
+   "chapterCount": 0,
+   "chapters": []
+  },
+  {
+   "id": "act",
+   "name": {
+    "fr": "Actes",
+    "en": "Actes des Apôtres"
+   },
+   "testament": "new",
+   "chapterCount": 0,
+   "chapters": []
+  },
+  {
+   "id": "rom",
+   "name": {
+    "fr": "Romains",
+    "en": "Épître de Paul aux Romains"
+   },
+   "testament": "new",
+   "chapterCount": 0,
+   "chapters": []
+  },
+  {
+   "id": "1cor",
+   "name": {
+    "fr": "1 Corinthiens",
+    "en": "Première épître de Paul aux Corinthiens"
+   },
+   "testament": "new",
+   "chapterCount": 0,
+   "chapters": []
+  },
+  {
+   "id": "2cor",
+   "name": {
+    "fr": "2 Corinthiens",
+    "en": "Seconde épître de Paul aux Corinthiens"
+   },
+   "testament": "new",
+   "chapterCount": 0,
+   "chapters": []
+  },
+  {
+   "id": "gal",
+   "name": {
+    "fr": "Galates",
+    "en": "Épître de Paul aux Galates"
+   },
+   "testament": "new",
+   "chapterCount": 0,
+   "chapters": []
+  },
+  {
+   "id": "eph",
+   "name": {
+    "fr": "Éphésiens",
+    "en": "Épître de Paul aux Éphésiens"
+   },
+   "testament": "new",
+   "chapterCount": 0,
+   "chapters": []
+  },
+  {
+   "id": "phil",
+   "name": {
+    "fr": "Philippiens",
+    "en": "Épître de Paul aux Philippiens"
+   },
+   "testament": "new",
+   "chapterCount": 0,
+   "chapters": []
+  },
+  {
+   "id": "col",
+   "name": {
+    "fr": "Colossiens",
+    "en": "Épître de Paul aux Colossiens"
+   },
+   "testament": "new",
+   "chapterCount": 0,
+   "chapters": []
+  },
+  {
+   "id": "1thes",
+   "name": {
+    "fr": "1 Thessaloniciens",
+    "en": "Première épître de Paul aux Thessaloniciens"
+   },
+   "testament": "new",
+   "chapterCount": 0,
+   "chapters": []
+  },
+  {
+   "id": "2thes",
+   "name": {
+    "fr": "2 Thessaloniciens",
+    "en": "Second épître de Paul aux Thessaloniciens"
+   },
+   "testament": "new",
+   "chapterCount": 0,
+   "chapters": []
+  },
+  {
+   "id": "1tim",
+   "name": {
+    "fr": "1 Timothée",
+    "en": "Première épître de Paul à Timothée"
+   },
+   "testament": "new",
+   "chapterCount": 0,
+   "chapters": []
+  },
+  {
+   "id": "2tim",
+   "name": {
+    "fr": "2 Timothée",
+    "en": "Second épître de Paul à Timothée"
+   },
+   "testament": "new",
+   "chapterCount": 0,
+   "chapters": []
+  },
+  {
+   "id": "tit",
+   "name": {
+    "fr": "Tite",
+    "en": "Épître de Paul à Tite"
+   },
+   "testament": "new",
+   "chapterCount": 0,
+   "chapters": []
+  },
+  {
+   "id": "philem",
+   "name": {
+    "fr": "Philémon",
+    "en": "Épître de Paul à Philémon"
+   },
+   "testament": "new",
+   "chapterCount": 0,
+   "chapters": []
+  },
+  {
+   "id": "heb",
+   "name": {
+    "fr": "Hébreux",
+    "en": "Épître aux Hébreux"
+   },
+   "testament": "new",
+   "chapterCount": 0,
+   "chapters": []
+  },
+  {
+   "id": "jac",
+   "name": {
+    "fr": "Jacques",
+    "en": "Épître de Jacques"
+   },
+   "testament": "new",
+   "chapterCount": 0,
+   "chapters": []
+  },
+  {
+   "id": "1pet",
+   "name": {
+    "fr": "1 Pierre",
+    "en": "Première épître de Pierre"
+   },
+   "testament": "new",
+   "chapterCount": 0,
+   "chapters": []
+  },
+  {
+   "id": "2pet",
+   "name": {
+    "fr": "2 Pierre",
+    "en": "Seconde épître de Pierre"
+   },
+   "testament": "new",
+   "chapterCount": 0,
+   "chapters": []
+  },
+  {
+   "id": "1joh",
+   "name": {
+    "fr": "1 Jean",
+    "en": "Première épître de Jean"
+   },
+   "testament": "new",
+   "chapterCount": 0,
+   "chapters": []
+  },
+  {
+   "id": "2joh",
+   "name": {
+    "fr": "2 Jean",
+    "en": "Seconde épître de Jean"
+   },
+   "testament": "new",
+   "chapterCount": 0,
+   "chapters": []
+  },
+  {
+   "id": "3joh",
+   "name": {
+    "fr": "3 Jean",
+    "en": "Troisième épître de Jean"
+   },
+   "testament": "new",
+   "chapterCount": 0,
+   "chapters": []
+  },
+  {
+   "id": "jud",
+   "name": {
+    "fr": "Jude",
+    "en": "Épître de Jude"
+   },
+   "testament": "new",
+   "chapterCount": 0,
+   "chapters": []
+  },
+  {
+   "id": "rev",
+   "name": {
+    "fr": "Apocalypse",
+    "en": "Apocalypse de Jean"
+   },
+   "testament": "new",
+   "chapterCount": 0,
+   "chapters": []
+  }
+ ]
+}

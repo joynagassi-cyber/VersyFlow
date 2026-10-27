@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+
+<html lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>M13 — Famille — Résultats d’un défi</title>
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts: Inter & Playfair Display -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Playfair+Display:wght@700;800;900&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind Configuration -->
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              magenta: '#c91479',
+              'magenta-dark': '#b01068',
+              'soft-pink': '#fae8f0',
+              'podium-pink': '#fdf2f6',
+              'podium-num': '#c91479',
+            },
+            avatar: {
+              marc: '#2e7ee6',
+              lea: '#e61e7d',
+              ama: '#249f64',
+            },
+            badge: {
+              gold: '#d89b33',
+            },
+            bonus: {
+              green: '#2e8b57',
+              'green-bg': '#e0f3e6',
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            serif: ['Playfair Display', 'serif'],
+          },
+          boxShadow: {
+            card: '0 4px 20px -2px rgba(0, 0, 0, 0.05)',
+            glow: '0 8px 30px -4px rgba(201, 20, 121, 0.25)',
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-[#faf9f9] text-gray-900 font-sans antialiased min-h-screen flex flex-col items-center justify-start pb-6">
+<!-- BEGIN: MobileContainer -->
+<div class="w-full max-w-[420px] min-h-screen flex flex-col justify-between px-4 pb-4" data-purpose="mobile-viewport-wrapper">
+<!-- BEGIN: TopSection -->
+<div class="flex flex-col gap-3">
+<!-- BEGIN: StatusBar -->
+<!-- iOS Status Bar with Time and System Icons -->
+<header class="w-full pt-3 pb-1 px-4 flex justify-between items-center text-xs font-semibold tracking-tight text-neutral-800" data-purpose="status-bar">
+<span class="font-medium text-[15px]">9:41</span>
+<div class="flex items-center gap-1.5">
+<span class="text-[13px] font-medium tracking-tight">5G</span>
+<!-- Signal & Battery representation -->
+<div class="flex items-end gap-[2px] h-3">
+<span class="w-[3px] h-1.5 bg-black rounded-[0.5px]"></span>
+<span class="w-[3px] h-2.5 bg-black rounded-[0.5px]"></span>
+<span class="w-[3px] h-3 bg-black rounded-[0.5px]"></span>
+</div>
+</div>
+</header>
+<!-- END: StatusBar -->
+<!-- BEGIN: CelebrationBanner -->
+<!-- Hero card celebrating the success of the challenge -->
+<section class="bg-brand-magenta text-white rounded-[32px] px-6 pt-7 pb-8 text-center flex flex-col items-center shadow-glow relative overflow-hidden" data-purpose="challenge-success-banner">
+<!-- Trophy Icon Container -->
+<div class="w-16 h-16 rounded-full bg-white flex items-center justify-center mb-5 shadow-sm" data-purpose="trophy-circle">
+<svg class="w-8 h-8 text-brand-magenta" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" viewbox="0 0 24 24">
+<path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
+<path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
+<path d="M4 22h16"></path>
+<path d="M10 14.66V17c0 .55-.45 1-1 1H8v4h8v-4h-1c-.55 0-1-.45-1-1v-2.34"></path>
+<path d="M6 4h12a2 2 0 0 1 2 2v3a6 6 0 0 1-6 6h0a6 6 0 0 1-6-6V6a2 2 0 0 1 2-2Z"></path>
+</svg>
+</div>
+<!-- Banner Title & Subtitle -->
+<h1 class="font-serif text-[32px] font-extrabold tracking-tight leading-tight text-white mb-2">
+          Défi réussi !
+        </h1>
+<p class="text-white/95 text-[15px] font-medium tracking-normal">
+          Psaume 23 en 14 jours
+        </p>
+</section>
+<!-- END: CelebrationBanner -->
+<!-- BEGIN: PodiumSection -->
+<!-- Leaderboard podium showcasing top 3 participants -->
+<section class="bg-white rounded-[32px] pt-7 px-4 shadow-card flex flex-col overflow-hidden" data-purpose="podium-card">
+<div class="grid grid-cols-3 items-end gap-2 px-1">
+<!-- Rank 2: Marc -->
+<div class="flex flex-col items-center" data-purpose="podium-rank-2">
+<!-- Avatar -->
+<div class="w-13 h-13 w-[54px] h-[54px] rounded-full bg-avatar-marc text-white flex items-center justify-center font-bold text-xl mb-2.5 shadow-sm">
+              M
+            </div>
+<!-- Name & Points -->
+<span class="font-bold text-neutral-800 text-[15px] leading-tight">Marc</span>
+<span class="text-xs text-neutral-400 font-medium mb-3 mt-0.5">268 pts</span>
+<!-- Podium Bar -->
+<div class="w-full h-24 bg-brand-soft-pink rounded-t-2xl flex items-center justify-center">
+<span class="font-serif text-3xl font-extrabold text-brand-podium-num">2</span>
+</div>
+</div>
+<!-- Rank 1: Léa (Center, Winner) -->
+<div class="flex flex-col items-center" data-purpose="podium-rank-1">
+<!-- Avatar -->
+<div class="w-[62px] h-[62px] rounded-full bg-avatar-lea text-white flex items-center justify-center font-bold text-2xl mb-2.5 shadow-md">
+              L
+            </div>
+<!-- Name & Points -->
+<span class="font-bold text-neutral-800 text-[16px] leading-tight">Léa</span>
+<span class="text-xs text-neutral-400 font-medium mb-3 mt-0.5">312 pts</span>
+<!-- Podium Bar -->
+<div class="w-full h-36 bg-brand-soft-pink rounded-t-2xl flex items-start justify-center pt-5">
+<span class="font-serif text-3xl font-extrabold text-brand-podium-num">1</span>
+</div>
+</div>
+<!-- Rank 3: Ama -->
+<div class="flex flex-col items-center" data-purpose="podium-rank-3">
+<!-- Avatar -->
+<div class="w-[54px] h-[54px] rounded-full bg-avatar-ama text-white flex items-center justify-center font-bold text-xl mb-2.5 shadow-sm">
+              A
+            </div>
+<!-- Name & Points -->
+<span class="font-bold text-neutral-800 text-[15px] leading-tight">Ama</span>
+<span class="text-xs text-neutral-400 font-medium mb-3 mt-0.5">205 pts</span>
+<!-- Podium Bar -->
+<div class="w-full h-16 bg-brand-soft-pink rounded-t-2xl flex items-center justify-center">
+<span class="font-serif text-3xl font-extrabold text-brand-podium-num">3</span>
+</div>
+</div>
+</div>
+</section>
+<!-- END: PodiumSection -->
+<!-- BEGIN: TeamBadgeCard -->
+<!-- Collective achievement badge card -->
+<section class="bg-white rounded-3xl p-4.5 py-4 px-5 shadow-card flex items-center gap-4" data-purpose="team-badge">
+<!-- Gold Badge Icon -->
+<div class="w-13 h-13 w-[52px] h-[52px] rounded-full bg-badge-gold flex items-center justify-center shrink-0">
+<svg class="w-7 h-7 text-white stroke-[3.2]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="m4.5 12.75 6 6 9-13.5" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+<!-- Badge Info -->
+<div class="flex flex-col">
+<h2 class="font-bold text-neutral-900 text-[17px] leading-snug">Badge d’équipe</h2>
+<p class="text-xs text-neutral-500 font-normal mt-0.5">« Un cœur, un psaume »</p>
+</div>
+</section>
+<!-- END: TeamBadgeCard -->
+<!-- BEGIN: BonusCard -->
+<!-- Reward points announcement pill-card -->
+<section class="bg-white rounded-3xl py-4 px-5 shadow-card flex items-center justify-between" data-purpose="bonus-reward">
+<span class="font-bold text-neutral-900 text-[16px]">Bonus pour chacun</span>
+<span class="bg-[#dcf3e4] text-[#218151] font-bold text-sm px-3.5 py-1.5 rounded-full inline-flex items-center justify-center">
+          +50 pts
+        </span>
+</section>
+<!-- END: BonusCard -->
+</div>
+<!-- END: TopSection -->
+<!-- BEGIN: BottomActions -->
+<!-- Primary and secondary action buttons -->
+<footer class="flex flex-col gap-3 pt-6 pb-2" data-purpose="action-buttons">
+<!-- Primary Action: Start New Challenge -->
+<button class="w-full py-4 bg-brand-magenta hover:bg-brand-magenta-dark active:scale-[0.99] transition duration-150 rounded-full text-white font-bold text-base shadow-glow text-center" type="button">
+        Lancer un nouveau défi
+      </button>
+<!-- Secondary Action: Return to Family Screen -->
+<button class="w-full py-2.5 bg-transparent border border-neutral-200 hover:border-neutral-300 active:bg-neutral-100 transition duration-150 rounded-full text-neutral-700 font-medium text-[15px] text-center" type="button">
+        Retour à la famille
+      </button>
+</footer>
+<!-- END: BottomActions -->
+</div>
+<!-- END: MobileContainer -->
+</body></html>

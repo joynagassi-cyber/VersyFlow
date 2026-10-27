@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+
+<html lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>M11 — Famille — Créer un défi</title>
+<!-- Tailwind CSS v3 -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts: Playfair Display & Inter -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Playfair+Display:wght@700;800&amp;display=swap" rel="stylesheet"/>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              pink: '#cf0b74',
+              pinkHover: '#b80966',
+              softPink: '#fdf2f7',
+              badgePink: '#fae4ed',
+              badgePinkText: '#7b1c4e',
+              mintBg: '#e2f6eb',
+              mintText: '#137947',
+              graySubtitle: '#6e6e73',
+              radioBorder: '#d1d5db',
+            }
+          },
+          fontFamily: {
+            serif: ['"Playfair Display"', 'Georgia', 'serif'],
+            sans: ['"Inter"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+          },
+          boxShadow: {
+            'card': '0 2px 10px rgba(0, 0, 0, 0.03)',
+            'pink-glow': '0 10px 24px -4px rgba(207, 11, 116, 0.35)',
+            'pill': '0 1px 3px rgba(0,0,0,0.06)'
+          }
+        }
+      }
+    }
+  </script>
+<!-- BEGIN: Custom Layout & System Styles -->
+<style data-purpose="base-theme">
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      background-color: #faf9fb;
+    }
+    .font-playfair {
+      font-family: 'Playfair Display', Georgia, serif;
+    }
+  </style>
+<!-- END: Custom Layout & System Styles -->
+</head>
+<body class="flex justify-center min-h-screen text-[#1c1c1e] bg-[#f5f5f7]">
+<!-- BEGIN: Mobile Container -->
+<main class="w-full max-w-[428px] min-h-screen bg-[#faf8fa] flex flex-col justify-between px-5 pt-3 pb-8 select-none">
+<!-- BEGIN: Top Area (Status Bar & Header & Form) -->
+<div class="w-full">
+<!-- BEGIN: iOS Status Bar -->
+<section class="w-full flex justify-between items-center pt-1 pb-3 px-1 text-sm font-semibold tracking-tight text-black" data-purpose="status-bar">
+<span class="text-[15px] font-medium tracking-tight">9:41</span>
+<div class="flex items-center space-x-1.5">
+<span class="text-[11px] font-bold">5G</span>
+<!-- Signal Bars -->
+<div class="flex items-end space-x-[2px] h-3">
+<span class="w-[3px] h-1.5 bg-black rounded-sm"></span>
+<span class="w-[3px] h-2 bg-black rounded-sm"></span>
+<span class="w-[3px] h-2.5 bg-black rounded-sm"></span>
+<span class="w-[3px] h-3 bg-black rounded-sm"></span>
+</div>
+<!-- Battery Icon -->
+<div class="w-5 h-2.5 border border-black rounded-sm p-[1px] flex items-center ml-0.5">
+<div class="w-full h-full bg-black rounded-[1px]"></div>
+</div>
+</div>
+</section>
+<!-- END: iOS Status Bar -->
+<!-- BEGIN: Navigation Header -->
+<header class="flex items-center justify-between mt-1 mb-5" data-purpose="main-header">
+<!-- Back Button -->
+<button aria-label="Retour" class="w-10 h-10 rounded-full bg-white shadow-card flex items-center justify-center border border-gray-100/80 active:scale-95 transition-transform" type="button">
+<svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" stroke-width="2.5" viewbox="0 0 24 24">
+<path d="M15 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+<!-- Title & Subtitle -->
+<div class="text-center">
+<h1 class="font-playfair text-[21px] font-bold tracking-tight text-gray-900 leading-tight">Créer un défi</h1>
+<p class="text-[13px] font-medium text-gray-500">Famille Étoile</p>
+</div>
+<!-- More Options Button -->
+<button aria-label="Plus d'options" class="w-10 h-10 rounded-full bg-white shadow-card flex items-center justify-center border border-gray-100/80 active:scale-95 transition-transform" type="button">
+<svg class="w-5 h-5 text-gray-700" fill="currentColor" viewbox="0 0 24 24">
+<circle cx="6" cy="12" r="2"></circle>
+<circle cx="12" cy="12" r="2"></circle>
+<circle cx="18" cy="12" r="2"></circle>
+</svg>
+</button>
+</header>
+<!-- END: Navigation Header -->
+<!-- BEGIN: Challenge Options (Radio Cards) -->
+<section class="flex flex-col space-y-3 mb-4" data-purpose="challenge-type-selection">
+<!-- Option 1: Selected (Passage commun) -->
+<label class="relative flex items-center p-4 bg-white rounded-2xl border-2 border-[#cf0b74] cursor-pointer shadow-sm transition-all">
+<input checked="" class="sr-only" name="challenge_type" type="radio" value="passage_commun"/>
+<!-- Custom Radio Dot -->
+<div class="w-7 h-7 rounded-full border-2 border-[#cf0b74] flex items-center justify-center mr-3.5 flex-shrink-0">
+<div class="w-3.5 h-3.5 rounded-full bg-[#cf0b74]"></div>
+</div>
+<div>
+<div class="font-bold text-gray-900 text-[15px] leading-tight">Passage commun</div>
+<div class="text-[13px] text-gray-500 mt-0.5">Tous mémorisent le même passage</div>
+</div>
+</label>
+<!-- Option 2: Unselected (Objectif collectif) -->
+<label class="relative flex items-center p-4 bg-white rounded-2xl border border-gray-200/90 cursor-pointer shadow-card transition-all hover:border-gray-300">
+<input class="sr-only" name="challenge_type" type="radio" value="objectif_collectif"/>
+<div class="w-7 h-7 rounded-full border-2 border-gray-300 mr-3.5 flex-shrink-0"></div>
+<div>
+<div class="font-bold text-gray-900 text-[15px] leading-tight">Objectif collectif</div>
+<div class="text-[13px] text-gray-500 mt-0.5">Atteindre un total ensemble</div>
+</div>
+</label>
+<!-- Option 3: Unselected (Série collective) -->
+<label class="relative flex items-center p-4 bg-white rounded-2xl border border-gray-200/90 cursor-pointer shadow-card transition-all hover:border-gray-300">
+<input class="sr-only" name="challenge_type" type="radio" value="serie_collective"/>
+<div class="w-7 h-7 rounded-full border-2 border-gray-300 mr-3.5 flex-shrink-0"></div>
+<div>
+<div class="font-bold text-gray-900 text-[15px] leading-tight">Série collective</div>
+<div class="text-[13px] text-gray-500 mt-0.5">Aucun jour manqué</div>
+</div>
+</label>
+</section>
+<!-- END: Challenge Options -->
+<!-- BEGIN: Passage Section -->
+<section class="mb-4" data-purpose="passage-selector">
+<button class="w-full bg-white rounded-2xl border border-gray-200/80 p-4 shadow-card flex items-center justify-between text-left active:scale-[0.99] transition-transform" type="button">
+<div>
+<span class="block text-[11px] font-extrabold uppercase tracking-wider text-[#b80065] mb-1">Passage</span>
+<span class="font-playfair text-[19px] font-extrabold text-gray-900">Psaumes 23:1-6</span>
+</div>
+<svg class="w-5 h-5 text-gray-800 stroke-[2.5]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+</section>
+<!-- END: Passage Section -->
+<!-- BEGIN: Duration Section -->
+<section class="bg-white rounded-2xl border border-gray-200/80 p-4 shadow-card mb-4" data-purpose="duration-selector">
+<span class="block text-[11px] font-extrabold uppercase tracking-wider text-[#b80065] mb-2.5">Durée</span>
+<div class="flex items-center space-x-2.5">
+<!-- Option 3j -->
+<button class="w-11 h-9 flex items-center justify-center rounded-xl bg-gray-100 text-gray-800 text-[14px] font-semibold active:bg-gray-200" type="button">
+            3 j
+          </button>
+<!-- Option 7j -->
+<button class="w-11 h-9 flex items-center justify-center rounded-xl bg-gray-100 text-gray-800 text-[14px] font-semibold active:bg-gray-200" type="button">
+            7 j
+          </button>
+<!-- Option 14j (Selected) -->
+<button class="px-3.5 h-9 flex items-center justify-center rounded-xl bg-[#cf0b74] text-white text-[14px] font-semibold shadow-sm" type="button">
+            14 j
+          </button>
+<!-- Option 30j -->
+<button class="px-3 h-9 flex items-center justify-center rounded-xl bg-gray-100 text-gray-800 text-[14px] font-semibold active:bg-gray-200" type="button">
+            30 j
+          </button>
+</div>
+</section>
+<!-- END: Duration Section -->
+<!-- BEGIN: Participants Section -->
+<section class="bg-white rounded-2xl border border-gray-200/80 p-4 shadow-card mb-4" data-purpose="participants-list">
+<span class="block text-[11px] font-extrabold uppercase tracking-wider text-[#b80065] mb-3">Participants · 4 sur 5</span>
+<div class="flex items-center space-x-2.5">
+<!-- Member L (Pink) -->
+<div class="w-12 h-12 rounded-full bg-[#e60067] flex items-center justify-center text-white font-bold text-lg shadow-sm border-2 border-white">
+            L
+          </div>
+<!-- Member M (Blue) -->
+<div class="w-12 h-12 rounded-full bg-[#1e88e5] flex items-center justify-center text-white font-bold text-lg shadow-sm border-2 border-white">
+            M
+          </div>
+<!-- Member A (Teal/Green) -->
+<div class="w-12 h-12 rounded-full bg-[#10a368] flex items-center justify-center text-white font-bold text-lg shadow-sm border-2 border-white">
+            A
+          </div>
+<!-- Member D (Amber) -->
+<div class="w-12 h-12 rounded-full bg-[#e69b00] flex items-center justify-center text-white font-bold text-lg shadow-sm border-2 border-white">
+            D
+          </div>
+<!-- Member N (Unselected / Inactive) -->
+<div class="w-12 h-12 rounded-full bg-[#cecaf7]/60 text-white font-bold text-lg flex items-center justify-center border-2 border-transparent">
+            N
+          </div>
+</div>
+</section>
+<!-- END: Participants Section -->
+<!-- BEGIN: Reward Badges Banner -->
+<section class="bg-white rounded-2xl border border-gray-200/70 px-4 py-3 shadow-card flex items-center justify-between" data-purpose="rewards-banner">
+<!-- Mint pill -->
+<span class="inline-flex items-center px-3 py-1.5 rounded-full text-[13px] font-semibold bg-[#ddf7e8] text-[#0d7f45]">
+          +50 pts bonus
+        </span>
+<!-- Rose pill -->
+<span class="inline-flex items-center px-3 py-1.5 rounded-full text-[13px] font-medium bg-[#fae3ee] text-[#86124c]">
+          Badge d’équipe
+        </span>
+</section>
+<!-- END: Reward Badges Banner -->
+</div>
+<!-- END: Top Area -->
+<!-- BEGIN: Primary CTA Button -->
+<footer class="w-full pt-5" data-purpose="action-footer">
+<button class="w-full py-4 rounded-full bg-[#cf0b74] hover:bg-[#b80966] text-white font-bold text-[16px] text-center shadow-pink-glow active:scale-[0.98] transition-all" type="button">
+        Lancer le défi
+      </button>
+</footer>
+<!-- END: Primary CTA Button -->
+</main>
+<!-- END: Mobile Container -->
+</body></html>

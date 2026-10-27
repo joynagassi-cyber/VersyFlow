@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+
+<html lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>Rappels et notifications</title>
+<!-- Tailwind CSS CDN with plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration -->
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              pink: '#db146e',
+              pinkHover: '#c21061',
+              lightGray: '#f0f2f5',
+              border: '#eef0f3',
+              subtext: '#64748b',
+              title: '#1e293b'
+            }
+          },
+          fontFamily: {
+            sans: ['-apple-system', 'BlinkMacSystemFont', '"SF Pro Text"', '"SF Pro Display"', 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'],
+            display: ['Georgia', 'Cambria', '"Times New Roman"', 'Times', 'serif']
+          }
+        }
+      }
+    }
+  </script>
+<style data-purpose="custom-toggle">
+    /* iOS Custom Toggle styling matching the screenshot */
+    .ios-switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 30px;
+    }
+    .ios-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #e2e8f0;
+      transition: .25s ease-in-out;
+      border-radius: 34px;
+    }
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 24px;
+      width: 24px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .25s ease-in-out;
+      border-radius: 50%;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    input:checked + .slider {
+      background-color: #db146e;
+    }
+    input:checked + .slider:before {
+      transform: translateX(20px);
+    }
+    /* Small checkmark inside switch knob */
+    .slider-check:after {
+      content: "";
+      position: absolute;
+      right: 9px;
+      top: 11px;
+      width: 4px;
+      height: 8px;
+      border: solid #db146e;
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+      opacity: 0;
+      transition: opacity .2s ease;
+      z-index: 2;
+    }
+    input:checked + .slider-check:after {
+      opacity: 1;
+    }
+  </style>
+<style data-purpose="scroll-behavior">
+    /* Hide scrollbars for app-like feeling */
+    ::-webkit-scrollbar {
+      display: none;
+    }
+    body {
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+  </style>
+</head>
+<body class="bg-[#fbfbfb] text-[#1c1c1e] antialiased min-h-screen flex justify-center selection:bg-pink-100">
+<!-- Mobile Screen Container -->
+<div class="w-full max-w-md bg-[#fafafa] min-h-screen flex flex-col relative pb-24 shadow-2xl">
+<!-- BEGIN: StatusBar -->
+<!-- Top iOS Status Bar (Time, 5G, Battery indicators) -->
+<header class="pt-3 px-7 pb-2 flex justify-between items-center text-sm font-semibold text-black bg-[#fafafa] z-20">
+<span class="text-[15px] font-medium tracking-tight">9:41</span>
+<div class="flex items-center space-x-1.5 text-xs">
+<span class="text-[12px] font-medium tracking-tight mr-0.5">5G</span>
+<!-- Cellular Bars -->
+<div class="flex items-end space-x-[2px] h-3 mr-1">
+<span class="w-[3px] h-1.5 bg-black rounded-xs"></span>
+<span class="w-[3px] h-2 bg-black rounded-xs"></span>
+<span class="w-[3px] h-2.5 bg-black rounded-xs"></span>
+<span class="w-[3px] h-3 bg-black rounded-xs"></span>
+</div>
+<!-- Battery Icon -->
+<div class="w-5 h-2.5 border border-black rounded-[3px] p-[1px] flex items-center relative">
+<div class="h-full w-full bg-black rounded-[1px]"></div>
+<div class="w-[1.5px] h-1 bg-black absolute -right-[3.5px] rounded-r-xs"></div>
+</div>
+</div>
+</header>
+<!-- END: StatusBar -->
+<!-- BEGIN: NavigationBar -->
+<!-- Top app bar with back navigation and title -->
+<nav class="px-4 py-3 flex items-center border-b border-gray-200/50 bg-[#fafafa] sticky top-0 z-10" data-purpose="app-bar">
+<button aria-label="Retour" class="p-1 -ml-1 text-gray-800 hover:text-black focus:outline-none transition-colors" type="button">
+<svg class="w-6 h-6 stroke-[2.2]" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M15.75 19.5L8.25 12l7.5-7.5" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+<h1 class="ml-4 text-xl tracking-tight text-[#1c1c1e] font-serif font-normal">Rappels et notifications</h1>
+</nav>
+<!-- END: NavigationBar -->
+<!-- BEGIN: MainContent -->
+<main class="flex-1 px-5 pt-5 space-y-6">
+<!-- BEGIN: DailyRevisionSection -->
+<!-- Section: Rappel de révision quotidien -->
+<section class="space-y-4" data-purpose="daily-reminder-section">
+<!-- Daily Revision Header & Switch -->
+<div class="flex items-center justify-between">
+<h2 class="text-[17px] font-normal text-gray-900 tracking-tight">Rappel de révision quotidien</h2>
+<label class="ios-switch">
+<input checked="" type="checkbox"/>
+<span class="slider slider-check"></span>
+</label>
+</div>
+<!-- Time Row -->
+<div class="flex items-center justify-between py-1">
+<span class="text-[17px] text-gray-800">Heure</span>
+<span class="px-3.5 py-1.5 bg-[#eef0f4] text-gray-900 font-semibold text-[15px] rounded-xl tracking-wide">
+            07:22
+          </span>
+</div>
+<!-- Frequency Row -->
+<div class="flex items-center justify-between py-1">
+<span class="text-[17px] text-gray-800">Fréquence</span>
+<button class="flex items-center space-x-1 text-[15px] text-gray-600 hover:text-gray-900 focus:outline-none" type="button">
+<span>1 fois par jour</span>
+<svg class="w-3.5 h-3.5 fill-current text-gray-500 mt-0.5" viewbox="0 0 20 20">
+<path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"></path>
+</svg>
+</button>
+</div>
+<!-- Day Pills Row -->
+<div class="pt-1">
+<span class="block text-xs text-gray-500 font-medium mb-2.5">Jours</span>
+<div class="flex justify-between items-center max-w-[340px]">
+<!-- Active Days (L, M, M, J, V) -->
+<button class="w-10 h-10 rounded-full bg-[#db146e] text-white font-medium text-[15px] flex items-center justify-center shadow-sm" type="button">L</button>
+<button class="w-10 h-10 rounded-full bg-[#db146e] text-white font-medium text-[15px] flex items-center justify-center shadow-sm" type="button">M</button>
+<button class="w-10 h-10 rounded-full bg-[#db146e] text-white font-medium text-[15px] flex items-center justify-center shadow-sm" type="button">M</button>
+<button class="w-10 h-10 rounded-full bg-[#db146e] text-white font-medium text-[15px] flex items-center justify-center shadow-sm" type="button">J</button>
+<button class="w-10 h-10 rounded-full bg-[#db146e] text-white font-medium text-[15px] flex items-center justify-center shadow-sm" type="button">V</button>
+<!-- Inactive Days (S, D) -->
+<button class="w-10 h-10 rounded-full bg-[#ebeef2] text-gray-600 font-semibold text-[15px] flex items-center justify-center" type="button">S</button>
+<button class="w-10 h-10 rounded-full bg-[#ebeef2] text-gray-600 font-semibold text-[15px] flex items-center justify-center" type="button">D</button>
+</div>
+</div>
+</section>
+<!-- END: DailyRevisionSection -->
+<div class="pt-2">
+<hr class="border-t border-gray-200/80"/>
+</div>
+<!-- BEGIN: ReminderTypesSection -->
+<!-- Section: Types de rappels -->
+<section class="space-y-5" data-purpose="reminder-types-section">
+<h2 class="text-xl font-bold tracking-tight text-gray-950 pt-1">Types de rappels</h2>
+<!-- Item 1: Versets en retard -->
+<div class="flex items-start justify-between">
+<div class="pr-3">
+<h3 class="text-[16px] text-gray-900 leading-snug">Versets en retard</h3>
+<p class="text-[13px] text-gray-500 font-normal">Quand un verset dépasse sa date</p>
+</div>
+<label class="ios-switch shrink-0">
+<input checked="" type="checkbox"/>
+<span class="slider slider-check"></span>
+</label>
+</div>
+<!-- Item 2: Série en danger -->
+<div class="flex items-start justify-between">
+<div class="pr-3">
+<h3 class="text-[16px] text-gray-900 leading-snug">Série en danger</h3>
+<p class="text-[13px] text-gray-500 font-normal">Le soir, si rien n'a été révisé</p>
+</div>
+<label class="ios-switch shrink-0">
+<input checked="" type="checkbox"/>
+<span class="slider slider-check"></span>
+</label>
+</div>
+<!-- Item 3: Heure du rappel de série -->
+<div class="flex items-center justify-between py-1">
+<span class="text-[16px] text-gray-900">Heure du rappel de série</span>
+<span class="px-3.5 py-1.5 bg-[#eef0f4] text-gray-900 font-semibold text-[15px] rounded-xl tracking-wide">
+            20:30
+          </span>
+</div>
+<!-- Item 4: Verset du jour -->
+<div class="flex items-center justify-between">
+<span class="text-[16px] text-gray-900">Verset du jour</span>
+<label class="ios-switch shrink-0">
+<input checked="" type="checkbox"/>
+<span class="slider slider-check"></span>
+</label>
+</div>
+<!-- Item 5: Verset du jour illustré -->
+<div class="flex items-center justify-between">
+<span class="text-[16px] text-gray-900">Verset du jour illustré</span>
+<label class="ios-switch shrink-0">
+<!-- Inactive toggle -->
+<input type="checkbox"/>
+<span class="slider"></span>
+</label>
+</div>
+<!-- Item 6: Bilan hebdomadaire -->
+<div class="flex items-start justify-between">
+<div class="pr-3">
+<h3 class="text-[16px] text-gray-900 leading-snug">Bilan hebdomadaire</h3>
+<p class="text-[13px] text-gray-500 font-normal">Le dimanche soir</p>
+</div>
+<label class="ios-switch shrink-0">
+<input checked="" type="checkbox"/>
+<span class="slider slider-check"></span>
+</label>
+</div>
+<!-- Item 7: Défis et classement de la famille -->
+<div class="flex items-center justify-between">
+<span class="text-[16px] text-gray-900 max-w-[260px] leading-snug">Défis et classement de la famille</span>
+<label class="ios-switch shrink-0">
+<input checked="" type="checkbox"/>
+<span class="slider slider-check"></span>
+</label>
+</div>
+</section>
+<!-- END: ReminderTypesSection -->
+<div class="pt-2">
+<hr class="border-t border-gray-200/80"/>
+</div>
+<!-- BEGIN: QuietComfortSection -->
+<!-- Section: Calme et confort -->
+<section class="space-y-5 pb-6" data-purpose="quiet-comfort-section">
+<h2 class="text-xl font-bold tracking-tight text-gray-950 pt-1">Calme et confort</h2>
+<!-- Heures calmes -->
+<div class="flex items-start justify-between">
+<div class="pr-3">
+<h3 class="text-[16px] text-gray-900 leading-snug">Heures calmes</h3>
+<p class="text-[13px] text-gray-500 font-normal">22:00 – 07:00</p>
+</div>
+<label class="ios-switch shrink-0">
+<input checked="" type="checkbox"/>
+<span class="slider slider-check"></span>
+</label>
+</div>
+<!-- Son -->
+<div class="flex items-center justify-between py-1">
+<span class="text-[16px] text-gray-900">Son</span>
+<button class="flex items-center space-x-1 text-[15px] text-gray-600 hover:text-gray-900 focus:outline-none" type="button">
+<span>Doux</span>
+<svg class="w-4 h-4 text-gray-400 stroke-2" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M8.25 4.5l7.5 7.5-7.5 7.5" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+</div>
+<!-- Vibration -->
+<div class="flex items-center justify-between">
+<span class="text-[16px] text-gray-900">Vibration</span>
+<label class="ios-switch shrink-0">
+<input checked="" type="checkbox"/>
+<span class="slider slider-check"></span>
+</label>
+</div>
+</section>
+<!-- END: QuietComfortSection -->
+</main>
+<!-- END: MainContent -->
+<!-- BEGIN: BottomTabBar -->
+<!-- 5-tabs iOS navigation bar with 'Réglages' active -->
+<footer class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white/95 backdrop-blur-md border-t border-gray-200/80 px-2 py-1.5 z-30" data-purpose="tab-bar">
+<nav aria-label="Navigation principale" class="flex justify-around items-center">
+<!-- Tab: Accueil -->
+<a class="flex flex-col items-center py-1 text-gray-700 hover:text-gray-900 w-16" href="#accueil">
+<svg class="w-6 h-6 stroke-[1.8]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[10px] mt-1 tracking-tight font-medium">Accueil</span>
+</a>
+<!-- Tab: Bible -->
+<a class="flex flex-col items-center py-1 text-gray-700 hover:text-gray-900 w-16" href="#bible">
+<svg class="w-6 h-6 stroke-[1.8]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[10px] mt-1 tracking-tight font-medium">Bible</span>
+</a>
+<!-- Tab: Mémoriser -->
+<a class="flex flex-col items-center py-1 text-gray-700 hover:text-gray-900 w-16" href="#memoriser">
+<svg class="w-6 h-6 stroke-[1.8]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M6.429 9.75L2.25 12l4.179 2.25m0-4.5l5.571 3 5.571-3m-11.142 0L2.25 7.5 12 2.25l9.75 5.25-4.179 2.25m0 0L21.75 12l-4.179 2.25m0 0l4.179 2.25L12 21.75 2.25 16.5l4.179-2.25m11.142 0l-5.571 3-5.571-3" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[10px] mt-1 tracking-tight font-medium">Mémoriser</span>
+</a>
+<!-- Tab: Progrès -->
+<a class="flex flex-col items-center py-1 text-gray-700 hover:text-gray-900 w-16" href="#progres">
+<svg class="w-6 h-6 stroke-[1.8]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[10px] mt-1 tracking-tight font-medium">Progrès</span>
+</a>
+<!-- Tab: Réglages (Active) -->
+<a aria-current="page" class="flex flex-col items-center py-1 text-[#db146e] w-16" href="#reglages">
+<!-- Cog/Settings Icon with flower/spoke appearance -->
+<svg class="w-6 h-6 stroke-[2]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[10px] mt-1 tracking-tight font-semibold">Réglages</span>
+</a>
+</nav>
+<!-- Safe Area indicator bar -->
+<div class="w-32 h-1 bg-black/20 rounded-full mx-auto mt-2"></div>
+</footer>
+<!-- END: BottomTabBar -->
+</div>
+</body></html>

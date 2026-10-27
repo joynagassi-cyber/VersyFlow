@@ -1,0 +1,266 @@
+<!DOCTYPE html><html lang="fr"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Membres - Famille</title>
+<!-- Tailwind CSS v3 CDN with plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts: Inter & Newsreader (Serif) -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Newsreader:ital,opsz,wght@0,6..72,600;0,6..72,700;1,6..72,600&amp;display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<!-- Tailwind Configuration -->
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+            serif: ['Newsreader', 'Georgia', 'serif'],
+          },
+          colors: {
+            app: {
+              bg: '#FAF7F7',
+              primary: '#9F1853',
+              cardBorder: '#F2E8E8',
+              badgeRoseBg: '#FCE7F1',
+              badgeRoseText: '#9D174D',
+              badgeGrayBg: '#F1EFF1',
+              badgeGrayText: '#4B5563',
+              subtext: '#6B7280',
+              text: '#1F2937',
+            }
+          },
+          boxShadow: {
+            card: '0 4px 20px -2px rgba(220, 205, 205, 0.4), 0 2px 6px -2px rgba(0, 0, 0, 0.03)',
+            circleBtn: '0 2px 8px rgba(0, 0, 0, 0.05)',
+          }
+        }
+      }
+    }
+  </script>
+<!-- Base Custom Layout & Typography Styles -->
+<style data-purpose="custom-styling">
+    body {
+      -webkit-tap-highlight-color: transparent;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    .font-serif-title {
+      font-family: 'Newsreader', Georgia, serif;
+    }
+  </style>
+</head>
+<body class="bg-stone-200 min-h-screen flex justify-center items-start sm:p-4 text-slate-800 antialiased selection:bg-pink-100">
+<!-- BEGIN: MobileDeviceFrame -->
+<main class="w-full max-w-[390px] min-h-screen bg-[#FDFBFB] shadow-2xl relative flex flex-col justify-between overflow-x-hidden border-x border-stone-200/40">
+<!-- BEGIN: TopContainer -->
+<div class="w-full flex flex-col pb-6">
+<!-- BEGIN: iOSStatusBar -->
+<header class="w-full pt-3 px-7 pb-1 flex justify-between items-center text-[15px] font-semibold tracking-tight text-black z-20" data-purpose="ios-status-bar">
+<span class="">9:41</span>
+<div class="flex items-center space-x-1.5">
+<span class="text-xs font-bold tracking-tighter">5G</span>
+<!-- Signal / Battery Icons -->
+<div class="flex items-end space-x-[2px] h-3">
+<span class="w-[3px] h-1.5 bg-black rounded-xs"></span>
+<span class="w-[3px] h-2.5 bg-black rounded-xs"></span>
+<span class="w-[3px] h-3 bg-black rounded-xs"></span>
+</div>
+<!-- Battery Pill -->
+<div class="w-5 h-[11px] border border-black rounded-[3px] p-[1px] flex items-center ml-0.5 relative">
+<div class="h-full w-3 bg-black rounded-[1px]"></div>
+<div class="w-[1.5px] h-1 bg-black absolute -right-[3px] rounded-r-xs"></div>
+</div>
+</div>
+</header>
+<!-- END: iOSStatusBar -->
+<!-- BEGIN: NavigationBar -->
+<nav class="relative flex items-center justify-between px-4 pt-2 pb-3" data-purpose="top-navigation">
+<!-- Back Button -->
+<button aria-label="Retour" class="w-10 h-10 rounded-full bg-white shadow-circleBtn flex items-center justify-center text-slate-700 active:scale-95 transition-transform" type="button"><span class="material-symbols-outlined text-[22px] leading-none text-slate-700">arrow_back_ios_new</span></button>
+<!-- Center Title & Count -->
+<div class="text-center">
+<h1 class="text-2xl font-bold font-serif-title tracking-tight text-[#111827]">Membres</h1>
+<p class="text-xs font-normal text-stone-500 mt-0.5">5 membres</p>
+</div>
+<!-- More Options Button -->
+<button aria-label="Plus d'options" class="w-10 h-10 rounded-full bg-white shadow-circleBtn flex items-center justify-center text-slate-800 active:scale-95 transition-transform" type="button"><span class="material-symbols-outlined text-[24px] leading-none text-slate-800">more_horiz</span></button>
+</nav>
+<!-- END: NavigationBar -->
+<!-- BEGIN: MembersList -->
+<section class="px-4 space-y-3.5 mt-1" data-purpose="members-list">
+<!-- Member 1: Léa -->
+<article class="bg-white rounded-[26px] p-4 flex items-center justify-between shadow-card border border-stone-100" data-purpose="member-card">
+<div class="flex items-center space-x-3.5">
+<!-- Avatar -->
+<div class="w-[54px] h-[54px] rounded-full bg-[#E6007A] flex items-center justify-center text-white text-xl font-bold flex-shrink-0 shadow-inner">
+              L
+            </div>
+<!-- Member Details -->
+<div>
+<h2 class="text-base font-bold text-slate-900 leading-snug">Léa</h2>
+<p class="text-[13px] italic text-stone-600 font-normal leading-tight mb-2">Gardienne du Psaume 23</p>
+<!-- Badges -->
+<div class="flex items-center space-x-1.5">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-[#FDF0F6] text-[#D81B60]"><span class="material-symbols-outlined text-[15px] mr-1 leading-none">bolt</span> 12</span>
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#F1EFF1] text-stone-700">
+                  312 pts
+                </span>
+</div>
+</div>
+</div>
+<!-- Level Badge -->
+<div class="self-center">
+<span class="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-[#FCE7F0] text-[#B81965]">
+              Niv. 5
+            </span>
+</div>
+</article>
+<!-- Member 2: Marc -->
+<article class="bg-white rounded-[26px] p-4 flex items-center justify-between shadow-card border border-stone-100" data-purpose="member-card">
+<div class="flex items-center space-x-3.5">
+<!-- Avatar -->
+<div class="w-[54px] h-[54px] rounded-full bg-[#3B82F6] flex items-center justify-center text-white text-xl font-bold flex-shrink-0 shadow-inner">
+              M
+            </div>
+<!-- Member Details -->
+<div>
+<h2 class="text-base font-bold text-slate-900 leading-snug">Marc</h2>
+<p class="text-[13px] italic text-stone-600 font-normal leading-tight mb-2">Capitaine des révisions</p>
+<!-- Badges -->
+<div class="flex items-center space-x-1.5">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-[#FDF0F6] text-[#D81B60]"><span class="material-symbols-outlined text-[15px] mr-1 leading-none">bolt</span> 10</span>
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#F1EFF1] text-stone-700">
+                  268 pts
+                </span>
+</div>
+</div>
+</div>
+<!-- Level Badge -->
+<div class="self-center">
+<span class="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-[#FCE7F0] text-[#B81965]">
+              Niv. 5
+            </span>
+</div>
+</article>
+<!-- Member 3: Ama -->
+<article class="bg-white rounded-[26px] p-4 flex items-center justify-between shadow-card border border-stone-100" data-purpose="member-card">
+<div class="flex items-center space-x-3.5">
+<!-- Avatar -->
+<div class="w-[54px] h-[54px] rounded-full bg-[#10B981] flex items-center justify-center text-white text-xl font-bold flex-shrink-0 shadow-inner">
+              A
+            </div>
+<!-- Member Details -->
+<div>
+<h2 class="text-base font-bold text-slate-900 leading-snug">Ama</h2>
+<p class="text-[13px] italic text-stone-600 font-normal leading-tight mb-2">Reine des flashcards</p>
+<!-- Badges -->
+<div class="flex items-center space-x-1.5">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-[#FDF0F6] text-[#D81B60]"><span class="material-symbols-outlined text-[15px] mr-1 leading-none">bolt</span> 8</span>
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#F1EFF1] text-stone-700">
+                  205 pts
+                </span>
+</div>
+</div>
+</div>
+<!-- Level Badge -->
+<div class="self-center">
+<span class="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-[#FCE7F0] text-[#B81965]">
+              Niv. 4
+            </span>
+</div>
+</article>
+<!-- Member 4: David -->
+<article class="bg-white rounded-[26px] p-4 flex items-center justify-between shadow-card border border-stone-100" data-purpose="member-card">
+<div class="flex items-center space-x-3.5">
+<!-- Avatar -->
+<div class="w-[54px] h-[54px] rounded-full bg-[#F59E0B] flex items-center justify-center text-white text-xl font-bold flex-shrink-0 shadow-inner">
+              D
+            </div>
+<!-- Member Details -->
+<div>
+<h2 class="text-base font-bold text-slate-900 leading-snug">David</h2>
+<p class="text-[13px] italic text-stone-600 font-normal leading-tight mb-2">Le lève-tôt</p>
+<!-- Badges -->
+<div class="flex items-center space-x-1.5">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-[#FDF0F6] text-[#D81B60]"><span class="material-symbols-outlined text-[15px] mr-1 leading-none">bolt</span> 6</span>
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#F1EFF1] text-stone-700">
+                  140 pts
+                </span>
+</div>
+</div>
+</div>
+<!-- Level Badge -->
+<div class="self-center">
+<span class="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-[#FCE7F0] text-[#B81965]">
+              Niv. 4
+            </span>
+</div>
+</article>
+<!-- Member 5: Noé -->
+<article class="bg-white rounded-[26px] p-4 flex items-center justify-between shadow-card border border-stone-100" data-purpose="member-card">
+<div class="flex items-center space-x-3.5">
+<!-- Avatar -->
+<div class="w-[54px] h-[54px] rounded-full bg-[#8B5CF6] flex items-center justify-center text-white text-xl font-bold flex-shrink-0 shadow-inner">
+              N
+            </div>
+<!-- Member Details -->
+<div>
+<h2 class="text-base font-bold text-slate-900 leading-snug">Noé</h2>
+<p class="text-[13px] italic text-stone-600 font-normal leading-tight mb-2">Petit mais costaud</p>
+<!-- Badges -->
+<div class="flex items-center space-x-1.5">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-[#FDF0F6] text-[#D81B60]"><span class="material-symbols-outlined text-[15px] mr-1 leading-none">bolt</span> 4</span>
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#F1EFF1] text-stone-700">
+                  96 pts
+                </span>
+</div>
+</div>
+</div>
+<!-- Level Badge -->
+<div class="self-center">
+<span class="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-[#FCE7F0] text-[#B81965]">
+              Niv. 3
+            </span>
+</div>
+</article>
+</section>
+<!-- END: MembersList -->
+<!-- BEGIN: ActionButtonSection -->
+<section class="px-4 mt-4" data-purpose="add-member-action">
+<button class="w-full py-3.5 px-4 rounded-[26px] border border-[#E9D3DF] bg-transparent text-[#9F1853] font-semibold text-[15px] flex items-center justify-center hover:bg-pink-50/50 active:scale-[0.99] transition duration-150" type="button"><span class="material-symbols-outlined text-[20px] mr-2">person_add</span><span class="">Ajouter un membre</span></button>
+</section>
+<!-- END: ActionButtonSection -->
+</div>
+<!-- END: TopContainer -->
+<!-- BEGIN: BottomNavigationBar -->
+<nav class="w-full bg-white/95 backdrop-blur-md border-t border-stone-200/80 px-2 py-2 flex justify-around items-center z-30" data-purpose="bottom-tab-bar"><!-- Tab 1: Accueil (vf-accueil) -->
+<a class="flex flex-col items-center justify-center w-16 py-1 text-stone-600 hover:text-stone-900 transition-colors" data-purpose="nav-item" href="#accueil">
+  <span class="material-symbols-outlined text-[24px]">home</span>
+  <span class="text-[11px] font-medium mt-1">Accueil</span>
+</a>
+<!-- Tab 2: Bible (vf-bible) -->
+<a class="flex flex-col items-center justify-center w-16 py-1 text-stone-600 hover:text-stone-900 transition-colors" data-purpose="nav-item" href="#bible">
+  <span class="material-symbols-outlined text-[24px]">menu_book</span>
+  <span class="text-[11px] font-medium mt-1">Bible</span>
+</a>
+<!-- Tab 3: Mémoriser (vf-memoriser) -->
+<a class="flex flex-col items-center justify-center w-16 py-1 text-stone-600 hover:text-stone-900 transition-colors" data-purpose="nav-item" href="#memoriser">
+  <span class="material-symbols-outlined text-[24px]">psychology</span>
+  <span class="text-[11px] font-medium mt-1">Mémoriser</span>
+</a>
+<!-- Tab 4: Famille (Active in Mode Famille: vf-famille) -->
+<a class="flex flex-col items-center justify-center w-16 py-1 text-[#d81b60] group" data-purpose="nav-item" href="#famille">
+  <span class="material-symbols-outlined text-[24px] font-bold">group</span>
+  <span class="text-[11px] font-semibold mt-1">Famille</span>
+</a>
+<!-- Tab 5: Plus (vf-options) -->
+<a class="flex flex-col items-center justify-center w-16 py-1 text-stone-600 hover:text-stone-900 transition-colors" data-purpose="nav-item" href="#plus">
+  <span class="material-symbols-outlined text-[24px]">more_horiz</span>
+  <span class="text-[11px] font-medium mt-1">Plus</span>
+</a></nav>
+<!-- END: BottomNavigationBar -->
+</main>
+<!-- END: MobileDeviceFrame -->
+
+
+</body></html>

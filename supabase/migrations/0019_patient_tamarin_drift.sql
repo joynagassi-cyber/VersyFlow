@@ -1,0 +1,1 @@
+alter table public.concept_relations enable row level security;

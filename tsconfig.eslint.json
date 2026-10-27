@@ -1,0 +1,13 @@
+{
+  "extends": "./tsconfig.app.json",
+  "include": [
+    "src",
+    "app",
+    "tests",
+    "vite.config.ts",
+    "vitest.config.ts",
+    "env.d.ts",
+    "capacitor.config.ts",
+    "scripts/**/*.ts"
+  ]
+}

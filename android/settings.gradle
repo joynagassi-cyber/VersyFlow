@@ -1,0 +1,19 @@
+pluginManagement {
+    plugins {
+        id "com.android.application" version "8.5.2"
+        id "com.android.library" version "8.5.2"
+        id "org.jetbrains.kotlin.android" version "1.9.25"
+        id "com.capacitorjs.capacitor" version "8.0.0"
+    }
+}
+
+plugins {
+    id "com.capacitor.app" version "8.0.0"
+}
+
+rootProject.name = 'VersyFlow'
+
+include ':capacitor-android'
+project(':capacitor-android').projectDir = new File('../../../node_modules/@capacitor/android/capacitor')
+
+apply from: 'capacitor.settings.gradle'

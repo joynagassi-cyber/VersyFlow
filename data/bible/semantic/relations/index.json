@@ -1,0 +1,101 @@
+{
+  "crossrefs": [
+    {
+      "id": "5deffcf2-5cef-4b5f-5bef-f9cc5aeff839",
+      "fromVerseId": "gen:1:1",
+      "toVerseId": "heb:11:3",
+      "relationType": "CROSS_REFERENCE",
+      "confidence": 0.9,
+      "source": "stage-F:crossref"
+    },
+    {
+      "id": "f0111068-f311-4521-f211-138ef5111847",
+      "fromVerseId": "joh:3:16",
+      "toVerseId": "rom:5:8",
+      "relationType": "CROSS_REFERENCE",
+      "confidence": 0.9,
+      "source": "stage-F:crossref"
+    },
+    {
+      "id": "12c29d9e-11c2-4c0b-10c2-9a7817c2a57d",
+      "fromVerseId": "col:1:15",
+      "toVerseId": "joh:1:1",
+      "relationType": "CROSS_REFERENCE",
+      "confidence": 0.8,
+      "source": "stage-F:crossref"
+    },
+    {
+      "id": "a6499e05-a349-494c-a449-9adfa1499626",
+      "fromVerseId": "luk:11:36",
+      "toVerseId": "mat:5:14",
+      "relationType": "CROSS_REFERENCE",
+      "confidence": 0.7,
+      "source": "stage-F:crossref"
+    },
+    {
+      "id": "278b9b21-248b-4668-258b-97fb2a8b9fda",
+      "fromVerseId": "rom:3:23",
+      "toVerseId": "rom:3:24",
+      "relationType": "CROSS_REFERENCE",
+      "confidence": 0.95,
+      "source": "stage-F:crossref"
+    },
+    {
+      "id": "d2739dbb-d373-4f4e-d473-a0e1d573a274",
+      "fromVerseId": "eph:2:8",
+      "toVerseId": "eph:2:9",
+      "relationType": "CROSS_REFERENCE",
+      "confidence": 0.95,
+      "source": "stage-F:crossref"
+    },
+    {
+      "id": "cb544c95-c854-47dc-c954-496fc65444b6",
+      "fromVerseId": "act:4:12",
+      "toVerseId": "joh:14:6",
+      "relationType": "CROSS_REFERENCE",
+      "confidence": 0.85,
+      "source": "stage-F:crossref"
+    },
+    {
+      "id": "d0492a0b-d149-4b9e-d249-2d31d3492ec4",
+      "fromVerseId": "1pet:2:25",
+      "toVerseId": "psa:23:1",
+      "relationType": "CROSS_REFERENCE",
+      "confidence": 0.6,
+      "source": "stage-F:crossref"
+    },
+    {
+      "id": "9c897c20-9f89-40d9-9e89-7f46a18983ff",
+      "fromVerseId": "luk:6:37",
+      "toVerseId": "mat:7:7",
+      "relationType": "CROSS_REFERENCE",
+      "confidence": 0.8,
+      "source": "stage-F:crossref"
+    },
+    {
+      "id": "f22606a7-f326-483a-f426-09cded25fec8",
+      "fromVerseId": "gal:5:22",
+      "toVerseId": "rom:6:22",
+      "relationType": "CROSS_REFERENCE",
+      "confidence": 0.7,
+      "source": "stage-F:crossref"
+    },
+    {
+      "id": "8e1e8909-8b1e-4450-8c1e-85e3911e8dc2",
+      "fromVerseId": "heb:11:1",
+      "toVerseId": "heb:11:6",
+      "relationType": "CROSS_REFERENCE",
+      "confidence": 0.9,
+      "source": "stage-F:crossref"
+    },
+    {
+      "id": "4bc16fff-4cc1-4192-4dc1-732546c16820",
+      "fromVerseId": "1joh:1:5",
+      "toVerseId": "joh:1:5",
+      "relationType": "CROSS_REFERENCE",
+      "confidence": 0.85,
+      "source": "stage-F:crossref"
+    }
+  ],
+  "shared": []
+}

@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+
+<html lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>Léa - Détail du membre</title>
+<!-- Tailwind CSS v3 with Plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts: Inter & Playfair Display -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,400;1,500;1,600&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind Configuration -->
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            app: {
+              bg: '#faf8f9',
+              pink: '#e11d74',
+              pinkDark: '#b8125a',
+              pinkSoft: '#fdf2f6',
+              textDark: '#1c1917',
+              graySub: '#78716c',
+              borderLight: '#f1ede9'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+            serif: ['"Playfair Display"', 'Georgia', 'serif'],
+          },
+          boxShadow: {
+            'card': '0 4px 20px -2px rgba(220, 200, 205, 0.22), 0 2px 6px -1px rgba(220, 200, 205, 0.15)',
+            'nav': '0 -4px 16px rgba(0, 0, 0, 0.03)'
+          }
+        }
+      }
+    }
+  </script>
+<!-- BEGIN: Custom Styles -->
+<style data-purpose="base-enhancements">
+    body {
+      -webkit-tap-highlight-color: transparent;
+      font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+    }
+  </style>
+<!-- END: Custom Styles -->
+</head>
+<body class="bg-stone-100/60 min-h-screen flex justify-center text-stone-800 antialiased font-sans">
+<!-- BEGIN: Mobile Container -->
+<main class="w-full max-w-[430px] min-h-screen bg-[#fbf9f9] flex flex-col justify-between relative shadow-2xl overflow-hidden pb-24">
+<!-- BEGIN: Top Status Bar & Navigation -->
+<header class="w-full pt-3 px-6 pb-2" data-purpose="top-navigation-header">
+<!-- iOS Status Bar Simulation -->
+<div class="flex justify-between items-center text-xs font-semibold tracking-tight text-neutral-900 mb-4 px-1" data-purpose="status-bar">
+<span>9:41</span>
+<div class="flex items-center space-x-1.5 text-neutral-800">
+<span class="text-[11px] font-bold">5G</span>
+<div class="flex items-end space-x-[2px] h-3">
+<span class="w-[3px] h-1.5 bg-neutral-900 rounded-[0.5px]"></span>
+<span class="w-[3px] h-2 bg-neutral-900 rounded-[0.5px]"></span>
+<span class="w-[3px] h-2.5 bg-neutral-900 rounded-[0.5px]"></span>
+</div>
+</div>
+</div>
+<!-- Header Navigation Bar -->
+<nav aria-label="Menu supérieur" class="flex items-center justify-between relative h-12">
+<button aria-label="Retour" class="w-10 h-10 rounded-full bg-white shadow-sm border border-stone-100 flex items-center justify-center text-neutral-800 hover:bg-stone-50 active:scale-95 transition-all" type="button">
+<svg class="w-5 h-5 -ml-0.5" fill="none" stroke="currentColor" stroke-width="2.5" viewbox="0 0 24 24">
+<path d="M15.75 19.5L8.25 12l7.5-7.5" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+<!-- Centered Header Title -->
+<div class="flex flex-col items-center text-center">
+<h1 class="text-xl font-bold font-serif text-stone-900 leading-tight">Léa</h1>
+<p class="text-xs text-stone-500 font-medium">Membre depuis le 7 octobre</p>
+</div>
+<!-- Actions / More Button -->
+<button aria-label="Options supplémentaires" class="w-10 h-10 rounded-full bg-white shadow-sm border border-stone-100 flex items-center justify-center text-neutral-800 hover:bg-stone-50 active:scale-95 transition-all" type="button">
+<svg class="w-5 h-5" fill="currentColor" viewbox="0 0 24 24">
+<circle cx="5" cy="12" r="2"></circle>
+<circle cx="12" cy="12" r="2"></circle>
+<circle cx="19" cy="12" r="2"></circle>
+</svg>
+</button>
+</nav>
+</header>
+<!-- END: Top Status Bar & Navigation -->
+<!-- BEGIN: Main Scrollable Content -->
+<div class="flex-1 px-5 pt-3 pb-8 space-y-4 overflow-y-auto" data-purpose="profile-body-content">
+<!-- BEGIN: User Avatar & Name Section -->
+<section aria-label="Profil du membre" class="flex flex-col items-center text-center pt-2 pb-1">
+<!-- Large Pink Avatar -->
+<div class="w-24 h-24 rounded-full bg-gradient-to-tr from-[#e11d74] to-[#f0298a] border-4 border-white shadow-md flex items-center justify-center text-white mb-3">
+<span class="text-5xl font-bold font-serif select-none -translate-y-0.5">L</span>
+</div>
+<!-- Member Title & Subtitle -->
+<h2 class="text-3xl font-serif font-extrabold text-stone-900 tracking-tight mb-0.5">Léa</h2>
+<p class="text-stone-600 italic font-serif text-base tracking-wide">Gardienne du Psaume 23</p>
+</section>
+<!-- END: User Avatar & Name Section -->
+<!-- BEGIN: Level Progress Card -->
+<section class="bg-white rounded-3xl p-5 border border-stone-100 shadow-card flex items-center gap-5" data-purpose="level-card">
+<!-- Circular Progress Indicator -->
+<div class="relative w-20 h-20 flex-shrink-0 flex items-center justify-center">
+<svg class="w-20 h-20 -rotate-90 transform" viewbox="0 0 72 72">
+<!-- Background Track -->
+<circle cx="36" cy="36" fill="none" r="30" stroke="#fce7f0" stroke-width="6.5"></circle>
+<!-- Active Progress Arc (~75%) -->
+<circle cx="36" cy="36" fill="none" r="30" stroke="#e11d74" stroke-dasharray="188.4" stroke-dashoffset="48" stroke-linecap="round" stroke-width="6.5"></circle>
+</svg>
+<span class="absolute text-2xl font-serif font-bold text-stone-900">5</span>
+</div>
+<!-- Level Info Details -->
+<div class="flex flex-col justify-center">
+<span class="text-xs uppercase font-extrabold text-[#b8125a] tracking-wider mb-0.5">NIVEAU 5</span>
+<p class="text-2xl font-bold font-serif text-stone-900 leading-tight">1 240 points</p>
+<span class="text-xs text-stone-500 font-medium mt-1">160 pts avant le niveau 6</span>
+</div>
+</section>
+<!-- END: Level Progress Card -->
+<!-- BEGIN: Weekly Stats Overview Grid -->
+<section aria-label="Statistiques du membre" class="grid grid-cols-3 gap-3" data-purpose="stats-grid">
+<!-- Stat Item 1: Cette semaine -->
+<div class="bg-white rounded-2xl py-3.5 px-3 border border-stone-100 shadow-card flex flex-col justify-between">
+<span class="text-[12px] text-stone-600 font-medium leading-tight">Cette semaine</span>
+<span class="text-2xl font-serif font-bold text-stone-900 mt-2">312</span>
+</div>
+<!-- Stat Item 2: Série -->
+<div class="bg-white rounded-2xl py-3.5 px-3 border border-stone-100 shadow-card flex flex-col justify-between">
+<span class="text-[12px] text-stone-600 font-medium leading-tight">Série</span>
+<span class="text-2xl font-serif font-bold text-stone-900 mt-2">12</span>
+</div>
+<!-- Stat Item 3: Maîtrisés -->
+<div class="bg-white rounded-2xl py-3.5 px-3 border border-stone-100 shadow-card flex flex-col justify-between">
+<span class="text-[12px] text-stone-600 font-medium leading-tight">Maîtrisés</span>
+<span class="text-2xl font-serif font-bold text-stone-900 mt-2">5</span>
+</div>
+</section>
+<!-- END: Weekly Stats Overview Grid -->
+<!-- BEGIN: Badges Carousel Card -->
+<section class="bg-white rounded-3xl p-5 border border-stone-100 shadow-card" data-purpose="badges-section">
+<!-- Section Header Link -->
+<div class="flex items-center justify-between mb-4">
+<h3 class="text-base font-bold text-stone-900 font-sans">Badges</h3>
+<button class="flex items-center text-stone-500 hover:text-stone-800 text-sm font-semibold transition-colors" type="button">
+<span>7</span>
+<svg class="w-4 h-4 ml-1 text-stone-400 stroke-2" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M8.25 4.5l7.5 7.5-7.5 7.5" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+</div>
+<!-- Badges Row -->
+<div class="flex items-center space-x-3.5" data-purpose="badge-icons-list">
+<!-- Badge 1: Golden Lightning -->
+<div class="w-14 h-14 rounded-full bg-[#fdf5e6] border-[2px] border-[#d8972b] p-0.5 flex items-center justify-center">
+<div class="w-full h-full rounded-full bg-[#d8972b] flex items-center justify-center shadow-inner text-white">
+<svg class="w-6 h-6 fill-white" viewbox="0 0 24 24">
+<path d="M13 2L3 14h7v8l10-12h-7l1-8z"></path>
+</svg>
+</div>
+</div>
+<!-- Badge 2: Purple Checkmark -->
+<div class="w-14 h-14 rounded-full bg-[#f0eef9] border-[2px] border-[#6b66b0] p-0.5 flex items-center justify-center">
+<div class="w-full h-full rounded-full bg-[#6b66b0] flex items-center justify-center shadow-inner text-white">
+<svg class="w-6 h-6 stroke-white stroke-[3] fill-none" viewbox="0 0 24 24">
+<path d="M4.5 12.75l6 6 9-13.5" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+</div>
+<!-- Badge 3: Terracotta Flash -->
+<div class="w-14 h-14 rounded-full bg-[#fbeee9] border-[2px] border-[#cb674b] p-0.5 flex items-center justify-center">
+<div class="w-full h-full rounded-full bg-[#cb674b] flex items-center justify-center shadow-inner text-white">
+<svg class="w-6 h-6 fill-white" viewbox="0 0 24 24">
+<path d="M13 2L3 14h7v8l10-12h-7l1-8z"></path>
+</svg>
+</div>
+</div>
+</div>
+</section>
+<!-- END: Badges Carousel Card -->
+<!-- BEGIN: Passages Status List -->
+<section class="bg-white rounded-3xl p-5 border border-stone-100 shadow-card" data-purpose="passages-section">
+<h3 class="text-xs font-bold uppercase tracking-wider text-[#b8125a] mb-3">PASSAGES</h3>
+<div class="divide-y divide-stone-100">
+<!-- Passage Item 1 -->
+<div class="flex items-center justify-between py-3">
+<span class="text-base font-serif font-bold text-stone-900">Psaumes 23:1-3</span>
+<span class="px-3.5 py-1 rounded-full bg-[#fbe7ef] text-[#b8125a] text-xs font-semibold tracking-wide">
+              En cours
+            </span>
+</div>
+<!-- Passage Item 2 -->
+<div class="flex items-center justify-between pt-3">
+<span class="text-base font-serif font-bold text-stone-900">Jean 3:16</span>
+<span class="px-3.5 py-1 rounded-full bg-[#e8f6ed] text-[#2c8a4c] text-xs font-semibold tracking-wide">
+              Maîtrisé
+            </span>
+</div>
+</div>
+</section>
+<!-- END: Passages Status List -->
+</div>
+<!-- END: Main Scrollable Content -->
+<!-- BEGIN: Bottom Tab Navigation Bar -->
+<nav aria-label="Navigation principale" class="absolute bottom-0 left-0 right-0 bg-white border-t border-stone-200/70 px-4 py-2 flex justify-between items-center z-20 shadow-nav">
+<!-- Nav Item: Accueil (Active) -->
+<a class="flex flex-col items-center text-[#e11d74] space-y-1 flex-1 py-1" href="#">
+<svg class="w-6 h-6 stroke-current stroke-2 fill-none" viewbox="0 0 24 24">
+<path d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[10px] font-semibold tracking-tight">Accueil</span>
+</a>
+<!-- Nav Item: Bible -->
+<a class="flex flex-col items-center text-stone-700 hover:text-stone-900 space-y-1 flex-1 py-1 transition-colors" href="#">
+<svg class="w-6 h-6 stroke-current stroke-2 fill-none" viewbox="0 0 24 24">
+<rect height="16" rx="2" stroke-linecap="round" stroke-linejoin="round" width="16" x="4" y="4"></rect>
+</svg>
+<span class="text-[10px] font-medium tracking-tight">Bible</span>
+</a>
+<!-- Nav Item: Mémoriser -->
+<a class="flex flex-col items-center text-stone-700 hover:text-stone-900 space-y-1 flex-1 py-1 transition-colors" href="#">
+<svg class="w-6 h-6 stroke-current stroke-2 fill-none" viewbox="0 0 24 24">
+<path d="M6 8l6-4 6 4-6 4-6-4z" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M6 12l6 4 6-4" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M6 16l6 4 6-4" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[10px] font-medium tracking-tight">Mémoriser</span>
+</a>
+<!-- Nav Item: Progrès -->
+<a class="flex flex-col items-center text-stone-700 hover:text-stone-900 space-y-1 flex-1 py-1 transition-colors" href="#">
+<svg class="w-6 h-6 stroke-current stroke-2 fill-none" viewbox="0 0 24 24">
+<path d="M3 20h18" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M6 20v-4" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M12 20V8" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M18 20v-8" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[10px] font-medium tracking-tight">Progrès</span>
+</a>
+<!-- Nav Item: Réglages -->
+<a class="flex flex-col items-center text-stone-700 hover:text-stone-900 space-y-1 flex-1 py-1 transition-colors" href="#">
+<svg class="w-6 h-6 stroke-current stroke-2 fill-none" viewbox="0 0 24 24">
+<circle cx="12" cy="12" r="3.5"></circle>
+<path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41m14.14-14.14l-1.41 1.41" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[10px] font-medium tracking-tight">Réglages</span>
+</a>
+</nav>
+<!-- END: Bottom Tab Navigation Bar -->
+</main>
+<!-- END: Mobile Container -->
+</body></html>

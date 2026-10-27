@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+<title>Mes tags - Arbres sémantiques</title>
+<!-- Tailwind CSS v3 CDN -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts for Serif Headings and Clean Sans UI -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=Playfair+Display:ital,wght@0,600;0,700;1,600&amp;display=swap" rel="stylesheet"/>
+<script data-purpose="tailwind-config">
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            app: {
+              bg: '#faf8f8',
+              accent: '#d81b60',
+              accentLight: '#fde8ef',
+              textPrimary: '#1a1819',
+              textSecondary: '#6e6a71',
+              cardBg: '#ffffff',
+              borderDashed: '#d3c9ce',
+              progressTrack: '#ebe5e8',
+            }
+          },
+          fontFamily: {
+            serif: ['"Playfair Display"', 'Georgia', 'serif'],
+            sans: ['"Plus Jakarta Sans"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+          },
+          boxShadow: {
+            softCard: '0 4px 20px -2px rgba(220, 180, 195, 0.12), 0 2px 6px -1px rgba(0, 0, 0, 0.03)',
+            navBar: '0 -2px 10px rgba(0, 0, 0, 0.03)',
+          }
+        }
+      }
+    }
+  </script>
+<style data-purpose="custom-styling">
+    /* Subtle touch tweaks for iOS experience */
+    body {
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      background-color: #faf8f8;
+    }
+    
+    /* Smooth transition for active states */
+    .press-effect:active {
+      transform: scale(0.985);
+      transition: transform 0.1s ease;
+    }
+  </style>
+</head>
+<body class="h-full font-sans text-app-textPrimary bg-app-bg antialiased flex justify-center">
+<!-- BEGIN: MobileDeviceContainer -->
+<!-- Container max-width to simulate exact iPhone proportions on desktop view -->
+<div class="w-full max-w-[420px] min-h-screen bg-app-bg flex flex-col justify-between relative shadow-2xl">
+<!-- Top Content Area (Scrollable) -->
+<div class="flex-1 flex flex-col overflow-y-auto pb-6">
+<!-- BEGIN: StatusBar -->
+<!-- Standard iOS Status Bar -->
+<div class="pt-3 px-7 flex justify-between items-center text-sm font-semibold tracking-tight text-neutral-900 select-none">
+<span>9:41</span>
+<div class="flex items-center space-x-1.5 text-xs">
+<span class="font-bold text-[11px] tracking-tighter mr-0.5">5G</span>
+<!-- Signal bars -->
+<div class="flex items-end space-x-[2px] h-3">
+<span class="w-[3px] h-1.5 bg-black rounded-sm"></span>
+<span class="w-[3px] h-2 bg-black rounded-sm"></span>
+<span class="w-[3px] h-2.5 bg-black rounded-sm"></span>
+<span class="w-[3px] h-3 bg-black rounded-sm"></span>
+</div>
+<!-- Battery icon -->
+<div class="w-5 h-2.5 border border-black rounded-[4px] p-[1px] flex items-center ml-1">
+<div class="h-full w-full bg-black rounded-[2px]"></div>
+</div>
+</div>
+</div>
+<!-- END: StatusBar -->
+<!-- BEGIN: NavigationHeader -->
+<header class="px-5 pt-3 pb-2 flex items-center justify-between" data-purpose="screen-header">
+<!-- Back Button -->
+<button aria-label="Retour" class="w-11 h-11 rounded-full bg-white shadow-sm border border-neutral-100 flex items-center justify-center text-neutral-700 press-effect" type="button">
+<svg class="w-5 h-5 stroke-[2.5]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M15 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+<!-- Center Title & Subtitle -->
+<div class="text-center">
+<h1 class="font-serif font-bold text-2xl tracking-tight text-neutral-900 leading-tight">Mes tags</h1>
+<p class="text-xs text-app-textSecondary font-medium tracking-normal mt-0.5">Arbres sémantiques</p>
+</div>
+<!-- Options/More Menu Button -->
+<button aria-label="Plus d'options" class="w-11 h-11 rounded-full bg-white shadow-sm border border-neutral-100 flex items-center justify-center text-neutral-700 press-effect" type="button">
+<svg class="w-5 h-5" fill="currentColor" viewbox="0 0 24 24">
+<circle cx="5" cy="12" r="2"></circle>
+<circle cx="12" cy="12" r="2"></circle>
+<circle cx="19" cy="12" r="2"></circle>
+</svg>
+</button>
+</header>
+<!-- END: NavigationHeader -->
+<!-- BEGIN: SearchBar -->
+<div class="px-5 mt-4" data-purpose="search-container">
+<div class="relative flex items-center">
+<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-neutral-500">
+<svg class="w-5 h-5 stroke-[2.2]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+<input class="w-full bg-[#f0ebed]/90 text-neutral-800 placeholder-neutral-500 text-[15px] font-medium pl-12 pr-4 py-3.5 rounded-2xl border-none focus:outline-none focus:ring-2 focus:ring-app-accent/20 transition-all" placeholder="Rechercher un tag" type="text"/>
+</div>
+</div>
+<!-- END: SearchBar -->
+<!-- BEGIN: TagCardsList -->
+<main class="px-5 mt-4 flex flex-col space-y-3.5" data-purpose="tags-list">
+<!-- Tag Card 1: Amour -->
+<article class="bg-white rounded-[22px] p-4 pr-5 shadow-softCard flex items-center justify-between press-effect cursor-pointer border border-neutral-100/60">
+<div class="flex items-center space-x-3.5 flex-1 min-w-0">
+<!-- Left Color Pill Indicator -->
+<span aria-hidden="true" class="w-3 h-12 rounded-full bg-[#e91e63] flex-shrink-0"></span>
+<div class="flex-1 min-w-0 pr-2">
+<h2 class="font-serif font-bold text-lg text-neutral-900 leading-snug">Amour</h2>
+<p class="text-xs text-neutral-500 font-medium tracking-tight mt-0.5">12 versets · 5 branches</p>
+<!-- Progress Bar Track -->
+<div class="w-full bg-app-progressTrack h-1.5 rounded-full mt-2.5 overflow-hidden">
+<div class="bg-app-accent h-full rounded-full" style="width: 58%;"></div>
+</div>
+</div>
+</div>
+<!-- Right Chevron Icon -->
+<svg class="w-4 h-4 text-neutral-500 stroke-[2.5] flex-shrink-0 ml-2" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</article>
+<!-- Tag Card 2: Prière -->
+<article class="bg-white rounded-[22px] p-4 pr-5 shadow-softCard flex items-center justify-between press-effect cursor-pointer border border-neutral-100/60">
+<div class="flex items-center space-x-3.5 flex-1 min-w-0">
+<!-- Left Color Pill Indicator -->
+<span aria-hidden="true" class="w-3 h-12 rounded-full bg-[#3b82f6] flex-shrink-0"></span>
+<div class="flex-1 min-w-0 pr-2">
+<h2 class="font-serif font-bold text-lg text-neutral-900 leading-snug">Prière</h2>
+<p class="text-xs text-neutral-500 font-medium tracking-tight mt-0.5">9 versets · 4 branches</p>
+<!-- Progress Bar Track -->
+<div class="w-full bg-app-progressTrack h-1.5 rounded-full mt-2.5 overflow-hidden">
+<div class="bg-app-accent h-full rounded-full" style="width: 46%;"></div>
+</div>
+</div>
+</div>
+<!-- Right Chevron Icon -->
+<svg class="w-4 h-4 text-neutral-500 stroke-[2.5] flex-shrink-0 ml-2" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</article>
+<!-- Tag Card 3: Combat -->
+<article class="bg-white rounded-[22px] p-4 pr-5 shadow-softCard flex items-center justify-between press-effect cursor-pointer border border-neutral-100/60">
+<div class="flex items-center space-x-3.5 flex-1 min-w-0">
+<!-- Left Color Pill Indicator -->
+<span aria-hidden="true" class="w-3 h-12 rounded-full bg-[#d97706] flex-shrink-0"></span>
+<div class="flex-1 min-w-0 pr-2">
+<h2 class="font-serif font-bold text-lg text-neutral-900 leading-snug">Combat</h2>
+<p class="text-xs text-neutral-500 font-medium tracking-tight mt-0.5">7 versets · 3 branches</p>
+<!-- Progress Bar Track -->
+<div class="w-full bg-app-progressTrack h-1.5 rounded-full mt-2.5 overflow-hidden">
+<div class="bg-app-accent h-full rounded-full" style="width: 34%;"></div>
+</div>
+</div>
+</div>
+<!-- Right Chevron Icon -->
+<svg class="w-4 h-4 text-neutral-500 stroke-[2.5] flex-shrink-0 ml-2" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</article>
+<!-- Tag Card 4: Espérance -->
+<article class="bg-white rounded-[22px] p-4 pr-5 shadow-softCard flex items-center justify-between press-effect cursor-pointer border border-neutral-100/60">
+<div class="flex items-center space-x-3.5 flex-1 min-w-0">
+<!-- Left Color Pill Indicator -->
+<span aria-hidden="true" class="w-3 h-12 rounded-full bg-[#10b981] flex-shrink-0"></span>
+<div class="flex-1 min-w-0 pr-2">
+<h2 class="font-serif font-bold text-lg text-neutral-900 leading-snug">Espérance</h2>
+<p class="text-xs text-neutral-500 font-medium tracking-tight mt-0.5">4 versets · 2 branches</p>
+<!-- Progress Bar Track -->
+<div class="w-full bg-app-progressTrack h-1.5 rounded-full mt-2.5 overflow-hidden">
+<div class="bg-app-accent h-full rounded-full" style="width: 21%;"></div>
+</div>
+</div>
+</div>
+<!-- Right Chevron Icon -->
+<svg class="w-4 h-4 text-neutral-500 stroke-[2.5] flex-shrink-0 ml-2" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</article>
+<!-- Action Card: Nouveau tag -->
+<button class="w-full text-left bg-white/50 border-[1.5px] border-dashed border-app-borderDashed rounded-[24px] p-4 flex items-center space-x-3.5 press-effect hover:bg-white/80 transition-colors" type="button">
+<!-- Plus Icon inside soft tinted pink square/rounded rect -->
+<div class="w-12 h-12 rounded-2xl bg-[#fde8ef] flex items-center justify-center text-app-accent flex-shrink-0">
+<svg class="w-6 h-6 stroke-[2.4]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M12 4v16m8-8H4" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+<div>
+<h3 class="font-bold text-[16px] text-neutral-900 leading-snug">Nouveau tag</h3>
+<p class="text-xs text-neutral-500 font-normal mt-0.5">Concept de la base ou tag personnel</p>
+</div>
+</button>
+</main>
+<!-- END: TagCardsList -->
+<!-- BEGIN: ExplanatoryFooterNote -->
+<footer class="mt-6 mb-2 text-center px-4" data-purpose="footnote">
+<p class="text-[13px] text-neutral-500 font-medium">Un verset peut avoir plusieurs tags</p>
+</footer>
+<!-- END: ExplanatoryFooterNote -->
+</div>
+<!-- BEGIN: BottomNavigation -->
+<nav class="bg-white border-t border-neutral-100 shadow-navBar px-3 pt-2.5 pb-7 flex items-center justify-around z-20 select-none" data-purpose="bottom-tab-bar">
+<!-- Tab 1: Accueil (Active) -->
+<a class="flex flex-col items-center justify-center text-app-accent group min-w-[56px]" href="#">
+<svg class="w-6 h-6 stroke-[2.2] mb-1" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[11px] font-bold tracking-tight">Accueil</span>
+</a>
+<!-- Tab 2: Bible -->
+<a class="flex flex-col items-center justify-center text-neutral-600 hover:text-neutral-900 group min-w-[56px]" href="#">
+<svg class="w-6 h-6 stroke-[2.2] mb-1" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<rect height="16" rx="2" stroke-linejoin="round" width="16" x="4" y="4"></rect>
+</svg>
+<span class="text-[11px] font-medium tracking-tight">Bible</span>
+</a>
+<!-- Tab 3: Mémoriser -->
+<a class="flex flex-col items-center justify-center text-neutral-600 hover:text-neutral-900 group min-w-[56px]" href="#">
+<svg class="w-6 h-6 stroke-[2.2] mb-1" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M12 2l9 5-9 5-9-5 9-5z" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M3 12l9 5 9-5" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M3 17l9 5 9-5" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[11px] font-medium tracking-tight">Mémoriser</span>
+</a>
+<!-- Tab 4: Progrès -->
+<a class="flex flex-col items-center justify-center text-neutral-600 hover:text-neutral-900 group min-w-[56px]" href="#">
+<svg class="w-6 h-6 stroke-[2.2] mb-1" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[11px] font-medium tracking-tight">Progrès</span>
+</a>
+<!-- Tab 5: Réglages -->
+<a class="flex flex-col items-center justify-center text-neutral-600 hover:text-neutral-900 group min-w-[56px]" href="#">
+<svg class="w-6 h-6 stroke-[2.2] mb-1" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<circle cx="12" cy="12" r="3"></circle>
+<path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41m11.32-11.32l1.41-1.41" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[11px] font-medium tracking-tight">Réglages</span>
+</a>
+</nav>
+<!-- END: BottomNavigation -->
+</div>
+<!-- END: MobileDeviceContainer -->
+</body></html>

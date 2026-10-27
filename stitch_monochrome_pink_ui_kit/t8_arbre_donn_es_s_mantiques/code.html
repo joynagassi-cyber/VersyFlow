@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+
+<html lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>T8 — Arbre — Données sémantiques</title>
+<!-- Tailwind CSS CDN with forms and container-queries -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- BEGIN: Custom Font & Tailwind Configuration -->
+<script data-purpose="tailwind-config">
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              pink: '#C81E61',
+              pinkLight: '#FFF0F5',
+              bgLight: '#FFF9FB',
+              cardBorder: '#F9E6EE',
+              greenBadgeBg: '#DFF4EA',
+              greenBadgeText: '#187B57',
+              greenCheckBg: '#D5F2E3',
+              greenCheckText: '#1D8359'
+            }
+          },
+          fontFamily: {
+            serif: ['Georgia', 'Cambria', '"Times New Roman"', 'Times', 'serif'],
+            sans: ['-apple-system', 'BlinkMacSystemFont', '"SF Pro Text"', '"SF Pro Display"', '"Segoe UI"', 'Roboto', 'Helvetica', 'Arial', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+<!-- END: Custom Font & Tailwind Configuration -->
+<!-- BEGIN: Custom Styles -->
+<style data-purpose="ios-tweaks">
+    /* Subtle custom card shadows matching iOS soft design */
+    .ios-card {
+      box-shadow: 0 4px 18px rgba(220, 160, 185, 0.08);
+      border: 1px solid rgba(245, 215, 226, 0.6);
+    }
+    /* Hide scrollbars for clean presentation */
+    body::-webkit-scrollbar {
+      display: none;
+    }
+    body {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+  </style>
+<!-- END: Custom Styles -->
+</head>
+<body class="bg-[#FCF9FA] text-gray-900 font-sans min-h-screen flex flex-col justify-between antialiased select-none pb-20">
+<!-- BEGIN: TopContainer (Status Bar & Header) -->
+<header class="pt-2 px-5 sticky top-0 bg-[#FCF9FA]/90 backdrop-blur-md z-30" data-purpose="mobile-header">
+<!-- Status Bar Area -->
+<div class="flex justify-between items-center text-xs font-semibold tracking-tight text-gray-900 pb-2" data-purpose="status-bar">
+<span class="pl-2">9:41</span>
+<div class="flex items-center space-x-1.5 pr-2">
+<span class="text-[11px] font-bold tracking-tight">5G</span>
+<!-- Cellular Signal Bars -->
+<div class="flex items-end space-x-0.5 h-3">
+<span class="w-1 h-1.5 bg-black rounded-2xs"></span>
+<span class="w-1 h-2.5 bg-black rounded-2xs"></span>
+<span class="w-1 h-3 bg-black rounded-2xs"></span>
+</div>
+</div>
+</div>
+<!-- Navigation Bar -->
+<div class="flex items-center justify-between mt-2 mb-4" data-purpose="nav-bar">
+<!-- Back Button -->
+<button aria-label="Retour" class="w-11 h-11 bg-white rounded-full flex items-center justify-center shadow-sm border border-gray-100 active:scale-95 transition-transform" type="button">
+<svg class="w-5 h-5 text-gray-800" fill="none" stroke="currentColor" stroke-width="2.5" viewbox="0 0 24 24">
+<path d="M15 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+<!-- Screen Title & Subtitle -->
+<div class="text-center">
+<h1 class="text-[20px] font-bold font-serif text-gray-900 leading-tight">Données sémantiques</h1>
+<p class="text-[13px] text-gray-500 font-normal mt-0.5">Base de l'arbre</p>
+</div>
+<!-- Action Options Button -->
+<button aria-label="Plus d'options" class="w-11 h-11 bg-white rounded-full flex items-center justify-center shadow-sm border border-gray-100 active:scale-95 transition-transform" type="button">
+<svg class="w-5 h-5 text-gray-800" fill="currentColor" viewbox="0 0 24 24">
+<circle cx="5" cy="12" r="2"></circle>
+<circle cx="12" cy="12" r="2"></circle>
+<circle cx="19" cy="12" r="2"></circle>
+</svg>
+</button>
+</div>
+</header>
+<!-- END: TopContainer -->
+<!-- BEGIN: MainContent -->
+<main class="flex-1 px-4 space-y-3.5 max-w-md mx-auto w-full" data-purpose="content-scroll">
+<!-- BEGIN: InstalledVersionCard -->
+<section class="bg-white rounded-3xl p-5 ios-card" data-purpose="installed-version-card">
+<span class="block text-[11px] font-bold tracking-wider text-[#B81858] uppercase mb-2">Version installée</span>
+<div class="flex items-center justify-between">
+<div class="space-y-0.5">
+<div class="text-[28px] font-extrabold text-gray-900 tracking-tight font-serif">2026.10.1</div>
+<div class="text-[13px] text-gray-500 font-medium">24 Mo · 15 octobre 2026</div>
+</div>
+<!-- 'À jour' Status Pill -->
+<span class="px-3.5 py-1.5 bg-[#DFF4EA] text-[#167D55] text-xs font-semibold rounded-full tracking-wide">
+          À jour
+        </span>
+</div>
+</section>
+<!-- END: InstalledVersionCard -->
+<!-- BEGIN: WhatsNewCard -->
+<section class="bg-white rounded-3xl p-5 ios-card" data-purpose="whats-new-card">
+<span class="block text-[11px] font-bold tracking-wider text-[#B81858] uppercase mb-2">Nouveautés</span>
+<p class="text-[14px] text-gray-800 leading-snug">
+        2 nouvelles branches pour Amour et Combat. 14 liens vers des versets ajoutés.
+      </p>
+</section>
+<!-- END: WhatsNewCard -->
+<!-- BEGIN: ConceptLanguagesCard -->
+<section class="bg-white rounded-3xl p-5 ios-card" data-purpose="languages-card">
+<span class="block text-[11px] font-bold tracking-wider text-[#B81858] uppercase mb-4">Langues des concepts</span>
+<div class="divide-y divide-gray-100">
+<!-- French Item -->
+<div class="py-3.5 first:pt-0 flex items-center justify-between">
+<div>
+<h3 class="text-sm font-bold text-gray-900 leading-snug">Français</h3>
+<span class="text-xs text-gray-500 font-medium">Installé</span>
+</div>
+<!-- Completed Checkmark Badge -->
+<div class="w-7 h-7 rounded-full bg-[#DAF4E7] flex items-center justify-center">
+<svg class="w-3.5 h-3.5 text-[#1D8359]" fill="none" stroke="currentColor" stroke-width="2.5" viewbox="0 0 24 24">
+<path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+</div>
+<!-- English Item -->
+<div class="py-3.5 flex items-center justify-between">
+<div>
+<h3 class="text-sm font-bold text-gray-900 leading-snug">English</h3>
+<span class="text-xs text-gray-500 font-medium">Installé</span>
+</div>
+<!-- Completed Checkmark Badge -->
+<div class="w-7 h-7 rounded-full bg-[#DAF4E7] flex items-center justify-center">
+<svg class="w-3.5 h-3.5 text-[#1D8359]" fill="none" stroke="currentColor" stroke-width="2.5" viewbox="0 0 24 24">
+<path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+</div>
+<!-- Arabic Item -->
+<div class="py-3.5 flex items-center justify-between">
+<div>
+<h3 class="text-sm font-bold text-gray-900 leading-snug">العربية</h3>
+<span class="text-xs text-gray-500 font-medium">3,1 Mo</span>
+</div>
+<button class="px-4 py-1.5 rounded-full border border-[#C81E61] text-[#C81E61] text-xs font-semibold hover:bg-[#FFF0F5] active:scale-95 transition-all" type="button">
+            Télécharger
+          </button>
+</div>
+<!-- German Item -->
+<div class="py-3.5 pb-1 flex items-center justify-between">
+<div>
+<h3 class="text-sm font-bold text-gray-900 leading-snug">Deutsch</h3>
+<span class="text-xs text-gray-500 font-medium">2,8 Mo</span>
+</div>
+<button class="px-4 py-1.5 rounded-full border border-[#C81E61] text-[#C81E61] text-xs font-semibold hover:bg-[#FFF0F5] active:scale-95 transition-all" type="button">
+            Télécharger
+          </button>
+</div>
+</div>
+</section>
+<!-- END: ConceptLanguagesCard -->
+<!-- BEGIN: SourcesAndCreditsCard -->
+<a class="bg-white rounded-3xl p-5 ios-card block hover:bg-gray-50/50 transition-colors" data-purpose="sources-link-card" href="#sources">
+<div class="flex items-center justify-between">
+<h2 class="text-sm font-bold text-gray-900">Sources et crédits</h2>
+<!-- Chevron Right -->
+<svg class="w-4 h-4 text-gray-600 stroke-[2.5]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+<p class="text-xs text-gray-600 mt-1 truncate">
+        OpenBible.info (CC BY), STEPBible (CC BY), Wikidata (CC0)...
+      </p>
+</a>
+<!-- END: SourcesAndCreditsCard -->
+<!-- BEGIN: WifiToggleSetting -->
+<div class="pt-3 pb-4 px-2 flex items-center justify-between" data-purpose="wifi-setting-toggle">
+<label class="text-[15px] font-medium text-gray-900 cursor-pointer" for="wifi-toggle">
+        Télécharger en Wi-Fi uniquement
+      </label>
+<!-- iOS Styled Toggle Switch -->
+<div class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" id="wifi-toggle" type="checkbox"/>
+<div class="w-[52px] h-[31px] bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:bg-[#CD1C60] transition-colors duration-200 ease-in-out"></div>
+<div class="absolute left-[2px] top-[2px] bg-white rounded-full h-[27px] w-[27px] transition-all duration-200 ease-in-out peer-checked:translate-x-[21px] flex items-center justify-center shadow-md">
+<!-- Small Check icon in switch knob -->
+<svg class="w-3.5 h-3.5 text-[#CD1C60]" fill="none" stroke="currentColor" stroke-width="3" viewbox="0 0 24 24">
+<path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+</div>
+</div>
+<!-- END: WifiToggleSetting -->
+</main>
+<!-- END: MainContent -->
+<!-- BEGIN: BottomTabBar -->
+<nav class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-gray-200/70 z-40 px-2 py-1.5" data-purpose="bottom-tab-bar">
+<div class="max-w-md mx-auto grid grid-cols-5 text-center items-center">
+<!-- Tab: Accueil -->
+<a class="flex flex-col items-center justify-center py-1 text-gray-700 active:opacity-70" href="#accueil">
+<!-- Home Icon -->
+<svg class="w-5 h-5 stroke-[1.8]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M3 10.5L12 3l9 7.5v10a1 1 0 01-1 1h-4.5a.5.5 0 01-.5-.5v-5a1 1 0 00-1-1h-2a1 1 0 00-1 1v5a.5.5 0 01-.5.5H4a1 1 0 01-1-1v-10z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[11px] font-medium mt-1">Accueil</span>
+</a>
+<!-- Tab: Bible -->
+<a class="flex flex-col items-center justify-center py-1 text-gray-700 active:opacity-70" href="#bible">
+<!-- Book/Bible Icon -->
+<svg class="w-5 h-5 stroke-[1.8]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M5 4h14a1 1 0 011 1v14a1 1 0 01-1 1H5a1 1 0 01-1-1V5a1 1 0 011-1z" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M9 4v16" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[11px] font-medium mt-1">Bible</span>
+</a>
+<!-- Tab: Mémoriser -->
+<a class="flex flex-col items-center justify-center py-1 text-gray-700 active:opacity-70" href="#memoriser">
+<!-- Layers/Memorize Icon -->
+<svg class="w-5 h-5 stroke-[1.8]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M12 2l8 4.5-8 4.5-8-4.5L12 2z" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M4 11.5l8 4.5 8-4.5" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M4 16.5l8 4.5 8-4.5" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[11px] font-medium mt-1">Mémoriser</span>
+</a>
+<!-- Tab: Progrès -->
+<a class="flex flex-col items-center justify-center py-1 text-gray-700 active:opacity-70" href="#progres">
+<!-- Bar Chart/Progress Icon -->
+<svg class="w-5 h-5 stroke-[1.8]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M4 20h16M7 20v-5M12 20v-9M17 20V6" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[11px] font-medium mt-1">Progrès</span>
+</a>
+<!-- Tab: Réglages (Active/Selected) -->
+<a class="flex flex-col items-center justify-center py-1 text-[#C81E61] active:opacity-70" href="#reglages">
+<!-- Cog/Sparkle Settings Icon -->
+<svg class="w-5 h-5 stroke-[1.8]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<circle cx="12" cy="12" r="3"></circle>
+<path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41m11.32-11.32l1.41-1.41" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[11px] font-medium mt-1">Réglages</span>
+</a>
+</div>
+</nav>
+<!-- END: BottomTabBar -->
+</body></html>

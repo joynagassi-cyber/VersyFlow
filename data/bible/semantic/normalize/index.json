@@ -1,0 +1,1382 @@
+{
+  "concepts": {
+    "canon:pride": {
+      "key": "canon:pride",
+      "label": "Pride",
+      "labelsByLanguage": {
+        "en": "Pride",
+        "fr": "Orgueil",
+        "pt": "Soberba"
+      },
+      "provenance": [
+        {
+          "term": "Pride",
+          "source": "derived",
+          "language": "en"
+        }
+      ]
+    },
+    "canon:faith": {
+      "key": "canon:faith",
+      "label": "Faith",
+      "labelsByLanguage": {
+        "en": "Faith",
+        "fr": "Foi",
+        "pt": "Fé"
+      },
+      "provenance": [
+        {
+          "term": "Faith",
+          "source": "derived",
+          "language": "en"
+        }
+      ]
+    },
+    "canon:forgiveness": {
+      "key": "canon:forgiveness",
+      "label": "Forgiveness",
+      "labelsByLanguage": {
+        "en": "Forgiveness",
+        "fr": "Pardon",
+        "pt": "Perdão"
+      },
+      "provenance": [
+        {
+          "term": "Forgiveness",
+          "source": "derived",
+          "language": "en"
+        }
+      ]
+    },
+    "canon:obedience": {
+      "key": "canon:obedience",
+      "label": "Obedience",
+      "labelsByLanguage": {
+        "en": "Obedience",
+        "fr": "Obéissance",
+        "pt": "Obediência"
+      },
+      "provenance": [
+        {
+          "term": "Obedience",
+          "source": "derived",
+          "language": "en"
+        }
+      ]
+    },
+    "canon:prayer": {
+      "key": "canon:prayer",
+      "label": "Prayer",
+      "labelsByLanguage": {
+        "en": "Prayer",
+        "fr": "Prière",
+        "pt": "Oração"
+      },
+      "provenance": [
+        {
+          "term": "Prayer",
+          "source": "derived",
+          "language": "en"
+        }
+      ]
+    },
+    "canon:perseverance": {
+      "key": "canon:perseverance",
+      "label": "Perseverance",
+      "labelsByLanguage": {
+        "en": "Perseverance",
+        "fr": "Persévérance",
+        "pt": "Perseverança"
+      },
+      "provenance": [
+        {
+          "term": "Perseverance",
+          "source": "derived",
+          "language": "en"
+        }
+      ]
+    },
+    "canon:temptation": {
+      "key": "canon:temptation",
+      "label": "Temptation",
+      "labelsByLanguage": {
+        "en": "Temptation",
+        "fr": "Tentation",
+        "pt": "Tentação"
+      },
+      "provenance": [
+        {
+          "term": "Temptation",
+          "source": "derived",
+          "language": "en"
+        }
+      ]
+    },
+    "canon:wisdom": {
+      "key": "canon:wisdom",
+      "label": "Wisdom",
+      "labelsByLanguage": {
+        "en": "Wisdom",
+        "fr": "Sagesse",
+        "pt": "Sabedoria"
+      },
+      "provenance": [
+        {
+          "term": "Wisdom",
+          "source": "derived",
+          "language": "en"
+        }
+      ]
+    },
+    "canon:hope": {
+      "key": "canon:hope",
+      "label": "Hope",
+      "labelsByLanguage": {
+        "en": "Hope",
+        "fr": "Espérance",
+        "pt": "Esperança"
+      },
+      "provenance": [
+        {
+          "term": "Hope",
+          "source": "derived",
+          "language": "en"
+        }
+      ]
+    },
+    "canon:fear": {
+      "key": "canon:fear",
+      "label": "Fear",
+      "labelsByLanguage": {
+        "en": "Fear",
+        "fr": "Peur",
+        "pt": "Medo"
+      },
+      "provenance": [
+        {
+          "term": "Fear",
+          "source": "derived",
+          "language": "en"
+        }
+      ]
+    },
+    "canon:peace": {
+      "key": "canon:peace",
+      "label": "Peace",
+      "labelsByLanguage": {
+        "en": "Peace",
+        "fr": "Paix",
+        "pt": "Paz"
+      },
+      "provenance": [
+        {
+          "term": "Peace",
+          "source": "derived",
+          "language": "en"
+        }
+      ]
+    },
+    "canon:service": {
+      "key": "canon:service",
+      "label": "Service",
+      "labelsByLanguage": {
+        "en": "Service",
+        "fr": "Service",
+        "pt": "Serviço"
+      },
+      "provenance": [
+        {
+          "term": "Service",
+          "source": "derived",
+          "language": "en"
+        }
+      ]
+    },
+    "canon:justice": {
+      "key": "canon:justice",
+      "label": "Justice",
+      "labelsByLanguage": {
+        "en": "Justice",
+        "fr": "Justice",
+        "pt": "Justiça"
+      },
+      "provenance": [
+        {
+          "term": "Justice",
+          "source": "derived",
+          "language": "en"
+        }
+      ]
+    },
+    "canon:mercy": {
+      "key": "canon:mercy",
+      "label": "Mercy",
+      "labelsByLanguage": {
+        "en": "Mercy",
+        "fr": "Miséricorde",
+        "pt": "Misericórdia"
+      },
+      "provenance": [
+        {
+          "term": "Mercy",
+          "source": "derived",
+          "language": "en"
+        }
+      ]
+    },
+    "canon:holiness": {
+      "key": "canon:holiness",
+      "label": "Holiness",
+      "labelsByLanguage": {
+        "en": "Holiness",
+        "fr": "Sainteté",
+        "pt": "Santidade"
+      },
+      "provenance": [
+        {
+          "term": "Holiness",
+          "source": "derived",
+          "language": "en"
+        }
+      ]
+    },
+    "canon:sanctification": {
+      "key": "canon:sanctification",
+      "label": "Sanctification",
+      "labelsByLanguage": {
+        "en": "Sanctification",
+        "fr": "Sanctification",
+        "pt": "Santificação"
+      },
+      "provenance": [
+        {
+          "term": "Sanctification",
+          "source": "derived",
+          "language": "en"
+        }
+      ]
+    },
+    "canon:justification": {
+      "key": "canon:justification",
+      "label": "Justification",
+      "labelsByLanguage": {
+        "en": "Justification",
+        "fr": "Justification",
+        "pt": "Justificação"
+      },
+      "provenance": [
+        {
+          "term": "Justification",
+          "source": "derived",
+          "language": "en"
+        }
+      ]
+    },
+    "canon:regeneration": {
+      "key": "canon:regeneration",
+      "label": "Regeneration",
+      "labelsByLanguage": {
+        "en": "Regeneration",
+        "fr": "Régénération",
+        "pt": "Regeneração"
+      },
+      "provenance": [
+        {
+          "term": "Regeneration",
+          "source": "derived",
+          "language": "en"
+        }
+      ]
+    },
+    "canon:conversion": {
+      "key": "canon:conversion",
+      "label": "Conversion",
+      "labelsByLanguage": {
+        "en": "Conversion",
+        "fr": "Conversion",
+        "pt": "Conversão"
+      },
+      "provenance": [
+        {
+          "term": "Conversion",
+          "source": "derived",
+          "language": "en"
+        }
+      ]
+    },
+    "canon:calling": {
+      "key": "canon:calling",
+      "label": "Calling",
+      "labelsByLanguage": {
+        "en": "Calling",
+        "fr": "Appel",
+        "pt": "Chamado"
+      },
+      "provenance": [
+        {
+          "term": "Calling",
+          "source": "derived",
+          "language": "en"
+        }
+      ]
+    },
+    "canon:mission": {
+      "key": "canon:mission",
+      "label": "Mission",
+      "labelsByLanguage": {
+        "en": "Mission",
+        "fr": "Mission",
+        "pt": "Missão"
+      },
+      "provenance": [
+        {
+          "term": "Mission",
+          "source": "derived",
+          "language": "en"
+        }
+      ]
+    },
+    "canon:evangelism": {
+      "key": "canon:evangelism",
+      "label": "Evangelism",
+      "labelsByLanguage": {
+        "en": "Evangelism",
+        "fr": "Évangélisation",
+        "pt": "Evangelismo"
+      },
+      "provenance": [
+        {
+          "term": "Evangelism",
+          "source": "derived",
+          "language": "en"
+        }
+      ]
+    },
+    "canon:discipleship": {
+      "key": "canon:discipleship",
+      "label": "Discipleship",
+      "labelsByLanguage": {
+        "en": "Discipleship",
+        "fr": "Discipulat",
+        "pt": "Discipulado"
+      },
+      "provenance": [
+        {
+          "term": "Discipleship",
+          "source": "derived",
+          "language": "en"
+        }
+      ]
+    },
+    "canon:evangelistic preaching": {
+      "key": "canon:evangelistic preaching",
+      "label": "Evangelistic Preaching",
+      "labelsByLanguage": {
+        "en": "Evangelistic Preaching",
+        "fr": "Prédication Évangélique",
+        "pt": "Pregação Evangelística"
+      },
+      "provenance": [
+        {
+          "term": "Evangelistic Preaching",
+          "source": "derived",
+          "language": "en"
+        }
+      ]
+    },
+    "canon:gospel": {
+      "key": "canon:gospel",
+      "label": "Gospel",
+      "labelsByLanguage": {
+        "en": "Gospel",
+        "fr": "Évangile",
+        "pt": "Evangelho"
+      },
+      "provenance": [
+        {
+          "term": "Gospel",
+          "source": "derived",
+          "language": "en"
+        }
+      ]
+    },
+    "canon:salvation": {
+      "key": "canon:salvation",
+      "label": "Salvation",
+      "labelsByLanguage": {
+        "en": "Salvation",
+        "fr": "Salut",
+        "pt": "Salvação"
+      },
+      "provenance": [
+        {
+          "term": "Salvation",
+          "source": "derived",
+          "language": "en"
+        }
+      ]
+    },
+    "canon:the cross": {
+      "key": "canon:the cross",
+      "label": "The Cross",
+      "labelsByLanguage": {
+        "en": "The Cross",
+        "fr": "La Croix",
+        "pt": "A Cruz"
+      },
+      "provenance": [
+        {
+          "term": "The Cross",
+          "source": "derived",
+          "language": "en"
+        }
+      ]
+    },
+    "canon:the atonement": {
+      "key": "canon:the atonement",
+      "label": "The Atonement",
+      "labelsByLanguage": {
+        "en": "The Atonement",
+        "fr": "L'Expiation",
+        "pt": "A Expiação"
+      },
+      "provenance": [
+        {
+          "term": "The Atonement",
+          "source": "derived",
+          "language": "en"
+        }
+      ]
+    },
+    "canon:the resurrection": {
+      "key": "canon:the resurrection",
+      "label": "The Resurrection",
+      "labelsByLanguage": {
+        "en": "The Resurrection",
+        "fr": "La Résurrection",
+        "pt": "A Ressurreição"
+      },
+      "provenance": [
+        {
+          "term": "The Resurrection",
+          "source": "derived",
+          "language": "en"
+        }
+      ]
+    },
+    "canon:the ascension": {
+      "key": "canon:the ascension",
+      "label": "The Ascension",
+      "labelsByLanguage": {
+        "en": "The Ascension",
+        "fr": "L'Ascension",
+        "pt": "A Ascensão"
+      },
+      "provenance": [
+        {
+          "term": "The Ascension",
+          "source": "derived",
+          "language": "en"
+        }
+      ]
+    },
+    "canon:the transfiguration": {
+      "key": "canon:the transfiguration",
+      "label": "The Transfiguration",
+      "labelsByLanguage": {
+        "en": "The Transfiguration",
+        "fr": "La Transfiguration",
+        "pt": "A Transfiguração"
+      },
+      "provenance": [
+        {
+          "term": "The Transfiguration",
+          "source": "derived",
+          "language": "en"
+        }
+      ]
+    },
+    "canon:pentecost": {
+      "key": "canon:pentecost",
+      "label": "Pentecost",
+      "labelsByLanguage": {
+        "en": "Pentecost",
+        "fr": "Pentecôte",
+        "pt": "Pentecostes"
+      },
+      "provenance": [
+        {
+          "term": "Pentecost",
+          "source": "derived",
+          "language": "en"
+        }
+      ]
+    },
+    "canon:the flood": {
+      "key": "canon:the flood",
+      "label": "The Flood",
+      "labelsByLanguage": {
+        "en": "The Flood",
+        "fr": "Le Déluge",
+        "pt": "O Dilúvio"
+      },
+      "provenance": [
+        {
+          "term": "The Flood",
+          "source": "derived",
+          "language": "en"
+        }
+      ]
+    },
+    "canon:the exile": {
+      "key": "canon:the exile",
+      "label": "The Exile",
+      "labelsByLanguage": {
+        "en": "The Exile",
+        "fr": "L'Exil",
+        "pt": "O Exílio"
+      },
+      "provenance": [
+        {
+          "term": "The Exile",
+          "source": "derived",
+          "language": "en"
+        }
+      ]
+    },
+    "canon:the second coming": {
+      "key": "canon:the second coming",
+      "label": "The Second Coming",
+      "labelsByLanguage": {
+        "en": "The Second Coming",
+        "fr": "La Seconde Venue",
+        "pt": "A Segunda Vinda"
+      },
+      "provenance": [
+        {
+          "term": "The Second Coming",
+          "source": "derived",
+          "language": "en"
+        }
+      ]
+    },
+    "canon:the millennium": {
+      "key": "canon:the millennium",
+      "label": "The Millennium",
+      "labelsByLanguage": {
+        "en": "The Millennium",
+        "fr": "Le Millénarium",
+        "pt": "O Milênio"
+      },
+      "provenance": [
+        {
+          "term": "The Millennium",
+          "source": "derived",
+          "language": "en"
+        }
+      ]
+    },
+    "canon:the fall": {
+      "key": "canon:the fall",
+      "label": "The Fall",
+      "labelsByLanguage": {
+        "en": "The Fall",
+        "fr": "La Chute",
+        "pt": "A Queda"
+      },
+      "provenance": [
+        {
+          "term": "The Fall",
+          "source": "derived",
+          "language": "en"
+        }
+      ]
+    },
+    "canon:creation": {
+      "key": "canon:creation",
+      "label": "Creation",
+      "labelsByLanguage": {
+        "en": "Creation",
+        "fr": "Création",
+        "pt": "Criação"
+      },
+      "provenance": [
+        {
+          "term": "Creation",
+          "source": "derived",
+          "language": "en"
+        }
+      ]
+    },
+    "canon:the exodus": {
+      "key": "canon:the exodus",
+      "label": "The Exodus",
+      "labelsByLanguage": {
+        "en": "The Exodus",
+        "fr": "L'Exode",
+        "pt": "O Êxodo"
+      },
+      "provenance": [
+        {
+          "term": "The Exodus",
+          "source": "derived",
+          "language": "en"
+        }
+      ]
+    },
+    "canon:the burning bush": {
+      "key": "canon:the burning bush",
+      "label": "The Burning Bush",
+      "labelsByLanguage": {
+        "en": "The Burning Bush",
+        "fr": "Le Buisson Ardent",
+        "pt": "A Sarça Ardente"
+      },
+      "provenance": [
+        {
+          "term": "The Burning Bush",
+          "source": "derived",
+          "language": "en"
+        }
+      ]
+    },
+    "canon:abraham": {
+      "key": "canon:abraham",
+      "label": "Abraham",
+      "labelsByLanguage": {
+        "en": "Abraham",
+        "fr": "Abraham",
+        "pt": "Abraão"
+      },
+      "provenance": [
+        {
+          "term": "Abraham",
+          "source": "derived",
+          "language": "en"
+        }
+      ]
+    },
+    "canon:moses": {
+      "key": "canon:moses",
+      "label": "Moses",
+      "labelsByLanguage": {
+        "en": "Moses",
+        "fr": "Moïse",
+        "pt": "Moisés"
+      },
+      "provenance": [
+        {
+          "term": "Moses",
+          "source": "derived",
+          "language": "en"
+        }
+      ]
+    },
+    "canon:david": {
+      "key": "canon:david",
+      "label": "David",
+      "labelsByLanguage": {
+        "en": "David",
+        "fr": "David",
+        "pt": "David"
+      },
+      "provenance": [
+        {
+          "term": "David",
+          "source": "derived",
+          "language": "en"
+        }
+      ]
+    },
+    "canon:peter": {
+      "key": "canon:peter",
+      "label": "Peter",
+      "labelsByLanguage": {
+        "en": "Peter",
+        "fr": "Pierre",
+        "pt": "Pedro"
+      },
+      "provenance": [
+        {
+          "term": "Peter",
+          "source": "derived",
+          "language": "en"
+        }
+      ]
+    },
+    "canon:paul": {
+      "key": "canon:paul",
+      "label": "Paul",
+      "labelsByLanguage": {
+        "en": "Paul",
+        "fr": "Paul",
+        "pt": "Paulo"
+      },
+      "provenance": [
+        {
+          "term": "Paul",
+          "source": "derived",
+          "language": "en"
+        }
+      ]
+    },
+    "canon:john": {
+      "key": "canon:john",
+      "label": "John",
+      "labelsByLanguage": {
+        "en": "John",
+        "fr": "Jean",
+        "pt": "João"
+      },
+      "provenance": [
+        {
+          "term": "John",
+          "source": "derived",
+          "language": "en"
+        }
+      ]
+    },
+    "canon:jesus": {
+      "key": "canon:jesus",
+      "label": "Jesus",
+      "labelsByLanguage": {
+        "en": "Jesus",
+        "fr": "Jésus",
+        "pt": "Jesus"
+      },
+      "provenance": [
+        {
+          "term": "Jesus",
+          "source": "derived",
+          "language": "en"
+        }
+      ]
+    },
+    "canon:the holy spirit": {
+      "key": "canon:the holy spirit",
+      "label": "The Holy Spirit",
+      "labelsByLanguage": {
+        "en": "The Holy Spirit",
+        "fr": "Le Saint-Esprit",
+        "pt": "O Espírito Santo"
+      },
+      "provenance": [
+        {
+          "term": "The Holy Spirit",
+          "source": "derived",
+          "language": "en"
+        }
+      ]
+    },
+    "canon:the law": {
+      "key": "canon:the law",
+      "label": "The Law",
+      "labelsByLanguage": {
+        "en": "The Law",
+        "fr": "La Loi",
+        "pt": "A Lei"
+      },
+      "provenance": [
+        {
+          "term": "The Law",
+          "source": "derived",
+          "language": "en"
+        }
+      ]
+    },
+    "canon:the psalms": {
+      "key": "canon:the psalms",
+      "label": "The Psalms",
+      "labelsByLanguage": {
+        "en": "The Psalms",
+        "fr": "Les Psaumes",
+        "pt": "Os Salmos"
+      },
+      "provenance": [
+        {
+          "term": "The Psalms",
+          "source": "derived",
+          "language": "en"
+        }
+      ]
+    },
+    "canon:the prophets": {
+      "key": "canon:the prophets",
+      "label": "The Prophets",
+      "labelsByLanguage": {
+        "en": "The Prophets",
+        "fr": "Les Prophètes",
+        "pt": "Os Profetas"
+      },
+      "provenance": [
+        {
+          "term": "The Prophets",
+          "source": "derived",
+          "language": "en"
+        }
+      ]
+    },
+    "canon:the temple": {
+      "key": "canon:the temple",
+      "label": "The Temple",
+      "labelsByLanguage": {
+        "en": "The Temple",
+        "fr": "Le Temple",
+        "pt": "O Templo"
+      },
+      "provenance": [
+        {
+          "term": "The Temple",
+          "source": "derived",
+          "language": "en"
+        }
+      ]
+    },
+    "seed:humility": {
+      "key": "seed:humility",
+      "label": "Humility",
+      "labelsByLanguage": {
+        "en": "Humility",
+        "fr": "Humilité",
+        "pt": "Humildade"
+      },
+      "provenance": [
+        {
+          "term": "Humility",
+          "source": "derived",
+          "language": "en"
+        }
+      ]
+    },
+    "seed:love": {
+      "key": "seed:love",
+      "label": "Love",
+      "labelsByLanguage": {
+        "en": "Love",
+        "fr": "Amour",
+        "pt": "Amor"
+      },
+      "provenance": [
+        {
+          "term": "Love",
+          "source": "derived",
+          "language": "en"
+        }
+      ]
+    },
+    "seed:grace": {
+      "key": "seed:grace",
+      "label": "Grace",
+      "labelsByLanguage": {
+        "en": "Grace",
+        "fr": "Grâce",
+        "pt": "Graça"
+      },
+      "provenance": [
+        {
+          "term": "Grace",
+          "source": "derived",
+          "language": "en"
+        }
+      ]
+    },
+    "seed:repentance": {
+      "key": "seed:repentance",
+      "label": "Repentance",
+      "labelsByLanguage": {
+        "en": "Repentance",
+        "fr": "Repentance",
+        "pt": "Arrependimento"
+      },
+      "provenance": [
+        {
+          "term": "Repentance",
+          "source": "derived",
+          "language": "en"
+        }
+      ]
+    }
+  },
+  "edges": [
+    {
+      "fromKey": "canon:hope",
+      "toKey": "canon:faith",
+      "relationType": "RELATED",
+      "confidence": 0.8,
+      "source": "derived"
+    },
+    {
+      "fromKey": "canon:faith",
+      "toKey": "seed:love",
+      "relationType": "RELATED",
+      "confidence": 0.8,
+      "source": "derived"
+    },
+    {
+      "fromKey": "seed:grace",
+      "toKey": "canon:faith",
+      "relationType": "RELATED",
+      "confidence": 0.8,
+      "source": "derived"
+    },
+    {
+      "fromKey": "canon:jesus",
+      "toKey": "canon:faith",
+      "relationType": "RELATED",
+      "confidence": 0.8,
+      "source": "derived"
+    },
+    {
+      "fromKey": "seed:grace",
+      "toKey": "seed:love",
+      "relationType": "RELATED",
+      "confidence": 0.8,
+      "source": "derived"
+    },
+    {
+      "fromKey": "canon:forgiveness",
+      "toKey": "seed:love",
+      "relationType": "RELATED",
+      "confidence": 0.8,
+      "source": "derived"
+    },
+    {
+      "fromKey": "canon:service",
+      "toKey": "seed:love",
+      "relationType": "RELATED",
+      "confidence": 0.8,
+      "source": "derived"
+    },
+    {
+      "fromKey": "seed:grace",
+      "toKey": "canon:salvation",
+      "relationType": "RELATED",
+      "confidence": 0.8,
+      "source": "derived"
+    },
+    {
+      "fromKey": "canon:forgiveness",
+      "toKey": "seed:repentance",
+      "relationType": "RELATED",
+      "confidence": 0.8,
+      "source": "derived"
+    },
+    {
+      "fromKey": "canon:obedience",
+      "toKey": "seed:repentance",
+      "relationType": "RELATED",
+      "confidence": 0.8,
+      "source": "derived"
+    },
+    {
+      "fromKey": "canon:obedience",
+      "toKey": "canon:discipleship",
+      "relationType": "RELATED",
+      "confidence": 0.8,
+      "source": "derived"
+    },
+    {
+      "fromKey": "canon:prayer",
+      "toKey": "canon:peace",
+      "relationType": "RELATED",
+      "confidence": 0.8,
+      "source": "derived"
+    },
+    {
+      "fromKey": "canon:prayer",
+      "toKey": "canon:the holy spirit",
+      "relationType": "RELATED",
+      "confidence": 0.8,
+      "source": "derived"
+    },
+    {
+      "fromKey": "canon:wisdom",
+      "toKey": "canon:peace",
+      "relationType": "RELATED",
+      "confidence": 0.8,
+      "source": "derived"
+    },
+    {
+      "fromKey": "canon:wisdom",
+      "toKey": "canon:perseverance",
+      "relationType": "RELATED",
+      "confidence": 0.8,
+      "source": "derived"
+    },
+    {
+      "fromKey": "canon:temptation",
+      "toKey": "canon:perseverance",
+      "relationType": "RELATED",
+      "confidence": 0.8,
+      "source": "derived"
+    },
+    {
+      "fromKey": "canon:hope",
+      "toKey": "canon:salvation",
+      "relationType": "RELATED",
+      "confidence": 0.8,
+      "source": "derived"
+    },
+    {
+      "fromKey": "canon:temptation",
+      "toKey": "canon:fear",
+      "relationType": "RELATED",
+      "confidence": 0.8,
+      "source": "derived"
+    },
+    {
+      "fromKey": "canon:evangelism",
+      "toKey": "canon:gospel",
+      "relationType": "RELATED",
+      "confidence": 0.8,
+      "source": "derived"
+    },
+    {
+      "fromKey": "canon:gospel",
+      "toKey": "canon:salvation",
+      "relationType": "RELATED",
+      "confidence": 0.8,
+      "source": "derived"
+    },
+    {
+      "fromKey": "canon:gospel",
+      "toKey": "canon:discipleship",
+      "relationType": "RELATED",
+      "confidence": 0.8,
+      "source": "derived"
+    },
+    {
+      "fromKey": "canon:evangelism",
+      "toKey": "canon:mission",
+      "relationType": "RELATED",
+      "confidence": 0.8,
+      "source": "derived"
+    },
+    {
+      "fromKey": "canon:discipleship",
+      "toKey": "canon:mission",
+      "relationType": "RELATED",
+      "confidence": 0.8,
+      "source": "derived"
+    },
+    {
+      "fromKey": "canon:justification",
+      "toKey": "seed:grace",
+      "relationType": "RELATED",
+      "confidence": 0.8,
+      "source": "derived"
+    },
+    {
+      "fromKey": "canon:justification",
+      "toKey": "canon:salvation",
+      "relationType": "RELATED",
+      "confidence": 0.8,
+      "source": "derived"
+    },
+    {
+      "fromKey": "canon:regeneration",
+      "toKey": "canon:conversion",
+      "relationType": "RELATED",
+      "confidence": 0.8,
+      "source": "derived"
+    },
+    {
+      "fromKey": "canon:regeneration",
+      "toKey": "canon:the holy spirit",
+      "relationType": "RELATED",
+      "confidence": 0.8,
+      "source": "derived"
+    },
+    {
+      "fromKey": "canon:holiness",
+      "toKey": "canon:sanctification",
+      "relationType": "RELATED",
+      "confidence": 0.8,
+      "source": "derived"
+    },
+    {
+      "fromKey": "canon:sanctification",
+      "toKey": "canon:discipleship",
+      "relationType": "RELATED",
+      "confidence": 0.8,
+      "source": "derived"
+    },
+    {
+      "fromKey": "canon:the law",
+      "toKey": "canon:justice",
+      "relationType": "RELATED",
+      "confidence": 0.8,
+      "source": "derived"
+    },
+    {
+      "fromKey": "canon:forgiveness",
+      "toKey": "canon:mercy",
+      "relationType": "RELATED",
+      "confidence": 0.8,
+      "source": "derived"
+    },
+    {
+      "fromKey": "canon:the atonement",
+      "toKey": "canon:the cross",
+      "relationType": "RELATED",
+      "confidence": 0.8,
+      "source": "derived"
+    },
+    {
+      "fromKey": "canon:the resurrection",
+      "toKey": "canon:the cross",
+      "relationType": "RELATED",
+      "confidence": 0.8,
+      "source": "derived"
+    },
+    {
+      "fromKey": "canon:the second coming",
+      "toKey": "canon:the resurrection",
+      "relationType": "RELATED",
+      "confidence": 0.8,
+      "source": "derived"
+    },
+    {
+      "fromKey": "canon:the ascension",
+      "toKey": "canon:the millennium",
+      "relationType": "RELATED",
+      "confidence": 0.8,
+      "source": "derived"
+    },
+    {
+      "fromKey": "canon:the atonement",
+      "toKey": "canon:salvation",
+      "relationType": "RELATED",
+      "confidence": 0.8,
+      "source": "derived"
+    },
+    {
+      "fromKey": "canon:jesus",
+      "toKey": "canon:the transfiguration",
+      "relationType": "RELATED",
+      "confidence": 0.8,
+      "source": "derived"
+    },
+    {
+      "fromKey": "canon:pentecost",
+      "toKey": "canon:the holy spirit",
+      "relationType": "RELATED",
+      "confidence": 0.8,
+      "source": "derived"
+    },
+    {
+      "fromKey": "canon:pentecost",
+      "toKey": "canon:peter",
+      "relationType": "RELATED",
+      "confidence": 0.8,
+      "source": "derived"
+    },
+    {
+      "fromKey": "canon:the flood",
+      "toKey": "canon:creation",
+      "relationType": "RELATED",
+      "confidence": 0.8,
+      "source": "derived"
+    },
+    {
+      "fromKey": "canon:the exodus",
+      "toKey": "canon:the fall",
+      "relationType": "RELATED",
+      "confidence": 0.8,
+      "source": "derived"
+    },
+    {
+      "fromKey": "canon:moses",
+      "toKey": "canon:the exodus",
+      "relationType": "RELATED",
+      "confidence": 0.8,
+      "source": "derived"
+    },
+    {
+      "fromKey": "canon:moses",
+      "toKey": "canon:the burning bush",
+      "relationType": "RELATED",
+      "confidence": 0.8,
+      "source": "derived"
+    },
+    {
+      "fromKey": "canon:the exile",
+      "toKey": "canon:the burning bush",
+      "relationType": "RELATED",
+      "confidence": 0.8,
+      "source": "derived"
+    },
+    {
+      "fromKey": "canon:the second coming",
+      "toKey": "canon:the exile",
+      "relationType": "RELATED",
+      "confidence": 0.8,
+      "source": "derived"
+    },
+    {
+      "fromKey": "canon:abraham",
+      "toKey": "canon:faith",
+      "relationType": "RELATED",
+      "confidence": 0.8,
+      "source": "derived"
+    },
+    {
+      "fromKey": "canon:abraham",
+      "toKey": "canon:creation",
+      "relationType": "RELATED",
+      "confidence": 0.8,
+      "source": "derived"
+    },
+    {
+      "fromKey": "canon:the law",
+      "toKey": "canon:moses",
+      "relationType": "RELATED",
+      "confidence": 0.8,
+      "source": "derived"
+    },
+    {
+      "fromKey": "canon:jesus",
+      "toKey": "canon:david",
+      "relationType": "RELATED",
+      "confidence": 0.8,
+      "source": "derived"
+    },
+    {
+      "fromKey": "canon:david",
+      "toKey": "canon:the psalms",
+      "relationType": "RELATED",
+      "confidence": 0.8,
+      "source": "derived"
+    },
+    {
+      "fromKey": "canon:jesus",
+      "toKey": "canon:peter",
+      "relationType": "RELATED",
+      "confidence": 0.8,
+      "source": "derived"
+    },
+    {
+      "fromKey": "seed:grace",
+      "toKey": "canon:paul",
+      "relationType": "RELATED",
+      "confidence": 0.8,
+      "source": "derived"
+    },
+    {
+      "fromKey": "canon:gospel",
+      "toKey": "canon:paul",
+      "relationType": "RELATED",
+      "confidence": 0.8,
+      "source": "derived"
+    },
+    {
+      "fromKey": "canon:jesus",
+      "toKey": "canon:john",
+      "relationType": "RELATED",
+      "confidence": 0.8,
+      "source": "derived"
+    },
+    {
+      "fromKey": "canon:john",
+      "toKey": "canon:gospel",
+      "relationType": "RELATED",
+      "confidence": 0.8,
+      "source": "derived"
+    },
+    {
+      "fromKey": "canon:jesus",
+      "toKey": "canon:the holy spirit",
+      "relationType": "RELATED",
+      "confidence": 0.8,
+      "source": "derived"
+    },
+    {
+      "fromKey": "canon:the prophets",
+      "toKey": "canon:the psalms",
+      "relationType": "RELATED",
+      "confidence": 0.8,
+      "source": "derived"
+    },
+    {
+      "fromKey": "canon:the law",
+      "toKey": "canon:the temple",
+      "relationType": "RELATED",
+      "confidence": 0.8,
+      "source": "derived"
+    },
+    {
+      "fromKey": "canon:the second coming",
+      "toKey": "canon:the millennium",
+      "relationType": "RELATED",
+      "confidence": 0.8,
+      "source": "derived"
+    }
+  ],
+  "degree": {
+    "canon:hope": 2,
+    "canon:faith": 5,
+    "seed:love": 4,
+    "seed:grace": 5,
+    "canon:jesus": 6,
+    "canon:forgiveness": 3,
+    "canon:service": 1,
+    "canon:salvation": 5,
+    "seed:repentance": 2,
+    "canon:obedience": 2,
+    "canon:discipleship": 4,
+    "canon:prayer": 2,
+    "canon:peace": 2,
+    "canon:the holy spirit": 4,
+    "canon:wisdom": 2,
+    "canon:perseverance": 2,
+    "canon:temptation": 2,
+    "canon:fear": 1,
+    "canon:evangelism": 2,
+    "canon:gospel": 5,
+    "canon:mission": 2,
+    "canon:justification": 2,
+    "canon:regeneration": 2,
+    "canon:conversion": 1,
+    "canon:holiness": 1,
+    "canon:sanctification": 2,
+    "canon:the law": 3,
+    "canon:justice": 1,
+    "canon:mercy": 1,
+    "canon:the atonement": 2,
+    "canon:the cross": 2,
+    "canon:the resurrection": 2,
+    "canon:the second coming": 3,
+    "canon:the ascension": 1,
+    "canon:the millennium": 2,
+    "canon:the transfiguration": 1,
+    "canon:pentecost": 2,
+    "canon:peter": 2,
+    "canon:the flood": 1,
+    "canon:creation": 2,
+    "canon:the exodus": 2,
+    "canon:the fall": 1,
+    "canon:moses": 3,
+    "canon:the burning bush": 2,
+    "canon:the exile": 2,
+    "canon:abraham": 2,
+    "canon:david": 2,
+    "canon:the psalms": 2,
+    "canon:paul": 2,
+    "canon:john": 2,
+    "canon:the prophets": 1,
+    "canon:the temple": 1,
+    "seed:humility": 0,
+    "canon:pride": 0,
+    "canon:calling": 0,
+    "canon:evangelistic preaching": 0
+  },
+  "stats": {
+    "input_concepts": 56,
+    "input_edges": 59,
+    "equivalence_merges": 0,
+    "folded": 0,
+    "output_concepts": 56,
+    "output_edges": 59,
+    "self_edges_dropped": 0
+  }
+}

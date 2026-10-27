@@ -1,0 +1,1 @@
+create policy "semantic_verse_concepts_public_read" on public.verse_concepts for select to anon, authenticated using (true);

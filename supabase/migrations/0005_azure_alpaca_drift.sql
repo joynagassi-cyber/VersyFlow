@@ -1,0 +1,1 @@
+create index if not exists idx_concepts_canonical_name on public.concepts(canonical_name);

@@ -1,0 +1,19 @@
+{
+  "projectId": "16827544075993232901",
+  "title": "VersyFlow",
+  "screens": [
+    { "route": "/home", "stitchId": "9868065664099571161", "title": "Accueil" },
+    { "route": "/bible/chapter", "stitchId": "15392427578623410913", "title": "Chapitre Bible" },
+    { "route": "/memorization/session", "stitchId": "9122992116301352618", "title": "Session Mémorisation" },
+    { "route": "/memorization/confirm", "stitchId": "6472115853169479039", "title": "Confirmation" },
+    { "route": "/review/queue", "stitchId": "18157642795451772133", "title": "File de Révision" }
+  ],
+  "designSystem": {
+    "name": "Sacred Modern",
+    "primaryColor": "#E91E8C",
+    "backgroundColor": "#fcf9f8",
+    "fontFamily": "System Sans-serif",
+    "roundness": "ROUND_EIGHT",
+    "extracted": "2026-08-11"
+  }
+}

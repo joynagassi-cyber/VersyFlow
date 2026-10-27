@@ -1,0 +1,38 @@
+[
+  {
+    "file": "src/domains/memorization/service.ts",
+    "line": 78,
+    "summary": "getAllReviewLogs() filters out all review log keys because it excludes keys containing colons, but review log keys (e.g., 'versyflow:reviewlog:recordId:timestamp') contain colons, causing the function to always return empty array.",
+    "failure_scenario": "User accesses review history screen - sees empty list even though review logs exist. Analytics and history features become non-functional."
+  },
+  {
+    "file": "src/domains/memorization/service.ts",
+    "line": 49-52,
+    "summary": "saveReviewLog() has a race condition: it reads the existing log array, pushes a new entry, and writes back without atomic operations. Concurrent reviews can cause lost updates.",
+    "failure_scenario": "User quickly completes two reviews in succession - the second read may get the stale array from before the first write completes, causing the first review log to be lost."
+  },
+  {
+    "file": "src/domains/memorization/service.ts",
+    "line": 67-68,
+    "summary": "getReviewLogsForRecord() catches all errors and silently returns an empty array, potentially hiding storage corruption, permission issues, or malformed data without alerting the application.",
+    "failure_scenario": "Storage returns corrupted JSON or throws an error due to disk full - the app silently shows no logs instead of showing an error or recovering, leading to data loss that goes unnoticed."
+  },
+  {
+    "file": "src/hooks/useMemorizationSession.ts",
+    "line": 170-174,
+    "summary": "verifyAnswer() in the hook is a hardcoded stub returning {similarity: 0.5, correctWords: [], missingWords: []} and does not use SessionEngine.verifyAnswer(), breaking user input verification during memorization sessions.",
+    "failure_scenario": "User attempts to verify a memorized verse - the hook returns a dummy result regardless of actual input, causing the session to think verification succeeded with arbitrary 50% similarity, preventing proper progress tracking and FSRS rating calculation."
+  },
+  {
+    "file": "src/domains/memorization/service.ts",
+    "line": 137,
+    "summary": "updateRecordAfterReview() parameter 'newFsrsState' is typed as 'any' instead of the proper FsrsState interface, reducing type safety and potentially allowing incompatible state shapes to be passed.",
+    "failure_scenario": "Accidentally passing an object missing required FSRS fields (like 'stability' or 'repetitions') would cause runtime errors later when the state is used, without compile-time detection."
+  },
+  {
+    "file": "src/domains/memorization/session-engine.ts",
+    "line": 8,
+    "summary": "SessionEngine imports Rating using relative path '../fsrs' while other files use absolute path '@/domains/fsrs/FsrsRating', which could potentially lead to duplicate enum instances if module resolution creates separate copies.",
+    "failure_scenario": "In rare cases, the Rating enum from the relative import might be a different object than the one used in service.ts, causing comparison failures when checking rating values (e.g., Rating.AGAIN !== FsrsRating.AGAIN)."
+  }
+]

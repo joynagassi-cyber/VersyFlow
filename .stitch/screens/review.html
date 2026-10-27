@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VersyFlow — File de Révision</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #fcf9f8; color: #2D2D2D; }
+    .screen { max-width: 430px; margin: 0 auto; min-height: 100vh; background: #fcf9f8; }
+    .header { padding: 20px; background: #fff; border-bottom: 1px solid #FFE4EE; }
+    .header h1 { font-size: 24px; font-weight: 700; }
+    .header p { font-size: 14px; color: #6E6E6E; margin-top: 4px; }
+    .summary { margin: 16px; background: #fff; border-radius: 20px; padding: 20px; display: flex; justify-content: space-around; }
+    .stat { text-align: center; }
+    .stat .value { font-size: 24px; font-weight: 800; color: #E91E8C; }
+    .stat .label { font-size: 12px; color: #6E6E6E; margin-top: 4px; }
+    .verse-list { padding: 16px; }
+    .verse-item { background: #fff; border-radius: 16px; padding: 16px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+    .verse-item .reference { font-size: 16px; font-weight: 700; color: #2D2D2D; margin-bottom: 8px; }
+    .verse-item .text { font-size: 14px; color: #594048; line-height: 22px; margin-bottom: 12px; }
+    .verse-item .meta { display: flex; justify-content: space-between; align-items: center; }
+    .verse-item .stability { font-size: 12px; color: #999; }
+    .verse-item .due { font-size: 12px; color: #FF9800; font-weight: 600; }
+    .verse-item.passage { border-left: 4px solid #E91E8C; }
+    .verse-item.passage .badge { display: inline-flex; align-items: center; gap: 4px; background: #FFF0F6; padding: 4px 8px; border-radius: 12px; font-size: 11px; color: #E91E8C; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <div class="header">
+      <h1>Révisions</h1>
+      <p>3 versets en attente</p>
+    </div>
+    
+    <div class="summary">
+      <div class="stat">
+        <div class="value">3</div>
+        <div class="label">À réviser</div>
+      </div>
+      <div class="stat">
+        <div class="value">1</div>
+        <div class="label">En retard</div>
+      </div>
+      <div class="stat">
+        <div class="value">0.3</div>
+        <div class="label">Stabilité moy.</div>
+      </div>
+    </div>
+    
+    <div class="verse-list">
+      <div class="verse-item passage">
+        <div class="reference">
+          Jean 3:16-18
+          <span class="badge">📖 Passage</span>
+        </div>
+        <div class="text">Car Dieu a tant aimé le monde qu'il a donné son Fils unique...</div>
+        <div class="meta">
+          <span class="stability">Stabilité: 0.3j</span>
+          <span class="due">⏰ En retard de 2j</span>
+        </div>
+      </div>
+      
+      <div class="verse-item">
+        <div class="reference">Psaume 23:1</div>
+        <div class="text">L'Éternel est mon berger: je ne manquerai de rien.</div>
+        <div class="meta">
+          <span class="stability">Stabilité: 5.2j</span>
+          <span class="due">📅 Aujourd'hui</span>
+        </div>
+      </div>
+      
+      <div class="verse-item">
+        <div class="reference">Genèse 1:1</div>
+        <div class="text">Au commencement Dieu créa les cieux et la terre.</div>
+        <div class="meta">
+          <span class="stability">Stabilité: 3.1j</span>
+          <span class="due">📅 Aujourd'hui</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

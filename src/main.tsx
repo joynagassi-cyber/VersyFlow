@@ -1,0 +1,431 @@
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+import { IonApp } from '@ionic/react';
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate,
+  Outlet,
+  useNavigate,
+  useLocation,
+} from 'react-router-dom';
+import { I18nextProvider } from 'react-i18next';
+import { Suspense, lazy, useEffect } from 'react';
+import '@/styles/globals.css';
+
+// Serif font bundle for bible text (referenced by `--vf-font-bible` and
+// `tokens.typography.bible = 'Source Serif 4'`). Self-hosted — no network
+// fetch, works offline. Other @fontsource packages are available for
+// theme font choices (playfair-display, lora, merriweather, etc.) but
+// are not imported by default — add them on demand when a theme
+// references a specific one.
+import '@fontsource/source-serif-4/400.css';
+import '@fontsource/source-serif-4/400-italic.css';
+import '@fontsource/source-serif-4/600.css';
+import '@fontsource/source-serif-4/700.css';
+
+// Lazy loaded route pages
+const TabLayout = lazy(() => import('../app/(tabs)/_layout'));
+const HomePage = lazy(() => import('../app/(tabs)/index'));
+const ExplorePage = lazy(() => import('../app/(tabs)/explore'));
+const ProgressPage = lazy(() => import('../app/(tabs)/progress'));
+const SettingsPage = lazy(() => import('../app/(tabs)/settings'));
+const AuthLogin = lazy(() => import('../app/(tabs)/auth/login'));
+const AuthSignup = lazy(() => import('../app/(tabs)/auth/signup'));
+const AuthIndex = lazy(() => import('../app/(tabs)/auth'));
+const SplashScreen = lazy(() => import('../app/splash'));
+const NotFound = lazy(() => import('../app/+not-found'));
+
+// Onboarding
+const OnboardingLayout = lazy(() => import('../app/onboarding/_layout'));
+const OnboardingWelcome = lazy(() => import('../app/onboarding/welcome'));
+const OnboardingLanguage = lazy(() => import('../app/onboarding/language-select'));
+const OnboardingTranslation = lazy(() => import('../app/onboarding/translation-select'));
+const OnboardingFsrs = lazy(() => import('../app/onboarding/fsrs-introduction'));
+const OnboardingSessionConfig = lazy(() => import('../app/onboarding/session-config'));
+const OnboardingReminderConfig = lazy(() => import('../app/onboarding/reminder-config'));
+
+// Bible
+const BibleExplorer = lazy(() => import('../app/bible/explorer'));
+const BibleBook = lazy(() => import('../app/bible/book'));
+const BibleChapter = lazy(() => import('../app/bible/chapter'));
+
+// Memorization
+const MemorizationSession = lazy(() => import('../app/memorization/session'));
+const MemorizationFlashcard = lazy(() => import('../app/memorization/flashcard'));
+const MemorizationConfirm = lazy(() => import('../app/memorization/confirm'));
+const MemorizationWorkspace = lazy(() => import('../app/memorization/workspace'));
+
+// Review
+const ReviewQueue = lazy(() => import('../app/review/queue'));
+const ReviewSession = lazy(() => import('../app/review/session'));
+const ReviewSummary = lazy(() => import('../app/review/summary'));
+const ReviewCalendar = lazy(() => import('../app/review/calendar'));
+const ReviewHistory = lazy(() => import('../app/review/History'));
+
+// Family
+const FamilyHome = lazy(() => import('../app/family/home'));
+const FamilyMembers = lazy(() => import('../app/family/members'));
+const FamilyInvite = lazy(() => import('../app/family/invite'));
+const FamilyJoin = lazy(() => import('../app/family/join'));
+
+// Settings sub-pages
+const SettingsLanguages = lazy(() => import('../app/settings/languages'));
+const SettingsAppearance = lazy(() => import('../app/settings/appearance'));
+const SettingsBackup = lazy(() => import('../app/settings/backup'));
+const SettingsAbout = lazy(() => import('../app/settings/about'));
+const SettingsPrivacy = lazy(() => import('../app/settings/privacy'));
+const SettingsSession = lazy(() => import('../app/settings/session'));
+const SettingsReminders = lazy(() => import('../app/settings/reminders'));
+const SettingsIndex = lazy(() => import('../app/settings/index'));
+const SettingsAvailableTranslations = lazy(() => import('../app/settings/available-translations'));
+const SettingsThemePicker = lazy(() => import('../app/settings/theme-picker'));
+const SettingsNavigation = lazy(() => import('../app/settings/navigation'));
+const SettingsData = lazy(() => import('../app/settings/data'));
+
+// Misc deep pages
+const SearchPage = lazy(() => import('../app/search/index'));
+const NotificationsPage = lazy(() => import('../app/notifications'));
+const MasteryPage = lazy(() => import('../app/mastery/index'));
+const AchievementsPage = lazy(() => import('../app/achievements/index'));
+const AnalyticsDashboard = lazy(() => import('../app/analytics/dashboard'));
+const ProfileIndex = lazy(() => import('../app/profile/index'));
+const ProfileCreate = lazy(() => import('../app/profile/create'));
+const ProfileSelect = lazy(() => import('../app/profile/select'));
+const CollectionsPage = lazy(() => import('../app/collections/index'));
+const ComparisonTranslation = lazy(() => import('../app/comparison/translation'));
+const ComparisonResult = lazy(() => import('../app/comparison/result'));
+const MemoryStart = lazy(() => import('../app/memory/start'));
+const MemoryFlashcard = lazy(() => import('../app/memory/flashcard'));
+const MemoryRecallWriting = lazy(() => import('../app/memory/recall-writing'));
+// Semantic tree views (LOCAL_ONLY semantic store, tree UI — P0.2)
+const SemanticIndex = lazy(() => import('../app/semantic/index'));
+const SemanticConcept = lazy(() => import('../app/semantic/concept'));
+const SemanticVerse = lazy(() => import('../app/semantic/verse'));
+const SemanticCommunity = lazy(() => import('../app/semantic/community'));
+
+import i18next, { initI18next } from '@/i18n/i18next-init';
+import { initializeSettingsStore, useSettingsStore } from '@/store/settings-store';
+import { initializeAppearanceStore, useAppearanceStore } from '@/store/appearance-store';
+import { initializeUiStore } from '@/store/ui-store';
+import { ThemeManager } from '@/components/ThemeManager';
+import ErrorBoundary from '@/components/ErrorBoundary';
+import { ToastProvider } from '@/components/ui/toast';
+import { useAuthStore } from '@/store/auth-store';
+import { useFamilySyncBridge } from '@/hooks/useFamilySyncBridge';
+import { useProfileSyncBridge } from '@/hooks/useProfileSyncBridge';
+import { attachSyncCompletionHandlers } from '@/services/sync-completion-service';
+import { wireAppTelemetry } from '@/services/app-telemetry-wiring';
+import { wireStreakCoordinator } from '@/services/streak-wiring';
+import { notificationService } from '@/services/notification-service';
+import type { MemorizationRecord } from '@/domains/memorization/entities';
+import { isRTL, DEFAULT_LANGUAGE, normalizeLocaleCode } from '@/domains/i18n/config';
+
+// Initialize i18n + boot-time one-shot wiring (PowerSync lifecycle,
+// telemetry listener + periodic flush, streak event-driven writer).
+//
+// The three `initialize*Store()` calls below hydrate the settings,
+// appearance and ui Zustand stores asynchronously (MmkvStorage →
+// localStorage reads) BEFORE React's first render. This is required
+// for `RootRedirect` to read the persisted `versyflow:onboarding:completed`
+// flag before the first route evaluation: otherwise the router always
+// lands on `/onboarding/welcome` on a hard reload, because the Zustand
+// store still holds its default `onboardingCompleted: false` at the
+// moment `Navigate` fires, and the router does not re-evaluate the `/`
+// redirect after it has pushed to a sub-route. The reads are
+// localStorage-backed (MmkvStorage), so they resolve in <1 ms on the
+// deployed SPA host and add no perceptible startup cost.
+const bootStoresPromise = (async () => {
+  await initI18next();
+  const activeLanguage = normalizeLocaleCode(i18next.language ?? DEFAULT_LANGUAGE);
+  document.documentElement.dir = isRTL(activeLanguage) ? 'rtl' : 'ltr';
+  await Promise.all([
+    initializeSettingsStore(),
+    initializeAppearanceStore(),
+    initializeUiStore(),
+  ]);
+  // Sync-side wiring runs after the stores are hydrated so the
+  // `initializeSettingsStore()` side-effects above (language sync,
+  // persisted flag restore) have already landed in the Zustand state.
+  attachSyncCompletionHandlers();
+  wireAppTelemetry();
+  wireStreakCoordinator();
+  wireSessionRefresh();
+  void scheduleBootReminders();
+})();
+
+/** Boot-time reminder scheduling with the notification body translated in
+ *  the active UI language and the reminder config read from the store —
+ *  the service itself stays dependency-injected (no store/i18next access). */
+async function scheduleBootReminders() {
+  const {
+    reminderEnabled,
+    reminderFrequency,
+    reminderTime,
+  } = useAppearanceStore.getState();
+  await notificationService.scheduleDailyReminders(
+    { enabled: reminderEnabled, frequency: reminderFrequency, time: reminderTime },
+    i18next.t('reminders.notificationBody', 'Temps de révision !'),
+  );
+}
+
+/** SPA equivalent of the Supabase "session refresh" middleware: re-checks and
+ *  refreshes the auth session periodically so long-lived webview/native
+ *  sessions don't expire unnoticed. No-op when signed out. */
+function wireSessionRefresh() {
+  const REFRESH_EVERY_MS = 10 * 60 * 1000;
+  setInterval(() => {
+    const { isAuthenticated, refreshSession } = useAuthStore.getState();
+    if (isAuthenticated) void refreshSession();
+  }, REFRESH_EVERY_MS);
+}
+
+/** Guard: redirects to onboarding if it hasn't been completed yet */
+function RequireOnboarded() {
+  const onboardingCompleted = useSettingsStore(
+    (s) => s.onboardingCompleted,
+  );
+  if (!onboardingCompleted) {
+    return <Navigate to="/onboarding/welcome" replace />;
+  }
+  return <Outlet />;
+}
+
+/** Root redirect: onboarding or home depending on completion state */
+function RootRedirect() {
+  const onboardingCompleted = useSettingsStore(
+    (s) => s.onboardingCompleted,
+  );
+  return <Navigate to={onboardingCompleted ? '/tabs/home' : '/onboarding/welcome'} replace />;
+}
+
+/** Applies RTL/LTR document direction whenever the i18n language changes */
+function DirSync() {
+  useEffect(() => {
+    const apply = () => {
+      const lng = normalizeLocaleCode(i18next.language ?? DEFAULT_LANGUAGE);
+      document.documentElement.dir = isRTL(lng) ? 'rtl' : 'ltr';
+      document.documentElement.lang = lng;
+    };
+    apply();
+    i18next.on('languageChanged', apply);
+    return () => {
+      i18next.off('languageChanged', apply);
+    };
+  }, []);
+  return null;
+}
+
+/** Mounts the PowerSync → store bridges for family & profile data.
+ *  Activated whenever the user is authenticated; the bridges are
+ *  offline-safe and re-sync on the `initialized` event. */
+function SyncBridges() {
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  useFamilySyncBridge(isAuthenticated);
+  useProfileSyncBridge(isAuthenticated);
+  return null;
+}
+
+/** Auth gate with navigation handlers */
+function AuthGateRoute() {
+  const navigate = useNavigate();
+  return (
+    <AuthIndex onSkip={() => navigate('/tabs/home')} />
+  );
+}
+
+/** Splash that continues to the root redirect on finish */
+function SplashRoute() {
+  const navigate = useNavigate();
+  return <SplashScreen onFinish={() => navigate('/', { replace: true })} />;
+}
+
+/** Comparison result — needs session data via router state */
+function ComparisonResultRoute() {
+  const location = useLocation();
+  const state = location.state as {
+    record?: MemorizationRecord;
+    userAnswer?: string;
+  } | null;
+  if (!state?.record || !state?.userAnswer) {
+    return <Navigate to="/comparison/translation" replace />;
+  }
+  return <ComparisonResult record={state.record} userAnswer={state.userAnswer} />;
+}
+
+/** Memory start — needs verse data via router state */
+function MemoryStartRoute() {
+  const location = useLocation();
+  const state = location.state as {
+    verseData?: {
+      reference: string;
+      text: string;
+      bookId: string;
+      chapter: number;
+      verse: number;
+    };
+  } | null;
+  if (!state?.verseData) {
+    return <Navigate to="/memorization/session" replace />;
+  }
+  return <MemoryStart verseData={state.verseData} />;
+}
+
+function App() {
+  return (
+    <StrictMode>
+      <DirSync />
+      <ThemeManager />
+      <SyncBridges />
+      <BrowserRouter>
+        <IonApp>
+          <ErrorBoundary>
+            <Routes>
+            <Route path="/" element={<RootRedirect />} />
+
+            {/* Onboarding (public) */}
+            <Route path="/onboarding" element={<OnboardingLayout />}>
+              <Route index element={<Navigate to="/onboarding/welcome" replace />} />
+              <Route path="welcome" element={<OnboardingWelcome />} />
+              <Route path="language-select" element={<OnboardingLanguage />} />
+              <Route path="translation-select" element={<OnboardingTranslation />} />
+              <Route path="session-config" element={<OnboardingSessionConfig />} />
+              <Route path="reminder-config" element={<OnboardingReminderConfig />} />
+              <Route path="fsrs-introduction" element={<OnboardingFsrs />} />
+            </Route>
+
+            {/* Main tabs (guarded by onboarding) */}
+            <Route element={<RequireOnboarded />}>
+              <Route path="/tabs" element={<TabLayout />}>
+                <Route index element={<Navigate to="/tabs/home" replace />} />
+                <Route path="home" element={<HomePage />} />
+                <Route path="explore" element={<ExplorePage />} />
+                <Route path="progress" element={<ProgressPage />} />
+                <Route path="settings" element={<SettingsPage />} />
+              </Route>
+
+              {/* Auth */}
+              <Route path="/auth" element={<AuthGateRoute />} />
+              <Route path="/auth/login" element={<AuthLogin />} />
+              <Route path="/auth/signup" element={<AuthSignup />} />
+
+              {/* Bible — the explorer is URL-driven: each view is a route */}
+              <Route path="/bible/explorer" element={<BibleExplorer />} />
+              <Route path="/bible/explorer/:bookId" element={<BibleExplorer />} />
+              <Route path="/bible/explorer/:bookId/:chapter" element={<BibleExplorer />} />
+              <Route path="/bible/book/:bookId" element={<BibleBook />} />
+              <Route path="/bible/book" element={<Navigate to="/bible/explorer" replace />} />
+              <Route path="/bible/chapter" element={<Navigate to="/bible/explorer" replace />} />
+              <Route path="/bible/chapter/:bookId/:chapterNumber" element={<BibleChapter />} />
+
+              {/* Memorization */}
+              <Route path="/memorization/session" element={<MemorizationSession />} />
+              <Route path="/memorization/flashcard" element={<MemorizationFlashcard />} />
+              <Route path="/memorization/confirm" element={<MemorizationConfirm />} />
+              <Route path="/memorization/workspace" element={<MemorizationWorkspace />} />
+
+              {/* Review */}
+              <Route path="/review/queue" element={<ReviewQueue />} />
+              <Route path="/review/session" element={<ReviewSession />} />
+              <Route path="/review/summary" element={<ReviewSummary />} />
+              <Route path="/review/calendar" element={<ReviewCalendar />} />
+              <Route path="/review/history" element={<ReviewHistory />} />
+
+              {/* Family */}
+              <Route path="/family/home" element={<FamilyHome />} />
+              <Route path="/family/members" element={<FamilyMembers />} />
+              <Route path="/family/invite" element={<FamilyInvite />} />
+              <Route path="/family/join" element={<FamilyJoin />} />
+
+              {/* Settings sub-pages */}
+              <Route path="/settings" element={<SettingsIndex />} />
+              <Route path="/settings/languages" element={<SettingsLanguages />} />
+              <Route path="/settings/appearance" element={<SettingsAppearance />} />
+              <Route path="/settings/backup" element={<SettingsBackup />} />
+              <Route path="/settings/about" element={<SettingsAbout />} />
+              <Route path="/settings/privacy" element={<SettingsPrivacy />} />
+              <Route path="/settings/session" element={<SettingsSession />} />
+              <Route path="/settings/reminders" element={<SettingsReminders />} />
+              <Route path="/settings/available-translations" element={<SettingsAvailableTranslations />} />
+              <Route path="/settings/theme-picker" element={<SettingsThemePicker />} />
+              <Route path="/settings/navigation" element={<SettingsNavigation />} />
+              <Route path="/settings/data" element={<SettingsData />} />
+
+              {/* Misc */}
+              <Route path="/search" element={<SearchPage />} />
+              <Route path="/notifications" element={<NotificationsPage />} />
+              <Route path="/mastery" element={<MasteryPage />} />
+              <Route path="/achievements" element={<AchievementsPage />} />
+              <Route path="/analytics/dashboard" element={<AnalyticsDashboard />} />
+              <Route path="/profile" element={<ProfileIndex />} />
+              <Route path="/profile/create" element={<ProfileCreate />} />
+              <Route path="/profile/select" element={<ProfileSelect />} />
+              <Route path="/collections" element={<CollectionsPage />} />
+              <Route path="/comparison/translation" element={<ComparisonTranslation />} />
+              <Route path="/comparison/result" element={<ComparisonResultRoute />} />
+              <Route path="/memory/start" element={<MemoryStartRoute />} />
+              <Route path="/memory/flashcard" element={<MemoryFlashcard />} />
+              <Route path="/memory/recall-writing" element={<MemoryRecallWriting />} />
+
+              {/* Semantic tree views */}
+              <Route path="/semantic" element={<SemanticIndex />} />
+              <Route path="/semantic/concept" element={<SemanticConcept />} />
+              <Route path="/semantic/verse" element={<SemanticVerse />} />
+              <Route path="/semantic/community" element={<SemanticCommunity />} />
+            </Route>
+
+            {/* Public routes */}
+            <Route path="/splash" element={<SplashRoute />} />
+            <Route path="*" element={<NotFound />} />
+            </Routes>
+          </ErrorBoundary>
+          <ToastProvider />
+        </IonApp>
+      </BrowserRouter>
+    </StrictMode>
+  );
+}
+
+const rootElement = document.getElementById('root');
+if (!rootElement) throw new Error('Root element not found');
+const root = createRoot(rootElement);
+
+/**
+ * Gate React's first render on the boot-time store hydration
+ * (`initializeSettingsStore` / `initializeAppearanceStore` /
+ * `initializeUiStore`, awaited inside `bootStoresPromise`).
+ *
+ * Without this gate the router evaluates `/` before the persisted
+ * `versyflow:onboarding:completed` flag has reached the Zustand store,
+ * so `RootRedirect` always fires `Navigate` to `/onboarding/welcome`
+ * on a hard reload — and the router never re-evaluates the `/` route
+ * afterwards, so the screen is stuck on onboarding even when the user
+ * has already completed it. i18next resources also finish loading in
+ * the same async block, so deferring the render there guarantees both
+ * the store and the translations are ready before the first paint.
+ */
+bootStoresPromise.then(
+  () => {
+    root.render(
+      <I18nextProvider i18n={i18next}>
+        <Suspense fallback={null}>
+          <App />
+        </Suspense>
+      </I18nextProvider>,
+    );
+  },
+  (error: unknown) => {
+    console.error('Failed to initialise i18n/stores at boot:', error);
+    // Still render the app — a i18n failure must not leave the user
+    // on a blank screen; components fall back to their English
+    // literals when i18next is not ready.
+    root.render(
+      <I18nextProvider i18n={i18next}>
+        <Suspense fallback={null}>
+          <App />
+        </Suspense>
+      </I18nextProvider>,
+    );
+  },
+);

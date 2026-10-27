@@ -1,0 +1,229 @@
+<!DOCTYPE html><html lang="fr"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+<title>R17 — Bible — chapitres</title>
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'app-bg': '#fcfbf9',
+            'app-pink': '#d81b60',
+            'app-pink-soft': '#fdf2f6',
+            'tile-bg': '#f5f3f4',
+            'seg-bg': '#f3eeed',
+            'text-primary': '#191919',
+            'text-secondary': '#6e6967',
+          },
+          fontFamily: {
+            serif: ['Georgia', 'Cambria', '"Times New Roman"', 'Times', 'serif'],
+            sans: ['-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+<!-- Custom Styles for precise alignments & typography -->
+<style data-purpose="custom-typography">
+    .font-serif-title {
+      font-family: Georgia, 'Times New Roman', serif;
+    }
+    /* Smooth transitions and mobile tap highlight removal */
+    * {
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+  </style>
+</head>
+<body class="bg-[#f0ece9] flex justify-center min-h-screen text-[#1a1a1a] font-sans antialiased">
+<!-- BEGIN: Mobile Container (iOS 390x844 ratio) -->
+<div class="relative w-full max-w-[410px] min-h-screen bg-[#fcfbfa] flex flex-col justify-between shadow-2xl overflow-hidden pb-20">
+<!-- BEGIN: Top Section (Status Bar & Header) -->
+<header class="w-full pt-3 px-6 pb-2" data-purpose="app-header">
+<!-- iOS Status Bar -->
+<div class="flex justify-between items-center text-sm font-semibold tracking-tight text-black pt-1 pb-3" data-purpose="status-bar">
+<span class="">9:41</span>
+<div class="flex items-center space-x-1.5">
+<span class="text-xs font-bold tracking-tight">5G</span>
+<!-- Signal bars -->
+<div class="flex items-end space-x-0.5 h-3">
+<span class="w-1 h-1.5 bg-black rounded-2xs"></span>
+<span class="w-1 h-2 bg-black rounded-2xs"></span>
+<span class="w-1 h-2.5 bg-black rounded-2xs"></span>
+<span class="w-1 h-3 bg-black rounded-2xs"></span>
+</div>
+</div>
+</div>
+<!-- Navigation Bar (Back, Title, Search) -->
+<div class="flex items-center justify-between mt-2" data-purpose="nav-bar">
+<!-- Back Button -->
+<button aria-label="Retour" class="w-11 h-11 rounded-full bg-white shadow-[0_2px_8px_rgba(0,0,0,0.06)] border border-gray-100/70 flex items-center justify-center text-gray-800 active:scale-95 transition-transform" type="button"><svg class="w-5 h-5 stroke-[2]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round"></path></svg></button>
+<!-- Centered Title -->
+<div class="text-center" data-purpose="book-title">
+<h1 class="font-serif-title text-[23px] font-bold tracking-tight text-gray-900 leading-tight">Psaumes</h1>
+<p class="text-xs text-stone-500 font-normal tracking-wide mt-0.5">150 chapitres · LSG</p>
+</div>
+<!-- Search Button -->
+<button aria-label="Recherche" class="w-11 h-11 rounded-full bg-white shadow-[0_2px_8px_rgba(0,0,0,0.06)] border border-gray-100/70 flex items-center justify-center text-gray-800 active:scale-95 transition-transform" type="button">
+<svg class="w-5 h-5 stroke-[2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+<path d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 103 10.5a7.5 7.5 0 0013.65 6.15z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+</div>
+<!-- Segmented Control Tabs -->
+<div class="mt-5 p-1 bg-[#f1edec] rounded-2xl flex items-center shadow-inner" data-purpose="tabs">
+<button class="flex-1 py-2 text-center text-sm font-semibold text-gray-900 bg-white rounded-xl shadow-[0_2px_6px_rgba(0,0,0,0.06)] transition-all" type="button">
+          Chapitres
+        </button>
+<button class="flex-1 py-2 text-center text-sm font-medium text-stone-600 hover:text-stone-900 transition-colors" type="button">
+          Plan de lecture
+        </button>
+</div>
+</header>
+<!-- END: Top Section -->
+<!-- BEGIN: Main Chapters Grid Content -->
+<main class="flex-1 px-5 pt-3 pb-4" data-purpose="chapters-section">
+<!-- 5-column Chapter Grid -->
+<div class="grid grid-cols-5 gap-3.5" data-purpose="chapter-grid">
+<!-- Row 1: 1-5 -->
+<!-- Chapter 1 (with memorization indicator dot) -->
+<button class="aspect-square bg-[#f4f2f2] rounded-2xl flex flex-col items-center justify-center relative active:opacity-75 transition-opacity" type="button">
+<span class="font-serif text-xl font-normal text-stone-900 mt-1">1</span>
+<span class="w-1.5 h-1.5 rounded-full bg-app-pink mt-0.5"></span>
+</button>
+<!-- Chapter 2 -->
+<button class="aspect-square bg-[#f4f2f2] rounded-2xl flex items-center justify-center active:opacity-75 transition-opacity" type="button">
+<span class="font-serif text-xl font-normal text-stone-900">2</span>
+</button>
+<!-- Chapter 3 -->
+<button class="aspect-square bg-[#f4f2f2] rounded-2xl flex items-center justify-center active:opacity-75 transition-opacity" type="button">
+<span class="font-serif text-xl font-normal text-stone-900">3</span>
+</button>
+<!-- Chapter 4 -->
+<button class="aspect-square bg-[#f4f2f2] rounded-2xl flex items-center justify-center active:opacity-75 transition-opacity" type="button">
+<span class="font-serif text-xl font-normal text-stone-900">4</span>
+</button>
+<!-- Chapter 5 -->
+<button class="aspect-square bg-[#f4f2f2] rounded-2xl flex items-center justify-center active:opacity-75 transition-opacity" type="button">
+<span class="font-serif text-xl font-normal text-stone-900">5</span>
+</button>
+<!-- Row 2: 6-10 -->
+<button class="aspect-square bg-[#f4f2f2] rounded-2xl flex items-center justify-center active:opacity-75 transition-opacity" type="button">
+<span class="font-serif text-xl font-normal text-stone-900">6</span>
+</button>
+<button class="aspect-square bg-[#f4f2f2] rounded-2xl flex items-center justify-center active:opacity-75 transition-opacity" type="button">
+<span class="font-serif text-xl font-normal text-stone-900">7</span>
+</button>
+<button class="aspect-square bg-[#f4f2f2] rounded-2xl flex items-center justify-center active:opacity-75 transition-opacity" type="button">
+<span class="font-serif text-xl font-normal text-stone-900">8</span>
+</button>
+<button class="aspect-square bg-[#f4f2f2] rounded-2xl flex items-center justify-center active:opacity-75 transition-opacity" type="button">
+<span class="font-serif text-xl font-normal text-stone-900">9</span>
+</button>
+<button class="aspect-square bg-[#f4f2f2] rounded-2xl flex items-center justify-center active:opacity-75 transition-opacity" type="button">
+<span class="font-serif text-xl font-normal text-stone-900">10</span>
+</button>
+<!-- Row 3: 11-15 -->
+<button class="aspect-square bg-[#f4f2f2] rounded-2xl flex items-center justify-center active:opacity-75 transition-opacity" type="button">
+<span class="font-serif text-xl font-normal text-stone-900">11</span>
+</button>
+<button class="aspect-square bg-[#f4f2f2] rounded-2xl flex items-center justify-center active:opacity-75 transition-opacity" type="button">
+<span class="font-serif text-xl font-normal text-stone-900">12</span>
+</button>
+<button class="aspect-square bg-[#f4f2f2] rounded-2xl flex items-center justify-center active:opacity-75 transition-opacity" type="button">
+<span class="font-serif text-xl font-normal text-stone-900">13</span>
+</button>
+<button class="aspect-square bg-[#f4f2f2] rounded-2xl flex items-center justify-center active:opacity-75 transition-opacity" type="button">
+<span class="font-serif text-xl font-normal text-stone-900">14</span>
+</button>
+<button class="aspect-square bg-[#f4f2f2] rounded-2xl flex items-center justify-center active:opacity-75 transition-opacity" type="button">
+<span class="font-serif text-xl font-normal text-stone-900">15</span>
+</button>
+<!-- Row 4: 16-20 -->
+<button class="aspect-square bg-[#f4f2f2] rounded-2xl flex items-center justify-center active:opacity-75 transition-opacity" type="button">
+<span class="font-serif text-xl font-normal text-stone-900">16</span>
+</button>
+<button class="aspect-square bg-[#f4f2f2] rounded-2xl flex items-center justify-center active:opacity-75 transition-opacity" type="button">
+<span class="font-serif text-xl font-normal text-stone-900">17</span>
+</button>
+<button class="aspect-square bg-[#f4f2f2] rounded-2xl flex items-center justify-center active:opacity-75 transition-opacity" type="button">
+<span class="font-serif text-xl font-normal text-stone-900">18</span>
+</button>
+<button class="aspect-square bg-[#f4f2f2] rounded-2xl flex items-center justify-center active:opacity-75 transition-opacity" type="button">
+<span class="font-serif text-xl font-normal text-stone-900">19</span>
+</button>
+<button class="aspect-square bg-[#f4f2f2] rounded-2xl flex items-center justify-center active:opacity-75 transition-opacity" type="button">
+<span class="font-serif text-xl font-normal text-stone-900">20</span>
+</button>
+<!-- Row 5: 21-25 -->
+<button class="aspect-square bg-[#f4f2f2] rounded-2xl flex items-center justify-center active:opacity-75 transition-opacity" type="button">
+<span class="font-serif text-xl font-normal text-stone-900">21</span>
+</button>
+<button class="aspect-square bg-[#f4f2f2] rounded-2xl flex items-center justify-center active:opacity-75 transition-opacity" type="button">
+<span class="font-serif text-xl font-normal text-stone-900">22</span>
+</button>
+<!-- Chapter 23 (Active Highlighted) -->
+<button class="aspect-square bg-app-pink rounded-2xl flex items-center justify-center shadow-md shadow-pink-500/20 active:scale-95 transition-transform" type="button">
+<span class="font-serif text-xl font-bold text-white tracking-wide">23</span>
+</button>
+<button class="aspect-square bg-[#f4f2f2] rounded-2xl flex items-center justify-center active:opacity-75 transition-opacity" type="button">
+<span class="font-serif text-xl font-normal text-stone-900">24</span>
+</button>
+<button class="aspect-square bg-[#f4f2f2] rounded-2xl flex items-center justify-center active:opacity-75 transition-opacity" type="button">
+<span class="font-serif text-xl font-normal text-stone-900">25</span>
+</button>
+<!-- Row 6: 26-30 -->
+<button class="aspect-square bg-[#f4f2f2] rounded-2xl flex items-center justify-center active:opacity-75 transition-opacity" type="button">
+<span class="font-serif text-xl font-normal text-stone-900">26</span>
+</button>
+<button class="aspect-square bg-[#f4f2f2] rounded-2xl flex items-center justify-center active:opacity-75 transition-opacity" type="button">
+<span class="font-serif text-xl font-normal text-stone-900">27</span>
+</button>
+<button class="aspect-square bg-[#f4f2f2] rounded-2xl flex items-center justify-center active:opacity-75 transition-opacity" type="button">
+<span class="font-serif text-xl font-normal text-stone-900">28</span>
+</button>
+<button class="aspect-square bg-[#f4f2f2] rounded-2xl flex items-center justify-center active:opacity-75 transition-opacity" type="button">
+<span class="font-serif text-xl font-normal text-stone-900">29</span>
+</button>
+<button class="aspect-square bg-[#f4f2f2] rounded-2xl flex items-center justify-center active:opacity-75 transition-opacity" type="button">
+<span class="font-serif text-xl font-normal text-stone-900">30</span>
+</button>
+</div>
+<!-- Legend below grid -->
+<div class="flex items-center justify-center space-x-2 mt-6 text-[12.5px] text-stone-700 tracking-tight" data-purpose="legend">
+<span class="w-2 h-2 rounded-full bg-app-pink shrink-0"></span>
+<span class="font-normal text-stone-600">Contient des versets en cours de mémorisation</span>
+</div>
+</main>
+<!-- END: Main Chapters Grid Content -->
+<!-- BEGIN: Bottom Tab Navigation Bar -->
+<nav class="absolute bottom-0 left-0 right-0 bg-[#fcfbfa]/95 backdrop-blur-md border-t border-gray-200/60 px-3 pt-2 pb-5 z-20 flex justify-around items-center" data-purpose="bottom-navigation">
+<!-- Accueil -->
+<button class="flex flex-col items-center justify-center flex-1 text-stone-600 group" type="button">
+<svg class="w-6 h-6 stroke-[1.8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+<path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[11px] font-medium mt-1">Accueil</span>
+</button>
+<!-- Bible (Active) -->
+<button class="flex flex-col items-center justify-center flex-1 text-app-pink" type="button"><svg class="w-6 h-6 stroke-[2]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" stroke-linecap="round" stroke-linejoin="round"></path></svg><span class="text-[11px] font-semibold mt-1">Bible</span></button>
+<!-- Mémoriser -->
+<button class="flex flex-col items-center justify-center flex-1 text-stone-600 group" type="button"><svg class="w-6 h-6 stroke-[1.8]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" stroke-linecap="round" stroke-linejoin="round"></path></svg><span class="text-[11px] font-medium mt-1">Mémoriser</span></button>
+<!-- Progrès -->
+<button class="flex flex-col items-center justify-center flex-1 text-stone-600 group" type="button">
+<svg class="w-6 h-6 stroke-[1.8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+<path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[11px] font-medium mt-1">Progrès</span>
+</button>
+<!-- Réglages -->
+<button class="flex flex-col items-center justify-center flex-1 text-stone-600 group" type="button"><svg class="w-6 h-6 stroke-[1.8]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.5" fill="currentColor"></circle><circle cx="12" cy="12" r="1.5" fill="currentColor"></circle><circle cx="19" cy="12" r="1.5" fill="currentColor"></circle></svg><span class="text-[11px] font-medium mt-1">Plus</span></button>
+</nav>
+<!-- END: Bottom Tab Navigation Bar -->
+</div>
+<!-- END: Mobile Container -->
+
+
+</body></html>

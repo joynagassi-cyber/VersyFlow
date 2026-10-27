@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+
+<html lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>R4 — Flashcard — Verso</title>
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              pink: '#D81B60',
+              'pink-light': '#FCE4EC',
+              'card-bg': '#FFF5F8',
+              green: '#007A33',
+              'dark-red': '#A81347'
+            }
+          },
+          fontFamily: {
+            serif: ['Georgia', 'Cambria', '"Times New Roman"', 'serif'],
+            sans: ['-apple-system', 'BlinkMacSystemFont', '"SF Pro Text"', '"SF Pro Display"', 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+<style data-purpose="base-styling">
+    body {
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      background-color: #FAFAFA;
+      user-select: none;
+    }
+  </style>
+</head>
+<body class="flex justify-center bg-gray-100 min-h-screen text-slate-800 font-sans">
+<!-- Mobile Device Container (iPhone dimensions) -->
+<div class="w-full max-w-[390px] bg-white min-h-[844px] flex flex-col justify-between relative shadow-2xl overflow-hidden border-x border-gray-100">
+<!-- Top Screen Wrapper -->
+<div class="w-full flex flex-col">
+<!-- BEGIN: StatusBar -->
+<div class="w-full pt-3 px-7 flex justify-between items-center text-[15px] font-semibold text-black tracking-tight" data-purpose="status-bar">
+<span>9:41</span>
+<div class="flex items-center space-x-1.5 text-black">
+<span class="text-[12px] font-bold tracking-tighter">5G</span>
+<!-- Signal / Battery indicators -->
+<div class="flex items-end space-x-[2px] h-3 ml-0.5">
+<span class="w-[3px] h-[5px] bg-black rounded-[0.5px]"></span>
+<span class="w-[3px] h-[7.5px] bg-black rounded-[0.5px]"></span>
+<span class="w-[3px] h-[10.5px] bg-black rounded-[0.5px]"></span>
+<span class="w-[3px] h-[12px] bg-black rounded-[0.5px]"></span>
+</div>
+<div class="w-5 h-2.5 border border-black rounded-[3px] p-[1px] ml-1 flex items-center">
+<div class="w-full h-full bg-black rounded-[1px]"></div>
+</div>
+</div>
+</div>
+<!-- END: StatusBar -->
+<!-- BEGIN: Header -->
+<header class="px-5 pt-3 pb-2 flex items-center justify-between" data-purpose="app-header">
+<!-- Close Button -->
+<button aria-label="Fermer" class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-700 active:scale-95 transition-transform">
+<svg class="w-4 h-4 stroke-[2.5]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M6 18L18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+<!-- Scripture Title -->
+<div class="text-center">
+<h1 class="font-serif text-[21px] font-bold text-gray-900 tracking-tight leading-none mb-1">
+            Jean 3:16–18
+          </h1>
+<p class="text-[12px] text-gray-500 font-medium tracking-normal">
+            LSG · Mode Flashcard
+          </p>
+</div>
+<!-- Options Button -->
+<button aria-label="Options" class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-700 active:scale-95 transition-transform">
+<svg class="w-5 h-5" fill="currentColor" viewbox="0 0 24 24">
+<circle cx="5" cy="12" r="2"></circle>
+<circle cx="12" cy="12" r="2"></circle>
+<circle cx="19" cy="12" r="2"></circle>
+</svg>
+</button>
+</header>
+<!-- END: Header -->
+<!-- BEGIN: StepperBar -->
+<section class="px-4 pt-2 pb-1" data-purpose="learning-steps">
+<!-- Step progress bars -->
+<div class="grid grid-cols-4 gap-1.5 px-1 mb-1.5">
+<div class="h-[3px] rounded-full bg-[#E01E5A]"></div>
+<div class="h-[3px] rounded-full bg-[#E01E5A]"></div>
+<div class="h-[3px] rounded-full bg-[#E01E5A]"></div>
+<div class="h-[3px] rounded-full bg-gray-200"></div>
+</div>
+<!-- Step labels -->
+<div class="grid grid-cols-4 text-center text-[10px] tracking-tight font-medium">
+<div class="flex items-center justify-center text-gray-700 space-x-0.5">
+<svg class="w-2.5 h-2.5 stroke-[3] text-gray-600" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span>Révélation</span>
+</div>
+<div class="flex items-center justify-center text-gray-700 space-x-0.5">
+<svg class="w-2.5 h-2.5 stroke-[3] text-gray-600" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span>Masquage</span>
+</div>
+<div class="text-[#D81B60] font-semibold">Flashcard</div>
+<div class="flex items-center justify-center text-gray-400 space-x-0.5">
+<svg class="w-2.5 h-2.5 stroke-[2.5]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<rect height="10" rx="2" stroke-width="2.5" width="14" x="5" y="11"></rect>
+<path d="M8 11V7a4 4 0 018 0v4" stroke-width="2.5"></path>
+</svg>
+<span>Écriture</span>
+</div>
+</div>
+</section>
+<!-- END: StepperBar -->
+<!-- BEGIN: CardStatusRow -->
+<div class="px-5 pt-3.5 pb-2 flex items-center justify-between" data-purpose="card-meta">
+<span class="inline-flex items-center px-3 py-1 rounded-full text-[12px] font-semibold text-[#A81347] bg-[#FCE4EC]">
+          Carte 2 / 3
+        </span>
+<span class="text-[13px] text-gray-500 font-medium">
+          Verso
+        </span>
+</div>
+<!-- END: CardStatusRow -->
+<!-- BEGIN: Flashcard -->
+<main class="px-4 pt-1 pb-1" data-purpose="flashcard-main">
+<div class="bg-[#FFF6F9] border border-[#FADCE6] rounded-[28px] min-h-[352px] flex flex-col items-center justify-center text-center p-6 shadow-sm relative">
+<!-- Category Header -->
+<span class="text-[11px] font-bold tracking-[0.14em] text-[#C2185B] uppercase mb-4">
+            Verso · Où se trouve ce verset ?
+          </span>
+<!-- Scripture Reference Serif -->
+<div class="flex flex-col items-center justify-center my-1">
+<span class="font-serif text-[42px] font-bold text-gray-950 leading-none tracking-tight">
+              Jean
+            </span>
+<span class="font-serif text-[68px] font-bold text-[#C2185B] leading-[1.05] tracking-tight">
+              3:17
+            </span>
+</div>
+<!-- Version Pill Badge -->
+<div class="mt-4 bg-white/90 shadow-sm border border-[#F8BBD0]/60 rounded-full px-4 py-1.5">
+<span class="text-[12px] font-semibold text-gray-800">
+              Nouveau Testament · Louis Segond
+            </span>
+</div>
+<!-- Subtext Details -->
+<p class="text-[13px] text-gray-600 mt-2 font-normal">
+            Verset 2 sur 3 du passage 3:16–18
+          </p>
+</div>
+<!-- Flip Button Action -->
+<button class="w-full flex items-center justify-center space-x-2 text-gray-700 text-[13px] font-medium py-3.5 hover:text-black transition-colors" data-purpose="flip-card-action">
+<svg class="w-4 h-4 stroke-[2.2]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span>Retourner le recto</span>
+</button>
+</main>
+<!-- END: Flashcard -->
+</div>
+<!-- Bottom Controls & Navigation Wrapper -->
+<div class="w-full flex flex-col items-center bg-transparent">
+<!-- BEGIN: AnswerDecisionButtons -->
+<section class="w-full px-4 grid grid-cols-2 gap-3 mb-3.5" data-purpose="answer-buttons">
+<button class="w-full py-3.5 px-4 rounded-full border-[1.5px] border-[#D81B60] bg-white text-[#D81B60] text-[16px] font-semibold hover:bg-pink-50 active:scale-[0.98] transition-all">
+          Pas su
+        </button>
+<button class="w-full py-3.5 px-4 rounded-full bg-[#007A33] text-white text-[16px] font-semibold hover:bg-[#006A2C] active:scale-[0.98] transition-all shadow-sm">
+          Su
+        </button>
+</section>
+<!-- END: AnswerDecisionButtons -->
+<!-- BEGIN: FloatingModePill -->
+<div class="mb-3 px-3 py-1.5 bg-white rounded-full shadow-lg border border-gray-100 flex items-center space-x-4 z-10" data-purpose="floating-mode-selector">
+<!-- Icon 1: Eye completed -->
+<div class="relative cursor-pointer">
+<svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="absolute -top-1.5 -right-1.5 bg-emerald-600 rounded-full w-3.5 h-3.5 flex items-center justify-center text-[8px] text-white font-bold">✓</span>
+</div>
+<!-- Icon 2: Masking completed -->
+<div class="relative cursor-pointer">
+<svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M4 6h16M4 12h10M4 18h7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="absolute -top-1.5 -right-1.5 bg-emerald-600 rounded-full w-3.5 h-3.5 flex items-center justify-center text-[8px] text-white font-bold">✓</span>
+</div>
+<!-- Active Flashcard Button -->
+<div class="bg-[#D81B60] text-white px-3.5 py-1.5 rounded-full flex items-center space-x-1.5 shadow-md shadow-pink-200">
+<svg class="w-4 h-4 stroke-[2.2]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<rect height="12" rx="2" width="12" x="4" y="4"></rect>
+<path d="M8 16v2a2 2 0 002 2h8a2 2 0 002-2v-8a2 2 0 00-2-2h-2"></path>
+</svg>
+<span class="text-[12px] font-semibold">Flashcard</span>
+</div>
+<!-- Icon 4: Locked Writing -->
+<div class="cursor-pointer text-gray-400">
+<svg class="w-4 h-4 stroke-[2]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<rect height="10" rx="2" width="14" x="5" y="11"></rect>
+<path d="M8 11V7a4 4 0 018 0v4"></path>
+</svg>
+</div>
+<!-- Down Chevron -->
+<div class="cursor-pointer text-gray-500 pl-1 pr-1">
+<svg class="w-4 h-4 stroke-[2.5]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+</div>
+<!-- END: FloatingModePill -->
+<!-- BEGIN: BottomNavigation -->
+<nav class="w-full bg-white border-t border-gray-100 px-3 pt-2 pb-5 grid grid-cols-5 items-center text-center text-gray-500" data-purpose="tab-bar">
+<!-- Tab 1 -->
+<button class="flex flex-col items-center justify-center space-y-1">
+<svg class="w-5 h-5 stroke-[2]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[10px] font-medium">Accueil</span>
+</button>
+<!-- Tab 2 -->
+<button class="flex flex-col items-center justify-center space-y-1">
+<svg class="w-5 h-5 stroke-[2]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<rect height="16" rx="2" width="16" x="4" y="4"></rect>
+</svg>
+<span class="text-[10px] font-medium">Bible</span>
+</button>
+<!-- Tab 3 (Active) -->
+<button class="flex flex-col items-center justify-center space-y-1 text-[#D81B60]">
+<svg class="w-5 h-5 stroke-[2]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M12 2l9 5-9 5-9-5 9-5z" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M3 12l9 5 9-5" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M3 17l9 5 9-5" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[10px] font-semibold">Mémoriser</span>
+</button>
+<!-- Tab 4 -->
+<button class="flex flex-col items-center justify-center space-y-1">
+<svg class="w-5 h-5 stroke-[2]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[10px] font-medium">Progrès</span>
+</button>
+<!-- Tab 5 -->
+<button class="flex flex-col items-center justify-center space-y-1">
+<svg class="w-5 h-5 stroke-[2]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[10px] font-medium">Réglages</span>
+</button>
+</nav>
+<!-- END: BottomNavigation -->
+</div>
+</div>
+</body></html>

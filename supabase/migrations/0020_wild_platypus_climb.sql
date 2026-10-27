@@ -1,0 +1,1 @@
+alter table public.communities enable row level security;

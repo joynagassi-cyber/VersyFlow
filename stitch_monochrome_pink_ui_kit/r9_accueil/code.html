@@ -1,0 +1,244 @@
+<!DOCTYPE html><html lang="fr"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+<title>R9 — Accueil</title>
+<!-- Tailwind CSS v3 with Plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts: Inter & Newsreader for elegant Scripture serif -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Lora:ital,wght@0,400;0,500;0,600;1,400&amp;display=swap" rel="stylesheet">
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            serif: ['"Lora"', 'Georgia', 'serif'],
+          },
+          colors: {
+            app: {
+              bg: '#F9F8F6',
+              primary: '#D81B60',
+              pink: '#E91E63',
+              pinkSoft: '#FCE7F0',
+              pinkLight: '#FFF0F5',
+              dark: '#1C1917',
+              graySub: '#78716C',
+              cardDark: '#452A3F',
+            }
+          },
+          boxShadow: {
+            'soft': '0 4px 20px -2px rgba(0, 0, 0, 0.04)',
+            'nav': '0 -4px 16px -2px rgba(0, 0, 0, 0.03)',
+          }
+        }
+      }
+    }
+  </script>
+<style data-purpose="typography">
+    body {
+      -webkit-font-smoothing: antialiased;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+  </style>
+<style data-purpose="custom-decorations">
+    .card-gradient {
+      background: linear-gradient(145deg, #42283C 0%, #3B2234 45%, #63364A 100%);
+    }
+    .flashcard-shadow {
+      box-shadow: 0 4px 12px rgba(216, 27, 96, 0.08);
+    }
+  </style>
+</head>
+<body class="bg-[#F8F7F5] text-app-dark font-sans flex justify-center min-h-screen">
+<!-- Mobile iOS Frame Container -->
+<div class="w-full max-w-[430px] min-h-screen flex flex-col justify-between relative pb-24 select-none">
+<!-- BEGIN: TopBarAndHeader -->
+<header class="pt-2 px-6 pb-2">
+<!-- iOS Status Bar -->
+<div class="flex justify-between items-center h-10 text-[15px] font-semibold tracking-tight text-neutral-900" data-purpose="ios-status-bar">
+<span class="">9:41</span>
+<div class="flex items-center space-x-1.5">
+<span class="text-xs font-bold mr-0.5 tracking-tighter">5G</span>
+<!-- Signal bars -->
+<div class="flex items-end space-x-[2px] h-3">
+<span class="w-[3px] h-1.5 bg-neutral-900 rounded-sm"></span>
+<span class="w-[3px] h-2 bg-neutral-900 rounded-sm"></span>
+<span class="w-[3px] h-2.5 bg-neutral-900 rounded-sm"></span>
+<span class="w-[3px] h-3 bg-neutral-900 rounded-sm"></span>
+</div>
+<!-- Battery icon -->
+<div class="w-5 h-2.5 border border-neutral-900 rounded-[3px] p-[1px] flex items-center ml-1">
+<div class="h-full w-full bg-neutral-900 rounded-[1.5px]"></div>
+</div>
+</div>
+</div>
+<!-- Main Section Header -->
+<div class="flex justify-between items-end mt-4">
+<div>
+<div class="inline-block relative pb-1.5">
+<h1 class="text-[32px] font-extrabold tracking-tight leading-none text-neutral-900">Aujourd’hui</h1>
+<!-- Accent pink bottom bar -->
+<div class="absolute bottom-0 left-0 right-0 h-[3px] bg-[#D81B60] rounded-full"></div>
+</div>
+<p class="text-[21px] font-bold text-neutral-900 mt-5">Bonsoir</p>
+</div>
+<!-- Streak & Notification Icons -->
+<div class="flex items-center space-x-3.5 mb-6">
+<div class="flex items-center space-x-1.5 text-neutral-900 font-bold text-[19px]"><svg class="w-5 h-5 text-neutral-900" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><path d="M13 2L4 13h6l-2 9 11-12h-6l2-8z"></path><path d="M19 2v4"></path><path d="M17 4h4"></path></svg><span class="tracking-tight">12</span></div>
+<button aria-label="Notifications" class="text-neutral-900 p-1" type="button"><svg class="w-[23px] h-[23px] text-neutral-900" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg></button>
+</div>
+</div>
+</header>
+<!-- END: TopBarAndHeader -->
+<!-- BEGIN: MainContent -->
+<main class="px-5 space-y-4 pt-1">
+<!-- Hero Card: Verset du jour -->
+<section class="card-gradient text-white rounded-[28px] p-6 relative overflow-hidden shadow-lg" data-purpose="hero-verse-card">
+<!-- Subtle decorative circle overlay -->
+<div class="absolute -right-12 top-16 w-56 h-56 rounded-full bg-white opacity-[0.06] pointer-events-none"></div>
+<div class="relative z-10">
+<span class="text-neutral-300 text-xs font-semibold tracking-wide block mb-1">Verset du jour</span>
+<h2 class="text-[17px] font-bold text-white tracking-wide mb-5">Jérémie 29:11 · LSG</h2>
+<p class="font-serif text-[20px] leading-[1.45] text-white/95 font-medium tracking-normal mb-8">
+            Car je connais les projets que j’ai formés sur vous, dit l’Éternel, projets de paix et non de malheur, afin de vous donner un avenir et de l’espérance.
+          </p>
+<!-- Action Buttons Bar -->
+<div class="flex items-center justify-between pt-1">
+<!-- Primary Memorize CTA Button -->
+<button class="bg-white text-[#D81B60] font-bold text-[13px] px-4 py-2.5 rounded-full flex items-center space-x-2 shadow-md active:scale-95 transition-transform"><svg class="w-4 h-4 text-[#D81B60]" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><polygon points="12 3 2 8 12 13 22 8 12 3"></polygon><polyline points="2 13.5 12 18.5 22 13.5"></polyline><polyline points="2 18 12 23 22 18"></polyline><path d="M19 1v4"></path><path d="M17 3h4"></path></svg><span class="">Mémoriser</span></button>
+<!-- Secondary Actions -->
+<div class="flex items-center space-x-4 pr-1 text-white/90 text-xs font-medium"><button class="flex flex-col items-center gap-1 hover:text-white transition"><svg class="w-5 h-5 stroke-[2]" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg><span class="text-[10px]">Sauvegarder</span></button><button class="flex flex-col items-center gap-1 hover:text-white transition"><svg class="w-5 h-5 stroke-[2]" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg><span class="text-[10px]">Partager</span></button><button class="flex flex-col items-center gap-1 hover:text-white transition"><svg class="w-5 h-5 stroke-[2]" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="6"></rect><circle cx="7.5" cy="12" r="1.25" fill="currentColor"></circle><circle cx="12" cy="12" r="1.25" fill="currentColor"></circle><circle cx="16.5" cy="12" r="1.25" fill="currentColor"></circle></svg><span class="text-[10px]">Plus</span></button></div>
+</div>
+</div>
+</section>
+<!-- Card 2: Révision du jour -->
+<section class="bg-white rounded-[26px] p-5 shadow-soft border border-neutral-100/60 relative overflow-hidden" data-purpose="daily-review-card">
+<div class="flex justify-between items-start">
+<div class="max-w-[210px]">
+<span class="inline-block bg-[#FDE8EF] text-[#D81B60] text-[11px] font-bold px-2.5 py-1 rounded-md mb-2.5">
+              3 en attente
+            </span>
+<p class="text-[12px] font-semibold text-neutral-400 leading-tight">Révision du jour</p>
+<h3 class="text-[17px] font-bold text-neutral-900 mt-1 leading-[1.25]">
+              Retrouve tes versets avant de les oublier
+            </h3>
+<div class="flex items-center text-neutral-500 text-[12px] font-semibold mt-3.5 space-x-1.5">
+<span class="text-[10px]">▶</span>
+<span class="">≈ 5 min</span>
+</div>
+</div>
+<!-- Flashcard Graphic Mockup -->
+<div aria-hidden="true" class="relative w-20 h-24 mt-0.5 mr-1">
+<!-- Background layer card -->
+<div class="absolute inset-0 bg-[#FCE5ED] rounded-xl transform translate-x-2 -translate-y-1"></div>
+<!-- Main card front -->
+<div class="absolute inset-0 bg-white border border-[#F3D7E2] rounded-xl p-2.5 flex flex-col justify-start shadow-sm">
+<span class="text-[11px] font-bold text-[#A8154D]">Ps 23:1</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Card 3: Parcours en cours -->
+<section class="bg-white rounded-[26px] p-5 shadow-soft border border-neutral-100/60 flex items-center justify-between" data-purpose="current-track-card">
+<div>
+<span class="text-[11px] font-bold tracking-wider text-[#A8154D] uppercase block mb-1">
+            Parcours en cours
+          </span>
+<h3 class="text-[20px] font-serif font-extrabold text-neutral-900 tracking-tight">
+            Psaumes 23:1-3
+          </h3>
+<p class="text-[12px] text-neutral-500 font-medium mt-1">
+            Étape 2 sur 4 · Masquage
+          </p>
+</div>
+<!-- Radial Progress Badge -->
+<div class="relative w-14 h-14 flex items-center justify-center">
+<svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+<!-- Track -->
+<path class="text-neutral-200" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="3.5"></path>
+<!-- Progress (50%) -->
+<path class="text-[#D81B60]" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="50, 100" stroke-linecap="round" stroke-width="3.5"></path>
+</svg>
+<span class="absolute font-serif font-bold text-[13px] text-neutral-800">2/4</span>
+</div>
+</section>
+<!-- Card 4: Ta semaine -->
+<section class="bg-white rounded-[26px] p-5 shadow-soft border border-neutral-100/60" data-purpose="weekly-tracker-card">
+<div class="flex justify-between items-center mb-4">
+<h3 class="text-[16px] font-bold text-neutral-900 tracking-tight">Ta semaine</h3>
+<span class="bg-[#FDE8EF] text-[#D81B60] text-[11px] font-bold px-2.5 py-1 rounded-full flex items-center space-x-1">
+<span class="">⚡</span>
+<span class="">12 jours</span>
+</span>
+</div>
+<!-- Week Day Dots Grid -->
+<div class="grid grid-cols-7 gap-2 text-center pt-1">
+<!-- Lundi (Completed) -->
+<div class="flex flex-col items-center space-y-2">
+<div class="w-9 h-9 rounded-full bg-[#D81B60] text-white flex items-center justify-center shadow-xs">
+<svg class="w-4 h-4 stroke-[3]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+<path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+<span class="text-[11px] font-bold text-neutral-800">L</span>
+</div>
+<!-- Mardi (Completed) -->
+<div class="flex flex-col items-center space-y-2">
+<div class="w-9 h-9 rounded-full bg-[#D81B60] text-white flex items-center justify-center shadow-xs">
+<svg class="w-4 h-4 stroke-[3]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+<path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+<span class="text-[11px] font-bold text-neutral-800">M</span>
+</div>
+<!-- Mercredi (Completed) -->
+<div class="flex flex-col items-center space-y-2">
+<div class="w-9 h-9 rounded-full bg-[#D81B60] text-white flex items-center justify-center shadow-xs">
+<svg class="w-4 h-4 stroke-[3]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+<path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+<span class="text-[11px] font-bold text-neutral-800">M</span>
+</div>
+<!-- Jeudi (Completed) -->
+<div class="flex flex-col items-center space-y-2">
+<div class="w-9 h-9 rounded-full bg-[#D81B60] text-white flex items-center justify-center shadow-xs">
+<svg class="w-4 h-4 stroke-[3]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+<path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+<span class="text-[11px] font-bold text-neutral-800">J</span>
+</div>
+<!-- Vendredi (Pending) -->
+<div class="flex flex-col items-center space-y-2">
+<div class="w-9 h-9 rounded-full bg-neutral-200/80"></div>
+<span class="text-[11px] font-bold text-neutral-800">V</span>
+</div>
+<!-- Samedi (Pending) -->
+<div class="flex flex-col items-center space-y-2">
+<div class="w-9 h-9 rounded-full bg-neutral-200/80"></div>
+<span class="text-[11px] font-bold text-neutral-800">S</span>
+</div>
+<!-- Dimanche (Pending) -->
+<div class="flex flex-col items-center space-y-2">
+<div class="w-9 h-9 rounded-full bg-neutral-200/80"></div>
+<span class="text-[11px] font-bold text-neutral-800">D</span>
+</div>
+</div>
+</section>
+</main>
+<!-- END: MainContent -->
+<!-- BEGIN: BottomNavigation -->
+<nav class="fixed bottom-0 left-0 right-0 max-w-[430px] mx-auto bg-white/95 backdrop-blur-md border-t border-neutral-100 py-2.5 px-3 z-50" data-purpose="tab-bar">
+<div class="flex justify-around items-center"><a class="flex flex-col items-center text-[#D81B60]" href="#accueil"><svg class="w-6 h-6 stroke-[2]" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M3 10.5L12 3l9 7.5V20a1.5 1.5 0 0 1-1.5 1.5H4.5A1.5 1.5 0 0 1 3 20v-9.5z"></path><rect height="6.5" rx="1.5" width="5" x="9.5" y="15"></rect></svg><span class="text-[10px] font-bold mt-1">Accueil</span></a><a class="flex flex-col items-center text-neutral-500 hover:text-neutral-900 transition" href="#bible"><svg class="w-6 h-6 stroke-[2]" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5z"></path><path d="M6.5 22A2.5 2.5 0 0 0 9 19.5V2H6.5"></path><path d="M13 7v6"></path><path d="M10.5 9.5h5"></path></svg><span class="text-[10px] font-medium mt-1">Bible</span></a><a class="flex flex-col items-center text-neutral-500 hover:text-neutral-900 transition" href="#memoriser"><svg class="w-6 h-6 stroke-[2]" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polygon points="12 3 2 8 12 13 22 8 12 3"></polygon><polyline points="2 13.5 12 18.5 22 13.5"></polyline><polyline points="2 18 12 23 22 18"></polyline><path d="M19 1v4"></path><path d="M17 3h4"></path></svg><span class="text-[10px] font-medium mt-1">Mémoriser</span></a><a class="flex flex-col items-center text-neutral-500 hover:text-neutral-900 transition" href="#progres"><svg class="w-6 h-6 stroke-[2]" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect height="7" rx="1" width="3.5" x="3.5" y="14"></rect><rect height="11" rx="1" width="3.5" x="10.25" y="10"></rect><rect height="15" rx="1" width="3.5" x="17" y="6"></rect><path d="M4 9l6-5 5 4 6-5"></path><polyline points="17 3 21 3 21 7"></polyline></svg><span class="text-[10px] font-medium mt-1">Progrès</span></a><a class="flex flex-col items-center text-neutral-500 hover:text-neutral-900 transition" href="#plus"><svg class="w-6 h-6 stroke-[2]" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect height="12" rx="6" width="20" x="2" y="6"></rect><circle cx="7.5" cy="12" fill="currentColor" r="1.25"></circle><circle cx="12" cy="12" fill="currentColor" r="1.25"></circle><circle cx="16.5" cy="12" fill="currentColor" r="1.25"></circle></svg><span class="text-[10px] font-medium mt-1">Plus</span></a></div>
+</nav>
+<!-- END: BottomNavigation -->
+</div>
+
+
+
+
+</body></html>

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>T2 — Arbre — Ajouter des tags</title>
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              DEFAULT: '#D81B60',
+              hover: '#C2185B',
+              light: '#FCE4EC',
+            },
+            mint: {
+              bg: '#EAF8F1',
+              text: '#1B7A4D',
+            }
+          },
+          fontFamily: {
+            serif: ['Georgia', 'Cambria', '"Times New Roman"', 'serif'],
+            sans: ['-apple-system', 'BlinkMacSystemFont', '"SF Pro Display"', '"SF Pro Text"', 'Roboto', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+<style data-purpose="custom-styling">
+    /* Custom dotted underline for the highlighted verse */
+    .dotted-highlight {
+      border-bottom: 2px dotted #D81B60;
+      padding-bottom: 2px;
+    }
+    /* Blinking text cursor simulation */
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+    .typing-cursor {
+      animation: blink 1s infinite;
+    }
+    /* Hide scrollbar for clean chip sliders if needed */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
+</head>
+<body class="bg-black/40 flex justify-center items-end min-h-screen font-sans antialiased select-none">
+<!-- BEGIN: MobileDeviceContainer -->
+<div class="relative w-full max-w-[430px] h-screen max-h-[932px] bg-[#EFEFEF] overflow-hidden flex flex-col shadow-2xl">
+<!-- BEGIN: BackgroundBibleReader -->
+<!-- The dimmed background view showing Psalms 23 -->
+<div aria-hidden="true" class="absolute inset-0 bg-[#FBF9F5] text-stone-900 overflow-hidden flex flex-col z-0 opacity-45 pointer-events-none">
+<!-- iOS Status Bar Simulation -->
+<div class="w-full pt-3 px-8 flex justify-between items-center text-xs font-semibold text-stone-900">
+<span>9:41</span>
+<div class="flex items-center space-x-1.5">
+<span class="text-[11px] font-bold">5G</span>
+<div class="flex space-x-0.5 items-end h-3">
+<span class="w-1 h-1.5 bg-stone-900 rounded-2xs"></span>
+<span class="w-1 h-2 bg-stone-900 rounded-2xs"></span>
+<span class="w-1 h-2.5 bg-stone-900 rounded-2xs"></span>
+</div>
+</div>
+</div>
+<!-- Top Reader Navigation Bar -->
+<div class="w-full px-5 py-3 flex items-center justify-between border-b border-stone-200/50">
+<div class="flex items-center space-x-1 text-lg font-bold">
+<span>Psaumes 23</span>
+<svg class="w-4 h-4 text-stone-600" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path></svg>
+</div>
+<div class="flex items-center space-x-3 text-stone-700">
+<button class="p-1"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg></button>
+<button class="p-1"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg></button>
+<div class="flex items-center space-x-1 px-2 py-0.5 rounded-full bg-stone-200 text-xs font-semibold">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M12 21a9 9 0 100-18 9 9 0 000 18zm0 0v-8m-8 4a9 9 0 0116-2" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"></path></svg>
+<span>LSG</span>
+</div>
+</div>
+</div>
+<!-- Chapter Number & Verse Content -->
+<div class="p-6 font-serif">
+<div class="flex items-baseline space-x-4 mb-4">
+<span class="text-7xl font-serif text-stone-300 select-none">23</span>
+<span class="text-xl font-medium text-stone-800">Psaume de David.</span>
+</div>
+<div class="space-y-5 text-xl leading-relaxed text-stone-800">
+<p>
+<sup class="text-xs font-sans font-medium text-stone-500 mr-1">1</sup>
+<span class="dotted-highlight font-medium">L'Éternel est mon berger : je ne manquerai de rien.</span>
+</p>
+<p>
+<sup class="text-xs font-sans font-medium text-stone-500 mr-1">2</sup>
+            Il me fait reposer dans de verts pâturages, Il me dirige près des eaux paisibles.
+          </p>
+<p>
+<sup class="text-xs font-sans font-medium text-stone-500 mr-1">3</sup>
+            Il restaure mon âme, Il me conduit dans les sentiers de la justice, à cause de son nom.
+          </p>
+</div>
+</div>
+</div>
+<!-- END: BackgroundBibleReader -->
+<!-- BEGIN: BackdropDimming -->
+<!-- Darkened overlay behind bottom sheet -->
+<div class="absolute inset-0 bg-black/45 z-10 transition-opacity"></div>
+<!-- END: BackdropDimming -->
+<!-- BEGIN: BottomSheetModal -->
+<!-- The main interactive Tagging Bottom Sheet -->
+<section class="absolute bottom-0 inset-x-0 z-20 bg-white rounded-t-[34px] px-6 pt-3 pb-8 shadow-2xl flex flex-col space-y-4" data-purpose="tag-selection-modal">
+<!-- Drag Handle Indicator -->
+<div class="w-full flex justify-center py-1">
+<div class="w-10 h-1.5 bg-stone-300 rounded-full"></div>
+</div>
+<!-- Sheet Header -->
+<header class="space-y-1">
+<p class="text-[11px] font-black uppercase tracking-wider text-brand">AJOUTER DES TAGS</p>
+<h1 class="text-2xl font-bold font-serif text-stone-900 tracking-tight">Psaumes 23:1</h1>
+</header>
+<!-- Horizontal Tag / Chips Selector -->
+<div class="flex items-center space-x-2 overflow-x-auto no-scrollbar py-1" data-purpose="chip-list">
+<!-- Selected Tag: Prière -->
+<button class="inline-flex items-center px-3.5 py-1.5 bg-brand text-white font-medium text-xs rounded-full shadow-sm hover:opacity-95 transition-opacity whitespace-nowrap">
+<svg class="w-3.5 h-3.5 mr-1 stroke-[3]" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+          Prière
+        </button>
+<!-- Selected Tag: Confiance -->
+<button class="inline-flex items-center px-3.5 py-1.5 bg-brand text-white font-medium text-xs rounded-full shadow-sm hover:opacity-95 transition-opacity whitespace-nowrap">
+<svg class="w-3.5 h-3.5 mr-1 stroke-[3]" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+          Confiance
+        </button>
+<!-- Unselected Tag: Amour -->
+<button class="inline-flex items-center px-3.5 py-1.5 bg-stone-100 hover:bg-stone-200 text-stone-800 font-medium text-xs rounded-full transition-colors whitespace-nowrap">
+          Amour
+        </button>
+<!-- Unselected Tag: Combat -->
+<button class="inline-flex items-center px-3.5 py-1.5 bg-stone-100 hover:bg-stone-200 text-stone-800 font-medium text-xs rounded-full transition-colors whitespace-nowrap">
+          Combat
+        </button>
+</div>
+<!-- Tag Input Field with active styling -->
+<div class="relative" data-purpose="tag-input-container">
+<div class="w-full flex items-center justify-between border-2 border-brand rounded-2xl px-4 py-2.5 bg-white shadow-sm ring-1 ring-brand/10">
+<div class="flex items-center text-sm font-medium text-stone-900">
+<span>prot</span>
+<span class="w-[2px] h-4 bg-brand ml-0.5 typing-cursor inline-block"></span>
+</div>
+<span class="text-xs text-stone-400 font-normal">Entrée pour ajouter</span>
+</div>
+</div>
+<!-- Base Concepts Section -->
+<div class="space-y-2 pt-1" data-purpose="base-concepts">
+<h2 class="text-xs font-normal text-stone-600">Concepts de la base</h2>
+<div class="flex flex-wrap gap-2">
+<!-- Concept Badge 1 -->
+<button class="px-3 py-1 bg-mint-bg text-mint-text rounded-lg text-xs font-semibold hover:bg-mint-bg/80 transition-colors">
+            Protection
+          </button>
+<!-- Concept Badge 2 -->
+<button class="px-3 py-1 bg-mint-bg text-mint-text rounded-lg text-xs font-semibold hover:bg-mint-bg/80 transition-colors">
+            Providence
+          </button>
+</div>
+</div>
+<!-- Create Custom Tag Outline Button -->
+<div>
+<button class="inline-flex items-center px-3.5 py-1.5 border border-dashed border-stone-400 text-stone-700 text-xs font-medium rounded-full hover:bg-stone-50 active:bg-stone-100 transition-colors">
+          Créer « prot » comme tag personnel
+        </button>
+</div>
+<!-- Primary Action Button -->
+<div class="pt-2">
+<button class="w-full py-3.5 px-6 bg-brand hover:bg-brand-hover active:scale-[0.99] text-white font-bold text-sm tracking-wide rounded-2xl shadow-lg shadow-brand/25 transition duration-150 flex items-center justify-center space-x-1.5" type="button">
+<span>Enregistrer · 2 tags</span>
+</button>
+</div>
+</section>
+<!-- END: BottomSheetModal -->
+</div>
+<!-- END: MobileDeviceContainer -->
+</body></html>

@@ -1,0 +1,7 @@
+{
+  "name": "VersyFlow",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react-vite"
+}

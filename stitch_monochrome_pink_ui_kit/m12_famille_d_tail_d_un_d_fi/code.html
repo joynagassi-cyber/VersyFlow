@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+
+<html lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>M12 — Famille — Détail d'un défi</title>
+<!-- Tailwind CSS CDN with plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts: Newsreader (Editorial Serif) & Plus Jakarta Sans / Inter -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;0,6..72,700;1,6..72,400&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<script data-purpose="tailwind-config">
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            serif: ['Newsreader', 'Georgia', 'serif'],
+            sans: ['"Plus Jakarta Sans"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+          },
+          colors: {
+            appPink: {
+              DEFAULT: '#e6007e',
+              deep: '#d8006f',
+              light: '#fdf2f7',
+            },
+            appBg: '#faf8f9',
+            cardBg: '#ffffff',
+          },
+          boxShadow: {
+            soft: '0 4px 20px -2px rgba(180, 160, 175, 0.12)',
+            floating: '0 8px 30px -4px rgba(160, 130, 150, 0.14)',
+          }
+        }
+      }
+    };
+  </script>
+<style data-purpose="custom-layout">
+    body {
+      background-color: #faf8f9;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -webkit-tap-highlight-color: transparent;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between text-neutral-900 selection:bg-pink-100 selection:text-pink-600">
+<!-- BEGIN: MainContent -->
+<main class="w-full max-w-[430px] mx-auto min-h-screen flex flex-col pb-24 bg-[#faf8f9] shadow-2xl relative overflow-x-hidden">
+<!-- BEGIN: StatusBar -->
+<header class="w-full pt-3 px-7 flex justify-between items-center text-sm font-semibold tracking-tight text-neutral-900 z-20" data-purpose="status-bar">
+<!-- Time Display -->
+<span>9:41</span>
+<!-- Connectivity & Battery Indicators -->
+<div class="flex items-center space-x-1.5">
+<span class="text-xs font-bold tracking-normal mr-0.5">5G</span>
+<div class="flex items-end space-x-[2px] h-3.5">
+<span class="w-[3px] h-1.5 bg-neutral-900 rounded-[1px]"></span>
+<span class="w-[3px] h-2 bg-neutral-900 rounded-[1px]"></span>
+<span class="w-[3px] h-3 bg-neutral-900 rounded-[1px]"></span>
+</div>
+<div class="w-5 h-2.5 ml-1 border border-neutral-900 rounded-[3px] p-[1px] flex items-center">
+<div class="h-full w-full bg-neutral-900 rounded-[1px]"></div>
+</div>
+</div>
+</header>
+<!-- END: StatusBar -->
+<!-- BEGIN: TopBar -->
+<section class="px-5 pt-4 pb-3 flex items-center justify-between" data-purpose="navigation-header">
+<!-- Back Navigation Button -->
+<button aria-label="Retour" class="w-11 h-11 rounded-full bg-white flex items-center justify-center shadow-soft border border-neutral-100/60 active:scale-95 transition-transform text-neutral-700">
+<svg class="w-5 h-5 stroke-[2.5]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M15 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+<!-- Challenge Title & Subtitle -->
+<div class="text-center flex-1 px-2">
+<h1 class="font-serif font-bold text-[22px] leading-tight text-neutral-950 tracking-normal">
+          Psaume 23 en 14 jours
+        </h1>
+<p class="text-[13px] text-neutral-500 font-medium mt-0.5">
+          Passage commun · J-9
+        </p>
+</div>
+<!-- Action Overflow Button -->
+<button aria-label="Plus d'options" class="w-11 h-11 rounded-full bg-white flex items-center justify-center shadow-soft border border-neutral-100/60 active:scale-95 transition-transform text-neutral-800">
+<div class="flex space-x-1">
+<span class="w-1.5 h-1.5 rounded-full bg-neutral-800"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-neutral-800"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-neutral-800"></span>
+</div>
+</button>
+</section>
+<!-- END: TopBar -->
+<!-- BEGIN: ChallengeCards -->
+<div class="px-5 space-y-3.5 mt-2 flex-1">
+<!-- BEGIN: CollectiveGoalCard -->
+<article class="bg-white rounded-[26px] p-5 shadow-soft border border-neutral-100/70 flex items-center space-x-4" data-purpose="collective-goal-card">
+<!-- SVG Progress Ring (60% Progress = 3/5) -->
+<div class="relative w-24 h-24 flex-shrink-0 flex items-center justify-center">
+<svg class="w-full h-full -rotate-90 transform" viewbox="0 0 88 88">
+<!-- Background track -->
+<circle class="opacity-60" cx="44" cy="44" fill="transparent" r="37" stroke="#e5e7eb" stroke-width="7"></circle>
+<!-- Active 60% pink arc -->
+<circle cx="44" cy="44" fill="transparent" r="37" stroke="#e6007e" stroke-dasharray="232.47" stroke-dashoffset="92.99" stroke-linecap="round" stroke-width="7"></circle>
+</svg>
+<!-- Score Overlay -->
+<div class="absolute inset-0 flex items-center justify-center">
+<span class="font-serif font-bold text-2xl tracking-tight text-neutral-900">3/5</span>
+</div>
+</div>
+<!-- Goal Description -->
+<div class="flex-1 pr-1">
+<p class="text-[11px] font-extrabold uppercase tracking-widest text-[#e6007e]">
+            Objectif Collectif
+          </p>
+<h2 class="font-serif font-bold text-[19px] text-neutral-900 leading-snug mt-0.5">
+            3 membres ont fini
+          </h2>
+<p class="text-[13px] text-neutral-600 font-normal leading-normal mt-0.5">
+            Étape Écriture débloquée pour 3 sur 5
+          </p>
+</div>
+</article>
+<!-- END: CollectiveGoalCard -->
+<!-- BEGIN: MemberCardsList -->
+<div class="space-y-3 pt-1" data-purpose="member-progress-list">
+<!-- Card: Léa (Completed) -->
+<article class="bg-white rounded-[22px] px-4 py-3.5 shadow-soft border border-neutral-100/70 flex items-center space-x-3.5">
+<!-- Member Avatar -->
+<div class="w-12 h-12 rounded-full bg-[#e6007e] text-white font-bold text-lg flex items-center justify-center flex-shrink-0 shadow-sm">
+            L
+          </div>
+<!-- Details & Segmented Progress -->
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-baseline mb-2">
+<span class="font-bold text-[15px] text-neutral-900">Léa</span>
+<span class="text-[11px] font-medium text-neutral-500">Terminé</span>
+</div>
+<!-- 4 Segment Progress Bars (All Filled) -->
+<div class="grid grid-cols-4 gap-1.5 w-full">
+<div class="h-1.5 rounded-full bg-[#e6007e]"></div>
+<div class="h-1.5 rounded-full bg-[#e6007e]"></div>
+<div class="h-1.5 rounded-full bg-[#e6007e]"></div>
+<div class="h-1.5 rounded-full bg-[#e6007e]"></div>
+</div>
+</div>
+</article>
+<!-- Card: Marc (Completed) -->
+<article class="bg-white rounded-[22px] px-4 py-3.5 shadow-soft border border-neutral-100/70 flex items-center space-x-3.5">
+<!-- Member Avatar -->
+<div class="w-12 h-12 rounded-full bg-[#3b82f6] text-white font-bold text-lg flex items-center justify-center flex-shrink-0 shadow-sm">
+            M
+          </div>
+<!-- Details & Segmented Progress -->
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-baseline mb-2">
+<span class="font-bold text-[15px] text-neutral-900">Marc</span>
+<span class="text-[11px] font-medium text-neutral-500">Terminé</span>
+</div>
+<!-- 4 Segment Progress Bars (All Filled) -->
+<div class="grid grid-cols-4 gap-1.5 w-full">
+<div class="h-1.5 rounded-full bg-[#e6007e]"></div>
+<div class="h-1.5 rounded-full bg-[#e6007e]"></div>
+<div class="h-1.5 rounded-full bg-[#e6007e]"></div>
+<div class="h-1.5 rounded-full bg-[#e6007e]"></div>
+</div>
+</div>
+</article>
+<!-- Card: Ama (Completed) -->
+<article class="bg-white rounded-[22px] px-4 py-3.5 shadow-soft border border-neutral-100/70 flex items-center space-x-3.5">
+<!-- Member Avatar -->
+<div class="w-12 h-12 rounded-full bg-[#10b981] text-white font-bold text-lg flex items-center justify-center flex-shrink-0 shadow-sm">
+            A
+          </div>
+<!-- Details & Segmented Progress -->
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-baseline mb-2">
+<span class="font-bold text-[15px] text-neutral-900">Ama</span>
+<span class="text-[11px] font-medium text-neutral-500">Terminé</span>
+</div>
+<!-- 4 Segment Progress Bars (All Filled) -->
+<div class="grid grid-cols-4 gap-1.5 w-full">
+<div class="h-1.5 rounded-full bg-[#e6007e]"></div>
+<div class="h-1.5 rounded-full bg-[#e6007e]"></div>
+<div class="h-1.5 rounded-full bg-[#e6007e]"></div>
+<div class="h-1.5 rounded-full bg-[#e6007e]"></div>
+</div>
+</div>
+</article>
+<!-- Card: David (Step 3: Flashcard) -->
+<article class="bg-white rounded-[22px] px-4 py-3.5 shadow-soft border border-neutral-100/70 flex items-center space-x-3.5">
+<!-- Member Avatar -->
+<div class="w-12 h-12 rounded-full bg-[#eab308] text-white font-bold text-lg flex items-center justify-center flex-shrink-0 shadow-sm">
+            D
+          </div>
+<!-- Details & Segmented Progress -->
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-baseline mb-2">
+<span class="font-bold text-[15px] text-neutral-900">David</span>
+<span class="text-[11px] font-medium text-neutral-500">Flashcard</span>
+</div>
+<!-- 4 Segment Progress Bars (3 Filled, 1 Gray) -->
+<div class="grid grid-cols-4 gap-1.5 w-full">
+<div class="h-1.5 rounded-full bg-[#e6007e]"></div>
+<div class="h-1.5 rounded-full bg-[#e6007e]"></div>
+<div class="h-1.5 rounded-full bg-[#e6007e]"></div>
+<div class="h-1.5 rounded-full bg-neutral-200"></div>
+</div>
+</div>
+</article>
+<!-- Card: Noé (Step 2: Masquage) -->
+<article class="bg-white rounded-[22px] px-4 py-3.5 shadow-soft border border-neutral-100/70 flex items-center space-x-3.5">
+<!-- Member Avatar -->
+<div class="w-12 h-12 rounded-full bg-[#8b5cf6] text-white font-bold text-lg flex items-center justify-center flex-shrink-0 shadow-sm">
+            N
+          </div>
+<!-- Details & Segmented Progress -->
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-baseline mb-2">
+<span class="font-bold text-[15px] text-neutral-900">Noé</span>
+<span class="text-[11px] font-medium text-neutral-500">Masquage</span>
+</div>
+<!-- 4 Segment Progress Bars (2 Filled, 2 Gray) -->
+<div class="grid grid-cols-4 gap-1.5 w-full">
+<div class="h-1.5 rounded-full bg-[#e6007e]"></div>
+<div class="h-1.5 rounded-full bg-[#e6007e]"></div>
+<div class="h-1.5 rounded-full bg-neutral-200"></div>
+<div class="h-1.5 rounded-full bg-neutral-200"></div>
+</div>
+</div>
+</article>
+</div>
+<!-- END: MemberCardsList -->
+<!-- BEGIN: StepLegend -->
+<footer class="pt-2 px-1" data-purpose="step-labels-legend">
+<div class="grid grid-cols-4 text-center">
+<span class="text-[11px] font-medium text-neutral-600">Révélation</span>
+<span class="text-[11px] font-medium text-neutral-600">Masquage</span>
+<span class="text-[11px] font-medium text-neutral-600">Flashcard</span>
+<span class="text-[11px] font-medium text-neutral-600">Écriture</span>
+</div>
+</footer>
+<!-- END: StepLegend -->
+</div>
+<!-- END: ChallengeCards -->
+<!-- BEGIN: BottomNavigationBar -->
+<nav class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] bg-white/95 backdrop-blur-md border-t border-neutral-200/80 px-3 py-2 z-30" data-purpose="bottom-tab-bar">
+<div class="flex justify-around items-center">
+<!-- Item: Accueil (Active) -->
+<a class="flex flex-col items-center py-1 px-2 text-[#e6007e] font-medium group" href="#accueil">
+<svg class="w-6 h-6 stroke-[2]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[10px] mt-1 tracking-tight font-semibold">Accueil</span>
+</a>
+<!-- Item: Bible -->
+<a class="flex flex-col items-center py-1 px-2 text-neutral-700 hover:text-neutral-900 font-medium group" href="#bible">
+<svg class="w-6 h-6 stroke-[1.8]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M5 4h14a1 1 0 011 1v14a1 1 0 01-1 1H5a1 1 0 01-1-1V5a1 1 0 011-1z" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M9 4v16" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[10px] mt-1 tracking-tight">Bible</span>
+</a>
+<!-- Item: Mémoriser -->
+<a class="flex flex-col items-center py-1 px-2 text-neutral-700 hover:text-neutral-900 font-medium group" href="#memoriser">
+<svg class="w-6 h-6 stroke-[1.8]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M12 4l8 4-8 4-8-4 8-4z" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M4 12l8 4 8-4" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M4 16l8 4 8-4" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[10px] mt-1 tracking-tight">Mémoriser</span>
+</a>
+<!-- Item: Progrès -->
+<a class="flex flex-col items-center py-1 px-2 text-neutral-700 hover:text-neutral-900 font-medium group" href="#progres">
+<svg class="w-6 h-6 stroke-[1.8]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M6 20v-4m6 4V10m6 10V4" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[10px] mt-1 tracking-tight">Progrès</span>
+</a>
+<!-- Item: Réglages -->
+<a class="flex flex-col items-center py-1 px-2 text-neutral-700 hover:text-neutral-900 font-medium group" href="#reglages">
+<svg class="w-6 h-6 stroke-[1.8]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M12 3v2m0 14v2m9-9h-2M5 12H3m15.364-6.364l-1.414 1.414M7.05 16.95l-1.414 1.414m12.728 0l-1.414-1.414M7.05 7.05L5.636 5.636M12 16a4 4 0 100-8 4 4 0 000 8z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[10px] mt-1 tracking-tight">Réglages</span>
+</a>
+</div>
+</nav>
+<!-- END: BottomNavigationBar -->
+</main>
+<!-- END: MainContent -->
+</body></html>

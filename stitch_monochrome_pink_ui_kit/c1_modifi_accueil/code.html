@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+
+<html class="h-full bg-slate-100" lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>Aujourd'hui - Mémorisation</title>
+<!-- Tailwind CSS CDN with plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts: Inter & Newsreader / Playfair for scripture display -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Playfair+Display:ital,wght@0,600;0,700;1,400&amp;family=Lora:ital,wght@0,400;0,500;0,600;1,400&amp;display=swap" rel="stylesheet"/>
+<script data-purpose="tailwind-config">
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+            serif: ['Lora', 'Georgia', 'serif'],
+            display: ['"Playfair Display"', 'Georgia', 'serif']
+          },
+          colors: {
+            primary: {
+              DEFAULT: '#D81176', // Deep vibrant pink seen in mockup
+              hover: '#B80D63',
+              light: '#FDF2F7',
+              pill: '#FCE7F1'
+            },
+            status: {
+              bg: '#FBF9F8'
+            }
+          },
+          boxShadow: {
+            'card': '0 4px 20px -2px rgba(220, 38, 127, 0.08), 0 2px 6px -1px rgba(0, 0, 0, 0.04)',
+            'btn': '0 4px 14px 0 rgba(216, 17, 118, 0.35)'
+          }
+        }
+      }
+    }
+  </script>
+<style data-purpose="custom-layout">
+    body {
+      -webkit-font-smoothing: antialiased;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+    /* Hide scrollbar for a native app feel */
+    ::-webkit-scrollbar {
+      display: none;
+    }
+    * {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
+<style data-purpose="circular-progress">
+    /* Conic gradient for 2/4 progress ring */
+    .conic-progress-2-4 {
+      background: conic-gradient(#D81176 0deg 180deg, #E2E8F0 180deg 360deg);
+    }
+  </style>
+</head>
+<body class="h-full flex justify-center bg-slate-200 antialiased font-sans">
+<!-- BEGIN: PhoneFrameWrapper -->
+<!-- Container sizing matches typical modern iPhone aspect ratio -->
+<div class="relative w-full max-w-[420px] min-h-screen bg-[#FBFBFC] flex flex-col justify-between shadow-2xl overflow-y-auto">
+<!-- Top Mobile Header & Status Bar Area -->
+<div class="w-full pt-3 pb-2 px-6 flex-shrink-0">
+<!-- BEGIN: StatusBar -->
+<div class="w-full flex justify-between items-center text-xs font-semibold tracking-tight text-neutral-900 pb-3" data-purpose="ios-status-bar">
+<!-- Time -->
+<span class="text-[14px] font-bold tracking-tight">9:41</span>
+<!-- Indicators (5G, Signal bars, Battery) -->
+<div class="flex items-center space-x-1.5">
+<span class="text-[12px] font-semibold tracking-tight mr-0.5">5G</span>
+<!-- Signal icon -->
+<div class="flex items-end gap-[2px] h-3">
+<span class="w-[3px] h-[5px] bg-neutral-900 rounded-[0.5px]"></span>
+<span class="w-[3px] h-[7px] bg-neutral-900 rounded-[0.5px]"></span>
+<span class="w-[3px] h-[10px] bg-neutral-900 rounded-[0.5px]"></span>
+<span class="w-[3px] h-[12px] bg-neutral-900 rounded-[0.5px]"></span>
+</div>
+<!-- Battery icon -->
+<div class="w-5 h-2.5 border-[1.5px] border-neutral-900 rounded-sm p-[1.5px] flex items-center relative ml-1">
+<div class="w-full h-full bg-neutral-900 rounded-2xs"></div>
+<div class="w-[2px] h-1 bg-neutral-900 absolute -right-[3.5px] rounded-r-xs"></div>
+</div>
+</div>
+</div>
+<!-- END: StatusBar -->
+<!-- BEGIN: TopAppHeader -->
+<header class="w-full pt-1 pb-1 flex justify-between items-center" data-purpose="header-nav">
+<!-- Screen Title with vibrant underline indicator -->
+<div class="relative pb-2">
+<h1 class="text-[27px] font-extrabold text-neutral-900 tracking-tight leading-none">Aujourd’hui</h1>
+<div class="absolute bottom-0 left-0 w-full h-[3.5px] bg-[#D81176] rounded-full"></div>
+</div>
+<!-- Top Right Actions: Streak counter, Notification Bell, User Avatar -->
+<div class="flex items-center space-x-3.5">
+<!-- Streak points -->
+<div class="flex items-center space-x-1" data-purpose="streak-counter">
+<!-- Lightning bolt SVG -->
+<svg class="w-5 h-5 text-neutral-900" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" viewbox="0 0 24 24">
+<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+</svg>
+<span class="text-[18px] font-bold text-neutral-900">12</span>
+</div>
+<!-- Notification Bell -->
+<button aria-label="Notifications" class="text-neutral-900 focus:outline-none hover:opacity-75 transition-opacity">
+<svg class="w-[22px] h-[22px]" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+<path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+</svg>
+</button>
+<!-- User Profile Avatar -->
+<div class="w-[34px] h-[34px] rounded-full bg-[#D81176] text-white flex items-center justify-center font-bold text-[16px] shadow-sm select-none" data-purpose="user-avatar">
+            L
+          </div>
+</div>
+</header>
+<!-- END: TopAppHeader -->
+<!-- BEGIN: UserGreetingBanner -->
+<section class="mt-4 flex justify-between items-center" data-purpose="user-greeting">
+<h2 class="text-[19px] font-extrabold text-neutral-900 tracking-tight">Bonsoir Léa</h2>
+<!-- Points & Level pill -->
+<div class="px-3 py-1 bg-[#FCE6F1] text-[#931754] font-semibold text-[13px] rounded-full tracking-wide">
+          312 pts <span class="mx-0.5 opacity-60">·</span> Niv. 5
+        </div>
+</section>
+<!-- END: UserGreetingBanner -->
+</div>
+<!-- BEGIN: MainContentList -->
+<main class="flex-1 px-5 pt-3 pb-8 space-y-4 overflow-y-auto">
+<!-- BEGIN: VerseOfTheDayCard -->
+<article class="w-full rounded-[24px] p-6 text-white relative overflow-hidden shadow-lg" data-purpose="verse-card" style="background: linear-gradient(145deg, #442E4B 0%, #683B5E 45%, #B7667C 100%);">
+<!-- Subtitle and reference -->
+<header class="mb-3">
+<p class="text-[13px] font-medium text-pink-100 opacity-90 leading-tight">Verset du jour</p>
+<h3 class="text-[17px] font-extrabold tracking-wide mt-0.5">Jérémie 29:11 · LSG</h3>
+</header>
+<!-- Scripture Quote -->
+<p class="font-serif text-[17px] leading-snug tracking-normal text-rose-50/95 font-medium pr-1">
+          Car je connais les projets que j’ai formés sur vous, dit l’Éternel, projets de paix et non de malheur...
+        </p>
+</article>
+<!-- END: VerseOfTheDayCard -->
+<!-- BEGIN: FamilyGroupCard -->
+<article class="w-full rounded-[24px] p-5 bg-white border-2 border-[#D81176] shadow-card" data-purpose="family-team-card">
+<!-- Header: Group name & Badges -->
+<div class="flex items-center justify-between flex-wrap gap-2 mb-3.5">
+<div class="flex items-center space-x-2">
+<h3 class="text-[18px] font-extrabold text-neutral-900 tracking-tight">Famille Étoile</h3>
+<!-- Nouveau badge -->
+<span class="bg-[#D81176] text-white text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full tracking-wider">
+              NOUVEAU
+            </span>
+</div>
+<!-- Rank badge -->
+<span class="bg-[#E2F7EB] text-[#1E7E44] text-[12px] font-bold px-2.5 py-0.5 rounded-full">
+            1re cette semaine
+          </span>
+</div>
+<!-- Middle: Avatar Stack & Completion stats -->
+<div class="flex items-center justify-between my-2">
+<!-- Overlapping Circular Avatars -->
+<div class="flex items-center -space-x-2.5 overflow-visible" data-purpose="group-members">
+<div class="w-9 h-9 rounded-full bg-[#D81176] text-white flex items-center justify-center font-bold text-sm border-2 border-white ring-1 ring-black/5 shadow-sm">L</div>
+<div class="w-9 h-9 rounded-full bg-[#2F80ED] text-white flex items-center justify-center font-bold text-sm border-2 border-white ring-1 ring-black/5 shadow-sm">M</div>
+<div class="w-9 h-9 rounded-full bg-[#27AE60] text-white flex items-center justify-center font-bold text-sm border-2 border-white ring-1 ring-black/5 shadow-sm">A</div>
+<div class="w-9 h-9 rounded-full bg-[#E0B15B] text-white flex items-center justify-center font-bold text-sm border-2 border-white ring-1 ring-black/5 shadow-sm">D</div>
+<div class="w-9 h-9 rounded-full bg-[#B295DC] text-white flex items-center justify-center font-bold text-sm border-2 border-white ring-1 ring-black/5 shadow-sm">N</div>
+</div>
+<!-- Counter text -->
+<div class="text-right">
+<div class="text-[19px] font-bold text-neutral-900 font-serif leading-tight">3 sur 5</div>
+<p class="text-[11px] text-neutral-500 font-medium tracking-tight">ont révisé aujourd’hui</p>
+</div>
+</div>
+<!-- Bottom: Progress Bar & Objective -->
+<div class="mt-4 flex items-center space-x-3">
+<div class="flex-1 h-2.5 bg-neutral-100 rounded-full overflow-hidden">
+<!-- 62% progress fill -->
+<div class="h-full bg-[#D81176] rounded-full w-[62%] transition-all duration-300"></div>
+</div>
+<span class="text-[12px] font-bold text-neutral-800 whitespace-nowrap">Objectif 62 %</span>
+</div>
+</article>
+<!-- END: FamilyGroupCard -->
+<!-- BEGIN: RevisionCard -->
+<article class="w-full bg-white rounded-[24px] p-5 shadow-sm border border-neutral-100 flex items-center justify-between" data-purpose="revision-card">
+<div class="space-y-0.5">
+<span class="text-[11px] font-extrabold uppercase tracking-wider text-[#9C1155]">À RÉVISER</span>
+<h3 class="text-[21px] font-serif font-bold text-neutral-900 tracking-normal leading-tight">3 versets</h3>
+</div>
+<!-- Action Button -->
+<button class="bg-[#C8106D] hover:bg-[#B00E5F] active:scale-95 transition text-white font-bold text-[15px] px-7 py-2.5 rounded-full shadow-btn">
+          Réviser
+        </button>
+</article>
+<!-- END: RevisionCard -->
+<!-- BEGIN: CurrentJourneyCard -->
+<article class="w-full bg-white rounded-[24px] p-5 shadow-sm border border-neutral-100 flex items-center justify-between" data-purpose="journey-card">
+<div class="space-y-0.5">
+<span class="text-[11px] font-extrabold uppercase tracking-wider text-[#9C1155]">PARCOURS EN COURS</span>
+<h3 class="text-[20px] font-serif font-bold text-neutral-900 tracking-normal leading-tight">Psaumes 23:1-3</h3>
+<p class="text-[13px] font-medium text-neutral-600">Étape 2 sur 4</p>
+</div>
+<!-- Circular Progress Ring (2/4 = 50%) -->
+<div class="relative w-14 h-14 rounded-full conic-progress-2-4 flex items-center justify-center p-[5px]">
+<!-- Inner circle knockout -->
+<div class="w-full h-full bg-[#FAF9F9] rounded-full flex items-center justify-center">
+<span class="text-[14px] font-extrabold text-neutral-900 font-sans tracking-tight">2/4</span>
+</div>
+</div>
+</article>
+<!-- END: CurrentJourneyCard -->
+</main>
+<!-- END: MainContentList -->
+<!-- BEGIN: BottomNavigation -->
+<nav class="w-full bg-white border-t border-neutral-100 px-4 pt-2.5 pb-6 flex justify-around items-center flex-shrink-0 z-20" data-purpose="bottom-tab-bar">
+<!-- Nav Item: Accueil (Active) -->
+<a class="flex flex-col items-center group py-1 text-[#D81176]" data-purpose="tab-active" href="#">
+<svg class="w-6 h-6 stroke-[2.2]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[11px] font-bold mt-1">Accueil</span>
+</a>
+<!-- Nav Item: Bible -->
+<a class="flex flex-col items-center group py-1 text-neutral-600 hover:text-neutral-900 transition-colors" href="#">
+<svg class="w-6 h-6 stroke-[2]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<rect height="16" rx="2" stroke-linecap="round" stroke-linejoin="round" width="14" x="5" y="4"></rect>
+<line stroke-linecap="round" stroke-linejoin="round" x1="9" x2="9" y1="4" y2="20"></line>
+</svg>
+<span class="text-[11px] font-medium mt-1">Bible</span>
+</a>
+<!-- Nav Item: Mémoriser -->
+<a class="flex flex-col items-center group py-1 text-neutral-600 hover:text-neutral-900 transition-colors" href="#">
+<svg class="w-6 h-6 stroke-[2]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M12 2l9 5-9 5-9-5 9-5z" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M3 12l9 5 9-5" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M3 17l9 5 9-5" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[11px] font-medium mt-1">Mémoriser</span>
+</a>
+<!-- Nav Item: Progrès -->
+<a class="flex flex-col items-center group py-1 text-neutral-600 hover:text-neutral-900 transition-colors" href="#">
+<svg class="w-6 h-6 stroke-[2]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<line stroke-linecap="round" stroke-linejoin="round" x1="18" x2="18" y1="20" y2="10"></line>
+<line stroke-linecap="round" stroke-linejoin="round" x1="12" x2="12" y1="20" y2="4"></line>
+<line stroke-linecap="round" stroke-linejoin="round" x1="6" x2="6" y1="20" y2="14"></line>
+</svg>
+<span class="text-[11px] font-medium mt-1">Progrès</span>
+</a>
+<!-- Nav Item: Réglages -->
+<a class="flex flex-col items-center group py-1 text-neutral-600 hover:text-neutral-900 transition-colors" href="#">
+<svg class="w-6 h-6 stroke-[2]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<circle cx="12" cy="12" r="3" stroke-linecap="round" stroke-linejoin="round"></circle>
+<path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[11px] font-medium mt-1">Réglages</span>
+</a>
+</nav>
+<!-- END: BottomNavigation -->
+</div>
+<!-- END: PhoneFrameWrapper -->
+</body></html>

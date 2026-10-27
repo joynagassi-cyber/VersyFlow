@@ -1,0 +1,272 @@
+<!DOCTYPE html><html lang="fr"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+<title>R6 — Écriture — diff + note FSRS</title>
+<!-- Tailwind CSS v3 CDN -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              magenta: '#D81B60',
+              pinkLight: '#FDE7EF',
+              pinkPill: '#FBE3EB',
+              greenPill: '#DCF4E7',
+              greenText: '#137943',
+              errorText: '#C2185B',
+              yellowPill: '#FDF0CD',
+              yellowText: '#875800',
+              missingBorder: '#E69500',
+              superfluousBg: '#E9E4ED',
+              superfluousText: '#594A6B',
+              neutralBg: '#F8F4F6'
+            }
+          },
+          fontFamily: {
+            serifText: ['"Times New Roman"', 'Times', 'Baskerville', 'Georgia', 'serif'],
+            sans: ['-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', 'Helvetica', 'Arial', 'sans-serif']
+          }
+        }
+      }
+    };
+  </script>
+<style data-purpose="custom-decorations">
+    /* Squiggly underline for erroneous diff text */
+    .wavy-underline {
+      text-decoration-line: underline;
+      text-decoration-style: wavy;
+      text-decoration-color: #D81B60;
+      text-decoration-thickness: 1.5px;
+      text-underline-offset: 4px;
+    }
+    
+    /* Strikethrough combined with wavy for exact matching */
+    .wavy-underline-strike {
+      text-decoration: underline wavy #D81B60 1.5px;
+      text-underline-offset: 5px;
+    }
+
+    /* iOS safe areas and styling fixes */
+    body {
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      -webkit-tap-highlight-color: transparent;
+    }
+  </style>
+</head>
+<body class="bg-[#FBF8FA] text-[#1E1E1E] flex justify-center min-h-screen">
+<!-- Mobile Screen Container -->
+<div class="w-full max-w-[430px] min-h-screen bg-[#FBF8FA] flex flex-col justify-between relative shadow-2xl overflow-x-hidden pb-24">
+<!-- BEGIN: TopBar -->
+<header class="w-full pt-3 px-6 pb-2" data-purpose="header-section">
+<!-- iOS Status Bar -->
+<div class="flex justify-between items-center text-xs font-semibold tracking-tight text-neutral-900 mb-3" data-purpose="ios-status-bar">
+<span class="text-[15px] font-semibold tracking-tight ml-2">9:41</span>
+<div class="flex items-center space-x-1.5 mr-1">
+<span class="text-[12px] font-bold tracking-tighter">5G</span>
+<!-- Signal bars -->
+<div class="flex items-end space-x-[2px] h-3">
+<span class="w-[3px] h-1.5 bg-neutral-900 rounded-[0.5px]"></span>
+<span class="w-[3px] h-2 bg-neutral-900 rounded-[0.5px]"></span>
+<span class="w-[3px] h-2.5 bg-neutral-900 rounded-[0.5px]"></span>
+<span class="w-[3px] h-3 bg-neutral-900 rounded-[0.5px]"></span>
+</div>
+<!-- Battery Icon -->
+<div class="w-5 h-2.5 border border-neutral-900 rounded-[3px] p-[1px] flex items-center ml-0.5 relative">
+<div class="h-full w-full bg-neutral-900 rounded-[1px]"></div>
+<div class="absolute -right-[3px] top-0.5 w-[2px] h-1.5 bg-neutral-900 rounded-r-[1px]"></div>
+</div>
+</div>
+</div>
+<!-- Navigation Bar -->
+<div class="flex items-center justify-between mt-1">
+<!-- Back Button -->
+<button aria-label="Retour" class="w-10 h-10 rounded-full bg-white shadow-[0_1px_4px_rgba(0,0,0,0.06)] flex items-center justify-center text-neutral-700 active:bg-neutral-100 transition">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</button>
+<!-- Title & Subtitle -->
+<div class="text-center">
+<h1 class="text-[19px] font-serif font-bold text-neutral-900 tracking-tight leading-tight">Résultat</h1>
+<p class="text-[12px] text-neutral-500 font-normal">Jean 3:16–18 · Écriture</p>
+</div>
+<!-- More Options Button -->
+<button aria-label="Plus d'options" class="w-10 h-10 rounded-full bg-white shadow-[0_1px_4px_rgba(0,0,0,0.06)] flex items-center justify-center text-neutral-700 active:bg-neutral-100 transition">
+<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+<circle cx="5" cy="12" r="1.75"></circle>
+<circle cx="12" cy="12" r="1.75"></circle>
+<circle cx="19" cy="12" r="1.75"></circle>
+</svg>
+</button>
+</div>
+</header>
+<!-- END: TopBar -->
+<!-- BEGIN: MainContent -->
+<main class="flex-1 px-4 space-y-3.5 mt-2">
+<!-- Score Card -->
+<section class="bg-white rounded-3xl p-5 shadow-[0_1px_8px_rgba(0,0,0,0.03)] border border-neutral-100/70" data-purpose="score-summary-card">
+<div class="flex items-center space-x-6">
+<!-- Circular Progress Indicator (SVG) -->
+<div class="relative w-[96px] h-[96px] flex-shrink-0 flex items-center justify-center">
+<svg class="w-full h-full -rotate-90 transform" viewBox="0 0 100 100">
+<!-- Background Circle -->
+<circle cx="50" cy="50" fill="none" r="41" stroke="#FCE4EC" stroke-width="11"></circle>
+<!-- Progress Circle: 95% of 257.6 circumference = 244.7 stroke-dasharray -->
+<circle cx="50" cy="50" fill="none" r="41" stroke="#D81B60" stroke-dasharray="257.6" stroke-dashoffset="12.88" stroke-linecap="round" stroke-width="11"></circle>
+</svg>
+<div class="absolute inset-0 flex items-center justify-center">
+<span class="text-[23px] font-bold text-neutral-900 tracking-tight">95 <span class="text-[17px] font-bold -ml-1">%</span></span>
+</div>
+</div>
+<!-- Text and Badges Info -->
+<div class="flex-1 space-y-2">
+<div>
+<h2 class="text-[20px] font-bold text-neutral-900 font-serif leading-none tracking-tight">Très bien</h2>
+<p class="text-[12.5px] text-neutral-500 mt-1 font-normal">76 mots justes sur 80</p>
+</div>
+<!-- Pill Badges -->
+<div class="flex flex-wrap gap-1.5 pt-0.5">
+<span class="px-2.5 py-1 bg-[#DCF4E7] text-[#137943] text-[11px] font-medium rounded-full inline-block">76 justes</span>
+<span class="px-2.5 py-1 bg-[#FDE2EC] text-[#D81B60] text-[11px] font-medium rounded-full inline-block">1 erreur</span>
+<span class="px-2.5 py-1 bg-[#FBF1D5] text-[#8C6000] text-[11px] font-medium rounded-full inline-block">2 écarts</span>
+</div>
+</div>
+</div>
+</section>
+<!-- View Switcher (En ligne / Côte à côte) -->
+<section class="bg-[#EFE8EC]/70 p-1 rounded-2xl flex text-xs font-semibold text-neutral-600" data-purpose="diff-view-toggle">
+<button aria-selected="true" class="flex-1 py-2 rounded-xl bg-white text-neutral-900 shadow-sm text-center font-medium transition">
+          En ligne
+        </button>
+<button aria-selected="false" class="flex-1 py-2 rounded-xl text-neutral-500 text-center font-medium hover:text-neutral-900 transition">
+          Côte à côte
+        </button>
+</section>
+<!-- Diff Text Container -->
+<section class="bg-white rounded-3xl p-5 shadow-[0_1px_8px_rgba(0,0,0,0.03)] border border-neutral-100/70 space-y-4" data-purpose="diff-viewer">
+<!-- Legend Bar -->
+<div class="flex items-center space-x-3 text-[11.5px] pb-1 border-b border-neutral-100 font-normal">
+<span class="text-neutral-700">Juste</span>
+<span class="text-[#D81B60] wavy-underline font-medium">Erroné</span>
+<span class="px-1.5 py-0.5 border border-dashed border-[#DE8900] text-[#B86B00] rounded text-[11px] font-normal leading-none">[Manquant]</span>
+<span class="px-1.5 py-0.5 bg-[#E8E2EE] text-[#554668] rounded text-[11px] font-normal leading-none">Superflu</span>
+</div>
+<!-- Collapsible Verse 16 Banner -->
+<div class="flex justify-between items-center text-[12.5px] pt-1">
+<div class="flex items-center space-x-1.5 text-[#137943] font-semibold">
+<svg class="w-3.5 h-3.5 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+<path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="">v.16 · 100 %</span>
+</div>
+<button class="text-neutral-600 text-[12px] font-semibold hover:text-neutral-900">replier</button>
+</div>
+<!-- Verses Text Body -->
+<div class="text-[17.5px] font-serif leading-[1.68] text-neutral-900 space-y-4 pt-1 text-left">
+<!-- Verse 17 -->
+<p class="">
+<span class="text-[#D81B60] font-sans font-bold text-[13px] align-super tracking-tight mr-1">v.17</span>
+            Dieu, en effet, n’a pas 
+            <!-- Mistake container with strikethrough/wavy & correction -->
+<span class="inline-block relative">
+<span class="text-[#D81B60] wavy-underline">appelé</span>
+<span class="text-[#137943] font-sans text-[11px] font-bold absolute -top-3.5 left-1 tracking-tight">envoyé</span>
+</span>
+            son Fils dans le monde pour qu’il juge le monde, mais pour que le monde soit sauvé par lui.
+          </p>
+<!-- Verse 18 -->
+<p class="">
+<span class="text-[#D81B60] font-sans font-bold text-[13px] align-super tracking-tight mr-1">v.18</span>
+            Celui qui croit en lui n’est 
+            <!-- Missing word -->
+<span class="inline-block px-1.5 py-0.2 border border-dashed border-[#DE8900] text-[#9A5C00] rounded font-serif text-[17px] leading-tight bg-[#FFFCF6]">point</span>
+            jugé ; mais celui qui ne croit pas est déjà jugé, parce qu’il n’a pas cru au nom du 
+            <!-- Superfluous word -->
+<span class="inline-block px-1 py-0.2 bg-[#E7E2ED] text-[#4E415F] rounded font-serif text-[17px] leading-tight">bien</span>
+            Fils unique de Dieu.
+          </p>
+</div>
+</section>
+<!-- FSRS Rating Section Card -->
+<section class="bg-white rounded-3xl p-5 shadow-[0_1px_8px_rgba(0,0,0,0.03)] border border-neutral-100/70 space-y-3" data-purpose="fsrs-review-card">
+<!-- Header & Formula -->
+<div class="flex items-start space-x-3">
+<div class="text-[10px] font-bold tracking-wider text-[#C2185B] leading-[1.2] uppercase pt-0.5 w-12 flex-shrink-0">
+            NOTE<br>FSRS
+          </div>
+<div class="text-[11.5px] text-neutral-600 leading-snug">
+            Flashcards 100 % × 40 % + Écriture 95 % × 60 %
+          </div>
+</div>
+<!-- Proposed Grade Label -->
+<div>
+<h3 class="text-[17.5px] font-serif font-bold text-neutral-900 tracking-tight">
+            97 % · note proposée : <span class="font-bold">Bon</span>
+</h3>
+</div>
+<!-- Rating Action Buttons Grid -->
+<div class="grid grid-cols-4 gap-2 pt-1" data-purpose="fsrs-buttons">
+<!-- À revoir -->
+<button class="flex flex-col items-center justify-center py-2.5 px-1 rounded-2xl border border-neutral-200/90 bg-white hover:bg-neutral-50 active:scale-95 transition">
+<span class="text-[11.5px] font-semibold text-neutral-900">À revoir</span>
+<span class="text-[10px] text-neutral-500 font-medium mt-0.5">10 min</span>
+</button>
+<!-- Difficile -->
+<button class="flex flex-col items-center justify-center py-2.5 px-1 rounded-2xl border border-neutral-200/90 bg-white hover:bg-neutral-50 active:scale-95 transition">
+<span class="text-[11.5px] font-semibold text-neutral-900">Difficile</span>
+<span class="text-[10px] text-neutral-500 font-medium mt-0.5">J+1</span>
+</button>
+<!-- Bon (Active / Selected) -->
+<button class="flex flex-col items-center justify-center py-2.5 px-1 rounded-2xl bg-[#D81B60] text-white shadow-md active:scale-95 transition border border-[#D81B60]">
+<span class="text-[11.5px] font-bold">Bon</span>
+<span class="text-[10px] text-white/90 font-medium mt-0.5">J+3</span>
+</button>
+<!-- Facile -->
+<button class="flex flex-col items-center justify-center py-2.5 px-1 rounded-2xl border border-neutral-200/90 bg-white hover:bg-neutral-50 active:scale-95 transition">
+<span class="text-[11.5px] font-semibold text-neutral-900">Facile</span>
+<span class="text-[10px] text-neutral-500 font-medium mt-0.5">J+7</span>
+</button>
+</div>
+</section>
+<!-- Primary Action CTA Button -->
+<div class="pt-1.5 pb-2">
+<button class="w-full py-4 rounded-full bg-[#D81B60] text-white font-medium text-[15px] tracking-tight shadow-md hover:bg-[#C2185B] active:scale-[0.99] transition flex items-center justify-center space-x-1.5" data-purpose="submit-rating-button">
+<span class="">Valider la note · prochain rappel J+3</span>
+</button>
+</div>
+</main>
+<!-- END: MainContent -->
+<!-- BEGIN: BottomNavigation -->
+<nav class="fixed bottom-0 max-w-[430px] w-full bg-white border-t border-neutral-200/80 px-4 pt-2.5 pb-5 flex justify-between items-center text-[10px] font-medium z-50" data-purpose="tab-bar">
+<!-- Accueil -->
+<button class="flex-1 flex flex-col items-center justify-center text-neutral-700 hover:text-neutral-900 space-y-1">
+<svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<span class="">Accueil</span>
+</button>
+<!-- Bible -->
+<button class="flex-1 flex flex-col items-center justify-center text-neutral-700 hover:text-neutral-900 space-y-1">
+<svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect height="16" rx="2" stroke-linecap="round" stroke-linejoin="round" width="16" x="4" y="4"></rect></svg>
+<span class="">Bible</span>
+</button>
+<!-- Mémoriser (Active Tab) -->
+<button class="flex-1 flex flex-col items-center justify-center text-[#D81B60] space-y-1">
+<svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 4.5l8.5 4.5-8.5 4.5L3.5 9 12 4.5zM3.5 13.5l8.5 4.5 8.5-4.5M3.5 18l8.5 4.5 8.5-4.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<span class="font-semibold">Mémoriser</span>
+</button>
+<!-- Progrès -->
+<button class="flex-1 flex flex-col items-center justify-center text-neutral-700 hover:text-neutral-900 space-y-1">
+<svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<span class="">Progrès</span>
+</button>
+<!-- Réglages -->
+<button class="flex-1 flex flex-col items-center justify-center text-neutral-700 hover:text-neutral-900 space-y-1">
+<svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3" stroke-linecap="round" stroke-linejoin="round"></circle><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41m11.32-11.32l1.41-1.41" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<span class="">Réglages</span>
+</button>
+</nav>
+<!-- END: BottomNavigation -->
+</div>
+
+
+</body></html>

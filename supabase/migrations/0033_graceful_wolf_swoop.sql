@@ -1,0 +1,1 @@
+create policy "semantic_concepts_manual_delete" on public.concepts for delete to authenticated using (source = 'manual' and created_by = auth.uid()::text);

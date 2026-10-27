@@ -1,0 +1,224 @@
+<!DOCTYPE html><html lang="fr"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+<title>R14 — Progrès — Activité</title>
+<!-- Tailwind CSS CDN with forms and container queries plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            appPink: '#e81c76',
+            appPinkLight: '#fde7f1',
+            appBg: '#fbf9f9',
+            appCardBg: '#ffffff',
+            appMuted: '#8e8e93',
+            badgeStar: '#d48806',
+            badgeThunder: '#722ed1',
+            badgeBook: '#d46b08',
+            badgeCheck: '#cf1322'
+          },
+          fontFamily: {
+            sans: ['-apple-system', 'BlinkMacSystemFont', '"SF Pro Display"', '"SF Pro Text"', 'Roboto', 'Helvetica', 'Arial', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+<style data-purpose="custom-layout">
+    /* Disabling default scrollbars for smooth mobile feeling */
+    ::-webkit-scrollbar {
+      display: none;
+    }
+    body {
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+    /* Donut chart circular progress */
+    .retention-donut {
+      background: conic-gradient(#e81c76 0% 91%, #f1e4ec 91% 100%);
+    }
+  </style>
+</head>
+<body class="bg-[#faf7f7] text-[#1c1c1e] min-h-screen flex justify-center items-start antialiased font-sans">
+<!-- Mobile Screen Container -->
+<div class="w-full max-w-[430px] min-h-screen flex flex-col relative pb-28 shadow-xl bg-[#faf7f7]">
+<!-- BEGIN: iOSStatusBar -->
+<header class="w-full pt-3 px-7 flex justify-between items-center text-sm font-semibold tracking-tight" data-purpose="status-bar">
+<!-- Time indicator -->
+<span class="">9:41</span>
+<!-- Connectivity & Battery icons -->
+<div class="flex items-center space-x-1.5">
+<span class="text-xs font-semibold mr-0.5">5G</span>
+<!-- Cellular Signal bars -->
+<div class="flex items-end space-x-[2px] h-3">
+<span class="w-[3px] h-1.5 bg-black rounded-xs"></span>
+<span class="w-[3px] h-2 bg-black rounded-xs"></span>
+<span class="w-[3px] h-2.5 bg-black rounded-xs"></span>
+<span class="w-[3px] h-3 bg-black rounded-xs"></span>
+</div>
+</div>
+</header>
+<!-- END: iOSStatusBar -->
+<!-- BEGIN: UserHeader -->
+<section class="px-6 pt-5 pb-2" data-purpose="user-header">
+<div class="flex justify-between items-start">
+<div>
+<h1 class="text-[32px] font-black tracking-tight leading-tight text-[#161618]">Ton parcours</h1>
+<p class="text-[13px] text-[#71717a] font-normal mt-0.5">Mémorisation depuis le 7 octobre</p>
+</div>
+<!-- Profile Avatar with letter 'J' -->
+<div class="w-14 h-14 rounded-full border border-black/80 flex items-center justify-center bg-white shadow-xs">
+<span class="text-2xl font-serif font-light text-black">J</span>
+</div>
+</div>
+<!-- Tab Navigation -->
+<nav class="flex space-x-7 mt-6 border-b border-[#e5e5ea]/60" data-purpose="secondary-navigation">
+<button class="font-bold text-[16px] text-black pb-2.5 border-b-2 border-black -mb-[1px] tracking-tight">Activité</button>
+<button class="font-semibold text-[16px] text-[#8e8e93] pb-2.5 tracking-tight hover:text-black transition-colors">Enregistré</button>
+<button class="font-semibold text-[16px] text-[#8e8e93] pb-2.5 tracking-tight hover:text-black transition-colors">Profil</button>
+</nav>
+</section>
+<!-- END: UserHeader -->
+<!-- BEGIN: MainContent -->
+<main class="px-5 pt-4 space-y-3.5">
+<!-- Two-column stats grid -->
+<section class="grid grid-cols-2 gap-3.5" data-purpose="streak-stats-grid">
+<!-- Card 1: Serie dans l'application -->
+<div class="bg-white rounded-3xl p-5 shadow-[0_2px_12px_rgba(0,0,0,0.03)] flex flex-col justify-between min-h-[160px]">
+<span class="text-[14px] font-semibold text-[#1c1c1e] leading-snug">Série dans<br>l’application</span>
+<div class="mt-2">
+<div class="flex items-center gap-1.5">
+<span class="text-[40px] font-extrabold text-[#111] tracking-tight leading-none">12</span>
+<svg class="w-6 h-6 text-[#d81b60] stroke-[2.2]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 3L4 14h6l-2 7 9-11h-5l3-7z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M18 4v4m-2-2h4" stroke-width="2"></path></svg>
+</div>
+<p class="text-[12px] text-[#8e8e93] font-medium mt-1.5">Le meilleur : 12</p>
+</div>
+</div>
+<!-- Card 2: Jours de memorisation -->
+<div class="bg-white rounded-3xl p-5 shadow-[0_2px_12px_rgba(0,0,0,0.03)] flex flex-col justify-between min-h-[160px]">
+<span class="text-[14px] font-semibold text-[#1c1c1e] leading-snug">Jours de<br>mémorisation<br>cette année</span>
+<div class="mt-2">
+<span class="text-[40px] font-extrabold text-[#111] tracking-tight leading-none">104</span>
+</div>
+</div>
+</section>
+<!-- Card: Memorized Verses Overview -->
+<section class="bg-white rounded-2xl px-5 py-4 shadow-[0_2px_12px_rgba(0,0,0,0.03)] flex items-center justify-between" data-purpose="verses-overview">
+<div>
+<span class="text-[26px] font-extrabold text-[#111] leading-none tracking-tight block">14</span>
+<span class="text-[12px] text-[#8e8e93] font-medium">Versets mémorisés</span>
+</div>
+<div class="flex items-center space-x-2">
+<span class="bg-[#ebf8f0] text-[#1e824c] font-semibold text-xs px-3 py-1.5 rounded-full">5 maîtrisés</span>
+<svg class="w-4 h-4 text-[#8e8e93] stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.5 4.5l7 7.5-7 7.5"></path></svg>
+</div>
+</section>
+<!-- Card: Badges Showcase -->
+<section class="bg-white rounded-3xl p-5 shadow-[0_2px_12px_rgba(0,0,0,0.03)]" data-purpose="badges-card">
+<div class="flex justify-between items-center mb-3"><div class="w-14 h-14 rounded-full border-2 border-[#d99435] flex items-center justify-center bg-white p-0.5 shadow-sm"><div class="w-full h-full rounded-full bg-[#cb8a27] flex items-center justify-center text-white"><svg class="w-6 h-6 stroke-white stroke-2 fill-none" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" stroke-linecap="round" stroke-linejoin="round"></polygon></svg></div></div><div class="w-14 h-14 rounded-full border-2 border-[#7e64cf] flex items-center justify-center bg-white p-0.5 shadow-sm"><div class="w-full h-full rounded-full bg-[#7861cc] flex items-center justify-center text-white"><svg class="w-6 h-6 stroke-white stroke-[2.2] fill-none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 9V4h12v5a6 6 0 01-12 0z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M18 6h3a2 2 0 012 2v1a4 4 0 01-4 4h-1M6 6H3a2 2 0 00-2 2v1a4 4 0 004 4h1M12 15v5m-4 0h8"></path></svg></div></div><div class="w-14 h-14 rounded-full border-2 border-[#d9663d] flex items-center justify-center bg-white p-0.5 shadow-sm"><div class="w-full h-full rounded-full bg-[#ce5d34] flex items-center justify-center text-white"><svg class="w-6 h-6 stroke-white stroke-2 fill-none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg></div></div><div class="w-14 h-14 rounded-full border-2 border-[#ad4242] flex items-center justify-center bg-white p-0.5 shadow-sm"><div class="w-full h-full rounded-full bg-[#9f3434] flex items-center justify-center text-white"><svg class="w-6 h-6 stroke-white stroke-[2.5] fill-none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div></div></div>
+<!-- Badges list -->
+<div class="flex items-center justify-between pt-1 pb-1 px-1"><div class="w-14 h-14 rounded-full border-2 border-[#d99435] flex items-center justify-center bg-white p-0.5 shadow-sm"><div class="w-full h-full rounded-full bg-[#cb8a27] flex items-center justify-center text-white"><svg class="w-6 h-6 stroke-white stroke-2 fill-none" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" stroke-linecap="round" stroke-linejoin="round"></polygon></svg></div></div><div class="w-14 h-14 rounded-full border-2 border-[#7e64cf] flex items-center justify-center bg-white p-0.5 shadow-sm"><div class="w-full h-full rounded-full bg-[#7861cc] flex items-center justify-center text-white"><svg class="w-6 h-6 stroke-white stroke-[2.2] fill-none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 9V4h12v5a6 6 0 01-12 0z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M18 6h3a2 2 0 012 2v1a4 4 0 01-4 4h-1M6 6H3a2 2 0 00-2 2v1a4 4 0 004 4h1M12 15v5m-4 0h8"></path></svg></div></div><div class="w-14 h-14 rounded-full border-2 border-[#d9663d] flex items-center justify-center bg-white p-0.5 shadow-sm"><div class="w-full h-full rounded-full bg-[#ce5d34] flex items-center justify-center text-white"><svg class="w-6 h-6 stroke-white stroke-2 fill-none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg></div></div><div class="w-14 h-14 rounded-full border-2 border-[#ad4242] flex items-center justify-center bg-white p-0.5 shadow-sm"><div class="w-full h-full rounded-full bg-[#9f3434] flex items-center justify-center text-white"><svg class="w-6 h-6 stroke-white stroke-[2.5] fill-none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div></div></div>
+</section>
+<!-- Pill Filter Tabs -->
+<section class="flex items-center space-x-2 pt-1 overflow-x-auto no-scrollbar" data-purpose="pill-filters">
+<button class="bg-[#1c1c1e] text-white text-[13px] font-semibold px-4 py-2.5 rounded-full shadow-sm">Tout</button>
+<button class="bg-white text-[#1c1c1e] text-[13px] font-semibold px-4 py-2.5 rounded-full border border-gray-100 shadow-xs">Mémorisés</button>
+<button class="bg-white text-[#1c1c1e] text-[13px] font-semibold px-3 py-1.5 rounded-full border border-gray-100 shadow-xs text-center leading-tight">À<br>revoir</button>
+<button class="bg-white text-[#1c1c1e] text-[13px] font-semibold px-4 py-2.5 rounded-full border border-gray-100 shadow-xs">Maîtrisés</button>
+</section>
+<!-- Card: Retention Section with Chart -->
+<section class="bg-white rounded-3xl p-5 shadow-[0_2px_12px_rgba(0,0,0,0.03)]" data-purpose="retention-card">
+<div class="flex justify-between items-start">
+<div>
+<h2 class="text-[17px] font-bold text-[#111]">Rétention</h2>
+<p class="text-[12px] text-[#8e8e93] font-medium mt-0.5">sur 30 jours</p>
+</div>
+<!-- Donut Retention Gauge -->
+<div class="relative w-16 h-16 rounded-full retention-donut flex items-center justify-center">
+<div class="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-inner">
+<span class="text-xs font-black tracking-tight text-[#111]">91 %</span>
+</div>
+</div>
+</div>
+<!-- Weekly Activity Histogram -->
+<div class="pt-6 pb-1">
+<div class="flex items-end justify-between h-20 px-2">
+<!-- Day L -->
+<div class="flex flex-col items-center gap-2">
+<div class="w-8 h-6 rounded-md bg-gradient-to-t from-[#e81c76] to-[#ec4899]"></div>
+<span class="text-[11px] font-bold text-[#111]">L</span>
+</div>
+<!-- Day M -->
+<div class="flex flex-col items-center gap-2">
+<div class="w-8 h-12 rounded-md bg-gradient-to-t from-[#e81c76] to-[#ec4899]"></div>
+<span class="text-[11px] font-bold text-[#111]">M</span>
+</div>
+<!-- Day M -->
+<div class="flex flex-col items-center gap-2">
+<div class="w-8 h-9 rounded-md bg-gradient-to-t from-[#e81c76] to-[#ec4899]"></div>
+<span class="text-[11px] font-bold text-[#111]">M</span>
+</div>
+<!-- Day J -->
+<div class="flex flex-col items-center gap-2">
+<div class="w-8 h-16 rounded-md bg-gradient-to-t from-[#e81c76] to-[#ec4899]"></div>
+<span class="text-[11px] font-bold text-[#111]">J</span>
+</div>
+<!-- Day V -->
+<div class="flex flex-col items-center gap-2">
+<div class="w-8 h-1.5 rounded-full bg-[#e5e5ea]"></div>
+<span class="text-[11px] font-bold text-[#111]">V</span>
+</div>
+<!-- Day S -->
+<div class="flex flex-col items-center gap-2">
+<div class="w-8 h-1.5 rounded-full bg-[#e5e5ea]"></div>
+<span class="text-[11px] font-bold text-[#111]">S</span>
+</div>
+<!-- Day D -->
+<div class="flex flex-col items-center gap-2">
+<div class="w-8 h-1.5 rounded-full bg-[#e5e5ea]"></div>
+<span class="text-[11px] font-bold text-[#111]">D</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Card: A Renforcer Section -->
+<section class="bg-white rounded-3xl p-5 shadow-[0_2px_12px_rgba(0,0,0,0.03)]" data-purpose="to-reinforce-card">
+<h2 class="text-[16px] font-bold text-[#111] mb-3">À renforcer</h2>
+<div class="space-y-4">
+<!-- Item 1: Psaume 23:1 -->
+<div class="flex items-center justify-between border-t border-[#f4f4f6] pt-3">
+<span class="text-[14px] font-bold text-[#111] w-28 shrink-0">Psaume 23:1</span>
+<div class="flex-1 mx-3 h-2 bg-[#f0eff2] rounded-full overflow-hidden">
+<div class="h-full bg-[#e81c76] rounded-full" style="width: 48%;"></div>
+</div>
+<span class="text-[13px] font-bold text-[#111] w-5 text-right">48</span>
+</div>
+<!-- Item 2: Jean 3:16 -->
+<div class="flex items-center justify-between border-t border-[#f4f4f6] pt-3">
+<span class="text-[14px] font-bold text-[#111] w-28 shrink-0">Jean 3:16</span>
+<div class="flex-1 mx-3 h-2 bg-[#f0eff2] rounded-full overflow-hidden">
+<div class="h-full bg-[#e81c76] rounded-full" style="width: 62%;"></div>
+</div>
+<span class="text-[13px] font-bold text-[#111] w-5 text-right">62</span>
+</div>
+<!-- Item 3: Romains 8:28 -->
+<div class="flex items-center justify-between border-t border-[#f4f4f6] pt-3">
+<span class="text-[14px] font-bold text-[#111] w-28 shrink-0">Romains 8:28</span>
+<div class="flex-1 mx-3 h-2 bg-[#f0eff2] rounded-full overflow-hidden">
+<div class="h-full bg-[#e81c76] rounded-full" style="width: 71%;"></div>
+</div>
+<span class="text-[13px] font-bold text-[#111] w-5 text-right">71</span>
+</div>
+</div>
+</section>
+</main>
+<!-- END: MainContent -->
+<!-- BEGIN: BottomNavigation -->
+<footer class="fixed bottom-0 left-0 right-0 max-w-[430px] mx-auto bg-white border-t border-[#f2f2f7] px-3 py-2 z-50 flex justify-around items-center" data-purpose="bottom-tab-bar"><button class="flex flex-col items-center group flex-1"><svg class="w-6 h-6 text-[#1c1c1e] stroke-[1.8]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l9-9 9 9M5 10v10a1 1 0 001 1h4a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1h4a1 1 0 001-1V10"></path></svg><span class="text-[10px] font-medium text-[#1c1c1e] mt-1">Accueil</span></button><button class="flex flex-col items-center group flex-1"><svg class="w-6 h-6 text-[#1c1c1e] stroke-[1.8]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg><span class="text-[10px] font-medium text-[#1c1c1e] mt-1">Bible</span></button><button class="flex flex-col items-center group flex-1"><svg class="w-6 h-6 text-[#1c1c1e] stroke-[1.8]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2.5" stroke-linecap="round" stroke-linejoin="round"></rect><path stroke-linecap="round" stroke-linejoin="round" d="M9 9h6M9 12h6M9 15h4"></path></svg><span class="text-[10px] font-medium text-[#1c1c1e] mt-1">Mémoriser</span></button><button class="flex flex-col items-center group flex-1"><svg class="w-6 h-6 text-[#e81c76] stroke-[2.2]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M18 20V10M12 20V4M6 20v-6"></path></svg><span class="text-[10px] font-semibold text-[#e81c76] mt-1">Progrès</span></button><button class="flex flex-col items-center group flex-1"><svg class="w-6 h-6 text-[#1c1c1e] stroke-[1.8]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.5" fill="currentColor"></circle><circle cx="12" cy="12" r="1.5" fill="currentColor"></circle><circle cx="19" cy="12" r="1.5" fill="currentColor"></circle></svg><span class="text-[10px] font-medium text-[#1c1c1e] mt-1">Plus</span></button></footer>
+<!-- END: BottomNavigation -->
+</div>
+
+
+</body></html>

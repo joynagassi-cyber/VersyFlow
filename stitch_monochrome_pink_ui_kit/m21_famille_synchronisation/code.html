@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+
+<html lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>M21 — Famille — Synchronisation</title>
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              pink: '#c71373',
+              pinkHover: '#ad0f63',
+              pinkLight: '#fde8f1',
+              pinkBadge: '#f8d2e6',
+              bg: '#faf8f8'
+            }
+          },
+          fontFamily: {
+            serif: ['Georgia', 'Cambria', '"Times New Roman"', 'serif'],
+            sans: ['-apple-system', 'BlinkMacSystemFont', '"SF Pro Text"', '"SF Pro Display"', 'Roboto', 'Helvetica', 'Arial', 'sans-serif']
+          },
+          boxShadow: {
+            soft: '0 4px 20px -2px rgba(0, 0, 0, 0.05)',
+            card: '0 2px 12px 0 rgba(0, 0, 0, 0.04)'
+          }
+        }
+      }
+    }
+  </script>
+<!-- BEGIN: Custom Styles for iOS look & feel -->
+<style data-purpose="custom-layout">
+    body {
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+    .safe-top {
+      padding-top: env(safe-area-inset-top, 14px);
+    }
+    .safe-bottom {
+      padding-bottom: env(safe-area-inset-bottom, 24px);
+    }
+  </style>
+<!-- END: Custom Styles -->
+</head>
+<body class="bg-[#faf8f8] text-gray-900 font-sans antialiased min-h-screen flex justify-center items-start">
+<!-- Mobile Screen Wrapper -->
+<div class="w-full max-w-[420px] min-h-screen bg-[#faf8f8] flex flex-col relative pb-28 shadow-xl">
+<!-- BEGIN: iOS Status Bar -->
+<header class="w-full px-7 pt-3.5 pb-2 flex justify-between items-center text-[15px] font-semibold tracking-tight text-gray-900">
+<span class="tracking-tight text-[15px] font-medium">9:41</span>
+<div aria-label="Signal et batterie" class="flex items-center space-x-1.5">
+<span class="text-xs font-semibold mr-0.5">5G</span>
+<!-- Signal strength bars -->
+<div class="flex items-end space-x-0.5 h-3">
+<div class="w-1 h-1.5 bg-black rounded-[0.5px]"></div>
+<div class="w-1 h-2 bg-black rounded-[0.5px]"></div>
+<div class="w-1 h-3 bg-black rounded-[0.5px]"></div>
+</div>
+</div>
+</header>
+<!-- END: iOS Status Bar -->
+<!-- BEGIN: Top Navigation Bar -->
+<nav aria-label="En-tête de page" class="px-5 py-2 flex items-center justify-between relative">
+<!-- Back button -->
+<button aria-label="Retour" class="w-10 h-10 rounded-full bg-white shadow-soft border border-gray-100 flex items-center justify-center text-gray-800 active:bg-gray-100 transition-colors" type="button">
+<svg class="w-5 h-5 -ml-0.5" fill="none" stroke="currentColor" stroke-width="2.2" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M15 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+<!-- Center Title -->
+<div class="text-center">
+<h1 class="font-serif text-2xl font-bold tracking-tight text-gray-900">Synchronisation</h1>
+<p class="text-xs text-gray-500 font-normal mt-0.5">Famille connectée</p>
+</div>
+<!-- More Options Button -->
+<button aria-label="Plus d'options" class="w-10 h-10 rounded-full bg-white shadow-soft border border-gray-100 flex items-center justify-center text-gray-800 active:bg-gray-100 transition-colors" type="button">
+<svg class="w-5 h-5" fill="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<circle cx="5" cy="12" r="2"></circle>
+<circle cx="12" cy="12" r="2"></circle>
+<circle cx="19" cy="12" r="2"></circle>
+</svg>
+</button>
+</nav>
+<!-- END: Top Navigation Bar -->
+<!-- BEGIN: Main Content Area -->
+<main class="flex-1 px-5 pt-4 space-y-4">
+<!-- Status Card: Tout est à jour -->
+<section class="bg-white rounded-3xl p-5 shadow-card border border-gray-50 flex items-center space-x-4" data-purpose="status-card">
+<!-- Circle check icon -->
+<div class="w-14 h-14 rounded-full bg-[#e3f6ea] flex items-center justify-center shrink-0">
+<svg class="w-6 h-6 text-[#1b8044]" fill="none" stroke="currentColor" stroke-width="3" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+<!-- Title and timestamp -->
+<div>
+<h2 class="font-serif text-xl font-bold text-gray-900 leading-tight">Tout est à jour</h2>
+<p class="text-xs text-gray-500 mt-1 font-normal">Dernière synchronisation il y a 2 min</p>
+</div>
+</section>
+<!-- Primary Action Button -->
+<div class="pt-1">
+<button class="w-full py-4 px-6 bg-[#c71373] hover:bg-[#b01066] active:scale-[0.99] transition-all text-white font-medium text-[16px] rounded-full shadow-md text-center" type="button">
+          Synchroniser maintenant
+        </button>
+</div>
+<!-- Section: Appareils Liés -->
+<section class="bg-white rounded-3xl p-5 shadow-card border border-gray-50" data-purpose="linked-devices">
+<h3 class="text-[11px] font-bold uppercase tracking-wider text-[#c71373] mb-3">APPAREILS LIÉS</h3>
+<div class="divide-y divide-gray-100">
+<!-- Item 1: Ce téléphone · Léa -->
+<div class="py-3.5 flex items-center justify-between first:pt-1">
+<div class="flex items-center space-x-3.5">
+<div class="w-11 h-11 rounded-2xl bg-[#f5f5f7] flex items-center justify-center text-gray-700">
+<svg class="w-5 h-5 text-gray-800" fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<rect height="20" rx="2.5" width="10" x="7" y="2"></rect>
+<path d="M11 18h2" stroke-linecap="round"></path>
+</svg>
+</div>
+<div>
+<p class="text-base font-bold text-gray-900">Ce téléphone · Léa</p>
+<p class="text-xs text-gray-400 mt-0.5">Actif maintenant</p>
+</div>
+</div>
+<span class="px-3 py-1 rounded-full text-xs font-semibold bg-[#e4f6ec] text-[#147a3e]">
+              À jour
+            </span>
+</div>
+<!-- Item 2: Tablette · Marc -->
+<div class="py-3.5 flex items-center justify-between last:pb-1">
+<div class="flex items-center space-x-3.5">
+<div class="w-11 h-11 rounded-2xl bg-[#f5f5f7] flex items-center justify-center text-gray-700">
+<svg class="w-5 h-5 text-gray-800" fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<rect height="20" rx="2.5" width="10" x="7" y="2"></rect>
+<path d="M11 18h2" stroke-linecap="round"></path>
+</svg>
+</div>
+<div>
+<p class="text-base font-bold text-gray-900">Tablette · Marc</p>
+<p class="text-xs text-gray-400 mt-0.5">Dernière connexion hier</p>
+</div>
+</div>
+<span class="px-3 py-1 rounded-full text-xs font-semibold bg-[#fef3d6] text-[#9a6700]">
+              En retard
+            </span>
+</div>
+</div>
+</section>
+<!-- Section: En attente d'envoi -->
+<section class="bg-white rounded-3xl p-5 shadow-card border border-gray-50" data-purpose="pending-changes">
+<div class="flex items-center justify-between mb-1.5">
+<h3 class="text-base font-bold text-gray-900">En attente d’envoi</h3>
+<span class="px-3 py-1 rounded-full text-xs font-semibold bg-[#fef3d6] text-[#9a6700]">
+            3 changements
+          </span>
+</div>
+<p class="text-xs text-gray-500 leading-relaxed">
+          Ils partiront dès que la connexion revient.
+        </p>
+</section>
+<!-- Section: Conflit résolu -->
+<section class="bg-white rounded-3xl p-5 shadow-card border border-gray-50" data-purpose="conflict-resolved">
+<div class="flex items-center justify-between mb-1.5">
+<h3 class="text-base font-bold text-gray-900">Conflit résolu</h3>
+<span class="w-6 h-6 rounded-full bg-[#fad1e4] text-[#c71373] text-xs font-bold flex items-center justify-center">
+            1
+          </span>
+</div>
+<p class="text-xs text-gray-500 leading-relaxed pr-2">
+          Deux appareils ont modifié l’alias de Noé : la version la plus récente a été gardée.
+        </p>
+</section>
+<!-- Section: Réglage Wi-Fi uniquement -->
+<section class="bg-white rounded-3xl px-5 py-4 shadow-card border border-gray-50 flex items-center justify-between" data-purpose="setting-wifi-toggle">
+<span class="text-base font-normal text-gray-900">Wi-Fi uniquement</span>
+<!-- iOS Toggle Switch (Enabled pink state with checkmark) -->
+<label class="relative inline-flex items-center cursor-pointer">
+<input aria-label="Activer le Wi-Fi uniquement" checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-[54px] h-[32px] bg-[#c71373] rounded-full peer peer-checked:bg-[#c71373] relative transition-colors duration-200">
+<!-- White Knob with Pink Checkmark -->
+<div class="absolute right-[3px] top-[3px] bg-white w-[26px] h-[26px] rounded-full shadow-sm flex items-center justify-center transition-transform">
+<svg class="w-3.5 h-3.5 text-[#c71373]" fill="none" stroke="currentColor" stroke-width="3.5" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+</div>
+</label>
+</section>
+<!-- Offline Info Caption -->
+<p class="text-center text-xs text-gray-500 pt-1 pb-4 font-normal">
+        Hors ligne, tout continue de fonctionner.
+      </p>
+</main>
+<!-- END: Main Content Area -->
+<!-- BEGIN: Bottom Tab Navigation Bar -->
+<nav class="fixed bottom-0 max-w-[420px] w-full bg-white/95 backdrop-blur-md border-t border-gray-100 safe-bottom px-3 pt-2 pb-2 flex justify-around items-center z-50">
+<!-- Tab 1: Accueil -->
+<a class="flex flex-col items-center justify-center text-gray-700 hover:text-gray-900 w-16" href="#">
+<svg class="w-6 h-6 stroke-current fill-none" stroke-width="1.8" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M3 10.5l9-7.5 9 7.5v9a1.5 1.5 0 01-1.5 1.5h-4.5a1 1 0 01-1-1v-4a1 1 0 00-1-1h-2a1 1 0 00-1 1v4a1 1 0 01-1 1H4.5A1.5 1.5 0 013 19.5v-9z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[10px] font-medium mt-1">Accueil</span>
+</a>
+<!-- Tab 2: Bible -->
+<a class="flex flex-col items-center justify-center text-gray-700 hover:text-gray-900 w-16" href="#">
+<svg class="w-6 h-6 stroke-current fill-none" stroke-width="1.8" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M5 4h14a1 1 0 011 1v14a1 1 0 01-1 1H5a1 1 0 01-1-1V5a1 1 0 011-1z" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M9 4v16" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[10px] font-medium mt-1">Bible</span>
+</a>
+<!-- Tab 3: Mémoriser -->
+<a class="flex flex-col items-center justify-center text-gray-700 hover:text-gray-900 w-16" href="#">
+<svg class="w-6 h-6 stroke-current fill-none" stroke-width="1.8" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M12 3L2 8.5l10 5.5 10-5.5L12 3z" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M2 13l10 5.5 10-5.5" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M2 17.5L12 23l10-5.5" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[10px] font-medium mt-1">Mémoriser</span>
+</a>
+<!-- Tab 4: Progrès -->
+<a class="flex flex-col items-center justify-center text-gray-700 hover:text-gray-900 w-16" href="#">
+<svg class="w-6 h-6 stroke-current fill-none" stroke-width="1.8" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M4 20h16M7 16v-4m5 4V8m5 8v-6" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[10px] font-medium mt-1">Progrès</span>
+</a>
+<!-- Tab 5: Réglages (Actif) -->
+<a aria-current="page" class="flex flex-col items-center justify-center text-[#c71373] w-16" href="#">
+<svg class="w-6 h-6 stroke-current fill-none" stroke-width="1.8" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<circle cx="12" cy="12" r="3"></circle>
+<path d="M12 2v2m0 16v2m10-10h-2M4 12H2m15.07-7.07l-1.41 1.41M6.34 17.66l-1.41 1.41m12.73 0l-1.41-1.41M6.34 6.34L4.93 4.93" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[10px] font-semibold mt-1">Réglages</span>
+</a>
+</nav>
+<!-- END: Bottom Tab Navigation Bar -->
+</div>
+</body></html>

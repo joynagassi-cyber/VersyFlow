@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+<title>Mémorisation - Jean 3:16–18</title>
+<!-- Tailwind CSS CDN v3 with forms & container queries -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script data-purpose="tailwind-config">
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              DEFAULT: '#c2185b',
+              50: '#fdf2f8',
+              100: '#fce7f3',
+              500: '#e11d74',
+              600: '#c2185b',
+              700: '#9d174d'
+            },
+            app: {
+              bg: '#fbf9f9',
+              card: '#ffffff',
+              muted: '#8e8e93',
+              border: '#f0ecec'
+            }
+          },
+          fontFamily: {
+            serif: ['Georgia', 'Cambria', '"Times New Roman"', 'serif'],
+            sans: ['-apple-system', 'BlinkMacSystemFont', '"SF Pro Text"', '"SF Pro Display"', '"Segoe UI"', 'Roboto', 'Helvetica', 'Arial', 'sans-serif']
+          },
+          boxShadow: {
+            'soft': '0 4px 20px -2px rgba(220, 180, 190, 0.15)',
+            'floating': '0 8px 30px rgba(0, 0, 0, 0.12)'
+          }
+        }
+      }
+    };
+  </script>
+<!-- BEGIN: Custom Styling Rules -->
+<style data-purpose="custom-range-slider">
+    /* Custom iOS-like pink slider styling */
+    input[type=range].slider-pink {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 6px;
+      background: #f1e5e9;
+      border-radius: 9999px;
+      outline: none;
+      position: relative;
+    }
+
+    input[type=range].slider-pink::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: #ffffff;
+      border: 3.5px solid #c2185b;
+      box-shadow: 0 2px 6px rgba(194, 24, 91, 0.25);
+      cursor: pointer;
+    }
+
+    input[type=range].slider-pink::-moz-range-thumb {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: #ffffff;
+      border: 3.5px solid #c2185b;
+      box-shadow: 0 2px 6px rgba(194, 24, 91, 0.25);
+      cursor: pointer;
+    }
+  </style>
+<style data-purpose="base-enhancements">
+    /* Prevent rubber-band on fixed viewport */
+    body {
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      touch-action: manipulation;
+    }
+    .pb-safe {
+      padding-bottom: env(safe-area-inset-bottom, 20px);
+    }
+    .pt-safe {
+      padding-top: env(safe-area-inset-top, 44px);
+    }
+  </style>
+<!-- END: Custom Styling Rules -->
+</head>
+<body class="bg-stone-50 text-neutral-900 font-sans min-h-screen flex flex-col justify-between select-none">
+<!-- BEGIN: TopScreenContainer -->
+<div class="w-full max-w-[430px] mx-auto flex-1 flex flex-col px-4 pt-2">
+<!-- BEGIN: iOSStatusBar -->
+<header class="w-full flex justify-between items-center text-sm font-semibold tracking-tight text-neutral-900 pt-1 pb-2 px-1" data-purpose="ios-status-bar">
+<span class="text-[15px] font-semibold tracking-tight pl-1">9:41</span>
+<div class="flex items-center space-x-1.5 pr-1">
+<span class="text-[13px] font-bold tracking-tight">5G</span>
+<!-- Cellular Signal Icon -->
+<div class="flex items-end space-x-[2px] h-[11px] ml-1">
+<span class="w-[3px] h-[3px] bg-neutral-900 rounded-[0.5px]"></span>
+<span class="w-[3px] h-[5px] bg-neutral-900 rounded-[0.5px]"></span>
+<span class="w-[3px] h-[8px] bg-neutral-900 rounded-[0.5px]"></span>
+<span class="w-[3px] h-[11px] bg-neutral-900 rounded-[0.5px]"></span>
+</div>
+<!-- Battery Icon -->
+<div class="w-6 h-[11.5px] border border-neutral-900 rounded-[3px] p-[1.5px] flex items-center ml-1">
+<div class="bg-neutral-900 h-full w-full rounded-[1.5px]"></div>
+</div>
+</div>
+</header>
+<!-- END: iOSStatusBar -->
+<!-- BEGIN: MainHeader -->
+<section class="relative flex items-center justify-between py-2 mt-1" data-purpose="header-navigation">
+<!-- Close Button -->
+<button aria-label="Fermer" class="w-10 h-10 rounded-full bg-neutral-100 flex items-center justify-center text-neutral-800 hover:bg-neutral-200 transition-colors">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewbox="0 0 24 24">
+<path d="M6 18L18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+<!-- Center Title & Subtitle -->
+<div class="text-center">
+<h1 class="text-[20px] font-serif font-bold text-neutral-900 tracking-tight">Jean 3:16–18</h1>
+<p class="text-[12px] text-neutral-500 font-medium">LSG · 3 versets</p>
+</div>
+<!-- More Options Button -->
+<button aria-label="Plus d'options" class="w-10 h-10 rounded-full bg-neutral-100 flex items-center justify-center text-neutral-800 hover:bg-neutral-200 transition-colors">
+<svg class="w-5 h-5" fill="currentColor" viewbox="0 0 24 24">
+<circle cx="5" cy="12" r="2"></circle>
+<circle cx="12" cy="12" r="2"></circle>
+<circle cx="19" cy="12" r="2"></circle>
+</svg>
+</button>
+</section>
+<!-- END: MainHeader -->
+<!-- BEGIN: TabsSection -->
+<nav class="grid grid-cols-4 gap-2 pt-3 pb-2 text-center text-[12px] font-medium border-b border-transparent" data-purpose="study-modes-tabs">
+<!-- Tab 1: Active Révélation -->
+<div class="flex flex-col items-center">
+<div class="w-full h-[3px] bg-[#c2185b] rounded-full mb-1.5"></div>
+<span class="text-[#c2185b] font-semibold">Révélation</span>
+</div>
+<!-- Tab 2: Masquage -->
+<div class="flex flex-col items-center">
+<div class="w-full h-[3px] bg-neutral-200 rounded-full mb-1.5"></div>
+<span class="text-neutral-700">Masquage</span>
+</div>
+<!-- Tab 3: Flashcard -->
+<div class="flex flex-col items-center">
+<div class="w-full h-[3px] bg-neutral-200 rounded-full mb-1.5"></div>
+<span class="text-neutral-700">Flashcard</span>
+</div>
+<!-- Tab 4: Écriture (locked) -->
+<div class="flex flex-col items-center">
+<div class="w-full h-[3px] bg-neutral-200 rounded-full mb-1.5"></div>
+<div class="flex items-center justify-center space-x-1 text-neutral-700">
+<svg class="w-3 h-3 text-neutral-500" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<rect height="10" rx="2" width="14" x="5" y="11"></rect>
+<path d="M8 11V7a4 4 0 018 0v4" stroke-linecap="round"></path>
+</svg>
+<span>Écriture</span>
+</div>
+</div>
+</nav>
+<!-- END: TabsSection -->
+<!-- BEGIN: SegmentationAndBadge -->
+<section class="flex items-center justify-between mt-3 mb-3" data-purpose="granularity-selector">
+<!-- Segmented Button (Phrase / Verset) -->
+<div class="bg-[#ebe7e8] p-1 rounded-2xl flex items-center space-x-1 text-[13px] font-medium text-neutral-700">
+<button class="bg-white text-neutral-900 px-6 py-1.5 rounded-xl shadow-sm font-semibold transition-all">Phrase</button>
+<button class="px-5 py-1.5 rounded-xl hover:text-neutral-900 transition-colors">Verset</button>
+</div>
+<!-- Verse progress indicator badge -->
+<div class="bg-[#fcebf2] text-[#c2185b] text-[12px] font-semibold px-3 py-1.5 rounded-full tracking-tight">
+        v.16 · phrase 1/3
+      </div>
+</section>
+<!-- END: SegmentationAndBadge -->
+<!-- BEGIN: MainVerseCard -->
+<main class="bg-white rounded-3xl p-5 shadow-[0_4px_25px_rgba(200,160,180,0.12)] border border-[#f3eaee] mt-1 mb-3" data-purpose="active-verse-card">
+<!-- Card Subheader -->
+<div class="flex items-center justify-between text-xs tracking-wider mb-5">
+<span class="text-[#c2185b] font-bold uppercase tracking-widest text-[11px]">JEAN 3:16</span>
+<span class="text-neutral-500 text-[12px]">9 / 13 mots visibles</span>
+</div>
+<!-- Verse Content with Cloze Placeholders -->
+<div class="text-[23px] font-serif leading-[1.75] text-neutral-900 mb-6 font-normal">
+        Car Dieu a 
+        <span class="inline-block align-middle w-12 h-6 bg-[#dfd6db] rounded-lg mx-1"></span>
+        aimé le 
+        <span class="inline-block align-middle w-16 h-6 bg-[#dfd6db] rounded-lg mx-1"></span>
+        qu’il a 
+        <span class="inline-block align-middle w-14 h-6 bg-[#fdeef4] border-2 border-dashed border-[#e11d74] rounded-lg mx-1 animate-pulse"></span>
+        son 
+        <span class="inline-block align-middle w-12 h-6 bg-[#dfd6db] rounded-lg mx-1"></span>
+        unique,
+      </div>
+<!-- Internal Pink Progress Bar -->
+<div class="w-full bg-[#f1e5e9] h-1.5 rounded-full overflow-hidden mb-3">
+<div class="bg-[#c2185b] h-full w-[65%] rounded-full"></div>
+</div>
+<!-- Hint Caption -->
+<p class="text-[11.5px] leading-relaxed text-neutral-700 font-normal">
+        Touche un mot pour le révéler · le mot en pointillés est le prochain
+      </p>
+</main>
+<!-- END: MainVerseCard -->
+<!-- BEGIN: MaskLevelSliderCard -->
+<section class="bg-white rounded-2xl p-4 shadow-[0_3px_15px_rgba(200,160,180,0.08)] border border-[#f3eaee] mb-4" data-purpose="mask-level-control">
+<div class="flex items-center justify-between text-[13px] font-medium text-neutral-900 mb-2.5">
+<span>Niveau de masquage</span>
+<span class="text-[#c2185b] font-semibold text-[13px]">30 %</span>
+</div>
+<!-- Slider Track -->
+<div class="relative flex items-center">
+<!-- Colored track background simulation -->
+<div class="w-full bg-[#f0e7eb] h-1.5 rounded-full overflow-hidden absolute">
+<div class="bg-[#c2185b] h-full w-[28%] rounded-full"></div>
+</div>
+<!-- Native Slider for interaction -->
+<input aria-label="Niveau de masquage" class="slider-pink relative z-10 w-full" max="100" min="0" type="range" value="28"/>
+</div>
+</section>
+<!-- END: MaskLevelSliderCard -->
+<!-- BEGIN: VerseBadges -->
+<div class="flex justify-center items-center space-x-2.5 mb-5" data-purpose="verse-indicators">
+<span class="bg-[#c2185b] text-white text-[12px] font-bold px-3.5 py-1 rounded-full shadow-sm">v.16</span>
+<span class="bg-[#e7e1e4] text-neutral-700 text-[12px] font-semibold px-3.5 py-1 rounded-full">v.17</span>
+<span class="bg-[#e7e1e4] text-neutral-700 text-[12px] font-semibold px-3.5 py-1 rounded-full">v.18</span>
+</div>
+<!-- END: VerseBadges -->
+<!-- BEGIN: ActionButtonsGroup -->
+<section class="grid grid-cols-2 gap-3 mb-3" data-purpose="secondary-actions">
+<button class="bg-white hover:bg-neutral-50 text-neutral-900 border border-neutral-200/90 text-[14px] font-semibold py-3.5 px-4 rounded-full shadow-sm transition-all text-center">
+        Tout révéler
+      </button>
+<button class="bg-white hover:bg-neutral-50 text-neutral-900 border border-neutral-200/90 text-[14px] font-semibold py-3.5 px-4 rounded-full shadow-sm transition-all text-center">
+        Revoir la phrase
+      </button>
+</section>
+<!-- Main Primary Action CTA -->
+<button class="w-full bg-[#c2185b] hover:bg-[#a3154d] active:scale-[0.99] text-white text-[15px] font-semibold py-4 px-6 rounded-full shadow-[0_4px_16px_rgba(194,24,91,0.35)] transition-all flex items-center justify-center space-x-1 mb-4" data-purpose="primary-action-cta">
+<span>Phrase suivante</span>
+<span class="text-lg">→</span>
+</button>
+<!-- END: ActionButtonsGroup -->
+<!-- BEGIN: FloatingModeBar -->
+<div class="flex justify-center mb-2" data-purpose="floating-mode-selector">
+<div class="bg-white/95 backdrop-blur-md rounded-full px-2 py-1.5 shadow-[0_8px_25px_rgba(0,0,0,0.08)] border border-neutral-200/80 flex items-center space-x-2">
+<!-- Active Révélation Tag with Eye -->
+<button class="bg-[#c2185b] text-white flex items-center space-x-1.5 px-4 py-2 rounded-full text-xs font-semibold shadow-sm">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span>Révélation</span>
+</button>
+<!-- Mask Mode Icon -->
+<button aria-label="Mode Masquage" class="w-8 h-8 flex items-center justify-center text-neutral-600 hover:text-neutral-900 transition-colors">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M4 6h16M4 12h10M4 18h16" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+<!-- Flashcard Mode Icon -->
+<button aria-label="Mode Flashcard" class="w-8 h-8 flex items-center justify-center text-neutral-600 hover:text-neutral-900 transition-colors">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24">
+<rect height="15" rx="2" width="13" x="7" y="3"></rect>
+<rect height="15" rx="2" stroke-opacity="0.6" width="13" x="4" y="6"></rect>
+</svg>
+</button>
+<!-- Writing / Lock Mode Icon -->
+<button aria-label="Mode Écriture verrouillé" class="w-8 h-8 flex items-center justify-center text-neutral-400 hover:text-neutral-600 transition-colors">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<rect height="10" rx="2" width="14" x="5" y="11"></rect>
+<path d="M8 11V7a4 4 0 018 0v4" stroke-linecap="round"></path>
+</svg>
+</button>
+<!-- Chevron Down -->
+<button aria-label="Dérouler les modes" class="w-7 h-8 flex items-center justify-center text-neutral-700 pr-1">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewbox="0 0 24 24">
+<path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+</div>
+</div>
+<!-- END: FloatingModeBar -->
+</div>
+<!-- END: TopScreenContainer -->
+<!-- BEGIN: BottomTabBar -->
+<footer class="w-full bg-white border-t border-neutral-200/80 pt-2 pb-safe px-4 mt-auto" data-purpose="ios-bottom-tab-bar">
+<div class="max-w-[430px] mx-auto grid grid-cols-5 text-center">
+<!-- Accueil -->
+<a class="flex flex-col items-center justify-center text-neutral-700 hover:text-neutral-900 group" href="#">
+<svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24">
+<path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[10px] font-medium tracking-tight">Accueil</span>
+</a>
+<!-- Bible -->
+<a class="flex flex-col items-center justify-center text-neutral-700 hover:text-neutral-900 group" href="#">
+<svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24">
+<path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[10px] font-medium tracking-tight">Bible</span>
+</a>
+<!-- Mémoriser (Active) -->
+<a class="flex flex-col items-center justify-center text-[#c2185b]" href="#">
+<svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M12 2l9 5-9 5-9-5 9-5z" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M3 12l9 5 9-5" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M3 17l9 5 9-5" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[10px] font-semibold tracking-tight">Mémoriser</span>
+</a>
+<!-- Progrès -->
+<a class="flex flex-col items-center justify-center text-neutral-700 hover:text-neutral-900 group" href="#">
+<svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24">
+<path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[10px] font-medium tracking-tight">Progrès</span>
+</a>
+<!-- Réglages -->
+<a class="flex flex-col items-center justify-center text-neutral-700 hover:text-neutral-900 group" href="#">
+<svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24">
+<circle cx="12" cy="12" r="3.5"></circle>
+<path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41m14.14-14.14l-1.41 1.41" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[10px] font-medium tracking-tight">Réglages</span>
+</a>
+</div>
+</footer>
+<!-- END: BottomTabBar -->
+</body></html>

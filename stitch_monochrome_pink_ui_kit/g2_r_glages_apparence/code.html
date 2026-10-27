@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+
+<html lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>Réglages - Apparence</title>
+<!-- Tailwind CSS v3 with Plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts: Inter & Newsreader (Serif) -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&amp;display=swap" rel="stylesheet"/>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+            serif: ['Newsreader', 'Georgia', 'serif'],
+          },
+          colors: {
+            appPink: '#e61e7e',
+            appBg: '#faf8f8',
+            cardBg: '#ffffff',
+            segmentBg: '#f0ecee',
+          }
+        }
+      }
+    }
+  </script>
+<style data-purpose="custom-slider">
+    /* Custom styles for range input to match pink progress bar accurately */
+    input[type=range] {
+      -webkit-appearance: none;
+      background: transparent;
+    }
+    input[type=range]:focus {
+      outline: none;
+    }
+    input[type=range]::-webkit-slider-runnable-track {
+      width: 100%;
+      height: 4px;
+      cursor: pointer;
+      border-radius: 9999px;
+      background: linear-gradient(to right, #e61e7e 0%, #e61e7e 42%, #e5e0e3 42%, #e5e0e3 100%);
+    }
+    input[type=range]::-webkit-slider-thumb {
+      height: 22px;
+      width: 22px;
+      border-radius: 50%;
+      background: #ffffff;
+      border: 3px solid #e61e7e;
+      cursor: pointer;
+      -webkit-appearance: none;
+      margin-top: -9px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+    }
+  </style>
+</head>
+<body class="bg-[#fcfafa] text-neutral-900 font-sans antialiased flex justify-center min-h-screen">
+<!-- Mobile Screen Container -->
+<div class="w-full max-w-[430px] bg-[#fcfafa] min-h-screen flex flex-col relative pb-28 select-none">
+<!-- BEGIN: StatusBar -->
+<header class="pt-3 px-8 flex justify-between items-center text-sm font-semibold tracking-tight text-neutral-900 z-30">
+<!-- iOS Clock -->
+<span>9:41</span>
+<!-- Right Status Icons (5G, Signal, Battery) -->
+<div class="flex items-center space-x-1.5 text-xs">
+<span class="font-bold text-[13px] tracking-tighter mr-0.5">5G</span>
+<!-- Cellular Signal Bars -->
+<div class="flex items-end space-x-0.5 h-3">
+<span class="w-[3px] h-1.5 bg-neutral-900 rounded-[0.5px]"></span>
+<span class="w-[3px] h-2 bg-neutral-900 rounded-[0.5px]"></span>
+<span class="w-[3px] h-2.5 bg-neutral-900 rounded-[0.5px]"></span>
+<span class="w-[3px] h-3 bg-neutral-900 rounded-[0.5px]"></span>
+</div>
+<!-- Battery Icon -->
+<div class="w-5 h-2.5 border-[1.5px] border-neutral-900 rounded-[3px] p-[1px] flex items-center ml-1">
+<div class="h-full w-full bg-neutral-900 rounded-[1px]"></div>
+</div>
+</div>
+</header>
+<!-- END: StatusBar -->
+<!-- BEGIN: TopNavigationBar -->
+<nav class="pt-3 pb-2 px-5 flex items-center border-b border-neutral-100 bg-[#fcfafa]/90 sticky top-0 z-20 backdrop-blur-sm">
+<button aria-label="Retour" class="p-1 -ml-1 text-neutral-900 active:opacity-60 transition-opacity" type="button">
+<svg class="w-6 h-6 stroke-[2.25]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M15.75 19.5L8.25 12l7.5-7.5" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+<h1 class="ml-4 text-xl font-serif font-bold text-neutral-900 tracking-tight">Apparence</h1>
+</nav>
+<!-- END: TopNavigationBar -->
+<!-- BEGIN: MainContent -->
+<main class="px-5 pt-4 space-y-6">
+<!-- BEGIN: ApercuVerseCard -->
+<!-- Visual preview of text rendering and typography -->
+<section class="bg-white rounded-3xl p-6 shadow-[0_4px_24px_rgba(0,0,0,0.03)] border border-neutral-100/80" data-purpose="preview-card">
+<span class="text-xs text-neutral-400 font-medium tracking-wide block mb-3">Aperçu</span>
+<blockquote class="font-serif text-[21px] leading-[1.4] text-neutral-800">
+<sup class="text-xs font-serif text-neutral-400 font-normal mr-1 -top-2">16</sup>Car Dieu a tant aimé le monde qu’il a donné son Fils unique
+        </blockquote>
+</section>
+<!-- END: ApercuVerseCard -->
+<!-- BEGIN: ThemeSection -->
+<section class="space-y-3" data-purpose="theme-selection">
+<h2 class="text-[17px] font-bold text-neutral-900">Thème</h2>
+<!-- Segmented 3-option control -->
+<div class="bg-[#efebee] p-1 rounded-2xl flex items-center justify-between text-[14px] font-semibold text-neutral-700">
+<button class="flex-1 py-2 text-center bg-white text-neutral-900 rounded-xl shadow-sm border border-black/[0.04]" type="button">
+            Clair
+          </button>
+<button class="flex-1 py-2 text-center text-neutral-600 hover:text-neutral-900" type="button">
+            Sombre
+          </button>
+<button class="flex-1 py-2 text-center text-neutral-600 hover:text-neutral-900" type="button">
+            Automatique
+          </button>
+</div>
+</section>
+<!-- END: ThemeSection -->
+<!-- BEGIN: AccentColorSection -->
+<section class="space-y-3" data-purpose="accent-color-selection">
+<h2 class="text-[17px] font-bold text-neutral-900">Couleur d’accent</h2>
+<div class="flex items-center justify-between pt-1 px-1">
+<!-- Active Color: Vibrant Pink with outer focus ring -->
+<button aria-label="Couleur Rose" class="relative flex items-center justify-center p-0.5" type="button">
+<span class="w-[50px] h-[50px] rounded-full border-2 border-appPink flex items-center justify-center">
+<span class="w-[42px] h-[42px] rounded-full bg-[#e61e7e] block"></span>
+</span>
+</button>
+<!-- Blue -->
+<button aria-label="Couleur Bleu" class="w-[42px] h-[42px] rounded-full bg-[#3b82f6] shadow-inner" type="button"></button>
+<!-- Green -->
+<button aria-label="Couleur Vert" class="w-[42px] h-[42px] rounded-full bg-[#2da868] shadow-inner" type="button"></button>
+<!-- Amber / Gold -->
+<button aria-label="Couleur Or" class="w-[42px] h-[42px] rounded-full bg-[#e39f28] shadow-inner" type="button"></button>
+<!-- Purple -->
+<button aria-label="Couleur Violet" class="w-[42px] h-[42px] rounded-full bg-[#8257d0] shadow-inner" type="button"></button>
+<!-- Dark Slate / Black -->
+<button aria-label="Couleur Noir" class="w-[42px] h-[42px] rounded-full bg-[#1e2322] shadow-inner" type="button"></button>
+</div>
+</section>
+<!-- END: AccentColorSection -->
+<!-- BEGIN: ApplicationTextSection -->
+<section class="space-y-4" data-purpose="font-and-size-settings">
+<h2 class="text-[17px] font-bold text-neutral-900">Texte de l’application</h2>
+<!-- Font Style Chips -->
+<div class="flex space-x-2.5">
+<!-- Active Chip (Système) -->
+<button class="px-5 py-2.5 rounded-full bg-appPink text-white font-semibold text-sm shadow-sm tracking-tight" type="button">
+            Système
+          </button>
+<button class="px-5 py-2.5 rounded-full bg-[#efebee] text-neutral-800 font-serif font-bold text-sm tracking-tight" type="button">
+            Serif
+          </button>
+<button class="px-5 py-2.5 rounded-full bg-[#efebee] text-neutral-800 font-semibold text-sm tracking-tight" type="button">
+            Arrondie
+          </button>
+</div>
+<!-- Font Size Slider -->
+<div class="flex items-center space-x-4 pt-2 px-1">
+<span class="font-serif text-base text-neutral-800 font-medium">A</span>
+<div class="flex-1 flex items-center">
+<input aria-label="Taille de police" class="w-full" max="30" min="10" type="range" value="18"/>
+</div>
+<span class="font-serif text-2xl text-neutral-800 font-medium">A</span>
+</div>
+<!-- Density Option Row -->
+<div class="flex justify-between items-center pt-2 pb-1">
+<span class="text-base text-neutral-900 font-medium">Densité</span>
+<button class="text-sm font-medium text-neutral-500 hover:text-neutral-800 flex items-center space-x-1" type="button">
+<span>Confort</span>
+<svg class="w-3.5 h-3.5 stroke-[2.5]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M8.25 4.5l7.5 7.5-7.5 7.5" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+</div>
+</section>
+<!-- END: ApplicationTextSection -->
+<div class="border-b border-neutral-200/70 pt-1"></div>
+<!-- BEGIN: MovementSection -->
+<section class="space-y-4 pt-1" data-purpose="motion-accessibility">
+<h2 class="text-[17px] font-bold text-neutral-900">Mouvement</h2>
+<!-- Animations Row -->
+<div class="flex justify-between items-center">
+<div class="space-y-0.5">
+<h3 class="text-base text-neutral-900 font-medium">Animations</h3>
+<p class="text-xs text-neutral-500">Transitions et effets</p>
+</div>
+<!-- iOS Pink Toggle Switch with Checkmark -->
+<button aria-checked="true" class="w-[50px] h-[30px] bg-appPink rounded-full p-[2px] flex items-center justify-end transition-colors shadow-sm" role="switch" type="button">
+<div class="w-[26px] h-[26px] bg-white rounded-full flex items-center justify-center shadow-md">
+<svg class="w-3.5 h-3.5 text-appPink stroke-[3]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M4.5 12.75l6 6 9-13.5" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+</button>
+</div>
+<!-- Glass / Blur Effects Row -->
+<div class="flex justify-between items-center pt-1">
+<div>
+<h3 class="text-base text-neutral-900 font-medium">Effets de verre (flou)</h3>
+</div>
+<!-- iOS Pink Toggle Switch with Checkmark -->
+<button aria-checked="true" class="w-[50px] h-[30px] bg-appPink rounded-full p-[2px] flex items-center justify-end transition-colors shadow-sm" role="switch" type="button">
+<div class="w-[26px] h-[26px] bg-white rounded-full flex items-center justify-center shadow-md">
+<svg class="w-3.5 h-3.5 text-appPink stroke-[3]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M4.5 12.75l6 6 9-13.5" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+</button>
+</div>
+</section>
+<!-- END: MovementSection -->
+</main>
+<!-- END: MainContent -->
+<!-- BEGIN: BottomNavigation -->
+<nav class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] bg-white/95 backdrop-blur-md border-t border-neutral-100 px-3 py-2 flex justify-around items-center z-40">
+<!-- Accueil -->
+<a class="flex flex-col items-center justify-center py-1 text-neutral-700 hover:text-neutral-900 group" href="#">
+<svg class="w-6 h-6 stroke-[1.75]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[11px] font-medium tracking-tight mt-1">Accueil</span>
+</a>
+<!-- Bible -->
+<a class="flex flex-col items-center justify-center py-1 text-neutral-700 hover:text-neutral-900 group" href="#">
+<svg class="w-6 h-6 stroke-[1.75]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[11px] font-medium tracking-tight mt-1">Bible</span>
+</a>
+<!-- Mémoriser -->
+<a class="flex flex-col items-center justify-center py-1 text-neutral-700 hover:text-neutral-900 group" href="#">
+<svg class="w-6 h-6 stroke-[1.75]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M6.429 9.75L2.25 12l4.179 2.25m0-4.5l5.571 3 5.571-3m-11.142 0L2.25 7.5 12 2.25l9.75 5.25-4.179 2.25m0 0L21.75 12l-4.179 2.25m0 0l4.179 2.25L12 21.75 2.25 16.5l4.179-2.25m11.142 0l-5.571 3-5.571-3" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[11px] font-medium tracking-tight mt-1">Mémoriser</span>
+</a>
+<!-- Progrès -->
+<a class="flex flex-col items-center justify-center py-1 text-neutral-700 hover:text-neutral-900 group" href="#">
+<svg class="w-6 h-6 stroke-[1.75]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[11px] font-medium tracking-tight mt-1">Progrès</span>
+</a>
+<!-- Réglages (ACTIVE) -->
+<a class="flex flex-col items-center justify-center py-1 text-appPink" href="#">
+<svg class="w-6 h-6 stroke-[1.75]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[11px] font-semibold tracking-tight mt-1">Réglages</span>
+</a>
+</nav>
+<!-- END: BottomNavigation -->
+</div>
+</body></html>

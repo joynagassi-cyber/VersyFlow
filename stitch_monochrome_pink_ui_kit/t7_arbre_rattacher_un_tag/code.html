@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>Rattacher un tag</title>
+<!-- Tailwind CSS CDN with plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts for Serif & Sans-serif typography -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600;1,700&amp;display=swap" rel="stylesheet"/>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            serif: ['"Playfair Display"', 'Georgia', 'serif'],
+          },
+          colors: {
+            primary: {
+              DEFAULT: '#D1126D',
+              light: '#FDF2F7',
+              border: '#E8247F',
+            },
+            neutral: {
+              bg: '#FAF8F5',
+              surface: '#FFFFFF',
+              border: '#EFECE6',
+              subtle: '#6B7280',
+              muted: '#9CA3AF',
+              text: '#111827',
+            }
+          },
+          boxShadow: {
+            'soft': '0 4px 20px -2px rgba(0, 0, 0, 0.04)',
+            'pink-glow': '0 8px 24px -4px rgba(209, 18, 109, 0.35)',
+          }
+        }
+      }
+    }
+  </script>
+<style data-purpose="custom-blinking-cursor">
+    /* Search input cursor effect */
+    @keyframes cursor-blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+    .blinking-cursor {
+      display: inline-block;
+      width: 2px;
+      height: 1.25rem;
+      background-color: #E8247F;
+      vertical-align: middle;
+      animation: cursor-blink 1s step-start infinite;
+    }
+  </style>
+</head>
+<body class="bg-[#F8F7F4] text-neutral-text font-sans antialiased h-full flex justify-center">
+<!-- BEGIN: MobileDeviceFrame -->
+<div class="w-full max-w-md min-h-screen bg-[#FAF9F6] flex flex-col justify-between shadow-2xl relative select-none">
+<!-- Top Content Area -->
+<div class="flex-1 flex flex-col">
+<!-- BEGIN: iOSStatusBar -->
+<header class="w-full px-7 pt-3 pb-2 flex justify-between items-center text-black text-sm font-semibold tracking-tight" data-purpose="status-bar">
+<span>9:41</span>
+<div class="flex items-center gap-1.5">
+<span class="text-xs font-bold tracking-tighter">5G</span>
+<!-- Signal indicator bars -->
+<div class="flex items-end gap-0.5 h-3 ml-0.5">
+<span class="w-1 h-1.5 bg-black rounded-2xs"></span>
+<span class="w-1 h-2.5 bg-black rounded-2xs"></span>
+<span class="w-1 h-3 bg-black rounded-2xs"></span>
+</div>
+</div>
+</header>
+<!-- END: iOSStatusBar -->
+<!-- BEGIN: NavigationHeader -->
+<nav class="px-5 pt-2 pb-3 flex items-center justify-between" data-purpose="screen-header">
+<!-- Back Button -->
+<button aria-label="Retour" class="w-11 h-11 bg-white rounded-full flex items-center justify-center shadow-sm border border-neutral-100 active:scale-95 transition-transform" type="button">
+<svg class="w-5 h-5 text-gray-800" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M15 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path>
+</svg>
+</button>
+<!-- Screen Titles -->
+<div class="text-center">
+<h1 class="font-serif text-2xl font-bold tracking-tight text-gray-900 leading-tight">Rattacher un tag</h1>
+<p class="text-xs text-gray-500 font-medium mt-0.5">Tag personnel</p>
+</div>
+<!-- More Options Button -->
+<button aria-label="Options" class="w-11 h-11 bg-white rounded-full flex items-center justify-center shadow-sm border border-neutral-100 active:scale-95 transition-transform" type="button">
+<svg class="w-5 h-5 text-gray-800" fill="currentColor" viewbox="0 0 24 24">
+<circle cx="5" cy="12" r="2"></circle>
+<circle cx="12" cy="12" r="2"></circle>
+<circle cx="19" cy="12" r="2"></circle>
+</svg>
+</button>
+</nav>
+<!-- END: NavigationHeader -->
+<!-- BEGIN: MainContent -->
+<main class="flex-1 px-5 pt-3 pb-6 flex flex-col gap-4">
+<!-- Card: Ton Tag -->
+<section class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100/80" data-purpose="current-user-tag-card">
+<span class="text-[11px] font-bold tracking-wider text-[#D1126D] uppercase block mb-1">TON TAG</span>
+<h2 class="font-serif text-2xl font-bold text-gray-950 tracking-tight leading-snug">Guerre spirituelle</h2>
+<p class="text-xs text-gray-500 font-normal mt-1">Concept personnel · 4 versets</p>
+</section>
+<!-- Search Bar -->
+<div class="relative flex items-center" data-purpose="search-input-container">
+<div class="w-full bg-[#EEEEEE]/80 backdrop-blur-sm rounded-2xl px-4 py-3.5 flex items-center gap-3">
+<svg class="w-5 h-5 text-gray-700 shrink-0" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<div class="flex items-center text-[15px] font-medium text-gray-900 tracking-tight">
+<span>combat</span>
+<span class="blinking-cursor ml-0.5"></span>
+</div>
+</div>
+</div>
+<!-- Base Concepts List Section -->
+<section class="flex flex-col gap-2.5 mt-0.5" data-purpose="base-concepts-selection">
+<h3 class="text-xs font-normal text-gray-600 ml-1">Concepts de la base</h3>
+<!-- Option 1: Selected 'Combat spirituel' -->
+<article class="bg-white rounded-2xl p-4 border-2 border-[#E8247F] shadow-sm flex items-center justify-between cursor-pointer active:scale-[0.99] transition-transform" data-purpose="concept-card-selected">
+<div class="pr-2">
+<h4 class="font-serif text-lg font-bold text-gray-950 leading-tight">Combat spirituel</h4>
+<p class="text-xs text-gray-500 font-normal mt-1">Famille : Combat · 38 versets</p>
+</div>
+<!-- Checkmark Icon -->
+<div class="shrink-0 text-black pr-1">
+<svg class="w-6 h-6 stroke-[3]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+</article>
+<!-- Option 2: 'Armure de Dieu' -->
+<article class="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm cursor-pointer hover:border-gray-200 transition-colors" data-purpose="concept-card">
+<div>
+<h4 class="font-serif text-lg font-bold text-gray-950 leading-tight">Armure de Dieu</h4>
+<p class="text-xs text-gray-500 font-normal mt-1">Sous-concept de Combat spirituel · 6 versets</p>
+</div>
+</article>
+<!-- Option 3: 'Victoire' -->
+<article class="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm cursor-pointer hover:border-gray-200 transition-colors" data-purpose="concept-card">
+<div>
+<h4 class="font-serif text-lg font-bold text-gray-950 leading-tight">Victoire</h4>
+<p class="text-xs text-gray-500 font-normal mt-1">Famille : Combat · 21 versets</p>
+</div>
+</article>
+<!-- Option 4: Keep as Personal Concept (Dashed Border) -->
+<div class="rounded-2xl p-4 border border-dashed border-gray-300 bg-transparent flex items-center mt-0.5 cursor-pointer hover:bg-black/[0.02] transition-colors" data-purpose="keep-personal-option">
+<span class="text-gray-700 text-[15px] font-normal">Garder comme concept personnel</span>
+</div>
+<!-- Explanation Subtitle -->
+<p class="text-center text-[12px] text-gray-600 font-normal mt-2 px-2">
+            Aucun rapprochement automatique : c'est toi qui choisis.
+          </p>
+</section>
+</main>
+<!-- END: MainContent -->
+</div>
+<!-- BEGIN: BottomActionAndTabBar -->
+<div class="w-full flex flex-col shrink-0">
+<!-- Primary Action CTA -->
+<div class="px-5 pb-5">
+<button class="w-full bg-[#D1126D] hover:bg-[#BF0E62] active:scale-[0.98] text-white font-bold text-base py-4 px-6 rounded-full shadow-pink-glow transition-all flex items-center justify-center gap-1.5" data-purpose="cta-confirm-link" type="button">
+<span>Rattacher à « Combat spirituel »</span>
+</button>
+</div>
+<!-- Navigation Tab Bar -->
+<footer class="bg-white border-t border-gray-100 px-3 pt-2 pb-5 flex items-center justify-around" data-purpose="ios-tab-bar">
+<!-- Tab: Accueil (Active) -->
+<a class="flex flex-col items-center gap-1 group w-14" href="#accueil">
+<div class="w-6 h-6 flex items-center justify-center">
+<svg class="w-6 h-6 text-[#D1126D]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<span class="text-[10px] font-bold text-[#D1126D]">Accueil</span>
+</a>
+<!-- Tab: Bible -->
+<a class="flex flex-col items-center gap-1 group w-14" href="#bible">
+<div class="w-6 h-6 flex items-center justify-center">
+<svg class="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<span class="text-[10px] font-medium text-gray-700">Bible</span>
+</a>
+<!-- Tab: Mémoriser -->
+<a class="flex flex-col items-center gap-1 group w-14" href="#memoriser">
+<div class="w-6 h-6 flex items-center justify-center">
+<svg class="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<span class="text-[10px] font-medium text-gray-700">Mémoriser</span>
+</a>
+<!-- Tab: Progrès -->
+<a class="flex flex-col items-center gap-1 group w-14" href="#progres">
+<div class="w-6 h-6 flex items-center justify-center">
+<svg class="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<span class="text-[10px] font-medium text-gray-700">Progrès</span>
+</a>
+<!-- Tab: Réglages -->
+<a class="flex flex-col items-center gap-1 group w-14" href="#reglages">
+<div class="w-6 h-6 flex items-center justify-center">
+<svg class="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+<path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<span class="text-[10px] font-medium text-gray-700">Réglages</span>
+</a>
+</footer>
+<!-- END: NavigationTabBar -->
+</div>
+<!-- END: BottomActionAndTabBar -->
+</div>
+<!-- END: MobileDeviceFrame -->
+</body></html>
