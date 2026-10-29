@@ -25,31 +25,22 @@ import { fileURLToPath } from 'node:url';
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
 /** 10 presets officiels tweakcn : neutre, sombres, colorés, éditoriaux. */
+// 20 presets officiels tweakcn (exclus par consigne : cyberpunk, néon,
+// glow, brutaliste — 'neo-brutalism' et 'doom-64' sont donc écartés).
 const PRESET_IDS = [
-  'modern-minimal', // neutre
-  'cosmic-night', // sombre
-  'doom-64', // sombre coloré
-  'violet-bloom', // coloré
-  'quantum-rose', // coloré (proche de l'identité VersyFlow)
-  'ocean-breeze', // coloré frais
-  'amber-minimal', // chaud minimal
-  'vintage-paper', // éditorial papier
-  'sage-garden', // vert doux
-  'neo-brutalism', // contrasté
-];
+  'modern-minimal', 'clean-slate', 'violet-bloom', 't3-chat', 'mocha-mousse',
+  'amethyst-haze', 'kodama-grove', 'cosmic-night', 'quantum-rose',
+  'elegant-luxury', 'amber-minimal', 'solar-dusk', 'pastel-dreams',
+  'ocean-breeze', 'midnight-bloom', 'northern-lights', 'vintage-paper',
+  'sunset-horizon', 'starry-night', 'soft-pop', 'sage-garden',
+].slice(0, 20);
 
 /** 10 gradients officiels webgradients (CSS copié tel quel). */
 const GRADIENT_CLASSES = [
-  'warm_flame',
-  'juicy_peach',
-  'sunny_morning',
-  'malibu_beach',
-  'true_sunset',
-  'morpheus_den',
-  'plum_plate',
-  'happy_fisher',
-  'saint_petersburg',
-  'everlasting_sky',
+  'warm_flame', 'juicy_peach', 'sunny_morning', 'malibu_beach', 'true_sunset',
+  'morpheus_den', 'plum_plate', 'happy_fisher', 'saint_petersburg',
+  'everlasting_sky', 'night_fade', 'spring_warmth', 'young_passion',
+  'lady_lips', 'rainy_ashville',
 ];
 
 import { execFile } from 'node:child_process';
@@ -103,6 +94,45 @@ function parsePreset(tsSource, id) {
   };
 }
 
+/**
+ * 5 thèmes hybrides haut de gamme, créés par fusion de tokens OFFICIELS
+ * tweakcn (catégories croisées, hors cyberpunk/néon/glow/brutaliste).
+ * `base` fournit la structure ; `take` copie des tokens précis d'autres
+ * presets sources. Noms évocateurs (nature, matière, architecture).
+ */
+const HYBRIDS = [
+  {
+    id: 'alabaster-zen', label: 'Alabaster Zen',
+    philosophy: 'Minimal + Monochrome + Flat + Zen — blanc albâtre, neutres doux, surfaces plates.',
+    base: 'clean-slate',
+    take: { primary: 'modern-minimal', ring: 'modern-minimal', accent: 'sage-garden', muted: 'modern-minimal' },
+  },
+  {
+    id: 'obsidian-meridian', label: 'Obsidian Meridian',
+    philosophy: 'Professional + Corporate + Midnight + Glassmorphism — nuit obsidienne, cartes verre, accents océan.',
+    base: 'cosmic-night',
+    take: { card: 'midnight-bloom', popover: 'midnight-bloom', accent: 'northern-lights', secondary: 'midnight-bloom' },
+  },
+  {
+    id: 'velvet-terracotta', label: 'Velvet Terracotta',
+    philosophy: 'Warm + Earthy + Retro + Sunset + Autumn + Elegant — crème vintage, terre cuite, laiton chaud.',
+    base: 'vintage-paper',
+    take: { primary: 'sunset-horizon', ring: 'sunset-horizon', accent: 'mocha-mousse', secondary: 'amber-minimal' },
+  },
+  {
+    id: 'pastel-reverie', label: 'Pastel Reverie',
+    philosophy: 'Playful + Soft + Candy + Pastel + Spring — pastels doux, géométrie ronde, accents bonbon AA.',
+    base: 'pastel-dreams',
+    take: { primary: 'soft-pop', ring: 'soft-pop', accent: 'soft-pop' },
+  },
+  {
+    id: 'quartz-deco', label: 'Quartz Deco',
+    philosophy: 'Geometric + Art-Deco + Bold + High-Contrast — lignes franches, contraste net, rythme typographique.',
+    base: 'elegant-luxury',
+    take: { background: 'modern-minimal', foreground: 'modern-minimal', accent: 'amber-minimal', ring: 'elegant-luxury' },
+  },
+];
+
 function styleVars(styles, indent = '  ') {
   return Object.entries(styles)
     .map(([k, v]) => `${indent}--${k}: ${v};`)
@@ -154,19 +184,51 @@ async function main() {
     css.push(BRIDGE);
     css.push('}', '');
   }
-  writeFileSync(resolve(root, 'src/styles/tweakcn-presets.css'), css.join('\n'));
-  console.log(`[themes] ${presets.length} presets → src/styles/tweakcn-presets.css`);
+  // Hybrides : base + copies de tokens sources (clair ET sombre).
+  const byId = Object.fromEntries(presets.map((p) => [p.id, p]));
+  const hybridMetas = [];
+  for (const h of HYBRIDS) {
+    const base = byId[h.base];
+    if (!base) throw new Error(`hybride ${h.id} : base introuvable ${h.base}`);
+    const merged = { light: { ...base.light }, dark: { ...base.dark } };
+    for (const mode of ['light', 'dark']) {
+      for (const [token, srcId] of Object.entries(h.take)) {
+        const src = byId[srcId];
+        if (src && src[mode][token] !== undefined) merged[mode][token] = src[mode][token];
+      }
+    }
+    css.push(`/* HYBRIDE — ${h.label} : ${h.philosophy} */`);
+    css.push(`:root[data-preset='${h.id}'] {`);
+    css.push(styleVars(merged.light));
+    css.push(BRIDGE);
+    css.push('}', '');
+    css.push(`:root[data-theme='dark'][data-preset='${h.id}'] {`);
+    css.push(styleVars(merged.dark));
+    css.push(BRIDGE);
+    css.push('}', '');
+    hybridMetas.push(
+      `  { id: '${h.id}', label: ${JSON.stringify(h.label)}, swatch: '${merged.light.primary}', hybrid: true },`,
+    );
+  }
 
+  writeFileSync(resolve(root, 'src/styles/tweakcn-presets.css'), css.join('\n'));
+  console.log(`[themes] ${presets.length} presets + ${HYBRIDS.length} hybrides → src/styles/tweakcn-presets.css`);
+  presets.push(...hybridMetas.map((line, i) => ({
+    id: HYBRIDS[i].id, label: HYBRIDS[i].label,
+    light: { primary: line.match(/swatch: '(#[0-9a-fA-F]+)'/)[1] }, dark: {},
+  })));
+
+  const hybridIds = new Set(HYBRIDS.map((h) => h.id));
   const meta = [
     '/**',
     ' * GÉNÉRÉ par scripts/import-official-themes.mjs — métadonnées des presets',
-    ' * officiels tweakcn (label + couleur primaire d\u2019origine, pour l\u2019aperçu).',
+    ' * officiels tweakcn + des 5 hybrides fusionnés depuis leurs tokens.',
     ' */',
-    'export interface TweakcnPresetMeta { id: string; label: string; swatch: string }',
+    'export interface TweakcnPresetMeta { id: string; label: string; swatch: string; hybrid?: boolean }',
     'export const TWEAKCN_PRESETS: TweakcnPresetMeta[] = [',
     ...presets.map(
       (p) =>
-        `  { id: '${p.id}', label: ${JSON.stringify(p.label)}, swatch: '${p.light.primary}' },`,
+        `  { id: '${p.id}', label: ${JSON.stringify(p.label)}, swatch: '${p.light.primary}'${hybridIds.has(p.id) ? ', hybrid: true' : ''} },`,
     ),
     '];',
     '',

@@ -178,6 +178,11 @@ export default function AppearanceScreen() {
                   </span>
                   <span className="text-center text-[10px] font-medium leading-tight text-text-muted">
                     {preset.label}
+                    {preset.hybrid && (
+                      <span className="block font-bold text-primary">
+                        {t('settings.hybrid', 'Fusion')}
+                      </span>
+                    )}
                   </span>
                 </button>
               );

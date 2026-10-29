@@ -671,3 +671,12 @@ html[data-app-bg='gradient'] [class*='bg-background'],
 html[data-theme-image='on'] [class*='bg-background'] {
   background-color: transparent;
 }
+
+/* Polices du preset tweakcn actif : --font-sans/--font-serif d'origine. */
+:root[data-preset] body {
+  font-family: var(--font-sans, 'Inter', -apple-system, sans-serif);
+}
+:root[data-preset] h1,
+:root[data-preset] h2 {
+  font-family: var(--font-serif, Georgia, serif);
+}

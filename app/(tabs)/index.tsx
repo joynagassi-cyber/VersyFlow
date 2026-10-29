@@ -25,6 +25,7 @@ import {
   Feather,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { motion } from 'motion/react';
 import { useActiveProfile } from '@/hooks/useActiveProfile';
 import { useFamilyStore } from '@/store/family-store';
 import { getFsrsEngine } from '@/services/fsrs-factory';
@@ -155,7 +156,12 @@ export default function HomeScreen() {
       </div>
 
       {/* Hero card — streak + due reviews, premium gradient */}
-      <div className="relative mt-5 overflow-hidden rounded-[28px] bg-primary p-6 text-primary-foreground shadow-[0_8px_24px_-4px_var(--ring)]">
+      <motion.div
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.45, ease: 'easeOut' }}
+        className="relative mt-5 overflow-hidden rounded-[28px] bg-primary p-6 text-primary-foreground shadow-[0_8px_24px_-4px_var(--ring)]"
+      >
         <div className="flex items-center justify-between">
           <div>
             <p className="text-xs font-semibold uppercase tracking-widest text-white/80">
@@ -199,7 +205,7 @@ export default function HomeScreen() {
             <ChevronRight size={18} />
           </button>
         )}
-      </div>
+      </motion.div>
 
       {/* Quick actions grid */}
       <h2 className="mb-3 mt-8 text-xl font-bold tracking-tight text-text-primary">

@@ -8,15 +8,15 @@
 
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Home, BookOpen, BarChart3, Settings } from 'lucide-react';
+import { House, BookOpen, ChartBar, GearSix } from '@phosphor-icons/react';
 import { ALL_TABS, useUiStore, type TabId } from '@/store/ui-store';
 import { cn } from '@/lib/utils';
 
-const ICONS: Record<TabId, typeof Home> = {
-  home: Home,
+const ICONS: Record<TabId, typeof House> = {
+  home: House,
   explore: BookOpen,
-  progress: BarChart3,
-  settings: Settings,
+  progress: ChartBar,
+  settings: GearSix,
 };
 
 export function BottomTabs() {
@@ -52,8 +52,8 @@ export function BottomTabs() {
                 )}
               >
                 <Icon
-                  size={21}
-                  strokeWidth={active ? 2.4 : 2}
+                  size={22}
+                  weight={active ? 'fill' : 'regular'}
                   color={active ? 'var(--color-primary)' : 'var(--color-text-muted)'}
                 />
               </span>
