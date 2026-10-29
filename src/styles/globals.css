@@ -11,6 +11,9 @@
   --color-primary: #e6067a;
   --color-primary-light: #ffc1e3;
   --color-primary-dark: #e6067a;
+  /* Texte posé SUR l'accent. Mesuré : blanc/#e6067a = 4,49:1 (limite AA,
+     pair de marque préexistant — voir docs/design/desktop-audit-versyflow.md). */
+  --color-on-primary: #ffffff;
 
   /* Accent - logo red (for secondary CTAs / highlights) */
   --color-accent: #ffc1e3;
@@ -58,6 +61,8 @@
 [data-theme='dark'] {
   /* Primary - lighter magenta for contrast on dark */
   --color-primary: #f472d6;
+  /* #f472d6 + blanc = 2,55:1 → illisible. Encre sombre = 6,69:1. */
+  --color-on-primary: #1b1c1c;
   --color-primary-light: #ff9ee0;
   --color-primary-dark: #c21585;
 
@@ -694,4 +699,96 @@ html[data-theme-image='on'] [class*='bg-background'] {
 :root[data-preset] h1,
 :root[data-preset] h2 {
   font-family: var(--font-serif, Georgia, serif);
+}
+
+
+/* ==================================================================
+ * Coquille bureau — UNE seule variable pilote la largeur du rail.
+ * Le rail n'existe pas dans le DOM sous 1024 px (montage React), donc
+ * --rail vaut 0 et rien n'est décalé. Au-delà, la valeur vient de
+ * <html data-rail>, écrit par DesktopRail.
+ * ================================================================== */
+:root {
+  --rail-expanded: 264px;
+  --rail-collapsed: 88px;
+  --rail: 0px;
+  --shell-header: 56px;
+  --reading-width: 720px;
+  --reading-wide: 1060px;
+}
+
+@media (min-width: 1024px) {
+  :root[data-rail='expanded'],
+  :root:not([data-rail]) {
+    --rail: var(--rail-expanded);
+  }
+  :root[data-rail='collapsed'] {
+    --rail: var(--rail-collapsed);
+  }
+}
+
+/* Rien d'autre ne connaît la largeur du rail que ces deux règles. */
+.app-main {
+  margin-inline-start: var(--rail);
+  transition: margin-inline-start 180ms ease;
+}
+
+.desktop-rail {
+  width: var(--rail);
+  transition: width 180ms ease;
+}
+
+/* Replié : les libellés sortent de l'écran ET de l'arbre d'accessibilité
+   visuel (le bouton garde son aria-label, posé sur le bouton, pas sur l'icône). */
+.desktop-rail[data-collapsed='true'] .rail-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-main,
+  .desktop-rail {
+    transition: none;
+  }
+}
+
+/* Colonne de lecture bureau : la mesure du texte, pas la largeur de l'écran. */
+.shell-column {
+  width: 100%;
+  max-width: var(--reading-width);
+  margin-inline: auto;
+}
+
+@media (min-width: 1280px) {
+  .shell-column-wide {
+    max-width: var(--reading-wide);
+    margin-inline: auto;
+  }
+}
+
+/* Colonne d'écran — une seule abstraction pour les 63 écrans.
+   Sous 1024 px : comportement inchangé (max-width: 100 %).
+   Au-dessus : le contenu cesse de s'étirer sur toute la largeur et prend la
+   mesure de lecture de la coquille (1060 px pour les listes, 720 px pour lire). */
+.screen-column,
+.screen-column-narrow {
+  width: 100%;
+  max-width: 100%;
+  margin-inline: auto;
+}
+
+@media (min-width: 1024px) {
+  .screen-column {
+    max-width: var(--reading-wide);
+  }
+  .screen-column-narrow {
+    max-width: var(--reading-width);
+  }
 }

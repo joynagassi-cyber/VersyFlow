@@ -1,3 +1,11 @@
+/**
+ * Tailwind ne sait pas décomposer une variable CSS : sans ce helper,
+ * `bg-primary/10` ne génère AUCUNE règle (le modificateur d'opacité est
+ * silencieusement perdu). On lui donne la fonction qui fabrique l'alpha.
+ * Sans modificateur, Tailwind passe 1 → couleur pleine, comportement inchangé.
+ */
+const alpha = (token) => `color-mix(in srgb, ${token} calc(<alpha-value> * 100%), transparent)`;
+
 /** @type {import('tailwindcss').Config} */
 const config = {
   content: [
@@ -10,26 +18,28 @@ const config = {
     extend: {
       colors: {
         primary: {
-          DEFAULT: 'var(--color-primary)',
-          light: 'var(--color-primary-light)',
-          dark: 'var(--color-primary-dark)',
+          DEFAULT: alpha('var(--color-primary)'),
+          light: alpha('var(--color-primary-light)'),
+          dark: alpha('var(--color-primary-dark)'),
         },
-        background: 'var(--color-background)',
+        accent: alpha('var(--color-accent)'),
+        'on-primary': alpha('var(--color-on-primary)'),
+        background: alpha('var(--color-background)'),
         card: 'var(--card)',
         popover: 'var(--popover)',
         muted: 'var(--muted)',
         ring: 'var(--ring)',
         'primary-foreground': 'var(--primary-foreground)',
-        surface: 'var(--color-surface)',
-        'surface-tint': 'var(--color-surface-tint)',
-        'surface-elevated': 'var(--color-surface-elevated)',
-        'text-primary': 'var(--color-text-primary)',
-        'text-secondary': 'var(--color-text-secondary)',
-        'text-tertiary': 'var(--color-text-tertiary)',
-        'text-muted': 'var(--color-text-muted)',
-        'text-placeholder': 'var(--color-text-placeholder)',
-        border: 'var(--color-border)',
-        divider: 'var(--color-divider)',
+        surface: alpha('var(--color-surface)'),
+        'surface-tint': alpha('var(--color-surface-tint)'),
+        'surface-elevated': alpha('var(--color-surface-elevated)'),
+        'text-primary': alpha('var(--color-text-primary)'),
+        'text-secondary': alpha('var(--color-text-secondary)'),
+        'text-tertiary': alpha('var(--color-text-tertiary)'),
+        'text-muted': alpha('var(--color-text-muted)'),
+        'text-placeholder': alpha('var(--color-text-placeholder)'),
+        border: alpha('var(--color-border)'),
+        divider: alpha('var(--color-divider)'),
         success: 'var(--color-success)',
         'success-light': 'var(--color-success-light)',
         error: 'var(--color-error)',

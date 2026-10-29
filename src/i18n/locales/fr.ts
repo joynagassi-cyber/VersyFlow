@@ -41,6 +41,10 @@ export const fr = {
   },
   nav: {
     menu: 'Navigation',
+    brandHome: 'VersyFlow — Accueil',
+    newSession: 'Nouvelle session',
+    expandRail: 'Déplier la navigation',
+    collapseRail: 'Replier la navigation',
     account: 'Compte',
     explore: 'Bible',
     memorize: 'Mémorisation',
@@ -143,6 +147,9 @@ export const fr = {
   },
   onboarding: {
     welcome: 'Bienvenue dans VersyFlow',
+    welcomeTitle: 'Mémorisez la Parole, à votre rythme',
+    welcomeSubtitle:
+      'Versets ancrés, révisions espacées et progression suivie — sans bruit autour du texte.',
     selectLanguage: 'Choisissez votre langue',
     selectTranslation: 'Choisissez votre traduction biblique',
     selectTranslationHint: 'Choisissez le type de version puis la traduction.',
@@ -178,6 +185,7 @@ export const fr = {
   },
   home: {
     greeting: 'Bonjour',
+    today: "Aujourd'hui",
     reviewDue: '{count} verset{plural} à réviser',
     streak: '{count} jour{plural} de suite!',
     explore: 'Explorer la Bible',
@@ -405,6 +413,16 @@ export const fr = {
     vsLastWeek: 'vs semaine précédente',
   },
   settings: {
+    background: 'Fond',
+    bgNone: 'Aucun',
+    bgNoneHint: 'Le fond du thème, sans image ni dégradé.',
+    bgGradient: 'Dégradé',
+    bgImage: 'Image',
+    bgImageHint: 'Le fond de la galerie de thèmes, avec accent tiré de l\'image.',
+    hybrid: 'Hybride',
+    themePreset: 'Preset de couleurs',
+    themePresetHint: 'Palette officielle appliquée à toute l\'interface.',
+    uiFont: 'Police de l\'interface',
     settings: 'Paramètres',
     uiLanguage: 'Langue de l\'interface',
     bibleTranslation: 'Traduction biblique',

@@ -132,7 +132,7 @@ export default function HomeScreen() {
   ];
 
   return (
-    <div className="h-full overflow-y-auto px-5 pb-28">
+    <div className="screen-column h-full overflow-y-auto px-5 pb-28">
       {/* Header */}
       <div className="flex items-start justify-between">
         <div className="flex-1">

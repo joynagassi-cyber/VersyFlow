@@ -40,6 +40,10 @@ export const en = {
   },
   nav: {
     menu: 'Navigation',
+    brandHome: 'VersyFlow — Home',
+    newSession: 'New session',
+    expandRail: 'Expand navigation',
+    collapseRail: 'Collapse navigation',
     account: 'Account',
     explore: 'Bible',
     memorize: 'Memorization',
@@ -141,6 +145,9 @@ export const en = {
     title: 'Notifications',
   },
   onboarding: {
+    welcomeTitle: 'Memorise the Word, at your own pace',
+    welcomeSubtitle:
+      'Anchored verses, spaced review and tracked progress — nothing around the text.',
     welcome: 'Welcome to VersyFlow',
     selectLanguage: 'Choose your language',
     selectTranslation: 'Choose your Bible translation',
@@ -176,6 +183,7 @@ export const en = {
     tagline: 'Intuitive biblical memorization',
   },
   home: {
+    today: 'Today',
     greeting: 'Hello',
     reviewDue: '{count} verse{plural} to review',
     streak: '{count} day{plural} streak!',
@@ -404,6 +412,16 @@ export const en = {
     vsLastWeek: 'vs last week',
   },
   settings: {
+    background: 'Background',
+    bgNone: 'None',
+    bgNoneHint: 'The theme background, with no image or gradient.',
+    bgGradient: 'Gradient',
+    bgImage: 'Image',
+    bgImageHint: 'The theme gallery background, with an accent drawn from the image.',
+    hybrid: 'Hybrid',
+    themePreset: 'Colour preset',
+    themePresetHint: 'Official palette applied across the whole interface.',
+    uiFont: 'Interface font',
     settings: 'Settings',
     uiLanguage: 'Interface Language',
     bibleTranslation: 'Bible Translation',

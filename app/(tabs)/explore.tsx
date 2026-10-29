@@ -62,7 +62,7 @@ export default function ExploreScreen() {
     ) : null;
 
   return (
-    <div className="h-full overflow-y-auto bg-background p-4 pb-24">
+    <div className="screen-column h-full overflow-y-auto bg-background p-4 pb-24">
       <h1 className="mb-4 text-2xl font-bold text-text-primary">
         {t('bible.explorer', 'Explorer la Bible')}
       </h1>
