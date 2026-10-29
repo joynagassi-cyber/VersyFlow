@@ -3,7 +3,7 @@
 Généré par `node scripts/audit-plan.mjs`. **Ne pas éditer à la main.**
 Exécuté le 2026-10-29 18:41 (UTC).
 
-**Bilan : 14 PASS · 1 PARTIEL · 1 FAIL · 4 non vérifiable(s).**
+**Bilan : 15 PASS · 1 PARTIEL · 0 FAIL · 4 non vérifiable(s).**
 
 | ID | § | Verdict | Contrôle | Mesure |
 | --- | --- | --- | --- | --- |
@@ -13,7 +13,7 @@ Exécuté le 2026-10-29 18:41 (UTC).
 | C04 | §2.3 | **PASS** | Toutes les paires texte/fond atteignent 4,5:1 (AA) | 250 paires · pire 4.50:1 (kodama-grove/dark muted-foreground/card = 4.50:1) · 0 échec(s) |
 | C05 | §2.4 | **PASS** | Fondu 0,8 s sur jetons typés, valeurs initiales crédibles, mouvement réduit respecté | 4 @property <color> · initiales invalides: 0 · transition 800ms: true · courbe: true · reduced-motion: true |
 | C06 | §2.5 | **PASS** | Alpha dérivable sur les variables ; recette de verre 40 % + 40 px + voile | helper: true · 24 jetons dérivables · .surface-glass: true · consommée 1× · voile en background-image: true |
-| C07 | §9.2 | **FAIL** | Modes « transparence réduite » et « contraste élevé » pilotables et appliqués | css: true · store: true · interrupteurs: true · attributs posés: false |
+| C07 | §9.2 | **PASS** | Modes « transparence réduite » et « contraste élevé » pilotables et appliqués | css: true · store: true · interrupteurs: true · attributs posés: true |
 | C08 | §3.3 | **PASS** | Aucune couleur littérale dans le code d’interface (hors exception documentée) | 97 fichiers d’interface scannés · 0 ligne(s) fautive(s) |
 | C09 | §6.1 | **PASS** | Un seul seuil (1024 px), une seule navigation montée, aucune largeur en dur | seuil: true · montage exclusif: true · zéro px en dur: true |
 | C10 | §6.2 | **PASS** | Rail : une variable de largeur, repli accessible, état actif non colorimétrique | variable unique: true · largeur: true · repli sr-only: true · aria: true · Hugeicons seuls: true |
@@ -41,7 +41,7 @@ Exécuté le 2026-10-29 18:41 (UTC).
 - C04 : `node scripts/apply-preset-contrast.mjs --check`
 - C05 : `grep -n "@property\|--primary 0.8s" src/styles/globals.css`
 - C06 : `grep -o "surface-glass{[^}]*}" www/assets/*.css (après build)`
-- C07 : `grep -n "data-transparency" src/styles/globals.css src/components/ThemeManager.tsx`
+- C07 : `grep -n "data-transparency" src/styles/globals.css src/theme/resolve-theme.ts src/components/ThemeManager.tsx`
 - C08 : `npx vitest run tests/design/no-hardcoded-colors.test.ts`
 - C09 : `npx vitest run tests/design/desktop-shell.test.ts`
 - C10 : `npx vitest run tests/design/desktop-shell.test.ts`

@@ -255,14 +255,21 @@ const record = (id, section, label, verdict, detail, proof) =>
   const store =
     /reducedTransparency: boolean/.test(appearanceStore) && /highContrast: boolean/.test(appearanceStore);
   const ui = /setReducedTransparency/.test(appearance) && /setHighContrast/.test(appearance);
-  const applied = /data-transparency/.test(themeManager) && /data-contrast/.test(themeManager);
+  // Depuis L5, la décision d'attributs vit dans le résolveur pur
+  // (src/theme/resolve-theme.ts) et non plus dans ThemeManager : on mesure
+  // donc le pipeline entier, pas un fichier qui n'a plus à les nommer.
+  const resolver = read('src/theme/resolve-theme.ts');
+  const applied =
+    /data-transparency/.test(resolver) &&
+    /data-contrast/.test(resolver) &&
+    /applyThemeToDocument\(\s*\n?\s*resolveTheme\(/.test(themeManager);
   record(
     'C07',
     '§9.2',
     'Modes « transparence réduite » et « contraste élevé » pilotables et appliqués',
     css && store && ui && applied ? 'PASS' : 'FAIL',
     `css: ${css} · store: ${store} · interrupteurs: ${ui} · attributs posés: ${applied}`,
-    'grep -n "data-transparency" src/styles/globals.css src/components/ThemeManager.tsx',
+    'grep -n "data-transparency" src/styles/globals.css src/theme/resolve-theme.ts src/components/ThemeManager.tsx',
   );
 }
 
