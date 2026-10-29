@@ -17,11 +17,17 @@ import { useAppearanceStore } from '@/store/appearance-store';
 import { useTheme } from '@/theme/useTheme';
 import { applyAccentPreset, clearAccentPreset } from '@/theme/theme-presets';
 import { applyReadingVars, findBibleFont, loadBibleFont } from '@/theme/theme-fonts';
+import { GRADIENTS } from '@/theme/tweakcn-presets';
+
+/** Preset tweakcn appliqué quand aucun choix explicite n'est persisté. */
+const DEFAULT_PRESET_ID = 'quantum-rose';
 
 export function ThemeManager() {
   const themeMode = useAppearanceStore((s) => s.themeMode);
   const accent = useAppearanceStore((s) => s.accent);
   const presetId = useAppearanceStore((s) => s.presetId);
+  const backgroundType = useAppearanceStore((s) => s.backgroundType);
+  const gradientId = useAppearanceStore((s) => s.gradientId);
   const colorThemeId = useAppearanceStore((s) => s.colorThemeId);
   const bibleFontFamily = useAppearanceStore((s) => s.bibleFontFamily);
   const bibleFontSize = useAppearanceStore((s) => s.bibleFontSize);
@@ -40,17 +46,28 @@ export function ThemeManager() {
   // image-based theme background (when an image theme is active).
   useEffect(() => {
     const root = document.documentElement;
-    if (presetId) {
-      // Preset tweakcn : les variables viennent de la feuille générée
-      // (data-preset) — on retire les overrides inline d'accent pour la
-      // laisser s'appliquer, sans toucher au mode clair/sombre existant.
-      root.setAttribute('data-preset', presetId);
-      clearAccentPreset();
+    // La plateforme repose sur les presets tweakcn : il y en a TOUJOURS un
+    // d'actif (défaut Quantum Rose, proche de l'identité d'origine).
+    root.setAttribute('data-preset', presetId ?? DEFAULT_PRESET_ID);
+    clearAccentPreset();
+    // Fond d'app personnalisé : un dégradé prime sur tout le reste ; une
+    // image repasse par applyAccentPreset (fond + accent extrait de l'image).
+    if (backgroundType === 'gradient' && gradientId) {
+      const gradient = GRADIENTS.find((g) => g.id === gradientId);
+      root.setAttribute('data-app-bg', 'gradient');
+      if (gradient) root.style.setProperty('--app-bg-image', gradient.css);
+      root.style.removeProperty('--theme-image');
+      root.removeAttribute('data-theme-image');
       return;
     }
-    root.removeAttribute('data-preset');
-    applyAccentPreset(accent, theme.isDark, colorThemeId);
-  }, [accent, colorThemeId, presetId, theme.isDark, theme]);
+    root.removeAttribute('data-app-bg');
+    root.style.removeProperty('--app-bg-image');
+    root.style.removeProperty('--theme-image');
+    root.removeAttribute('data-theme-image');
+    if (backgroundType === 'image' && colorThemeId) {
+      applyAccentPreset(accent, theme.isDark, colorThemeId);
+    }
+  }, [accent, colorThemeId, presetId, backgroundType, gradientId, theme.isDark, theme]);
 
   // Bible reading typography: lazy-load the chosen webfont (offline-first,
   // only on selection change) and write the live --reading-* vars so the

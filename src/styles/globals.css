@@ -1,4 +1,6 @@
-/* VersyFlow Global Styles — "Sacred Focus Scripture" (voir src/styles/sacred-focus.css) */
+/* VersyFlow Global Styles — plateforme de personnalisation :
+   presets tweakcn (data-preset), gradients webgradients, fonds image
+   à accent dynamique. Aucun design system maison ici. */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -897,4 +899,60 @@ ion-scroll,
   --ion-background-color: var(--color-background);
   --ion-background-color-rgb: 18, 18, 18;
   --ion-text-color: var(--color-text-primary);
+}
+
+/*
+ * ── Personnalisation (plateforme tweakcn / webgradients / images) ───────
+ * Fond d'app : dégradé (--app-bg-image, posé par ThemeManager quand
+ * data-app-bg='gradient') ou image de thème (--theme-image, accent extrait
+ * dynamiquement). La couche html::before existante sert les deux cas ; le
+ * corps devient transparent pour laisser le fond respirer derrière des
+ * cartes en verre dépoli.
+ */
+html[data-app-bg='gradient']::before {
+  background-image: var(--app-bg-image, none);
+  background-size: cover;
+  background-position: center;
+  opacity: 1;
+  filter: none;
+  transform: none;
+}
+html[data-app-bg='gradient'] body,
+html[data-theme-image='on'] body {
+  background-color: transparent;
+}
+
+/* Accent dynamique : variables enregistrées pour un fondu de 0,8 s quand
+   l'accent extrait de l'image de fond change. */
+@property --primary { syntax: '<color>'; inherits: true; initial-value: #000000; }
+@property --ring { syntax: '<color>'; inherits: true; initial-value: #000000; }
+@property --accent { syntax: '<color>'; inherits: true; initial-value: #000000; }
+@property --tint { syntax: '<color>'; inherits: true; initial-value: #000000; }
+@property --app-bg-image { syntax: '*'; inherits: false; initial-value: none; }
+
+:root {
+  transition:
+    --primary 0.8s ease,
+    --ring 0.8s ease,
+    --accent 0.8s ease,
+    --tint 0.8s ease;
+}
+
+/* Carte verre dépoli teinté : fond carte translucide (40 %) + voile de la
+   teinte extraite de l'image (color-mix 22 %), flou d'arrière-plan fort. */
+.card-glass {
+  background:
+    linear-gradient(color-mix(in srgb, var(--tint, transparent) 22%, transparent), color-mix(in srgb, var(--tint, transparent) 22%, transparent)),
+    color-mix(in srgb, var(--card, var(--color-surface)) 40%, transparent);
+  -webkit-backdrop-filter: blur(40px);
+  backdrop-filter: blur(40px);
+  border: 1px solid var(--color-border);
+  border-radius: 1.5rem;
+}
+
+/* Quand un fond personnalisé est actif (dégradé ou image), les toiles des
+   écrans deviennent transparentes pour le laisser apparaître en entier. */
+html[data-app-bg='gradient'] .app-canvas,
+html[data-theme-image='on'] .app-canvas {
+  background-color: transparent;
 }

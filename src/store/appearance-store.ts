@@ -20,6 +20,10 @@ export interface AppearanceState {
   /** Preset officiel tweakcn actif (src/styles/tweakcn-presets.css) — null
    *  quand l'accent VersyFlow ou un thème image est utilisé. */
   presetId: string | null;
+  /** Fond d'écran de l'app : dégradé webgradients ou image de thème. */
+  backgroundType: 'none' | 'gradient' | 'image';
+  /** Id du dégradé actif (src/styles/gradients.css) si backgroundType='gradient'. */
+  gradientId: string | null;
   /** Image-based color theme id (from theme-catalog) — null when a plain
    *  accent preset is active. The portrait illustration is applied as the
    *  app background; the accent color is the theme's core hex. */
@@ -41,6 +45,8 @@ export interface AppearanceState {
   setThemeMode: (mode: ThemeMode) => void;
   setAccent: (key: AccentKey) => void;
   setPreset: (id: string | null) => void;
+  setGradient: (id: string | null) => void;
+  setBackgroundType: (type: 'none' | 'gradient' | 'image') => void;
   setColorTheme: (id: string | null) => void;
   setFontSize: (size: number) => void;
   toggleVerseNumbers: () => void;
@@ -62,6 +68,8 @@ const DEFAULTS: Pick<
   | 'themeMode'
   | 'accent'
   | 'presetId'
+  | 'backgroundType'
+  | 'gradientId'
   | 'colorThemeId'
   | 'fontSize'
   | 'showVerseNumbers'
@@ -78,7 +86,9 @@ const DEFAULTS: Pick<
 > = {
   themeMode: 'system',
   accent: DEFAULT_ACCENT,
-  presetId: null,
+  presetId: 'quantum-rose',
+  backgroundType: 'none',
+  gradientId: null,
   colorThemeId: null,
   fontSize: 16,
   showVerseNumbers: true,
@@ -103,7 +113,7 @@ export const useAppearanceStore = create<AppearanceState>(() => ({
   },
 
   setAccent(key: AccentKey) {
-    useAppearanceStore.setState({ accent: key, colorThemeId: null, presetId: null });
+    useAppearanceStore.setState({ accent: key, colorThemeId: null, backgroundType: 'none', gradientId: null });
     void appearanceStorePersist.save();
   },
 
@@ -112,8 +122,30 @@ export const useAppearanceStore = create<AppearanceState>(() => ({
     void appearanceStorePersist.save();
   },
 
+  setGradient(id: string | null) {
+    useAppearanceStore.setState({
+      gradientId: id,
+      backgroundType: id ? 'gradient' : 'none',
+      colorThemeId: null,
+    });
+    void appearanceStorePersist.save();
+  },
+
+  setBackgroundType(type: 'none' | 'gradient' | 'image') {
+    useAppearanceStore.setState({
+      backgroundType: type,
+      ...(type === 'none' ? { gradientId: null, colorThemeId: null } : {}),
+    });
+    void appearanceStorePersist.save();
+  },
+
   setColorTheme(id: string | null) {
-    useAppearanceStore.setState({ colorThemeId: id, presetId: null, accent: id ?? DEFAULT_ACCENT });
+    useAppearanceStore.setState({
+      colorThemeId: id,
+      backgroundType: id ? 'image' : 'none',
+      gradientId: null,
+      accent: id ?? DEFAULT_ACCENT,
+    });
     void appearanceStorePersist.save();
   },
 
@@ -195,6 +227,8 @@ const PERSISTED_KEYS: (keyof AppearanceState)[] = [
   'themeMode',
   'accent',
   'presetId',
+  'backgroundType',
+  'gradientId',
   'colorThemeId',
   'fontSize',
   'showVerseNumbers',
@@ -234,6 +268,8 @@ export const appearanceStorePersist = {
       themeMode: s.themeMode,
       accent: s.accent,
       presetId: s.presetId,
+      backgroundType: s.backgroundType,
+      gradientId: s.gradientId,
       colorThemeId: s.colorThemeId,
       fontSize: s.fontSize,
       showVerseNumbers: s.showVerseNumbers,

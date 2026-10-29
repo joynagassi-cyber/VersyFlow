@@ -195,6 +195,25 @@ async function main() {
   }
   writeFileSync(resolve(root, 'src/styles/gradients.css'), out.join('\n'));
   console.log(`[gradients] ${GRADIENT_CLASSES.length} gradients → src/styles/gradients.css`);
+
+  // Métadonnées gradients (valeur background-image d'origine, verbatim) pour
+  // appliquer un dégradé en fond d'app via --app-bg-image.
+  const gradMeta = [
+    'export interface GradientMeta { id: string; className: string; css: string }',
+    'export const GRADIENTS: GradientMeta[] = [',
+  ];
+  for (const cls of GRADIENT_CLASSES) {
+    const re = new RegExp(`\\.${cls}\\s*\\{[^}]*\\}`, 'm');
+    const m = gradCss.match(re);
+    const cssValue = m[0].match(/background-image:\s*([^;]+);/)[1].trim();
+    const id = cls.replace(/_/g, '-');
+    gradMeta.push(`  { id: '${id}', className: 'grad-${id}', css: ${JSON.stringify(cssValue)} },`);
+  }
+  gradMeta.push('];', '');
+  const metaPath = resolve(root, 'src/theme/tweakcn-presets.ts');
+  const { readFileSync } = await import('node:fs');
+  writeFileSync(metaPath, readFileSync(metaPath, 'utf8') + '\n' + gradMeta.join('\n'));
+  console.log('[gradients] métadonnées → src/theme/tweakcn-presets.ts');
 }
 
 main().catch((e) => {

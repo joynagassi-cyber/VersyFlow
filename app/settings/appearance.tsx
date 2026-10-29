@@ -3,8 +3,8 @@ import { Check, Sun, Moon, Monitor, Palette } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { useAppearanceStore } from '@/store/appearance-store';
-import { ACCENT_PRESETS } from '@/theme/theme-presets';
-import { TWEAKCN_PRESETS } from '@/theme/tweakcn-presets';
+import { TWEAKCN_PRESETS, GRADIENTS } from '@/theme/tweakcn-presets';
+import { themeLandscapeUrl } from '@/theme/theme-catalog';
 import { THEME_CATEGORIES } from '@/theme/theme-catalog';
 import { BIBLE_FONTS } from '@/theme/theme-fonts';
 import { cn } from '@/lib/utils';
@@ -87,6 +87,10 @@ export default function AppearanceScreen() {
   const colorThemeId = useAppearanceStore((s) => s.colorThemeId);
   const presetId = useAppearanceStore((s) => s.presetId);
   const setPreset = useAppearanceStore((s) => s.setPreset);
+  const backgroundType = useAppearanceStore((s) => s.backgroundType);
+  const gradientId = useAppearanceStore((s) => s.gradientId);
+  const setGradient = useAppearanceStore((s) => s.setGradient);
+  const setBackgroundType = useAppearanceStore((s) => s.setBackgroundType);
   const fontSize = useAppearanceStore((s) => s.fontSize);
   const showVerseNumbers = useAppearanceStore((s) => s.showVerseNumbers);
   const focusMode = useAppearanceStore((s) => s.focusMode);
@@ -148,44 +152,18 @@ export default function AppearanceScreen() {
           </div>
         </Section>
 
-        <Section title={t('settings.accentColor', "Couleur d'accent")}>
-          <div className="grid grid-cols-4 gap-3">
-            {ACCENT_PRESETS.map((p) => {
-              const active = accent === p.key && colorThemeId == null && presetId == null;
-              return (
-                <button
-                  key={p.key}
-                  onClick={() => setColorTheme(null)}
-                  aria-pressed={active}
-                  className="flex flex-col items-center gap-1.5"
-                >
-                  <span
-                    className={cn(
-                      'flex h-11 w-11 items-center justify-center rounded-full border-2 bg-white transition',
-                      active ? 'border-text-primary' : 'border-transparent',
-                    )}
-                    style={{ backgroundColor: p.swatch }}
-                  >
-                    {active && <Check size={18} className="text-white" />}
-                  </span>
-                  <span className="text-[11px] font-medium text-text-muted">{p.label}</span>
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Presets officiels tweakcn (importés tels quels, voir
-              src/styles/tweakcn-presets.css) — clair + sombre via le Mode. */}
-          <p className="mb-2 mt-5 text-xs font-semibold uppercase tracking-wider text-text-muted">
-            {t('settings.tweakcnPresets', 'Thèmes tweakcn')}
-          </p>
+        {/* ── Plateforme de personnalisation ─────────────────────────────
+            Tout le style de l'app vient d'ici : preset tweakcn (couleurs),
+            fond dégradé (webgradients) ou image (accent extrait de l'image).
+            Aucun style n'est codé en dur dans les écrans. */}
+        <Section title={t('settings.themePreset', 'Thème')}>
           <div className="grid grid-cols-5 gap-3">
             {TWEAKCN_PRESETS.map((preset) => {
-              const active = presetId === preset.id;
+              const active = (presetId ?? 'quantum-rose') === preset.id;
               return (
                 <button
                   key={preset.id}
-                  onClick={() => setPreset(active ? null : preset.id)}
+                  onClick={() => setPreset(preset.id)}
                   aria-pressed={active}
                   className="flex flex-col items-center gap-1.5"
                 >
@@ -205,36 +183,112 @@ export default function AppearanceScreen() {
               );
             })}
           </div>
+          <p className="mt-3 text-[11px] leading-relaxed text-text-muted">
+            {t('settings.themePresetHint', 'Thèmes officiels tweakcn — le mode Clair/Sombre ci-dessus choisit la variante.')}
+          </p>
+        </Section>
 
-          {/* Image-based color themes (100 flat-2D monochrome illustrations) */}
-          <button
-            type="button"
-            onClick={() => navigate('/settings/theme-picker')}
-            className={cn(
-              'mt-3 flex w-full items-center gap-3 rounded-xl p-3 text-left transition',
-              colorThemeId != null
-                ? 'bg-primary/10 ring-1 ring-primary/30'
-                : 'bg-surface-tint/50 active:bg-surface-tint',
-            )}
-          >
-            <span
-              className={cn(
-                'flex h-10 w-10 shrink-0 items-center justify-center rounded-full',
-                colorThemeId != null ? 'bg-primary text-white' : 'bg-surface-tint text-primary',
-              )}
-            >
-              <Palette size={18} />
-            </span>
-            <span className="min-w-0 flex-1">
-              <span className="block text-sm font-semibold text-text-primary">
-                {t('settings.themeImage', "Thèmes d'image")}
-              </span>
-              <span className="block text-xs text-text-muted">
-                {totalThemes} {t('settings.themeImagesCount', 'illustrations 2D monochromes par catégorie')}
-              </span>
-            </span>
-            <span className="text-xs font-bold text-primary">›</span>
-          </button>
+        <Section title={t('settings.background', "Fond de l'app")}>
+          <div className="mb-4 flex gap-2">
+            {(
+              [
+                { value: 'none', label: t('settings.bgNone', 'Aucun') },
+                { value: 'gradient', label: t('settings.bgGradient', 'Dégradé') },
+                { value: 'image', label: t('settings.bgImage', 'Image') },
+              ] as const
+            ).map((opt) => (
+              <button
+                key={opt.value}
+                onClick={() => setBackgroundType(opt.value)}
+                aria-pressed={backgroundType === opt.value}
+                className={cn(
+                  'flex-1 rounded-full px-3 py-2 text-xs font-bold transition',
+                  backgroundType === opt.value
+                    ? 'bg-primary text-primary-foreground'
+                    : 'bg-surface-tint text-text-secondary',
+                )}
+              >
+                {opt.label}
+              </button>
+            ))}
+          </div>
+
+          {backgroundType === 'gradient' && (
+            <div className="grid grid-cols-2 gap-2">
+              {GRADIENTS.map((g) => {
+                const active = gradientId === g.id;
+                return (
+                  <button
+                    key={g.id}
+                    onClick={() => setGradient(g.id)}
+                    aria-pressed={active}
+                    className={cn(
+                      'h-16 rounded-2xl border-2 p-2 text-left transition',
+                      g.className,
+                      active ? 'border-text-primary' : 'border-transparent',
+                    )}
+                  >
+                    <span className="rounded-full bg-black/25 px-2 py-0.5 text-[10px] font-bold capitalize text-white">
+                      {g.id.replace(/-/g, ' ')}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          )}
+
+          {backgroundType === 'image' && (
+            <div className="flex flex-col gap-4">
+              {THEME_CATEGORIES.map((cat) => (
+                <div key={cat.id}>
+                  <p className="mb-2 text-[11px] font-bold uppercase tracking-wider text-text-muted">
+                    {cat.name}
+                  </p>
+                  <div className="grid grid-cols-5 gap-2">
+                    {cat.themes.map((entry) => {
+                      const active = colorThemeId === entry.id;
+                      return (
+                        <button
+                          key={entry.id}
+                          onClick={() => setColorTheme(entry.id)}
+                          aria-pressed={active}
+                          title={entry.name}
+                          className={cn(
+                            'flex aspect-square items-center justify-center overflow-hidden rounded-2xl border-2 transition',
+                            active ? 'border-text-primary' : 'border-transparent',
+                          )}
+                          style={{ backgroundColor: entry.color }}
+                        >
+                          <img
+                            src={themeLandscapeUrl(entry.id)}
+                            alt=""
+                            loading="lazy"
+                            className="h-full w-full object-cover"
+                            onError={(e) => {
+                              (e.target as HTMLImageElement).style.display = 'none';
+                            }}
+                          />
+                          {active && <Check size={16} className="absolute text-white" />}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
+              <p className="text-[11px] leading-relaxed text-text-muted">
+                {t(
+                  'settings.bgImageHint',
+                  "L'accent de l'app est extrait automatiquement de l'image choisie (couleurs, anneau, voile des cartes).",
+                )}
+              </p>
+            </div>
+          )}
+
+          {backgroundType === 'none' && (
+            <p className="text-[11px] leading-relaxed text-text-muted">
+              {t('settings.bgNoneHint', 'Le fond suit simplement le thème choisi ci-dessus.')}
+            </p>
+          )}
         </Section>
 
         {/* ── Lecture : full Bible reading controls (font + fine spacing) ── */}

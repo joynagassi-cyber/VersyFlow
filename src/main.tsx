@@ -13,7 +13,6 @@ import {
 import { I18nextProvider } from 'react-i18next';
 import { Suspense, lazy, useEffect } from 'react';
 import '@/styles/globals.css';
-import '@/styles/sacred-focus.css';
 import '@/styles/tweakcn-presets.css';
 import '@/styles/gradients.css';
 
@@ -23,9 +22,6 @@ import '@/styles/gradients.css';
 // theme font choices (playfair-display, lora, merriweather, etc.) but
 // are not imported by default — add them on demand when a theme
 // references a specific one.
-// Sacred Focus Scripture (DESIGN.md) : Playfair Display = titres + Écriture.
-import '@fontsource/playfair-display/600.css';
-import '@fontsource/playfair-display/700.css';
 import '@fontsource/source-serif-4/400.css';
 import '@fontsource/source-serif-4/400-italic.css';
 import '@fontsource/source-serif-4/600.css';

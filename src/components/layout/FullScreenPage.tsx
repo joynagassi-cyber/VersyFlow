@@ -71,7 +71,7 @@ export function FullScreenPage({
           </IonToolbar>
         </IonHeader>
       )}
-      <div className={cn('h-full overflow-y-auto bg-background p-4', className)}>
+      <div className={cn('app-canvas h-full overflow-y-auto bg-background p-4', className)}>
         {children}
       </div>
     </IonPage>
