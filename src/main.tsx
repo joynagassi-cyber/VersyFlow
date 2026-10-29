@@ -71,6 +71,24 @@ const FamilyHome = lazy(() => import('../app/family/home'));
 const FamilyMembers = lazy(() => import('../app/family/members'));
 const FamilyInvite = lazy(() => import('../app/family/invite'));
 const FamilyJoin = lazy(() => import('../app/family/join'));
+const FamilyPresentation = lazy(() => import('../app/family/presentation'));
+const FamilyCreate = lazy(() => import('../app/family/create'));
+const FamilyProfile = lazy(() => import('../app/family/profile'));
+const FamilySelectProfile = lazy(() => import('../app/family/select-profile'));
+const FamilyMember = lazy(() => import('../app/family/member'));
+const FamilyLeaderboard = lazy(() => import('../app/family/leaderboard'));
+const FamilyPoints = lazy(() => import('../app/family/points'));
+const FamilyChallenges = lazy(() => import('../app/family/challenges/index'));
+const FamilyChallengeNew = lazy(() => import('../app/family/challenges/new'));
+const FamilyChallengeDetail = lazy(() => import('../app/family/challenges/detail'));
+const FamilyChallengeResults = lazy(() => import('../app/family/challenges/results'));
+const FamilySettings = lazy(() => import('../app/family/settings'));
+const FamilySessionPrepare = lazy(() => import('../app/family/session/prepare'));
+const FamilySessionLive = lazy(() => import('../app/family/session/live'));
+const FamilySessionSummary = lazy(() => import('../app/family/session/summary'));
+const FamilyActivity = lazy(() => import('../app/family/activity'));
+const FamilySync = lazy(() => import('../app/family/sync'));
+const NotesPage = lazy(() => import('../app/notes'));
 
 // Settings sub-pages
 const SettingsLanguages = lazy(() => import('../app/settings/languages'));
@@ -106,6 +124,14 @@ const SemanticIndex = lazy(() => import('../app/semantic/index'));
 const SemanticConcept = lazy(() => import('../app/semantic/concept'));
 const SemanticVerse = lazy(() => import('../app/semantic/verse'));
 const SemanticCommunity = lazy(() => import('../app/semantic/community'));
+const SemanticTags = lazy(() => import('../app/semantic/tags'));
+const SemanticTagNew = lazy(() => import('../app/semantic/tags/new'));
+const SemanticTree = lazy(() => import('../app/semantic/tree'));
+const SemanticNode = lazy(() => import('../app/semantic/node'));
+const SemanticSuggestions = lazy(() => import('../app/semantic/suggestions'));
+const SemanticReview = lazy(() => import('../app/semantic/review'));
+const SemanticAttach = lazy(() => import('../app/semantic/attach'));
+const SemanticData = lazy(() => import('../app/semantic/data'));
 
 import i18next, { initI18next } from '@/i18n/i18next-init';
 import { initializeSettingsStore, useSettingsStore } from '@/store/settings-store';
@@ -339,6 +365,23 @@ function App() {
               <Route path="/family/members" element={<FamilyMembers />} />
               <Route path="/family/invite" element={<FamilyInvite />} />
               <Route path="/family/join" element={<FamilyJoin />} />
+              <Route path="/family/presentation" element={<FamilyPresentation />} />
+              <Route path="/family/create" element={<FamilyCreate />} />
+              <Route path="/family/profile" element={<FamilyProfile />} />
+              <Route path="/family/select-profile" element={<FamilySelectProfile />} />
+              <Route path="/family/member/:accountId" element={<FamilyMember />} />
+              <Route path="/family/leaderboard" element={<FamilyLeaderboard />} />
+              <Route path="/family/points" element={<FamilyPoints />} />
+              <Route path="/family/challenges" element={<FamilyChallenges />} />
+              <Route path="/family/challenges/new" element={<FamilyChallengeNew />} />
+              <Route path="/family/challenges/:challengeId" element={<FamilyChallengeDetail />} />
+              <Route path="/family/challenges/:challengeId/results" element={<FamilyChallengeResults />} />
+              <Route path="/family/settings" element={<FamilySettings />} />
+              <Route path="/family/session/prepare" element={<FamilySessionPrepare />} />
+              <Route path="/family/session/live" element={<FamilySessionLive />} />
+              <Route path="/family/session/summary" element={<FamilySessionSummary />} />
+              <Route path="/family/activity" element={<FamilyActivity />} />
+              <Route path="/family/sync" element={<FamilySync />} />
 
               {/* Settings sub-pages */}
               <Route path="/settings" element={<SettingsIndex />} />
@@ -357,6 +400,7 @@ function App() {
               {/* Misc */}
               <Route path="/search" element={<SearchPage />} />
               <Route path="/notifications" element={<NotificationsPage />} />
+              <Route path="/notes" element={<NotesPage />} />
               <Route path="/mastery" element={<MasteryPage />} />
               <Route path="/achievements" element={<AchievementsPage />} />
               <Route path="/analytics/dashboard" element={<AnalyticsDashboard />} />
@@ -375,6 +419,14 @@ function App() {
               <Route path="/semantic/concept" element={<SemanticConcept />} />
               <Route path="/semantic/verse" element={<SemanticVerse />} />
               <Route path="/semantic/community" element={<SemanticCommunity />} />
+              <Route path="/semantic/tags" element={<SemanticTags />} />
+              <Route path="/semantic/tags/new" element={<SemanticTagNew />} />
+              <Route path="/semantic/tree" element={<SemanticTree />} />
+              <Route path="/semantic/node" element={<SemanticNode />} />
+              <Route path="/semantic/suggestions" element={<SemanticSuggestions />} />
+              <Route path="/semantic/review" element={<SemanticReview />} />
+              <Route path="/semantic/attach" element={<SemanticAttach />} />
+              <Route path="/semantic/data" element={<SemanticData />} />
             </Route>
 
             {/* Public routes */}
@@ -455,6 +507,23 @@ function preloadAllPages() {
     void import('../app/family/invite');
     void import('../app/family/join');
     void import('../app/family/members');
+    void import('../app/family/activity');
+    void import('../app/family/challenges/detail');
+    void import('../app/family/challenges/index');
+    void import('../app/family/challenges/new');
+    void import('../app/family/challenges/results');
+    void import('../app/family/create');
+    void import('../app/family/leaderboard');
+    void import('../app/family/member');
+    void import('../app/family/points');
+    void import('../app/family/presentation');
+    void import('../app/family/profile');
+    void import('../app/family/select-profile');
+    void import('../app/family/session/live');
+    void import('../app/family/session/prepare');
+    void import('../app/family/session/summary');
+    void import('../app/family/settings');
+    void import('../app/family/sync');
     void import('../app/mastery/index');
     void import('../app/memorization/confirm');
     void import('../app/memorization/flashcard');
@@ -484,6 +553,15 @@ function preloadAllPages() {
     void import('../app/semantic/concept');
     void import('../app/semantic/index');
     void import('../app/semantic/verse');
+    void import('../app/semantic/attach');
+    void import('../app/semantic/data');
+    void import('../app/semantic/node');
+    void import('../app/semantic/review');
+    void import('../app/semantic/suggestions');
+    void import('../app/semantic/tags');
+    void import('../app/semantic/tags/new');
+    void import('../app/semantic/tree');
+    void import('../app/notes');
     void import('../app/settings/about');
     void import('../app/settings/appearance');
     void import('../app/settings/available-translations');

@@ -16,7 +16,8 @@
 import { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { HugeiconsIcon } from '@hugeicons/react';
+import type { IconSvgElement } from '@hugeicons/react';
+import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   Home01Icon,
   BookOpen01Icon,
@@ -43,7 +44,8 @@ import { useIsDesktop } from '@/hooks/useIsDesktop';
 import { Logo } from '@/components/brand/Logo';
 import { cn } from '@/lib/utils';
 
-type IconType = typeof Home01Icon;
+/** Type des icônes Hugeicons : celui de la bibliothèque, pas une approximation. */
+type IconType = IconSvgElement;
 
 const TAB_ICONS: Record<TabId, IconType> = {
   home: Home01Icon,
@@ -131,7 +133,7 @@ export function DesktopRail() {
           aria-expanded={!collapsed}
           className="ms-auto flex h-8 w-8 flex-none items-center justify-center rounded-lg text-text-muted hover:bg-surface-tint hover:text-text-primary"
         >
-          <HugeiconsIcon icon={SidebarLeft01Icon} size={19} />
+          <DuoIcon icon={SidebarLeft01Icon} size={19} />
         </button>
         )}
       </div>
@@ -147,7 +149,7 @@ export function DesktopRail() {
           )}
           aria-label={t('nav.newSession', 'Nouvelle session')}
         >
-          <HugeiconsIcon icon={PlusSignIcon} size={19} strokeWidth={2.2} />
+          <DuoIcon icon={PlusSignIcon} size={19} strokeWidth={2.2} />
           <span className="rail-label text-sm font-semibold">{t('nav.newSession', 'Nouvelle session')}</span>
         </button>
       </div>
@@ -171,7 +173,7 @@ export function DesktopRail() {
                 )}
               >
                 <span className={iconColumn}>
-                  <HugeiconsIcon
+                  <DuoIcon
                     icon={TAB_ICONS[tab.id]}
                     size={20}
                     strokeWidth={active ? 2.3 : 1.8}
@@ -208,7 +210,7 @@ export function DesktopRail() {
                 )}
               >
                 <span className={iconColumn}>
-                  <HugeiconsIcon icon={Icon} size={20} strokeWidth={active ? 2.3 : 1.8} />
+                  <DuoIcon icon={Icon} size={20} strokeWidth={active ? 2.3 : 1.8} />
                 </span>
                 <span className="rail-label truncate">{t(item.labelKey, item.label)}</span>
               </button>
@@ -232,7 +234,7 @@ export function DesktopRail() {
           )}
         >
           <span className={iconColumn}>
-            <HugeiconsIcon icon={UserCircleIcon} size={20} />
+            <DuoIcon icon={UserCircleIcon} size={20} />
           </span>
           <span className="rail-label truncate">{t('nav.profile', 'Profil')}</span>
         </button>
