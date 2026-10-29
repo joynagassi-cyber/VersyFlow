@@ -499,24 +499,28 @@ const unverifiable = [
     section: '§11.3',
     label: 'Rendu visuel réel aux largeurs 390 / 768 / 1024 / 1440 px',
     reason: 'Aucun navigateur ni outil de capture dans l’environnement de développement.',
+    check: 'docs/plan/verification-manuelle.md §1 — ou `node scripts/visual-check.mjs` (Playwright)',
   },
   {
     id: 'U02',
     section: '§11.3',
     label: 'Absence de débordement horizontal et positions réelles',
     reason: 'jsdom ne calcule pas de mise en page ; seule l’inspection à l’écran peut le prouver.',
+    check: 'docs/plan/verification-manuelle.md §2 — le script mesure scrollWidth − clientWidth',
   },
   {
     id: 'U03',
     section: '§4.5',
     label: 'Rendu effectif du verre (backdrop-filter) sur les cartes',
     reason: 'Le CSS est prouvé, l’effet composité ne l’est pas sans moteur de rendu.',
+    check: 'docs/plan/verification-manuelle.md §3 — thème image + cartes .surface-glass',
   },
   {
     id: 'U04',
     section: '§7',
     label: 'Parcours métier complets (mémorisation, révisions) sur données réelles',
     reason: 'Les jeux bibliques multi-traductions sont absents du poste (données non versionnées).',
+    check: 'docs/plan/verification-manuelle.md §4 — restaurer data/bible depuis l’historique puis jouer les 6 étapes',
   },
 ];
 
@@ -540,7 +544,10 @@ if (JSON_ONLY) {
     console.log(`${' '.repeat(23)}${r.detail}`);
   }
   console.log('\nNon vérifiable dans cet environnement :');
-  for (const u of unverifiable) console.log(`  ${u.id} ${u.section} ${u.label}\n     → ${u.reason}`);
+  for (const u of unverifiable) {
+    console.log(`  ${u.id} ${u.section} ${u.label}\n     → ${u.reason}`);
+    if (u.check) console.log(`     ↳ pour le vérifier : ${u.check}`);
+  }
   console.log(
     `\nBilan : ${counts.PASS ?? 0} PASS · ${counts.PARTIAL ?? 0} PARTIEL · ${counts.FAIL ?? 0} FAIL · ${unverifiable.length} non vérifiable(s)`,
   );
@@ -561,9 +568,9 @@ if (!JSON_ONLY) {
     '',
     '## Non vérifiable ici',
     '',
-    '| ID | § | Élément | Raison |',
-    '| --- | --- | --- | --- |',
-    ...unverifiable.map((u) => `| ${u.id} | ${u.section} | ${u.label} | ${u.reason} |`),
+    '| ID | § | Élément | Raison | Comment le vérifier |',
+    '| --- | --- | --- | --- | --- |',
+    ...unverifiable.map((u) => `| ${u.id} | ${u.section} | ${u.label} | ${u.reason} | ${u.check ?? '—'} |`),
     '',
     '## Commandes de preuve',
     '',

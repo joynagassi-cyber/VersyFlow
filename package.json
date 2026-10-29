@@ -34,7 +34,8 @@
     "plan:audit": "node scripts/audit-plan.mjs",
     "verify": "tsc -p tsconfig.app.json --noEmit && eslint app src/components src/hooks src/store src/theme tests/design --ext .ts,.tsx && vitest run tests/design && node scripts/audit-plan.mjs && node scripts/theme-provenance.mjs && node scripts/journey-inventory.mjs",
     "themes:provenance": "node scripts/theme-provenance.mjs",
-    "plan:journeys": "node scripts/journey-inventory.mjs"
+    "plan:journeys": "node scripts/journey-inventory.mjs",
+    "verify:visuel": "node scripts/visual-check.mjs"
   },
   "dependencies": {
     "@capacitor-community/sqlite": "^8.1.1",

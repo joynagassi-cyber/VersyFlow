@@ -1,7 +1,7 @@
 # Rapport d’audit — plan « Interface web + thèmes »
 
 Généré par `node scripts/audit-plan.mjs`. **Ne pas éditer à la main.**
-Exécuté le 2026-10-29 20:59 (UTC).
+Exécuté le 2026-10-29 21:21 (UTC).
 
 **Bilan : 17 PASS · 0 PARTIEL · 0 FAIL · 4 non vérifiable(s).**
 
@@ -27,12 +27,12 @@ Exécuté le 2026-10-29 20:59 (UTC).
 
 ## Non vérifiable ici
 
-| ID | § | Élément | Raison |
-| --- | --- | --- | --- |
-| U01 | §11.3 | Rendu visuel réel aux largeurs 390 / 768 / 1024 / 1440 px | Aucun navigateur ni outil de capture dans l’environnement de développement. |
-| U02 | §11.3 | Absence de débordement horizontal et positions réelles | jsdom ne calcule pas de mise en page ; seule l’inspection à l’écran peut le prouver. |
-| U03 | §4.5 | Rendu effectif du verre (backdrop-filter) sur les cartes | Le CSS est prouvé, l’effet composité ne l’est pas sans moteur de rendu. |
-| U04 | §7 | Parcours métier complets (mémorisation, révisions) sur données réelles | Les jeux bibliques multi-traductions sont absents du poste (données non versionnées). |
+| ID | § | Élément | Raison | Comment le vérifier |
+| --- | --- | --- | --- | --- |
+| U01 | §11.3 | Rendu visuel réel aux largeurs 390 / 768 / 1024 / 1440 px | Aucun navigateur ni outil de capture dans l’environnement de développement. | docs/plan/verification-manuelle.md §1 — ou `node scripts/visual-check.mjs` (Playwright) |
+| U02 | §11.3 | Absence de débordement horizontal et positions réelles | jsdom ne calcule pas de mise en page ; seule l’inspection à l’écran peut le prouver. | docs/plan/verification-manuelle.md §2 — le script mesure scrollWidth − clientWidth |
+| U03 | §4.5 | Rendu effectif du verre (backdrop-filter) sur les cartes | Le CSS est prouvé, l’effet composité ne l’est pas sans moteur de rendu. | docs/plan/verification-manuelle.md §3 — thème image + cartes .surface-glass |
+| U04 | §7 | Parcours métier complets (mémorisation, révisions) sur données réelles | Les jeux bibliques multi-traductions sont absents du poste (données non versionnées). | docs/plan/verification-manuelle.md §4 — restaurer data/bible depuis l’historique puis jouer les 6 étapes |
 
 ## Commandes de preuve
 

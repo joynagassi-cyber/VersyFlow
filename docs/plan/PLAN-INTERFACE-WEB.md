@@ -287,12 +287,16 @@ une commande, et sa sortie au dernier passage.
 | 5 | `npx vite build` | **✓ 15,2 s**, `index-*.js` 437,09 kB (124,37 kB gzip) |
 | 6 | `grep -rn "setProperty" app/` | **0** (le thème n'est plus écrit par un écran) |
 | 7 | `grep -rIl "lucide-react" --include=*.tsx app src` | **0** |
-| 8 | 4 largeurs de référence inspectées à l'écran | **NON VÉRIFIABLE** : aucun navigateur dans l'environnement (U01/U02) |
+| 8 | 4 largeurs de référence inspectées à l'écran | **NON VÉRIFIABLE ici** : aucun navigateur (U01/U02). **Rendu exécutable sur un poste** : `node scripts/visual-check.mjs` (mesure le débordement, capture les 12 écrans × 4 largeurs) et la fiche pas à pas `docs/plan/verification-manuelle.md` |
 
 Deux limites restent déclarées, jamais comptées comme réussies :
 
 - **U01/U02/U03** — le rendu réel (390/768/1024/1440 px), l'absence de débordement
-  et l'effet du verre ne se prouvent pas sans moteur de rendu.
+  et l'effet du verre ne se prouvent pas sans moteur de rendu. Ces quatre points ne
+  sont plus une case grise : `docs/plan/verification-manuelle.md` décrit quoi
+  regarder, dans quel ordre, et `scripts/visual-check.mjs` les **mesure** sur une
+  machine avec navigateur (Playwright). Le script sort en **code 3** quand il ne
+  peut rien mesurer : absent ≠ réussi.
 - **Visuels de thèmes** — `public/themes` est désormais **versionné** (décision du
   29/10 : les thèmes image font partie de la livraison). État mesuré par
   `npm run themes:provenance` : **198 PNG suivis** = 99 portraits + 99 paysages
@@ -353,6 +357,6 @@ restants, non bloquants, à traiter en lot dédié).
 | --- | --- | --- |
 | `public/themes` non versionné | clone neuf sans visuels de thème | **réalisé** : manifeste de provenance + repli sur la couleur de catalogue ; décision de stockage toujours à prendre |
 | Migration Hugeicons (70 fichiers d'un coup) | régression visuelle silencieuse | **réalisé** : codemod + `tsc` + build ; aucun nom d'icône inventé (115 noms vérifiés dans les types du paquet) |
-| Aucun navigateur | mise en page non prouvée | **déclaré** : U01–U03 restent non vérifiables |
+| Aucun navigateur | mise en page non prouvée | **déclaré** : U01–U03 restent non vérifiés ; vérification **outillée** (`scripts/visual-check.mjs`) et **documentée** (`docs/plan/verification-manuelle.md`) pour un poste avec navigateur |
 | Largeur des écrans | colonne étroite sur desktop | **réalisé** : `.screen-column` dans les coquilles, `max-w-md` = 0 |
 | Migration des icônes sans preuve visuelle | taille/poids différents de Lucide (24 px par défaut) | **risque ouvert** : à confirmer à l'écran (U01) |
