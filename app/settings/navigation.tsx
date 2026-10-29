@@ -11,27 +11,28 @@
  */
 
 import { useTranslation } from 'react-i18next';
+import { HugeiconsIcon } from '@hugeicons/react';
 import {
-  Eye,
-  BarChart3,
-  BookOpen,
-  SlidersHorizontal,
-  BrainCircuit,
-  Folder,
-  Trophy,
-  Search,
-  Target,
-  Bell,
-  History,
-  GitCompare,
-  Users,
-} from 'lucide-react';
+  BarChartIcon as BarChart3,
+  BookOpen01Icon as BookOpen,
+  SlidersHorizontalIcon as SlidersHorizontal,
+  BrainCircuitIcon as BrainCircuit,
+  Folder01Icon as Folder,
+  TrophyIcon as Trophy,
+  Search01Icon as Search,
+  Target01Icon as Target,
+  BellIcon as Bell,
+  HistoryIcon as History,
+  GitCompareIcon as GitCompare,
+  UsersIcon as Users,
+} from '@hugeicons/core-free-icons';
+import type { EyeIcon } from '@hugeicons/core-free-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { useUiStore, ALL_MENU_ITEMS, type TabId } from '@/store/ui-store';
 
 interface ToggleRow {
   tabId: TabId;
-  icon: typeof Eye;
+  icon: typeof EyeIcon;
   i18nKey: string;
   defaultLabel: string;
 }
@@ -42,7 +43,7 @@ const TOGGLES: ToggleRow[] = [
 ];
 
 /** One icon per hamburger-menu item, keyed by route path. */
-const MENU_ITEM_ICONS: Record<string, typeof Eye> = {
+const MENU_ITEM_ICONS: Record<string, typeof EyeIcon> = {
   '/bible/explorer': BookOpen,
   '/memorization/session': BrainCircuit,
   '/review/queue': History,
@@ -79,7 +80,7 @@ export default function NavigationSettingsScreen() {
       showBack
       backPath="/settings"
     >
-      <div className="mx-auto max-w-md space-y-5">
+      <div className="screen-column space-y-5">
         <p className="px-1 text-sm text-text-muted">
           {t('settings.navigationHint', 'Choisissez quelles pages sont visibles dans la barre de navigation en bas de l’appli. Désactiver une page ne supprime pas sa fonctionnalité.')}
         </p>
@@ -101,7 +102,7 @@ export default function NavigationSettingsScreen() {
                   className="flex w-full items-center justify-between px-4 py-3.5 text-left"
                 >
                   <span className="flex items-center gap-3">
-                    <Icon size={18} className={visible ? 'text-primary' : 'text-text-muted'} />
+                    <HugeiconsIcon icon={Icon} size={18} className={visible ? 'text-primary' : 'text-text-muted'} />
                     <span className="text-base text-text-primary">{t(i18nKey, defaultLabel)}</span>
                   </span>
                   <span className={pillClass(visible)}>
@@ -134,7 +135,7 @@ export default function NavigationSettingsScreen() {
                   className="flex w-full items-center justify-between px-4 py-3.5 text-left"
                 >
                   <span className="flex items-center gap-3">
-                    <Icon size={18} className={visible ? 'text-primary' : 'text-text-muted'} />
+                    <HugeiconsIcon icon={Icon} size={18} className={visible ? 'text-primary' : 'text-text-muted'} />
                     <span className="text-base text-text-primary">{t(labelKey, label)}</span>
                   </span>
                   <span className={pillClass(visible)}>

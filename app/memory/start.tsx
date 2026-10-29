@@ -1,15 +1,16 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { HugeiconsIcon } from '@hugeicons/react';
 import {
-  Eye,
-  Sparkles,
-  Brain,
-  Layers,
-  PenLine,
-  Target,
-  ChevronRight,
-} from 'lucide-react';
+  EyeIcon as Eye,
+  SparklesIcon as Sparkles,
+  BrainIcon as Brain,
+  Layers01Icon as Layers,
+  PenLineIcon as PenLine,
+  Target01Icon as Target,
+  ChevronRightIcon as ChevronRight,
+} from '@hugeicons/core-free-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { Button } from '@/components/ui/button';
 import type { ExerciseStrategy } from '@/domains/memorization/entities';
@@ -62,7 +63,7 @@ export default function MemorizationStartScreen({ verseData }: Props) {
       showBack
       backPath="/tabs/home"
     >
-      <div className="mx-auto max-w-md space-y-5">
+      <div className="screen-column space-y-5">
         {/* Verse preview */}
         <div className="rounded-3xl bg-surface p-5 shadow-sm">
           <p className="text-sm font-semibold text-primary">{verseData.reference}</p>
@@ -90,10 +91,10 @@ export default function MemorizationStartScreen({ verseData }: Props) {
                 <span
                   className={
                     'flex h-12 w-12 shrink-0 items-center justify-center rounded-xl ' +
-                    (active ? 'bg-primary text-white' : 'bg-surface-tint text-primary')
+                    (active ? 'bg-primary text-on-primary' : 'bg-surface-tint text-primary')
                   }
                 >
-                  <Icon size={22} />
+                  <HugeiconsIcon icon={Icon} size={22} />
                 </span>
                 <span className="min-w-0 flex-1">
                   <span className="block text-base font-bold text-text-primary">
@@ -102,7 +103,7 @@ export default function MemorizationStartScreen({ verseData }: Props) {
                   <span className="text-sm text-text-muted">{t(s.key + '.desc', s.id)}</span>
                 </span>
                 {active ? (
-                  <ChevronRight size={18} className="text-primary" />
+                  <HugeiconsIcon icon={ChevronRight} size={18} className="text-primary" />
                 ) : null}
               </button>
             );

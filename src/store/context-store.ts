@@ -4,7 +4,7 @@
  */
 
 import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
+import { persist } from 'zustand/middleware';
 
 export type AppContext = 'personal' | 'family';
 
@@ -71,7 +71,6 @@ export const useContextStore = create<ContextState>()(
       },
 
       restorePersonal: () => {
-        const { personalSnapshot } = get();
         set({
           activeContext: 'personal',
           activeFamilyId: null,

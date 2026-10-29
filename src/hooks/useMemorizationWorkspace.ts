@@ -18,7 +18,6 @@
  */
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { LocalBibleRepository } from '@/domains/bible/repository-local';
 import { resolveBibleTextSource } from '@/services/bible-text-service';
@@ -78,7 +77,6 @@ export interface MemorizationWorkspaceApi {
 export function useMemorizationWorkspace(
   coords: WorkspaceCoords,
 ): MemorizationWorkspaceApi {
-  const navigate = useNavigate();
   const { i18n } = useTranslation();
   const { activeProfile } = useActiveProfile();
   const profileId = activeProfile?.id ?? 'default';
@@ -106,7 +104,7 @@ export function useMemorizationWorkspace(
     setRevealed(0);
     setReviewLogCount(0);
 
-    (async () => {
+    void (async () => {
       try {
         const source = await resolveBibleTextSource(coords.translationId);
         const repo = new LocalBibleRepository(source);

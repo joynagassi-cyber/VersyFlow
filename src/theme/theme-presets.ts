@@ -1,79 +1,32 @@
-export type AccentKey =
-  | 'magenta'
-  | 'rose'
-  | 'red'
-  | 'violet'
-  | 'blue'
-  | 'emerald'
-  | 'amber'
-  | 'ink'
-  | (string & {});
+/** Identifiant d'accent libre (preset tweakcn ou thème image). */
+export type AccentKey = string;
 
 import { findThemeById as catalogFindThemeById, type ThemeCatalogEntry } from './theme-catalog';
 import { extractImageAccent } from './image-accent';
 import { useAppearanceStore } from '@/store/appearance-store';
+import {
+  ACCENT_VARS,
+  accentVars,
+  applyThemeToDocument,
+  imagePath,
+  type ResolvedAccent,
+  type ThemePlan,
+} from './resolve-theme';
 
 export function findThemeById(id: string | null | undefined): ThemeCatalogEntry | null {
   return catalogFindThemeById(id);
 }
 
-export interface AccentValues {
-  primary: string;
-  primaryLight: string;
-  primaryDark: string;
-  accent: string;
-  accentLight: string;
-}
+/** Couleurs d'accent : définies une seule fois, dans `resolve-theme.ts`. */
+export type AccentValues = ResolvedAccent;
 
-export interface AccentPreset {
-  key: AccentKey;
-  label: string;
-  swatch: string;
-  light: AccentValues;
-  dark: AccentValues;
-}
-
-type V = AccentValues;
-const P = (
-  key: AccentKey,
-  label: string,
-  swatch: string,
-  light: V,
-  dark: V,
-): AccentPreset => ({ key, label, swatch, light, dark });
-
-export const ACCENT_PRESETS: AccentPreset[] = [
-  P('magenta', 'Magenta', '#d81b97',
-    { primary: '#d81b97', primaryLight: '#ff9ee0', primaryDark: '#a60d6e', accent: '#ff2d55', accentLight: '#ff7a93' },
-    { primary: '#f472d6', primaryLight: '#ff9ee0', primaryDark: '#c21585', accent: '#ff5a7a', accentLight: '#ff8fa5' }),
-  P('rose', 'Rose', '#e91e8c',
-    { primary: '#e91e8c', primaryLight: '#ffb6cc', primaryDark: '#b30069', accent: '#ff5a7a', accentLight: '#ff8fa5' },
-    { primary: '#f472d6', primaryLight: '#ff9ee0', primaryDark: '#c21585', accent: '#ff5a7a', accentLight: '#ff8fa5' }),
-  P('red', 'Rubis', '#e11d48',
-    { primary: '#e11d48', primaryLight: '#ffb3c4', primaryDark: '#9f1239', accent: '#ff2d55', accentLight: '#ff7a93' },
-    { primary: '#fb7185', primaryLight: '#ffb3c4', primaryDark: '#be123c', accent: '#ff5a7a', accentLight: '#ff8fa5' }),
-  P('violet', 'Violet', '#8a2be2',
-    { primary: '#8a2be2', primaryLight: '#d7b8f7', primaryDark: '#6b21a8', accent: '#c026d3', accentLight: '#e879f9' },
-    { primary: '#c084fc', primaryLight: '#e9d5ff', primaryDark: '#9333ea', accent: '#e879f9', accentLight: '#f5b8fc' }),
-  P('blue', 'Ocean', '#0ea5e9',
-    { primary: '#0284c7', primaryLight: '#a5dcf5', primaryDark: '#075985', accent: '#6366f1', accentLight: '#a5b4fc' },
-    { primary: '#38bdf8', primaryLight: '#bae6fd', primaryDark: '#0ea5e9', accent: '#818cf8', accentLight: '#c7d2fe' }),
-  P('emerald', 'Emeraude', '#059669',
-    { primary: '#059669', primaryLight: '#a7f3d0', primaryDark: '#065f46', accent: '#d97706', accentLight: '#fcd34d' },
-    { primary: '#34d399', primaryLight: '#a7f3d0', primaryDark: '#059669', accent: '#fbbf24', accentLight: '#fde68a' }),
-  P('amber', 'Ambre', '#f59e0b',
-    { primary: '#d97706', primaryLight: '#fde68a', primaryDark: '#92400e', accent: '#ea580c', accentLight: '#fdba74' },
-    { primary: '#fbbf24', primaryLight: '#fde68a', primaryDark: '#d97706', accent: '#fb923c', accentLight: '#fdba74' }),
-  P('ink', 'Encre', '#334155',
-    { primary: '#334155', primaryLight: '#cbd5e1', primaryDark: '#0f172a', accent: '#e11d48', accentLight: '#fda4af' },
-    { primary: '#94a3b8', primaryLight: '#cbd5e1', primaryDark: '#475569', accent: '#fb7185', accentLight: '#fda4af' }),
-];
-
-export const DEFAULT_ACCENT: AccentKey = 'magenta';
-
-export function getAccentPreset(key?: string | null): AccentPreset {
-  return ACCENT_PRESETS.find((p) => p.key === key) ?? ACCENT_PRESETS[0];
-}
+/**
+ * L'ancien catalogue d'accents maison (ACCENT_PRESETS) a été SUPPRIMÉ :
+ * les couleurs de l'app viennent des presets officiels tweakcn
+ * (data-preset) ou de l'accent extrait de l'image de fond. Il ne reste
+ * ici que l'application de l'accent dynamique d'image.
+ */
+export const DEFAULT_ACCENT: AccentKey = 'quantum-rose';
 
 /**
  * Build an AccentValues set for a color-based image theme (public/themes/…).
@@ -90,59 +43,39 @@ export function colorThemeValues(hex: string): AccentValues {
   };
 }
 
-export function applyAccentPreset(key: string | null | undefined, isDark: boolean, colorThemeId?: string | null): void {
-  if (typeof document === 'undefined') return;
-  const root = document.documentElement;
-  // An image/color theme overrides all preset accent variables. Its accent
-  // color is extracted live from the illustration's own palette (not the
-  // static catalog hex), and its background is the applied portrait.
-  if (colorThemeId) {
-    const theme = findThemeById(colorThemeId);
-    const fallback = theme ? colorThemeValues(theme.color) : colorThemeValues('#d81b97');
-    const src = themeImagePath(colorThemeId);
-    // Apply the fallback immediately (synchronous, zero-flash), then
-    // refine with the real extracted palette once the image is sampled.
-    setAccentVars(root, fallback, src, colorThemeId, isDark);
-    void extractImageAccent(colorThemeId, src, fallback).then((values) => {
-      // Guard: the theme may have changed while the sample was in flight.
-      if (useAppearanceStore.getState().colorThemeId !== colorThemeId) return;
-      setAccentVars(root, values, src, colorThemeId, isDark);
-    });
-    return;
-  }
-  const v = isDark ? getAccentPreset(key).dark : getAccentPreset(key).light;
-  root.style.setProperty('--color-primary', v.primary);
-  root.style.setProperty('--color-primary-light', v.primaryLight);
-  root.style.setProperty('--color-primary-dark', v.primaryDark);
-  root.style.setProperty('--color-accent', v.accent);
-  root.style.setProperty('--color-accent-light', v.accentLight);
-  root.style.setProperty('--ion-color-primary', v.primary);
-  root.style.setProperty('--ion-color-secondary', v.accent);
-  root.style.removeProperty('--theme-image');
-  root.removeAttribute('data-theme-image');
+export function applyAccentPreset(
+  key: string | null | undefined,
+  isDark: boolean,
+  colorThemeId?: string | null,
+): void {
+  // Sans image de fond, les variables viennent du preset tweakcn actif
+  // (feuille générée) : aucun override maison, donc aucune écriture ici.
+  void key;
+  if (!colorThemeId) return;
+  const theme = findThemeById(colorThemeId);
+  const fallback = theme ? colorThemeValues(theme.color) : colorThemeValues('#e6067a');
+  const src = themeImagePath(colorThemeId);
+  // On pose tout de suite les couleurs du catalogue (aucun flash), puis on
+  // affine avec la palette réellement extraite de l'illustration.
+  applyThemeToDocument(accentPlan(fallback, src, isDark));
+  void extractImageAccent(colorThemeId, src, fallback).then((values) => {
+    // Garde : le thème a pu changer pendant l'échantillonnage.
+    if (useAppearanceStore.getState().colorThemeId !== colorThemeId) return;
+    applyThemeToDocument(accentPlan(values, src, isDark));
+  });
 }
 
-function setAccentVars(
-  root: HTMLElement,
-  v: AccentValues,
-  src: string,
-  id: string,
-  isDark: boolean,
-): void {
-  root.style.setProperty('--color-primary', v.primary);
-  root.style.setProperty('--color-primary-light', v.primaryLight);
-  root.style.setProperty('--color-primary-dark', v.primaryDark);
-  root.style.setProperty('--color-accent', v.accent);
-  root.style.setProperty('--color-accent-light', v.accentLight);
-  root.style.setProperty('--ion-color-primary', v.primary);
-  root.style.setProperty('--ion-color-secondary', v.accent);
-  // The applied portrait gets a soft depth-of-field treatment: a large
-  // blur + slight scale so it reads as an ambient wash (creativity,
-  // not a raw photo), and the UI surface stays readable on top of it.
-  root.style.setProperty('--theme-image', `url(${src})`);
-  root.setAttribute('data-theme-image', 'on');
-  root.setAttribute('data-theme-image-mode', isDark ? 'dark' : 'light');
-  void id;
+/** Plan partiel : accent + illustration (appliqué par l'unique écrivain). */
+export function accentPlan(values: AccentValues, src: string, isDark: boolean): ThemePlan {
+  return {
+    attributes: {
+      'data-theme-image': 'on',
+      'data-theme-image-mode': isDark ? 'dark' : 'light',
+    },
+    removedAttributes: [],
+    vars: { ...accentVars(values), '--theme-image': `url(${src})` },
+    removedVars: [],
+  };
 }
 
 /**
@@ -152,20 +85,16 @@ function setAccentVars(
  * public/themes/{category}/{id}-portrait.png.
  */
 export function themeImagePath(id: string): string {
-  const category = id.split('-').slice(0, 2).join('-');
-  return `/themes/${category}/${id}-portrait.png`;
+  // Mobile (< 1024 px) : artwork portrait. Desktop/web : artwork paysage large.
+  const wide = typeof window !== 'undefined' && window.innerWidth >= 1024;
+  return imagePath(id, wide);
 }
 
 export function clearAccentPreset(): void {
-  if (typeof document === 'undefined') return;
-  const root = document.documentElement;
-  [
-    '--color-primary',
-    '--color-primary-light',
-    '--color-primary-dark',
-    '--color-accent',
-    '--color-accent-light',
-    '--ion-color-primary',
-    '--ion-color-secondary',
-  ].forEach((k) => root.style.removeProperty(k));
+  applyThemeToDocument({
+    attributes: {},
+    removedAttributes: ['data-theme-image', 'data-theme-image-mode'],
+    vars: {},
+    removedVars: [...ACCENT_VARS, '--theme-image'],
+  });
 }

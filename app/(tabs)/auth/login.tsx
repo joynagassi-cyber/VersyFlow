@@ -2,12 +2,16 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
-import { Loader2 } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import {
+  Loading03Icon as Loader2,
+} from '@hugeicons/core-free-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { Logo } from '@/components/brand/Logo';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { SupabaseAuthService } from '@/auth';
+import { fireAndForget } from '@/lib/fire-and-forget';
 
 const LOGIN = z.object({
   email: z.string().min(1).email(),
@@ -50,7 +54,7 @@ export default function LoginScreen({ onSkip }: Props) {
 
   return (
     <FullScreenPage>
-      <div className="mx-auto flex min-h-[70vh] w-full max-w-md flex-col items-center justify-center gap-4">
+      <div className="mx-auto flex min-h-[70vh] screen-column flex-col items-center justify-center gap-4">
         <Logo size={72} />
         <div className="text-center">
           <h1 className="text-2xl font-extrabold text-text-primary">
@@ -78,9 +82,13 @@ export default function LoginScreen({ onSkip }: Props) {
             onChange={(e) => setName(e.target.value)}
             autoComplete="name"
           />
-          <Button variant="default" onClick={handleLogin} disabled={loading}>
+          <Button
+            variant="default"
+            onClick={() => fireAndForget(handleLogin(), 'auth:login')}
+            disabled={loading}
+          >
             {loading ? (
-              <Loader2 size={18} className="animate-spin" />
+              <HugeiconsIcon icon={Loader2} size={18} className="animate-spin" />
             ) : (
               t('auth.continue', 'Continuer')
             )}

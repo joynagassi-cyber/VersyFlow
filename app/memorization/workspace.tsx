@@ -23,8 +23,12 @@
 import { useMemo, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { ArrowLeft, ArrowLeftRight, Loader2 } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { HugeiconsIcon } from '@hugeicons/react';
+import {
+  ArrowLeft01Icon as ArrowLeft,
+  ArrowLeftRightIcon as ArrowLeftRight,
+} from '@hugeicons/core-free-icons';
+
 import { useSettingsStore } from '@/store/settings-store';
 import { useMemorizationWorkspace, parseWorkspaceReference } from '@/hooks/useMemorizationWorkspace';
 import { ModeSwitcher, type ModeId } from '@/components/memorization/ModeSwitcher';
@@ -151,7 +155,7 @@ export default function MemorizationWorkspace() {
           </p>
           <button
             onClick={() => navigate('/bible/explorer')}
-            className="mt-4 rounded-full bg-primary px-5 py-2.5 text-sm font-bold text-white shadow-sm active:scale-95"
+            className="mt-4 rounded-full bg-primary px-5 py-2.5 text-sm font-bold text-on-primary shadow-sm active:scale-95"
           >
             {t('workspace.openBible', 'Ouvrir la Bible')}
           </button>
@@ -183,7 +187,7 @@ export default function MemorizationWorkspace() {
               className="flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-surface text-text-primary shadow-sm active:scale-95"
               aria-label={t('workspace.compare', 'Comparer')}
             >
-              <ArrowLeftRight size={18} />
+              <HugeiconsIcon icon={ArrowLeftRight} size={18} />
             </button>
           }
           subtitleExtra={
@@ -195,7 +199,7 @@ export default function MemorizationWorkspace() {
         <div className="flex-1 overflow-y-auto px-4 pb-40">
           {status === 'loading' && (
             <div className="flex flex-col items-center py-16">
-              <Loader2 size={28} className="animate-spin text-primary" />
+              <div className="screen-column animate-pulse space-y-3 px-6" aria-hidden><div className="h-4 w-2/5 rounded-full bg-surface-tint" /><div className="h-24 rounded-3xl bg-surface-tint" /><div className="h-24 rounded-3xl bg-surface-tint" /></div>
               <p className="mt-3 text-sm text-text-tertiary">
                 {t('workspace.loading', 'Chargement du verset...')}
               </p>
@@ -257,7 +261,7 @@ function ShellHeader({
           className="flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-surface text-text-primary shadow-sm active:scale-95"
           aria-label="Retour"
         >
-          <ArrowLeft size={18} />
+          <HugeiconsIcon icon={ArrowLeft} size={18} />
         </button>
         <div className="flex min-w-0 flex-1 flex-col items-center">
           <h1 className="truncate text-lg font-bold text-text-primary">{title}</h1>

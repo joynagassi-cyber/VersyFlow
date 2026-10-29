@@ -11,7 +11,13 @@
 
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { BarChart3, ListChecks, Tag, History } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import {
+  BarChartIcon as BarChart3,
+  ListChecksIcon as ListChecks,
+  Tag01Icon as Tag,
+  HistoryIcon as History,
+} from '@hugeicons/core-free-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { ListItem } from '@/components/ui/ListItem';
 import { useHighlightStore } from '@/store/highlight-store';
@@ -27,11 +33,11 @@ export default function SettingsDataScreen() {
       showBack
       backPath="/settings"
     >
-      <div className="mx-auto max-w-md space-y-5">
+      <div className="screen-column space-y-5">
         {/* Highlights summary card */}
         <div className="rounded-2xl bg-surface p-4 shadow-sm">
           <p className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-text-muted">
-            <ListChecks size={13} className="text-primary" />
+            <HugeiconsIcon icon={ListChecks} size={13} className="text-primary" />
             {t('settings.dataHighlights', 'Mes highlights')}
           </p>
           <p className="text-sm text-text-secondary">

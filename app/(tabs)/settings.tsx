@@ -8,34 +8,32 @@
 import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { HugeiconsIcon } from '@hugeicons/react';
 import {
-  ChevronRight,
-  Languages,
-  BookText,
-  Moon,
-  CloudUpload,
-  Download,
-  ShieldCheck,
-  Info,
-  FileText,
-  HelpCircle,
-  Trash2,
-  LogOut,
-  Check,
-  CircleUserRound,
-  DownloadCloud,
-  LayoutGrid,
-  BarChart3,
-  TrendingUp,
-  Repeat,
-  History,
-  Layers,
-  Camera,
-  Mail,
-  UserRound,
-  Plus,
-  Flame,
-} from 'lucide-react';
+  ChevronRightIcon as ChevronRight,
+  LanguagesIcon as Languages,
+  BookTextIcon as BookText,
+  Moon01Icon as Moon,
+  CloudUploadIcon as CloudUpload,
+  Download01Icon as Download,
+  ShieldCheckIcon as ShieldCheck,
+  InformationCircleIcon as Info,
+  HelpCircleIcon as HelpCircle,
+  Delete02Icon as Trash2,
+  LogOutIcon as LogOut,
+  CheckIcon as Check,
+  UserCircleIcon as CircleUserRound,
+  LayoutGridIcon as LayoutGrid,
+  BarChartIcon as BarChart3,
+  TrendingUpIcon as TrendingUp,
+  RepeatIcon as Repeat,
+  HistoryIcon as History,
+  Layers01Icon as Layers,
+  Camera01Icon as Camera,
+  Mail01Icon as Mail,
+  UserRoundIcon as UserRound,
+  PlusSignIcon as Plus,
+} from '@hugeicons/core-free-icons';
 import { cn } from '@/lib/utils';
 import { useAuthStore } from '@/store/auth-store';
 import { ALL_TABS, useUiStore } from '@/store/ui-store';
@@ -54,13 +52,13 @@ const TAB_DEFS: { id: SettingsTab; key: string; label: string }[] = [
 ];
 
 import { bibleTranslationDisplayName } from '@/services/bible-translation-names';
+import { fireAndForget } from '@/lib/fire-and-forget';
 
 const AVATAR_KEY = 'versyflow:profile:avatar';
 const NAME_KEY = 'versyflow:profile:name';
 
 export default function SettingsScreen() {
-  const navigate = useNavigate();
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const [tab, setTab] = useState<SettingsTab>('data');
 
   return (
@@ -84,7 +82,7 @@ export default function SettingsScreen() {
       </div>
 
       {/* Scrollable content */}
-      <div className="min-h-0 flex-1 overflow-y-auto p-4 pb-24">
+      <div className="screen-column-narrow min-h-0 flex-1 overflow-y-auto p-4 pb-24">
         {tab === 'data' && <DataTab />}
         {tab === 'params' && <ParamsTab />}
         {tab === 'profile' && <ProfileTab />}
@@ -117,13 +115,13 @@ function DataTab() {
           className="flex w-full items-center gap-4 rounded-2xl bg-surface p-4 text-left shadow-sm transition active:scale-[0.99]"
         >
           <span className={cn('flex h-11 w-11 shrink-0 items-center justify-center rounded-full', c.bg)}>
-            <c.icon size={20} className={c.color} />
+            <HugeiconsIcon icon={c.icon} size={20} className={c.color} />
           </span>
           <span className="flex-1">
             <span className="block text-base font-semibold text-text-primary">{c.label}</span>
             <span className="block text-sm text-text-muted">{c.sub}</span>
           </span>
-          <ChevronRight size={18} className="text-text-muted" />
+          <HugeiconsIcon icon={ChevronRight} size={18} className="text-text-muted" />
         </button>
       ))}
     </div>
@@ -135,7 +133,6 @@ function DataTab() {
 function ParamsTab() {
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
-  const user = useAuthStore((s) => s.user);
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   const signOut = useAuthStore((s) => s.signOut);
   const bibleTranslation = useSettingsStore((s) => s.bibleTranslation);
@@ -161,29 +158,29 @@ function ParamsTab() {
     {
       title: t('settings.apparence', 'Apparence'),
       rows: [
-        { icon: <Languages size={20} />, bg: 'bg-icon-bg-purple', color: 'text-primary', label: t('settings.uiLanguage', "Langue de l'interface"), sub: getLanguageName(currentLanguage), onClick: () => setLanguageModalOpen(true) },
-        { icon: <BookText size={20} />, bg: 'bg-surface-tint', color: 'text-text-secondary', label: t('settings.bibleTranslation', 'Traduction biblique'), sub: `${bibleTranslationDisplayName(bibleTranslation)} · ${t('settings.downloadTranslations', 'Télécharger d’autres versions')}`, onClick: () => navigate('/settings/available-translations') },
-        { icon: <Moon size={20} />, bg: 'bg-icon-bg-blue', color: 'text-info', label: t('settings.theme', 'Thème & accent'), sub: t('settings.fontSize', 'Clair, sombre, taille, accent'), onClick: () => navigate('/settings/appearance') },
+        { icon: <HugeiconsIcon icon={Languages} size={20} />, bg: 'bg-icon-bg-purple', color: 'text-primary', label: t('settings.uiLanguage', "Langue de l'interface"), sub: getLanguageName(currentLanguage), onClick: () => setLanguageModalOpen(true) },
+        { icon: <HugeiconsIcon icon={BookText} size={20} />, bg: 'bg-surface-tint', color: 'text-text-secondary', label: t('settings.bibleTranslation', 'Traduction biblique'), sub: `${bibleTranslationDisplayName(bibleTranslation)} · ${t('settings.downloadTranslations', 'Télécharger d’autres versions')}`, onClick: () => navigate('/settings/available-translations') },
+        { icon: <HugeiconsIcon icon={Moon} size={20} />, bg: 'bg-icon-bg-blue', color: 'text-info', label: t('settings.theme', 'Thème & accent'), sub: t('settings.fontSize', 'Clair, sombre, taille, accent'), onClick: () => navigate('/settings/appearance') },
       ],
     },
     {
       title: t('settings.sessionReminders', 'Session & Rappels'),
       rows: [
-        { icon: <LayoutGrid size={20} />, bg: 'bg-surface-tint', color: 'text-primary', label: t('settings.session', 'Session'), sub: t('settings.reminders', 'Objectif & durée'), onClick: () => navigate('/settings/session') },
-        { icon: <CloudUpload size={20} />, bg: 'bg-icon-bg-green', color: 'text-success', label: t('settings.reminders', 'Rappels'), sub: t('settings.data', 'Heures & fréquence'), onClick: () => navigate('/settings/reminders') },
+        { icon: <HugeiconsIcon icon={LayoutGrid} size={20} />, bg: 'bg-surface-tint', color: 'text-primary', label: t('settings.session', 'Session'), sub: t('settings.reminders', 'Objectif & durée'), onClick: () => navigate('/settings/session') },
+        { icon: <HugeiconsIcon icon={CloudUpload} size={20} />, bg: 'bg-icon-bg-green', color: 'text-success', label: t('settings.reminders', 'Rappels'), sub: t('settings.data', 'Heures & fréquence'), onClick: () => navigate('/settings/reminders') },
       ],
     },
     {
       title: t('settings.confidentialite', 'Confidentialité'),
       rows: [
-        { icon: <ShieldCheck size={20} />, bg: 'bg-icon-bg-blue', color: 'text-info', label: t('settings.privacyTitle', 'Données & confidentialité'), sub: t('settings.downloadData', 'Télémétrie & données'), onClick: () => navigate('/settings/privacy') },
+        { icon: <HugeiconsIcon icon={ShieldCheck} size={20} />, bg: 'bg-icon-bg-blue', color: 'text-info', label: t('settings.privacyTitle', 'Données & confidentialité'), sub: t('settings.downloadData', 'Télémétrie & données'), onClick: () => navigate('/settings/privacy') },
       ],
     },
     {
       title: t('settings.about', 'À propos'),
       rows: [
-        { icon: <Info size={20} />, bg: 'bg-surface-tint', color: 'text-text-tertiary', label: t('settings.about', 'À propos'), sub: `${t('common.appName', 'VersyFlow')} v0.1.0`, onClick: () => navigate('/settings/about') },
-        { icon: <HelpCircle size={20} />, bg: 'bg-icon-bg-green', color: 'text-success', label: t('settings.helpSupport', 'Aide & Support'), sub: t('settings.documentation', 'Guides et contact'), onClick: () => navigate('/settings/about') },
+        { icon: <HugeiconsIcon icon={Info} size={20} />, bg: 'bg-surface-tint', color: 'text-text-tertiary', label: t('settings.about', 'À propos'), sub: `${t('common.appName', 'VersyFlow')} v0.1.0`, onClick: () => navigate('/settings/about') },
+        { icon: <HugeiconsIcon icon={HelpCircle} size={20} />, bg: 'bg-icon-bg-green', color: 'text-success', label: t('settings.helpSupport', 'Aide & Support'), sub: t('settings.documentation', 'Guides et contact'), onClick: () => navigate('/settings/about') },
       ],
     },
   ];
@@ -198,7 +195,7 @@ function ParamsTab() {
       {/* Navigation — enable/disable tabs */}
       <section>
         <h2 className="mb-2 flex items-center gap-2 px-1 text-sm font-semibold uppercase tracking-wide text-text-tertiary">
-          <LayoutGrid size={16} />
+          <HugeiconsIcon icon={LayoutGrid} size={16} />
           {t('settings.navigation', 'Navigation')}
         </h2>
         <div className="overflow-hidden rounded-2xl bg-surface shadow-sm">
@@ -213,7 +210,7 @@ function ParamsTab() {
                   </span>
                 </span>
                 <button onClick={() => setVisibleTab(tabItem.id, !on)} className={cn('relative h-6 w-11 shrink-0 rounded-full transition-colors', on ? 'bg-primary' : 'bg-border')} aria-pressed={on}>
-                  <span className={cn('absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-all', on ? 'left-[22px]' : 'left-0.5')} />
+                  <span className={cn('absolute top-0.5 h-5 w-5 rounded-full bg-surface shadow transition-all', on ? 'left-[22px]' : 'left-0.5')} />
                 </button>
               </div>
             );
@@ -235,7 +232,7 @@ function ParamsTab() {
                   <span className="block text-base text-text-primary">{row.label}</span>
                   <span className="block text-sm text-text-muted">{row.sub}</span>
                 </span>
-                <ChevronRight size={18} className="text-text-muted" />
+                <HugeiconsIcon icon={ChevronRight} size={18} className="text-text-muted" />
               </button>
             ))}
           </div>
@@ -264,20 +261,20 @@ function ParamsTab() {
             className="flex w-full items-center gap-3 p-4 text-left"
           >
             <span className="flex h-10 w-10 items-center justify-center rounded-full bg-error-light">
-              <Trash2 size={20} className="text-error" />
+              <HugeiconsIcon icon={Trash2} size={20} className="text-error" />
             </span>
             <span className="flex-1">
               <span className="block text-base font-medium text-error">{t('settings.resetProgress', 'Réinitialiser la progression')}</span>
               <span className="block text-sm text-text-muted">{t('common.delete', 'Supprimer toutes les données')}</span>
             </span>
-            <ChevronRight size={18} className="text-error" />
+            <HugeiconsIcon icon={ChevronRight} size={18} className="text-error" />
           </button>
         </div>
       </section>
 
       {isAuthenticated && (
-        <button onClick={handleSignOut} className="flex w-full items-center justify-center gap-2 rounded-full bg-surface p-4 text-base font-semibold text-error shadow-sm">
-          <LogOut size={18} />
+        <button onClick={() => fireAndForget(handleSignOut(), 'settings:signOut')} className="flex w-full items-center justify-center gap-2 rounded-full bg-surface p-4 text-base font-semibold text-error shadow-sm">
+          <HugeiconsIcon icon={LogOut} size={18} />
           {t('settings.signOut', 'Se déconnecter')}
         </button>
       )}
@@ -297,7 +294,7 @@ function ParamsTab() {
                     <span className={cn('block text-base', selected ? 'font-semibold text-primary' : 'font-medium text-text-primary')}>{lang.name}</span>
                     <span className="text-sm text-text-muted">{lang.displayName}</span>
                   </span>
-                  {selected && <Check size={18} className="text-primary" />}
+                  {selected && <HugeiconsIcon icon={Check} size={18} className="text-primary" />}
                 </button>
               );
             })}
@@ -374,8 +371,8 @@ function ProfileTab() {
               {displayName.charAt(0).toUpperCase()}
             </span>
           )}
-          <span className="absolute bottom-0 right-0 flex h-7 w-7 items-center justify-center rounded-full bg-primary text-white shadow">
-            <Camera size={14} />
+          <span className="absolute bottom-0 right-0 flex h-7 w-7 items-center justify-center rounded-full bg-primary text-on-primary shadow">
+            <HugeiconsIcon icon={Camera} size={14} />
           </span>
         </button>
         <input ref={fileRef} type="file" accept="image/*" onChange={pickPhoto} className="hidden" />
@@ -391,10 +388,10 @@ function ProfileTab() {
               />
               <button
                 onClick={saveName}
-                className="rounded-full bg-primary p-2 text-white"
+                className="rounded-full bg-primary p-2 text-on-primary"
                 aria-label={t('common.save', 'Enregistrer')}
               >
-                <Check size={16} />
+                <HugeiconsIcon icon={Check} size={16} />
               </button>
             </div>
           ) : (
@@ -403,11 +400,11 @@ function ProfileTab() {
               className="flex items-center gap-2 text-xl font-extrabold text-text-primary"
             >
               {displayName}
-              <CircleUserRound size={18} className="text-text-muted" />
+              <HugeiconsIcon icon={CircleUserRound} size={18} className="text-text-muted" />
             </button>
           )}
           <p className="mt-1 flex items-center gap-1.5 text-sm text-text-muted">
-            <Mail size={14} />
+            <HugeiconsIcon icon={Mail} size={14} />
             {isAuthenticated ? user?.email ?? t('profile.local', 'Local') : t('profile.local', 'Mode local')}
           </p>
           <div className="mt-3 flex items-center gap-2">
@@ -429,21 +426,21 @@ function ProfileTab() {
           {actions.map((a, i) => (
             <button key={i} onClick={() => navigate(a.to)} className={cn('flex w-full items-center gap-3 p-4 text-left', i < actions.length - 1 && 'border-b border-divider')}>
               <span className={cn('flex h-10 w-10 shrink-0 items-center justify-center rounded-full', a.bg)}>
-                <a.icon size={18} className={a.color} />
+                <HugeiconsIcon icon={a.icon} size={18} className={a.color} />
               </span>
               <span className="flex-1">
                 <span className="block text-base text-text-primary">{a.label}</span>
                 <span className="block text-sm text-text-muted">{a.sub}</span>
               </span>
-              <ChevronRight size={18} className="text-text-muted" />
+              <HugeiconsIcon icon={ChevronRight} size={18} className="text-text-muted" />
             </button>
           ))}
         </div>
       </section>
 
       {isAuthenticated && (
-        <button onClick={handleSignOut} className="flex w-full items-center justify-center gap-2 rounded-full bg-surface p-4 text-base font-semibold text-error shadow-sm">
-          <LogOut size={18} />
+        <button onClick={() => fireAndForget(handleSignOut(), 'settings:signOut')} className="flex w-full items-center justify-center gap-2 rounded-full bg-surface p-4 text-base font-semibold text-error shadow-sm">
+          <HugeiconsIcon icon={LogOut} size={18} />
           {t('settings.signOut', 'Se déconnecter')}
         </button>
       )}

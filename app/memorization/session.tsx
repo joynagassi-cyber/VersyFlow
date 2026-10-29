@@ -6,26 +6,30 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';import { useTranslation } from 'react-i18next';
-import { X, Loader2, ArrowLeft, ArrowRight, CheckCircle } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import {
+  Cancel01Icon as X,
+  ArrowLeft01Icon as ArrowLeft,
+  ArrowRight01Icon as ArrowRight,
+  CheckmarkCircle01Icon as CheckCircle,
+} from '@hugeicons/core-free-icons';
 import FullScreenPage from '@/components/layout/FullScreenPage';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-
 import { resolveBibleTextSource } from '@/services/bible-text-service';
 import { getFsrsEngine } from '@/services/fsrs-factory';
 import { createLocalBibleRepository, createWorkspaceEngine, Rating, type MemorizationSessionEngine } from '@/services/memorization-session-service';
-
 import { resolveBookIdFromText as resolveBookId } from '@/services/memorization-session-service';
 import { useActiveProfile } from '@/hooks/useActiveProfile';
 import { useSettingsStore } from '@/store/settings-store';
 import { getMemorizationRepository, getSyncUserIdProvider } from '@/infrastructure/repository/powersync-repositories';
 import type { MemorizationRecord } from '@/domains/memorization/entities';
 import { eventBus, DomainEventTypes } from '@/services/events-service';
+import { fireAndForget } from '@/lib/fire-and-forget';
 
 /** Resolve the authenticated user id (or null when not signed in). */
 const resolveUserId = async (): Promise<string | null> =>
   getSyncUserIdProvider().resolveUserId();
-
 
 /** Parse a "Jean 3:16" / "Psalm 23" style reference into coordinates */
 function parseReference(reference: string) {
@@ -147,7 +151,7 @@ export default function MemorizationSession() {
       }
     }
 
-    init();
+    void init();
     return () => {
       cancelled = true;
     };
@@ -216,7 +220,7 @@ export default function MemorizationSession() {
     return (
       <FullScreenPage title={t('session.memorizing', 'Mémorisation')} backPath="/tabs/home" showBack={false}>
         <div className="flex flex-col items-center justify-center py-24">
-          <Loader2 size={36} className="animate-spin text-primary" />
+          <div className="screen-column animate-pulse space-y-3 px-6" aria-hidden><div className="h-4 w-2/5 rounded-full bg-surface-tint" /><div className="h-24 rounded-3xl bg-surface-tint" /><div className="h-24 rounded-3xl bg-surface-tint" /></div>
           {downloadPercent !== null ? (
             <>
               <p className="mt-3 text-sm font-semibold text-text-primary">
@@ -242,7 +246,7 @@ export default function MemorizationSession() {
 
   if (error) {
     return (
-      <FullScreenPage title={t('session.memorizing', 'Mémorisation')} backPath="/tabs/home">
+      <FullScreenPage title={t('session.memorizing', 'Mémorisation')} backPath="/tabs/home" column="narrow">
         <div className="flex flex-col items-center py-16 text-center">
           <p className="text-base text-error">{error}</p>
           <Button className="mt-6" variant="secondary" onClick={() => navigate(-1)}>
@@ -258,40 +262,66 @@ export default function MemorizationSession() {
   const totalVerses = engine.getTotalVerses();
   const currentIndex = engine.getCurrentVerseIndex();
 
+  const closeSession = async () => {
+    try {
+      await persistAllRecords(engine.getRecords());
+    } catch (e) {
+      console.error('[MemorizationSession] abandon flush failed:', e);
+    }
+    // Emit SESSION_ABANDONED before navigating away.
+    eventBus.emit({
+      id: crypto.randomUUID(),
+      type: DomainEventTypes.SESSION_ABANDONED,
+      timestamp: Date.now(),
+      payload: {
+        recordId: `${bookId}:${chapter}:${verseStart}:${translationId}`,
+        // `getState` is a class-only member (not on the interface);
+        // fall back to `Date.now()` when the engine is still idle so
+        // the payload shape is stable.
+        elapsedMs: Date.now() - ((engine as unknown as { getState?: () => { startedAt?: number } }).getState?.()?.startedAt ?? Date.now()),
+        wordsRevealed: engine.getCurrentVerseIndex() + 1,
+        totalWords: engine.getTotalVerses(),
+        abandonedByClose: true,
+      },
+    });
+    engine.abandon();
+    navigate(-1);
+  };
+
+  const rateVerse = async (rating: Rating) => {
+    // Persist the rated record BEFORE navigating — otherwise the
+    // FSRS state (stability, nextReviewAt) is lost on unmount.
+    const record = await engine.rateCurrentVerse(rating);
+    if (record) await persistRecord(record);
+    refresh();
+  };
+
+  const proceedSession = async () => {
+    engine.nextVerse();
+    refresh();
+    if (engine.isComplete()) {
+      // Flush any records that were produced but not yet persisted
+      // (user pressed "next" before rating the last verse, or rating
+      // failed silently) so nothing is lost on unmount.
+      try {
+        await persistAllRecords(engine.getRecords());
+      } catch (e) {
+        console.error('[MemorizationSession] flush failed:', e);
+      }
+      navigate('/memorization/confirm', { state: { reference } });
+    }
+  };
+
   return (
     <FullScreenPage
       title={t('session.memorizing', 'Mémorisation')}
       showBack={false}
       right={
         <button
-          onClick={async () => {
-            try {
-              await persistAllRecords(engine.getRecords());
-            } catch (e) {
-              console.error('[MemorizationSession] abandon flush failed:', e);
-            }
-            // Emit SESSION_ABANDONED before navigating away.
-            eventBus.emit({
-              id: crypto.randomUUID(),
-              type: DomainEventTypes.SESSION_ABANDONED,
-              timestamp: Date.now(),
-              payload: {
-                recordId: `${bookId}:${chapter}:${verseStart}:${translationId}`,
-                // `getState` is a class-only member (not on the interface);
-                // fall back to `Date.now()` when the engine is still idle so
-                // the payload shape is stable.
-                elapsedMs: Date.now() - ((engine as unknown as { getState?: () => { startedAt?: number } }).getState?.()?.startedAt ?? Date.now()),
-                wordsRevealed: engine.getCurrentVerseIndex() + 1,
-                totalWords: engine.getTotalVerses(),
-                abandonedByClose: true,
-              },
-            });
-            engine.abandon();
-            navigate(-1);
-          }}
+          onClick={() => fireAndForget(closeSession(), 'session:abandon')}
           className="flex items-center gap-1 text-sm font-semibold text-text-secondary"
         >
-          <X size={16} />
+          <HugeiconsIcon icon={X} size={16} />
           {t('common.close', 'Fermer')}
         </button>
       }
@@ -321,19 +351,13 @@ export default function MemorizationSession() {
           [
             { rating: Rating.AGAIN, label: t('session.ratingAgain', 'À revoir'), cls: 'bg-error-light text-error' },
             { rating: Rating.HARD, label: t('session.ratingHard', 'Difficile'), cls: 'bg-warning-light text-warning' },
-            { rating: Rating.GOOD, label: t('session.ratingGood', 'Bon'), cls: 'bg-primary text-white' },
+            { rating: Rating.GOOD, label: t('session.ratingGood', 'Bon'), cls: 'bg-primary text-on-primary' },
             { rating: Rating.EASY, label: t('session.ratingEasy', 'Facile'), cls: 'bg-success-light text-success' },
           ] as const
         ).map(({ rating, label, cls }) => (
           <button
             key={rating}
-            onClick={async () => {
-              // Persist the rated record BEFORE navigating — otherwise the
-              // FSRS state (stability, nextReviewAt) is lost on unmount.
-              const record = await engine.rateCurrentVerse(rating);
-              if (record) await persistRecord(record);
-              refresh();
-            }}
+            onClick={() => fireAndForget(rateVerse(rating), 'session:rate')}
             className={cn('rounded-xl py-3 text-sm font-semibold', cls)}
           >
             {label}
@@ -352,35 +376,21 @@ export default function MemorizationSession() {
             refresh();
           }}
         >
-          <ArrowLeft size={15} />
+          <HugeiconsIcon icon={ArrowLeft} size={15} />
           {t('session.goBack', 'Retour')}
         </Button>
         <Button
           className="flex-1"
-          onClick={async () => {
-            engine.nextVerse();
-            refresh();
-            if (engine.isComplete()) {
-              // Flush any records that were produced but not yet persisted
-              // (user pressed "next" before rating the last verse, or rating
-              // failed silently) so nothing is lost on unmount.
-              try {
-                await persistAllRecords(engine.getRecords());
-              } catch (e) {
-                console.error('[MemorizationSession] flush failed:', e);
-              }
-              navigate('/memorization/confirm', { state: { reference } });
-            }
-          }}
+          onClick={() => fireAndForget(proceedSession(), 'session:proceed')}
         >
           {t('session.proceed', 'Continuer')}
-          <ArrowRight size={15} />
+          <HugeiconsIcon icon={ArrowRight} size={15} />
         </Button>
       </div>
 
       {complete && (
         <div className="mt-5 flex items-center justify-center gap-2 rounded-xl bg-success-light p-4 text-success">
-          <CheckCircle size={18} />
+          <HugeiconsIcon icon={CheckCircle} size={18} />
           <span className="text-base font-semibold">
             {t('session.passageComplete', 'Passage terminé!')}
           </span>

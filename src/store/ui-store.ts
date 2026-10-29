@@ -15,6 +15,9 @@ import { MmkvStorage } from '@/infrastructure/storage';
 
 export type TabId = 'home' | 'explore' | 'progress' | 'settings';
 
+/** État du rail de bureau : replié (icônes seules) ou déployé (264 px). */
+export type RailMode = 'expanded' | 'collapsed';
+
 export interface TabDef {
   id: TabId;
   path: string;
@@ -66,6 +69,10 @@ interface UiState {
   /** Paths of the hamburger "Navigation" items that are visible. */
   visibleMenuPaths: string[];
   menuOpen: boolean;
+  /** Rail de bureau : mémorisé, lu par le CSS via <html data-rail>. */
+  railMode: RailMode;
+  setRailMode: (mode: RailMode) => void;
+  toggleRail: () => void;
   setVisibleTab: (id: TabId, visible: boolean) => void;
   setAllTabs: (ids: TabId[]) => void;
   setMenuPathVisible: (path: string, visible: boolean) => void;
@@ -92,6 +99,17 @@ export const useUiStore = create<UiState>(() => ({
   visibleTabs: DEFAULT_TABS,
   visibleMenuPaths: DEFAULT_MENU_PATHS,
   menuOpen: false,
+  railMode: 'expanded',
+
+  setRailMode(mode) {
+    useUiStore.setState({ railMode: mode });
+    void uiStorePersist.save();
+  },
+
+  toggleRail() {
+    const next: RailMode = useUiStore.getState().railMode === 'expanded' ? 'collapsed' : 'expanded';
+    useUiStore.getState().setRailMode(next);
+  },
 
   openMenu() {
     useUiStore.setState({ menuOpen: true });
@@ -130,7 +148,11 @@ export const useUiStore = create<UiState>(() => ({
   },
 
   reset() {
-    useUiStore.setState({ visibleTabs: DEFAULT_TABS, visibleMenuPaths: DEFAULT_MENU_PATHS });
+    useUiStore.setState({
+      visibleTabs: DEFAULT_TABS,
+      visibleMenuPaths: DEFAULT_MENU_PATHS,
+      railMode: 'expanded',
+    });
     void uiStorePersist.save();
   },
 }));
@@ -140,7 +162,14 @@ export const uiStorePersist = {
     try {
       const raw = await storage.get(KEY);
       if (!raw) return;
-      const parsed = JSON.parse(raw) as { visibleTabs?: TabId[]; menuVisible?: string[] };
+      const parsed = JSON.parse(raw) as {
+        visibleTabs?: TabId[];
+        menuVisible?: string[];
+        railMode?: RailMode;
+      };
+      if (parsed.railMode === 'expanded' || parsed.railMode === 'collapsed') {
+        useUiStore.setState({ railMode: parsed.railMode });
+      }
       if (Array.isArray(parsed.visibleTabs) && parsed.visibleTabs.length) {
         useUiStore.setState({ visibleTabs: normalize(parsed.visibleTabs) });
       }
@@ -152,8 +181,11 @@ export const uiStorePersist = {
     }
   },
   save: async () => {
-    const { visibleTabs, visibleMenuPaths } = useUiStore.getState();
-    await storage.set(KEY, JSON.stringify({ visibleTabs, menuVisible: visibleMenuPaths }));
+    const { visibleTabs, visibleMenuPaths, railMode } = useUiStore.getState();
+    await storage.set(
+      KEY,
+      JSON.stringify({ visibleTabs, menuVisible: visibleMenuPaths, railMode }),
+    );
   },
 };
 

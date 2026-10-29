@@ -10,7 +10,10 @@
 
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Check } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import {
+  CheckIcon as Check,
+} from '@hugeicons/core-free-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { useAppearanceStore } from '@/store/appearance-store';
 import {
@@ -32,7 +35,7 @@ export default function ThemePickerScreen() {
 
   return (
     <FullScreenPage title={t('settings.themeImage', "Thème d'image")}>
-      <div className="mx-auto max-w-md">
+      <div className="screen-column">
         {/* Pure white / black quick reset */}
         <div className="mb-4 rounded-2xl bg-surface p-3 shadow-sm">
           <p className="mb-2 text-xs font-bold uppercase tracking-wide text-text-muted">
@@ -50,7 +53,7 @@ export default function ThemePickerScreen() {
               )}
             >
               <span className="flex items-center gap-2">
-                <span className="h-6 w-6 rounded-full bg-white shadow-sm" />
+                <span className="h-6 w-6 rounded-full bg-surface shadow-sm ring-1 ring-border" />
                 <span className="text-sm font-medium text-text-primary">
                   {t('settings.themeWhite', 'Blanc pur #FFFFFF')}
                 </span>
@@ -81,7 +84,7 @@ export default function ThemePickerScreen() {
         {THEME_CATEGORIES.map((cat) => {
           const open = expanded === cat.id;
           return (
-            <section key={cat.id} className="mb-3 rounded-2xl bg-surface shadow-sm">
+            <section key={cat.id} className="surface-glass mb-3 rounded-2xl">
               <button
                 type="button"
                 onClick={() => setExpanded(open ? null : cat.id)}
@@ -110,7 +113,7 @@ export default function ThemePickerScreen() {
                           src={themeLandscapeUrl(entry.id)}
                           alt={entry.name}
                           loading="lazy"
-                          className="aspect-[3/2] w-full rounded-lg bg-white object-cover"
+                          className="aspect-[3/2] w-full rounded-lg bg-surface-2 object-cover"
                         />
                         <div className="mt-1.5 flex items-center gap-1.5">
                           <span
@@ -121,8 +124,8 @@ export default function ThemePickerScreen() {
                             {entry.name}
                           </span>
                           {active && (
-                            <span className="ml-auto flex h-5 w-5 items-center justify-center rounded-full bg-primary text-white">
-                              <Check size={11} />
+                            <span className="ml-auto flex h-5 w-5 items-center justify-center rounded-full bg-primary text-on-primary">
+                              <HugeiconsIcon icon={Check} size={11} />
                             </span>
                           )}
                         </div>

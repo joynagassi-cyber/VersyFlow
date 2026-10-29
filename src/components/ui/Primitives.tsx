@@ -18,39 +18,15 @@
  *   </View>
  */
 
-import React, { forwardRef, useCallback, useMemo, useState, useEffect } from 'react';
+import React, { forwardRef, useCallback } from 'react';
 import {
   IonContent,
-  IonHeader,
-  IonToolbar,
-  IonTitle,
-  IonButtons,
-  IonButton,
   IonIcon as IonIonIcon,
   IonSpinner,
-  IonChip,
-  IonFab,
-  IonFabButton,
   IonList,
   IonItem,
   IonLabel,
-  IonToggle,
-  IonInput,
-  IonTextarea,
-  IonSelect,
-  IonSegment,
-  IonSegmentButton,
-  IonRefresher,
-  IonRefresherContent,
-  IonInfiniteScroll,
-  IonInfiniteScrollContent,
   IonModal,
-  IonPopover,
-  IonBackButton,
-  IonNav,
-  IonRouterLink,
-  IonPage,
-  IonFooter,
 } from '@ionic/react';
 // useTheme imported by components that need it
 import type { CSSProperties as ReactCSSProperties } from 'react';
@@ -150,6 +126,28 @@ export interface TextStyle extends BaseStyle {
   textDecorationColor?: string;
   writingDirection?: 'auto' | 'ltr' | 'rtl';
   numberOfLines?: number;
+}
+
+/**
+ * `withAlpha` — React Native splits a shadow into a colour and an opacity;
+ * CSS has no such split, so the opacity is folded into the colour here.
+ * Hex values (the documented RN form) are converted exactly; anything else
+ * (rgb(), var(), named colours) falls back to `color-mix`, which keeps the
+ * alpha without parsing the colour string.
+ */
+function withAlpha(color: string, alpha: number): string {
+  const hex = /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.exec(color.trim());
+  if (hex) {
+    const h =
+      hex[1].length === 3
+        ? hex[1].split('').map((c) => c + c).join('')
+        : hex[1];
+    const r = parseInt(h.slice(0, 2), 16);
+    const g = parseInt(h.slice(2, 4), 16);
+    const b = parseInt(h.slice(4, 6), 16);
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+  }
+  return `color-mix(in srgb, ${color} ${Math.round(alpha * 100)}%, transparent)`;
 }
 
 // ─── StyleSheet ───────────────────────────────────────────────────────────────
@@ -303,7 +301,7 @@ function convertStyle(style: BaseStyle | TextStyle): CSSProperties {
     const shadowOpacity = (styleRecord.shadowOpacity as number) ?? 0.05;
     const shadowRadius = (styleRecord.shadowRadius as number) ?? 2;
     const elevation = (styleRecord.elevation as number) ?? 0;
-    result.boxShadow = `${shadowOffset.width}px ${shadowOffset.height}px ${shadowRadius}px rgba(0,0,0,${shadowOpacity})`;
+    result.boxShadow = `${shadowOffset.width}px ${shadowOffset.height}px ${shadowRadius}px ${withAlpha(shadowColor, shadowOpacity)}`;
     // Map elevation to box-shadow as a fallback
     if (elevation > 0) {
       result.boxShadow = `0 ${elevation}px ${elevation * 2}px rgba(0,0,0,0.1)`;
@@ -404,7 +402,7 @@ interface IonicTextProps {
  */
 export const Text = forwardRef<HTMLSpanElement, IonicTextProps>(
   ({ style, className, children, testID, numberOfLines, ellipsizeMode, color, ...rest }, ref) => {
-    const { colors, typ } = useTheme();
+    const { colors } = useTheme();
     const resolvedStyle = Array.isArray(style)
       ? mergeStyles(...style.map(s => convertStyle(s as TextStyle)))
       : convertStyle(style as TextStyle);
@@ -792,7 +790,7 @@ interface IonicStatusBarProps {
  * IonicStatusBar — placeholder for web. No-op in browser context.
  * Can be connected to a real status bar plugin on native.
  */
-export const StatusBar = ({ backgroundColor, barStyle, hidden, ...rest }: IonicStatusBarProps) => {
+export const StatusBar = (_props: IonicStatusBarProps) => {
   // No-op on web — returns null. Extend with a plugin on native builds.
   return null;
 };
@@ -904,13 +902,9 @@ interface IonicAlertProps {
  * works without requiring a React context.
  */
 export const Alert = Object.assign(
-  ({ title, message, buttons, onDidDismiss, ...rest }: IonicAlertProps) => {
-    const ionButtons = (buttons || []).map(b => ({
-      text: b.text,
-      role: b.cssClass?.includes('destructive') ? 'destructive' as const : 'cancel' as const,
-      handler: b.handler,
-    }));
-
+  (_props: IonicAlertProps) => {
+    // The component form is a placeholder: it renders nothing visible.
+    // `Alert.alert(...)` below builds the real toast imperatively.
     return (
       <IonModal isOpen={false} initialBreakpoint={0} breakpoints={[0]}>
         {/* Alert is shown programmatically via controller — placeholder */}
@@ -936,8 +930,8 @@ export const Alert = Object.assign(
         'z-index:9999',
         'min-width:240px',
         'max-width:80vw',
-        'background:rgba(30,30,30,0.95)',
-        'color:#fff',
+        'background:color-mix(in srgb, var(--color-text-primary, #1e1e1e) 95%, transparent)',
+        'color:var(--color-surface, #fff)',
         'font-size:14px',
         'font-family:system-ui,sans-serif',
         'border-radius:12px',
@@ -966,9 +960,9 @@ export const Alert = Object.assign(
           b.style.cssText = [
             'padding:6px 14px',
             'border-radius:8px',
-            'border:1px solid rgba(255,255,255,0.25)',
-            'background:rgba(255,255,255,0.1)',
-            'color:#fff',
+            'border:1px solid color-mix(in srgb, var(--color-surface, #fff) 25%, transparent)',
+            'background:color-mix(in srgb, var(--color-surface, #fff) 10%, transparent)',
+            'color:var(--color-surface, #fff)',
             'font-size:13px',
             'cursor:pointer',
           ].join(';');
@@ -1315,9 +1309,7 @@ const Platform = {
 };
 export { Platform };
 
-
 // ─── Barrel exports ───────────────────────────────────────────────────────────
-
 
 // ─── Keyboard (web compatible) ──────────────────────────────────────────────
 // On native (Capacitor) platforms, `document.activeElement.blur()` does NOT
@@ -1385,7 +1377,6 @@ export const Stack = (() => (props: { children?: React.ReactNode; screenOptions?
 };
 Stack.Screen = (() => null) as unknown as () => React.ReactElement;
 Stack.Group = ({ children }) => <>{children}</>;
-
 
 // ─── TextInput (web compatible) ────────────────────────────────────────────
 export const TextInput = React.forwardRef<HTMLTextAreaElement, any>(({

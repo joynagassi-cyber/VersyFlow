@@ -11,12 +11,13 @@
 
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { HugeiconsIcon } from '@hugeicons/react';
 import {
-  BrainCircuit,
-  Map,
-  ChevronRight,
-  User,
-} from 'lucide-react';
+  BrainCircuitIcon as BrainCircuit,
+  MapIcon as Map,
+  ChevronRightIcon as ChevronRight,
+  UserIcon as User,
+} from '@hugeicons/core-free-icons';
 import FullScreenPage from '@/components/layout/FullScreenPage';
 import { useSemanticIndex, useMyConcepts } from '@/hooks/useSemanticViews';
 import type { Community } from '@/domains/semantic-memory';
@@ -45,7 +46,7 @@ export default function SemanticIndex() {
 
   return (
     <FullScreenPage title={t('semantic.title', 'Mémoire sémantique')}>
-      <div className="min-h-full overflow-y-auto bg-background p-4 pb-24">
+      <div className="screen-column min-h-full overflow-y-auto bg-background p-4 pb-24">
         {loading ? (
           <p className="text-sm text-text-muted">{t('common.loading', 'Chargement...')}</p>
         ) : (
@@ -53,7 +54,7 @@ export default function SemanticIndex() {
             {/* User's personal semantic tree */}
             <section className="mb-6">
               <h2 className="mb-3 flex items-center gap-2 px-1 text-lg font-semibold text-text-primary">
-                <User size={18} className="text-primary" />
+                <HugeiconsIcon icon={User} size={18} className="text-primary" />
                 {t('semantic.myConcepts', 'Mes concepts')}
               </h2>
               {myConcepts.length === 0 ? (
@@ -83,7 +84,7 @@ export default function SemanticIndex() {
                           </p>
                         ) : null}
                       </div>
-                      <ChevronRight size={18} className="shrink-0 text-primary" />
+                      <HugeiconsIcon icon={ChevronRight} size={18} className="shrink-0 text-primary" />
                     </button>
                   ))}
                 </div>
@@ -93,7 +94,7 @@ export default function SemanticIndex() {
             {/* Active concepts */}
             <section className="mb-6">
               <h2 className="mb-3 flex items-center gap-2 px-1 text-lg font-semibold text-text-primary">
-                <BrainCircuit size={18} className="text-primary" />
+                <HugeiconsIcon icon={BrainCircuit} size={18} className="text-primary" />
                 {t('semantic.concept', 'Concept')}s
               </h2>
               {featuredConcepts.length === 0 ? (
@@ -114,7 +115,7 @@ export default function SemanticIndex() {
                         </p>
                         <p className="text-xs text-text-muted">{item.concept.canonical_name}</p>
                       </div>
-                      <ChevronRight size={18} className="text-primary" />
+                      <HugeiconsIcon icon={ChevronRight} size={18} className="text-primary" />
                     </button>
                   ))}
                 </div>
@@ -124,7 +125,7 @@ export default function SemanticIndex() {
             {/* Communities */}
             <section>
               <h2 className="mb-3 flex items-center gap-2 px-1 text-lg font-semibold text-text-primary">
-                <Map size={18} className="text-primary" />
+                <HugeiconsIcon icon={Map} size={18} className="text-primary" />
                 {t('semantic.community', 'Communauté')}
               </h2>
               {communities.length === 0 ? (
@@ -145,7 +146,7 @@ export default function SemanticIndex() {
                           <p className="line-clamp-1 text-xs text-text-muted">{c.description}</p>
                         ) : null}
                       </div>
-                      <ChevronRight size={18} className="text-primary" />
+                      <HugeiconsIcon icon={ChevronRight} size={18} className="text-primary" />
                     </button>
                   ))}
                 </div>

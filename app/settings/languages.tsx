@@ -1,5 +1,8 @@
 import { useTranslation } from 'react-i18next';
-import { Check } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import {
+  CheckIcon as Check,
+} from '@hugeicons/core-free-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { SUPPORTED_LANGUAGES } from '@/services/i18n-service';
 import { useSettingsStore } from '@/store/settings-store';
@@ -17,7 +20,7 @@ export default function LanguageSettingsScreen() {
       showBack
       backPath="/settings"
     >
-      <div className="mx-auto max-w-md space-y-2">
+      <div className="screen-column space-y-2">
         {SUPPORTED_LANGUAGES.map((lang) => {
           const active = selected === lang.code;
           return (
@@ -50,8 +53,8 @@ export default function LanguageSettingsScreen() {
                 <span className="text-sm text-text-muted">{lang.displayName}</span>
               </span>
               {active && (
-                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-white">
-                  <Check size={14} />
+                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-on-primary">
+                  <HugeiconsIcon icon={Check} size={14} />
                 </span>
               )}
             </button>

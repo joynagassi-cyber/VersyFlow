@@ -1,20 +1,21 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import { HugeiconsIcon } from '@hugeicons/react';
 import {
-  BookOpen,
-  Flame,
-  Medal,
-  RefreshCw,
-  Trophy,
-  Star,
-  Lock,
-  Check,
-  CheckCircle2,
-  BookMarked,
-  FolderOpen,
-  Globe,
-  School,
-} from 'lucide-react';
+  BookOpen01Icon as BookOpen,
+  FlameIcon as Flame,
+  Medal01Icon as Medal,
+  RefreshIcon as RefreshCw,
+  TrophyIcon as Trophy,
+  StarIcon as Star,
+  LockIcon as Lock,
+  CheckIcon as Check,
+  CheckmarkCircle02Icon as CheckCircle2,
+  BookMarkedIcon as BookMarked,
+  FolderOpenIcon as FolderOpen,
+  GlobeIcon as Globe,
+  SchoolIcon as School,
+} from '@hugeicons/core-free-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { ProgressRing } from '@/components/ui/ProgressRing';
 import { useActiveProfile } from '@/hooks/useActiveProfile';
@@ -180,12 +181,12 @@ export default function AchievementScreen() {
       showBack
       right={
         <span className="flex items-center gap-1 rounded-full bg-surface-tint px-3 py-1 text-sm font-semibold text-primary">
-          <Star size={14} className="text-warning" />
+          <HugeiconsIcon icon={Star} size={14} className="text-warning tabular-nums" />
           {unlockedCount}/{achievements.length}
         </span>
       }
     >
-      <div className="mx-auto max-w-md space-y-5">
+      <div className="screen-column space-y-5">
         {/* Overall */}
         <div className="flex items-center gap-4 rounded-3xl bg-surface p-5 shadow-sm">
           <ProgressRing value={Math.round(overall)} size={72} />
@@ -193,7 +194,7 @@ export default function AchievementScreen() {
             <p className="text-sm font-semibold text-text-primary">
               {t('achievements.overall', 'Progression globale')}
             </p>
-            <p className="mt-1 text-xs text-text-muted">
+            <p className="mt-1 text-xs text-text-muted tabular-nums">
               {unlockedCount} {t('achievements.unlockedOn', 'succes debloques')} sur {achievements.length}
             </p>
           </div>
@@ -211,7 +212,7 @@ export default function AchievementScreen() {
               className={
                 'rounded-full px-3.5 py-1.5 text-sm font-medium ' +
                 (selectedCategory === cat.id
-                  ? 'bg-primary text-white'
+                  ? 'bg-primary text-on-primary'
                   : 'bg-surface-tint text-text-secondary')
               }
             >
@@ -237,7 +238,7 @@ export default function AchievementScreen() {
                     backgroundColor: achievementTint(a.color),
                   }}
                 >
-                  <Icon size={26} />
+                  <HugeiconsIcon icon={Icon} size={26} />
                 </span>
                 <span className="min-w-0 flex-1">
                   <span
@@ -264,7 +265,7 @@ export default function AchievementScreen() {
                     className="flex h-6 w-6 items-center justify-center rounded-full text-white"
                     style={{ backgroundColor: a.color }}
                   >
-                    <Check size={14} />
+                    <HugeiconsIcon icon={Check} size={14} />
                   </span>
                 )}
               </button>
@@ -313,7 +314,7 @@ export default function AchievementScreen() {
               t('achievements.tip3', 'Creez des collections thematiques'),
             ].map((tip, i) => (
               <p key={i} className="flex items-center gap-2 text-sm text-text-secondary">
-                <CheckCircle2 size={16} className="text-primary" />
+                <HugeiconsIcon icon={CheckCircle2} size={16} className="text-primary" />
                 {tip}
               </p>
             ))}

@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ProfileAvatar } from '@/components/profile/ProfileAvatar';
 import { useActiveProfile } from '@/hooks/useActiveProfile';
-import { cn } from '@/lib/utils';
+import { fireAndForget } from '@/lib/fire-and-forget';
 
 /** Max length of the optional personal slogan (matches the DB column). */
 const SLOGAN_MAX_LENGTH = 60;
@@ -49,7 +49,7 @@ export default function CreateProfileScreen() {
 
   return (
     <FullScreenPage title={t('profile.create', 'Nouveau profil')} showBack>
-      <div className="mx-auto flex max-w-md flex-col items-center gap-6">
+      <div className="screen-column flex flex-col items-center gap-6">
         {/* Live preview of the profile avatar as the name is typed. */}
         <ProfileAvatar name={previewSeed} size={96} className="shadow-xl" />
 
@@ -86,7 +86,7 @@ export default function CreateProfileScreen() {
           </p>
         </div>
 
-        <Button variant="default" className="w-full" onClick={handleCreate} disabled={submitting}>
+        <Button variant="default" className="w-full" onClick={() => fireAndForget(handleCreate(), 'profile:create')} disabled={submitting}>
           {submitting ? t('common.loading', 'Creation...') : t('profile.createCta', 'Creer mon profil')}
         </Button>
       </div>

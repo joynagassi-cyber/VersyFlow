@@ -5,7 +5,7 @@
  */
 
 import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
+import { persist } from 'zustand/middleware';
 import type { LearnerProfile } from '@/domains/learner-profile';
 
 export interface ProfileSyncState {

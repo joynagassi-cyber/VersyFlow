@@ -1,9 +1,15 @@
 import { useTranslation } from 'react-i18next';
-import { Check, Sun, Moon, Monitor, Palette } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { HugeiconsIcon } from '@hugeicons/react';
+import { Sun01Icon, Moon01Icon, ComputerIcon, Tick01Icon } from '@hugeicons/core-free-icons';
+
+function Check({ size = 18, className }: { size?: number; className?: string }) {
+  return <HugeiconsIcon icon={Tick01Icon} size={size} className={className} color="currentColor" />;
+}
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { useAppearanceStore } from '@/store/appearance-store';
-import { ACCENT_PRESETS } from '@/theme/theme-presets';
+import { TWEAKCN_PRESETS, GRADIENTS } from '@/theme/tweakcn-presets';
+import { UI_FONTS } from '@/theme/theme-fonts';
+import { themeLandscapeUrl } from '@/theme/theme-catalog';
 import { THEME_CATEGORIES } from '@/theme/theme-catalog';
 import { BIBLE_FONTS } from '@/theme/theme-fonts';
 import { cn } from '@/lib/utils';
@@ -35,7 +41,7 @@ function Toggle({ on, onChange }: { on: boolean; onChange: () => void }) {
       aria-pressed={on}
       className={cn('relative h-6 w-11 shrink-0 rounded-full transition-colors', on ? 'bg-primary' : 'bg-border')}
     >
-      <span className={cn('absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-all', on ? 'left-[22px]' : 'left-0.5')} />
+      <span className={cn('absolute top-0.5 h-5 w-5 rounded-full bg-surface shadow transition-all', on ? 'left-[22px]' : 'left-0.5')} />
     </button>
   );
 }
@@ -80,13 +86,23 @@ function SliderRow({
 
 export default function AppearanceScreen() {
   const { t } = useTranslation();
-  const navigate = useNavigate();
   const themeMode = useAppearanceStore((s) => s.themeMode);
-  const accent = useAppearanceStore((s) => s.accent);
   const colorThemeId = useAppearanceStore((s) => s.colorThemeId);
+  const presetId = useAppearanceStore((s) => s.presetId);
+  const setPreset = useAppearanceStore((s) => s.setPreset);
+  const backgroundType = useAppearanceStore((s) => s.backgroundType);
+  const gradientId = useAppearanceStore((s) => s.gradientId);
+  const setGradient = useAppearanceStore((s) => s.setGradient);
+  const setBackgroundType = useAppearanceStore((s) => s.setBackgroundType);
+  const uiFontId = useAppearanceStore((s) => s.uiFontId);
+  const setUiFontId = useAppearanceStore((s) => s.setUiFontId);
   const fontSize = useAppearanceStore((s) => s.fontSize);
   const showVerseNumbers = useAppearanceStore((s) => s.showVerseNumbers);
   const focusMode = useAppearanceStore((s) => s.focusMode);
+  const reducedTransparency = useAppearanceStore((s) => s.reducedTransparency);
+  const highContrast = useAppearanceStore((s) => s.highContrast);
+  const setReducedTransparency = useAppearanceStore((s) => s.setReducedTransparency);
+  const setHighContrast = useAppearanceStore((s) => s.setHighContrast);
   const bibleFontFamily = useAppearanceStore((s) => s.bibleFontFamily);
   const bibleFontSize = useAppearanceStore((s) => s.bibleFontSize);
   const bibleLineHeight = useAppearanceStore((s) => s.bibleLineHeight);
@@ -103,17 +119,15 @@ export default function AppearanceScreen() {
   const setBibleLetterSpacing = useAppearanceStore((s) => s.setBibleLetterSpacing);
   const setBibleLineLength = useAppearanceStore((s) => s.setBibleLineLength);
 
-  const themeOptions: { value: ThemeMode; label: string; Icon: typeof Sun }[] = [
-    { value: 'light', label: t('settings.themeLight', 'Clair'), Icon: Sun },
-    { value: 'dark', label: t('settings.themeDark', 'Sombre'), Icon: Moon },
-    { value: 'system', label: t('settings.themeSystem', 'Système'), Icon: Monitor },
+  const themeOptions: { value: ThemeMode; label: string; Icon: typeof Sun01Icon }[] = [
+    { value: 'light', label: t('settings.themeLight', 'Clair'), Icon: Sun01Icon },
+    { value: 'dark', label: t('settings.themeDark', 'Sombre'), Icon: Moon01Icon },
+    { value: 'system', label: t('settings.themeSystem', 'Système'), Icon: ComputerIcon },
   ];
-
-  const totalThemes = THEME_CATEGORIES.reduce((n, c) => n + c.themes.length, 0);
 
   return (
     <FullScreenPage title={t('settings.theme', 'Thème')}>
-      <div className="mx-auto max-w-md">
+      <div className="screen-column">
         <Section title={t('settings.themeMode', 'Mode')}>
           <div className="flex flex-col gap-2">
             {themeOptions.map(({ value, label, Icon }) => {
@@ -130,10 +144,10 @@ export default function AppearanceScreen() {
                   <span
                     className={cn(
                       'flex h-9 w-9 items-center justify-center rounded-full',
-                      active ? 'bg-primary text-white' : 'bg-surface-tint text-primary',
+                      active ? 'bg-primary text-on-primary' : 'bg-surface-tint text-primary',
                     )}
                   >
-                    <Icon size={18} />
+                    <HugeiconsIcon icon={Icon} size={19} />
                   </span>
                   <span className={cn('flex-1 text-sm font-medium', active ? 'text-primary' : 'text-text-primary')}>
                     {label}
@@ -145,61 +159,226 @@ export default function AppearanceScreen() {
           </div>
         </Section>
 
-        <Section title={t('settings.accentColor', "Couleur d'accent")}>
-          <div className="grid grid-cols-4 gap-3">
-            {ACCENT_PRESETS.map((p) => {
-              const active = accent === p.key && colorThemeId == null;
+        {/* ── Plateforme de personnalisation ─────────────────────────────
+            Tout le style de l'app vient d'ici : preset tweakcn (couleurs),
+            fond dégradé (webgradients) ou image (accent extrait de l'image).
+            Aucun style n'est codé en dur dans les écrans. */}
+        <Section title={t('settings.themePreset', 'Thème')}>
+          {/* Aperçus professionnels : chaque carte est une miniature
+              d'écran (en-tête, carte de verset, bouton, onglets) dessinée
+              avec les VRAIS tokens du thème — l'utilisateur voit exactement
+              à quoi l'app ressemblera avant de choisir. */}
+          <div className="grid grid-cols-2 gap-3">
+            {TWEAKCN_PRESETS.map((preset) => {
+              const active = (presetId ?? 'quantum-rose') === preset.id;
               return (
                 <button
-                  key={p.key}
-                  onClick={() => setColorTheme(null)}
+                  key={preset.id}
+                  onClick={() => setPreset(preset.id)}
                   aria-pressed={active}
-                  className="flex flex-col items-center gap-1.5"
+                  className={cn(
+                    'overflow-hidden rounded-2xl border-2 text-left transition active:scale-[0.98]',
+                    active ? 'border-text-primary shadow-md' : 'border-[var(--color-border)]',
+                  )}
+                  style={{ backgroundColor: preset.bg }}
                 >
-                  <span
-                    className={cn(
-                      'flex h-11 w-11 items-center justify-center rounded-full border-2 bg-white transition',
-                      active ? 'border-text-primary' : 'border-transparent',
-                    )}
-                    style={{ backgroundColor: p.swatch }}
-                  >
-                    {active && <Check size={18} className="text-white" />}
-                  </span>
-                  <span className="text-[11px] font-medium text-text-muted">{p.label}</span>
+                  <div className="p-3">
+                    <div className="mb-2 flex items-center justify-between">
+                      <span
+                        className="h-2.5 w-16 rounded-full"
+                        style={{ backgroundColor: preset.fg }}
+                      />
+                      <span
+                        className="h-4 w-4 rounded-full"
+                        style={{ backgroundColor: preset.accent }}
+                      />
+                    </div>
+                    <div
+                      className="mb-2 rounded-xl p-2.5 shadow-sm"
+                      style={{ backgroundColor: preset.card }}
+                    >
+                      <span
+                        className="mb-1.5 block h-1.5 w-10 rounded-full"
+                        style={{ backgroundColor: preset.primary }}
+                      />
+                      <span
+                        className="mb-1 block h-1.5 w-full rounded-full opacity-70"
+                        style={{ backgroundColor: preset.muted }}
+                      />
+                      <span
+                        className="block h-1.5 w-4/5 rounded-full opacity-70"
+                        style={{ backgroundColor: preset.muted }}
+                      />
+                    </div>
+                    <span
+                      className="mb-2 inline-flex rounded-full px-3 py-1 text-[10px] font-bold"
+                      style={{ backgroundColor: preset.primary, color: preset.primaryFg }}
+                    >
+                      Mémoriser
+                    </span>
+                    <div className="flex items-center justify-between px-1">
+                      {[0, 1, 2, 3].map((i) => (
+                        <span
+                          key={i}
+                          className="h-3.5 w-3.5 rounded-full"
+                          style={{
+                            backgroundColor: i === 0 ? preset.primary : preset.muted,
+                          }}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between bg-black/[0.04] px-3 py-2">
+                    <span className="text-[11px] font-bold leading-tight text-text-primary">
+                      {preset.label}
+                      {preset.hybrid && (
+                        <span className="block text-[9px] font-bold uppercase tracking-wide text-primary">
+                          {t('settings.hybrid', 'Fusion')}
+                        </span>
+                      )}
+                    </span>
+                    {active && <Check size={16} className="shrink-0 text-primary" />}
+                  </div>
                 </button>
               );
             })}
           </div>
+          <p className="mt-3 text-[11px] leading-relaxed text-text-muted">
+            {t('settings.themePresetHint', 'Thèmes officiels tweakcn — le mode Clair/Sombre ci-dessus choisit la variante de chaque thème.')}
+          </p>
+        </Section>
 
-          {/* Image-based color themes (100 flat-2D monochrome illustrations) */}
-          <button
-            type="button"
-            onClick={() => navigate('/settings/theme-picker')}
-            className={cn(
-              'mt-3 flex w-full items-center gap-3 rounded-xl p-3 text-left transition',
-              colorThemeId != null
-                ? 'bg-primary/10 ring-1 ring-primary/30'
-                : 'bg-surface-tint/50 active:bg-surface-tint',
-            )}
-          >
-            <span
-              className={cn(
-                'flex h-10 w-10 shrink-0 items-center justify-center rounded-full',
-                colorThemeId != null ? 'bg-primary text-white' : 'bg-surface-tint text-primary',
-              )}
-            >
-              <Palette size={18} />
-            </span>
-            <span className="min-w-0 flex-1">
-              <span className="block text-sm font-semibold text-text-primary">
-                {t('settings.themeImage', "Thèmes d'image")}
-              </span>
-              <span className="block text-xs text-text-muted">
-                {totalThemes} {t('settings.themeImagesCount', 'illustrations 2D monochromes par catégorie')}
-              </span>
-            </span>
-            <span className="text-xs font-bold text-primary">›</span>
-          </button>
+        <Section title={t('settings.uiFont', "Police de l'interface")}>
+          <div className="grid grid-cols-2 gap-2">
+            {UI_FONTS.map((font) => {
+              const active = uiFontId === font.id;
+              return (
+                <button
+                  key={font.id}
+                  onClick={() => setUiFontId(font.id)}
+                  aria-pressed={active}
+                  className={cn(
+                    'rounded-xl border-2 p-3 text-left transition active:scale-[0.98]',
+                    active ? 'border-primary bg-primary/5' : 'border-[var(--color-border)]',
+                  )}
+                >
+                  <span
+                    className="block text-lg leading-tight text-text-primary"
+                    style={{ fontFamily: font.family }}
+                  >
+                    Ag VersyFlow
+                  </span>
+                  <span className="mt-1 block text-[11px] font-bold text-text-primary">
+                    {font.label}
+                  </span>
+                  <span className="block text-[10px] text-text-muted">{font.style}</span>
+                </button>
+              );
+            })}
+          </div>
+        </Section>
+
+        <Section title={t('settings.background', "Fond de l'app")}>
+          <div className="mb-4 flex gap-2">
+            {(
+              [
+                { value: 'none', label: t('settings.bgNone', 'Aucun') },
+                { value: 'gradient', label: t('settings.bgGradient', 'Dégradé') },
+                { value: 'image', label: t('settings.bgImage', 'Image') },
+              ] as const
+            ).map((opt) => (
+              <button
+                key={opt.value}
+                onClick={() => setBackgroundType(opt.value)}
+                aria-pressed={backgroundType === opt.value}
+                className={cn(
+                  'flex-1 rounded-full px-3 py-2 text-xs font-bold transition',
+                  backgroundType === opt.value
+                    ? 'bg-primary text-primary-foreground'
+                    : 'bg-surface-tint text-text-secondary',
+                )}
+              >
+                {opt.label}
+              </button>
+            ))}
+          </div>
+
+          {backgroundType === 'gradient' && (
+            <div className="grid grid-cols-2 gap-2">
+              {GRADIENTS.map((g) => {
+                const active = gradientId === g.id;
+                return (
+                  <button
+                    key={g.id}
+                    onClick={() => setGradient(g.id)}
+                    aria-pressed={active}
+                    className={cn(
+                      'h-16 rounded-2xl border-2 p-2 text-left transition',
+                      g.className,
+                      active ? 'border-text-primary' : 'border-transparent',
+                    )}
+                  >
+                    <span className="rounded-full bg-black/25 px-2 py-0.5 text-[10px] font-bold capitalize text-white">
+                      {g.id.replace(/-/g, ' ')}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          )}
+
+          {backgroundType === 'image' && (
+            <div className="flex flex-col gap-4">
+              {THEME_CATEGORIES.map((cat) => (
+                <div key={cat.id}>
+                  <p className="mb-2 text-[11px] font-bold uppercase tracking-wider text-text-muted">
+                    {cat.name}
+                  </p>
+                  <div className="grid grid-cols-5 gap-2">
+                    {cat.themes.map((entry) => {
+                      const active = colorThemeId === entry.id;
+                      return (
+                        <button
+                          key={entry.id}
+                          onClick={() => setColorTheme(entry.id)}
+                          aria-pressed={active}
+                          title={entry.name}
+                          className={cn(
+                            'flex aspect-square items-center justify-center overflow-hidden rounded-2xl border-2 transition',
+                            active ? 'border-text-primary' : 'border-transparent',
+                          )}
+                          style={{ backgroundColor: entry.color }}
+                        >
+                          <img
+                            src={themeLandscapeUrl(entry.id)}
+                            alt=""
+                            loading="lazy"
+                            className="h-full w-full object-cover"
+                            onError={(e) => {
+                              (e.target as HTMLImageElement).style.display = 'none';
+                            }}
+                          />
+                          {active && <Check size={16} className="absolute text-white" />}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
+              <p className="text-[11px] leading-relaxed text-text-muted">
+                {t(
+                  'settings.bgImageHint',
+                  "L'accent de l'app est extrait automatiquement de l'image choisie (couleurs, anneau, voile des cartes).",
+                )}
+              </p>
+            </div>
+          )}
+
+          {backgroundType === 'none' && (
+            <p className="text-[11px] leading-relaxed text-text-muted">
+              {t('settings.bgNoneHint', 'Le fond suit simplement le thème choisi ci-dessus.')}
+            </p>
+          )}
         </Section>
 
         {/* ── Lecture : full Bible reading controls (font + fine spacing) ── */}
@@ -290,7 +469,7 @@ export default function AppearanceScreen() {
                   onClick={() => setFontSize(size)}
                   className={cn(
                     'flex-1 rounded-xl py-2.5 text-sm font-semibold transition',
-                    active ? 'gradient-hero text-white' : 'bg-surface-tint text-text-primary',
+                    active ? 'bg-primary text-on-primary' : 'bg-surface-tint text-text-primary',
                   )}
                 >
                   {size}
@@ -313,6 +492,29 @@ export default function AppearanceScreen() {
                 {t('settings.focusMode', 'Mode concentration')}
               </span>
               <Toggle on={focusMode} onChange={() => setFocusMode(!focusMode)} />
+            </div>
+
+            <div className="flex items-center justify-between gap-3 py-2">
+              <span className="flex-1 text-sm font-medium text-text-primary">
+                {t('settings.reducedTransparency', 'Réduire la transparence')}
+                <span className="mt-0.5 block text-xs font-normal text-text-muted">
+                  {t('settings.reducedTransparencyHint', 'Surfaces opaques, sans effet de verre.')}
+                </span>
+              </span>
+              <Toggle
+                on={reducedTransparency}
+                onChange={() => setReducedTransparency(!reducedTransparency)}
+              />
+            </div>
+
+            <div className="flex items-center justify-between gap-3 py-2">
+              <span className="flex-1 text-sm font-medium text-text-primary">
+                {t('settings.highContrast', 'Contraste élevé')}
+                <span className="mt-0.5 block text-xs font-normal text-text-muted">
+                  {t('settings.highContrastHint', 'Contours renforcés, fond décoratif atténué.')}
+                </span>
+              </span>
+              <Toggle on={highContrast} onChange={() => setHighContrast(!highContrast)} />
             </div>
           </div>
         </Section>

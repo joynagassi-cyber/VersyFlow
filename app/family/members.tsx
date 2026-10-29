@@ -2,7 +2,12 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { UserPlus, CheckCircle2, AlertCircle } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import {
+  UserPlusIcon as UserPlus,
+  CheckmarkCircle02Icon as CheckCircle2,
+  AlertCircleIcon as AlertCircle,
+} from '@hugeicons/core-free-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { useFamilySyncStore } from '@/store/family-sync-store';
@@ -54,7 +59,7 @@ export default function FamilyMembersScreen() {
   if (!family) {
     return (
       <FullScreenPage title={t('family.members', 'Membres')} showBack>
-        <div className="mx-auto max-w-md">
+        <div className="screen-column">
           <EmptyState
             title={t('family.noFamily', 'Aucune famille active')}
             description={t('family.noFamilyHint', 'Commencez par rejoindre ou creer une famille.')}
@@ -83,11 +88,11 @@ export default function FamilyMembersScreen() {
           onClick={() => navigate('/family/invite')}
           className="rounded-full bg-surface-tint p-2 active:bg-primary/10"
         >
-          <UserPlus size={18} className="text-primary" />
+          <HugeiconsIcon icon={UserPlus} size={18} className="text-primary" />
         </button>
       }
     >
-      <div className="mx-auto max-w-md space-y-4">
+      <div className="screen-column space-y-4">
         <h2 className="text-xs font-bold uppercase tracking-wide text-text-muted">
           {t('family.members', 'Membres')}
         </h2>
@@ -98,11 +103,11 @@ export default function FamilyMembersScreen() {
           </p>
         ) : loadError ? (
           <div className="flex flex-col items-center gap-3 rounded-2xl bg-surface p-6 text-center shadow-sm">
-            <AlertCircle size={28} className="text-error" />
+            <HugeiconsIcon icon={AlertCircle} size={28} className="text-error" />
             <p className="text-sm text-error">{loadError}</p>
             <button
               onClick={() => loadMembers(family.id)}
-              className="rounded-full bg-primary px-5 py-2 text-sm font-semibold text-white active:opacity-90"
+              className="rounded-full bg-primary px-5 py-2 text-sm font-semibold text-on-primary active:opacity-90"
             >
               {t('common.retry', 'Réessayer')}
             </button>
@@ -125,7 +130,7 @@ export default function FamilyMembersScreen() {
                   </p>
                   <p className="text-xs text-text-muted">{roleLabel(m.role)}</p>
                 </div>
-                <CheckCircle2 size={20} className="text-success" />
+                <HugeiconsIcon icon={CheckCircle2} size={20} className="text-success" />
               </div>
             ))}
           </div>
@@ -135,8 +140,8 @@ export default function FamilyMembersScreen() {
           onClick={() => navigate('/family/invite')}
           className="flex w-full items-center gap-3 rounded-2xl bg-surface-tint p-4 text-left active:opacity-90"
         >
-          <span className="flex h-11 w-11 items-center justify-center rounded-full bg-primary text-white">
-            <UserPlus size={20} />
+          <span className="flex h-11 w-11 items-center justify-center rounded-full bg-primary text-on-primary">
+            <HugeiconsIcon icon={UserPlus} size={20} />
           </span>
           <span className="flex-1">
             <span className="block text-sm font-semibold text-text-primary">

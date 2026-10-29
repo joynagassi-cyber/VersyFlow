@@ -1,13 +1,18 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Plus, Check } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import {
+  PlusSignIcon as Plus,
+  CheckIcon as Check,
+} from '@hugeicons/core-free-icons';
 import { z } from 'zod';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useActiveProfile } from '@/hooks/useActiveProfile';
 import { cn } from '@/lib/utils';
+import { fireAndForget } from '@/lib/fire-and-forget';
 
 const NAME_SCHEMA = z.string().trim().min(2).max(30);
 
@@ -36,7 +41,7 @@ export default function ProfileSelectionScreen() {
 
   return (
     <FullScreenPage title={t('profile.select', 'Profil')} showBack>
-      <div className="mx-auto max-w-md space-y-4">
+      <div className="screen-column space-y-4">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-text-primary">
             {t('profile.who', "Qui apprend aujourd'hui ?")}
@@ -58,7 +63,7 @@ export default function ProfileSelectionScreen() {
                   active && 'ring-2 ring-primary',
                 )}
               >
-                <span className="flex h-12 w-12 items-center justify-center rounded-full gradient-hero text-xl font-bold text-white">
+                <span className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-xl font-bold text-on-primary">
                   {(profile.displayName || '?').charAt(0).toUpperCase()}
                 </span>
                 <span className="flex-1">
@@ -71,14 +76,14 @@ export default function ProfileSelectionScreen() {
                     </span>
                   )}
                 </span>
-                {active && <Check size={20} className="text-primary" />}
+                {active && <HugeiconsIcon icon={Check} size={20} className="text-primary" />}
               </button>
             );
           })}
         </div>
 
         <Button variant="outline" className="w-full" onClick={() => setShowCreate((s) => !s)}>
-          <Plus size={18} />
+          <HugeiconsIcon icon={Plus} size={18} />
           {t('profile.create', 'Creer un profil')}
         </Button>
 
@@ -103,7 +108,7 @@ export default function ProfileSelectionScreen() {
               >
                 {t('common.cancel', 'Annuler')}
               </Button>
-              <Button variant="default" className="flex-1" onClick={handleCreate}>
+              <Button variant="default" className="flex-1" onClick={() => fireAndForget(handleCreate(), 'profile:select-create')}>
                 {t('common.continue', 'Creer')}
               </Button>
             </div>

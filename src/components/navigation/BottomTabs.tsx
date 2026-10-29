@@ -8,15 +8,21 @@
 
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Home, BookOpen, BarChart3, Settings } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import {
+  Home01Icon,
+  BookOpen01Icon,
+  ChartBarLineIcon,
+  Settings01Icon,
+} from '@hugeicons/core-free-icons';
 import { ALL_TABS, useUiStore, type TabId } from '@/store/ui-store';
 import { cn } from '@/lib/utils';
 
-const ICONS: Record<TabId, typeof Home> = {
-  home: Home,
-  explore: BookOpen,
-  progress: BarChart3,
-  settings: Settings,
+const ICONS: Record<TabId, typeof Home01Icon> = {
+  home: Home01Icon,
+  explore: BookOpen01Icon,
+  progress: ChartBarLineIcon,
+  settings: Settings01Icon,
 };
 
 export function BottomTabs() {
@@ -51,12 +57,14 @@ export function BottomTabs() {
                   active ? 'bg-primary/12' : 'bg-transparent',
                 )}
               >
-                <Icon
-                  size={21}
-                  strokeWidth={active ? 2.4 : 2}
+                <HugeiconsIcon
+                  icon={Icon}
+                  size={23}
+                  strokeWidth={active ? 2.4 : 1.8}
                   color={active ? 'var(--color-primary)' : 'var(--color-text-muted)'}
                 />
               </span>
+              {active && <span className="h-1 w-1 rounded-full bg-primary" />}
               <span
                 className={cn(
                   'max-w-[72px] truncate text-[11px] font-semibold transition-colors',

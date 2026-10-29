@@ -9,15 +9,19 @@
  *
  * This mode is the LAST of the four modes (recommended after F).
  *
- * Premium design: 3D card surface (.mw-card), the diff result is laid
- * out in two columns (.mw-diff-grid) with word-level colored chips
+ * Premium design: 3D card surface (.mem-card), the diff result is laid
+ * out in two columns (.mem-diff-grid) with word-level colored chips
  * (.word-missing / .word-wrong / .word-extra), and the 4 FSRS buttons
  * sit at the very bottom of the card.
  */
 
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Check, PenLine } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import {
+  CheckIcon as Check,
+  PenLineIcon as PenLine,
+} from '@hugeicons/core-free-icons';
 import { cn } from '@/lib/utils';
 import { getComparisonEngine } from '@/services/recall-comparison-service';
 import type { WrittenRecallResult } from '@/domains/memorization/comparison-engine';
@@ -34,7 +38,7 @@ export interface ModeWriteProps {
 const RATING_OPTIONS: Parameters<typeof RatingBar>[0]['options'] = [
   { value: FsrsRating.AGAIN, label: 'À revoir', className: 'bg-error-light text-error' },
   { value: FsrsRating.HARD, label: 'Difficile', className: 'bg-warning-light text-warning' },
-  { value: FsrsRating.GOOD, label: 'Bon', className: 'bg-primary text-white' },
+  { value: FsrsRating.GOOD, label: 'Bon', className: 'bg-primary text-on-primary' },
   { value: FsrsRating.EASY, label: 'Facile', className: 'bg-success-light text-success' },
 ];
 
@@ -65,15 +69,15 @@ export function ModeWrite({
     <div className="space-y-3">
       {/* Title case — separate from the verse (per user requirement) */}
       <div className="rounded-2xl bg-surface p-4 shadow-sm">
-        <p className="mw-label">{t('workspace.titleCase', 'TITRE DU VERSET')}</p>
+        <p className="mem-label">{t('workspace.titleCase', 'TITRE DU VERSET')}</p>
         <p className="text-base font-bold text-text-primary">{referenceLabel}</p>
       </div>
 
       {/* The write area */}
-      <div className="mw-card">
+      <div className="mem-card">
         <div className="mb-3 flex items-center gap-2">
           <span className="flex h-9 w-9 items-center justify-center rounded-full bg-surface-tint text-primary">
-            <PenLine size={16} />
+            <HugeiconsIcon icon={PenLine} size={16} />
           </span>
           <div>
             <p className="text-sm font-extrabold text-text-primary">
@@ -100,19 +104,19 @@ export function ModeWrite({
           type="button"
           onClick={handleVerify}
           disabled={!written.trim() || verified != null}
-          className="mw-pill mt-3"
+          className="mem-pill mt-3"
         >
-          <Check size={16} />
+          <HugeiconsIcon icon={Check} size={16} />
           {t('workspace.verify', 'Vérifier')}
         </button>
       </div>
 
       {/* Diff result — original on the left, written on the right */}
       {verified && (
-        <div className={cn('mw-card relative', verified.matchScore >= 0.9 && 'overflow-hidden')} style={verified.matchScore >= 0.9 ? { background: 'color-mix(in srgb, var(--color-success) 8%, var(--color-surface))' } : undefined}>
+        <div className={cn('mem-card relative', verified.matchScore >= 0.9 && 'overflow-hidden')} style={verified.matchScore >= 0.9 ? { background: 'color-mix(in srgb, var(--color-success) 8%, var(--color-surface))' } : undefined}>
           {/* Soft confetti burst on a successful verify (≥ 90 %) */}
           {verified.matchScore >= 0.9 && (
-            <div className="mw-confetti">
+            <div className="mem-confetti">
               {[0, 1, 2, 3, 4].map((i) => (
                 <span
                   key={i}
@@ -126,7 +130,7 @@ export function ModeWrite({
             </div>
           )}
           <div className="mb-3 flex items-center justify-between">
-            <span className="mw-label">{t('workspace.result', 'RÉSULTAT')} · {t('workspace.diffWord', 'diff mot à mot')}</span>
+            <span className="mem-label">{t('workspace.result', 'RÉSULTAT')} · {t('workspace.diffWord', 'diff mot à mot')}</span>
             <span
               className={cn(
                 'text-2xl font-extrabold',
@@ -141,15 +145,15 @@ export function ModeWrite({
             </span>
           </div>
 
-          <div className="mw-diff-grid">
+          <div className="mem-diff-grid">
             {/* Original (left) with the title case */}
-            <div className="mw-diff-col original">
+            <div className="mem-diff-col original">
               <span className="col-label">{referenceLabel}</span>
               <p className="verse">{originalWords.join(' ')}</p>
             </div>
 
             {/* Written (right) with errors in red */}
-            <div className="mw-diff-col written">
+            <div className="mem-diff-col written">
               <span className="col-label">{t('workspace.youWrote', 'Vous avez écrit')}</span>
               <p className="verse">
                 {verified.wordDiffs.map((d, i) => {
@@ -181,7 +185,7 @@ export function ModeWrite({
           </div>
 
           {/* 4 FSRS buttons at the bottom of the mode */}
-          <p className="mw-label mt-4">{t('workspace.commentWasIt', 'COMMENT C\'ÉTAIT ?')}</p>
+          <p className="mem-label mt-4">{t('workspace.commentWasIt', 'COMMENT C\'ÉTAIT ?')}</p>
           <RatingBar options={RATING_OPTIONS} onSelect={(v) => void handleRate(v)} />
         </div>
       )}

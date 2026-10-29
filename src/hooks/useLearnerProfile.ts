@@ -8,6 +8,7 @@ import { useCallback } from 'react';
 import { useAuthStore } from '@/store/auth-store';
 import { LearnerProfileService } from '@/services/learner-profile-service';
 import { getLearnerProfileRepository } from '@/infrastructure/repository/powersync-repositories';
+import type { LearnerProfile } from '@/domains/learner-profile';
 
 let _service: LearnerProfileService | null = null;
 
@@ -45,9 +46,9 @@ export function useLearnerProfile() {
   );
 
   const updateProfile = useCallback(
-    (id: string, updates: Partial<Record<string, unknown>>) => {
+    (id: string, updates: Partial<LearnerProfile>) => {
       if (!accountId) throw new Error('Not authenticated');
-      return service.update(id, updates as any, accountId);
+      return service.update(id, updates, accountId);
     },
     [accountId, service],
   );

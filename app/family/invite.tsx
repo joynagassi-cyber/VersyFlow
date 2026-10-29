@@ -2,13 +2,21 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Copy, Share2, Info, Loader2, Check } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import {
+  Copy01Icon as Copy,
+  Share08Icon as Share2,
+  InformationCircleIcon as Info,
+  Loading03Icon as Loader2,
+  CheckIcon as Check,
+} from '@hugeicons/core-free-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { Button } from '@/components/ui/button';
 import { useFamilySyncStore } from '@/store/family-sync-store';
 import { useFamilyService } from '@/hooks/useFamilyService';
 import { useAuthStore } from '@/store/auth-store';
+import { fireAndForget } from '@/lib/fire-and-forget';
 
 export default function FamilyInviteScreen() {
   const navigate = useNavigate();
@@ -28,7 +36,6 @@ export default function FamilyInviteScreen() {
     if (family && !inviteCode && !isLoading) {
       void handleGenerateCode();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [family]);
 
   const handleGenerateCode = async () => {
@@ -76,14 +83,14 @@ export default function FamilyInviteScreen() {
         setSharing(false);
       }
     } else {
-      handleCopy();
+      await handleCopy();
     }
   };
 
   if (!family || !signedIn) {
     return (
       <FullScreenPage title={t('family.invite', 'Inviter')} showBack>
-        <div className="mx-auto max-w-md">
+        <div className="screen-column">
           <EmptyState
             title={t('family.noFamily', 'Aucune famille active')}
             description={t('family.noFamilyHint', 'Rejoignez une famille pour inviter des membres.')}
@@ -102,9 +109,9 @@ export default function FamilyInviteScreen() {
       backPath="/family/members"
       right={<span className="px-4 text-lg" aria-hidden>{family.icon}</span>}
     >
-      <div className="mx-auto max-w-md space-y-5">
+      <div className="screen-column space-y-5">
         {/* Family header */}
-        <div className="gradient-hero glow-primary flex items-center gap-3 rounded-3xl p-5 text-white">
+        <div className="bg-primary flex items-center gap-3 rounded-3xl p-5 text-on-primary">
           <span className="text-3xl">{family.icon}</span>
           <span className="text-xl font-bold">{family.name}</span>
         </div>
@@ -120,16 +127,16 @@ export default function FamilyInviteScreen() {
                 {inviteCode}
               </span>
               <button
-                onClick={handleCopy}
+                onClick={() => fireAndForget(handleCopy(), 'family:copy')}
                 className="rounded-full bg-surface-tint p-2 active:bg-primary/10"
                 aria-label={copied ? t('common.saved', 'Copié') : t('common.copy', 'Copier')}
               >
-                {copied ? <Check size={18} className="text-success" /> : <Copy size={18} className="text-primary" />}
+                {copied ? <HugeiconsIcon icon={Check} size={18} className="text-success" /> : <HugeiconsIcon icon={Copy} size={18} className="text-primary" />}
               </button>
             </div>
           ) : (
-            <Button variant="default" onClick={handleGenerateCode} disabled={isLoading}>
-              {isLoading ? <Loader2 size={18} className="animate-spin" /> : t('family.generateCode', 'Generer un code')}
+            <Button variant="default" onClick={() => fireAndForget(handleGenerateCode(), 'family:generate-code')} disabled={isLoading}>
+              {isLoading ? <HugeiconsIcon icon={Loader2} size={18} className="animate-spin" /> : t('family.generateCode', 'Generer un code')}
             </Button>
           )}
           <span className="text-xs text-text-muted">
@@ -140,19 +147,19 @@ export default function FamilyInviteScreen() {
         <Button
           variant="default"
           className="w-full"
-          onClick={handleShare}
+          onClick={() => fireAndForget(handleShare(), 'family:share')}
           disabled={isLoading || !inviteCode || sharing}
         >
           {sharing ? (
-            <Loader2 size={18} className="animate-spin" />
+            <HugeiconsIcon icon={Loader2} size={18} className="animate-spin" />
           ) : (
-            <Share2 size={18} />
+            <HugeiconsIcon icon={Share2} size={18} />
           )}
           {t('family.shareCode', 'Partager le code')}
         </Button>
 
         <div className="flex items-start gap-3 rounded-2xl bg-surface-tint p-4">
-          <Info size={18} className="mt-0.5 text-info" />
+          <HugeiconsIcon icon={Info} size={18} className="mt-0.5 text-info" />
           <p className="flex-1 text-sm text-text-secondary">
             {t('family.inviteHint', 'Chaque membre utilise ce code pour rejoindre votre famille.')}
           </p>

@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <title>VersyFlow — fil de fer coquille bureau</title>
+    <style>
+      /* Fil de fer : pas de design, seulement des zones, des largeurs et du collage. */
+      * { box-sizing: border-box; }
+      body { margin: 0; font: 13px/1.5 ui-monospace, monospace; background: #ece4d4; color: #2b2a27; }
+      h1 { font-size: 15px; margin: 24px 20px 6px; }
+      p.note { margin: 0 20px 18px; max-width: 70ch; color: #6b6659; }
+      .frame { position: relative; margin: 0 20px 32px; height: 520px; background: #fffdf8; border: 1px solid #c9bfa8; }
+      .label { position: absolute; font-size: 10px; letter-spacing: .04em; text-transform: uppercase; color: #6b6659; }
+      .dim { position: absolute; font-size: 11px; background: #2b2a27; color: #fffdf8; padding: 1px 5px; border-radius: 3px; }
+
+      /* ---- rail ---- */
+      .rail { position: absolute; inset: 0 auto 0 0; width: 264px; border-right: 1px solid #c9bfa8; background: #f6f1e7; display: flex; flex-direction: column; }
+      .rail-brand { height: 56px; display: flex; align-items: center; gap: 8px; padding: 0 16px; border-bottom: 1px solid #e4dccb; }
+      .rail-cta { margin: 12px; height: 40px; border: 1px dashed #0f766e; display: grid; place-items: center; color: #0f766e; }
+      .rail-nav { padding: 4px 8px; }
+      .rail-item { height: 36px; display: flex; align-items: center; gap: 10px; padding: 0 8px; }
+      .rail-item .dot { width: 20px; height: 20px; border: 1px solid #6b6659; border-radius: 6px; flex: none; }
+      .rail-sep { height: 1px; background: #e4dccb; margin: 8px 12px; }
+      .rail-foot { margin-top: auto; padding: 8px; border-top: 1px solid #e4dccb; }
+
+      /* ---- contenu ---- */
+      .main { position: absolute; inset: 0 0 0 264px; display: flex; flex-direction: column; }
+      .head { height: 56px; border-bottom: 1px solid #e4dccb; display: flex; align-items: center; padding: 0 32px; background: #fffdf8; }
+      .body { flex: 1; overflow: hidden; padding: 24px 32px; }
+      .col { max-width: 720px; border: 1px dashed #c9bfa8; height: 100%; padding: 12px; }
+      .aside { position: absolute; top: 56px; bottom: 0; right: 0; width: 340px; border-left: 1px solid #c9bfa8; background: #f6f1e7; padding: 12px; display: none; }
+    </style>
+  </head>
+  <body>
+    <h1>Coquille bureau — 1440 × 900</h1>
+    <p class="note">
+      Zones, largeurs, ce qui est collant, ce qui défile. Une seule variable pilote la largeur du
+      rail (<code>--rail</code>) ; <code>.app-main { margin-left: var(--rail) }</code>. Le rail et la
+      barre d'onglets basse ne coexistent jamais dans le DOM.
+    </p>
+
+    <div class="frame">
+      <aside class="rail">
+        <div class="rail-brand"><b>▣ VersyFlow</b><span class="dim" style="margin-left:auto">264</span></div>
+        <div class="rail-cta">＋ Nouvelle session (accent, --color-primary)</div>
+        <nav class="rail-nav">
+          <div class="rail-item"><span class="dot"></span>Accueil</div>
+          <div class="rail-item"><span class="dot"></span>Bible</div>
+          <div class="rail-item"><span class="dot"></span>Stats</div>
+          <div class="rail-item"><span class="dot"></span>Réglages</div>
+          <div class="rail-sep"></div>
+          <div class="rail-item"><span class="dot"></span>Mémorisation</div>
+          <div class="rail-item"><span class="dot"></span>Révisions</div>
+          <div class="rail-item"><span class="dot"></span>Sémantique</div>
+          <div class="rail-item"><span class="dot"></span>Analytics</div>
+          <div class="rail-item"><span class="dot"></span>Collections</div>
+          <div class="rail-item"><span class="dot"></span>Recherche</div>
+        </nav>
+        <div class="rail-foot"><div class="rail-item"><span class="dot"></span>Profil</div></div>
+      </aside>
+
+      <div class="main">
+        <header class="head">
+          titre de page + fil d'Ariane — <b>sticky, 56 px, verre</b>
+          <span class="dim" style="margin-left:auto">1fr</span>
+        </header>
+        <div class="body">
+          <div class="col">
+            colonne de contenu<br />
+            lecture 720 px · listes 1060 px<br />
+            <span class="dim">padding 32 px</span><br /><br />
+            <small>≥ 1180 px seulement : un côté de 340 px peut s'ajouter, jamais avant.</small>
+          </div>
+        </div>
+      </div>
+      <div class="aside" style="display:none"></div>
+    </div>
+
+    <h1>Variantes</h1>
+    <p class="note">
+      <b>Tablette 768–1023 :</b> rail 88 px, icônes seules, libellés en <code>sr-only</code>.<br />
+      <b>Replié :</b> 88 px, même DOM, aucun second bouton de fermeture.<br />
+      <b>Téléphone &lt; 768 :</b> rail absent du DOM, barre d'onglets basse, <code>--rail: 0</code>.
+    </p>
+  </body>
+</html>

@@ -10,7 +10,13 @@
 import { useState, useMemo } from 'react';
 import { useSearchParams, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Download, Loader2, AlertCircle, X } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import {
+  Download01Icon as Download,
+  Loading03Icon as Loader2,
+  AlertCircleIcon as AlertCircle,
+  Cancel01Icon as X,
+} from '@hugeicons/core-free-icons';
 import FullScreenPage from '@/components/layout/FullScreenPage';
 import { useBibleBooks } from '@/hooks/useBibleBooks';
 import { useChapterSemanticTags } from '@/hooks/useSemanticTags';
@@ -79,6 +85,7 @@ export default function ChapterScreen() {
       title={`${book.displayName} ${chapter}`}
       subtitle={t('bible.chapter', 'Chapitre')}
       backPath={`/bible/book/${book.id}`}
+      column="narrow"
     >
       <div className="flex flex-col gap-3">
         {/* Download-on-demand banner */}
@@ -87,9 +94,9 @@ export default function ChapterScreen() {
             <div className="flex items-start gap-3">
               <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-surface-tint text-primary">
                 {status === 'downloading' ? (
-                  <Loader2 size={18} className="animate-spin" />
+                  <HugeiconsIcon icon={Loader2} size={18} className="animate-spin" />
                 ) : (
-                  <Download size={18} />
+                  <HugeiconsIcon icon={Download} size={18} />
                 )}
               </span>
               <div className="min-w-0 flex-1">
@@ -121,7 +128,7 @@ export default function ChapterScreen() {
                 )}
                 {status === 'error' && (
                   <p className="mt-1 flex items-center gap-1 text-xs text-error">
-                    <AlertCircle size={12} /> {error}
+                    <HugeiconsIcon icon={AlertCircle} size={12} /> {error}
                   </p>
                 )}
               </div>
@@ -130,13 +137,13 @@ export default function ChapterScreen() {
                   onClick={cancelDownload}
                   className="flex shrink-0 items-center gap-1.5 rounded-full bg-surface-tint px-4 py-2 text-sm font-semibold text-text-secondary"
                 >
-                  <X size={15} />
+                  <HugeiconsIcon icon={X} size={15} />
                   {t('common.cancel', 'Annuler')}
                 </button>
               ) : (
                 <button
                   onClick={handleDownload}
-                  className="shrink-0 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-white shadow-sm"
+                  className="shrink-0 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-on-primary shadow-sm"
                 >
                   {status === 'error'
                     ? t('common.retry', 'Réessayer')

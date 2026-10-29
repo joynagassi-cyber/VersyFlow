@@ -7,7 +7,12 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { Flame, TrendingUp, TrendingDown, Loader2 } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import {
+  FlameIcon as Flame,
+  TrendingUpIcon as TrendingUp,
+  TrendingDownIcon as TrendingDown,
+} from '@hugeicons/core-free-icons';
 import { useActiveProfile } from '@/hooks/useActiveProfile';
 import { getFsrsEngine } from '@/services/fsrs-factory';
 import { ProgressService } from '@/services/progress-service';
@@ -53,7 +58,7 @@ export default function ProgressScreen() {
   if (loading) {
     return (
       <div className="flex min-h-full items-center justify-center bg-background">
-        <Loader2 className="animate-spin text-primary" size={36} />
+        <div className="screen-column animate-pulse space-y-3 px-6" aria-hidden><div className="h-4 w-2/5 rounded-full bg-surface-tint" /><div className="h-24 rounded-3xl bg-surface-tint" /><div className="h-24 rounded-3xl bg-surface-tint" /></div>
       </div>
     );
   }
@@ -70,7 +75,7 @@ export default function ProgressScreen() {
         </p>
         <button
           onClick={() => navigate('/bible/explorer')}
-          className="mt-6 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-white shadow-rose"
+          className="mt-6 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-on-primary shadow"
         >
           {t('bible.explorer', 'Explorer la Bible')}
         </button>
@@ -88,7 +93,7 @@ export default function ProgressScreen() {
   const change = stats.weeklyTrend.changePercentage;
 
   return (
-    <div className="h-full overflow-y-auto bg-background p-4 pb-24">
+    <div className="screen-column h-full overflow-y-auto bg-background p-4 pb-24">
       <h1 className="mb-4 text-2xl font-bold text-text-primary">
         {t('progress.yourProgress', 'Votre Progression')}
       </h1>
@@ -115,19 +120,19 @@ export default function ProgressScreen() {
               change >= 0 ? 'text-success' : 'text-error',
             )}
           >
-            {change >= 0 ? <TrendingUp size={16} /> : <TrendingDown size={16} />}
+            {change >= 0 ? <HugeiconsIcon icon={TrendingUp} size={16} /> : <HugeiconsIcon icon={TrendingDown} size={16} />}
             {Math.abs(change)}%
           </span>
         </div>
         <div className="mt-3 flex items-center justify-between">
           <div className="text-center">
             <p className="text-xs text-text-muted">{t('progress.thisWeek', 'Cette semaine')}</p>
-            <p className="text-2xl font-bold text-text-primary">{stats.weeklyTrend.thisWeek}</p>
+            <p className="text-2xl font-bold text-text-primary tabular-nums">{stats.weeklyTrend.thisWeek}</p>
           </div>
           <div className="h-10 w-px bg-divider" />
           <div className="text-center">
             <p className="text-xs text-text-muted">{t('progress.lastWeek', 'Semaine dernière')}</p>
-            <p className="text-2xl font-bold text-text-primary">{stats.weeklyTrend.lastWeek}</p>
+            <p className="text-2xl font-bold text-text-primary tabular-nums">{stats.weeklyTrend.lastWeek}</p>
           </div>
         </div>
       </div>
@@ -139,12 +144,12 @@ export default function ProgressScreen() {
           className="mt-4 flex w-full items-center justify-between rounded-xl border border-border bg-surface p-4 shadow-sm"
         >
           <div className="flex items-center gap-3">
-            <Flame size={26} className="text-primary" />
+            <HugeiconsIcon icon={Flame} size={26} className="text-primary" />
             <div className="text-left">
-              <p className="text-base font-semibold text-text-primary">
+              <p className="text-base font-semibold text-text-primary tabular-nums">
                 {t('progress.streak', 'Série consécutive')}
               </p>
-              <p className="text-sm text-text-secondary">
+              <p className="text-sm text-text-secondary tabular-nums">
                 {t('home.streak', { count: stats.streakCount })}
               </p>
             </div>
@@ -164,7 +169,7 @@ export default function ProgressScreen() {
           <span className="text-text-muted">
             {t('progress.versesMemorized', 'Temps moyen par session')}
           </span>
-          <span className="font-semibold text-text-primary">
+          <span className="font-semibold text-text-primary tabular-nums">
             {stats.avgSessionDurationMin.toFixed(1)} min
           </span>
         </div>

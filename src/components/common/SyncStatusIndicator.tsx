@@ -10,7 +10,6 @@
 import { useTranslation } from 'react-i18next';
 import { useAppTheme } from '@/theme/useTheme';
 import { useSyncStatus } from '@/hooks/useSyncStatus';
-import type { SyncPhase } from '@/hooks/useSyncStatus';
 
 function formatElapsed(ms: number): string {
   if (ms < 60_000) return 'now';

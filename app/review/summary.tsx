@@ -7,7 +7,14 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Flame, Loader2, TrendingUp, CheckCircle, Clock, BookOpen } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import {
+  FlameIcon as Flame,
+  TrendingUpIcon as TrendingUp,
+  CheckmarkCircle01Icon as CheckCircle,
+  Clock01Icon as Clock,
+  BookOpen01Icon as BookOpen,
+} from '@hugeicons/core-free-icons';
 import FullScreenPage from '@/components/layout/FullScreenPage';
 import { Button } from '@/components/ui/button';
 import { useActiveProfile } from '@/hooks/useActiveProfile';
@@ -50,7 +57,7 @@ export default function ReviewSummaryScreen() {
     return (
       <FullScreenPage title={t('review.summary', 'Résumé de session')} backPath="/review/queue">
         <div className="flex flex-col items-center py-24">
-          <Loader2 size={32} className="animate-spin text-primary" />
+          <div className="screen-column animate-pulse space-y-3 px-6" aria-hidden><div className="h-4 w-2/5 rounded-full bg-surface-tint" /><div className="h-24 rounded-3xl bg-surface-tint" /><div className="h-24 rounded-3xl bg-surface-tint" /></div>
         </div>
       </FullScreenPage>
     );
@@ -62,18 +69,18 @@ export default function ReviewSummaryScreen() {
   const retention = total > 0 ? Math.round((mastered / total) * 100) : 0;
 
   const statCards = [
-    { value: total, label: t('progress.versesMemorized', 'Verset(s) mémorisé(s)'), icon: <BookOpen size={16} /> },
-    { value: mastered, label: t('progress.mastered', 'Maîtrisé(s)'), icon: <CheckCircle size={16} /> },
-    { value: inProgress, label: t('progress.inProgress', 'En cours'), icon: <Clock size={16} /> },
-    { value: retention + '%', label: t('progress.retention', 'Rétention'), icon: <TrendingUp size={16} /> },
+    { value: total, label: t('progress.versesMemorized', 'Verset(s) mémorisé(s)'), icon: <HugeiconsIcon icon={BookOpen} size={16} /> },
+    { value: mastered, label: t('progress.mastered', 'Maîtrisé(s)'), icon: <HugeiconsIcon icon={CheckCircle} size={16} /> },
+    { value: inProgress, label: t('progress.inProgress', 'En cours'), icon: <HugeiconsIcon icon={Clock} size={16} /> },
+    { value: retention + '%', label: t('progress.retention', 'Rétention'), icon: <HugeiconsIcon icon={TrendingUp} size={16} /> },
   ];
 
   return (
     <FullScreenPage title={t('review.summary', 'Résumé de session')} backPath="/review/queue">
       {/* Streak hero */}
-      <div className="mb-5 flex flex-col items-center rounded-2xl bg-primary p-6 text-white shadow-rose">
+      <div className="mb-5 flex flex-col items-center rounded-2xl bg-primary p-6 text-on-primary shadow">
         <span className="flex items-center gap-1.5 text-sm text-white/90">
-          <Flame size={16} />
+          <HugeiconsIcon icon={Flame} size={16} />
           {t('progress.streak', 'Série quotidienne')} 🔥
         </span>
         <span className="mt-2 text-5xl font-extrabold">{stats?.streakCount ?? 0}</span>

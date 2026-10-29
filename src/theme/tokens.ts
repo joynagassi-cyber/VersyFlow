@@ -4,15 +4,13 @@
  * Do NOT hardcode colors in components — always use these tokens
  */
 
-import { StyleSheet, Platform } from '@/components/ui/Primitives';
-
 // ─── Color Palette ───────────────────────────────────────────────────────────
 
 export const Colors = {
   // Primary — Sacred Rose
-  primary: '#d81b97',
-  primaryLight: '#ff9ee0',
-  primaryDark: '#a60d6e',
+  primary: '#e6067a',
+  primaryLight: '#ffb2bf',
+  primaryDark: '#90003b',
 
   // Backgrounds
   background: '#fcf9f8',
@@ -65,7 +63,7 @@ export const Colors = {
 
   // Status indicators
   statusNew: '#A0A0A0',
-  statusReview: '#d81b97',
+  statusReview: '#e6067a',
   statusLearned: '#008733',
 
   // Icon backgrounds
@@ -81,7 +79,7 @@ export const Colors = {
   // Aliases used across the codebase
   outline: '#B3B3B3',
   onSurface: '#FFFFFF',
-  primaryFixed: '#d81b97',
+  primaryFixed: '#e6067a',
 } as const;
 
 // Backward-compatible properties
@@ -133,7 +131,7 @@ const typographyFamilies = {
 export const ColorsDark = {
   // Primary — Sacred Rose (same, works on dark)
   primary: '#f472d6',
-  primaryLight: '#ff9ee0',
+  primaryLight: '#ffb2bf',
   primaryDark: '#c21585',
 
   // Backgrounds
@@ -329,7 +327,14 @@ export function getThemeColors(mode: ThemeMode) {
   return mode === 'dark' ? ColorsDark : Colors;
 }
 
-export function getThemeShadow(size: keyof typeof Shadows, mode: ThemeMode) {
+/**
+ * Elevation is intentionally mode-independent: the same offset/blur/opacity
+ * pair is readable on both the light and the dark surface (the dark theme
+ * compensates through its surface colours, not through a heavier shadow).
+ * `_mode` is kept in the signature so callers do not have to branch, and is
+ * named with a leading underscore to say so out loud.
+ */
+export function getThemeShadow(size: keyof typeof Shadows, _mode: ThemeMode) {
   return Shadows[size];
 }
 

@@ -1,6 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { RotateCcw, Scale } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import {
+  RotateCcwIcon as RotateCcw,
+  ScaleIcon as Scale,
+} from '@hugeicons/core-free-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { Button } from '@/components/ui/button';
 import { useLocalSearchParams } from '@/hooks/useIonicNavigation';
@@ -48,7 +52,6 @@ export default function RecallWritingScreen() {
         totalWords: words.length,
       });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleCompare = () => {
@@ -75,7 +78,7 @@ export default function RecallWritingScreen() {
       showBack
       backPath="/tabs/home"
     >
-      <div className="mx-auto max-w-md space-y-4">
+      <div className="screen-column space-y-4">
         {expectedVerse && (
           <div className="rounded-2xl bg-surface p-4 shadow-sm">
             <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-text-muted">
@@ -101,12 +104,12 @@ export default function RecallWritingScreen() {
             onClick={handleCompare}
             disabled={!text.trim() || !expectedVerse}
           >
-            <Scale size={18} />
+            <HugeiconsIcon icon={Scale} size={18} />
             {t('recallWriting.compare', 'Comparer')}
           </Button>
           {result && (
             <Button variant="secondary" className="flex-1" onClick={handleReset}>
-              <RotateCcw size={18} />
+              <HugeiconsIcon icon={RotateCcw} size={18} />
               {t('recallWriting.reset', 'Recommencer')}
             </Button>
           )}

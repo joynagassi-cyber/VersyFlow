@@ -26,10 +26,10 @@ export default function SplashScreen({ onFinish }: Props) {
           visible ? 'translate-y-0 scale-100 opacity-100' : 'translate-y-4 scale-95 opacity-0',
         )}
       >
-        <div className="glow-primary rounded-[28%] bg-surface p-1">
+        <div className=" rounded-[28%] bg-surface p-1">
           <AppIcon size={104} rounded />
         </div>
-        <h1 className="text-gradient-hero mt-5 text-3xl font-extrabold tracking-tight">VersyFlow</h1>
+        <h1 className="text-primary mt-5 text-3xl font-extrabold tracking-tight">VersyFlow</h1>
         <p className="mt-2 px-8 text-center text-sm text-text-tertiary">
           {t('onboarding.tagline', "Mémorisation biblique intuitive")}
         </p>

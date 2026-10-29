@@ -305,6 +305,7 @@ export class PowerSyncSyncService implements ISyncService {
   // ------------------------------------------------------------------
 
   private async ensureStream(): Promise<void> {
+    if (!this.isConfigured()) return; // mode local : pas de flux cloud
     const db = getPowerSyncDatabase();
     await db.init();
     if (!db.connected && !db.connecting) {

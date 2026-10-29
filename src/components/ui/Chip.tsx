@@ -19,7 +19,7 @@ export const Chip = React.memo(function Chip({
 }: ChipProps) {
   const cls = cn(
     'inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold transition',
-    active ? 'bg-primary text-white shadow-rose' : 'bg-surface-tint text-primary',
+    active ? 'bg-primary text-on-primary shadow' : 'bg-surface-tint text-primary',
     className,
   );
   if (onClick) {

@@ -104,6 +104,36 @@ module.exports = {
       },
     },
     {
+      /*
+       * SHIM DE COMPATIBILITÉ REACT NATIVE — exception GELÉE, pas un acquis.
+       *
+       * `src/components/ui/Primitives.tsx` reproduit l'API de React Native
+       * (`View`, `Text`, `Image`, `Modal`…) sur le DOM. Son contrat EST d'être
+       * permissif : il accepte toutes les props RN, y compris celles qui n'ont
+       * pas d'équivalent DOM. Typer strictement ses `[key: string]: any`
+       * produit 45 erreurs dans le shim et casse l'appel des 3 écrans qui
+       * l'utilisent — ce n'est pas une dette de typage ordinaire, c'est la
+       * frontière du shim.
+       *
+       * Décision du 29/10 : les règles de propagation du `any` sont coupées
+       * POUR CE FICHIER SEUL. Les 128 avertissements correspondants sont donc
+       * retirés de la sortie `eslint`, mais ils restent une dette mesurée :
+       * `node scripts/audit-plan.mjs` la compte (C17) et la publie.
+       *
+       * Sortie possible : typer les 13 projections `{...rest}` puis les props
+       * d'événement, en même temps que la migration des 3 écrans consommateurs.
+       */
+      files: ['src/components/ui/Primitives.tsx'],
+      rules: {
+        '@typescript-eslint/no-explicit-any': 'off',
+        '@typescript-eslint/no-unsafe-member-access': 'off',
+        '@typescript-eslint/no-unsafe-assignment': 'off',
+        '@typescript-eslint/no-unsafe-call': 'off',
+        '@typescript-eslint/no-unsafe-argument': 'off',
+        '@typescript-eslint/no-unsafe-return': 'off',
+      },
+    },
+    {
       files: ['*.test.ts', '*.test.tsx', '*.spec.ts'],
       rules: {
         '@typescript-eslint/no-explicit-any': 'off',

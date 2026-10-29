@@ -22,20 +22,37 @@ export class AuthError extends Error {
 }
 
 export class SupabaseAuthService {
-  private supabase: SupabaseClient;
+  private supabase: SupabaseClient | null;
+
+  /** False when no Supabase credentials are configured (local/offline mode). */
+  readonly isConfigured: boolean;
 
   constructor() {
     const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || import.meta.env.SUPABASE_URL;
     const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || import.meta.env.SUPABASE_ANON_KEY;
 
+    // Ne jamais planter au démarrage : sans identifiants Supabase, l'app
+    // fonctionne en mode local (identité locale, données on-device) et les
+    // méthodes réseau renvoient une AuthError propre au lieu de lever.
+    // (Avant : ce `throw` dans le constructeur, instancié au niveau module
+    // par les stores, donnait un écran blanc « Uncaught AuthError ».)
     if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
-      throw new AuthError('Supabase credentials not configured', 'CREDENTIALS_MISSING');
+      console.warn('[auth] Supabase non configuré — mode local uniquement.');
+      this.supabase = null;
+      this.isConfigured = false;
+      return;
     }
 
     this.supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    this.isConfigured = true;
+  }
+
+  private missingCredentials(): AuthError {
+    return new AuthError('Supabase credentials not configured', 'CREDENTIALS_MISSING');
   }
 
   async signUp(email: string, password: string): Promise<{ user: User | null; error: AuthError | null }> {
+    if (!this.supabase) return { user: null, error: this.missingCredentials() };
     const { data, error } = await this.supabase.auth.signUp({
       email,
       password,
@@ -49,6 +66,7 @@ export class SupabaseAuthService {
   }
 
   async signIn(email: string, password: string): Promise<{ user: User | null; error: AuthError | null }> {
+    if (!this.supabase) return { user: null, error: this.missingCredentials() };
     const { data, error } = await this.supabase.auth.signInWithPassword({
       email,
       password,
@@ -62,6 +80,7 @@ export class SupabaseAuthService {
   }
 
   async signOut(): Promise<{ error: AuthError | null }> {
+    if (!this.supabase) { this.clearLocalIdentity(); return { error: null }; }
     const { error } = await this.supabase.auth.signOut();
 
     if (error) {
@@ -72,11 +91,13 @@ export class SupabaseAuthService {
   }
 
   async getCurrentUser(): Promise<User | null> {
+    if (!this.supabase) return null;
     const { data: { user } } = await this.supabase.auth.getUser();
     return user;
   }
 
   async getSession(): Promise<{ session: any; error: AuthError | null }> {
+    if (!this.supabase) return { session: null, error: this.missingCredentials() };
     const { data, error } = await this.supabase.auth.getSession();
 
     if (error) {
@@ -88,6 +109,7 @@ export class SupabaseAuthService {
 
   /** Refresh the current access token (keeps long-lived sessions alive). */
   async refreshSession(): Promise<{ user: User | null; error: AuthError | null }> {
+    if (!this.supabase) return { user: null, error: this.missingCredentials() };
     const { data, error } = await this.supabase.auth.refreshSession();
     if (error) {
       return { user: null, error: new AuthError(error.message, error.code) };
@@ -139,6 +161,7 @@ export class SupabaseAuthService {
   }
 
   async getUserProfile(userId: string): Promise<UserProfile | null> {
+    if (!this.supabase) return null;
     const { data, error } = await this.supabase
       .from('users')
       .select('*')
@@ -150,6 +173,7 @@ export class SupabaseAuthService {
   }
 
   async updateUserProfile(userId: string, updates: Partial<UserProfile>): Promise<void> {
+    if (!this.supabase) return;
     await this.supabase
       .from('users')
       .update(updates)

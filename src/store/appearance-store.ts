@@ -17,6 +17,15 @@ export type ThemeMode = 'light' | 'dark' | 'system';
 export interface AppearanceState {
   themeMode: ThemeMode;
   accent: AccentKey;
+  /** Preset officiel tweakcn actif (src/styles/tweakcn-presets.css) — null
+   *  quand l'accent VersyFlow ou un thème image est utilisé. */
+  presetId: string | null;
+  /** Fond d'écran de l'app : dégradé webgradients ou image de thème. */
+  backgroundType: 'none' | 'gradient' | 'image';
+  /** Id du dégradé actif (src/styles/gradients.css) si backgroundType='gradient'. */
+  gradientId: string | null;
+  /** Police d'interface choisie (UI_FONTS) — 'system' par défaut. */
+  uiFontId: string;
   /** Image-based color theme id (from theme-catalog) — null when a plain
    *  accent preset is active. The portrait illustration is applied as the
    *  app background; the accent color is the theme's core hex. */
@@ -27,6 +36,10 @@ export interface AppearanceState {
   reminderEnabled: boolean;
   sessionGoal: number;
   focusMode: boolean;
+  /** Accessibilité : supprime le verre (surfaces opaques). */
+  reducedTransparency: boolean;
+  /** Accessibilité : contours renforcés et fond décoratif atténué. */
+  highContrast: boolean;
   reminderTime: string;
   /** Reading (Bible) typography settings — applied live via theme-fonts.ts. */
   bibleFontFamily: string;
@@ -37,6 +50,10 @@ export interface AppearanceState {
 
   setThemeMode: (mode: ThemeMode) => void;
   setAccent: (key: AccentKey) => void;
+  setPreset: (id: string | null) => void;
+  setGradient: (id: string | null) => void;
+  setUiFontId: (id: string) => void;
+  setBackgroundType: (type: 'none' | 'gradient' | 'image') => void;
   setColorTheme: (id: string | null) => void;
   setFontSize: (size: number) => void;
   toggleVerseNumbers: () => void;
@@ -44,6 +61,8 @@ export interface AppearanceState {
   toggleReminders: () => void;
   setSessionGoal: (count: number) => void;
   setFocusMode: (enabled: boolean) => void;
+  setReducedTransparency: (enabled: boolean) => void;
+  setHighContrast: (enabled: boolean) => void;
   setReminderTime: (time: string) => void;
   setBibleFontFamily: (id: string) => void;
   setBibleFontSize: (size: number) => void;
@@ -57,6 +76,10 @@ const DEFAULTS: Pick<
   AppearanceState,
   | 'themeMode'
   | 'accent'
+  | 'presetId'
+  | 'backgroundType'
+  | 'gradientId'
+  | 'uiFontId'
   | 'colorThemeId'
   | 'fontSize'
   | 'showVerseNumbers'
@@ -64,6 +87,8 @@ const DEFAULTS: Pick<
   | 'reminderEnabled'
   | 'sessionGoal'
   | 'focusMode'
+  | 'reducedTransparency'
+  | 'highContrast'
   | 'reminderTime'
   | 'bibleFontFamily'
   | 'bibleFontSize'
@@ -73,6 +98,10 @@ const DEFAULTS: Pick<
 > = {
   themeMode: 'system',
   accent: DEFAULT_ACCENT,
+  presetId: 'quantum-rose',
+  backgroundType: 'none',
+  gradientId: null,
+  uiFontId: 'system',
   colorThemeId: null,
   fontSize: 16,
   showVerseNumbers: true,
@@ -80,6 +109,8 @@ const DEFAULTS: Pick<
   reminderEnabled: true,
   sessionGoal: 3,
   focusMode: false,
+  reducedTransparency: false,
+  highContrast: false,
   reminderTime: '09:00',
   bibleFontFamily: 'source-serif-4',
   bibleFontSize: 19,
@@ -97,12 +128,44 @@ export const useAppearanceStore = create<AppearanceState>(() => ({
   },
 
   setAccent(key: AccentKey) {
-    useAppearanceStore.setState({ accent: key, colorThemeId: null });
+    useAppearanceStore.setState({ accent: key, colorThemeId: null, backgroundType: 'none', gradientId: null });
+    void appearanceStorePersist.save();
+  },
+
+  setPreset(id: string | null) {
+    useAppearanceStore.setState({ presetId: id, colorThemeId: null });
+    void appearanceStorePersist.save();
+  },
+
+  setGradient(id: string | null) {
+    useAppearanceStore.setState({
+      gradientId: id,
+      backgroundType: id ? 'gradient' : 'none',
+      colorThemeId: null,
+    });
+    void appearanceStorePersist.save();
+  },
+
+  setUiFontId(id: string) {
+    useAppearanceStore.setState({ uiFontId: id });
+    void appearanceStorePersist.save();
+  },
+
+  setBackgroundType(type: 'none' | 'gradient' | 'image') {
+    useAppearanceStore.setState({
+      backgroundType: type,
+      ...(type === 'none' ? { gradientId: null, colorThemeId: null } : {}),
+    });
     void appearanceStorePersist.save();
   },
 
   setColorTheme(id: string | null) {
-    useAppearanceStore.setState({ colorThemeId: id, accent: id ?? DEFAULT_ACCENT });
+    useAppearanceStore.setState({
+      colorThemeId: id,
+      backgroundType: id ? 'image' : 'none',
+      gradientId: null,
+      accent: id ?? DEFAULT_ACCENT,
+    });
     void appearanceStorePersist.save();
   },
 
@@ -137,6 +200,16 @@ export const useAppearanceStore = create<AppearanceState>(() => ({
 
   setFocusMode(enabled: boolean) {
     useAppearanceStore.setState({ focusMode: enabled });
+    void appearanceStorePersist.save();
+  },
+
+  setReducedTransparency(enabled: boolean) {
+    useAppearanceStore.setState({ reducedTransparency: enabled });
+    void appearanceStorePersist.save();
+  },
+
+  setHighContrast(enabled: boolean) {
+    useAppearanceStore.setState({ highContrast: enabled });
     void appearanceStorePersist.save();
   },
 
@@ -183,6 +256,10 @@ export const useAppearanceStore = create<AppearanceState>(() => ({
 const PERSISTED_KEYS: (keyof AppearanceState)[] = [
   'themeMode',
   'accent',
+  'presetId',
+  'backgroundType',
+  'gradientId',
+  'uiFontId',
   'colorThemeId',
   'fontSize',
   'showVerseNumbers',
@@ -221,6 +298,10 @@ export const appearanceStorePersist = {
     const value = JSON.stringify({
       themeMode: s.themeMode,
       accent: s.accent,
+      presetId: s.presetId,
+      backgroundType: s.backgroundType,
+      gradientId: s.gradientId,
+      uiFontId: s.uiFontId,
       colorThemeId: s.colorThemeId,
       fontSize: s.fontSize,
       showVerseNumbers: s.showVerseNumbers,
@@ -228,6 +309,8 @@ export const appearanceStorePersist = {
       reminderEnabled: s.reminderEnabled,
       sessionGoal: s.sessionGoal,
       focusMode: s.focusMode,
+      reducedTransparency: s.reducedTransparency,
+      highContrast: s.highContrast,
       reminderTime: s.reminderTime,
       bibleFontFamily: s.bibleFontFamily,
       bibleFontSize: s.bibleFontSize,

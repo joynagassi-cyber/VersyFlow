@@ -1,18 +1,18 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { HugeiconsIcon } from '@hugeicons/react';
 import {
-  BookOpen,
-  CheckCircle2,
-  Flame,
-  RefreshCw,
-  TrendingUp,
-  TrendingDown,
-  Loader2,
-  LineChart,
-} from 'lucide-react';
+  BookOpen01Icon as BookOpen,
+  RefreshIcon as RefreshCw,
+  TrendingUpIcon as TrendingUp,
+  TrendingDownIcon as TrendingDown,
+  Loading03Icon as Loader2,
+  ChartLineData01Icon as LineChart,
+} from '@hugeicons/core-free-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { useTranslation } from 'react-i18next';
 import { useAnalyticsCapability } from '@/capabilities/analytics/store';
+import { fireAndForget } from '@/lib/fire-and-forget';
 
 interface DataPoint {
   date: string;
@@ -39,15 +39,14 @@ export default function AnalyticsDashboardScreen() {
   };
 
   useEffect(() => {
-    loadData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    void loadData();
   }, []);
 
   if (loading) {
     return (
       <FullScreenPage title={t('analytics.title', 'Progression')} showBack>
         <div className="flex min-h-[50vh] flex-col items-center justify-center gap-3">
-          <Loader2 size={28} className="animate-spin text-primary" />
+          <HugeiconsIcon icon={Loader2} size={28} className="animate-spin text-primary" />
           <p className="text-sm text-text-muted">
             {t('analytics.loading', 'Chargement des statistiques...')}
           </p>
@@ -65,22 +64,22 @@ export default function AnalyticsDashboardScreen() {
       showBack
       right={
         <button
-          onClick={loadData}
+          onClick={() => fireAndForget(loadData(), 'analytics:reload')}
           className="flex h-9 w-9 items-center justify-center rounded-full bg-surface-tint"
         >
-          <RefreshCw size={16} className="text-primary" />
+          <HugeiconsIcon icon={RefreshCw} size={16} className="text-primary" />
         </button>
       }
     >
-      <div className="mx-auto max-w-md space-y-6">
+      <div className="screen-column space-y-6">
         {/* Stats */}
         <div className="grid grid-cols-2 gap-3">
           <div className="col-span-2 flex items-center gap-4 rounded-3xl bg-surface p-4 shadow-sm">
-            <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary text-white">
-              <BookOpen size={22} />
+            <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary text-on-primary">
+              <HugeiconsIcon icon={BookOpen} size={22} />
             </span>
             <div>
-              <p className="text-3xl font-extrabold text-text-primary">
+              <p className="text-3xl font-extrabold text-text-primary tabular-nums">
                 {stats?.totalVerses || 0}
               </p>
               <p className="text-xs text-text-muted">
@@ -89,7 +88,7 @@ export default function AnalyticsDashboardScreen() {
             </div>
           </div>
           <div className="rounded-2xl bg-surface p-4 text-center shadow-sm">
-            <p className="text-2xl font-extrabold text-success">
+            <p className="text-2xl font-extrabold text-success tabular-nums">
               {stats?.masteredVerses || 0}
             </p>
             <p className="text-xs text-text-muted">
@@ -97,7 +96,7 @@ export default function AnalyticsDashboardScreen() {
             </p>
           </div>
           <div className="rounded-2xl bg-surface p-4 text-center shadow-sm">
-            <p className="text-2xl font-extrabold text-error">
+            <p className="text-2xl font-extrabold text-error tabular-nums">
               {stats?.streakCount || 0}
             </p>
             <p className="text-xs text-text-muted">{t('analytics.streak', 'Streak')}</p>
@@ -130,7 +129,7 @@ export default function AnalyticsDashboardScreen() {
             </div>
           ) : (
             <div className="flex flex-col items-center gap-2 py-8 text-center">
-              <LineChart size={32} className="text-text-muted" />
+              <HugeiconsIcon icon={LineChart} size={32} className="text-text-muted" />
               <p className="text-sm font-semibold text-text-primary">
                 {t('analytics.noData', 'Aucune donnee de retention')}
               </p>
@@ -149,7 +148,7 @@ export default function AnalyticsDashboardScreen() {
             </p>
             <div className="grid grid-cols-2 gap-3 text-center">
               <div className="rounded-2xl bg-surface-tint p-4">
-                <p className="text-2xl font-extrabold text-text-primary">
+                <p className="text-2xl font-extrabold text-text-primary tabular-nums">
                   {stats.weeklyTrend.thisWeek}
                 </p>
                 <p className="text-xs text-text-muted">
@@ -157,7 +156,7 @@ export default function AnalyticsDashboardScreen() {
                 </p>
               </div>
               <div className="rounded-2xl bg-surface-tint p-4">
-                <p className="text-2xl font-extrabold text-text-primary">
+                <p className="text-2xl font-extrabold text-text-primary tabular-nums">
                   {stats.weeklyTrend.lastWeek}
                 </p>
                 <p className="text-xs text-text-muted">
@@ -174,9 +173,9 @@ export default function AnalyticsDashboardScreen() {
               }
             >
               {stats.weeklyTrend.changePercentage >= 0 ? (
-                <TrendingUp size={16} />
+                <HugeiconsIcon icon={TrendingUp} size={16} />
               ) : (
-                <TrendingDown size={16} />
+                <HugeiconsIcon icon={TrendingDown} size={16} />
               )}
               <span className="font-bold">
                 {(stats.weeklyTrend.changePercentage >= 0 ? '+' : '') +
@@ -227,7 +226,7 @@ export default function AnalyticsDashboardScreen() {
           <p className="text-3xl font-extrabold text-text-primary">
             {getLearningTime()} min
           </p>
-          <p className="text-xs text-text-muted">
+          <p className="text-xs text-text-muted tabular-nums">
             {t('analytics.totalTime', 'Temps total d\'apprentissage')}
           </p>
         </div>

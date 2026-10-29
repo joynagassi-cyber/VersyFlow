@@ -9,14 +9,19 @@
  *
  * This is the DEFAULT mode of the unified Memorization Workspace.
  *
- * Premium design: 3D card surface (.mw-card), pulsing ring on the current
- * block (.mw-block.current), green check on done blocks (.mw-check), and a
- * success CTA (.mw-cta-success) on completion.
+ * Premium design: 3D card surface (.mem-card), pulsing ring on the current
+ * block (.mem-block.current), green check on done blocks (.mem-check), and a
+ * success CTA (.mem-cta-success) on completion.
  */
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ArrowRight, Check, Play } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import {
+  ArrowRight01Icon as ArrowRight,
+  CheckIcon as Check,
+  PlayIcon as Play,
+} from '@hugeicons/core-free-icons';
 import { cn } from '@/lib/utils';
 
 export interface ModeRevealProps {
@@ -162,10 +167,10 @@ export function ModeReveal({
 
   return (
     <div className="space-y-3">
-      <div className="mw-card">
+      <div className="mem-card">
         {/* The reference "case" (Livre : Chap : Verset) — always visible, top-left */}
         <div className="mb-4 flex items-center justify-between">
-          <span className="mw-case">
+          <span className="mem-case">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20M4 19.5A2.5 2.5 0 0 0 6.5 22H20V2H6.5A2.5 2.5 0 0 0 4 4.5v15z"/></svg>
             {referenceLabel}
           </span>
@@ -207,7 +212,7 @@ export function ModeReveal({
                 onClick={isCurrent ? advance : undefined}
                 disabled={!isCurrent && !isRevealed}
                 className={cn(
-                  'mw-block text-left',
+                  'mem-block text-left',
                   isRevealed && 'done',
                   isCurrent && 'current',
                   isLocked && 'locked',
@@ -216,14 +221,14 @@ export function ModeReveal({
                 {isRevealed ? (
                   <>
                     <span>{block}</span>
-                    <span className="mw-check"><Check size={10} /></span>
+                    <span className="mem-check"><HugeiconsIcon icon={Check} size={10} /></span>
                   </>
                 ) : (
                   <>
                     <span className="select-none">{maskDots(block.length)}</span>
                     {isCurrent && (
-                      <span className="mw-hint">
-                        <ArrowRight size={11} />
+                      <span className="mem-hint">
+                        <HugeiconsIcon icon={ArrowRight} size={11} />
                         {t('workspace.tapToReveal', 'Touchez pour révéler')}
                         {autoRevealLeft !== null && autoRevealLeft > 0 && (
                           <span className="ml-2 tabular-nums text-text-tertiary">
@@ -245,14 +250,14 @@ export function ModeReveal({
             type="button"
             onClick={goBack}
             disabled={revealed === 0}
-            className="mw-pill-ghost"
+            className="mem-pill-ghost"
           >
-            <ArrowRight className="rotate-180" size={14} />
+            <HugeiconsIcon icon={ArrowRight} className="rotate-180" size={14} />
             {t('workspace.prev', 'Précédent')}
           </button>
           {!allRevealed && (
-            <button type="button" onClick={advance} className="mw-pill" style={{ width: 'auto', padding: '12px 20px' }}>
-              <Play size={14} />
+            <button type="button" onClick={advance} className="mem-pill" style={{ width: 'auto', padding: '12px 20px' }}>
+              <HugeiconsIcon icon={Play} size={14} />
               {t('workspace.revealNext', 'Révéler le bloc')}
             </button>
           )}
@@ -261,9 +266,9 @@ export function ModeReveal({
 
       {/* Completion banner + "next mode" recommendation */}
       {allRevealed && (
-        <div className="mw-card relative overflow-hidden" style={{ background: 'color-mix(in srgb, var(--color-success) 8%, var(--color-surface))' }}>
+        <div className="mem-card relative overflow-hidden" style={{ background: 'color-mix(in srgb, var(--color-success) 8%, var(--color-surface))' }}>
           {/* Soft confetti burst (non-interactive) */}
-          <div className="mw-confetti">
+          <div className="mem-confetti">
             {[0, 1, 2, 3, 4].map((i) => (
               <span
                 key={i}
@@ -276,9 +281,9 @@ export function ModeReveal({
             ))}
           </div>
           <div className="flex items-center gap-3">
-            <span className="mw-success-celebration">
+            <span className="mem-success-celebration">
               <span className="ring" />
-              <span className="ic"><Check size={22} /></span>
+              <span className="ic"><HugeiconsIcon icon={Check} size={22} /></span>
             </span>
             <div className="min-w-0 flex-1">
               <p className="text-sm font-extrabold text-success">
@@ -295,9 +300,9 @@ export function ModeReveal({
           <button
             type="button"
             onClick={onNextMode}
-            className="mw-cta-success mt-4"
+            className="mem-cta-success mt-4"
           >
-            <ArrowRight size={16} />
+            <HugeiconsIcon icon={ArrowRight} size={16} />
             {t('workspace.passNextMode', 'Passer au mode suivant')}
           </button>
         </div>

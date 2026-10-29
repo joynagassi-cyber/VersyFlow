@@ -8,26 +8,27 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { HugeiconsIcon } from '@hugeicons/react';
 import {
-  Users,
-  Flame,
-  Star,
-  Clock,
-  ChevronRight,
-  CircleUserRound,
-  Compass,
-  Gem,
-  ScrollText,
-  CalendarClock,
-  TrendingUp,
-  HeartHandshake,
-  Library,
-  Feather,
-} from 'lucide-react';
+  UsersIcon as Users,
+  FlameIcon as Flame,
+  StarIcon as Star,
+  Clock01Icon as Clock,
+  ChevronRightIcon as ChevronRight,
+  UserCircleIcon as CircleUserRound,
+  CompassIcon as Compass,
+  GemIcon as Gem,
+  ScrollTextIcon as ScrollText,
+  CalendarClockIcon as CalendarClock,
+  TrendingUpIcon as TrendingUp,
+  HeartHandshakeIcon as HeartHandshake,
+  LibraryIcon as Library,
+  FeatherIcon as Feather,
+} from '@hugeicons/core-free-icons';
 import { cn } from '@/lib/utils';
+import { motion } from 'motion/react';
 import { useActiveProfile } from '@/hooks/useActiveProfile';
 import { useFamilyStore } from '@/store/family-store';
-import { getFsrsEngine } from '@/services/fsrs-factory';
 import { StreakService } from '@/services/streak-service';
 import { getMemorizationService } from '@/services/memorization-service-factory';
 import type { MemorizationRecord } from '@/domains/memorization/entities';
@@ -131,17 +132,16 @@ export default function HomeScreen() {
   ];
 
   return (
-    <div className="h-full overflow-y-auto bg-background p-4 pb-24">
+    <div className="screen-column h-full overflow-y-auto px-5 pb-28">
       {/* Header */}
       <div className="flex items-start justify-between">
         <div className="flex-1">
-          <h1 className="text-2xl font-bold text-text-primary">
-            {t('home.greeting', 'Bonjour')} 👋
-          </h1>
-          <p className="mt-1 text-sm capitalize text-text-muted">{dateLabel}</p>
+          <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-primary">{t('home.today', "Aujourd'hui")}</p>
+          <h1 className="mt-2 text-[32px] font-extrabold leading-none tracking-tight text-text-primary">{t('home.greeting', 'Bonjour')}</h1>
+          <p className="mt-2 text-sm capitalize text-text-muted">{dateLabel}</p>
           {activeFamily && (
             <span className="mt-2 inline-flex items-center gap-1 rounded-full bg-icon-bg-rose px-2.5 py-1 text-xs font-semibold text-primary">
-              <Users size={12} />
+              <HugeiconsIcon icon={Users} size={12} />
               {activeFamily.name}
             </span>
           )}
@@ -151,59 +151,64 @@ export default function HomeScreen() {
           className="rounded-full bg-surface-tint p-2.5"
           aria-label={t('settings.settings', 'Paramètres')}
         >
-          <CircleUserRound size={28} className="text-primary" />
+          <HugeiconsIcon icon={CircleUserRound} size={28} className="text-primary" />
         </button>
       </div>
 
       {/* Hero card — streak + due reviews, premium gradient */}
-      <div className="gradient-hero glow-primary relative mt-5 overflow-hidden rounded-3xl p-5 text-white">
+      <motion.div
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.45, ease: 'easeOut' }}
+        className="relative mt-5 overflow-hidden rounded-[28px] bg-primary p-6 text-primary-foreground shadow-[0_8px_24px_-4px_var(--ring)]"
+      >
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-widest text-white/80">
+            <p className="text-xs font-semibold uppercase tracking-widest text-white/80 tabular-nums">
               {t('home.streakLabel', 'Série de jours')}
             </p>
             <p className="mt-1 flex items-end gap-2">
-              <span className="text-5xl font-black leading-none">
+              <span className="text-5xl font-black leading-none tabular-nums">
                 {streak ?? '–'}
               </span>
-              <Flame size={26} className="mb-1 text-white/90" />
+              <HugeiconsIcon icon={Flame} size={26} className="mb-1 text-white/90" />
             </p>
-            <p className="mt-1 text-xs text-white/80">
+            <p className="mt-1 text-xs text-white/80 tabular-nums">
               {t('home.streak', { count: streak ?? 1 })}
             </p>
           </div>
           <button
             onClick={() => navigate('/tabs/progress')}
-            className="flex h-11 w-11 items-center justify-center rounded-full bg-white/20 backdrop-blur active:scale-95"
+            className="flex h-11 w-11 items-center justify-center rounded-full bg-surface/20 backdrop-blur active:scale-95"
             aria-label={t('home.goodJob', 'Voir détails')}
           >
-            <TrendingUp size={20} />
+            <HugeiconsIcon icon={TrendingUp} size={20} />
           </button>
         </div>
 
         {reviewsDue !== null && reviewsDue > 0 && (
           <button
             onClick={() => navigate('/review/queue')}
-            className="mt-5 flex w-full items-center gap-3 rounded-2xl bg-white/15 p-3.5 text-left backdrop-blur transition active:scale-[0.99]"
+            className="mt-5 flex w-full items-center gap-3 rounded-2xl bg-surface/15 p-3.5 text-left backdrop-blur transition active:scale-[0.99]"
           >
-            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white/25">
-              <Clock size={18} />
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-surface/25">
+              <HugeiconsIcon icon={Clock} size={18} />
             </span>
             <span className="flex-1">
-              <span className="block text-sm font-bold">
+              <span className="block text-sm font-bold tabular-nums">
                 {t('home.reviewDue', { count: reviewsDue })}
               </span>
               <span className="block text-[11px] text-white/80">
                 {t('home.noReviews', 'Ne perdez pas votre progression — révisez maintenant')}
               </span>
             </span>
-            <ChevronRight size={18} />
+            <HugeiconsIcon icon={ChevronRight} size={18} />
           </button>
         )}
-      </div>
+      </motion.div>
 
       {/* Quick actions grid */}
-      <h2 className="mb-3 mt-8 text-lg font-bold text-text-primary">
+      <h2 className="mb-3 mt-8 text-xl font-bold tracking-tight text-text-primary">
         {t('home.quickActions', 'Actions rapides')}
       </h2>
       <div className="grid grid-cols-2 gap-3">
@@ -211,10 +216,10 @@ export default function HomeScreen() {
           <button
             key={label}
             onClick={action}
-            className="flex flex-col items-center rounded-2xl bg-surface p-4 shadow-sm transition-transform active:scale-[0.98]"
+            className="flex flex-col items-center rounded-3xl border border-border/60 bg-card p-4 shadow-[0_4px_20px_-2px_rgba(0,0,0,0.04)] transition-transform active:scale-[0.98]"
           >
             <span className={cn('mb-2 flex h-12 w-12 items-center justify-center rounded-full', bg)}>
-              <Icon size={24} className={color} />
+              <HugeiconsIcon icon={Icon} size={24} className={color} />
             </span>
             <span className="text-sm font-bold text-text-primary">{label}</span>
             <span className="mt-0.5 text-center text-[11px] text-text-muted">{desc}</span>
@@ -223,18 +228,18 @@ export default function HomeScreen() {
       </div>
 
       {/* Verse of the day */}
-      <h2 className="mb-3 mt-8 text-lg font-bold text-text-primary">
+      <h2 className="mb-3 mt-8 text-xl font-bold tracking-tight text-text-primary">
         {t('home.dailyVerse', 'Verset du jour')}
       </h2>
-      <div className="rounded-2xl bg-surface p-4 shadow-md">
+      <div className="card-glass p-6">
         <div className="mb-3 flex items-center justify-between">
           <span className="inline-flex items-center gap-1.5 rounded-full bg-surface-tint px-3 py-1.5 text-xs font-semibold text-primary">
-            <Star size={13} />
+            <HugeiconsIcon icon={Star} size={13} />
             {t('home.dailyVerse', "Aujourd'hui")}
           </span>
           <button
             onClick={() => navigate('/memorization/session')}
-            className="rounded-full bg-primary px-4 py-1.5 text-xs font-semibold text-white"
+            className="rounded-full bg-primary px-4 py-1.5 text-xs font-semibold text-on-primary"
           >
             {t('bible.memorize', 'Mémoriser')}
           </button>
@@ -246,7 +251,7 @@ export default function HomeScreen() {
       </div>
 
       {/* Recently memorized */}
-      <h2 className="mb-3 mt-8 text-lg font-bold text-text-primary">
+      <h2 className="mb-3 mt-8 text-xl font-bold tracking-tight text-text-primary">
         {t('progress.recentVerses', 'Récemment mémorisés')}
       </h2>
       <div className="flex gap-4 overflow-x-auto pb-2">
@@ -265,7 +270,7 @@ export default function HomeScreen() {
                     : '/bible/chapter',
                 )
               }
-              className="w-40 shrink-0 rounded-xl bg-surface p-4 text-left shadow-sm"
+              className="w-40 shrink-0 rounded-3xl border border-border/60 bg-card p-4 text-left shadow-[0_4px_20px_-2px_rgba(0,0,0,0.04)]"
             >
               <span
                 className={cn(
@@ -290,7 +295,7 @@ export default function HomeScreen() {
       <div className="mt-8 rounded-2xl border border-success/20 bg-success/5 p-4">
         <div className="flex items-start gap-3">
           <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-success text-white shadow-sm">
-            <Star size={16} />
+            <HugeiconsIcon icon={Star} size={16} />
           </span>
           <div className="min-w-0 flex-1">
             <p className="text-xs font-bold uppercase tracking-wider text-success">

@@ -1,17 +1,18 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { HugeiconsIcon } from '@hugeicons/react';
 import {
-  Leaf,
-  BookOpen,
-  Brain,
-  GraduationCap,
-  Trophy,
-  Lock,
-  Flame,
-  BarChart3,
-  CheckCircle2,
-  Clock,
-} from 'lucide-react';
+  Leaf01Icon as Leaf,
+  BookOpen01Icon as BookOpen,
+  BrainIcon as Brain,
+  GraduationCapIcon as GraduationCap,
+  TrophyIcon as Trophy,
+  LockIcon as Lock,
+  FlameIcon as Flame,
+  BarChartIcon as BarChart3,
+  CheckmarkCircle02Icon as CheckCircle2,
+  Clock01Icon as Clock,
+} from '@hugeicons/core-free-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { useActiveProfile } from '@/hooks/useActiveProfile';
 import { getMemorizationService } from '@/services/memorization-service-factory';
@@ -137,11 +138,11 @@ export default function MasteryScreen() {
 
   return (
     <FullScreenPage title={t('nav.mastery', 'Maitrise')} showBack>
-      <div className="mx-auto max-w-md space-y-6">
+      <div className="screen-column space-y-6">
         {/* Level hero */}
-        <div className="gradient-hero glow-primary rounded-3xl p-6 text-center text-white">
-          <span className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-white/20">
-            <CurrentIcon size={40} />
+        <div className="bg-primary rounded-3xl p-6 text-center text-on-primary">
+          <span className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-surface/20">
+            <HugeiconsIcon icon={CurrentIcon} size={40} />
           </span>
           <p className="text-2xl font-extrabold">{currentLevel.name}</p>
           <p className="mt-1 text-sm opacity-90">{currentLevel.description}</p>
@@ -162,7 +163,7 @@ export default function MasteryScreen() {
                 style={{ width: progressToNext + '%' }}
               />
             </div>
-            <p className="mt-2 text-xs text-text-muted">
+            <p className="mt-2 text-xs text-text-muted tabular-nums">
               {t('mastery.stabilityRequired', 'Stabilite moyenne requise')}: {nextLevel.requiredStability}j - {stats.averageStability.toFixed(1)}j
             </p>
           </div>
@@ -186,7 +187,7 @@ export default function MasteryScreen() {
                   className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full"
                   style={{ color: c.color, backgroundColor: 'transparent' }}
                 >
-                  <c.icon size={22} />
+                  <HugeiconsIcon icon={c.icon} size={22} />
                 </span>
                 <div className={i === 0 ? '' : 'mt-1'}>
                   <p className="text-2xl font-extrabold text-text-primary">{c.value}</p>
@@ -225,7 +226,7 @@ export default function MasteryScreen() {
                       backgroundColor: levelTint(level.color),
                     }}
                   >
-                    <Icon size={22} />
+                    <HugeiconsIcon icon={Icon} size={22} />
                   </span>
                   <div className="min-w-0 flex-1">
                     <p
@@ -242,13 +243,13 @@ export default function MasteryScreen() {
                           style={{ width: pct + '%', backgroundColor: level.color }}
                         />
                       </div>
-                      <span className="text-xs text-text-muted">
+                      <span className="text-xs text-text-muted tabular-nums">
                         {levelCounts[level.id] ?? 0}/{stats.totalMemorized}
                       </span>
                     </div>
                   </div>
                   {isUnlocked && (
-                    <CheckCircle2 size={20} style={{ color: level.color }} />
+                    <HugeiconsIcon icon={CheckCircle2} size={20} style={{ color: level.color }} />
                   )}
                 </div>
               );
@@ -268,7 +269,7 @@ export default function MasteryScreen() {
               t('mastery.tip3', 'Utilisez diferentes strategies de memorisation'),
             ].map((tip, i) => (
               <p key={i} className="flex items-center gap-2 text-sm text-text-secondary">
-                <CheckCircle2 size={16} className="text-success" />
+                <HugeiconsIcon icon={CheckCircle2} size={16} className="text-success" />
                 {tip}
               </p>
             ))}

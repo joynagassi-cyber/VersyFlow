@@ -1,7 +1,10 @@
 import * as React from 'react';
 import * as ToastPrimitives from '@radix-ui/react-toast';
 import { cva, type VariantProps } from 'class-variance-authority';
-import { X } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import {
+  Cancel01Icon as X,
+} from '@hugeicons/core-free-icons';
 import { cn } from '@/lib/utils';
 
 const ToastProvider = ToastPrimitives.Provider;
@@ -56,7 +59,7 @@ const ToastAction = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <ToastPrimitives.Action
     ref={ref}
-    className={cn('inline-flex h-8 items-center justify-center rounded-md bg-primary px-4 text-sm font-medium text-white', className)}
+    className={cn('inline-flex h-8 items-center justify-center rounded-md bg-primary px-4 text-sm font-medium text-on-primary', className)}
     {...props}
   />
 ));
@@ -72,7 +75,7 @@ const ToastClose = React.forwardRef<
     toast-close=""
     {...props}
   >
-    <X size={14} />
+    <HugeiconsIcon icon={X} size={14} />
   </ToastPrimitives.Close>
 ));
 ToastClose.displayName = 'ToastClose';

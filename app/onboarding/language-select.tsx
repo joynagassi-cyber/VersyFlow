@@ -6,11 +6,16 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { Check, ArrowLeft, ArrowRight, Languages } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import {
+  CheckIcon as Check,
+  ArrowLeft01Icon as ArrowLeft,
+  ArrowRight01Icon as ArrowRight,
+  LanguagesIcon as Languages,
+} from '@hugeicons/core-free-icons';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { SUPPORTED_LANGUAGES, isRTL } from '@/services/i18n-service';
-import { I18nService } from '@/services/i18n-service';
 import { useSettingsStore } from '@/store/settings-store';
 
 export default function LanguagePickerScreen() {
@@ -28,14 +33,14 @@ export default function LanguagePickerScreen() {
   };
 
   return (
-    <div className="flex min-h-full flex-col p-6">
+    <div className="screen-column-narrow flex min-h-full flex-col p-6">
       <header className="mb-6 flex items-center gap-3">
         <button
           onClick={() => navigate('/onboarding/welcome')}
           className="flex h-10 w-10 items-center justify-center rounded-full bg-surface shadow-sm"
           aria-label={t('common.back')}
         >
-          <ArrowLeft size={20} className="text-text-secondary" />
+          <HugeiconsIcon icon={ArrowLeft} size={20} className="text-text-secondary" />
         </button>
         <div>
           <h1 className="text-2xl font-bold text-text-primary">
@@ -60,7 +65,7 @@ export default function LanguagePickerScreen() {
             >
               <div>
                 <div className="flex items-center gap-2">
-                  <Languages size={18} className="text-primary" />
+                  <HugeiconsIcon icon={Languages} size={18} className="text-primary" />
                   <span className="text-lg font-semibold text-text-primary">
                     {lang.name}
                   </span>
@@ -77,7 +82,7 @@ export default function LanguagePickerScreen() {
                   </p>
                 )}
               </div>
-              {isSelected && <Check size={22} className="text-primary" />}
+              {isSelected && <HugeiconsIcon icon={Check} size={22} className="text-primary" />}
             </button>
           );
         })}
@@ -85,12 +90,12 @@ export default function LanguagePickerScreen() {
 
       <div className="mt-6 flex gap-4">
         <Button variant="outline" className="flex-1" onClick={() => navigate('/onboarding/welcome')}>
-          <ArrowLeft size={16} />
+          <HugeiconsIcon icon={ArrowLeft} size={16} />
           {t('common.back')}
         </Button>
         <Button className="flex-1" onClick={() => navigate('/onboarding/translation-select')}>
           {t('common.continue')}
-          <ArrowRight size={16} />
+          <HugeiconsIcon icon={ArrowRight} size={16} />
         </Button>
       </div>
     </div>

@@ -1,13 +1,20 @@
 import { useState, useRef } from 'react';
 import type { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Download, Upload, Cloud, Loader2 } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import {
+  Download01Icon as Download,
+  Upload01Icon as Upload,
+  CloudIcon as Cloud,
+  Loading03Icon as Loader2,
+} from '@hugeicons/core-free-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { Button } from '@/components/ui/button';
 import { useAuthStore } from '@/store/auth-store';
 import { useActiveProfile } from '@/hooks/useActiveProfile';
 import { getMemorizationService } from '@/services/memorization-service-factory';
 import type { MemorizationRecord } from '@/domains/memorization/entities';
+import { fireAndForget } from '@/lib/fire-and-forget';
 
 export default function BackupScreen() {
   const { t } = useTranslation();
@@ -83,7 +90,7 @@ export default function BackupScreen() {
     >
       <span
         className={
-          'absolute top-0.5 h-6 w-6 rounded-full bg-white transition-all ' +
+          'absolute top-0.5 h-6 w-6 rounded-full bg-surface transition-all ' +
           (on ? 'left-[calc(100%-1.625rem)]' : 'left-0.5')
         }
       />
@@ -96,7 +103,7 @@ export default function BackupScreen() {
       showBack
       backPath="/settings"
     >
-      <div className="mx-auto max-w-md space-y-4">
+      <div className="screen-column space-y-4">
         <div className="space-y-3 rounded-2xl bg-surface p-4 shadow-sm">
           <p className="text-base font-bold text-text-primary">
             {t('settings.backup.title', 'Sauvegarde')}
@@ -107,8 +114,8 @@ export default function BackupScreen() {
             </span>
             <Toggle on={autoBackup} onChange={() => setAutoBackup((v) => !v)} />
           </div>
-          <Button variant="default" className="w-full" onClick={handleExport} disabled={busy}>
-            {busy ? <Loader2 size={18} className="animate-spin" /> : <Download size={18} />}
+          <Button variant="default" className="w-full" onClick={() => fireAndForget(handleExport(), 'settings:export')} disabled={busy}>
+            {busy ? <HugeiconsIcon icon={Loader2} size={18} className="animate-spin" /> : <HugeiconsIcon icon={Download} size={18} />}
             {t('settings.backup.export', 'Exporter mes donnees')}
           </Button>
           <Button
@@ -116,7 +123,7 @@ export default function BackupScreen() {
             className="w-full"
             onClick={() => fileRef.current?.click()}
           >
-            <Upload size={18} />
+            <HugeiconsIcon icon={Upload} size={18} />
             {t('settings.backup.import', 'Importer des donnees')}
           </Button>
           <input
@@ -144,7 +151,7 @@ export default function BackupScreen() {
           </p>
           <div className="flex items-center justify-between">
             <span className="flex items-center gap-2 text-base text-text-primary">
-              <Cloud size={18} className="text-primary" />
+              <HugeiconsIcon icon={Cloud} size={18} className="text-primary" />
               {t('settings.backup.sync', 'Sync automatique')}
             </span>
             <Toggle on={syncEnabled} onChange={() => setSyncEnabled((v) => !v)} disabled={!isAuthenticated} />

@@ -13,6 +13,8 @@ import {
 import { I18nextProvider } from 'react-i18next';
 import { Suspense, lazy, useEffect } from 'react';
 import '@/styles/globals.css';
+import '@/styles/tweakcn-presets.css';
+import '@/styles/gradients.css';
 
 // Serif font bundle for bible text (referenced by `--vf-font-bible` and
 // `tokens.typography.bible = 'Source Serif 4'`). Self-hosted — no network
@@ -405,27 +407,125 @@ const root = createRoot(rootElement);
  * the same async block, so deferring the render there guarantees both
  * the store and the translations are ready before the first paint.
  */
-bootStoresPromise.then(
-  () => {
-    root.render(
-      <I18nextProvider i18n={i18next}>
-        <Suspense fallback={null}>
-          <App />
-        </Suspense>
-      </I18nextProvider>,
-    );
-  },
-  (error: unknown) => {
-    console.error('Failed to initialise i18n/stores at boot:', error);
-    // Still render the app — a i18n failure must not leave the user
-    // on a blank screen; components fall back to their English
-    // literals when i18next is not ready.
-    root.render(
-      <I18nextProvider i18n={i18next}>
-        <Suspense fallback={null}>
-          <App />
-        </Suspense>
-      </I18nextProvider>,
-    );
-  },
-);
+function BootSplash() {
+  return (
+    <div
+      style={{
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: '#fbf9f9',
+        color: 'var(--color-primary, #e6067a)',
+        fontFamily: 'Georgia, serif',
+        fontSize: 22,
+        fontWeight: 700,
+      }}
+    >
+      VersyFlow…
+    </div>
+  );
+}
+
+/**
+ * Précharge TOUTES les pages paresseuses après le premier rendu (au repos,
+ * dans l'ordre) : chaque chunk est déjà en cache quand l'utilisateur
+ * navigue, donc aucun écran d'attente n'apparaît lors des transitions.
+ */
+function preloadAllPages() {
+  const load = () => {
+    void import('../app/(tabs)/_layout');
+    void import('../app/(tabs)/auth');
+    void import('../app/(tabs)/auth/login');
+    void import('../app/(tabs)/auth/signup');
+    void import('../app/(tabs)/explore');
+    void import('../app/(tabs)/index');
+    void import('../app/(tabs)/progress');
+    void import('../app/(tabs)/settings');
+    void import('../app/+not-found');
+    void import('../app/achievements/index');
+    void import('../app/analytics/dashboard');
+    void import('../app/bible/book');
+    void import('../app/bible/chapter');
+    void import('../app/bible/explorer');
+    void import('../app/collections/index');
+    void import('../app/comparison/result');
+    void import('../app/comparison/translation');
+    void import('../app/family/home');
+    void import('../app/family/invite');
+    void import('../app/family/join');
+    void import('../app/family/members');
+    void import('../app/mastery/index');
+    void import('../app/memorization/confirm');
+    void import('../app/memorization/flashcard');
+    void import('../app/memorization/session');
+    void import('../app/memorization/workspace');
+    void import('../app/memory/flashcard');
+    void import('../app/memory/recall-writing');
+    void import('../app/memory/start');
+    void import('../app/notifications');
+    void import('../app/onboarding/_layout');
+    void import('../app/onboarding/fsrs-introduction');
+    void import('../app/onboarding/language-select');
+    void import('../app/onboarding/reminder-config');
+    void import('../app/onboarding/session-config');
+    void import('../app/onboarding/translation-select');
+    void import('../app/onboarding/welcome');
+    void import('../app/profile/create');
+    void import('../app/profile/index');
+    void import('../app/profile/select');
+    void import('../app/review/History');
+    void import('../app/review/calendar');
+    void import('../app/review/queue');
+    void import('../app/review/session');
+    void import('../app/review/summary');
+    void import('../app/search/index');
+    void import('../app/semantic/community');
+    void import('../app/semantic/concept');
+    void import('../app/semantic/index');
+    void import('../app/semantic/verse');
+    void import('../app/settings/about');
+    void import('../app/settings/appearance');
+    void import('../app/settings/available-translations');
+    void import('../app/settings/backup');
+    void import('../app/settings/data');
+    void import('../app/settings/index');
+    void import('../app/settings/languages');
+    void import('../app/settings/navigation');
+    void import('../app/settings/privacy');
+    void import('../app/settings/reminders');
+    void import('../app/settings/session');
+    void import('../app/settings/theme-picker');
+    void import('../app/splash');
+  };
+  if (typeof requestIdleCallback === 'function') requestIdleCallback(load);
+  else setTimeout(load, 600);
+}
+
+let rendered = false;
+function renderApp() {
+  if (rendered) return;
+  rendered = true;
+  root.render(
+    <I18nextProvider i18n={i18next}>
+      <Suspense fallback={null}>
+        <App />
+      </Suspense>
+    </I18nextProvider>,
+  );
+  preloadAllPages();
+}
+
+// Ne jamais rester sur un écran blanc : si l'initialisation (i18n, stores,
+// sync…) traîne ou échoue, on rend quand même l'app après 2 s. Les
+// composants ont des littéraux de secours quand i18next n'est pas prêt.
+const bootTimeout = new Promise<void>((resolve) => {
+  setTimeout(() => {
+    console.warn('[boot] Initialisation lente — rendu de secours après 2 s.');
+    resolve();
+  }, 2000);
+});
+Promise.race([bootStoresPromise, bootTimeout]).then(renderApp, (error: unknown) => {
+  console.error('Failed to initialise i18n/stores at boot:', error);
+  renderApp();
+});

@@ -1,6 +1,9 @@
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { X } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import {
+  Cancel01Icon as X,
+} from '@hugeicons/core-free-icons';
 import { Logo } from '@/components/brand/Logo';
 import { useAuthStore } from '@/store/auth-store';
 import { useUiStore, ALL_MENU_ITEMS } from '@/store/ui-store';
@@ -50,7 +53,7 @@ export function HamburgerMenu() {
           <div className="flex items-center gap-3">
             <Logo size={38} />
             <div className="leading-tight">
-              <span className="text-gradient-hero text-base font-extrabold">VersyFlow</span>
+              <span className="text-primary text-base font-extrabold">VersyFlow</span>
               <div className="text-xs text-text-muted">{user?.display_name || 'Mode local'}</div>
             </div>
           </div>
@@ -59,7 +62,7 @@ export function HamburgerMenu() {
             className="rounded-full p-1.5 active:bg-surface-tint"
             aria-label="Fermer"
           >
-            <X size={20} className="text-text-muted" />
+            <HugeiconsIcon icon={X} size={20} className="text-text-muted" />
           </button>
         </div>
 
@@ -96,7 +99,7 @@ export function HamburgerMenu() {
               <button
                 onClick={() => {
                   closeMenu();
-                  signOut();
+                  void signOut();
                   navigate('/auth');
                 }}
                 className={cn(itemClass, 'text-error')}

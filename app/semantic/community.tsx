@@ -11,12 +11,13 @@
 
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { HugeiconsIcon } from '@hugeicons/react';
 import {
-  Map,
-  BrainCircuit,
-  BookMarked,
-  ChevronRight,
-} from 'lucide-react';
+  MapIcon as Map,
+  BrainCircuitIcon as BrainCircuit,
+  BookMarkedIcon as BookMarked,
+  ChevronRightIcon as ChevronRight,
+} from '@hugeicons/core-free-icons';
 import FullScreenPage from '@/components/layout/FullScreenPage';
 import { useCommunityView } from '@/hooks/useSemanticViews';
 
@@ -68,11 +69,11 @@ export default function CommunityView() {
 
   return (
     <FullScreenPage title={community.name} subtitle={community.description}>
-      <div className="min-h-full overflow-y-auto bg-background p-4 pb-24">
+      <div className="screen-column min-h-full overflow-y-auto bg-background p-4 pb-24">
         {/* Header */}
         <div className="mb-4 flex items-center gap-3">
           <span className="flex h-11 w-11 items-center justify-center rounded-full bg-icon-bg-rose">
-            <Map size={20} className="text-primary" />
+            <HugeiconsIcon icon={Map} size={20} className="text-primary" />
           </span>
           <div>
             <h1 className="text-xl font-bold text-text-primary">{community.name}</h1>
@@ -92,7 +93,7 @@ export default function CommunityView() {
         {/* Member concepts */}
         <section className="mb-5">
           <h2 className="mb-2 flex items-center gap-1.5 text-sm font-semibold text-text-tertiary">
-            <BrainCircuit size={14} className="text-primary" />
+            <HugeiconsIcon icon={BrainCircuit} size={14} className="text-primary" />
             {t('semantic.concept', 'Concept')}s — {concepts.length}
           </h2>
           {concepts.length === 0 ? (
@@ -111,7 +112,7 @@ export default function CommunityView() {
                     </p>
                     <p className="text-xs text-text-muted">{concept.canonical_name}</p>
                   </div>
-                  <ChevronRight size={16} className="text-primary" />
+                  <HugeiconsIcon icon={ChevronRight} size={16} className="text-primary" />
                 </button>
               ))}
             </div>
@@ -121,7 +122,7 @@ export default function CommunityView() {
         {/* Sample versets */}
         <section>
           <h2 className="mb-2 flex items-center gap-1.5 text-sm font-semibold text-text-tertiary">
-            <BookMarked size={14} className="text-primary" />
+            <HugeiconsIcon icon={BookMarked} size={14} className="text-primary" />
             {t('semantic.verses', 'Verset{count}', { count: sampleVerseKeys.length })}
           </h2>
           {sampleVerseKeys.length === 0 ? (
@@ -135,7 +136,7 @@ export default function CommunityView() {
                   className="flex items-center justify-between rounded-xl bg-surface p-3 text-left shadow-sm transition-transform active:scale-[0.99]"
                 >
                   <p className="text-sm font-semibold text-text-primary">{formatVerseKey(key)}</p>
-                  <ChevronRight size={16} className="text-primary" />
+                  <HugeiconsIcon icon={ChevronRight} size={16} className="text-primary" />
                 </button>
               ))}
             </div>

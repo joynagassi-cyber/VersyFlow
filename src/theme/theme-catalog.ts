@@ -210,8 +210,12 @@ export function isImageTheme(accent: string | null | undefined): boolean {
 
 /** Image URLs for the catalog. */
 export function themePortraitUrl(id: string): string {
-  return `/themes/${id.split('-').slice(0, 2).join('-')}/${id}-portrait.png`;
+  // Le dossier est la CATÉGORIE du thème (esprit, evenements…), comme
+  // l'écrit scripts/generate-themes.mjs — pas les segments de l'id.
+  const category = findThemeById(id)?.category ?? id.split('-')[0];
+  return `/themes/${category}/${id}-portrait.png`;
 }
 export function themeLandscapeUrl(id: string): string {
-  return `/themes/${id.split('-').slice(0, 2).join('-')}/${id}-landscape.png`;
+  const category = findThemeById(id)?.category ?? id.split('-')[0];
+  return `/themes/${category}/${id}-landscape.png`;
 }

@@ -142,3 +142,11 @@ graphify-out/graph.json
 apitest.obj
 __pycache__/
 *.pyc
+# Repo cleanup (2026-10-29): lourdes datasets bibliques + images de thèmes
+# gardés en local, hors Git (régénérables / téléchargeables via Supabase Storage).
+# Seuls lsg.json (défaut, importé par le code) et dataset-catalog.json restent suivis.
+data/bible/*
+!data/bible/lsg.json
+!data/bible/dataset-catalog.json
+# public/themes/ : VERSIONNÉ (200 visuels, 140 Mo) — décision du 29/10 : les
+# thèmes image font partie de la livraison, ils ne sont plus ignorés.

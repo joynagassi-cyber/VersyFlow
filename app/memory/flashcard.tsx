@@ -1,7 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Eye, RotateCcw, ArrowLeft } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import {
+  EyeIcon as Eye,
+  RotateCcwIcon as RotateCcw,
+  ArrowLeft01Icon as ArrowLeft,
+} from '@hugeicons/core-free-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { useLocalSearchParams } from '@/hooks/useIonicNavigation';
 import { useMemoryCapability } from '@/capabilities/memory/store';
@@ -28,12 +33,11 @@ export default function FlashcardScreen() {
         totalWords: words.length,
       });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
     <FullScreenPage title={t('memory.flashcard', 'Flashcard')} showBack backPath="/tabs/home">
-      <div className="mx-auto max-w-md space-y-5">
+      <div className="screen-column space-y-5">
         <div className="rounded-3xl bg-surface p-6 shadow-sm">
           <p className="text-sm font-semibold text-primary">{text}</p>
           <div className="mt-4 flex flex-wrap gap-2">
@@ -63,16 +67,16 @@ export default function FlashcardScreen() {
         <div className="flex gap-3">
           <button
             onClick={() => setRevealed((r) => Math.min(words.length, r + 1))}
-            className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-primary py-3 font-bold text-white active:scale-[0.99]"
+            className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-primary py-3 font-bold text-on-primary active:scale-[0.99]"
           >
-            <Eye size={18} />
+            <HugeiconsIcon icon={Eye} size={18} />
             {t('memory.reveal', 'Reveler')}
           </button>
           <button
             onClick={() => setRevealed(0)}
             className="flex items-center justify-center gap-2 rounded-2xl border border-border px-4 text-text-secondary"
           >
-            <RotateCcw size={18} />
+            <HugeiconsIcon icon={RotateCcw} size={18} />
           </button>
         </div>
 
@@ -80,7 +84,7 @@ export default function FlashcardScreen() {
           onClick={() => navigate(-1)}
           className="flex w-full items-center justify-center gap-2 py-3 text-sm text-text-muted"
         >
-          <ArrowLeft size={16} />
+          <HugeiconsIcon icon={ArrowLeft} size={16} />
           {t('common.back', 'Retour')}
         </button>
       </div>

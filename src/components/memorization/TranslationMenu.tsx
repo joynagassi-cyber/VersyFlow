@@ -9,7 +9,12 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Check, ChevronDown, Loader2 } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import {
+  CheckIcon as Check,
+  ChevronDownIcon as ChevronDown,
+  Loading03Icon as Loader2,
+} from '@hugeicons/core-free-icons';
 import { cn } from '@/lib/utils';
 import { useSettingsStore } from '@/store/settings-store';
 import { BIBLE_DATASET_CATALOG } from '@/services/bible-text-service';
@@ -38,7 +43,7 @@ export function TranslationMenu({
 
   const display = bibleTranslationDisplayName(translationId);
 
-  const handlePick = async (id: string) => {
+  const handlePick = (id: string) => {
     if (id === translationId) {
       setOpen(false);
       return;
@@ -63,7 +68,7 @@ export function TranslationMenu({
         className="flex items-center gap-1 rounded-full bg-surface-tint px-2.5 py-1 text-xs font-bold text-primary transition active:scale-95"
       >
         {display}
-        <ChevronDown size={11} />
+        <HugeiconsIcon icon={ChevronDown} size={11} />
       </button>
 
       {open && (
@@ -89,9 +94,9 @@ export function TranslationMenu({
                   {bibleTranslationDisplayName(entry.id)}
                 </span>
                 {isBusy ? (
-                  <Loader2 size={13} className="animate-spin text-text-muted" />
+                  <HugeiconsIcon icon={Loader2} size={13} className="animate-spin text-text-muted" />
                 ) : isCurrent ? (
-                  <Check size={13} />
+                  <HugeiconsIcon icon={Check} size={13} />
                 ) : null}
               </button>
             );

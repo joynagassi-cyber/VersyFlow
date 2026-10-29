@@ -13,13 +13,14 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { HugeiconsIcon } from '@hugeicons/react';
 import {
-  BrainCircuit,
-  Map,
-  BookMarked,
-  ChevronRight,
-  FileText,
-} from 'lucide-react';
+  BrainCircuitIcon as BrainCircuit,
+  MapIcon as Map,
+  BookMarkedIcon as BookMarked,
+  ChevronRightIcon as ChevronRight,
+  FileTextIcon as FileText,
+} from '@hugeicons/core-free-icons';
 import FullScreenPage from '@/components/layout/FullScreenPage';
 import { useVerseView } from '@/hooks/useSemanticViews';
 import { formatVerseKey } from '@/hooks/useSemanticTags';
@@ -86,12 +87,12 @@ export default function VerseView() {
   const community = cues?.community ?? null;
 
   return (
-    <FullScreenPage title={verseRef ? formatVerseKey(verseRef) : undefined}>
-      <div className="min-h-full overflow-y-auto bg-background p-4 pb-24">
+    <FullScreenPage title={verseRef ? formatVerseKey(verseRef) : undefined} column="narrow">
+      <div className="screen-column min-h-full overflow-y-auto bg-background p-4 pb-24">
         {/* Verse text */}
         <div className="mb-5 rounded-xl bg-surface p-4 shadow-sm">
           <div className="mb-2 flex items-center gap-2">
-            <FileText size={16} className="text-primary" />
+            <HugeiconsIcon icon={FileText} size={16} className="text-primary" />
             <span className="text-sm font-semibold text-text-primary">
               {verseRef ? formatVerseKey(verseRef) : ''}
             </span>
@@ -106,7 +107,7 @@ export default function VerseView() {
         {/* Concepts */}
         <section className="mb-5">
           <h2 className="mb-2 flex items-center gap-1.5 text-sm font-semibold text-text-tertiary">
-            <BrainCircuit size={14} className="text-primary" />
+            <HugeiconsIcon icon={BrainCircuit} size={14} className="text-primary" />
             {t('semantic.concept', 'Concept')}s — {t('semantic.related', 'Concepts liés')}
           </h2>
           {concepts.length === 0 ? (
@@ -127,7 +128,7 @@ export default function VerseView() {
                       {role === 'PRIMARY' ? t('semantic.primary', 'Principal') : role}
                     </p>
                   </div>
-                  <ChevronRight size={16} className="text-primary" />
+                  <HugeiconsIcon icon={ChevronRight} size={16} className="text-primary" />
                 </button>
               ))}
             </div>
@@ -137,7 +138,7 @@ export default function VerseView() {
         {/* Cross-refs / related verses */}
         <section className="mb-5">
           <h2 className="mb-2 flex items-center gap-1.5 text-sm font-semibold text-text-tertiary">
-            <BookMarked size={14} className="text-primary" />
+            <HugeiconsIcon icon={BookMarked} size={14} className="text-primary" />
             {t('semantic.crossRefs', 'Références croisées')}
           </h2>
           {relatedVerses.length === 0 ? (
@@ -156,7 +157,7 @@ export default function VerseView() {
                     </p>
                     <p className="text-xs text-text-muted">{r.relation.type}</p>
                   </div>
-                  <ChevronRight size={16} className="text-primary" />
+                  <HugeiconsIcon icon={ChevronRight} size={16} className="text-primary" />
                 </button>
               ))}
             </div>
@@ -166,7 +167,7 @@ export default function VerseView() {
         {/* Community */}
         <section>
           <h2 className="mb-2 flex items-center gap-1.5 text-sm font-semibold text-text-tertiary">
-            <Map size={14} className="text-primary" />
+            <HugeiconsIcon icon={Map} size={14} className="text-primary" />
             {t('semantic.community', 'Communauté')}
           </h2>
           {community ? (
@@ -180,7 +181,7 @@ export default function VerseView() {
                   <p className="text-xs text-text-muted">{community.description}</p>
                 ) : null}
               </div>
-              <ChevronRight size={16} className="text-primary" />
+              <HugeiconsIcon icon={ChevronRight} size={16} className="text-primary" />
             </button>
           ) : (
             <p className="text-sm text-text-muted">{t('semantic.noCommunity', 'Aucune communauté')}</p>

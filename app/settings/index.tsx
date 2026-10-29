@@ -1,26 +1,25 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import type { IconSvgElement } from '@hugeicons/react';
+import { HugeiconsIcon } from '@hugeicons/react';
 import {
-  User,
-  Cloud,
-  Palette,
-  Languages,
-  Calendar,
-  Bell,
-  Shield,
-  BookOpen,
-  LogOut,
-  ChevronRight,
-  Sparkles,
-  LayoutGrid,
-  Layers,
-  Star,
-  BookText,
-  SlidersHorizontal,
-  ListChecks,
-  type LucideIcon,
-} from 'lucide-react';
+  CloudIcon as Cloud,
+  PaletteIcon as Palette,
+  LanguagesIcon as Languages,
+  Calendar01Icon as Calendar,
+  BellIcon as Bell,
+  Shield01Icon as Shield,
+  LogOutIcon as LogOut,
+  ChevronRightIcon as ChevronRight,
+  SparklesIcon as Sparkles,
+  LayoutGridIcon as LayoutGrid,
+  Layers01Icon as Layers,
+  StarIcon as Star,
+  BookTextIcon as BookText,
+  SlidersHorizontalIcon as SlidersHorizontal,
+  ListChecksIcon as ListChecks,
+} from '@hugeicons/core-free-icons';
 import { cn } from '@/lib/utils';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { Button } from '@/components/ui/button';
@@ -28,8 +27,9 @@ import { ProfileAvatar } from '@/components/profile/ProfileAvatar';
 import { useAuthStore } from '@/store/auth-store';
 import { useSettingsStore, type BibleVersionType } from '@/store/settings-store';
 import { getTranslationDisplayInfo } from '@/services/bible-translation-names';
+import { fireAndForget } from '@/lib/fire-and-forget';
 
-type Row = { label: string; icon: LucideIcon; to: string };
+type Row = { label: string; icon: IconSvgElement; to: string };
 
 /** The three version types, with their i18n keys (shared with onboarding). */
 const VERSION_TYPES: { id: BibleVersionType; i18nKey: string; label: string }[] = [
@@ -47,7 +47,7 @@ export default function SettingsScreen() {
   const [showConfirm, setShowConfirm] = useState(false);
 
   const handleSignOut = () => {
-    signOut();
+    fireAndForget(signOut(), 'settings:signOut');
     navigate('/auth');
   };
 
@@ -60,7 +60,7 @@ export default function SettingsScreen() {
   // Settings reorganized into clearly divided vertical sections. Each group
   // is a distinct user concern: Bible, App, Appearance, Learning, Sync,
   // New features, and Bottom-nav page toggles.
-  const groups: { title: string; icon: LucideIcon; items: Row[] }[] = [
+  const groups: { title: string; icon: IconSvgElement; items: Row[] }[] = [
     {
       title: t('settings.bibleSection', 'Bible'),
       icon: BookText,
@@ -141,7 +141,7 @@ export default function SettingsScreen() {
 
   return (
     <FullScreenPage title={t('nav.settings', 'Parametres')} showBack>
-      <div className="mx-auto max-w-md space-y-5">
+      <div className="screen-column space-y-5">
         {/* Profile card — premium avatar (photo → vector illustration fallback) */}
         <button
           onClick={() => navigate('/profile')}
@@ -149,20 +149,20 @@ export default function SettingsScreen() {
         >
           <ProfileAvatar name={displayName} size={48} />
           <span className="min-w-0 flex-1">
-            <span className="text-gradient-hero block truncate text-base font-extrabold">
+            <span className="text-primary block truncate text-base font-extrabold">
               {displayName}
             </span>
             <span className="block truncate text-sm text-text-muted">
               {isAuthenticated ? t('settings.connected', 'Connecte') : t('settings.localMode', 'Mode local')}
             </span>
           </span>
-          <ChevronRight size={18} className="text-text-muted" />
+          <HugeiconsIcon icon={ChevronRight} size={18} className="text-text-muted" />
         </button>
 
         {/* Active translation pill (abbreviation + full name, subtitle). */}
         <div className="flex items-center gap-3 rounded-2xl bg-surface p-4 shadow-sm">
           <span className="flex h-10 w-10 items-center justify-center rounded-full bg-surface-tint text-primary">
-            <BookText size={18} />
+            <HugeiconsIcon icon={BookText} size={18} />
           </span>
           <div className="min-w-0 flex-1">
             <p className="truncate text-sm font-bold text-text-primary">
@@ -194,7 +194,7 @@ export default function SettingsScreen() {
                     className={cn(
                       'rounded-full px-2 py-0.5 text-[11px] font-semibold transition',
                       bibleVersionType === v.id
-                        ? 'bg-primary text-white'
+                        ? 'bg-primary text-on-primary'
                         : 'bg-surface-tint text-text-secondary',
                     )}
                   >
@@ -204,7 +204,7 @@ export default function SettingsScreen() {
               </div>
             </div>
           </div>
-          <ChevronRight
+          <HugeiconsIcon icon={ChevronRight}
             size={18}
             className="cursor-pointer text-text-muted"
             onClick={() => navigate('/settings/available-translations')}
@@ -215,7 +215,7 @@ export default function SettingsScreen() {
         {groups.map((group, gi) => (
           <div key={gi}>
             <p className="mb-2 flex items-center gap-2 px-1 text-xs font-bold uppercase tracking-wide text-text-muted">
-              <group.icon size={13} className="text-primary" />
+              <HugeiconsIcon icon={group.icon} size={13} className="text-primary" />
               {group.title}
             </p>
             <div className="overflow-hidden rounded-2xl bg-surface shadow-sm">
@@ -231,10 +231,10 @@ export default function SettingsScreen() {
                   }
                 >
                   <span className="flex items-center gap-3">
-                    <item.icon size={18} className="text-text-muted" />
+                    <HugeiconsIcon icon={item.icon} size={18} className="text-text-muted" />
                     <span className="text-base text-text-primary">{item.label}</span>
                   </span>
-                  <ChevronRight size={16} className="text-text-muted" />
+                  <HugeiconsIcon icon={ChevronRight} size={16} className="text-text-muted" />
                 </button>
               ))}
             </div>
@@ -247,7 +247,7 @@ export default function SettingsScreen() {
             onClick={() => setShowConfirm(true)}
             className="flex w-full items-center justify-center gap-2 rounded-2xl bg-surface py-3.5 font-semibold text-error shadow-sm"
           >
-            <LogOut size={18} />
+            <HugeiconsIcon icon={LogOut} size={18} />
             {t('settings.signOut', 'Se deconnecter')}
           </button>
         )}

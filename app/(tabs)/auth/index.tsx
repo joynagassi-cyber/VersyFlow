@@ -1,7 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { LogIn, ArrowRight } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import {
+  LogInIcon as LogIn,
+  ArrowRight01Icon as ArrowRight,
+} from '@hugeicons/core-free-icons';
 import { Logo } from '@/components/brand/Logo';
 import { Button } from '@/components/ui/button';
 import { useAuthStore } from '@/store/auth-store';
@@ -15,7 +19,6 @@ export default function AuthGate({ onSkip }: Props) {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [mounted, setMounted] = useState(false);
-  const [loading, setLoading] = useState(false);
 
   // On mount: pick up a prior local identification (email + name, no network
   // check) so returning users land straight in the app.
@@ -39,7 +42,7 @@ export default function AuthGate({ onSkip }: Props) {
   // If a session already exists (cloud or local), the gate is satisfied.
   if (useAuthStore.getState().isAuthenticated) {
     return (
-      <div className="flex min-h-[60vh] flex-col items-center justify-center gap-5 px-6">
+      <div className="screen-column-narrow flex min-h-[60vh] flex-col items-center justify-center gap-5 px-6">
         <Logo size={72} />
         <h1 className="text-2xl font-extrabold text-text-primary">
           {t('auth.ready', 'Vous êtes identifié(e)')}
@@ -52,7 +55,7 @@ export default function AuthGate({ onSkip }: Props) {
           onClick={() => navigate('/tabs/home', { replace: true })}
         >
           {t('auth.continue', 'Continuer')}
-          <ArrowRight size={18} />
+          <HugeiconsIcon icon={ArrowRight} size={18} />
         </Button>
       </div>
     );
@@ -66,7 +69,7 @@ export default function AuthGate({ onSkip }: Props) {
   };
 
   return (
-    <div className="flex min-h-[60vh] flex-col items-center justify-center gap-5 px-6">
+    <div className="screen-column-narrow flex min-h-[60vh] flex-col items-center justify-center gap-5 px-6">
       <Logo size={72} />
       <div className="text-center">
         <h1 className="text-2xl font-extrabold text-text-primary">
@@ -79,8 +82,8 @@ export default function AuthGate({ onSkip }: Props) {
       </div>
 
       <div className="flex w-full max-w-xs flex-col gap-3">
-        <Button variant="default" onClick={handleIdentify} disabled={loading}>
-          <LogIn size={18} />
+        <Button variant="default" onClick={handleIdentify}>
+          <HugeiconsIcon icon={LogIn} size={18} />
           {t('auth.identify', 'Identifiez-vous')}
         </Button>
         {onSkip && (
@@ -89,7 +92,7 @@ export default function AuthGate({ onSkip }: Props) {
             className="flex items-center justify-center gap-1 py-2 text-sm font-medium text-text-muted underline"
           >
             {t('auth.skip', 'Continuer sans compte')}
-            <ArrowRight size={14} />
+            <HugeiconsIcon icon={ArrowRight} size={14} />
           </button>
         )}
       </div>

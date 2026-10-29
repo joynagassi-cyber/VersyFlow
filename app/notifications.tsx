@@ -1,14 +1,15 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { TFunction } from 'i18next';
+import { HugeiconsIcon } from '@hugeicons/react';
 import {
-  Bell,
-  Trophy,
-  Settings2,
-  Users,
-  BellOff,
-  Check,
-} from 'lucide-react';
+  BellIcon as Bell,
+  TrophyIcon as Trophy,
+  Settings02Icon as Settings2,
+  UsersIcon as Users,
+  BellOffIcon as BellOff,
+  CheckIcon as Check,
+} from '@hugeicons/core-free-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { useActiveProfile } from '@/hooks/useActiveProfile';
@@ -209,14 +210,14 @@ export default function NotificationsScreen() {
           onClick={markAllAsRead}
           className="flex items-center gap-1 text-sm font-semibold text-primary"
         >
-          <Check size={14} />
+          <HugeiconsIcon icon={Check} size={14} />
           {t('notifications.markAllRead', 'Tout lire')}
         </button>
       }
     >
-      <div className="mx-auto max-w-md space-y-4">
+      <div className="screen-column space-y-4">
         {unreadCount > 0 && (
-          <span className="inline-block rounded-full bg-primary px-3 py-1 text-xs font-bold text-white">
+          <span className="inline-block rounded-full bg-primary px-3 py-1 text-xs font-bold text-on-primary">
             {unreadCount} {t('notifications.unread', 'non lues')}
           </span>
         )}
@@ -226,7 +227,7 @@ export default function NotificationsScreen() {
             onClick={() => setFilter('all')}
             className={
               'flex-1 rounded-full py-2 text-sm font-medium ' +
-              (filter === 'all' ? 'bg-primary text-white' : 'bg-surface-tint text-text-secondary')
+              (filter === 'all' ? 'bg-primary text-on-primary' : 'bg-surface-tint text-text-secondary')
             }
           >
             {t('notifications.allTab', 'Toutes')} ({notifications.length})
@@ -235,7 +236,7 @@ export default function NotificationsScreen() {
             onClick={() => setFilter('unread')}
             className={
               'flex-1 rounded-full py-2 text-sm font-medium ' +
-              (filter === 'unread' ? 'bg-primary text-white' : 'bg-surface-tint text-text-secondary')
+              (filter === 'unread' ? 'bg-primary text-on-primary' : 'bg-surface-tint text-text-secondary')
             }
           >
             {t('notifications.unreadTab', 'Non lues')} ({unreadCount})
@@ -260,7 +261,7 @@ export default function NotificationsScreen() {
                     className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full"
                     style={{ color, backgroundColor: color.replace(')', '') + '20' }}
                   >
-                    <Icon size={18} />
+                    <HugeiconsIcon icon={Icon} size={18} />
                   </span>
                   <span className="min-w-0 flex-1">
                     <span className="flex items-center justify-between gap-2">
@@ -296,7 +297,7 @@ export default function NotificationsScreen() {
                   ? t('notifications.emptyUnread', 'Vous avez tout lu !')
                   : t('notifications.emptyAll', 'Vos notifications apparaitront ici')
               }
-              icon={<BellOff size={40} className="text-text-muted" />}
+              icon={<HugeiconsIcon icon={BellOff} size={40} className="text-text-muted" />}
               showLogo={false}
             />
           </div>

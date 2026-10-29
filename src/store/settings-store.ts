@@ -96,6 +96,18 @@ export const useSettingsStore = create<SettingsState>(() => ({
   },
 }));
 
+/**
+ * Forme persistée : un sous-ensemble des réglages, volontairement partiel —
+ * un stockage plus ancien peut ne pas contenir toutes les clés, et une clé
+ * ajoutée plus tard ne doit pas rendre la lecture impossible.
+ */
+interface PersistedSettings {
+  uiLanguage?: unknown;
+  bibleTranslation?: unknown;
+  bibleVersionType?: unknown;
+  onboardingCompleted?: unknown;
+}
+
 // Manual persist helper — avoids the zustand v5 `persist` mutator type conflict
 // that arises with async JSON storage adapters (`SettingsState | null` widening).
 export const settingsStorePersist = {
@@ -103,12 +115,19 @@ export const settingsStorePersist = {
     try {
       const raw = await storage.get('versyflow-settings-storage');
       if (!raw) return;
-      const parsed = JSON.parse(raw);
+      const parsed = JSON.parse(raw) as PersistedSettings;
       useSettingsStore.setState({
-        uiLanguage: parsed.uiLanguage ? normalizeLocaleCode(parsed.uiLanguage) : DEFAULT_LANGUAGE,
-        bibleTranslation: parsed.bibleTranslation ?? 'lsg',
-        bibleVersionType: parsed.bibleVersionType ?? 'classical',
-        onboardingCompleted: parsed.onboardingCompleted ?? false,
+        uiLanguage:
+          typeof parsed.uiLanguage === 'string'
+            ? normalizeLocaleCode(parsed.uiLanguage)
+            : DEFAULT_LANGUAGE,
+        bibleTranslation:
+          typeof parsed.bibleTranslation === 'string' ? parsed.bibleTranslation : 'lsg',
+        bibleVersionType:
+          typeof parsed.bibleVersionType === 'string'
+            ? (parsed.bibleVersionType as 'classical' | 'modern')
+            : 'classical',
+        onboardingCompleted: parsed.onboardingCompleted === true,
       });
     } catch {
       /* ignore */

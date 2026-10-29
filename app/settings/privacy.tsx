@@ -1,6 +1,11 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ChevronRight, Download, Trash2 } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import {
+  ChevronRightIcon as ChevronRight,
+  Download01Icon as Download,
+  Delete02Icon as Trash2,
+} from '@hugeicons/core-free-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 
 export default function PrivacyScreen() {
@@ -19,7 +24,7 @@ export default function PrivacyScreen() {
     >
       <span
         className={
-          'absolute top-0.5 h-6 w-6 rounded-full bg-white transition-all ' +
+          'absolute top-0.5 h-6 w-6 rounded-full bg-surface transition-all ' +
           (on ? 'left-[calc(100%-1.625rem)]' : 'left-0.5')
         }
       />
@@ -32,7 +37,7 @@ export default function PrivacyScreen() {
       showBack
       backPath="/settings"
     >
-      <div className="mx-auto max-w-md space-y-4">
+      <div className="screen-column space-y-4">
         <div className="space-y-1 rounded-2xl bg-surface p-2 shadow-sm">
           <p className="px-3 pt-2 text-base font-bold text-text-primary">
             {t('settings.privacyTitle', 'Donnees & confidentialite')}
@@ -57,14 +62,14 @@ export default function PrivacyScreen() {
           </p>
           <button className="flex w-full items-center justify-between px-4 py-3.5">
             <span className="flex items-center gap-3 text-base text-text-primary">
-              <Download size={18} className="text-text-muted" />
+              <HugeiconsIcon icon={Download} size={18} className="text-text-muted" />
               {t('settings.downloadData', 'Telecharger mes donnees')}
             </span>
-            <ChevronRight size={18} className="text-text-muted" />
+            <HugeiconsIcon icon={ChevronRight} size={18} className="text-text-muted" />
           </button>
           <button className="flex w-full items-center justify-between px-4 py-3.5">
             <span className="flex items-center gap-3 text-base font-medium text-error">
-              <Trash2 size={18} />
+              <HugeiconsIcon icon={Trash2} size={18} />
               {t('settings.deleteAccount', 'Supprimer mon compte')}
             </span>
             <span className="text-sm font-semibold text-error">
