@@ -44,7 +44,7 @@ interface Row {
 }
 
 export default function TranslationComparisonScreen() {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const bibleTranslation = useSettingsStore((s) => s.bibleTranslation);
   const [searchParams] = useSearchParams();
   const bookId = searchParams.get('bookId') ?? '';
@@ -100,8 +100,9 @@ export default function TranslationComparisonScreen() {
 
   useEffect(() => {
     let cancelled = false;
-    (async () => {
+    void (async () => {
       const books = await import('@/domains/bible/entities').then((m) => m.BIBLE_BOOKS);
+      if (cancelled) return; // the book changed while the chunk was loading
       setBookName(
         books.find((b) => b.id === bookId)?.name?.[i18next.language ?? 'fr'] ?? bookId,
       );

@@ -12,6 +12,7 @@ import {
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { useTranslation } from 'react-i18next';
 import { useAnalyticsCapability } from '@/capabilities/analytics/store';
+import { fireAndForget } from '@/lib/fire-and-forget';
 
 interface DataPoint {
   date: string;
@@ -63,7 +64,7 @@ export default function AnalyticsDashboardScreen() {
       showBack
       right={
         <button
-          onClick={loadData}
+          onClick={() => fireAndForget(loadData(), 'analytics:reload')}
           className="flex h-9 w-9 items-center justify-center rounded-full bg-surface-tint"
         >
           <HugeiconsIcon icon={RefreshCw} size={16} className="text-primary" />

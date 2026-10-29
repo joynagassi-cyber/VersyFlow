@@ -71,7 +71,6 @@ export const useContextStore = create<ContextState>()(
       },
 
       restorePersonal: () => {
-        const { personalSnapshot } = get();
         set({
           activeContext: 'personal',
           activeFamilyId: null,

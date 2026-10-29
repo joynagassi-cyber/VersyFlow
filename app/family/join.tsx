@@ -13,6 +13,7 @@ import { Button } from '@/components/ui/button';
 import { useFamilyService } from '@/hooks/useFamilyService';
 import { useFamilySyncStore } from '@/store/family-sync-store';
 import { useAuthStore } from '@/store/auth-store';
+import { fireAndForget } from '@/lib/fire-and-forget';
 
 export default function FamilyJoinScreen() {
   const navigate = useNavigate();
@@ -97,7 +98,7 @@ export default function FamilyJoinScreen() {
 
         {error && <p className="text-sm text-error">{error}</p>}
 
-        <Button variant="default" className="w-full" onClick={handleJoin} disabled={isLoading}>
+        <Button variant="default" className="w-full" onClick={() => fireAndForget(handleJoin(), 'family:join')} disabled={isLoading}>
           {isLoading ? <HugeiconsIcon icon={Loader2} size={18} className="animate-spin" /> : <HugeiconsIcon icon={LogIn} size={18} />}
           {isLoading ? t('common.loading', 'Chargement...') : t('family.joinButton', 'Rejoindre la famille')}
         </Button>

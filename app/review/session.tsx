@@ -28,6 +28,7 @@ import { ReviewQueueService } from '@/services/review-queue-service';
 import { Rating } from '@/services/review-rating-service';
 import type { MemorizationRecord } from '@/domains/memorization/entities';
 import { eventBus, DomainEventTypes } from '@/services/events-service';
+import { fireAndForget } from '@/lib/fire-and-forget';
 
 interface ReviewItem {
   record: MemorizationRecord;
@@ -330,7 +331,7 @@ export default function ReviewSessionScreen() {
           {ratingOptions.map(({ rating, icon, cls }) => (
             <button
               key={rating}
-              onClick={() => rate(rating)}
+              onClick={() => fireAndForget(rate(rating), 'review:rate')}
               className={cn('flex flex-col items-center gap-1 rounded-xl py-3 text-xs font-bold', cls)}
             >
               {icon}

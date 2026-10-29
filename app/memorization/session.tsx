@@ -25,6 +25,7 @@ import { useSettingsStore } from '@/store/settings-store';
 import { getMemorizationRepository, getSyncUserIdProvider } from '@/infrastructure/repository/powersync-repositories';
 import type { MemorizationRecord } from '@/domains/memorization/entities';
 import { eventBus, DomainEventTypes } from '@/services/events-service';
+import { fireAndForget } from '@/lib/fire-and-forget';
 
 /** Resolve the authenticated user id (or null when not signed in). */
 const resolveUserId = async (): Promise<string | null> =>
@@ -261,37 +262,63 @@ export default function MemorizationSession() {
   const totalVerses = engine.getTotalVerses();
   const currentIndex = engine.getCurrentVerseIndex();
 
+  const closeSession = async () => {
+    try {
+      await persistAllRecords(engine.getRecords());
+    } catch (e) {
+      console.error('[MemorizationSession] abandon flush failed:', e);
+    }
+    // Emit SESSION_ABANDONED before navigating away.
+    eventBus.emit({
+      id: crypto.randomUUID(),
+      type: DomainEventTypes.SESSION_ABANDONED,
+      timestamp: Date.now(),
+      payload: {
+        recordId: `${bookId}:${chapter}:${verseStart}:${translationId}`,
+        // `getState` is a class-only member (not on the interface);
+        // fall back to `Date.now()` when the engine is still idle so
+        // the payload shape is stable.
+        elapsedMs: Date.now() - ((engine as unknown as { getState?: () => { startedAt?: number } }).getState?.()?.startedAt ?? Date.now()),
+        wordsRevealed: engine.getCurrentVerseIndex() + 1,
+        totalWords: engine.getTotalVerses(),
+        abandonedByClose: true,
+      },
+    });
+    engine.abandon();
+    navigate(-1);
+  };
+
+  const rateVerse = async (rating: Rating) => {
+    // Persist the rated record BEFORE navigating — otherwise the
+    // FSRS state (stability, nextReviewAt) is lost on unmount.
+    const record = await engine.rateCurrentVerse(rating);
+    if (record) await persistRecord(record);
+    refresh();
+  };
+
+  const proceedSession = async () => {
+    engine.nextVerse();
+    refresh();
+    if (engine.isComplete()) {
+      // Flush any records that were produced but not yet persisted
+      // (user pressed "next" before rating the last verse, or rating
+      // failed silently) so nothing is lost on unmount.
+      try {
+        await persistAllRecords(engine.getRecords());
+      } catch (e) {
+        console.error('[MemorizationSession] flush failed:', e);
+      }
+      navigate('/memorization/confirm', { state: { reference } });
+    }
+  };
+
   return (
     <FullScreenPage
       title={t('session.memorizing', 'Mémorisation')}
       showBack={false}
       right={
         <button
-          onClick={async () => {
-            try {
-              await persistAllRecords(engine.getRecords());
-            } catch (e) {
-              console.error('[MemorizationSession] abandon flush failed:', e);
-            }
-            // Emit SESSION_ABANDONED before navigating away.
-            eventBus.emit({
-              id: crypto.randomUUID(),
-              type: DomainEventTypes.SESSION_ABANDONED,
-              timestamp: Date.now(),
-              payload: {
-                recordId: `${bookId}:${chapter}:${verseStart}:${translationId}`,
-                // `getState` is a class-only member (not on the interface);
-                // fall back to `Date.now()` when the engine is still idle so
-                // the payload shape is stable.
-                elapsedMs: Date.now() - ((engine as unknown as { getState?: () => { startedAt?: number } }).getState?.()?.startedAt ?? Date.now()),
-                wordsRevealed: engine.getCurrentVerseIndex() + 1,
-                totalWords: engine.getTotalVerses(),
-                abandonedByClose: true,
-              },
-            });
-            engine.abandon();
-            navigate(-1);
-          }}
+          onClick={() => fireAndForget(closeSession(), 'session:abandon')}
           className="flex items-center gap-1 text-sm font-semibold text-text-secondary"
         >
           <HugeiconsIcon icon={X} size={16} />
@@ -330,13 +357,7 @@ export default function MemorizationSession() {
         ).map(({ rating, label, cls }) => (
           <button
             key={rating}
-            onClick={async () => {
-              // Persist the rated record BEFORE navigating — otherwise the
-              // FSRS state (stability, nextReviewAt) is lost on unmount.
-              const record = await engine.rateCurrentVerse(rating);
-              if (record) await persistRecord(record);
-              refresh();
-            }}
+            onClick={() => fireAndForget(rateVerse(rating), 'session:rate')}
             className={cn('rounded-xl py-3 text-sm font-semibold', cls)}
           >
             {label}
@@ -360,21 +381,7 @@ export default function MemorizationSession() {
         </Button>
         <Button
           className="flex-1"
-          onClick={async () => {
-            engine.nextVerse();
-            refresh();
-            if (engine.isComplete()) {
-              // Flush any records that were produced but not yet persisted
-              // (user pressed "next" before rating the last verse, or rating
-              // failed silently) so nothing is lost on unmount.
-              try {
-                await persistAllRecords(engine.getRecords());
-              } catch (e) {
-                console.error('[MemorizationSession] flush failed:', e);
-              }
-              navigate('/memorization/confirm', { state: { reference } });
-            }
-          }}
+          onClick={() => fireAndForget(proceedSession(), 'session:proceed')}
         >
           {t('session.proceed', 'Continuer')}
           <HugeiconsIcon icon={ArrowRight} size={15} />

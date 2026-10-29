@@ -206,7 +206,8 @@ une commande, et sa sortie au dernier passage.
 | **L9** | Journal des ajustements d'accent | **FAIT** | `npm run themes:contrast` → `500 paires, min 4.5:1` · `npx vitest run tests/design/accent-journal.test.ts` → 5 tests |
 | **L10** | Inventaire des parcours | **FAIT** | `npm run plan:journeys` → `16 parcours · actifs 16 · partiels 0 · absents 0` |
 | **L11** | Propreté du lint : imports morts + promesses flottantes | **FAIT** | `npx eslint` → **308 → 243 avertissements** (−65), **0 erreur** · `npx tsc` → 0 |
-| **L12** | Typage des stores + du hook de session ; dette du shim RN mesurée | **PARTIEL** | `npx eslint` → **243 → 57 avertissements** · C17 : **128 avertissements gelés, documentés et mesurés** |
+| **L12** | Typage des stores + du hook de session ; dette du shim RN mesurée | **FAIT** | `npx eslint` → **243 → 57 avertissements** · C17 : **128 avertissements gelés, documentés et mesurés** |
+| **L13** | Zéro avertissement sur le périmètre : variables mortes, promesses non gérées, types | **FAIT** | `npx eslint app src/components src/hooks src/store src/theme tests/design --ext .ts,.tsx` → **57 → 0 avertissement**, **0 erreur** · C17 **re-mesure 128 → 123** |
 
 ### Ce que chaque lot a réellement changé
 
@@ -250,6 +251,24 @@ une commande, et sa sortie au dernier passage.
   une exception **documentée dans `.eslintrc.js`** et **mesurée par l'audit
   C17** (128 avertissements gelés, pas supprimés). Sortie prévue : typer les 13
   projections `{...rest}` en même temps que la migration des 3 écrans clients.
+- **L13** — **57 → 0** avertissement, sans exception nouvelle :
+  **24 variables mortes** retirées (dont un `loading` d'`auth/index.tsx` qui
+  n'était jamais mis à `true` : le bouton ne pouvait donc jamais être désactivé,
+  et un `personalSnapshot` lu puis immédiatement remis à `null` dans
+  `restorePersonal`) ; **17 promesses non gérées** traitées par un helper testé,
+  `src/lib/fire-and-forget.ts` (3 tests) : `void handler()` aurait éteint la
+  règle en laissant le rejet non capturé, le helper **capture et journalise**
+  avec le contexte de l'action ; **6 promesses flottantes** restantes préfixées
+  de `void` (IIFE d'effets) ; **5 imports de types** corrigés (`import type`,
+  dont `image-accent.ts` où 4 `import()` inline devenaient un seul import) ;
+  **2 `async` sans `await`** rendus synchrones (`completeSession` n'était qu'une
+  transition d'état, et `handlePick` n'attendait rien) ; `as any` de
+  `useLearnerProfile` remplacé par `Partial<LearnerProfile>` ; comparaison
+  `Rating` / `RATING_AGAIN` ramenée à enum-contre-enum ; `shadowColor` de
+  `Primitives.tsx` **réellement utilisé** (`withAlpha`) au lieu d'être calculé
+  puis jeté. C17 re-mesure : **123** avertissements gelés (128 − 5 variables
+  mortes corrigées dans le shim), ce qui prouve que le compteur recompte au lieu
+  de recopier.
 - **L11** — **62 bindings d'import inutilisés** retirés (dont 15 icônes laissées
   par la migration L3 sur 70 fichiers) et **3 promesses flottantes** préfixées de
   `void` (aucun rejet silencieux ne disparaît plus dans la console).
@@ -263,9 +282,9 @@ une commande, et sa sortie au dernier passage.
 | --- | --- | --- |
 | 1 | `node scripts/audit-plan.mjs` → 0 FAIL, 0 PARTIEL | **17 PASS · 0 PARTIEL · 0 FAIL** (4 non vérifiables) |
 | 2 | `npx tsc -p tsconfig.app.json --noEmit` | **0 erreur** |
-| 3 | `npx eslint` sur le périmètre | **0 erreur · 57 avertissements** (308 au départ ; 128 autres gelés et mesurés par C17) |
-| 4 | `npx vitest run tests/design` | **103 tests / 9 fichiers, tous verts** |
-| 5 | `npx vite build` | **✓ 12,9 s**, `index-*.js` 436,86 kB (124,31 kB gzip) |
+| 3 | `npx eslint` sur le périmètre | **0 erreur · 0 avertissement** (308 au départ ; 123 autres, propres au shim RN, gelés et re-mesurés par C17) |
+| 4 | `npx vitest run tests/design` | **105 tests / 9 fichiers, tous verts** (suite complète : 1282 verts, 19 échecs préexistants hors périmètre) |
+| 5 | `npx vite build` | **✓ 15,2 s**, `index-*.js` 437,09 kB (124,37 kB gzip) |
 | 6 | `grep -rn "setProperty" app/` | **0** (le thème n'est plus écrit par un écran) |
 | 7 | `grep -rIl "lucide-react" --include=*.tsx app src` | **0** |
 | 8 | 4 largeurs de référence inspectées à l'écran | **NON VÉRIFIABLE** : aucun navigateur dans l'environnement (U01/U02) |

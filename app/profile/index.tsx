@@ -24,6 +24,7 @@ import { ProgressService } from '@/services/progress-service';
 import type { ProgressStats } from '@/services/stats-calculator';
 import { cn } from '@/lib/utils';
 import { getTranslationDisplayInfo } from '@/services/bible-translation-names';
+import { fireAndForget } from '@/lib/fire-and-forget';
 
 function StatTile({ value, label }: { value: number; label: string }) {
   return (
@@ -53,7 +54,7 @@ export default function ProfileScreen() {
 
   useEffect(() => {
     let cancelled = false;
-    (async () => {
+    void (async () => {
       try {
         const service = getMemorizationService(profileId);
         const progress = new ProgressService(service, getFsrsEngine(), undefined, profileId);
@@ -193,7 +194,7 @@ export default function ProfileScreen() {
             </Button>
           )}
           {isAuthenticated && (
-            <Button variant="ghost" className={cn('text-error')} onClick={handleSignOut}>
+            <Button variant="ghost" className={cn('text-error')} onClick={() => fireAndForget(handleSignOut(), 'profile:signOut')}>
               <HugeiconsIcon icon={LogOut} size={18} />
               {t('nav.signOut', 'Se deconnecter')}
             </Button>

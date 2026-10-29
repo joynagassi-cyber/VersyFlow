@@ -15,8 +15,10 @@
  * is not yet loaded.
  */
 
+import type { AccentValues } from './theme-presets';
+
 // Module-level cache: theme id → extracted accent values.
-const accentCache = new Map<string, import('./theme-presets').AccentValues>();
+const accentCache = new Map<string, AccentValues>();
 
 /**
  * Load a theme image and extract its dominant accent palette.
@@ -26,8 +28,8 @@ const accentCache = new Map<string, import('./theme-presets').AccentValues>();
 export async function extractImageAccent(
   id: string,
   src: string,
-  fallback: import('./theme-presets').AccentValues,
-): Promise<import('./theme-presets').AccentValues> {
+  fallback: AccentValues,
+): Promise<AccentValues> {
   const cached = accentCache.get(id);
   if (cached) return cached;
 
@@ -202,7 +204,7 @@ function rgbToHex([r, g, b]: [number, number, number]): string {
  */
 function paletteToAccent(
   palette: Array<{ h: number; s: number; l: number }>,
-): import('./theme-presets').AccentValues {
+): AccentValues {
   const d = palette[0];
   const primary = rgbToHex(hslToRgb(d.h, Math.min(d.s, 0.85), Math.min(d.l, 0.55)));
   const light = rgbToHex(hslToRgb(d.h, Math.min(d.s, 0.7), 0.75));

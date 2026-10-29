@@ -128,6 +128,28 @@ export interface TextStyle extends BaseStyle {
   numberOfLines?: number;
 }
 
+/**
+ * `withAlpha` — React Native splits a shadow into a colour and an opacity;
+ * CSS has no such split, so the opacity is folded into the colour here.
+ * Hex values (the documented RN form) are converted exactly; anything else
+ * (rgb(), var(), named colours) falls back to `color-mix`, which keeps the
+ * alpha without parsing the colour string.
+ */
+function withAlpha(color: string, alpha: number): string {
+  const hex = /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.exec(color.trim());
+  if (hex) {
+    const h =
+      hex[1].length === 3
+        ? hex[1].split('').map((c) => c + c).join('')
+        : hex[1];
+    const r = parseInt(h.slice(0, 2), 16);
+    const g = parseInt(h.slice(2, 4), 16);
+    const b = parseInt(h.slice(4, 6), 16);
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+  }
+  return `color-mix(in srgb, ${color} ${Math.round(alpha * 100)}%, transparent)`;
+}
+
 // ─── StyleSheet ───────────────────────────────────────────────────────────────
 
 export type StyleSheetType = {
@@ -279,7 +301,7 @@ function convertStyle(style: BaseStyle | TextStyle): CSSProperties {
     const shadowOpacity = (styleRecord.shadowOpacity as number) ?? 0.05;
     const shadowRadius = (styleRecord.shadowRadius as number) ?? 2;
     const elevation = (styleRecord.elevation as number) ?? 0;
-    result.boxShadow = `${shadowOffset.width}px ${shadowOffset.height}px ${shadowRadius}px rgba(0,0,0,${shadowOpacity})`;
+    result.boxShadow = `${shadowOffset.width}px ${shadowOffset.height}px ${shadowRadius}px ${withAlpha(shadowColor, shadowOpacity)}`;
     // Map elevation to box-shadow as a fallback
     if (elevation > 0) {
       result.boxShadow = `0 ${elevation}px ${elevation * 2}px rgba(0,0,0,0.1)`;
@@ -380,7 +402,7 @@ interface IonicTextProps {
  */
 export const Text = forwardRef<HTMLSpanElement, IonicTextProps>(
   ({ style, className, children, testID, numberOfLines, ellipsizeMode, color, ...rest }, ref) => {
-    const { colors, typ } = useTheme();
+    const { colors } = useTheme();
     const resolvedStyle = Array.isArray(style)
       ? mergeStyles(...style.map(s => convertStyle(s as TextStyle)))
       : convertStyle(style as TextStyle);
@@ -768,7 +790,7 @@ interface IonicStatusBarProps {
  * IonicStatusBar — placeholder for web. No-op in browser context.
  * Can be connected to a real status bar plugin on native.
  */
-export const StatusBar = ({ backgroundColor, barStyle, hidden, ...rest }: IonicStatusBarProps) => {
+export const StatusBar = (_props: IonicStatusBarProps) => {
   // No-op on web — returns null. Extend with a plugin on native builds.
   return null;
 };
@@ -880,13 +902,9 @@ interface IonicAlertProps {
  * works without requiring a React context.
  */
 export const Alert = Object.assign(
-  ({ title, message, buttons, onDidDismiss, ...rest }: IonicAlertProps) => {
-    const ionButtons = (buttons || []).map(b => ({
-      text: b.text,
-      role: b.cssClass?.includes('destructive') ? 'destructive' as const : 'cancel' as const,
-      handler: b.handler,
-    }));
-
+  (_props: IonicAlertProps) => {
+    // The component form is a placeholder: it renders nothing visible.
+    // `Alert.alert(...)` below builds the real toast imperatively.
     return (
       <IonModal isOpen={false} initialBreakpoint={0} breakpoints={[0]}>
         {/* Alert is shown programmatically via controller — placeholder */}

@@ -51,7 +51,7 @@ export default function BibleExplorerScreen() {
   const [query, setQuery] = useState('');
   const [selectedVerse, setSelectedVerse] = useState<number | null>(null);
 
-  const { byId, oldTestament, newTestament, translationId } = useBibleBooks();
+  const { byId, translationId } = useBibleBooks();
 
   const rawBookId = params.bookId ?? null;
   const selectedBookId = rawBookId != null && byId.has(rawBookId) ? rawBookId : null;

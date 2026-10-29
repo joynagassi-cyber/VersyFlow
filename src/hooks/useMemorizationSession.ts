@@ -280,17 +280,21 @@ export function useMemorizationSession(deps?: MemorizationSessionDeps) {
   /**
    * Termine la session et enregistre le rating dans le service
    */
-  const completeSession = useCallback(async (rating: Rating) => {
+  const completeSession = useCallback((rating: Rating) => {
     const service = serviceRef.current;
     if (!sessionState || !service) return null;
 
     const isComplete = sessionState.revealedWords.size >= sessionState.words.length;
 
-    // Forcer AGAIN si la session n'est pas complète
+    // Forcer AGAIN si la session n'est pas complète.
+    // `RATING_AGAIN` is typed `number` by the service layer; narrowing it once
+    // to `Rating` keeps the comparison enum-to-enum (no mixed comparison) and
+    // lets the assignment below need no double cast.
+    const ratingAgain = RATING_AGAIN as Rating;
     let effectiveRating = rating;
-    if (!isComplete && rating !== RATING_AGAIN) {
+    if (!isComplete && rating !== ratingAgain) {
       console.warn('Session pas complète, rating forcé à AGAIN');
-      effectiveRating = RATING_AGAIN as unknown as Rating;
+      effectiveRating = ratingAgain;
     }
 
     // Dans une version complète, appellerait service.memorizeVerse()

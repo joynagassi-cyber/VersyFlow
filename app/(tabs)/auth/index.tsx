@@ -19,7 +19,6 @@ export default function AuthGate({ onSkip }: Props) {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [mounted, setMounted] = useState(false);
-  const [loading, setLoading] = useState(false);
 
   // On mount: pick up a prior local identification (email + name, no network
   // check) so returning users land straight in the app.
@@ -83,7 +82,7 @@ export default function AuthGate({ onSkip }: Props) {
       </div>
 
       <div className="flex w-full max-w-xs flex-col gap-3">
-        <Button variant="default" onClick={handleIdentify} disabled={loading}>
+        <Button variant="default" onClick={handleIdentify}>
           <HugeiconsIcon icon={LogIn} size={18} />
           {t('auth.identify', 'Identifiez-vous')}
         </Button>

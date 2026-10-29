@@ -5,7 +5,6 @@ import { Sun01Icon, Moon01Icon, ComputerIcon, Tick01Icon } from '@hugeicons/core
 function Check({ size = 18, className }: { size?: number; className?: string }) {
   return <HugeiconsIcon icon={Tick01Icon} size={size} className={className} color="currentColor" />;
 }
-import { useNavigate } from 'react-router-dom';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { useAppearanceStore } from '@/store/appearance-store';
 import { TWEAKCN_PRESETS, GRADIENTS } from '@/theme/tweakcn-presets';
@@ -87,9 +86,7 @@ function SliderRow({
 
 export default function AppearanceScreen() {
   const { t } = useTranslation();
-  const navigate = useNavigate();
   const themeMode = useAppearanceStore((s) => s.themeMode);
-  const accent = useAppearanceStore((s) => s.accent);
   const colorThemeId = useAppearanceStore((s) => s.colorThemeId);
   const presetId = useAppearanceStore((s) => s.presetId);
   const setPreset = useAppearanceStore((s) => s.setPreset);
@@ -127,8 +124,6 @@ export default function AppearanceScreen() {
     { value: 'dark', label: t('settings.themeDark', 'Sombre'), Icon: Moon01Icon },
     { value: 'system', label: t('settings.themeSystem', 'Système'), Icon: ComputerIcon },
   ];
-
-  const totalThemes = THEME_CATEGORIES.reduce((n, c) => n + c.themes.length, 0);
 
   return (
     <FullScreenPage title={t('settings.theme', 'Thème')}>

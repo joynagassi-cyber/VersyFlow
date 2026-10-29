@@ -22,7 +22,7 @@ export default function ExploreScreen() {
   const { t } = useTranslation();
   const [query, setQuery] = useState('');
 
-  const { byId, oldTestament, newTestament } = useBibleBooks();
+  const { byId } = useBibleBooks();
 
   const books = useMemo(() => {
     const q = query.trim().toLowerCase();

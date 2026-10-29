@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ProfileAvatar } from '@/components/profile/ProfileAvatar';
 import { useActiveProfile } from '@/hooks/useActiveProfile';
+import { fireAndForget } from '@/lib/fire-and-forget';
 
 /** Max length of the optional personal slogan (matches the DB column). */
 const SLOGAN_MAX_LENGTH = 60;
@@ -85,7 +86,7 @@ export default function CreateProfileScreen() {
           </p>
         </div>
 
-        <Button variant="default" className="w-full" onClick={handleCreate} disabled={submitting}>
+        <Button variant="default" className="w-full" onClick={() => fireAndForget(handleCreate(), 'profile:create')} disabled={submitting}>
           {submitting ? t('common.loading', 'Creation...') : t('profile.createCta', 'Creer mon profil')}
         </Button>
       </div>

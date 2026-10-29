@@ -120,12 +120,6 @@ export default function CollectionsScreen() {
     };
   }, []);
 
-  const favoriteRefs = favorites.map((r) => {
-    const book = byId.get(r.bookId);
-    const name = book?.displayName ?? r.bookId;
-    return `${name} ${r.chapterNumber}:${r.verseNumber}`;
-  });
-
   const filtered =
     selected === 'all'
       ? collections

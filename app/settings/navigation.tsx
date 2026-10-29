@@ -13,7 +13,6 @@
 import { useTranslation } from 'react-i18next';
 import { HugeiconsIcon } from '@hugeicons/react';
 import {
-  EyeIcon as Eye,
   BarChartIcon as BarChart3,
   BookOpen01Icon as BookOpen,
   SlidersHorizontalIcon as SlidersHorizontal,
@@ -27,12 +26,13 @@ import {
   GitCompareIcon as GitCompare,
   UsersIcon as Users,
 } from '@hugeicons/core-free-icons';
+import type { EyeIcon } from '@hugeicons/core-free-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { useUiStore, ALL_MENU_ITEMS, type TabId } from '@/store/ui-store';
 
 interface ToggleRow {
   tabId: TabId;
-  icon: typeof Eye;
+  icon: typeof EyeIcon;
   i18nKey: string;
   defaultLabel: string;
 }
@@ -43,7 +43,7 @@ const TOGGLES: ToggleRow[] = [
 ];
 
 /** One icon per hamburger-menu item, keyed by route path. */
-const MENU_ITEM_ICONS: Record<string, typeof Eye> = {
+const MENU_ITEM_ICONS: Record<string, typeof EyeIcon> = {
   '/bible/explorer': BookOpen,
   '/memorization/session': BrainCircuit,
   '/review/queue': History,

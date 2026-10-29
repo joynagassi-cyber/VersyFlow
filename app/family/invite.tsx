@@ -16,6 +16,7 @@ import { Button } from '@/components/ui/button';
 import { useFamilySyncStore } from '@/store/family-sync-store';
 import { useFamilyService } from '@/hooks/useFamilyService';
 import { useAuthStore } from '@/store/auth-store';
+import { fireAndForget } from '@/lib/fire-and-forget';
 
 export default function FamilyInviteScreen() {
   const navigate = useNavigate();
@@ -82,7 +83,7 @@ export default function FamilyInviteScreen() {
         setSharing(false);
       }
     } else {
-      handleCopy();
+      await handleCopy();
     }
   };
 
@@ -126,7 +127,7 @@ export default function FamilyInviteScreen() {
                 {inviteCode}
               </span>
               <button
-                onClick={handleCopy}
+                onClick={() => fireAndForget(handleCopy(), 'family:copy')}
                 className="rounded-full bg-surface-tint p-2 active:bg-primary/10"
                 aria-label={copied ? t('common.saved', 'Copié') : t('common.copy', 'Copier')}
               >
@@ -134,7 +135,7 @@ export default function FamilyInviteScreen() {
               </button>
             </div>
           ) : (
-            <Button variant="default" onClick={handleGenerateCode} disabled={isLoading}>
+            <Button variant="default" onClick={() => fireAndForget(handleGenerateCode(), 'family:generate-code')} disabled={isLoading}>
               {isLoading ? <HugeiconsIcon icon={Loader2} size={18} className="animate-spin" /> : t('family.generateCode', 'Generer un code')}
             </Button>
           )}
@@ -146,7 +147,7 @@ export default function FamilyInviteScreen() {
         <Button
           variant="default"
           className="w-full"
-          onClick={handleShare}
+          onClick={() => fireAndForget(handleShare(), 'family:share')}
           disabled={isLoading || !inviteCode || sharing}
         >
           {sharing ? (

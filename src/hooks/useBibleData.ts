@@ -108,7 +108,7 @@ export function useBibleData(explicitTranslationId?: string): UseBibleData {
     setBooks(null);
     setError(null);
 
-    loadTranslationBooks(translationId).then(async (data) => {
+    void loadTranslationBooks(translationId).then(async (data) => {
       if (cancelled) return;
       if (data) {
         setBooks(data);

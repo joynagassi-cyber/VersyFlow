@@ -13,6 +13,7 @@ import { Logo } from '@/components/brand/Logo';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { SupabaseAuthService } from '@/auth';
+import { fireAndForget } from '@/lib/fire-and-forget';
 
 const SIGNUP = z.object({
   email: z.string().min(1).email(),
@@ -102,7 +103,11 @@ export default function SignupScreen({ onSkip }: Props) {
             onChange={(e) => setName(e.target.value)}
             autoComplete="name"
           />
-          <Button variant="default" onClick={handleSignup} disabled={loading}>
+          <Button
+            variant="default"
+            onClick={() => fireAndForget(handleSignup(), 'auth:signup')}
+            disabled={loading}
+          >
             {loading ? (
               <HugeiconsIcon icon={Loader2} size={18} className="animate-spin" />
             ) : (

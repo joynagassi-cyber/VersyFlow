@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useActiveProfile } from '@/hooks/useActiveProfile';
 import { cn } from '@/lib/utils';
+import { fireAndForget } from '@/lib/fire-and-forget';
 
 const NAME_SCHEMA = z.string().trim().min(2).max(30);
 
@@ -107,7 +108,7 @@ export default function ProfileSelectionScreen() {
               >
                 {t('common.cancel', 'Annuler')}
               </Button>
-              <Button variant="default" className="flex-1" onClick={handleCreate}>
+              <Button variant="default" className="flex-1" onClick={() => fireAndForget(handleCreate(), 'profile:select-create')}>
                 {t('common.continue', 'Creer')}
               </Button>
             </div>

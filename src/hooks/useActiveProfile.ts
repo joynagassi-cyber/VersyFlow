@@ -16,8 +16,7 @@ export function useActiveProfile() {
   const removeProfile = useProfileStore((s) => s.removeProfile);
   const autoSelectIfSingle = useProfileStore((s) => s.autoSelectIfSingle);
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
-  const user = useAuthStore((s) => s.user);
-  const { createProfile, getProfiles, deleteProfile, setActiveProfile } = useLearnerProfile();
+  const { createProfile, deleteProfile, setActiveProfile } = useLearnerProfile();
 
   const activeProfile = profiles.find((p) => p.id === activeProfileId) || null;
 

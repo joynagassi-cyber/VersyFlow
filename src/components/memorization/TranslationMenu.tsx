@@ -43,7 +43,7 @@ export function TranslationMenu({
 
   const display = bibleTranslationDisplayName(translationId);
 
-  const handlePick = async (id: string) => {
+  const handlePick = (id: string) => {
     if (id === translationId) {
       setOpen(false);
       return;

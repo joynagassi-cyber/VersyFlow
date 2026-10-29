@@ -14,6 +14,7 @@ import { useAuthStore } from '@/store/auth-store';
 import { useActiveProfile } from '@/hooks/useActiveProfile';
 import { getMemorizationService } from '@/services/memorization-service-factory';
 import type { MemorizationRecord } from '@/domains/memorization/entities';
+import { fireAndForget } from '@/lib/fire-and-forget';
 
 export default function BackupScreen() {
   const { t } = useTranslation();
@@ -113,7 +114,7 @@ export default function BackupScreen() {
             </span>
             <Toggle on={autoBackup} onChange={() => setAutoBackup((v) => !v)} />
           </div>
-          <Button variant="default" className="w-full" onClick={handleExport} disabled={busy}>
+          <Button variant="default" className="w-full" onClick={() => fireAndForget(handleExport(), 'settings:export')} disabled={busy}>
             {busy ? <HugeiconsIcon icon={Loader2} size={18} className="animate-spin" /> : <HugeiconsIcon icon={Download} size={18} />}
             {t('settings.backup.export', 'Exporter mes donnees')}
           </Button>

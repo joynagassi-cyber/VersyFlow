@@ -52,13 +52,13 @@ const TAB_DEFS: { id: SettingsTab; key: string; label: string }[] = [
 ];
 
 import { bibleTranslationDisplayName } from '@/services/bible-translation-names';
+import { fireAndForget } from '@/lib/fire-and-forget';
 
 const AVATAR_KEY = 'versyflow:profile:avatar';
 const NAME_KEY = 'versyflow:profile:name';
 
 export default function SettingsScreen() {
-  const navigate = useNavigate();
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const [tab, setTab] = useState<SettingsTab>('data');
 
   return (
@@ -133,7 +133,6 @@ function DataTab() {
 function ParamsTab() {
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
-  const user = useAuthStore((s) => s.user);
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   const signOut = useAuthStore((s) => s.signOut);
   const bibleTranslation = useSettingsStore((s) => s.bibleTranslation);
@@ -274,7 +273,7 @@ function ParamsTab() {
       </section>
 
       {isAuthenticated && (
-        <button onClick={handleSignOut} className="flex w-full items-center justify-center gap-2 rounded-full bg-surface p-4 text-base font-semibold text-error shadow-sm">
+        <button onClick={() => fireAndForget(handleSignOut(), 'settings:signOut')} className="flex w-full items-center justify-center gap-2 rounded-full bg-surface p-4 text-base font-semibold text-error shadow-sm">
           <HugeiconsIcon icon={LogOut} size={18} />
           {t('settings.signOut', 'Se déconnecter')}
         </button>
@@ -440,7 +439,7 @@ function ProfileTab() {
       </section>
 
       {isAuthenticated && (
-        <button onClick={handleSignOut} className="flex w-full items-center justify-center gap-2 rounded-full bg-surface p-4 text-base font-semibold text-error shadow-sm">
+        <button onClick={() => fireAndForget(handleSignOut(), 'settings:signOut')} className="flex w-full items-center justify-center gap-2 rounded-full bg-surface p-4 text-base font-semibold text-error shadow-sm">
           <HugeiconsIcon icon={LogOut} size={18} />
           {t('settings.signOut', 'Se déconnecter')}
         </button>

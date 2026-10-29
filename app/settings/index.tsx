@@ -27,6 +27,7 @@ import { ProfileAvatar } from '@/components/profile/ProfileAvatar';
 import { useAuthStore } from '@/store/auth-store';
 import { useSettingsStore, type BibleVersionType } from '@/store/settings-store';
 import { getTranslationDisplayInfo } from '@/services/bible-translation-names';
+import { fireAndForget } from '@/lib/fire-and-forget';
 
 type Row = { label: string; icon: IconSvgElement; to: string };
 
@@ -46,7 +47,7 @@ export default function SettingsScreen() {
   const [showConfirm, setShowConfirm] = useState(false);
 
   const handleSignOut = () => {
-    signOut();
+    fireAndForget(signOut(), 'settings:signOut');
     navigate('/auth');
   };
 

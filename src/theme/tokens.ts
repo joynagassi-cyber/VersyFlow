@@ -327,7 +327,14 @@ export function getThemeColors(mode: ThemeMode) {
   return mode === 'dark' ? ColorsDark : Colors;
 }
 
-export function getThemeShadow(size: keyof typeof Shadows, mode: ThemeMode) {
+/**
+ * Elevation is intentionally mode-independent: the same offset/blur/opacity
+ * pair is readable on both the light and the dark surface (the dark theme
+ * compensates through its surface colours, not through a heavier shadow).
+ * `_mode` is kept in the signature so callers do not have to branch, and is
+ * named with a leading underscore to say so out loud.
+ */
+export function getThemeShadow(size: keyof typeof Shadows, _mode: ThemeMode) {
   return Shadows[size];
 }
 
