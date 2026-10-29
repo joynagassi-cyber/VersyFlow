@@ -131,14 +131,13 @@ export default function HomeScreen() {
   ];
 
   return (
-    <div className="h-full overflow-y-auto bg-background p-4 pb-24">
+    <div className="sf-screen">
       {/* Header */}
       <div className="flex items-start justify-between">
         <div className="flex-1">
-          <h1 className="text-2xl font-bold text-text-primary">
-            {t('home.greeting', 'Bonjour')} 👋
-          </h1>
-          <p className="mt-1 text-sm capitalize text-text-muted">{dateLabel}</p>
+          <p className="sf-label-caps">{t('home.today', "Aujourd'hui")}</p>
+          <h1 className="sf-title mt-2">{t('home.greeting', 'Bonjour')}</h1>
+          <p className="mt-2 text-sm capitalize text-text-muted">{dateLabel}</p>
           {activeFamily && (
             <span className="mt-2 inline-flex items-center gap-1 rounded-full bg-icon-bg-rose px-2.5 py-1 text-xs font-semibold text-primary">
               <Users size={12} />
@@ -156,7 +155,7 @@ export default function HomeScreen() {
       </div>
 
       {/* Hero card — streak + due reviews, premium gradient */}
-      <div className="gradient-hero glow-primary relative mt-5 overflow-hidden rounded-3xl p-5 text-white">
+      <div className="sf-hero mt-5">
         <div className="flex items-center justify-between">
           <div>
             <p className="text-xs font-semibold uppercase tracking-widest text-white/80">
@@ -203,7 +202,7 @@ export default function HomeScreen() {
       </div>
 
       {/* Quick actions grid */}
-      <h2 className="mb-3 mt-8 text-lg font-bold text-text-primary">
+      <h2 className="sf-section-title">
         {t('home.quickActions', 'Actions rapides')}
       </h2>
       <div className="grid grid-cols-2 gap-3">
@@ -211,7 +210,7 @@ export default function HomeScreen() {
           <button
             key={label}
             onClick={action}
-            className="flex flex-col items-center rounded-2xl bg-surface p-4 shadow-sm transition-transform active:scale-[0.98]"
+            className="sf-card-flat flex flex-col items-center !mb-0 transition-transform active:scale-[0.98]"
           >
             <span className={cn('mb-2 flex h-12 w-12 items-center justify-center rounded-full', bg)}>
               <Icon size={24} className={color} />
@@ -223,10 +222,10 @@ export default function HomeScreen() {
       </div>
 
       {/* Verse of the day */}
-      <h2 className="mb-3 mt-8 text-lg font-bold text-text-primary">
+      <h2 className="sf-section-title">
         {t('home.dailyVerse', 'Verset du jour')}
       </h2>
-      <div className="rounded-2xl bg-surface p-4 shadow-md">
+      <div className="sf-card">
         <div className="mb-3 flex items-center justify-between">
           <span className="inline-flex items-center gap-1.5 rounded-full bg-surface-tint px-3 py-1.5 text-xs font-semibold text-primary">
             <Star size={13} />
@@ -246,7 +245,7 @@ export default function HomeScreen() {
       </div>
 
       {/* Recently memorized */}
-      <h2 className="mb-3 mt-8 text-lg font-bold text-text-primary">
+      <h2 className="sf-section-title">
         {t('progress.recentVerses', 'Récemment mémorisés')}
       </h2>
       <div className="flex gap-4 overflow-x-auto pb-2">
@@ -265,7 +264,7 @@ export default function HomeScreen() {
                     : '/bible/chapter',
                 )
               }
-              className="w-40 shrink-0 rounded-xl bg-surface p-4 text-left shadow-sm"
+              className="sf-card-flat w-40 shrink-0 text-left !mb-0"
             >
               <span
                 className={cn(

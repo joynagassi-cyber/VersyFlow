@@ -1,4 +1,4 @@
-/* VersyFlow Global Styles - "Vif & inspirant" brand system */
+/* VersyFlow Global Styles — "Sacred Focus Scripture" (voir src/styles/sacred-focus.css) */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -6,28 +6,28 @@
 :root,
 :root[data-theme='light'] {
   /* Primary - Vivid Magenta (from the logo) */
-  --color-primary: #d81b97;
-  --color-primary-light: #ff9ee0;
-  --color-primary-dark: #a60d6e;
+  --color-primary: #d81b60;
+  --color-primary-light: #ffb2bf;
+  --color-primary-dark: #90003b;
 
   /* Accent - logo red (for secondary CTAs / highlights) */
-  --color-accent: #ff2d55;
-  --color-accent-light: #ff7a93;
+  --color-accent: #c2185b;
+  --color-accent-light: #ffb2bf;
 
   /* Backgrounds (neutral white — accent stays in --color-*) */
-  --color-background: #FFFFFF;
+  --color-background: #fbf9f9;
   --color-surface: #ffffff;
-  --color-surface-tint: #f5f5f7;
+  --color-surface-tint: #f5f3f3;
   --color-surface-elevated: #ffffff;
 
   /* Borders & Dividers */
-  --color-border: #e5e5ea;
-  --color-divider: #f0f0f2;
+  --color-border: #e3bdc3;
+  --color-divider: #efeded;
 
   /* Text */
-  --color-text-primary: #1c1c1e;
-  --color-text-secondary: #48484c;
-  --color-text-tertiary: #6e6e73;
+  --color-text-primary: #1b1c1c;
+  --color-text-secondary: #5a4044;
+  --color-text-tertiary: #767676;
   --color-text-muted: #98989e;
   --color-text-placeholder: #c7c7cc;
 
@@ -278,7 +278,7 @@
     box-shadow:
       0 1px 2px rgba(28, 26, 26, 0.03),
       0 8px 24px -6px rgba(28, 26, 26, 0.08),
-      0 20px 48px -16px rgba(216, 27, 151, 0.10);
+      0 20px 48px -16px rgba(216, 27, 96, 0.10);
     transition: box-shadow 240ms cubic-bezier(0.4, 0, 0.2, 1),
                 transform 240ms cubic-bezier(0.4, 0, 0.2, 1);
   }
@@ -286,7 +286,7 @@
     box-shadow:
       0 2px 4px rgba(28, 26, 26, 0.04),
       0 14px 36px -8px rgba(28, 26, 26, 0.10),
-      0 28px 64px -20px rgba(216, 27, 151, 0.14);
+      0 28px 64px -20px rgba(216, 27, 96, 0.14);
   }
 
   /* Radial primary tint (glow) at the top of the card */
@@ -347,14 +347,14 @@
     letter-spacing: 0.01em;
     cursor: pointer;
     box-shadow:
-      0 1px 2px rgba(166, 13, 110, 0.25),
-      0 8px 20px -4px rgba(216, 27, 151, 0.45);
+      0 1px 2px rgba(144, 0, 59, 0.25),
+      0 8px 20px -4px rgba(216, 27, 96, 0.45);
     transition: transform 160ms cubic-bezier(0.34, 1.56, 0.64, 1),
                 box-shadow 160ms ease,
                 filter 160ms ease;
   }
   .mw-pill:hover { transform: translateY(-1px); filter: brightness(1.04); }
-  .mw-pill:active { transform: translateY(0); box-shadow: 0 1px 2px rgba(166, 13, 110, 0.2); }
+  .mw-pill:active { transform: translateY(0); box-shadow: 0 1px 2px rgba(144, 0, 59, 0.2); }
   .mw-pill:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
 
   /* Ghost / secondary pill */
@@ -524,7 +524,7 @@
     box-shadow:
       0 1px 2px rgba(28, 26, 26, 0.04),
       0 10px 30px -8px rgba(28, 26, 26, 0.10),
-      0 28px 64px -18px rgba(216, 27, 151, 0.12);
+      0 28px 64px -18px rgba(216, 27, 96, 0.12);
     perspective: 1400px;
     overflow: hidden;
   }
@@ -769,11 +769,7 @@
 
   /* Vibrant hero gradient (magenta to accent) */
   .gradient-hero {
-    background: linear-gradient(
-      135deg,
-      var(--color-primary) 0%,
-      var(--color-accent) 100%
-    );
+    background: linear-gradient(145deg, #42283c 0%, #3b2234 45%, #63364a 100%);
   }
 
   /* Soft glow used behind heroes / onboarding */

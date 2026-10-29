@@ -43,12 +43,12 @@ const P = (
 ): AccentPreset => ({ key, label, swatch, light, dark });
 
 export const ACCENT_PRESETS: AccentPreset[] = [
-  P('magenta', 'Magenta', '#d81b97',
-    { primary: '#d81b97', primaryLight: '#ff9ee0', primaryDark: '#a60d6e', accent: '#ff2d55', accentLight: '#ff7a93' },
-    { primary: '#f472d6', primaryLight: '#ff9ee0', primaryDark: '#c21585', accent: '#ff5a7a', accentLight: '#ff8fa5' }),
+  P('magenta', 'Magenta', '#d81b60',
+    { primary: '#d81b60', primaryLight: '#ffb2bf', primaryDark: '#90003b', accent: '#ff2d55', accentLight: '#ff7a93' },
+    { primary: '#f472d6', primaryLight: '#ffb2bf', primaryDark: '#c21585', accent: '#ff5a7a', accentLight: '#ff8fa5' }),
   P('rose', 'Rose', '#e91e8c',
     { primary: '#e91e8c', primaryLight: '#ffb6cc', primaryDark: '#b30069', accent: '#ff5a7a', accentLight: '#ff8fa5' },
-    { primary: '#f472d6', primaryLight: '#ff9ee0', primaryDark: '#c21585', accent: '#ff5a7a', accentLight: '#ff8fa5' }),
+    { primary: '#f472d6', primaryLight: '#ffb2bf', primaryDark: '#c21585', accent: '#ff5a7a', accentLight: '#ff8fa5' }),
   P('red', 'Rubis', '#e11d48',
     { primary: '#e11d48', primaryLight: '#ffb3c4', primaryDark: '#9f1239', accent: '#ff2d55', accentLight: '#ff7a93' },
     { primary: '#fb7185', primaryLight: '#ffb3c4', primaryDark: '#be123c', accent: '#ff5a7a', accentLight: '#ff8fa5' }),
@@ -98,7 +98,7 @@ export function applyAccentPreset(key: string | null | undefined, isDark: boolea
   // static catalog hex), and its background is the applied portrait.
   if (colorThemeId) {
     const theme = findThemeById(colorThemeId);
-    const fallback = theme ? colorThemeValues(theme.color) : colorThemeValues('#d81b97');
+    const fallback = theme ? colorThemeValues(theme.color) : colorThemeValues('#d81b60');
     const src = themeImagePath(colorThemeId);
     // Apply the fallback immediately (synchronous, zero-flash), then
     // refine with the real extracted palette once the image is sampled.

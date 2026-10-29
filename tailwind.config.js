@@ -57,18 +57,20 @@ const config = {
         '2xl': '48px',
       },
       boxShadow: {
-        sm: '0 1px 2px rgba(0,0,0,0.03)',
-        md: '0 2px 4px rgba(0,0,0,0.05)',
-        lg: '0 4px 8px rgba(0,0,0,0.08)',
-        xl: '0 8px 16px rgba(0,0,0,0.1)',
-        rose: '0 4px 12px rgba(233,30,140,0.3)',
+        rose: '0 4px 12px rgba(216,27,96,0.3)',
       },
       fontFamily: {
         sans: [
-          '-apple-system', 'BlinkMacSystemFont', 'SF Pro Text',
+          'Inter', '-apple-system', 'BlinkMacSystemFont', 'SF Pro Text',
           'Roboto', 'Segoe UI', 'sans-serif',
         ],
         serif: ['Source Serif 4', 'Georgia', 'serif'],
+        display: ['"Playfair Display"', 'Georgia', 'serif'],
+      },
+      boxShadow: {
+        soft: '0 4px 20px -2px rgba(26,26,26,0.04)',
+        hero: '0 8px 24px -4px rgba(216,27,96,0.25)',
+        nav: '0 -4px 16px -2px rgba(0,0,0,0.03)',
       },
     },
   },
