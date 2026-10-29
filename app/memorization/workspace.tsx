@@ -27,9 +27,8 @@ import { HugeiconsIcon } from '@hugeicons/react';
 import {
   ArrowLeft01Icon as ArrowLeft,
   ArrowLeftRightIcon as ArrowLeftRight,
-  Loading03Icon as Loader2,
 } from '@hugeicons/core-free-icons';
-import { cn } from '@/lib/utils';
+
 import { useSettingsStore } from '@/store/settings-store';
 import { useMemorizationWorkspace, parseWorkspaceReference } from '@/hooks/useMemorizationWorkspace';
 import { ModeSwitcher, type ModeId } from '@/components/memorization/ModeSwitcher';

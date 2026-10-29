@@ -23,8 +23,7 @@ import { getFsrsEngine } from '@/services/fsrs-factory';
 import { ProgressService } from '@/services/progress-service';
 import type { ProgressStats } from '@/services/stats-calculator';
 import { cn } from '@/lib/utils';
-
-import { bibleTranslationDisplayName, getTranslationDisplayInfo } from '@/services/bible-translation-names';
+import { getTranslationDisplayInfo } from '@/services/bible-translation-names';
 
 function StatTile({ value, label }: { value: number; label: string }) {
   return (

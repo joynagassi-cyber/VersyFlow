@@ -7,7 +7,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ProfileAvatar } from '@/components/profile/ProfileAvatar';
 import { useActiveProfile } from '@/hooks/useActiveProfile';
-import { cn } from '@/lib/utils';
 
 /** Max length of the optional personal slogan (matches the DB column). */
 const SLOGAN_MAX_LENGTH = 60;

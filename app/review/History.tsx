@@ -9,7 +9,6 @@ import {
   CheckmarkCircle02Icon as CheckCircle2,
   RefreshIcon as RefreshCw,
   Medal01Icon as Medal,
-  Loading03Icon as Loader2,
 } from '@hugeicons/core-free-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { EmptyState } from '@/components/ui/EmptyState';

@@ -10,7 +10,6 @@ import { useTranslation } from 'react-i18next';
 import { HugeiconsIcon } from '@hugeicons/react';
 import {
   FlameIcon as Flame,
-  Loading03Icon as Loader2,
   TrendingUpIcon as TrendingUp,
   CheckmarkCircle01Icon as CheckCircle,
   Clock01Icon as Clock,

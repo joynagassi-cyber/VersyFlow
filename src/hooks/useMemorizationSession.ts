@@ -21,7 +21,7 @@ import type {
   MemorizationTarget,
   MemorizationTargetType,
 } from '@/domains/memorization/entities';
-import { useSettingsStore } from '@/store/settings-store';
+
 import type { SessionEngine } from '@/domains/memorization/session-engine';
 import type { MemorizationService } from '@/domains/memorization/service';
 import {

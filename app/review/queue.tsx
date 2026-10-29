@@ -12,8 +12,6 @@ import {
   AlertCircleIcon as AlertCircle,
   CheckmarkCircle01Icon as CheckCircle,
   Clock01Icon as Clock,
-  ChevronRightIcon as ChevronRight,
-  Loading03Icon as Loader2,
   PlayIcon as Play,
 } from '@hugeicons/core-free-icons';
 import FullScreenPage from '@/components/layout/FullScreenPage';

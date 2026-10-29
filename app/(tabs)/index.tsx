@@ -29,7 +29,6 @@ import { cn } from '@/lib/utils';
 import { motion } from 'motion/react';
 import { useActiveProfile } from '@/hooks/useActiveProfile';
 import { useFamilyStore } from '@/store/family-store';
-import { getFsrsEngine } from '@/services/fsrs-factory';
 import { StreakService } from '@/services/streak-service';
 import { getMemorizationService } from '@/services/memorization-service-factory';
 import type { MemorizationRecord } from '@/domains/memorization/entities';

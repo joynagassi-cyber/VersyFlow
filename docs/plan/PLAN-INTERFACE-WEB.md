@@ -204,6 +204,7 @@ une commande, et sa sortie au dernier passage.
 | **L8** | Rail tablette + un seul seuil par rôle | **FAIT** | `useIsRail` (768 px) · C09 `seuils: true · montage exclusif: true` |
 | **L9** | Journal des ajustements d'accent | **FAIT** | `npm run themes:contrast` → `500 paires, min 4.5:1` · `npx vitest run tests/design/accent-journal.test.ts` → 5 tests |
 | **L10** | Inventaire des parcours | **FAIT** | `npm run plan:journeys` → `16 parcours · actifs 16 · partiels 0 · absents 0` |
+| **L11** | Propreté du lint : imports morts + promesses flottantes | **FAIT** | `npx eslint` → **308 → 243 avertissements** (−65), **0 erreur** · `npx tsc` → 0 |
 
 ### Ce que chaque lot a réellement changé
 
@@ -234,6 +235,12 @@ une commande, et sa sortie au dernier passage.
   journal périmé.
 - **L10** — les 16 parcours sont confrontés aux routes, aux écrans, aux tests et
   aux données présentes : l'état est calculé, jamais déclaré.
+- **L11** — **62 bindings d'import inutilisés** retirés (dont 15 icônes laissées
+  par la migration L3 sur 70 fichiers) et **3 promesses flottantes** préfixées de
+  `void` (aucun rejet silencieux ne disparaît plus dans la console).
+  Reste **243** avertissements, mesurés : `Primitives.tsx` (shim React Native)
+  128 · `useMemorizationSession` 35 · `auth-store` 20 · `settings-store` 10 ·
+  le reste sur les écrans. Prochain lot : typer le shim, puis les stores.
 
 ## 5. Définition de fini (globale) — résultat mesuré
 

@@ -4,14 +4,12 @@ import { useTranslation } from 'react-i18next';
 import type { IconSvgElement } from '@hugeicons/react';
 import { HugeiconsIcon } from '@hugeicons/react';
 import {
-  UserIcon as User,
   CloudIcon as Cloud,
   PaletteIcon as Palette,
   LanguagesIcon as Languages,
   Calendar01Icon as Calendar,
   BellIcon as Bell,
   Shield01Icon as Shield,
-  BookOpen01Icon as BookOpen,
   LogOutIcon as LogOut,
   ChevronRightIcon as ChevronRight,
   SparklesIcon as Sparkles,

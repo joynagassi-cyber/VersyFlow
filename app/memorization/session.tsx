@@ -9,7 +9,6 @@ import { useNavigate, useSearchParams } from 'react-router-dom';import { useTran
 import { HugeiconsIcon } from '@hugeicons/react';
 import {
   Cancel01Icon as X,
-  Loading03Icon as Loader2,
   ArrowLeft01Icon as ArrowLeft,
   ArrowRight01Icon as ArrowRight,
   CheckmarkCircle01Icon as CheckCircle,
@@ -17,11 +16,9 @@ import {
 import FullScreenPage from '@/components/layout/FullScreenPage';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-
 import { resolveBibleTextSource } from '@/services/bible-text-service';
 import { getFsrsEngine } from '@/services/fsrs-factory';
 import { createLocalBibleRepository, createWorkspaceEngine, Rating, type MemorizationSessionEngine } from '@/services/memorization-session-service';
-
 import { resolveBookIdFromText as resolveBookId } from '@/services/memorization-session-service';
 import { useActiveProfile } from '@/hooks/useActiveProfile';
 import { useSettingsStore } from '@/store/settings-store';
@@ -32,7 +29,6 @@ import { eventBus, DomainEventTypes } from '@/services/events-service';
 /** Resolve the authenticated user id (or null when not signed in). */
 const resolveUserId = async (): Promise<string | null> =>
   getSyncUserIdProvider().resolveUserId();
-
 
 /** Parse a "Jean 3:16" / "Psalm 23" style reference into coordinates */
 function parseReference(reference: string) {
@@ -154,7 +150,7 @@ export default function MemorizationSession() {
       }
     }
 
-    init();
+    void init();
     return () => {
       cancelled = true;
     };

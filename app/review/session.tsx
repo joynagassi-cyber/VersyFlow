@@ -10,7 +10,6 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { HugeiconsIcon } from '@hugeicons/react';
 import {
-  Loading03Icon as Loader2,
   Bookmark01Icon as Bookmark,
   HandIcon as Hand,
   RefreshIcon as RefreshCw,

@@ -12,7 +12,6 @@ import {
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { Button } from '@/components/ui/button';
 import { Logo } from '@/components/brand/Logo';
-import { cn } from '@/lib/utils';
 import { useAppearanceStore } from '@/store/appearance-store';
 import { notificationService } from '@/services/notification-service';
 

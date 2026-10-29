@@ -24,13 +24,13 @@ import {
 } from '@hugeicons/core-free-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { BIBLE_TRANSLATION_REGISTRY as DEFAULT_BIBLE_TRANSLATIONS } from '@/services/translation-preference-service';
-import { bibleTranslationDisplayName, getTranslationDisplayInfo } from '@/services/bible-translation-names';
+import { getTranslationDisplayInfo } from '@/services/bible-translation-names';
 import {
   downloadAndLoadTranslationData,
   loadTranslationData,
   BIBLE_DATASET_CATALOG,
 } from '@/services/bible-text-service';
-import { EmptyState } from '@/components/ui/EmptyState';
+
 import { useSettingsStore } from '@/store/settings-store';
 import { cn } from '@/lib/utils';
 

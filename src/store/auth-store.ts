@@ -9,11 +9,9 @@ import { persist, createJSONStorage } from 'zustand/middleware';
 import type { UserProfile } from '@/auth';
 import { SupabaseAuthService, AuthError } from '@/auth';
 import { useSyncStore, syncService } from '@/store/sync-store';
-import { getSyncUserIdProvider } from '@/infrastructure/repository/powersync-repositories';
 import { invalidateSyncUserIdProvider } from '@/infrastructure/repository/powersync-repositories';
 import {
   detachSyncCompletionHandlers,
-  attachSyncCompletionHandlers,
 } from '@/services/sync-completion-service';
 
 interface AuthState {

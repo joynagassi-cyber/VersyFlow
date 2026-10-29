@@ -12,7 +12,6 @@ import {
   FlameIcon as Flame,
   TrendingUpIcon as TrendingUp,
   TrendingDownIcon as TrendingDown,
-  Loading03Icon as Loader2,
 } from '@hugeicons/core-free-icons';
 import { useActiveProfile } from '@/hooks/useActiveProfile';
 import { getFsrsEngine } from '@/services/fsrs-factory';

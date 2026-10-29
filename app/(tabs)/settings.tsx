@@ -18,13 +18,11 @@ import {
   Download01Icon as Download,
   ShieldCheckIcon as ShieldCheck,
   InformationCircleIcon as Info,
-  FileTextIcon as FileText,
   HelpCircleIcon as HelpCircle,
   Delete02Icon as Trash2,
   LogOutIcon as LogOut,
   CheckIcon as Check,
   UserCircleIcon as CircleUserRound,
-  CloudDownloadIcon as DownloadCloud,
   LayoutGridIcon as LayoutGrid,
   BarChartIcon as BarChart3,
   TrendingUpIcon as TrendingUp,
@@ -35,7 +33,6 @@ import {
   Mail01Icon as Mail,
   UserRoundIcon as UserRound,
   PlusSignIcon as Plus,
-  FlameIcon as Flame,
 } from '@hugeicons/core-free-icons';
 import { cn } from '@/lib/utils';
 import { useAuthStore } from '@/store/auth-store';

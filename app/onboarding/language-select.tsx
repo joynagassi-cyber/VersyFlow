@@ -16,7 +16,6 @@ import {
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { SUPPORTED_LANGUAGES, isRTL } from '@/services/i18n-service';
-import { I18nService } from '@/services/i18n-service';
 import { useSettingsStore } from '@/store/settings-store';
 
 export default function LanguagePickerScreen() {

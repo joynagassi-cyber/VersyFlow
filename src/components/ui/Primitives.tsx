@@ -18,39 +18,15 @@
  *   </View>
  */
 
-import React, { forwardRef, useCallback, useMemo, useState, useEffect } from 'react';
+import React, { forwardRef, useCallback } from 'react';
 import {
   IonContent,
-  IonHeader,
-  IonToolbar,
-  IonTitle,
-  IonButtons,
-  IonButton,
   IonIcon as IonIonIcon,
   IonSpinner,
-  IonChip,
-  IonFab,
-  IonFabButton,
   IonList,
   IonItem,
   IonLabel,
-  IonToggle,
-  IonInput,
-  IonTextarea,
-  IonSelect,
-  IonSegment,
-  IonSegmentButton,
-  IonRefresher,
-  IonRefresherContent,
-  IonInfiniteScroll,
-  IonInfiniteScrollContent,
   IonModal,
-  IonPopover,
-  IonBackButton,
-  IonNav,
-  IonRouterLink,
-  IonPage,
-  IonFooter,
 } from '@ionic/react';
 // useTheme imported by components that need it
 import type { CSSProperties as ReactCSSProperties } from 'react';
@@ -1315,9 +1291,7 @@ const Platform = {
 };
 export { Platform };
 
-
 // ─── Barrel exports ───────────────────────────────────────────────────────────
-
 
 // ─── Keyboard (web compatible) ──────────────────────────────────────────────
 // On native (Capacitor) platforms, `document.activeElement.blur()` does NOT
@@ -1385,7 +1359,6 @@ export const Stack = (() => (props: { children?: React.ReactNode; screenOptions?
 };
 Stack.Screen = (() => null) as unknown as () => React.ReactElement;
 Stack.Group = ({ children }) => <>{children}</>;
-
 
 // ─── TextInput (web compatible) ────────────────────────────────────────────
 export const TextInput = React.forwardRef<HTMLTextAreaElement, any>(({

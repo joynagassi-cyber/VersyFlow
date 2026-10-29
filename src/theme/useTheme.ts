@@ -11,7 +11,6 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import {
-  Colors,
   ColorsDark,
   Typography,
   Spacing,

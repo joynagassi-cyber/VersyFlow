@@ -5,7 +5,7 @@
  */
 
 import { useCallback } from 'react';
-import { Alert, Platform } from '@/components/ui/Primitives';
+import { Alert } from '@/components/ui/Primitives';
 import { useMemoryCapability } from '@/capabilities/memory/store';
 import { useContextStore } from '@/store/context-store';
 import { useTranslation } from 'react-i18next';

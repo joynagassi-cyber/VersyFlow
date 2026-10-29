@@ -4,8 +4,6 @@
  * Do NOT hardcode colors in components — always use these tokens
  */
 
-import { StyleSheet, Platform } from '@/components/ui/Primitives';
-
 // ─── Color Palette ───────────────────────────────────────────────────────────
 
 export const Colors = {

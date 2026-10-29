@@ -5,7 +5,7 @@
 
 import React, { createContext, useContext } from 'react';
 import { useColorScheme } from '@/components/ui/Primitives';
-import { Colors, ColorsDark, getThemeColors, type ThemeMode } from './tokens';
+import { Colors, ColorsDark, type ThemeMode } from './tokens';
 
 /** Common color palette satisfied by both `Colors` (light) and `ColorsDark`. */
 type ColorPalette = typeof Colors | typeof ColorsDark;

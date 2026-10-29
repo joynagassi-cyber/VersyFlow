@@ -99,7 +99,7 @@ export function HamburgerMenu() {
               <button
                 onClick={() => {
                   closeMenu();
-                  signOut();
+                  void signOut();
                   navigate('/auth');
                 }}
                 className={cn(itemClass, 'text-error')}

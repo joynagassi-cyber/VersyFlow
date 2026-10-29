@@ -3,8 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { HugeiconsIcon } from '@hugeicons/react';
 import {
   BookOpen01Icon as BookOpen,
-  CheckmarkCircle02Icon as CheckCircle2,
-  FlameIcon as Flame,
   RefreshIcon as RefreshCw,
   TrendingUpIcon as TrendingUp,
   TrendingDownIcon as TrendingDown,
@@ -40,7 +38,7 @@ export default function AnalyticsDashboardScreen() {
   };
 
   useEffect(() => {
-    loadData();
+    void loadData();
   }, []);
 
   if (loading) {
