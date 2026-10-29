@@ -31,7 +31,7 @@ compté comme réussi : c'est une avancement mesuré, avec son numérateur.
 
 ## 2. État mesuré au dernier audit
 
-`node scripts/audit-plan.mjs` → **16 PASS · 0 PARTIEL · 0 FAIL · 4 non vérifiables**
+`node scripts/audit-plan.mjs` → **17 PASS · 0 PARTIEL · 0 FAIL · 4 non vérifiables**
 (audit du 29/10 après exécution des lots L1→L10).
 
 | ID | § | Contrôle | Verdict | Mesure |
@@ -52,6 +52,7 @@ compté comme réussi : c'est une avancement mesuré, avec son numérateur.
 | C14 | §11.2 | une famille de tests par contrat | **FAIT** | 9 fichiers, **103 tests** |
 | C15 | §0 | libellés fr + en | **FAIT** | 8 clés |
 | C16 | §4.6 | registres uniques (25 / 15 / 101) | **FAIT** | 1 source chacun |
+| C17 | §11.1 | dette de lint du shim RN mesurée | **FAIT** | exception documentée · **128 gelés, mesurés** |
 
 Non vérifiable ici : **U01** rendu à 390/768/1024/1440 px · **U02** débordement et
 positions · **U03** effet réel du verre · **U04** parcours métier sur données réelles.
@@ -205,6 +206,7 @@ une commande, et sa sortie au dernier passage.
 | **L9** | Journal des ajustements d'accent | **FAIT** | `npm run themes:contrast` → `500 paires, min 4.5:1` · `npx vitest run tests/design/accent-journal.test.ts` → 5 tests |
 | **L10** | Inventaire des parcours | **FAIT** | `npm run plan:journeys` → `16 parcours · actifs 16 · partiels 0 · absents 0` |
 | **L11** | Propreté du lint : imports morts + promesses flottantes | **FAIT** | `npx eslint` → **308 → 243 avertissements** (−65), **0 erreur** · `npx tsc` → 0 |
+| **L12** | Typage des stores + du hook de session ; dette du shim RN mesurée | **PARTIEL** | `npx eslint` → **243 → 57 avertissements** · C17 : **128 avertissements gelés, documentés et mesurés** |
 
 ### Ce que chaque lot a réellement changé
 
@@ -235,6 +237,19 @@ une commande, et sa sortie au dernier passage.
   journal périmé.
 - **L10** — les 16 parcours sont confrontés aux routes, aux écrans, aux tests et
   aux données présentes : l'état est calculé, jamais déclaré.
+- **L12** — trois sources de `any` supprimées à la racine :
+  `useMemorizationSession` passe de `useState<any>` à un
+  `MemorizationSessionState` explicite (18 champs, `phase` en union littérale) ;
+  `auth-store` remplace trois `as any` par un accesseur typé `extrasOf()` et
+  **corrige un vrai bug** : `getItem` renvoyait un objet déjà parsé alors que
+  `createJSONStorage` attend la chaîne (le `any` masquait l'erreur de type) ;
+  `settings-store` type la forme persistée et refuse une valeur d'un autre type
+  au lieu de la laisser passer. Résultat : **243 → 57 avertissements**.
+  Le **shim React Native** (`Primitives.tsx`) garde son contrat permissif : les
+  règles de propagation du `any` y sont **coupées pour ce fichier seul**, avec
+  une exception **documentée dans `.eslintrc.js`** et **mesurée par l'audit
+  C17** (128 avertissements gelés, pas supprimés). Sortie prévue : typer les 13
+  projections `{...rest}` en même temps que la migration des 3 écrans clients.
 - **L11** — **62 bindings d'import inutilisés** retirés (dont 15 icônes laissées
   par la migration L3 sur 70 fichiers) et **3 promesses flottantes** préfixées de
   `void` (aucun rejet silencieux ne disparaît plus dans la console).
@@ -246,9 +261,9 @@ une commande, et sa sortie au dernier passage.
 
 | # | Condition | Résultat |
 | --- | --- | --- |
-| 1 | `node scripts/audit-plan.mjs` → 0 FAIL, 0 PARTIEL | **16 PASS · 0 PARTIEL · 0 FAIL** (4 non vérifiables) |
+| 1 | `node scripts/audit-plan.mjs` → 0 FAIL, 0 PARTIEL | **17 PASS · 0 PARTIEL · 0 FAIL** (4 non vérifiables) |
 | 2 | `npx tsc -p tsconfig.app.json --noEmit` | **0 erreur** |
-| 3 | `npx eslint` sur le périmètre | **0 erreur** (308 avertissements non bloquants) |
+| 3 | `npx eslint` sur le périmètre | **0 erreur · 57 avertissements** (308 au départ ; 128 autres gelés et mesurés par C17) |
 | 4 | `npx vitest run tests/design` | **103 tests / 9 fichiers, tous verts** |
 | 5 | `npx vite build` | **✓ 12,9 s**, `index-*.js` 436,86 kB (124,31 kB gzip) |
 | 6 | `grep -rn "setProperty" app/` | **0** (le thème n'est plus écrit par un écran) |

@@ -38,13 +38,36 @@ export interface MemorizationSessionDeps {
   fsrsEngine?: IFsrsEngine;
 }
 
+/** État d'une session de mémorisation, tel que rendu par le hook. */
+export interface MemorizationSessionState {
+  phase: 'preview' | 'revealing' | 'confirmed' | 'abandoned';
+  verseText: string;
+  reference: string;
+  bookId: string;
+  chapter: number;
+  verse: number;
+  translationId: string;
+  words: string[];
+  revealedWords: Set<number>;
+  wordsRevealed: number;
+  startTime: number;
+  isComplete: boolean;
+  rating: Rating | null;
+  nextReviewAt: number;
+  targetId?: string;
+  targetType: MemorizationTargetType;
+  currentVerseIndex: number;
+  totalVerses: number;
+  completedAt?: number;
+}
+
 /**
  * Hook personnalisé pour la gestion de session de méméorisation
  * Fournit les méthodes pour démarrer, avancer et terminer une session
  * Supporte single-verse et passage (multiple versets)
  */
 export function useMemorizationSession(deps?: MemorizationSessionDeps) {
-  const [sessionState, setSessionState] = useState<any>(null);
+  const [sessionState, setSessionState] = useState<MemorizationSessionState | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
 
   // useRef pour le service et le session engine — lié au cycle de vie du hook, pas singleton module-level
@@ -134,7 +157,7 @@ export function useMemorizationSession(deps?: MemorizationSessionDeps) {
    */
   const startRevealing = useCallback(() => {
     if (sessionState && sessionState.phase === 'preview') {
-      setSessionState((prev: any) => ({ ...prev, phase: 'revealing' }));
+      setSessionState((prev) => (prev ? { ...prev, phase: 'revealing' } : prev));
     }
   }, [sessionState]);
 
@@ -158,11 +181,11 @@ export function useMemorizationSession(deps?: MemorizationSessionDeps) {
 
     if (nextIndex !== -1) {
       revealed.add(nextIndex);
-      setSessionState((prev: any) => ({
+      setSessionState((prev) => (prev ? {
         ...prev,
         revealedWords: revealed,
         wordsRevealed: revealed.size,
-      }));
+      } : prev));
     }
 
     return nextIndex;
@@ -178,11 +201,11 @@ export function useMemorizationSession(deps?: MemorizationSessionDeps) {
     const revealed = new Set(sessionState.revealedWords);
     if (!revealed.has(index)) {
       revealed.add(index);
-      setSessionState((prev: any) => ({
+      setSessionState((prev) => (prev ? {
         ...prev,
         revealedWords: revealed,
         wordsRevealed: revealed.size,
-      }));
+      } : prev));
     }
   }, [sessionState]);
 
@@ -196,7 +219,7 @@ export function useMemorizationSession(deps?: MemorizationSessionDeps) {
 
     const moved = engine.revealNextVerse();
     if (moved) {
-      setSessionState((prev: any) => ({
+      setSessionState((prev) => (prev ? {
         ...prev,
         verseText: engine.getState().verseText,
         words: engine.getState().words,
@@ -205,7 +228,7 @@ export function useMemorizationSession(deps?: MemorizationSessionDeps) {
         currentVerseIndex: engine.getCurrentVerseIndex(),
         totalVerses: engine.getTotalVerses(),
         phase: 'preview' as const,
-      }));
+      } : prev));
       return true;
     }
     return false;
@@ -220,7 +243,7 @@ export function useMemorizationSession(deps?: MemorizationSessionDeps) {
 
     const moved = engine.revealPrevVerse();
     if (moved) {
-      setSessionState((prev: any) => ({
+      setSessionState((prev) => (prev ? {
         ...prev,
         verseText: engine.getState().verseText,
         words: engine.getState().words,
@@ -229,7 +252,7 @@ export function useMemorizationSession(deps?: MemorizationSessionDeps) {
         currentVerseIndex: engine.getCurrentVerseIndex(),
         totalVerses: engine.getTotalVerses(),
         phase: 'preview' as const,
-      }));
+      } : prev));
       return true;
     }
     return false;
@@ -247,7 +270,7 @@ export function useMemorizationSession(deps?: MemorizationSessionDeps) {
 
     // Restaurer le state de révélation dans l'engine existant
     engine.startPreview();
-    Array.from(sessionState.revealedWords as Set<number>).forEach((index: number) => {
+    Array.from(sessionState.revealedWords).forEach((index: number) => {
       engine.revealWordAt(index);
     });
 
@@ -276,7 +299,7 @@ export function useMemorizationSession(deps?: MemorizationSessionDeps) {
       ...sessionState,
       rating: effectiveRating,
       completedAt: Date.now(),
-      phase: 'confirmed',
+      phase: 'confirmed' as const,
     };
 
     setSessionState(completedState);
@@ -288,21 +311,21 @@ export function useMemorizationSession(deps?: MemorizationSessionDeps) {
    */
   const resetSession = useCallback(() => {
     if (!sessionState) return;
-    setSessionState((prev: any) => ({
+    setSessionState((prev) => (prev ? {
       ...prev,
       phase: 'preview',
       revealedWords: new Set<number>(),
       wordsRevealed: 0,
       isComplete: false,
       rating: null,
-    }));
+    } : prev));
   }, [sessionState]);
 
   /**
    * Abandonne la session
    */
   const abandonSession = useCallback(() => {
-    setSessionState((prev: any) => ({ ...prev, phase: 'abandoned' }));
+    setSessionState((prev) => (prev ? { ...prev, phase: 'abandoned' } : prev));
   }, []);
 
   /**

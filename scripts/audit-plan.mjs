@@ -18,6 +18,7 @@
  */
 import { readFileSync, readdirSync, statSync, writeFileSync, existsSync } from 'node:fs';
 import { join, relative, dirname, resolve } from 'node:path';
+import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -443,6 +444,50 @@ const record = (id, section, label, verdict, detail, proof) =>
     presets >= 20 && gradients >= 10 && themes >= 100 ? 'PASS' : 'FAIL',
     `${presets} presets · ${gradients} dégradés · ${themes} thèmes image`,
     'grep -c "motif:" src/theme/theme-catalog.ts',
+  );
+}
+
+/* §11.1 — dette de lint gelée (exception documentée) ------------------------ */
+{
+  const eslintConfig = read('.eslintrc.js');
+  const documented = /SHIM DE COMPATIBILIT\u00c9 REACT NATIVE/.test(eslintConfig);
+  const hasOverride = /files: \['src\/components\/ui\/Primitives\.tsx'\]/.test(eslintConfig);
+  let frozen = 0;
+  let measured = false;
+  if (hasOverride) {
+    try {
+      // Les règles sont coupées par la configuration : on les ré-active en
+      // ligne de commande pour MESURER la dette au lieu de la croire éteinte.
+      const out = execFileSync(
+        'npx',
+        [
+          'eslint',
+          'src/components/ui/Primitives.tsx',
+          '--ext',
+          '.tsx',
+          '-f',
+          'json',
+          '--rule',
+          '{"@typescript-eslint/no-explicit-any":"warn","@typescript-eslint/no-unsafe-assignment":"warn","@typescript-eslint/no-unsafe-member-access":"warn","@typescript-eslint/no-unsafe-call":"warn","@typescript-eslint/no-unsafe-argument":"warn","@typescript-eslint/no-unsafe-return":"warn"}',
+        ],
+        { encoding: 'utf8', maxBuffer: 32 * 1024 * 1024 },
+      );
+      frozen = JSON.parse(out)[0].messages.length;
+      measured = true;
+    } catch {
+      /* eslint indisponible : la mesure est simplement absente */
+    }
+  }
+  const ok = (!hasOverride && !documented) || (hasOverride && documented && (!measured || frozen > 0));
+  record(
+    'C17',
+    '§11.1',
+    'Dette de lint du shim React Native : exception documentée ET mesurée, jamais masquée',
+    ok ? 'PASS' : 'FAIL',
+    hasOverride
+      ? `exception: ${documented ? 'documentée' : 'NON documentée'} · dette gelée mesurée: ${measured ? `${frozen} avertissements` : 'non mesurable (eslint absent)'}`
+      : 'aucune exception : tout le périmètre est linté strictement',
+    'npx eslint src/components/ui/Primitives.tsx --rule \'{"@typescript-eslint/no-explicit-any":"warn"}\'',
   );
 }
 

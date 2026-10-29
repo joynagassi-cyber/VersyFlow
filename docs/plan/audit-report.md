@@ -1,9 +1,9 @@
 # Rapport d’audit — plan « Interface web + thèmes »
 
 Généré par `node scripts/audit-plan.mjs`. **Ne pas éditer à la main.**
-Exécuté le 2026-10-29 19:24 (UTC).
+Exécuté le 2026-10-29 20:04 (UTC).
 
-**Bilan : 16 PASS · 0 PARTIEL · 0 FAIL · 4 non vérifiable(s).**
+**Bilan : 17 PASS · 0 PARTIEL · 0 FAIL · 4 non vérifiable(s).**
 
 | ID | § | Verdict | Contrôle | Mesure |
 | --- | --- | --- | --- | --- |
@@ -23,6 +23,7 @@ Exécuté le 2026-10-29 19:24 (UTC).
 | C14 | §11.2 | **PASS** | Chaque famille de contrat a un test dédié | 9 fichiers · 7/7 familles couvertes |
 | C15 | §0 | **PASS** | Les libellés ajoutés existent en français et en anglais | fr manquants: aucun · en manquants: aucun |
 | C16 | §4.6 | **PASS** | Registres de thèmes : presets, dégradés et thèmes image déclarés une seule fois | 25 presets · 15 dégradés · 101 thèmes image |
+| C17 | §11.1 | **PASS** | Dette de lint du shim React Native : exception documentée ET mesurée, jamais masquée | exception: documentée · dette gelée mesurée: 128 avertissements |
 
 ## Non vérifiable ici
 
@@ -51,3 +52,4 @@ Exécuté le 2026-10-29 19:24 (UTC).
 - C14 : `npx vitest run tests/design`
 - C15 : `npx vitest run tests/unit/i18n/parity.test.ts`
 - C16 : `grep -c "motif:" src/theme/theme-catalog.ts`
+- C17 : `npx eslint src/components/ui/Primitives.tsx --rule '{"@typescript-eslint/no-explicit-any":"warn"}'`

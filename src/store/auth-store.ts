@@ -34,9 +34,22 @@ interface AuthState {
 // Auth service singleton
 const authService = new SupabaseAuthService();
 
+/**
+ * Le service d'authentification renvoie l'utilisateur brut (forme Supabase) :
+ * deux champs ne font pas partie de son type public. Une fonction les nomme
+ * une fois, plutôt que trois `as any` dispersés.
+ */
+interface AuthUserExtras {
+  display_name?: string;
+  default_translation?: string;
+}
+function extrasOf(user: unknown): AuthUserExtras {
+  return (user ?? {}) as AuthUserExtras;
+}
+
 export const useAuthStore = create<AuthState>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       user: null,
       isAuthenticated: false,
       isLoading: false,
@@ -52,8 +65,8 @@ export const useAuthStore = create<AuthState>()(
             user: {
               userId: user.id,
               email: user.email || email,
-              display_name: (user as any).display_name,
-              default_translation: (user as any).default_translation,
+              display_name: extrasOf(user).display_name,
+              default_translation: extrasOf(user).default_translation,
             },
             isAuthenticated: true,
             isLoading: false,
@@ -123,8 +136,8 @@ export const useAuthStore = create<AuthState>()(
               user: {
                 userId: user.id,
                 email: user.email || '',
-                display_name: (user as any).display_name,
-                default_translation: (user as any).default_translation,
+                display_name: extrasOf(user).display_name,
+                default_translation: extrasOf(user).default_translation,
               },
               isAuthenticated: true,
               isLoading: false,
@@ -154,8 +167,8 @@ export const useAuthStore = create<AuthState>()(
               user: {
                 userId: refreshed.id,
                 email: refreshed.email || '',
-                display_name: (refreshed as any).display_name,
-                default_translation: (refreshed as any).default_translation,
+                display_name: extrasOf(refreshed).display_name,
+                default_translation: extrasOf(refreshed).default_translation,
               },
               isAuthenticated: true,
             });
@@ -173,8 +186,11 @@ export const useAuthStore = create<AuthState>()(
       name: 'versyflow-auth-storage',
       storage: createJSONStorage(() => ({
         getItem: async (key: string) => {
+          // `createJSONStorage` fait lui-même le JSON.parse : renvoyer l'objet
+          // déjà parsé était une erreur que `any` masquait. On renvoie la
+          // chaîne brute, telle que l'adaptateur l'attend.
           const value = await capacitorStorage.get(key);
-          return value ? JSON.parse(value) : null;
+          return value ?? null;
         },
         setItem: async (key: string, value: string) => {
           await capacitorStorage.set(key, value);
