@@ -16,7 +16,7 @@ import { useEffect } from 'react';
 import { useAppearanceStore } from '@/store/appearance-store';
 import { useTheme } from '@/theme/useTheme';
 import { applyAccentPreset, clearAccentPreset } from '@/theme/theme-presets';
-import { applyReadingVars, findBibleFont, loadBibleFont } from '@/theme/theme-fonts';
+import { applyReadingVars, findBibleFont, findUiFont, loadBibleFont } from '@/theme/theme-fonts';
 import { GRADIENTS } from '@/theme/tweakcn-presets';
 
 /** Preset tweakcn appliqué quand aucun choix explicite n'est persisté. */
@@ -28,6 +28,7 @@ export function ThemeManager() {
   const presetId = useAppearanceStore((s) => s.presetId);
   const backgroundType = useAppearanceStore((s) => s.backgroundType);
   const gradientId = useAppearanceStore((s) => s.gradientId);
+  const uiFontId = useAppearanceStore((s) => s.uiFontId);
   const colorThemeId = useAppearanceStore((s) => s.colorThemeId);
   const bibleFontFamily = useAppearanceStore((s) => s.bibleFontFamily);
   const bibleFontSize = useAppearanceStore((s) => s.bibleFontSize);
@@ -75,6 +76,13 @@ export function ThemeManager() {
   useEffect(() => {
     void loadBibleFont(bibleFontFamily);
   }, [bibleFontFamily]);
+
+  // Police d'interface personnalisée : écrase --font-sans du preset.
+  useEffect(() => {
+    const font = findUiFont(uiFontId);
+    if (font.id !== 'system') void loadBibleFont(font.id);
+    document.documentElement.style.setProperty('--font-sans', font.family);
+  }, [uiFontId]);
 
   useEffect(() => {
     applyReadingVars({

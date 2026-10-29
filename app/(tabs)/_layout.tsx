@@ -1,6 +1,7 @@
 import { IonPage, IonFab, IonFabButton } from '@ionic/react';
 import { Outlet, useNavigate } from 'react-router-dom';
-import { Plus, LayoutGrid } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import { Menu01Icon, PlusSignIcon } from '@hugeicons/core-free-icons';
 import SyncStatusIndicator from '@/components/common/SyncStatusIndicator';
 import { BottomTabs } from '@/components/navigation/BottomTabs';
 import { QuickDock } from '@/components/navigation/QuickDock';
@@ -27,7 +28,7 @@ export default function TabLayout() {
               className="rounded-full p-1.5 active:bg-surface-tint"
               aria-label="Ouvrir le menu"
             >
-              <LayoutGrid size={22} className="text-text-primary" />
+              <HugeiconsIcon icon={Menu01Icon} size={23} color="var(--color-text-primary)" />
             </button>
             <div className="flex items-center gap-2">
               <Logo size={24} />
@@ -47,7 +48,7 @@ export default function TabLayout() {
               onClick={() => navigate('/memorization/session')}
               aria-label="Nouvelle session de memorisation"
             >
-              <Plus size={24} />
+              <HugeiconsIcon icon={PlusSignIcon} size={24} />
             </IonFabButton>
           </IonFab>
 

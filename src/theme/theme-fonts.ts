@@ -90,3 +90,21 @@ export function applyReadingVars(vars: ReadingVars): void {
   root.style.setProperty('--reading-letter-spacing', `${vars.letterSpacing}em`);
   root.style.setProperty('--reading-line-length', `${vars.lineLength}em`);
 }
+
+/**
+ * Six polices d'INTERFACE sélectionnables (personnalisation) — familles
+ * élégantes déjà auto-hébergées via @fontsource, chargées à la demande
+ * avec le même chargeur que les polices de lecture.
+ */
+export interface UiFontEntry { id: string; label: string; family: string; style: string }
+export const UI_FONTS: UiFontEntry[] = [
+  { id: 'system', label: 'Inter — Moderne', family: "'Inter', -apple-system, 'Segoe UI', sans-serif", style: 'Clair et contemporain' },
+  { id: 'playfair-display', label: 'Playfair — Éditorial', family: "'Playfair Display', Georgia, serif", style: 'Élégant, haut de gamme' },
+  { id: 'lora', label: 'Lora — Littéraire', family: "'Lora', Georgia, serif", style: 'Doux et chaleureux' },
+  { id: 'spectral', label: 'Spectral — Raffiné', family: "'Spectral', Georgia, serif", style: 'Fin et précieux' },
+  { id: 'crimson-pro', label: 'Crimson — Classique', family: "'Crimson Pro', Georgia, serif", style: 'Traditionnel et noble' },
+  { id: 'merriweather', label: 'Merriweather — Lecture', family: "'Merriweather', Georgia, serif", style: 'Robuste et lisible' },
+];
+export function findUiFont(id: string | null | undefined): UiFontEntry {
+  return UI_FONTS.find((f) => f.id === id) ?? UI_FONTS[0];
+}

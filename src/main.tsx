@@ -427,17 +427,47 @@ function BootSplash() {
   );
 }
 
+/**
+ * Indicateur de navigation : NE DOIT JAMAIS ressembler à un redémarrage.
+ * Petit anneau discret, aucun texte, aucun écran plein.
+ */
+function RouteLoader() {
+  return (
+    <div className="flex h-full items-center justify-center" aria-label="Chargement">
+      <div className="h-8 w-8 animate-spin rounded-full border-[3px] border-[var(--color-border)] border-t-[var(--color-primary)]" />
+    </div>
+  );
+}
+
+/** Précharge les pages principales après le premier rendu : les
+ *  navigations deviennent instantanées, le fallback ne s'affiche plus. */
+function preloadMainPages() {
+  const load = () => {
+    void import('../app/(tabs)/index');
+    void import('../app/(tabs)/explore');
+    void import('../app/(tabs)/progress');
+    void import('../app/(tabs)/settings');
+    void import('../app/onboarding/welcome');
+    void import('../app/bible/explorer');
+    void import('../app/review/queue');
+    void import('../app/memorization/session');
+  };
+  if (typeof requestIdleCallback === 'function') requestIdleCallback(load);
+  else setTimeout(load, 600);
+}
+
 let rendered = false;
 function renderApp() {
   if (rendered) return;
   rendered = true;
   root.render(
     <I18nextProvider i18n={i18next}>
-      <Suspense fallback={<BootSplash />}>
+      <Suspense fallback={<RouteLoader />}>
         <App />
       </Suspense>
     </I18nextProvider>,
   );
+  preloadMainPages();
 }
 
 // Ne jamais rester sur un écran blanc : si l'initialisation (i18n, stores,

@@ -206,6 +206,7 @@ async function main() {
     css.push(styleVars(merged.dark));
     css.push(BRIDGE);
     css.push('}', '');
+    byId[h.id] = { id: h.id, label: h.label, light: merged.light, dark: merged.dark };
     hybridMetas.push(
       `  { id: '${h.id}', label: ${JSON.stringify(h.label)}, swatch: '${merged.light.primary}', hybrid: true },`,
     );
@@ -224,12 +225,13 @@ async function main() {
     ' * GÉNÉRÉ par scripts/import-official-themes.mjs — métadonnées des presets',
     ' * officiels tweakcn + des 5 hybrides fusionnés depuis leurs tokens.',
     ' */',
-    'export interface TweakcnPresetMeta { id: string; label: string; swatch: string; hybrid?: boolean }',
+    'export interface TweakcnPresetMeta { id: string; label: string; swatch: string; hybrid?: boolean; bg: string; card: string; fg: string; primary: string; accent: string; muted: string; primaryFg: string }',
     'export const TWEAKCN_PRESETS: TweakcnPresetMeta[] = [',
-    ...presets.map(
-      (p) =>
-        `  { id: '${p.id}', label: ${JSON.stringify(p.label)}, swatch: '${p.light.primary}'${hybridIds.has(p.id) ? ', hybrid: true' : ''} },`,
-    ),
+    ...presets.map((p) => {
+      const L = byId[p.id] ? byId[p.id].light : p.light;
+      const tok = (k) => `'${(L[k] ?? '#000000').replace(/'/g, '')}'`;
+      return `  { id: '${p.id}', label: ${JSON.stringify(p.label)}, swatch: ${tok('primary')}, bg: ${tok('background')}, card: ${tok('card')}, fg: ${tok('foreground')}, primary: ${tok('primary')}, accent: ${tok('accent')}, muted: ${tok('muted')}, primaryFg: ${tok('primary-foreground')}${hybridIds.has(p.id) ? ', hybrid: true' : ''} },`;
+    }),
     '];',
     '',
   ];

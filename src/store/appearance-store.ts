@@ -24,6 +24,8 @@ export interface AppearanceState {
   backgroundType: 'none' | 'gradient' | 'image';
   /** Id du dégradé actif (src/styles/gradients.css) si backgroundType='gradient'. */
   gradientId: string | null;
+  /** Police d'interface choisie (UI_FONTS) — 'system' par défaut. */
+  uiFontId: string;
   /** Image-based color theme id (from theme-catalog) — null when a plain
    *  accent preset is active. The portrait illustration is applied as the
    *  app background; the accent color is the theme's core hex. */
@@ -46,6 +48,7 @@ export interface AppearanceState {
   setAccent: (key: AccentKey) => void;
   setPreset: (id: string | null) => void;
   setGradient: (id: string | null) => void;
+  setUiFontId: (id: string) => void;
   setBackgroundType: (type: 'none' | 'gradient' | 'image') => void;
   setColorTheme: (id: string | null) => void;
   setFontSize: (size: number) => void;
@@ -70,6 +73,7 @@ const DEFAULTS: Pick<
   | 'presetId'
   | 'backgroundType'
   | 'gradientId'
+  | 'uiFontId'
   | 'colorThemeId'
   | 'fontSize'
   | 'showVerseNumbers'
@@ -89,6 +93,7 @@ const DEFAULTS: Pick<
   presetId: 'quantum-rose',
   backgroundType: 'none',
   gradientId: null,
+  uiFontId: 'system',
   colorThemeId: null,
   fontSize: 16,
   showVerseNumbers: true,
@@ -128,6 +133,11 @@ export const useAppearanceStore = create<AppearanceState>(() => ({
       backgroundType: id ? 'gradient' : 'none',
       colorThemeId: null,
     });
+    void appearanceStorePersist.save();
+  },
+
+  setUiFontId(id: string) {
+    useAppearanceStore.setState({ uiFontId: id });
     void appearanceStorePersist.save();
   },
 
@@ -229,6 +239,7 @@ const PERSISTED_KEYS: (keyof AppearanceState)[] = [
   'presetId',
   'backgroundType',
   'gradientId',
+  'uiFontId',
   'colorThemeId',
   'fontSize',
   'showVerseNumbers',
@@ -270,6 +281,7 @@ export const appearanceStorePersist = {
       presetId: s.presetId,
       backgroundType: s.backgroundType,
       gradientId: s.gradientId,
+      uiFontId: s.uiFontId,
       colorThemeId: s.colorThemeId,
       fontSize: s.fontSize,
       showVerseNumbers: s.showVerseNumbers,
