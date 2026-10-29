@@ -185,7 +185,6 @@ export default function SearchScreen() {
     // `filterIndex` is intentionally re-created each render (depends on the
     // live `index`); re-running on `index` changes is correct — a freshly
     // loaded corpus should re-filter the in-flight query.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedQuery, index]);
 
   const handleQuickSearch = (reference: string) => {

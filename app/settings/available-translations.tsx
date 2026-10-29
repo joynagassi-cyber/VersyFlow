@@ -89,7 +89,6 @@ export default function AvailableTranslationsScreen() {
   // chapter/verse count without an extra tap.
   useEffect(() => {
     if (bibleTranslation) loadStatsFor(bibleTranslation);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bibleTranslation]);
 
   // Probe which datasets are already resolvable locally (bundled or cached)

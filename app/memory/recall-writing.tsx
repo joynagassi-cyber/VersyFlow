@@ -48,7 +48,6 @@ export default function RecallWritingScreen() {
         totalWords: words.length,
       });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleCompare = () => {

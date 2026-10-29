@@ -157,7 +157,6 @@ export default function TranslationComparisonScreen() {
     seed.forEach((m) => {
       void loadRow(m.id, m.language, m.name);
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bookId, chapter, verse, bibleTranslation, seedLanguage, allManifests]);
 
   const add = (id: string, name: string, language: string) => {

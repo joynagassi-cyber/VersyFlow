@@ -1,5 +1,5 @@
 /** Identifiant d'accent libre (preset tweakcn ou thème image). */
-export type AccentKey = string & {};
+export type AccentKey = string;
 
 import { findThemeById as catalogFindThemeById, themePortraitUrl, themeLandscapeUrl, type ThemeCatalogEntry } from './theme-catalog';
 import { extractImageAccent } from './image-accent';

@@ -28,7 +28,6 @@ export default function FlashcardScreen() {
         totalWords: words.length,
       });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

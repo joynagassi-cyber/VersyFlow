@@ -23,7 +23,6 @@ export default function ComparisonResultScreen({ record, userAnswer }: Props) {
       verifyAnswer(record.bibleVerseText, userAnswer);
       setVerified(true);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (!lastVerification) {

@@ -28,7 +28,6 @@ export default function FamilyInviteScreen() {
     if (family && !inviteCode && !isLoading) {
       void handleGenerateCode();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [family]);
 
   const handleGenerateCode = async () => {

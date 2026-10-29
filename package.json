@@ -30,7 +30,9 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "semantic:build": "npx tsx scripts/semantic/run.ts",
-    "themes:contrast": "node scripts/apply-preset-contrast.mjs"
+    "themes:contrast": "node scripts/apply-preset-contrast.mjs",
+    "plan:audit": "node scripts/audit-plan.mjs",
+    "verify": "tsc -p tsconfig.app.json --noEmit && eslint app src/components src/hooks src/store src/theme tests/design --ext .ts,.tsx && vitest run tests/design && node scripts/audit-plan.mjs"
   },
   "dependencies": {
     "@capacitor-community/sqlite": "^8.1.1",
