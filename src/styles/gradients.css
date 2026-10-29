@@ -1,0 +1,46 @@
+/*
+ * gradients.css — GÉNÉRÉ par scripts/import-official-themes.mjs
+ * Source : webgradients.com / https://github.com/itmeo/webgradients
+ * (licence MIT, voir le dépôt source). Règles copiées TELLES QUELLES,
+ * simplement renommées avec le préfixe .grad- pour éviter les collisions.
+ */
+
+.grad-warm-flame{
+    background-image: linear-gradient(45deg, #ff9a9e 0%, #fad0c4 99%, #fad0c4 100%);
+}
+
+.grad-juicy-peach{
+    background-image: linear-gradient(to right, #ffecd2 0%, #fcb69f 100%);
+}
+
+.grad-sunny-morning{
+    background-image: linear-gradient(120deg, #f6d365 0%, #fda085 100%);
+}
+
+.grad-malibu-beach{
+    background-image: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
+}
+
+.grad-true-sunset{
+    background-image: linear-gradient(to right, #fa709a 0%, #fee140 100%);
+}
+
+.grad-morpheus-den{
+    background-image: linear-gradient(to top, #30cfd0 0%, #330867 100%);
+}
+
+.grad-plum-plate{
+    background-image: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.grad-happy-fisher{
+    background-image: linear-gradient(120deg, #89f7fe 0%, #66a6ff 100%);
+}
+
+.grad-saint-petersburg{
+    background-image: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+}
+
+.grad-everlasting-sky{
+    background-image: linear-gradient(135deg, #fdfcfb 0%, #e2d1c3 100%);
+}

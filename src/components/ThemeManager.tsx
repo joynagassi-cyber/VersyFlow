@@ -15,12 +15,13 @@
 import { useEffect } from 'react';
 import { useAppearanceStore } from '@/store/appearance-store';
 import { useTheme } from '@/theme/useTheme';
-import { applyAccentPreset } from '@/theme/theme-presets';
+import { applyAccentPreset, clearAccentPreset } from '@/theme/theme-presets';
 import { applyReadingVars, findBibleFont, loadBibleFont } from '@/theme/theme-fonts';
 
 export function ThemeManager() {
   const themeMode = useAppearanceStore((s) => s.themeMode);
   const accent = useAppearanceStore((s) => s.accent);
+  const presetId = useAppearanceStore((s) => s.presetId);
   const colorThemeId = useAppearanceStore((s) => s.colorThemeId);
   const bibleFontFamily = useAppearanceStore((s) => s.bibleFontFamily);
   const bibleFontSize = useAppearanceStore((s) => s.bibleFontSize);
@@ -38,8 +39,18 @@ export function ThemeManager() {
   // Apply the accent color for the current effective dark state, and the
   // image-based theme background (when an image theme is active).
   useEffect(() => {
+    const root = document.documentElement;
+    if (presetId) {
+      // Preset tweakcn : les variables viennent de la feuille générée
+      // (data-preset) — on retire les overrides inline d'accent pour la
+      // laisser s'appliquer, sans toucher au mode clair/sombre existant.
+      root.setAttribute('data-preset', presetId);
+      clearAccentPreset();
+      return;
+    }
+    root.removeAttribute('data-preset');
     applyAccentPreset(accent, theme.isDark, colorThemeId);
-  }, [accent, colorThemeId, theme.isDark, theme]);
+  }, [accent, colorThemeId, presetId, theme.isDark, theme]);
 
   // Bible reading typography: lazy-load the chosen webfont (offline-first,
   // only on selection change) and write the live --reading-* vars so the

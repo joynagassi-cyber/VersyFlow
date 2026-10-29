@@ -14,6 +14,8 @@ import { I18nextProvider } from 'react-i18next';
 import { Suspense, lazy, useEffect } from 'react';
 import '@/styles/globals.css';
 import '@/styles/sacred-focus.css';
+import '@/styles/tweakcn-presets.css';
+import '@/styles/gradients.css';
 
 // Serif font bundle for bible text (referenced by `--vf-font-bible` and
 // `tokens.typography.bible = 'Source Serif 4'`). Self-hosted — no network

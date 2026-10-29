@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { useAppearanceStore } from '@/store/appearance-store';
 import { ACCENT_PRESETS } from '@/theme/theme-presets';
+import { TWEAKCN_PRESETS } from '@/theme/tweakcn-presets';
 import { THEME_CATEGORIES } from '@/theme/theme-catalog';
 import { BIBLE_FONTS } from '@/theme/theme-fonts';
 import { cn } from '@/lib/utils';
@@ -84,6 +85,8 @@ export default function AppearanceScreen() {
   const themeMode = useAppearanceStore((s) => s.themeMode);
   const accent = useAppearanceStore((s) => s.accent);
   const colorThemeId = useAppearanceStore((s) => s.colorThemeId);
+  const presetId = useAppearanceStore((s) => s.presetId);
+  const setPreset = useAppearanceStore((s) => s.setPreset);
   const fontSize = useAppearanceStore((s) => s.fontSize);
   const showVerseNumbers = useAppearanceStore((s) => s.showVerseNumbers);
   const focusMode = useAppearanceStore((s) => s.focusMode);
@@ -148,7 +151,7 @@ export default function AppearanceScreen() {
         <Section title={t('settings.accentColor', "Couleur d'accent")}>
           <div className="grid grid-cols-4 gap-3">
             {ACCENT_PRESETS.map((p) => {
-              const active = accent === p.key && colorThemeId == null;
+              const active = accent === p.key && colorThemeId == null && presetId == null;
               return (
                 <button
                   key={p.key}
@@ -166,6 +169,38 @@ export default function AppearanceScreen() {
                     {active && <Check size={18} className="text-white" />}
                   </span>
                   <span className="text-[11px] font-medium text-text-muted">{p.label}</span>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Presets officiels tweakcn (importés tels quels, voir
+              src/styles/tweakcn-presets.css) — clair + sombre via le Mode. */}
+          <p className="mb-2 mt-5 text-xs font-semibold uppercase tracking-wider text-text-muted">
+            {t('settings.tweakcnPresets', 'Thèmes tweakcn')}
+          </p>
+          <div className="grid grid-cols-5 gap-3">
+            {TWEAKCN_PRESETS.map((preset) => {
+              const active = presetId === preset.id;
+              return (
+                <button
+                  key={preset.id}
+                  onClick={() => setPreset(active ? null : preset.id)}
+                  aria-pressed={active}
+                  className="flex flex-col items-center gap-1.5"
+                >
+                  <span
+                    className={cn(
+                      'flex h-11 w-11 items-center justify-center rounded-full border-2 transition',
+                      active ? 'border-text-primary' : 'border-transparent',
+                    )}
+                    style={{ backgroundColor: preset.swatch }}
+                  >
+                    {active && <Check size={18} className="text-white" />}
+                  </span>
+                  <span className="text-center text-[10px] font-medium leading-tight text-text-muted">
+                    {preset.label}
+                  </span>
                 </button>
               );
             })}

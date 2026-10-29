@@ -23,6 +23,12 @@ export interface AccentValues {
   primaryDark: string;
   accent: string;
   accentLight: string;
+  /** 2e couleur extraite de l'image de fond (thèmes image uniquement). */
+  accentSecondary?: string;
+  /** Teinte moyenne sombre extraite de l'image — voile des cartes. */
+  tint?: string;
+  /** Texte (noir/blanc) choisi par contraste WCAG sur `primary`. */
+  primaryForeground?: string;
 }
 
 export interface AccentPreset {
@@ -111,6 +117,7 @@ export function applyAccentPreset(key: string | null | undefined, isDark: boolea
     return;
   }
   const v = isDark ? getAccentPreset(key).dark : getAccentPreset(key).light;
+  setShadcnAccentVars(root, v);
   root.style.setProperty('--color-primary', v.primary);
   root.style.setProperty('--color-primary-light', v.primaryLight);
   root.style.setProperty('--color-primary-dark', v.primaryDark);
@@ -120,6 +127,18 @@ export function applyAccentPreset(key: string | null | undefined, isDark: boolea
   root.style.setProperty('--ion-color-secondary', v.accent);
   root.style.removeProperty('--theme-image');
   root.removeAttribute('data-theme-image');
+}
+
+/** Variables shadcn standard alimentées par l'accent dynamique (image). */
+function setShadcnAccentVars(root: HTMLElement, v: AccentValues): void {
+  root.style.setProperty('--primary', v.primary);
+  root.style.setProperty('--ring', v.primary);
+  root.style.setProperty('--accent', v.accentSecondary ?? v.accent);
+  if (v.tint) root.style.setProperty('--tint', v.tint);
+  if (v.primaryForeground) {
+    root.style.setProperty('--primary-foreground', v.primaryForeground);
+    root.style.setProperty('--color-primary-foreground', v.primaryForeground);
+  }
 }
 
 function setAccentVars(
@@ -136,6 +155,7 @@ function setAccentVars(
   root.style.setProperty('--color-accent-light', v.accentLight);
   root.style.setProperty('--ion-color-primary', v.primary);
   root.style.setProperty('--ion-color-secondary', v.accent);
+  setShadcnAccentVars(root, v);
   // The applied portrait gets a soft depth-of-field treatment: a large
   // blur + slight scale so it reads as an ambient wash (creativity,
   // not a raw photo), and the UI surface stays readable on top of it.
@@ -167,5 +187,11 @@ export function clearAccentPreset(): void {
     '--color-accent-light',
     '--ion-color-primary',
     '--ion-color-secondary',
+    '--primary',
+    '--ring',
+    '--accent',
+    '--tint',
+    '--primary-foreground',
+    '--color-primary-foreground',
   ].forEach((k) => root.style.removeProperty(k));
 }

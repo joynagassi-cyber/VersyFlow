@@ -9,6 +9,40 @@
  * pour pouvoir être appliquées écran par écran sans casser l'existant.
  */
 
+/*
+ * Accent dynamique (image de fond → variables) : variables enregistrées via
+ * @property pour être TRANSITIONNABLES — quand l'accent change (nouvelle
+ * image), boutons, anneaux et voiles fondent en 0,8 s au lieu de sauter.
+ */
+@property --primary { syntax: '<color>'; inherits: true; initial-value: #d81b60; }
+@property --ring { syntax: '<color>'; inherits: true; initial-value: #d81b60; }
+@property --accent { syntax: '<color>'; inherits: true; initial-value: #d81b60; }
+@property --tint { syntax: '<color>'; inherits: true; initial-value: #63364a; }
+@property --color-primary { syntax: '<color>'; inherits: true; initial-value: #d81b60; }
+
+:root {
+  transition:
+    --primary 0.8s ease,
+    --ring 0.8s ease,
+    --accent 0.8s ease,
+    --tint 0.8s ease,
+    --color-primary 0.8s ease;
+}
+
+/* Carte verre dépoli teinté : fond carte translucide (40 %) + voile de la
+   teinte extraite de l'image de fond (color-mix 22 %), flou fort. */
+.sf-card-glass {
+  background:
+    linear-gradient(color-mix(in srgb, var(--tint, transparent) 22%, transparent), color-mix(in srgb, var(--tint, transparent) 22%, transparent)),
+    color-mix(in srgb, var(--card, var(--color-surface)) 40%, transparent);
+  -webkit-backdrop-filter: blur(40px);
+  backdrop-filter: blur(40px);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 1.5rem;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+}
+
   /* ── Écran ─────────────────────────────────────────────── */
   .sf-screen {
     @apply h-full overflow-y-auto;

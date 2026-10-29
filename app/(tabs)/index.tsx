@@ -225,7 +225,7 @@ export default function HomeScreen() {
       <h2 className="sf-section-title">
         {t('home.dailyVerse', 'Verset du jour')}
       </h2>
-      <div className="sf-card">
+      <div className="sf-card-glass">
         <div className="mb-3 flex items-center justify-between">
           <span className="inline-flex items-center gap-1.5 rounded-full bg-surface-tint px-3 py-1.5 text-xs font-semibold text-primary">
             <Star size={13} />
