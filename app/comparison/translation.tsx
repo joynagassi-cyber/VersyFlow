@@ -13,7 +13,15 @@ import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import i18next from 'i18next';
-import { Plus, X, Loader2, Languages, Check, Globe } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import {
+  PlusSignIcon as Plus,
+  Cancel01Icon as X,
+  Loading03Icon as Loader2,
+  LanguagesIcon as Languages,
+  CheckIcon as Check,
+  GlobeIcon as Globe,
+} from '@hugeicons/core-free-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { BIBLE_TRANSLATION_REGISTRY as DEFAULT_BIBLE_TRANSLATIONS } from '@/services/translation-preference-service';
 import { bibleTranslationDisplayName, getTranslationDisplayInfo } from '@/services/bible-translation-names';
@@ -189,7 +197,7 @@ export default function TranslationComparisonScreen() {
           onClick={() => setAddOpen(true)}
           className="flex items-center gap-1.5 rounded-full bg-primary px-3.5 py-1.5 text-xs font-bold text-on-primary shadow-sm active:scale-95"
         >
-          <Plus size={14} />
+          <HugeiconsIcon icon={Plus} size={14} />
           {t('comparison.addVersion', 'Ajouter une version')}
         </button>
       }
@@ -205,7 +213,7 @@ export default function TranslationComparisonScreen() {
           </div>
           {availableLanguages.length > 1 && (
             <div className="flex items-center gap-2">
-              <Globe size={13} className="shrink-0 text-primary" />
+              <HugeiconsIcon icon={Globe} size={13} className="shrink-0 text-primary" />
               <select
                 value={targetLang ?? ''}
                 onChange={(e) => changeLanguage(e.target.value)}
@@ -245,7 +253,7 @@ export default function TranslationComparisonScreen() {
                   )}
                   {r.id === bibleTranslation && (
                     <span className="flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-bold text-primary">
-                      <Check size={10} /> {t('comparison.active', 'Active')}
+                      <HugeiconsIcon icon={Check} size={10} /> {t('comparison.active', 'Active')}
                     </span>
                   )}
                 </div>
@@ -255,12 +263,12 @@ export default function TranslationComparisonScreen() {
                   className="rounded-full p-1 text-text-muted active:bg-surface-tint"
                   aria-label={t('common.remove', 'Retirer')}
                 >
-                  <X size={15} />
+                  <HugeiconsIcon icon={X} size={15} />
                 </button>
               </div>
               {r.loading ? (
                 <div className="flex items-center gap-2 text-sm text-text-muted">
-                  <Loader2 size={14} className="animate-spin text-primary" />
+                  <HugeiconsIcon icon={Loader2} size={14} className="animate-spin text-primary" />
                   {t('comparison.loadingTranslation', 'Chargement de la traduction...')}
                 </div>
               ) : r.error ? (
@@ -288,7 +296,7 @@ export default function TranslationComparisonScreen() {
             <div className="relative max-h-[70vh] screen-column overflow-y-auto rounded-t-3xl bg-surface p-4 shadow-xl">
               <div className="mb-3 flex items-center justify-between">
                 <p className="flex items-center gap-2 text-sm font-bold text-text-primary">
-                  <Languages size={16} className="text-primary" />
+                  <HugeiconsIcon icon={Languages} size={16} className="text-primary" />
                   {t('comparison.addVersion', 'Ajouter une version')}
                 </p>
                 <button
@@ -296,7 +304,7 @@ export default function TranslationComparisonScreen() {
                   onClick={() => setAddOpen(false)}
                   className="rounded-full p-1 text-text-muted active:bg-surface-tint"
                 >
-                  <X size={16} />
+                  <HugeiconsIcon icon={X} size={16} />
                 </button>
               </div>
               {availableToAdd.length === 0 ? (
@@ -322,7 +330,7 @@ export default function TranslationComparisonScreen() {
                           </span>
                         )}
                       </span>
-                      <Plus size={16} className="shrink-0 text-primary" />
+                      <HugeiconsIcon icon={Plus} size={16} className="shrink-0 text-primary" />
                     </button>
                   ))}
                 </div>

@@ -2,7 +2,10 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
-import { Loader2 } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import {
+  Loading03Icon as Loader2,
+} from '@hugeicons/core-free-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { Logo } from '@/components/brand/Logo';
 import { Input } from '@/components/ui/input';
@@ -80,7 +83,7 @@ export default function LoginScreen({ onSkip }: Props) {
           />
           <Button variant="default" onClick={handleLogin} disabled={loading}>
             {loading ? (
-              <Loader2 size={18} className="animate-spin" />
+              <HugeiconsIcon icon={Loader2} size={18} className="animate-spin" />
             ) : (
               t('auth.continue', 'Continuer')
             )}

@@ -16,16 +16,17 @@ import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import i18next from 'i18next';
+import { HugeiconsIcon } from '@hugeicons/react';
 import {
-  BrainCircuit,
-  Check,
-  Copy,
-  Heart,
-  Highlighter,
-  PenLine,
-  Tag,
-  ArrowLeftRight,
-} from 'lucide-react';
+  BrainCircuitIcon as BrainCircuit,
+  CheckIcon as Check,
+  Copy01Icon as Copy,
+  HeartIcon as Heart,
+  HighlighterIcon as Highlighter,
+  PenLineIcon as PenLine,
+  Tag01Icon as Tag,
+  ArrowLeftRightIcon as ArrowLeftRight,
+} from '@hugeicons/core-free-icons';
 import { BIBLE_BOOKS_LIST as BIBLE_BOOKS } from '@/services/memorization-session-service';
 import { eventBus, DomainEventTypes } from '@/services/events-service';
 import { getVerseNote, saveVerseNote } from '@/services/verse-note-service';
@@ -62,7 +63,7 @@ function ActionButton({
         active ? 'bg-primary/10 text-primary' : 'text-text-secondary active:bg-surface-tint',
       )}
     >
-      <Icon size={19} />
+      <HugeiconsIcon icon={Icon} size={19} />
       <span className="leading-tight">{label}</span>
     </button>
   );
@@ -383,7 +384,7 @@ export default function VerseActionBar({
               </p>
               {noteSaved ? (
                 <span className="flex items-center gap-1 text-xs font-semibold text-success">
-                  <Check size={13} /> {t('common.saved', 'Enregistré')}
+                  <HugeiconsIcon icon={Check} size={13} /> {t('common.saved', 'Enregistré')}
                 </span>
               ) : null}
             </div>

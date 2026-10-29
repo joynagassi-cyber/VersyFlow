@@ -6,15 +6,16 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { HugeiconsIcon } from '@hugeicons/react';
 import {
-  List,
-  AlertCircle,
-  CheckCircle,
-  Clock,
-  ChevronRight,
-  Loader2,
-  Play,
-} from 'lucide-react';
+  ListIcon as List,
+  AlertCircleIcon as AlertCircle,
+  CheckmarkCircle01Icon as CheckCircle,
+  Clock01Icon as Clock,
+  ChevronRightIcon as ChevronRight,
+  Loading03Icon as Loader2,
+  PlayIcon as Play,
+} from '@hugeicons/core-free-icons';
 import FullScreenPage from '@/components/layout/FullScreenPage';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -153,7 +154,7 @@ export default function ReviewQueueScreen() {
       <FullScreenPage title={t('review.todayReviews', 'Révisions du jour')} backPath="/tabs/home">
         <div className="flex flex-col items-center py-20 text-center">
           <div className="flex h-24 w-24 items-center justify-center rounded-full bg-icon-bg-green">
-            <CheckCircle size={40} className="text-success" />
+            <HugeiconsIcon icon={CheckCircle} size={40} className="text-success" />
           </div>
           <h2 className="mt-6 text-2xl font-bold text-text-primary">
             {t('home.noReviews', 'Tout est à jour ! ✓')}
@@ -176,17 +177,17 @@ export default function ReviewQueueScreen() {
       {/* Summary strip */}
       <div className="mb-4 flex flex-wrap items-center justify-center gap-2">
         <span className="inline-flex items-center gap-1.5 rounded-full bg-primary px-3 py-1.5 text-[13px] font-semibold text-on-primary">
-          <List size={14} />
+          <HugeiconsIcon icon={List} size={14} />
           {t('review.totalDue', { count: totalDue })}
         </span>
         {overdue.length > 0 && (
           <span className="inline-flex items-center gap-1.5 rounded-full bg-error px-3 py-1.5 text-[13px] font-semibold text-white">
-            <AlertCircle size={14} />
+            <HugeiconsIcon icon={AlertCircle} size={14} />
             {overdue.length} {t('review.overdue', 'en retard')}
           </span>
         )}
         <span className="inline-flex items-center gap-1.5 rounded-full bg-surface-tint px-3 py-1.5 text-[13px] font-semibold text-text-secondary">
-          <Clock size={14} />
+          <HugeiconsIcon icon={Clock} size={14} />
           {t('review.estimatedTime', { minutes: estimatedTime })}
         </span>
       </div>
@@ -194,18 +195,18 @@ export default function ReviewQueueScreen() {
       {renderSection(
         t('review.overdue', 'En retard'),
         overdue,
-        <AlertCircle size={18} className="text-error" />,
+        <HugeiconsIcon icon={AlertCircle} size={18} className="text-error" />,
       )}
       {renderSection(
         t('review.dueSoon', "À l'heure"),
         due,
-        <CheckCircle size={18} className="text-primary" />,
+        <HugeiconsIcon icon={CheckCircle} size={18} className="text-primary" />,
       )}
 
       {/* Start CTA */}
       <div className="fixed inset-x-0 bottom-0 border-t border-border bg-surface/95 p-4 backdrop-blur">
         <Button className="w-full" onClick={() => navigate(`/review/session?recordId=${encodeURIComponent(items[0].record.id)}`)}>
-          <Play size={18} />
+          <HugeiconsIcon icon={Play} size={18} />
           {t('review.startReview', 'Commencer la révision')}
           <span className="text-white/80">({totalDue})</span>
         </Button>

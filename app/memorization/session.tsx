@@ -6,7 +6,14 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';import { useTranslation } from 'react-i18next';
-import { X, Loader2, ArrowLeft, ArrowRight, CheckCircle } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import {
+  Cancel01Icon as X,
+  Loading03Icon as Loader2,
+  ArrowLeft01Icon as ArrowLeft,
+  ArrowRight01Icon as ArrowRight,
+  CheckmarkCircle01Icon as CheckCircle,
+} from '@hugeicons/core-free-icons';
 import FullScreenPage from '@/components/layout/FullScreenPage';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -291,7 +298,7 @@ export default function MemorizationSession() {
           }}
           className="flex items-center gap-1 text-sm font-semibold text-text-secondary"
         >
-          <X size={16} />
+          <HugeiconsIcon icon={X} size={16} />
           {t('common.close', 'Fermer')}
         </button>
       }
@@ -352,7 +359,7 @@ export default function MemorizationSession() {
             refresh();
           }}
         >
-          <ArrowLeft size={15} />
+          <HugeiconsIcon icon={ArrowLeft} size={15} />
           {t('session.goBack', 'Retour')}
         </Button>
         <Button
@@ -374,13 +381,13 @@ export default function MemorizationSession() {
           }}
         >
           {t('session.proceed', 'Continuer')}
-          <ArrowRight size={15} />
+          <HugeiconsIcon icon={ArrowRight} size={15} />
         </Button>
       </div>
 
       {complete && (
         <div className="mt-5 flex items-center justify-center gap-2 rounded-xl bg-success-light p-4 text-success">
-          <CheckCircle size={18} />
+          <HugeiconsIcon icon={CheckCircle} size={18} />
           <span className="text-base font-semibold">
             {t('session.passageComplete', 'Passage terminé!')}
           </span>

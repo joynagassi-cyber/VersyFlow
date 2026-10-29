@@ -1,6 +1,11 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ChevronRight, Download, Trash2 } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import {
+  ChevronRightIcon as ChevronRight,
+  Download01Icon as Download,
+  Delete02Icon as Trash2,
+} from '@hugeicons/core-free-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 
 export default function PrivacyScreen() {
@@ -57,14 +62,14 @@ export default function PrivacyScreen() {
           </p>
           <button className="flex w-full items-center justify-between px-4 py-3.5">
             <span className="flex items-center gap-3 text-base text-text-primary">
-              <Download size={18} className="text-text-muted" />
+              <HugeiconsIcon icon={Download} size={18} className="text-text-muted" />
               {t('settings.downloadData', 'Telecharger mes donnees')}
             </span>
-            <ChevronRight size={18} className="text-text-muted" />
+            <HugeiconsIcon icon={ChevronRight} size={18} className="text-text-muted" />
           </button>
           <button className="flex w-full items-center justify-between px-4 py-3.5">
             <span className="flex items-center gap-3 text-base font-medium text-error">
-              <Trash2 size={18} />
+              <HugeiconsIcon icon={Trash2} size={18} />
               {t('settings.deleteAccount', 'Supprimer mon compte')}
             </span>
             <span className="text-sm font-semibold text-error">

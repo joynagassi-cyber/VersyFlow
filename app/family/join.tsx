@@ -1,7 +1,12 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { ScanLine, Loader2, LogIn } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import {
+  ScanLineIcon as ScanLine,
+  Loading03Icon as Loader2,
+  LogInIcon as LogIn,
+} from '@hugeicons/core-free-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -58,7 +63,7 @@ export default function FamilyJoinScreen() {
           className="flex w-full flex-col items-center gap-3 rounded-3xl border-2 border-dashed border-primary/40 bg-surface p-8 active:bg-surface-tint"
           onClick={() => setError(t('family.scannerDesc', 'Le scanner QR sera disponible prochainement.'))}
         >
-          <ScanLine size={44} className="text-primary" />
+          <HugeiconsIcon icon={ScanLine} size={44} className="text-primary" />
           <span className="text-sm font-semibold text-text-secondary">
             {t('family.scanQR', 'Scanner le QR code')}
           </span>
@@ -93,7 +98,7 @@ export default function FamilyJoinScreen() {
         {error && <p className="text-sm text-error">{error}</p>}
 
         <Button variant="default" className="w-full" onClick={handleJoin} disabled={isLoading}>
-          {isLoading ? <Loader2 size={18} className="animate-spin" /> : <LogIn size={18} />}
+          {isLoading ? <HugeiconsIcon icon={Loader2} size={18} className="animate-spin" /> : <HugeiconsIcon icon={LogIn} size={18} />}
           {isLoading ? t('common.loading', 'Chargement...') : t('family.joinButton', 'Rejoindre la famille')}
         </Button>
       </div>

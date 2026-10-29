@@ -7,7 +7,13 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { Flame, TrendingUp, TrendingDown, Loader2 } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import {
+  FlameIcon as Flame,
+  TrendingUpIcon as TrendingUp,
+  TrendingDownIcon as TrendingDown,
+  Loading03Icon as Loader2,
+} from '@hugeicons/core-free-icons';
 import { useActiveProfile } from '@/hooks/useActiveProfile';
 import { getFsrsEngine } from '@/services/fsrs-factory';
 import { ProgressService } from '@/services/progress-service';
@@ -115,7 +121,7 @@ export default function ProgressScreen() {
               change >= 0 ? 'text-success' : 'text-error',
             )}
           >
-            {change >= 0 ? <TrendingUp size={16} /> : <TrendingDown size={16} />}
+            {change >= 0 ? <HugeiconsIcon icon={TrendingUp} size={16} /> : <HugeiconsIcon icon={TrendingDown} size={16} />}
             {Math.abs(change)}%
           </span>
         </div>
@@ -139,7 +145,7 @@ export default function ProgressScreen() {
           className="mt-4 flex w-full items-center justify-between rounded-xl border border-border bg-surface p-4 shadow-sm"
         >
           <div className="flex items-center gap-3">
-            <Flame size={26} className="text-primary" />
+            <HugeiconsIcon icon={Flame} size={26} className="text-primary" />
             <div className="text-left">
               <p className="text-base font-semibold text-text-primary tabular-nums">
                 {t('progress.streak', 'Série consécutive')}

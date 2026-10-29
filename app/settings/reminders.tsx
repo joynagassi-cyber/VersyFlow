@@ -9,14 +9,15 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
+import { HugeiconsIcon } from '@hugeicons/react';
 import {
-  ArrowLeft,
-  Bell,
-  BellRing,
-  Clock,
-  Check,
-  RefreshCw,
-} from 'lucide-react';
+  ArrowLeft01Icon as ArrowLeft,
+  BellIcon as Bell,
+  BellRingIcon as BellRing,
+  Clock01Icon as Clock,
+  CheckIcon as Check,
+  RefreshIcon as RefreshCw,
+} from '@hugeicons/core-free-icons';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { useAppearanceStore } from '@/store/appearance-store';
@@ -71,7 +72,7 @@ export default function SettingsRemindersScreen() {
           className="flex h-10 w-10 items-center justify-center rounded-full bg-surface shadow-sm"
           aria-label={t('common.back')}
         >
-          <ArrowLeft size={20} className="text-text-secondary" />
+          <HugeiconsIcon icon={ArrowLeft} size={20} className="text-text-secondary" />
         </button>
         <h1 className="text-2xl font-bold text-text-primary">
           {t('settings.reminderConfig', 'Rappels de révision')}
@@ -95,7 +96,7 @@ export default function SettingsRemindersScreen() {
               reminderEnabled ? 'bg-primary text-on-primary' : 'bg-surface-tint text-primary',
             )}
           >
-            {reminderEnabled ? <BellRing size={22} /> : <Bell size={22} />}
+            {reminderEnabled ? <HugeiconsIcon icon={BellRing} size={22} /> : <HugeiconsIcon icon={Bell} size={22} />}
           </div>
           <div className="flex-1">
             <p className="text-base font-semibold text-text-primary">
@@ -111,14 +112,14 @@ export default function SettingsRemindersScreen() {
               reminderEnabled ? 'border-primary bg-primary' : 'border-text-muted',
             )}
           >
-            {reminderEnabled && <Check size={14} className="text-white" />}
+            {reminderEnabled && <HugeiconsIcon icon={Check} size={14} className="text-white" />}
           </div>
         </button>
 
         {/* Frequency */}
         <div className={cn(!reminderEnabled && 'opacity-40')}>
           <div className="mb-3 flex items-center gap-2">
-            <Bell size={18} className="text-primary" />
+            <HugeiconsIcon icon={Bell} size={18} className="text-primary" />
             <span className="text-base font-semibold text-text-primary">
               {t('onboarding.reminderFrequency')}
             </span>
@@ -139,7 +140,7 @@ export default function SettingsRemindersScreen() {
                   )}
                 >
                   {f}
-                  {selected && <Check className="ml-1" size={16} />}
+                  {selected && <HugeiconsIcon icon={Check} className="ml-1" size={16} />}
                 </button>
               );
             })}
@@ -149,7 +150,7 @@ export default function SettingsRemindersScreen() {
         {/* Reminder time */}
         <div className={cn('flex items-center gap-4', !reminderEnabled && 'opacity-40')}>
           <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-surface-tint">
-            <Clock size={22} className="text-primary" />
+            <HugeiconsIcon icon={Clock} size={22} className="text-primary" />
           </div>
           <div className="flex-1">
             <p className="text-base font-semibold text-text-primary">
@@ -167,7 +168,7 @@ export default function SettingsRemindersScreen() {
         {/* Notification push locales */}
         <div className="rounded-2xl bg-surface p-4 shadow-sm">
           <div className="mb-3 flex items-center gap-2">
-            <BellRing size={18} className="text-primary" />
+            <HugeiconsIcon icon={BellRing} size={18} className="text-primary" />
             <span className="text-base font-semibold text-text-primary">
               {t('settings.notificationPush', 'Notifications locales')}
             </span>
@@ -182,7 +183,7 @@ export default function SettingsRemindersScreen() {
               onClick={() => void schedulePush()}
               disabled={!reminderEnabled || pushStatus === 'scheduled'}
             >
-              <Check size={16} />
+              <HugeiconsIcon icon={Check} size={16} />
               {t('settings.notificationSchedule', 'Planifier les rappels')}
             </Button>
             <Button
@@ -191,7 +192,7 @@ export default function SettingsRemindersScreen() {
               onClick={() => void cancelPush()}
               disabled={pushStatus === 'idle'}
             >
-              <RefreshCw size={16} />
+              <HugeiconsIcon icon={RefreshCw} size={16} />
               {t('settings.notificationCancel', 'Annuler les rappels planifiés')}
             </Button>
           </div>
@@ -200,7 +201,7 @@ export default function SettingsRemindersScreen() {
 
       <div className="mt-6 flex gap-4">
         <Button variant="outline" className="flex-1" onClick={() => navigate(-1)}>
-          <ArrowLeft size={16} />
+          <HugeiconsIcon icon={ArrowLeft} size={16} />
           {t('common.back')}
         </Button>
       </div>

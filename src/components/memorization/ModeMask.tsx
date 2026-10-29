@@ -17,7 +17,12 @@
 
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ArrowRight, Check, Sparkles } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import {
+  ArrowRight01Icon as ArrowRight,
+  CheckIcon as Check,
+  SparklesIcon as Sparkles,
+} from '@hugeicons/core-free-icons';
 import { cn } from '@/lib/utils';
 import { getComparisonEngine } from '@/services/recall-comparison-service';
 import type { WrittenRecallResult } from '@/domains/memorization/comparison-engine';
@@ -127,7 +132,7 @@ export function ModeMask({
                   : 'text-text-secondary',
               )}
             >
-              <Sparkles size={11} />
+              <HugeiconsIcon icon={Sparkles} size={11} />
               {t('workspace.autoProgressive', 'Auto')}
             </button>
           </div>
@@ -172,7 +177,7 @@ export function ModeMask({
           disabled={activeMasked.size === 0 || verified != null}
           className="mem-pill mt-3"
         >
-          <Check size={16} />
+          <HugeiconsIcon icon={Check} size={16} />
           {t('workspace.verify', 'Vérifier')}
         </button>
       </div>
@@ -234,7 +239,7 @@ export function ModeMask({
 
           {verified.matchScore >= 0.9 && (
             <button type="button" onClick={onNextMode} className="mem-cta-success">
-              <ArrowRight size={16} />
+              <HugeiconsIcon icon={ArrowRight} size={16} />
               {t('workspace.passNextMode', 'Passer au mode suivant')}
             </button>
           )}

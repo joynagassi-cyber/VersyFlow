@@ -1,7 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { ArrowRight, Check } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import {
+  ArrowRight01Icon as ArrowRight,
+  CheckIcon as Check,
+} from '@hugeicons/core-free-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { Button } from '@/components/ui/button';
 import { useComparisonCapability } from '@/capabilities/comparison/store';
@@ -73,7 +77,7 @@ export default function ComparisonResultScreen({ record, userAnswer }: Props) {
               {lastVerification.substitutedWords.map((sub, i) => (
                 <p key={i} className="text-sm">
                   <span className="text-text-primary">{sub.expected}</span>
-                  <ArrowRight size={12} className="mx-1 inline text-text-muted" />
+                  <HugeiconsIcon icon={ArrowRight} size={12} className="mx-1 inline text-text-muted" />
                   <span className="text-error">{sub.got}</span>
                 </p>
               ))}
@@ -123,7 +127,7 @@ export default function ComparisonResultScreen({ record, userAnswer }: Props) {
 
         <div className="space-y-3 pt-2">
           <Button variant="default" className="w-full" onClick={() => navigate(-1)}>
-            <Check size={18} />
+            <HugeiconsIcon icon={Check} size={18} />
             {t('comparison.finish', 'Terminer')}
           </Button>
           <Button

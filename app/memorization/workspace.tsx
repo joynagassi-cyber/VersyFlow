@@ -23,7 +23,12 @@
 import { useMemo, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { ArrowLeft, ArrowLeftRight, Loader2 } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import {
+  ArrowLeft01Icon as ArrowLeft,
+  ArrowLeftRightIcon as ArrowLeftRight,
+  Loading03Icon as Loader2,
+} from '@hugeicons/core-free-icons';
 import { cn } from '@/lib/utils';
 import { useSettingsStore } from '@/store/settings-store';
 import { useMemorizationWorkspace, parseWorkspaceReference } from '@/hooks/useMemorizationWorkspace';
@@ -183,7 +188,7 @@ export default function MemorizationWorkspace() {
               className="flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-surface text-text-primary shadow-sm active:scale-95"
               aria-label={t('workspace.compare', 'Comparer')}
             >
-              <ArrowLeftRight size={18} />
+              <HugeiconsIcon icon={ArrowLeftRight} size={18} />
             </button>
           }
           subtitleExtra={
@@ -257,7 +262,7 @@ function ShellHeader({
           className="flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-surface text-text-primary shadow-sm active:scale-95"
           aria-label="Retour"
         >
-          <ArrowLeft size={18} />
+          <HugeiconsIcon icon={ArrowLeft} size={18} />
         </button>
         <div className="flex min-w-0 flex-1 flex-col items-center">
           <h1 className="truncate text-lg font-bold text-text-primary">{title}</h1>

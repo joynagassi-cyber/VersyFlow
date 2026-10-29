@@ -17,7 +17,11 @@
 
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Check, PenLine } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import {
+  CheckIcon as Check,
+  PenLineIcon as PenLine,
+} from '@hugeicons/core-free-icons';
 import { cn } from '@/lib/utils';
 import { getComparisonEngine } from '@/services/recall-comparison-service';
 import type { WrittenRecallResult } from '@/domains/memorization/comparison-engine';
@@ -73,7 +77,7 @@ export function ModeWrite({
       <div className="mem-card">
         <div className="mb-3 flex items-center gap-2">
           <span className="flex h-9 w-9 items-center justify-center rounded-full bg-surface-tint text-primary">
-            <PenLine size={16} />
+            <HugeiconsIcon icon={PenLine} size={16} />
           </span>
           <div>
             <p className="text-sm font-extrabold text-text-primary">
@@ -102,7 +106,7 @@ export function ModeWrite({
           disabled={!written.trim() || verified != null}
           className="mem-pill mt-3"
         >
-          <Check size={16} />
+          <HugeiconsIcon icon={Check} size={16} />
           {t('workspace.verify', 'Vérifier')}
         </button>
       </div>

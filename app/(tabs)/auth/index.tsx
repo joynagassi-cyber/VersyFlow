@@ -1,7 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { LogIn, ArrowRight } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import {
+  LogInIcon as LogIn,
+  ArrowRight01Icon as ArrowRight,
+} from '@hugeicons/core-free-icons';
 import { Logo } from '@/components/brand/Logo';
 import { Button } from '@/components/ui/button';
 import { useAuthStore } from '@/store/auth-store';
@@ -52,7 +56,7 @@ export default function AuthGate({ onSkip }: Props) {
           onClick={() => navigate('/tabs/home', { replace: true })}
         >
           {t('auth.continue', 'Continuer')}
-          <ArrowRight size={18} />
+          <HugeiconsIcon icon={ArrowRight} size={18} />
         </Button>
       </div>
     );
@@ -80,7 +84,7 @@ export default function AuthGate({ onSkip }: Props) {
 
       <div className="flex w-full max-w-xs flex-col gap-3">
         <Button variant="default" onClick={handleIdentify} disabled={loading}>
-          <LogIn size={18} />
+          <HugeiconsIcon icon={LogIn} size={18} />
           {t('auth.identify', 'Identifiez-vous')}
         </Button>
         {onSkip && (
@@ -89,7 +93,7 @@ export default function AuthGate({ onSkip }: Props) {
             className="flex items-center justify-center gap-1 py-2 text-sm font-medium text-text-muted underline"
           >
             {t('auth.skip', 'Continuer sans compte')}
-            <ArrowRight size={14} />
+            <HugeiconsIcon icon={ArrowRight} size={14} />
           </button>
         )}
       </div>

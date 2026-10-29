@@ -8,14 +8,15 @@
 
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
+import { HugeiconsIcon } from '@hugeicons/react';
 import {
-  ArrowLeft,
-  ArrowRight,
-  Bell,
-  BellRing,
-  Clock,
-  Check,
-} from 'lucide-react';
+  ArrowLeft01Icon as ArrowLeft,
+  ArrowRight01Icon as ArrowRight,
+  BellIcon as Bell,
+  BellRingIcon as BellRing,
+  Clock01Icon as Clock,
+  CheckIcon as Check,
+} from '@hugeicons/core-free-icons';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { useAppearanceStore } from '@/store/appearance-store';
@@ -42,7 +43,7 @@ export default function OnboardingReminderConfig() {
           className="flex h-10 w-10 items-center justify-center rounded-full bg-surface shadow-sm"
           aria-label={t('common.back')}
         >
-          <ArrowLeft size={20} className="text-text-secondary" />
+          <HugeiconsIcon icon={ArrowLeft} size={20} className="text-text-secondary" />
         </button>
         <h1 className="text-2xl font-bold text-text-primary">
           {t('onboarding.reminderTitle')}
@@ -72,7 +73,7 @@ export default function OnboardingReminderConfig() {
                 : 'bg-surface-tint text-primary',
             )}
           >
-            {reminderEnabled ? <BellRing size={22} /> : <Bell size={22} />}
+            {reminderEnabled ? <HugeiconsIcon icon={BellRing} size={22} /> : <HugeiconsIcon icon={Bell} size={22} />}
           </div>
           <div className="flex-1">
             <p className="text-base font-semibold text-text-primary">
@@ -90,14 +91,14 @@ export default function OnboardingReminderConfig() {
                 : 'border-text-muted',
             )}
           >
-            {reminderEnabled && <Check size={14} className="text-white" />}
+            {reminderEnabled && <HugeiconsIcon icon={Check} size={14} className="text-white" />}
           </div>
         </button>
 
         {/* Frequency — how many reminders per day */}
         <div className={cn(!reminderEnabled && 'opacity-40')}>
           <div className="mb-3 flex items-center gap-2">
-            <Bell size={18} className="text-primary" />
+            <HugeiconsIcon icon={Bell} size={18} className="text-primary" />
             <span className="text-base font-semibold text-text-primary">
               {t('onboarding.reminderFrequency')}
             </span>
@@ -118,7 +119,7 @@ export default function OnboardingReminderConfig() {
                   )}
                 >
                   {f}
-                  {selected && <Check className="ml-1" size={16} />}
+                  {selected && <HugeiconsIcon icon={Check} className="ml-1" size={16} />}
                 </button>
               );
             })}
@@ -128,7 +129,7 @@ export default function OnboardingReminderConfig() {
         {/* Reminder time */}
         <div className={cn('flex items-center gap-4', !reminderEnabled && 'opacity-40')}>
           <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-surface-tint">
-            <Clock size={22} className="text-primary" />
+            <HugeiconsIcon icon={Clock} size={22} className="text-primary" />
           </div>
           <div className="flex-1">
             <p className="text-base font-semibold text-text-primary">
@@ -151,12 +152,12 @@ export default function OnboardingReminderConfig() {
           className="flex-1"
           onClick={() => navigate('/onboarding/session-config')}
         >
-          <ArrowLeft size={16} />
+          <HugeiconsIcon icon={ArrowLeft} size={16} />
           {t('common.back')}
         </Button>
         <Button className="flex-1" onClick={finish}>
           {t('common.continue')}
-          <ArrowRight size={16} />
+          <HugeiconsIcon icon={ArrowRight} size={16} />
         </Button>
       </div>
     </div>

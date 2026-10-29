@@ -1,7 +1,11 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Plus, Check } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import {
+  PlusSignIcon as Plus,
+  CheckIcon as Check,
+} from '@hugeicons/core-free-icons';
 import { z } from 'zod';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { Button } from '@/components/ui/button';
@@ -71,14 +75,14 @@ export default function ProfileSelectionScreen() {
                     </span>
                   )}
                 </span>
-                {active && <Check size={20} className="text-primary" />}
+                {active && <HugeiconsIcon icon={Check} size={20} className="text-primary" />}
               </button>
             );
           })}
         </div>
 
         <Button variant="outline" className="w-full" onClick={() => setShowCreate((s) => !s)}>
-          <Plus size={18} />
+          <HugeiconsIcon icon={Plus} size={18} />
           {t('profile.create', 'Creer un profil')}
         </Button>
 

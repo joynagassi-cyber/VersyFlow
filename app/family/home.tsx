@@ -7,7 +7,15 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Plus, LogIn, ChevronRight, Check, AlertCircle, Loader2 } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import {
+  PlusSignIcon as Plus,
+  LogInIcon as LogIn,
+  ChevronRightIcon as ChevronRight,
+  CheckIcon as Check,
+  AlertCircleIcon as AlertCircle,
+  Loading03Icon as Loader2,
+} from '@hugeicons/core-free-icons';
 import FullScreenPage from '@/components/layout/FullScreenPage';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -71,7 +79,7 @@ export default function FamilyHomeScreen() {
           className="rounded-full bg-surface-tint p-2"
           aria-label={t('family.invite', 'Inviter')}
         >
-          <Plus size={18} className="text-primary" />
+          <HugeiconsIcon icon={Plus} size={18} className="text-primary" />
         </button>
       }
     >
@@ -94,7 +102,7 @@ export default function FamilyHomeScreen() {
               {t('family.members', 'Membres')} • {t('family.contextFamilyDesc', 'Progression partagée')}
             </p>
           </span>
-          <ChevronRight size={20} className="text-text-muted" />
+          <HugeiconsIcon icon={ChevronRight} size={20} className="text-text-muted" />
         </button>
       ) : (
         <div className="flex flex-col items-center rounded-2xl bg-surface p-8 text-center shadow-sm">
@@ -124,7 +132,7 @@ export default function FamilyHomeScreen() {
         />
         {createError && (
           <p className="flex items-center gap-1.5 rounded-xl bg-error/10 px-3 py-2 text-sm text-error">
-            <AlertCircle size={14} className="shrink-0" />
+            <HugeiconsIcon icon={AlertCircle} size={14} className="shrink-0" />
             {createError}
           </p>
         )}
@@ -136,9 +144,9 @@ export default function FamilyHomeScreen() {
           disabled={!signedIn || creating || !newName.trim()}
         >
           {creating ? (
-            <Loader2 size={16} className="animate-spin" />
+            <HugeiconsIcon icon={Loader2} size={16} className="animate-spin" />
           ) : (
-            <Plus size={16} />
+            <HugeiconsIcon icon={Plus} size={16} />
           )}
           {creating ? t('common.loading', 'Chargement…') : t('family.createFamily', 'Créer une famille')}
         </Button>
@@ -158,7 +166,7 @@ export default function FamilyHomeScreen() {
       {/* Actions */}
       <div className="mt-5 flex flex-col gap-3">
         <Button variant="outline" className="w-full" onClick={() => navigate('/family/join')}>
-          <LogIn size={16} />
+          <HugeiconsIcon icon={LogIn} size={16} />
           {t('family.joinButton', 'Rejoindre la famille')}
         </Button>
       </div>
@@ -193,7 +201,7 @@ export default function FamilyHomeScreen() {
                 </span>
                 {activeFamilyId === family.id && (
                   <span className="flex items-center gap-1 rounded-full bg-surface-tint px-2.5 py-1 text-xs font-semibold text-primary">
-                    <Check size={12} />
+                    <HugeiconsIcon icon={Check} size={12} />
                     {t('family.familyActive', 'Actif')}
                   </span>
                 )}

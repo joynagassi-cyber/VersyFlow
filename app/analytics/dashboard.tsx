@@ -1,15 +1,16 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { HugeiconsIcon } from '@hugeicons/react';
 import {
-  BookOpen,
-  CheckCircle2,
-  Flame,
-  RefreshCw,
-  TrendingUp,
-  TrendingDown,
-  Loader2,
-  LineChart,
-} from 'lucide-react';
+  BookOpen01Icon as BookOpen,
+  CheckmarkCircle02Icon as CheckCircle2,
+  FlameIcon as Flame,
+  RefreshIcon as RefreshCw,
+  TrendingUpIcon as TrendingUp,
+  TrendingDownIcon as TrendingDown,
+  Loading03Icon as Loader2,
+  ChartLineData01Icon as LineChart,
+} from '@hugeicons/core-free-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { useTranslation } from 'react-i18next';
 import { useAnalyticsCapability } from '@/capabilities/analytics/store';
@@ -46,7 +47,7 @@ export default function AnalyticsDashboardScreen() {
     return (
       <FullScreenPage title={t('analytics.title', 'Progression')} showBack>
         <div className="flex min-h-[50vh] flex-col items-center justify-center gap-3">
-          <Loader2 size={28} className="animate-spin text-primary" />
+          <HugeiconsIcon icon={Loader2} size={28} className="animate-spin text-primary" />
           <p className="text-sm text-text-muted">
             {t('analytics.loading', 'Chargement des statistiques...')}
           </p>
@@ -67,7 +68,7 @@ export default function AnalyticsDashboardScreen() {
           onClick={loadData}
           className="flex h-9 w-9 items-center justify-center rounded-full bg-surface-tint"
         >
-          <RefreshCw size={16} className="text-primary" />
+          <HugeiconsIcon icon={RefreshCw} size={16} className="text-primary" />
         </button>
       }
     >
@@ -76,7 +77,7 @@ export default function AnalyticsDashboardScreen() {
         <div className="grid grid-cols-2 gap-3">
           <div className="col-span-2 flex items-center gap-4 rounded-3xl bg-surface p-4 shadow-sm">
             <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary text-on-primary">
-              <BookOpen size={22} />
+              <HugeiconsIcon icon={BookOpen} size={22} />
             </span>
             <div>
               <p className="text-3xl font-extrabold text-text-primary tabular-nums">
@@ -129,7 +130,7 @@ export default function AnalyticsDashboardScreen() {
             </div>
           ) : (
             <div className="flex flex-col items-center gap-2 py-8 text-center">
-              <LineChart size={32} className="text-text-muted" />
+              <HugeiconsIcon icon={LineChart} size={32} className="text-text-muted" />
               <p className="text-sm font-semibold text-text-primary">
                 {t('analytics.noData', 'Aucune donnee de retention')}
               </p>
@@ -173,9 +174,9 @@ export default function AnalyticsDashboardScreen() {
               }
             >
               {stats.weeklyTrend.changePercentage >= 0 ? (
-                <TrendingUp size={16} />
+                <HugeiconsIcon icon={TrendingUp} size={16} />
               ) : (
-                <TrendingDown size={16} />
+                <HugeiconsIcon icon={TrendingDown} size={16} />
               )}
               <span className="font-bold">
                 {(stats.weeklyTrend.changePercentage >= 0 ? '+' : '') +

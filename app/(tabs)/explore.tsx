@@ -7,7 +7,13 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Search, BookOpen, ChevronRight, Network } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import {
+  Search01Icon as Search,
+  BookOpen01Icon as BookOpen,
+  ChevronRightIcon as ChevronRight,
+  NetworkIcon as Network,
+} from '@hugeicons/core-free-icons';
 import { Input } from '@/components/ui/input';
 import { useBibleBooks, type BookMeta } from '@/hooks/useBibleBooks';
 
@@ -43,7 +49,7 @@ export default function ExploreScreen() {
             >
               <div className="flex items-center gap-3">
                 <span className="flex h-10 w-10 items-center justify-center rounded-full bg-icon-bg-rose">
-                  <BookOpen size={18} className="text-primary" />
+                  <HugeiconsIcon icon={BookOpen} size={18} className="text-primary" />
                 </span>
                 <div>
                   <p className="text-base font-semibold text-text-primary">
@@ -54,7 +60,7 @@ export default function ExploreScreen() {
                   </p>
                 </div>
               </div>
-              <ChevronRight size={18} className="text-primary" />
+              <HugeiconsIcon icon={ChevronRight} size={18} className="text-primary" />
             </button>
           ))}
         </div>
@@ -69,7 +75,7 @@ export default function ExploreScreen() {
 
       {/* Search */}
       <div className="relative mb-6">
-        <Search
+        <HugeiconsIcon icon={Search}
           size={18}
           className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-muted"
         />
@@ -88,7 +94,7 @@ export default function ExploreScreen() {
       >
         <div className="flex items-center gap-3">
           <span className="flex h-10 w-10 items-center justify-center rounded-full bg-icon-bg-purple">
-            <Network size={18} className="text-primary" />
+            <HugeiconsIcon icon={Network} size={18} className="text-primary" />
           </span>
           <div>
             <p className="text-base font-semibold text-text-primary">
@@ -99,7 +105,7 @@ export default function ExploreScreen() {
             </p>
           </div>
         </div>
-        <ChevronRight size={18} className="text-primary" />
+        <HugeiconsIcon icon={ChevronRight} size={18} className="text-primary" />
       </button>
 
       {oldTestamentFiltered.length === 0 && newTestamentFiltered.length === 0 ? (

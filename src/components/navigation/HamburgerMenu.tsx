@@ -1,6 +1,9 @@
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { X } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import {
+  Cancel01Icon as X,
+} from '@hugeicons/core-free-icons';
 import { Logo } from '@/components/brand/Logo';
 import { useAuthStore } from '@/store/auth-store';
 import { useUiStore, ALL_MENU_ITEMS } from '@/store/ui-store';
@@ -59,7 +62,7 @@ export function HamburgerMenu() {
             className="rounded-full p-1.5 active:bg-surface-tint"
             aria-label="Fermer"
           >
-            <X size={20} className="text-text-muted" />
+            <HugeiconsIcon icon={X} size={20} className="text-text-muted" />
           </button>
         </div>
 

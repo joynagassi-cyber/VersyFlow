@@ -1,6 +1,14 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { BookOpen, ExternalLink, Heart, Cpu, Sparkles, ChevronDown } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import {
+  BookOpen01Icon as BookOpen,
+  ExternalLinkIcon as ExternalLink,
+  HeartIcon as Heart,
+  CpuIcon as Cpu,
+  SparklesIcon as Sparkles,
+  ChevronDownIcon as ChevronDown,
+} from '@hugeicons/core-free-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { Button } from '@/components/ui/button';
 import { Logo } from '@/components/brand/Logo';
@@ -88,10 +96,10 @@ export default function AboutScreen() {
             aria-expanded={showWhatNew}
           >
             <p className="flex items-center gap-2 text-base font-bold text-text-primary">
-              <Sparkles size={18} className="text-primary" />
+              <HugeiconsIcon icon={Sparkles} size={18} className="text-primary" />
               {t('settings.whatsNew', 'Nouveautés')}
             </p>
-            <ChevronDown
+            <HugeiconsIcon icon={ChevronDown}
               size={18}
               aria-label={t('common.expandCollapse', 'Déplier / replier')}
               className={'text-text-muted transition-transform ' + (showWhatNew ? 'rotate-180' : '')}
@@ -127,7 +135,7 @@ export default function AboutScreen() {
         {/* About */}
         <div className="rounded-2xl bg-surface p-4 shadow-sm">
           <p className="mb-2 flex items-center gap-2 text-base font-bold text-text-primary">
-            <BookOpen size={18} className="text-primary" />
+            <HugeiconsIcon icon={BookOpen} size={18} className="text-primary" />
             {t('settings.about', "A propos")}
           </p>
           <p className="text-sm leading-relaxed text-text-secondary">
@@ -149,7 +157,7 @@ export default function AboutScreen() {
               className="flex w-full items-center justify-between border-b border-[color:var(--color-divider)] px-4 py-3.5 last:border-0"
             >
               <span className="text-base font-medium text-primary">{l.label}</span>
-              <ExternalLink size={16} className="text-text-muted" />
+              <HugeiconsIcon icon={ExternalLink} size={16} className="text-text-muted" />
             </button>
           ))}
         </div>
@@ -157,11 +165,11 @@ export default function AboutScreen() {
         {/* Credits */}
         <div className="space-y-2 rounded-2xl bg-surface p-4 text-center shadow-sm">
           <p className="flex items-center justify-center gap-2 text-sm text-text-secondary">
-            <Heart size={14} className="text-primary" />
+            <HugeiconsIcon icon={Heart} size={14} className="text-primary" />
             {t('settings.creditMission', 'Developpe avec amour pour la gloire de Dieu')}
           </p>
           <p className="flex items-center justify-center gap-2 text-sm text-text-muted">
-            <Cpu size={14} />
+            <HugeiconsIcon icon={Cpu} size={14} />
             {t('settings.creditEngine', 'Moteur FSRS par Dmytro Gutman')}
           </p>
         </div>

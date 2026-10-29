@@ -2,16 +2,17 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { HugeiconsIcon } from '@hugeicons/react';
 import {
-  Plus,
-  BookOpen,
-  ChevronDown,
-  Heart,
-  Music,
-  Lightbulb,
-  Clock,
-  AlertCircle,
-} from 'lucide-react';
+  PlusSignIcon as Plus,
+  BookOpen01Icon as BookOpen,
+  ChevronDownIcon as ChevronDown,
+  HeartIcon as Heart,
+  MusicNote01Icon as Music,
+  LightbulbIcon as Lightbulb,
+  Clock01Icon as Clock,
+  AlertCircleIcon as AlertCircle,
+} from '@hugeicons/core-free-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { colorTintAlpha } from '@/lib/platform';
@@ -176,14 +177,14 @@ export default function CollectionsScreen() {
           onClick={() => setCreating(true)}
           className="flex h-9 w-9 items-center justify-center rounded-full bg-surface-tint"
         >
-          <Plus size={18} className="text-primary" />
+          <HugeiconsIcon icon={Plus} size={18} className="text-primary" />
         </button>
       }
     >
       <div className="screen-column space-y-4">
         {loadError && (
           <div className="flex flex-col items-center gap-3 rounded-2xl bg-surface p-4 text-center shadow-sm">
-            <AlertCircle size={24} className="text-error" />
+            <HugeiconsIcon icon={AlertCircle} size={24} className="text-error" />
             <p className="text-sm text-error">{loadError}</p>
             <button
               onClick={() => {
@@ -243,7 +244,7 @@ export default function CollectionsScreen() {
                     className="flex w-full items-center gap-3 rounded-xl bg-surface p-3 text-left shadow-sm active:bg-surface-tint"
                   >
                     <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-error/10">
-                      <Heart size={16} className="text-error" />
+                      <HugeiconsIcon icon={Heart} size={16} className="text-error" />
                     </span>
                     <span className="min-w-0 flex-1">
                       <span className="block truncate text-sm font-semibold text-text-primary">
@@ -286,7 +287,7 @@ export default function CollectionsScreen() {
                   className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full"
                   style={{ color: collection.color, backgroundColor: collectionTint(collection.color) }}
                 >
-                  <Icon size={26} />
+                  <HugeiconsIcon icon={Icon} size={26} />
                 </span>
                 <span className="min-w-0 flex-1">
                   <span className="block text-base font-bold text-text-primary">
@@ -295,16 +296,16 @@ export default function CollectionsScreen() {
                   <span className="text-sm text-text-muted">{collection.description}</span>
                   <span className="mt-1 flex gap-3 text-xs text-text-muted">
                     <span className="flex items-center gap-1">
-                      <BookOpen size={12} />
+                      <HugeiconsIcon icon={BookOpen} size={12} />
                       {collection.verseCount} {t('collections.verses', 'versets')}
                     </span>
                     <span className="flex items-center gap-1">
-                      <Clock size={12} />
+                      <HugeiconsIcon icon={Clock} size={12} />
                       {collection.lastUpdated}
                     </span>
                   </span>
                 </span>
-                <ChevronDown
+                <HugeiconsIcon icon={ChevronDown}
                   size={18}
                   className={'text-text-muted transition ' + (expanded ? 'rotate-180' : '')}
                 />
@@ -351,7 +352,7 @@ export default function CollectionsScreen() {
               onClick={submitCreate}
               className="flex h-11 w-11 items-center justify-center rounded-full bg-primary text-on-primary"
             >
-              <Plus size={20} />
+              <HugeiconsIcon icon={Plus} size={20} />
             </button>
           </div>
         ) : (
@@ -360,7 +361,7 @@ export default function CollectionsScreen() {
             className="flex w-full items-center gap-4 rounded-2xl border-2 border-dashed border-primary/40 p-4 text-left active:opacity-90"
           >
             <span className="flex h-14 w-14 items-center justify-center rounded-full bg-surface-tint">
-              <Plus size={26} className="text-primary" />
+              <HugeiconsIcon icon={Plus} size={26} className="text-primary" />
             </span>
             <span>
               <span className="block text-base font-bold text-primary">

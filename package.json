@@ -79,7 +79,6 @@
     "i18next": "^24.0.0",
     "i18next-browser-languagedetector": "^8.2.1",
     "ionicons": "^7.0.0",
-    "lucide-react": "0.469.0",
     "motion": "^14.7.1",
     "postcss": "8.4.49",
     "react": "18.3.1",

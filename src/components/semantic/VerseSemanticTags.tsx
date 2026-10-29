@@ -8,7 +8,11 @@
 
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { BrainCircuit, UserRound } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import {
+  BrainCircuitIcon as BrainCircuit,
+  UserRoundIcon as UserRound,
+} from '@hugeicons/core-free-icons';
 import type { Concept } from '@/domains/semantic-memory';
 import { conceptLabel } from '@/hooks/useSemanticTags';
 import { cn } from '@/lib/utils';
@@ -52,7 +56,7 @@ export default function VerseSemanticTags({
                 : 'bg-surface-tint text-primary',
             )}
           >
-            {personal ? <UserRound size={11} /> : <BrainCircuit size={11} />}
+            {personal ? <HugeiconsIcon icon={UserRound} size={11} /> : <HugeiconsIcon icon={BrainCircuit} size={11} />}
             {conceptLabel(c, lang)}
           </button>
         );

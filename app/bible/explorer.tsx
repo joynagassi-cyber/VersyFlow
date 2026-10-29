@@ -10,16 +10,17 @@
 import { useState, useMemo, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { HugeiconsIcon } from '@hugeicons/react';
 import {
-  Search,
-  ChevronRight,
-  BookOpen,
-  Cross,
-  X,
-  Download,
-  Loader2,
-  AlertCircle,
-} from 'lucide-react';
+  Search01Icon as Search,
+  ChevronRightIcon as ChevronRight,
+  BookOpen01Icon as BookOpen,
+  CrossIcon as Cross,
+  Cancel01Icon as X,
+  Download01Icon as Download,
+  Loading03Icon as Loader2,
+  AlertCircleIcon as AlertCircle,
+} from '@hugeicons/core-free-icons';
 import FullScreenPage from '@/components/layout/FullScreenPage';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
@@ -164,7 +165,7 @@ export default function BibleExplorerScreen() {
       {/* Search */}
       {viewMode === 'books' && (
         <div className="relative mb-4">
-          <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-muted" />
+          <HugeiconsIcon icon={Search} size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-muted" />
           <Input
             placeholder={t('bible.search', 'Rechercher un livre...')}
             value={query}
@@ -176,7 +177,7 @@ export default function BibleExplorerScreen() {
               onClick={() => setQuery('')}
               className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted"
             >
-              <X size={16} />
+              <HugeiconsIcon icon={X} size={16} />
             </button>
           )}
         </div>
@@ -190,14 +191,14 @@ export default function BibleExplorerScreen() {
               key: 'old',
               label: t('bible.oldTestament', 'Ancien Testament'),
               list: oldTestamentFiltered,
-              icon: <BookOpen size={16} className="text-primary" />,
+              icon: <HugeiconsIcon icon={BookOpen} size={16} className="text-primary" />,
               iconBg: 'bg-surface-tint',
             },
             {
               key: 'new',
               label: t('bible.newTestament', 'Nouveau Testament'),
               list: newTestamentFiltered,
-              icon: <Cross size={16} className="text-white" />,
+              icon: <HugeiconsIcon icon={Cross} size={16} className="text-white" />,
               iconBg: 'bg-success',
             },
           ].map((section) =>
@@ -234,7 +235,7 @@ export default function BibleExplorerScreen() {
                           {t('bible.chapterCount', { count: book.chapterCount })}
                         </p>
                       </div>
-                      <ChevronRight size={18} className="text-text-muted" />
+                      <HugeiconsIcon icon={ChevronRight} size={18} className="text-text-muted" />
                     </button>
                   ))}
                 </div>
@@ -270,9 +271,9 @@ export default function BibleExplorerScreen() {
               <div className="flex items-start gap-3">
                 <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-surface-tint text-primary">
                   {status === 'downloading' ? (
-                    <Loader2 size={18} className="animate-spin" />
+                    <HugeiconsIcon icon={Loader2} size={18} className="animate-spin" />
                   ) : (
-                    <Download size={18} />
+                    <HugeiconsIcon icon={Download} size={18} />
                   )}
                 </span>
                 <div className="min-w-0 flex-1">
@@ -294,7 +295,7 @@ export default function BibleExplorerScreen() {
                   )}
                   {status === 'error' && (
                     <p className="mt-1 flex items-center gap-1 text-xs text-error">
-                      <AlertCircle size={12} /> {error}
+                      <HugeiconsIcon icon={AlertCircle} size={12} /> {error}
                     </p>
                   )}
                 </div>

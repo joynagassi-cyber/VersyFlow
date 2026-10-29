@@ -8,7 +8,17 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Loader2, Bookmark, Hand, RefreshCw, RotateCcw, Star, Check, X } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import {
+  Loading03Icon as Loader2,
+  Bookmark01Icon as Bookmark,
+  HandIcon as Hand,
+  RefreshIcon as RefreshCw,
+  RotateCcwIcon as RotateCcw,
+  StarIcon as Star,
+  CheckIcon as Check,
+  Cancel01Icon as X,
+} from '@hugeicons/core-free-icons';
 import FullScreenPage from '@/components/layout/FullScreenPage';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -208,10 +218,10 @@ export default function ReviewSessionScreen() {
 
   const ratingOptions = useMemo(
     () => [
-      { rating: Rating.AGAIN, icon: <RotateCcw size={20} />, cls: 'bg-error text-white' },
-      { rating: Rating.HARD, icon: <X size={20} />, cls: 'bg-warning text-white' },
-      { rating: Rating.GOOD, icon: <Check size={20} />, cls: 'bg-success text-white' },
-      { rating: Rating.EASY, icon: <Star size={20} />, cls: 'bg-info text-white' },
+      { rating: Rating.AGAIN, icon: <HugeiconsIcon icon={RotateCcw} size={20} />, cls: 'bg-error text-white' },
+      { rating: Rating.HARD, icon: <HugeiconsIcon icon={X} size={20} />, cls: 'bg-warning text-white' },
+      { rating: Rating.GOOD, icon: <HugeiconsIcon icon={Check} size={20} />, cls: 'bg-success text-white' },
+      { rating: Rating.EASY, icon: <HugeiconsIcon icon={Star} size={20} />, cls: 'bg-info text-white' },
     ],
     [],
   );
@@ -270,7 +280,7 @@ export default function ReviewSessionScreen() {
       {/* Card */}
       <div className="rounded-2xl bg-surface p-6 shadow-lg">
         <span className="mb-4 inline-flex items-center gap-1.5 rounded-full bg-surface-tint px-3 py-1.5 text-xs font-semibold text-primary">
-          <Bookmark size={14} />
+          <HugeiconsIcon icon={Bookmark} size={14} />
           {current.reference}
         </span>
 
@@ -293,7 +303,7 @@ export default function ReviewSessionScreen() {
               ))}
             </div>
             <span className="flex items-center gap-2 text-sm text-text-muted">
-              <Hand size={16} className="text-primary" />
+              <HugeiconsIcon icon={Hand} size={16} className="text-primary" />
               {t('session.tapToReveal', 'Tape pour révéler le verset')}
             </span>
             {autoRevealLeft !== null && autoRevealLeft > 0 && (
@@ -308,7 +318,7 @@ export default function ReviewSessionScreen() {
               {current.text}
             </p>
             <span className="flex items-center gap-2 border-t border-border pt-4 text-sm text-text-muted">
-              <RefreshCw size={14} />
+              <HugeiconsIcon icon={RefreshCw} size={14} />
               {t('review.iRecalled', 'Comment te souvenais-tu de ce verset ?')}
             </span>
           </div>
@@ -335,7 +345,7 @@ export default function ReviewSessionScreen() {
       {showRating && feedback && selected && (
         <div className="mt-5 rounded-2xl bg-surface p-5 shadow-md">
           <div className="mb-3 flex items-center gap-2">
-            <Check size={22} className="text-success" />
+            <HugeiconsIcon icon={Check} size={22} className="text-success" />
             <p className="text-lg font-bold text-text-primary">{feedback.label}</p>
           </div>
           <div className="flex items-center justify-between border-b border-divider pb-3">

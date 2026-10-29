@@ -7,7 +7,14 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { ChevronLeft, ChevronRight, Flame, BookOpen, TrendingUp } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import {
+  ChevronLeftIcon as ChevronLeft,
+  ChevronRightIcon as ChevronRight,
+  FlameIcon as Flame,
+  BookOpen01Icon as BookOpen,
+  TrendingUpIcon as TrendingUp,
+} from '@hugeicons/core-free-icons';
 import FullScreenPage from '@/components/layout/FullScreenPage';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -95,12 +102,12 @@ export default function ReviewCalendarScreen() {
   ];
 
   const monthSummary = [
-    { value: stats?.streakCount ?? 0, label: t('progress.streak', 'Jours de série'), icon: <Flame size={14} /> },
-    { value: stats?.totalVerses ?? 0, label: t('progress.versesMemorized', 'Verset(s) révisés'), icon: <BookOpen size={14} /> },
+    { value: stats?.streakCount ?? 0, label: t('progress.streak', 'Jours de série'), icon: <HugeiconsIcon icon={Flame} size={14} /> },
+    { value: stats?.totalVerses ?? 0, label: t('progress.versesMemorized', 'Verset(s) révisés'), icon: <HugeiconsIcon icon={BookOpen} size={14} /> },
     {
       value: `${stats ? Math.round((stats.masteredVerses / Math.max(1, stats.totalVerses)) * 100) : 0}%`,
       label: t('progress.retention', 'Taux de rétention'),
-      icon: <TrendingUp size={14} />,
+      icon: <HugeiconsIcon icon={TrendingUp} size={14} />,
     },
   ];
 
@@ -113,7 +120,7 @@ export default function ReviewCalendarScreen() {
           className="flex h-10 w-10 items-center justify-center rounded-full bg-surface shadow-sm"
           aria-label="Mois précédent"
         >
-          <ChevronLeft size={20} className="text-primary" />
+          <HugeiconsIcon icon={ChevronLeft} size={20} className="text-primary" />
         </button>
         <h2 className="text-lg font-bold text-text-primary">
           {changeMonth(monthLabel)}
@@ -123,7 +130,7 @@ export default function ReviewCalendarScreen() {
           className="flex h-10 w-10 items-center justify-center rounded-full bg-surface shadow-sm"
           aria-label="Mois suivant"
         >
-          <ChevronRight size={20} className="text-primary" />
+          <HugeiconsIcon icon={ChevronRight} size={20} className="text-primary" />
         </button>
       </div>
 

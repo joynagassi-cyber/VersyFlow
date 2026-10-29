@@ -15,7 +15,15 @@
  */
 
 import { useState } from 'react';
-import { ChevronDown, ChevronRight, Eye, EyeOff, Layers, PenLine } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import {
+  ChevronDownIcon as ChevronDown,
+  ChevronRightIcon as ChevronRight,
+  EyeIcon as Eye,
+  EyeOffIcon as EyeOff,
+  Layers01Icon as Layers,
+  PenLineIcon as PenLine,
+} from '@hugeicons/core-free-icons';
 import { cn } from '@/lib/utils';
 
 export type ModeId = 'reveal' | 'mask' | 'cards' | 'write';
@@ -68,7 +76,7 @@ export function ModeSwitcher({
                 isRecommended && 'recommended',
               )}
             >
-              <Icon size={14} />
+              <HugeiconsIcon icon={Icon} size={14} />
               {mode.label}
               {isRecommended && <span className="badge">PROCHAIN</span>}
             </button>
@@ -85,7 +93,7 @@ export function ModeSwitcher({
           className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-surface-tint text-text-secondary active:scale-90"
           aria-label={showAll ? 'Replier' : 'Déplier'}
         >
-          {showAll ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+          {showAll ? <HugeiconsIcon icon={ChevronDown} size={16} /> : <HugeiconsIcon icon={ChevronRight} size={16} />}
         </button>
       </div>
     </div>

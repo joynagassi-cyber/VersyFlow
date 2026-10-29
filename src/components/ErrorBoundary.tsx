@@ -1,5 +1,9 @@
 import * as React from 'react';
-import { RefreshCw, Home } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import {
+  RefreshIcon as RefreshCw,
+  Home01Icon as Home,
+} from '@hugeicons/core-free-icons';
 import { useNavigate } from 'react-router-dom';
 
 interface Props {
@@ -35,7 +39,7 @@ function BoundaryFallback({ onReset }: { onReset: () => void }) {
   return (
     <div className="flex min-h-full flex-col items-center justify-center gap-4 bg-background p-8 text-center">
       <span className="flex h-16 w-16 items-center justify-center rounded-2xl bg-error-light text-error">
-        <RefreshCw size={28} />
+        <HugeiconsIcon icon={RefreshCw} size={28} />
       </span>
       <div>
         <p className="text-lg font-bold text-text-primary">Une erreur est survenue</p>
@@ -61,7 +65,7 @@ function BoundaryFallback({ onReset }: { onReset: () => void }) {
           className="rounded-full bg-surface px-5 py-2.5 text-sm font-semibold text-primary shadow-sm"
         >
           <span className="inline-flex items-center gap-1">
-            <Home size={14} />
+            <HugeiconsIcon icon={Home} size={14} />
             Accueil
           </span>
         </button>

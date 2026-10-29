@@ -11,21 +11,22 @@
  */
 
 import { useTranslation } from 'react-i18next';
+import { HugeiconsIcon } from '@hugeicons/react';
 import {
-  Eye,
-  BarChart3,
-  BookOpen,
-  SlidersHorizontal,
-  BrainCircuit,
-  Folder,
-  Trophy,
-  Search,
-  Target,
-  Bell,
-  History,
-  GitCompare,
-  Users,
-} from 'lucide-react';
+  EyeIcon as Eye,
+  BarChartIcon as BarChart3,
+  BookOpen01Icon as BookOpen,
+  SlidersHorizontalIcon as SlidersHorizontal,
+  BrainCircuitIcon as BrainCircuit,
+  Folder01Icon as Folder,
+  TrophyIcon as Trophy,
+  Search01Icon as Search,
+  Target01Icon as Target,
+  BellIcon as Bell,
+  HistoryIcon as History,
+  GitCompareIcon as GitCompare,
+  UsersIcon as Users,
+} from '@hugeicons/core-free-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { useUiStore, ALL_MENU_ITEMS, type TabId } from '@/store/ui-store';
 
@@ -101,7 +102,7 @@ export default function NavigationSettingsScreen() {
                   className="flex w-full items-center justify-between px-4 py-3.5 text-left"
                 >
                   <span className="flex items-center gap-3">
-                    <Icon size={18} className={visible ? 'text-primary' : 'text-text-muted'} />
+                    <HugeiconsIcon icon={Icon} size={18} className={visible ? 'text-primary' : 'text-text-muted'} />
                     <span className="text-base text-text-primary">{t(i18nKey, defaultLabel)}</span>
                   </span>
                   <span className={pillClass(visible)}>
@@ -134,7 +135,7 @@ export default function NavigationSettingsScreen() {
                   className="flex w-full items-center justify-between px-4 py-3.5 text-left"
                 >
                   <span className="flex items-center gap-3">
-                    <Icon size={18} className={visible ? 'text-primary' : 'text-text-muted'} />
+                    <HugeiconsIcon icon={Icon} size={18} className={visible ? 'text-primary' : 'text-text-muted'} />
                     <span className="text-base text-text-primary">{t(labelKey, label)}</span>
                   </span>
                   <span className={pillClass(visible)}>
