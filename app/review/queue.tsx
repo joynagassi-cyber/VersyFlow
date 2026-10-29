@@ -138,7 +138,7 @@ export default function ReviewQueueScreen() {
 
   if (loading) {
     return (
-      <FullScreenPage title={t('review.todayReviews', 'Révisions du jour')} backPath="/tabs/home">
+      <FullScreenPage title={t('review.todayReviews', 'Révisions du jour')} backPath="/tabs/home" column="narrow">
         <div className="flex flex-col items-center py-24">
           <div className="screen-column animate-pulse space-y-3 px-6" aria-hidden><div className="h-4 w-2/5 rounded-full bg-surface-tint" /><div className="h-24 rounded-3xl bg-surface-tint" /><div className="h-24 rounded-3xl bg-surface-tint" /></div>
           <p className="mt-4 text-sm text-text-muted">
@@ -151,7 +151,7 @@ export default function ReviewQueueScreen() {
 
   if (totalDue === 0) {
     return (
-      <FullScreenPage title={t('review.todayReviews', 'Révisions du jour')} backPath="/tabs/home">
+      <FullScreenPage title={t('review.todayReviews', 'Révisions du jour')} backPath="/tabs/home" column="narrow">
         <div className="flex flex-col items-center py-20 text-center">
           <div className="flex h-24 w-24 items-center justify-center rounded-full bg-icon-bg-green">
             <HugeiconsIcon icon={CheckCircle} size={40} className="text-success" />
@@ -173,7 +173,7 @@ export default function ReviewQueueScreen() {
   }
 
   return (
-    <FullScreenPage title={t('review.todayReviews', 'Révisions du jour')} backPath="/tabs/home">
+    <FullScreenPage title={t('review.todayReviews', 'Révisions du jour')} backPath="/tabs/home" column="narrow">
       {/* Summary strip */}
       <div className="mb-4 flex flex-wrap items-center justify-center gap-2">
         <span className="inline-flex items-center gap-1.5 rounded-full bg-primary px-3 py-1.5 text-[13px] font-semibold text-on-primary">

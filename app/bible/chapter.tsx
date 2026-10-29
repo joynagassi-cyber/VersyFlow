@@ -85,6 +85,7 @@ export default function ChapterScreen() {
       title={`${book.displayName} ${chapter}`}
       subtitle={t('bible.chapter', 'Chapitre')}
       backPath={`/bible/book/${book.id}`}
+      column="narrow"
     >
       <div className="flex flex-col gap-3">
         {/* Download-on-demand banner */}

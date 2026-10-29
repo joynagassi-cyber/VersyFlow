@@ -746,9 +746,10 @@ html[data-theme-image='on'] [class*='bg-background'] {
 
 /* ==================================================================
  * Coquille bureau — UNE seule variable pilote la largeur du rail.
- * Le rail n'existe pas dans le DOM sous 1024 px (montage React), donc
+ * Le rail n'existe pas dans le DOM sous 768 px (montage React), donc
  * --rail vaut 0 et rien n'est décalé. Au-delà, la valeur vient de
- * <html data-rail>, écrit par DesktopRail.
+ * <html data-rail>, écrit par DesktopRail : replié sur tablette
+ * (768–1023 px), dépliable seulement au bureau (≥ 1024 px).
  * ================================================================== */
 :root {
   --rail-expanded: 264px;
@@ -757,6 +758,17 @@ html[data-theme-image='on'] [class*='bg-background'] {
   --shell-header: 56px;
   --reading-width: 720px;
   --reading-wide: 1060px;
+}
+
+@media (min-width: 768px) {
+  /* Valeur par défaut sous 1024 px : replié. Le rail déplié n'apparaît que
+     si l'attribut le dit ET que la largeur le permet. */
+  :root[data-rail='expanded'] {
+    --rail: var(--rail-collapsed);
+  }
+  :root[data-rail='collapsed'] {
+    --rail: var(--rail-collapsed);
+  }
 }
 
 @media (min-width: 1024px) {
@@ -839,6 +851,51 @@ html[data-theme-image='on'] [class*='bg-background'] {
   }
   .screen-column-narrow {
     max-width: var(--reading-width);
+  }
+}
+
+/* Feuille modale — un seul comportement, deux formes.
+   Téléphone (< 768 px) : tiroir collé au bas, poignée visible.
+   Tablette et bureau : boîte centrée de 680 px, la largeur où un formulaire
+   reste lisible sans traverser l'écran ; la poignée disparaît, elle n'a plus
+   de sens. L'alignement est porté par le CSS, pas par un `useMediaQuery` :
+   aucun décalage au premier rendu, aucun état à synchroniser. */
+.modal-sheet {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.modal-sheet-panel {
+  position: relative;
+  width: 100%;
+  max-height: 82vh;
+  overflow-y: auto;
+  border-start-start-radius: 24px;
+  border-start-end-radius: 24px;
+  background: var(--color-surface);
+  box-shadow: var(--shadow-lift);
+}
+
+.modal-sheet-handle {
+  display: block;
+}
+
+@media (min-width: 768px) {
+  .modal-sheet {
+    align-items: center;
+    padding: 24px;
+  }
+  .modal-sheet-panel {
+    width: min(680px, 100%);
+    max-height: 80vh;
+    border-radius: 24px;
+  }
+  .modal-sheet-handle {
+    display: none;
   }
 }
 

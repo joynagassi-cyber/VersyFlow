@@ -291,9 +291,9 @@ export default function TranslationComparisonScreen() {
 
         {/* "Add a version" bottom sheet */}
         {addOpen && (
-          <div className="fixed inset-0 z-50 flex items-end justify-center">
+          <div className="modal-sheet">
             <div className="absolute inset-0 bg-black/40" onClick={() => setAddOpen(false)} />
-            <div className="relative max-h-[70vh] screen-column overflow-y-auto rounded-t-3xl bg-surface p-4 shadow-xl">
+            <div className="modal-sheet-panel p-4">
               <div className="mb-3 flex items-center justify-between">
                 <p className="flex items-center gap-2 text-sm font-bold text-text-primary">
                   <HugeiconsIcon icon={Languages} size={16} className="text-primary" />

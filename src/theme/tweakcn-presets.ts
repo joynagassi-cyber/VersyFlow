@@ -6,7 +6,7 @@ export interface TweakcnPresetMeta { id: string; label: string; swatch: string; 
 export const TWEAKCN_PRESETS: TweakcnPresetMeta[] = [
   { id: 'modern-minimal', label: "Modern Minimal", swatch: '#3b82f6', bg: '#ffffff', card: '#ffffff', fg: '#333333', primary: '#1e6ff5', accent: '#e0f2fe', muted: '#f9fafb', primaryFg: '#ffffff' },
   { id: 'clean-slate', label: "Clean Slate", swatch: '#6366f1', bg: '#f8fafc', card: '#ffffff', fg: '#1e293b', primary: '#5e61f1', accent: '#e0e7ff', muted: '#f3f4f6', primaryFg: '#ffffff' },
-  { id: 'violet-bloom', label: "Violet Bloom", swatch: '#7033ff', bg: '#fdfdfd', card: '#fdfdfd', fg: '#000000', primary: '#7033ff', accent: '#e2ebff', muted: '#f5f5f5', primaryFg: '#ffffff' },
+  { id: 'violet-bloom', label: "Violet Bloom", swatch: '#7033ff', bg: '#fdfdfd', card: '#fdfdfd', fg: '#000000', primary: '#7033ff', accent: '#ecf2ff', muted: '#f5f5f5', primaryFg: '#ffffff' },
   { id: 't3-chat', label: "T3 Chat", swatch: '#a84370', bg: '#faf5fa', card: '#faf5fa', fg: '#501854', primary: '#a84370', accent: '#f1c4e6', muted: '#f6e5f3', primaryFg: '#ffffff' },
   { id: 'mocha-mousse', label: "Mocha Mousse", swatch: '#A37764', bg: '#F1F0E5', card: '#F1F0E5', fg: '#56453F', primary: '#956b58', accent: '#E4C7B8', muted: '#E4C7B8', primaryFg: '#FFFFFF' },
   { id: 'amethyst-haze', label: "Amethyst Haze", swatch: '#8a79ab', bg: '#f8f7fa', card: '#ffffff', fg: '#3d3c4f', primary: '#7a669f', accent: '#e6a5b8', muted: '#dcd9e3', primaryFg: '#f8f7fa' },
@@ -18,7 +18,7 @@ export const TWEAKCN_PRESETS: TweakcnPresetMeta[] = [
   { id: 'solar-dusk', label: "Solar Dusk", swatch: '#B45309', bg: '#FDFBF7', card: '#F8F4EE', fg: '#4A3B33', primary: '#B45309', accent: '#f2daba', muted: '#F1E9DA', primaryFg: '#FFFFFF' },
   { id: 'pastel-dreams', label: "Pastel Dreams", swatch: '#a78bfa', bg: '#f7f3f9', card: '#ffffff', fg: '#374151', primary: '#7e55f8', accent: '#f3e5f5', muted: '#f3e8ff', primaryFg: '#ffffff' },
   { id: 'ocean-breeze', label: "Ocean Breeze", swatch: '#22c55e', bg: '#f0f8ff', card: '#ffffff', fg: '#374151', primary: '#22c55e', accent: '#d1fae5', muted: '#f3f4f6', primaryFg: '#000000' },
-  { id: 'midnight-bloom', label: "Midnight Bloom", swatch: '#6c5ce7', bg: '#f9f9f9', card: '#ffffff', fg: '#333333', primary: '#6c5ce7', accent: '#8b9467', muted: '#c9c4b5', primaryFg: '#ffffff' },
+  { id: 'midnight-bloom', label: "Midnight Bloom", swatch: '#6c5ce7', bg: '#f9f9f9', card: '#ffffff', fg: '#333333', primary: '#6c5ce7', accent: '#727954', muted: '#c9c4b5', primaryFg: '#ffffff' },
   { id: 'northern-lights', label: "Northern Lights", swatch: '#34a85a', bg: '#f9f9fa', card: '#ffffff', fg: '#333333', primary: '#298547', accent: '#66d9ef', muted: '#ddd9c4', primaryFg: '#ffffff' },
   { id: 'vintage-paper', label: "Vintage Paper", swatch: '#a67c52', bg: '#f5f1e6', card: '#fffcf5', fg: '#4a3f35', primary: '#956f4a', accent: '#d4c8aa', muted: '#ece5d8', primaryFg: '#ffffff' },
   { id: 'sunset-horizon', label: "Sunset Horizon", swatch: '#ff7e5f', bg: '#fff9f5', card: '#ffffff', fg: '#3d3436', primary: '#ff7e5f', accent: '#feb47b', muted: '#fff0eb', primaryFg: '#000000' },

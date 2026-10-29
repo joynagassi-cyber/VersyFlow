@@ -39,6 +39,7 @@ import {
   UserCircleIcon,
 } from '@hugeicons/core-free-icons';
 import { ALL_MENU_ITEMS, ALL_TABS, useUiStore, type TabId } from '@/store/ui-store';
+import { useIsDesktop } from '@/hooks/useIsDesktop';
 import { Logo } from '@/components/brand/Logo';
 import { cn } from '@/lib/utils';
 
@@ -81,16 +82,20 @@ export function DesktopRail() {
   const visibleTabs = useUiStore((s) => s.visibleTabs);
   const visibleMenuPaths = useUiStore((s) => s.visibleMenuPaths);
 
-  const collapsed = railMode === 'collapsed';
+  // Tablette (768–1023 px) : le rail est TOUJOURS replié. L'écran est assez
+  // large pour une colonne d'icônes, pas pour un libellé + une icône + du
+  // contenu : le repli n'est pas un choix, c'est la seule forme qui tient.
+  const isDesktop = useIsDesktop();
+  const collapsed = !isDesktop || railMode === 'collapsed';
 
   // La largeur réelle est décidée par le CSS ; ce composant ne fait que dire
   // dans quel état on est. Une seule source pour `--rail`.
   useEffect(() => {
-    document.documentElement.dataset.rail = railMode;
+    document.documentElement.dataset.rail = collapsed ? 'collapsed' : 'expanded';
     return () => {
       delete document.documentElement.dataset.rail;
     };
-  }, [railMode]);
+  }, [collapsed]);
 
   const tabs = ALL_TABS.filter((tab) => visibleTabs.includes(tab.id));
   const menuItems = ALL_MENU_ITEMS.filter((item) => visibleMenuPaths.includes(item.path));
@@ -116,6 +121,7 @@ export function DesktopRail() {
           <Logo size={28} />
           <span className="rail-label text-primary text-base font-extrabold">VersyFlow</span>
         </button>
+        {isDesktop && (
         <button
           type="button"
           onClick={toggleRail}
@@ -127,6 +133,7 @@ export function DesktopRail() {
         >
           <HugeiconsIcon icon={SidebarLeft01Icon} size={19} />
         </button>
+        )}
       </div>
 
       {/* Action principale */}

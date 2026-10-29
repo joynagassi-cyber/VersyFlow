@@ -8,7 +8,7 @@ import { QuickDock } from '@/components/navigation/QuickDock';
 import { HamburgerMenu } from '@/components/navigation/HamburgerMenu';
 import { DesktopRail } from '@/components/navigation/DesktopRail';
 import { Logo } from '@/components/brand/Logo';
-import { useIsDesktop } from '@/hooks/useIsDesktop';
+import { useIsDesktop, useIsRail } from '@/hooks/useIsDesktop';
 import { useUiStore } from '@/store/ui-store';
 
 /**
@@ -28,11 +28,13 @@ export default function TabLayout() {
   const navigate = useNavigate();
   const openMenu = useUiStore((s) => s.openMenu);
   const isDesktop = useIsDesktop();
+  // Tablette (768–1023 px) : rail replié, pas de barre d'onglets basse.
+  const isRail = useIsRail();
 
   return (
     <>
-      {!isDesktop && <HamburgerMenu />}
-      {isDesktop && <DesktopRail />}
+      {!isRail && <HamburgerMenu />}
+      {isRail && <DesktopRail />}
       <IonPage>
         <div
           id="main-content"
@@ -70,7 +72,7 @@ export default function TabLayout() {
             <Outlet />
           </div>
 
-          {!isDesktop && (
+          {!isRail && (
             <IonFab horizontal="end" vertical="bottom" style={{ marginBottom: '116px' }}>
               <IonFabButton
                 onClick={() => navigate('/memorization/session')}
@@ -81,8 +83,8 @@ export default function TabLayout() {
             </IonFab>
           )}
 
-          {!isDesktop && <QuickDock />}
-          {!isDesktop && <BottomTabs />}
+          {!isRail && <QuickDock />}
+          {!isRail && <BottomTabs />}
         </div>
       </IonPage>
     </>

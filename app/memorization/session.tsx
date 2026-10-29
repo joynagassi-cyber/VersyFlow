@@ -249,7 +249,7 @@ export default function MemorizationSession() {
 
   if (error) {
     return (
-      <FullScreenPage title={t('session.memorizing', 'Mémorisation')} backPath="/tabs/home">
+      <FullScreenPage title={t('session.memorizing', 'Mémorisation')} backPath="/tabs/home" column="narrow">
         <div className="flex flex-col items-center py-16 text-center">
           <p className="text-base text-error">{error}</p>
           <Button className="mt-6" variant="secondary" onClick={() => navigate(-1)}>

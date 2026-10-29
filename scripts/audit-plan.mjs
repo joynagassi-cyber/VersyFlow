@@ -296,19 +296,23 @@ const record = (id, section, label, verdict, detail, proof) =>
 
 /* §6.1 — seuil et montage exclusif ------------------------------------------ */
 {
-  const threshold = /DESKTOP_MIN_WIDTH = 1024/.test(isDesktop);
+  // Deux seuils, chacun avec UN rôle : 768 px = rail (navigation),
+  // 1024 px = colonne de lecture. Le rail apparaît dès 768 px, donc c'est lui
+  // qui conditionne le montage exclusif avec les navigations mobiles.
+  const threshold =
+    /DESKTOP_MIN_WIDTH = 1024/.test(isDesktop) && /TABLET_MIN_WIDTH = 768/.test(isDesktop);
   const exclusif =
-    /\{isDesktop && <DesktopRail/.test(layout) &&
+    /\{isRail && <DesktopRail/.test(layout) &&
     ['HamburgerMenu', 'QuickDock', 'BottomTabs'].every((c) =>
-      new RegExp(`\\{!isDesktop && <${c}`).test(layout),
+      new RegExp(`\\{!isRail && <${c}`).test(layout),
     );
   const noPixels = !/\b(264|88)px/.test(layout);
   record(
     'C09',
     '§6.1',
-    'Un seul seuil (1024 px), une seule navigation montée, aucune largeur en dur',
+    'Deux seuils, un rôle chacun (768 px rail, 1024 px colonne), une seule navigation montée',
     threshold && exclusif && noPixels ? 'PASS' : 'FAIL',
-    `seuil: ${threshold} · montage exclusif: ${exclusif} · zéro px en dur: ${noPixels}`,
+    `seuils: ${threshold} · montage exclusif: ${exclusif} · zéro px en dur: ${noPixels}`,
     'npx vitest run tests/design/desktop-shell.test.ts',
   );
 }

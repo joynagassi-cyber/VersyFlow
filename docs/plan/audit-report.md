@@ -1,7 +1,7 @@
 # Rapport d’audit — plan « Interface web + thèmes »
 
 Généré par `node scripts/audit-plan.mjs`. **Ne pas éditer à la main.**
-Exécuté le 2026-10-29 18:45 (UTC).
+Exécuté le 2026-10-29 18:53 (UTC).
 
 **Bilan : 16 PASS · 0 PARTIEL · 0 FAIL · 4 non vérifiable(s).**
 
@@ -15,12 +15,12 @@ Exécuté le 2026-10-29 18:45 (UTC).
 | C06 | §2.5 | **PASS** | Alpha dérivable sur les variables ; recette de verre 40 % + 40 px + voile | helper: true · 24 jetons dérivables · .surface-glass: true · consommée 1× · voile en background-image: true |
 | C07 | §9.2 | **PASS** | Modes « transparence réduite » et « contraste élevé » pilotables et appliqués | css: true · store: true · interrupteurs: true · attributs posés: true |
 | C08 | §3.3 | **PASS** | Aucune couleur littérale dans le code d’interface (hors exception documentée) | 97 fichiers d’interface scannés · 0 ligne(s) fautive(s) |
-| C09 | §6.1 | **PASS** | Un seul seuil (1024 px), une seule navigation montée, aucune largeur en dur | seuil: true · montage exclusif: true · zéro px en dur: true |
+| C09 | §6.1 | **PASS** | Deux seuils, un rôle chacun (768 px rail, 1024 px colonne), une seule navigation montée | seuils: true · montage exclusif: true · zéro px en dur: true |
 | C10 | §6.2 | **PASS** | Rail : une variable de largeur, repli accessible, état actif non colorimétrique | variable unique: true · largeur: true · repli sr-only: true · aria: true · Hugeicons seuls: true |
 | C11 | §6.4 | **PASS** | Mesure de lecture définie et appliquée à tous les écrans de contenu | 60/60 écrans couverts (classe directe ou coquille) · coquilles: ok · jetons présents |
 | C12 | §5.1 | **PASS** | Une seule bibliothèque d’icônes (Hugeicons) | 101/101 fichiers sans Lucide · 0 à migrer |
 | C13 | §4.4 | **PASS** | Accent d’image : trois rôles, texte choisi par contraste, pas de promesse pendante | 3 rôles: true · garde-fou de chargement: true · texte au ratio: true |
-| C14 | §11.2 | **PASS** | Chaque famille de contrat a un test dédié | 6 fichiers · 7/7 familles couvertes |
+| C14 | §11.2 | **PASS** | Chaque famille de contrat a un test dédié | 9 fichiers · 7/7 familles couvertes |
 | C15 | §0 | **PASS** | Les libellés ajoutés existent en français et en anglais | fr manquants: aucun · en manquants: aucun |
 | C16 | §4.6 | **PASS** | Registres de thèmes : presets, dégradés et thèmes image déclarés une seule fois | 25 presets · 15 dégradés · 101 thèmes image |
 

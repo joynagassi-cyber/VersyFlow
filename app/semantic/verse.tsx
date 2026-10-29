@@ -87,7 +87,7 @@ export default function VerseView() {
   const community = cues?.community ?? null;
 
   return (
-    <FullScreenPage title={verseRef ? formatVerseKey(verseRef) : undefined}>
+    <FullScreenPage title={verseRef ? formatVerseKey(verseRef) : undefined} column="narrow">
       <div className="screen-column min-h-full overflow-y-auto bg-background p-4 pb-24">
         {/* Verse text */}
         <div className="mb-5 rounded-xl bg-surface p-4 shadow-sm">

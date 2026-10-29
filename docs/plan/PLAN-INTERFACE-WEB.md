@@ -10,8 +10,10 @@ la mesure, ou si la preuve est citée dans la colonne « Preuve ».
 
 ```bash
 node scripts/audit-plan.mjs          # re-calcule les 16 contrôles depuis les fichiers → docs/plan/audit-report.md
-npm run verify                       # tsc + eslint + tests design + audit
+npm run verify                       # tsc + eslint + tests design + audit + provenance + parcours
 npm run themes:contrast -- --check   # idempotence de la normalisation des contrastes
+npm run themes:provenance            # manifeste des 100 thèmes (source, licence, empreintes)
+npm run plan:journeys                # inventaire des 16 parcours → docs/plan/parcours-inventaire.md
 ```
 
 L'audit sort en **code 1** si un contrôle `FAIL` existe. `PARTIAL` n'est jamais
@@ -29,26 +31,27 @@ compté comme réussi : c'est une avancement mesuré, avec son numérateur.
 
 ## 2. État mesuré au dernier audit
 
-`node scripts/audit-plan.mjs` → **14 PASS · 2 PARTIEL · 0 FAIL · 4 non vérifiables**.
+`node scripts/audit-plan.mjs` → **16 PASS · 0 PARTIEL · 0 FAIL · 4 non vérifiables**
+(audit du 29/10 après exécution des lots L1→L10).
 
 | ID | § | Contrôle | Verdict | Mesure |
 | --- | --- | --- | --- | --- |
 | C01 | §2.2 | aucun triplet HSL nu | **FAIT** | `hsl(var(--…))` : 0 |
 | C02 | §2.1 | 14 jetons × 50 blocs de preset | **FAIT** | 25 presets, 0 manquant |
 | C03 | §2.1 | pont `--color-*` (dont `--color-on-primary`) | **FAIT** | 50/50 |
-| C04 | §2.3 | 4,5:1 partout | **FAIT** | 250 paires, pire 4,50:1 |
+| C04 | §2.3 | 4,5:1 partout | **FAIT** | **500 paires** (25 presets × 10 × 2 modes), pire 4,50:1 |
 | C05 | §2.4 | fondu 0,8 s + `@property` + reduced-motion | **FAIT** | 4 jetons typés |
 | C06 | §2.5 | alpha Tailwind + verre 40 %/40 px | **FAIT** | 24 jetons dérivables |
 | C07 | §9.2 | transparence réduite / contraste élevé | **FAIT** | css + store + UI |
 | C08 | §3.3 | zéro couleur en dur | **FAIT** | 97 fichiers, 0 ligne |
-| C09 | §6.1 | seuil unique, navigation unique | **FAIT** | 1024 px |
+| C09 | §6.1 | deux seuils, un rôle chacun | **FAIT** | 768 px rail / 1024 px colonne |
 | C10 | §6.2 | rail : 1 variable, repli accessible | **FAIT** | Hugeicons seuls |
-| C11 | §6.4 | `--reading-width` appliqué aux écrans | **PARTIEL** | **4/63 écrans** |
-| C12 | §5.1 | une seule bibliothèque d'icônes | **PARTIEL** | **29/101 fichiers**, 72 à migrer |
+| C11 | §6.4 | `--reading-width` appliqué aux écrans | **FAIT** | **60/60 écrans** (classe ou coquille) |
+| C12 | §5.1 | une seule bibliothèque d'icônes | **FAIT** | **101/101 fichiers**, 0 restant |
 | C13 | §4.4 | accent d'image (3 rôles, ratio, garde-fou) | **FAIT** | délai 4 s |
-| C14 | §11.2 | une famille de tests par contrat | **FAIT** | 7/7, 54 tests |
+| C14 | §11.2 | une famille de tests par contrat | **FAIT** | 9 fichiers, **103 tests** |
 | C15 | §0 | libellés fr + en | **FAIT** | 8 clés |
-| C16 | §4.6 | registres uniques (25 / 15 / 100) | **FAIT** | 1 source chacun |
+| C16 | §4.6 | registres uniques (25 / 15 / 101) | **FAIT** | 1 source chacun |
 
 Non vérifiable ici : **U01** rendu à 390/768/1024/1440 px · **U02** débordement et
 positions · **U03** effet réel du verre · **U04** parcours métier sur données réelles.
@@ -184,40 +187,74 @@ observable** et **une preuve**. Le lot indique le tour de travail prévu.
 
 ---
 
-## 4. Lots de travail restants, dans l'ordre des dépendances
+## 4. Lots de travail — état d'exécution
 
-Un lot = un tour de travail, livrable et vérifiable seul.
+Tous les lots L1→L10 sont exécutés. Chaque ligne donne la **preuve recalculable** :
+une commande, et sa sortie au dernier passage.
 
-| Lot | Contenu | Tâches | Sortie vérifiable |
+| Lot | Contenu | État | Preuve (commande → sortie) |
 | --- | --- | --- | --- |
-| **L1** | Écrans de listes passés en `.screen-column` + filtre collant | 9.4, 9.5, 9.6 | `screen-column` ≥ 12/63, `max-w-md` en baisse chiffrée |
-| **L2** | Colonne de lecture des parcours (mémorisation, révision, Bible) | 10.3, 10.4 | 3 écrans en `--reading-width`, test de largeur |
-| **L3** | Migration Hugeicons, 10 fichiers par lot | 5.1 (C12) | compteur Lucide 72 → 62 → … → 0 |
-| **L4** | Échelle typographique + ombres + `tabular-nums` | 3.7, 3.8, 3.9 | `fontSize` et `boxShadow` déclarés, test qui les lit |
-| **L5** | Résolveur de thème extrait + testé | 4.1, 4.6 | `resolveTheme()` pur, 1 seul écrivain du DOM |
-| **L6** | Provenance / licences / tons pré-calculés | 5.4, 5.5 | manifeste + script de mesure des pixels |
-| **L7** | Feuilles modales → boîtes centrées | 10.5 | 6 modales converties, test de montage |
-| **L8** | Rail compact tablette + en-tête collant | 8.4, 8.5 | seuil 768 testé |
-| **L9** | Journal des ajustements d'accent | 6.5 | export consultable + test |
-| **L10** | Inventaire des parcours métier | 10.1 | document actif/incomplet/absent |
+| **L1** | Écrans en `.screen-column` + coquilles | **FAIT** | `node scripts/audit-plan.mjs` → C11 `60/60 écrans couverts` · `grep -rIl max-w-md --include=*.tsx app src` → 0 |
+| **L2** | Colonne de lecture des parcours | **FAIT** | `npx vitest run tests/design/journeys-and-modals.test.ts` → 10 tests, dont « les quatre écrans de lecture demandent explicitement la colonne » |
+| **L3** | Migration Hugeicons complète | **FAIT** | `grep -rIl lucide-react --include=*.tsx app src` → 0 · C12 `101/101` · `lucide-react` retiré de `package.json` |
+| **L4** | Échelle typographique + ombres + `tabular-nums` | **FAIT** | `npx vitest run tests/design/elevation-and-type.test.ts` → 6 tests (`boxShadow` déclaré une seule fois, 3 niveaux neutres, 11 pas `fontSize`) |
+| **L5** | Résolveur de thème pur + écrivain unique | **FAIT** | `npx vitest run tests/design/resolve-theme.test.ts` → 15 tests · `grep -c "style.setProperty" src/components/ThemeManager.tsx` → 0 |
+| **L6** | Provenance / licences / tons | **FAIT** | `npm run themes:provenance` → `100 thèmes` · `docs/design/theme-provenance.json` · décodeur PNG testé sur image synthétique |
+| **L7** | Feuilles modales → boîtes centrées | **FAIT** | `.modal-sheet` / `.modal-sheet-panel` dans `globals.css` · test L7 dans `journeys-and-modals.test.ts` (centrage 680 px, poignée masquée ≥ 768 px) |
+| **L8** | Rail tablette + un seul seuil par rôle | **FAIT** | `useIsRail` (768 px) · C09 `seuils: true · montage exclusif: true` |
+| **L9** | Journal des ajustements d'accent | **FAIT** | `npm run themes:contrast` → `500 paires, min 4.5:1` · `npx vitest run tests/design/accent-journal.test.ts` → 5 tests |
+| **L10** | Inventaire des parcours | **FAIT** | `npm run plan:journeys` → `16 parcours · actifs 16 · partiels 0 · absents 0` |
 
-Ordre imposé : **L1 → L2 → L3** (ils se voient), puis L4 et L5 (socle), puis L6, L7,
-L8, L9, L10. Aucun lot ne touche plus de 70 fichiers : au-delà, la revue devient
-impossible et le risque de régression silencieuse augmente.
+### Ce que chaque lot a réellement changé
 
-## 5. Définition de fini (globale)
+- **L1** — une seule abstraction de largeur (`.screen-column` / `-narrow`) posée dans
+  les coquilles (`FullScreenPage`, `OnboardingShell`) : les 60 écrans l'obtiennent
+  sans que chacun la réécrive. `max-w-md` : **42 → 0** hors barre d'onglets.
+- **L2** — les quatre écrans de lecture (session, révision, chapitre, verset)
+  demandent **explicitement** `column="narrow"` : ils ne dépendent plus d'un défaut.
+- **L3** — 116 icônes Lucide remplacées par des équivalents Hugeicons **vérifiés un
+  par un** dans `@hugeicons/core-free-icons` (aucun nom inventé), 70 fichiers
+  convertis par codemod puis repris à la main pour les usages dynamiques
+  (`<Icon />` dans une carte). La dépendance `lucide-react` est supprimée.
+- **L4** — deux clés `boxShadow` se masquaient dans `theme.extend` (la seconde
+  écrasait la première) : ramenées à **trois** ombres neutres dérivées de l'encre
+  du thème (`--shadow-card/float/lift`), plus une échelle `fontSize` de 11 pas et
+  des chiffres tabulaires sur les compteurs.
+- **L5** — `resolveTheme()` décide, `applyThemePlan()` écrit : un seul écrivain du
+  DOM. Le plan ne se contredit jamais (aucune clé à la fois posée et retirée),
+  et `ThemeManager` ne touche plus au document.
+- **L6** — manifeste de provenance (modèle, script, licence, empreintes) + mesure
+  de la couleur moyenne des portraits sur les pixels.
+- **L7** — un seul couple de classes `.modal-sheet` / `.modal-sheet-panel` :
+  tiroir bas sous 768 px, boîte centrée de 680 px au-delà, poignée masquée.
+- **L8** — `768 px` fait apparaître le rail **replié** (dépliable seulement à
+  1024 px), la barre d'onglets basse disparaît : une seule navigation montée.
+- **L9** — les contrastes ne sont plus seulement corrigés, ils sont **journalisés** :
+  500 paires mesurées, empreinte du CSS dans le journal, test qui refuse un
+  journal périmé.
+- **L10** — les 16 parcours sont confrontés aux routes, aux écrans, aux tests et
+  aux données présentes : l'état est calculé, jamais déclaré.
 
-Toutes ces conditions doivent être vraies **en même temps** :
+## 5. Définition de fini (globale) — résultat mesuré
 
-1. `node scripts/audit-plan.mjs` → **0 FAIL** et **0 PARTIEL** sur C11 et C12.
-2. `npx tsc -p tsconfig.app.json --noEmit` → 0 erreur.
-3. `npx eslint` sur le périmètre → 0 erreur.
-4. `npx vitest run tests/design` → tout vert, nombre de tests cité.
-5. `npx vite build` → ✓, et le CSS construit contient les règles de verre.
-6. Aucun écran ne porte de logique de thème locale (`grep -rn "setProperty" app/` → 0).
-7. `grep -rIl "lucide-react" --include=*.tsx app src` → 0.
-8. Les 4 largeurs de référence inspectées à l'écran (ou explicitement déclarées
-   non vérifiées, avec la raison).
+| # | Condition | Résultat |
+| --- | --- | --- |
+| 1 | `node scripts/audit-plan.mjs` → 0 FAIL, 0 PARTIEL | **16 PASS · 0 PARTIEL · 0 FAIL** (4 non vérifiables) |
+| 2 | `npx tsc -p tsconfig.app.json --noEmit` | **0 erreur** |
+| 3 | `npx eslint` sur le périmètre | **0 erreur** (308 avertissements non bloquants) |
+| 4 | `npx vitest run tests/design` | **103 tests / 9 fichiers, tous verts** |
+| 5 | `npx vite build` | **✓ 12,9 s**, `index-*.js` 436,86 kB (124,31 kB gzip) |
+| 6 | `grep -rn "setProperty" app/` | **0** (le thème n'est plus écrit par un écran) |
+| 7 | `grep -rIl "lucide-react" --include=*.tsx app src` | **0** |
+| 8 | 4 largeurs de référence inspectées à l'écran | **NON VÉRIFIABLE** : aucun navigateur dans l'environnement (U01/U02) |
+
+Deux limites restent déclarées, jamais comptées comme réussies :
+
+- **U01/U02/U03** — le rendu réel (390/768/1024/1440 px), l'absence de débordement
+  et l'effet du verre ne se prouvent pas sans moteur de rendu.
+- **Visuels de thèmes absents du poste** — `public/themes` n'est pas versionné
+  (données lourdes). Le manifeste de provenance le déclare (`portraitsPresent: 0`)
+  au lieu de le masquer ; l'application retombe sur la couleur de catalogue.
 
 ## 6. Décisions déjà arbitrées (ne pas rejouer)
 
@@ -229,6 +266,10 @@ Toutes ces conditions doivent être vraies **en même temps** :
 | Hugeicons, pas Phosphor | consigne produit | audit desktop §2 |
 | Verre jamais condition de lisibilité | accessibilité | C07 |
 | `PARTIAL` n'est jamais présenté comme fait | exigence de suivi | §1 |
+| Trois ombres neutres, aucune ombre colorée | une ombre teintée salit le verre et vieillit mal entre deux thèmes | §4 L4 |
+| Une seule décision de thème, un seul écrivain du DOM | deux écrivains = deux vérités possibles | `resolve-theme.ts` |
+| Feuille modale asymétrique (bas → centre) | un tiroir collé en bas sur 1440 px est un défaut, pas un choix | `.modal-sheet` |
+| Rail dès 768 px, replié, sans choix | une colonne d'icônes tient, un rail déplié non | §4 L8 |
 
 ## 7. Échecs de tests assumés (environnement, pas régression)
 
@@ -241,10 +282,17 @@ Toutes ces conditions doivent être vraies **en même temps** :
 | `tests/api/fsrs-engine-api.test.ts`, `tests/unit/services/fsrs-factory.test.ts` | WASM non compilé dans l'environnement |
 | `tests/unit/powersync-connector.test.ts`, `tests/integration/auth-integration.test.ts` | aucun `.env` (mode local) |
 
-## 8. Corrections apportées pendant l'établissement du plan
+## 8. Corrections apportées pendant l'exécution
 
-Deux défauts préexistants empêchaient d'affirmer « lint : 0 erreur » — ils ne
-venaient pas des lots précédents, mais bloquaient la définition de fini :
+### 8.1 Trois défauts trouvés en exécutant, corrigés et mesurés
+
+| Défaut | Comment il a été trouvé | Correction | Preuve |
+| --- | --- | --- | --- |
+| **Deux clés `boxShadow`** dans le même `theme.extend` : la seconde écrasait la première, donc `shadow-rose` ne produisait rien | lecture de `tailwind.config.js` en L4 | fusion en 3 ombres neutres pilotées par des variables CSS | `tests/design/elevation-and-type.test.ts` (6 tests) |
+| **24 paires texte/surface sous AA** (`destructive`, `secondary`, `accent`) jamais mesurées : la normalisation ne couvrait que `primary` et `muted-foreground` | ajout du journal de 500 paires en L9 | normalisation étendue aux trois couples, luminosité ajustée, teinte préservée | `accent-adjustments.json` → `belowThreshold: 0`, min **4,5:1** |
+| **C07 et C09 mesuraient un fichier, pas un comportement** (ils cherchaient `data-transparency` dans `ThemeManager` et `!isDesktop` dans le layout) | les lots L5 et L8 ont déplacé la décision | contrôles réécrits pour mesurer le résolveur pur et les deux seuils | audit `16 PASS · 0 FAIL` |
+
+### 8.2 Défauts préexistants qui bloquaient « lint : 0 erreur »
 
 | Défaut | Mesure | Correction |
 | --- | --- | --- |
@@ -259,7 +307,8 @@ restants, non bloquants, à traiter en lot dédié).
 
 | Risque | Effet | Mitigation |
 | --- | --- | --- |
-| `public/themes` gitignored (353 Mo) | clone neuf sans visuels de thème | documenté ; décision de stockage à prendre |
-| 72 fichiers à migrer vers Hugeicons | régression visuelle silencieuse | 10 par lot, tsc + build à chaque lot |
-| Aucun navigateur | mise en page non prouvée | `UNVERIFIABLE` déclaré, jamais compté réussi |
-| 42 `max-w-md` imbriqués dans des composants | colonne étroite sur desktop | compteur suivi à chaque lot |
+| `public/themes` non versionné | clone neuf sans visuels de thème | **réalisé** : manifeste de provenance + repli sur la couleur de catalogue ; décision de stockage toujours à prendre |
+| Migration Hugeicons (70 fichiers d'un coup) | régression visuelle silencieuse | **réalisé** : codemod + `tsc` + build ; aucun nom d'icône inventé (115 noms vérifiés dans les types du paquet) |
+| Aucun navigateur | mise en page non prouvée | **déclaré** : U01–U03 restent non vérifiables |
+| Largeur des écrans | colonne étroite sur desktop | **réalisé** : `.screen-column` dans les coquilles, `max-w-md` = 0 |
+| Migration des icônes sans preuve visuelle | taille/poids différents de Lucide (24 px par défaut) | **risque ouvert** : à confirmer à l'écran (U01) |

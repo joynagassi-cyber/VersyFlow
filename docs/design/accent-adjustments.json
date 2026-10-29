@@ -1,0 +1,4512 @@
+{
+  "note": "Généré par scripts/apply-preset-contrast.mjs — ne pas éditer à la main.",
+  "threshold": 4.5,
+  "cssSha256": "feb9ecc82c998abd",
+  "presets": 25,
+  "pairs": 500,
+  "minimum": 4.5,
+  "belowThreshold": 0,
+  "adjustments": [],
+  "entries": [
+    {
+      "preset": "modern-minimal",
+      "mode": "light",
+      "pair": "foreground / background",
+      "fg": "#333333",
+      "bg": "#ffffff",
+      "ratio": 12.63,
+      "verdict": "ok"
+    },
+    {
+      "preset": "modern-minimal",
+      "mode": "light",
+      "pair": "foreground / card",
+      "fg": "#333333",
+      "bg": "#ffffff",
+      "ratio": 12.63,
+      "verdict": "ok"
+    },
+    {
+      "preset": "modern-minimal",
+      "mode": "light",
+      "pair": "card-foreground / card",
+      "fg": "#333333",
+      "bg": "#ffffff",
+      "ratio": 12.63,
+      "verdict": "ok"
+    },
+    {
+      "preset": "modern-minimal",
+      "mode": "light",
+      "pair": "popover-foreground / popover",
+      "fg": "#333333",
+      "bg": "#ffffff",
+      "ratio": 12.63,
+      "verdict": "ok"
+    },
+    {
+      "preset": "modern-minimal",
+      "mode": "light",
+      "pair": "muted-foreground / background",
+      "fg": "#6b7280",
+      "bg": "#ffffff",
+      "ratio": 4.83,
+      "verdict": "ok"
+    },
+    {
+      "preset": "modern-minimal",
+      "mode": "light",
+      "pair": "muted-foreground / card",
+      "fg": "#6b7280",
+      "bg": "#ffffff",
+      "ratio": 4.83,
+      "verdict": "ok"
+    },
+    {
+      "preset": "modern-minimal",
+      "mode": "light",
+      "pair": "primary-foreground / primary",
+      "fg": "#ffffff",
+      "bg": "#1e6ff5",
+      "ratio": 4.52,
+      "verdict": "ok"
+    },
+    {
+      "preset": "modern-minimal",
+      "mode": "light",
+      "pair": "secondary-foreground / secondary",
+      "fg": "#4b5563",
+      "bg": "#f3f4f6",
+      "ratio": 6.87,
+      "verdict": "ok"
+    },
+    {
+      "preset": "modern-minimal",
+      "mode": "light",
+      "pair": "accent-foreground / accent",
+      "fg": "#1e3a8a",
+      "bg": "#e0f2fe",
+      "ratio": 9.03,
+      "verdict": "ok"
+    },
+    {
+      "preset": "modern-minimal",
+      "mode": "light",
+      "pair": "destructive-foreground / destructive",
+      "fg": "#ffffff",
+      "bg": "#eb1515",
+      "ratio": 4.52,
+      "verdict": "ok"
+    },
+    {
+      "preset": "modern-minimal",
+      "mode": "dark",
+      "pair": "foreground / background",
+      "fg": "#e5e5e5",
+      "bg": "#171717",
+      "ratio": 14.23,
+      "verdict": "ok"
+    },
+    {
+      "preset": "modern-minimal",
+      "mode": "dark",
+      "pair": "foreground / card",
+      "fg": "#e5e5e5",
+      "bg": "#262626",
+      "ratio": 12.01,
+      "verdict": "ok"
+    },
+    {
+      "preset": "modern-minimal",
+      "mode": "dark",
+      "pair": "card-foreground / card",
+      "fg": "#e5e5e5",
+      "bg": "#262626",
+      "ratio": 12.01,
+      "verdict": "ok"
+    },
+    {
+      "preset": "modern-minimal",
+      "mode": "dark",
+      "pair": "popover-foreground / popover",
+      "fg": "#e5e5e5",
+      "bg": "#262626",
+      "ratio": 12.01,
+      "verdict": "ok"
+    },
+    {
+      "preset": "modern-minimal",
+      "mode": "dark",
+      "pair": "muted-foreground / background",
+      "fg": "#a3a3a3",
+      "bg": "#171717",
+      "ratio": 7.11,
+      "verdict": "ok"
+    },
+    {
+      "preset": "modern-minimal",
+      "mode": "dark",
+      "pair": "muted-foreground / card",
+      "fg": "#a3a3a3",
+      "bg": "#262626",
+      "ratio": 6,
+      "verdict": "ok"
+    },
+    {
+      "preset": "modern-minimal",
+      "mode": "dark",
+      "pair": "primary-foreground / primary",
+      "fg": "#ffffff",
+      "bg": "#1e6ff5",
+      "ratio": 4.52,
+      "verdict": "ok"
+    },
+    {
+      "preset": "modern-minimal",
+      "mode": "dark",
+      "pair": "secondary-foreground / secondary",
+      "fg": "#e5e5e5",
+      "bg": "#262626",
+      "ratio": 12.01,
+      "verdict": "ok"
+    },
+    {
+      "preset": "modern-minimal",
+      "mode": "dark",
+      "pair": "accent-foreground / accent",
+      "fg": "#bfdbfe",
+      "bg": "#1e3a8a",
+      "ratio": 7.29,
+      "verdict": "ok"
+    },
+    {
+      "preset": "modern-minimal",
+      "mode": "dark",
+      "pair": "destructive-foreground / destructive",
+      "fg": "#ffffff",
+      "bg": "#eb1515",
+      "ratio": 4.52,
+      "verdict": "ok"
+    },
+    {
+      "preset": "clean-slate",
+      "mode": "light",
+      "pair": "foreground / background",
+      "fg": "#1e293b",
+      "bg": "#f8fafc",
+      "ratio": 13.98,
+      "verdict": "ok"
+    },
+    {
+      "preset": "clean-slate",
+      "mode": "light",
+      "pair": "foreground / card",
+      "fg": "#1e293b",
+      "bg": "#ffffff",
+      "ratio": 14.63,
+      "verdict": "ok"
+    },
+    {
+      "preset": "clean-slate",
+      "mode": "light",
+      "pair": "card-foreground / card",
+      "fg": "#1e293b",
+      "bg": "#ffffff",
+      "ratio": 14.63,
+      "verdict": "ok"
+    },
+    {
+      "preset": "clean-slate",
+      "mode": "light",
+      "pair": "popover-foreground / popover",
+      "fg": "#1e293b",
+      "bg": "#ffffff",
+      "ratio": 14.63,
+      "verdict": "ok"
+    },
+    {
+      "preset": "clean-slate",
+      "mode": "light",
+      "pair": "muted-foreground / background",
+      "fg": "#6b7280",
+      "bg": "#f8fafc",
+      "ratio": 4.62,
+      "verdict": "ok"
+    },
+    {
+      "preset": "clean-slate",
+      "mode": "light",
+      "pair": "muted-foreground / card",
+      "fg": "#6b7280",
+      "bg": "#ffffff",
+      "ratio": 4.83,
+      "verdict": "ok"
+    },
+    {
+      "preset": "clean-slate",
+      "mode": "light",
+      "pair": "primary-foreground / primary",
+      "fg": "#ffffff",
+      "bg": "#5e61f1",
+      "ratio": 4.71,
+      "verdict": "ok"
+    },
+    {
+      "preset": "clean-slate",
+      "mode": "light",
+      "pair": "secondary-foreground / secondary",
+      "fg": "#374151",
+      "bg": "#e5e7eb",
+      "ratio": 8.33,
+      "verdict": "ok"
+    },
+    {
+      "preset": "clean-slate",
+      "mode": "light",
+      "pair": "accent-foreground / accent",
+      "fg": "#374151",
+      "bg": "#e0e7ff",
+      "ratio": 8.37,
+      "verdict": "ok"
+    },
+    {
+      "preset": "clean-slate",
+      "mode": "light",
+      "pair": "destructive-foreground / destructive",
+      "fg": "#ffffff",
+      "bg": "#eb1515",
+      "ratio": 4.52,
+      "verdict": "ok"
+    },
+    {
+      "preset": "clean-slate",
+      "mode": "dark",
+      "pair": "foreground / background",
+      "fg": "#e2e8f0",
+      "bg": "#0f172a",
+      "ratio": 14.48,
+      "verdict": "ok"
+    },
+    {
+      "preset": "clean-slate",
+      "mode": "dark",
+      "pair": "foreground / card",
+      "fg": "#e2e8f0",
+      "bg": "#1e293b",
+      "ratio": 11.87,
+      "verdict": "ok"
+    },
+    {
+      "preset": "clean-slate",
+      "mode": "dark",
+      "pair": "card-foreground / card",
+      "fg": "#e2e8f0",
+      "bg": "#1e293b",
+      "ratio": 11.87,
+      "verdict": "ok"
+    },
+    {
+      "preset": "clean-slate",
+      "mode": "dark",
+      "pair": "popover-foreground / popover",
+      "fg": "#e2e8f0",
+      "bg": "#1e293b",
+      "ratio": 11.87,
+      "verdict": "ok"
+    },
+    {
+      "preset": "clean-slate",
+      "mode": "dark",
+      "pair": "muted-foreground / background",
+      "fg": "#9ca3af",
+      "bg": "#0f172a",
+      "ratio": 7.03,
+      "verdict": "ok"
+    },
+    {
+      "preset": "clean-slate",
+      "mode": "dark",
+      "pair": "muted-foreground / card",
+      "fg": "#9ca3af",
+      "bg": "#1e293b",
+      "ratio": 5.76,
+      "verdict": "ok"
+    },
+    {
+      "preset": "clean-slate",
+      "mode": "dark",
+      "pair": "primary-foreground / primary",
+      "fg": "#0f172a",
+      "bg": "#818cf8",
+      "ratio": 5.98,
+      "verdict": "ok"
+    },
+    {
+      "preset": "clean-slate",
+      "mode": "dark",
+      "pair": "secondary-foreground / secondary",
+      "fg": "#d1d5db",
+      "bg": "#2d3748",
+      "ratio": 8.14,
+      "verdict": "ok"
+    },
+    {
+      "preset": "clean-slate",
+      "mode": "dark",
+      "pair": "accent-foreground / accent",
+      "fg": "#d1d5db",
+      "bg": "#374151",
+      "ratio": 7,
+      "verdict": "ok"
+    },
+    {
+      "preset": "clean-slate",
+      "mode": "dark",
+      "pair": "destructive-foreground / destructive",
+      "fg": "#0f172a",
+      "bg": "#ef4444",
+      "ratio": 4.74,
+      "verdict": "ok"
+    },
+    {
+      "preset": "violet-bloom",
+      "mode": "light",
+      "pair": "foreground / background",
+      "fg": "#000000",
+      "bg": "#fdfdfd",
+      "ratio": 20.65,
+      "verdict": "ok"
+    },
+    {
+      "preset": "violet-bloom",
+      "mode": "light",
+      "pair": "foreground / card",
+      "fg": "#000000",
+      "bg": "#fdfdfd",
+      "ratio": 20.65,
+      "verdict": "ok"
+    },
+    {
+      "preset": "violet-bloom",
+      "mode": "light",
+      "pair": "card-foreground / card",
+      "fg": "#000000",
+      "bg": "#fdfdfd",
+      "ratio": 20.65,
+      "verdict": "ok"
+    },
+    {
+      "preset": "violet-bloom",
+      "mode": "light",
+      "pair": "popover-foreground / popover",
+      "fg": "#000000",
+      "bg": "#fcfcfc",
+      "ratio": 20.47,
+      "verdict": "ok"
+    },
+    {
+      "preset": "violet-bloom",
+      "mode": "light",
+      "pair": "muted-foreground / background",
+      "fg": "#525252",
+      "bg": "#fdfdfd",
+      "ratio": 7.68,
+      "verdict": "ok"
+    },
+    {
+      "preset": "violet-bloom",
+      "mode": "light",
+      "pair": "muted-foreground / card",
+      "fg": "#525252",
+      "bg": "#fdfdfd",
+      "ratio": 7.68,
+      "verdict": "ok"
+    },
+    {
+      "preset": "violet-bloom",
+      "mode": "light",
+      "pair": "primary-foreground / primary",
+      "fg": "#ffffff",
+      "bg": "#7033ff",
+      "ratio": 5.82,
+      "verdict": "ok"
+    },
+    {
+      "preset": "violet-bloom",
+      "mode": "light",
+      "pair": "secondary-foreground / secondary",
+      "fg": "#080808",
+      "bg": "#edf0f4",
+      "ratio": 17.52,
+      "verdict": "ok"
+    },
+    {
+      "preset": "violet-bloom",
+      "mode": "light",
+      "pair": "accent-foreground / accent",
+      "fg": "#1e69dc",
+      "bg": "#ecf2ff",
+      "ratio": 4.55,
+      "verdict": "ok"
+    },
+    {
+      "preset": "violet-bloom",
+      "mode": "light",
+      "pair": "destructive-foreground / destructive",
+      "fg": "#ffffff",
+      "bg": "#e02c30",
+      "ratio": 4.59,
+      "verdict": "ok"
+    },
+    {
+      "preset": "violet-bloom",
+      "mode": "dark",
+      "pair": "foreground / background",
+      "fg": "#f0f0f0",
+      "bg": "#1a1b1e",
+      "ratio": 15.11,
+      "verdict": "ok"
+    },
+    {
+      "preset": "violet-bloom",
+      "mode": "dark",
+      "pair": "foreground / card",
+      "fg": "#f0f0f0",
+      "bg": "#222327",
+      "ratio": 13.78,
+      "verdict": "ok"
+    },
+    {
+      "preset": "violet-bloom",
+      "mode": "dark",
+      "pair": "card-foreground / card",
+      "fg": "#f0f0f0",
+      "bg": "#222327",
+      "ratio": 13.78,
+      "verdict": "ok"
+    },
+    {
+      "preset": "violet-bloom",
+      "mode": "dark",
+      "pair": "popover-foreground / popover",
+      "fg": "#f0f0f0",
+      "bg": "#222327",
+      "ratio": 13.78,
+      "verdict": "ok"
+    },
+    {
+      "preset": "violet-bloom",
+      "mode": "dark",
+      "pair": "muted-foreground / background",
+      "fg": "#a0a0a0",
+      "bg": "#1a1b1e",
+      "ratio": 6.59,
+      "verdict": "ok"
+    },
+    {
+      "preset": "violet-bloom",
+      "mode": "dark",
+      "pair": "muted-foreground / card",
+      "fg": "#a0a0a0",
+      "bg": "#222327",
+      "ratio": 6,
+      "verdict": "ok"
+    },
+    {
+      "preset": "violet-bloom",
+      "mode": "dark",
+      "pair": "primary-foreground / primary",
+      "fg": "#ffffff",
+      "bg": "#8552ff",
+      "ratio": 4.52,
+      "verdict": "ok"
+    },
+    {
+      "preset": "violet-bloom",
+      "mode": "dark",
+      "pair": "secondary-foreground / secondary",
+      "fg": "#f0f0f0",
+      "bg": "#2a2c33",
+      "ratio": 12.23,
+      "verdict": "ok"
+    },
+    {
+      "preset": "violet-bloom",
+      "mode": "dark",
+      "pair": "accent-foreground / accent",
+      "fg": "#79c0ff",
+      "bg": "#1e293b",
+      "ratio": 7.52,
+      "verdict": "ok"
+    },
+    {
+      "preset": "violet-bloom",
+      "mode": "dark",
+      "pair": "destructive-foreground / destructive",
+      "fg": "#000000",
+      "bg": "#f87171",
+      "ratio": 7.59,
+      "verdict": "ok"
+    },
+    {
+      "preset": "t3-chat",
+      "mode": "light",
+      "pair": "foreground / background",
+      "fg": "#501854",
+      "bg": "#faf5fa",
+      "ratio": 12.19,
+      "verdict": "ok"
+    },
+    {
+      "preset": "t3-chat",
+      "mode": "light",
+      "pair": "foreground / card",
+      "fg": "#501854",
+      "bg": "#faf5fa",
+      "ratio": 12.19,
+      "verdict": "ok"
+    },
+    {
+      "preset": "t3-chat",
+      "mode": "light",
+      "pair": "card-foreground / card",
+      "fg": "#501854",
+      "bg": "#faf5fa",
+      "ratio": 12.19,
+      "verdict": "ok"
+    },
+    {
+      "preset": "t3-chat",
+      "mode": "light",
+      "pair": "popover-foreground / popover",
+      "fg": "#501854",
+      "bg": "#ffffff",
+      "ratio": 13.13,
+      "verdict": "ok"
+    },
+    {
+      "preset": "t3-chat",
+      "mode": "light",
+      "pair": "muted-foreground / background",
+      "fg": "#834588",
+      "bg": "#faf5fa",
+      "ratio": 6.15,
+      "verdict": "ok"
+    },
+    {
+      "preset": "t3-chat",
+      "mode": "light",
+      "pair": "muted-foreground / card",
+      "fg": "#834588",
+      "bg": "#faf5fa",
+      "ratio": 6.15,
+      "verdict": "ok"
+    },
+    {
+      "preset": "t3-chat",
+      "mode": "light",
+      "pair": "primary-foreground / primary",
+      "fg": "#ffffff",
+      "bg": "#a84370",
+      "ratio": 5.67,
+      "verdict": "ok"
+    },
+    {
+      "preset": "t3-chat",
+      "mode": "light",
+      "pair": "secondary-foreground / secondary",
+      "fg": "#77347c",
+      "bg": "#f1c4e6",
+      "ratio": 5.37,
+      "verdict": "ok"
+    },
+    {
+      "preset": "t3-chat",
+      "mode": "light",
+      "pair": "accent-foreground / accent",
+      "fg": "#77347c",
+      "bg": "#f1c4e6",
+      "ratio": 5.37,
+      "verdict": "ok"
+    },
+    {
+      "preset": "t3-chat",
+      "mode": "light",
+      "pair": "destructive-foreground / destructive",
+      "fg": "#ffffff",
+      "bg": "#ab4347",
+      "ratio": 5.79,
+      "verdict": "ok"
+    },
+    {
+      "preset": "t3-chat",
+      "mode": "dark",
+      "pair": "foreground / background",
+      "fg": "#d2c4de",
+      "bg": "#221d27",
+      "ratio": 9.97,
+      "verdict": "ok"
+    },
+    {
+      "preset": "t3-chat",
+      "mode": "dark",
+      "pair": "foreground / card",
+      "fg": "#d2c4de",
+      "bg": "#2c2632",
+      "ratio": 8.87,
+      "verdict": "ok"
+    },
+    {
+      "preset": "t3-chat",
+      "mode": "dark",
+      "pair": "card-foreground / card",
+      "fg": "#dbc5d2",
+      "bg": "#2c2632",
+      "ratio": 9.04,
+      "verdict": "ok"
+    },
+    {
+      "preset": "t3-chat",
+      "mode": "dark",
+      "pair": "popover-foreground / popover",
+      "fg": "#f8f1f5",
+      "bg": "#100a0e",
+      "ratio": 17.63,
+      "verdict": "ok"
+    },
+    {
+      "preset": "t3-chat",
+      "mode": "dark",
+      "pair": "muted-foreground / background",
+      "fg": "#c2b6cf",
+      "bg": "#221d27",
+      "ratio": 8.55,
+      "verdict": "ok"
+    },
+    {
+      "preset": "t3-chat",
+      "mode": "dark",
+      "pair": "muted-foreground / card",
+      "fg": "#c2b6cf",
+      "bg": "#2c2632",
+      "ratio": 7.61,
+      "verdict": "ok"
+    },
+    {
+      "preset": "t3-chat",
+      "mode": "dark",
+      "pair": "primary-foreground / primary",
+      "fg": "#efc0d8",
+      "bg": "#a3004c",
+      "ratio": 4.96,
+      "verdict": "ok"
+    },
+    {
+      "preset": "t3-chat",
+      "mode": "dark",
+      "pair": "secondary-foreground / secondary",
+      "fg": "#d4c7e1",
+      "bg": "#362d3d",
+      "ratio": 8.16,
+      "verdict": "ok"
+    },
+    {
+      "preset": "t3-chat",
+      "mode": "dark",
+      "pair": "accent-foreground / accent",
+      "fg": "#f8f1f5",
+      "bg": "#463753",
+      "ratio": 9.78,
+      "verdict": "ok"
+    },
+    {
+      "preset": "t3-chat",
+      "mode": "dark",
+      "pair": "destructive-foreground / destructive",
+      "fg": "#ffffff",
+      "bg": "#301015",
+      "ratio": 17.35,
+      "verdict": "ok"
+    },
+    {
+      "preset": "mocha-mousse",
+      "mode": "light",
+      "pair": "foreground / background",
+      "fg": "#56453F",
+      "bg": "#F1F0E5",
+      "ratio": 7.91,
+      "verdict": "ok"
+    },
+    {
+      "preset": "mocha-mousse",
+      "mode": "light",
+      "pair": "foreground / card",
+      "fg": "#56453F",
+      "bg": "#F1F0E5",
+      "ratio": 7.91,
+      "verdict": "ok"
+    },
+    {
+      "preset": "mocha-mousse",
+      "mode": "light",
+      "pair": "card-foreground / card",
+      "fg": "#56453F",
+      "bg": "#F1F0E5",
+      "ratio": 7.91,
+      "verdict": "ok"
+    },
+    {
+      "preset": "mocha-mousse",
+      "mode": "light",
+      "pair": "popover-foreground / popover",
+      "fg": "#56453F",
+      "bg": "#FFFFFF",
+      "ratio": 9.06,
+      "verdict": "ok"
+    },
+    {
+      "preset": "mocha-mousse",
+      "mode": "light",
+      "pair": "muted-foreground / background",
+      "fg": "#876358",
+      "bg": "#F1F0E5",
+      "ratio": 4.64,
+      "verdict": "ok"
+    },
+    {
+      "preset": "mocha-mousse",
+      "mode": "light",
+      "pair": "muted-foreground / card",
+      "fg": "#876358",
+      "bg": "#F1F0E5",
+      "ratio": 4.64,
+      "verdict": "ok"
+    },
+    {
+      "preset": "mocha-mousse",
+      "mode": "light",
+      "pair": "primary-foreground / primary",
+      "fg": "#FFFFFF",
+      "bg": "#956b58",
+      "ratio": 4.64,
+      "verdict": "ok"
+    },
+    {
+      "preset": "mocha-mousse",
+      "mode": "light",
+      "pair": "secondary-foreground / secondary",
+      "fg": "#000000",
+      "bg": "#BAAB92",
+      "ratio": 9.33,
+      "verdict": "ok"
+    },
+    {
+      "preset": "mocha-mousse",
+      "mode": "light",
+      "pair": "accent-foreground / accent",
+      "fg": "#56453F",
+      "bg": "#E4C7B8",
+      "ratio": 5.68,
+      "verdict": "ok"
+    },
+    {
+      "preset": "mocha-mousse",
+      "mode": "light",
+      "pair": "destructive-foreground / destructive",
+      "fg": "#FFFFFF",
+      "bg": "#1f1a17",
+      "ratio": 17.24,
+      "verdict": "ok"
+    },
+    {
+      "preset": "mocha-mousse",
+      "mode": "dark",
+      "pair": "foreground / background",
+      "fg": "#F1F0E5",
+      "bg": "#2d2521",
+      "ratio": 13.11,
+      "verdict": "ok"
+    },
+    {
+      "preset": "mocha-mousse",
+      "mode": "dark",
+      "pair": "foreground / card",
+      "fg": "#F1F0E5",
+      "bg": "#3c332e",
+      "ratio": 10.75,
+      "verdict": "ok"
+    },
+    {
+      "preset": "mocha-mousse",
+      "mode": "dark",
+      "pair": "card-foreground / card",
+      "fg": "#F1F0E5",
+      "bg": "#3c332e",
+      "ratio": 10.75,
+      "verdict": "ok"
+    },
+    {
+      "preset": "mocha-mousse",
+      "mode": "dark",
+      "pair": "popover-foreground / popover",
+      "fg": "#F1F0E5",
+      "bg": "#3c332e",
+      "ratio": 10.75,
+      "verdict": "ok"
+    },
+    {
+      "preset": "mocha-mousse",
+      "mode": "dark",
+      "pair": "muted-foreground / background",
+      "fg": "#c5aa9b",
+      "bg": "#2d2521",
+      "ratio": 6.86,
+      "verdict": "ok"
+    },
+    {
+      "preset": "mocha-mousse",
+      "mode": "dark",
+      "pair": "muted-foreground / card",
+      "fg": "#c5aa9b",
+      "bg": "#3c332e",
+      "ratio": 5.63,
+      "verdict": "ok"
+    },
+    {
+      "preset": "mocha-mousse",
+      "mode": "dark",
+      "pair": "primary-foreground / primary",
+      "fg": "#2d2521",
+      "bg": "#C39E88",
+      "ratio": 6.13,
+      "verdict": "ok"
+    },
+    {
+      "preset": "mocha-mousse",
+      "mode": "dark",
+      "pair": "secondary-foreground / secondary",
+      "fg": "#F1F0E5",
+      "bg": "#876358",
+      "ratio": 4.64,
+      "verdict": "ok"
+    },
+    {
+      "preset": "mocha-mousse",
+      "mode": "dark",
+      "pair": "accent-foreground / accent",
+      "fg": "#2d2521",
+      "bg": "#BAAB92",
+      "ratio": 6.67,
+      "verdict": "ok"
+    },
+    {
+      "preset": "mocha-mousse",
+      "mode": "dark",
+      "pair": "destructive-foreground / destructive",
+      "fg": "#2d2521",
+      "bg": "#E57373",
+      "ratio": 5.03,
+      "verdict": "ok"
+    },
+    {
+      "preset": "amethyst-haze",
+      "mode": "light",
+      "pair": "foreground / background",
+      "fg": "#3d3c4f",
+      "bg": "#f8f7fa",
+      "ratio": 10.05,
+      "verdict": "ok"
+    },
+    {
+      "preset": "amethyst-haze",
+      "mode": "light",
+      "pair": "foreground / card",
+      "fg": "#3d3c4f",
+      "bg": "#ffffff",
+      "ratio": 10.73,
+      "verdict": "ok"
+    },
+    {
+      "preset": "amethyst-haze",
+      "mode": "light",
+      "pair": "card-foreground / card",
+      "fg": "#3d3c4f",
+      "bg": "#ffffff",
+      "ratio": 10.73,
+      "verdict": "ok"
+    },
+    {
+      "preset": "amethyst-haze",
+      "mode": "light",
+      "pair": "popover-foreground / popover",
+      "fg": "#3d3c4f",
+      "bg": "#ffffff",
+      "ratio": 10.73,
+      "verdict": "ok"
+    },
+    {
+      "preset": "amethyst-haze",
+      "mode": "light",
+      "pair": "muted-foreground / background",
+      "fg": "#6b6880",
+      "bg": "#f8f7fa",
+      "ratio": 5.02,
+      "verdict": "ok"
+    },
+    {
+      "preset": "amethyst-haze",
+      "mode": "light",
+      "pair": "muted-foreground / card",
+      "fg": "#6b6880",
+      "bg": "#ffffff",
+      "ratio": 5.36,
+      "verdict": "ok"
+    },
+    {
+      "preset": "amethyst-haze",
+      "mode": "light",
+      "pair": "primary-foreground / primary",
+      "fg": "#f8f7fa",
+      "bg": "#7a669f",
+      "ratio": 4.65,
+      "verdict": "ok"
+    },
+    {
+      "preset": "amethyst-haze",
+      "mode": "light",
+      "pair": "secondary-foreground / secondary",
+      "fg": "#3d3c4f",
+      "bg": "#dfd9ec",
+      "ratio": 7.8,
+      "verdict": "ok"
+    },
+    {
+      "preset": "amethyst-haze",
+      "mode": "light",
+      "pair": "accent-foreground / accent",
+      "fg": "#4b2e36",
+      "bg": "#e6a5b8",
+      "ratio": 5.99,
+      "verdict": "ok"
+    },
+    {
+      "preset": "amethyst-haze",
+      "mode": "light",
+      "pair": "destructive-foreground / destructive",
+      "fg": "#f8f7fa",
+      "bg": "#d03737",
+      "ratio": 4.59,
+      "verdict": "ok"
+    },
+    {
+      "preset": "amethyst-haze",
+      "mode": "dark",
+      "pair": "foreground / background",
+      "fg": "#e0ddef",
+      "bg": "#1a1823",
+      "ratio": 13.14,
+      "verdict": "ok"
+    },
+    {
+      "preset": "amethyst-haze",
+      "mode": "dark",
+      "pair": "foreground / card",
+      "fg": "#e0ddef",
+      "bg": "#232030",
+      "ratio": 11.93,
+      "verdict": "ok"
+    },
+    {
+      "preset": "amethyst-haze",
+      "mode": "dark",
+      "pair": "card-foreground / card",
+      "fg": "#e0ddef",
+      "bg": "#232030",
+      "ratio": 11.93,
+      "verdict": "ok"
+    },
+    {
+      "preset": "amethyst-haze",
+      "mode": "dark",
+      "pair": "popover-foreground / popover",
+      "fg": "#e0ddef",
+      "bg": "#232030",
+      "ratio": 11.93,
+      "verdict": "ok"
+    },
+    {
+      "preset": "amethyst-haze",
+      "mode": "dark",
+      "pair": "muted-foreground / background",
+      "fg": "#a09aad",
+      "bg": "#1a1823",
+      "ratio": 6.44,
+      "verdict": "ok"
+    },
+    {
+      "preset": "amethyst-haze",
+      "mode": "dark",
+      "pair": "muted-foreground / card",
+      "fg": "#a09aad",
+      "bg": "#232030",
+      "ratio": 5.85,
+      "verdict": "ok"
+    },
+    {
+      "preset": "amethyst-haze",
+      "mode": "dark",
+      "pair": "primary-foreground / primary",
+      "fg": "#1a1823",
+      "bg": "#a995c9",
+      "ratio": 6.53,
+      "verdict": "ok"
+    },
+    {
+      "preset": "amethyst-haze",
+      "mode": "dark",
+      "pair": "secondary-foreground / secondary",
+      "fg": "#e0ddef",
+      "bg": "#5a5370",
+      "ratio": 5.42,
+      "verdict": "ok"
+    },
+    {
+      "preset": "amethyst-haze",
+      "mode": "dark",
+      "pair": "accent-foreground / accent",
+      "fg": "#f2b8c6",
+      "bg": "#372e3f",
+      "ratio": 7.66,
+      "verdict": "ok"
+    },
+    {
+      "preset": "amethyst-haze",
+      "mode": "dark",
+      "pair": "destructive-foreground / destructive",
+      "fg": "#1a1823",
+      "bg": "#e57373",
+      "ratio": 5.87,
+      "verdict": "ok"
+    },
+    {
+      "preset": "kodama-grove",
+      "mode": "light",
+      "pair": "foreground / background",
+      "fg": "#5c4b3e",
+      "bg": "#e4d7b0",
+      "ratio": 5.79,
+      "verdict": "ok"
+    },
+    {
+      "preset": "kodama-grove",
+      "mode": "light",
+      "pair": "foreground / card",
+      "fg": "#5c4b3e",
+      "bg": "#e7dbbf",
+      "ratio": 6.04,
+      "verdict": "ok"
+    },
+    {
+      "preset": "kodama-grove",
+      "mode": "light",
+      "pair": "card-foreground / card",
+      "fg": "#5c4b3e",
+      "bg": "#e7dbbf",
+      "ratio": 6.04,
+      "verdict": "ok"
+    },
+    {
+      "preset": "kodama-grove",
+      "mode": "light",
+      "pair": "popover-foreground / popover",
+      "fg": "#5c4b3e",
+      "bg": "#f3ead2",
+      "ratio": 6.92,
+      "verdict": "ok"
+    },
+    {
+      "preset": "kodama-grove",
+      "mode": "light",
+      "pair": "muted-foreground / background",
+      "fg": "#665a51",
+      "bg": "#e4d7b0",
+      "ratio": 4.66,
+      "verdict": "ok"
+    },
+    {
+      "preset": "kodama-grove",
+      "mode": "light",
+      "pair": "muted-foreground / card",
+      "fg": "#665a51",
+      "bg": "#e7dbbf",
+      "ratio": 4.86,
+      "verdict": "ok"
+    },
+    {
+      "preset": "kodama-grove",
+      "mode": "light",
+      "pair": "primary-foreground / primary",
+      "fg": "#fdfbf6",
+      "bg": "#6b783c",
+      "ratio": 4.64,
+      "verdict": "ok"
+    },
+    {
+      "preset": "kodama-grove",
+      "mode": "light",
+      "pair": "secondary-foreground / secondary",
+      "fg": "#5c4b3e",
+      "bg": "#decea0",
+      "ratio": 5.31,
+      "verdict": "ok"
+    },
+    {
+      "preset": "kodama-grove",
+      "mode": "light",
+      "pair": "accent-foreground / accent",
+      "fg": "#5c4b3e",
+      "bg": "#dbc894",
+      "ratio": 5.02,
+      "verdict": "ok"
+    },
+    {
+      "preset": "kodama-grove",
+      "mode": "light",
+      "pair": "destructive-foreground / destructive",
+      "fg": "#000000",
+      "bg": "#d98b7e",
+      "ratio": 7.94,
+      "verdict": "ok"
+    },
+    {
+      "preset": "kodama-grove",
+      "mode": "dark",
+      "pair": "foreground / background",
+      "fg": "#ede4d4",
+      "bg": "#3a3529",
+      "ratio": 9.67,
+      "verdict": "ok"
+    },
+    {
+      "preset": "kodama-grove",
+      "mode": "dark",
+      "pair": "foreground / card",
+      "fg": "#ede4d4",
+      "bg": "#413c33",
+      "ratio": 8.68,
+      "verdict": "ok"
+    },
+    {
+      "preset": "kodama-grove",
+      "mode": "dark",
+      "pair": "card-foreground / card",
+      "fg": "#ede4d4",
+      "bg": "#413c33",
+      "ratio": 8.68,
+      "verdict": "ok"
+    },
+    {
+      "preset": "kodama-grove",
+      "mode": "dark",
+      "pair": "popover-foreground / popover",
+      "fg": "#ede4d4",
+      "bg": "#413c33",
+      "ratio": 8.68,
+      "verdict": "ok"
+    },
+    {
+      "preset": "kodama-grove",
+      "mode": "dark",
+      "pair": "muted-foreground / background",
+      "fg": "#ada59c",
+      "bg": "#3a3529",
+      "ratio": 5.02,
+      "verdict": "ok"
+    },
+    {
+      "preset": "kodama-grove",
+      "mode": "dark",
+      "pair": "muted-foreground / card",
+      "fg": "#ada59c",
+      "bg": "#413c33",
+      "ratio": 4.5,
+      "verdict": "ok"
+    },
+    {
+      "preset": "kodama-grove",
+      "mode": "dark",
+      "pair": "primary-foreground / primary",
+      "fg": "#2a2521",
+      "bg": "#8a9f7b",
+      "ratio": 5.29,
+      "verdict": "ok"
+    },
+    {
+      "preset": "kodama-grove",
+      "mode": "dark",
+      "pair": "secondary-foreground / secondary",
+      "fg": "#ede4d4",
+      "bg": "#5a5345",
+      "ratio": 6.04,
+      "verdict": "ok"
+    },
+    {
+      "preset": "kodama-grove",
+      "mode": "dark",
+      "pair": "accent-foreground / accent",
+      "fg": "#2a2521",
+      "bg": "#a18f5c",
+      "ratio": 4.76,
+      "verdict": "ok"
+    },
+    {
+      "preset": "kodama-grove",
+      "mode": "dark",
+      "pair": "destructive-foreground / destructive",
+      "fg": "#f0e9db",
+      "bg": "#97574b",
+      "ratio": 4.6,
+      "verdict": "ok"
+    },
+    {
+      "preset": "cosmic-night",
+      "mode": "light",
+      "pair": "foreground / background",
+      "fg": "#2a2a4a",
+      "bg": "#f5f5ff",
+      "ratio": 12.68,
+      "verdict": "ok"
+    },
+    {
+      "preset": "cosmic-night",
+      "mode": "light",
+      "pair": "foreground / card",
+      "fg": "#2a2a4a",
+      "bg": "#ffffff",
+      "ratio": 13.74,
+      "verdict": "ok"
+    },
+    {
+      "preset": "cosmic-night",
+      "mode": "light",
+      "pair": "card-foreground / card",
+      "fg": "#2a2a4a",
+      "bg": "#ffffff",
+      "ratio": 13.74,
+      "verdict": "ok"
+    },
+    {
+      "preset": "cosmic-night",
+      "mode": "light",
+      "pair": "popover-foreground / popover",
+      "fg": "#2a2a4a",
+      "bg": "#ffffff",
+      "ratio": 13.74,
+      "verdict": "ok"
+    },
+    {
+      "preset": "cosmic-night",
+      "mode": "light",
+      "pair": "muted-foreground / background",
+      "fg": "#6c6c8a",
+      "bg": "#f5f5ff",
+      "ratio": 4.67,
+      "verdict": "ok"
+    },
+    {
+      "preset": "cosmic-night",
+      "mode": "light",
+      "pair": "muted-foreground / card",
+      "fg": "#6c6c8a",
+      "bg": "#ffffff",
+      "ratio": 5.06,
+      "verdict": "ok"
+    },
+    {
+      "preset": "cosmic-night",
+      "mode": "light",
+      "pair": "primary-foreground / primary",
+      "fg": "#ffffff",
+      "bg": "#6e56cf",
+      "ratio": 5.39,
+      "verdict": "ok"
+    },
+    {
+      "preset": "cosmic-night",
+      "mode": "light",
+      "pair": "secondary-foreground / secondary",
+      "fg": "#4a4080",
+      "bg": "#e4dfff",
+      "ratio": 6.98,
+      "verdict": "ok"
+    },
+    {
+      "preset": "cosmic-night",
+      "mode": "light",
+      "pair": "accent-foreground / accent",
+      "fg": "#2a2a4a",
+      "bg": "#d8e6ff",
+      "ratio": 10.91,
+      "verdict": "ok"
+    },
+    {
+      "preset": "cosmic-night",
+      "mode": "light",
+      "pair": "destructive-foreground / destructive",
+      "fg": "#000000",
+      "bg": "#ff5470",
+      "ratio": 6.75,
+      "verdict": "ok"
+    },
+    {
+      "preset": "cosmic-night",
+      "mode": "dark",
+      "pair": "foreground / background",
+      "fg": "#e2e2f5",
+      "bg": "#0f0f1a",
+      "ratio": 14.89,
+      "verdict": "ok"
+    },
+    {
+      "preset": "cosmic-night",
+      "mode": "dark",
+      "pair": "foreground / card",
+      "fg": "#e2e2f5",
+      "bg": "#1a1a2e",
+      "ratio": 13.35,
+      "verdict": "ok"
+    },
+    {
+      "preset": "cosmic-night",
+      "mode": "dark",
+      "pair": "card-foreground / card",
+      "fg": "#e2e2f5",
+      "bg": "#1a1a2e",
+      "ratio": 13.35,
+      "verdict": "ok"
+    },
+    {
+      "preset": "cosmic-night",
+      "mode": "dark",
+      "pair": "popover-foreground / popover",
+      "fg": "#e2e2f5",
+      "bg": "#1a1a2e",
+      "ratio": 13.35,
+      "verdict": "ok"
+    },
+    {
+      "preset": "cosmic-night",
+      "mode": "dark",
+      "pair": "muted-foreground / background",
+      "fg": "#a0a0c0",
+      "bg": "#0f0f1a",
+      "ratio": 7.51,
+      "verdict": "ok"
+    },
+    {
+      "preset": "cosmic-night",
+      "mode": "dark",
+      "pair": "muted-foreground / card",
+      "fg": "#a0a0c0",
+      "bg": "#1a1a2e",
+      "ratio": 6.73,
+      "verdict": "ok"
+    },
+    {
+      "preset": "cosmic-night",
+      "mode": "dark",
+      "pair": "primary-foreground / primary",
+      "fg": "#0f0f1a",
+      "bg": "#a48fff",
+      "ratio": 7.21,
+      "verdict": "ok"
+    },
+    {
+      "preset": "cosmic-night",
+      "mode": "dark",
+      "pair": "secondary-foreground / secondary",
+      "fg": "#c4c2ff",
+      "bg": "#2d2b55",
+      "ratio": 7.87,
+      "verdict": "ok"
+    },
+    {
+      "preset": "cosmic-night",
+      "mode": "dark",
+      "pair": "accent-foreground / accent",
+      "fg": "#e2e2f5",
+      "bg": "#303060",
+      "ratio": 9.57,
+      "verdict": "ok"
+    },
+    {
+      "preset": "cosmic-night",
+      "mode": "dark",
+      "pair": "destructive-foreground / destructive",
+      "fg": "#000000",
+      "bg": "#ff5470",
+      "ratio": 6.75,
+      "verdict": "ok"
+    },
+    {
+      "preset": "quantum-rose",
+      "mode": "light",
+      "pair": "foreground / background",
+      "fg": "#91185c",
+      "bg": "#fff0f8",
+      "ratio": 7.66,
+      "verdict": "ok"
+    },
+    {
+      "preset": "quantum-rose",
+      "mode": "light",
+      "pair": "foreground / card",
+      "fg": "#91185c",
+      "bg": "#fff7fc",
+      "ratio": 8.02,
+      "verdict": "ok"
+    },
+    {
+      "preset": "quantum-rose",
+      "mode": "light",
+      "pair": "card-foreground / card",
+      "fg": "#91185c",
+      "bg": "#fff7fc",
+      "ratio": 8.02,
+      "verdict": "ok"
+    },
+    {
+      "preset": "quantum-rose",
+      "mode": "light",
+      "pair": "popover-foreground / popover",
+      "fg": "#91185c",
+      "bg": "#fff7fc",
+      "ratio": 8.02,
+      "verdict": "ok"
+    },
+    {
+      "preset": "quantum-rose",
+      "mode": "light",
+      "pair": "muted-foreground / background",
+      "fg": "#be3f80",
+      "bg": "#fff0f8",
+      "ratio": 4.53,
+      "verdict": "ok"
+    },
+    {
+      "preset": "quantum-rose",
+      "mode": "light",
+      "pair": "muted-foreground / card",
+      "fg": "#be3f80",
+      "bg": "#fff7fc",
+      "ratio": 4.74,
+      "verdict": "ok"
+    },
+    {
+      "preset": "quantum-rose",
+      "mode": "light",
+      "pair": "primary-foreground / primary",
+      "fg": "#ffffff",
+      "bg": "#e10677",
+      "ratio": 4.67,
+      "verdict": "ok"
+    },
+    {
+      "preset": "quantum-rose",
+      "mode": "light",
+      "pair": "secondary-foreground / secondary",
+      "fg": "#91185c",
+      "bg": "#ffd6ff",
+      "ratio": 6.55,
+      "verdict": "ok"
+    },
+    {
+      "preset": "quantum-rose",
+      "mode": "light",
+      "pair": "accent-foreground / accent",
+      "fg": "#91185c",
+      "bg": "#ffc1e3",
+      "ratio": 5.62,
+      "verdict": "ok"
+    },
+    {
+      "preset": "quantum-rose",
+      "mode": "light",
+      "pair": "destructive-foreground / destructive",
+      "fg": "#ffffff",
+      "bg": "#d13869",
+      "ratio": 4.69,
+      "verdict": "ok"
+    },
+    {
+      "preset": "quantum-rose",
+      "mode": "dark",
+      "pair": "foreground / background",
+      "fg": "#ffb3ff",
+      "bg": "#1a0922",
+      "ratio": 11.88,
+      "verdict": "ok"
+    },
+    {
+      "preset": "quantum-rose",
+      "mode": "dark",
+      "pair": "foreground / card",
+      "fg": "#ffb3ff",
+      "bg": "#2a1435",
+      "ratio": 10.52,
+      "verdict": "ok"
+    },
+    {
+      "preset": "quantum-rose",
+      "mode": "dark",
+      "pair": "card-foreground / card",
+      "fg": "#ffb3ff",
+      "bg": "#2a1435",
+      "ratio": 10.52,
+      "verdict": "ok"
+    },
+    {
+      "preset": "quantum-rose",
+      "mode": "dark",
+      "pair": "popover-foreground / popover",
+      "fg": "#ffb3ff",
+      "bg": "#2a1435",
+      "ratio": 10.52,
+      "verdict": "ok"
+    },
+    {
+      "preset": "quantum-rose",
+      "mode": "dark",
+      "pair": "muted-foreground / background",
+      "fg": "#d67ad6",
+      "bg": "#1a0922",
+      "ratio": 6.88,
+      "verdict": "ok"
+    },
+    {
+      "preset": "quantum-rose",
+      "mode": "dark",
+      "pair": "muted-foreground / card",
+      "fg": "#d67ad6",
+      "bg": "#2a1435",
+      "ratio": 6.09,
+      "verdict": "ok"
+    },
+    {
+      "preset": "quantum-rose",
+      "mode": "dark",
+      "pair": "primary-foreground / primary",
+      "fg": "#180518",
+      "bg": "#ff6bef",
+      "ratio": 8.01,
+      "verdict": "ok"
+    },
+    {
+      "preset": "quantum-rose",
+      "mode": "dark",
+      "pair": "secondary-foreground / secondary",
+      "fg": "#ffb3ff",
+      "bg": "#46204f",
+      "ratio": 8.32,
+      "verdict": "ok"
+    },
+    {
+      "preset": "quantum-rose",
+      "mode": "dark",
+      "pair": "accent-foreground / accent",
+      "fg": "#ffb3ff",
+      "bg": "#5a1f5d",
+      "ratio": 7.35,
+      "verdict": "ok"
+    },
+    {
+      "preset": "quantum-rose",
+      "mode": "dark",
+      "pair": "destructive-foreground / destructive",
+      "fg": "#000000",
+      "bg": "#ff2876",
+      "ratio": 5.82,
+      "verdict": "ok"
+    },
+    {
+      "preset": "elegant-luxury",
+      "mode": "light",
+      "pair": "foreground / background",
+      "fg": "#1a1a1a",
+      "bg": "#faf7f5",
+      "ratio": 16.32,
+      "verdict": "ok"
+    },
+    {
+      "preset": "elegant-luxury",
+      "mode": "light",
+      "pair": "foreground / card",
+      "fg": "#1a1a1a",
+      "bg": "#faf7f5",
+      "ratio": 16.32,
+      "verdict": "ok"
+    },
+    {
+      "preset": "elegant-luxury",
+      "mode": "light",
+      "pair": "card-foreground / card",
+      "fg": "#1a1a1a",
+      "bg": "#faf7f5",
+      "ratio": 16.32,
+      "verdict": "ok"
+    },
+    {
+      "preset": "elegant-luxury",
+      "mode": "light",
+      "pair": "popover-foreground / popover",
+      "fg": "#1a1a1a",
+      "bg": "#faf7f5",
+      "ratio": 16.32,
+      "verdict": "ok"
+    },
+    {
+      "preset": "elegant-luxury",
+      "mode": "light",
+      "pair": "muted-foreground / background",
+      "fg": "#57534e",
+      "bg": "#faf7f5",
+      "ratio": 7.15,
+      "verdict": "ok"
+    },
+    {
+      "preset": "elegant-luxury",
+      "mode": "light",
+      "pair": "muted-foreground / card",
+      "fg": "#57534e",
+      "bg": "#faf7f5",
+      "ratio": 7.15,
+      "verdict": "ok"
+    },
+    {
+      "preset": "elegant-luxury",
+      "mode": "light",
+      "pair": "primary-foreground / primary",
+      "fg": "#ffffff",
+      "bg": "#9b2c2c",
+      "ratio": 7.53,
+      "verdict": "ok"
+    },
+    {
+      "preset": "elegant-luxury",
+      "mode": "light",
+      "pair": "secondary-foreground / secondary",
+      "fg": "#805500",
+      "bg": "#fdf2d6",
+      "ratio": 5.86,
+      "verdict": "ok"
+    },
+    {
+      "preset": "elegant-luxury",
+      "mode": "light",
+      "pair": "accent-foreground / accent",
+      "fg": "#7f1d1d",
+      "bg": "#fef3c7",
+      "ratio": 9,
+      "verdict": "ok"
+    },
+    {
+      "preset": "elegant-luxury",
+      "mode": "light",
+      "pair": "destructive-foreground / destructive",
+      "fg": "#ffffff",
+      "bg": "#991b1b",
+      "ratio": 8.31,
+      "verdict": "ok"
+    },
+    {
+      "preset": "elegant-luxury",
+      "mode": "dark",
+      "pair": "foreground / background",
+      "fg": "#f5f5f4",
+      "bg": "#1c1917",
+      "ratio": 16.03,
+      "verdict": "ok"
+    },
+    {
+      "preset": "elegant-luxury",
+      "mode": "dark",
+      "pair": "foreground / card",
+      "fg": "#f5f5f4",
+      "bg": "#292524",
+      "ratio": 13.9,
+      "verdict": "ok"
+    },
+    {
+      "preset": "elegant-luxury",
+      "mode": "dark",
+      "pair": "card-foreground / card",
+      "fg": "#f5f5f4",
+      "bg": "#292524",
+      "ratio": 13.9,
+      "verdict": "ok"
+    },
+    {
+      "preset": "elegant-luxury",
+      "mode": "dark",
+      "pair": "popover-foreground / popover",
+      "fg": "#f5f5f4",
+      "bg": "#292524",
+      "ratio": 13.9,
+      "verdict": "ok"
+    },
+    {
+      "preset": "elegant-luxury",
+      "mode": "dark",
+      "pair": "muted-foreground / background",
+      "fg": "#d6d3d1",
+      "bg": "#1c1917",
+      "ratio": 11.74,
+      "verdict": "ok"
+    },
+    {
+      "preset": "elegant-luxury",
+      "mode": "dark",
+      "pair": "muted-foreground / card",
+      "fg": "#d6d3d1",
+      "bg": "#292524",
+      "ratio": 10.18,
+      "verdict": "ok"
+    },
+    {
+      "preset": "elegant-luxury",
+      "mode": "dark",
+      "pair": "primary-foreground / primary",
+      "fg": "#faf7f5",
+      "bg": "#b91c1c",
+      "ratio": 6.07,
+      "verdict": "ok"
+    },
+    {
+      "preset": "elegant-luxury",
+      "mode": "dark",
+      "pair": "secondary-foreground / secondary",
+      "fg": "#fef3c7",
+      "bg": "#92400e",
+      "ratio": 6.37,
+      "verdict": "ok"
+    },
+    {
+      "preset": "elegant-luxury",
+      "mode": "dark",
+      "pair": "accent-foreground / accent",
+      "fg": "#fef3c7",
+      "bg": "#b45309",
+      "ratio": 4.51,
+      "verdict": "ok"
+    },
+    {
+      "preset": "elegant-luxury",
+      "mode": "dark",
+      "pair": "destructive-foreground / destructive",
+      "fg": "#ffffff",
+      "bg": "#eb1515",
+      "ratio": 4.52,
+      "verdict": "ok"
+    },
+    {
+      "preset": "amber-minimal",
+      "mode": "light",
+      "pair": "foreground / background",
+      "fg": "#262626",
+      "bg": "#ffffff",
+      "ratio": 15.13,
+      "verdict": "ok"
+    },
+    {
+      "preset": "amber-minimal",
+      "mode": "light",
+      "pair": "foreground / card",
+      "fg": "#262626",
+      "bg": "#ffffff",
+      "ratio": 15.13,
+      "verdict": "ok"
+    },
+    {
+      "preset": "amber-minimal",
+      "mode": "light",
+      "pair": "card-foreground / card",
+      "fg": "#262626",
+      "bg": "#ffffff",
+      "ratio": 15.13,
+      "verdict": "ok"
+    },
+    {
+      "preset": "amber-minimal",
+      "mode": "light",
+      "pair": "popover-foreground / popover",
+      "fg": "#262626",
+      "bg": "#ffffff",
+      "ratio": 15.13,
+      "verdict": "ok"
+    },
+    {
+      "preset": "amber-minimal",
+      "mode": "light",
+      "pair": "muted-foreground / background",
+      "fg": "#6b7280",
+      "bg": "#ffffff",
+      "ratio": 4.83,
+      "verdict": "ok"
+    },
+    {
+      "preset": "amber-minimal",
+      "mode": "light",
+      "pair": "muted-foreground / card",
+      "fg": "#6b7280",
+      "bg": "#ffffff",
+      "ratio": 4.83,
+      "verdict": "ok"
+    },
+    {
+      "preset": "amber-minimal",
+      "mode": "light",
+      "pair": "primary-foreground / primary",
+      "fg": "#000000",
+      "bg": "#f59e0b",
+      "ratio": 9.78,
+      "verdict": "ok"
+    },
+    {
+      "preset": "amber-minimal",
+      "mode": "light",
+      "pair": "secondary-foreground / secondary",
+      "fg": "#4b5563",
+      "bg": "#f3f4f6",
+      "ratio": 6.87,
+      "verdict": "ok"
+    },
+    {
+      "preset": "amber-minimal",
+      "mode": "light",
+      "pair": "accent-foreground / accent",
+      "fg": "#92400e",
+      "bg": "#fffbeb",
+      "ratio": 6.84,
+      "verdict": "ok"
+    },
+    {
+      "preset": "amber-minimal",
+      "mode": "light",
+      "pair": "destructive-foreground / destructive",
+      "fg": "#ffffff",
+      "bg": "#eb1515",
+      "ratio": 4.52,
+      "verdict": "ok"
+    },
+    {
+      "preset": "amber-minimal",
+      "mode": "dark",
+      "pair": "foreground / background",
+      "fg": "#e5e5e5",
+      "bg": "#171717",
+      "ratio": 14.23,
+      "verdict": "ok"
+    },
+    {
+      "preset": "amber-minimal",
+      "mode": "dark",
+      "pair": "foreground / card",
+      "fg": "#e5e5e5",
+      "bg": "#262626",
+      "ratio": 12.01,
+      "verdict": "ok"
+    },
+    {
+      "preset": "amber-minimal",
+      "mode": "dark",
+      "pair": "card-foreground / card",
+      "fg": "#e5e5e5",
+      "bg": "#262626",
+      "ratio": 12.01,
+      "verdict": "ok"
+    },
+    {
+      "preset": "amber-minimal",
+      "mode": "dark",
+      "pair": "popover-foreground / popover",
+      "fg": "#e5e5e5",
+      "bg": "#262626",
+      "ratio": 12.01,
+      "verdict": "ok"
+    },
+    {
+      "preset": "amber-minimal",
+      "mode": "dark",
+      "pair": "muted-foreground / background",
+      "fg": "#a3a3a3",
+      "bg": "#171717",
+      "ratio": 7.11,
+      "verdict": "ok"
+    },
+    {
+      "preset": "amber-minimal",
+      "mode": "dark",
+      "pair": "muted-foreground / card",
+      "fg": "#a3a3a3",
+      "bg": "#262626",
+      "ratio": 6,
+      "verdict": "ok"
+    },
+    {
+      "preset": "amber-minimal",
+      "mode": "dark",
+      "pair": "primary-foreground / primary",
+      "fg": "#000000",
+      "bg": "#f59e0b",
+      "ratio": 9.78,
+      "verdict": "ok"
+    },
+    {
+      "preset": "amber-minimal",
+      "mode": "dark",
+      "pair": "secondary-foreground / secondary",
+      "fg": "#e5e5e5",
+      "bg": "#262626",
+      "ratio": 12.01,
+      "verdict": "ok"
+    },
+    {
+      "preset": "amber-minimal",
+      "mode": "dark",
+      "pair": "accent-foreground / accent",
+      "fg": "#fde68a",
+      "bg": "#92400e",
+      "ratio": 5.69,
+      "verdict": "ok"
+    },
+    {
+      "preset": "amber-minimal",
+      "mode": "dark",
+      "pair": "destructive-foreground / destructive",
+      "fg": "#ffffff",
+      "bg": "#eb1515",
+      "ratio": 4.52,
+      "verdict": "ok"
+    },
+    {
+      "preset": "solar-dusk",
+      "mode": "light",
+      "pair": "foreground / background",
+      "fg": "#4A3B33",
+      "bg": "#FDFBF7",
+      "ratio": 10.34,
+      "verdict": "ok"
+    },
+    {
+      "preset": "solar-dusk",
+      "mode": "light",
+      "pair": "foreground / card",
+      "fg": "#4A3B33",
+      "bg": "#F8F4EE",
+      "ratio": 9.76,
+      "verdict": "ok"
+    },
+    {
+      "preset": "solar-dusk",
+      "mode": "light",
+      "pair": "card-foreground / card",
+      "fg": "#4A3B33",
+      "bg": "#F8F4EE",
+      "ratio": 9.76,
+      "verdict": "ok"
+    },
+    {
+      "preset": "solar-dusk",
+      "mode": "light",
+      "pair": "popover-foreground / popover",
+      "fg": "#4A3B33",
+      "bg": "#F8F4EE",
+      "ratio": 9.76,
+      "verdict": "ok"
+    },
+    {
+      "preset": "solar-dusk",
+      "mode": "light",
+      "pair": "muted-foreground / background",
+      "fg": "#756e6a",
+      "bg": "#FDFBF7",
+      "ratio": 4.84,
+      "verdict": "ok"
+    },
+    {
+      "preset": "solar-dusk",
+      "mode": "light",
+      "pair": "muted-foreground / card",
+      "fg": "#756e6a",
+      "bg": "#F8F4EE",
+      "ratio": 4.57,
+      "verdict": "ok"
+    },
+    {
+      "preset": "solar-dusk",
+      "mode": "light",
+      "pair": "primary-foreground / primary",
+      "fg": "#FFFFFF",
+      "bg": "#B45309",
+      "ratio": 5.02,
+      "verdict": "ok"
+    },
+    {
+      "preset": "solar-dusk",
+      "mode": "light",
+      "pair": "secondary-foreground / secondary",
+      "fg": "#57534E",
+      "bg": "#e5c294",
+      "ratio": 4.53,
+      "verdict": "ok"
+    },
+    {
+      "preset": "solar-dusk",
+      "mode": "light",
+      "pair": "accent-foreground / accent",
+      "fg": "#57534E",
+      "bg": "#f2daba",
+      "ratio": 5.64,
+      "verdict": "ok"
+    },
+    {
+      "preset": "solar-dusk",
+      "mode": "light",
+      "pair": "destructive-foreground / destructive",
+      "fg": "#FFFFFF",
+      "bg": "#991B1B",
+      "ratio": 8.31,
+      "verdict": "ok"
+    },
+    {
+      "preset": "solar-dusk",
+      "mode": "dark",
+      "pair": "foreground / background",
+      "fg": "#F5F5F4",
+      "bg": "#1C1917",
+      "ratio": 16.03,
+      "verdict": "ok"
+    },
+    {
+      "preset": "solar-dusk",
+      "mode": "dark",
+      "pair": "foreground / card",
+      "fg": "#F5F5F4",
+      "bg": "#292524",
+      "ratio": 13.9,
+      "verdict": "ok"
+    },
+    {
+      "preset": "solar-dusk",
+      "mode": "dark",
+      "pair": "card-foreground / card",
+      "fg": "#F5F5F4",
+      "bg": "#292524",
+      "ratio": 13.9,
+      "verdict": "ok"
+    },
+    {
+      "preset": "solar-dusk",
+      "mode": "dark",
+      "pair": "popover-foreground / popover",
+      "fg": "#F5F5F4",
+      "bg": "#292524",
+      "ratio": 13.9,
+      "verdict": "ok"
+    },
+    {
+      "preset": "solar-dusk",
+      "mode": "dark",
+      "pair": "muted-foreground / background",
+      "fg": "#A8A29E",
+      "bg": "#1C1917",
+      "ratio": 6.93,
+      "verdict": "ok"
+    },
+    {
+      "preset": "solar-dusk",
+      "mode": "dark",
+      "pair": "muted-foreground / card",
+      "fg": "#A8A29E",
+      "bg": "#292524",
+      "ratio": 6.01,
+      "verdict": "ok"
+    },
+    {
+      "preset": "solar-dusk",
+      "mode": "dark",
+      "pair": "primary-foreground / primary",
+      "fg": "#000000",
+      "bg": "#F97316",
+      "ratio": 7.49,
+      "verdict": "ok"
+    },
+    {
+      "preset": "solar-dusk",
+      "mode": "dark",
+      "pair": "secondary-foreground / secondary",
+      "fg": "#E7E5E4",
+      "bg": "#57534E",
+      "ratio": 6.08,
+      "verdict": "ok"
+    },
+    {
+      "preset": "solar-dusk",
+      "mode": "dark",
+      "pair": "accent-foreground / accent",
+      "fg": "#E7E5E4",
+      "bg": "#1e4252",
+      "ratio": 8.55,
+      "verdict": "ok"
+    },
+    {
+      "preset": "solar-dusk",
+      "mode": "dark",
+      "pair": "destructive-foreground / destructive",
+      "fg": "#FFFFFF",
+      "bg": "#DC2626",
+      "ratio": 4.83,
+      "verdict": "ok"
+    },
+    {
+      "preset": "pastel-dreams",
+      "mode": "light",
+      "pair": "foreground / background",
+      "fg": "#374151",
+      "bg": "#f7f3f9",
+      "ratio": 9.4,
+      "verdict": "ok"
+    },
+    {
+      "preset": "pastel-dreams",
+      "mode": "light",
+      "pair": "foreground / card",
+      "fg": "#374151",
+      "bg": "#ffffff",
+      "ratio": 10.31,
+      "verdict": "ok"
+    },
+    {
+      "preset": "pastel-dreams",
+      "mode": "light",
+      "pair": "card-foreground / card",
+      "fg": "#374151",
+      "bg": "#ffffff",
+      "ratio": 10.31,
+      "verdict": "ok"
+    },
+    {
+      "preset": "pastel-dreams",
+      "mode": "light",
+      "pair": "popover-foreground / popover",
+      "fg": "#374151",
+      "bg": "#ffffff",
+      "ratio": 10.31,
+      "verdict": "ok"
+    },
+    {
+      "preset": "pastel-dreams",
+      "mode": "light",
+      "pair": "muted-foreground / background",
+      "fg": "#69707d",
+      "bg": "#f7f3f9",
+      "ratio": 4.54,
+      "verdict": "ok"
+    },
+    {
+      "preset": "pastel-dreams",
+      "mode": "light",
+      "pair": "muted-foreground / card",
+      "fg": "#69707d",
+      "bg": "#ffffff",
+      "ratio": 4.98,
+      "verdict": "ok"
+    },
+    {
+      "preset": "pastel-dreams",
+      "mode": "light",
+      "pair": "primary-foreground / primary",
+      "fg": "#ffffff",
+      "bg": "#7e55f8",
+      "ratio": 4.62,
+      "verdict": "ok"
+    },
+    {
+      "preset": "pastel-dreams",
+      "mode": "light",
+      "pair": "secondary-foreground / secondary",
+      "fg": "#4b5563",
+      "bg": "#e9d8fd",
+      "ratio": 5.65,
+      "verdict": "ok"
+    },
+    {
+      "preset": "pastel-dreams",
+      "mode": "light",
+      "pair": "accent-foreground / accent",
+      "fg": "#374151",
+      "bg": "#f3e5f5",
+      "ratio": 8.51,
+      "verdict": "ok"
+    },
+    {
+      "preset": "pastel-dreams",
+      "mode": "light",
+      "pair": "destructive-foreground / destructive",
+      "fg": "#000000",
+      "bg": "#fca5a5",
+      "ratio": 11.06,
+      "verdict": "ok"
+    },
+    {
+      "preset": "pastel-dreams",
+      "mode": "dark",
+      "pair": "foreground / background",
+      "fg": "#e0e7ff",
+      "bg": "#1c1917",
+      "ratio": 14.19,
+      "verdict": "ok"
+    },
+    {
+      "preset": "pastel-dreams",
+      "mode": "dark",
+      "pair": "foreground / card",
+      "fg": "#e0e7ff",
+      "bg": "#2d2535",
+      "ratio": 11.94,
+      "verdict": "ok"
+    },
+    {
+      "preset": "pastel-dreams",
+      "mode": "dark",
+      "pair": "card-foreground / card",
+      "fg": "#e0e7ff",
+      "bg": "#2d2535",
+      "ratio": 11.94,
+      "verdict": "ok"
+    },
+    {
+      "preset": "pastel-dreams",
+      "mode": "dark",
+      "pair": "popover-foreground / popover",
+      "fg": "#e0e7ff",
+      "bg": "#2d2535",
+      "ratio": 11.94,
+      "verdict": "ok"
+    },
+    {
+      "preset": "pastel-dreams",
+      "mode": "dark",
+      "pair": "muted-foreground / background",
+      "fg": "#9ca3af",
+      "bg": "#1c1917",
+      "ratio": 6.89,
+      "verdict": "ok"
+    },
+    {
+      "preset": "pastel-dreams",
+      "mode": "dark",
+      "pair": "muted-foreground / card",
+      "fg": "#9ca3af",
+      "bg": "#2d2535",
+      "ratio": 5.79,
+      "verdict": "ok"
+    },
+    {
+      "preset": "pastel-dreams",
+      "mode": "dark",
+      "pair": "primary-foreground / primary",
+      "fg": "#1c1917",
+      "bg": "#c0aafd",
+      "ratio": 8.67,
+      "verdict": "ok"
+    },
+    {
+      "preset": "pastel-dreams",
+      "mode": "dark",
+      "pair": "secondary-foreground / secondary",
+      "fg": "#d1d5db",
+      "bg": "#3f324a",
+      "ratio": 8.07,
+      "verdict": "ok"
+    },
+    {
+      "preset": "pastel-dreams",
+      "mode": "dark",
+      "pair": "accent-foreground / accent",
+      "fg": "#d1d5db",
+      "bg": "#4a3d5a",
+      "ratio": 6.77,
+      "verdict": "ok"
+    },
+    {
+      "preset": "pastel-dreams",
+      "mode": "dark",
+      "pair": "destructive-foreground / destructive",
+      "fg": "#1c1917",
+      "bg": "#fca5a5",
+      "ratio": 9.21,
+      "verdict": "ok"
+    },
+    {
+      "preset": "ocean-breeze",
+      "mode": "light",
+      "pair": "foreground / background",
+      "fg": "#374151",
+      "bg": "#f0f8ff",
+      "ratio": 9.61,
+      "verdict": "ok"
+    },
+    {
+      "preset": "ocean-breeze",
+      "mode": "light",
+      "pair": "foreground / card",
+      "fg": "#374151",
+      "bg": "#ffffff",
+      "ratio": 10.31,
+      "verdict": "ok"
+    },
+    {
+      "preset": "ocean-breeze",
+      "mode": "light",
+      "pair": "card-foreground / card",
+      "fg": "#374151",
+      "bg": "#ffffff",
+      "ratio": 10.31,
+      "verdict": "ok"
+    },
+    {
+      "preset": "ocean-breeze",
+      "mode": "light",
+      "pair": "popover-foreground / popover",
+      "fg": "#374151",
+      "bg": "#ffffff",
+      "ratio": 10.31,
+      "verdict": "ok"
+    },
+    {
+      "preset": "ocean-breeze",
+      "mode": "light",
+      "pair": "muted-foreground / background",
+      "fg": "#6b7280",
+      "bg": "#f0f8ff",
+      "ratio": 4.51,
+      "verdict": "ok"
+    },
+    {
+      "preset": "ocean-breeze",
+      "mode": "light",
+      "pair": "muted-foreground / card",
+      "fg": "#6b7280",
+      "bg": "#ffffff",
+      "ratio": 4.83,
+      "verdict": "ok"
+    },
+    {
+      "preset": "ocean-breeze",
+      "mode": "light",
+      "pair": "primary-foreground / primary",
+      "fg": "#000000",
+      "bg": "#22c55e",
+      "ratio": 9.22,
+      "verdict": "ok"
+    },
+    {
+      "preset": "ocean-breeze",
+      "mode": "light",
+      "pair": "secondary-foreground / secondary",
+      "fg": "#4b5563",
+      "bg": "#e0f2fe",
+      "ratio": 6.59,
+      "verdict": "ok"
+    },
+    {
+      "preset": "ocean-breeze",
+      "mode": "light",
+      "pair": "accent-foreground / accent",
+      "fg": "#374151",
+      "bg": "#d1fae5",
+      "ratio": 9.09,
+      "verdict": "ok"
+    },
+    {
+      "preset": "ocean-breeze",
+      "mode": "light",
+      "pair": "destructive-foreground / destructive",
+      "fg": "#ffffff",
+      "bg": "#eb1515",
+      "ratio": 4.52,
+      "verdict": "ok"
+    },
+    {
+      "preset": "ocean-breeze",
+      "mode": "dark",
+      "pair": "foreground / background",
+      "fg": "#d1d5db",
+      "bg": "#0f172a",
+      "ratio": 12.12,
+      "verdict": "ok"
+    },
+    {
+      "preset": "ocean-breeze",
+      "mode": "dark",
+      "pair": "foreground / card",
+      "fg": "#d1d5db",
+      "bg": "#1e293b",
+      "ratio": 9.93,
+      "verdict": "ok"
+    },
+    {
+      "preset": "ocean-breeze",
+      "mode": "dark",
+      "pair": "card-foreground / card",
+      "fg": "#d1d5db",
+      "bg": "#1e293b",
+      "ratio": 9.93,
+      "verdict": "ok"
+    },
+    {
+      "preset": "ocean-breeze",
+      "mode": "dark",
+      "pair": "popover-foreground / popover",
+      "fg": "#d1d5db",
+      "bg": "#1e293b",
+      "ratio": 9.93,
+      "verdict": "ok"
+    },
+    {
+      "preset": "ocean-breeze",
+      "mode": "dark",
+      "pair": "muted-foreground / background",
+      "fg": "#8b919e",
+      "bg": "#0f172a",
+      "ratio": 5.65,
+      "verdict": "ok"
+    },
+    {
+      "preset": "ocean-breeze",
+      "mode": "dark",
+      "pair": "muted-foreground / card",
+      "fg": "#8b919e",
+      "bg": "#1e293b",
+      "ratio": 4.63,
+      "verdict": "ok"
+    },
+    {
+      "preset": "ocean-breeze",
+      "mode": "dark",
+      "pair": "primary-foreground / primary",
+      "fg": "#0f172a",
+      "bg": "#34d399",
+      "ratio": 9.29,
+      "verdict": "ok"
+    },
+    {
+      "preset": "ocean-breeze",
+      "mode": "dark",
+      "pair": "secondary-foreground / secondary",
+      "fg": "#a1a1aa",
+      "bg": "#2d3748",
+      "ratio": 4.68,
+      "verdict": "ok"
+    },
+    {
+      "preset": "ocean-breeze",
+      "mode": "dark",
+      "pair": "accent-foreground / accent",
+      "fg": "#a1a1aa",
+      "bg": "#2f3745",
+      "ratio": 4.67,
+      "verdict": "ok"
+    },
+    {
+      "preset": "ocean-breeze",
+      "mode": "dark",
+      "pair": "destructive-foreground / destructive",
+      "fg": "#0f172a",
+      "bg": "#ef4444",
+      "ratio": 4.74,
+      "verdict": "ok"
+    },
+    {
+      "preset": "midnight-bloom",
+      "mode": "light",
+      "pair": "foreground / background",
+      "fg": "#333333",
+      "bg": "#f9f9f9",
+      "ratio": 12,
+      "verdict": "ok"
+    },
+    {
+      "preset": "midnight-bloom",
+      "mode": "light",
+      "pair": "foreground / card",
+      "fg": "#333333",
+      "bg": "#ffffff",
+      "ratio": 12.63,
+      "verdict": "ok"
+    },
+    {
+      "preset": "midnight-bloom",
+      "mode": "light",
+      "pair": "card-foreground / card",
+      "fg": "#333333",
+      "bg": "#ffffff",
+      "ratio": 12.63,
+      "verdict": "ok"
+    },
+    {
+      "preset": "midnight-bloom",
+      "mode": "light",
+      "pair": "popover-foreground / popover",
+      "fg": "#333333",
+      "bg": "#ffffff",
+      "ratio": 12.63,
+      "verdict": "ok"
+    },
+    {
+      "preset": "midnight-bloom",
+      "mode": "light",
+      "pair": "muted-foreground / background",
+      "fg": "#6e6e6e",
+      "bg": "#f9f9f9",
+      "ratio": 4.84,
+      "verdict": "ok"
+    },
+    {
+      "preset": "midnight-bloom",
+      "mode": "light",
+      "pair": "muted-foreground / card",
+      "fg": "#6e6e6e",
+      "bg": "#ffffff",
+      "ratio": 5.1,
+      "verdict": "ok"
+    },
+    {
+      "preset": "midnight-bloom",
+      "mode": "light",
+      "pair": "primary-foreground / primary",
+      "fg": "#ffffff",
+      "bg": "#6c5ce7",
+      "ratio": 4.86,
+      "verdict": "ok"
+    },
+    {
+      "preset": "midnight-bloom",
+      "mode": "light",
+      "pair": "secondary-foreground / secondary",
+      "fg": "#333333",
+      "bg": "#a1c9f2",
+      "ratio": 7.31,
+      "verdict": "ok"
+    },
+    {
+      "preset": "midnight-bloom",
+      "mode": "light",
+      "pair": "accent-foreground / accent",
+      "fg": "#ffffff",
+      "bg": "#727954",
+      "ratio": 4.59,
+      "verdict": "ok"
+    },
+    {
+      "preset": "midnight-bloom",
+      "mode": "light",
+      "pair": "destructive-foreground / destructive",
+      "fg": "#ffffff",
+      "bg": "#eb1515",
+      "ratio": 4.52,
+      "verdict": "ok"
+    },
+    {
+      "preset": "midnight-bloom",
+      "mode": "dark",
+      "pair": "foreground / background",
+      "fg": "#e5e5e5",
+      "bg": "#1a1d23",
+      "ratio": 13.4,
+      "verdict": "ok"
+    },
+    {
+      "preset": "midnight-bloom",
+      "mode": "dark",
+      "pair": "foreground / card",
+      "fg": "#e5e5e5",
+      "bg": "#2f3436",
+      "ratio": 10.01,
+      "verdict": "ok"
+    },
+    {
+      "preset": "midnight-bloom",
+      "mode": "dark",
+      "pair": "card-foreground / card",
+      "fg": "#e5e5e5",
+      "bg": "#2f3436",
+      "ratio": 10.01,
+      "verdict": "ok"
+    },
+    {
+      "preset": "midnight-bloom",
+      "mode": "dark",
+      "pair": "popover-foreground / popover",
+      "fg": "#e5e5e5",
+      "bg": "#2f3436",
+      "ratio": 10.01,
+      "verdict": "ok"
+    },
+    {
+      "preset": "midnight-bloom",
+      "mode": "dark",
+      "pair": "muted-foreground / background",
+      "fg": "#a3a3a3",
+      "bg": "#1a1d23",
+      "ratio": 6.69,
+      "verdict": "ok"
+    },
+    {
+      "preset": "midnight-bloom",
+      "mode": "dark",
+      "pair": "muted-foreground / card",
+      "fg": "#a3a3a3",
+      "bg": "#2f3436",
+      "ratio": 5,
+      "verdict": "ok"
+    },
+    {
+      "preset": "midnight-bloom",
+      "mode": "dark",
+      "pair": "primary-foreground / primary",
+      "fg": "#ffffff",
+      "bg": "#6c5ce7",
+      "ratio": 4.86,
+      "verdict": "ok"
+    },
+    {
+      "preset": "midnight-bloom",
+      "mode": "dark",
+      "pair": "secondary-foreground / secondary",
+      "fg": "#e5e5e5",
+      "bg": "#4b0082",
+      "ratio": 10.28,
+      "verdict": "ok"
+    },
+    {
+      "preset": "midnight-bloom",
+      "mode": "dark",
+      "pair": "accent-foreground / accent",
+      "fg": "#000000",
+      "bg": "#6495ed",
+      "ratio": 7.06,
+      "verdict": "ok"
+    },
+    {
+      "preset": "midnight-bloom",
+      "mode": "dark",
+      "pair": "destructive-foreground / destructive",
+      "fg": "#ffffff",
+      "bg": "#eb1515",
+      "ratio": 4.52,
+      "verdict": "ok"
+    },
+    {
+      "preset": "northern-lights",
+      "mode": "light",
+      "pair": "foreground / background",
+      "fg": "#333333",
+      "bg": "#f9f9fa",
+      "ratio": 12.01,
+      "verdict": "ok"
+    },
+    {
+      "preset": "northern-lights",
+      "mode": "light",
+      "pair": "foreground / card",
+      "fg": "#333333",
+      "bg": "#ffffff",
+      "ratio": 12.63,
+      "verdict": "ok"
+    },
+    {
+      "preset": "northern-lights",
+      "mode": "light",
+      "pair": "card-foreground / card",
+      "fg": "#333333",
+      "bg": "#ffffff",
+      "ratio": 12.63,
+      "verdict": "ok"
+    },
+    {
+      "preset": "northern-lights",
+      "mode": "light",
+      "pair": "popover-foreground / popover",
+      "fg": "#333333",
+      "bg": "#ffffff",
+      "ratio": 12.63,
+      "verdict": "ok"
+    },
+    {
+      "preset": "northern-lights",
+      "mode": "light",
+      "pair": "muted-foreground / background",
+      "fg": "#6e6e6e",
+      "bg": "#f9f9fa",
+      "ratio": 4.85,
+      "verdict": "ok"
+    },
+    {
+      "preset": "northern-lights",
+      "mode": "light",
+      "pair": "muted-foreground / card",
+      "fg": "#6e6e6e",
+      "bg": "#ffffff",
+      "ratio": 5.1,
+      "verdict": "ok"
+    },
+    {
+      "preset": "northern-lights",
+      "mode": "light",
+      "pair": "primary-foreground / primary",
+      "fg": "#ffffff",
+      "bg": "#298547",
+      "ratio": 4.63,
+      "verdict": "ok"
+    },
+    {
+      "preset": "northern-lights",
+      "mode": "light",
+      "pair": "secondary-foreground / secondary",
+      "fg": "#ffffff",
+      "bg": "#2d70e7",
+      "ratio": 4.58,
+      "verdict": "ok"
+    },
+    {
+      "preset": "northern-lights",
+      "mode": "light",
+      "pair": "accent-foreground / accent",
+      "fg": "#333333",
+      "bg": "#66d9ef",
+      "ratio": 7.66,
+      "verdict": "ok"
+    },
+    {
+      "preset": "northern-lights",
+      "mode": "light",
+      "pair": "destructive-foreground / destructive",
+      "fg": "#ffffff",
+      "bg": "#eb1515",
+      "ratio": 4.52,
+      "verdict": "ok"
+    },
+    {
+      "preset": "northern-lights",
+      "mode": "dark",
+      "pair": "foreground / background",
+      "fg": "#e5e5e5",
+      "bg": "#1a1d23",
+      "ratio": 13.4,
+      "verdict": "ok"
+    },
+    {
+      "preset": "northern-lights",
+      "mode": "dark",
+      "pair": "foreground / card",
+      "fg": "#e5e5e5",
+      "bg": "#2f3436",
+      "ratio": 10.01,
+      "verdict": "ok"
+    },
+    {
+      "preset": "northern-lights",
+      "mode": "dark",
+      "pair": "card-foreground / card",
+      "fg": "#e5e5e5",
+      "bg": "#2f3436",
+      "ratio": 10.01,
+      "verdict": "ok"
+    },
+    {
+      "preset": "northern-lights",
+      "mode": "dark",
+      "pair": "popover-foreground / popover",
+      "fg": "#e5e5e5",
+      "bg": "#2f3436",
+      "ratio": 10.01,
+      "verdict": "ok"
+    },
+    {
+      "preset": "northern-lights",
+      "mode": "dark",
+      "pair": "muted-foreground / background",
+      "fg": "#a3a3a3",
+      "bg": "#1a1d23",
+      "ratio": 6.69,
+      "verdict": "ok"
+    },
+    {
+      "preset": "northern-lights",
+      "mode": "dark",
+      "pair": "muted-foreground / card",
+      "fg": "#a3a3a3",
+      "bg": "#2f3436",
+      "ratio": 5,
+      "verdict": "ok"
+    },
+    {
+      "preset": "northern-lights",
+      "mode": "dark",
+      "pair": "primary-foreground / primary",
+      "fg": "#ffffff",
+      "bg": "#298547",
+      "ratio": 4.63,
+      "verdict": "ok"
+    },
+    {
+      "preset": "northern-lights",
+      "mode": "dark",
+      "pair": "secondary-foreground / secondary",
+      "fg": "#e5e5e5",
+      "bg": "#396a93",
+      "ratio": 4.56,
+      "verdict": "ok"
+    },
+    {
+      "preset": "northern-lights",
+      "mode": "dark",
+      "pair": "accent-foreground / accent",
+      "fg": "#000000",
+      "bg": "#6495ed",
+      "ratio": 7.06,
+      "verdict": "ok"
+    },
+    {
+      "preset": "northern-lights",
+      "mode": "dark",
+      "pair": "destructive-foreground / destructive",
+      "fg": "#ffffff",
+      "bg": "#eb1515",
+      "ratio": 4.52,
+      "verdict": "ok"
+    },
+    {
+      "preset": "vintage-paper",
+      "mode": "light",
+      "pair": "foreground / background",
+      "fg": "#4a3f35",
+      "bg": "#f5f1e6",
+      "ratio": 9.06,
+      "verdict": "ok"
+    },
+    {
+      "preset": "vintage-paper",
+      "mode": "light",
+      "pair": "foreground / card",
+      "fg": "#4a3f35",
+      "bg": "#fffcf5",
+      "ratio": 9.98,
+      "verdict": "ok"
+    },
+    {
+      "preset": "vintage-paper",
+      "mode": "light",
+      "pair": "card-foreground / card",
+      "fg": "#4a3f35",
+      "bg": "#fffcf5",
+      "ratio": 9.98,
+      "verdict": "ok"
+    },
+    {
+      "preset": "vintage-paper",
+      "mode": "light",
+      "pair": "popover-foreground / popover",
+      "fg": "#4a3f35",
+      "bg": "#fffcf5",
+      "ratio": 9.98,
+      "verdict": "ok"
+    },
+    {
+      "preset": "vintage-paper",
+      "mode": "light",
+      "pair": "muted-foreground / background",
+      "fg": "#7d6b56",
+      "bg": "#f5f1e6",
+      "ratio": 4.53,
+      "verdict": "ok"
+    },
+    {
+      "preset": "vintage-paper",
+      "mode": "light",
+      "pair": "muted-foreground / card",
+      "fg": "#7d6b56",
+      "bg": "#fffcf5",
+      "ratio": 4.99,
+      "verdict": "ok"
+    },
+    {
+      "preset": "vintage-paper",
+      "mode": "light",
+      "pair": "primary-foreground / primary",
+      "fg": "#ffffff",
+      "bg": "#956f4a",
+      "ratio": 4.52,
+      "verdict": "ok"
+    },
+    {
+      "preset": "vintage-paper",
+      "mode": "light",
+      "pair": "secondary-foreground / secondary",
+      "fg": "#5c4d3f",
+      "bg": "#e2d8c3",
+      "ratio": 5.73,
+      "verdict": "ok"
+    },
+    {
+      "preset": "vintage-paper",
+      "mode": "light",
+      "pair": "accent-foreground / accent",
+      "fg": "#4a3f35",
+      "bg": "#d4c8aa",
+      "ratio": 6.16,
+      "verdict": "ok"
+    },
+    {
+      "preset": "vintage-paper",
+      "mode": "light",
+      "pair": "destructive-foreground / destructive",
+      "fg": "#ffffff",
+      "bg": "#b54a35",
+      "ratio": 5.26,
+      "verdict": "ok"
+    },
+    {
+      "preset": "vintage-paper",
+      "mode": "dark",
+      "pair": "foreground / background",
+      "fg": "#ece5d8",
+      "bg": "#2d2621",
+      "ratio": 11.88,
+      "verdict": "ok"
+    },
+    {
+      "preset": "vintage-paper",
+      "mode": "dark",
+      "pair": "foreground / card",
+      "fg": "#ece5d8",
+      "bg": "#3a322c",
+      "ratio": 10.02,
+      "verdict": "ok"
+    },
+    {
+      "preset": "vintage-paper",
+      "mode": "dark",
+      "pair": "card-foreground / card",
+      "fg": "#ece5d8",
+      "bg": "#3a322c",
+      "ratio": 10.02,
+      "verdict": "ok"
+    },
+    {
+      "preset": "vintage-paper",
+      "mode": "dark",
+      "pair": "popover-foreground / popover",
+      "fg": "#ece5d8",
+      "bg": "#3a322c",
+      "ratio": 10.02,
+      "verdict": "ok"
+    },
+    {
+      "preset": "vintage-paper",
+      "mode": "dark",
+      "pair": "muted-foreground / background",
+      "fg": "#c5bcac",
+      "bg": "#2d2621",
+      "ratio": 7.91,
+      "verdict": "ok"
+    },
+    {
+      "preset": "vintage-paper",
+      "mode": "dark",
+      "pair": "muted-foreground / card",
+      "fg": "#c5bcac",
+      "bg": "#3a322c",
+      "ratio": 6.67,
+      "verdict": "ok"
+    },
+    {
+      "preset": "vintage-paper",
+      "mode": "dark",
+      "pair": "primary-foreground / primary",
+      "fg": "#2d2621",
+      "bg": "#c0a080",
+      "ratio": 6.08,
+      "verdict": "ok"
+    },
+    {
+      "preset": "vintage-paper",
+      "mode": "dark",
+      "pair": "secondary-foreground / secondary",
+      "fg": "#ece5d8",
+      "bg": "#4a4039",
+      "ratio": 8.05,
+      "verdict": "ok"
+    },
+    {
+      "preset": "vintage-paper",
+      "mode": "dark",
+      "pair": "accent-foreground / accent",
+      "fg": "#ece5d8",
+      "bg": "#59493e",
+      "ratio": 6.85,
+      "verdict": "ok"
+    },
+    {
+      "preset": "vintage-paper",
+      "mode": "dark",
+      "pair": "destructive-foreground / destructive",
+      "fg": "#ffffff",
+      "bg": "#b54a35",
+      "ratio": 5.26,
+      "verdict": "ok"
+    },
+    {
+      "preset": "sunset-horizon",
+      "mode": "light",
+      "pair": "foreground / background",
+      "fg": "#3d3436",
+      "bg": "#fff9f5",
+      "ratio": 11.54,
+      "verdict": "ok"
+    },
+    {
+      "preset": "sunset-horizon",
+      "mode": "light",
+      "pair": "foreground / card",
+      "fg": "#3d3436",
+      "bg": "#ffffff",
+      "ratio": 12.05,
+      "verdict": "ok"
+    },
+    {
+      "preset": "sunset-horizon",
+      "mode": "light",
+      "pair": "card-foreground / card",
+      "fg": "#3d3436",
+      "bg": "#ffffff",
+      "ratio": 12.05,
+      "verdict": "ok"
+    },
+    {
+      "preset": "sunset-horizon",
+      "mode": "light",
+      "pair": "popover-foreground / popover",
+      "fg": "#3d3436",
+      "bg": "#ffffff",
+      "ratio": 12.05,
+      "verdict": "ok"
+    },
+    {
+      "preset": "sunset-horizon",
+      "mode": "light",
+      "pair": "muted-foreground / background",
+      "fg": "#78716C",
+      "bg": "#fff9f5",
+      "ratio": 4.6,
+      "verdict": "ok"
+    },
+    {
+      "preset": "sunset-horizon",
+      "mode": "light",
+      "pair": "muted-foreground / card",
+      "fg": "#78716C",
+      "bg": "#ffffff",
+      "ratio": 4.8,
+      "verdict": "ok"
+    },
+    {
+      "preset": "sunset-horizon",
+      "mode": "light",
+      "pair": "primary-foreground / primary",
+      "fg": "#000000",
+      "bg": "#ff7e5f",
+      "ratio": 8.4,
+      "verdict": "ok"
+    },
+    {
+      "preset": "sunset-horizon",
+      "mode": "light",
+      "pair": "secondary-foreground / secondary",
+      "fg": "#b35340",
+      "bg": "#fff1ef",
+      "ratio": 4.51,
+      "verdict": "ok"
+    },
+    {
+      "preset": "sunset-horizon",
+      "mode": "light",
+      "pair": "accent-foreground / accent",
+      "fg": "#3d3436",
+      "bg": "#feb47b",
+      "ratio": 6.9,
+      "verdict": "ok"
+    },
+    {
+      "preset": "sunset-horizon",
+      "mode": "light",
+      "pair": "destructive-foreground / destructive",
+      "fg": "#ffffff",
+      "bg": "#e42735",
+      "ratio": 4.53,
+      "verdict": "ok"
+    },
+    {
+      "preset": "sunset-horizon",
+      "mode": "dark",
+      "pair": "foreground / background",
+      "fg": "#f2e9e4",
+      "bg": "#2a2024",
+      "ratio": 13.19,
+      "verdict": "ok"
+    },
+    {
+      "preset": "sunset-horizon",
+      "mode": "dark",
+      "pair": "foreground / card",
+      "fg": "#f2e9e4",
+      "bg": "#392f35",
+      "ratio": 10.75,
+      "verdict": "ok"
+    },
+    {
+      "preset": "sunset-horizon",
+      "mode": "dark",
+      "pair": "card-foreground / card",
+      "fg": "#f2e9e4",
+      "bg": "#392f35",
+      "ratio": 10.75,
+      "verdict": "ok"
+    },
+    {
+      "preset": "sunset-horizon",
+      "mode": "dark",
+      "pair": "popover-foreground / popover",
+      "fg": "#f2e9e4",
+      "bg": "#392f35",
+      "ratio": 10.75,
+      "verdict": "ok"
+    },
+    {
+      "preset": "sunset-horizon",
+      "mode": "dark",
+      "pair": "muted-foreground / background",
+      "fg": "#d7c6bc",
+      "bg": "#2a2024",
+      "ratio": 9.54,
+      "verdict": "ok"
+    },
+    {
+      "preset": "sunset-horizon",
+      "mode": "dark",
+      "pair": "muted-foreground / card",
+      "fg": "#d7c6bc",
+      "bg": "#392f35",
+      "ratio": 7.78,
+      "verdict": "ok"
+    },
+    {
+      "preset": "sunset-horizon",
+      "mode": "dark",
+      "pair": "primary-foreground / primary",
+      "fg": "#000000",
+      "bg": "#ff7e5f",
+      "ratio": 8.4,
+      "verdict": "ok"
+    },
+    {
+      "preset": "sunset-horizon",
+      "mode": "dark",
+      "pair": "secondary-foreground / secondary",
+      "fg": "#f2e9e4",
+      "bg": "#463a41",
+      "ratio": 9.04,
+      "verdict": "ok"
+    },
+    {
+      "preset": "sunset-horizon",
+      "mode": "dark",
+      "pair": "accent-foreground / accent",
+      "fg": "#2a2024",
+      "bg": "#feb47b",
+      "ratio": 9.04,
+      "verdict": "ok"
+    },
+    {
+      "preset": "sunset-horizon",
+      "mode": "dark",
+      "pair": "destructive-foreground / destructive",
+      "fg": "#ffffff",
+      "bg": "#e42735",
+      "ratio": 4.53,
+      "verdict": "ok"
+    },
+    {
+      "preset": "starry-night",
+      "mode": "light",
+      "pair": "foreground / background",
+      "fg": "#1a2238",
+      "bg": "#f5f7fa",
+      "ratio": 14.71,
+      "verdict": "ok"
+    },
+    {
+      "preset": "starry-night",
+      "mode": "light",
+      "pair": "foreground / card",
+      "fg": "#1a2238",
+      "bg": "#e3eaf2",
+      "ratio": 13.02,
+      "verdict": "ok"
+    },
+    {
+      "preset": "starry-night",
+      "mode": "light",
+      "pair": "card-foreground / card",
+      "fg": "#1a2238",
+      "bg": "#e3eaf2",
+      "ratio": 13.02,
+      "verdict": "ok"
+    },
+    {
+      "preset": "starry-night",
+      "mode": "light",
+      "pair": "popover-foreground / popover",
+      "fg": "#1a2238",
+      "bg": "#fffbe6",
+      "ratio": 15.18,
+      "verdict": "ok"
+    },
+    {
+      "preset": "starry-night",
+      "mode": "light",
+      "pair": "muted-foreground / background",
+      "fg": "#3a5ba0",
+      "bg": "#f5f7fa",
+      "ratio": 6.15,
+      "verdict": "ok"
+    },
+    {
+      "preset": "starry-night",
+      "mode": "light",
+      "pair": "muted-foreground / card",
+      "fg": "#3a5ba0",
+      "bg": "#e3eaf2",
+      "ratio": 5.44,
+      "verdict": "ok"
+    },
+    {
+      "preset": "starry-night",
+      "mode": "light",
+      "pair": "primary-foreground / primary",
+      "fg": "#fffbe6",
+      "bg": "#3a5ba0",
+      "ratio": 6.34,
+      "verdict": "ok"
+    },
+    {
+      "preset": "starry-night",
+      "mode": "light",
+      "pair": "secondary-foreground / secondary",
+      "fg": "#1a2238",
+      "bg": "#f7c873",
+      "ratio": 10.12,
+      "verdict": "ok"
+    },
+    {
+      "preset": "starry-night",
+      "mode": "light",
+      "pair": "accent-foreground / accent",
+      "fg": "#000000",
+      "bg": "#6ea3c1",
+      "ratio": 7.67,
+      "verdict": "ok"
+    },
+    {
+      "preset": "starry-night",
+      "mode": "light",
+      "pair": "destructive-foreground / destructive",
+      "fg": "#fffbe6",
+      "bg": "#2d1e2f",
+      "ratio": 15.09,
+      "verdict": "ok"
+    },
+    {
+      "preset": "starry-night",
+      "mode": "dark",
+      "pair": "foreground / background",
+      "fg": "#e6eaf3",
+      "bg": "#181a24",
+      "ratio": 14.38,
+      "verdict": "ok"
+    },
+    {
+      "preset": "starry-night",
+      "mode": "dark",
+      "pair": "foreground / card",
+      "fg": "#e6eaf3",
+      "bg": "#23243a",
+      "ratio": 12.58,
+      "verdict": "ok"
+    },
+    {
+      "preset": "starry-night",
+      "mode": "dark",
+      "pair": "card-foreground / card",
+      "fg": "#e6eaf3",
+      "bg": "#23243a",
+      "ratio": 12.58,
+      "verdict": "ok"
+    },
+    {
+      "preset": "starry-night",
+      "mode": "dark",
+      "pair": "popover-foreground / popover",
+      "fg": "#ffe066",
+      "bg": "#23243a",
+      "ratio": 11.63,
+      "verdict": "ok"
+    },
+    {
+      "preset": "starry-night",
+      "mode": "dark",
+      "pair": "muted-foreground / background",
+      "fg": "#808da5",
+      "bg": "#181a24",
+      "ratio": 5.17,
+      "verdict": "ok"
+    },
+    {
+      "preset": "starry-night",
+      "mode": "dark",
+      "pair": "muted-foreground / card",
+      "fg": "#808da5",
+      "bg": "#23243a",
+      "ratio": 4.53,
+      "verdict": "ok"
+    },
+    {
+      "preset": "starry-night",
+      "mode": "dark",
+      "pair": "primary-foreground / primary",
+      "fg": "#ffe066",
+      "bg": "#3a5ba0",
+      "ratio": 5.06,
+      "verdict": "ok"
+    },
+    {
+      "preset": "starry-night",
+      "mode": "dark",
+      "pair": "secondary-foreground / secondary",
+      "fg": "#23243a",
+      "bg": "#ffe066",
+      "ratio": 11.63,
+      "verdict": "ok"
+    },
+    {
+      "preset": "starry-night",
+      "mode": "dark",
+      "pair": "accent-foreground / accent",
+      "fg": "#181a24",
+      "bg": "#bccdf0",
+      "ratio": 10.83,
+      "verdict": "ok"
+    },
+    {
+      "preset": "starry-night",
+      "mode": "dark",
+      "pair": "destructive-foreground / destructive",
+      "fg": "#ffe066",
+      "bg": "#9d486a",
+      "ratio": 4.51,
+      "verdict": "ok"
+    },
+    {
+      "preset": "soft-pop",
+      "mode": "light",
+      "pair": "foreground / background",
+      "fg": "#000000",
+      "bg": "#f7f9f3",
+      "ratio": 19.8,
+      "verdict": "ok"
+    },
+    {
+      "preset": "soft-pop",
+      "mode": "light",
+      "pair": "foreground / card",
+      "fg": "#000000",
+      "bg": "#ffffff",
+      "ratio": 21,
+      "verdict": "ok"
+    },
+    {
+      "preset": "soft-pop",
+      "mode": "light",
+      "pair": "card-foreground / card",
+      "fg": "#000000",
+      "bg": "#ffffff",
+      "ratio": 21,
+      "verdict": "ok"
+    },
+    {
+      "preset": "soft-pop",
+      "mode": "light",
+      "pair": "popover-foreground / popover",
+      "fg": "#000000",
+      "bg": "#ffffff",
+      "ratio": 21,
+      "verdict": "ok"
+    },
+    {
+      "preset": "soft-pop",
+      "mode": "light",
+      "pair": "muted-foreground / background",
+      "fg": "#333333",
+      "bg": "#f7f9f3",
+      "ratio": 11.91,
+      "verdict": "ok"
+    },
+    {
+      "preset": "soft-pop",
+      "mode": "light",
+      "pair": "muted-foreground / card",
+      "fg": "#333333",
+      "bg": "#ffffff",
+      "ratio": 12.63,
+      "verdict": "ok"
+    },
+    {
+      "preset": "soft-pop",
+      "mode": "light",
+      "pair": "primary-foreground / primary",
+      "fg": "#ffffff",
+      "bg": "#4f46e5",
+      "ratio": 6.29,
+      "verdict": "ok"
+    },
+    {
+      "preset": "soft-pop",
+      "mode": "light",
+      "pair": "secondary-foreground / secondary",
+      "fg": "#ffffff",
+      "bg": "#0f8578",
+      "ratio": 4.52,
+      "verdict": "ok"
+    },
+    {
+      "preset": "soft-pop",
+      "mode": "light",
+      "pair": "accent-foreground / accent",
+      "fg": "#000000",
+      "bg": "#f59e0b",
+      "ratio": 9.78,
+      "verdict": "ok"
+    },
+    {
+      "preset": "soft-pop",
+      "mode": "light",
+      "pair": "destructive-foreground / destructive",
+      "fg": "#ffffff",
+      "bg": "#eb1515",
+      "ratio": 4.52,
+      "verdict": "ok"
+    },
+    {
+      "preset": "soft-pop",
+      "mode": "dark",
+      "pair": "foreground / background",
+      "fg": "#ffffff",
+      "bg": "#000000",
+      "ratio": 21,
+      "verdict": "ok"
+    },
+    {
+      "preset": "soft-pop",
+      "mode": "dark",
+      "pair": "foreground / card",
+      "fg": "#ffffff",
+      "bg": "#1a212b",
+      "ratio": 16.2,
+      "verdict": "ok"
+    },
+    {
+      "preset": "soft-pop",
+      "mode": "dark",
+      "pair": "card-foreground / card",
+      "fg": "#ffffff",
+      "bg": "#1a212b",
+      "ratio": 16.2,
+      "verdict": "ok"
+    },
+    {
+      "preset": "soft-pop",
+      "mode": "dark",
+      "pair": "popover-foreground / popover",
+      "fg": "#ffffff",
+      "bg": "#1a212b",
+      "ratio": 16.2,
+      "verdict": "ok"
+    },
+    {
+      "preset": "soft-pop",
+      "mode": "dark",
+      "pair": "muted-foreground / background",
+      "fg": "#cccccc",
+      "bg": "#000000",
+      "ratio": 13.08,
+      "verdict": "ok"
+    },
+    {
+      "preset": "soft-pop",
+      "mode": "dark",
+      "pair": "muted-foreground / card",
+      "fg": "#cccccc",
+      "bg": "#1a212b",
+      "ratio": 10.09,
+      "verdict": "ok"
+    },
+    {
+      "preset": "soft-pop",
+      "mode": "dark",
+      "pair": "primary-foreground / primary",
+      "fg": "#000000",
+      "bg": "#818cf8",
+      "ratio": 7.04,
+      "verdict": "ok"
+    },
+    {
+      "preset": "soft-pop",
+      "mode": "dark",
+      "pair": "secondary-foreground / secondary",
+      "fg": "#000000",
+      "bg": "#2dd4bf",
+      "ratio": 11.28,
+      "verdict": "ok"
+    },
+    {
+      "preset": "soft-pop",
+      "mode": "dark",
+      "pair": "accent-foreground / accent",
+      "fg": "#000000",
+      "bg": "#fcd34d",
+      "ratio": 14.56,
+      "verdict": "ok"
+    },
+    {
+      "preset": "soft-pop",
+      "mode": "dark",
+      "pair": "destructive-foreground / destructive",
+      "fg": "#000000",
+      "bg": "#f87171",
+      "ratio": 7.59,
+      "verdict": "ok"
+    },
+    {
+      "preset": "alabaster-zen",
+      "mode": "light",
+      "pair": "foreground / background",
+      "fg": "#1e293b",
+      "bg": "#f8fafc",
+      "ratio": 13.98,
+      "verdict": "ok"
+    },
+    {
+      "preset": "alabaster-zen",
+      "mode": "light",
+      "pair": "foreground / card",
+      "fg": "#1e293b",
+      "bg": "#ffffff",
+      "ratio": 14.63,
+      "verdict": "ok"
+    },
+    {
+      "preset": "alabaster-zen",
+      "mode": "light",
+      "pair": "card-foreground / card",
+      "fg": "#1e293b",
+      "bg": "#ffffff",
+      "ratio": 14.63,
+      "verdict": "ok"
+    },
+    {
+      "preset": "alabaster-zen",
+      "mode": "light",
+      "pair": "popover-foreground / popover",
+      "fg": "#1e293b",
+      "bg": "#ffffff",
+      "ratio": 14.63,
+      "verdict": "ok"
+    },
+    {
+      "preset": "alabaster-zen",
+      "mode": "light",
+      "pair": "muted-foreground / background",
+      "fg": "#6b7280",
+      "bg": "#f8fafc",
+      "ratio": 4.62,
+      "verdict": "ok"
+    },
+    {
+      "preset": "alabaster-zen",
+      "mode": "light",
+      "pair": "muted-foreground / card",
+      "fg": "#6b7280",
+      "bg": "#ffffff",
+      "ratio": 4.83,
+      "verdict": "ok"
+    },
+    {
+      "preset": "alabaster-zen",
+      "mode": "light",
+      "pair": "primary-foreground / primary",
+      "fg": "#ffffff",
+      "bg": "#1e6ff5",
+      "ratio": 4.52,
+      "verdict": "ok"
+    },
+    {
+      "preset": "alabaster-zen",
+      "mode": "light",
+      "pair": "secondary-foreground / secondary",
+      "fg": "#374151",
+      "bg": "#e5e7eb",
+      "ratio": 8.33,
+      "verdict": "ok"
+    },
+    {
+      "preset": "alabaster-zen",
+      "mode": "light",
+      "pair": "accent-foreground / accent",
+      "fg": "#374151",
+      "bg": "#e0e7ff",
+      "ratio": 8.37,
+      "verdict": "ok"
+    },
+    {
+      "preset": "alabaster-zen",
+      "mode": "light",
+      "pair": "destructive-foreground / destructive",
+      "fg": "#ffffff",
+      "bg": "#eb1515",
+      "ratio": 4.52,
+      "verdict": "ok"
+    },
+    {
+      "preset": "alabaster-zen",
+      "mode": "dark",
+      "pair": "foreground / background",
+      "fg": "#e2e8f0",
+      "bg": "#0f172a",
+      "ratio": 14.48,
+      "verdict": "ok"
+    },
+    {
+      "preset": "alabaster-zen",
+      "mode": "dark",
+      "pair": "foreground / card",
+      "fg": "#e2e8f0",
+      "bg": "#1e293b",
+      "ratio": 11.87,
+      "verdict": "ok"
+    },
+    {
+      "preset": "alabaster-zen",
+      "mode": "dark",
+      "pair": "card-foreground / card",
+      "fg": "#e2e8f0",
+      "bg": "#1e293b",
+      "ratio": 11.87,
+      "verdict": "ok"
+    },
+    {
+      "preset": "alabaster-zen",
+      "mode": "dark",
+      "pair": "popover-foreground / popover",
+      "fg": "#e2e8f0",
+      "bg": "#1e293b",
+      "ratio": 11.87,
+      "verdict": "ok"
+    },
+    {
+      "preset": "alabaster-zen",
+      "mode": "dark",
+      "pair": "muted-foreground / background",
+      "fg": "#9ca3af",
+      "bg": "#0f172a",
+      "ratio": 7.03,
+      "verdict": "ok"
+    },
+    {
+      "preset": "alabaster-zen",
+      "mode": "dark",
+      "pair": "muted-foreground / card",
+      "fg": "#9ca3af",
+      "bg": "#1e293b",
+      "ratio": 5.76,
+      "verdict": "ok"
+    },
+    {
+      "preset": "alabaster-zen",
+      "mode": "dark",
+      "pair": "primary-foreground / primary",
+      "fg": "#0f172a",
+      "bg": "#3b82f6",
+      "ratio": 4.85,
+      "verdict": "ok"
+    },
+    {
+      "preset": "alabaster-zen",
+      "mode": "dark",
+      "pair": "secondary-foreground / secondary",
+      "fg": "#d1d5db",
+      "bg": "#2d3748",
+      "ratio": 8.14,
+      "verdict": "ok"
+    },
+    {
+      "preset": "alabaster-zen",
+      "mode": "dark",
+      "pair": "accent-foreground / accent",
+      "fg": "#d1d5db",
+      "bg": "#374151",
+      "ratio": 7,
+      "verdict": "ok"
+    },
+    {
+      "preset": "alabaster-zen",
+      "mode": "dark",
+      "pair": "destructive-foreground / destructive",
+      "fg": "#0f172a",
+      "bg": "#ef4444",
+      "ratio": 4.74,
+      "verdict": "ok"
+    },
+    {
+      "preset": "obsidian-meridian",
+      "mode": "light",
+      "pair": "foreground / background",
+      "fg": "#2a2a4a",
+      "bg": "#f5f5ff",
+      "ratio": 12.68,
+      "verdict": "ok"
+    },
+    {
+      "preset": "obsidian-meridian",
+      "mode": "light",
+      "pair": "foreground / card",
+      "fg": "#2a2a4a",
+      "bg": "#ffffff",
+      "ratio": 13.74,
+      "verdict": "ok"
+    },
+    {
+      "preset": "obsidian-meridian",
+      "mode": "light",
+      "pair": "card-foreground / card",
+      "fg": "#2a2a4a",
+      "bg": "#ffffff",
+      "ratio": 13.74,
+      "verdict": "ok"
+    },
+    {
+      "preset": "obsidian-meridian",
+      "mode": "light",
+      "pair": "popover-foreground / popover",
+      "fg": "#2a2a4a",
+      "bg": "#ffffff",
+      "ratio": 13.74,
+      "verdict": "ok"
+    },
+    {
+      "preset": "obsidian-meridian",
+      "mode": "light",
+      "pair": "muted-foreground / background",
+      "fg": "#6c6c8a",
+      "bg": "#f5f5ff",
+      "ratio": 4.67,
+      "verdict": "ok"
+    },
+    {
+      "preset": "obsidian-meridian",
+      "mode": "light",
+      "pair": "muted-foreground / card",
+      "fg": "#6c6c8a",
+      "bg": "#ffffff",
+      "ratio": 5.06,
+      "verdict": "ok"
+    },
+    {
+      "preset": "obsidian-meridian",
+      "mode": "light",
+      "pair": "primary-foreground / primary",
+      "fg": "#ffffff",
+      "bg": "#6e56cf",
+      "ratio": 5.39,
+      "verdict": "ok"
+    },
+    {
+      "preset": "obsidian-meridian",
+      "mode": "light",
+      "pair": "secondary-foreground / secondary",
+      "fg": "#4a4080",
+      "bg": "#a1c9f2",
+      "ratio": 5.2,
+      "verdict": "ok"
+    },
+    {
+      "preset": "obsidian-meridian",
+      "mode": "light",
+      "pair": "accent-foreground / accent",
+      "fg": "#2a2a4a",
+      "bg": "#66d9ef",
+      "ratio": 8.33,
+      "verdict": "ok"
+    },
+    {
+      "preset": "obsidian-meridian",
+      "mode": "light",
+      "pair": "destructive-foreground / destructive",
+      "fg": "#000000",
+      "bg": "#ff5470",
+      "ratio": 6.75,
+      "verdict": "ok"
+    },
+    {
+      "preset": "obsidian-meridian",
+      "mode": "dark",
+      "pair": "foreground / background",
+      "fg": "#e2e2f5",
+      "bg": "#0f0f1a",
+      "ratio": 14.89,
+      "verdict": "ok"
+    },
+    {
+      "preset": "obsidian-meridian",
+      "mode": "dark",
+      "pair": "foreground / card",
+      "fg": "#e2e2f5",
+      "bg": "#2f3436",
+      "ratio": 9.87,
+      "verdict": "ok"
+    },
+    {
+      "preset": "obsidian-meridian",
+      "mode": "dark",
+      "pair": "card-foreground / card",
+      "fg": "#e2e2f5",
+      "bg": "#2f3436",
+      "ratio": 9.87,
+      "verdict": "ok"
+    },
+    {
+      "preset": "obsidian-meridian",
+      "mode": "dark",
+      "pair": "popover-foreground / popover",
+      "fg": "#e2e2f5",
+      "bg": "#2f3436",
+      "ratio": 9.87,
+      "verdict": "ok"
+    },
+    {
+      "preset": "obsidian-meridian",
+      "mode": "dark",
+      "pair": "muted-foreground / background",
+      "fg": "#a0a0c0",
+      "bg": "#0f0f1a",
+      "ratio": 7.51,
+      "verdict": "ok"
+    },
+    {
+      "preset": "obsidian-meridian",
+      "mode": "dark",
+      "pair": "muted-foreground / card",
+      "fg": "#a0a0c0",
+      "bg": "#2f3436",
+      "ratio": 4.97,
+      "verdict": "ok"
+    },
+    {
+      "preset": "obsidian-meridian",
+      "mode": "dark",
+      "pair": "primary-foreground / primary",
+      "fg": "#0f0f1a",
+      "bg": "#a48fff",
+      "ratio": 7.21,
+      "verdict": "ok"
+    },
+    {
+      "preset": "obsidian-meridian",
+      "mode": "dark",
+      "pair": "secondary-foreground / secondary",
+      "fg": "#c4c2ff",
+      "bg": "#4b0082",
+      "ratio": 7.71,
+      "verdict": "ok"
+    },
+    {
+      "preset": "obsidian-meridian",
+      "mode": "dark",
+      "pair": "accent-foreground / accent",
+      "fg": "#000000",
+      "bg": "#6495ed",
+      "ratio": 7.06,
+      "verdict": "ok"
+    },
+    {
+      "preset": "obsidian-meridian",
+      "mode": "dark",
+      "pair": "destructive-foreground / destructive",
+      "fg": "#000000",
+      "bg": "#ff5470",
+      "ratio": 6.75,
+      "verdict": "ok"
+    },
+    {
+      "preset": "velvet-terracotta",
+      "mode": "light",
+      "pair": "foreground / background",
+      "fg": "#4a3f35",
+      "bg": "#f5f1e6",
+      "ratio": 9.06,
+      "verdict": "ok"
+    },
+    {
+      "preset": "velvet-terracotta",
+      "mode": "light",
+      "pair": "foreground / card",
+      "fg": "#4a3f35",
+      "bg": "#fffcf5",
+      "ratio": 9.98,
+      "verdict": "ok"
+    },
+    {
+      "preset": "velvet-terracotta",
+      "mode": "light",
+      "pair": "card-foreground / card",
+      "fg": "#4a3f35",
+      "bg": "#fffcf5",
+      "ratio": 9.98,
+      "verdict": "ok"
+    },
+    {
+      "preset": "velvet-terracotta",
+      "mode": "light",
+      "pair": "popover-foreground / popover",
+      "fg": "#4a3f35",
+      "bg": "#fffcf5",
+      "ratio": 9.98,
+      "verdict": "ok"
+    },
+    {
+      "preset": "velvet-terracotta",
+      "mode": "light",
+      "pair": "muted-foreground / background",
+      "fg": "#7d6b56",
+      "bg": "#f5f1e6",
+      "ratio": 4.53,
+      "verdict": "ok"
+    },
+    {
+      "preset": "velvet-terracotta",
+      "mode": "light",
+      "pair": "muted-foreground / card",
+      "fg": "#7d6b56",
+      "bg": "#fffcf5",
+      "ratio": 4.99,
+      "verdict": "ok"
+    },
+    {
+      "preset": "velvet-terracotta",
+      "mode": "light",
+      "pair": "primary-foreground / primary",
+      "fg": "#000000",
+      "bg": "#ff7e5f",
+      "ratio": 8.4,
+      "verdict": "ok"
+    },
+    {
+      "preset": "velvet-terracotta",
+      "mode": "light",
+      "pair": "secondary-foreground / secondary",
+      "fg": "#5c4d3f",
+      "bg": "#f3f4f6",
+      "ratio": 7.37,
+      "verdict": "ok"
+    },
+    {
+      "preset": "velvet-terracotta",
+      "mode": "light",
+      "pair": "accent-foreground / accent",
+      "fg": "#4a3f35",
+      "bg": "#E4C7B8",
+      "ratio": 6.41,
+      "verdict": "ok"
+    },
+    {
+      "preset": "velvet-terracotta",
+      "mode": "light",
+      "pair": "destructive-foreground / destructive",
+      "fg": "#ffffff",
+      "bg": "#b54a35",
+      "ratio": 5.26,
+      "verdict": "ok"
+    },
+    {
+      "preset": "velvet-terracotta",
+      "mode": "dark",
+      "pair": "foreground / background",
+      "fg": "#ece5d8",
+      "bg": "#2d2621",
+      "ratio": 11.88,
+      "verdict": "ok"
+    },
+    {
+      "preset": "velvet-terracotta",
+      "mode": "dark",
+      "pair": "foreground / card",
+      "fg": "#ece5d8",
+      "bg": "#3a322c",
+      "ratio": 10.02,
+      "verdict": "ok"
+    },
+    {
+      "preset": "velvet-terracotta",
+      "mode": "dark",
+      "pair": "card-foreground / card",
+      "fg": "#ece5d8",
+      "bg": "#3a322c",
+      "ratio": 10.02,
+      "verdict": "ok"
+    },
+    {
+      "preset": "velvet-terracotta",
+      "mode": "dark",
+      "pair": "popover-foreground / popover",
+      "fg": "#ece5d8",
+      "bg": "#3a322c",
+      "ratio": 10.02,
+      "verdict": "ok"
+    },
+    {
+      "preset": "velvet-terracotta",
+      "mode": "dark",
+      "pair": "muted-foreground / background",
+      "fg": "#c5bcac",
+      "bg": "#2d2621",
+      "ratio": 7.91,
+      "verdict": "ok"
+    },
+    {
+      "preset": "velvet-terracotta",
+      "mode": "dark",
+      "pair": "muted-foreground / card",
+      "fg": "#c5bcac",
+      "bg": "#3a322c",
+      "ratio": 6.67,
+      "verdict": "ok"
+    },
+    {
+      "preset": "velvet-terracotta",
+      "mode": "dark",
+      "pair": "primary-foreground / primary",
+      "fg": "#2d2621",
+      "bg": "#ff7e5f",
+      "ratio": 5.96,
+      "verdict": "ok"
+    },
+    {
+      "preset": "velvet-terracotta",
+      "mode": "dark",
+      "pair": "secondary-foreground / secondary",
+      "fg": "#ece5d8",
+      "bg": "#262626",
+      "ratio": 12.08,
+      "verdict": "ok"
+    },
+    {
+      "preset": "velvet-terracotta",
+      "mode": "dark",
+      "pair": "accent-foreground / accent",
+      "fg": "#000000",
+      "bg": "#BAAB92",
+      "ratio": 9.33,
+      "verdict": "ok"
+    },
+    {
+      "preset": "velvet-terracotta",
+      "mode": "dark",
+      "pair": "destructive-foreground / destructive",
+      "fg": "#ffffff",
+      "bg": "#b54a35",
+      "ratio": 5.26,
+      "verdict": "ok"
+    },
+    {
+      "preset": "pastel-reverie",
+      "mode": "light",
+      "pair": "foreground / background",
+      "fg": "#374151",
+      "bg": "#f7f3f9",
+      "ratio": 9.4,
+      "verdict": "ok"
+    },
+    {
+      "preset": "pastel-reverie",
+      "mode": "light",
+      "pair": "foreground / card",
+      "fg": "#374151",
+      "bg": "#ffffff",
+      "ratio": 10.31,
+      "verdict": "ok"
+    },
+    {
+      "preset": "pastel-reverie",
+      "mode": "light",
+      "pair": "card-foreground / card",
+      "fg": "#374151",
+      "bg": "#ffffff",
+      "ratio": 10.31,
+      "verdict": "ok"
+    },
+    {
+      "preset": "pastel-reverie",
+      "mode": "light",
+      "pair": "popover-foreground / popover",
+      "fg": "#374151",
+      "bg": "#ffffff",
+      "ratio": 10.31,
+      "verdict": "ok"
+    },
+    {
+      "preset": "pastel-reverie",
+      "mode": "light",
+      "pair": "muted-foreground / background",
+      "fg": "#69707d",
+      "bg": "#f7f3f9",
+      "ratio": 4.54,
+      "verdict": "ok"
+    },
+    {
+      "preset": "pastel-reverie",
+      "mode": "light",
+      "pair": "muted-foreground / card",
+      "fg": "#69707d",
+      "bg": "#ffffff",
+      "ratio": 4.98,
+      "verdict": "ok"
+    },
+    {
+      "preset": "pastel-reverie",
+      "mode": "light",
+      "pair": "primary-foreground / primary",
+      "fg": "#ffffff",
+      "bg": "#4f46e5",
+      "ratio": 6.29,
+      "verdict": "ok"
+    },
+    {
+      "preset": "pastel-reverie",
+      "mode": "light",
+      "pair": "secondary-foreground / secondary",
+      "fg": "#4b5563",
+      "bg": "#e9d8fd",
+      "ratio": 5.65,
+      "verdict": "ok"
+    },
+    {
+      "preset": "pastel-reverie",
+      "mode": "light",
+      "pair": "accent-foreground / accent",
+      "fg": "#374151",
+      "bg": "#f59e0b",
+      "ratio": 4.8,
+      "verdict": "ok"
+    },
+    {
+      "preset": "pastel-reverie",
+      "mode": "light",
+      "pair": "destructive-foreground / destructive",
+      "fg": "#000000",
+      "bg": "#fca5a5",
+      "ratio": 11.06,
+      "verdict": "ok"
+    },
+    {
+      "preset": "pastel-reverie",
+      "mode": "dark",
+      "pair": "foreground / background",
+      "fg": "#e0e7ff",
+      "bg": "#1c1917",
+      "ratio": 14.19,
+      "verdict": "ok"
+    },
+    {
+      "preset": "pastel-reverie",
+      "mode": "dark",
+      "pair": "foreground / card",
+      "fg": "#e0e7ff",
+      "bg": "#2d2535",
+      "ratio": 11.94,
+      "verdict": "ok"
+    },
+    {
+      "preset": "pastel-reverie",
+      "mode": "dark",
+      "pair": "card-foreground / card",
+      "fg": "#e0e7ff",
+      "bg": "#2d2535",
+      "ratio": 11.94,
+      "verdict": "ok"
+    },
+    {
+      "preset": "pastel-reverie",
+      "mode": "dark",
+      "pair": "popover-foreground / popover",
+      "fg": "#e0e7ff",
+      "bg": "#2d2535",
+      "ratio": 11.94,
+      "verdict": "ok"
+    },
+    {
+      "preset": "pastel-reverie",
+      "mode": "dark",
+      "pair": "muted-foreground / background",
+      "fg": "#9ca3af",
+      "bg": "#1c1917",
+      "ratio": 6.89,
+      "verdict": "ok"
+    },
+    {
+      "preset": "pastel-reverie",
+      "mode": "dark",
+      "pair": "muted-foreground / card",
+      "fg": "#9ca3af",
+      "bg": "#2d2535",
+      "ratio": 5.79,
+      "verdict": "ok"
+    },
+    {
+      "preset": "pastel-reverie",
+      "mode": "dark",
+      "pair": "primary-foreground / primary",
+      "fg": "#1c1917",
+      "bg": "#818cf8",
+      "ratio": 5.86,
+      "verdict": "ok"
+    },
+    {
+      "preset": "pastel-reverie",
+      "mode": "dark",
+      "pair": "secondary-foreground / secondary",
+      "fg": "#d1d5db",
+      "bg": "#3f324a",
+      "ratio": 8.07,
+      "verdict": "ok"
+    },
+    {
+      "preset": "pastel-reverie",
+      "mode": "dark",
+      "pair": "accent-foreground / accent",
+      "fg": "#000000",
+      "bg": "#fcd34d",
+      "ratio": 14.56,
+      "verdict": "ok"
+    },
+    {
+      "preset": "pastel-reverie",
+      "mode": "dark",
+      "pair": "destructive-foreground / destructive",
+      "fg": "#1c1917",
+      "bg": "#fca5a5",
+      "ratio": 9.21,
+      "verdict": "ok"
+    },
+    {
+      "preset": "quartz-deco",
+      "mode": "light",
+      "pair": "foreground / background",
+      "fg": "#333333",
+      "bg": "#ffffff",
+      "ratio": 12.63,
+      "verdict": "ok"
+    },
+    {
+      "preset": "quartz-deco",
+      "mode": "light",
+      "pair": "foreground / card",
+      "fg": "#333333",
+      "bg": "#faf7f5",
+      "ratio": 11.85,
+      "verdict": "ok"
+    },
+    {
+      "preset": "quartz-deco",
+      "mode": "light",
+      "pair": "card-foreground / card",
+      "fg": "#1a1a1a",
+      "bg": "#faf7f5",
+      "ratio": 16.32,
+      "verdict": "ok"
+    },
+    {
+      "preset": "quartz-deco",
+      "mode": "light",
+      "pair": "popover-foreground / popover",
+      "fg": "#1a1a1a",
+      "bg": "#faf7f5",
+      "ratio": 16.32,
+      "verdict": "ok"
+    },
+    {
+      "preset": "quartz-deco",
+      "mode": "light",
+      "pair": "muted-foreground / background",
+      "fg": "#57534e",
+      "bg": "#ffffff",
+      "ratio": 7.63,
+      "verdict": "ok"
+    },
+    {
+      "preset": "quartz-deco",
+      "mode": "light",
+      "pair": "muted-foreground / card",
+      "fg": "#57534e",
+      "bg": "#faf7f5",
+      "ratio": 7.15,
+      "verdict": "ok"
+    },
+    {
+      "preset": "quartz-deco",
+      "mode": "light",
+      "pair": "primary-foreground / primary",
+      "fg": "#ffffff",
+      "bg": "#9b2c2c",
+      "ratio": 7.53,
+      "verdict": "ok"
+    },
+    {
+      "preset": "quartz-deco",
+      "mode": "light",
+      "pair": "secondary-foreground / secondary",
+      "fg": "#805500",
+      "bg": "#fdf2d6",
+      "ratio": 5.86,
+      "verdict": "ok"
+    },
+    {
+      "preset": "quartz-deco",
+      "mode": "light",
+      "pair": "accent-foreground / accent",
+      "fg": "#7f1d1d",
+      "bg": "#fffbeb",
+      "ratio": 9.66,
+      "verdict": "ok"
+    },
+    {
+      "preset": "quartz-deco",
+      "mode": "light",
+      "pair": "destructive-foreground / destructive",
+      "fg": "#ffffff",
+      "bg": "#991b1b",
+      "ratio": 8.31,
+      "verdict": "ok"
+    },
+    {
+      "preset": "quartz-deco",
+      "mode": "dark",
+      "pair": "foreground / background",
+      "fg": "#e5e5e5",
+      "bg": "#171717",
+      "ratio": 14.23,
+      "verdict": "ok"
+    },
+    {
+      "preset": "quartz-deco",
+      "mode": "dark",
+      "pair": "foreground / card",
+      "fg": "#e5e5e5",
+      "bg": "#292524",
+      "ratio": 12.04,
+      "verdict": "ok"
+    },
+    {
+      "preset": "quartz-deco",
+      "mode": "dark",
+      "pair": "card-foreground / card",
+      "fg": "#f5f5f4",
+      "bg": "#292524",
+      "ratio": 13.9,
+      "verdict": "ok"
+    },
+    {
+      "preset": "quartz-deco",
+      "mode": "dark",
+      "pair": "popover-foreground / popover",
+      "fg": "#f5f5f4",
+      "bg": "#292524",
+      "ratio": 13.9,
+      "verdict": "ok"
+    },
+    {
+      "preset": "quartz-deco",
+      "mode": "dark",
+      "pair": "muted-foreground / background",
+      "fg": "#d6d3d1",
+      "bg": "#171717",
+      "ratio": 12.04,
+      "verdict": "ok"
+    },
+    {
+      "preset": "quartz-deco",
+      "mode": "dark",
+      "pair": "muted-foreground / card",
+      "fg": "#d6d3d1",
+      "bg": "#292524",
+      "ratio": 10.18,
+      "verdict": "ok"
+    },
+    {
+      "preset": "quartz-deco",
+      "mode": "dark",
+      "pair": "primary-foreground / primary",
+      "fg": "#faf7f5",
+      "bg": "#b91c1c",
+      "ratio": 6.07,
+      "verdict": "ok"
+    },
+    {
+      "preset": "quartz-deco",
+      "mode": "dark",
+      "pair": "secondary-foreground / secondary",
+      "fg": "#fef3c7",
+      "bg": "#92400e",
+      "ratio": 6.37,
+      "verdict": "ok"
+    },
+    {
+      "preset": "quartz-deco",
+      "mode": "dark",
+      "pair": "accent-foreground / accent",
+      "fg": "#fef3c7",
+      "bg": "#92400e",
+      "ratio": 6.37,
+      "verdict": "ok"
+    },
+    {
+      "preset": "quartz-deco",
+      "mode": "dark",
+      "pair": "destructive-foreground / destructive",
+      "fg": "#ffffff",
+      "bg": "#eb1515",
+      "ratio": 4.52,
+      "verdict": "ok"
+    }
+  ]
+}

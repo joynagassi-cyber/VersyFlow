@@ -1,0 +1,1518 @@
+{
+  "note": "Généré par scripts/theme-provenance.mjs — ne pas éditer à la main.",
+  "generator": "scripts/generate-themes.mjs",
+  "model": "agnes-image-2.5-flash",
+  "endpoint": "https://apihub.agnes-ai.com/v1/images/generations",
+  "promptStyle": "nature photoréaliste, scène complète, lavis teinté dans la famille du thème",
+  "licence": "contenu généré pour VersyFlow — aucune image tierce, aucun visuel sous licence externe",
+  "formats": {
+    "portrait": "1024×1536 (mobile, appliqué comme fond)",
+    "landscape": "1536×1024 (bureau, sélection et bandeau)"
+  },
+  "themes": 100,
+  "portraitsPresent": 0,
+  "landscapesPresent": 0,
+  "measuredTones": 0,
+  "entries": [
+    {
+      "id": "esprit-pentecote",
+      "category": "esprit",
+      "label": "Pentecôte",
+      "declaredColor": "#C0392B",
+      "portrait": {
+        "path": "/themes/esprit/esprit-pentecote-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/esprit/esprit-pentecote-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "esprit-feu",
+      "category": "esprit",
+      "label": "Feu du Saint-Esprit",
+      "declaredColor": "#E74C3C",
+      "portrait": {
+        "path": "/themes/esprit/esprit-feu-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/esprit/esprit-feu-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "esprit-zel",
+      "category": "esprit",
+      "label": "Zèle",
+      "declaredColor": "#F39C12",
+      "portrait": {
+        "path": "/themes/esprit/esprit-zel-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/esprit/esprit-zel-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "esprit-olivier",
+      "category": "esprit",
+      "label": "Rameau d’olivier",
+      "declaredColor": "#27AE60",
+      "portrait": {
+        "path": "/themes/esprit/esprit-olivier-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/esprit/esprit-olivier-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "esprit-dove",
+      "category": "esprit",
+      "label": "Colombe",
+      "declaredColor": "#3498DB",
+      "portrait": {
+        "path": "/themes/esprit/esprit-dove-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/esprit/esprit-dove-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "esprit-eau",
+      "category": "esprit",
+      "label": "Eau vive",
+      "declaredColor": "#1ABC9C",
+      "portrait": {
+        "path": "/themes/esprit/esprit-eau-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/esprit/esprit-eau-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "esprit-semin",
+      "category": "esprit",
+      "label": "Sémin (vent)",
+      "declaredColor": "#8E44AD",
+      "portrait": {
+        "path": "/themes/esprit/esprit-semin-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/esprit/esprit-semin-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "esprit-nouvel",
+      "category": "esprit",
+      "label": "Vie nouvelle",
+      "declaredColor": "#2ECC71",
+      "portrait": {
+        "path": "/themes/esprit/esprit-nouvel-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/esprit/esprit-nouvel-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "esprit-tete",
+      "category": "esprit",
+      "label": "Lumière de l’esprit",
+      "declaredColor": "#F1C40F",
+      "portrait": {
+        "path": "/themes/esprit/esprit-tete-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/esprit/esprit-tete-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "esprit-rain",
+      "category": "esprit",
+      "label": "Pluie d’esprit",
+      "declaredColor": "#5DADE2",
+      "portrait": {
+        "path": "/themes/esprit/esprit-rain-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/esprit/esprit-rain-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "ev-pasque",
+      "category": "evenements",
+      "label": "Pâque",
+      "declaredColor": "#7D3C98",
+      "portrait": {
+        "path": "/themes/evenements/ev-pasque-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/evenements/ev-pasque-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "ev-noel",
+      "category": "evenements",
+      "label": "Noël",
+      "declaredColor": "#1E8449",
+      "portrait": {
+        "path": "/themes/evenements/ev-noel-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/evenements/ev-noel-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "ev-epee",
+      "category": "evenements",
+      "label": "Épiphanie",
+      "declaredColor": "#F4D03F",
+      "portrait": {
+        "path": "/themes/evenements/ev-epee-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/evenements/ev-epee-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "ev-temple",
+      "category": "evenements",
+      "label": "Temple",
+      "declaredColor": "#B03A2E",
+      "portrait": {
+        "path": "/themes/evenements/ev-temple-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/evenements/ev-temple-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "ev-lent",
+      "category": "evenements",
+      "label": "Carême",
+      "declaredColor": "#566573",
+      "portrait": {
+        "path": "/themes/evenements/ev-lent-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/evenements/ev-lent-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "ev-ascension",
+      "category": "evenements",
+      "label": "Ascension",
+      "declaredColor": "#2C3E50",
+      "portrait": {
+        "path": "/themes/evenements/ev-ascension-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/evenements/ev-ascension-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "ev-toussaint",
+      "category": "evenements",
+      "label": "Toussaint",
+      "declaredColor": "#154360",
+      "portrait": {
+        "path": "/themes/evenements/ev-toussaint-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/evenements/ev-toussaint-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "ev-resurrection",
+      "category": "evenements",
+      "label": "Résurrection",
+      "declaredColor": "#A93226",
+      "portrait": {
+        "path": "/themes/evenements/ev-resurrection-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/evenements/ev-resurrection-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "ev-bapteme",
+      "category": "evenements",
+      "label": "Baptême",
+      "declaredColor": "#148F77",
+      "portrait": {
+        "path": "/themes/evenements/ev-bapteme-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/evenements/ev-bapteme-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "ev-harvest",
+      "category": "evenements",
+      "label": "Moisson",
+      "declaredColor": "#B7950B",
+      "portrait": {
+        "path": "/themes/evenements/ev-harvest-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/evenements/ev-harvest-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "villes-paris",
+      "category": "villes",
+      "label": "Paris",
+      "declaredColor": "#34495E",
+      "portrait": {
+        "path": "/themes/villes/villes-paris-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/villes/villes-paris-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "villes-berlin",
+      "category": "villes",
+      "label": "Berlin",
+      "declaredColor": "#7F8C8D",
+      "portrait": {
+        "path": "/themes/villes/villes-berlin-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/villes/villes-berlin-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "villes-caire",
+      "category": "villes",
+      "label": "Le Caire",
+      "declaredColor": "#B7950B",
+      "portrait": {
+        "path": "/themes/villes/villes-caire-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/villes/villes-caire-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "villes-pekin",
+      "category": "villes",
+      "label": "Pékin",
+      "declaredColor": "#922B21",
+      "portrait": {
+        "path": "/themes/villes/villes-pekin-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/villes/villes-pekin-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "villes-madrid",
+      "category": "villes",
+      "label": "Madrid",
+      "declaredColor": "#CA6F1E",
+      "portrait": {
+        "path": "/themes/villes/villes-madrid-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/villes/villes-madrid-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "villes-lisbonne",
+      "category": "villes",
+      "label": "Lisbonne",
+      "declaredColor": "#1F618D",
+      "portrait": {
+        "path": "/themes/villes/villes-lisbonne-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/villes/villes-lisbonne-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "villes-jakarta",
+      "category": "villes",
+      "label": "Jakarta",
+      "declaredColor": "#148F77",
+      "portrait": {
+        "path": "/themes/villes/villes-jakarta-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/villes/villes-jakarta-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "villes-delhi",
+      "category": "villes",
+      "label": "Delhi",
+      "declaredColor": "#B03A2E",
+      "portrait": {
+        "path": "/themes/villes/villes-delhi-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/villes/villes-delhi-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "villes-istanbul",
+      "category": "villes",
+      "label": "Istanbul",
+      "declaredColor": "#5B2C6F",
+      "portrait": {
+        "path": "/themes/villes/villes-istanbul-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/villes/villes-istanbul-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "villes-stpetersbourg",
+      "category": "villes",
+      "label": "St Pétersbourg",
+      "declaredColor": "#1A5276",
+      "portrait": {
+        "path": "/themes/villes/villes-stpetersbourg-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/villes/villes-stpetersbourg-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "nat-trees",
+      "category": "natures",
+      "label": "Forêt",
+      "declaredColor": "#1E8449",
+      "portrait": {
+        "path": "/themes/natures/nat-trees-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/natures/nat-trees-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "nat-mont",
+      "category": "natures",
+      "label": "Montagnes",
+      "declaredColor": "#4A235A",
+      "portrait": {
+        "path": "/themes/natures/nat-mont-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/natures/nat-mont-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "nat-cactus",
+      "category": "natures",
+      "label": "Désert",
+      "declaredColor": "#CA6F1E",
+      "portrait": {
+        "path": "/themes/natures/nat-cactus-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/natures/nat-cactus-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "nat-fleurs",
+      "category": "natures",
+      "label": "Fleurs",
+      "declaredColor": "#C2185B",
+      "portrait": {
+        "path": "/themes/natures/nat-fleurs-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/natures/nat-fleurs-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "nat-feuille",
+      "category": "natures",
+      "label": "Feuillage",
+      "declaredColor": "#27AE60",
+      "portrait": {
+        "path": "/themes/natures/nat-feuille-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/natures/nat-feuille-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "nat-paon",
+      "category": "natures",
+      "label": "Oiseau",
+      "declaredColor": "#1565C0",
+      "portrait": {
+        "path": "/themes/natures/nat-paon-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/natures/nat-paon-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "nat-lune",
+      "category": "natures",
+      "label": "Lune",
+      "declaredColor": "#1B4F72",
+      "portrait": {
+        "path": "/themes/natures/nat-lune-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/natures/nat-lune-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "nat-sun",
+      "category": "natures",
+      "label": "Soleil",
+      "declaredColor": "#F39C12",
+      "portrait": {
+        "path": "/themes/natures/nat-sun-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/natures/nat-sun-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "nat-ocean",
+      "category": "natures",
+      "label": "Océan",
+      "declaredColor": "#0E6655",
+      "portrait": {
+        "path": "/themes/natures/nat-ocean-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/natures/nat-ocean-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "nat-pluie",
+      "category": "natures",
+      "label": "Pluie",
+      "declaredColor": "#21618C",
+      "portrait": {
+        "path": "/themes/natures/nat-pluie-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/natures/nat-pluie-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "sag-livre",
+      "category": "sagesse",
+      "label": "Livre",
+      "declaredColor": "#6E2C00",
+      "portrait": {
+        "path": "/themes/sagesse/sag-livre-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/sagesse/sag-livre-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "sag-plume",
+      "category": "sagesse",
+      "label": "Plume",
+      "declaredColor": "#283747",
+      "portrait": {
+        "path": "/themes/sagesse/sag-plume-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/sagesse/sag-plume-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "sag-lam",
+      "category": "sagesse",
+      "label": "Lamplume",
+      "declaredColor": "#B9770E",
+      "portrait": {
+        "path": "/themes/sagesse/sag-lam-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/sagesse/sag-lam-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "sag-perle",
+      "category": "sagesse",
+      "label": "Perle",
+      "declaredColor": "#A569BD",
+      "portrait": {
+        "path": "/themes/sagesse/sag-perle-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/sagesse/sag-perle-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "sag-miroir",
+      "category": "sagesse",
+      "label": "Miroir",
+      "declaredColor": "#566573",
+      "portrait": {
+        "path": "/themes/sagesse/sag-miroir-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/sagesse/sag-miroir-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "sag-tri",
+      "category": "sagesse",
+      "label": "Triangle",
+      "declaredColor": "#1F618D",
+      "portrait": {
+        "path": "/themes/sagesse/sag-tri-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/sagesse/sag-tri-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "sag-horloger",
+      "category": "sagesse",
+      "label": "Boussole",
+      "declaredColor": "#117864",
+      "portrait": {
+        "path": "/themes/sagesse/sag-horloger-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/sagesse/sag-horloger-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "sag-geometrie",
+      "category": "sagesse",
+      "label": "Geométrie",
+      "declaredColor": "#4A235A",
+      "portrait": {
+        "path": "/themes/sagesse/sag-geometrie-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/sagesse/sag-geometrie-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "sag-colonne",
+      "category": "sagesse",
+      "label": "Colonne",
+      "declaredColor": "#7B241C",
+      "portrait": {
+        "path": "/themes/sagesse/sag-colonne-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/sagesse/sag-colonne-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "sag-sceau",
+      "category": "sagesse",
+      "label": "Sceau",
+      "declaredColor": "#B03A2E",
+      "portrait": {
+        "path": "/themes/sagesse/sag-sceau-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/sagesse/sag-sceau-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "frat-pains",
+      "category": "fraternite",
+      "label": "Pain partagé",
+      "declaredColor": "#B9770E",
+      "portrait": {
+        "path": "/themes/fraternite/frat-pains-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/fraternite/frat-pains-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "frat-table",
+      "category": "fraternite",
+      "label": "Table commune",
+      "declaredColor": "#6E2C00",
+      "portrait": {
+        "path": "/themes/fraternite/frat-table-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/fraternite/frat-table-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "frat-mains",
+      "category": "fraternite",
+      "label": "Mains jointes",
+      "declaredColor": "#A04000",
+      "portrait": {
+        "path": "/themes/fraternite/frat-mains-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/fraternite/frat-mains-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "frat-cord",
+      "category": "fraternite",
+      "label": "Cordes liées",
+      "declaredColor": "#1F618D",
+      "portrait": {
+        "path": "/themes/fraternite/frat-cord-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/fraternite/frat-cord-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "frat-grenade",
+      "category": "fraternite",
+      "label": "Cèdre",
+      "declaredColor": "#1E8449",
+      "portrait": {
+        "path": "/themes/fraternite/frat-grenade-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/fraternite/frat-grenade-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "frat-lantern",
+      "category": "fraternite",
+      "label": "Lanterne",
+      "declaredColor": "#B9770E",
+      "portrait": {
+        "path": "/themes/fraternite/frat-lantern-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/fraternite/frat-lantern-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "frat-rainbow",
+      "category": "fraternite",
+      "label": "Arc-en-ciel",
+      "declaredColor": "#C2185B",
+      "portrait": {
+        "path": "/themes/fraternite/frat-rainbow-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/fraternite/frat-rainbow-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "frat-tour",
+      "category": "fraternite",
+      "label": "Tour",
+      "declaredColor": "#283747",
+      "portrait": {
+        "path": "/themes/fraternite/frat-tour-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/fraternite/frat-tour-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "frat-oiseaux",
+      "category": "fraternite",
+      "label": "Oiseaux",
+      "declaredColor": "#1565C0",
+      "portrait": {
+        "path": "/themes/fraternite/frat-oiseaux-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/fraternite/frat-oiseaux-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "frat-couron",
+      "category": "fraternite",
+      "label": "Couronne",
+      "declaredColor": "#B03A2E",
+      "portrait": {
+        "path": "/themes/fraternite/frat-couron-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/fraternite/frat-couron-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "lum-etoile",
+      "category": "lumieres",
+      "label": "Étoile",
+      "declaredColor": "#F1C40F",
+      "portrait": {
+        "path": "/themes/lumieres/lum-etoile-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/lumieres/lum-etoile-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "lum-lanter",
+      "category": "lumieres",
+      "label": "Lanterne",
+      "declaredColor": "#E67E22",
+      "portrait": {
+        "path": "/themes/lumieres/lum-lanter-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/lumieres/lum-lanter-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "lum-chand",
+      "category": "lumieres",
+      "label": "Chandelle",
+      "declaredColor": "#F9E79F",
+      "portrait": {
+        "path": "/themes/lumieres/lum-chand-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/lumieres/lum-chand-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "lum-bougie",
+      "category": "lumieres",
+      "label": "Bougie",
+      "declaredColor": "#F4D03F",
+      "portrait": {
+        "path": "/themes/lumieres/lum-bougie-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/lumieres/lum-bougie-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "lum-lune",
+      "category": "lumieres",
+      "label": "Lune",
+      "declaredColor": "#1B4F72",
+      "portrait": {
+        "path": "/themes/lumieres/lum-lune-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/lumieres/lum-lune-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "lum-sunrise",
+      "category": "lumieres",
+      "label": "Lever de soleil",
+      "declaredColor": "#CA6F1E",
+      "portrait": {
+        "path": "/themes/lumieres/lum-sunrise-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/lumieres/lum-sunrise-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "lum-lamp",
+      "category": "lumieres",
+      "label": "Lampe",
+      "declaredColor": "#B9770E",
+      "portrait": {
+        "path": "/themes/lumieres/lum-lamp-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/lumieres/lum-lamp-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "lum-feu",
+      "category": "lumieres",
+      "label": "Feu de camp",
+      "declaredColor": "#E74C3C",
+      "portrait": {
+        "path": "/themes/lumieres/lum-feu-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/lumieres/lum-feu-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "lum-phares",
+      "category": "lumieres",
+      "label": "Phare",
+      "declaredColor": "#1565C0",
+      "portrait": {
+        "path": "/themes/lumieres/lum-phares-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/lumieres/lum-phares-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "lum-diamant",
+      "category": "lumieres",
+      "label": "Diamant",
+      "declaredColor": "#A569BD",
+      "portrait": {
+        "path": "/themes/lumieres/lum-diamant-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/lumieres/lum-diamant-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "sai-printemps",
+      "category": "saisons",
+      "label": "Printemps",
+      "declaredColor": "#27AE60",
+      "portrait": {
+        "path": "/themes/saisons/sai-printemps-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/saisons/sai-printemps-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "sai-ete",
+      "category": "saisons",
+      "label": "Été",
+      "declaredColor": "#F39C12",
+      "portrait": {
+        "path": "/themes/saisons/sai-ete-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/saisons/sai-ete-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "sai-autome",
+      "category": "saisons",
+      "label": "Automne",
+      "declaredColor": "#CA6F1E",
+      "portrait": {
+        "path": "/themes/saisons/sai-autome-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/saisons/sai-autome-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "sai-hiver",
+      "category": "saisons",
+      "label": "Hiver",
+      "declaredColor": "#21618C",
+      "portrait": {
+        "path": "/themes/saisons/sai-hiver-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/saisons/sai-hiver-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "sai-neige",
+      "category": "saisons",
+      "label": "Neige",
+      "declaredColor": "#1B4F72",
+      "portrait": {
+        "path": "/themes/saisons/sai-neige-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/saisons/sai-neige-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "sai-rain",
+      "category": "saisons",
+      "label": "Pluie",
+      "declaredColor": "#566573",
+      "portrait": {
+        "path": "/themes/saisons/sai-rain-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/saisons/sai-rain-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "sai-fleur",
+      "category": "saisons",
+      "label": "Fleur",
+      "declaredColor": "#C2185B",
+      "portrait": {
+        "path": "/themes/saisons/sai-fleur-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/saisons/sai-fleur-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "sai-feuille",
+      "category": "saisons",
+      "label": "Feuille",
+      "declaredColor": "#1E8449",
+      "portrait": {
+        "path": "/themes/saisons/sai-feuille-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/saisons/sai-feuille-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "sai-nuit",
+      "category": "saisons",
+      "label": "Nuit",
+      "declaredColor": "#154360",
+      "portrait": {
+        "path": "/themes/saisons/sai-nuit-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/saisons/sai-nuit-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "sai-dawn",
+      "category": "saisons",
+      "label": "Aube",
+      "declaredColor": "#F4D03F",
+      "portrait": {
+        "path": "/themes/saisons/sai-dawn-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/saisons/sai-dawn-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "ani-belle",
+      "category": "animaux",
+      "label": "Gazelle",
+      "declaredColor": "#B9770E",
+      "portrait": {
+        "path": "/themes/animaux/ani-belle-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/animaux/ani-belle-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "ani-agneau",
+      "category": "animaux",
+      "label": "Agneau",
+      "declaredColor": "#6E2C00",
+      "portrait": {
+        "path": "/themes/animaux/ani-agneau-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/animaux/ani-agneau-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "ani-pigeon",
+      "category": "animaux",
+      "label": "Pigeon",
+      "declaredColor": "#283747",
+      "portrait": {
+        "path": "/themes/animaux/ani-pigeon-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/animaux/ani-pigeon-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "ani-abeille",
+      "category": "animaux",
+      "label": "Abeille",
+      "declaredColor": "#F39C12",
+      "portrait": {
+        "path": "/themes/animaux/ani-abeille-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/animaux/ani-abeille-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "ani-colombe",
+      "category": "animaux",
+      "label": "Colombe",
+      "declaredColor": "#1565C0",
+      "portrait": {
+        "path": "/themes/animaux/ani-colombe-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/animaux/ani-colombe-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "ani-taupe",
+      "category": "animaux",
+      "label": "Taupe",
+      "declaredColor": "#6E2C00",
+      "portrait": {
+        "path": "/themes/animaux/ani-taupe-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/animaux/ani-taupe-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "ani-cam",
+      "category": "animaux",
+      "label": "Chameau",
+      "declaredColor": "#CA6F1E",
+      "portrait": {
+        "path": "/themes/animaux/ani-cam-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/animaux/ani-cam-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "ani-pharaon",
+      "category": "animaux",
+      "label": "Pharaon",
+      "declaredColor": "#B03A2E",
+      "portrait": {
+        "path": "/themes/animaux/ani-pharaon-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/animaux/ani-pharaon-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "ani-scorp",
+      "category": "animaux",
+      "label": "Scorpion",
+      "declaredColor": "#4A235A",
+      "portrait": {
+        "path": "/themes/animaux/ani-scorp-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/animaux/ani-scorp-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "ani-aigle",
+      "category": "animaux",
+      "label": "Aigle",
+      "declaredColor": "#283747",
+      "portrait": {
+        "path": "/themes/animaux/ani-aigle-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/animaux/ani-aigle-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "obj-cle",
+      "category": "objets",
+      "label": "Clé",
+      "declaredColor": "#B9770E",
+      "portrait": {
+        "path": "/themes/objets/obj-cle-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/objets/obj-cle-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "obj-sceau",
+      "category": "objets",
+      "label": "Sceau",
+      "declaredColor": "#B03A2E",
+      "portrait": {
+        "path": "/themes/objets/obj-sceau-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/objets/obj-sceau-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "obj-vase",
+      "category": "objets",
+      "label": "Vase",
+      "declaredColor": "#1F618D",
+      "portrait": {
+        "path": "/themes/objets/obj-vase-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/objets/obj-vase-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "obj-jar",
+      "category": "objets",
+      "label": "Jarre",
+      "declaredColor": "#CA6F1E",
+      "portrait": {
+        "path": "/themes/objets/obj-jar-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/objets/obj-jar-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "obj-ankh",
+      "category": "objets",
+      "label": "Ankh",
+      "declaredColor": "#B03A2E",
+      "portrait": {
+        "path": "/themes/objets/obj-ankh-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/objets/obj-ankh-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "obj-swan",
+      "category": "objets",
+      "label": "Cygne",
+      "declaredColor": "#283747",
+      "portrait": {
+        "path": "/themes/objets/obj-swan-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/objets/obj-swan-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "obj-anchor",
+      "category": "objets",
+      "label": "Ancre",
+      "declaredColor": "#1565C0",
+      "portrait": {
+        "path": "/themes/objets/obj-anchor-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/objets/obj-anchor-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "obj-veil",
+      "category": "objets",
+      "label": "Voile",
+      "declaredColor": "#A569BD",
+      "portrait": {
+        "path": "/themes/objets/obj-veil-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/objets/obj-veil-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "obj-donnee",
+      "category": "objets",
+      "label": "Don",
+      "declaredColor": "#C2185B",
+      "portrait": {
+        "path": "/themes/objets/obj-donnee-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/objets/obj-donnee-landscape.png",
+        "present": false
+      },
+      "measured": null
+    },
+    {
+      "id": "obj-miroir",
+      "category": "objets",
+      "label": "Miroir",
+      "declaredColor": "#566573",
+      "portrait": {
+        "path": "/themes/objets/obj-miroir-portrait.png",
+        "present": false
+      },
+      "landscape": {
+        "path": "/themes/objets/obj-miroir-landscape.png",
+        "present": false
+      },
+      "measured": null
+    }
+  ]
+}

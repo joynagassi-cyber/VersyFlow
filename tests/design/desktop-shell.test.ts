@@ -100,11 +100,13 @@ describe('coquille bureau — largeur pilotée par une seule variable', () => {
 
   it('ne monte jamais deux navigations à la fois', () => {
     const layout = readFileSync(join(root, 'app', '(tabs)', '_layout.tsx'), 'utf8');
-    // chaque navigation mobile est conditionnée par !isDesktop
+    // Depuis L8, c'est le rail qui apparaît dès 768 px : chaque navigation
+    // mobile est conditionnée par !isRail, le rail par isRail. Une seule
+    // navigation est montée, quel que soit le palier.
     for (const component of ['HamburgerMenu', 'QuickDock', 'BottomTabs']) {
-      expect(layout).toMatch(new RegExp(`\\{!isDesktop && <${component}`));
+      expect(layout).toMatch(new RegExp(`\\{!isRail && <${component}`));
     }
-    expect(layout).toMatch(/\{isDesktop && <DesktopRail/);
+    expect(layout).toMatch(/\{isRail && <DesktopRail/);
   });
 });
 
