@@ -49,7 +49,7 @@ export default function CreateProfileScreen() {
 
   return (
     <FullScreenPage title={t('profile.create', 'Nouveau profil')} showBack>
-      <div className="mx-auto flex max-w-md flex-col items-center gap-6">
+      <div className="screen-column flex flex-col items-center gap-6">
         {/* Live preview of the profile avatar as the name is typed. */}
         <ProfileAvatar name={previewSeed} size={96} className="shadow-xl" />
 

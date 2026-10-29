@@ -32,7 +32,7 @@ export default function FlashcardScreen() {
 
   return (
     <FullScreenPage title={t('memory.flashcard', 'Flashcard')} showBack backPath="/tabs/home">
-      <div className="mx-auto max-w-md space-y-5">
+      <div className="screen-column space-y-5">
         <div className="rounded-3xl bg-surface p-6 shadow-sm">
           <p className="text-sm font-semibold text-primary">{text}</p>
           <div className="mt-4 flex flex-wrap gap-2">

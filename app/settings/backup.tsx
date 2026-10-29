@@ -96,7 +96,7 @@ export default function BackupScreen() {
       showBack
       backPath="/settings"
     >
-      <div className="mx-auto max-w-md space-y-4">
+      <div className="screen-column space-y-4">
         <div className="space-y-3 rounded-2xl bg-surface p-4 shadow-sm">
           <p className="text-base font-bold text-text-primary">
             {t('settings.backup.title', 'Sauvegarde')}

@@ -74,7 +74,7 @@ export default function RecallWritingScreen() {
       showBack
       backPath="/tabs/home"
     >
-      <div className="mx-auto max-w-md space-y-4">
+      <div className="screen-column space-y-4">
         {expectedVerse && (
           <div className="rounded-2xl bg-surface p-4 shadow-sm">
             <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-text-muted">

@@ -172,3 +172,42 @@ describe('contrastes du rail', () => {
     expect(contrast(ink, surface)).toBeGreaterThanOrEqual(7);
   });
 });
+
+describe('coquille bureau — couverture des écrans', () => {
+  const contentScreens = [
+    'app/(tabs)/index.tsx',
+    'app/review/History.tsx',
+    'app/collections/index.tsx',
+    'app/settings/index.tsx',
+    'app/search/index.tsx',
+  ];
+
+  it.each(contentScreens)('%s porte la mesure de lecture', (file) => {
+    const src = readFileSync(join(root, file), 'utf8');
+    expect(src).toMatch(/screen-column(-narrow)?/);
+  });
+
+  it('la boîte de dialogue a une largeur décidée une seule fois (680 px)', () => {
+    expect(ruleBody(css, '.dialog-box')).toMatch(/max-width:\s*680px/);
+  });
+
+  it('les coquilles profondes portent aussi la colonne', () => {
+    for (const shell of [
+      'src/components/layout/FullScreenPage.tsx',
+      'src/components/onboarding/OnboardingShell.tsx',
+    ]) {
+      expect(readFileSync(join(root, shell), 'utf8')).toMatch(/screen-column/);
+    }
+  });
+
+  it('aucun plafond téléphone ne subsiste hors barre d’onglets', () => {
+    const { execSync } = require('node:child_process');
+    const hits = execSync(
+      "grep -rIl 'max-w-md' --include=*.tsx app src || true",
+    )
+      .toString()
+      .trim();
+    const files = hits ? hits.split('\n') : [];
+    expect(files.filter((f: string) => !f.includes('BottomTabs'))).toEqual([]);
+  });
+});

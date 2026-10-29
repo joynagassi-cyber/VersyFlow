@@ -36,7 +36,7 @@ export default function ProfileSelectionScreen() {
 
   return (
     <FullScreenPage title={t('profile.select', 'Profil')} showBack>
-      <div className="mx-auto max-w-md space-y-4">
+      <div className="screen-column space-y-4">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-text-primary">
             {t('profile.who', "Qui apprend aujourd'hui ?")}

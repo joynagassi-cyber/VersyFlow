@@ -137,7 +137,7 @@ export default function MasteryScreen() {
 
   return (
     <FullScreenPage title={t('nav.mastery', 'Maitrise')} showBack>
-      <div className="mx-auto max-w-md space-y-6">
+      <div className="screen-column space-y-6">
         {/* Level hero */}
         <div className="bg-primary rounded-3xl p-6 text-center text-on-primary">
           <span className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-surface/20">

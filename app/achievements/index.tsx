@@ -185,7 +185,7 @@ export default function AchievementScreen() {
         </span>
       }
     >
-      <div className="mx-auto max-w-md space-y-5">
+      <div className="screen-column space-y-5">
         {/* Overall */}
         <div className="flex items-center gap-4 rounded-3xl bg-surface p-5 shadow-sm">
           <ProgressRing value={Math.round(overall)} size={72} />

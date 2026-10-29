@@ -45,7 +45,7 @@ export default function SemanticIndex() {
 
   return (
     <FullScreenPage title={t('semantic.title', 'Mémoire sémantique')}>
-      <div className="min-h-full overflow-y-auto bg-background p-4 pb-24">
+      <div className="screen-column min-h-full overflow-y-auto bg-background p-4 pb-24">
         {loading ? (
           <p className="text-sm text-text-muted">{t('common.loading', 'Chargement...')}</p>
         ) : (

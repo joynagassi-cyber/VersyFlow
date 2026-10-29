@@ -194,7 +194,7 @@ export default function TranslationComparisonScreen() {
         </button>
       }
     >
-      <div className="mx-auto max-w-md">
+      <div className="screen-column">
         {/* Sticky reference label + target-language picker */}
         <div className="sticky top-0 z-10 mb-3 space-y-2 rounded-xl bg-surface/95 px-3 py-2.5 shadow-sm backdrop-blur">
           <div className="flex items-center justify-between">
@@ -285,7 +285,7 @@ export default function TranslationComparisonScreen() {
         {addOpen && (
           <div className="fixed inset-0 z-50 flex items-end justify-center">
             <div className="absolute inset-0 bg-black/40" onClick={() => setAddOpen(false)} />
-            <div className="relative max-h-[70vh] w-full max-w-md overflow-y-auto rounded-t-3xl bg-surface p-4 shadow-xl">
+            <div className="relative max-h-[70vh] screen-column overflow-y-auto rounded-t-3xl bg-surface p-4 shadow-xl">
               <div className="mb-3 flex items-center justify-between">
                 <p className="flex items-center gap-2 text-sm font-bold text-text-primary">
                   <Languages size={16} className="text-primary" />

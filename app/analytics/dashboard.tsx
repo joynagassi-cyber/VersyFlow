@@ -71,7 +71,7 @@ export default function AnalyticsDashboardScreen() {
         </button>
       }
     >
-      <div className="mx-auto max-w-md space-y-6">
+      <div className="screen-column space-y-6">
         {/* Stats */}
         <div className="grid grid-cols-2 gap-3">
           <div className="col-span-2 flex items-center gap-4 rounded-3xl bg-surface p-4 shadow-sm">

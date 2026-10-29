@@ -32,7 +32,7 @@ export default function ThemePickerScreen() {
 
   return (
     <FullScreenPage title={t('settings.themeImage', "Thème d'image")}>
-      <div className="mx-auto max-w-md">
+      <div className="screen-column">
         {/* Pure white / black quick reset */}
         <div className="mb-4 rounded-2xl bg-surface p-3 shadow-sm">
           <p className="mb-2 text-xs font-bold uppercase tracking-wide text-text-muted">

@@ -214,7 +214,7 @@ export default function NotificationsScreen() {
         </button>
       }
     >
-      <div className="mx-auto max-w-md space-y-4">
+      <div className="screen-column space-y-4">
         {unreadCount > 0 && (
           <span className="inline-block rounded-full bg-primary px-3 py-1 text-xs font-bold text-on-primary">
             {unreadCount} {t('notifications.unread', 'non lues')}

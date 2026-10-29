@@ -180,7 +180,7 @@ export default function CollectionsScreen() {
         </button>
       }
     >
-      <div className="mx-auto max-w-md space-y-4">
+      <div className="screen-column space-y-4">
         {loadError && (
           <div className="flex flex-col items-center gap-3 rounded-2xl bg-surface p-4 text-center shadow-sm">
             <AlertCircle size={24} className="text-error" />

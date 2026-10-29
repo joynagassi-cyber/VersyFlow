@@ -17,7 +17,7 @@ export default function LanguageSettingsScreen() {
       showBack
       backPath="/settings"
     >
-      <div className="mx-auto max-w-md space-y-2">
+      <div className="screen-column space-y-2">
         {SUPPORTED_LANGUAGES.map((lang) => {
           const active = selected === lang.code;
           return (

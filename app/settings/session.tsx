@@ -23,7 +23,7 @@ export default function SettingsSessionScreen() {
   const setFocusMode = useAppearanceStore((s) => s.setFocusMode);
 
   return (
-    <div className="flex h-full flex-col overflow-y-auto p-6">
+    <div className="screen-column-narrow flex h-full flex-col overflow-y-auto p-6">
       <header className="mb-6 flex items-center gap-3">
         <button
           onClick={() => navigate(-1)}

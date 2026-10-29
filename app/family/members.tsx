@@ -54,7 +54,7 @@ export default function FamilyMembersScreen() {
   if (!family) {
     return (
       <FullScreenPage title={t('family.members', 'Membres')} showBack>
-        <div className="mx-auto max-w-md">
+        <div className="screen-column">
           <EmptyState
             title={t('family.noFamily', 'Aucune famille active')}
             description={t('family.noFamilyHint', 'Commencez par rejoindre ou creer une famille.')}
@@ -87,7 +87,7 @@ export default function FamilyMembersScreen() {
         </button>
       }
     >
-      <div className="mx-auto max-w-md space-y-4">
+      <div className="screen-column space-y-4">
         <h2 className="text-xs font-bold uppercase tracking-wide text-text-muted">
           {t('family.members', 'Membres')}
         </h2>

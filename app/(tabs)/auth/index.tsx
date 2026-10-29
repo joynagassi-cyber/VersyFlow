@@ -39,7 +39,7 @@ export default function AuthGate({ onSkip }: Props) {
   // If a session already exists (cloud or local), the gate is satisfied.
   if (useAuthStore.getState().isAuthenticated) {
     return (
-      <div className="flex min-h-[60vh] flex-col items-center justify-center gap-5 px-6">
+      <div className="screen-column-narrow flex min-h-[60vh] flex-col items-center justify-center gap-5 px-6">
         <Logo size={72} />
         <h1 className="text-2xl font-extrabold text-text-primary">
           {t('auth.ready', 'Vous êtes identifié(e)')}
@@ -66,7 +66,7 @@ export default function AuthGate({ onSkip }: Props) {
   };
 
   return (
-    <div className="flex min-h-[60vh] flex-col items-center justify-center gap-5 px-6">
+    <div className="screen-column-narrow flex min-h-[60vh] flex-col items-center justify-center gap-5 px-6">
       <Logo size={72} />
       <div className="text-center">
         <h1 className="text-2xl font-extrabold text-text-primary">

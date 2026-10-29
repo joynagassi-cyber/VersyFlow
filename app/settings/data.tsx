@@ -27,7 +27,7 @@ export default function SettingsDataScreen() {
       showBack
       backPath="/settings"
     >
-      <div className="mx-auto max-w-md space-y-5">
+      <div className="screen-column space-y-5">
         {/* Highlights summary card */}
         <div className="rounded-2xl bg-surface p-4 shadow-sm">
           <p className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-text-muted">

@@ -50,7 +50,7 @@ export default function LoginScreen({ onSkip }: Props) {
 
   return (
     <FullScreenPage>
-      <div className="mx-auto flex min-h-[70vh] w-full max-w-md flex-col items-center justify-center gap-4">
+      <div className="mx-auto flex min-h-[70vh] screen-column flex-col items-center justify-center gap-4">
         <Logo size={72} />
         <div className="text-center">
           <h1 className="text-2xl font-extrabold text-text-primary">

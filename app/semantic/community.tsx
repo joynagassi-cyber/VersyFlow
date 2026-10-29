@@ -68,7 +68,7 @@ export default function CommunityView() {
 
   return (
     <FullScreenPage title={community.name} subtitle={community.description}>
-      <div className="min-h-full overflow-y-auto bg-background p-4 pb-24">
+      <div className="screen-column min-h-full overflow-y-auto bg-background p-4 pb-24">
         {/* Header */}
         <div className="mb-4 flex items-center gap-3">
           <span className="flex h-11 w-11 items-center justify-center rounded-full bg-icon-bg-rose">

@@ -32,7 +32,7 @@ export default function PrivacyScreen() {
       showBack
       backPath="/settings"
     >
-      <div className="mx-auto max-w-md space-y-4">
+      <div className="screen-column space-y-4">
         <div className="space-y-1 rounded-2xl bg-surface p-2 shadow-sm">
           <p className="px-3 pt-2 text-base font-bold text-text-primary">
             {t('settings.privacyTitle', 'Donnees & confidentialite')}

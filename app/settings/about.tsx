@@ -72,7 +72,7 @@ export default function AboutScreen() {
       showBack
       backPath="/settings"
     >
-      <div className="mx-auto max-w-md space-y-4">
+      <div className="screen-column space-y-4">
         {/* Header */}
         <div className="flex flex-col items-center gap-2 rounded-3xl bg-surface p-6 shadow-sm">
           <Logo size={72} />

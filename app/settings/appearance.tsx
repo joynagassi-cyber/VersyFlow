@@ -132,7 +132,7 @@ export default function AppearanceScreen() {
 
   return (
     <FullScreenPage title={t('settings.theme', 'Thème')}>
-      <div className="mx-auto max-w-md">
+      <div className="screen-column">
         <Section title={t('settings.themeMode', 'Mode')}>
           <div className="flex flex-col gap-2">
             {themeOptions.map(({ value, label, Icon }) => {

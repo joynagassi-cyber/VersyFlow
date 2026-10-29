@@ -75,7 +75,7 @@ export default function ProfileScreen() {
 
   return (
     <FullScreenPage title={t('common.profil', 'Profil')} showBack>
-      <div className="mx-auto max-w-md space-y-5">
+      <div className="screen-column space-y-5">
         {/* ── Header card: gradient name (very large) + photo on the right ── */}
         <div className="bg-primary overflow-hidden rounded-3xl p-5 text-on-primary">
           <div className="flex items-center gap-4">

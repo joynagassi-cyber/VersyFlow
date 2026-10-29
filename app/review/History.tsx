@@ -158,7 +158,7 @@ export default function ReviewHistoryScreen() {
     return (
       <FullScreenPage title={t('nav.history', 'Historique')} showBack>
         <div className="flex min-h-[50vh] flex-col items-center justify-center gap-3">
-          <div className="w-full max-w-md animate-pulse space-y-3 px-6" aria-hidden><div className="h-4 w-2/5 rounded-full bg-surface-tint" /><div className="h-24 rounded-3xl bg-surface-tint" /><div className="h-24 rounded-3xl bg-surface-tint" /></div>
+          <div className="screen-column animate-pulse space-y-3 px-6" aria-hidden><div className="h-4 w-2/5 rounded-full bg-surface-tint" /><div className="h-24 rounded-3xl bg-surface-tint" /><div className="h-24 rounded-3xl bg-surface-tint" /></div>
           <p className="text-sm text-text-muted">{t('common.loading', 'Chargement...')}</p>
         </div>
       </FullScreenPage>
@@ -168,7 +168,7 @@ export default function ReviewHistoryScreen() {
   if (noData || !verse) {
     return (
       <FullScreenPage title={t('nav.history', 'Historique')} showBack>
-        <div className="mx-auto max-w-md">
+        <div className="screen-column">
           <EmptyState
             title={t('review.historyEmpty', 'Aucune revision enregistree')}
             description={t('review.historyEmptyHint', 'Revisez des versets pour construire votre historique.')}
@@ -187,7 +187,7 @@ export default function ReviewHistoryScreen() {
 
   return (
     <FullScreenPage title={t('nav.history', 'Historique')} showBack backPath="/review/queue">
-      <div className="mx-auto max-w-md space-y-6">
+      <div className="screen-column space-y-6">
         <div className="rounded-3xl bg-surface p-5 shadow-sm">
           <div className="flex gap-3">
             <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-surface-tint">

@@ -12,7 +12,8 @@ import {
   IonButtons,
   IonButton,
 } from '@ionic/react';
-import { ArrowLeft } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import { ArrowLeft01Icon } from '@hugeicons/core-free-icons';
 import { useNavigate } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 
@@ -25,6 +26,11 @@ interface FullScreenPageProps {
   right?: React.ReactNode;
   children: React.ReactNode;
   className?: string;
+  /**
+   * Mesure de la colonne. Deep pages lisent (720 px), les listes respirent
+   * (1060 px). `false` = pleine largeur, réservé aux canevas/éditeurs.
+   */
+  column?: 'narrow' | 'wide' | false;
 }
 
 export function FullScreenPage({
@@ -35,6 +41,7 @@ export function FullScreenPage({
   right,
   children,
   className,
+  column = 'narrow',
 }: FullScreenPageProps) {
   const navigate = useNavigate();
 
@@ -55,7 +62,7 @@ export function FullScreenPage({
                   className="h-10 w-10 p-0"
                   shape="round"
                 >
-                  <ArrowLeft size={22} className="text-text-secondary" />
+                  <HugeiconsIcon icon={ArrowLeft01Icon} size={22} color="var(--color-text-secondary)" />
                 </IonButton>
               </IonButtons>
             )}
@@ -72,7 +79,14 @@ export function FullScreenPage({
         </IonHeader>
       )}
       <div className={cn('app-canvas h-full overflow-y-auto bg-background p-4', className)}>
-        {children}
+        <div
+          className={cn(
+            column === 'narrow' && 'screen-column-narrow',
+            column === 'wide' && 'screen-column',
+          )}
+        >
+          {children}
+        </div>
       </div>
     </IonPage>
   );

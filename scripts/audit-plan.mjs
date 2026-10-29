@@ -326,15 +326,23 @@ const record = (id, section, label, verdict, detail, proof) =>
 /* §6.4 — largeurs de lecture ------------------------------------------------ */
 {
   const tokens = /--reading-width: 720px/.test(globals) && /--reading-wide: 1060px/.test(globals);
-  const applied = walk('app', /\.tsx$/).filter((f) => /screen-column/.test(read(f))).length;
-  const total = walk('app', /\.tsx$/).length;
+  const shells = ['src/components/layout/FullScreenPage.tsx', 'src/components/onboarding/OnboardingShell.tsx'];
+  const shellHasColumn = shells.every((f) => exists(f) && /screen-column/.test(read(f)));
+  // Un écran est couvert s'il porte la classe, ou s'il passe par une coquille qui la porte.
+  const screens = walk('app', /\.tsx$/).filter(
+    (f) => !/(_layout|\(tabs\)\/_layout|splash|\.test\.)/.test(f),
+  );
+  const covered = screens.filter((f) => {
+    const src = read(f);
+    return /screen-column/.test(src) || shells.some((sh) => new RegExp(`from '@/${sh.replace('src/', '').replace('.tsx', '').replace('.ts', '')}`).test(src));
+  });
   record(
     'C11',
     '§6.4',
-    'Mesure de lecture définie et appliquée aux écrans',
-    tokens && applied >= total ? 'PASS' : 'PARTIAL',
-    `${applied}/${total} écrans portent .screen-column(-narrow) · jetons ${tokens ? 'présents' : 'absents'}`,
-    'grep -rIl "screen-column" app | wc -l',
+    'Mesure de lecture définie et appliquée à tous les écrans de contenu',
+    tokens && shellHasColumn && covered.length === screens.length ? 'PASS' : 'PARTIAL',
+    `${covered.length}/${screens.length} écrans couverts (classe directe ou coquille) · coquilles: ${shellHasColumn ? 'ok' : 'manquante'} · jetons ${tokens ? 'présents' : 'absents'}`,
+    'node scripts/audit-plan.mjs',
   );
 }
 

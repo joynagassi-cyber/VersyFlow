@@ -52,7 +52,7 @@ export default function FamilyJoinScreen() {
       showBack
       backPath="/family/home"
     >
-      <div className="mx-auto max-w-md space-y-6">
+      <div className="screen-column space-y-6">
         {/* QR scan (placeholder for camera) */}
         <button
           className="flex w-full flex-col items-center gap-3 rounded-3xl border-2 border-dashed border-primary/40 bg-surface p-8 active:bg-surface-tint"

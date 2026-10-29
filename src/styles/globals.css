@@ -800,6 +800,13 @@ html[data-theme-image='on'] [class*='bg-background'] {
   }
 }
 
+/* Boîte de dialogue : une seule largeur, décidée ici.
+   Téléphone : le viewport moins 32 px. Bureau : 680 px — au-delà, un
+   formulaire cesse d'être lisible et devient une colonne perdue. */
+.dialog-box {
+  max-width: 680px;
+}
+
 /* Colonne d'écran — une seule abstraction pour les 63 écrans.
    Sous 1024 px : comportement inchangé (max-width: 100 %).
    Au-dessus : le contenu cesse de s'étirer sur toute la largeur et prend la

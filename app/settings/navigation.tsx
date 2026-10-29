@@ -79,7 +79,7 @@ export default function NavigationSettingsScreen() {
       showBack
       backPath="/settings"
     >
-      <div className="mx-auto max-w-md space-y-5">
+      <div className="screen-column space-y-5">
         <p className="px-1 text-sm text-text-muted">
           {t('settings.navigationHint', 'Choisissez quelles pages sont visibles dans la barre de navigation en bas de l’appli. Désactiver une page ne supprime pas sa fonctionnalité.')}
         </p>

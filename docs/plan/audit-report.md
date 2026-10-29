@@ -1,9 +1,9 @@
 # Rapport d’audit — plan « Interface web + thèmes »
 
 Généré par `node scripts/audit-plan.mjs`. **Ne pas éditer à la main.**
-Exécuté le 2026-10-29 17:03 (UTC).
+Exécuté le 2026-10-29 18:36 (UTC).
 
-**Bilan : 14 PASS · 2 PARTIEL · 0 FAIL · 4 non vérifiable(s).**
+**Bilan : 15 PASS · 1 PARTIEL · 0 FAIL · 4 non vérifiable(s).**
 
 | ID | § | Verdict | Contrôle | Mesure |
 | --- | --- | --- | --- | --- |
@@ -17,8 +17,8 @@ Exécuté le 2026-10-29 17:03 (UTC).
 | C08 | §3.3 | **PASS** | Aucune couleur littérale dans le code d’interface (hors exception documentée) | 97 fichiers d’interface scannés · 0 ligne(s) fautive(s) |
 | C09 | §6.1 | **PASS** | Un seul seuil (1024 px), une seule navigation montée, aucune largeur en dur | seuil: true · montage exclusif: true · zéro px en dur: true |
 | C10 | §6.2 | **PASS** | Rail : une variable de largeur, repli accessible, état actif non colorimétrique | variable unique: true · largeur: true · repli sr-only: true · aria: true · Hugeicons seuls: true |
-| C11 | §6.4 | **PARTIAL** | Mesure de lecture définie et appliquée aux écrans | 4/63 écrans portent .screen-column(-narrow) · jetons présents |
-| C12 | §5.1 | **PARTIAL** | Une seule bibliothèque d’icônes (Hugeicons) | 29/101 fichiers sans Lucide · 72 à migrer |
+| C11 | §6.4 | **PASS** | Mesure de lecture définie et appliquée à tous les écrans de contenu | 60/60 écrans couverts (classe directe ou coquille) · coquilles: ok · jetons présents |
+| C12 | §5.1 | **PARTIAL** | Une seule bibliothèque d’icônes (Hugeicons) | 31/101 fichiers sans Lucide · 70 à migrer |
 | C13 | §4.4 | **PASS** | Accent d’image : trois rôles, texte choisi par contraste, pas de promesse pendante | 3 rôles: true · garde-fou de chargement: true · texte au ratio: true |
 | C14 | §11.2 | **PASS** | Chaque famille de contrat a un test dédié | 4 fichiers · 7/7 familles couvertes |
 | C15 | §0 | **PASS** | Les libellés ajoutés existent en français et en anglais | fr manquants: aucun · en manquants: aucun |
@@ -45,7 +45,7 @@ Exécuté le 2026-10-29 17:03 (UTC).
 - C08 : `npx vitest run tests/design/no-hardcoded-colors.test.ts`
 - C09 : `npx vitest run tests/design/desktop-shell.test.ts`
 - C10 : `npx vitest run tests/design/desktop-shell.test.ts`
-- C11 : `grep -rIl "screen-column" app | wc -l`
+- C11 : `node scripts/audit-plan.mjs`
 - C12 : `grep -rIl "lucide-react" --include=*.tsx app src | wc -l`
 - C13 : `npx vitest run tests/design/image-accent.test.ts`
 - C14 : `npx vitest run tests/design`

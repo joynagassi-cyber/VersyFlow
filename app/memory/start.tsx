@@ -62,7 +62,7 @@ export default function MemorizationStartScreen({ verseData }: Props) {
       showBack
       backPath="/tabs/home"
     >
-      <div className="mx-auto max-w-md space-y-5">
+      <div className="screen-column space-y-5">
         {/* Verse preview */}
         <div className="rounded-3xl bg-surface p-5 shadow-sm">
           <p className="text-sm font-semibold text-primary">{verseData.reference}</p>

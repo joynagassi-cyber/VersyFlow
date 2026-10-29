@@ -214,7 +214,7 @@ export default function SearchScreen() {
 
   return (
     <FullScreenPage title={t('nav.search', 'Recherche')} showBack>
-      <div className="mx-auto max-w-md">
+      <div className="screen-column">
         {/* Input */}
         <div className="flex items-center gap-2 rounded-2xl bg-surface-tint px-4 py-3">
           <Search size={18} className="text-text-muted" />

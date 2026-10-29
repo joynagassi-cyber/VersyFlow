@@ -82,7 +82,7 @@ export default function FamilyInviteScreen() {
   if (!family || !signedIn) {
     return (
       <FullScreenPage title={t('family.invite', 'Inviter')} showBack>
-        <div className="mx-auto max-w-md">
+        <div className="screen-column">
           <EmptyState
             title={t('family.noFamily', 'Aucune famille active')}
             description={t('family.noFamilyHint', 'Rejoignez une famille pour inviter des membres.')}
@@ -101,7 +101,7 @@ export default function FamilyInviteScreen() {
       backPath="/family/members"
       right={<span className="px-4 text-lg" aria-hidden>{family.icon}</span>}
     >
-      <div className="mx-auto max-w-md space-y-5">
+      <div className="screen-column space-y-5">
         {/* Family header */}
         <div className="bg-primary flex items-center gap-3 rounded-3xl p-5 text-on-primary">
           <span className="text-3xl">{family.icon}</span>

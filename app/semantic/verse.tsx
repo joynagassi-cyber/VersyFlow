@@ -87,7 +87,7 @@ export default function VerseView() {
 
   return (
     <FullScreenPage title={verseRef ? formatVerseKey(verseRef) : undefined}>
-      <div className="min-h-full overflow-y-auto bg-background p-4 pb-24">
+      <div className="screen-column min-h-full overflow-y-auto bg-background p-4 pb-24">
         {/* Verse text */}
         <div className="mb-5 rounded-xl bg-surface p-4 shadow-sm">
           <div className="mb-2 flex items-center gap-2">

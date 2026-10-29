@@ -46,7 +46,7 @@ export default function ComparisonResultScreen({ record, userAnswer }: Props) {
 
   return (
     <FullScreenPage title={t('comparison.result', 'Resultat')} showBack>
-      <div className="mx-auto max-w-md space-y-4">
+      <div className="screen-column space-y-4">
         {/* Score */}
         <div className="flex flex-col items-center rounded-3xl bg-surface p-6 shadow-sm">
           <p className="text-sm text-text-muted">

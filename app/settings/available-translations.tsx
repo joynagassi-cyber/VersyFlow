@@ -391,7 +391,7 @@ export default function AvailableTranslationsScreen() {
   };
 
   return (
-    <div className="h-full overflow-y-auto bg-background p-4 pb-24">
+    <div className="screen-column-narrow h-full overflow-y-auto bg-background p-4 pb-24">
       <div className="mb-4 flex items-center gap-2">
         <button
           onClick={() => navigate(-1)}

@@ -44,7 +44,7 @@ export default function FSRSIntroductionScreen() {
   ];
 
   return (
-    <div className="relative flex min-h-full flex-col">
+    <div className="screen-column-narrow relative flex min-h-full flex-col">
       {/* Hero */}
       <div className="flex flex-col items-center px-6 pb-6 pt-10">
         <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-surface-tint">

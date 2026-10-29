@@ -35,7 +35,7 @@ export default function OnboardingReminderConfig() {
   const finish = () => navigate('/onboarding/fsrs-introduction');
 
   return (
-    <div className="flex min-h-full flex-col p-6">
+    <div className="screen-column-narrow flex min-h-full flex-col p-6">
       <header className="mb-6 flex items-center gap-3">
         <button
           onClick={() => navigate('/onboarding/session-config')}

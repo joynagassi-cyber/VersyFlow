@@ -141,7 +141,7 @@ export default function SettingsScreen() {
 
   return (
     <FullScreenPage title={t('nav.settings', 'Parametres')} showBack>
-      <div className="mx-auto max-w-md space-y-5">
+      <div className="screen-column space-y-5">
         {/* Profile card — premium avatar (photo → vector illustration fallback) */}
         <button
           onClick={() => navigate('/profile')}
