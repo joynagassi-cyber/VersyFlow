@@ -34,7 +34,7 @@ export interface ModeWriteProps {
 const RATING_OPTIONS: Parameters<typeof RatingBar>[0]['options'] = [
   { value: FsrsRating.AGAIN, label: 'À revoir', className: 'bg-error-light text-error' },
   { value: FsrsRating.HARD, label: 'Difficile', className: 'bg-warning-light text-warning' },
-  { value: FsrsRating.GOOD, label: 'Bon', className: 'bg-primary text-white' },
+  { value: FsrsRating.GOOD, label: 'Bon', className: 'bg-primary text-on-primary' },
   { value: FsrsRating.EASY, label: 'Facile', className: 'bg-success-light text-success' },
 ];
 

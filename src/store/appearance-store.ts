@@ -36,6 +36,10 @@ export interface AppearanceState {
   reminderEnabled: boolean;
   sessionGoal: number;
   focusMode: boolean;
+  /** Accessibilité : supprime le verre (surfaces opaques). */
+  reducedTransparency: boolean;
+  /** Accessibilité : contours renforcés et fond décoratif atténué. */
+  highContrast: boolean;
   reminderTime: string;
   /** Reading (Bible) typography settings — applied live via theme-fonts.ts. */
   bibleFontFamily: string;
@@ -57,6 +61,8 @@ export interface AppearanceState {
   toggleReminders: () => void;
   setSessionGoal: (count: number) => void;
   setFocusMode: (enabled: boolean) => void;
+  setReducedTransparency: (enabled: boolean) => void;
+  setHighContrast: (enabled: boolean) => void;
   setReminderTime: (time: string) => void;
   setBibleFontFamily: (id: string) => void;
   setBibleFontSize: (size: number) => void;
@@ -81,6 +87,8 @@ const DEFAULTS: Pick<
   | 'reminderEnabled'
   | 'sessionGoal'
   | 'focusMode'
+  | 'reducedTransparency'
+  | 'highContrast'
   | 'reminderTime'
   | 'bibleFontFamily'
   | 'bibleFontSize'
@@ -101,6 +109,8 @@ const DEFAULTS: Pick<
   reminderEnabled: true,
   sessionGoal: 3,
   focusMode: false,
+  reducedTransparency: false,
+  highContrast: false,
   reminderTime: '09:00',
   bibleFontFamily: 'source-serif-4',
   bibleFontSize: 19,
@@ -190,6 +200,16 @@ export const useAppearanceStore = create<AppearanceState>(() => ({
 
   setFocusMode(enabled: boolean) {
     useAppearanceStore.setState({ focusMode: enabled });
+    void appearanceStorePersist.save();
+  },
+
+  setReducedTransparency(enabled: boolean) {
+    useAppearanceStore.setState({ reducedTransparency: enabled });
+    void appearanceStorePersist.save();
+  },
+
+  setHighContrast(enabled: boolean) {
+    useAppearanceStore.setState({ highContrast: enabled });
     void appearanceStorePersist.save();
   },
 
@@ -289,6 +309,8 @@ export const appearanceStorePersist = {
       reminderEnabled: s.reminderEnabled,
       sessionGoal: s.sessionGoal,
       focusMode: s.focusMode,
+      reducedTransparency: s.reducedTransparency,
+      highContrast: s.highContrast,
       reminderTime: s.reminderTime,
       bibleFontFamily: s.bibleFontFamily,
       bibleFontSize: s.bibleFontSize,

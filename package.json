@@ -29,7 +29,8 @@
     "cap:run:ios": "capacitor run ios",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "semantic:build": "npx tsx scripts/semantic/run.ts"
+    "semantic:build": "npx tsx scripts/semantic/run.ts",
+    "themes:contrast": "node scripts/apply-preset-contrast.mjs"
   },
   "dependencies": {
     "@capacitor-community/sqlite": "^8.1.1",

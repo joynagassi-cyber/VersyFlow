@@ -68,7 +68,7 @@ export default function OnboardingReminderConfig() {
             className={cn(
               'flex h-12 w-12 shrink-0 items-center justify-center rounded-full',
               reminderEnabled
-                ? 'bg-primary text-white'
+                ? 'bg-primary text-on-primary'
                 : 'bg-surface-tint text-primary',
             )}
           >

@@ -77,7 +77,7 @@ export default function ProfileScreen() {
     <FullScreenPage title={t('common.profil', 'Profil')} showBack>
       <div className="mx-auto max-w-md space-y-5">
         {/* ── Header card: gradient name (very large) + photo on the right ── */}
-        <div className="bg-primary overflow-hidden rounded-3xl p-5 text-white">
+        <div className="bg-primary overflow-hidden rounded-3xl p-5 text-on-primary">
           <div className="flex items-center gap-4">
             <div className="min-w-0 flex-1">
               {/* Big gradient display name — the name is the hero. */}
@@ -89,7 +89,7 @@ export default function ProfileScreen() {
                     onChange={(e) => setName(e.target.value)}
                     onBlur={() => setEditing(false)}
                     onKeyDown={(e) => e.key === 'Enter' && setEditing(false)}
-                    className="w-full rounded-lg bg-white/20 px-2 py-1 text-2xl font-extrabold text-white outline-none"
+                    className="w-full rounded-lg bg-surface/20 px-2 py-1 text-2xl font-extrabold text-white outline-none"
                   />
                 ) : (
                   <h1 className="text-primary truncate text-3xl font-extrabold leading-tight">
@@ -98,7 +98,7 @@ export default function ProfileScreen() {
                 )}
                 <button
                   onClick={() => setEditing(true)}
-                  className="shrink-0 rounded-full bg-white/20 p-1.5 active:bg-white/30"
+                  className="shrink-0 rounded-full bg-surface/20 p-1.5 active:bg-surface/30"
                   aria-label={t('common.edit', 'Modifier')}
                 >
                   <Pencil size={14} />
@@ -111,7 +111,7 @@ export default function ProfileScreen() {
               <p className="mt-1 truncate text-sm text-white/80">
                 {slogan || user?.userId || t('profile.localMode', 'Mode local')}
               </p>
-              <span className="mt-2 inline-block rounded-full bg-white/20 px-2.5 py-0.5 text-xs font-semibold">
+              <span className="mt-2 inline-block rounded-full bg-surface/20 px-2.5 py-0.5 text-xs font-semibold">
                 {isAuthenticated
                   ? t('profile.connected', 'Connecte')
                   : t('profile.local', 'Local')}

@@ -42,7 +42,7 @@ function Toggle({ on, onChange }: { on: boolean; onChange: () => void }) {
       aria-pressed={on}
       className={cn('relative h-6 w-11 shrink-0 rounded-full transition-colors', on ? 'bg-primary' : 'bg-border')}
     >
-      <span className={cn('absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-all', on ? 'left-[22px]' : 'left-0.5')} />
+      <span className={cn('absolute top-0.5 h-5 w-5 rounded-full bg-surface shadow transition-all', on ? 'left-[22px]' : 'left-0.5')} />
     </button>
   );
 }
@@ -102,6 +102,10 @@ export default function AppearanceScreen() {
   const fontSize = useAppearanceStore((s) => s.fontSize);
   const showVerseNumbers = useAppearanceStore((s) => s.showVerseNumbers);
   const focusMode = useAppearanceStore((s) => s.focusMode);
+  const reducedTransparency = useAppearanceStore((s) => s.reducedTransparency);
+  const highContrast = useAppearanceStore((s) => s.highContrast);
+  const setReducedTransparency = useAppearanceStore((s) => s.setReducedTransparency);
+  const setHighContrast = useAppearanceStore((s) => s.setHighContrast);
   const bibleFontFamily = useAppearanceStore((s) => s.bibleFontFamily);
   const bibleFontSize = useAppearanceStore((s) => s.bibleFontSize);
   const bibleLineHeight = useAppearanceStore((s) => s.bibleLineHeight);
@@ -145,7 +149,7 @@ export default function AppearanceScreen() {
                   <span
                     className={cn(
                       'flex h-9 w-9 items-center justify-center rounded-full',
-                      active ? 'bg-primary text-white' : 'bg-surface-tint text-primary',
+                      active ? 'bg-primary text-on-primary' : 'bg-surface-tint text-primary',
                     )}
                   >
                     <HugeiconsIcon icon={Icon} size={19} />
@@ -470,7 +474,7 @@ export default function AppearanceScreen() {
                   onClick={() => setFontSize(size)}
                   className={cn(
                     'flex-1 rounded-xl py-2.5 text-sm font-semibold transition',
-                    active ? 'bg-primary text-white' : 'bg-surface-tint text-text-primary',
+                    active ? 'bg-primary text-on-primary' : 'bg-surface-tint text-text-primary',
                   )}
                 >
                   {size}
@@ -493,6 +497,29 @@ export default function AppearanceScreen() {
                 {t('settings.focusMode', 'Mode concentration')}
               </span>
               <Toggle on={focusMode} onChange={() => setFocusMode(!focusMode)} />
+            </div>
+
+            <div className="flex items-center justify-between gap-3 py-2">
+              <span className="flex-1 text-sm font-medium text-text-primary">
+                {t('settings.reducedTransparency', 'Réduire la transparence')}
+                <span className="mt-0.5 block text-xs font-normal text-text-muted">
+                  {t('settings.reducedTransparencyHint', 'Surfaces opaques, sans effet de verre.')}
+                </span>
+              </span>
+              <Toggle
+                on={reducedTransparency}
+                onChange={() => setReducedTransparency(!reducedTransparency)}
+              />
+            </div>
+
+            <div className="flex items-center justify-between gap-3 py-2">
+              <span className="flex-1 text-sm font-medium text-text-primary">
+                {t('settings.highContrast', 'Contraste élevé')}
+                <span className="mt-0.5 block text-xs font-normal text-text-muted">
+                  {t('settings.highContrastHint', 'Contours renforcés, fond décoratif atténué.')}
+                </span>
+              </span>
+              <Toggle on={highContrast} onChange={() => setHighContrast(!highContrast)} />
             </div>
           </div>
         </Section>

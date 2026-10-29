@@ -216,7 +216,7 @@ export default function NotificationsScreen() {
     >
       <div className="mx-auto max-w-md space-y-4">
         {unreadCount > 0 && (
-          <span className="inline-block rounded-full bg-primary px-3 py-1 text-xs font-bold text-white">
+          <span className="inline-block rounded-full bg-primary px-3 py-1 text-xs font-bold text-on-primary">
             {unreadCount} {t('notifications.unread', 'non lues')}
           </span>
         )}
@@ -226,7 +226,7 @@ export default function NotificationsScreen() {
             onClick={() => setFilter('all')}
             className={
               'flex-1 rounded-full py-2 text-sm font-medium ' +
-              (filter === 'all' ? 'bg-primary text-white' : 'bg-surface-tint text-text-secondary')
+              (filter === 'all' ? 'bg-primary text-on-primary' : 'bg-surface-tint text-text-secondary')
             }
           >
             {t('notifications.allTab', 'Toutes')} ({notifications.length})
@@ -235,7 +235,7 @@ export default function NotificationsScreen() {
             onClick={() => setFilter('unread')}
             className={
               'flex-1 rounded-full py-2 text-sm font-medium ' +
-              (filter === 'unread' ? 'bg-primary text-white' : 'bg-surface-tint text-text-secondary')
+              (filter === 'unread' ? 'bg-primary text-on-primary' : 'bg-surface-tint text-text-secondary')
             }
           >
             {t('notifications.unreadTab', 'Non lues')} ({unreadCount})

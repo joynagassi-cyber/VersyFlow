@@ -179,7 +179,7 @@ export default function HomeScreen() {
           </div>
           <button
             onClick={() => navigate('/tabs/progress')}
-            className="flex h-11 w-11 items-center justify-center rounded-full bg-white/20 backdrop-blur active:scale-95"
+            className="flex h-11 w-11 items-center justify-center rounded-full bg-surface/20 backdrop-blur active:scale-95"
             aria-label={t('home.goodJob', 'Voir détails')}
           >
             <TrendingUp size={20} />
@@ -189,9 +189,9 @@ export default function HomeScreen() {
         {reviewsDue !== null && reviewsDue > 0 && (
           <button
             onClick={() => navigate('/review/queue')}
-            className="mt-5 flex w-full items-center gap-3 rounded-2xl bg-white/15 p-3.5 text-left backdrop-blur transition active:scale-[0.99]"
+            className="mt-5 flex w-full items-center gap-3 rounded-2xl bg-surface/15 p-3.5 text-left backdrop-blur transition active:scale-[0.99]"
           >
-            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white/25">
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-surface/25">
               <Clock size={18} />
             </span>
             <span className="flex-1">
@@ -239,7 +239,7 @@ export default function HomeScreen() {
           </span>
           <button
             onClick={() => navigate('/memorization/session')}
-            className="rounded-full bg-primary px-4 py-1.5 text-xs font-semibold text-white"
+            className="rounded-full bg-primary px-4 py-1.5 text-xs font-semibold text-on-primary"
           >
             {t('bible.memorize', 'Mémoriser')}
           </button>

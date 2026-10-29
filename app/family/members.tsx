@@ -102,7 +102,7 @@ export default function FamilyMembersScreen() {
             <p className="text-sm text-error">{loadError}</p>
             <button
               onClick={() => loadMembers(family.id)}
-              className="rounded-full bg-primary px-5 py-2 text-sm font-semibold text-white active:opacity-90"
+              className="rounded-full bg-primary px-5 py-2 text-sm font-semibold text-on-primary active:opacity-90"
             >
               {t('common.retry', 'Réessayer')}
             </button>
@@ -135,7 +135,7 @@ export default function FamilyMembersScreen() {
           onClick={() => navigate('/family/invite')}
           className="flex w-full items-center gap-3 rounded-2xl bg-surface-tint p-4 text-left active:opacity-90"
         >
-          <span className="flex h-11 w-11 items-center justify-center rounded-full bg-primary text-white">
+          <span className="flex h-11 w-11 items-center justify-center rounded-full bg-primary text-on-primary">
             <UserPlus size={20} />
           </span>
           <span className="flex-1">

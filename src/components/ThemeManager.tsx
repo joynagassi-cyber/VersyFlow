@@ -26,6 +26,8 @@ export function ThemeManager() {
   const themeMode = useAppearanceStore((s) => s.themeMode);
   const accent = useAppearanceStore((s) => s.accent);
   const presetId = useAppearanceStore((s) => s.presetId);
+  const reducedTransparency = useAppearanceStore((s) => s.reducedTransparency);
+  const highContrast = useAppearanceStore((s) => s.highContrast);
   const backgroundType = useAppearanceStore((s) => s.backgroundType);
   const gradientId = useAppearanceStore((s) => s.gradientId);
   const uiFontId = useAppearanceStore((s) => s.uiFontId);
@@ -79,6 +81,16 @@ export function ThemeManager() {
       applyAccentPreset(accent, theme.isDark, colorThemeId);
     }
   }, [accent, colorThemeId, presetId, backgroundType, gradientId, theme.isDark, theme, viewportWide]);
+
+  // Accessibilité : deux états globaux lus par le CSS (surfaces opaques,
+  // contours renforcés). Le verre est un confort, jamais une condition.
+  useEffect(() => {
+    const root = document.documentElement;
+    root.toggleAttribute('data-transparency', false);
+    if (reducedTransparency) root.setAttribute('data-transparency', 'reduced');
+    if (highContrast) root.setAttribute('data-contrast', 'high');
+    else root.removeAttribute('data-contrast');
+  }, [reducedTransparency, highContrast]);
 
   // Bible reading typography: lazy-load the chosen webfont (offline-first,
   // only on selection change) and write the live --reading-* vars so the

@@ -50,7 +50,7 @@ export default function LanguageSettingsScreen() {
                 <span className="text-sm text-text-muted">{lang.displayName}</span>
               </span>
               {active && (
-                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-white">
+                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-on-primary">
                   <Check size={14} />
                 </span>
               )}

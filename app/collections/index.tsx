@@ -190,7 +190,7 @@ export default function CollectionsScreen() {
                 setCollections(SAMPLE_COLLECTIONS);
                 setLoadError(null);
               }}
-              className="rounded-full bg-primary px-5 py-2 text-sm font-semibold text-white active:opacity-90"
+              className="rounded-full bg-primary px-5 py-2 text-sm font-semibold text-on-primary active:opacity-90"
             >
               {t('common.retry', 'Réessayer')}
             </button>
@@ -206,7 +206,7 @@ export default function CollectionsScreen() {
               className={
                 'rounded-full px-3.5 py-1.5 text-sm font-medium ' +
                 (selected === cat.id
-                  ? 'bg-primary text-white'
+                  ? 'bg-primary text-on-primary'
                   : 'bg-surface-tint text-text-secondary')
               }
             >
@@ -349,7 +349,7 @@ export default function CollectionsScreen() {
             </button>
             <button
               onClick={submitCreate}
-              className="flex h-11 w-11 items-center justify-center rounded-full bg-primary text-white"
+              className="flex h-11 w-11 items-center justify-center rounded-full bg-primary text-on-primary"
             >
               <Plus size={20} />
             </button>

@@ -194,7 +194,7 @@ export default function SettingsScreen() {
                     className={cn(
                       'rounded-full px-2 py-0.5 text-[11px] font-semibold transition',
                       bibleVersionType === v.id
-                        ? 'bg-primary text-white'
+                        ? 'bg-primary text-on-primary'
                         : 'bg-surface-tint text-text-secondary',
                     )}
                   >

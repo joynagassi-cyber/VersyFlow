@@ -49,7 +49,7 @@ function BoundaryFallback({ onReset }: { onReset: () => void }) {
             onReset();
             navigate(0 as unknown as string);
           }}
-          className="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-white shadow active:opacity-90"
+          className="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-on-primary shadow active:opacity-90"
         >
           Réessayer
         </button>

@@ -175,7 +175,7 @@ export default function ReviewQueueScreen() {
     <FullScreenPage title={t('review.todayReviews', 'Révisions du jour')} backPath="/tabs/home">
       {/* Summary strip */}
       <div className="mb-4 flex flex-wrap items-center justify-center gap-2">
-        <span className="inline-flex items-center gap-1.5 rounded-full bg-primary px-3 py-1.5 text-[13px] font-semibold text-white">
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-primary px-3 py-1.5 text-[13px] font-semibold text-on-primary">
           <List size={14} />
           {t('review.totalDue', { count: totalDue })}
         </span>

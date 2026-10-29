@@ -188,7 +188,7 @@ export default function TranslationComparisonScreen() {
         <button
           type="button"
           onClick={() => setAddOpen(true)}
-          className="flex items-center gap-1.5 rounded-full bg-primary px-3.5 py-1.5 text-xs font-bold text-white shadow-sm active:scale-95"
+          className="flex items-center gap-1.5 rounded-full bg-primary px-3.5 py-1.5 text-xs font-bold text-on-primary shadow-sm active:scale-95"
         >
           <Plus size={14} />
           {t('comparison.addVersion', 'Ajouter une version')}

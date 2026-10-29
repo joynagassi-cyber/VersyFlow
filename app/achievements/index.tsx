@@ -211,7 +211,7 @@ export default function AchievementScreen() {
               className={
                 'rounded-full px-3.5 py-1.5 text-sm font-medium ' +
                 (selectedCategory === cat.id
-                  ? 'bg-primary text-white'
+                  ? 'bg-primary text-on-primary'
                   : 'bg-surface-tint text-text-secondary')
               }
             >

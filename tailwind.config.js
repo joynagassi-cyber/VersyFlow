@@ -25,11 +25,13 @@ const config = {
         accent: alpha('var(--color-accent)'),
         'on-primary': alpha('var(--color-on-primary)'),
         background: alpha('var(--color-background)'),
-        card: 'var(--card)',
-        popover: 'var(--popover)',
-        muted: 'var(--muted)',
-        ring: 'var(--ring)',
-        'primary-foreground': 'var(--primary-foreground)',
+        // card / popover / muted / ring sont eux aussi dérivables en alpha :
+        // sans cela, la recette de verre `bg-card/40` ne générait aucune règle.
+        card: { DEFAULT: alpha('var(--card)'), foreground: alpha('var(--card-foreground)') },
+        popover: { DEFAULT: alpha('var(--popover)'), foreground: alpha('var(--popover-foreground)') },
+        muted: { DEFAULT: alpha('var(--muted)'), foreground: alpha('var(--muted-foreground)') },
+        ring: alpha('var(--ring)'),
+        'primary-foreground': alpha('var(--primary-foreground)'),
         surface: alpha('var(--color-surface)'),
         'surface-tint': alpha('var(--color-surface-tint)'),
         'surface-elevated': alpha('var(--color-surface-elevated)'),

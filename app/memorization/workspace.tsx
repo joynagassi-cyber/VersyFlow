@@ -151,7 +151,7 @@ export default function MemorizationWorkspace() {
           </p>
           <button
             onClick={() => navigate('/bible/explorer')}
-            className="mt-4 rounded-full bg-primary px-5 py-2.5 text-sm font-bold text-white shadow-sm active:scale-95"
+            className="mt-4 rounded-full bg-primary px-5 py-2.5 text-sm font-bold text-on-primary shadow-sm active:scale-95"
           >
             {t('workspace.openBible', 'Ouvrir la Bible')}
           </button>

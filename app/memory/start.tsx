@@ -90,7 +90,7 @@ export default function MemorizationStartScreen({ verseData }: Props) {
                 <span
                   className={
                     'flex h-12 w-12 shrink-0 items-center justify-center rounded-xl ' +
-                    (active ? 'bg-primary text-white' : 'bg-surface-tint text-primary')
+                    (active ? 'bg-primary text-on-primary' : 'bg-surface-tint text-primary')
                   }
                 >
                   <Icon size={22} />

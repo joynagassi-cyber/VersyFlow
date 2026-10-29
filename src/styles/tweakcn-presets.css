@@ -13,7 +13,7 @@
   --card-foreground: #333333;
   --popover: #ffffff;
   --popover-foreground: #333333;
-  --primary: #3b82f6;
+  --primary: #1e6ff5;
   --primary-foreground: #ffffff;
   --secondary: #f3f4f6;
   --secondary-foreground: #4b5563;
@@ -25,7 +25,7 @@
   --destructive-foreground: #ffffff;
   --border: #e5e7eb;
   --input: #e5e7eb;
-  --ring: #3b82f6;
+  --ring: #1e6ff5;
   --chart-1: #3b82f6;
   --chart-2: #2563eb;
   --chart-3: #1d4ed8;
@@ -53,6 +53,10 @@
   --color-border: var(--border);
   --color-text-primary: var(--foreground);
   --color-text-secondary: var(--muted-foreground);
+  /* Texte posé sur l'accent : DOIT suivre --primary-foreground, sinon un
+     preset à texte noir sur accent clair rend du blanc illisible. */
+  --color-on-primary: var(--primary-foreground);
+  --color-ring: var(--ring);
   --ion-color-primary: var(--primary);
 }
 
@@ -64,7 +68,7 @@
   --card-foreground: #e5e5e5;
   --popover: #262626;
   --popover-foreground: #e5e5e5;
-  --primary: #3b82f6;
+  --primary: #1e6ff5;
   --primary-foreground: #ffffff;
   --secondary: #262626;
   --secondary-foreground: #e5e5e5;
@@ -76,7 +80,7 @@
   --destructive-foreground: #ffffff;
   --border: #404040;
   --input: #404040;
-  --ring: #3b82f6;
+  --ring: #1e6ff5;
   --chart-1: #60a5fa;
   --chart-2: #3b82f6;
   --chart-3: #2563eb;
@@ -101,6 +105,10 @@
   --color-border: var(--border);
   --color-text-primary: var(--foreground);
   --color-text-secondary: var(--muted-foreground);
+  /* Texte posé sur l'accent : DOIT suivre --primary-foreground, sinon un
+     preset à texte noir sur accent clair rend du blanc illisible. */
+  --color-on-primary: var(--primary-foreground);
+  --color-ring: var(--ring);
   --ion-color-primary: var(--primary);
 }
 
@@ -112,7 +120,7 @@
   --card-foreground: #1e293b;
   --popover: #ffffff;
   --popover-foreground: #1e293b;
-  --primary: #6366f1;
+  --primary: #5e61f1;
   --primary-foreground: #ffffff;
   --secondary: #e5e7eb;
   --secondary-foreground: #374151;
@@ -124,7 +132,7 @@
   --destructive-foreground: #ffffff;
   --border: #d1d5db;
   --input: #d1d5db;
-  --ring: #6366f1;
+  --ring: #5e61f1;
   --chart-1: #6366f1;
   --chart-2: #4f46e5;
   --chart-3: #4338ca;
@@ -158,6 +166,10 @@
   --color-border: var(--border);
   --color-text-primary: var(--foreground);
   --color-text-secondary: var(--muted-foreground);
+  /* Texte posé sur l'accent : DOIT suivre --primary-foreground, sinon un
+     preset à texte noir sur accent clair rend du blanc illisible. */
+  --color-on-primary: var(--primary-foreground);
+  --color-ring: var(--ring);
   --ion-color-primary: var(--primary);
 }
 
@@ -206,6 +218,10 @@
   --color-border: var(--border);
   --color-text-primary: var(--foreground);
   --color-text-secondary: var(--muted-foreground);
+  /* Texte posé sur l'accent : DOIT suivre --primary-foreground, sinon un
+     preset à texte noir sur accent clair rend du blanc illisible. */
+  --color-on-primary: var(--primary-foreground);
+  --color-ring: var(--ring);
   --ion-color-primary: var(--primary);
 }
 
@@ -265,6 +281,10 @@
   --color-border: var(--border);
   --color-text-primary: var(--foreground);
   --color-text-secondary: var(--muted-foreground);
+  /* Texte posé sur l'accent : DOIT suivre --primary-foreground, sinon un
+     preset à texte noir sur accent clair rend du blanc illisible. */
+  --color-on-primary: var(--primary-foreground);
+  --color-ring: var(--ring);
   --ion-color-primary: var(--primary);
 }
 
@@ -276,7 +296,7 @@
   --card-foreground: #f0f0f0;
   --popover: #222327;
   --popover-foreground: #f0f0f0;
-  --primary: #8c5cff;
+  --primary: #8552ff;
   --primary-foreground: #ffffff;
   --secondary: #2a2c33;
   --secondary-foreground: #f0f0f0;
@@ -288,7 +308,7 @@
   --destructive-foreground: #ffffff;
   --border: #33353a;
   --input: #33353a;
-  --ring: #8c5cff;
+  --ring: #8552ff;
   --chart-1: #4ade80;
   --chart-2: #8c5cff;
   --chart-3: #fca5a5;
@@ -324,6 +344,10 @@
   --color-border: var(--border);
   --color-text-primary: var(--foreground);
   --color-text-secondary: var(--muted-foreground);
+  /* Texte posé sur l'accent : DOIT suivre --primary-foreground, sinon un
+     preset à texte noir sur accent clair rend du blanc illisible. */
+  --color-on-primary: var(--primary-foreground);
+  --color-ring: var(--ring);
   --ion-color-primary: var(--primary);
 }
 
@@ -372,6 +396,10 @@
   --color-border: var(--border);
   --color-text-primary: var(--foreground);
   --color-text-secondary: var(--muted-foreground);
+  /* Texte posé sur l'accent : DOIT suivre --primary-foreground, sinon un
+     preset à texte noir sur accent clair rend du blanc illisible. */
+  --color-on-primary: var(--primary-foreground);
+  --color-ring: var(--ring);
   --ion-color-primary: var(--primary);
 }
 
@@ -419,6 +447,10 @@
   --color-border: var(--border);
   --color-text-primary: var(--foreground);
   --color-text-secondary: var(--muted-foreground);
+  /* Texte posé sur l'accent : DOIT suivre --primary-foreground, sinon un
+     preset à texte noir sur accent clair rend du blanc illisible. */
+  --color-on-primary: var(--primary-foreground);
+  --color-ring: var(--ring);
   --ion-color-primary: var(--primary);
 }
 
@@ -430,19 +462,19 @@
   --card-foreground: #56453F;
   --popover: #FFFFFF;
   --popover-foreground: #56453F;
-  --primary: #A37764;
+  --primary: #956b58;
   --primary-foreground: #FFFFFF;
   --secondary: #BAAB92;
   --secondary-foreground: #ffffff;
   --muted: #E4C7B8;
-  --muted-foreground: #8A655A;
+  --muted-foreground: #876358;
   --accent: #E4C7B8;
   --accent-foreground: #56453F;
   --destructive: #1f1a17;
   --destructive-foreground: #FFFFFF;
   --border: #BAAB92;
   --input: #BAAB92;
-  --ring: #A37764;
+  --ring: #956b58;
   --chart-1: #A37764;
   --chart-2: #8A655A;
   --chart-3: #C39E88;
@@ -476,6 +508,10 @@
   --color-border: var(--border);
   --color-text-primary: var(--foreground);
   --color-text-secondary: var(--muted-foreground);
+  /* Texte posé sur l'accent : DOIT suivre --primary-foreground, sinon un
+     preset à texte noir sur accent clair rend du blanc illisible. */
+  --color-on-primary: var(--primary-foreground);
+  --color-ring: var(--ring);
   --ion-color-primary: var(--primary);
 }
 
@@ -524,6 +560,10 @@
   --color-border: var(--border);
   --color-text-primary: var(--foreground);
   --color-text-secondary: var(--muted-foreground);
+  /* Texte posé sur l'accent : DOIT suivre --primary-foreground, sinon un
+     preset à texte noir sur accent clair rend du blanc illisible. */
+  --color-on-primary: var(--primary-foreground);
+  --color-ring: var(--ring);
   --ion-color-primary: var(--primary);
 }
 
@@ -535,7 +575,7 @@
   --card-foreground: #3d3c4f;
   --popover: #ffffff;
   --popover-foreground: #3d3c4f;
-  --primary: #8a79ab;
+  --primary: #7a669f;
   --primary-foreground: #f8f7fa;
   --secondary: #dfd9ec;
   --secondary-foreground: #3d3c4f;
@@ -547,7 +587,7 @@
   --destructive-foreground: #f8f7fa;
   --border: #cec9d9;
   --input: #eae7f0;
-  --ring: #8a79ab;
+  --ring: #7a669f;
   --chart-1: #8a79ab;
   --chart-2: #e6a5b8;
   --chart-3: #77b8a1;
@@ -581,6 +621,10 @@
   --color-border: var(--border);
   --color-text-primary: var(--foreground);
   --color-text-secondary: var(--muted-foreground);
+  /* Texte posé sur l'accent : DOIT suivre --primary-foreground, sinon un
+     preset à texte noir sur accent clair rend du blanc illisible. */
+  --color-on-primary: var(--primary-foreground);
+  --color-ring: var(--ring);
   --ion-color-primary: var(--primary);
 }
 
@@ -628,6 +672,10 @@
   --color-border: var(--border);
   --color-text-primary: var(--foreground);
   --color-text-secondary: var(--muted-foreground);
+  /* Texte posé sur l'accent : DOIT suivre --primary-foreground, sinon un
+     preset à texte noir sur accent clair rend du blanc illisible. */
+  --color-on-primary: var(--primary-foreground);
+  --color-ring: var(--ring);
   --ion-color-primary: var(--primary);
 }
 
@@ -639,19 +687,19 @@
   --card-foreground: #5c4b3e;
   --popover: #f3ead2;
   --popover-foreground: #5c4b3e;
-  --primary: #8d9d4f;
+  --primary: #6b783c;
   --primary-foreground: #fdfbf6;
   --secondary: #decea0;
   --secondary-foreground: #5c4b3e;
   --muted: #decea0;
-  --muted-foreground: #85766a;
+  --muted-foreground: #665a51;
   --accent: #dbc894;
   --accent-foreground: #5c4b3e;
   --destructive: #d98b7e;
   --destructive-foreground: #faf8f2;
   --border: #b19681;
   --input: #dbc894;
-  --ring: #9db18c;
+  --ring: #6b783c;
   --chart-1: #9db18c;
   --chart-2: #8a9f7b;
   --chart-3: #bac9b4;
@@ -685,6 +733,10 @@
   --color-border: var(--border);
   --color-text-primary: var(--foreground);
   --color-text-secondary: var(--muted-foreground);
+  /* Texte posé sur l'accent : DOIT suivre --primary-foreground, sinon un
+     preset à texte noir sur accent clair rend du blanc illisible. */
+  --color-on-primary: var(--primary-foreground);
+  --color-ring: var(--ring);
   --ion-color-primary: var(--primary);
 }
 
@@ -701,7 +753,7 @@
   --secondary: #5a5345;
   --secondary-foreground: #ede4d4;
   --muted: #4a4439;
-  --muted-foreground: #a8a096;
+  --muted-foreground: #ada59c;
   --accent: #a18f5c;
   --accent-foreground: #2a2521;
   --destructive: #b5766a;
@@ -732,6 +784,10 @@
   --color-border: var(--border);
   --color-text-primary: var(--foreground);
   --color-text-secondary: var(--muted-foreground);
+  /* Texte posé sur l'accent : DOIT suivre --primary-foreground, sinon un
+     preset à texte noir sur accent clair rend du blanc illisible. */
+  --color-on-primary: var(--primary-foreground);
+  --color-ring: var(--ring);
   --ion-color-primary: var(--primary);
 }
 
@@ -789,6 +845,10 @@
   --color-border: var(--border);
   --color-text-primary: var(--foreground);
   --color-text-secondary: var(--muted-foreground);
+  /* Texte posé sur l'accent : DOIT suivre --primary-foreground, sinon un
+     preset à texte noir sur accent clair rend du blanc illisible. */
+  --color-on-primary: var(--primary-foreground);
+  --color-ring: var(--ring);
   --ion-color-primary: var(--primary);
 }
 
@@ -837,6 +897,10 @@
   --color-border: var(--border);
   --color-text-primary: var(--foreground);
   --color-text-secondary: var(--muted-foreground);
+  /* Texte posé sur l'accent : DOIT suivre --primary-foreground, sinon un
+     preset à texte noir sur accent clair rend du blanc illisible. */
+  --color-on-primary: var(--primary-foreground);
+  --color-ring: var(--ring);
   --ion-color-primary: var(--primary);
 }
 
@@ -848,19 +912,19 @@
   --card-foreground: #91185c;
   --popover: #fff7fc;
   --popover-foreground: #91185c;
-  --primary: #e6067a;
+  --primary: #e10677;
   --primary-foreground: #ffffff;
   --secondary: #ffd6ff;
   --secondary-foreground: #91185c;
   --muted: #ffe3f2;
-  --muted-foreground: #c04283;
+  --muted-foreground: #be3f80;
   --accent: #ffc1e3;
   --accent-foreground: #91185c;
   --destructive: #d13869;
   --destructive-foreground: #ffffff;
   --border: #ffc7e6;
   --input: #ffd6ff;
-  --ring: #e6067a;
+  --ring: #e10677;
   --chart-1: #e6067a;
   --chart-2: #c44b97;
   --chart-3: #9969b6;
@@ -894,6 +958,10 @@
   --color-border: var(--border);
   --color-text-primary: var(--foreground);
   --color-text-secondary: var(--muted-foreground);
+  /* Texte posé sur l'accent : DOIT suivre --primary-foreground, sinon un
+     preset à texte noir sur accent clair rend du blanc illisible. */
+  --color-on-primary: var(--primary-foreground);
+  --color-ring: var(--ring);
   --ion-color-primary: var(--primary);
 }
 
@@ -945,6 +1013,10 @@
   --color-border: var(--border);
   --color-text-primary: var(--foreground);
   --color-text-secondary: var(--muted-foreground);
+  /* Texte posé sur l'accent : DOIT suivre --primary-foreground, sinon un
+     preset à texte noir sur accent clair rend du blanc illisible. */
+  --color-on-primary: var(--primary-foreground);
+  --color-ring: var(--ring);
   --ion-color-primary: var(--primary);
 }
 
@@ -1002,6 +1074,10 @@
   --color-border: var(--border);
   --color-text-primary: var(--foreground);
   --color-text-secondary: var(--muted-foreground);
+  /* Texte posé sur l'accent : DOIT suivre --primary-foreground, sinon un
+     preset à texte noir sur accent clair rend du blanc illisible. */
+  --color-on-primary: var(--primary-foreground);
+  --color-ring: var(--ring);
   --ion-color-primary: var(--primary);
 }
 
@@ -1050,6 +1126,10 @@
   --color-border: var(--border);
   --color-text-primary: var(--foreground);
   --color-text-secondary: var(--muted-foreground);
+  /* Texte posé sur l'accent : DOIT suivre --primary-foreground, sinon un
+     preset à texte noir sur accent clair rend du blanc illisible. */
+  --color-on-primary: var(--primary-foreground);
+  --color-ring: var(--ring);
   --ion-color-primary: var(--primary);
 }
 
@@ -1109,6 +1189,10 @@
   --color-border: var(--border);
   --color-text-primary: var(--foreground);
   --color-text-secondary: var(--muted-foreground);
+  /* Texte posé sur l'accent : DOIT suivre --primary-foreground, sinon un
+     preset à texte noir sur accent clair rend du blanc illisible. */
+  --color-on-primary: var(--primary-foreground);
+  --color-ring: var(--ring);
   --ion-color-primary: var(--primary);
 }
 
@@ -1156,6 +1240,10 @@
   --color-border: var(--border);
   --color-text-primary: var(--foreground);
   --color-text-secondary: var(--muted-foreground);
+  /* Texte posé sur l'accent : DOIT suivre --primary-foreground, sinon un
+     preset à texte noir sur accent clair rend du blanc illisible. */
+  --color-on-primary: var(--primary-foreground);
+  --color-ring: var(--ring);
   --ion-color-primary: var(--primary);
 }
 
@@ -1172,7 +1260,7 @@
   --secondary: #E4C090;
   --secondary-foreground: #57534E;
   --muted: #F1E9DA;
-  --muted-foreground: #78716C;
+  --muted-foreground: #756e6a;
   --accent: #f2daba;
   --accent-foreground: #57534E;
   --destructive: #991B1B;
@@ -1213,6 +1301,10 @@
   --color-border: var(--border);
   --color-text-primary: var(--foreground);
   --color-text-secondary: var(--muted-foreground);
+  /* Texte posé sur l'accent : DOIT suivre --primary-foreground, sinon un
+     preset à texte noir sur accent clair rend du blanc illisible. */
+  --color-on-primary: var(--primary-foreground);
+  --color-ring: var(--ring);
   --ion-color-primary: var(--primary);
 }
 
@@ -1225,7 +1317,7 @@
   --popover: #292524;
   --popover-foreground: #F5F5F4;
   --primary: #F97316;
-  --primary-foreground: #FFFFFF;
+  --primary-foreground: #000000;
   --secondary: #57534E;
   --secondary-foreground: #E7E5E4;
   --muted: #201d1a;
@@ -1262,6 +1354,10 @@
   --color-border: var(--border);
   --color-text-primary: var(--foreground);
   --color-text-secondary: var(--muted-foreground);
+  /* Texte posé sur l'accent : DOIT suivre --primary-foreground, sinon un
+     preset à texte noir sur accent clair rend du blanc illisible. */
+  --color-on-primary: var(--primary-foreground);
+  --color-ring: var(--ring);
   --ion-color-primary: var(--primary);
 }
 
@@ -1273,19 +1369,19 @@
   --card-foreground: #374151;
   --popover: #ffffff;
   --popover-foreground: #374151;
-  --primary: #a78bfa;
+  --primary: #7e55f8;
   --primary-foreground: #ffffff;
   --secondary: #e9d8fd;
   --secondary-foreground: #4b5563;
   --muted: #f3e8ff;
-  --muted-foreground: #6b7280;
+  --muted-foreground: #69707d;
   --accent: #f3e5f5;
   --accent-foreground: #374151;
   --destructive: #fca5a5;
   --destructive-foreground: #ffffff;
   --border: #e9d8fd;
   --input: #e9d8fd;
-  --ring: #a78bfa;
+  --ring: #7e55f8;
   --chart-1: #a78bfa;
   --chart-2: #8b5cf6;
   --chart-3: #7c3aed;
@@ -1319,6 +1415,10 @@
   --color-border: var(--border);
   --color-text-primary: var(--foreground);
   --color-text-secondary: var(--muted-foreground);
+  /* Texte posé sur l'accent : DOIT suivre --primary-foreground, sinon un
+     preset à texte noir sur accent clair rend du blanc illisible. */
+  --color-on-primary: var(--primary-foreground);
+  --color-ring: var(--ring);
   --ion-color-primary: var(--primary);
 }
 
@@ -1367,6 +1467,10 @@
   --color-border: var(--border);
   --color-text-primary: var(--foreground);
   --color-text-secondary: var(--muted-foreground);
+  /* Texte posé sur l'accent : DOIT suivre --primary-foreground, sinon un
+     preset à texte noir sur accent clair rend du blanc illisible. */
+  --color-on-primary: var(--primary-foreground);
+  --color-ring: var(--ring);
   --ion-color-primary: var(--primary);
 }
 
@@ -1379,7 +1483,7 @@
   --popover: #ffffff;
   --popover-foreground: #374151;
   --primary: #22c55e;
-  --primary-foreground: #ffffff;
+  --primary-foreground: #000000;
   --secondary: #e0f2fe;
   --secondary-foreground: #4b5563;
   --muted: #f3f4f6;
@@ -1424,6 +1528,10 @@
   --color-border: var(--border);
   --color-text-primary: var(--foreground);
   --color-text-secondary: var(--muted-foreground);
+  /* Texte posé sur l'accent : DOIT suivre --primary-foreground, sinon un
+     preset à texte noir sur accent clair rend du blanc illisible. */
+  --color-on-primary: var(--primary-foreground);
+  --color-ring: var(--ring);
   --ion-color-primary: var(--primary);
 }
 
@@ -1440,7 +1548,7 @@
   --secondary: #2d3748;
   --secondary-foreground: #a1a1aa;
   --muted: #19212e;
-  --muted-foreground: #6b7280;
+  --muted-foreground: #8b919e;
   --accent: #374151;
   --accent-foreground: #a1a1aa;
   --destructive: #ef4444;
@@ -1472,6 +1580,10 @@
   --color-border: var(--border);
   --color-text-primary: var(--foreground);
   --color-text-secondary: var(--muted-foreground);
+  /* Texte posé sur l'accent : DOIT suivre --primary-foreground, sinon un
+     preset à texte noir sur accent clair rend du blanc illisible. */
+  --color-on-primary: var(--primary-foreground);
+  --color-ring: var(--ring);
   --ion-color-primary: var(--primary);
 }
 
@@ -1529,6 +1641,10 @@
   --color-border: var(--border);
   --color-text-primary: var(--foreground);
   --color-text-secondary: var(--muted-foreground);
+  /* Texte posé sur l'accent : DOIT suivre --primary-foreground, sinon un
+     preset à texte noir sur accent clair rend du blanc illisible. */
+  --color-on-primary: var(--primary-foreground);
+  --color-ring: var(--ring);
   --ion-color-primary: var(--primary);
 }
 
@@ -1577,6 +1693,10 @@
   --color-border: var(--border);
   --color-text-primary: var(--foreground);
   --color-text-secondary: var(--muted-foreground);
+  /* Texte posé sur l'accent : DOIT suivre --primary-foreground, sinon un
+     preset à texte noir sur accent clair rend du blanc illisible. */
+  --color-on-primary: var(--primary-foreground);
+  --color-ring: var(--ring);
   --ion-color-primary: var(--primary);
 }
 
@@ -1588,7 +1708,7 @@
   --card-foreground: #333333;
   --popover: #ffffff;
   --popover-foreground: #333333;
-  --primary: #34a85a;
+  --primary: #298547;
   --primary-foreground: #ffffff;
   --secondary: #6495ed;
   --secondary-foreground: #ffffff;
@@ -1600,7 +1720,7 @@
   --destructive-foreground: #ffffff;
   --border: #d4d4d4;
   --input: #d4d4d4;
-  --ring: #34a85a;
+  --ring: #298547;
   --chart-1: #34a85a;
   --chart-2: #6495ed;
   --chart-3: #66d9ef;
@@ -1628,6 +1748,10 @@
   --color-border: var(--border);
   --color-text-primary: var(--foreground);
   --color-text-secondary: var(--muted-foreground);
+  /* Texte posé sur l'accent : DOIT suivre --primary-foreground, sinon un
+     preset à texte noir sur accent clair rend du blanc illisible. */
+  --color-on-primary: var(--primary-foreground);
+  --color-ring: var(--ring);
   --ion-color-primary: var(--primary);
 }
 
@@ -1639,7 +1763,7 @@
   --card-foreground: #e5e5e5;
   --popover: #2f3436;
   --popover-foreground: #e5e5e5;
-  --primary: #34a85a;
+  --primary: #298547;
   --primary-foreground: #ffffff;
   --secondary: #4682b4;
   --secondary-foreground: #e5e5e5;
@@ -1651,7 +1775,7 @@
   --destructive-foreground: #ffffff;
   --border: #444444;
   --input: #444444;
-  --ring: #34a85a;
+  --ring: #298547;
   --chart-1: #34a85a;
   --chart-2: #4682b4;
   --chart-3: #6495ed;
@@ -1676,6 +1800,10 @@
   --color-border: var(--border);
   --color-text-primary: var(--foreground);
   --color-text-secondary: var(--muted-foreground);
+  /* Texte posé sur l'accent : DOIT suivre --primary-foreground, sinon un
+     preset à texte noir sur accent clair rend du blanc illisible. */
+  --color-on-primary: var(--primary-foreground);
+  --color-ring: var(--ring);
   --ion-color-primary: var(--primary);
 }
 
@@ -1687,7 +1815,7 @@
   --card-foreground: #4a3f35;
   --popover: #fffcf5;
   --popover-foreground: #4a3f35;
-  --primary: #a67c52;
+  --primary: #956f4a;
   --primary-foreground: #ffffff;
   --secondary: #e2d8c3;
   --secondary-foreground: #5c4d3f;
@@ -1699,7 +1827,7 @@
   --destructive-foreground: #ffffff;
   --border: #dbd0ba;
   --input: #dbd0ba;
-  --ring: #a67c52;
+  --ring: #956f4a;
   --chart-1: #a67c52;
   --chart-2: #8d6e4c;
   --chart-3: #735a3a;
@@ -1733,6 +1861,10 @@
   --color-border: var(--border);
   --color-text-primary: var(--foreground);
   --color-text-secondary: var(--muted-foreground);
+  /* Texte posé sur l'accent : DOIT suivre --primary-foreground, sinon un
+     preset à texte noir sur accent clair rend du blanc illisible. */
+  --color-on-primary: var(--primary-foreground);
+  --color-ring: var(--ring);
   --ion-color-primary: var(--primary);
 }
 
@@ -1781,6 +1913,10 @@
   --color-border: var(--border);
   --color-text-primary: var(--foreground);
   --color-text-secondary: var(--muted-foreground);
+  /* Texte posé sur l'accent : DOIT suivre --primary-foreground, sinon un
+     preset à texte noir sur accent clair rend du blanc illisible. */
+  --color-on-primary: var(--primary-foreground);
+  --color-ring: var(--ring);
   --ion-color-primary: var(--primary);
 }
 
@@ -1793,7 +1929,7 @@
   --popover: #ffffff;
   --popover-foreground: #3d3436;
   --primary: #ff7e5f;
-  --primary-foreground: #ffffff;
+  --primary-foreground: #000000;
   --secondary: #ffedea;
   --secondary-foreground: #b35340;
   --muted: #fff0eb;
@@ -1838,6 +1974,10 @@
   --color-border: var(--border);
   --color-text-primary: var(--foreground);
   --color-text-secondary: var(--muted-foreground);
+  /* Texte posé sur l'accent : DOIT suivre --primary-foreground, sinon un
+     preset à texte noir sur accent clair rend du blanc illisible. */
+  --color-on-primary: var(--primary-foreground);
+  --color-ring: var(--ring);
   --ion-color-primary: var(--primary);
 }
 
@@ -1850,7 +1990,7 @@
   --popover: #392f35;
   --popover-foreground: #f2e9e4;
   --primary: #ff7e5f;
-  --primary-foreground: #ffffff;
+  --primary-foreground: #000000;
   --secondary: #463a41;
   --secondary-foreground: #f2e9e4;
   --muted: #30272c;
@@ -1886,6 +2026,10 @@
   --color-border: var(--border);
   --color-text-primary: var(--foreground);
   --color-text-secondary: var(--muted-foreground);
+  /* Texte posé sur l'accent : DOIT suivre --primary-foreground, sinon un
+     preset à texte noir sur accent clair rend du blanc illisible. */
+  --color-on-primary: var(--primary-foreground);
+  --color-ring: var(--ring);
   --ion-color-primary: var(--primary);
 }
 
@@ -1935,6 +2079,10 @@
   --color-border: var(--border);
   --color-text-primary: var(--foreground);
   --color-text-secondary: var(--muted-foreground);
+  /* Texte posé sur l'accent : DOIT suivre --primary-foreground, sinon un
+     preset à texte noir sur accent clair rend du blanc illisible. */
+  --color-on-primary: var(--primary-foreground);
+  --color-ring: var(--ring);
   --ion-color-primary: var(--primary);
 }
 
@@ -1951,7 +2099,7 @@
   --secondary: #ffe066;
   --secondary-foreground: #23243a;
   --muted: #1d1e2f;
-  --muted-foreground: #7a88a1;
+  --muted-foreground: #808da5;
   --accent: #bccdf0;
   --accent-foreground: #181a24;
   --destructive: #a04a6c;
@@ -1983,6 +2131,10 @@
   --color-border: var(--border);
   --color-text-primary: var(--foreground);
   --color-text-secondary: var(--muted-foreground);
+  /* Texte posé sur l'accent : DOIT suivre --primary-foreground, sinon un
+     preset à texte noir sur accent clair rend du blanc illisible. */
+  --color-on-primary: var(--primary-foreground);
+  --color-ring: var(--ring);
   --ion-color-primary: var(--primary);
 }
 
@@ -2042,6 +2194,10 @@
   --color-border: var(--border);
   --color-text-primary: var(--foreground);
   --color-text-secondary: var(--muted-foreground);
+  /* Texte posé sur l'accent : DOIT suivre --primary-foreground, sinon un
+     preset à texte noir sur accent clair rend du blanc illisible. */
+  --color-on-primary: var(--primary-foreground);
+  --color-ring: var(--ring);
   --ion-color-primary: var(--primary);
 }
 
@@ -2101,6 +2257,10 @@
   --color-border: var(--border);
   --color-text-primary: var(--foreground);
   --color-text-secondary: var(--muted-foreground);
+  /* Texte posé sur l'accent : DOIT suivre --primary-foreground, sinon un
+     preset à texte noir sur accent clair rend du blanc illisible. */
+  --color-on-primary: var(--primary-foreground);
+  --color-ring: var(--ring);
   --ion-color-primary: var(--primary);
 }
 
@@ -2112,7 +2272,7 @@
   --card-foreground: #1e293b;
   --popover: #ffffff;
   --popover-foreground: #1e293b;
-  --primary: #3b82f6;
+  --primary: #1e6ff5;
   --primary-foreground: #ffffff;
   --secondary: #e5e7eb;
   --secondary-foreground: #374151;
@@ -2124,7 +2284,7 @@
   --destructive-foreground: #ffffff;
   --border: #d1d5db;
   --input: #d1d5db;
-  --ring: #3b82f6;
+  --ring: #1e6ff5;
   --chart-1: #6366f1;
   --chart-2: #4f46e5;
   --chart-3: #4338ca;
@@ -2158,6 +2318,10 @@
   --color-border: var(--border);
   --color-text-primary: var(--foreground);
   --color-text-secondary: var(--muted-foreground);
+  /* Texte posé sur l'accent : DOIT suivre --primary-foreground, sinon un
+     preset à texte noir sur accent clair rend du blanc illisible. */
+  --color-on-primary: var(--primary-foreground);
+  --color-ring: var(--ring);
   --ion-color-primary: var(--primary);
 }
 
@@ -2205,6 +2369,10 @@
   --color-border: var(--border);
   --color-text-primary: var(--foreground);
   --color-text-secondary: var(--muted-foreground);
+  /* Texte posé sur l'accent : DOIT suivre --primary-foreground, sinon un
+     preset à texte noir sur accent clair rend du blanc illisible. */
+  --color-on-primary: var(--primary-foreground);
+  --color-ring: var(--ring);
   --ion-color-primary: var(--primary);
 }
 
@@ -2262,6 +2430,10 @@
   --color-border: var(--border);
   --color-text-primary: var(--foreground);
   --color-text-secondary: var(--muted-foreground);
+  /* Texte posé sur l'accent : DOIT suivre --primary-foreground, sinon un
+     preset à texte noir sur accent clair rend du blanc illisible. */
+  --color-on-primary: var(--primary-foreground);
+  --color-ring: var(--ring);
   --ion-color-primary: var(--primary);
 }
 
@@ -2309,6 +2481,10 @@
   --color-border: var(--border);
   --color-text-primary: var(--foreground);
   --color-text-secondary: var(--muted-foreground);
+  /* Texte posé sur l'accent : DOIT suivre --primary-foreground, sinon un
+     preset à texte noir sur accent clair rend du blanc illisible. */
+  --color-on-primary: var(--primary-foreground);
+  --color-ring: var(--ring);
   --ion-color-primary: var(--primary);
 }
 
@@ -2321,7 +2497,7 @@
   --popover: #fffcf5;
   --popover-foreground: #4a3f35;
   --primary: #ff7e5f;
-  --primary-foreground: #ffffff;
+  --primary-foreground: #000000;
   --secondary: #f3f4f6;
   --secondary-foreground: #5c4d3f;
   --muted: #ece5d8;
@@ -2366,6 +2542,10 @@
   --color-border: var(--border);
   --color-text-primary: var(--foreground);
   --color-text-secondary: var(--muted-foreground);
+  /* Texte posé sur l'accent : DOIT suivre --primary-foreground, sinon un
+     preset à texte noir sur accent clair rend du blanc illisible. */
+  --color-on-primary: var(--primary-foreground);
+  --color-ring: var(--ring);
   --ion-color-primary: var(--primary);
 }
 
@@ -2413,6 +2593,10 @@
   --color-border: var(--border);
   --color-text-primary: var(--foreground);
   --color-text-secondary: var(--muted-foreground);
+  /* Texte posé sur l'accent : DOIT suivre --primary-foreground, sinon un
+     preset à texte noir sur accent clair rend du blanc illisible. */
+  --color-on-primary: var(--primary-foreground);
+  --color-ring: var(--ring);
   --ion-color-primary: var(--primary);
 }
 
@@ -2429,7 +2613,7 @@
   --secondary: #e9d8fd;
   --secondary-foreground: #4b5563;
   --muted: #f3e8ff;
-  --muted-foreground: #6b7280;
+  --muted-foreground: #69707d;
   --accent: #f59e0b;
   --accent-foreground: #374151;
   --destructive: #fca5a5;
@@ -2470,6 +2654,10 @@
   --color-border: var(--border);
   --color-text-primary: var(--foreground);
   --color-text-secondary: var(--muted-foreground);
+  /* Texte posé sur l'accent : DOIT suivre --primary-foreground, sinon un
+     preset à texte noir sur accent clair rend du blanc illisible. */
+  --color-on-primary: var(--primary-foreground);
+  --color-ring: var(--ring);
   --ion-color-primary: var(--primary);
 }
 
@@ -2517,6 +2705,10 @@
   --color-border: var(--border);
   --color-text-primary: var(--foreground);
   --color-text-secondary: var(--muted-foreground);
+  /* Texte posé sur l'accent : DOIT suivre --primary-foreground, sinon un
+     preset à texte noir sur accent clair rend du blanc illisible. */
+  --color-on-primary: var(--primary-foreground);
+  --color-ring: var(--ring);
   --ion-color-primary: var(--primary);
 }
 
@@ -2574,6 +2766,10 @@
   --color-border: var(--border);
   --color-text-primary: var(--foreground);
   --color-text-secondary: var(--muted-foreground);
+  /* Texte posé sur l'accent : DOIT suivre --primary-foreground, sinon un
+     preset à texte noir sur accent clair rend du blanc illisible. */
+  --color-on-primary: var(--primary-foreground);
+  --color-ring: var(--ring);
   --ion-color-primary: var(--primary);
 }
 
@@ -2621,5 +2817,9 @@
   --color-border: var(--border);
   --color-text-primary: var(--foreground);
   --color-text-secondary: var(--muted-foreground);
+  /* Texte posé sur l'accent : DOIT suivre --primary-foreground, sinon un
+     preset à texte noir sur accent clair rend du blanc illisible. */
+  --color-on-primary: var(--primary-foreground);
+  --color-ring: var(--ring);
   --ion-color-primary: var(--primary);
 }

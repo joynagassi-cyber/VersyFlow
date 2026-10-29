@@ -63,7 +63,7 @@ export default function FlashcardScreen() {
         <div className="flex gap-3">
           <button
             onClick={() => setRevealed((r) => Math.min(words.length, r + 1))}
-            className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-primary py-3 font-bold text-white active:scale-[0.99]"
+            className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-primary py-3 font-bold text-on-primary active:scale-[0.99]"
           >
             <Eye size={18} />
             {t('memory.reveal', 'Reveler')}

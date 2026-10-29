@@ -44,12 +44,33 @@ export async function extractImageAccent(
 }
 
 /** Load an <img> element with a decode (waits until pixels are usable). */
+/** Au-delà de ce délai, on considère l'image indisponible et on garde le thème. */
+const IMAGE_TIMEOUT_MS = 4000;
+
 function loadImage(src: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
+    // Une image qui ne déclenche ni `load` ni `error` (réseau suspendu, data
+    // URI tronquée, onglet en veille) ne doit pas bloquer le thème pour
+    // toujours : sans ce garde-fou, l'accent resterait figé et la promesse
+    // pendante à chaque rendu.
+    let settled = false;
+    const timer = setTimeout(() => {
+      if (settled) return;
+      settled = true;
+      reject(new Error('image-accent: délai dépassé'));
+    }, IMAGE_TIMEOUT_MS);
+
+    const done = (fn: () => void) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      fn();
+    };
+
     const img = new Image();
     img.crossOrigin = 'anonymous';
-    img.onload = () => img.decode().then(() => resolve(img)).catch(reject);
-    img.onerror = reject;
+    img.onload = () => img.decode().then(() => done(() => resolve(img))).catch((error) => done(() => reject(error)));
+    img.onerror = () => done(() => reject(new Error('image-accent: chargement impossible')));
     img.src = src;
   });
 }

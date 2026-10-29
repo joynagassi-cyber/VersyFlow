@@ -83,7 +83,7 @@ export default function OnboardingSessionConfig() {
           <div
             className={cn(
               'flex h-12 w-12 shrink-0 items-center justify-center rounded-full',
-              focusMode ? 'bg-primary text-white' : 'bg-surface-tint text-primary',
+              focusMode ? 'bg-primary text-on-primary' : 'bg-surface-tint text-primary',
             )}
           >
             <Focus size={22} />

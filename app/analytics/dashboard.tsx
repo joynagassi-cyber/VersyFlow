@@ -76,7 +76,7 @@ export default function AnalyticsDashboardScreen() {
         {/* Stats */}
         <div className="grid grid-cols-2 gap-3">
           <div className="col-span-2 flex items-center gap-4 rounded-3xl bg-surface p-4 shadow-sm">
-            <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary text-white">
+            <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary text-on-primary">
               <BookOpen size={22} />
             </span>
             <div>

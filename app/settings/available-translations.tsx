@@ -217,7 +217,7 @@ export default function AvailableTranslationsScreen() {
           <span
             className={cn(
               'flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl',
-              isActive ? 'bg-primary text-white' : 'bg-surface-tint text-primary',
+              isActive ? 'bg-primary text-on-primary' : 'bg-surface-tint text-primary',
             )}
           >
             <BookOpen size={20} />
@@ -231,7 +231,7 @@ export default function AvailableTranslationsScreen() {
                 )}
               </p>
               {isActive && (
-                <span className="rounded-full bg-primary px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white">
+                <span className="rounded-full bg-primary px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-on-primary">
                   {t('common.active', 'Active')}
                 </span>
               )}
@@ -321,7 +321,7 @@ export default function AvailableTranslationsScreen() {
               onClick={() => void handleSelect(entry.id)}
               className={cn(
                 'flex h-10 shrink-0 items-center gap-2 rounded-full px-4 text-sm font-semibold transition active:scale-95',
-                isActive ? 'bg-primary text-white' : 'bg-surface-tint text-primary',
+                isActive ? 'bg-primary text-on-primary' : 'bg-surface-tint text-primary',
               )}
             >
               <Check size={16} />
@@ -330,7 +330,7 @@ export default function AvailableTranslationsScreen() {
           ) : (
             <button
               onClick={() => void handleDownload(entry.id)}
-              className="flex h-10 shrink-0 items-center gap-2 rounded-full bg-primary px-4 text-sm font-semibold text-white shadow-sm transition active:scale-95"
+              className="flex h-10 shrink-0 items-center gap-2 rounded-full bg-primary px-4 text-sm font-semibold text-on-primary shadow-sm transition active:scale-95"
             >
               <Download size={16} />
               {t('common.download', 'Télécharger')}

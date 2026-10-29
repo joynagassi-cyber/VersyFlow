@@ -301,7 +301,7 @@ export default function BibleExplorerScreen() {
                 {status !== 'downloading' && (
                   <button
                     onClick={handleDownload}
-                    className="shrink-0 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-white shadow-sm"
+                    className="shrink-0 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-on-primary shadow-sm"
                   >
                     {status === 'error'
                       ? t('common.retry', 'Réessayer')

@@ -154,6 +154,10 @@ const BRIDGE = `  --color-background: var(--background);
   --color-border: var(--border);
   --color-text-primary: var(--foreground);
   --color-text-secondary: var(--muted-foreground);
+  /* Texte posé sur l'accent : DOIT suivre --primary-foreground, sinon un
+     preset à texte noir sur accent clair rend du blanc illisible. */
+  --color-on-primary: var(--primary-foreground);
+  --color-ring: var(--ring);
   --ion-color-primary: var(--primary);`;
 
 async function main() {
@@ -280,6 +284,9 @@ async function main() {
   console.log('[gradients] métadonnées → src/theme/tweakcn-presets.ts');
 }
 
+// IMPORTANT : après régénération, lancer `node scripts/apply-preset-contrast.mjs`.
+// Les palettes officielles verbatim échouent AA sur le texte posé sur --primary
+// pour 17 des 25 presets ; la normalisation est déterministe et idempotente.
 main().catch((e) => {
   console.error('[import-official-themes] ÉCHEC :', e.message);
   process.exit(1);

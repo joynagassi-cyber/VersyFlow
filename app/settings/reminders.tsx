@@ -92,7 +92,7 @@ export default function SettingsRemindersScreen() {
           <div
             className={cn(
               'flex h-12 w-12 shrink-0 items-center justify-center rounded-full',
-              reminderEnabled ? 'bg-primary text-white' : 'bg-surface-tint text-primary',
+              reminderEnabled ? 'bg-primary text-on-primary' : 'bg-surface-tint text-primary',
             )}
           >
             {reminderEnabled ? <BellRing size={22} /> : <Bell size={22} />}

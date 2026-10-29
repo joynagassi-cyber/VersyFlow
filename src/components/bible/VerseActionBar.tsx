@@ -366,7 +366,7 @@ export default function VerseActionBar({
                 <button
                   onClick={() => void tagVerse()}
                   disabled={tagSaving}
-                  className="rounded-full bg-primary px-4 py-2 text-xs font-semibold text-white shadow-sm disabled:opacity-50"
+                  className="rounded-full bg-primary px-4 py-2 text-xs font-semibold text-on-primary shadow-sm disabled:opacity-50"
                 >
                   {tagSaving ? t('common.saving', 'Enregistrement…') : t('common.save', 'Enregistrer')}
                 </button>
@@ -407,7 +407,7 @@ export default function VerseActionBar({
               </button>
               <button
                 onClick={() => void saveNote()}
-                className="rounded-full bg-primary px-4 py-2 text-xs font-semibold text-white shadow-sm"
+                className="rounded-full bg-primary px-4 py-2 text-xs font-semibold text-on-primary shadow-sm"
               >
                 {t('common.save', 'Enregistrer')}
               </button>

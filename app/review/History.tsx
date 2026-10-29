@@ -62,7 +62,7 @@ function ratingConfig(rating: Rating | string) {
     case Rating.EASY:
       return { cls: 'bg-info text-white', label: 'Facile', Icon: CheckCircle2 };
     default:
-      return { cls: 'bg-primary text-white', label: 'Bon', Icon: CheckCircle2 };
+      return { cls: 'bg-primary text-on-primary', label: 'Bon', Icon: CheckCircle2 };
   }
 }
 
@@ -281,7 +281,7 @@ export default function ReviewHistoryScreen() {
           </h2>
           <div className="grid grid-cols-2 gap-3">
             <div className="col-span-2 flex items-center gap-3 rounded-2xl bg-surface p-4 shadow-sm">
-              <span className="flex h-11 w-11 items-center justify-center rounded-full bg-primary text-white">
+              <span className="flex h-11 w-11 items-center justify-center rounded-full bg-primary text-on-primary">
                 <TrendingUp size={20} />
               </span>
               <div>

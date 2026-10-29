@@ -67,7 +67,7 @@ export function QuickDock() {
         <button
           onClick={() => setOpen(true)}
           aria-label={t('dock.open', 'Ouvrir les raccourcis')}
-          className="pointer-events-auto h-[5px] w-32 rounded-full bg-white shadow-md transition-transform active:scale-95"
+          className="pointer-events-auto h-[5px] w-32 rounded-full bg-surface shadow-md transition-transform active:scale-95"
         />
       </div>
 

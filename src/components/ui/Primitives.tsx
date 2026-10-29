@@ -936,8 +936,8 @@ export const Alert = Object.assign(
         'z-index:9999',
         'min-width:240px',
         'max-width:80vw',
-        'background:rgba(30,30,30,0.95)',
-        'color:#fff',
+        'background:color-mix(in srgb, var(--color-text-primary, #1e1e1e) 95%, transparent)',
+        'color:var(--color-surface, #fff)',
         'font-size:14px',
         'font-family:system-ui,sans-serif',
         'border-radius:12px',
@@ -966,9 +966,9 @@ export const Alert = Object.assign(
           b.style.cssText = [
             'padding:6px 14px',
             'border-radius:8px',
-            'border:1px solid rgba(255,255,255,0.25)',
-            'background:rgba(255,255,255,0.1)',
-            'color:#fff',
+            'border:1px solid color-mix(in srgb, var(--color-surface, #fff) 25%, transparent)',
+            'background:color-mix(in srgb, var(--color-surface, #fff) 10%, transparent)',
+            'color:var(--color-surface, #fff)',
             'font-size:13px',
             'cursor:pointer',
           ].join(';');

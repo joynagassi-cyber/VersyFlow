@@ -652,18 +652,34 @@ html[data-theme-image='on'] body {
 
 /* Accent dynamique : variables enregistrées pour un fondu de 0,8 s quand
    l'accent extrait de l'image de fond change. */
-@property --primary { syntax: '<color>'; inherits: true; initial-value: #000000; }
-@property --ring { syntax: '<color>'; inherits: true; initial-value: #000000; }
-@property --accent { syntax: '<color>'; inherits: true; initial-value: #000000; }
-@property --tint { syntax: '<color>'; inherits: true; initial-value: #000000; }
+/* Les valeurs initiales sont les couleurs du preset par défaut (quantum-rose),
+   JAMAIS du noir : un jeton non encore écrit doit ressembler au produit, pas
+   faire clignoter l'interface en noir au premier rendu. */
+@property --primary { syntax: '<color>'; inherits: true; initial-value: #e10677; }
+@property --ring { syntax: '<color>'; inherits: true; initial-value: #e10677; }
+@property --accent { syntax: '<color>'; inherits: true; initial-value: #ffc1e3; }
+@property --tint { syntax: '<color>'; inherits: true; initial-value: #e10677; }
+
+/* Socle : les jetons shadcn existent AVANT qu'un preset soit appliqué.
+   Sans ce bloc, --accent/--tint valaient noir tant que React n'avait pas posé
+   data-preset. Les règles [data-preset] restent prioritaires. */
+:root {
+  --primary: #e10677;
+  --primary-foreground: #ffffff;
+  --ring: #e10677;
+  --accent: #ffc1e3;
+  --tint: #e10677;
+  --color-on-primary: #ffffff;
+}
 @property --app-bg-image { syntax: '*'; inherits: false; initial-value: none; }
 
 :root {
+  /* Un changement de thème est un fondu, pas un saut. */
   transition:
-    --primary 0.8s ease,
-    --ring 0.8s ease,
-    --accent 0.8s ease,
-    --tint 0.8s ease;
+    --primary 0.8s cubic-bezier(0.22, 0.61, 0.36, 1),
+    --ring 0.8s cubic-bezier(0.22, 0.61, 0.36, 1),
+    --accent 0.8s cubic-bezier(0.22, 0.61, 0.36, 1),
+    --tint 0.8s cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 
 /* Carte verre dépoli teinté : fond carte translucide (40 %) + voile de la
@@ -676,6 +692,17 @@ html[data-theme-image='on'] body {
   backdrop-filter: blur(40px);
   border: 1px solid var(--color-border);
   border-radius: 1.5rem;
+}
+
+/* Recette de verre — écrite UNE fois, consommée par les surfaces de carte.
+   40 % de la carte + 40 px de flou + un voile de teinte posé en
+   background-image (jamais en background-color, sinon il écrase la carte). */
+.surface-glass {
+  @apply bg-card/40 backdrop-blur-2xl;
+  background-image: linear-gradient(
+    color-mix(in srgb, var(--tint) 22%, transparent),
+    color-mix(in srgb, var(--tint) 22%, transparent)
+  );
 }
 
 /* Quand un fond personnalisé est actif (dégradé ou image), les toiles des
@@ -791,4 +818,33 @@ html[data-theme-image='on'] [class*='bg-background'] {
   .screen-column-narrow {
     max-width: var(--reading-width);
   }
+}
+
+
+/* ==================================================================
+ * États d'accessibilité globaux — le verre est un confort, jamais une
+ * condition de lisibilité. Posés sur <html> par ThemeManager.
+ * ================================================================== */
+:root[data-transparency='reduced'] .surface-glass,
+:root[data-contrast='high'] .surface-glass,
+:root[data-transparency='reduced'] .card-glass,
+:root[data-contrast='high'] .card-glass {
+  background: var(--color-surface);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  border-color: var(--color-text-primary);
+}
+
+html[data-transparency='reduced']::before,
+html[data-contrast='high']::before {
+  opacity: 0.35;
+}
+
+:root[data-contrast='high'] {
+  --color-border: var(--color-text-primary);
+}
+
+:root[data-contrast='high'] :where(a, button, [role='button']):focus-visible {
+  outline: 3px solid var(--color-text-primary);
+  outline-offset: 2px;
 }

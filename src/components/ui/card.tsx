@@ -9,7 +9,7 @@ interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
 
 const variantClasses: Record<CardVariant, string> = {
   surface: 'bg-surface shadow-md',
-  hero: 'bg-primary text-white shadow',
+  hero: 'bg-primary text-on-primary shadow',
   tint: 'bg-surface-tint shadow-sm',
 };
 

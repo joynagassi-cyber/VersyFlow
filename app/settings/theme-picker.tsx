@@ -50,7 +50,7 @@ export default function ThemePickerScreen() {
               )}
             >
               <span className="flex items-center gap-2">
-                <span className="h-6 w-6 rounded-full bg-white shadow-sm" />
+                <span className="h-6 w-6 rounded-full bg-surface shadow-sm ring-1 ring-border" />
                 <span className="text-sm font-medium text-text-primary">
                   {t('settings.themeWhite', 'Blanc pur #FFFFFF')}
                 </span>
@@ -81,7 +81,7 @@ export default function ThemePickerScreen() {
         {THEME_CATEGORIES.map((cat) => {
           const open = expanded === cat.id;
           return (
-            <section key={cat.id} className="mb-3 rounded-2xl bg-surface shadow-sm">
+            <section key={cat.id} className="surface-glass mb-3 rounded-2xl">
               <button
                 type="button"
                 onClick={() => setExpanded(open ? null : cat.id)}
@@ -110,7 +110,7 @@ export default function ThemePickerScreen() {
                           src={themeLandscapeUrl(entry.id)}
                           alt={entry.name}
                           loading="lazy"
-                          className="aspect-[3/2] w-full rounded-lg bg-white object-cover"
+                          className="aspect-[3/2] w-full rounded-lg bg-surface-2 object-cover"
                         />
                         <div className="mt-1.5 flex items-center gap-1.5">
                           <span
@@ -121,7 +121,7 @@ export default function ThemePickerScreen() {
                             {entry.name}
                           </span>
                           {active && (
-                            <span className="ml-auto flex h-5 w-5 items-center justify-center rounded-full bg-primary text-white">
+                            <span className="ml-auto flex h-5 w-5 items-center justify-center rounded-full bg-primary text-on-primary">
                               <Check size={11} />
                             </span>
                           )}

@@ -321,7 +321,7 @@ export default function MemorizationSession() {
           [
             { rating: Rating.AGAIN, label: t('session.ratingAgain', 'À revoir'), cls: 'bg-error-light text-error' },
             { rating: Rating.HARD, label: t('session.ratingHard', 'Difficile'), cls: 'bg-warning-light text-warning' },
-            { rating: Rating.GOOD, label: t('session.ratingGood', 'Bon'), cls: 'bg-primary text-white' },
+            { rating: Rating.GOOD, label: t('session.ratingGood', 'Bon'), cls: 'bg-primary text-on-primary' },
             { rating: Rating.EASY, label: t('session.ratingEasy', 'Facile'), cls: 'bg-success-light text-success' },
           ] as const
         ).map(({ rating, label, cls }) => (
