@@ -12,7 +12,7 @@
  *    appearance store's bibleFont* fields, and lazy-loads the chosen
  *    @fontsource family so the webfont is only fetched when selected.
  */
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useAppearanceStore } from '@/store/appearance-store';
 import { useTheme } from '@/theme/useTheme';
 import { applyAccentPreset, clearAccentPreset } from '@/theme/theme-presets';
@@ -36,6 +36,16 @@ export function ThemeManager() {
   const bibleLetterSpacing = useAppearanceStore((s) => s.bibleLetterSpacing);
   const bibleLineLength = useAppearanceStore((s) => s.bibleLineLength);
   const theme = useTheme();
+  // Re-applique le fond image quand le viewport traverse le seuil desktop
+  // (portrait mobile <-> paysage large), p.ex. rotation ou redimensionnement.
+  const [viewportWide, setViewportWide] = useState<boolean>(
+    () => typeof window !== 'undefined' && window.innerWidth >= 1024,
+  );
+  useEffect(() => {
+    const onResize = () => setViewportWide(window.innerWidth >= 1024);
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
 
   // Follow a manual override; for 'system' the useTheme hook tracks the OS.
   useEffect(() => {
@@ -68,7 +78,7 @@ export function ThemeManager() {
     if (backgroundType === 'image' && colorThemeId) {
       applyAccentPreset(accent, theme.isDark, colorThemeId);
     }
-  }, [accent, colorThemeId, presetId, backgroundType, gradientId, theme.isDark, theme]);
+  }, [accent, colorThemeId, presetId, backgroundType, gradientId, theme.isDark, theme, viewportWide]);
 
   // Bible reading typography: lazy-load the chosen webfont (offline-first,
   // only on selection change) and write the live --reading-* vars so the

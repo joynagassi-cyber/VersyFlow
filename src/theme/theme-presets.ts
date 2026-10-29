@@ -1,7 +1,7 @@
 /** Identifiant d'accent libre (preset tweakcn ou thème image). */
 export type AccentKey = string & {};
 
-import { findThemeById as catalogFindThemeById, themePortraitUrl, type ThemeCatalogEntry } from './theme-catalog';
+import { findThemeById as catalogFindThemeById, themePortraitUrl, themeLandscapeUrl, type ThemeCatalogEntry } from './theme-catalog';
 import { extractImageAccent } from './image-accent';
 import { useAppearanceStore } from '@/store/appearance-store';
 
@@ -116,7 +116,9 @@ function setAccentVars(
  * public/themes/{category}/{id}-portrait.png.
  */
 export function themeImagePath(id: string): string {
-  return themePortraitUrl(id);
+  // Mobile (< 1024 px) : artwork portrait. Desktop/web : artwork paysage large.
+  const wide = typeof window !== 'undefined' && window.innerWidth >= 1024;
+  return wide ? themeLandscapeUrl(id) : themePortraitUrl(id);
 }
 
 export function clearAccentPreset(): void {
