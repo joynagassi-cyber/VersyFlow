@@ -216,7 +216,7 @@ export default function MemorizationSession() {
     return (
       <FullScreenPage title={t('session.memorizing', 'Mémorisation')} backPath="/tabs/home" showBack={false}>
         <div className="flex flex-col items-center justify-center py-24">
-          <Loader2 size={36} className="animate-spin text-primary" />
+          <div className="w-full max-w-md animate-pulse space-y-3 px-6" aria-hidden><div className="h-4 w-2/5 rounded-full bg-surface-tint" /><div className="h-24 rounded-3xl bg-surface-tint" /><div className="h-24 rounded-3xl bg-surface-tint" /></div>
           {downloadPercent !== null ? (
             <>
               <p className="mt-3 text-sm font-semibold text-text-primary">

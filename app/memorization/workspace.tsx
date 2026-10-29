@@ -195,7 +195,7 @@ export default function MemorizationWorkspace() {
         <div className="flex-1 overflow-y-auto px-4 pb-40">
           {status === 'loading' && (
             <div className="flex flex-col items-center py-16">
-              <Loader2 size={28} className="animate-spin text-primary" />
+              <div className="w-full max-w-md animate-pulse space-y-3 px-6" aria-hidden><div className="h-4 w-2/5 rounded-full bg-surface-tint" /><div className="h-24 rounded-3xl bg-surface-tint" /><div className="h-24 rounded-3xl bg-surface-tint" /></div>
               <p className="mt-3 text-sm text-text-tertiary">
                 {t('workspace.loading', 'Chargement du verset...')}
               </p>

@@ -158,7 +158,7 @@ export default function ReviewHistoryScreen() {
     return (
       <FullScreenPage title={t('nav.history', 'Historique')} showBack>
         <div className="flex min-h-[50vh] flex-col items-center justify-center gap-3">
-          <Loader2 size={28} className="animate-spin text-primary" />
+          <div className="w-full max-w-md animate-pulse space-y-3 px-6" aria-hidden><div className="h-4 w-2/5 rounded-full bg-surface-tint" /><div className="h-24 rounded-3xl bg-surface-tint" /><div className="h-24 rounded-3xl bg-surface-tint" /></div>
           <p className="text-sm text-text-muted">{t('common.loading', 'Chargement...')}</p>
         </div>
       </FullScreenPage>

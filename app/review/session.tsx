@@ -220,7 +220,7 @@ export default function ReviewSessionScreen() {
     return (
       <FullScreenPage title={t('review.startReview', 'Révision')} backPath="/review/queue">
         <div className="flex flex-col items-center py-24">
-          <Loader2 size={32} className="animate-spin text-primary" />
+          <div className="w-full max-w-md animate-pulse space-y-3 px-6" aria-hidden><div className="h-4 w-2/5 rounded-full bg-surface-tint" /><div className="h-24 rounded-3xl bg-surface-tint" /><div className="h-24 rounded-3xl bg-surface-tint" /></div>
           <p className="mt-4 text-sm text-text-muted">
             {t('common.loading', 'Chargement de la session...')}
           </p>

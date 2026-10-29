@@ -428,29 +428,75 @@ function BootSplash() {
 }
 
 /**
- * Indicateur de navigation : NE DOIT JAMAIS ressembler à un redémarrage.
- * Petit anneau discret, aucun texte, aucun écran plein.
+ * Précharge TOUTES les pages paresseuses après le premier rendu (au repos,
+ * dans l'ordre) : chaque chunk est déjà en cache quand l'utilisateur
+ * navigue, donc aucun écran d'attente n'apparaît lors des transitions.
  */
-function RouteLoader() {
-  return (
-    <div className="flex h-full items-center justify-center" aria-label="Chargement">
-      <div className="h-8 w-8 animate-spin rounded-full border-[3px] border-[var(--color-border)] border-t-[var(--color-primary)]" />
-    </div>
-  );
-}
-
-/** Précharge les pages principales après le premier rendu : les
- *  navigations deviennent instantanées, le fallback ne s'affiche plus. */
-function preloadMainPages() {
+function preloadAllPages() {
   const load = () => {
-    void import('../app/(tabs)/index');
+    void import('../app/(tabs)/_layout');
+    void import('../app/(tabs)/auth');
+    void import('../app/(tabs)/auth/login');
+    void import('../app/(tabs)/auth/signup');
     void import('../app/(tabs)/explore');
+    void import('../app/(tabs)/index');
     void import('../app/(tabs)/progress');
     void import('../app/(tabs)/settings');
-    void import('../app/onboarding/welcome');
+    void import('../app/+not-found');
+    void import('../app/achievements/index');
+    void import('../app/analytics/dashboard');
+    void import('../app/bible/book');
+    void import('../app/bible/chapter');
     void import('../app/bible/explorer');
-    void import('../app/review/queue');
+    void import('../app/collections/index');
+    void import('../app/comparison/result');
+    void import('../app/comparison/translation');
+    void import('../app/family/home');
+    void import('../app/family/invite');
+    void import('../app/family/join');
+    void import('../app/family/members');
+    void import('../app/mastery/index');
+    void import('../app/memorization/confirm');
+    void import('../app/memorization/flashcard');
     void import('../app/memorization/session');
+    void import('../app/memorization/workspace');
+    void import('../app/memory/flashcard');
+    void import('../app/memory/recall-writing');
+    void import('../app/memory/start');
+    void import('../app/notifications');
+    void import('../app/onboarding/_layout');
+    void import('../app/onboarding/fsrs-introduction');
+    void import('../app/onboarding/language-select');
+    void import('../app/onboarding/reminder-config');
+    void import('../app/onboarding/session-config');
+    void import('../app/onboarding/translation-select');
+    void import('../app/onboarding/welcome');
+    void import('../app/profile/create');
+    void import('../app/profile/index');
+    void import('../app/profile/select');
+    void import('../app/review/History');
+    void import('../app/review/calendar');
+    void import('../app/review/queue');
+    void import('../app/review/session');
+    void import('../app/review/summary');
+    void import('../app/search/index');
+    void import('../app/semantic/community');
+    void import('../app/semantic/concept');
+    void import('../app/semantic/index');
+    void import('../app/semantic/verse');
+    void import('../app/settings/about');
+    void import('../app/settings/appearance');
+    void import('../app/settings/available-translations');
+    void import('../app/settings/backup');
+    void import('../app/settings/data');
+    void import('../app/settings/index');
+    void import('../app/settings/languages');
+    void import('../app/settings/navigation');
+    void import('../app/settings/privacy');
+    void import('../app/settings/reminders');
+    void import('../app/settings/session');
+    void import('../app/settings/theme-picker');
+    void import('../app/splash');
   };
   if (typeof requestIdleCallback === 'function') requestIdleCallback(load);
   else setTimeout(load, 600);
@@ -462,12 +508,12 @@ function renderApp() {
   rendered = true;
   root.render(
     <I18nextProvider i18n={i18next}>
-      <Suspense fallback={<RouteLoader />}>
+      <Suspense fallback={null}>
         <App />
       </Suspense>
     </I18nextProvider>,
   );
-  preloadMainPages();
+  preloadAllPages();
 }
 
 // Ne jamais rester sur un écran blanc : si l'initialisation (i18n, stores,
