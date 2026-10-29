@@ -165,6 +165,21 @@
   html[data-theme='dark'][data-theme-image='on']::before {
     filter: blur(32px) invert(0.85) hue-rotate(180deg);
   }
+  /*
+   * Desktop/web (>= 1024 px) : le fond servi est la composition PAYSAGE
+   * large (16:9) dessinée pour cet écran, pas le portrait mobile recadré.
+   * Le flou est donc réduit pour laisser lire la composition, et le
+   * scale-up est plus discret puisque l'image couvre déjà le viewport.
+   */
+  @media (min-width: 1024px) {
+    html::before {
+      filter: blur(22px);
+      transform: scale(1.06);
+    }
+    html[data-theme='dark'][data-theme-image='on']::before {
+      filter: blur(22px) invert(0.85) hue-rotate(180deg);
+    }
+  }
 }
 
 /* Brand utility layer */
