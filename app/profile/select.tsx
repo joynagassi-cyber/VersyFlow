@@ -58,7 +58,7 @@ export default function ProfileSelectionScreen() {
                   active && 'ring-2 ring-primary',
                 )}
               >
-                <span className="flex h-12 w-12 items-center justify-center rounded-full gradient-hero text-xl font-bold text-white">
+                <span className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-xl font-bold text-white">
                   {(profile.displayName || '?').charAt(0).toUpperCase()}
                 </span>
                 <span className="flex-1">

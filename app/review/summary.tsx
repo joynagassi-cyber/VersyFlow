@@ -71,7 +71,7 @@ export default function ReviewSummaryScreen() {
   return (
     <FullScreenPage title={t('review.summary', 'Résumé de session')} backPath="/review/queue">
       {/* Streak hero */}
-      <div className="mb-5 flex flex-col items-center rounded-2xl bg-primary p-6 text-white shadow-rose">
+      <div className="mb-5 flex flex-col items-center rounded-2xl bg-primary p-6 text-white shadow">
         <span className="flex items-center gap-1.5 text-sm text-white/90">
           <Flame size={16} />
           {t('progress.streak', 'Série quotidienne')} 🔥

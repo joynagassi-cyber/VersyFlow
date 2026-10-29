@@ -139,7 +139,7 @@ export default function MasteryScreen() {
     <FullScreenPage title={t('nav.mastery', 'Maitrise')} showBack>
       <div className="mx-auto max-w-md space-y-6">
         {/* Level hero */}
-        <div className="gradient-hero glow-primary rounded-3xl p-6 text-center text-white">
+        <div className="bg-primary rounded-3xl p-6 text-center text-white">
           <span className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-white/20">
             <CurrentIcon size={40} />
           </span>

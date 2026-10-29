@@ -32,7 +32,7 @@ export default function WelcomeScreen() {
         <div className="mb-6 mt-4 flex h-28 w-28 items-center justify-center">
           <Logo size={116} />
         </div>
-        <h1 className="text-gradient-hero text-4xl font-extrabold tracking-tight">
+        <h1 className="text-primary text-4xl font-extrabold tracking-tight">
           {t('common.appName', 'VersyFlow')}
         </h1>
         <p className="mt-3 text-base text-text-tertiary">

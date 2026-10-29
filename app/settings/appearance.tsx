@@ -379,7 +379,7 @@ export default function AppearanceScreen() {
                   onClick={() => setFontSize(size)}
                   className={cn(
                     'flex-1 rounded-xl py-2.5 text-sm font-semibold transition',
-                    active ? 'gradient-hero text-white' : 'bg-surface-tint text-text-primary',
+                    active ? 'bg-primary text-white' : 'bg-surface-tint text-text-primary',
                   )}
                 >
                   {size}

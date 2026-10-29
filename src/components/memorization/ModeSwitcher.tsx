@@ -9,8 +9,8 @@
  * `<`/`>` toggle (or chevron) collapses the bar to a single-button
  * state when the user wants minimal chrome.
  *
- * Premium design: floating pill with layered shadows (.mw-switcher /
- * .mw-switcher-pill), springy active state, and a "PROCHAIN" badge on
+ * Premium design: floating pill with layered shadows (.mem-switcher /
+ * .mem-switcher-pill), springy active state, and a "PROCHAIN" badge on
  * the recommended next mode.
  */
 
@@ -51,8 +51,8 @@ export function ModeSwitcher({
   const visibleModes = showAll ? MODES : [MODES.find((m) => m.id === active)!];
 
   return (
-    <div className="mw-switcher">
-      <div className="mw-switcher-pill">
+    <div className="mem-switcher">
+      <div className="mem-switcher-pill">
         {visibleModes.map((mode) => {
           const isActive = active === mode.id;
           const isRecommended = recommendedNext === mode.id && !isActive;

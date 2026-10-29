@@ -31,7 +31,7 @@ export default function TabLayout() {
             </button>
             <div className="flex items-center gap-2">
               <Logo size={24} />
-              <span className="text-gradient-hero text-base font-extrabold">VersyFlow</span>
+              <span className="text-primary text-base font-extrabold">VersyFlow</span>
             </div>
             <div className="flex w-12 items-center justify-end">
               <SyncStatusIndicator />

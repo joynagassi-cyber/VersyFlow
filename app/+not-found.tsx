@@ -14,7 +14,7 @@ export default function NotFoundScreen() {
       <div className="flex min-h-full flex-col items-center justify-center gap-6 p-6 text-center animate-fade-in-up">
         <Logo size={96} />
         <div>
-          <p className="text-gradient-hero text-5xl font-extrabold tracking-tight">404</p>
+          <p className="text-primary text-5xl font-extrabold tracking-tight">404</p>
           <p className="mt-2 text-lg font-semibold text-text-primary">
             {t('notFound.title', "Cette page n'existe pas")}
           </p>

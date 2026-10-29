@@ -10,8 +10,8 @@
  * Toggling a masked word reveals it; "Vérifier" computes an in-place
  * word diff and feeds the recommendation for the next mode.
  *
- * Premium design: 3D card surface (.mw-card), tappable word chips
- * (.mw-mask-word) with masked/correct/missing states, and a dark pill
+ * Premium design: 3D card surface (.mem-card), tappable word chips
+ * (.mem-mask-word) with masked/correct/missing states, and a dark pill
  * for the verify action.
  */
 
@@ -98,9 +98,9 @@ export function ModeMask({
   return (
     <div className="space-y-3">
       {/* The reference "case" + mode segmented */}
-      <div className="mw-card">
+      <div className="mem-card">
         <div className="mb-4 flex items-center justify-between">
-          <span className="mw-case">
+          <span className="mem-case">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20M4 19.5A2.5 2.5 0 0 0 6.5 22H20V2H6.5A2.5 2.5 0 0 0 4 4.5v15z"/></svg>
             {referenceLabel}
           </span>
@@ -134,7 +134,7 @@ export function ModeMask({
         </div>
 
         {/* Maskable word flow */}
-        <div className="mw-mask-flow">
+        <div className="mem-mask-flow">
           {words.map((w, i) => {
             const isMasked = activeMasked.has(i);
             const verifiedWord = verified?.wordDiffs.find((d) => d.position === i);
@@ -145,7 +145,7 @@ export function ModeMask({
                 onClick={() => toggle(i)}
                 disabled={verified != null || maskMode === 'auto'}
                 className={cn(
-                  'mw-mask-word',
+                  'mem-mask-word',
                   isMasked && !verifiedWord && 'is-masked',
                   verifiedWord?.type === 'missing' && 'is-missing',
                   verifiedWord?.type === 'correct' && 'is-correct',
@@ -170,7 +170,7 @@ export function ModeMask({
           type="button"
           onClick={handleVerify}
           disabled={activeMasked.size === 0 || verified != null}
-          className="mw-pill mt-3"
+          className="mem-pill mt-3"
         >
           <Check size={16} />
           {t('workspace.verify', 'Vérifier')}
@@ -179,10 +179,10 @@ export function ModeMask({
 
       {/* Diff result + next-mode recommendation */}
       {verified && (
-        <div className={cn('mw-card relative', verified.matchScore >= 0.9 && 'overflow-hidden')} style={verified.matchScore >= 0.9 ? { background: 'color-mix(in srgb, var(--color-success) 8%, var(--color-surface))' } : undefined}>
+        <div className={cn('mem-card relative', verified.matchScore >= 0.9 && 'overflow-hidden')} style={verified.matchScore >= 0.9 ? { background: 'color-mix(in srgb, var(--color-success) 8%, var(--color-surface))' } : undefined}>
           {/* Soft confetti burst on a successful verify (≥ 90 %) */}
           {verified.matchScore >= 0.9 && (
-            <div className="mw-confetti">
+            <div className="mem-confetti">
               {[0, 1, 2, 3, 4].map((i) => (
                 <span
                   key={i}
@@ -196,7 +196,7 @@ export function ModeMask({
             </div>
           )}
           <div className="mb-3 flex items-center justify-between">
-            <span className="mw-label">{t('workspace.result', 'RÉSULTAT')} · {t('workspace.diffWord', 'diff mot à mot')}</span>
+            <span className="mem-label">{t('workspace.result', 'RÉSULTAT')} · {t('workspace.diffWord', 'diff mot à mot')}</span>
             <span
               className={cn(
                 'text-2xl font-extrabold',
@@ -233,7 +233,7 @@ export function ModeMask({
           </div>
 
           {verified.matchScore >= 0.9 && (
-            <button type="button" onClick={onNextMode} className="mw-cta-success">
+            <button type="button" onClick={onNextMode} className="mem-cta-success">
               <ArrowRight size={16} />
               {t('workspace.passNextMode', 'Passer au mode suivant')}
             </button>

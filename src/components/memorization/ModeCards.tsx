@@ -9,7 +9,7 @@
  * When a record already has multiple verseTexts (a passage), the card
  * iterates them; otherwise the single verse.
  *
- * Premium design: 3D flip (.mw-flashcard / .mw-flashcard-inner with
+ * Premium design: 3D flip (.mem-flashcard / .mem-flashcard-inner with
  * rotateY(180deg) + backface-visibility: hidden), layered depth shadows,
  * and a "PROCHAIN" outline on the recommended next mode.
  */
@@ -127,16 +127,16 @@ export function ModeCards({
       {/* 3D flashcard */}
       <div
         className={cn(
-          'mw-flashcard',
+          'mem-flashcard',
           fullscreen && 'min-h-[60vh]',
         )}
       >
-        <div className={cn('mw-flashcard-inner', flipped && 'is-flipped')}>
+        <div className={cn('mem-flashcard-inner', flipped && 'is-flipped')}>
           {/* Front face — the verse, big serif, centered */}
-          <div className="mw-flashcard-face front">
-            <span className="mw-flashcard-corner">{referenceLabel}</span>
+          <div className="mem-flashcard-face front">
+            <span className="mem-flashcard-corner">{referenceLabel}</span>
             {verses.length > 1 && (
-              <span className="mw-flashcard-counter">{cardIndex + 1}/{verses.length}</span>
+              <span className="mem-flashcard-counter">{cardIndex + 1}/{verses.length}</span>
             )}
             <p className="verse">{currentVerse}</p>
             <p className="hint">
@@ -150,7 +150,7 @@ export function ModeCards({
             <button
               type="button"
               onClick={() => setFlipped(true)}
-              className="mw-pill-ghost"
+              className="mem-pill-ghost"
               style={{ marginTop: 8 }}
             >
               <Check size={14} />
@@ -159,8 +159,8 @@ export function ModeCards({
           </div>
 
           {/* Back face — "verso" hint + expected full text */}
-          <div className="mw-flashcard-face back">
-            <span className="mw-flashcard-corner">{referenceLabel}</span>
+          <div className="mem-flashcard-face back">
+            <span className="mem-flashcard-corner">{referenceLabel}</span>
             <p className="verse">{currentVerse}</p>
             <p className="hint">
               {t('workspace.cardsBack', 'Verso · repérez les mots clés')}
@@ -172,7 +172,7 @@ export function ModeCards({
         <button
           type="button"
           onClick={() => setFullscreen((f) => !f)}
-          className="mw-flashcard-zoom"
+          className="mem-flashcard-zoom"
           aria-label={fullscreen ? t('workspace.exitFullscreen', 'Quitter le plein écran') : t('workspace.fullscreen', 'Plein écran')}
         >
           {fullscreen ? <Minimize2 size={16} /> : <Maximize2 size={16} />}
@@ -181,15 +181,15 @@ export function ModeCards({
 
       {/* 4 FSRS buttons ("Je m'en souvenais ?") */}
       <div>
-        <p className="mw-label">{t('workspace.didYouRemember', 'JE M\'EN SOUVENAIS ?')}</p>
+        <p className="mem-label">{t('workspace.didYouRemember', 'JE M\'EN SOUVENAIS ?')}</p>
         <RatingBar options={RATING_OPTIONS} onSelect={(v) => void handleRate(v)} />
       </div>
 
       {/* "Passer au mode suivant" when the user rated with Bon / Facile */}
       {lastScore !== null && lastScore >= 0.7 && (
-        <div className="mw-card relative overflow-hidden" style={{ background: 'color-mix(in srgb, var(--color-success) 8%, var(--color-surface))' }}>
+        <div className="mem-card relative overflow-hidden" style={{ background: 'color-mix(in srgb, var(--color-success) 8%, var(--color-surface))' }}>
           {/* Soft confetti burst (non-interactive) */}
-          <div className="mw-confetti">
+          <div className="mem-confetti">
             {[0, 1, 2, 3, 4].map((i) => (
               <span
                 key={i}
@@ -202,7 +202,7 @@ export function ModeCards({
             ))}
           </div>
           <div className="flex items-center gap-3">
-            <span className="mw-success-celebration">
+            <span className="mem-success-celebration">
               <span className="ring" />
               <span className="ic"><Check size={22} /></span>
             </span>
@@ -212,7 +212,7 @@ export function ModeCards({
               </p>
             </div>
           </div>
-          <button type="button" onClick={onNextMode} className="mw-cta-success mt-3">
+          <button type="button" onClick={onNextMode} className="mem-cta-success mt-3">
             <Check size={16} />
             {t('workspace.passNextMode', 'Passer au mode Écrire')}
           </button>

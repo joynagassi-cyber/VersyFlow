@@ -149,7 +149,7 @@ export default function SettingsScreen() {
         >
           <ProfileAvatar name={displayName} size={48} />
           <span className="min-w-0 flex-1">
-            <span className="text-gradient-hero block truncate text-base font-extrabold">
+            <span className="text-primary block truncate text-base font-extrabold">
               {displayName}
             </span>
             <span className="block truncate text-sm text-text-muted">

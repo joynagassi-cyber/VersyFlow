@@ -77,7 +77,7 @@ export default function ProfileScreen() {
     <FullScreenPage title={t('common.profil', 'Profil')} showBack>
       <div className="mx-auto max-w-md space-y-5">
         {/* ── Header card: gradient name (very large) + photo on the right ── */}
-        <div className="gradient-hero glow-primary overflow-hidden rounded-3xl p-5 text-white">
+        <div className="bg-primary overflow-hidden rounded-3xl p-5 text-white">
           <div className="flex items-center gap-4">
             <div className="min-w-0 flex-1">
               {/* Big gradient display name — the name is the hero. */}
@@ -92,7 +92,7 @@ export default function ProfileScreen() {
                     className="w-full rounded-lg bg-white/20 px-2 py-1 text-2xl font-extrabold text-white outline-none"
                   />
                 ) : (
-                  <h1 className="text-gradient-hero truncate text-3xl font-extrabold leading-tight">
+                  <h1 className="text-primary truncate text-3xl font-extrabold leading-tight">
                     {displayName || t('profile.setName', 'Definir un nom')}
                   </h1>
                 )}

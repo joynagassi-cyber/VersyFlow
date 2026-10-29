@@ -50,7 +50,7 @@ export function HamburgerMenu() {
           <div className="flex items-center gap-3">
             <Logo size={38} />
             <div className="leading-tight">
-              <span className="text-gradient-hero text-base font-extrabold">VersyFlow</span>
+              <span className="text-primary text-base font-extrabold">VersyFlow</span>
               <div className="text-xs text-text-muted">{user?.display_name || 'Mode local'}</div>
             </div>
           </div>

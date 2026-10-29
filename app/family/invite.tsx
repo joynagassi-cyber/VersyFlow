@@ -104,7 +104,7 @@ export default function FamilyInviteScreen() {
     >
       <div className="mx-auto max-w-md space-y-5">
         {/* Family header */}
-        <div className="gradient-hero glow-primary flex items-center gap-3 rounded-3xl p-5 text-white">
+        <div className="bg-primary flex items-center gap-3 rounded-3xl p-5 text-white">
           <span className="text-3xl">{family.icon}</span>
           <span className="text-xl font-bold">{family.name}</span>
         </div>

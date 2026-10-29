@@ -70,7 +70,7 @@ export default function ProgressScreen() {
         </p>
         <button
           onClick={() => navigate('/bible/explorer')}
-          className="mt-6 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-white shadow-rose"
+          className="mt-6 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-white shadow"
         >
           {t('bible.explorer', 'Explorer la Bible')}
         </button>
