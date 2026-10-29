@@ -1,27 +1,24 @@
 /** Identifiant d'accent libre (preset tweakcn ou thème image). */
 export type AccentKey = string;
 
-import { findThemeById as catalogFindThemeById, themePortraitUrl, themeLandscapeUrl, type ThemeCatalogEntry } from './theme-catalog';
+import { findThemeById as catalogFindThemeById, type ThemeCatalogEntry } from './theme-catalog';
 import { extractImageAccent } from './image-accent';
 import { useAppearanceStore } from '@/store/appearance-store';
+import {
+  ACCENT_VARS,
+  accentVars,
+  applyThemeToDocument,
+  imagePath,
+  type ResolvedAccent,
+  type ThemePlan,
+} from './resolve-theme';
 
 export function findThemeById(id: string | null | undefined): ThemeCatalogEntry | null {
   return catalogFindThemeById(id);
 }
 
-export interface AccentValues {
-  primary: string;
-  primaryLight: string;
-  primaryDark: string;
-  accent: string;
-  accentLight: string;
-  /** 2e couleur extraite de l'image de fond (thèmes image uniquement). */
-  accentSecondary?: string;
-  /** Teinte moyenne sombre extraite de l'image — voile des cartes. */
-  tint?: string;
-  /** Texte (noir/blanc) choisi par contraste WCAG sur `primary`. */
-  primaryForeground?: string;
-}
+/** Couleurs d'accent : définies une seule fois, dans `resolve-theme.ts`. */
+export type AccentValues = ResolvedAccent;
 
 /**
  * L'ancien catalogue d'accents maison (ACCENT_PRESETS) a été SUPPRIMÉ :
@@ -46,67 +43,39 @@ export function colorThemeValues(hex: string): AccentValues {
   };
 }
 
-export function applyAccentPreset(key: string | null | undefined, isDark: boolean, colorThemeId?: string | null): void {
-  if (typeof document === 'undefined') return;
-  const root = document.documentElement;
-  // An image/color theme overrides all preset accent variables. Its accent
-  // color is extracted live from the illustration's own palette (not the
-  // static catalog hex), and its background is the applied portrait.
-  if (colorThemeId) {
-    const theme = findThemeById(colorThemeId);
-    const fallback = theme ? colorThemeValues(theme.color) : colorThemeValues('#e6067a');
-    const src = themeImagePath(colorThemeId);
-    // Apply the fallback immediately (synchronous, zero-flash), then
-    // refine with the real extracted palette once the image is sampled.
-    setAccentVars(root, fallback, src, colorThemeId, isDark);
-    void extractImageAccent(colorThemeId, src, fallback).then((values) => {
-      // Guard: the theme may have changed while the sample was in flight.
-      if (useAppearanceStore.getState().colorThemeId !== colorThemeId) return;
-      setAccentVars(root, values, src, colorThemeId, isDark);
-    });
-    return;
-  }
-  // Sans image de fond, les variables viennent du preset tweakcn actif
-  // (feuille générée) : aucun override maison ici.
-  void key; void isDark;
-  root.style.removeProperty('--theme-image');
-  root.removeAttribute('data-theme-image');
-}
-
-/** Variables shadcn standard alimentées par l'accent dynamique (image). */
-function setShadcnAccentVars(root: HTMLElement, v: AccentValues): void {
-  root.style.setProperty('--primary', v.primary);
-  root.style.setProperty('--ring', v.primary);
-  root.style.setProperty('--accent', v.accentSecondary ?? v.accent);
-  if (v.tint) root.style.setProperty('--tint', v.tint);
-  if (v.primaryForeground) {
-    root.style.setProperty('--primary-foreground', v.primaryForeground);
-    root.style.setProperty('--color-primary-foreground', v.primaryForeground);
-  }
-}
-
-function setAccentVars(
-  root: HTMLElement,
-  v: AccentValues,
-  src: string,
-  id: string,
+export function applyAccentPreset(
+  key: string | null | undefined,
   isDark: boolean,
+  colorThemeId?: string | null,
 ): void {
-  root.style.setProperty('--color-primary', v.primary);
-  root.style.setProperty('--color-primary-light', v.primaryLight);
-  root.style.setProperty('--color-primary-dark', v.primaryDark);
-  root.style.setProperty('--color-accent', v.accent);
-  root.style.setProperty('--color-accent-light', v.accentLight);
-  root.style.setProperty('--ion-color-primary', v.primary);
-  root.style.setProperty('--ion-color-secondary', v.accent);
-  setShadcnAccentVars(root, v);
-  // The applied portrait gets a soft depth-of-field treatment: a large
-  // blur + slight scale so it reads as an ambient wash (creativity,
-  // not a raw photo), and the UI surface stays readable on top of it.
-  root.style.setProperty('--theme-image', `url(${src})`);
-  root.setAttribute('data-theme-image', 'on');
-  root.setAttribute('data-theme-image-mode', isDark ? 'dark' : 'light');
-  void id;
+  // Sans image de fond, les variables viennent du preset tweakcn actif
+  // (feuille générée) : aucun override maison, donc aucune écriture ici.
+  void key;
+  if (!colorThemeId) return;
+  const theme = findThemeById(colorThemeId);
+  const fallback = theme ? colorThemeValues(theme.color) : colorThemeValues('#e6067a');
+  const src = themeImagePath(colorThemeId);
+  // On pose tout de suite les couleurs du catalogue (aucun flash), puis on
+  // affine avec la palette réellement extraite de l'illustration.
+  applyThemeToDocument(accentPlan(fallback, src, isDark));
+  void extractImageAccent(colorThemeId, src, fallback).then((values) => {
+    // Garde : le thème a pu changer pendant l'échantillonnage.
+    if (useAppearanceStore.getState().colorThemeId !== colorThemeId) return;
+    applyThemeToDocument(accentPlan(values, src, isDark));
+  });
+}
+
+/** Plan partiel : accent + illustration (appliqué par l'unique écrivain). */
+export function accentPlan(values: AccentValues, src: string, isDark: boolean): ThemePlan {
+  return {
+    attributes: {
+      'data-theme-image': 'on',
+      'data-theme-image-mode': isDark ? 'dark' : 'light',
+    },
+    removedAttributes: [],
+    vars: { ...accentVars(values), '--theme-image': `url(${src})` },
+    removedVars: [],
+  };
 }
 
 /**
@@ -118,25 +87,14 @@ function setAccentVars(
 export function themeImagePath(id: string): string {
   // Mobile (< 1024 px) : artwork portrait. Desktop/web : artwork paysage large.
   const wide = typeof window !== 'undefined' && window.innerWidth >= 1024;
-  return wide ? themeLandscapeUrl(id) : themePortraitUrl(id);
+  return imagePath(id, wide);
 }
 
 export function clearAccentPreset(): void {
-  if (typeof document === 'undefined') return;
-  const root = document.documentElement;
-  [
-    '--color-primary',
-    '--color-primary-light',
-    '--color-primary-dark',
-    '--color-accent',
-    '--color-accent-light',
-    '--ion-color-primary',
-    '--ion-color-secondary',
-    '--primary',
-    '--ring',
-    '--accent',
-    '--tint',
-    '--primary-foreground',
-    '--color-primary-foreground',
-  ].forEach((k) => root.style.removeProperty(k));
+  applyThemeToDocument({
+    attributes: {},
+    removedAttributes: ['data-theme-image', 'data-theme-image-mode'],
+    vars: {},
+    removedVars: [...ACCENT_VARS, '--theme-image'],
+  });
 }

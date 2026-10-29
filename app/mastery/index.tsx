@@ -162,7 +162,7 @@ export default function MasteryScreen() {
                 style={{ width: progressToNext + '%' }}
               />
             </div>
-            <p className="mt-2 text-xs text-text-muted">
+            <p className="mt-2 text-xs text-text-muted tabular-nums">
               {t('mastery.stabilityRequired', 'Stabilite moyenne requise')}: {nextLevel.requiredStability}j - {stats.averageStability.toFixed(1)}j
             </p>
           </div>
@@ -242,7 +242,7 @@ export default function MasteryScreen() {
                           style={{ width: pct + '%', backgroundColor: level.color }}
                         />
                       </div>
-                      <span className="text-xs text-text-muted">
+                      <span className="text-xs text-text-muted tabular-nums">
                         {levelCounts[level.id] ?? 0}/{stats.totalMemorized}
                       </span>
                     </div>

@@ -1,9 +1,9 @@
 # Rapport d’audit — plan « Interface web + thèmes »
 
 Généré par `node scripts/audit-plan.mjs`. **Ne pas éditer à la main.**
-Exécuté le 2026-10-29 18:36 (UTC).
+Exécuté le 2026-10-29 18:41 (UTC).
 
-**Bilan : 15 PASS · 1 PARTIEL · 0 FAIL · 4 non vérifiable(s).**
+**Bilan : 14 PASS · 1 PARTIEL · 1 FAIL · 4 non vérifiable(s).**
 
 | ID | § | Verdict | Contrôle | Mesure |
 | --- | --- | --- | --- | --- |
@@ -13,14 +13,14 @@ Exécuté le 2026-10-29 18:36 (UTC).
 | C04 | §2.3 | **PASS** | Toutes les paires texte/fond atteignent 4,5:1 (AA) | 250 paires · pire 4.50:1 (kodama-grove/dark muted-foreground/card = 4.50:1) · 0 échec(s) |
 | C05 | §2.4 | **PASS** | Fondu 0,8 s sur jetons typés, valeurs initiales crédibles, mouvement réduit respecté | 4 @property <color> · initiales invalides: 0 · transition 800ms: true · courbe: true · reduced-motion: true |
 | C06 | §2.5 | **PASS** | Alpha dérivable sur les variables ; recette de verre 40 % + 40 px + voile | helper: true · 24 jetons dérivables · .surface-glass: true · consommée 1× · voile en background-image: true |
-| C07 | §9.2 | **PASS** | Modes « transparence réduite » et « contraste élevé » pilotables et appliqués | css: true · store: true · interrupteurs: true · attributs posés: true |
+| C07 | §9.2 | **FAIL** | Modes « transparence réduite » et « contraste élevé » pilotables et appliqués | css: true · store: true · interrupteurs: true · attributs posés: false |
 | C08 | §3.3 | **PASS** | Aucune couleur littérale dans le code d’interface (hors exception documentée) | 97 fichiers d’interface scannés · 0 ligne(s) fautive(s) |
 | C09 | §6.1 | **PASS** | Un seul seuil (1024 px), une seule navigation montée, aucune largeur en dur | seuil: true · montage exclusif: true · zéro px en dur: true |
 | C10 | §6.2 | **PASS** | Rail : une variable de largeur, repli accessible, état actif non colorimétrique | variable unique: true · largeur: true · repli sr-only: true · aria: true · Hugeicons seuls: true |
 | C11 | §6.4 | **PASS** | Mesure de lecture définie et appliquée à tous les écrans de contenu | 60/60 écrans couverts (classe directe ou coquille) · coquilles: ok · jetons présents |
 | C12 | §5.1 | **PARTIAL** | Une seule bibliothèque d’icônes (Hugeicons) | 31/101 fichiers sans Lucide · 70 à migrer |
 | C13 | §4.4 | **PASS** | Accent d’image : trois rôles, texte choisi par contraste, pas de promesse pendante | 3 rôles: true · garde-fou de chargement: true · texte au ratio: true |
-| C14 | §11.2 | **PASS** | Chaque famille de contrat a un test dédié | 4 fichiers · 7/7 familles couvertes |
+| C14 | §11.2 | **PASS** | Chaque famille de contrat a un test dédié | 6 fichiers · 7/7 familles couvertes |
 | C15 | §0 | **PASS** | Les libellés ajoutés existent en français et en anglais | fr manquants: aucun · en manquants: aucun |
 | C16 | §4.6 | **PASS** | Registres de thèmes : presets, dégradés et thèmes image déclarés une seule fois | 25 presets · 15 dégradés · 101 thèmes image |
 

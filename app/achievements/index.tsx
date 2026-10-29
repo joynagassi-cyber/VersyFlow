@@ -180,7 +180,7 @@ export default function AchievementScreen() {
       showBack
       right={
         <span className="flex items-center gap-1 rounded-full bg-surface-tint px-3 py-1 text-sm font-semibold text-primary">
-          <Star size={14} className="text-warning" />
+          <Star size={14} className="text-warning tabular-nums" />
           {unlockedCount}/{achievements.length}
         </span>
       }
@@ -193,7 +193,7 @@ export default function AchievementScreen() {
             <p className="text-sm font-semibold text-text-primary">
               {t('achievements.overall', 'Progression globale')}
             </p>
-            <p className="mt-1 text-xs text-text-muted">
+            <p className="mt-1 text-xs text-text-muted tabular-nums">
               {unlockedCount} {t('achievements.unlockedOn', 'succes debloques')} sur {achievements.length}
             </p>
           </div>

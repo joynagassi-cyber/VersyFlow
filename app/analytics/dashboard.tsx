@@ -79,7 +79,7 @@ export default function AnalyticsDashboardScreen() {
               <BookOpen size={22} />
             </span>
             <div>
-              <p className="text-3xl font-extrabold text-text-primary">
+              <p className="text-3xl font-extrabold text-text-primary tabular-nums">
                 {stats?.totalVerses || 0}
               </p>
               <p className="text-xs text-text-muted">
@@ -88,7 +88,7 @@ export default function AnalyticsDashboardScreen() {
             </div>
           </div>
           <div className="rounded-2xl bg-surface p-4 text-center shadow-sm">
-            <p className="text-2xl font-extrabold text-success">
+            <p className="text-2xl font-extrabold text-success tabular-nums">
               {stats?.masteredVerses || 0}
             </p>
             <p className="text-xs text-text-muted">
@@ -96,7 +96,7 @@ export default function AnalyticsDashboardScreen() {
             </p>
           </div>
           <div className="rounded-2xl bg-surface p-4 text-center shadow-sm">
-            <p className="text-2xl font-extrabold text-error">
+            <p className="text-2xl font-extrabold text-error tabular-nums">
               {stats?.streakCount || 0}
             </p>
             <p className="text-xs text-text-muted">{t('analytics.streak', 'Streak')}</p>
@@ -148,7 +148,7 @@ export default function AnalyticsDashboardScreen() {
             </p>
             <div className="grid grid-cols-2 gap-3 text-center">
               <div className="rounded-2xl bg-surface-tint p-4">
-                <p className="text-2xl font-extrabold text-text-primary">
+                <p className="text-2xl font-extrabold text-text-primary tabular-nums">
                   {stats.weeklyTrend.thisWeek}
                 </p>
                 <p className="text-xs text-text-muted">
@@ -156,7 +156,7 @@ export default function AnalyticsDashboardScreen() {
                 </p>
               </div>
               <div className="rounded-2xl bg-surface-tint p-4">
-                <p className="text-2xl font-extrabold text-text-primary">
+                <p className="text-2xl font-extrabold text-text-primary tabular-nums">
                   {stats.weeklyTrend.lastWeek}
                 </p>
                 <p className="text-xs text-text-muted">
@@ -226,7 +226,7 @@ export default function AnalyticsDashboardScreen() {
           <p className="text-3xl font-extrabold text-text-primary">
             {getLearningTime()} min
           </p>
-          <p className="text-xs text-text-muted">
+          <p className="text-xs text-text-muted tabular-nums">
             {t('analytics.totalTime', 'Temps total d\'apprentissage')}
           </p>
         </div>

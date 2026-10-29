@@ -73,8 +73,13 @@ const config = {
         xl: '32px',
         '2xl': '48px',
       },
+      // Trois ombres, pas quatre, et aucune ombre colorée : la profondeur vient
+      // de l'encre du thème, jamais d'une teinte inventée. Valeurs dans
+      // globals.css (--shadow-card/float/lift) pour qu'elles suivent le thème.
       boxShadow: {
-        rose: '0 4px 12px rgba(216,27,96,0.3)',
+        card: 'var(--shadow-card)',
+        float: 'var(--shadow-float)',
+        lift: 'var(--shadow-lift)',
       },
       fontFamily: {
         sans: [
@@ -83,10 +88,25 @@ const config = {
         ],
         serif: ['Source Serif 4', 'Georgia', 'serif'],
       },
-      boxShadow: {
-        soft: '0 4px 20px -2px rgba(26,26,26,0.04)',
-        hero: '0 8px 24px -4px rgba(216,27,96,0.25)',
-        nav: '0 -4px 16px -2px rgba(0,0,0,0.03)',
+      // Échelle typographique explicite (interface). Les tailles de contenu
+      // biblique restent pilotées par les réglages de lecture (theme-fonts.ts).
+      fontSize: {
+        '2xs': ['11px', { lineHeight: '14px' }],
+        xs: ['12px', { lineHeight: '16px' }],
+        sm: ['13px', { lineHeight: '18px' }],
+        base: ['14px', { lineHeight: '21px' }],
+        md: ['15px', { lineHeight: '22px' }],
+        lg: ['16px', { lineHeight: '24px' }],
+        xl: ['17px', { lineHeight: '26px' }],
+        '2xl': ['18px', { lineHeight: '27px' }],
+        '3xl': ['22px', { lineHeight: '28px' }],
+        '4xl': ['26px', { lineHeight: '32px' }],
+        '5xl': ['30px', { lineHeight: '36px' }],
+      },
+      // Largeurs de contenu : la mesure de lecture, pas la largeur de l'écran.
+      maxWidth: {
+        reading: 'var(--reading-width)',
+        content: 'var(--reading-wide)',
       },
     },
   },

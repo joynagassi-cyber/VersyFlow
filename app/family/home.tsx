@@ -99,7 +99,7 @@ export default function FamilyHomeScreen() {
       ) : (
         <div className="flex flex-col items-center rounded-2xl bg-surface p-8 text-center shadow-sm">
           <span className="text-5xl">👨‍👩‍👧‍👦</span>
-          <p className="mt-4 text-lg font-bold text-text-primary">
+          <p className="mt-4 text-lg font-bold text-text-primary tabular-nums">
             {families.length === 0 ? t('family.noFamiliesYet', 'Aucune famille pour l\'instant') : t('family.noFamily', 'Aucune famille active')}
           </p>
           <p className="mt-1 text-sm text-text-muted">

@@ -122,12 +122,12 @@ export default function ProgressScreen() {
         <div className="mt-3 flex items-center justify-between">
           <div className="text-center">
             <p className="text-xs text-text-muted">{t('progress.thisWeek', 'Cette semaine')}</p>
-            <p className="text-2xl font-bold text-text-primary">{stats.weeklyTrend.thisWeek}</p>
+            <p className="text-2xl font-bold text-text-primary tabular-nums">{stats.weeklyTrend.thisWeek}</p>
           </div>
           <div className="h-10 w-px bg-divider" />
           <div className="text-center">
             <p className="text-xs text-text-muted">{t('progress.lastWeek', 'Semaine dernière')}</p>
-            <p className="text-2xl font-bold text-text-primary">{stats.weeklyTrend.lastWeek}</p>
+            <p className="text-2xl font-bold text-text-primary tabular-nums">{stats.weeklyTrend.lastWeek}</p>
           </div>
         </div>
       </div>
@@ -141,10 +141,10 @@ export default function ProgressScreen() {
           <div className="flex items-center gap-3">
             <Flame size={26} className="text-primary" />
             <div className="text-left">
-              <p className="text-base font-semibold text-text-primary">
+              <p className="text-base font-semibold text-text-primary tabular-nums">
                 {t('progress.streak', 'Série consécutive')}
               </p>
-              <p className="text-sm text-text-secondary">
+              <p className="text-sm text-text-secondary tabular-nums">
                 {t('home.streak', { count: stats.streakCount })}
               </p>
             </div>
@@ -164,7 +164,7 @@ export default function ProgressScreen() {
           <span className="text-text-muted">
             {t('progress.versesMemorized', 'Temps moyen par session')}
           </span>
-          <span className="font-semibold text-text-primary">
+          <span className="font-semibold text-text-primary tabular-nums">
             {stats.avgSessionDurationMin.toFixed(1)} min
           </span>
         </div>

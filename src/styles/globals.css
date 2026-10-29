@@ -655,6 +655,21 @@ html[data-theme-image='on'] body {
 /* Les valeurs initiales sont les couleurs du preset par défaut (quantum-rose),
    JAMAIS du noir : un jeton non encore écrit doit ressembler au produit, pas
    faire clignoter l'interface en noir au premier rendu. */
+/* Trois niveaux de profondeur, dérivés de l'encre du thème : une carte posée
+   sur le papier, une surface qui flotte, un élément qui se soulève. Aucune
+   ombre colorée, aucune teinte inventée. */
+:root {
+  --shadow-card:
+    0 1px 2px color-mix(in srgb, var(--color-text-primary) 6%, transparent),
+    0 6px 16px -8px color-mix(in srgb, var(--color-text-primary) 12%, transparent);
+  --shadow-float:
+    0 2px 6px color-mix(in srgb, var(--color-text-primary) 8%, transparent),
+    0 16px 32px -12px color-mix(in srgb, var(--color-text-primary) 18%, transparent);
+  --shadow-lift:
+    0 4px 10px color-mix(in srgb, var(--color-text-primary) 10%, transparent),
+    0 24px 48px -16px color-mix(in srgb, var(--color-text-primary) 24%, transparent);
+}
+
 @property --primary { syntax: '<color>'; inherits: true; initial-value: #e10677; }
 @property --ring { syntax: '<color>'; inherits: true; initial-value: #e10677; }
 @property --accent { syntax: '<color>'; inherits: true; initial-value: #ffc1e3; }

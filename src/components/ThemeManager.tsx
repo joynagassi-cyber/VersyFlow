@@ -4,10 +4,11 @@
  * place before any screen paints.
  *
  *  - Syncs `appearance-store.themeMode` into `useTheme` (drives `data-theme`).
- *  - Applies the accent preset (`--color-primary*` / `--color-accent` / Ionic)
- *    based on the chosen accent + the effective dark state.
- *  - When the accent is an image-based color theme (theme-catalog), also sets
- *    `--theme-image` so the full-screen portrait illustration is applied.
+ *  - Rassemble l'état d'apparence et le confie à `resolveTheme` (fonction
+ *    pure, `src/theme/resolve-theme.ts`) ; l'application passe par l'unique
+ *    écrivain `applyThemeToDocument`. Ce composant ne pose plus aucun
+ *    attribut ni aucune variable lui-même.
+ *  - Thème image : l'accent est extrait de l'illustration, en asynchrone.
  *  - Applies the Bible reading typography (`--reading-*` vars) from the
  *    appearance store's bibleFont* fields, and lazy-loads the chosen
  *    @fontsource family so the webfont is only fetched when selected.
@@ -15,12 +16,9 @@
 import { useEffect, useState } from 'react';
 import { useAppearanceStore } from '@/store/appearance-store';
 import { useTheme } from '@/theme/useTheme';
-import { applyAccentPreset, clearAccentPreset } from '@/theme/theme-presets';
+import { applyAccentPreset } from '@/theme/theme-presets';
 import { applyReadingVars, findBibleFont, findUiFont, loadBibleFont } from '@/theme/theme-fonts';
-import { GRADIENTS } from '@/theme/tweakcn-presets';
-
-/** Preset tweakcn appliqué quand aucun choix explicite n'est persisté. */
-const DEFAULT_PRESET_ID = 'quantum-rose';
+import { applyThemeToDocument, resolveTheme } from '@/theme/resolve-theme';
 
 export function ThemeManager() {
   const themeMode = useAppearanceStore((s) => s.themeMode);
@@ -55,42 +53,44 @@ export function ThemeManager() {
     theme.setThemeMode(themeMode);
   }, [themeMode, theme]);
 
-  // Apply the accent color for the current effective dark state, and the
-  // image-based theme background (when an image theme is active).
+  /**
+   * Thème : UNE décision (`resolveTheme`, pure) puis UNE écriture
+   * (`applyThemeToDocument`). L'effet ne décide plus rien lui-même — il
+   * rassemble l'état, ce qui rend le rendu reproductible et testable.
+   */
   useEffect(() => {
-    const root = document.documentElement;
-    // La plateforme repose sur les presets tweakcn : il y en a TOUJOURS un
-    // d'actif (défaut Quantum Rose, proche de l'identité d'origine).
-    root.setAttribute('data-preset', presetId ?? DEFAULT_PRESET_ID);
-    clearAccentPreset();
-    // Fond d'app personnalisé : un dégradé prime sur tout le reste ; une
-    // image repasse par applyAccentPreset (fond + accent extrait de l'image).
-    if (backgroundType === 'gradient' && gradientId) {
-      const gradient = GRADIENTS.find((g) => g.id === gradientId);
-      root.setAttribute('data-app-bg', 'gradient');
-      if (gradient) root.style.setProperty('--app-bg-image', gradient.css);
-      root.style.removeProperty('--theme-image');
-      root.removeAttribute('data-theme-image');
-      return;
-    }
-    root.removeAttribute('data-app-bg');
-    root.style.removeProperty('--app-bg-image');
-    root.style.removeProperty('--theme-image');
-    root.removeAttribute('data-theme-image');
+    applyThemeToDocument(
+      resolveTheme({
+        presetId,
+        accent,
+        backgroundType,
+        gradientId,
+        colorThemeId,
+        isDark: theme.isDark,
+        reducedTransparency,
+        highContrast,
+        uiFontFamily: findUiFont(uiFontId).family,
+        wide: viewportWide,
+      }),
+    );
+    // Thème image : l'accent est échantillonné sur l'illustration, donc
+    // asynchrone. Le plan ci-dessus n'y touche pas ; on le complète ici.
     if (backgroundType === 'image' && colorThemeId) {
       applyAccentPreset(accent, theme.isDark, colorThemeId);
     }
-  }, [accent, colorThemeId, presetId, backgroundType, gradientId, theme.isDark, theme, viewportWide]);
-
-  // Accessibilité : deux états globaux lus par le CSS (surfaces opaques,
-  // contours renforcés). Le verre est un confort, jamais une condition.
-  useEffect(() => {
-    const root = document.documentElement;
-    root.toggleAttribute('data-transparency', false);
-    if (reducedTransparency) root.setAttribute('data-transparency', 'reduced');
-    if (highContrast) root.setAttribute('data-contrast', 'high');
-    else root.removeAttribute('data-contrast');
-  }, [reducedTransparency, highContrast]);
+  }, [
+    accent,
+    backgroundType,
+    colorThemeId,
+    gradientId,
+    highContrast,
+    presetId,
+    reducedTransparency,
+    theme.isDark,
+    theme,
+    uiFontId,
+    viewportWide,
+  ]);
 
   // Bible reading typography: lazy-load the chosen webfont (offline-first,
   // only on selection change) and write the live --reading-* vars so the
@@ -99,11 +99,11 @@ export function ThemeManager() {
     void loadBibleFont(bibleFontFamily);
   }, [bibleFontFamily]);
 
-  // Police d'interface personnalisée : écrase --font-sans du preset.
+  // Police d'interface : le chargement du webfont vit ici, l'écriture de
+  // `--font-sans` dans le plan de thème (cf. effet principal).
   useEffect(() => {
     const font = findUiFont(uiFontId);
     if (font.id !== 'system') void loadBibleFont(font.id);
-    document.documentElement.style.setProperty('--font-sans', font.family);
   }, [uiFontId]);
 
   useEffect(() => {

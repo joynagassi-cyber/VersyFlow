@@ -200,11 +200,11 @@ export default function ReviewHistoryScreen() {
           </div>
           <div className="mt-4 grid grid-cols-3 divide-x divide-[color:var(--color-divider)] text-center">
             <div>
-              <p className="text-xl font-extrabold text-primary">{verse.totalReviews}</p>
+              <p className="text-xl font-extrabold text-primary tabular-nums">{verse.totalReviews}</p>
               <p className="text-[11px] text-text-muted">{t('history.reviews', 'Revisions')}</p>
             </div>
             <div>
-              <p className="text-xl font-extrabold text-primary">
+              <p className="text-xl font-extrabold text-primary tabular-nums">
                 {verse.averageStability.toFixed(1)}j
               </p>
               <p className="text-[11px] text-text-muted">{t('history.stability', 'Stabilite')}</p>
@@ -251,9 +251,9 @@ export default function ReviewHistoryScreen() {
                         <p className="text-[10px] uppercase tracking-wide text-text-muted">
                           {t('history.stability', 'Stabilite')}
                         </p>
-                        <p className="font-medium text-text-primary">
+                        <p className="font-medium text-text-primary tabular-nums">
                           {log.stabilityBefore.toFixed(1)}
-                          <ArrowRight size={10} className="mx-1 inline text-text-muted" />
+                          <ArrowRight size={10} className="mx-1 inline text-text-muted tabular-nums" />
                           {log.stabilityAfter.toFixed(1)}j
                         </p>
                       </div>
@@ -261,9 +261,9 @@ export default function ReviewHistoryScreen() {
                         <p className="text-[10px] uppercase tracking-wide text-text-muted">
                           {t('history.difficulty', 'Difficulte')}
                         </p>
-                        <p className="font-medium text-text-primary">
+                        <p className="font-medium text-text-primary tabular-nums">
                           {log.difficultyBefore.toFixed(1)}
-                          <ArrowRight size={10} className="mx-1 inline text-text-muted" />
+                          <ArrowRight size={10} className="mx-1 inline text-text-muted tabular-nums" />
                           {log.difficultyAfter.toFixed(1)}
                         </p>
                       </div>
@@ -285,7 +285,7 @@ export default function ReviewHistoryScreen() {
                 <TrendingUp size={20} />
               </span>
               <div>
-                <p className="text-2xl font-extrabold text-text-primary">
+                <p className="text-2xl font-extrabold text-text-primary tabular-nums">
                   {(verse.averageStability * 10).toFixed(0)}%
                 </p>
                 <p className="text-xs text-text-muted">
@@ -298,7 +298,7 @@ export default function ReviewHistoryScreen() {
               <p className="text-xs text-text-muted">{t('history.goodEasy', 'Bon / Facile')}</p>
             </div>
             <div className="rounded-2xl bg-surface p-4 text-center shadow-sm">
-              <p className="text-2xl font-extrabold text-error">
+              <p className="text-2xl font-extrabold text-error tabular-nums">
                 {logs.filter((h) => h.rating === Rating.AGAIN).length}
               </p>
               <p className="text-xs text-text-muted">{t('history.toReview', 'A revoir')}</p>
@@ -322,7 +322,7 @@ export default function ReviewHistoryScreen() {
               style={{ width: Math.min(100, verse.averageStability * 10) + '%' }}
             />
           </div>
-          <p className="mt-2 text-center text-xs text-text-muted">
+          <p className="mt-2 text-center text-xs text-text-muted tabular-nums">
             {verse.averageStability.toFixed(1)}
             {t('history.daysOfStability', ' jours de stabilite')}
           </p>

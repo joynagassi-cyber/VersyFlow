@@ -11,6 +11,7 @@
  */
 
 import { readFileSync } from 'node:fs';
+import { execSync } from 'node:child_process';
 import { join } from 'node:path';
 import { DESKTOP_MIN_WIDTH } from '@/hooks/useIsDesktop';
 
@@ -201,7 +202,6 @@ describe('coquille bureau — couverture des écrans', () => {
   });
 
   it('aucun plafond téléphone ne subsiste hors barre d’onglets', () => {
-    const { execSync } = require('node:child_process');
     const hits = execSync(
       "grep -rIl 'max-w-md' --include=*.tsx app src || true",
     )

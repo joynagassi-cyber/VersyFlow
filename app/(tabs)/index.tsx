@@ -164,16 +164,16 @@ export default function HomeScreen() {
       >
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-widest text-white/80">
+            <p className="text-xs font-semibold uppercase tracking-widest text-white/80 tabular-nums">
               {t('home.streakLabel', 'Série de jours')}
             </p>
             <p className="mt-1 flex items-end gap-2">
-              <span className="text-5xl font-black leading-none">
+              <span className="text-5xl font-black leading-none tabular-nums">
                 {streak ?? '–'}
               </span>
               <Flame size={26} className="mb-1 text-white/90" />
             </p>
-            <p className="mt-1 text-xs text-white/80">
+            <p className="mt-1 text-xs text-white/80 tabular-nums">
               {t('home.streak', { count: streak ?? 1 })}
             </p>
           </div>
@@ -195,7 +195,7 @@ export default function HomeScreen() {
               <Clock size={18} />
             </span>
             <span className="flex-1">
-              <span className="block text-sm font-bold">
+              <span className="block text-sm font-bold tabular-nums">
                 {t('home.reviewDue', { count: reviewsDue })}
               </span>
               <span className="block text-[11px] text-white/80">
