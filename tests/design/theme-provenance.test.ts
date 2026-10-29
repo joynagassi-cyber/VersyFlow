@@ -9,6 +9,7 @@
  */
 import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
 import { resolve } from 'node:path';
 import { deflateSync } from 'node:zlib';
 // @ts-expect-error — script ESM sans types : seule la fonction testée est importée.
@@ -24,6 +25,8 @@ const manifest = JSON.parse(
   themes: number;
   portraitsPresent: number;
   measuredTones: number;
+  missingThemes: string[];
+  strays: string[];
   entries: {
     id: string;
     category: string;
@@ -99,6 +102,40 @@ describe('L6 — manifeste de provenance', () => {
         `/themes/${entry.category}/${entry.id}-landscape.png`,
       );
     }
+  });
+
+  it('les visuels de thèmes sont VERSIONNÉS (ils partent sur main avec le code)', () => {
+    const tracked = execFileSync('git', ['ls-files', 'public/themes'], {
+      cwd: root,
+      encoding: 'utf8',
+    })
+      .split('\n')
+      .filter((f) => f.endsWith('.png'));
+    // 100 thèmes × 2 formats, moins le seul thème jamais généré (obj-miroir).
+    expect(tracked.length).toBe(198);
+    expect(tracked.filter((f) => f.includes('-portrait.png')).length).toBeGreaterThanOrEqual(99);
+    // Le dossier ne doit plus être ignoré : un visuel ajouté doit pouvoir être versionné.
+    let ignored = '';
+    try {
+      ignored = execFileSync('git', ['check-ignore', 'public/themes/esprit/esprit-feu-portrait.png'], {
+        cwd: root,
+        encoding: 'utf8',
+      });
+    } catch {
+      ignored = '';
+    }
+    expect(ignored.trim()).toBe('');
+  });
+
+  it('déclare ce qui manque et ce qui est orphelin, sans rien supprimer', () => {
+    // Un seul thème du catalogue n'a jamais eu de visuel : « Miroir ».
+    expect(manifest.missingThemes).toEqual(['objets/obj-miroir']);
+    // Deux fichiers au nom accentué (« obj-clé ») ne correspondent à aucun
+    // thème : ils sont signalés, pas effacés.
+    expect(manifest.strays).toEqual([
+      'objets/obj-clé-landscape.png',
+      'objets/obj-clé-portrait.png',
+    ]);
   });
 
   it('ne prétend pas avoir mesuré ce qui est absent du poste', () => {

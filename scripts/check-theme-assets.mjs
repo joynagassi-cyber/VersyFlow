@@ -84,7 +84,7 @@ const total = themes.length;
 console.log(`Thèmes au catalogue : ${total}`);
 console.log(`Portraits mobiles OK : ${okPortrait}/${total}`);
 console.log(`Compositions bureau OK : ${okLandscape}/${total}`);
-console.log('Dossier : public/themes (gitignored, local uniquement)');
+console.log('Dossier : public/themes (versionné depuis le 29/10 : les visuels font partie de la livraison)');
 
 if (problems.length) {
   console.error(`\n${problems.length} problème(s) :`);

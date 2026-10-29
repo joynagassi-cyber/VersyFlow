@@ -19,7 +19,7 @@
  *
  * Usage : node scripts/theme-provenance.mjs [--strict]
  */
-import { readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync, readdirSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { inflateSync } from 'node:zlib';
 import { join, dirname } from 'node:path';
@@ -185,6 +185,27 @@ const entries = themes.map((theme) => {
 });
 
 const present = entries.filter((e) => e.portrait.present);
+
+// Fichiers présents mais qu'aucun thème du catalogue ne réclame : un visuel
+// orphelin est un fait à déclarer, pas à supprimer en silence.
+const expected = new Set(
+  entries.flatMap((e) => [e.portrait.path.split('/').pop(), e.landscape.path.split('/').pop()]),
+);
+const strays = [];
+for (const category of readdirSync(THEMES_DIR)) {
+  const dir = join(THEMES_DIR, category);
+  try {
+    for (const file of readdirSync(dir)) {
+      if (file.endsWith('.png') && !expected.has(file)) strays.push(`${category}/${file}`);
+    }
+  } catch {
+    /* pas un dossier */
+  }
+}
+
+const missingThemes = entries
+  .filter((e) => !e.portrait.present)
+  .map((e) => `${e.category}/${e.id}`);
 const manifest = {
   note: 'Généré par scripts/theme-provenance.mjs — ne pas éditer à la main.',
   ...PROVENANCE,
@@ -192,6 +213,8 @@ const manifest = {
   portraitsPresent: present.length,
   landscapesPresent: entries.filter((e) => e.landscape.present).length,
   measuredTones: entries.filter((e) => e.measured).length,
+  missingThemes,
+  strays,
   entries,
 };
 
@@ -200,6 +223,12 @@ console.log(
   `[theme-provenance] ${entries.length} thèmes · portfolios présents ${manifest.portraitsPresent}` +
     ` · paysages ${manifest.landscapesPresent} · tonalités mesurées ${manifest.measuredTones}`,
 );
+if (missingThemes.length) {
+  console.log(`[theme-provenance] sans visuel : ${missingThemes.join(', ')}`);
+}
+if (strays.length) {
+  console.log(`[theme-provenance] visuels orphelins (non réclamés par le catalogue) : ${strays.join(', ')}`);
+}
 console.log(`[theme-provenance] manifeste → ${OUT_PATH}`);
 
 if (STRICT && present.length !== entries.length) {

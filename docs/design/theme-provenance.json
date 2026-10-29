@@ -10,9 +10,16 @@
     "landscape": "1536×1024 (bureau, sélection et bandeau)"
   },
   "themes": 100,
-  "portraitsPresent": 0,
-  "landscapesPresent": 0,
-  "measuredTones": 0,
+  "portraitsPresent": 99,
+  "landscapesPresent": 99,
+  "measuredTones": 99,
+  "missingThemes": [
+    "objets/obj-miroir"
+  ],
+  "strays": [
+    "objets/obj-clé-landscape.png",
+    "objets/obj-clé-portrait.png"
+  ],
   "entries": [
     {
       "id": "esprit-pentecote",
@@ -21,13 +28,20 @@
       "declaredColor": "#C0392B",
       "portrait": {
         "path": "/themes/esprit/esprit-pentecote-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 751141,
+        "sha256": "16433ff4e6c00542",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/esprit/esprit-pentecote-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 798220,
+        "sha256": "763f489fd5e84104",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#c86051"
     },
     {
       "id": "esprit-feu",
@@ -36,13 +50,20 @@
       "declaredColor": "#E74C3C",
       "portrait": {
         "path": "/themes/esprit/esprit-feu-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 767931,
+        "sha256": "97ee61b607c3e59d",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/esprit/esprit-feu-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 815787,
+        "sha256": "6c26dedcd8893f13",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#d26556"
     },
     {
       "id": "esprit-zel",
@@ -51,13 +72,20 @@
       "declaredColor": "#F39C12",
       "portrait": {
         "path": "/themes/esprit/esprit-zel-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 921545,
+        "sha256": "8bbd66d89cd83713",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/esprit/esprit-zel-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 872294,
+        "sha256": "98db7119115231b1",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#f2a14a"
     },
     {
       "id": "esprit-olivier",
@@ -66,13 +94,20 @@
       "declaredColor": "#27AE60",
       "portrait": {
         "path": "/themes/esprit/esprit-olivier-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 738059,
+        "sha256": "d09ecc79eba79e94",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/esprit/esprit-olivier-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 749821,
+        "sha256": "7c3491604c991f35",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#81bdb4"
     },
     {
       "id": "esprit-dove",
@@ -81,13 +116,20 @@
       "declaredColor": "#3498DB",
       "portrait": {
         "path": "/themes/esprit/esprit-dove-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 621942,
+        "sha256": "54423a95e40bf44e",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/esprit/esprit-dove-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 632341,
+        "sha256": "06f3e6460b609c63",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#b1cfe9"
     },
     {
       "id": "esprit-eau",
@@ -96,13 +138,20 @@
       "declaredColor": "#1ABC9C",
       "portrait": {
         "path": "/themes/esprit/esprit-eau-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 787397,
+        "sha256": "d00ad8f4c6415dee",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/esprit/esprit-eau-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 749844,
+        "sha256": "4a429e2d622ee4aa",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#5eb9b9"
     },
     {
       "id": "esprit-semin",
@@ -111,13 +160,20 @@
       "declaredColor": "#8E44AD",
       "portrait": {
         "path": "/themes/esprit/esprit-semin-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 974837,
+        "sha256": "46e43592800541d9",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/esprit/esprit-semin-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 762648,
+        "sha256": "e4ac7f199da76707",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#986fa6"
     },
     {
       "id": "esprit-nouvel",
@@ -126,13 +182,20 @@
       "declaredColor": "#2ECC71",
       "portrait": {
         "path": "/themes/esprit/esprit-nouvel-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 680996,
+        "sha256": "602b42044ec4b3e6",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/esprit/esprit-nouvel-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 748044,
+        "sha256": "6b62449950a60ed3",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#49acad"
     },
     {
       "id": "esprit-tete",
@@ -141,13 +204,20 @@
       "declaredColor": "#F1C40F",
       "portrait": {
         "path": "/themes/esprit/esprit-tete-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 739185,
+        "sha256": "3ab0e2926f9351f3",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/esprit/esprit-tete-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 655377,
+        "sha256": "0e7f94d7f23b94cd",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#f9d172"
     },
     {
       "id": "esprit-rain",
@@ -156,13 +226,20 @@
       "declaredColor": "#5DADE2",
       "portrait": {
         "path": "/themes/esprit/esprit-rain-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 870016,
+        "sha256": "6f8ef21132775705",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/esprit/esprit-rain-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 762516,
+        "sha256": "868fdebb3bfaf534",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#b8e0f3"
     },
     {
       "id": "ev-pasque",
@@ -171,13 +248,20 @@
       "declaredColor": "#7D3C98",
       "portrait": {
         "path": "/themes/evenements/ev-pasque-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 736721,
+        "sha256": "763ae9d1f14a3cb5",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/evenements/ev-pasque-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 749266,
+        "sha256": "a61f657d53f8da44",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#8b78ae"
     },
     {
       "id": "ev-noel",
@@ -186,13 +270,20 @@
       "declaredColor": "#1E8449",
       "portrait": {
         "path": "/themes/evenements/ev-noel-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 817218,
+        "sha256": "4e07a6f54a20aca5",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/evenements/ev-noel-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 790337,
+        "sha256": "4829a018b11c2f2c",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#9ec7be"
     },
     {
       "id": "ev-epee",
@@ -201,13 +292,20 @@
       "declaredColor": "#F4D03F",
       "portrait": {
         "path": "/themes/evenements/ev-epee-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 655524,
+        "sha256": "e656b4085c1ed961",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/evenements/ev-epee-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 661681,
+        "sha256": "f4b07becdab64ec9",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#f7d675"
     },
     {
       "id": "ev-temple",
@@ -216,13 +314,20 @@
       "declaredColor": "#B03A2E",
       "portrait": {
         "path": "/themes/evenements/ev-temple-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 717009,
+        "sha256": "10dccbaf79604e89",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/evenements/ev-temple-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 672615,
+        "sha256": "71c5319cb99f4ee2",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#bf5f5f"
     },
     {
       "id": "ev-lent",
@@ -231,13 +336,20 @@
       "declaredColor": "#566573",
       "portrait": {
         "path": "/themes/evenements/ev-lent-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 603701,
+        "sha256": "dac9381710869055",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/evenements/ev-lent-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 684362,
+        "sha256": "e71d22e613551c7c",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#7d7c8a"
     },
     {
       "id": "ev-ascension",
@@ -246,13 +358,20 @@
       "declaredColor": "#2C3E50",
       "portrait": {
         "path": "/themes/evenements/ev-ascension-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 524569,
+        "sha256": "df4defdaa45a77fa",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/evenements/ev-ascension-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 576384,
+        "sha256": "d51dac05111b006d",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#6a8691"
     },
     {
       "id": "ev-toussaint",
@@ -261,13 +380,20 @@
       "declaredColor": "#154360",
       "portrait": {
         "path": "/themes/evenements/ev-toussaint-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 852045,
+        "sha256": "3a4e513e220d8b17",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/evenements/ev-toussaint-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 759164,
+        "sha256": "f68131ff8b31106f",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#426283"
     },
     {
       "id": "ev-resurrection",
@@ -276,13 +402,20 @@
       "declaredColor": "#A93226",
       "portrait": {
         "path": "/themes/evenements/ev-resurrection-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 691243,
+        "sha256": "afe0a5064021d724",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/evenements/ev-resurrection-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 711155,
+        "sha256": "71b6ab556641eec6",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#9c4542"
     },
     {
       "id": "ev-bapteme",
@@ -291,13 +424,20 @@
       "declaredColor": "#148F77",
       "portrait": {
         "path": "/themes/evenements/ev-bapteme-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 677103,
+        "sha256": "e1d916af9decad8c",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/evenements/ev-bapteme-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 759462,
+        "sha256": "a7d956837007492f",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#7dbdbf"
     },
     {
       "id": "ev-harvest",
@@ -306,13 +446,20 @@
       "declaredColor": "#B7950B",
       "portrait": {
         "path": "/themes/evenements/ev-harvest-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 796909,
+        "sha256": "c03ebc5d79e426c8",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/evenements/ev-harvest-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 949036,
+        "sha256": "045e28fe0ff45a68",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#c09a3e"
     },
     {
       "id": "villes-paris",
@@ -321,13 +468,20 @@
       "declaredColor": "#34495E",
       "portrait": {
         "path": "/themes/villes/villes-paris-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 733918,
+        "sha256": "a58d5c5a2ec15403",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/villes/villes-paris-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 742934,
+        "sha256": "fb572dc95cd0563c",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#5a7384"
     },
     {
       "id": "villes-berlin",
@@ -336,13 +490,20 @@
       "declaredColor": "#7F8C8D",
       "portrait": {
         "path": "/themes/villes/villes-berlin-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 668968,
+        "sha256": "15bcbb841d11398b",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/villes/villes-berlin-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 723064,
+        "sha256": "285297dc7830b507",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#88948b"
     },
     {
       "id": "villes-caire",
@@ -351,13 +512,20 @@
       "declaredColor": "#B7950B",
       "portrait": {
         "path": "/themes/villes/villes-caire-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 610188,
+        "sha256": "0fabf51314b141c4",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/villes/villes-caire-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 610168,
+        "sha256": "b486e503874b3a9c",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#dfb369"
     },
     {
       "id": "villes-pekin",
@@ -366,13 +534,20 @@
       "declaredColor": "#922B21",
       "portrait": {
         "path": "/themes/villes/villes-pekin-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 713171,
+        "sha256": "215da2286e6f360a",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/villes/villes-pekin-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 693649,
+        "sha256": "1f42efd6955b5b26",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#a76148"
     },
     {
       "id": "villes-madrid",
@@ -381,13 +556,20 @@
       "declaredColor": "#CA6F1E",
       "portrait": {
         "path": "/themes/villes/villes-madrid-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 730877,
+        "sha256": "59c90e300fdb0ce7",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/villes/villes-madrid-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 662357,
+        "sha256": "8cbe8c0122cbda62",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#c27133"
     },
     {
       "id": "villes-lisbonne",
@@ -396,13 +578,20 @@
       "declaredColor": "#1F618D",
       "portrait": {
         "path": "/themes/villes/villes-lisbonne-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 709427,
+        "sha256": "6c007d9efa067c94",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/villes/villes-lisbonne-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 718840,
+        "sha256": "e7309066a4dedbbc",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#4b839b"
     },
     {
       "id": "villes-jakarta",
@@ -411,13 +600,20 @@
       "declaredColor": "#148F77",
       "portrait": {
         "path": "/themes/villes/villes-jakarta-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 808430,
+        "sha256": "4d51ef3cc732f1f0",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/villes/villes-jakarta-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 758466,
+        "sha256": "3a2d8fd51930fbd7",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#7dbfbe"
     },
     {
       "id": "villes-delhi",
@@ -426,13 +622,20 @@
       "declaredColor": "#B03A2E",
       "portrait": {
         "path": "/themes/villes/villes-delhi-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 697743,
+        "sha256": "ff5d85bad75bcd72",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/villes/villes-delhi-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 696163,
+        "sha256": "1c334f4006a157bf",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#a6876e"
     },
     {
       "id": "villes-istanbul",
@@ -441,13 +644,20 @@
       "declaredColor": "#5B2C6F",
       "portrait": {
         "path": "/themes/villes/villes-istanbul-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 681743,
+        "sha256": "bf8671f4ce11ddf3",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/villes/villes-istanbul-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 690934,
+        "sha256": "3ee7178ba08273d3",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#846fa3"
     },
     {
       "id": "villes-stpetersbourg",
@@ -456,13 +666,20 @@
       "declaredColor": "#1A5276",
       "portrait": {
         "path": "/themes/villes/villes-stpetersbourg-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 664589,
+        "sha256": "fbd1ebb34533337e",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/villes/villes-stpetersbourg-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 674802,
+        "sha256": "47d156f48d29a2d5",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#5a729b"
     },
     {
       "id": "nat-trees",
@@ -471,13 +688,20 @@
       "declaredColor": "#1E8449",
       "portrait": {
         "path": "/themes/natures/nat-trees-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 976729,
+        "sha256": "9a2bebff9516c1f0",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/natures/nat-trees-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 861108,
+        "sha256": "2a52a6a276c9ed52",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#92b8aa"
     },
     {
       "id": "nat-mont",
@@ -486,13 +710,20 @@
       "declaredColor": "#4A235A",
       "portrait": {
         "path": "/themes/natures/nat-mont-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 693632,
+        "sha256": "9a9b9ff47e8415cd",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/natures/nat-mont-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 663209,
+        "sha256": "dd1cb734a2e90992",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#7468a1"
     },
     {
       "id": "nat-cactus",
@@ -501,13 +732,20 @@
       "declaredColor": "#CA6F1E",
       "portrait": {
         "path": "/themes/natures/nat-cactus-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 632013,
+        "sha256": "6806f1718828edc6",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/natures/nat-cactus-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 619507,
+        "sha256": "a248e975a2a63c1f",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#e2a974"
     },
     {
       "id": "nat-fleurs",
@@ -516,13 +754,20 @@
       "declaredColor": "#C2185B",
       "portrait": {
         "path": "/themes/natures/nat-fleurs-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 757743,
+        "sha256": "18b0cd5737cde9fb",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/natures/nat-fleurs-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 709064,
+        "sha256": "8ea5bf2481dd657d",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#ca5076"
     },
     {
       "id": "nat-feuille",
@@ -531,13 +776,20 @@
       "declaredColor": "#27AE60",
       "portrait": {
         "path": "/themes/natures/nat-feuille-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 792398,
+        "sha256": "b3e2cf715821251c",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/natures/nat-feuille-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 837695,
+        "sha256": "f60cacc135f96d2e",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#87c5be"
     },
     {
       "id": "nat-paon",
@@ -546,13 +798,20 @@
       "declaredColor": "#1565C0",
       "portrait": {
         "path": "/themes/natures/nat-paon-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 827146,
+        "sha256": "a073363e15548351",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/natures/nat-paon-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 801358,
+        "sha256": "8970e612465877cb",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#5b92c0"
     },
     {
       "id": "nat-lune",
@@ -561,13 +820,20 @@
       "declaredColor": "#1B4F72",
       "portrait": {
         "path": "/themes/natures/nat-lune-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 830572,
+        "sha256": "61d76795604b6315",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/natures/nat-lune-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 774519,
+        "sha256": "c2c22bac21951e55",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#6b92ae"
     },
     {
       "id": "nat-sun",
@@ -576,13 +842,20 @@
       "declaredColor": "#F39C12",
       "portrait": {
         "path": "/themes/natures/nat-sun-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 684102,
+        "sha256": "e45bef625cbd61dc",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/natures/nat-sun-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 659812,
+        "sha256": "952a881269e2d05b",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#f7ab4c"
     },
     {
       "id": "nat-ocean",
@@ -591,13 +864,20 @@
       "declaredColor": "#0E6655",
       "portrait": {
         "path": "/themes/natures/nat-ocean-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 671070,
+        "sha256": "b2adc02b132786d5",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/natures/nat-ocean-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 601786,
+        "sha256": "1d187d49798826c9",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#62968b"
     },
     {
       "id": "nat-pluie",
@@ -606,13 +886,20 @@
       "declaredColor": "#21618C",
       "portrait": {
         "path": "/themes/natures/nat-pluie-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 778128,
+        "sha256": "fbda1712b0f30ff3",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/natures/nat-pluie-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 670634,
+        "sha256": "a9c55faf869143ec",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#a6c2dc"
     },
     {
       "id": "sag-livre",
@@ -621,13 +908,20 @@
       "declaredColor": "#6E2C00",
       "portrait": {
         "path": "/themes/sagesse/sag-livre-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 721960,
+        "sha256": "ab4fce8b3971277c",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/sagesse/sag-livre-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 671093,
+        "sha256": "7ed5396b9c60683d",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#c5715d"
     },
     {
       "id": "sag-plume",
@@ -636,13 +930,20 @@
       "declaredColor": "#283747",
       "portrait": {
         "path": "/themes/sagesse/sag-plume-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 668900,
+        "sha256": "8c4f10913163acd6",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/sagesse/sag-plume-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 644764,
+        "sha256": "a9c6f7165d908513",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#5c627a"
     },
     {
       "id": "sag-lam",
@@ -651,13 +952,20 @@
       "declaredColor": "#B9770E",
       "portrait": {
         "path": "/themes/sagesse/sag-lam-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 730416,
+        "sha256": "490437746661eb6b",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/sagesse/sag-lam-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 750881,
+        "sha256": "c7e64af2f0d22bdb",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#ad6f2b"
     },
     {
       "id": "sag-perle",
@@ -666,13 +974,20 @@
       "declaredColor": "#A569BD",
       "portrait": {
         "path": "/themes/sagesse/sag-perle-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 789473,
+        "sha256": "4ac642355832efb3",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/sagesse/sag-perle-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 917475,
+        "sha256": "95f3bdfd3e16c078",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#ae98cc"
     },
     {
       "id": "sag-miroir",
@@ -681,13 +996,20 @@
       "declaredColor": "#566573",
       "portrait": {
         "path": "/themes/sagesse/sag-miroir-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 604556,
+        "sha256": "5b6c7f7e1964d606",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/sagesse/sag-miroir-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 580963,
+        "sha256": "11f023b35192eac2",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#7f7f8f"
     },
     {
       "id": "sag-tri",
@@ -696,13 +1018,20 @@
       "declaredColor": "#1F618D",
       "portrait": {
         "path": "/themes/sagesse/sag-tri-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 727026,
+        "sha256": "df172d548d3f981d",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/sagesse/sag-tri-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 671070,
+        "sha256": "4bb4a7faa0cc5e76",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#7395b8"
     },
     {
       "id": "sag-horloger",
@@ -711,13 +1040,20 @@
       "declaredColor": "#117864",
       "portrait": {
         "path": "/themes/sagesse/sag-horloger-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 801309,
+        "sha256": "7d17e054e1468ef8",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/sagesse/sag-horloger-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 755454,
+        "sha256": "f7b729e0c26bebe3",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#4f9395"
     },
     {
       "id": "sag-geometrie",
@@ -726,13 +1062,20 @@
       "declaredColor": "#4A235A",
       "portrait": {
         "path": "/themes/sagesse/sag-geometrie-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 854546,
+        "sha256": "320dca16e8d92398",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/sagesse/sag-geometrie-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 816182,
+        "sha256": "fdfe80c5ac6920e7",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#8c6caa"
     },
     {
       "id": "sag-colonne",
@@ -741,13 +1084,20 @@
       "declaredColor": "#7B241C",
       "portrait": {
         "path": "/themes/sagesse/sag-colonne-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 634465,
+        "sha256": "4d948ebf68d45c5c",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/sagesse/sag-colonne-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 636152,
+        "sha256": "6f6dcec44cf0825b",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#d7aaa7"
     },
     {
       "id": "sag-sceau",
@@ -756,13 +1106,20 @@
       "declaredColor": "#B03A2E",
       "portrait": {
         "path": "/themes/sagesse/sag-sceau-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 685712,
+        "sha256": "c00f0b454e612188",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/sagesse/sag-sceau-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 691163,
+        "sha256": "fae75e36e7187752",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#b25e5d"
     },
     {
       "id": "frat-pains",
@@ -771,13 +1128,20 @@
       "declaredColor": "#B9770E",
       "portrait": {
         "path": "/themes/fraternite/frat-pains-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 674786,
+        "sha256": "70b1fea08ed5f0c8",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/fraternite/frat-pains-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 644197,
+        "sha256": "da432a1db8ddd0cd",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#d09556"
     },
     {
       "id": "frat-table",
@@ -786,13 +1150,20 @@
       "declaredColor": "#6E2C00",
       "portrait": {
         "path": "/themes/fraternite/frat-table-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 937148,
+        "sha256": "a8d579aa6eb68907",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/fraternite/frat-table-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 717914,
+        "sha256": "1e5c592f9021615b",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#c0664a"
     },
     {
       "id": "frat-mains",
@@ -801,13 +1172,20 @@
       "declaredColor": "#A04000",
       "portrait": {
         "path": "/themes/fraternite/frat-mains-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 802886,
+        "sha256": "7e04e35b51eff7fc",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/fraternite/frat-mains-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 823069,
+        "sha256": "5ba1f97bac63c333",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#d88a6e"
     },
     {
       "id": "frat-cord",
@@ -816,13 +1194,20 @@
       "declaredColor": "#1F618D",
       "portrait": {
         "path": "/themes/fraternite/frat-cord-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 732161,
+        "sha256": "150b873433ae0980",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/fraternite/frat-cord-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 825240,
+        "sha256": "f7fd830537edf4fd",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#447698"
     },
     {
       "id": "frat-grenade",
@@ -831,13 +1216,20 @@
       "declaredColor": "#1E8449",
       "portrait": {
         "path": "/themes/fraternite/frat-grenade-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 870688,
+        "sha256": "ede979cb1f619949",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/fraternite/frat-grenade-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 790525,
+        "sha256": "a652755c2d5bfc57",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#63a18b"
     },
     {
       "id": "frat-lantern",
@@ -846,13 +1238,20 @@
       "declaredColor": "#B9770E",
       "portrait": {
         "path": "/themes/fraternite/frat-lantern-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 719943,
+        "sha256": "4c4ca3dedb5da5ec",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/fraternite/frat-lantern-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 736178,
+        "sha256": "c280901840197628",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#c18742"
     },
     {
       "id": "frat-rainbow",
@@ -861,13 +1260,20 @@
       "declaredColor": "#C2185B",
       "portrait": {
         "path": "/themes/fraternite/frat-rainbow-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 967349,
+        "sha256": "e583eeea5de1d29d",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/fraternite/frat-rainbow-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 786164,
+        "sha256": "6570b507b7129611",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#c4728d"
     },
     {
       "id": "frat-tour",
@@ -876,13 +1282,20 @@
       "declaredColor": "#283747",
       "portrait": {
         "path": "/themes/fraternite/frat-tour-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 605585,
+        "sha256": "581ea8b0022107fb",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/fraternite/frat-tour-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 607215,
+        "sha256": "98ec10e32c0a813a",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#6e6a8e"
     },
     {
       "id": "frat-oiseaux",
@@ -891,13 +1304,20 @@
       "declaredColor": "#1565C0",
       "portrait": {
         "path": "/themes/fraternite/frat-oiseaux-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 728002,
+        "sha256": "6fb962488a440d47",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/fraternite/frat-oiseaux-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 1071554,
+        "sha256": "145f960223924561",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#3c74a5"
     },
     {
       "id": "frat-couron",
@@ -906,13 +1326,20 @@
       "declaredColor": "#B03A2E",
       "portrait": {
         "path": "/themes/fraternite/frat-couron-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 754504,
+        "sha256": "0d0010df6f586357",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/fraternite/frat-couron-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 706458,
+        "sha256": "67888d1da38cfb67",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#c26e70"
     },
     {
       "id": "lum-etoile",
@@ -921,13 +1348,20 @@
       "declaredColor": "#F1C40F",
       "portrait": {
         "path": "/themes/lumieres/lum-etoile-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 702178,
+        "sha256": "c727bd008a7feca1",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/lumieres/lum-etoile-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 680373,
+        "sha256": "3257829b5a412951",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#fcd37d"
     },
     {
       "id": "lum-lanter",
@@ -936,13 +1370,20 @@
       "declaredColor": "#E67E22",
       "portrait": {
         "path": "/themes/lumieres/lum-lanter-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 712783,
+        "sha256": "be1d3a495f0214e2",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/lumieres/lum-lanter-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 713530,
+        "sha256": "0729ecfc4be516e8",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#7d4d1f"
     },
     {
       "id": "lum-chand",
@@ -951,13 +1392,20 @@
       "declaredColor": "#F9E79F",
       "portrait": {
         "path": "/themes/lumieres/lum-chand-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 584951,
+        "sha256": "c8d2556bcb050de8",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/lumieres/lum-chand-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 655041,
+        "sha256": "cec90eccbf9cdf33",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#f6dd90"
     },
     {
       "id": "lum-bougie",
@@ -966,13 +1414,20 @@
       "declaredColor": "#F4D03F",
       "portrait": {
         "path": "/themes/lumieres/lum-bougie-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 770089,
+        "sha256": "b25abf2fbd94e34f",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/lumieres/lum-bougie-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 735086,
+        "sha256": "b2737204cebb1c2c",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#f6d371"
     },
     {
       "id": "lum-lune",
@@ -981,13 +1436,20 @@
       "declaredColor": "#1B4F72",
       "portrait": {
         "path": "/themes/lumieres/lum-lune-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 729571,
+        "sha256": "c550f8489b60cdf0",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/lumieres/lum-lune-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 776567,
+        "sha256": "12b59743f4c2214c",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#6d8ba5"
     },
     {
       "id": "lum-sunrise",
@@ -996,13 +1458,20 @@
       "declaredColor": "#CA6F1E",
       "portrait": {
         "path": "/themes/lumieres/lum-sunrise-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 655027,
+        "sha256": "58348795e32363da",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/lumieres/lum-sunrise-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 663346,
+        "sha256": "9633890c3a9e92c6",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#c88445"
     },
     {
       "id": "lum-lamp",
@@ -1011,13 +1480,20 @@
       "declaredColor": "#B9770E",
       "portrait": {
         "path": "/themes/lumieres/lum-lamp-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 679598,
+        "sha256": "45db3a9df6f9812b",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/lumieres/lum-lamp-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 697710,
+        "sha256": "ff902087ef1bb538",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#d39853"
     },
     {
       "id": "lum-feu",
@@ -1026,13 +1502,20 @@
       "declaredColor": "#E74C3C",
       "portrait": {
         "path": "/themes/lumieres/lum-feu-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 728897,
+        "sha256": "c464a9adf0459b72",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/lumieres/lum-feu-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 690662,
+        "sha256": "fd82957dd9c580fe",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#e67c70"
     },
     {
       "id": "lum-phares",
@@ -1041,13 +1524,20 @@
       "declaredColor": "#1565C0",
       "portrait": {
         "path": "/themes/lumieres/lum-phares-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 692101,
+        "sha256": "ce6ca4c0c28955c0",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/lumieres/lum-phares-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 599641,
+        "sha256": "ea36fa772ca773fd",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#6195c2"
     },
     {
       "id": "lum-diamant",
@@ -1056,13 +1546,20 @@
       "declaredColor": "#A569BD",
       "portrait": {
         "path": "/themes/lumieres/lum-diamant-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 670781,
+        "sha256": "3afdaa2cb29bd504",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/lumieres/lum-diamant-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 628342,
+        "sha256": "991dfcab79c1a3bc",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#946db0"
     },
     {
       "id": "sai-printemps",
@@ -1071,13 +1568,20 @@
       "declaredColor": "#27AE60",
       "portrait": {
         "path": "/themes/saisons/sai-printemps-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 965910,
+        "sha256": "154aeb6f5d91b88f",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/saisons/sai-printemps-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 844994,
+        "sha256": "02326c607572fd17",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#97cac5"
     },
     {
       "id": "sai-ete",
@@ -1086,13 +1590,20 @@
       "declaredColor": "#F39C12",
       "portrait": {
         "path": "/themes/saisons/sai-ete-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 669884,
+        "sha256": "1837c263de7b3e2c",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/saisons/sai-ete-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 664878,
+        "sha256": "ed08af615d617136",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#fcbe66"
     },
     {
       "id": "sai-autome",
@@ -1101,13 +1612,20 @@
       "declaredColor": "#CA6F1E",
       "portrait": {
         "path": "/themes/saisons/sai-autome-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 687369,
+        "sha256": "a22ca68dbef5fa2f",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/saisons/sai-autome-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 640393,
+        "sha256": "99556b0d0c5a6054",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#d59566"
     },
     {
       "id": "sai-hiver",
@@ -1116,13 +1634,20 @@
       "declaredColor": "#21618C",
       "portrait": {
         "path": "/themes/saisons/sai-hiver-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 712633,
+        "sha256": "003098019ce0ec8d",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/saisons/sai-hiver-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 729678,
+        "sha256": "d3513774e7d93047",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#7b9ebe"
     },
     {
       "id": "sai-neige",
@@ -1131,13 +1656,20 @@
       "declaredColor": "#1B4F72",
       "portrait": {
         "path": "/themes/saisons/sai-neige-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 895545,
+        "sha256": "63cbc44d30b2bd9d",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/saisons/sai-neige-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 1049515,
+        "sha256": "919e08694e8fd4b0",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#8fa8bd"
     },
     {
       "id": "sai-rain",
@@ -1146,13 +1678,20 @@
       "declaredColor": "#566573",
       "portrait": {
         "path": "/themes/saisons/sai-rain-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 694359,
+        "sha256": "766ae78b9341790f",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/saisons/sai-rain-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 625012,
+        "sha256": "951e95ddd4586e26",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#9797a5"
     },
     {
       "id": "sai-fleur",
@@ -1161,13 +1700,20 @@
       "declaredColor": "#C2185B",
       "portrait": {
         "path": "/themes/saisons/sai-fleur-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 796312,
+        "sha256": "0bbf32e85609f0a9",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/saisons/sai-fleur-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 851177,
+        "sha256": "6ca1a07ad543712d",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#bc6f8d"
     },
     {
       "id": "sai-feuille",
@@ -1176,13 +1722,20 @@
       "declaredColor": "#1E8449",
       "portrait": {
         "path": "/themes/saisons/sai-feuille-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 808107,
+        "sha256": "bbc55cd8f4c4259f",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/saisons/sai-feuille-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 875339,
+        "sha256": "617ff46f046bfbef",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#78ad8f"
     },
     {
       "id": "sai-nuit",
@@ -1191,13 +1744,20 @@
       "declaredColor": "#154360",
       "portrait": {
         "path": "/themes/saisons/sai-nuit-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 841905,
+        "sha256": "39edfe64a7d876ed",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/saisons/sai-nuit-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 860619,
+        "sha256": "0cdd58c41b52a2ac",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#4d7191"
     },
     {
       "id": "sai-dawn",
@@ -1206,13 +1766,20 @@
       "declaredColor": "#F4D03F",
       "portrait": {
         "path": "/themes/saisons/sai-dawn-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 467432,
+        "sha256": "9ef9d3853c9ab2c2",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/saisons/sai-dawn-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 475628,
+        "sha256": "05f926f2089a2929",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#fcf0d7"
     },
     {
       "id": "ani-belle",
@@ -1221,13 +1788,20 @@
       "declaredColor": "#B9770E",
       "portrait": {
         "path": "/themes/animaux/ani-belle-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 632251,
+        "sha256": "e7156822ff7f260d",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/animaux/ani-belle-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 645234,
+        "sha256": "d16bb2dc7f9a44a9",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#d8995b"
     },
     {
       "id": "ani-agneau",
@@ -1236,13 +1810,20 @@
       "declaredColor": "#6E2C00",
       "portrait": {
         "path": "/themes/animaux/ani-agneau-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 628304,
+        "sha256": "d382fe150af7ef07",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/animaux/ani-agneau-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 652275,
+        "sha256": "710bd6373b5ccaab",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#ab6348"
     },
     {
       "id": "ani-pigeon",
@@ -1251,13 +1832,20 @@
       "declaredColor": "#283747",
       "portrait": {
         "path": "/themes/animaux/ani-pigeon-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 732602,
+        "sha256": "3f7ddad242ac284c",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/animaux/ani-pigeon-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 739201,
+        "sha256": "bf117d1c1121b0cc",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#37394d"
     },
     {
       "id": "ani-abeille",
@@ -1266,13 +1854,20 @@
       "declaredColor": "#F39C12",
       "portrait": {
         "path": "/themes/animaux/ani-abeille-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 1118223,
+        "sha256": "b0c20cbc15f5aa95",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/animaux/ani-abeille-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 1034205,
+        "sha256": "d7d5db9e0c6c476d",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#f9b96e"
     },
     {
       "id": "ani-colombe",
@@ -1281,13 +1876,20 @@
       "declaredColor": "#1565C0",
       "portrait": {
         "path": "/themes/animaux/ani-colombe-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 685345,
+        "sha256": "0989a065cdea3173",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/animaux/ani-colombe-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 648358,
+        "sha256": "9da5cc8a27be84bb",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#8eb1d5"
     },
     {
       "id": "ani-taupe",
@@ -1296,13 +1898,20 @@
       "declaredColor": "#6E2C00",
       "portrait": {
         "path": "/themes/animaux/ani-taupe-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 823223,
+        "sha256": "fb8f428525000aae",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/animaux/ani-taupe-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 788944,
+        "sha256": "554a97bd6e0d874a",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#8d3623"
     },
     {
       "id": "ani-cam",
@@ -1311,13 +1920,20 @@
       "declaredColor": "#CA6F1E",
       "portrait": {
         "path": "/themes/animaux/ani-cam-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 627592,
+        "sha256": "5247cb3e145e76d4",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/animaux/ani-cam-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 662974,
+        "sha256": "411be2d881d711fe",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#dda178"
     },
     {
       "id": "ani-pharaon",
@@ -1326,13 +1942,20 @@
       "declaredColor": "#B03A2E",
       "portrait": {
         "path": "/themes/animaux/ani-pharaon-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 777486,
+        "sha256": "32c53ffcd8b5f08b",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/animaux/ani-pharaon-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 735188,
+        "sha256": "084c253e98b71fb8",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#bd5c53"
     },
     {
       "id": "ani-scorp",
@@ -1341,13 +1964,20 @@
       "declaredColor": "#4A235A",
       "portrait": {
         "path": "/themes/animaux/ani-scorp-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 692087,
+        "sha256": "3ca11d2d39413392",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/animaux/ani-scorp-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 648971,
+        "sha256": "48797977219e54f6",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#584984"
     },
     {
       "id": "ani-aigle",
@@ -1356,13 +1986,20 @@
       "declaredColor": "#283747",
       "portrait": {
         "path": "/themes/animaux/ani-aigle-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 629028,
+        "sha256": "35c00252e4af56eb",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/animaux/ani-aigle-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 618889,
+        "sha256": "ee6009df5f095218",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#5e6780"
     },
     {
       "id": "obj-cle",
@@ -1371,13 +2008,20 @@
       "declaredColor": "#B9770E",
       "portrait": {
         "path": "/themes/objets/obj-cle-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 729532,
+        "sha256": "f0cd6f11090d2b90",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/objets/obj-cle-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 852967,
+        "sha256": "f5043d7b84e856f3",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#b97054"
     },
     {
       "id": "obj-sceau",
@@ -1386,13 +2030,20 @@
       "declaredColor": "#B03A2E",
       "portrait": {
         "path": "/themes/objets/obj-sceau-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 655616,
+        "sha256": "3619135dcc5136cd",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/objets/obj-sceau-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 699516,
+        "sha256": "48b9d7400ad67a7e",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#c7736f"
     },
     {
       "id": "obj-vase",
@@ -1401,13 +2052,20 @@
       "declaredColor": "#1F618D",
       "portrait": {
         "path": "/themes/objets/obj-vase-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 709427,
+        "sha256": "8536429ca37d7b67",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/objets/obj-vase-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 691892,
+        "sha256": "1c1604c8a4888921",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#5471ac"
     },
     {
       "id": "obj-jar",
@@ -1416,13 +2074,20 @@
       "declaredColor": "#CA6F1E",
       "portrait": {
         "path": "/themes/objets/obj-jar-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 577732,
+        "sha256": "5d18fb73f3e5400a",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/objets/obj-jar-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 766509,
+        "sha256": "7323749107aa9e5a",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#d99d76"
     },
     {
       "id": "obj-ankh",
@@ -1431,13 +2096,20 @@
       "declaredColor": "#B03A2E",
       "portrait": {
         "path": "/themes/objets/obj-ankh-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 764321,
+        "sha256": "cde48149c84fdee0",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/objets/obj-ankh-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 856402,
+        "sha256": "e3c35e99e32f8ebf",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#a15246"
     },
     {
       "id": "obj-swan",
@@ -1446,13 +2118,20 @@
       "declaredColor": "#283747",
       "portrait": {
         "path": "/themes/objets/obj-swan-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 756934,
+        "sha256": "39b887f174d93595",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/objets/obj-swan-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 744413,
+        "sha256": "7a21a77a9a2d7f3d",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#5c5b85"
     },
     {
       "id": "obj-anchor",
@@ -1461,13 +2140,20 @@
       "declaredColor": "#1565C0",
       "portrait": {
         "path": "/themes/objets/obj-anchor-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 771350,
+        "sha256": "4d6a26b5cd391e82",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/objets/obj-anchor-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 617521,
+        "sha256": "3d9785848af5e298",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#4784b0"
     },
     {
       "id": "obj-veil",
@@ -1476,13 +2162,20 @@
       "declaredColor": "#A569BD",
       "portrait": {
         "path": "/themes/objets/obj-veil-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 785663,
+        "sha256": "7db15224826a2be7",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/objets/obj-veil-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 620654,
+        "sha256": "96d6b8a764c5a225",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#9c83ba"
     },
     {
       "id": "obj-donnee",
@@ -1491,13 +2184,20 @@
       "declaredColor": "#C2185B",
       "portrait": {
         "path": "/themes/objets/obj-donnee-portrait.png",
-        "present": false
+        "present": true,
+        "bytes": 865305,
+        "sha256": "b31acbeb29b394f7",
+        "width": 832,
+        "height": 1248
       },
       "landscape": {
         "path": "/themes/objets/obj-donnee-landscape.png",
-        "present": false
+        "present": true,
+        "bytes": 779282,
+        "sha256": "b038b1e3ef13b55f",
+        "width": 1248
       },
-      "measured": null
+      "measured": "#b72f4e"
     },
     {
       "id": "obj-miroir",

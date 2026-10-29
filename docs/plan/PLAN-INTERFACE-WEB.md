@@ -252,9 +252,12 @@ Deux limites restent déclarées, jamais comptées comme réussies :
 
 - **U01/U02/U03** — le rendu réel (390/768/1024/1440 px), l'absence de débordement
   et l'effet du verre ne se prouvent pas sans moteur de rendu.
-- **Visuels de thèmes absents du poste** — `public/themes` n'est pas versionné
-  (données lourdes). Le manifeste de provenance le déclare (`portraitsPresent: 0`)
-  au lieu de le masquer ; l'application retombe sur la couleur de catalogue.
+- **Visuels de thèmes** — `public/themes` est désormais **versionné** (décision du
+  29/10 : les thèmes image font partie de la livraison). État mesuré par
+  `npm run themes:provenance` : **198 PNG suivis** = 99 portraits + 99 paysages
+  (+ 2 fichiers orphelins `obj-clé-landscape/portrait.png`). Un thème du catalogue,
+  **`objets/obj-miroir`**, n'a jamais eu de visuel : il retombe sur la couleur de
+  catalogue. Les orphelins sont **déclarés, pas supprimés**.
 
 ## 6. Décisions déjà arbitrées (ne pas rejouer)
 
