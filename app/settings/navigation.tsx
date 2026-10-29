@@ -11,7 +11,7 @@
  */
 
 import { useTranslation } from 'react-i18next';
-import { HugeiconsIcon } from '@hugeicons/react';
+import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   BarChartIcon as BarChart3,
   BookOpen01Icon as BookOpen,
@@ -102,7 +102,7 @@ export default function NavigationSettingsScreen() {
                   className="flex w-full items-center justify-between px-4 py-3.5 text-left"
                 >
                   <span className="flex items-center gap-3">
-                    <HugeiconsIcon icon={Icon} size={18} className={visible ? 'text-primary' : 'text-text-muted'} />
+                    <DuoIcon icon={Icon} size={18} className={visible ? 'text-primary' : 'text-text-muted'} />
                     <span className="text-base text-text-primary">{t(i18nKey, defaultLabel)}</span>
                   </span>
                   <span className={pillClass(visible)}>
@@ -135,7 +135,7 @@ export default function NavigationSettingsScreen() {
                   className="flex w-full items-center justify-between px-4 py-3.5 text-left"
                 >
                   <span className="flex items-center gap-3">
-                    <HugeiconsIcon icon={Icon} size={18} className={visible ? 'text-primary' : 'text-text-muted'} />
+                    <DuoIcon icon={Icon} size={18} className={visible ? 'text-primary' : 'text-text-muted'} />
                     <span className="text-base text-text-primary">{t(labelKey, label)}</span>
                   </span>
                   <span className={pillClass(visible)}>

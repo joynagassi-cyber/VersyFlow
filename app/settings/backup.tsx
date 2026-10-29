@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react';
 import type { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
-import { HugeiconsIcon } from '@hugeicons/react';
+import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   Download01Icon as Download,
   Upload01Icon as Upload,
@@ -115,7 +115,7 @@ export default function BackupScreen() {
             <Toggle on={autoBackup} onChange={() => setAutoBackup((v) => !v)} />
           </div>
           <Button variant="default" className="w-full" onClick={() => fireAndForget(handleExport(), 'settings:export')} disabled={busy}>
-            {busy ? <HugeiconsIcon icon={Loader2} size={18} className="animate-spin" /> : <HugeiconsIcon icon={Download} size={18} />}
+            {busy ? <DuoIcon icon={Loader2} size={18} className="animate-spin" /> : <DuoIcon icon={Download} size={18} />}
             {t('settings.backup.export', 'Exporter mes donnees')}
           </Button>
           <Button
@@ -123,7 +123,7 @@ export default function BackupScreen() {
             className="w-full"
             onClick={() => fileRef.current?.click()}
           >
-            <HugeiconsIcon icon={Upload} size={18} />
+            <DuoIcon icon={Upload} size={18} />
             {t('settings.backup.import', 'Importer des donnees')}
           </Button>
           <input
@@ -151,7 +151,7 @@ export default function BackupScreen() {
           </p>
           <div className="flex items-center justify-between">
             <span className="flex items-center gap-2 text-base text-text-primary">
-              <HugeiconsIcon icon={Cloud} size={18} className="text-primary" />
+              <DuoIcon icon={Cloud} size={18} className="text-primary" />
               {t('settings.backup.sync', 'Sync automatique')}
             </span>
             <Toggle on={syncEnabled} onChange={() => setSyncEnabled((v) => !v)} disabled={!isAuthenticated} />

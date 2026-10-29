@@ -8,7 +8,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { HugeiconsIcon } from '@hugeicons/react';
+import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   UsersIcon as Users,
   FlameIcon as Flame,
@@ -141,7 +141,7 @@ export default function HomeScreen() {
           <p className="mt-2 text-sm capitalize text-text-muted">{dateLabel}</p>
           {activeFamily && (
             <span className="mt-2 inline-flex items-center gap-1 rounded-full bg-icon-bg-rose px-2.5 py-1 text-xs font-semibold text-primary">
-              <HugeiconsIcon icon={Users} size={12} />
+              <DuoIcon icon={Users} size={12} />
               {activeFamily.name}
             </span>
           )}
@@ -151,7 +151,7 @@ export default function HomeScreen() {
           className="rounded-full bg-surface-tint p-2.5"
           aria-label={t('settings.settings', 'Paramètres')}
         >
-          <HugeiconsIcon icon={CircleUserRound} size={28} className="text-primary" />
+          <DuoIcon icon={CircleUserRound} size={28} className="text-primary" />
         </button>
       </div>
 
@@ -171,7 +171,7 @@ export default function HomeScreen() {
               <span className="text-5xl font-black leading-none tabular-nums">
                 {streak ?? '–'}
               </span>
-              <HugeiconsIcon icon={Flame} size={26} className="mb-1 text-white/90" />
+              <DuoIcon icon={Flame} size={26} className="mb-1 text-white/90" />
             </p>
             <p className="mt-1 text-xs text-white/80 tabular-nums">
               {t('home.streak', { count: streak ?? 1 })}
@@ -182,7 +182,7 @@ export default function HomeScreen() {
             className="flex h-11 w-11 items-center justify-center rounded-full bg-surface/20 backdrop-blur active:scale-95"
             aria-label={t('home.goodJob', 'Voir détails')}
           >
-            <HugeiconsIcon icon={TrendingUp} size={20} />
+            <DuoIcon icon={TrendingUp} size={20} />
           </button>
         </div>
 
@@ -192,7 +192,7 @@ export default function HomeScreen() {
             className="mt-5 flex w-full items-center gap-3 rounded-2xl bg-surface/15 p-3.5 text-left backdrop-blur transition active:scale-[0.99]"
           >
             <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-surface/25">
-              <HugeiconsIcon icon={Clock} size={18} />
+              <DuoIcon icon={Clock} size={18} />
             </span>
             <span className="flex-1">
               <span className="block text-sm font-bold tabular-nums">
@@ -202,7 +202,7 @@ export default function HomeScreen() {
                 {t('home.noReviews', 'Ne perdez pas votre progression — révisez maintenant')}
               </span>
             </span>
-            <HugeiconsIcon icon={ChevronRight} size={18} />
+            <DuoIcon icon={ChevronRight} size={18} />
           </button>
         )}
       </motion.div>
@@ -219,7 +219,7 @@ export default function HomeScreen() {
             className="flex flex-col items-center rounded-3xl border border-border/60 bg-card p-4 shadow-[0_4px_20px_-2px_rgba(0,0,0,0.04)] transition-transform active:scale-[0.98]"
           >
             <span className={cn('mb-2 flex h-12 w-12 items-center justify-center rounded-full', bg)}>
-              <HugeiconsIcon icon={Icon} size={24} className={color} />
+              <DuoIcon icon={Icon} size={24} className={color} />
             </span>
             <span className="text-sm font-bold text-text-primary">{label}</span>
             <span className="mt-0.5 text-center text-[11px] text-text-muted">{desc}</span>
@@ -234,7 +234,7 @@ export default function HomeScreen() {
       <div className="card-glass p-6">
         <div className="mb-3 flex items-center justify-between">
           <span className="inline-flex items-center gap-1.5 rounded-full bg-surface-tint px-3 py-1.5 text-xs font-semibold text-primary">
-            <HugeiconsIcon icon={Star} size={13} />
+            <DuoIcon icon={Star} size={13} />
             {t('home.dailyVerse', "Aujourd'hui")}
           </span>
           <button
@@ -295,7 +295,7 @@ export default function HomeScreen() {
       <div className="mt-8 rounded-2xl border border-success/20 bg-success/5 p-4">
         <div className="flex items-start gap-3">
           <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-success text-white shadow-sm">
-            <HugeiconsIcon icon={Star} size={16} />
+            <DuoIcon icon={Star} size={16} />
           </span>
           <div className="min-w-0 flex-1">
             <p className="text-xs font-bold uppercase tracking-wider text-success">

@@ -5,7 +5,7 @@
 
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { HugeiconsIcon } from '@hugeicons/react';
+import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   ArrowRight01Icon as ArrowRight,
   BrainIcon as Brain,
@@ -55,7 +55,7 @@ export default function FSRSIntroductionScreen() {
       {/* Hero */}
       <div className="flex flex-col items-center px-6 pb-6 pt-10">
         <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-surface-tint">
-          <HugeiconsIcon icon={Brain} size={28} className="text-primary" />
+          <DuoIcon icon={Brain} size={28} className="text-primary" />
         </div>
         <h1 className="text-center text-lg font-semibold text-text-primary">
           {t('onboarding.fsrsTitle', 'La science de la mémorisation')}
@@ -116,7 +116,7 @@ export default function FSRSIntroductionScreen() {
         {benefits.map(({ icon: Icon, title, desc, bg, color }) => (
           <div key={title} className="flex items-start gap-4 rounded-2xl bg-surface p-4 shadow-sm">
             <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-full ${bg}`}>
-              <HugeiconsIcon icon={Icon} size={22} className={color} />
+              <DuoIcon icon={Icon} size={22} className={color} />
             </div>
             <div className="flex-1">
               <p className="text-base font-semibold text-text-primary">{title}</p>
@@ -130,7 +130,7 @@ export default function FSRSIntroductionScreen() {
       <div className="mt-8 border-t border-border/50 bg-surface/80 p-6 backdrop-blur">
         <Button className="w-full" onClick={handleStartMemorization}>
           {t('onboarding.getStarted', 'Commencer à mémoriser')}
-          <HugeiconsIcon icon={ArrowRight} size={16} />
+          <DuoIcon icon={ArrowRight} size={16} />
         </Button>
       </div>
     </div>

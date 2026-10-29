@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { HugeiconsIcon } from '@hugeicons/react';
+import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   RotateCcwIcon as RotateCcw,
   ScaleIcon as Scale,
@@ -104,12 +104,12 @@ export default function RecallWritingScreen() {
             onClick={handleCompare}
             disabled={!text.trim() || !expectedVerse}
           >
-            <HugeiconsIcon icon={Scale} size={18} />
+            <DuoIcon icon={Scale} size={18} />
             {t('recallWriting.compare', 'Comparer')}
           </Button>
           {result && (
             <Button variant="secondary" className="flex-1" onClick={handleReset}>
-              <HugeiconsIcon icon={RotateCcw} size={18} />
+              <DuoIcon icon={RotateCcw} size={18} />
               {t('recallWriting.reset', 'Recommencer')}
             </Button>
           )}

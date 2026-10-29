@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { HugeiconsIcon } from '@hugeicons/react';
+import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   Leaf01Icon as Leaf,
   BookOpen01Icon as BookOpen,
@@ -142,7 +142,7 @@ export default function MasteryScreen() {
         {/* Level hero */}
         <div className="bg-primary rounded-3xl p-6 text-center text-on-primary">
           <span className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-surface/20">
-            <HugeiconsIcon icon={CurrentIcon} size={40} />
+            <DuoIcon icon={CurrentIcon} size={40} />
           </span>
           <p className="text-2xl font-extrabold">{currentLevel.name}</p>
           <p className="mt-1 text-sm opacity-90">{currentLevel.description}</p>
@@ -187,7 +187,7 @@ export default function MasteryScreen() {
                   className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full"
                   style={{ color: c.color, backgroundColor: 'transparent' }}
                 >
-                  <HugeiconsIcon icon={c.icon} size={22} />
+                  <DuoIcon icon={c.icon} size={22} />
                 </span>
                 <div className={i === 0 ? '' : 'mt-1'}>
                   <p className="text-2xl font-extrabold text-text-primary">{c.value}</p>
@@ -226,7 +226,7 @@ export default function MasteryScreen() {
                       backgroundColor: levelTint(level.color),
                     }}
                   >
-                    <HugeiconsIcon icon={Icon} size={22} />
+                    <DuoIcon icon={Icon} size={22} />
                   </span>
                   <div className="min-w-0 flex-1">
                     <p
@@ -249,7 +249,7 @@ export default function MasteryScreen() {
                     </div>
                   </div>
                   {isUnlocked && (
-                    <HugeiconsIcon icon={CheckCircle2} size={20} style={{ color: level.color }} />
+                    <DuoIcon icon={CheckCircle2} size={20} style={{ color: level.color }} />
                   )}
                 </div>
               );
@@ -269,7 +269,7 @@ export default function MasteryScreen() {
               t('mastery.tip3', 'Utilisez diferentes strategies de memorisation'),
             ].map((tip, i) => (
               <p key={i} className="flex items-center gap-2 text-sm text-text-secondary">
-                <HugeiconsIcon icon={CheckCircle2} size={16} className="text-success" />
+                <DuoIcon icon={CheckCircle2} size={16} className="text-success" />
                 {tip}
               </p>
             ))}

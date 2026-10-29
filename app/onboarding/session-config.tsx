@@ -7,7 +7,7 @@
 
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { HugeiconsIcon } from '@hugeicons/react';
+import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   ArrowLeft01Icon as ArrowLeft,
   ArrowRight01Icon as ArrowRight,
@@ -37,7 +37,7 @@ export default function OnboardingSessionConfig() {
           className="flex h-10 w-10 items-center justify-center rounded-full bg-surface shadow-sm"
           aria-label={t('common.back')}
         >
-          <HugeiconsIcon icon={ArrowLeft} size={20} className="text-text-secondary" />
+          <DuoIcon icon={ArrowLeft} size={20} className="text-text-secondary" />
         </button>
         <h1 className="text-2xl font-bold text-text-primary">
           {t('onboarding.sessionTitle')}
@@ -51,7 +51,7 @@ export default function OnboardingSessionConfig() {
       <div className="flex flex-1 flex-col gap-6">
         <div>
           <div className="mb-3 flex items-center gap-2">
-            <HugeiconsIcon icon={Target} size={18} className="text-primary" />
+            <DuoIcon icon={Target} size={18} className="text-primary" />
             <span className="text-base font-semibold text-text-primary">
               {t('onboarding.sessionGoal')}
             </span>
@@ -71,7 +71,7 @@ export default function OnboardingSessionConfig() {
                   )}
                 >
                   {g}
-                  {selected && <HugeiconsIcon icon={Check} className="ml-1" size={16} />}
+                  {selected && <DuoIcon icon={Check} className="ml-1" size={16} />}
                 </button>
               );
             })}
@@ -93,7 +93,7 @@ export default function OnboardingSessionConfig() {
               focusMode ? 'bg-primary text-on-primary' : 'bg-surface-tint text-primary',
             )}
           >
-            <HugeiconsIcon icon={Focus} size={22} />
+            <DuoIcon icon={Focus} size={22} />
           </div>
           <div className="flex-1">
             <p className="text-base font-semibold text-text-primary">
@@ -109,7 +109,7 @@ export default function OnboardingSessionConfig() {
               focusMode ? 'border-primary bg-primary' : 'border-text-muted',
             )}
           >
-            {focusMode && <HugeiconsIcon icon={Check} size={14} className="text-white" />}
+            {focusMode && <DuoIcon icon={Check} size={14} className="text-white" />}
           </div>
         </button>
       </div>
@@ -120,12 +120,12 @@ export default function OnboardingSessionConfig() {
           className="flex-1"
           onClick={() => navigate('/onboarding/translation-select')}
         >
-          <HugeiconsIcon icon={ArrowLeft} size={16} />
+          <DuoIcon icon={ArrowLeft} size={16} />
           {t('common.back')}
         </Button>
         <Button className="flex-1" onClick={() => navigate('/onboarding/reminder-config')}>
           {t('common.continue')}
-          <HugeiconsIcon icon={ArrowRight} size={16} />
+          <DuoIcon icon={ArrowRight} size={16} />
         </Button>
       </div>
     </div>

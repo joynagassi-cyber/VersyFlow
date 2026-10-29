@@ -14,7 +14,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { HugeiconsIcon } from '@hugeicons/react';
+import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   BrainCircuitIcon as BrainCircuit,
   MapIcon as Map,
@@ -101,7 +101,7 @@ export default function ConceptView() {
         {/* Header */}
         <div className="mb-4 flex items-center gap-3">
           <span className="flex h-11 w-11 items-center justify-center rounded-full bg-icon-bg-rose">
-            <HugeiconsIcon icon={BrainCircuit} size={20} className="text-primary" />
+            <DuoIcon icon={BrainCircuit} size={20} className="text-primary" />
           </span>
           <div>
             <h1 className="text-xl font-bold text-text-primary">
@@ -134,7 +134,7 @@ export default function ConceptView() {
         {/* Versets */}
         <section className="mb-5">
           <h2 className="mb-2 flex items-center gap-1.5 text-sm font-semibold text-text-tertiary">
-            <HugeiconsIcon icon={BookOpen} size={14} className="text-primary" />
+            <DuoIcon icon={BookOpen} size={14} className="text-primary" />
             {t('semantic.verses', 'Verset{count}', { count: verseKeys.length })}
           </h2>
           {verseKeys.length === 0 ? (
@@ -155,7 +155,7 @@ export default function ConceptView() {
                         <p className="line-clamp-2 text-xs text-text-muted">{text}</p>
                       ) : null}
                     </div>
-                    <HugeiconsIcon icon={ChevronRight} size={16} className="text-primary" />
+                    <DuoIcon icon={ChevronRight} size={16} className="text-primary" />
                   </button>
                 );
               })}
@@ -166,7 +166,7 @@ export default function ConceptView() {
         {/* Community */}
         <section className="mb-5">
           <h2 className="mb-2 flex items-center gap-1.5 text-sm font-semibold text-text-tertiary">
-            <HugeiconsIcon icon={Map} size={14} className="text-primary" />
+            <DuoIcon icon={Map} size={14} className="text-primary" />
             {t('semantic.community', 'Communauté')}
           </h2>
           {communities.length === 0 ? (
@@ -185,7 +185,7 @@ export default function ConceptView() {
                       <p className="text-xs text-text-muted">{c.description}</p>
                     ) : null}
                   </div>
-                  <HugeiconsIcon icon={ChevronRight} size={16} className="text-primary" />
+                  <DuoIcon icon={ChevronRight} size={16} className="text-primary" />
                 </button>
               ))}
             </div>
@@ -195,7 +195,7 @@ export default function ConceptView() {
         {/* 1-hop relations */}
         <section>
           <h2 className="mb-2 flex items-center gap-1.5 text-sm font-semibold text-text-tertiary">
-            <HugeiconsIcon icon={GitBranch} size={14} className="text-primary" />
+            <DuoIcon icon={GitBranch} size={14} className="text-primary" />
             {t('semantic.related', 'Concepts liés')}
           </h2>
           {relations.length === 0 ? (
@@ -209,7 +209,7 @@ export default function ConceptView() {
                   className="flex items-center justify-between rounded-xl bg-surface p-3 text-left shadow-sm transition-transform active:scale-[0.99]"
                 >
                   <div className="flex items-center gap-2">
-                    <HugeiconsIcon icon={GitBranch} size={14} className="text-text-muted" />
+                    <DuoIcon icon={GitBranch} size={14} className="text-text-muted" />
                     <div>
                       <p className="text-sm font-semibold text-text-primary">
                         {displayLabel(node.concept, lang)}
@@ -219,7 +219,7 @@ export default function ConceptView() {
                       </p>
                     </div>
                   </div>
-                  <HugeiconsIcon icon={ChevronRight} size={16} className="text-primary" />
+                  <DuoIcon icon={ChevronRight} size={16} className="text-primary" />
                 </button>
               ))}
             </div>

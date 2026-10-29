@@ -2,7 +2,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { HugeiconsIcon } from '@hugeicons/react';
+import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   Search01Icon as Search,
   Cancel01Icon as X,
@@ -225,7 +225,7 @@ export default function SearchScreen() {
       <div className="screen-column">
         {/* Input */}
         <div className="flex items-center gap-2 rounded-2xl bg-surface-tint px-4 py-3">
-          <HugeiconsIcon icon={Search} size={18} className="text-text-muted" />
+          <DuoIcon icon={Search} size={18} className="text-text-muted" />
           <input
             className="flex-1 bg-transparent text-base text-text-primary outline-none"
             placeholder={t('search.placeholder', 'Rechercher un verset...')}
@@ -236,7 +236,7 @@ export default function SearchScreen() {
           />
           {query && (
             <button onClick={() => handleSearch('')} aria-label={t('common.clear', 'Effacer')}>
-              <HugeiconsIcon icon={X} size={18} className="text-text-muted" />
+              <DuoIcon icon={X} size={18} className="text-text-muted" />
             </button>
           )}
         </div>
@@ -244,7 +244,7 @@ export default function SearchScreen() {
         {/* Index load failure hint */}
         {indexError && (
           <div className="mt-4 flex items-center gap-3 rounded-2xl bg-surface p-4 shadow-sm">
-            <HugeiconsIcon icon={AlertCircle} size={20} className="shrink-0 text-error" />
+            <DuoIcon icon={AlertCircle} size={20} className="shrink-0 text-error" />
             <p className="flex-1 text-sm text-error">{indexError}</p>
             <button
               onClick={() => {
@@ -291,7 +291,7 @@ export default function SearchScreen() {
                 onClick={() => handleQuickSearch(item)}
                 className="flex w-full items-center gap-3 border-b border-[color:var(--color-divider)] py-3 text-left"
               >
-                <HugeiconsIcon icon={Clock} size={16} className="text-text-muted" />
+                <DuoIcon icon={Clock} size={16} className="text-text-muted" />
                 <span className="flex-1 text-base text-text-primary">{item}</span>
               </button>
             ))}
@@ -325,11 +325,11 @@ export default function SearchScreen() {
                     onClick={() => openResult(result)}
                     className="flex items-center gap-1.5 rounded-full bg-surface-tint px-3 py-1.5 text-sm font-medium text-primary"
                   >
-                    <HugeiconsIcon icon={GraduationCap} size={14} />
+                    <DuoIcon icon={GraduationCap} size={14} />
                     {t('search.memorize', 'Memoriser')}
                   </button>
                   <button className="flex items-center gap-1.5 rounded-full bg-surface-tint px-3 py-1.5 text-sm font-medium text-primary">
-                    <HugeiconsIcon icon={Bookmark} size={14} />
+                    <DuoIcon icon={Bookmark} size={14} />
                     {t('search.save', 'Sauvegarder')}
                   </button>
                 </div>

@@ -2,7 +2,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { HugeiconsIcon } from '@hugeicons/react';
+import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   UserPlusIcon as UserPlus,
   CheckmarkCircle02Icon as CheckCircle2,
@@ -88,7 +88,7 @@ export default function FamilyMembersScreen() {
           onClick={() => navigate('/family/invite')}
           className="rounded-full bg-surface-tint p-2 active:bg-primary/10"
         >
-          <HugeiconsIcon icon={UserPlus} size={18} className="text-primary" />
+          <DuoIcon icon={UserPlus} size={18} className="text-primary" />
         </button>
       }
     >
@@ -103,7 +103,7 @@ export default function FamilyMembersScreen() {
           </p>
         ) : loadError ? (
           <div className="flex flex-col items-center gap-3 rounded-2xl bg-surface p-6 text-center shadow-sm">
-            <HugeiconsIcon icon={AlertCircle} size={28} className="text-error" />
+            <DuoIcon icon={AlertCircle} size={28} className="text-error" />
             <p className="text-sm text-error">{loadError}</p>
             <button
               onClick={() => loadMembers(family.id)}
@@ -130,7 +130,7 @@ export default function FamilyMembersScreen() {
                   </p>
                   <p className="text-xs text-text-muted">{roleLabel(m.role)}</p>
                 </div>
-                <HugeiconsIcon icon={CheckCircle2} size={20} className="text-success" />
+                <DuoIcon icon={CheckCircle2} size={20} className="text-success" />
               </div>
             ))}
           </div>
@@ -141,7 +141,7 @@ export default function FamilyMembersScreen() {
           className="flex w-full items-center gap-3 rounded-2xl bg-surface-tint p-4 text-left active:opacity-90"
         >
           <span className="flex h-11 w-11 items-center justify-center rounded-full bg-primary text-on-primary">
-            <HugeiconsIcon icon={UserPlus} size={20} />
+            <DuoIcon icon={UserPlus} size={20} />
           </span>
           <span className="flex-1">
             <span className="block text-sm font-semibold text-text-primary">

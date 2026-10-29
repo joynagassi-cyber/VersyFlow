@@ -7,7 +7,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { HugeiconsIcon } from '@hugeicons/react';
+import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   ChevronLeftIcon as ChevronLeft,
   ChevronRightIcon as ChevronRight,
@@ -102,12 +102,12 @@ export default function ReviewCalendarScreen() {
   ];
 
   const monthSummary = [
-    { value: stats?.streakCount ?? 0, label: t('progress.streak', 'Jours de série'), icon: <HugeiconsIcon icon={Flame} size={14} /> },
-    { value: stats?.totalVerses ?? 0, label: t('progress.versesMemorized', 'Verset(s) révisés'), icon: <HugeiconsIcon icon={BookOpen} size={14} /> },
+    { value: stats?.streakCount ?? 0, label: t('progress.streak', 'Jours de série'), icon: <DuoIcon icon={Flame} size={14} /> },
+    { value: stats?.totalVerses ?? 0, label: t('progress.versesMemorized', 'Verset(s) révisés'), icon: <DuoIcon icon={BookOpen} size={14} /> },
     {
       value: `${stats ? Math.round((stats.masteredVerses / Math.max(1, stats.totalVerses)) * 100) : 0}%`,
       label: t('progress.retention', 'Taux de rétention'),
-      icon: <HugeiconsIcon icon={TrendingUp} size={14} />,
+      icon: <DuoIcon icon={TrendingUp} size={14} />,
     },
   ];
 
@@ -120,7 +120,7 @@ export default function ReviewCalendarScreen() {
           className="flex h-10 w-10 items-center justify-center rounded-full bg-surface shadow-sm"
           aria-label="Mois précédent"
         >
-          <HugeiconsIcon icon={ChevronLeft} size={20} className="text-primary" />
+          <DuoIcon icon={ChevronLeft} size={20} className="text-primary" />
         </button>
         <h2 className="text-lg font-bold text-text-primary">
           {changeMonth(monthLabel)}
@@ -130,7 +130,7 @@ export default function ReviewCalendarScreen() {
           className="flex h-10 w-10 items-center justify-center rounded-full bg-surface shadow-sm"
           aria-label="Mois suivant"
         >
-          <HugeiconsIcon icon={ChevronRight} size={20} className="text-primary" />
+          <DuoIcon icon={ChevronRight} size={20} className="text-primary" />
         </button>
       </div>
 

@@ -10,7 +10,7 @@
 import { useState, useMemo } from 'react';
 import { useSearchParams, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { HugeiconsIcon } from '@hugeicons/react';
+import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   Download01Icon as Download,
   Loading03Icon as Loader2,
@@ -94,9 +94,9 @@ export default function ChapterScreen() {
             <div className="flex items-start gap-3">
               <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-surface-tint text-primary">
                 {status === 'downloading' ? (
-                  <HugeiconsIcon icon={Loader2} size={18} className="animate-spin" />
+                  <DuoIcon icon={Loader2} size={18} className="animate-spin" />
                 ) : (
-                  <HugeiconsIcon icon={Download} size={18} />
+                  <DuoIcon icon={Download} size={18} />
                 )}
               </span>
               <div className="min-w-0 flex-1">
@@ -128,7 +128,7 @@ export default function ChapterScreen() {
                 )}
                 {status === 'error' && (
                   <p className="mt-1 flex items-center gap-1 text-xs text-error">
-                    <HugeiconsIcon icon={AlertCircle} size={12} /> {error}
+                    <DuoIcon icon={AlertCircle} size={12} /> {error}
                   </p>
                 )}
               </div>
@@ -137,7 +137,7 @@ export default function ChapterScreen() {
                   onClick={cancelDownload}
                   className="flex shrink-0 items-center gap-1.5 rounded-full bg-surface-tint px-4 py-2 text-sm font-semibold text-text-secondary"
                 >
-                  <HugeiconsIcon icon={X} size={15} />
+                  <DuoIcon icon={X} size={15} />
                   {t('common.cancel', 'Annuler')}
                 </button>
               ) : (

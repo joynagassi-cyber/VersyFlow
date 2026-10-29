@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { HugeiconsIcon } from '@hugeicons/react';
+import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   CalendarClockIcon as CalendarClock,
   CompassIcon as Compass,
@@ -98,7 +98,7 @@ export function QuickDock() {
                 className="rounded-full p-1.5 text-text-muted active:bg-surface-tint"
                 aria-label={t('common.close', 'Fermer')}
               >
-                <HugeiconsIcon icon={X} size={20} />
+                <DuoIcon icon={X} size={20} />
               </button>
             </div>
 
@@ -113,7 +113,7 @@ export function QuickDock() {
                     className="flex flex-col items-center rounded-2xl bg-surface-tint/60 p-3 text-center transition active:scale-[0.97]"
                   >
                     <span className={cn('mb-2 flex h-11 w-11 items-center justify-center rounded-full', a.bg)}>
-                      <HugeiconsIcon icon={Icon} size={20} className={a.color} />
+                      <DuoIcon icon={Icon} size={20} className={a.color} />
                     </span>
                     <span className="text-[11px] font-semibold text-text-primary">
                       {t(a.key, DOCK_LABELS[a.key.split('.').pop() ?? ''])}

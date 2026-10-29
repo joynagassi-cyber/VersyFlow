@@ -2,7 +2,7 @@
 import { useState, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { HugeiconsIcon } from '@hugeicons/react';
+import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   Settings02Icon as Settings2,
   CheckIcon as Check,
@@ -110,7 +110,7 @@ export default function FlashcardScreen() {
           className="flex h-9 w-9 items-center justify-center rounded-full bg-surface shadow-sm"
           aria-label={t('common.close', 'Fermer')}
         >
-          <HugeiconsIcon icon={Settings2} size={18} className="text-text-secondary" />
+          <DuoIcon icon={Settings2} size={18} className="text-text-secondary" />
         </button>
       }
     >
@@ -156,9 +156,9 @@ export default function FlashcardScreen() {
                     }
                   >
                     {currentCard.mastered ? (
-                      <HugeiconsIcon icon={CheckCircle2} size={14} />
+                      <DuoIcon icon={CheckCircle2} size={14} />
                     ) : (
-                      <HugeiconsIcon icon={HelpCircle} size={14} />
+                      <DuoIcon icon={HelpCircle} size={14} />
                     )}
                     {currentCard.mastered
                       ? t('session.mastered', 'Maitrise')
@@ -176,14 +176,14 @@ export default function FlashcardScreen() {
                     </p>
                   </div>
                   <p className="flex items-center gap-2 text-xs text-text-muted">
-                    <HugeiconsIcon icon={RefreshCw} size={14} />
+                    <DuoIcon icon={RefreshCw} size={14} />
                     {t('session.tapToFlip', 'Tape pour voir la suite')}
                   </p>
                 </>
               ) : (
                 <>
                   <span className="inline-flex items-center gap-2 self-start rounded-full bg-surface-tint px-3 py-1.5 text-xs font-semibold text-primary">
-                    <HugeiconsIcon icon={BookOpen} size={14} />
+                    <DuoIcon icon={BookOpen} size={14} />
                     {t('session.fullVerse', 'Verset complet')}
                   </span>
                   <div>
@@ -195,7 +195,7 @@ export default function FlashcardScreen() {
                     </p>
                   </div>
                   <p className="flex items-center gap-2 text-xs text-text-muted">
-                    <HugeiconsIcon icon={RefreshCw} size={14} />
+                    <DuoIcon icon={RefreshCw} size={14} />
                     {t('session.tapToBack', 'Tape pour revenir')}
                   </p>
                 </>
@@ -207,11 +207,11 @@ export default function FlashcardScreen() {
         {/* Hints */}
         <div className="flex justify-around px-10 py-3 text-xs text-text-muted">
           <span className="flex items-center gap-2">
-            <HugeiconsIcon icon={Hand} size={18} />
+            <DuoIcon icon={Hand} size={18} />
             {t('session.swipeLeft', 'Glisser gauche: A revoir')}
           </span>
           <span className="flex items-center gap-2">
-            <HugeiconsIcon icon={Hand} size={18} className="-scale-x-100" />
+            <DuoIcon icon={Hand} size={18} className="-scale-x-100" />
             {t('session.swipeRight', 'Glisser droite: Maitrise')}
           </span>
         </div>
@@ -222,14 +222,14 @@ export default function FlashcardScreen() {
             onClick={() => advance('left')}
             className="flex flex-1 items-center justify-center gap-2 rounded-2xl border-2 border-error py-4 font-bold text-error active:scale-[0.99]"
           >
-            <HugeiconsIcon icon={RefreshCw} size={20} />
+            <DuoIcon icon={RefreshCw} size={20} />
             {t('session.review', 'A revoir')}
           </button>
           <button
             onClick={() => advance('right')}
             className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-success py-4 font-bold text-white active:scale-[0.99]"
           >
-            <HugeiconsIcon icon={Check} size={20} />
+            <DuoIcon icon={Check} size={20} />
             {t('session.mastered', 'Maitrise')}
           </button>
         </div>

@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { HugeiconsIcon } from '@hugeicons/react';
+import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   CheckIcon as Check,
 } from '@hugeicons/core-free-icons';
@@ -54,7 +54,7 @@ export default function LanguageSettingsScreen() {
               </span>
               {active && (
                 <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-on-primary">
-                  <HugeiconsIcon icon={Check} size={14} />
+                  <DuoIcon icon={Check} size={14} />
                 </span>
               )}
             </button>

@@ -11,7 +11,7 @@
 
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { HugeiconsIcon } from '@hugeicons/react';
+import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   BarChartIcon as BarChart3,
   ListChecksIcon as ListChecks,
@@ -37,7 +37,7 @@ export default function SettingsDataScreen() {
         {/* Highlights summary card */}
         <div className="rounded-2xl bg-surface p-4 shadow-sm">
           <p className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-text-muted">
-            <HugeiconsIcon icon={ListChecks} size={13} className="text-primary" />
+            <DuoIcon icon={ListChecks} size={13} className="text-primary" />
             {t('settings.dataHighlights', 'Mes highlights')}
           </p>
           <p className="text-sm text-text-secondary">

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { HugeiconsIcon } from '@hugeicons/react';
+import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   PencilIcon as Pencil,
   LogOutIcon as LogOut,
@@ -110,7 +110,7 @@ export default function ProfileScreen() {
                   className="shrink-0 rounded-full bg-surface/20 p-1.5 active:bg-surface/30"
                   aria-label={t('common.edit', 'Modifier')}
                 >
-                  <HugeiconsIcon icon={Pencil} size={14} />
+                  <DuoIcon icon={Pencil} size={14} />
                 </button>
               </div>
 
@@ -184,18 +184,18 @@ export default function ProfileScreen() {
         {/* ── Actions ── */}
         <div className="flex flex-col gap-3">
           <Button variant="outline" onClick={() => navigate('/settings/backup')}>
-            <HugeiconsIcon icon={Download} size={18} />
+            <DuoIcon icon={Download} size={18} />
             {t('settings.exportData', 'Exporter mes donnees')}
           </Button>
           {profiles.length > 1 && (
             <Button variant="ghost" onClick={() => navigate('/profile/select')}>
-              <HugeiconsIcon icon={UsersRound} size={18} />
+              <DuoIcon icon={UsersRound} size={18} />
               {t('profile.manageProfiles', 'Gerer les profils')}
             </Button>
           )}
           {isAuthenticated && (
             <Button variant="ghost" className={cn('text-error')} onClick={() => fireAndForget(handleSignOut(), 'profile:signOut')}>
-              <HugeiconsIcon icon={LogOut} size={18} />
+              <DuoIcon icon={LogOut} size={18} />
               {t('nav.signOut', 'Se deconnecter')}
             </Button>
           )}

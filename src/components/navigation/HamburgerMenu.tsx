@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { HugeiconsIcon } from '@hugeicons/react';
+import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   Cancel01Icon as X,
 } from '@hugeicons/core-free-icons';
@@ -62,7 +62,7 @@ export function HamburgerMenu() {
             className="rounded-full p-1.5 active:bg-surface-tint"
             aria-label="Fermer"
           >
-            <HugeiconsIcon icon={X} size={20} className="text-text-muted" />
+            <DuoIcon icon={X} size={20} className="text-text-muted" />
           </button>
         </div>
 

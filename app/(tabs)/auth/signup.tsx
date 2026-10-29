@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
-import { HugeiconsIcon } from '@hugeicons/react';
+import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   Loading03Icon as Loader2,
   CheckmarkCircle02Icon as CheckCircle2,
@@ -60,14 +60,14 @@ export default function SignupScreen({ onSkip }: Props) {
     return (
       <FullScreenPage>
         <div className="flex w-full flex-col items-center gap-4 text-center">
-          <HugeiconsIcon icon={CheckCircle2} size={56} className="text-success" />
+          <DuoIcon icon={CheckCircle2} size={56} className="text-success" />
           <h1 className="text-2xl font-bold text-text-primary">
             {t('auth.signupSuccess', 'Inscription réussie !')}
           </h1>
           <p className="text-sm text-text-muted">
             {t('auth.signupSuccessHint', 'Vous êtes identifié(e) sur cet appareil.')}
           </p>
-          <HugeiconsIcon icon={Loader2} size={24} className="animate-spin text-primary" />
+          <DuoIcon icon={Loader2} size={24} className="animate-spin text-primary" />
         </div>
       </FullScreenPage>
     );
@@ -109,7 +109,7 @@ export default function SignupScreen({ onSkip }: Props) {
             disabled={loading}
           >
             {loading ? (
-              <HugeiconsIcon icon={Loader2} size={18} className="animate-spin" />
+              <DuoIcon icon={Loader2} size={18} className="animate-spin" />
             ) : (
               t('auth.continue', 'Continuer')
             )}

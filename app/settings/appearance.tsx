@@ -1,9 +1,9 @@
 import { useTranslation } from 'react-i18next';
-import { HugeiconsIcon } from '@hugeicons/react';
+import { DuoIcon } from '@/components/ui/DuoIcon';
 import { Sun01Icon, Moon01Icon, ComputerIcon, Tick01Icon } from '@hugeicons/core-free-icons';
 
 function Check({ size = 18, className }: { size?: number; className?: string }) {
-  return <HugeiconsIcon icon={Tick01Icon} size={size} className={className} color="currentColor" />;
+  return <DuoIcon icon={Tick01Icon} size={size} className={className} color="currentColor" />;
 }
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { useAppearanceStore } from '@/store/appearance-store';
@@ -147,7 +147,7 @@ export default function AppearanceScreen() {
                       active ? 'bg-primary text-on-primary' : 'bg-surface-tint text-primary',
                     )}
                   >
-                    <HugeiconsIcon icon={Icon} size={19} />
+                    <DuoIcon icon={Icon} size={19} />
                   </span>
                   <span className={cn('flex-1 text-sm font-medium', active ? 'text-primary' : 'text-text-primary')}>
                     {label}

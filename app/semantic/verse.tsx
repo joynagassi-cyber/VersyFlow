@@ -13,7 +13,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { HugeiconsIcon } from '@hugeicons/react';
+import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   BrainCircuitIcon as BrainCircuit,
   MapIcon as Map,
@@ -92,7 +92,7 @@ export default function VerseView() {
         {/* Verse text */}
         <div className="mb-5 rounded-xl bg-surface p-4 shadow-sm">
           <div className="mb-2 flex items-center gap-2">
-            <HugeiconsIcon icon={FileText} size={16} className="text-primary" />
+            <DuoIcon icon={FileText} size={16} className="text-primary" />
             <span className="text-sm font-semibold text-text-primary">
               {verseRef ? formatVerseKey(verseRef) : ''}
             </span>
@@ -107,7 +107,7 @@ export default function VerseView() {
         {/* Concepts */}
         <section className="mb-5">
           <h2 className="mb-2 flex items-center gap-1.5 text-sm font-semibold text-text-tertiary">
-            <HugeiconsIcon icon={BrainCircuit} size={14} className="text-primary" />
+            <DuoIcon icon={BrainCircuit} size={14} className="text-primary" />
             {t('semantic.concept', 'Concept')}s — {t('semantic.related', 'Concepts liés')}
           </h2>
           {concepts.length === 0 ? (
@@ -128,7 +128,7 @@ export default function VerseView() {
                       {role === 'PRIMARY' ? t('semantic.primary', 'Principal') : role}
                     </p>
                   </div>
-                  <HugeiconsIcon icon={ChevronRight} size={16} className="text-primary" />
+                  <DuoIcon icon={ChevronRight} size={16} className="text-primary" />
                 </button>
               ))}
             </div>
@@ -138,7 +138,7 @@ export default function VerseView() {
         {/* Cross-refs / related verses */}
         <section className="mb-5">
           <h2 className="mb-2 flex items-center gap-1.5 text-sm font-semibold text-text-tertiary">
-            <HugeiconsIcon icon={BookMarked} size={14} className="text-primary" />
+            <DuoIcon icon={BookMarked} size={14} className="text-primary" />
             {t('semantic.crossRefs', 'Références croisées')}
           </h2>
           {relatedVerses.length === 0 ? (
@@ -157,7 +157,7 @@ export default function VerseView() {
                     </p>
                     <p className="text-xs text-text-muted">{r.relation.type}</p>
                   </div>
-                  <HugeiconsIcon icon={ChevronRight} size={16} className="text-primary" />
+                  <DuoIcon icon={ChevronRight} size={16} className="text-primary" />
                 </button>
               ))}
             </div>
@@ -167,7 +167,7 @@ export default function VerseView() {
         {/* Community */}
         <section>
           <h2 className="mb-2 flex items-center gap-1.5 text-sm font-semibold text-text-tertiary">
-            <HugeiconsIcon icon={Map} size={14} className="text-primary" />
+            <DuoIcon icon={Map} size={14} className="text-primary" />
             {t('semantic.community', 'Communauté')}
           </h2>
           {community ? (
@@ -181,7 +181,7 @@ export default function VerseView() {
                   <p className="text-xs text-text-muted">{community.description}</p>
                 ) : null}
               </div>
-              <HugeiconsIcon icon={ChevronRight} size={16} className="text-primary" />
+              <DuoIcon icon={ChevronRight} size={16} className="text-primary" />
             </button>
           ) : (
             <p className="text-sm text-text-muted">{t('semantic.noCommunity', 'Aucune communauté')}</p>

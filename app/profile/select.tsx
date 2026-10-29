@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { HugeiconsIcon } from '@hugeicons/react';
+import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   PlusSignIcon as Plus,
   CheckIcon as Check,
@@ -76,14 +76,14 @@ export default function ProfileSelectionScreen() {
                     </span>
                   )}
                 </span>
-                {active && <HugeiconsIcon icon={Check} size={20} className="text-primary" />}
+                {active && <DuoIcon icon={Check} size={20} className="text-primary" />}
               </button>
             );
           })}
         </div>
 
         <Button variant="outline" className="w-full" onClick={() => setShowCreate((s) => !s)}>
-          <HugeiconsIcon icon={Plus} size={18} />
+          <DuoIcon icon={Plus} size={18} />
           {t('profile.create', 'Creer un profil')}
         </Button>
 

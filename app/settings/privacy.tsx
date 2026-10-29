@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { HugeiconsIcon } from '@hugeicons/react';
+import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   ChevronRightIcon as ChevronRight,
   Download01Icon as Download,
@@ -62,14 +62,14 @@ export default function PrivacyScreen() {
           </p>
           <button className="flex w-full items-center justify-between px-4 py-3.5">
             <span className="flex items-center gap-3 text-base text-text-primary">
-              <HugeiconsIcon icon={Download} size={18} className="text-text-muted" />
+              <DuoIcon icon={Download} size={18} className="text-text-muted" />
               {t('settings.downloadData', 'Telecharger mes donnees')}
             </span>
-            <HugeiconsIcon icon={ChevronRight} size={18} className="text-text-muted" />
+            <DuoIcon icon={ChevronRight} size={18} className="text-text-muted" />
           </button>
           <button className="flex w-full items-center justify-between px-4 py-3.5">
             <span className="flex items-center gap-3 text-base font-medium text-error">
-              <HugeiconsIcon icon={Trash2} size={18} />
+              <DuoIcon icon={Trash2} size={18} />
               {t('settings.deleteAccount', 'Supprimer mon compte')}
             </span>
             <span className="text-sm font-semibold text-error">

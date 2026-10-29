@@ -6,7 +6,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';import { useTranslation } from 'react-i18next';
-import { HugeiconsIcon } from '@hugeicons/react';
+import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   Cancel01Icon as X,
   ArrowLeft01Icon as ArrowLeft,
@@ -321,7 +321,7 @@ export default function MemorizationSession() {
           onClick={() => fireAndForget(closeSession(), 'session:abandon')}
           className="flex items-center gap-1 text-sm font-semibold text-text-secondary"
         >
-          <HugeiconsIcon icon={X} size={16} />
+          <DuoIcon icon={X} size={16} />
           {t('common.close', 'Fermer')}
         </button>
       }
@@ -376,7 +376,7 @@ export default function MemorizationSession() {
             refresh();
           }}
         >
-          <HugeiconsIcon icon={ArrowLeft} size={15} />
+          <DuoIcon icon={ArrowLeft} size={15} />
           {t('session.goBack', 'Retour')}
         </Button>
         <Button
@@ -384,13 +384,13 @@ export default function MemorizationSession() {
           onClick={() => fireAndForget(proceedSession(), 'session:proceed')}
         >
           {t('session.proceed', 'Continuer')}
-          <HugeiconsIcon icon={ArrowRight} size={15} />
+          <DuoIcon icon={ArrowRight} size={15} />
         </Button>
       </div>
 
       {complete && (
         <div className="mt-5 flex items-center justify-center gap-2 rounded-xl bg-success-light p-4 text-success">
-          <HugeiconsIcon icon={CheckCircle} size={18} />
+          <DuoIcon icon={CheckCircle} size={18} />
           <span className="text-base font-semibold">
             {t('session.passageComplete', 'Passage terminé!')}
           </span>

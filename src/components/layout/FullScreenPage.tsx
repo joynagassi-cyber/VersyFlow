@@ -12,7 +12,7 @@ import {
   IonButtons,
   IonButton,
 } from '@ionic/react';
-import { HugeiconsIcon } from '@hugeicons/react';
+import { DuoIcon } from '@/components/ui/DuoIcon';
 import { ArrowLeft01Icon } from '@hugeicons/core-free-icons';
 import { useNavigate } from 'react-router-dom';
 import { cn } from '@/lib/utils';
@@ -62,7 +62,7 @@ export function FullScreenPage({
                   className="h-10 w-10 p-0"
                   shape="round"
                 >
-                  <HugeiconsIcon icon={ArrowLeft01Icon} size={22} color="var(--color-text-secondary)" />
+                  <DuoIcon icon={ArrowLeft01Icon} size={22} color="var(--color-text-secondary)" />
                 </IonButton>
               </IonButtons>
             )}

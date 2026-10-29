@@ -8,7 +8,7 @@
 
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { HugeiconsIcon } from '@hugeicons/react';
+import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   Home01Icon,
   BookOpen01Icon,
@@ -57,7 +57,7 @@ export function BottomTabs() {
                   active ? 'bg-primary/12' : 'bg-transparent',
                 )}
               >
-                <HugeiconsIcon
+                <DuoIcon
                   icon={Icon}
                   size={23}
                   strokeWidth={active ? 2.4 : 1.8}

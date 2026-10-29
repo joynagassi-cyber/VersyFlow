@@ -16,7 +16,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import i18next from 'i18next';
-import { HugeiconsIcon } from '@hugeicons/react';
+import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   BrainCircuitIcon as BrainCircuit,
   CheckIcon as Check,
@@ -63,7 +63,7 @@ function ActionButton({
         active ? 'bg-primary/10 text-primary' : 'text-text-secondary active:bg-surface-tint',
       )}
     >
-      <HugeiconsIcon icon={Icon} size={19} />
+      <DuoIcon icon={Icon} size={19} />
       <span className="leading-tight">{label}</span>
     </button>
   );
@@ -384,7 +384,7 @@ export default function VerseActionBar({
               </p>
               {noteSaved ? (
                 <span className="flex items-center gap-1 text-xs font-semibold text-success">
-                  <HugeiconsIcon icon={Check} size={13} /> {t('common.saved', 'Enregistré')}
+                  <DuoIcon icon={Check} size={13} /> {t('common.saved', 'Enregistré')}
                 </span>
               ) : null}
             </div>

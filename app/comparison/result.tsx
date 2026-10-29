@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { HugeiconsIcon } from '@hugeicons/react';
+import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   ArrowRight01Icon as ArrowRight,
   CheckIcon as Check,
@@ -77,7 +77,7 @@ export default function ComparisonResultScreen({ record, userAnswer }: Props) {
               {lastVerification.substitutedWords.map((sub, i) => (
                 <p key={i} className="text-sm">
                   <span className="text-text-primary">{sub.expected}</span>
-                  <HugeiconsIcon icon={ArrowRight} size={12} className="mx-1 inline text-text-muted" />
+                  <DuoIcon icon={ArrowRight} size={12} className="mx-1 inline text-text-muted" />
                   <span className="text-error">{sub.got}</span>
                 </p>
               ))}
@@ -127,7 +127,7 @@ export default function ComparisonResultScreen({ record, userAnswer }: Props) {
 
         <div className="space-y-3 pt-2">
           <Button variant="default" className="w-full" onClick={() => navigate(-1)}>
-            <HugeiconsIcon icon={Check} size={18} />
+            <DuoIcon icon={Check} size={18} />
             {t('comparison.finish', 'Terminer')}
           </Button>
           <Button

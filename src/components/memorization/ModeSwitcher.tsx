@@ -15,7 +15,7 @@
  */
 
 import { useState } from 'react';
-import { HugeiconsIcon } from '@hugeicons/react';
+import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   ChevronDownIcon as ChevronDown,
   ChevronRightIcon as ChevronRight,
@@ -76,7 +76,7 @@ export function ModeSwitcher({
                 isRecommended && 'recommended',
               )}
             >
-              <HugeiconsIcon icon={Icon} size={14} />
+              <DuoIcon icon={Icon} size={14} />
               {mode.label}
               {isRecommended && <span className="badge">PROCHAIN</span>}
             </button>
@@ -93,7 +93,7 @@ export function ModeSwitcher({
           className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-surface-tint text-text-secondary active:scale-90"
           aria-label={showAll ? 'Replier' : 'Déplier'}
         >
-          {showAll ? <HugeiconsIcon icon={ChevronDown} size={16} /> : <HugeiconsIcon icon={ChevronRight} size={16} />}
+          {showAll ? <DuoIcon icon={ChevronDown} size={16} /> : <DuoIcon icon={ChevronRight} size={16} />}
         </button>
       </div>
     </div>

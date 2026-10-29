@@ -16,7 +16,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { HugeiconsIcon } from '@hugeicons/react';
+import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   ArrowRight01Icon as ArrowRight,
   CheckIcon as Check,
@@ -221,14 +221,14 @@ export function ModeReveal({
                 {isRevealed ? (
                   <>
                     <span>{block}</span>
-                    <span className="mem-check"><HugeiconsIcon icon={Check} size={10} /></span>
+                    <span className="mem-check"><DuoIcon icon={Check} size={10} /></span>
                   </>
                 ) : (
                   <>
                     <span className="select-none">{maskDots(block.length)}</span>
                     {isCurrent && (
                       <span className="mem-hint">
-                        <HugeiconsIcon icon={ArrowRight} size={11} />
+                        <DuoIcon icon={ArrowRight} size={11} />
                         {t('workspace.tapToReveal', 'Touchez pour révéler')}
                         {autoRevealLeft !== null && autoRevealLeft > 0 && (
                           <span className="ml-2 tabular-nums text-text-tertiary">
@@ -252,12 +252,12 @@ export function ModeReveal({
             disabled={revealed === 0}
             className="mem-pill-ghost"
           >
-            <HugeiconsIcon icon={ArrowRight} className="rotate-180" size={14} />
+            <DuoIcon icon={ArrowRight} className="rotate-180" size={14} />
             {t('workspace.prev', 'Précédent')}
           </button>
           {!allRevealed && (
             <button type="button" onClick={advance} className="mem-pill" style={{ width: 'auto', padding: '12px 20px' }}>
-              <HugeiconsIcon icon={Play} size={14} />
+              <DuoIcon icon={Play} size={14} />
               {t('workspace.revealNext', 'Révéler le bloc')}
             </button>
           )}
@@ -283,7 +283,7 @@ export function ModeReveal({
           <div className="flex items-center gap-3">
             <span className="mem-success-celebration">
               <span className="ring" />
-              <span className="ic"><HugeiconsIcon icon={Check} size={22} /></span>
+              <span className="ic"><DuoIcon icon={Check} size={22} /></span>
             </span>
             <div className="min-w-0 flex-1">
               <p className="text-sm font-extrabold text-success">
@@ -302,7 +302,7 @@ export function ModeReveal({
             onClick={onNextMode}
             className="mem-cta-success mt-4"
           >
-            <HugeiconsIcon icon={ArrowRight} size={16} />
+            <DuoIcon icon={ArrowRight} size={16} />
             {t('workspace.passNextMode', 'Passer au mode suivant')}
           </button>
         </div>

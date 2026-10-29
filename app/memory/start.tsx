@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { HugeiconsIcon } from '@hugeicons/react';
+import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   EyeIcon as Eye,
   SparklesIcon as Sparkles,
@@ -94,7 +94,7 @@ export default function MemorizationStartScreen({ verseData }: Props) {
                     (active ? 'bg-primary text-on-primary' : 'bg-surface-tint text-primary')
                   }
                 >
-                  <HugeiconsIcon icon={Icon} size={22} />
+                  <DuoIcon icon={Icon} size={22} />
                 </span>
                 <span className="min-w-0 flex-1">
                   <span className="block text-base font-bold text-text-primary">
@@ -103,7 +103,7 @@ export default function MemorizationStartScreen({ verseData }: Props) {
                   <span className="text-sm text-text-muted">{t(s.key + '.desc', s.id)}</span>
                 </span>
                 {active ? (
-                  <HugeiconsIcon icon={ChevronRight} size={18} className="text-primary" />
+                  <DuoIcon icon={ChevronRight} size={18} className="text-primary" />
                 ) : null}
               </button>
             );
