@@ -31,7 +31,28 @@
     </style>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <!-- Splash statique : visible immédiatement, remplacé dès que React rend.
+           Si le JS échoue, le message d'erreur s'affiche au lieu d'un écran blanc. -->
+      <div
+        id="boot-splash"
+        style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#fbf9f9;color:#d81b60;font-family:Georgia,serif;font-size:22px;font-weight:700"
+      >
+        VersyFlow…
+      </div>
+    </div>
+    <script>
+      window.addEventListener('error', function (e) {
+        var el = document.getElementById('boot-splash');
+        if (el) {
+          el.style.color = '#ba1a1a';
+          el.style.fontSize = '14px';
+          el.style.padding = '24px';
+          el.textContent =
+            'Erreur de démarrage : ' + (e.message || 'script introuvable');
+        }
+      });
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

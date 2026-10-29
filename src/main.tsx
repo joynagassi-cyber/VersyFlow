@@ -409,27 +409,49 @@ const root = createRoot(rootElement);
  * the same async block, so deferring the render there guarantees both
  * the store and the translations are ready before the first paint.
  */
-bootStoresPromise.then(
-  () => {
-    root.render(
-      <I18nextProvider i18n={i18next}>
-        <Suspense fallback={null}>
-          <App />
-        </Suspense>
-      </I18nextProvider>,
-    );
-  },
-  (error: unknown) => {
-    console.error('Failed to initialise i18n/stores at boot:', error);
-    // Still render the app — a i18n failure must not leave the user
-    // on a blank screen; components fall back to their English
-    // literals when i18next is not ready.
-    root.render(
-      <I18nextProvider i18n={i18next}>
-        <Suspense fallback={null}>
-          <App />
-        </Suspense>
-      </I18nextProvider>,
-    );
-  },
-);
+function BootSplash() {
+  return (
+    <div
+      style={{
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: '#fbf9f9',
+        color: '#d81b60',
+        fontFamily: 'Georgia, serif',
+        fontSize: 22,
+        fontWeight: 700,
+      }}
+    >
+      VersyFlow…
+    </div>
+  );
+}
+
+let rendered = false;
+function renderApp() {
+  if (rendered) return;
+  rendered = true;
+  root.render(
+    <I18nextProvider i18n={i18next}>
+      <Suspense fallback={<BootSplash />}>
+        <App />
+      </Suspense>
+    </I18nextProvider>,
+  );
+}
+
+// Ne jamais rester sur un écran blanc : si l'initialisation (i18n, stores,
+// sync…) traîne ou échoue, on rend quand même l'app après 2 s. Les
+// composants ont des littéraux de secours quand i18next n'est pas prêt.
+const bootTimeout = new Promise<void>((resolve) => {
+  setTimeout(() => {
+    console.warn('[boot] Initialisation lente — rendu de secours après 2 s.');
+    resolve();
+  }, 2000);
+});
+Promise.race([bootStoresPromise, bootTimeout]).then(renderApp, (error: unknown) => {
+  console.error('Failed to initialise i18n/stores at boot:', error);
+  renderApp();
+});
