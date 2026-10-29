@@ -42,25 +42,34 @@ export interface PowerSyncSyncError {
  * @param powersyncUrl - The PowerSync Cloud endpoint (`VITE_POWERSYNC_URL`).
  */
 export class SupabasePowerSyncConnector implements PowerSyncBackendConnector {
-  private readonly supabase: SupabaseClient;
+  private readonly supabase: SupabaseClient | null;
   private readonly powersyncUrl: string;
+
+  /** False when Supabase/PowerSync are not configured (local-only mode). */
+  readonly isConfigured: boolean;
 
   constructor(auth: SupabaseAuthService, powersyncUrl: string) {
     const url = import.meta.env.VITE_SUPABASE_URL || import.meta.env.SUPABASE_URL;
     const anonKey =
       import.meta.env.VITE_SUPABASE_ANON_KEY || import.meta.env.SUPABASE_ANON_KEY;
 
-    if (!url || !anonKey) {
-      throw new Error('[PowerSync] Supabase credentials not configured');
-    }
-    if (!powersyncUrl) {
-      throw new Error('[PowerSync] PowerSync endpoint (VITE_POWERSYNC_URL) not configured');
+    // Ne jamais planter au démarrage : sans configuration cloud, la synchro
+    // est simplement inactive (fetchCredentials → null, PowerSync au repos).
+    // (Avant : ces `throw`, via l'instanciation au niveau module dans
+    // sync-store, cassaient le démarrage sans `.env`.)
+    if (!url || !anonKey || !powersyncUrl) {
+      console.warn('[PowerSync] Cloud non configuré — synchronisation inactive.');
+      this.supabase = null;
+      this.isConfigured = false;
+      this.powersyncUrl = powersyncUrl;
+      return;
     }
 
     // Data-API client created with the anon (publishable) key. The user JWT is
     // bound per-operation via setSession so RLS applies. Never the service key.
     this.supabase = createClient(url, anonKey);
     this.powersyncUrl = powersyncUrl;
+    this.isConfigured = true;
   }
 
   /**
@@ -69,6 +78,7 @@ export class SupabasePowerSyncConnector implements PowerSyncBackendConnector {
    * Throws on a transient error so PowerSync retries later.
    */
   async fetchCredentials(): Promise<{ endpoint: string; token: string } | null> {
+    if (!this.supabase) return null;
     // supabase-js v2 returns `{ data: { session }, error }` — destructure `data`.
     const { data, error } = await this.supabase.auth.getSession();
     if (error) {
@@ -87,6 +97,7 @@ export class SupabasePowerSyncConnector implements PowerSyncBackendConnector {
    * and retried after the configured wait period.
    */
   async uploadData(database: CommonPowerSyncDatabase): Promise<void> {
+    if (!this.supabase) throw new Error('[PowerSync] Cloud non configuré');
     // Bind the user session so PostgREST requests are signed with the user JWT.
     const { data, error } = await this.supabase.auth.getSession();
     const session = data?.session;
@@ -117,6 +128,8 @@ export class SupabasePowerSyncConnector implements PowerSyncBackendConnector {
    * upserts key on the stable `id`.
    */
   private async uploadBatch(entries: CrudEntry[]): Promise<void> {
+    if (!this.supabase) throw new Error('[PowerSync] Cloud non configuré');
+    const supabase = this.supabase;
     const byTable = new Map<string, CrudEntry[]>();
     for (const entry of entries) {
       const bucket = byTable.get(entry.table);
@@ -146,7 +159,7 @@ export class SupabasePowerSyncConnector implements PowerSyncBackendConnector {
       }
 
       if (upserts.length > 0) {
-        const { error } = await this.supabase
+        const { error } = await supabase
           .from(table)
           .upsert(upserts, { onConflict: 'id' });
         if (error) {
@@ -157,7 +170,7 @@ export class SupabasePowerSyncConnector implements PowerSyncBackendConnector {
       }
 
       if (deletes.length > 0) {
-        const { error } = await this.supabase
+        const { error } = await supabase
           .from(table)
           .delete()
           .in('id', deletes);
