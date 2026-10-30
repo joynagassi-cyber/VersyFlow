@@ -207,7 +207,7 @@ export default function ReviewCalendarScreen() {
               <span className="flex h-8 w-8 items-center justify-center rounded-full bg-surface-tint text-primary">
                 {item.icon}
               </span>
-              <p className="mt-2 text-2xl font-extrabold text-primary">{item.value}</p>
+              <p className="stat-value mt-2 text-2xl">{item.value}</p>
               <p className="text-xs text-text-tertiary">{item.label}</p>
             </div>
           ))}

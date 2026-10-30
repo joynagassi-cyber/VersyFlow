@@ -55,15 +55,15 @@ function ratingConfig(rating: Rating | string) {
       : rating;
   switch (r) {
     case Rating.AGAIN:
-      return { cls: 'bg-error text-on-status', label: 'A revoir', Icon: RefreshCw };
+      return { cls: 'bg-error text-on-status', labelKey: 'session.ratingAgain', label: 'À revoir', Icon: RefreshCw };
     case Rating.HARD:
-      return { cls: 'bg-warning text-on-status', label: 'Difficile', Icon: RefreshCw };
+      return { cls: 'bg-warning text-on-status', labelKey: 'session.ratingHard', label: 'Difficile', Icon: RefreshCw };
     case Rating.GOOD:
-      return { cls: 'bg-success text-on-status', label: 'Bon', Icon: CheckCircle2 };
+      return { cls: 'bg-success text-on-status', labelKey: 'session.ratingGood', label: 'Bon', Icon: CheckCircle2 };
     case Rating.EASY:
-      return { cls: 'bg-info text-on-status', label: 'Facile', Icon: CheckCircle2 };
+      return { cls: 'bg-info text-on-status', labelKey: 'session.ratingEasy', label: 'Facile', Icon: CheckCircle2 };
     default:
-      return { cls: 'bg-primary text-on-primary', label: 'Bon', Icon: CheckCircle2 };
+      return { cls: 'bg-primary text-on-primary', labelKey: 'session.ratingGood', label: 'Bon', Icon: CheckCircle2 };
   }
 }
 
@@ -198,7 +198,7 @@ export default function ReviewHistoryScreen() {
           </div>
           <div className="mt-4 grid grid-cols-3 divide-x divide-[color:var(--color-divider)] text-center">
             <div>
-              <p className="text-xl font-extrabold text-primary tabular-nums">{verse.totalReviews}</p>
+              <p className="stat-value text-xl">{verse.totalReviews}</p>
               <p className="text-2xs text-text-muted">{t('history.reviews', 'Revisions')}</p>
             </div>
             <div>
@@ -208,7 +208,7 @@ export default function ReviewHistoryScreen() {
               <p className="text-2xs text-text-muted">{t('history.stability', 'Stabilite')}</p>
             </div>
             <div>
-              <p className="text-xl font-extrabold text-primary">{progress}%</p>
+              <p className="stat-value text-xl">{progress}%</p>
               <p className="text-2xs text-text-muted">{t('history.success', 'Reussite')}</p>
             </div>
           </div>
@@ -241,7 +241,7 @@ export default function ReviewHistoryScreen() {
                       <span
                         className={'rounded-full px-2.5 py-0.5 text-xs font-semibold ' + cfg.cls}
                       >
-                        {cfg.label}
+                        {t(cfg.labelKey, cfg.label)}
                       </span>
                     </div>
                     <div className="flex gap-4 text-xs">

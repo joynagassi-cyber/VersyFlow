@@ -133,7 +133,7 @@ export function ModeWrite({
             <span className="mem-label">{t('workspace.result', 'RÉSULTAT')} · {t('workspace.diffWord', 'diff mot à mot')}</span>
             <span
               className={cn(
-                'text-2xl font-extrabold',
+                'stat-value text-2xl',
                 verified.matchScore >= 0.9
                   ? 'text-success'
                   : verified.matchScore >= 0.7

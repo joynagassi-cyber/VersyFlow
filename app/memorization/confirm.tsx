@@ -62,7 +62,7 @@ export default function MemorizationConfirm() {
           <span className="text-sm text-text-muted">
             {t('session.nextReview', 'Prochain rappel')}
           </span>
-          <span className="text-3xl font-bold text-primary">{interval}j</span>
+          <span className="stat-value text-3xl">{interval}j</span>
         </div>
         <div className="mt-4 flex items-center justify-between border-t border-divider pt-4">
           <span className="flex items-center gap-1.5 text-sm text-text-muted">

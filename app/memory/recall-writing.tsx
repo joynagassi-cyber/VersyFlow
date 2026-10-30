@@ -121,7 +121,7 @@ export default function RecallWritingScreen() {
               <span className="text-xs font-semibold uppercase tracking-wide text-text-muted">
                 {t('recallWriting.matchScore', 'Similarite')}
               </span>
-              <span className="text-3xl font-extrabold" style={{ color: scoreColor }}>
+              <span className="stat-value text-3xl">
                 {Math.round(result.matchScore * 100)}%
               </span>
             </div>

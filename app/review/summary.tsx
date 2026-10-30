@@ -98,7 +98,7 @@ export default function ReviewSummaryScreen() {
             <span className="flex h-9 w-9 items-center justify-center rounded-full bg-surface-tint text-primary">
               {card.icon}
             </span>
-            <p className="mt-2 text-2xl font-bold text-text-primary">{card.value}</p>
+            <p className="stat-value mt-2 text-2xl">{card.value}</p>
             <p className="text-xs text-text-muted">{card.label}</p>
           </div>
         ))}

@@ -163,6 +163,8 @@ Trois détails mesurés après les lots E–F, et corrigés au niveau système.
 | Titres de carte | **23** `<p class="text-base font-bold text-text-primary">` dans 15 fichiers alors que `h1|h2|h3` portent la serif du preset : deux rôles de titre pour la même fonction | `.card-title` (serif du preset, 16 px, graisse 400) porté par `<h2>`/`<h3>` quand la carte est un contenu, par `<span>` quand la carte **est** une commande |
 | Statuts dupliqués en français | `« N verset(s) exporte(s) »` concaténé dans l'écran, et des clés `settings.backup.*` qui ne se résolvaient pas (`settings.backup` est une **chaîne**, pas un objet) | `settings.backupScreen.*` en `fr` et `en` (exporté / importé / échec / fichier illisible), plus les deux explications de bascule |
 
+| Chiffres clés en sans-serif gras | **11** grands nombres encore en `font-extrabold` (scores, compteurs, `404`, jours avant rappel) alors que `.stat-value` existait | `.stat-value` partout (serif, tabulaire, `--acc-text`) ; seuls les logotypes et les pastilles d'état gardent leur graisse |
+| Étiquettes de note en français | `« A revoir », « Difficile », « Bon », « Facile »` écrits dans `History.tsx` | Clés `session.rating*` (déjà traduites en 45 langues) |
 | Chargements en phrase | `progress.tsx` posait « Chargement des statistiques… » dans une carte alors que 6 écrans avaient déjà un squelette | `ProgressSkeleton` : quatre tuiles puis deux cartes aux mêmes paddings que le vrai contenu, `role="status"` + `aria-busy` + libellé `sr-only` |
 
 Contrat : `tests/design/controls-and-headings.test.ts` (7) — aucun faux

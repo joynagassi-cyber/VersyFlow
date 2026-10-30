@@ -113,3 +113,47 @@ describe('titres de carte — un seul rôle pour la même fonction', () => {
     expect(text, 'et elle a un nom accessible').toMatch(/aria-label=\{t\('common\.expandCollapse'/);
   });
 });
+
+describe('chiffres clés — une seule main', () => {
+  const all = screens();
+  const brandFiles = [
+    // Logotype : le nom du produit n'est pas un chiffre clé.
+    'app/splash.tsx',
+    'src/components/navigation/DesktopRail.tsx',
+    'src/components/navigation/HamburgerMenu.tsx',
+    'app/(tabs)/settings.tsx',
+    'app/settings/index.tsx',
+  ];
+
+  it('aucun grand chiffre en `font-extrabold` sans `.stat-value`', () => {
+    const offenders = all
+      .filter(({ path }) => !brandFiles.includes(path))
+      .filter(({ text }) =>
+        /\btext-(?:2xl|3xl|4xl|5xl)\b[^"'`]{0,60}\bfont-extrabold\b|\bfont-extrabold\b[^"'`]{0,60}\btext-(?:2xl|3xl|4xl|5xl)\b/.test(
+          text,
+        ),
+      )
+      .map(({ path }) => path);
+    expect(offenders).toEqual([]);
+  });
+
+  it('les écrans à statistiques portent `.stat-value`', () => {
+    for (const path of [
+      'app/analytics/dashboard.tsx',
+      'app/review/History.tsx',
+      'app/review/summary.tsx',
+      'app/review/calendar.tsx',
+      'app/comparison/result.tsx',
+    ]) {
+      expect(read(path), `${path} doit styler ses chiffres avec .stat-value`).toContain('stat-value');
+    }
+    // `progress.tsx` porte son échelle dans la feuille (grille dédiée) : c'est
+    // le même rendu `.stat-value`, écrit une fois pour les quatre tuiles.
+    expect(read('src/styles/globals.css')).toMatch(/\.progress-stat strong[\s\S]{0,160}?var\(--font-serif/);
+  });
+
+  it('un chiffre clé est tabulaire (pas de largeur qui danse)', () => {
+    const css = read('src/styles/globals.css');
+    expect(css).toMatch(/\.stat-value\s*\{[^}]*font-variant-numeric:\s*tabular-nums/);
+  });
+});

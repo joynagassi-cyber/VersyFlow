@@ -57,7 +57,7 @@ export default function ComparisonResultScreen({ record, userAnswer }: Props) {
           <p className="text-sm text-text-muted">
             {t('comparison.accuracyScore', 'Score de precision')}
           </p>
-          <p className="my-2 text-5xl font-extrabold" style={{ color: scoreColor }}>
+          <p className="stat-value my-2 text-5xl" style={{ color: scoreColor }}>
             {Math.round(lastVerification.score * 100)}%
           </p>
           <div className="h-3 w-full overflow-hidden rounded-full bg-surface-tint">

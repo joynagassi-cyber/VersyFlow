@@ -196,9 +196,9 @@ export default function AnalyticsDashboardScreen() {
           </h2>
           <div className="glass overflow-hidden rounded-3xl">
             {[
-              { label: t('analytics.mastered', 'Maitrises'), value: stats?.masteredVerses || 0, dot: 'var(--color-success)', to: '/tabs/progress' },
-              { label: t('analytics.inProgress', 'En cours'), value: stats?.inProgressVerses || 0, dot: 'var(--color-primary)', to: '/review/queue' },
-              { label: t('analytics.toReview', 'A reviser'), value: stats?.dueForReview || 0, dot: 'var(--color-error)', to: '/review/queue' },
+              { label: t('analytics.mastered', 'Maîtrisés'), value: stats?.masteredVerses ?? 0, dot: 'bg-success', to: '/tabs/progress' },
+              { label: t('analytics.inProgress', 'En cours'), value: stats?.inProgressVerses ?? 0, dot: 'bg-primary', to: '/review/queue' },
+              { label: t('analytics.toReview', 'À réviser'), value: stats?.dueForReview ?? 0, dot: 'bg-warning', to: '/review/queue' },
             ].map((row, i) => (
               <button
                 key={i}
@@ -206,13 +206,10 @@ export default function AnalyticsDashboardScreen() {
                 className="flex w-full items-center justify-between border-b border-[color:var(--color-divider)] px-4 py-4 last:border-0"
               >
                 <span className="flex items-center gap-3">
-                  <span
-                    className="h-3 w-3 rounded-full"
-                    style={{ backgroundColor: row.dot }}
-                  />
+                  <span className={'h-2.5 w-2.5 shrink-0 rounded-full ' + row.dot} />
                   <span className="text-base font-medium text-text-primary">{row.label}</span>
                 </span>
-                <span className="text-lg font-bold text-primary">{row.value}</span>
+                <span className="stat-value text-lg">{row.value}</span>
               </button>
             ))}
           </div>
