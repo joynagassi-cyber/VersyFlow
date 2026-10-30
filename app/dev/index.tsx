@@ -287,7 +287,7 @@ export default function DevPanelScreen() {
             className="mt-3"
             size="sm"
             variant="outline"
-            onClick={handleSkipOnboarding}
+            onClick={() => void handleSkipOnboarding()}
             disabled={busy !== null}
           >
             <DuoIcon icon={ArrowRight} size={15} />
@@ -342,11 +342,11 @@ export default function DevPanelScreen() {
             </p>
           )}
           <div className="mt-3 flex flex-wrap gap-2">
-            <Button size="sm" variant="secondary" onClick={handleFlush} disabled={busy !== null}>
+            <Button size="sm" variant="secondary" onClick={() => void handleFlush()} disabled={busy !== null}>
               <DuoIcon icon={Refresh} size={15} />
               Vider la file
             </Button>
-            <Button size="sm" variant="outline" onClick={handleSnapshot} disabled={busy !== null}>
+            <Button size="sm" variant="outline" onClick={() => void handleSnapshot()} disabled={busy !== null}>
               <DuoIcon icon={Upload} size={15} />
               Envoyer l'instantané
             </Button>
@@ -377,15 +377,15 @@ export default function DevPanelScreen() {
             ))}
           </div>
           <div className="mt-3 flex flex-wrap gap-2">
-            <Button size="sm" variant="secondary" onClick={handleSeed} disabled={busy !== null}>
+            <Button size="sm" variant="secondary" onClick={() => void handleSeed()} disabled={busy !== null}>
               <DuoIcon icon={Refresh} size={15} />
               Re-seeder
             </Button>
-            <Button size="sm" variant="outline" onClick={handleExport} disabled={busy !== null}>
+            <Button size="sm" variant="outline" onClick={() => void handleExport()} disabled={busy !== null}>
               <DuoIcon icon={Download} size={15} />
               Exporter en JSON
             </Button>
-            <Button size="sm" variant="destructive" onClick={handleReset} disabled={busy !== null}>
+            <Button size="sm" variant="destructive" onClick={() => void handleReset()} disabled={busy !== null}>
               <DuoIcon icon={Trash} size={15} />
               Tout réinitialiser
             </Button>

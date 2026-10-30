@@ -165,7 +165,7 @@ export default function AppearanceScreen() {
     { id: 'colors', label: t('appearanceEditor.colors', 'Couleurs') },
     { id: 'icon', label: t('settings.appIconTab', 'Icône') },
     { id: 'text', label: t('appearanceEditor.text', 'Texte') },
-    { id: 'glass', label: t('appearanceEditor.glass', 'Verre') },
+    { id: 'glass', label: t('appearanceEditor.glass', 'Glass') },
   ];
 
   const themeOptions: { value: ThemeMode; label: string; Icon: typeof Sun01Icon }[] = [
@@ -468,7 +468,7 @@ export default function AppearanceScreen() {
         )}
 
         {tab === 'glass' && (
-          <Section title={t('appearanceEditor.glass', 'Verre')}>
+          <Section title={t('appearanceEditor.glass', 'Glass')}>
             <p className="appearance-hint">{t('appearanceEditor.glassHint', 'Réglez le flou, la transparence et le voile. L’aperçu utilise les surfaces de l’accueil.')}</p>
             {(backgroundType !== 'image' || !colorThemeId) && <p className="appearance-glass-note" role="status">{t('appearanceEditor.glassNeedsImage', 'Ces réglages sont enregistrés et s’appliqueront lorsque vous choisirez une image de fond.')}</p>}
             <BackgroundControls showPreview={false} />
@@ -530,7 +530,7 @@ export default function AppearanceScreen() {
               <span className="flex-1 text-sm font-medium text-text-primary">
                 {t('settings.reducedTransparency', 'Réduire la transparence')}
                 <span className="mt-0.5 block text-xs font-normal text-text-muted">
-                  {t('settings.reducedTransparencyHint', 'Surfaces opaques, sans effet de verre.')}
+                  {t('settings.reducedTransparencyHint', 'Surfaces opaques, sans effet Glass.')}
                 </span>
               </span>
               <Toggle

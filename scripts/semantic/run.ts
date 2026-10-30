@@ -134,7 +134,7 @@ function runStageD(seeded: SeedOut) {
   const concepts = seeded.concepts.map((c) => ({
     key: c.key,
     label: c.canonicalLabel,
-    labelsByLanguage: JSON.parse(c.labelsByLanguage as string) as Record<string, string>,
+    labelsByLanguage: JSON.parse(c.labelsByLanguage) as Record<string, string>,
   }));
   const edges = seeded.relations.map((e) => ({
     fromKey: seeded.conceptIdToKey.get(e.fromConceptId) ?? e.fromConceptId,
@@ -147,7 +147,7 @@ function runStageD(seeded: SeedOut) {
   // winner it folds into (source/language from the seed row itself).
   const provenance: Record<string, { source?: string; language?: string }> = {};
   for (const c of seeded.concepts) {
-    const labels = JSON.parse(c.labelsByLanguage as string) as Record<string, string>;
+    const labels = JSON.parse(c.labelsByLanguage) as Record<string, string>;
     provenance[c.key] = { source: c.source, language: Object.keys(labels)[0] ?? 'en' };
   }
   return dedupConcepts(concepts, edges, { provenance });

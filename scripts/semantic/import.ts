@@ -103,7 +103,7 @@ export function loadVerseUniverse(
     const path = join(bibleDir, file);
     let raw: string;
     try {
-      raw = readFileSync(path, 'utf8').replace(/^﻿/, '');
+      raw = readFileSync(path, 'utf8').replace(/^\uFEFF/, '');
     } catch (e) {
       errors.push(`failed to read ${file}: ${(e as Error).message}`);
       continue;
@@ -242,7 +242,7 @@ export function discoverLayers(baseDir: string): Record<string, string[]> {
 
 function readJson<T>(path: string, errors: string[]): T | null {
   try {
-    const text = readFileSync(path, 'utf8').replace(/^﻿/, '');
+    const text = readFileSync(path, 'utf8').replace(/^\uFEFF/, '');
     return JSON.parse(text) as T;
   } catch (e) {
     errors.push(`failed to parse ${path}: ${(e as Error).message}`);

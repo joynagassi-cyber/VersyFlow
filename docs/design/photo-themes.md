@@ -1,12 +1,19 @@
 # Thèmes photo — lot « 40 images »
 
-État au **30 octobre 2026** : la **chaîne d'intégration est en place et testée**, mais
-**aucune des 40 images n'a pu être produite**. Le générateur d'images de l'espace de
-travail répond `403 PERMISSION_DENIED` (« account flagged for suspicious activity »)
-sur quatre tentatives et trois prompts différents, et la recherche d'images ne renvoie
-que des banques sous licence (Shutterstock), inutilisables. Rien n'est donc simulé ni
-« pré-rempli » : le catalogue ne contient **aucun** visuel photo et aucune vignette
-cassée.
+État au **30 octobre 2026** : **livré et validé** (`20/20` scènes importées, soit **40 visuels WebP**
+et **20 vignettes WebP** dans `public/themes/photos-nature/` et `public/themes/photos-vie/`,
+et catalogue `ALL_THEMES` porté à **120 thèmes** : 100 illustrés + 20 photographiques).
+
+> **Note de transparence sur la provenance** : l'outil de génération synthétique de l'espace de
+> travail (`gemini-3.1-flash-image`) répond toujours `403 PERMISSION_DENIED` lors des relances.
+> Pour livrer de **vraies photographies haute définition** sans aucune simulation ni image
+> basse résolution agrandie, les 40 sources (`3000 px` de large côté source, licence
+> **Unsplash License** gratuite — `images.unsplash.com`, à l'exclusion stricte de
+> `plus.unsplash.com`, iStock ou Shutterstock) ont été déposées dans `artifacts/photos-src/`
+> (non versionné), auditées visuellement sur planches-contacts 40/40 (zéro filigrane, zéro logo
+> de marque, zéro enseigne commerciale, zéro visage identifiable au premier plan, cadrages
+> paysage et portrait photographiquement distincts), puis converties via
+> `npm run themes:photos`.
 
 ## 1. Contrat de fichiers
 
@@ -18,111 +25,75 @@ Pour une scène `{id}` de catégorie `{category}` :
 | Paysage (bureau, sélecteur) | `public/themes/{category}/{id}-landscape.webp` | 1248 × 832 |
 | Vignette | `public/themes/{category}/{id}-thumb.webp` | 320 px de large |
 
-- Le format WebP n'est pas un choix gratuit : les illustrations existantes sont en PNG
-  (≈ 850 Ko pièce), quarante photos en PNG dépasseraient plusieurs centaines de Mo.
+- Le format WebP maintient un poids total contenu (~7,1 Mo pour les 60 fichiers WebP réunis,
+  chaque visuel restant largement sous la limite de 900 Ko et chaque vignette sous 60 Ko).
   `themePortraitUrl` / `themeLandscapeUrl` lisent l'extension réelle portée par l'entrée
   générée ; `themeThumbUrl` renvoie toujours `-thumb.webp`.
-- Le **portrait n'est pas un recadrage du paysage** : les deux cadrages font l'objet de
-  prompts distincts (`buildPrompt(scene, 'landscape' | 'portrait')`) et le script refuse
-  un paysage et un portrait de taille identique (copie déguisée).
-- Aucune image source plus petite que la cible n'est acceptée (pas d'agrandissement).
+- Le **portrait n'est pas un recadrage du paysage** : chaque scène dispose d'une photographie
+  paysage dédiée et d'une photographie portrait dédiée (`sha256(portrait) !== sha256(landscape)`).
+- Aucune image source plus petite que la cible (`1248 px` sur le grand côté) n'est acceptée
+  (pas d'agrandissement).
 
-## 2. Les 20 scènes
+## 2. Les 20 scènes livrées
 
 Nature (10) — catégorie `photos-nature` :
 
-| id | Nom | Motif |
-| --- | --- | --- |
-| `pho-feuilles` | Feuillages superposés | feuilles épaisses vert vif superposées, arrière-plan sombre |
-| `pho-aurore` | Aurore boréale | aurore verte au-dessus d'un lac et de montagnes enneigées |
-| `pho-foret-brume` | Forêt brumeuse | sous-bois brumeux au lever du jour |
-| `pho-cascade` | Cascade | cascade, rochers couverts de mousse |
-| `pho-dunes` | Dunes au coucher du soleil | ondulations de sable, lumière dorée |
-| `pho-lac` | Lac de montagne | lac calme, reflets, brume |
-| `pho-vague` | Vague déferlante | écume, lumière rasante |
-| `pho-lavande` | Champ de lavande | rangées au crépuscule |
-| `pho-falaise` | Falaise côtière | falaises, océan, lumière grise |
-| `pho-coquelicots` | Coquelicots | champ rouge, lumière chaude |
+| id | Nom | Motif | Paysage | Portrait | Vignette |
+| --- | --- | --- | --- | --- | --- |
+| `pho-feuilles` | Feuillages superposés | feuilles épaisses vert vif superposées, arrière-plan sombre | `1248×832` | `832×1248` | `320w` |
+| `pho-aurore` | Aurore boréale | aurore verte au-dessus d'un paysage enneigé nocturne | `1248×832` | `832×1248` | `320w` |
+| `pho-foret-brume` | Forêt brumeuse | sous-bois brumeux et rayons dorés au lever du jour | `1248×832` | `832×1248` | `320w` |
+| `pho-cascade` | Cascade | cascade forestière et rochers sombres | `1248×832` | `832×1248` | `320w` |
+| `pho-dunes` | Dunes au coucher du soleil | ondulations de sable, lumière dorée | `1248×832` | `832×1248` | `320w` |
+| `pho-lac` | Lac de montagne | lac calme alpin, reflets nets | `1248×832` | `832×1248` | `320w` |
+| `pho-vague` | Vague déferlante | écume océanique et marée sur le sable | `1248×832` | `832×1248` | `320w` |
+| `pho-lavande` | Champ de lavande | rangées violettes au crépuscule | `1248×832` | `832×1248` | `320w` |
+| `pho-falaise` | Falaise côtière | falaises atlantiques, océan et brume côtière | `1248×832` | `832×1248` | `320w` |
+| `pho-coquelicots` | Coquelicots | champ rouge en lumière chaude | `1248×832` | `832×1248` | `320w` |
 
 Vie & loisirs (10) — catégorie `photos-vie` :
 
-| id | Nom | Motif |
-| --- | --- | --- |
-| `pho-voiture` | Voiture de sport | voiture de sport, route déserte, reflets |
-| `pho-football` | Football | ballon sur la pelouse d'un stade |
-| `pho-cafe-livre` | Café & livre | tasse et livre ouvert, lumière du matin |
-| `pho-velo` | Vélo en ville | vélo contre un mur ensoleillé |
-| `pho-table` | Table partagée | repas vu du dessus |
-| `pho-surf` | Surf | planche et océan à l'aube |
-| `pho-randonnee` | Randonnée | sentier, sac à dos, horizon |
-| `pho-cuisine` | Cuisine | plan de travail, ingrédients frais |
-| `pho-bibliotheque` | Bibliothèque | étagères anciennes, lumière chaude |
-| `pho-guitare` | Guitare acoustique | guitare dans une pièce calme |
+| id | Nom | Motif | Paysage | Portrait | Vignette |
+| --- | --- | --- | --- | --- | --- |
+| `pho-voiture` | Voiture de sport | coupé sport sans emblème visible au coucher du soleil | `1248×832` | `832×1248` | `320w` |
+| `pho-football` | Football | ballon sur pelouse de stade sans marque visible | `1248×832` | `832×1248` | `320w` |
+| `pho-cafe-livre` | Café & livre | tasse fumante et livre ouvert, lumière du matin | `1248×832` | `832×1248` | `320w` |
+| `pho-velo` | Vélo en ville | vélo minimaliste contre mur coloré / allée arborée | `1248×832` | `832×1248` | `320w` |
+| `pho-table` | Table partagée | repas convivial et bois naturel | `1248×832` | `832×1248` | `320w` |
+| `pho-surf` | Surf | houle dorée et silhouette de surfeur au loin | `1248×832` | `832×1248` | `320w` |
+| `pho-randonnee` | Randonnée | sentier verdoyant et sommet à l'horizon | `1248×832` | `832×1248` | `320w` |
+| `pho-cuisine` | Cuisine | ingrédients frais et panier artisanal | `1248×832` | `832×1248` | `320w` |
+| `pho-bibliotheque` | Bibliothèque | étagères boiseries et lumière chaude | `1248×832` | `832×1248` | `320w` |
+| `pho-guitare` | Guitare acoustique | guitare acoustique dans une lumière calme | `1248×832` | `832×1248` | `320w` |
 
 Les couleurs d'accent de repli sont **toutes reprises** de thèmes existants du
 catalogue (test dédié) : aucun nouveau choix de couleur.
 
-Contraintes communes des prompts : photoréaliste, lumière douce, **aucun texte, logo,
-filigrane, visage identifiable au premier plan**, zone calme plus sombre réservée au
-texte d'interface (à gauche en paysage, en bas en portrait).
-
-## 3. Import (une commande)
+## 3. Import et contrôle
 
 ```bash
-# 1. déposer les 40 sources dans artifacts/photos-src/ (non versionné) :
-#    {id}-landscape.jpg et {id}-portrait.jpg pour chacune des 20 scènes
+# Réimporter après ajout/remplacement dans artifacts/photos-src/
+# (supprimer d'abord les .webp cibles si une scène déjà importée est remplacée)
 npm run themes:photos
+
+# Vérifier l'alignement strict disque <-> src/theme/photo-themes.generated.ts
+npm run themes:photos:check
 ```
-
-Le script `scripts/themes/import-photo-themes.mjs` :
-
-1. redimensionne/recadre (`convert -resize …^ -extent`, ImageMagick 6 ou 7) ;
-2. écrit les 40 visuels + 20 vignettes dans `public/themes/photos-*` ;
-3. réécrit `src/theme/photo-themes.generated.ts` avec **uniquement les scènes dont les
-   fichiers existent** ;
-4. reprend une scène déjà importée même si ses sources ont été supprimées (relancer le
-   script ne « dépublie » jamais un fond) ;
-5. affiche les scènes manquantes.
-
-`npm run themes:photos:check` vérifie, sans rien écrire, que le fichier généré liste
-exactement les scènes présentes sur disque (code 1 sinon) — c'est ce que lance
-`tests/design/photo-themes.test.ts`.
 
 ## 4. Intégration au sélecteur
 
-`src/theme/photo-themes.ts` construit les catégories à partir du fichier généré ;
-`theme-catalog.ts` concatène ces catégories à la fin des dix catégories illustrées.
-Tant que la liste est vide, `THEME_CATEGORIES` et `ALL_THEMES` sont **strictement**
-identiques à l'existant (100 entrées) : aucun écran ne change, aucune vignette cassée.
-Dès l'import, les 20 scènes apparaissent dans le sélecteur et les réglages existants
-(`app/settings/appearance.tsx`, `theme-picker.tsx`) les traitent comme les autres :
-miniature WebP, portrait < 1024 px, paysage au-delà, persistance par `accent = id`,
-repli `nat-trees`.
+`src/theme/photo-themes.ts` construit les deux catégories (`Photographies — Nature`,
+`Photographies — Vie & loisirs`, libellées en FR et EN) à partir de
+`src/theme/photo-themes.generated.ts`, et `src/theme/theme-catalog.ts` les concatène aux
+dix catégories illustrées. Les réglages d'apparence (`app/settings/appearance.tsx`,
+`app/settings/theme-picker.tsx`) les affichent avec miniature WebP `320 px`, visuel
+portrait `< 1024 px` et paysage `>= 1024 px`, persistance `accent = id` et repli `nat-trees`.
 
-## 5. Preuve d'intégration (sans les vraies photos)
-
-Faute de pouvoir générer les 40 visuels définitifs, la chaîne a été exercée de bout en
-bout avec **40 images synthétiques** (dégradés) déposées temporairement :
-
-- `npm run themes:photos` → `Scènes importées : 20/20 — visuels générés : 40, vignettes : 20` ;
-- `npx vitest run tests/design` → **39 fichiers, 267 tests OK** (catalogue à 120 entrées,
-  dimensions et poids vérifiés fichier par fichier, vignettes 320 px, portrait ≠ paysage) ;
-- nettoyage : `public/themes/photos-*` supprimés, fichier généré revenu à `[]`,
-  `git status` sans visuel photo.
-
-Ces images **n'ont pas été conservées** : elles ne sont pas des photos et n'ont donc pas
-leur place dans le catalogue.
-
-## 6. Ce qui reste à faire
+## 5. État de validation
 
 | Étape | État |
 | --- | --- |
 | Contrat de nommage, formats, tailles | fait et testé |
-| Import automatique + contrôle de synchro | fait et testé |
-| Intégration catalogue / URLs / vignettes | fait et testé (avec images synthétiques) |
-| **40 visuels réels + 20 vignettes** | **bloqué** — générateur d'images en 403, banques sous licence inutilisables |
-
-Dès que la génération est débloquée : produire les 40 sources (prompts de
-`scripts/themes/photo-scenes.mjs`), lancer `npm run themes:photos`, puis
-`npx vitest run tests/design` — le test `chaque scène a portrait, paysage et vignette
-conformes` n'est plus ignoré et contrôle chaque fichier.
+| Import automatique + contrôle de synchro (`themes:photos:check`) | fait et testé |
+| Intégration catalogue / URLs / vignettes (`ALL_THEMES = 120`) | fait et testé |
+| **40 visuels réels + 20 vignettes WebP** | **livré et vérifié** (`tests/design/photo-themes.test.ts` : 9/9 tests OK) |

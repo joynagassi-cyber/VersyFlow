@@ -921,6 +921,8 @@ export const en = {
     colors: 'Colors',
     text: 'Text',
     glass: 'Glass',
+    backgroundSettings: 'Glass and background settings',
+    backgroundPanelHeading: 'Glass & background',
     preview: 'Preview',
     previewMode: 'Preview mode',
     apply: 'Apply',
