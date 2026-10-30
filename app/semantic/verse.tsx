@@ -112,7 +112,7 @@ export default function VerseView() {
             {t('semantic.concept', 'Concept')}s — {t('semantic.related', 'Concepts liés')}
           </h2>
           {concepts.length === 0 ? (
-            <p className="text-sm text-text-muted">{t('semantic.noConcepts', 'Aucun concept rattaché')}</p>
+            <p className="empty-line">{t('semantic.noConcepts', 'Aucun concept rattaché')}</p>
           ) : (
             <div className="flex flex-col gap-2">
               {concepts.map(({ concept, role }) => (
@@ -143,7 +143,7 @@ export default function VerseView() {
             {t('semantic.crossRefs', 'Références croisées')}
           </h2>
           {relatedVerses.length === 0 ? (
-            <p className="text-sm text-text-muted">{t('semantic.noCrossRefs', 'Aucune référence croisée')}</p>
+            <p className="empty-line">{t('semantic.noCrossRefs', 'Aucune référence croisée')}</p>
           ) : (
             <div className="flex flex-col gap-2">
               {relatedVerses.slice(0, 10).map((r) => (
@@ -185,7 +185,7 @@ export default function VerseView() {
               <DuoIcon icon={ChevronRight} size={16} className="text-primary" />
             </button>
           ) : (
-            <p className="text-sm text-text-muted">{t('semantic.noCommunity', 'Aucune communauté')}</p>
+            <p className="empty-line">{t('semantic.noCommunity', 'Aucune communauté')}</p>
           )}
         </section>
       </div>

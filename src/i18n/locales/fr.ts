@@ -251,6 +251,7 @@ export const fr = {
   bible: {
     bookCount: '{count} livre{plural}',
     noResults: 'Aucun résultat pour',
+    noResultsTitle: 'Aucun livre trouvé',
     explorer: 'Explorer la Bible',
     book: 'Livre',
     chapter: 'Chapitre',
@@ -1108,6 +1109,8 @@ export const fr = {
     noChallengesDesc: 'Un défi d’équipe propose un passage, un objectif collectif ou une série : chacun avance sur son appareil et la progression se rassemble.',
     noCognitiveData: 'Les données détaillées de révision ne sont affichées qu’au propriétaire et aux administrateurs, et seulement quand la synchronisation des révisions est active. Un tiret veut dire « pas encore mesuré », pas « zéro ».',
     noFamilySelected: 'Aucune famille active : choisissez ou créez une famille.',
+    noFamilySelectedBody: 'Créez une famille ou rejoignez-en une pour régler ses rappels, ses points et sa confidentialité.',
+    chooseFamily: 'Choisir une famille',
     noFamilyYet: 'Aucune famille active : votre profil existe déjà, il sera rattaché à la prochaine famille créée ou rejointe.',
     noMembers: 'Aucun membre pour l’instant',
     noMembersDesc: 'Invitez un membre : le classement se remplit dès la première révision partagée.',

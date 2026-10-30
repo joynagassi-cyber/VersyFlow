@@ -99,7 +99,7 @@ export default function SemanticIndex() {
                 {t('semantic.concept', 'Concept')}s
               </h2>
               {featuredConcepts.length === 0 ? (
-                <p className="text-sm text-text-muted">{t('semantic.noConcepts', 'Aucun concept actif')}</p>
+                <p className="empty-line">{t('semantic.noConcepts', 'Aucun concept actif')}</p>
               ) : (
                 <div className="flex flex-col gap-2">
                   {featuredConcepts.map((item) => (
@@ -130,7 +130,7 @@ export default function SemanticIndex() {
                 {t('semantic.community', 'Communauté')}
               </h2>
               {communities.length === 0 ? (
-                <p className="text-sm text-text-muted">{t('semantic.noCommunity', 'Aucune communauté')}</p>
+                <p className="empty-line">{t('semantic.noCommunity', 'Aucune communauté')}</p>
               ) : (
                 <div className="flex flex-col gap-2">
                   {communities.slice(0, 20).map((c: Community) => (

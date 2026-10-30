@@ -139,7 +139,7 @@ export default function ConceptView() {
             {t('semantic.verses', 'Verset{count}', { count: verseKeys.length })}
           </h2>
           {verseKeys.length === 0 ? (
-            <p className="text-sm text-text-muted">{t('semantic.noVerses', 'Aucun verset lié')}</p>
+            <p className="empty-line">{t('semantic.noVerses', 'Aucun verset lié')}</p>
           ) : (
             <div className="flex flex-col gap-2">
               {verseKeys.slice(0, 12).map((key) => {
@@ -171,7 +171,7 @@ export default function ConceptView() {
             {t('semantic.community', 'Communauté')}
           </h2>
           {communities.length === 0 ? (
-            <p className="text-sm text-text-muted">{t('semantic.noCommunity', 'Aucune communauté')}</p>
+            <p className="empty-line">{t('semantic.noCommunity', 'Aucune communauté')}</p>
           ) : (
             <div className="flex flex-col gap-2">
               {communities.map((c) => (
@@ -200,7 +200,7 @@ export default function ConceptView() {
             {t('semantic.related', 'Concepts liés')}
           </h2>
           {relations.length === 0 ? (
-            <p className="text-sm text-text-muted">{t('semantic.noRelated', 'Aucun lien direct')}</p>
+            <p className="empty-line">{t('semantic.noRelated', 'Aucun lien direct')}</p>
           ) : (
             <div className="flex flex-col gap-2">
               {relations.map((node) => (

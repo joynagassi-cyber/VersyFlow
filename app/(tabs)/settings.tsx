@@ -67,7 +67,7 @@ export default function SettingsScreen() {
       <div className="settings-content">
         <header className="g1 settings-heading">
           <p className="settings-eyebrow">VersyFlow</p>
-          <h1>{t('nav.settings', 'Réglages')}</h1>
+          <h1 className="page-title mt-2 mb-5">{t('nav.settings', 'Réglages')}</h1>
           <div className="settings-tabs" role="group" aria-label={t('settings.settings', 'Paramètres')}>
             {TAB_DEFS.map((d) => (
               <button key={d.id} type="button" onClick={() => setTab(d.id)} aria-pressed={tab === d.id}>

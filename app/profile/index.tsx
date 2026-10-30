@@ -103,7 +103,7 @@ export default function ProfileScreen() {
             <div className="profile-hero-text">
               <p className="profile-eyebrow">{isAuthenticated ? t('profile.connected', 'Connecté') : t('profile.localMode', 'Mode local')}</p>
               <div className="profile-name-row">
-                {editing ? <input value={name} autoFocus onChange={(e) => setName(e.target.value)} onBlur={saveName} onKeyDown={(e) => { if (e.key === 'Enter') saveName(); }} aria-label={t('profile.setName', 'Définir un nom')} className="profile-name-input" /> : <h1>{displayName || t('profile.setName', 'Définir un nom')}</h1>}
+                {editing ? <input value={name} autoFocus onChange={(e) => setName(e.target.value)} onBlur={saveName} onKeyDown={(e) => { if (e.key === 'Enter') saveName(); }} aria-label={t('profile.setName', 'Définir un nom')} className="profile-name-input" /> : <h1 className="display-title">{displayName || t('profile.setName', 'Définir un nom')}</h1>}
                 <button type="button" onClick={() => setEditing(true)} className="profile-name-edit" aria-label={t('common.edit', 'Modifier')}><DuoIcon icon={Pencil} size={18} /></button>
               </div>
               <p className="profile-slogan">{slogan || user?.userId || t('profile.localMode', 'Mode local')}</p>

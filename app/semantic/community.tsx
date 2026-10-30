@@ -98,7 +98,7 @@ export default function CommunityView() {
             {t('semantic.concept', 'Concept')}s — {concepts.length}
           </h2>
           {concepts.length === 0 ? (
-            <p className="text-sm text-text-muted">{t('semantic.noConcepts', 'Aucun concept rattaché')}</p>
+            <p className="empty-line">{t('semantic.noConcepts', 'Aucun concept rattaché')}</p>
           ) : (
             <div className="flex flex-col gap-2">
               {concepts.map(({ concept }) => (
@@ -127,7 +127,7 @@ export default function CommunityView() {
             {t('semantic.verses', 'Verset{count}', { count: sampleVerseKeys.length })}
           </h2>
           {sampleVerseKeys.length === 0 ? (
-            <p className="text-sm text-text-muted">{t('semantic.noVerses', 'Aucun verset lié')}</p>
+            <p className="empty-line">{t('semantic.noVerses', 'Aucun verset lié')}</p>
           ) : (
             <div className="flex flex-col gap-2">
               {sampleVerseKeys.map((key) => (

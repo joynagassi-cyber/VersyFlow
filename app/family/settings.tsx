@@ -26,6 +26,7 @@ import {
   Segmented,
 } from '@/components/family/FamilyKit';
 import { Switch } from '@/components/ui/Switch';
+import { EmptyState } from '@/components/ui/EmptyState';
 import { useFamilyRoom } from '@/hooks/useFamilyRoom';
 import { useFamilyRoomStore, type ResetDay } from '@/store/family-room-store';
 import { FAMILY_SWATCHES, familyTint } from '@/theme/family-palette';
@@ -52,9 +53,13 @@ export default function FamilySettingsScreen() {
   if (!family) {
     return (
       <FullScreenPage title={t('familyPlus.familySettingsTitle', 'Réglages Famille')} backPath="/family/home">
-        <HintNote>
-          {t('familyPlus.noFamilySelected', 'Aucune famille active : choisissez ou créez une famille.')}
-        </HintNote>
+        <EmptyState
+          icon={Users}
+          title={t('familyPlus.noFamilySelected', 'Aucune famille active')}
+          description={t('familyPlus.noFamilySelectedBody', 'Créez une famille ou rejoignez-en une pour régler ses rappels, ses points et sa confidentialité.')}
+          actionLabel={t('familyPlus.chooseFamily', 'Choisir une famille')}
+          onAction={() => navigate('/family/select-profile')}
+        />
       </FullScreenPage>
     );
   }

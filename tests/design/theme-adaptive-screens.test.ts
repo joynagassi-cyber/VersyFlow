@@ -239,10 +239,12 @@ describe('thème — une seule échelle de titres', () => {
         // Titre de barre d'outils d'une séance (18 px, tronqué) : ce n'est pas
         // un titre d'écran, c'est le rappel du contexte de la séance.
         if (/\btruncate\b/.test(cls) && /\btext-lg\b/.test(cls)) continue;
-        // Les héros de l'accueil, l'explorateur, la progression et le profil
-        // ont leur propre échelle (CSS dédiée) : ils titrent une section, pas
-        // un écran.
-        if (/\b(home-|explore-|progress-|settings-|profile-)\w*/.test(cls)) continue;
+        // Le titre « display » (accueil, profil) est la seule autre échelle :
+        // un prénom ou un nom, pas un écran.
+        if (/\bdisplay-title\b/.test(cls)) continue;
+        // Les en-têtes maison compacts (barre d'outils) ne sont pas des titres
+        // d'écran : 16–18 px, jamais dans le corps défilant.
+        if (/\b(appearance|toolbar|compact)-\w*/.test(cls)) continue;
         offenders.push(`${path}: ${cls}`);
       }
     }

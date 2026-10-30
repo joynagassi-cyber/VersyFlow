@@ -188,7 +188,7 @@ toujours rendu, nom accessible de la navigation, commandes de coquille à
 pleine en transparence réduite), focus de champ unique.
 
 
-## 4 quater. Lot H — le mode Famille comme une section, pas huit pages
+## 4 quater. Lots H → K — le mode Famille comme une section, puis écran par écran
 
 L'audit, en comptant (21 écrans, 3 660 lignes) :
 
@@ -211,11 +211,38 @@ Contrat : `tests/design/family-mode.test.ts` passe de 9 à **15 tests**
 (coquille des hubs, rang en pastille, barre dans la ligne, colonne large,
 jetons des nouvelles briques, fil d'activité).
 
+## 4 quinquies. Lot L — trois pas de titre, un interrupteur, une ligne vide
+
+L'audit, en comptant (`app/`, hors atelier `__dev`) :
+
+| Défaut | Mesure avant | Correction |
+| --- | --- | --- |
+| Titres d'onglet dessinés à part | 4 onglets (Accueil, Explorer, Progrès, Réglages) portaient un `<h1>` nu stylé par **quatre** règles CSS distinctes : `.home-greeting h1` (serif 40–52 px), puis trois règles identiques à 24 px recopiées | `<h1 className="display-title">` pour les deux écrans qui nomment une personne (accueil, profil), `<h1 className="page-title">` pour les autres ; les quatre règles supprimées de `globals.css` |
+| Troisième taille « display » | `.profile-name-row h1` montait à **84 px** (clamp 42–84) quand l'accueil s'arrêtait à 52 : deux écrans, deux échelles | `.display-title` : `clamp(38px, 5vw, 52px)`, un seul pas, partagé par l'accueil et le profil |
+| Interrupteurs réinventés | `ui/Switch` (rôle, cible 40 px) + `.appearance-toggle` maison (44 × 24, `aria-pressed`, **cible de 24 px**) utilisé par les réglages d'apparence **et** le planning hebdomadaire + un `Switch` React-Native de compatibilité | `ui/Switch` partout ; `.appearance-toggle` et sa règle `prefers-reduced-motion` supprimés de la feuille |
+| Ligne vide à trois tailles | la phrase de sous-liste vide s'écrivait en `text-sm text-text-muted` (7 écrans) et en `text-xs` (3 écrans), sans jeton commun | `.empty-line` : `var(--mut)` + le pas `0.875rem` de l'échelle, appliquée aux 10 sous-listes sémantiques |
+| Recherche sans état vide | l'explorateur affichait « Aucun résultat pour « x » » dans une carte de texte, sans action | `EmptyState tone="inline"` : icône, titre, requête rappelée, action « Effacer » |
+| Famille sans famille | l'écran Réglages Famille, sans famille active, affichait un `HintNote` sans issue | `EmptyState` avec l'action « Choisir une famille » |
+
+Nouvelles règles : `.display-title`, `.empty-line`. Contrat :
+`tests/design/scale-and-switches.test.ts` (**8 tests**) — trois pas tous en
+`clamp()` et en `--font-serif`, `.display-title` limité à deux écrans,
+en-têtes d'onglet plus redessinés, `Switch` unique et cible 40 px,
+`.empty-line` branchée sur le thème. Le contrat existant
+`theme-adaptive-screens.test.ts` **se resserre** : les exemptions
+`home-|explore-|progress-|settings-|profile-` disparaissent au profit de
+`display-title` seul.
+
+Vérifications : `tsc` 0 erreur, `vitest run tests/design tests/unit/i18n`
+**370 passed**, `eslint app src/components tests/design` 0 erreur / 27
+avertissements, `build:mock` **489,33 kB / 139,29 kB gzip**.
+
 ## 5. Prochaines finitions possibles (mesurées, non faites)
 
 | Sujet | Mesure | Pourquoi pas maintenant |
 | --- | --- | --- |
-| États vides résiduels | 27 blocs écrits à la main pour 23 fichiers qui utilisent déjà `EmptyState` | Les derniers sont des zones d'action pointillées (scan QR) ou des encarts d'explication, pas des vides |
+| États vides résiduels | 5 blocs écrits à la main pour 23 fichiers qui utilisent déjà `EmptyState` (après le lot L) | Les derniers sont des zones d'action pointillées (scan QR) ou des encarts d'explication, pas des vides |
+| Titres d'écran hors échelle | 0 `<h1>` hors `.page-title*` hors atelier `__dev` (lot L) | Fait |
 | Relecture contrastée | `data-contrast='high'` couvert partiellement | Demande des captures sur les 39 presets, hors de portée en CI |
 | Micro-copie | quelques libellés secondaires sans clé i18n | Chaque clé primaire doit être traduite dans 45 locales |
 | Cibles tactiles | puces de texte à 32 px | Choix assumé : agrandir une puce casserait la densité des listes |

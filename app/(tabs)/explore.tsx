@@ -8,6 +8,7 @@ import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { DuoIcon } from '@/components/ui/DuoIcon';
+import { EmptyState } from '@/components/ui/EmptyState';
 import {
   Search01Icon as Search,
   BookOpen01Icon as BookOpen,
@@ -61,7 +62,7 @@ export default function ExploreScreen() {
       <div className="explore-content">
         <header className="g1 explore-heading">
           <p className="explore-label">{t('nav.bible', 'Bible')}</p>
-          <h1>{t('bible.explorer', 'Explorer la Bible')}</h1>
+          <h1 className="page-title mt-2 mb-5">{t('bible.explorer', 'Explorer la Bible')}</h1>
           <div className="explore-search">
             <DuoIcon icon={Search} size={20} className="explore-search-icon" />
             <Input type="search" aria-label={t('bible.search', 'Rechercher un livre')} placeholder={t('bible.search', 'Rechercher un livre')} value={query} onChange={(e) => setQuery(e.target.value)} className="explore-search-input" />
@@ -73,7 +74,14 @@ export default function ExploreScreen() {
           <DuoIcon icon={ChevronRight} size={20} />
         </button>
         {oldTestamentFiltered.length === 0 && newTestamentFiltered.length === 0 ? (
-          <div className="g3 explore-empty" role="status">{t('bible.noResults', 'Aucun résultat pour')} « {query} »</div>
+          <EmptyState
+            tone="inline"
+            icon={Search}
+            title={t('bible.noResultsTitle', 'Aucun livre trouvé')}
+            description={t('bible.noResults', 'Aucun résultat pour') + ' « ' + query + ' »'}
+            actionLabel={t('common.clear', 'Effacer')}
+            onAction={() => setQuery('')}
+          />
         ) : (
           <div className="explore-testaments">
             {renderSection(t('bible.oldTestament', 'Ancien Testament'), oldTestamentFiltered)}

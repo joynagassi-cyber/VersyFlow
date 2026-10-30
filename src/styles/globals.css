@@ -1261,7 +1261,6 @@ html[data-bg='image']:is([data-transparency='reduced'],[data-contrast='high']) .
 .home-content { max-width: 1180px; margin: auto; display: grid; gap: 24px; }
 .home-greeting { position: relative; padding: 24px; }
 .home-label { color: var(--mut); font: 600 12px/1.4 var(--font-sans, Inter),sans-serif; letter-spacing: .14em; text-transform: uppercase; }
-.home-greeting h1 { font: 400 clamp(40px,4vw,52px)/1.1 var(--font-serif, Georgia), serif; margin-top: 8px; }
 .home-muted { color: var(--mut); font-size: 14px; }
 .home-greeting .home-muted { margin-top: 8px; display: flex; align-items: center; gap: 6px; }
 .home-profile { position: absolute; top: 24px; right: 24px; padding: 8px; border-radius: 50%; background: transparent; }
@@ -1350,7 +1349,6 @@ html[data-bg='image']:is([data-transparency='reduced'],[data-contrast='high']) .
 .explore-content { max-width: 1180px; margin: 0 auto; display: grid; gap: 24px; }
 .explore-heading { padding: 24px; }
 .explore-label { color: var(--mut); font: 600 12px/1.4 var(--font-sans, Inter),sans-serif; letter-spacing: .14em; text-transform: uppercase; }
-.explore-heading h1 { margin: 8px 0 20px; font: 400 24px/1.2 var(--font-serif, Georgia), serif; }
 .explore-search { position: relative; }
 .explore-search-icon { position: absolute; z-index: 1; inset-inline-start: 14px; top: 50%; transform: translateY(-50%); pointer-events: none; }
 .explore-search-input { padding-inline-start: 44px; background: var(--gc); color: var(--tx); border-color: var(--bd); border-radius: 16px; }
@@ -1377,7 +1375,6 @@ html[data-bg='image']:is([data-transparency='reduced'],[data-contrast='high']) .
 .progress-content { max-width: 1180px; margin: 0 auto; display: grid; gap: 24px; }
 .progress-heading { padding: 24px; }
 .progress-label { color: var(--mut); font: 600 12px/1.4 var(--font-sans, Inter),sans-serif; letter-spacing: .14em; text-transform: uppercase; }
-.progress-heading h1 { margin: 8px 0 0; font: 400 24px/1.2 var(--font-serif, Georgia), serif; }
 .progress-stat-grid { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 16px; }
 .progress-stat { padding: 24px; display: grid; gap: 16px; align-content: start; }
 .progress-stat strong,.progress-trend-values strong,.progress-mastery strong,.progress-metric strong { color: var(--acc-text); font: 400 42px/1 var(--font-serif, Georgia), serif; font-variant-numeric: tabular-nums; }
@@ -1402,7 +1399,6 @@ html[data-bg='image']:is([data-transparency='reduced'],[data-contrast='high']) .
 .settings-premium.screen-column { max-width: none; padding: 24px 16px 144px; color: var(--tx); font-family: var(--font-sans, Inter),sans-serif; }
 .settings-content { max-width: 1180px; margin: auto; display: grid; gap: 24px; }
 .settings-heading { padding: 24px; }
-.settings-heading h1 { margin: 8px 0 20px; font: 400 24px/1.2 var(--font-serif, Georgia), serif; }
 .settings-eyebrow { color: var(--tx); font: 600 12px/1.4 var(--font-sans, Inter),sans-serif; letter-spacing: .14em; text-transform: uppercase; }
 .settings-tabs { display: flex; gap: 4px; max-width: 500px; padding: 4px; border-radius: 18px; background: color-mix(in srgb,var(--tx) 8%,transparent); }
 .settings-tabs button { flex: 1; padding: 10px 8px; border-radius: 14px; color: var(--mut); font-size: 14px; font-weight: 600; transition: background 200ms,color 200ms; }
@@ -1459,17 +1455,11 @@ html[data-bg='image']:is([data-transparency='reduced'],[data-contrast='high']) .
 .appearance-page :is(.appearance-range,.background-control input[type=range]) { display: block; width: 100%; height: 6px; margin: 10px 0; appearance: none; -webkit-appearance: none; border-radius: 999px; background: linear-gradient(to right,var(--acc) 0 var(--range-progress),color-mix(in srgb,var(--tx) 12%,transparent) var(--range-progress) 100%); }
 .appearance-page :is(.appearance-range,.background-control input[type=range])::-webkit-slider-thumb { appearance: none; -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%; border: 1px solid var(--bd); background: var(--hi); }
 .appearance-page :is(.appearance-range,.background-control input[type=range])::-moz-range-thumb { width: 18px; height: 18px; border-radius: 50%; border: 1px solid var(--bd); background: var(--hi); }
-.appearance-toggle { position: relative; flex: none; width: 44px; height: 24px; border-radius: 999px; background: color-mix(in srgb,var(--tx) 14%,transparent); }
-.appearance-toggle[aria-pressed='true'] { background: var(--acc); }
-.appearance-toggle span { position: absolute; top: 2px; inset-inline-start: 2px; width: 20px; height: 20px; border-radius: 50%; background: var(--hi); border: 1px solid var(--bd); transition: transform 200ms; }
-.appearance-toggle[aria-pressed='true'] span { transform: translateX(20px); }
-[dir='rtl'] .appearance-toggle[aria-pressed='true'] span { transform: translateX(-20px); }
 .appearance-page .background-preview,.appearance-page .background-presets button,.appearance-page .background-reset,.appearance-page .background-custom { background: color-mix(in srgb,var(--tx) 6%,transparent); color: var(--tx); border: 1px solid var(--bd); }
 .appearance-page .background-presets button[aria-pressed='true'] { color: var(--tx); }
 .appearance-page .background-control-heading,.appearance-page .background-control-ends,.appearance-page .background-preview p { color: var(--mut); font-size: 14px; }
 .appearance-page .background-control output { color: var(--tx); }
 .appearance-page button:focus-visible,.appearance-header button:focus-visible { outline: 2px solid var(--acc); outline-offset: 3px; }
-@media (prefers-reduced-motion: reduce) { .appearance-toggle span { transition: none; } }
 .appearance-section .text-sm { font-size: 14px; }
 
 /* Première étape de l'éditeur : Fond et aperçu réel d'Accueil. */
@@ -1608,7 +1598,7 @@ html[data-fixed-accent] .desktop-rail button.bg-primary .solar { color: var(--pr
 .profile-hero-text { min-width: 0; }
 .profile-eyebrow { color: var(--mut); font-size: 13px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
 .profile-name-row { display: flex; align-items: center; gap: 16px; }
-.profile-name-row h1,.profile-name-input { color: var(--tx); font: 400 clamp(42px,7vw,84px)/1.05 var(--font-serif, Georgia), serif; overflow-wrap: anywhere; }
+.profile-name-row h1,.profile-name-input { color: var(--tx); overflow-wrap: anywhere; }
 .profile-name-input { max-width: 100%; background: var(--gc); border: 1px solid var(--bd); border-radius: 12px; }
 .profile-name-edit { display: grid; place-items: center; flex: none; width: 40px; height: 40px; border-radius: 50%; color: var(--tx); background: color-mix(in srgb,var(--tx) 10%,transparent); }
 .profile-slogan { margin-top: 12px; color: var(--mut); font-size: 15px; }
@@ -2071,6 +2061,29 @@ ion-tab-button::part(native):focus-visible {
 /* Titre d'état vide : la serif du preset à l'échelle d'une carte. Un état vide
    n'est pas un titre d'écran (22–26 px) mais il n'est pas non plus un
    paragraphe : 19–20 px, interligne 1.3, encre principale. */
+/* Titre « display » — la plus grande taille de l'échelle, et la seule. Deux
+   endroits seulement : l'accueil (le prénom de la personne) et la page de
+   profil (son nom). Ailleurs c'est `.page-title` ou `.page-title-lg`. */
+.display-title {
+  font-family: var(--font-serif, Georgia), serif;
+  font-weight: 400;
+  font-size: clamp(38px, 5vw, 52px);
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  color: var(--tx, var(--color-text-primary));
+  margin: 0;
+}
+/* Ligne d'une SOUS-liste vide (une liste dans une carte qui contient déjà
+   autre chose) : une seule ligne discrète. Un état vide de section, lui,
+   passe par `EmptyState`. Sept écrans écrivaient cette ligne en
+   `text-sm text-text-muted`, trois en `text-xs` : la même phrase, trois
+   tailles. */
+.empty-line {
+  color: var(--mut, var(--color-text-muted));
+  font-size: 0.875rem;   /* le pas « sm » de l'échelle, comme le reste du texte secondaire */
+  line-height: 1.55;
+}
+
 .empty-title {
   color: var(--text, var(--color-text-primary));
   font-family: var(--font-serif, Georgia), serif;

@@ -1,4 +1,5 @@
 import { goBackSafely } from '@/lib/navigation';
+import { Switch } from '@/components/ui/Switch';
 import { BackgroundControls } from '@/components/ui/BackgroundControls';
 import { useTranslation } from 'react-i18next';
 import { DuoIcon } from '@/components/ui/DuoIcon';
@@ -43,17 +44,10 @@ function Section({ title, children, action }: { title: string; children: React.R
   );
 }
 
+/** Un interrupteur, une implémentation : `ui/Switch` (rôle, cible 40 px,
+ *  pouce `--on-primary`). L'écran ne redessine pas la sienne. */
 function Toggle({ on, onChange, label }: { on: boolean; onChange: () => void; label: string }) {
-  return (
-    <button
-      onClick={onChange}
-      aria-pressed={on}
-      aria-label={label}
-      className="appearance-toggle"
-    >
-      <span />
-    </button>
-  );
+  return <Switch checked={on} onCheckedChange={onChange} label={label} />;
 }
 
 /** Labeled range control for a single reading parameter. */

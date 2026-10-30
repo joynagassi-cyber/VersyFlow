@@ -107,7 +107,7 @@ export default function ProgressScreen() {
       <div className="progress-content">
         <header className="g1 progress-heading">
           <p className="progress-label">{t('nav.progress', 'Progression')}</p>
-          <h1>{t('progress.yourProgress', 'Votre progression')}</h1>
+          <h1 className="page-title mt-2">{t('progress.yourProgress', 'Votre progression')}</h1>
           <button type="button" className="progress-demo-toggle" aria-pressed={demo} onClick={() => setDemo((value) => !value)}>{demo ? t('demo.exit', 'Quitter la démo') : t('demo.enter', 'Voir la démo')}</button>
           {demo && <p className="progress-demo-notice" role="status">{t('demo.notice', 'Données fictives pour cet écran uniquement. Vos données réelles ne sont pas modifiées.')}</p>}
         </header>

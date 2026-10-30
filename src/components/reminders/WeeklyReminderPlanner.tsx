@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Switch } from '@/components/ui/Switch';
 import { useTranslation } from 'react-i18next';
 import { applyWeeklyPlan, loadWeeklyPlan, type ReminderDay, type WeeklyReminderKind } from '@/services/weekly-reminder-plan';
 
@@ -30,7 +31,11 @@ export function WeeklyReminderPlanner() {
     {(['review', 'memorization'] as const).map((kind) => <div key={kind} className="weekly-planner-group">
       <div className="weekly-planner-heading">
         <h3>{kind === 'review' ? t('weeklyReminders.review', 'Récupération active') : t('weeklyReminders.memorization', 'Mémorisation biblique')}</h3>
-        <button type="button" className="appearance-toggle" aria-label={kind === 'review' ? t('weeklyReminders.review', 'Récupération active') : t('weeklyReminders.memorization', 'Mémorisation biblique')} aria-pressed={plan[kind].enabled} onClick={() => update(kind, { enabled: !plan[kind].enabled })}><span /></button>
+        <Switch
+          checked={plan[kind].enabled}
+          onCheckedChange={(next) => update(kind, { enabled: next })}
+          label={kind === 'review' ? t('weeklyReminders.review', 'Récupération active') : t('weeklyReminders.memorization', 'Mémorisation biblique')}
+        />
       </div>
       <div className="weekly-days" role="group" aria-label={t('weeklyReminders.days', 'Jours')}>
         {DAYS.map((day) => {

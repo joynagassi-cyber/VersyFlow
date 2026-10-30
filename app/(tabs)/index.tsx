@@ -120,7 +120,7 @@ export default function HomeScreen() {
       <div className="home-content">
         <section className="g2 home-greeting">
           <p className="home-label">{dateLabel}</p>
-          <h1>{t('home.greeting', 'Bonjour')}{activeProfile?.displayName ? `, ${activeProfile.displayName}` : ''}</h1>
+          <h1 className="display-title mt-2">{t('home.greeting', 'Bonjour')}{activeProfile?.displayName ? `, ${activeProfile.displayName}` : ''}</h1>
           {activeFamily && <p className="home-muted"><DuoIcon icon={Users} size={16} /> {activeFamily.name}</p>}
           <button onClick={() => navigate('/tabs/settings')} className="home-profile" aria-label={t('settings.settings', 'Paramètres')}><DuoIcon icon={CircleUserRound} size={24} /></button>
         </section>

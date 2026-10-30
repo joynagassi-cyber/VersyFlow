@@ -250,6 +250,7 @@ export const en = {
   bible: {
     bookCount: '{count} book{plural}',
     noResults: 'No results for',
+    noResultsTitle: 'No book found',
     explorer: 'Bible Explorer',
     book: 'Book',
     chapter: 'Chapter',
@@ -1095,6 +1096,8 @@ export const en = {
     noChallengesDesc: 'A team challenge is a passage, a shared goal or a streak: everyone moves forward on their own device and progress comes together.',
     noCognitiveData: 'Detailed review data is only shown to the owner and admins, and only once review sync is active. A dash means “not measured yet”, not “zero”.',
     noFamilySelected: 'No active family: pick one or create one.',
+    noFamilySelectedBody: 'Create a family or join one to set its reminders, points and privacy.',
+    chooseFamily: 'Choose a family',
     noFamilyYet: 'No active family: your profile already exists and will attach to the next family you create or join.',
     noMembers: 'No members yet',
     noMembersDesc: 'Invite a member: the leaderboard fills up from the first shared review.',
