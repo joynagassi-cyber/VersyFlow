@@ -7,6 +7,7 @@
 import { create } from 'zustand';
 import { MmkvStorage } from '@/infrastructure/storage';
 import { DEFAULT_ACCENT, type AccentKey } from '@/theme/theme-presets';
+import { DEFAULT_APP_ICON_ID } from '@/theme/app-icons';
 
 const storage = new MmkvStorage();
 
@@ -26,6 +27,8 @@ export interface AppearanceState {
   gradientId: string | null;
   /** Police d'interface choisie (UI_FONTS) — 'system' par défaut. */
   uiFontId: string;
+  /** Icône d'application active (catalogue APP_ICONS dans src/theme/app-icons.ts). */
+  appIconId: string;
   /** Image-based color theme id (from theme-catalog) — null when a plain
    *  accent preset is active. The portrait illustration is applied as the
    *  app background; the accent color is the theme's core hex. */
@@ -53,6 +56,7 @@ export interface AppearanceState {
   setPreset: (id: string | null) => void;
   setGradient: (id: string | null) => void;
   setUiFontId: (id: string) => void;
+  setAppIconId: (id: string) => void;
   setBackgroundType: (type: 'none' | 'gradient' | 'image') => void;
   setColorTheme: (id: string | null) => void;
   setFontSize: (size: number) => void;
@@ -80,6 +84,7 @@ const DEFAULTS: Pick<
   | 'backgroundType'
   | 'gradientId'
   | 'uiFontId'
+  | 'appIconId'
   | 'colorThemeId'
   | 'fontSize'
   | 'showVerseNumbers'
@@ -102,6 +107,7 @@ const DEFAULTS: Pick<
   backgroundType: 'none',
   gradientId: null,
   uiFontId: 'system',
+  appIconId: DEFAULT_APP_ICON_ID,
   colorThemeId: null,
   fontSize: 16,
   showVerseNumbers: true,
@@ -148,6 +154,11 @@ export const useAppearanceStore = create<AppearanceState>(() => ({
 
   setUiFontId(id: string) {
     useAppearanceStore.setState({ uiFontId: id });
+    void appearanceStorePersist.save();
+  },
+
+  setAppIconId(id: string) {
+    useAppearanceStore.setState({ appIconId: id });
     void appearanceStorePersist.save();
   },
 
@@ -260,6 +271,7 @@ const PERSISTED_KEYS: (keyof AppearanceState)[] = [
   'backgroundType',
   'gradientId',
   'uiFontId',
+  'appIconId',
   'colorThemeId',
   'fontSize',
   'showVerseNumbers',
@@ -302,6 +314,7 @@ export const appearanceStorePersist = {
       backgroundType: s.backgroundType,
       gradientId: s.gradientId,
       uiFontId: s.uiFontId,
+      appIconId: s.appIconId,
       colorThemeId: s.colorThemeId,
       fontSize: s.fontSize,
       showVerseNumbers: s.showVerseNumbers,

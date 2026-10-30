@@ -1,22 +1,29 @@
-import iconUrl from '@/assets/icons/versyflow_icon.png?url';
+import { useAppearanceStore } from '@/store/appearance-store';
+import { getAppIconUrl } from '@/theme/app-icons';
 
 interface AppIconProps {
   size?: number;
   className?: string;
   rounded?: boolean;
   alt?: string;
+  /** Override the persisted store selection (e.g. inside the icon picker grid). */
+  iconId?: string;
 }
 
-/** App icon (rounded-square, white background, magenta wings). */
+/** App icon (full-bleed 1024×1024 asset clipped to an OS-style 22% squircle). */
 export function AppIcon({
   size = 48,
   className,
   rounded = true,
   alt = 'VersyFlow',
+  iconId,
 }: AppIconProps) {
+  const activeIconId = useAppearanceStore((s) => s.appIconId);
+  const src = getAppIconUrl(iconId ?? activeIconId);
+
   return (
     <img
-      src={iconUrl}
+      src={src}
       alt={alt}
       className={className}
       style={{
