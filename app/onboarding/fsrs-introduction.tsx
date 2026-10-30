@@ -51,7 +51,7 @@ export default function FSRSIntroductionScreen() {
         <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-surface-tint">
           <DuoIcon icon={Brain} size={28} className="text-primary" />
         </div>
-        <h1 className="text-center text-lg font-semibold text-text-primary">
+        <h1 className="page-title text-center">
           {t('onboarding.fsrsTitle', 'La science de la mémorisation')}
         </h1>
         <p className="mt-3 max-w-sm text-center text-sm leading-6 text-text-secondary">

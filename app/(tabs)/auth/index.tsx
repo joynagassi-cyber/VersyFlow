@@ -44,7 +44,7 @@ export default function AuthGate({ onSkip }: Props) {
     return (
       <div className="screen-column-narrow flex min-h-[60vh] flex-col items-center justify-center gap-5 px-6">
         <Logo size={72} />
-        <h1 className="text-2xl font-extrabold text-text-primary">
+        <h1 className="page-title">
           {t('auth.ready', 'Vous êtes identifié(e)')}
         </h1>
         <p className="mx-auto mt-2 max-w-xs text-center text-sm text-text-muted">
@@ -72,7 +72,7 @@ export default function AuthGate({ onSkip }: Props) {
     <div className="screen-column-narrow flex min-h-[60vh] flex-col items-center justify-center gap-5 px-6">
       <Logo size={72} />
       <div className="text-center">
-        <h1 className="text-2xl font-extrabold text-text-primary">
+        <h1 className="page-title">
           {t('auth.welcome', 'Bienvenue sur VersyFlow')}
         </h1>
         <p className="mx-auto mt-2 max-w-xs text-sm text-text-muted">

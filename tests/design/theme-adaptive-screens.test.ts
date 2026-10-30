@@ -229,3 +229,35 @@ describe('thème — aucun contrôle décoratif', () => {
     expect(shared).toContain('aria-checked={checked}');
   });
 });
+
+describe('thème — une seule échelle de titres', () => {
+  it('les titres d’écran passent par `.page-title` / `.page-title-lg`', () => {
+    const offenders: string[] = [];
+    for (const { path, text } of sources) {
+      const code = stripCodeComments(text);
+      for (const m of code.matchAll(/<h1[^>]*className="([^"]*)"/g)) {
+        if (path.includes('__dev')) continue;
+        const cls = m[1];
+        if (/page-title/.test(cls)) continue;
+        // Deux échelles légitimes : le logotype de l'écran de démarrage et le
+        // titre « display » de l'onboarding (38 px, une seule fois par écran).
+        if (path.endsWith('app/splash.tsx')) continue;
+        if (/\btext-display\b/.test(cls)) continue;
+        // Titre de barre d'outils d'une séance (18 px, tronqué) : ce n'est pas
+        // un titre d'écran, c'est le rappel du contexte de la séance.
+        if (/\btruncate\b/.test(cls) && /\btext-lg\b/.test(cls)) continue;
+        // Les héros de l'accueil, l'explorateur, la progression et le profil
+        // ont leur propre échelle (CSS dédiée) : ils titrent une section, pas
+        // un écran.
+        if (/\b(home-|explore-|progress-|settings-|profile-)\w*/.test(cls)) continue;
+        offenders.push(`${path}: ${cls}`);
+      }
+    }
+    expect(offenders).toEqual([]);
+  });
+
+  it('l’échelle des titres est fluide, pas une taille fixe par écran', () => {
+    expect(globals).toMatch(/\.page-title\s*\{[\s\S]{0,200}?font-size:\s*clamp\(/);
+    expect(globals).toMatch(/\.page-title-lg\s*\{[\s\S]{0,200}?font-size:\s*clamp\(/);
+  });
+});

@@ -266,7 +266,7 @@ function ShellHeader({
           <DuoIcon icon={ArrowLeft} size={18} />
         </button>
         <div className="flex min-w-0 flex-1 flex-col items-center">
-          <h1 className="truncate text-lg font-bold text-text-primary">{title}</h1>
+          <h1 className="truncate text-lg font-semibold text-text-primary">{title}</h1>
           {subtitle && (
             <div className="mt-0.5 flex items-center gap-1 text-xs text-text-muted">
               {subtitleExtra}

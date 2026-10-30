@@ -81,7 +81,7 @@ deux clés secondaires ajoutées (`analytics.reload`, `memory.restartReveal`).
 
 ## 3. Le contrat de non-régression
 
-`tests/design/premium-finish.test.ts` — 17 assertions statiques :
+`tests/design/premium-finish.test.ts` — 18 assertions statiques :
 
 - anneau de focus unique (et aucun composant qui le concurrence) ;
 - état désactivé unique ; sélection et curseur teintés ;
@@ -99,19 +99,62 @@ deux clés secondaires ajoutées (`analytics.reload`, `memory.restartReveal`).
 
 ```bash
 npx tsc -p tsconfig.app.json --noEmit      # 0 erreur
-npx vitest run tests/design                # 34 fichiers, 242 tests
-npx vitest run                             # 1453 passés ; 19 échecs préexistants
+npx vitest run tests/design                # 36 fichiers, 266 tests
+npx vitest run tests/unit                  # 864 passés ; 17 échecs préexistants
 npm run build:mock                         # build OK
 ```
 
-Les 19 échecs sont ceux de `main` avant cette passe (jeux de données bibliques
+Les 17 échecs sont ceux de `main` avant cette passe (jeux de données bibliques
 absents, WASM FSRS, variables Supabase/PowerSync) — aucun n'est introduit ici.
+La parité i18n (`tests/unit/i18n/parity.test.ts`, 4 tests) est verte : chaque clé
+utilisée existe en `fr` **et** en `en`.
+
+## 4 bis. Lots E–F — le mode Famille en section, et 80 écrans qui suivent le thème
+
+### Lot E — mode Famille (21 écrans, 3 685 lignes)
+
+| Avant | Après |
+| --- | --- |
+| Aucun repère entre les 21 écrans | `FamilySubnav` sur les 6 sections : 40 px de cible, `aria-current="page"`, défilement horizontal (jamais de rangée cassée en deux) |
+| Carte `rounded-[28px] bg-primary` + `conic-gradient` inline pour la série | `FamilyHero` : `.stat-value` (serif, tabulaire, encre d'accent) + `ProgressRing` annoncé (`role="img"`, `aria-label`) |
+| 7 tuiles de raccourcis doublonnant les sections | 3 outils réels (arbre sémantique, notes, synchronisation) |
+| `« Chargement… »` en texte, erreurs en `<div>` ad hoc | `LoadingBlock` (squelette + `role="status"`), `EmptyState` (icône, action) |
+| 3 tailles d'avatar, 3 écritures de liste | `MemberRow` / `MetricRow` uniques, `MemberAvatar` seul fournisseur d'avatar |
+| Interrupteurs maison (28 px, `aria-pressed`) | `Switch` partagé : 40 px, `role="switch"`, `aria-checked`, mouvement du thème |
+| Pastilles de réaction en `bg-surface-tint` concaténé | `Chip` (32 px, `aria-pressed`, survol sur pointeur fin seulement) |
+
+### Lot F — tous les écrans suivent le thème
+
+| Défaut | Correction systémique |
+| --- | --- |
+| 17 `Georgia,serif` écrits en dur (les 7 écrans premium suivaient le preset, les autres non) | `var(--font-serif, Georgia), serif` partout : Lora, Playfair, Libre Baskerville selon le preset |
+| Titres de carte sans-serif gras, frères du titre serif de l'en-tête | `:is(.g1,.g2,.g3) :is(h2,h3)` reprend la serif du preset ; les micro-capitales restent en sans-serif |
+| Cartes `bg-surface + shadow-sm` sans liseré ni verre | Matériau commun : liseré `--bd`, reflet `--hi`, ombre `--sh`, verre sur fond image, plein en transparence réduite |
+| Chiffres clés de Maîtrise / Points en `font-extrabold` | `.stat-value` (serif, tabulaire, `--acc-text`) |
+| Glyphes `✓` et `✨` dans les locales | Icônes Solar ; copies nettoyées en `fr` et `en` |
+| Chaînes françaises en dur (accueil, FSRS, onboarding, `ErrorBoundary`, panneau de fond) | Clés i18n (`home.memorizeDesc`, `onboarding.fsrs*`, `errorBoundary.*`, `appearanceEditor.*`) |
+| Commandes mortes (« Sauvegarder » sans action, suppression de compte inerte) | Bouton supprimé ; l'export mène à « Activités & Données », la suppression explique pourquoi elle exige une session connectée |
+| Cartes non actionnables au survol | `:where(button,a):is(.g1,.g2,.g3)` : élévation de 1 px au pointeur fin, neutralisée en mouvement réduit |
+
+### Contrats ajoutés
+
+- `tests/design/family-mode.test.ts` (9) : sous-navigation sur les 6 sections,
+  `aria-current` unique, styles `.family-subnav*`, aucun `conic-gradient`,
+  `MemberRow` pour les listes, aucun rayon littéral, aucun emoji, aucun
+  « Chargement… » nu, `EmptyState` seul pour les vides.
+- `tests/design/theme-adaptive-screens.test.ts` (15) : surfaces translucides en
+  fond image, matériau des cartes historiques, aucune police en dur, encre
+  `text-on-status`, aucun `<button>` sans action, un seul `role="switch"`,
+  échelle de titres unique et fluide.
+- `tests/design/premium-finish.test.ts` : la règle serif admet désormais ses
+  exemptions explicites (`.section-label`, `.stat-label`, `.micro-label`).
 
 ## 5. Prochaines finitions possibles (mesurées, non faites)
 
 | Sujet | Mesure | Pourquoi pas maintenant |
 | --- | --- | --- |
-| États vides | 27 blocs écrits à la main vs `EmptyState` (23 usages) | Migration écran par écran, sans bénéfice visuel immédiat |
-| Hiérarchie des titres | 27 `<h1>` ; 13 en `text-2xl` | La famille est unifiée ; l'échelle des tailles demande une revue écran par écran |
+| États vides résiduels | 27 blocs écrits à la main pour 23 fichiers qui utilisent déjà `EmptyState` | Les derniers sont des zones d'action pointillées (scan QR) ou des encarts d'explication, pas des vides |
+| Hiérarchie des titres | `<h1>` d'écran unifiés (`.page-title`) ; restent les titres de section de 4 écrans profonds | Changement de rythme vertical, à valider sur captures |
 | Relecture contrastée | `data-contrast='high'` couvert partiellement | Demande des captures sur les 39 presets, hors de portée en CI |
-| Micro-copie | quelques libellés sans clé i18n | Chaque clé primaire doit être traduite dans 45 locales |
+| Micro-copie | quelques libellés secondaires sans clé i18n | Chaque clé primaire doit être traduite dans 45 locales |
+| Cibles tactiles | commandes icône seule ≥ 40 px dans les coquilles | Les puces de texte restent à 32 px par choix (densité des listes) |

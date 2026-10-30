@@ -105,7 +105,7 @@ export default function ConceptView() {
             <DuoIcon icon={BrainCircuit} size={20} />
           </span>
           <div>
-            <h1 className="text-xl font-bold text-text-primary">
+            <h1 className="page-title">
               {displayLabel(concept, lang)}
             </h1>
             <p className="text-xs text-text-muted">{concept.canonical_name}</p>

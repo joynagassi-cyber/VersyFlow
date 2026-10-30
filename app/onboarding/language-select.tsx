@@ -43,7 +43,7 @@ export default function LanguagePickerScreen() {
           <DuoIcon icon={ArrowLeft} size={20} className="text-text-secondary" />
         </button>
         <div>
-          <h1 className="text-2xl font-bold text-text-primary">
+          <h1 className="page-title">
             {t('onboarding.selectLanguage')}
           </h1>
         </div>

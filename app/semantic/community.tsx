@@ -77,7 +77,7 @@ export default function CommunityView() {
             <DuoIcon icon={Map} size={20} />
           </span>
           <div>
-            <h1 className="text-xl font-bold text-text-primary">{community.name}</h1>
+            <h1 className="page-title">{community.name}</h1>
             <p className="text-xs text-text-muted">
               {community.source}
               {typeof community.coherence === 'number' ? ` · ${Math.round(community.coherence * 100)}%` : ''}

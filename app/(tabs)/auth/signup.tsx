@@ -61,7 +61,7 @@ export default function SignupScreen({ onSkip }: Props) {
       <FullScreenPage>
         <div className="flex w-full flex-col items-center gap-4 text-center">
           <DuoIcon icon={CheckCircle2} size={56} className="text-success" />
-          <h1 className="text-2xl font-bold text-text-primary">
+          <h1 className="page-title">
             {t('auth.signupSuccess', 'Inscription réussie !')}
           </h1>
           <p className="text-sm text-text-muted">
@@ -78,7 +78,7 @@ export default function SignupScreen({ onSkip }: Props) {
       <div className="mx-auto flex min-h-[70vh] screen-column flex-col items-center justify-center gap-4">
         <Logo size={72} />
         <div className="text-center">
-          <h1 className="text-2xl font-extrabold text-text-primary">
+          <h1 className="page-title">
             {t('auth.identify', 'Qui êtes-vous ?')}
           </h1>
           <p className="mt-1 text-sm text-text-muted">

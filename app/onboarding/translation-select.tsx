@@ -148,7 +148,7 @@ export default function TranslationPickerScreen() {
           <DuoIcon icon={ArrowLeft} size={20} className="text-text-secondary" />
         </button>
         <div>
-          <h1 className="text-2xl font-bold text-text-primary">{t('onboarding.selectTranslation')}</h1>
+          <h1 className="page-title">{t('onboarding.selectTranslation')}</h1>
           <p className="text-sm text-text-muted">
             {t('onboarding.selectTranslationHint', 'Choisissez le type de version puis la traduction.')}
           </p>

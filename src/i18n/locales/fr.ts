@@ -449,10 +449,6 @@ export const fr = {
   },
   settings: {
     background: 'Fond',
-    trigger: 'Apparence',
-    panelTitle: 'Arrière-plan',
-    panelLabel: 'Réglages d’arrière-plan',
-    close: 'Fermer',
     bgNone: 'Aucun',
     bgNoneHint: 'Le fond du thème, sans image ni dégradé.',
     bgGradient: 'Dégradé',
@@ -833,6 +829,10 @@ export const fr = {
     added: 'Ajouté à la mémorisation',
   },
   appearanceEditor: {
+    trigger: 'Apparence',
+    panelTitle: 'Arrière-plan',
+    panelLabel: 'Réglages d’arrière-plan',
+    close: 'Fermer',
     glassHint: 'Réglez le flou, la transparence et le voile. L’aperçu utilise les surfaces de l’accueil.',
     glassNeedsImage: 'Ces réglages sont enregistrés et s’appliqueront lorsque vous choisirez une image de fond.',
     glassPresets: 'Préréglages de verre',
@@ -911,6 +911,7 @@ export const fr = {
   },
 
   familyPlus: {
+    overview: 'Vue d’ensemble',
     sections: 'Sections de la famille',
     leader: 'en tête',
     youMemorizeAs: 'Tu mémorises en tant que',

@@ -403,7 +403,7 @@ export default function AvailableTranslationsScreen() {
           <DuoIcon icon={ChevronRight} size={20} className="rotate-180" />
         </button>
         <div>
-          <h1 className="text-2xl font-extrabold text-text-primary">
+          <h1 className="page-title">
             {t('settings.availableTranslations', 'Versions de la Bible')}
           </h1>
           <p className="text-xs text-text-muted">

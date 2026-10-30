@@ -449,10 +449,6 @@ export const en = {
   },
   settings: {
     background: 'Background',
-    trigger: 'Appearance',
-    panelTitle: 'Background',
-    panelLabel: 'Background settings',
-    close: 'Close',
     bgNone: 'None',
     bgNoneHint: 'The theme background, with no image or gradient.',
     bgGradient: 'Gradient',
@@ -831,6 +827,10 @@ export const en = {
     added: 'Added to memorization',
   },
   appearanceEditor: {
+    trigger: 'Appearance',
+    panelTitle: 'Background',
+    panelLabel: 'Background settings',
+    close: 'Close',
     glassHint: 'Adjust blur, transparency and the veil. The preview uses the home screen surfaces.',
     glassNeedsImage: 'These settings are saved and will apply when you choose a background image.',
     glassPresets: 'Glass presets',
@@ -909,6 +909,7 @@ export const en = {
   },
 
   familyPlus: {
+    overview: 'Overview',
     sections: 'Family sections',
     leader: 'leading',
     youMemorizeAs: 'You are memorising as',

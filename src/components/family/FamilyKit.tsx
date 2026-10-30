@@ -323,9 +323,8 @@ export function FamilyHero({
           value={ring}
           size={76}
           stroke={7}
-          label={ringLabel}
-          trackClass="stroke-border"
-          fillClass="stroke-primary"
+          label={`${Math.round(ring)}%`}
+          ariaLabel={ringLabel ?? label}
           className="family-hero-ring"
         />
       )}

@@ -39,7 +39,7 @@ export default function OnboardingSessionConfig() {
         >
           <DuoIcon icon={ArrowLeft} size={20} className="text-text-secondary" />
         </button>
-        <h1 className="text-2xl font-bold text-text-primary">
+        <h1 className="page-title">
           {t('onboarding.sessionTitle')}
         </h1>
       </header>

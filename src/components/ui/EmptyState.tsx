@@ -4,6 +4,7 @@ import { Logo } from '@/components/brand/Logo';
 import { DuoIcon } from '@/components/ui/DuoIcon';
 import type { Icon as IconSvgElement } from '@solar-icons/react/lib/types';
 import { StarIcon } from '@/components/ui/solar-icons';
+import { Button } from '@/components/ui/button';
 
 interface EmptyStateProps {
   title: string;
@@ -18,7 +19,11 @@ interface EmptyStateProps {
   /** Ancien point d'entrée (nœud libre) — conservé pour les écrans existants. */
   children?: React.ReactNode;
   showLogo?: boolean;
-  /** `inline` : dans une carte (pas de cadre pointillé). */
+  /**
+   * `outline` (défaut) : l'état occupe un emplacement à remplir, cadre
+   * pointillé. `inline` : l'état vit DANS une carte déjà dessinée (réglages,
+   * liste de section) — pas de second cadre.
+   */
   tone?: 'outline' | 'inline';
   className?: string;
 }
@@ -52,15 +57,14 @@ export function EmptyState({
 }: EmptyStateProps) {
   return (
     <div
+      role="status"
       className={cn(
         'flex flex-col items-center justify-center gap-3 p-8 text-center',
-        tone === 'outline'
-          ? 'rounded-2xl border border-dashed border-border'
-          : 'rounded-2xl',
+        tone === 'outline' && 'rounded-2xl border border-dashed border-border',
         className,
       )}
     >
-      <div className="flex h-16 w-16 items-center justify-center rounded-full icon-chip">
+      <div className="icon-chip flex h-16 w-16 items-center justify-center rounded-full">
         {showLogo ? (
           <Logo size={40} />
         ) : React.isValidElement(icon) ? (
@@ -76,13 +80,9 @@ export function EmptyState({
         <p className="max-w-[34ch] text-sm leading-relaxed text-text-muted">{description}</p>
       )}
       {actionLabel && onAction && (
-        <button
-          type="button"
-          onClick={onAction}
-          className="mt-1 inline-flex h-10 items-center justify-center rounded-full bg-primary px-5 text-sm font-semibold text-on-primary transition-opacity active:opacity-90"
-        >
+        <Button type="button" size="sm" className="mt-1" onClick={onAction}>
           {actionLabel}
-        </button>
+        </Button>
       )}
     </div>
   );

@@ -39,7 +39,7 @@ export default function SettingsSessionScreen() {
         >
           <DuoIcon icon={ArrowLeft} size={20} className="text-text-secondary" />
         </button>
-        <h1 className="text-2xl font-bold text-text-primary">
+        <h1 className="page-title">
           {t('settings.sessionConfig', 'Configuration de session')}
         </h1>
       </header>
