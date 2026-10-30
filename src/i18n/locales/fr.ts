@@ -423,6 +423,7 @@ export const fr = {
     bgImage: 'Image',
     bgImageHint: 'Le fond de la galerie de thèmes, avec accent tiré de l\'image.',
     hybrid: 'Hybride',
+    darkOnly: 'Sombre',
     themePreset: 'Preset de couleurs',
     themePresetHint: 'Palette officielle appliquée à toute l\'interface.',
     uiFont: 'Police de l\'interface',

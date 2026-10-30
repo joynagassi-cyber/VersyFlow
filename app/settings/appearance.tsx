@@ -237,6 +237,14 @@ export default function AppearanceScreen() {
                           {t('settings.hybrid', 'Fusion')}
                         </span>
                       )}
+                      {/* Thèmes tweakcn conçus pour le sombre (`:root` ≡ `.dark`
+                          chez l'auteur) : l'utilisateur doit le savoir avant de
+                          choisir, pas après. */}
+                      {preset.darkOnly && (
+                        <span className="block text-[9px] font-bold uppercase tracking-wide text-primary">
+                          {t('settings.darkOnly', 'Sombre')}
+                        </span>
+                      )}
                     </span>
                     {active && <Check size={16} className="shrink-0 text-primary" />}
                   </div>

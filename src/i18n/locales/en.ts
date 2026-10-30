@@ -422,6 +422,7 @@ export const en = {
     bgImage: 'Image',
     bgImageHint: 'The theme gallery background, with an accent drawn from the image.',
     hybrid: 'Hybrid',
+    darkOnly: 'Dark',
     themePreset: 'Colour preset',
     themePresetHint: 'Official palette applied across the whole interface.',
     uiFont: 'Interface font',
