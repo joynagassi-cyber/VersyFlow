@@ -32,8 +32,14 @@
   /* Text */
   --color-text-primary: #1b1c1c;
   --color-text-secondary: #5a4044;
-  --color-text-tertiary: #767676;
-  --color-text-muted: #98989e;
+  /* « Tertiaire » et « atténué » ne sont plus des gris fixés à la main : ils
+     reprennent le `muted-foreground` du preset actif. Mesuré : les anciens
+     #767676 / #98989e tombaient à 4,35:1 et 2,75:1 sur le fond clair, sous le
+     seuil AA de 4,5:1 (et ils n'étaient surchargés par AUCUN preset). La
+     hiérarchie visuelle reste portée par la taille, la graisse et
+     l'interlettrage des libellés, jamais par un contraste insuffisant. */
+  --color-text-tertiary: var(--color-text-secondary);
+  --color-text-muted: var(--color-text-secondary);
   --color-text-placeholder: #c7c7cc;
 
   /* Semantic */
@@ -83,8 +89,9 @@
   /* Text */
   --color-text-primary: #ffffff;
   --color-text-secondary: #cbb3c0;
-  --color-text-tertiary: #8f7f88;
-  --color-text-muted: #6a5a63;
+  /* Idem en sombre : #8f7f88 / #6a5a63 mesuraient 4,69:1 et 2,75:1. */
+  --color-text-tertiary: var(--color-text-secondary);
+  --color-text-muted: var(--color-text-secondary);
   --color-text-placeholder: #4a3a43;
 
   /* Semantic */
@@ -1019,6 +1026,14 @@ ion-tab-button.tab-selected ion-icon {
   --veil-alpha: 1;
   --glass-rgb: 255, 255, 255;
   --veil-rgb: 0, 0, 0;
+  /* Plancher d'opacité des surfaces de verre posées SUR UNE PHOTO.
+     Mesuré (voir tests/design/contrast-surfaces.test.ts, pire cas du voile) :
+     à 42 % (preset « équilibre »), du texte secondaire sur une carte posée
+     sur une photo tombe à ~2,9:1. À 80 %, il repasse au-dessus de 4,5:1 dans
+     les quatre combinaisons (photo noire/blanche × mode clair/sombre), y
+     compris pour les numéros de versets. Le réglage de l'utilisateur reste
+     respecté au-dessus de ce plancher. */
+  --glass-alpha-min: .8;
 }
 :root[data-theme='dark'] { --glass-rgb: 15, 23, 42; }
 html[data-bg='image'] { min-height: 100dvh; }
@@ -1045,12 +1060,12 @@ html[data-bg='image'][data-contrast='high'] .glass { background: var(--color-sur
 .mobile-tabs { position: fixed; z-index: 30; left: 14px; right: 14px; bottom: 14px; border-radius: 26px; }
 
 html[data-bg='image'] :is(.card-glass, .surface-glass, .bible-card) {
-  background: rgba(var(--glass-rgb), var(--glass-alpha));
+  background: rgba(var(--glass-rgb), max(var(--glass-alpha), var(--glass-alpha-min)));
   -webkit-backdrop-filter: blur(var(--glass-blur));
   backdrop-filter: blur(var(--glass-blur));
   border: 1px solid var(--glass-border);
 }
-html[data-bg='image'] .bible-card { background: rgba(var(--glass-rgb), max(var(--glass-alpha), .62)); }
+html[data-bg='image'] .bible-card { background: rgba(var(--glass-rgb), max(var(--glass-alpha), var(--glass-alpha-min))); }
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
   html[data-bg='image'] :is(.card-glass, .surface-glass, .bible-card) { background: rgba(var(--glass-rgb), max(var(--glass-alpha), .75)); }
 }
@@ -1106,9 +1121,12 @@ html[data-bg='image'] { --color-text-primary: var(--tx); --color-text-secondary:
 .g2 { border-radius: 24px; }
 .g3 { border-radius: 28px; }
 html[data-bg='image'] :is(.g1,.g2,.g3) { -webkit-backdrop-filter: blur(var(--gb)) saturate(1.6); backdrop-filter: blur(var(--gb)) saturate(1.6); }
-html[data-bg='image'] .g1 { background: rgba(var(--gc-rgb), calc(var(--ga) * .8)); }
-html[data-bg='image'] .g2 { background: rgba(var(--gc-rgb), var(--ga)); }
-html[data-bg='image'] .g3 { background: rgba(var(--gc-rgb), calc(var(--ga) * .5 + .45)); }
+/* Sur une photo, toutes les surfaces de carte (g1/g2/g3) respectent le même
+   plancher mesuré que le verre : sans lui, les libellés des cartes et de la
+   barre d'onglets tombent sous AA sur les zones très sombres de l'image. */
+html[data-bg='image'] .g1 { background: rgba(var(--gc-rgb), max(calc(var(--ga) * .8), var(--glass-alpha-min))); }
+html[data-bg='image'] .g2 { background: rgba(var(--gc-rgb), max(var(--ga), var(--glass-alpha-min))); }
+html[data-bg='image'] .g3 { background: rgba(var(--gc-rgb), max(calc(var(--ga) * .5 + .45), var(--glass-alpha-min))); }
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
   html[data-bg='image'] :is(.g1,.g2,.g3) { background: rgba(var(--gc-rgb), .85); }
 }
@@ -1461,6 +1479,9 @@ html[data-fixed-accent] .desktop-rail button.bg-primary .solar { color: var(--pr
 .profile-name-edit { display: grid; place-items: center; flex: none; width: 40px; height: 40px; border-radius: 50%; color: var(--tx); background: color-mix(in srgb,var(--tx) 10%,transparent); }
 .profile-slogan { margin-top: 12px; color: var(--mut); font-size: 15px; }
 .profile-avatar { border: 4px solid var(--gc); }
+.profile-avatar-wrap { position: relative; flex: none; }
+.profile-avatar-edit { position: absolute; inset-inline-end: -4px; bottom: 4px; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; color: var(--on); background: var(--acc); border: 2px solid var(--gc); }
+.profile-avatar-edit:focus-visible { outline: 2px solid var(--acc-text); outline-offset: 3px; }
 @media (max-width: 699px) { .profile-hero { min-height: 280px; } .profile-hero-content { flex-direction: column-reverse; align-items: start; } .profile-avatar { max-width: 96px; max-height: 96px; } }
 /* Verset du jour : illustration locale et voile uni issu du thème. */
 .home-daily-card { position: relative; isolation: isolate; overflow: hidden; }

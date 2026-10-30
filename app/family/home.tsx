@@ -36,6 +36,7 @@ import {
 } from '@/components/ui/solar-icons';
 import FullScreenPage from '@/components/layout/FullScreenPage';
 import { FamilyDemo } from '@/components/family/FamilyDemo';
+import { isMockMode } from '@/dev/mode';
 import { Button } from '@/components/ui/button';
 import { HintNote, MemberAvatar, ProgressBar, SectionCard } from '@/components/family/FamilyKit';
 import { cn } from '@/lib/utils';
@@ -498,5 +499,5 @@ function RealFamilyHomeScreen() {
 /** Le prototype famille est séparé des services et données de la famille réelle. */
 export default function FamilyHomeScreen() {
   const [real, setReal] = useState(false);
-  return real ? <RealFamilyHomeScreen /> : <FamilyDemo onReal={() => setReal(true)} />;
+  return isMockMode() || real ? <RealFamilyHomeScreen /> : <FamilyDemo onReal={() => setReal(true)} />;
 }

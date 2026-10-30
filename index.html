@@ -2,39 +2,7 @@
 <html lang="fr">
   <head>
     <meta charset="UTF-8" />
-    <script type="module">
-      // A dedicated local namespace prevents this demo from reading or changing
-      // a real account. Abort boot if the browser refuses the isolation.
-      if (import.meta.env.DEV && import.meta.env.VITE_DEMO_MODE === 'true') {
-        try {
-          const real = window.localStorage;
-          const prefix = 'versyflow-demo-isolated:';
-          const keys = () => Array.from({ length: real.length }, (_, i) => real.key(i)).filter((key) => key && key.startsWith(prefix)).map((key) => key.slice(prefix.length));
-          const isolated = {
-            getItem: (key) => real.getItem(prefix + String(key)),
-            setItem: (key, value) => real.setItem(prefix + String(key), String(value)),
-            removeItem: (key) => real.removeItem(prefix + String(key)),
-            clear: () => keys().forEach((key) => real.removeItem(prefix + key)),
-            key: (index) => keys()[index] ?? null,
-            get length() { return keys().length; },
-          };
-          const facade = new Proxy(isolated, {
-            ownKeys: () => keys(),
-            getOwnPropertyDescriptor: (_target, key) => keys().includes(String(key)) ? { configurable: true, enumerable: true, writable: true, value: isolated.getItem(key) } : undefined,
-            get: (target, key) => key in target ? target[key] : isolated.getItem(key),
-            set: (_target, key, value) => { isolated.setItem(key, value); return true; },
-            deleteProperty: (_target, key) => { isolated.removeItem(key); return true; },
-          });
-          Object.defineProperty(window, 'localStorage', { configurable: true, value: facade });
-          if (window.localStorage !== facade) throw new Error('isolation refused');
-          window.localStorage.setItem('__isolation_probe__', 'ok');
-          if (real.getItem('__isolation_probe__') !== null || real.getItem(prefix + '__isolation_probe__') !== 'ok') throw new Error('isolation failed');
-          window.localStorage.removeItem('__isolation_probe__');
-        } catch (error) {
-          document.getElementById('boot-splash').textContent = 'Démo indisponible : isolation du stockage impossible. Aucune donnée réelle ne sera modifiée.';
-          throw error;
-        }
-      }
+    <script>
       // Réglages disponibles dès le premier paint (MmkvStorage utilise localStorage).
       (function () {
         try {
@@ -49,7 +17,6 @@
           root.style.setProperty('--veil-alpha', String(bounded(values.veilAlpha, 100, 0, 100) / 100));
         } catch (_) { document.documentElement.dataset.theme = 'light'; }
       })();
-      import('/src/main.tsx');
     </script>
 
     <link rel="icon" type="image/png" href="/icons/versyflow_icon.png" />
@@ -118,5 +85,6 @@
         showBootFailure('Le démarrage prend trop de temps. Vérifiez votre connexion puis réessayez.');
       }, 20000);
     </script>
+    <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

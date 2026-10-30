@@ -1,6 +1,4 @@
 import { capacitorStorage } from '@/infrastructure/storage';
-import { isDemoMode } from '@/dev/demo-mode';
-import { createDemoAccount, loginDemoAccount } from '@/dev/demo-auth';
 /**
  * Auth Store — User Authentication State Management
  * Handles login, signup, logout, and session persistence
@@ -9,7 +7,7 @@ import { createDemoAccount, loginDemoAccount } from '@/dev/demo-auth';
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import type { UserProfile } from '@/auth';
-import { SupabaseAuthService, AuthError } from '@/auth';
+import { getAuthService, AuthError } from '@/auth';
 import { useSyncStore, syncService } from '@/store/sync-store';
 import { invalidateSyncUserIdProvider } from '@/infrastructure/repository/powersync-repositories';
 import {
@@ -33,8 +31,8 @@ interface AuthState {
   setActiveProfileId: (id: string | null) => void;
 }
 
-// Auth service singleton
-const authService = new SupabaseAuthService();
+// Active auth service (mock in frontend-only mode, Supabase in live mode).
+const authService = getAuthService();
 
 /**
  * Le service d'authentification renvoie l'utilisateur brut (forme Supabase) :
@@ -61,11 +59,6 @@ export const useAuthStore = create<AuthState>()(
       signIn: async (email: string, password: string) => {
         set({ isLoading: true, error: null });
         try {
-          if (isDemoMode) {
-            const user = await loginDemoAccount(email, password);
-            set({ user: { userId: user.id, email: user.email }, isAuthenticated: true, isLoading: false });
-            return;
-          }
           const { user, error: authErr } = await authService.signIn(email, password);
           if (authErr || !user) throw authErr || new AuthError('No user returned');
           set({
@@ -91,11 +84,6 @@ export const useAuthStore = create<AuthState>()(
       signUp: async (email: string, password: string) => {
         set({ isLoading: true, error: null });
         try {
-          if (isDemoMode) {
-            const user = await createDemoAccount(email, password);
-            set({ user: { userId: user.id, email: user.email }, isAuthenticated: true, isLoading: false });
-            return;
-          }
           const { error: authErr } = await authService.signUp(email, password);
           if (authErr) throw authErr;
           set({ isLoading: false });
@@ -107,7 +95,6 @@ export const useAuthStore = create<AuthState>()(
       },
 
       signOut: async () => {
-        if (isDemoMode) { set({ user: null, isAuthenticated: false, isLoading: false, error: null }); return; }
         set({ isLoading: true });
         try {
           const { error: authErr } = await authService.signOut();
@@ -141,7 +128,6 @@ export const useAuthStore = create<AuthState>()(
       },
 
       checkSession: async () => {
-        if (isDemoMode) return;
         set({ isLoading: true });
         try {
           const user = await authService.getCurrentUser();
@@ -169,7 +155,6 @@ export const useAuthStore = create<AuthState>()(
 
       clearError: () => set({ error: null }),
       refreshSession: async () => {
-        if (isDemoMode) return;
         try {
           const { user: refreshed, error: refreshError } = await authService.refreshSession();
           if (refreshError) {

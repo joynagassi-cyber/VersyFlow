@@ -11,20 +11,17 @@
  * (one PowerSync DB, one set of repositories).
  */
 
-import {
-  TranslationPreferenceRepositoryPowerSync,
-  type ITranslationPreferenceRepository,
-} from '@/infrastructure/repository/translation-preference-repository-powersync';
-import { getSyncUserIdProvider } from '@/infrastructure/repository/powersync-repositories';
+import type { ITranslationPreferenceRepository } from '@/infrastructure/repository/translation-preference-repository-powersync';
+import { getTranslationPreferenceRepository as resolveRepository } from '@/infrastructure/repository/powersync-repositories';
 import { DEFAULT_BIBLE_TRANSLATIONS } from '@/domains/bible/registry';
 
-let _instance: ITranslationPreferenceRepository | null = null;
-
+/**
+ * The active adapter for the user's translation preference. Resolution (and
+ * singleton caching) lives in the repository composition root, which picks
+ * the PowerSync adapter in live mode and the in-browser adapter in mock mode.
+ */
 export function getTranslationPreferenceRepository(): ITranslationPreferenceRepository {
-  if (!_instance) {
-    _instance = new TranslationPreferenceRepositoryPowerSync(getSyncUserIdProvider());
-  }
-  return _instance;
+  return resolveRepository();
 }
 
 /**

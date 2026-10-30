@@ -1,4 +1,5 @@
-import { isDemoMode } from '@/dev/demo-mode';
+// Storage isolation must run before persisted stores are evaluated.
+import '@/dev/mock/install-isolation';
 import { readOnboardingProgress } from '@/onboarding/progress';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
@@ -140,6 +141,8 @@ const SemanticIndex = lazy(() => import('../app/semantic/index'));
 const SemanticConcept = lazy(() => import('../app/semantic/concept'));
 const SemanticVerse = lazy(() => import('../app/semantic/verse'));
 const SemanticCommunity = lazy(() => import('../app/semantic/community'));
+// Dev panel (mock-mode testing: seed / reset / local API)
+const DevPanel = lazy(() => import('../app/dev/index'));
 const SemanticTags = lazy(() => import('../app/semantic/tags'));
 const SemanticTagNew = lazy(() => import('../app/semantic/tags/new'));
 const SemanticTree = lazy(() => import('../app/semantic/tree'));
@@ -184,6 +187,9 @@ import { wireStreakCoordinator } from '@/services/streak-wiring';
 import { notificationService } from '@/services/notification-service';
 import type { MemorizationRecord } from '@/domains/memorization/entities';
 import { isRTL, DEFAULT_LANGUAGE, normalizeLocaleCode } from '@/domains/i18n/config';
+import { isMockMode } from '@/dev/mode';
+import { bootstrapDevBackend } from '@/dev/bootstrap';
+import { recordTestEvent } from '@/dev/local-backend';
 
 // Initialize i18n + boot-time one-shot wiring (PowerSync lifecycle,
 // telemetry listener + periodic flush, streak event-driven writer).
@@ -236,6 +242,11 @@ const bootStoresPromise = (async () => {
     preview.applyInitialPath();
   }
 
+  // Mock mode: seed the in-browser test database and announce the active
+  // backend BEFORE the first render, so every screen has data immediately.
+  // (No-op in live mode and inside the preview frame, which has its own seed.)
+  bootstrapDevBackend();
+
   await initI18next();
   const activeLanguage = normalizeLocaleCode(i18next.language ?? DEFAULT_LANGUAGE);
   document.documentElement.dir = isRTL(activeLanguage) ? 'rtl' : 'ltr';
@@ -253,11 +264,11 @@ const bootStoresPromise = (async () => {
   // Sync-side wiring runs after the stores are hydrated so the
   // `initializeSettingsStore()` side-effects above (language sync,
   // persisted flag restore) have already landed in the Zustand state.
-  if (!isDemoMode) {
-    attachSyncCompletionHandlers();
-    wireAppTelemetry();
-    wireStreakCoordinator();
-    wireSessionRefresh();
+  attachSyncCompletionHandlers();
+  wireAppTelemetry();
+  wireStreakCoordinator();
+  wireSessionRefresh();
+  if (!isMockMode()) {
     void scheduleBootReminders().catch((error: unknown) => console.warn('[reminders] Échec de programmation', error));
   }
 })();
@@ -332,13 +343,31 @@ function DirSync() {
   return null;
 }
 
+/**
+ * Records in-app navigation in mock mode (`nav.visit` events) so a manual
+ * test session can be replayed step by step from the local dashboard.
+ * No-op in live mode.
+ */
+function DevRouteRecorder() {
+  const location = useLocation();
+  useEffect(() => {
+    if (!isMockMode()) return;
+    recordTestEvent('nav.visit', {
+      path: location.pathname,
+      search: location.search,
+    });
+  }, [location.pathname, location.search]);
+  return null;
+}
+
 /** Mounts the PowerSync → store bridges for family & profile data.
  *  Activated whenever the user is authenticated; the bridges are
  *  offline-safe and re-sync on the `initialized` event. */
 function SyncBridges() {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
-  useFamilySyncBridge(isAuthenticated && !isDemoMode);
-  useProfileSyncBridge(isAuthenticated && !isDemoMode);
+  const enabled = isAuthenticated || isMockMode();
+  useFamilySyncBridge(enabled);
+  useProfileSyncBridge(enabled);
   return null;
 }
 
@@ -391,9 +420,9 @@ function App() {
       <ThemeManager />
       <SyncBridges />
       <BrowserRouter>
+        <DevRouteRecorder />
         <IonApp>
           <ErrorBoundary>
-            {isDemoMode && <div className="demo-mode-label" role="status">DÉMO LOCALE · données fictives</div>}
             <Routes>
             <Route path="/" element={<RootRedirect />} />
 
@@ -517,6 +546,9 @@ function App() {
               <Route path="/semantic/attach" element={<SemanticAttach />} />
               <Route path="/semantic/data" element={<SemanticData />} />
             </Route>
+
+            {/* Dev panel — reachable without onboarding (mock testing) */}
+            <Route path="/dev" element={<DevPanel />} />
 
             {/* Public routes */}
             {/*

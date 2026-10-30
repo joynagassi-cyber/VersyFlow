@@ -16,6 +16,7 @@
 import { PowerSyncDatabase } from '@powersync/capacitor';
 import type { CommonPowerSyncDatabase } from '@powersync/common';
 
+import { isMockMode, MockModeGuardError } from '@/dev/mode';
 import { buildPowerSyncSchema } from './powersync-schema';
 import { isDemoMode } from '@/dev/demo-mode';
 
@@ -67,6 +68,11 @@ let instance: CommonPowerSyncDatabase | null = null;
  * guarantees the SQLite schema is available before the first query.
  */
 export function getPowerSyncDatabase(): CommonPowerSyncDatabase {
+  // Frontend-only sessions must never open (or download) a sync replica:
+  // mock mode serves everything from `src/dev/mock/db.ts`.
+  if (isMockMode()) {
+    throw new MockModeGuardError('La base PowerSync');
+  }
   if (!instance) {
     instance = new PowerSyncDatabase({
       schema: buildPowerSyncSchema(),
