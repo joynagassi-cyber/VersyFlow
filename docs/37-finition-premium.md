@@ -168,13 +168,24 @@ Trois détails mesurés après les lots E–F, et corrigés au niveau système.
 | Étiquettes de note en français | `« A revoir », « Difficile », « Bon », « Facile »` écrits dans `History.tsx` | Clés `session.rating*` (déjà traduites en 45 langues) |
 | Chargements en phrase | `progress.tsx` posait « Chargement des statistiques… » dans une carte alors que 6 écrans avaient déjà un squelette | `ProgressSkeleton` : quatre tuiles puis deux cartes aux mêmes paddings que le vrai contenu, `role="status"` + `aria-busy` + libellé `sr-only` |
 
-Contrat : `tests/design/controls-and-headings.test.ts` (7) — aucun faux
+| Barre d'onglets | Point d'état rendu seulement si actif : la barre se décalait de 4 px à chaque onglet ; nom accessible `« Navigation principale »` écrit en français ; aucune rétroaction au survol | Indicateur toujours rendu (transparent au repos), `shell.mainNav` traduit, survol et appui teintés `--color-surface-tint` |
+| En-tête de bureau | 2 commandes de **36 px** et 2 anneaux de focus en utilitaire | 40 px, focus unique du système, `hover` conservé |
+| Tiroir et accès rapide | fermetures à ~28 px (`p-1.5`), `aria-label="Fermer"` en français, poignée de **5 px** à viser au pouce, entrées de menu à 40 px | `.touch-target`, `common.close`, poignée dans une cible de 32 px, entrées à 44 px |
+| Feuille modale | `background: var(--color-surface)` : un blanc opaque sur un thème teinté, aucun verre sur fond image | `var(--gc)` + liseré + reflet, verre sur fond image, plein en transparence réduite |
+| Focus des champs | `focus:ring-*` écran par écran (parfois bleu système) | Une règle pour `input`/`textarea`/`select` (cases et radios exclues) : bordure d'accent + halo calculé sur `--color-primary` |
+| État vide du tableau de bord | bloc centré écrit à la main | `EmptyState tone="inline"` |
+
+Contrat : `tests/design/controls-and-headings.test.ts` (10) — aucun faux
 interrupteur, les réglages à bascule passent par `ui/Switch`, aucune commande
 icône seule sous la cible tactile, aucun titre de carte en `<p>` gras,
 `aria-expanded` + nom accessible sur une commande qui déplie du contenu.
 Et `tests/design/loading-and-empty.test.ts` (5) : chargement en squelette sur
 les tableaux de bord, libellé annoncé, titre d'état vide sémantique (`h3`),
 surface de squelette issue du thème.
+Enfin `tests/design/shell-and-sheets.test.ts` (10) : indicateur d'onglet
+toujours rendu, nom accessible de la navigation, commandes de coquille à
+40 px et nommées, feuille modale au matériau du thème (verre sur fond image,
+pleine en transparence réduite), focus de champ unique.
 
 ## 5. Prochaines finitions possibles (mesurées, non faites)
 

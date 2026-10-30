@@ -9,6 +9,7 @@ import {
   ChartLineData01Icon as LineChart,
 } from '@/components/ui/solar-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
+import { EmptyState } from '@/components/ui/EmptyState';
 import { LoadingBlock } from '@/components/ui/Skeleton';
 import { useTranslation } from 'react-i18next';
 import { useAnalyticsCapability } from '@/capabilities/analytics/store';
@@ -125,15 +126,15 @@ export default function AnalyticsDashboardScreen() {
               ))}
             </div>
           ) : (
-            <div className="flex flex-col items-center gap-2 py-8 text-center">
-              <DuoIcon icon={LineChart} size={32} className="text-text-muted" />
-              <p className="text-sm font-semibold text-text-primary">
-                {t('analytics.noData', 'Aucune donnee de retention')}
-              </p>
-              <p className="stat-label mt-1">
-                {t('analytics.noDataHint', 'Commencez a memoriser pour voir vos courbes')}
-              </p>
-            </div>
+            <EmptyState
+              tone="inline"
+              icon={LineChart}
+              title={t('analytics.noData', 'Aucune donnée de rétention')}
+              description={t(
+                'analytics.noDataHint',
+                'Commencez à mémoriser pour voir vos courbes.',
+              )}
+            />
           )}
         </div>
 

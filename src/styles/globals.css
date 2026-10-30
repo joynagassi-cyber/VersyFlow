@@ -908,8 +908,35 @@ body {
   overflow-y: auto;
   border-start-start-radius: 24px;
   border-start-end-radius: 24px;
-  background: var(--color-surface);
-  box-shadow: var(--shadow-lift);
+  /* Le même matériau que les cartes : une feuille modale n'est pas un blanc
+     opaque posé sur un thème coloré, et sur fond image elle reste du verre. */
+  background: var(--gc);
+  color: var(--tx);
+  border: 1px solid var(--bd);
+  box-shadow: var(--shadow-lift), inset 0 1px 0 var(--hi);
+}
+html[data-bg='image'] .modal-sheet-panel {
+  background: rgba(var(--glass-rgb), max(var(--glass-alpha), .82));
+  -webkit-backdrop-filter: blur(28px) saturate(1.4);
+  backdrop-filter: blur(28px) saturate(1.4);
+}
+@media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
+  html[data-bg='image'] .modal-sheet-panel {
+    background: var(--gc);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+
+/* 14. Champs de saisie — un seul focus, quel que soit le champ.
+   Les utilitaires `focus:ring-*` étaient posés écran par écran (parfois avec
+   un bleu système) ; la règle ci-dessous ne dépend que de l'accent du thème.
+   Les cases et boutons radio en sont exclus : leur indicateur a son propre
+   dessin. */
+:where(input:not([type='checkbox']):not([type='radio']), textarea, select):focus-visible {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 18%, transparent);
+  outline: none;
 }
 
 .modal-sheet-handle {

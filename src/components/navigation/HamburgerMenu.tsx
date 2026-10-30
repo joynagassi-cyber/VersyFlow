@@ -10,7 +10,7 @@ import { useUiStore, ALL_MENU_ITEMS } from '@/store/ui-store';
 import { cn } from '@/lib/utils';
 
 const itemClass =
-  'rounded-xl px-4 py-3 text-start text-sm font-medium text-text-primary transition active:bg-surface-tint';
+  'flex min-h-11 items-center rounded-xl px-4 py-3 text-start text-sm font-medium text-text-primary transition-colors hover:bg-surface-tint active:bg-surface-tint';
 
 /** Self-managed slide-in drawer (RTL-safe), driven by ui-store menuOpen. */
 export function HamburgerMenu() {
@@ -54,13 +54,16 @@ export function HamburgerMenu() {
             <Logo size={38} />
             <div className="leading-tight">
               <span className="text-primary text-base font-extrabold">VersyFlow</span>
-              <div className="text-xs text-text-muted">{user?.display_name || 'Mode local'}</div>
+              <div className="text-xs text-text-muted">
+                {user?.display_name || t('profile.localMode', 'Mode local')}
+              </div>
             </div>
           </div>
           <button
+            type="button"
             onClick={closeMenu}
-            className="rounded-full p-1.5 active:bg-surface-tint"
-            aria-label="Fermer"
+            className="touch-target shrink-0 rounded-full text-text-muted active:bg-surface-tint"
+            aria-label={t('common.close', 'Fermer')}
           >
             <DuoIcon icon={X} size={20} className="text-text-muted" />
           </button>

@@ -1297,6 +1297,7 @@ export const fr = {
   },
 
   shell: {
+    mainNav: 'Navigation principale',
     openMenu: 'Ouvrir le menu',
     newSession: 'Nouvelle session de mémorisation',
     workspace: 'Espace de travail',

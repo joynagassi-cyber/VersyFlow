@@ -35,7 +35,7 @@ export function BottomTabs() {
 
   return (
     <nav
-      aria-label="Navigation principale"
+      aria-label={t('shell.mainNav', 'Navigation principale')}
       className="mobile-tabs g1"
     >
       <div className="mx-auto flex max-w-md items-stretch justify-between px-3 py-2">
@@ -47,9 +47,10 @@ export function BottomTabs() {
           return (
             <button
               key={tab.id}
+              type="button"
               onClick={() => navigate(tab.path)}
               aria-current={active ? 'page' : undefined}
-              className="flex min-w-0 flex-1 flex-col items-center gap-1 rounded-2xl py-1.5"
+              className="flex min-w-0 flex-1 flex-col items-center gap-1 rounded-2xl py-1.5 transition-colors hover:bg-surface-tint active:bg-surface-tint"
             >
               <span
                 className={cn(
@@ -64,7 +65,15 @@ export function BottomTabs() {
                   color={active ? 'var(--acc-text)' : 'var(--mut)'}
                 />
               </span>
-              {active && <span className="h-1 w-1 rounded-full bg-primary" />}
+              {/* L'indicateur est TOUJOURS rendu : le faire apparaître
+                  décalait la barre de 4 px à chaque changement d'onglet. */}
+              <span
+                aria-hidden="true"
+                className={cn(
+                  'h-1 w-1 rounded-full transition-colors',
+                  active ? 'bg-primary' : 'bg-transparent',
+                )}
+              />
               <span
                 className={cn(
                   'max-w-[72px] truncate text-2xs font-semibold transition-colors',
