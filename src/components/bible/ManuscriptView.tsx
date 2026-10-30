@@ -117,6 +117,7 @@ export function ManuscriptView({
               >
                 {showVerseNumbers && verse.number !== 1 && <sup
                   className={cn('verse-flow-number', isSelected && 'is-selected')}
+                  aria-hidden="true"
                 >
                   {verse.number}
                 </sup>}

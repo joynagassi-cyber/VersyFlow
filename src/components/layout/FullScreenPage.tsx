@@ -44,8 +44,7 @@ export function FullScreenPage({
   const { t } = useTranslation();
 
   const handleBack = () => {
-    if (backPath) navigate(backPath, { replace: true });
-    else goBackSafely(navigate);
+    goBackSafely(navigate, backPath ?? '/tabs/home');
   };
 
   return (

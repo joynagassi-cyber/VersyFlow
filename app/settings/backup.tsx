@@ -101,7 +101,7 @@ export default function BackupScreen() {
     <FullScreenPage
       title={t('settings.backup', 'Sauvegarde')}
       showBack
-      backPath="/settings"
+      backPath="/tabs/settings"
     >
       <div className="screen-column space-y-4">
         <div className="glass space-y-3 rounded-2xl bg-surface p-4 shadow-sm">

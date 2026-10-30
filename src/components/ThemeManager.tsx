@@ -25,6 +25,7 @@ import {
   uiFontFamilyOf,
 } from '@/theme/theme-fonts';
 import { applyThemeToDocument, resolveTheme } from '@/theme/resolve-theme';
+import { applyAppIcon } from '@/theme/app-icons';
 
 export function ThemeManager() {
   const glassSettings = useAppearanceStore((s) => s.glassSettings);
@@ -36,6 +37,7 @@ export function ThemeManager() {
   const backgroundType = useAppearanceStore((s) => s.backgroundType);
   const gradientId = useAppearanceStore((s) => s.gradientId);
   const uiFontId = useAppearanceStore((s) => s.uiFontId);
+  const appIconId = useAppearanceStore((s) => s.appIconId);
   const colorThemeId = useAppearanceStore((s) => s.colorThemeId);
   const bibleFontFamily = useAppearanceStore((s) => s.bibleFontFamily);
   const bibleFontSize = useAppearanceStore((s) => s.bibleFontSize);
@@ -113,6 +115,10 @@ export function ThemeManager() {
     const font = findUiFont(uiFontId);
     if (font.id !== 'system') void loadBibleFont(font.id);
   }, [uiFontId]);
+
+  useEffect(() => {
+    void applyAppIcon(appIconId);
+  }, [appIconId]);
 
   useEffect(() => {
     applyReadingVars({

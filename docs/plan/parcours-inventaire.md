@@ -9,7 +9,7 @@ Parcours inventoriés : **16** — actifs **16**, partiels **0**, absents **0**.
 | --- | --- | --- | --- | --- |
 | Démarrage et onboarding | 1 | `tests/api/navigation-api.test.ts`<br>`tests/design/onboarding-journey.test.tsx`<br>`tests/design/onboarding-progress.test.ts`<br>+1 | — | **actif** |
 | Authentification | 3 | `tests/api/navigation-api.test.ts`<br>`tests/auth/insforge-auth.test.ts`<br>`tests/design/onboarding-journey.test.tsx`<br>+2 | — | **actif** |
-| Accueil et navigation | 1 | `tests/api/navigation-api.test.ts`<br>`tests/design/batch-navigation.test.ts`<br>`tests/design/onboarding-journey.test.tsx`<br>+4 | — | **actif** |
+| Accueil et navigation | 1 | `tests/api/navigation-api.test.ts`<br>`tests/design/batch-navigation.test.ts`<br>`tests/design/lot-journeys-and-polish.test.ts`<br>+5 | — | **actif** |
 | Explorer la Bible | 5 | `tests/api/navigation-api.test.ts`<br>`tests/design/batch-navigation.test.ts`<br>`tests/design/bible-book-names.test.ts`<br>+23 | présentes | **actif** |
 | Lire un chapitre | 2 | `tests/api/navigation-api.test.ts`<br>`tests/design/app-shells.test.ts`<br>`tests/design/bible-book-names.test.ts`<br>+22 | présentes | **actif** |
 | Mémoriser un verset | 4 | `tests/api/navigation-api.test.ts`<br>`tests/design/app-shells.test.ts`<br>`tests/e2e/memorization-flow.test.ts`<br>+10 | présentes | **actif** |
@@ -21,7 +21,7 @@ Parcours inventoriés : **16** — actifs **16**, partiels **0**, absents **0**.
 | Recherche | 1 | `tests/api/navigation-api.test.ts`<br>`tests/e2e/search-flow.test.ts` | présentes | **actif** |
 | Famille et partage | 21 | `tests/design/app-shells.test.ts`<br>`tests/design/demo-family.test.ts`<br>`tests/design/family-demo.test.tsx`<br>+6 | — | **actif** |
 | Profil | 3 | `tests/api/navigation-api.test.ts`<br>`tests/design/settings-premium.test.ts`<br>`tests/e2e/profile-flow.test.ts`<br>+4 | — | **actif** |
-| Réglages | 12 | `tests/api/navigation-api.test.ts`<br>`tests/design/app-shells.test.ts`<br>`tests/design/settings-premium.test.ts`<br>+1 | — | **actif** |
+| Réglages | 12 | `tests/api/navigation-api.test.ts`<br>`tests/design/app-shells.test.ts`<br>`tests/design/lot-journeys-and-polish.test.ts`<br>+2 | — | **actif** |
 | Notifications | 1 | `tests/api/navigation-api.test.ts`<br>`tests/e2e/notifications-flow.test.ts` | — | **actif** |
 
 ## Ce que chaque état veut dire

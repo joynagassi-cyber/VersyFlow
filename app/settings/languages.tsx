@@ -18,7 +18,7 @@ export default function LanguageSettingsScreen() {
     <FullScreenPage
       title={t('settings.uiLanguage', "Langue de l'interface")}
       showBack
-      backPath="/settings"
+      backPath="/tabs/settings"
     >
       <div className="screen-column space-y-2">
         {SUPPORTED_LANGUAGES.map((lang) => {

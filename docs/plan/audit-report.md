@@ -1,7 +1,7 @@
 # Rapport d’audit — plan « Interface web + thèmes »
 
 Généré par `node scripts/audit-plan.mjs`. **Ne pas éditer à la main.**
-Exécuté le 2026-10-30 20:38 (UTC).
+Exécuté le 2026-10-30 20:51 (UTC).
 
 **Bilan : 17 PASS · 1 PARTIEL · 0 FAIL · 4 non vérifiable(s).**
 
@@ -17,10 +17,10 @@ Exécuté le 2026-10-30 20:38 (UTC).
 | C08 | §3.3 | **PASS** | Aucune couleur littérale dans le code d’interface (hors exception documentée) | 137 fichiers d’interface scannés · 0 ligne(s) fautive(s) |
 | C09 | §6.1 | **PASS** | Deux seuils, un rôle chacun (700 px rail, 1100 px bureau), une seule navigation montée | seuils: true · montage exclusif: true · zéro px en dur: true · shells: lus |
 | C10 | §6.2 | **PASS** | Rail : une variable de largeur, repli accessible, état actif non colorimétrique | variable unique: true · largeur: true · repli sr-only: true · aria: true · Solar : true |
-| C11 | §6.4 | **PARTIAL** | Mesure de lecture définie et appliquée à tous les écrans de contenu | 84/88 écrans couverts (classe directe ou coquille) · coquilles: ok · jetons absents |
+| C11 | §6.4 | **PARTIAL** | Mesure de lecture définie et appliquée à tous les écrans de contenu | 85/88 écrans couverts (classe directe ou coquille) · coquilles: ok · jetons présents |
 | C12 | §5.1 | **PASS** | Une seule bibliothèque d’icônes (Solar) | 148/148 fichiers sans Lucide · 0 à migrer |
 | C13 | §4.4 | **PASS** | Accent d’image : trois rôles, texte choisi par contraste, pas de promesse pendante | 3 rôles: true · garde-fou de chargement: true · texte au ratio: true |
-| C14 | §11.2 | **PASS** | Chaque famille de contrat a un test dédié | 40 fichiers · 7/7 familles couvertes |
+| C14 | §11.2 | **PASS** | Chaque famille de contrat a un test dédié | 42 fichiers · 7/7 familles couvertes |
 | C15 | §0 | **PASS** | Les libellés ajoutés existent en français et en anglais | fr manquants: aucun · en manquants: aucun |
 | C16 | §4.6 | **PASS** | Registres de thèmes : presets, dégradés et thèmes image déclarés une seule fois | 39 presets · 15 dégradés · 101 thèmes image |
 | C17 | §11.1 | **PASS** | Dette de lint du shim React Native : exception documentée ET mesurée, jamais masquée | exception: documentée · dette gelée mesurée: 123 avertissements |

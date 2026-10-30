@@ -244,7 +244,7 @@ export default function VerseActionBar({
           verseNumber: verse,
           endVerse: verse,
           translationId: translation,
-          bibleVerseReference: `${bookId} ${chapter}:${verse}`,
+          bibleVerseReference: reference,
           bibleVerseText: verseText ?? '',
           verseTexts: verseText ? [verseText] : [],
           status: 'new',
@@ -278,7 +278,7 @@ export default function VerseActionBar({
 
   return (
     <>
-      <div className="reading-actions sticky bottom-3 z-30 mx-auto w-full max-w-full">
+      <div role="region" aria-label={`${t('bible.verse', 'Verset')} ${reference}`} className="reading-actions sticky bottom-3 z-30 mx-auto w-full max-w-full">
         <div className="reading-actions-row">
           <span className="reading-actions-reference">
             {reference}

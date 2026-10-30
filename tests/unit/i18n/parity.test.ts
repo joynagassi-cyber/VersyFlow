@@ -21,6 +21,7 @@
 import { describe, it, expect, beforeAll } from 'vitest';
 import fs from 'node:fs';
 import path from 'node:path';
+import vm from 'node:vm';
 
 // ---------------------------------------------------------------------------
 // Configuration
@@ -143,7 +144,7 @@ function readLocaleKeys(lng: string): Set<string> {
     }
     const literal = raw.slice(start, i);
     try {
-      const obj = new Function(`return (${literal})`)() as Record<string, Record<string, unknown>>;
+      const obj = vm.runInNewContext(`(${literal})`, Object.create(null)) as Record<string, Record<string, unknown>>;
       for (const ns of Object.keys(obj)) {
         const block = obj[ns];
         if (block && typeof block === 'object') {

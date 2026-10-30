@@ -102,7 +102,7 @@ export function DesktopRail() {
   const menuItems = ALL_MENU_ITEMS.filter((item) => visibleMenuPaths.includes(item.path) && !(item.path === '/bible/explorer' && visibleTabs.includes('explore')));
 
   const itemBase =
-    'group flex h-9 w-full items-center gap-3 rounded-xl px-2.5 text-start text-sm font-medium transition-colors';
+    'group flex h-9 w-full items-center gap-3 rounded-xl px-2.5 text-start text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary';
   const iconColumn = 'flex h-6 w-6 flex-none items-center justify-center';
 
   return (
