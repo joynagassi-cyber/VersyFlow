@@ -75,7 +75,10 @@ export function EmptyState({
           (children ?? <DuoIcon icon={StarIcon} size={26} className="text-text-muted" />)
         )}
       </div>
-      <p className="empty-title">{title}</p>
+      {/* Un état vide remplace le contenu d'une section : son titre est le
+          titre de cette section, donc un vrai titre (h3 sous le h2 de la
+          carte). Le style reste `.empty-title`. */}
+      <h3 className="empty-title">{title}</h3>
       {description && (
         <p className="max-w-[34ch] text-sm leading-relaxed text-text-muted">{description}</p>
       )}

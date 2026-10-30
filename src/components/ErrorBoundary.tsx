@@ -43,7 +43,7 @@ function BoundaryFallback({ onReset }: { onReset: () => void }) {
         <DuoIcon icon={RefreshCw} size={28} />
       </span>
       <div>
-        <p className="empty-title">{i18next.t('errorBoundary.title', 'Une erreur est survenue')}</p>
+        <h2 className="empty-title">{i18next.t('errorBoundary.title', 'Une erreur est survenue')}</h2>
         <p className="mt-1 text-sm text-text-muted">
           {i18next.t('errorBoundary.message', 'Cette page n’a pas pu s’afficher. Réessayez.')}
         </p>
