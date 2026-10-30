@@ -292,8 +292,38 @@ function buildSeedProfiles(userId: string): LearnerProfile[] {
       createdAt: base + DAY,
       updatedAt: now(),
     },
+    // Profils des deux membres de la famille de démo (`buildSeedFamily`).
+    // Sans eux, `getMembersScoped` écarte les membres faute de profil et
+    // l'écran Famille n'affiche qu'une personne : impossible de tester le
+    // classement, les défis ou la liste des membres.
+    ...SEED_COMPANIONS.map((companion, index) => ({
+      id: stableId('prf_', `${companion.accountId}:main`),
+      accountId: companion.accountId,
+      displayName: companion.displayName,
+      avatar: companion.avatar,
+      slogan: companion.slogan,
+      status: 'active' as const,
+      createdAt: base + (index + 2) * DAY,
+      updatedAt: now(),
+    })),
   ];
 }
+
+/** Membres fictifs de la famille de démo (prénoms, pas de comptes réels). */
+export const SEED_COMPANIONS = [
+  {
+    accountId: stableId('usr_', 'grace@versyflow.test'),
+    displayName: 'Grâce',
+    avatar: '🌿',
+    slogan: 'Psaume 23 chaque matin',
+  },
+  {
+    accountId: stableId('usr_', 'sophie@versyflow.test'),
+    displayName: 'Sophie',
+    avatar: '☀️',
+    slogan: 'Apprendre en marchant',
+  },
+] as const;
 
 function buildSeedFamily(userId: string): {
   families: Family[];

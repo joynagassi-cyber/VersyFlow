@@ -1,4 +1,5 @@
 import { BackgroundPanel } from '@/components/ui/BackgroundPanel';
+import { DemoModeBadge } from '@/components/dev/DemoModeBadge';
 /**
  * DesktopHeader — l'en-tête de bureau (et de tablette) de VersyFlow.
  *
@@ -99,6 +100,7 @@ export function DesktopHeader() {
 
       {/* Barre de commande : une seule, toujours au même endroit. */}
       <div className="ms-auto flex items-center gap-1.5">
+        <DemoModeBadge />
         <BackgroundPanel />
         <button
           type="button"

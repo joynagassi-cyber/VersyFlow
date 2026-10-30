@@ -35,6 +35,8 @@
     "test:coverage": "vitest run --coverage",
     "semantic:build": "npx tsx scripts/semantic/run.ts",
     "themes:contrast": "node scripts/apply-preset-contrast.mjs",
+    "themes:photos": "node scripts/themes/import-photo-themes.mjs",
+    "themes:photos:check": "node scripts/themes/import-photo-themes.mjs --check",
     "plan:audit": "node scripts/audit-plan.mjs",
     "verify": "tsc -p tsconfig.app.json --noEmit && eslint app src/components src/hooks src/store src/theme tests/design --ext .ts,.tsx && vitest run tests/design && node scripts/audit-plan.mjs && node scripts/theme-provenance.mjs && node scripts/journey-inventory.mjs && node scripts/screen-coverage.mjs",
     "themes:provenance": "node scripts/theme-provenance.mjs",
@@ -104,6 +106,7 @@
   "devDependencies": {
     "@capacitor/cli": "^8.5.1",
     "@powersync/node": "^1.0.1",
+    "@testing-library/dom": "^10.4.2",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.3",
     "@types/better-sqlite3": "^9.6.0",

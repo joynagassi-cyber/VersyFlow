@@ -36,7 +36,6 @@ import {
   type MockCollectionName,
 } from '@/dev/mock/db';
 import {
-  resetMockDatabase,
   seedMockDatabase,
   SEED_VERSES,
 } from '@/dev/mock/seed';
@@ -53,6 +52,8 @@ import {
   type TestEvent,
 } from '@/dev/local-backend';
 import { getMockBootInfo } from '@/dev/bootstrap';
+import { DemoModePanel } from '@/components/dev/DemoModePanel';
+import { resetDemoSession } from '@/dev/demo-session';
 import { useSettingsStore } from '@/store/settings-store';
 import { cn } from '@/lib/utils';
 
@@ -156,9 +157,17 @@ export default function DevPanelScreen() {
 
   const handleReset = () =>
     withBusy('reset', () => {
-      resetMockDatabase();
-      recordTestEvent('dev.reset', {});
-      setNotice('Base de test vidée puis re-seedée.');
+      // Efface TOUT l'espace de démo (base mock + préférences isolées :
+      // apparence, profil, famille, historique de recherche…), puis re-sème.
+      // Les clés réelles ne sont jamais touchées.
+      const { clearedKeys, seeded } = resetDemoSession();
+      recordTestEvent('dev.reset', { clearedKeys, seeded });
+      setNotice(
+        `Démo réinitialisée : ${clearedKeys} ${clearedKeys > 1 ? 'clés' : 'clé'} de démo ${
+          clearedKeys > 1 ? 'effacées' : 'effacée'
+        }, base re-seedée. Rechargement…`,
+      );
+      window.setTimeout(() => window.location.reload(), 350);
     });
 
   const handleSkipOnboarding = () =>
@@ -224,6 +233,9 @@ export default function DevPanelScreen() {
       }
     >
       <div className="space-y-4 pb-10">
+        {/* ---------------- Démo / réel ---------------- */}
+        <DemoModePanel compact />
+
         {/* ---------------- Mode ---------------- */}
         <Card title="Mode de données" icon={Database}>
           <div className="flex items-center justify-between gap-3">

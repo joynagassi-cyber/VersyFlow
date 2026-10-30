@@ -29,6 +29,38 @@ export type DataMode = 'mock' | 'live';
 /** localStorage key holding the user's explicit override (Dev panel). */
 export const DATA_MODE_STORAGE_KEY = 'versyflow:data-mode';
 
+/**
+ * Chantier « démo » (2026-10-30) : le mode DÉMO est le mode par défaut.
+ *
+ * Raison : l'utilisateur veut tester toutes les fonctions (dont Famille) sans
+ * toucher à ses vraies données, dès l'ouverture de l'application.
+ *
+ * Sortie explicite et sûre (les données réelles n'ont jamais été modifiées,
+ * l'isolation de stockage s'en charge — voir `src/dev/mock/storage-scope.ts`) :
+ *   - `?data=live` dans l'URL,
+ *   - ou le bouton « Revenir aux données réelles » de `/settings/data` et `/dev`.
+ *
+ * Pour revenir au comportement « auto » (mock seulement si aucun projet
+ * Supabase n'est configuré), définir `VITE_DEMO_DEFAULT=off`.
+ */
+export const DEMO_IS_DEFAULT = true;
+
+/**
+ * `true` sauf si l'environnement désactive explicitement la démo par défaut.
+ * `env` est injectable pour les tests (l'environnement Vite n'est pas
+ * modifiable de façon fiable après chargement du module).
+ */
+export function isDemoDefaultEnabled(
+  env: Record<string, string | undefined> = readEnv(),
+): boolean {
+  const raw = env.VITE_DEMO_DEFAULT;
+  if (!raw) return DEMO_IS_DEFAULT;
+  const value = raw.trim().toLowerCase();
+  if (['off', 'false', '0', 'no', 'live'].includes(value)) return false;
+  if (['on', 'true', '1', 'yes', 'mock'].includes(value)) return true;
+  return DEMO_IS_DEFAULT;
+}
+
 function readEnv(): Record<string, string | undefined> {
   try {
     return (
@@ -112,6 +144,13 @@ export function getDataMode(): DataMode {
   const fromEnv = normalizeMode(readEnv().VITE_DATA_MODE);
   if (fromEnv) {
     cachedMode = fromEnv;
+    return cachedMode;
+  }
+
+  // Chantier démo : par défaut on ouvre en démo, même si un projet Supabase
+  // est configuré. `VITE_DEMO_DEFAULT=off` restaure l'auto-détection.
+  if (isDemoDefaultEnabled()) {
+    cachedMode = 'mock';
     return cachedMode;
   }
 

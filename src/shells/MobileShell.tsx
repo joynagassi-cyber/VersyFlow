@@ -24,6 +24,7 @@ import { QuickDock } from '@/components/navigation/QuickDock';
 import { HamburgerMenu } from '@/components/navigation/HamburgerMenu';
 import { Logo } from '@/components/brand/Logo';
 import { useUiStore } from '@/store/ui-store';
+import { DemoModeBadge } from '@/components/dev/DemoModeBadge';
 
 export function MobileShell() {
   const navigate = useNavigate();
@@ -50,7 +51,8 @@ export function MobileShell() {
               <span className="brand-tile"><Logo size={24} /></span>
               <span className="text-primary text-base font-extrabold">VersyFlow</span>
             </div>
-            <div className="flex items-center justify-end">
+            <div className="flex items-center justify-end gap-1.5">
+              <DemoModeBadge />
               <BackgroundPanel />
             </div>
           </div>
