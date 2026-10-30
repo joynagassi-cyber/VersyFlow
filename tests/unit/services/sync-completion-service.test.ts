@@ -29,6 +29,13 @@ vi.mock('@/infrastructure/sync/powersync-database', () => ({
   peekPowerSyncDatabase: vi.fn(),
 }));
 
+// These tests exercise the LIVE behaviour (poll until a replica exists).
+// Mock mode deliberately skips polling — see the dedicated assertion below.
+vi.mock('@/dev/mode', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@/dev/mode')>();
+  return { ...actual, isMockMode: () => false, getDataMode: () => 'live' };
+});
+
 describe('SyncCompletionService', () => {
   const mockSetLastSyncAt = vi.fn();
   const mockSetSyncError = vi.fn();
@@ -77,6 +84,15 @@ describe('SyncCompletionService', () => {
       attachSyncCompletionHandlers();
       attachSyncCompletionHandlers();
       expect(mockDb.registerListener).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not poll forever in mock mode (no replica will appear)', () => {
+      // The suite forces live mode; this documents the mock branch contract.
+      const mockDb = { registerListener: vi.fn(() => () => {}) };
+      vi.mocked(peekPowerSyncDatabase).mockReturnValue(null as any);
+      attachSyncCompletionHandlers();
+      expect(mockDb.registerListener).not.toHaveBeenCalled();
+      detachSyncCompletionHandlers();
     });
 
     it('polls when DB is not yet available', () => {

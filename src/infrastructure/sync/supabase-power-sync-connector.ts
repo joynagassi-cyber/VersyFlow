@@ -24,7 +24,7 @@ import type {
 import type { CrudEntry } from '@powersync/common';
 import { UpdateType } from '@powersync/common';
 
-import { SupabaseAuthService } from '@/auth';
+import type { IAuthService } from '@/auth/types';
 
 const DEFAULT_BATCH_SIZE = 50;
 
@@ -48,7 +48,7 @@ export class SupabasePowerSyncConnector implements PowerSyncBackendConnector {
   /** False when Supabase/PowerSync are not configured (local-only mode). */
   readonly isConfigured: boolean;
 
-  constructor(auth: SupabaseAuthService, powersyncUrl: string) {
+  constructor(auth: IAuthService, powersyncUrl: string) {
     const url = import.meta.env.VITE_SUPABASE_URL || import.meta.env.SUPABASE_URL;
     const anonKey =
       import.meta.env.VITE_SUPABASE_ANON_KEY || import.meta.env.SUPABASE_ANON_KEY;

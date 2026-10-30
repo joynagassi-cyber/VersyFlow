@@ -5,8 +5,12 @@
   "license": "MIT",
   "scripts": {
     "dev": "vite",
+    "dev:mock": "node scripts/dev-mock.mjs",
+    "mock:server": "node server/mock-api.mjs",
+    "build:mock": "vite build --mode mock",
     "build": "node scripts/copy-bible-bundled.mjs && tsc -b tsconfig.build.json && vite build",
     "preview": "vite preview",
+    "preview:mock": "vite preview --mode mock",
     "start": "serve -s www -l ${PORT:-3000}",
     "typecheck": "tsc -p tsconfig.app.json --noEmit",
     "lint": "eslint . --ext .ts,.tsx",

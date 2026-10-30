@@ -12,7 +12,7 @@ import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { Logo } from '@/components/brand/Logo';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { SupabaseAuthService } from '@/auth';
+import { getAuthService } from '@/auth';
 import { fireAndForget } from '@/lib/fire-and-forget';
 
 const SIGNUP = z.object({
@@ -33,7 +33,7 @@ export default function SignupScreen({ onSkip }: Props) {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
-  const auth = new SupabaseAuthService();
+  const auth = getAuthService();
 
   const handleSignup = async () => {
     const parsed = SIGNUP.safeParse({ email, name });
