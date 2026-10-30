@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { DuoIcon } from '@/components/ui/DuoIcon';
@@ -11,6 +11,7 @@ import {
   Download01Icon as Download,
   UsersRoundIcon as UsersRound,
   Camera01Icon as Camera,
+  CheckIcon as Check,
 } from '@/components/ui/solar-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { ListItem } from '@/components/ui/ListItem';
@@ -19,6 +20,9 @@ import { ProfileAvatar } from '@/components/profile/ProfileAvatar';
 import { useAuthStore } from '@/store/auth-store';
 import { useSettingsStore } from '@/store/settings-store';
 import { useActiveProfile } from '@/hooks/useActiveProfile';
+import { useProfileSyncStore } from '@/store/profile-sync-store';
+import { useProfileStore } from '@/store/profile-store';
+import { getLearnerProfileRepository } from '@/infrastructure/repository/powersync-repositories';
 import { getMemorizationService } from '@/services/memorization-service-factory';
 import { getFsrsEngine } from '@/services/fsrs-factory';
 import { ProgressService } from '@/services/progress-service';
@@ -26,8 +30,12 @@ import type { ProgressStats } from '@/services/stats-calculator';
 import { cn } from '@/lib/utils';
 import { getTranslationDisplayInfo } from '@/services/bible-translation-names';
 import { fireAndForget } from '@/lib/fire-and-forget';
-import { localProfileCover } from '@/theme/profile-cover';
-import { themeLandscapeUrl } from '@/theme/theme-catalog';
+import {
+  readPersistedProfileCover,
+  resolveAndPersistProfileCover,
+  type LocalProfileCoverSpec,
+} from '@/theme/profile-cover';
+import { isImageTheme, themeLandscapeUrl } from '@/theme/theme-catalog';
 import { useAppearanceStore } from '@/store/appearance-store';
 import { formatProgressLabel } from '@/lib/progress-label';
 
@@ -49,14 +57,31 @@ export default function ProfileScreen() {
   const bibleTranslation = useSettingsStore((s) => s.bibleTranslation);
   const setBibleTranslation = useSettingsStore((s) => s.setBibleTranslation);
   const { activeProfile, profiles } = useActiveProfile();
-  // Optional personal slogan (entity field, synced via PowerSync).
   const slogan = activeProfile?.slogan;
+
   const [editing, setEditing] = useState(false);
-  const [name, setName] = useState(() => localStorage.getItem('versyflow:profile:name') || user?.display_name || activeProfile?.displayName || '');
-  // Photo et nom vivent dans le stockage local de l'appareil (en démo : espace
-  // isolé). Aucun envoi réseau : `FileReader` produit une data URL locale.
+  const [name, setName] = useState(
+    () =>
+      localStorage.getItem('versyflow:profile:name') ||
+      activeProfile?.displayName ||
+      user?.display_name ||
+      '',
+  );
+
+  useEffect(() => {
+    if (!localStorage.getItem('versyflow:profile:name') && activeProfile?.displayName && !editing) {
+      setName(activeProfile.displayName);
+    }
+  }, [activeProfile?.displayName, editing]);
+
+  // Photo et couverture vivent exclusivement dans le stockage local de
+  // l'appareil (en mode démo : préfixe isolé). Aucune donnée ne quitte l'appareil.
   const [photo, setPhoto] = useState(() => localStorage.getItem('versyflow:profile:avatar') || '');
+  const [coverSpec, setCoverSpec] = useState<LocalProfileCoverSpec | null>(() =>
+    readPersistedProfileCover(localStorage.getItem('versyflow:profile:avatar') || ''),
+  );
   const fileRef = useRef<HTMLInputElement>(null);
+
   const pickPhoto = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
@@ -69,16 +94,54 @@ export default function ProfileScreen() {
     };
     reader.readAsDataURL(file);
   };
-  const imageTheme = useAppearanceStore((s) => s.colorThemeId);
-  const [cover, setCover] = useState<string | null>(null);
-  useEffect(() => {
-    let active = true;
-    void localProfileCover(photo).then((result) => { if (active) setCover(result); });
-    return () => { active = false; };
-  }, [photo]);
-  const saveName = () => { localStorage.setItem('versyflow:profile:name', name); setEditing(false); };
-  const [stats, setStats] = useState<ProgressStats | null>(null);
 
+  useEffect(() => {
+    let mounted = true;
+    void resolveAndPersistProfileCover(photo).then((result) => {
+      if (mounted) setCoverSpec(result);
+    });
+    return () => {
+      mounted = false;
+    };
+  }, [photo]);
+
+  const saveName = () => {
+    const trimmed = name.trim();
+    localStorage.setItem('versyflow:profile:name', trimmed);
+    setName(trimmed);
+    setEditing(false);
+
+    if (trimmed && activeProfile?.id) {
+      const syncProfiles = useProfileSyncStore.getState().profiles;
+      if (syncProfiles.some((p) => p.id === activeProfile.id)) {
+        useProfileSyncStore.getState().setProfiles(
+          syncProfiles.map((p) =>
+            p.id === activeProfile.id ? { ...p, displayName: trimmed } : p,
+          ),
+        );
+      }
+      const localProfiles = useProfileStore.getState().profiles;
+      if (localProfiles.some((p) => p.id === activeProfile.id)) {
+        useProfileStore.getState().setProfiles(
+          localProfiles.map((p) =>
+            p.id === activeProfile.id ? { ...p, displayName: trimmed } : p,
+          ),
+        );
+      }
+      fireAndForget(
+        getLearnerProfileRepository().update(activeProfile.id, { displayName: trimmed }),
+        'profile:rename',
+      );
+    }
+  };
+
+  const imageTheme = useAppearanceStore((s) => s.colorThemeId);
+  const fallbackCoverUrl = themeLandscapeUrl(
+    isImageTheme(imageTheme) && imageTheme !== 'obj-miroir' ? imageTheme! : 'nat-trees',
+  );
+  const heroCoverUrl = coverSpec?.motifDataUrl ?? fallbackCoverUrl;
+
+  const [stats, setStats] = useState<ProgressStats | null>(null);
   const profileId = activeProfile?.id ?? 'default';
 
   useEffect(() => {
@@ -98,39 +161,62 @@ export default function ProfileScreen() {
     };
   }, [profileId]);
 
-  const displayName = name || user?.display_name || activeProfile?.displayName || '';
+  const displayName = name || activeProfile?.displayName || user?.display_name || '';
+  const hasPhoto = photo.startsWith('data:image/');
   const translationInfo = getTranslationDisplayInfo(bibleTranslation);
 
   const toggleTranslation = () =>
     setBibleTranslation(bibleTranslation === 'lsg' ? 'ostervald' : 'lsg');
 
   const handleSignOut = async () => {
-    if (window.confirm(t('profile.confirmSignOut', 'Se deconnecter ?'))) {
+    if (window.confirm(t('profile.confirmSignOut', 'Se déconnecter ?'))) {
       await signOut();
       navigate('/auth');
     }
   };
 
+  const heroStyle: CSSProperties = {
+    backgroundImage: `url("${heroCoverUrl}")`,
+    ...(coverSpec
+      ? ({
+          '--profile-cover-base': coverSpec.baseColor,
+          '--profile-portrait-scrim': coverSpec.overlayScrim,
+          '--profile-portrait-text': coverSpec.overlayText,
+          '--profile-portrait-muted': coverSpec.overlayMuted,
+        } as CSSProperties)
+      : {}),
+  };
+
   return (
-    <FullScreenPage title={t('common.profil', 'Profil')} showBack column={false}>
+    <FullScreenPage title={t('common.profil', 'Profil')} showBack column="wide">
       <div className="profile-premium space-y-5">
-        <div className="profile-hero" style={{ backgroundImage: `url("${cover ?? themeLandscapeUrl(imageTheme && imageTheme !== 'obj-miroir' ? imageTheme : 'nat-trees')}")` }}>
+        <section
+          className={cn('profile-hero', coverSpec && 'has-local-motif')}
+          style={heroStyle}
+          aria-label={t('common.profil', 'Profil')}
+        >
           <div className="profile-hero-content">
-            <div className="profile-hero-text">
-              <p className="profile-eyebrow">{isAuthenticated ? t('profile.connected', 'Connecté') : t('profile.localMode', 'Mode local')}</p>
-              <div className="profile-name-row">
-                {editing ? <input value={name} autoFocus onChange={(e) => setName(e.target.value)} onBlur={saveName} onKeyDown={(e) => { if (e.key === 'Enter') saveName(); }} aria-label={t('profile.setName', 'Définir un nom')} className="profile-name-input" /> : <h1>{displayName || t('profile.setName', 'Définir un nom')}</h1>}
-                <button type="button" onClick={() => setEditing(true)} className="profile-name-edit" aria-label={t('common.edit', 'Modifier')}><DuoIcon icon={Pencil} size={18} /></button>
+            {/* Grand portrait avec nom intégré directement à la photo */}
+            <div className="profile-portrait-card">
+              <div className="profile-portrait-media">
+                {hasPhoto ? (
+                  <img
+                    src={photo}
+                    alt={displayName || t('common.profil', 'Profil')}
+                    className="profile-portrait-img"
+                  />
+                ) : (
+                  <div className="profile-portrait-placeholder">
+                    <ProfileAvatar
+                      photo={null}
+                      name={displayName}
+                      size={112}
+                      className="profile-avatar"
+                    />
+                  </div>
+                )}
               </div>
-              <p className="profile-slogan">{slogan || user?.userId || t('profile.localMode', 'Mode local')}</p>
-            </div>
-            <div className="profile-avatar-wrap">
-              <ProfileAvatar
-                photo={photo.startsWith('data:image/') ? photo : null}
-                name={displayName}
-                size={144}
-                className="profile-avatar"
-              />
+
               <button
                 type="button"
                 onClick={() => fileRef.current?.click()}
@@ -147,22 +233,96 @@ export default function ProfileScreen() {
                 className="hidden"
                 aria-label={t('profile.changePhoto', 'Changer la photo de profil')}
               />
+
+              <div className="profile-portrait-overlay">
+                <p className="profile-portrait-eyebrow">
+                  {isAuthenticated
+                    ? t('profile.connected', 'Connecté')
+                    : t('profile.localMode', 'Mode local')}
+                </p>
+                <div className="profile-portrait-name-row">
+                  {editing ? (
+                    <input
+                      value={name}
+                      autoFocus
+                      onChange={(e) => setName(e.target.value)}
+                      onBlur={saveName}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') saveName();
+                        if (e.key === 'Escape') setEditing(false);
+                      }}
+                      aria-label={t('profile.setName', 'Définir un nom')}
+                      className="profile-name-input"
+                    />
+                  ) : (
+                    <h1>{displayName || t('profile.setName', 'Définir un nom')}</h1>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => (editing ? saveName() : setEditing(true))}
+                    className="profile-name-edit"
+                    aria-label={
+                      editing
+                        ? t('common.save', 'Enregistrer')
+                        : t('common.edit', 'Modifier')
+                    }
+                  >
+                    <DuoIcon icon={editing ? Check : Pencil} size={16} />
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Détails harmonisés sur la couverture extraite localement */}
+            <div className="profile-hero-text">
+              <p className="profile-eyebrow">
+                {coverSpec
+                  ? t('profile.harmonizedCover', 'Couverture harmonisée locale')
+                  : t('profile.activeProfile', 'Profil actif')}
+              </p>
+              <p className="profile-slogan">
+                {slogan ||
+                  t(
+                    'profile.defaultSlogan',
+                    'Un verset médité chaque jour prend racine durablement.',
+                  )}
+              </p>
+              <p className="profile-local-note">
+                {t(
+                  'profile.localPrivacyNote',
+                  'Photo et motif de couverture traités et conservés uniquement sur cet appareil.',
+                )}
+              </p>
             </div>
           </div>
-        </div>
+        </section>
 
         {/* ── Stats band ── */}
-        <div className="grid grid-cols-2 gap-3">
-          <StatTile value={stats?.streakCount ?? null} label={t('progress.streak', 'Serie')} />
-          <StatTile value={stats?.masteredVerses ?? null} label={formatProgressLabel(t('progress.mastered', 'Maîtrisés'), stats?.masteredVerses ?? 0, i18n.resolvedLanguage || i18n.language)} />
-          <StatTile value={stats?.totalVerses ?? null} label={formatProgressLabel(t('progress.versesMemorized', 'Versets mémorisés'), stats?.totalVerses ?? 0, i18n.resolvedLanguage || i18n.language)} />
-          <StatTile value={stats?.dueForReview ?? null} label={t('progress.toReview', 'A reviser')} />
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+          <StatTile value={stats?.streakCount ?? null} label={t('progress.streak', 'Série')} />
+          <StatTile
+            value={stats?.masteredVerses ?? null}
+            label={formatProgressLabel(
+              t('progress.mastered', 'Maîtrisés'),
+              stats?.masteredVerses ?? 0,
+              i18n.resolvedLanguage || i18n.language,
+            )}
+          />
+          <StatTile
+            value={stats?.totalVerses ?? null}
+            label={formatProgressLabel(
+              t('progress.versesMemorized', 'Versets mémorisés'),
+              stats?.totalVerses ?? 0,
+              i18n.resolvedLanguage || i18n.language,
+            )}
+          />
+          <StatTile value={stats?.dueForReview ?? null} label={t('progress.toReview', 'À réviser')} />
         </div>
 
         {/* ── Preferences ── */}
         <div className="overflow-hidden rounded-2xl bg-surface shadow-sm">
           <h2 className="px-4 pt-4 text-xs font-bold uppercase tracking-wide text-text-muted">
-            {t('profile.preferences', 'Preferences')}
+            {t('profile.preferences', 'Préférences')}
           </h2>
           <div className="mt-2 flex flex-col divide-y divide-[color:var(--color-divider)]">
             <ListItem
@@ -180,13 +340,13 @@ export default function ProfileScreen() {
             <ListItem
               icon={Users}
               label={t('profile.activeProfile', 'Profil actif')}
-              value={activeProfile?.displayName}
+              value={displayName || activeProfile?.displayName}
               onClick={() => navigate('/profile/select')}
               showChevron
             />
             <ListItem
               icon={UsersRound}
-              label={t('profile.createProfile', 'Creer un profil')}
+              label={t('profile.createProfile', 'Créer un profil')}
               onClick={() => navigate('/profile/create')}
               showChevron
             />
@@ -203,18 +363,22 @@ export default function ProfileScreen() {
         <div className="flex flex-col gap-3">
           <Button variant="outline" onClick={() => navigate('/settings/backup')}>
             <DuoIcon icon={Download} size={18} />
-            {t('settings.exportData', 'Exporter mes donnees')}
+            {t('settings.exportData', 'Exporter mes données')}
           </Button>
           {profiles.length > 1 && (
             <Button variant="ghost" onClick={() => navigate('/profile/select')}>
               <DuoIcon icon={UsersRound} size={18} />
-              {t('profile.manageProfiles', 'Gerer les profils')}
+              {t('profile.manageProfiles', 'Gérer les profils')}
             </Button>
           )}
           {isAuthenticated && (
-            <Button variant="ghost" className={cn('text-error')} onClick={() => fireAndForget(handleSignOut(), 'profile:signOut')}>
+            <Button
+              variant="ghost"
+              className={cn('text-error')}
+              onClick={() => fireAndForget(handleSignOut(), 'profile:signOut')}
+            >
               <DuoIcon icon={LogOut} size={18} />
-              {t('nav.signOut', 'Se deconnecter')}
+              {t('nav.signOut', 'Se déconnecter')}
             </Button>
           )}
         </div>

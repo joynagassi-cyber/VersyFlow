@@ -273,4 +273,108 @@ describe('parcours démo : navigation directe, rechargement, sortie', () => {
     const firstImport = source.split('\n').find((line) => line.trim().startsWith('import '));
     expect(firstImport).toContain("@/dev/mock/install-isolation");
   });
+
+  it('isole aussi l’énumération des notes (MmkvStorage.getAllKeys / listVerseNotes)', async () => {
+    localStorage.setItem('versyflow:note:gen:1:1', 'Ma vraie note personnelle');
+
+    const { scope } = await loadScopeModule();
+    scope.installStorageIsolation();
+
+    const { saveVerseNote, listVerseNotes } = await import('@/services/verse-note-service');
+    await saveVerseNote('psa', 23, 2, 'Note écrite pendant la démo');
+
+    const demoNotes = await listVerseNotes();
+    expect(demoNotes.map((n) => n.verseKey)).toContain('psa:23:2');
+    expect(demoNotes.map((n) => n.verseKey)).not.toContain('gen:1:1');
+    expect(rawGet('versyflow:note:gen:1:1')).toBe('Ma vraie note personnelle');
+
+    // Retour en mode live : la vraie note réapparaît, la note démo reste cachée.
+    scope.uninstallStorageIsolation();
+    window.history.replaceState({}, '', '/?data=live');
+    vi.resetModules();
+    const liveNotesModule = await import('@/services/verse-note-service');
+    const liveNotes = await liveNotesModule.listVerseNotes();
+    expect(liveNotes.map((n) => n.verseKey)).toContain('gen:1:1');
+    expect(liveNotes.map((n) => n.verseKey)).not.toContain('psa:23:2');
+  });
+
+  it('isole l’arbre sémantique et les tags utilisateur sans ouvrir PowerSync', async () => {
+    const { scope } = await loadScopeModule();
+    scope.installStorageIsolation();
+
+    const { SemanticService } = await import('@/services/semantic-query-service');
+    const service = new SemanticService();
+
+    const index = await service.indexView();
+    expect(index.communities.length).toBeGreaterThan(0);
+
+    const saved = await service.saveVerseTag({
+      verseKey: 'joh:3:16',
+      conceptId: 'cpt-test-gratitude',
+      canonicalName: 'Gratitude',
+      role: 'PRIMARY',
+      locale: 'fr',
+    });
+    expect(saved.created).toBe(true);
+
+    const chapter = await service.chapterConcepts('joh', 3);
+    expect(chapter.conceptIdsByVerse['joh:3:16']).toContain(saved.concept.id);
+
+    const mine = await service.myConcepts(20, 'fr');
+    expect(mine.some((entry) => entry.label === 'Gratitude')).toBe(true);
+    expect(rawGet('versyflow:semantic:mock:v1')).toBeNull();
+  });
+
+  it('marque l’onboarding comme prêt dans la démo sans toucher le drapeau réel', async () => {
+    const { scope } = await loadScopeModule();
+    scope.installStorageIsolation();
+    const { ensureMockSeed } = await import('@/dev/mock/seed');
+    ensureMockSeed();
+
+    expect(localStorage.getItem('versyflow:onboarding:completed')).toBe('true');
+    expect(rawGet('versyflow:onboarding:completed')).toBeNull();
+  });
+
+  it('n’altère jamais les notifications système de l’appareil en mode démo isolé', async () => {
+    const scheduleSpy = vi.fn(() => Promise.resolve({ notifications: [] }));
+    const cancelSpy = vi.fn(() => Promise.resolve(undefined));
+    const requestPermissionsSpy = vi.fn(() => Promise.resolve({ display: 'granted' }));
+    vi.doMock('@/lib/platform', () => ({ isNativePlatform: () => true }));
+    vi.doMock('@capacitor/local-notifications', () => ({
+      LocalNotifications: {
+        schedule: scheduleSpy,
+        cancel: cancelSpy,
+        requestPermissions: requestPermissionsSpy,
+        checkPermissions: vi.fn(() => Promise.resolve({ display: 'granted' })),
+        getPending: vi.fn(() => Promise.resolve({ notifications: [{ id: 1 }, { id: 102 }] })),
+      },
+    }));
+
+    const { scope } = await loadScopeModule();
+    scope.installStorageIsolation();
+
+    const { NotificationService } = await import('@/services/notification-service');
+    const { applyWeeklyPlan, DEFAULT_WEEKLY_PLAN } = await import(
+      '@/services/weekly-reminder-plan'
+    );
+
+    const service = new NotificationService();
+    const daily = await service.scheduleDailyReminders(
+      { enabled: true, frequency: 2, time: '08:30' },
+      'Rappel démo',
+    );
+    expect(daily).toHaveLength(2);
+
+    const weeklyTarget = await applyWeeklyPlan(
+      {
+        ...DEFAULT_WEEKLY_PLAN,
+        review: { enabled: true, time: '09:00', days: [2, 4] },
+      },
+      { review: 'Révision', memorization: 'Mémorisation' },
+    );
+    expect(weeklyTarget).toBe('web');
+    expect(scheduleSpy).not.toHaveBeenCalled();
+    expect(cancelSpy).not.toHaveBeenCalled();
+    expect(requestPermissionsSpy).not.toHaveBeenCalled();
+  });
 });

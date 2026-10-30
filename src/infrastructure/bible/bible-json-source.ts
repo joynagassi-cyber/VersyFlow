@@ -43,7 +43,7 @@ export class BibleJsonFileSource implements IBibleTextSource {
     // calling it detached throws "Illegal invocation" in WebKit.
     this.fetchImpl =
       options.fetchImpl ??
-      (typeof fetch === 'function' ? (fetch.bind(globalThis) as typeof fetch) : null);
+      (typeof fetch === 'function' ? fetch.bind(globalThis) : null);
   }
 
   private resolvePath(translationId: string): string {

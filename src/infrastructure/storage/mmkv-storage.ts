@@ -21,6 +21,7 @@
  */
 
 import type { IStorage } from './storage-types';
+import { listLogicalStorageKeys } from '@/dev/mock/storage-scope';
 
 export class MmkvStorage implements IStorage {
   // -- IStorage implementation ----------------------------------------------
@@ -53,7 +54,7 @@ export class MmkvStorage implements IStorage {
 
   async getAllKeys(): Promise<string[]> {
     try {
-      return Object.keys(localStorage);
+      return listLogicalStorageKeys();
     } catch (error) {
       console.error('[MmkvStorage] getAllKeys failed:', error);
       return [];

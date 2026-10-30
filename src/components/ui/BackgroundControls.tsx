@@ -5,8 +5,8 @@ import { useTranslation } from 'react-i18next';
 const labels = { net: 'Net', equilibre: 'Équilibré', doux: 'Doux', opaque: 'Opaque' } as const;
 const fields: { key: keyof GlassSettings; label: string; max: number; min: number; step: number; unit: string }[] = [
   { key: 'bgBlur', label: "Flou de l’image", min: 0, max: 24, step: 1, unit: 'px' },
-  { key: 'glassBlur', label: 'Flou du verre', min: 0, max: 40, step: 1, unit: 'px' },
-  { key: 'glassAlpha', label: 'Opacité du verre', min: 20, max: 85, step: 1, unit: '%' },
+  { key: 'glassBlur', label: 'Flou Glass', min: 0, max: 40, step: 1, unit: 'px' },
+  { key: 'glassAlpha', label: 'Opacité Glass', min: 20, max: 85, step: 1, unit: '%' },
   { key: 'veilAlpha', label: 'Voile', min: 0, max: 100, step: 5, unit: '%' },
 ];
 
@@ -27,7 +27,7 @@ export function BackgroundControls({ showPreview = true }: { showPreview?: boole
   }, []);
   return (
     <div className="background-controls">
-      <div className="background-presets" role="group" aria-label={t('appearanceEditor.glassPresets', 'Préréglages de verre')}>
+      <div className="background-presets" role="group" aria-label={t('appearanceEditor.glassPresets', 'Préréglages Glass')}>
         {(Object.keys(labels) as (keyof typeof labels)[]).map((key) => (
           <button type="button" key={key} aria-pressed={active === key} onClick={() => applyPreset(key)}>{t(`appearanceEditor.glassPreset_${key}`, labels[key])}</button>
         ))}
@@ -45,7 +45,7 @@ export function BackgroundControls({ showPreview = true }: { showPreview?: boole
       {showPreview && <div className="background-preview" aria-label={t('appearanceEditor.glassPreview', 'Aperçu de la surface de lecture')}>
         <strong>{t('appearanceEditor.liveReading', 'Aperçu de lecture')}</strong><p>{t('appearanceEditor.glassPreviewText', 'Le texte reste au premier plan.')}</p><p>{t('appearanceEditor.glassPreviewBackground', 'Le fond se devine derrière la carte.')}</p>
       </div>}
-      <button type="button" className="background-reset" onClick={() => applyPreset('equilibre')}>{t('appearanceEditor.resetGlass', 'Réinitialiser le verre')}</button>
+      <button type="button" className="background-reset" onClick={() => applyPreset('equilibre')}>{t('appearanceEditor.resetGlass', 'Réinitialiser Glass')}</button>
     </div>
   );
 }

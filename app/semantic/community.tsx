@@ -20,6 +20,7 @@ import {
 } from '@/components/ui/solar-icons';
 import FullScreenPage from '@/components/layout/FullScreenPage';
 import { useCommunityView } from '@/hooks/useSemanticViews';
+import { formatVerseKey } from '@/hooks/useSemanticTags';
 
 function displayLabel(
   concept: { canonical_name: string; labels_by_language: Record<string, string> },
@@ -28,12 +29,6 @@ function displayLabel(
   const labels = concept.labels_by_language ?? {};
   const base = lang?.split('-')?.[0];
   return labels[lang] ?? labels[base] ?? concept.canonical_name;
-}
-
-function formatVerseKey(key: string): string {
-  const m = /^([a-z]+):(\d+):(\d+)$/i.exec(key);
-  if (!m) return key;
-  return `${m[1]} ${m[2]}:${m[3]}`;
 }
 
 export default function CommunityView() {

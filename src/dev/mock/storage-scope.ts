@@ -117,6 +117,37 @@ export function listDemoStorageKeys(): string[] {
   }
 }
 
+/**
+ * Clés logiques visibles par l'application (`MmkvStorage.getAllKeys()`, notes,
+ * export local). En mode démo, seules les clés préfixées sont exposées (sans
+ * leur préfixe interne) et les clés réelles restent invisibles ; en mode live,
+ * les clés de démo sont filtrées pour ne jamais polluer l'inventaire réel.
+ */
+export function listLogicalStorageKeys(): string[] {
+  const win = readWindow();
+  if (!win) return [];
+  try {
+    const demoActive = isDemoScopeActive();
+    const seen = new Set<string>();
+    for (let i = 0; i < win.localStorage.length; i += 1) {
+      const rawKey = win.localStorage.key(i);
+      if (!rawKey) continue;
+      if (demoActive) {
+        if (rawKey.startsWith(MOCK_STORAGE_PREFIX)) {
+          seen.add(rawKey.slice(MOCK_STORAGE_PREFIX.length));
+        } else if (DEMO_CONTROL_KEYS.has(rawKey)) {
+          seen.add(rawKey);
+        }
+      } else if (!rawKey.startsWith(MOCK_STORAGE_PREFIX)) {
+        seen.add(rawKey);
+      }
+    }
+    return [...seen];
+  } catch {
+    return [];
+  }
+}
+
 /** Nombre de clés + octets approximatifs occupés par la démo (pour l'UI). */
 export function demoStorageFootprint(): { keys: number; bytes: number } {
   const win = readWindow();

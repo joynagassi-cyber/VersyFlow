@@ -13,6 +13,14 @@
 // Fixed: Capacitor — notification permission request is now just-in-time (user-initiated), not fired at app launch
 
 import { isNativePlatform } from '@/lib/platform';
+import { getStorageIsolationState } from '@/dev/mock/storage-scope';
+
+const DEMO_DAILY_REMINDERS_KEY = 'versyflow:mock:daily-reminders';
+
+function isIsolatedDemoRuntime(): boolean {
+  const state = getStorageIsolationState();
+  return state.installed && state.scopeActive;
+}
 
 export interface ScheduledReminder {
   id: number;
@@ -48,9 +56,9 @@ export class NotificationService {
     if (permissionChecked && permissionGranted !== null) {
       return permissionGranted;
     }
-    if (!isNativePlatform()) {
-      // Web has no system permission concept — treat as granted so the
-      // in-app fallback path keeps working.
+    if (!isNativePlatform() || isIsolatedDemoRuntime()) {
+      // Web (or isolated Demo mode) never prompts or mutates real OS
+      // notification permissions.
       permissionGranted = true;
       permissionChecked = true;
       return true;
@@ -91,7 +99,7 @@ export class NotificationService {
     if (permissionChecked && permissionGranted !== null) {
       return permissionGranted;
     }
-    if (!isNativePlatform()) return true;
+    if (!isNativePlatform() || isIsolatedDemoRuntime()) return true;
     // De-duplicate concurrent calls so a rapid double-tap doesn't stack
     // two OS permission dialogs.
     if (!permissionRequestInFlight) {
@@ -134,6 +142,14 @@ export class NotificationService {
   ): Promise<ScheduledReminder[]> {
     const { enabled, time } = reminders;
     if (!enabled) {
+      if (isIsolatedDemoRuntime()) {
+        try {
+          localStorage.removeItem(DEMO_DAILY_REMINDERS_KEY);
+        } catch {
+          /* ignore */
+        }
+        return [];
+      }
       if (isNativePlatform()) await this.cancelAll();
       return [];
     }
@@ -145,6 +161,18 @@ export class NotificationService {
       time: this.offsetTime(time, i, frequency),
       frequency,
     }));
+
+    if (isIsolatedDemoRuntime()) {
+      try {
+        localStorage.setItem(
+          DEMO_DAILY_REMINDERS_KEY,
+          JSON.stringify({ body, scheduled, updatedAt: Date.now() }),
+        );
+      } catch {
+        /* ignore */
+      }
+      return scheduled;
+    }
 
     // Les notifications natives doivent avoir un horaire récurrent explicite ;
     // sinon le plugin les délivre immédiatement. Remplacer seulement nos IDs.
@@ -177,6 +205,16 @@ export class NotificationService {
    * next `ensurePermissions()` call would trust it without re-checking.
    */
   async cancelAll(): Promise<void> {
+    if (isIsolatedDemoRuntime()) {
+      try {
+        localStorage.removeItem(DEMO_DAILY_REMINDERS_KEY);
+      } catch {
+        /* ignore */
+      }
+      permissionChecked = false;
+      permissionGranted = null;
+      return;
+    }
     try {
       if (isNativePlatform()) {
         const { LocalNotifications } = await import('@capacitor/local-notifications');

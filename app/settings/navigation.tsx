@@ -78,7 +78,7 @@ export default function NavigationSettingsScreen() {
     <FullScreenPage
       title={t('settings.navigation', 'Navigation & Pages')}
       showBack
-      backPath="/settings"
+      backPath="/tabs/settings"
     >
       <div className="screen-column space-y-5">
         <p className="px-1 text-sm text-text-muted">
