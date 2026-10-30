@@ -2,6 +2,20 @@
 
 ## Chantier démo & accessibilité — 2026-10-30
 
+### Lot « 40 images » — 2026-10-30 (après-midi)
+
+- **Fait et testé** : chaîne d'import complète (`scripts/themes/photo-scenes.mjs`,
+  `scripts/themes/import-photo-themes.mjs`, `npm run themes:photos`), 20 scènes
+  décrites, recadrage 1248×832 / 832×1248 en WebP + vignettes 320 px, refus des
+  agrandissements et des copies, mode `--check`, `themeThumbUrl`, catégories photo
+  concaténées au catalogue (inertes tant qu'aucun fichier n'existe).
+- **Preuve** : 40 images synthétiques importées temporairement → catalogue à 120
+  entrées, `npx vitest run tests/design` = 39 fichiers / 267 tests OK ; nettoyées
+  ensuite. Détail : `docs/design/photo-themes.md`.
+- **Bloqué** : aucune des 40 vraies photos — 5ᵉ tentative de génération le 30/10,
+  toujours `403 PERMISSION_DENIED` (« account flagged for suspicious activity »).
+  Recherche d'images : uniquement des banques sous licence, inutilisables.
+
 ### Isolation réelle de la démo (fait, testé)
 
 - `src/dev/mock/storage-scope.ts` : en mode démo, **tous** les accès
