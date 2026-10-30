@@ -182,6 +182,20 @@ npm run dev            # vite, http://localhost:3000
 http://localhost:3000/__dev/responsive-preview
 ```
 
+**Ne cherchez pas les coques dans l'application** : `/` affiche l'application
+elle-même (donc, sur un écran large, la coquille de bureau — d'où l'impression
+de « ne voir que la version desktop »). Les coques vivent sur la route
+ci-dessus. Deux façons d'y arriver :
+
+1. en développement, une **pastille flottante « Coques mobile + bureau »**
+   (`src/dev/lab-shortcut.tsx`, masquée dans le laboratoire lui-même, absente
+   du build de production) est présente en bas à droite de tous les écrans ;
+2. l'URL directe ci-dessus.
+
+L'échelle de projection est bornée par la **largeur ET la hauteur** disponibles
+(`fitScale()`) : un téléphone de 868 px de haut est réduit pour tenir dans le
+panneau, au lieu d'afficher seulement son sommet.
+
 Dans l'espace de travail :
 
 | Commande | Effet |

@@ -157,6 +157,14 @@ const ResponsivePreview = import.meta.env.DEV
   ? lazy(() => import('../app/__dev/responsive-preview'))
   : null;
 
+/**
+ * Raccourci vers le laboratoire, également **développement uniquement** : sans
+ * lui, il fallait connaître l'URL par cœur pour voir les coques d'appareils.
+ */
+const DevLabShortcut = import.meta.env.DEV
+  ? lazy(() => import('../src/dev/lab-shortcut'))
+  : null;
+
 import i18next, { initI18next } from '@/i18n/i18next-init';
 import { initializeSettingsStore, useSettingsStore } from '@/store/settings-store';
 import { initializeAppearanceStore, useAppearanceStore } from '@/store/appearance-store';
@@ -502,6 +510,10 @@ function App() {
             <Route path="/splash" element={<SplashRoute />} />
             <Route path="*" element={<NotFound />} />
             </Routes>
+
+            {/* Raccourci de développement vers les coques d'appareils : présent
+                sur tous les écrans de l'app, absent du build de production. */}
+            {import.meta.env.DEV && DevLabShortcut && <DevLabShortcut />}
           </ErrorBoundary>
           <ToastProvider />
         </IonApp>

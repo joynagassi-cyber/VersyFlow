@@ -46,7 +46,7 @@ import {
 } from '@hugeicons/core-free-icons';
 import { useAppearanceStore } from '@/store/appearance-store';
 import { PREVIEW_SCREENS, DEFAULT_PREVIEW_SCREEN, type PreviewScreen } from '@/dev/preview-screens';
-import { DeviceCase, deviceOuterSize } from '@/dev/device-frames';
+import { DeviceCase, fitScale } from '@/dev/device-frames';
 import { cn } from '@/lib/utils';
 
 type Role = 'mobile' | 'desktop';
@@ -125,18 +125,34 @@ function ScaledFrame({
 }) {
   const wrapperRef = useRef<HTMLDivElement | null>(null);
   const [scale, setScale] = useState(1);
+  // Hauteur de fenêtre suivie : un téléphone de 868 px de haut ne rentre pas
+  // dans un panneau de 400 px. Sans cette borne, on ne voyait que le haut de
+  // la coque et l'aperçu semblait « ne pas s'afficher ».
+  const [viewportHeight, setViewportHeight] = useState(() =>
+    typeof window === 'undefined' ? 900 : window.innerHeight,
+  );
+
+  useEffect(() => {
+    const onResize = () => setViewportHeight(window.innerHeight);
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
 
   useEffect(() => {
     const element = wrapperRef.current;
     if (!element) return;
     // L'échelle se calcule sur la taille de l'APPAREIL (écran + coque) :
     // l'écran, lui, garde sa largeur interne de référence.
-    const outer = deviceOuterSize(spec.role, spec.width, spec.height).width;
     const compute = () => {
       const available = element.clientWidth;
       if (available <= 0) return;
-      // marge de 8 px de chaque côté pour ne pas coller aux bords
-      const next = Math.min(1, Math.max(0.28, (available - 16) / outer));
+      // Deux contraintes : la largeur de la colonne et la hauteur visible
+      // (barres du laboratoire déduites, 270 px). On prend la plus petite des
+      // deux, pour que la coque ENTIÈRE soit visible sans défiler.
+      const next = fitScale(spec.role, spec.width, spec.height, {
+        availableWidth: available,
+        availableHeight: viewportHeight - 270,
+      });
       setScale((current) => (Math.abs(current - next) > 0.01 ? next : current));
     };
     compute();
@@ -147,7 +163,7 @@ function ScaledFrame({
     }
     window.addEventListener('resize', compute);
     return () => window.removeEventListener('resize', compute);
-  }, [spec.role, spec.width, spec.height]);
+  }, [spec.role, spec.width, spec.height, viewportHeight]);
 
   // La source de la frame ne change JAMAIS après le montage : la navigation
   // passe par `postMessage`. Sinon un cadre « gelé » se rechargerait quand
@@ -158,7 +174,7 @@ function ScaledFrame({
   );
 
   return (
-    <section className="flex min-w-0 flex-1 flex-col gap-2">
+    <section className="flex min-w-0 flex-1 flex-col gap-2 rounded-2xl border border-border bg-surface p-3">
       <header className="flex flex-wrap items-center gap-2">
         <DuoIcon icon={spec.icon} size={18} className="text-primary" />
         <h2 className="text-sm font-bold text-text-primary">{spec.label}</h2>
@@ -240,6 +256,12 @@ function ScaledFrame({
             style={{ width: spec.width, height: spec.height, display: 'block' }}
           />
         </DeviceCase>
+
+        <p className="mt-2 text-center text-[11px] text-text-muted">
+          {spec.role === 'mobile'
+            ? 'Coque de téléphone — la version mobile y tourne sur 390 px de large'
+            : 'Écran de bureau — la version desktop y tourne sur 1440 px de large'}
+        </p>
       </div>
     </section>
   );

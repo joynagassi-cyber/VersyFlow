@@ -25,6 +25,7 @@ import {
   DESKTOP_CHROME,
   PHONE_CHROME,
   deviceOuterSize,
+  fitScale,
 } from '../../src/dev/device-frames';
 
 let container: HTMLDivElement | null = null;
@@ -119,11 +120,16 @@ describe('coques — rendu du laboratoire', () => {
 
   it('réserve la place de l’appareil après projection, pas celle de l’écran seul', () => {
     mount();
-    // jsdom ne calcule pas de mise en page : clientWidth = 0, donc l'échelle
-    // reste 1 et la place réservée est la taille naturelle de l'appareil.
-    const phone = document.querySelector('[data-device="phone"]')?.parentElement?.parentElement;
-    const reserved = phone?.style.height;
-    expect(reserved).toBe(`${deviceOuterSize('mobile', 390, 844).height}px`);
+    const outer = deviceOuterSize('mobile', 390, 844);
+    const box = document.querySelector('[data-device="phone"]')?.parentElement?.parentElement;
+    const reserved = Number.parseFloat(box?.style.height ?? '0');
+    expect(reserved).toBeGreaterThan(0);
+    // La place réservée correspond à l'échelle effectivement appliquée à
+    // l'appareil : si les deux divergent, la grille du laboratoire est fausse.
+    const scale = Number.parseFloat(
+      (box?.firstElementChild as HTMLElement).style.transform.replace(/[^0-9.]/g, ''),
+    );
+    expect(Math.round(reserved)).toBe(Math.round(outer.height * scale));
   });
 
   it('le décor est masqué aux lecteurs d’écran', () => {
@@ -135,5 +141,34 @@ describe('coques — rendu du laboratoire', () => {
     for (const frame of document.querySelectorAll('iframe')) {
       expect(frame.getAttribute('title')).toContain('px');
     }
+  });
+});
+
+describe('coques — échelle de projection', () => {
+  it('ne dépasse jamais 1 : un petit appareil n’est pas agrandi', () => {
+    expect(
+      fitScale('mobile', 390, 844, { availableWidth: 2000, availableHeight: 2000 }),
+    ).toBe(1);
+  });
+
+  it('se borne à la largeur quand la colonne est étroite', () => {
+    const scale = fitScale('desktop', 1440, 900, { availableWidth: 700, availableHeight: 2000 });
+    // 700 px de colonne pour un appareil de 1468 px de large.
+    expect(scale).toBeCloseTo((700 - 16) / 1468, 5);
+  });
+
+  it('se borne à la hauteur quand la fenêtre est basse', () => {
+    // Cas du problème signalé : un téléphone de 868 px de haut dans un panneau
+    // de 400 px. Sans cette borne, on ne voyait que le haut de la coque.
+    const scale = fitScale('mobile', 390, 844, { availableWidth: 2000, availableHeight: 400 });
+    expect(scale).toBeLessThan(0.5);
+    const outer = deviceOuterSize('mobile', 390, 844);
+    expect(outer.height * scale).toBeLessThanOrEqual(400);
+  });
+
+  it('garde un plancher lisible même si la place manque', () => {
+    expect(
+      fitScale('desktop', 1440, 900, { availableWidth: 100, availableHeight: 100, min: 0.2 }),
+    ).toBe(0.2);
   });
 });

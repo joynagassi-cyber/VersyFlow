@@ -122,4 +122,17 @@ describe('isolation de production', () => {
     const vite = readFileSync(join(root, 'vite.config.ts'), 'utf8');
     expect(vite).not.toMatch(/preview-frame\.html/);
   });
+
+  it('le raccourci vers le laboratoire est lui aussi gardé par import.meta.env.DEV', () => {
+    const main = readFileSync(join(root, 'src', 'main.tsx'), 'utf8');
+    // Import paresseux dans une branche morte en production…
+    expect(main).toMatch(
+      /const DevLabShortcut = import\.meta\.env\.DEV\s*\?\s*lazy\(\(\) => import\('\.\.\/src\/dev\/lab-shortcut'\)\)\s*:\s*null/,
+    );
+    // …et rendu sous la même garde.
+    expect(main).toMatch(/import\.meta\.env\.DEV && DevLabShortcut && <DevLabShortcut \/>/);
+    // Garde utile seulement si le composant pointe bien vers le laboratoire.
+    const shortcut = readFileSync(join(root, 'src', 'dev', 'lab-shortcut.tsx'), 'utf8');
+    expect(shortcut).toMatch(/to="\/__dev\/responsive-preview"/);
+  });
 });

@@ -71,6 +71,26 @@ export function deviceOuterSize(
   };
 }
 
+/**
+ * Échelle de projection : la plus petite des deux contraintes (largeur de la
+ * colonne, hauteur visible), bornée à 1 (jamais d'agrandissement) et à un
+ * plancher pour qu'un appareil ne devienne pas illisible.
+ *
+ * Fonction pure : le laboratoire l'appelle, les tests la vérifient sans DOM.
+ */
+export function fitScale(
+  role: DeviceRole,
+  screenWidth: number,
+  screenHeight: number,
+  options: { availableWidth: number; availableHeight: number; min?: number },
+): number {
+  const outer = deviceOuterSize(role, screenWidth, screenHeight);
+  const min = options.min ?? 0.2;
+  const byWidth = (options.availableWidth - 16) / outer.width;
+  const byHeight = (options.availableHeight - 16) / outer.height;
+  return Math.min(1, Math.max(min, Math.min(byWidth, byHeight)));
+}
+
 const SHELL_BG = 'linear-gradient(160deg, #23232a 0%, #141417 42%, #050506 100%)';
 
 /** Coque de téléphone : bordure, boutons latéraux, encoche, indicateur. */
