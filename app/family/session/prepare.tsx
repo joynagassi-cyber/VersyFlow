@@ -59,7 +59,7 @@ export default function FamilySessionPrepareScreen() {
       subtitle={t('familyPlus.eachOwnDevice', 'Chacun sur son appareil')}
       backPath="/family/home"
     >
-      <div className="flex flex-col gap-4">
+      <div className="space-y-4">
         <SectionCard title={t('familyPlus.passageLabel', 'Passage')}>
           <div className="flex items-center gap-2">
             <span className="flex h-9 w-9 items-center justify-center rounded-full bg-surface-tint text-primary">

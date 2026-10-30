@@ -35,7 +35,7 @@ export default function FamilyChallengeResultsScreen() {
 
   if (!challenge) {
     return (
-      <FullScreenPage title={t('familyPlus.resultsTitle', 'Résultats')} backPath="/family/challenges">
+      <FullScreenPage title={t('familyPlus.resultsTitle', 'Résultats')} backPath="/family/challenges" column="wide">
         <EmptyState
           title={t('familyPlus.challengeNotFound', 'Défi introuvable')}
           description={t('familyPlus.challengeNotFoundDesc', 'Il a peut-être été supprimé.')}
@@ -64,7 +64,7 @@ export default function FamilyChallengeResultsScreen() {
       subtitle={`${challenge.title} · ${family?.name ?? ''}`}
       backPath={`/family/challenges/${challenge.id}`}
     >
-      <div className="flex flex-col gap-4">
+      <div className="space-y-4">
         <SectionCard>
           <div className="grid grid-cols-3 gap-2">
             <StatTile value={rows.length} label={t('familyPlus.participantsLabel', 'Participants')} />

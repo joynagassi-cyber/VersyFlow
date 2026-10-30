@@ -6,16 +6,17 @@ import { useTranslation } from 'react-i18next';
 import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   UserPlusIcon as UserPlus,
-  CheckmarkCircle02Icon as CheckCircle2,
   AlertCircleIcon as AlertCircle,
+  ArrowRight01Icon as ChevronRight,
 } from '@/components/ui/solar-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
-import { FamilySubnav, MemberRow } from '@/components/family/FamilyKit';
+import { FamilyHubPage, MemberRow, SectionCard } from '@/components/family/FamilyKit';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { LoadingBlock } from '@/components/ui/Skeleton';
 import { useFamilySyncStore } from '@/store/family-sync-store';
 import { useActiveProfile } from '@/hooks/useActiveProfile';
 import { useFamilyService } from '@/hooks/useFamilyService';
+import { useAuthStore } from '@/store/auth-store';
 import type { MemberWithProfile } from '@/services/family-service';
 
 export default function FamilyMembersScreen() {
@@ -24,6 +25,7 @@ export default function FamilyMembersScreen() {
   const activeFamilyId = useFamilySyncStore((s) => s.activeFamilyId);
   const families = useFamilySyncStore((s) => s.families);
   const { activeProfile } = useActiveProfile();
+  const meId = useAuthStore((s) => s.user?.userId ?? null);
   const { getMembersScoped } = useFamilyService();
 
   const [members, setMembers] = useState<MemberWithProfile[]>([]);
@@ -76,16 +78,22 @@ export default function FamilyMembersScreen() {
 
   const roleLabel = (role: string) =>
     role === 'owner'
-      ? t('family.roleOwner', 'Proprietaire')
+      ? t('family.roleOwner', 'Propriétaire')
       : role === 'admin'
-        ? t('family.roleAdmin', 'Admin')
+        ? t('family.roleAdmin', 'Administrateur')
         : t('family.roleMember', 'Membre');
+  /* Le rôle est la première information utile d'une liste de membres : il
+     remplace la coche « vérifié » que portait chaque ligne, y compris la
+     sienne, et qui ne disait rien. */
+  const roleChip = (role: string) =>
+    role === 'owner' || role === 'admin' ? (
+      <span className="family-member-role">{roleLabel(role)}</span>
+    ) : null;
 
   return (
-    <FullScreenPage
-      title={family.name}
-      showBack
-      backPath="/family/home"
+    <FamilyHubPage
+      title={t('family.members', 'Membres')}
+      subtitle={family.name}
       right={
         <button
           type="button"
@@ -97,12 +105,7 @@ export default function FamilyMembersScreen() {
         </button>
       }
     >
-      <div className="screen-column space-y-4">
-        <FamilySubnav />
-
-        <h2 className="section-label">{t('family.members', 'Membres')}</h2>
-
-        {isLoading ? (
+      {isLoading ? (
           <LoadingBlock label={t('common.loading', 'Chargement…')} className="py-12" />
         ) : loadError ? (
           <EmptyState
@@ -125,37 +128,43 @@ export default function FamilyMembersScreen() {
             onAction={() => navigate('/family/invite')}
           />
         ) : (
-          <ul className="flex flex-col gap-1">
-            {members.map((m) => (
-              <li key={m.id}>
-                <MemberRow
-                  name={m.profile?.displayName || m.accountId}
-                  meta={roleLabel(m.role)}
-                  trailing={<DuoIcon icon={CheckCircle2} size={20} className="text-success" />}
-                />
-              </li>
-            ))}
-          </ul>
+          <SectionCard
+            title={t('familyPlus.membersCount', '{{count}} membres', { count: members.length })}
+          >
+            <ul className="flex flex-col">
+              {members.map((m) => (
+                <li key={m.id}>
+                  <MemberRow
+                    name={m.profile?.displayName || m.accountId}
+                    meta={roleLabel(m.role)}
+                    highlight={meId !== null && m.accountId === meId}
+                    youLabel={t('familyPlus.you', 'Vous')}
+                    trailing={roleChip(m.role)}
+                  />
+                </li>
+              ))}
+            </ul>
+          </SectionCard>
         )}
 
-        <button
-          type="button"
-          onClick={() => navigate('/family/invite')}
-          className="g2 flex w-full items-center gap-3 p-4 text-left"
-        >
-          <span className="flex h-11 w-11 items-center justify-center rounded-full bg-primary text-on-primary">
-            <DuoIcon icon={UserPlus} size={20} />
+      <button
+        type="button"
+        onClick={() => navigate('/family/invite')}
+        className="g2 flex w-full items-center gap-3 p-4 text-left"
+      >
+        <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-primary text-on-primary">
+          <DuoIcon icon={UserPlus} size={20} />
+        </span>
+        <span className="flex-1">
+          <span className="block text-sm font-semibold text-text-primary">
+            {t('family.inviteMember', 'Inviter un membre')}
           </span>
-          <span className="flex-1">
-            <span className="block text-sm font-semibold text-text-primary">
-              {t('family.inviteMember', 'Inviter un membre')}
-            </span>
-            <span className="text-xs text-text-muted">
-              {t('family.inviteHint', 'Partagez le code ou le lien')}
-            </span>
+          <span className="text-xs text-text-muted">
+            {t('family.inviteHint', 'Partagez le code ou le lien')}
           </span>
-        </button>
-      </div>
-    </FullScreenPage>
+        </span>
+        <DuoIcon icon={ChevronRight} size={18} className="shrink-0 text-text-muted" />
+      </button>
+    </FamilyHubPage>
   );
 }

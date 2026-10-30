@@ -944,6 +944,15 @@ export const en = {
   },
 
   familyPlus: {
+    noChallengeForMemberTitle: 'No active challenge',
+    activityFeed: 'Family feed',
+    entriesCount: '{{count}} entrie(s)',
+    challengesDone: '{{count}} challenge(s) completed',
+    emptyHistoryTitle: 'No scored challenge yet',
+    pointsProgress: 'Progress to the next tier',
+    pointsToNext: '{{points}} points to the next tier.',
+    pointsUnavailableShort: 'Points cannot be computed without an active profile.',
+    rankingLabel: 'Rank and points',
     noParticipantsHint:
       'This session’s points appear as soon as a member finishes their part.',
     overview: 'Overview',

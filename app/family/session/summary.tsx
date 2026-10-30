@@ -35,7 +35,7 @@ export default function FamilySessionSummaryScreen() {
 
   if (!session) {
     return (
-      <FullScreenPage title={t('familyPlus.sessionSummaryTitle', 'Session terminée')} backPath="/family/home">
+      <FullScreenPage title={t('familyPlus.sessionSummaryTitle', 'Session terminée')} backPath="/family/home" column="wide">
         <EmptyState
           title={t('familyPlus.sessionNotFound', 'Séance introuvable')}
           description={t('familyPlus.sessionNotFoundDesc', 'Préparez une séance pour la retrouver ici.')}
@@ -63,7 +63,7 @@ export default function FamilySessionSummaryScreen() {
       subtitle={`${session.passage} · ${session.participants.length} ${t('familyPlus.participantsShort', 'participants')}`}
       backPath="/family/home"
     >
-      <div className="flex flex-col gap-4">
+      <div className="space-y-4">
         <SectionCard>
           <div className="grid grid-cols-3 gap-2">
             <StatTile

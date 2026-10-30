@@ -89,7 +89,7 @@ export default function FamilyInviteScreen() {
 
   if (!family || !signedIn) {
     return (
-      <FullScreenPage title={t('family.invite', 'Inviter')} showBack>
+      <FullScreenPage title={t('family.invite', 'Inviter')} showBack column="wide">
         <div className="screen-column">
           <EmptyState
             title={t('family.noFamily', 'Aucune famille active')}

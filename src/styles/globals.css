@@ -2255,3 +2255,57 @@ ion-tab-button::part(native):focus-visible {
   font-weight: 600;
   font-variant-numeric: tabular-nums;
 }
+
+/* Nom de membre : le nom, puis l'étiquette « vous » — sur la même ligne. */
+.family-member-name {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+.family-member-you {
+  flex: none;
+  padding: 1px 6px;
+  border-radius: 9999px;
+  background: color-mix(in srgb, var(--acc) 14%, transparent);
+  color: var(--acc-text);
+  font-family: var(--font-sans, Inter), sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+/* Ma ligne dans la liste : teintée, jamais encadrée (la bordure dit l'état). */
+.family-member-row-you {
+  background: color-mix(in srgb, var(--acc) 7%, transparent);
+}
+/* Rôle élevé (propriétaire, administrateur) : une pastille, pas un paragraphe. */
+.family-member-role {
+  flex: none;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  background: color-mix(in srgb, var(--tx) 6%, transparent);
+  color: var(--mut);
+  font-family: var(--font-sans, Inter), sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+/* Nature d'un défi : micro-capitale d'accent (lisible sur les 39 presets). */
+.family-kind {
+  font-family: var(--font-sans, Inter), sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--acc-text, var(--color-primary));
+}
+/* Ligne d'activité : avatar + récit + horodatage + réactions. */
+.family-activity-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  width: 100%;
+}

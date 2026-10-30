@@ -19,7 +19,7 @@ import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { DuoIcon } from '@/components/ui/DuoIcon';
 import { Button } from '@/components/ui/button';
 import {
-  FamilySubnav,
+  FamilyHubPage,
   HintNote,
   InfoRow,
   SectionCard,
@@ -84,111 +84,106 @@ export default function FamilySettingsScreen() {
   };
 
   return (
-    <FullScreenPage
+    <FamilyHubPage
       title={t('familyPlus.familySettingsTitle', 'Réglages Famille')}
       subtitle={family.name}
-      backPath="/family/home"
     >
-      <div className="flex flex-col gap-4">
-        <FamilySubnav />
-
-        <SectionCard title={t('familyPlus.familySection', 'Famille')}>
-          <InfoRow
-            label={t('familyPlus.familyNameLabel', 'Nom')}
-            value={family.name}
-            icon={Users}
-          />
-          <div className="mt-2 flex items-center gap-2">
-            {FAMILY_SWATCHES.map((swatch) => (
-              <span
-                key={swatch.id}
-                aria-hidden="true"
-                className={cn(
-                  'h-6 w-6 rounded-full border-2',
-                  swatch.value === family.color ? 'border-text-primary' : 'border-transparent',
-                )}
-                style={{ backgroundColor: swatch.value }}
-              />
-            ))}
+      <SectionCard title={t('familyPlus.familySection', 'Famille')}>
+        <InfoRow
+          label={t('familyPlus.familyNameLabel', 'Nom')}
+          value={family.name}
+          icon={Users}
+        />
+        <div className="mt-2 flex items-center gap-2">
+          {FAMILY_SWATCHES.map((swatch) => (
             <span
-              className="ml-auto rounded-full px-2 py-1 text-2xs font-semibold text-text-primary"
-              style={{ backgroundColor: familyTint(family.color) }}
-            >
-              {t('familyPlus.currentColor', 'Couleur actuelle')}
-            </span>
-          </div>
-          <div className="mt-2">
-            <InfoRow
-              label={t('familyPlus.manageMembers', 'Gérer les membres')}
-              value={members.length}
-              onClick={() => navigate('/family/members')}
+              key={swatch.id}
+              aria-hidden="true"
+              className={cn(
+                'h-6 w-6 rounded-full border-2',
+                swatch.value === family.color ? 'border-text-primary' : 'border-transparent',
+              )}
+              style={{ backgroundColor: swatch.value }}
             />
-          </div>
-        </SectionCard>
-
-        <SectionCard title={t('familyPlus.leaderboardTitle', 'Classement')}>
-          <p className="mb-2 text-sm text-text-primary">{t('familyPlus.resetLabel', 'Remise à zéro')}</p>
-          <Segmented<ResetDay>
-            label={t('familyPlus.resetLabel', 'Remise à zéro')}
-            value={current.resetDay}
-            onChange={(resetDay) => updateSettings(family.id, { resetDay })}
-            options={[
-              { value: 'monday', label: t('familyPlus.resetMonday', 'Chaque lundi') },
-              { value: 'sunday', label: t('familyPlus.resetSunday', 'Chaque dimanche') },
-              { value: 'first-of-month', label: t('familyPlus.resetFirst', 'Le 1er du mois') },
-            ]}
-          />
-
-          <div className="mt-3">
-            <InfoRow
-              label={t('familyPlus.showScores', 'Afficher les scores détaillés')}
-              icon={Ranking}
-              trailing={
-                <Switch
-                  checked={current.showScores}
-                  label={t('familyPlus.showScores', 'Afficher les scores détaillés')}
-                  onCheckedChange={(v) => updateSettings(family.id, { showScores: v })}
-                />
-              }
-            />
-            <HintNote>
-              {t('familyPlus.showScoresHint', 'Sinon, seul le rang est visible (pas les points).')}
-            </HintNote>
-          </div>
-
-          <div className="mt-3">
-            <InfoRow
-              label={t('familyPlus.showAliases', 'Afficher les alias')}
-              trailing={
-                <Switch
-                  checked={current.showAliases}
-                  label={t('familyPlus.showAliases', 'Afficher les alias')}
-                  onCheckedChange={(v) => updateSettings(family.id, { showAliases: v })}
-                />
-              }
-            />
-          </div>
-        </SectionCard>
-
-        <SectionCard title={t('familyPlus.dangerZone', 'Zone sensible')}>
-          <p className="text-sm text-text-muted">
-            {t(
-              'familyPlus.leaveFamilyHint',
-              'Quitter la famille retire votre appartenance sur cet appareil. Les autres membres et leurs données ne sont pas supprimés.',
-            )}
-          </p>
-          {error && <p className="mt-2 rounded-xl bg-error/10 px-3 py-2 text-sm text-error">{error}</p>}
-          <Button
-            variant="destructive"
-            className="mt-3 w-full"
-            disabled={busy || signedOut}
-            onClick={() => fireAndForget(leave(), 'family:leave')}
+          ))}
+          <span
+            className="ml-auto rounded-full px-2 py-1 text-2xs font-semibold text-text-primary"
+            style={{ backgroundColor: familyTint(family.color) }}
           >
-            <DuoIcon icon={Logout} size={16} />
-            {t('familyPlus.leaveFamily', 'Quitter la famille')}
-          </Button>
-        </SectionCard>
-      </div>
-    </FullScreenPage>
+            {t('familyPlus.currentColor', 'Couleur actuelle')}
+          </span>
+        </div>
+        <div className="mt-2">
+          <InfoRow
+            label={t('familyPlus.manageMembers', 'Gérer les membres')}
+            value={members.length}
+            onClick={() => navigate('/family/members')}
+          />
+        </div>
+      </SectionCard>
+
+      <SectionCard title={t('familyPlus.leaderboardTitle', 'Classement')}>
+        <p className="mb-2 text-sm text-text-primary">{t('familyPlus.resetLabel', 'Remise à zéro')}</p>
+        <Segmented<ResetDay>
+          label={t('familyPlus.resetLabel', 'Remise à zéro')}
+          value={current.resetDay}
+          onChange={(resetDay) => updateSettings(family.id, { resetDay })}
+          options={[
+            { value: 'monday', label: t('familyPlus.resetMonday', 'Chaque lundi') },
+            { value: 'sunday', label: t('familyPlus.resetSunday', 'Chaque dimanche') },
+            { value: 'first-of-month', label: t('familyPlus.resetFirst', 'Le 1er du mois') },
+          ]}
+        />
+
+        <div className="mt-3">
+          <InfoRow
+            label={t('familyPlus.showScores', 'Afficher les scores détaillés')}
+            icon={Ranking}
+            trailing={
+              <Switch
+                checked={current.showScores}
+                label={t('familyPlus.showScores', 'Afficher les scores détaillés')}
+                onCheckedChange={(v) => updateSettings(family.id, { showScores: v })}
+              />
+            }
+          />
+          <HintNote>
+            {t('familyPlus.showScoresHint', 'Sinon, seul le rang est visible (pas les points).')}
+          </HintNote>
+        </div>
+
+        <div className="mt-3">
+          <InfoRow
+            label={t('familyPlus.showAliases', 'Afficher les alias')}
+            trailing={
+              <Switch
+                checked={current.showAliases}
+                label={t('familyPlus.showAliases', 'Afficher les alias')}
+                onCheckedChange={(v) => updateSettings(family.id, { showAliases: v })}
+              />
+            }
+          />
+        </div>
+      </SectionCard>
+
+      <SectionCard title={t('familyPlus.dangerZone', 'Zone sensible')}>
+        <p className="text-sm text-text-muted">
+          {t(
+            'familyPlus.leaveFamilyHint',
+            'Quitter la famille retire votre appartenance sur cet appareil. Les autres membres et leurs données ne sont pas supprimés.',
+          )}
+        </p>
+        {error && <p className="mt-2 rounded-xl bg-error/10 px-3 py-2 text-sm text-error">{error}</p>}
+        <Button
+          variant="destructive"
+          className="mt-3 w-full"
+          disabled={busy || signedOut}
+          onClick={() => fireAndForget(leave(), 'family:leave')}
+        >
+          <DuoIcon icon={Logout} size={16} />
+          {t('familyPlus.leaveFamily', 'Quitter la famille')}
+        </Button>
+      </SectionCard>
+    </FamilyHubPage>
   );
 }

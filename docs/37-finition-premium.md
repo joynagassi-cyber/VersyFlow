@@ -187,6 +187,30 @@ toujours rendu, nom accessible de la navigation, commandes de coquille à
 40 px et nommées, feuille modale au matériau du thème (verre sur fond image,
 pleine en transparence réduite), focus de champ unique.
 
+
+## 4 quater. Lot H — le mode Famille comme une section, pas huit pages
+
+L'audit, en comptant (21 écrans, 3 660 lignes) :
+
+| Défaut | Mesure avant | Correction |
+| --- | --- | --- |
+| En-têtes incohérents | 5 hubs sur 6 titraient avec le **nom de la famille**, le sixième avec « Réglages Famille » ; l'ordre des blocs (sous-nav, filtre, contenu) variait | `FamilyHubPage` : en-tête (section + nom de la famille), sous-navigation, puis contenu — la sous-nav ne peut plus être oubliée |
+| Colonne de lecture | 7 écrans de **liste** dans une colonne de 720 px sur bureau, alors que la coquille prévoit 1060 px pour les listes | `column="wide"` sur les écrans de liste ; les formulaires (création, profil, rejoindre) restent en lecture |
+| Rang écrit dans la méta | `meta={\`${index + 1}\`}` : le classement s'affichait comme un sous-titre du nom | `RankBadge` (`rank=`), pastille d'accent pour les trois premiers, discrète au-delà |
+| Barre décalée hors ligne | `ml-12 mr-1 -mt-1` pour retomber sous le nom — une valeur magique par écran | `bar=` sur `MemberRow` : la barre appartient au membre, pas à la liste |
+| Coche « vérifié » partout | chaque membre portait une coche verte, y compris soi-même : elle ne distinguait rien | rôle (propriétaire/administrateur) en pastille, et « Vous » sur sa propre ligne |
+| Rythme vertical | `flex flex-col gap-4` dans 12 écrans contre `space-y-4` ailleurs | `space-y-4` partout |
+| Fil d'activité recopié | avatar + récit + horodatage + réactions écrits dans l'écran | `ActivityRow` (avatar 36, récit, horodatage, réactions) |
+
+Nouvelles briques : `FamilyHubPage`, `RankBadge`, `ActivityRow`, plus
+`MemberRow` étendu (`rank`, `bar`, `highlight`, `youLabel`). Styles
+`.family-member-you`, `.family-member-row-you`, `.family-member-role`,
+`.family-kind`, `.family-activity-row` — aucun littéral, tout en jetons.
+
+Contrat : `tests/design/family-mode.test.ts` passe de 9 à **15 tests**
+(coquille des hubs, rang en pastille, barre dans la ligne, colonne large,
+jetons des nouvelles briques, fil d'activité).
+
 ## 5. Prochaines finitions possibles (mesurées, non faites)
 
 | Sujet | Mesure | Pourquoi pas maintenant |

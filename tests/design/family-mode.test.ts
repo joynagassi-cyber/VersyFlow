@@ -43,7 +43,9 @@ const kit = read('src/components/family/FamilyKit.tsx');
 const globals = read('src/styles/globals.css').replace(/\/\*[\s\S]*?\*\//g, '');
 
 describe('mode Famille — une section, pas huit pages isolées', () => {
-  it('les six écrans de section portent la sous-navigation', () => {
+  it('les six écrans de section passent par la même coquille', () => {
+    // La sous-navigation est portée par `FamilyHubPage` : un hub ne peut plus
+    // l'oublier, ni changer l'ordre des blocs (sous-nav, filtre, contenu).
     const hubs = [
       'app/family/home.tsx',
       'app/family/members.tsx',
@@ -54,7 +56,7 @@ describe('mode Famille — une section, pas huit pages isolées', () => {
     ];
     const missing = hubs.filter((hub) => {
       const text = stripCodeComments(read(hub));
-      return !/FamilySubnav/.test(text);
+      return !/FamilyHubPage/.test(text);
     });
     expect(missing).toEqual([]);
   });
@@ -122,5 +124,94 @@ describe('mode Famille — une seule écriture par rôle', () => {
     expect(adHoc.map((a) => a.path)).toEqual([]);
     const usingEmptyState = screens.filter(({ text }) => /<EmptyState/.test(text)).length;
     expect(usingEmptyState).toBeGreaterThanOrEqual(4);
+  });
+});
+
+/**
+ * V3 — la coquille des hubs et les lignes de membre.
+ *
+ * L'audit après la V2 : cinq hubs ouvraient sur le NOM de la famille, le
+ * sixième sur « Réglages Famille » ; trois écrans de liste restaient dans une
+ * colonne de lecture de 720 px sur bureau ; le classement posait sa barre de
+ * progression sous la ligne, décalée de `ml-12` pour retomber sous le nom, et
+ * écrivait le rang dans la « méta » du membre.
+ */
+describe('mode Famille — une coquille, une ligne, un rang', () => {
+  const css = read('src/styles/globals.css');
+  const hubs = [
+    'app/family/home.tsx',
+    'app/family/members.tsx',
+    'app/family/challenges/index.tsx',
+    'app/family/points.tsx',
+    'app/family/activity.tsx',
+    'app/family/settings.tsx',
+  ];
+
+  it('la coquille des hubs porte la sous-navigation et la colonne large', () => {
+    const kit = read('src/components/family/FamilyKit.tsx');
+    expect(kit).toMatch(/export function FamilyHubPage/);
+    expect(kit).toMatch(/<FamilySubnav \/>/);
+    expect(kit).toMatch(/column = 'wide'/);
+    expect(kit).toMatch(/backPath = '\/family\/home'/);
+    for (const hub of hubs) {
+      expect(read(hub), `${hub} doit utiliser FamilyHubPage`).toContain('<FamilyHubPage');
+      expect(read(hub), `${hub} ne remonte pas sa propre sous-nav`).not.toMatch(/<FamilySubnav/);
+    }
+  });
+
+  it('le rang est une pastille de la ligne, pas une méta', () => {
+    const leaderboard = stripCodeComments(read('app/family/leaderboard.tsx'));
+    expect(leaderboard).toMatch(/rank=\{index \+ 1\}/);
+    expect(leaderboard, 'aucune méta numérique de rang').not.toMatch(/meta=\{`\$\{index \+ 1\}`\}/);
+    expect(read('src/components/family/FamilyKit.tsx')).toMatch(/export function RankBadge/);
+  });
+
+  it('la barre de progression appartient à la ligne, sans décalage magique', () => {
+    const kit = read('src/components/family/FamilyKit.tsx');
+    expect(kit).toMatch(/bar\?: \{ value: number; max: number; label\?: string \}/);
+    for (const file of ['app/family/leaderboard.tsx', 'app/family/home.tsx']) {
+      const text = stripCodeComments(read(file));
+      expect(text, `${file} : la barre passe par MemberRow`).toMatch(/bar=\{\{/);
+      expect(text, `${file} : plus de barre décalée hors ligne`).not.toMatch(/ml-12/);
+    }
+  });
+
+  it('les écrans de liste s’ouvrent en colonne large, les formulaires restent en lecture', () => {
+    for (const file of [
+      'app/family/challenges/detail.tsx',
+      'app/family/challenges/results.tsx',
+      'app/family/session/live.tsx',
+      'app/family/session/summary.tsx',
+      'app/family/sync.tsx',
+      'app/family/invite.tsx',
+      'app/family/member.tsx',
+    ]) {
+      expect(read(file), `${file} doit passer column="wide"`).toContain('column="wide"');
+    }
+    for (const form of ['app/family/create.tsx', 'app/family/profile.tsx', 'app/family/join.tsx']) {
+      expect(read(form), `${form} reste en colonne de lecture`).not.toContain('column="wide"');
+    }
+  });
+
+  it('les nouvelles briques de ligne viennent du thème', () => {
+    for (const selector of [
+      '.family-member-you',
+      '.family-member-row-you',
+      '.family-member-role',
+      '.family-kind',
+      '.family-activity-row',
+    ]) {
+      expect(css, `${selector} doit exister`).toContain(selector);
+    }
+    // Aucune couleur littérale dans ces règles : que des jetons.
+    const block = css.slice(css.indexOf('.family-member-you'), css.indexOf('.family-activity-row'));
+    expect(block).not.toMatch(/#[0-9a-fA-F]{3,8}\b/);
+    expect(block).toMatch(/var\(--acc\)/);
+  });
+
+  it('le fil d’activité passe par `ActivityRow`', () => {
+    const activity = stripCodeComments(read('app/family/activity.tsx'));
+    expect(activity).toContain('<ActivityRow');
+    expect(activity, 'pas d’avatar recopié dans l’écran').not.toMatch(/<MemberAvatar/);
   });
 });

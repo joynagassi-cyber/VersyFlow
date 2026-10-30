@@ -947,6 +947,15 @@ export const fr = {
   },
 
   familyPlus: {
+    noChallengeForMemberTitle: 'Aucun défi en cours',
+    activityFeed: 'Fil de la famille',
+    entriesCount: '{{count}} entrée(s)',
+    challengesDone: '{{count}} défi(s) terminé(s)',
+    emptyHistoryTitle: 'Aucun défi marqué de points',
+    pointsProgress: 'Progression vers le palier suivant',
+    pointsToNext: 'Encore {{points}} points avant le palier suivant.',
+    pointsUnavailableShort: 'Points non calculables sans profil actif.',
+    rankingLabel: 'Rang et points',
     noParticipantsHint:
       'Les points de cette séance apparaîtront dès qu’un membre aura terminé sa part.',
     overview: 'Vue d’ensemble',

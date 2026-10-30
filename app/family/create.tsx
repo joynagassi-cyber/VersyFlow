@@ -67,7 +67,7 @@ export default function FamilyCreateScreen() {
       subtitle={t('familyPlus.step1of2', 'Étape 1 sur 2')}
       backPath="/family/presentation"
     >
-      <div className="flex flex-col gap-4">
+      <div className="space-y-4">
         <SectionCard title={t('familyPlus.nameLabel', 'Nom de la famille')}>
           <input
             value={name}

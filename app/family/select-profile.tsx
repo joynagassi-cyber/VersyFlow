@@ -90,7 +90,7 @@ export default function FamilySelectProfileScreen() {
       }
       backPath="/family/home"
     >
-      <div className="flex flex-col gap-4">
+      <div className="space-y-4">
         {profiles.length === 0 ? (
           <EmptyState
             title={t('familyPlus.noLocalProfile', 'Aucun profil sur cet appareil')}
@@ -120,7 +120,7 @@ export default function FamilySelectProfileScreen() {
                     >
                       <MemberAvatar name={profile.displayName} size={44} muted={!active} />
                       <span className="min-w-0 flex-1">
-                        <span className="block truncate text-sm font-bold text-text-primary">
+                        <span className="block truncate card-title">
                           {profile.displayName}
                         </span>
                         <span className="block truncate text-xs text-text-muted">

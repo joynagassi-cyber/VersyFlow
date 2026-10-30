@@ -26,6 +26,7 @@ import {
   UserMultiple02Icon,
 } from '@/components/ui/solar-icons';
 import { ProgressRing } from '@/components/ui/ProgressRing';
+import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { cn } from '@/lib/utils';
 
 /** Carte de section : titre, action éventuelle, contenu. */
@@ -343,6 +344,10 @@ export function MemberRow({
   name,
   meta,
   trailing,
+  rank,
+  bar,
+  highlight = false,
+  youLabel,
   avatarSize = 40,
   muted = false,
   onClick,
@@ -351,6 +356,13 @@ export function MemberRow({
   name: string;
   meta?: ReactNode;
   trailing?: ReactNode;
+  /** Rang de classement : une pastille avant l'avatar, pas une sous-ligne. */
+  rank?: number;
+  /** Barre de progression de la ligne (elle appartient au membre, pas à la liste). */
+  bar?: { value: number; max: number; label?: string };
+  /** Ligne de l'utilisateur courant : teintée et nommée. */
+  highlight?: boolean;
+  youLabel?: string;
   avatarSize?: number;
   muted?: boolean;
   onClick?: () => void;
@@ -358,27 +370,37 @@ export function MemberRow({
 }) {
   const content = (
     <>
+      {rank !== undefined && <RankBadge rank={rank} />}
       <MemberAvatar name={name} size={avatarSize} muted={muted} />
       <span className="min-w-0 flex-1">
-        <span className="block truncate text-sm font-semibold text-text-primary">{name}</span>
+        <span className="family-member-name">
+          <span className="truncate text-sm font-semibold text-text-primary">{name}</span>
+          {highlight && youLabel && <span className="family-member-you">{youLabel}</span>}
+        </span>
         {meta && <span className="mt-0.5 block truncate text-xs text-text-muted">{meta}</span>}
+        {bar && (
+          <ProgressBar
+            className="mt-2"
+            value={bar.value}
+            max={bar.max}
+            label={bar.label ?? name}
+          />
+        )}
       </span>
       {trailing}
     </>
   );
 
+  const classes = cn('family-member-row', highlight && 'family-member-row-you', className);
+
   if (onClick) {
     return (
-      <button
-        type="button"
-        onClick={onClick}
-        className={cn('family-member-row', className)}
-      >
+      <button type="button" onClick={onClick} className={classes}>
         {content}
       </button>
     );
   }
-  return <div className={cn('family-member-row', className)}>{content}</div>;
+  return <div className={classes}>{content}</div>;
 }
 
 /** Ligne « libellé → valeur », avec barre facultative. */
@@ -406,6 +428,116 @@ export function MetricRow({
           label={progressLabel ?? (typeof label === 'string' ? label : '')}
         />
       )}
+    </div>
+  );
+}
+
+/* ────────────────────────────────────────────────────────────────────────────
+ * V3 — la coquille des hubs, le rang et la barre DANS la ligne de membre.
+ *
+ * L'audit après la V2 :
+ *   • cinq hubs sur six ouvraient sur le NOM DE LA FAMILLE et le sixième sur
+ *     « Réglages Famille » : le titre ne disait pas la même chose selon
+ *     l'écran, et l'ordre des blocs (sous-nav, filtre, contenu) variait ;
+ *   • le classement posait sa barre de progression SOUS la ligne, décalée de
+ *     `ml-12` pour retomber sous le nom : une valeur magique par écran ;
+ *   • le rang était écrit dans la « méta » du membre (« 1 », « 2 »), donc
+ *     lu comme un sous-titre alors que c'est la première chose qu'on cherche.
+ * ──────────────────────────────────────────────────────────────────────────── */
+
+/**
+ * Coquille d'un hub Famille : en-tête (section + nom de la famille),
+ * sous-navigation, puis le contenu dans la même mesure que les autres écrans
+ * de liste (`wide`, 1060 px). Un hub se lit toujours de la même façon.
+ */
+export function FamilyHubPage({
+  title,
+  subtitle,
+  right,
+  children,
+  column = 'wide',
+  backPath = '/family/home',
+}: {
+  title: string;
+  subtitle?: string;
+  right?: ReactNode;
+  children: ReactNode;
+  column?: 'narrow' | 'wide' | false;
+  /** Le hub racine (`/family/home`) revient vers l'accueil, pas vers lui-même. */
+  backPath?: string;
+}) {
+  return (
+    <FullScreenPage
+      title={title}
+      subtitle={subtitle}
+      backPath={backPath}
+      right={right}
+      column={column}
+    >
+      <div className="space-y-4">
+        <FamilySubnav />
+        {children}
+      </div>
+    </FullScreenPage>
+  );
+}
+
+/**
+ * Rang dans un classement. Les trois premiers prennent l'accent (l'appui de
+ * la famille), les suivants restent discrets : personne d'autre n'est mis en
+ * avant, et le chiffre est toujours lisible (`tabular-nums`).
+ */
+export function RankBadge({ rank, className }: { rank: number; className?: string }) {
+  const leading = rank <= 3;
+  return (
+    <span
+      aria-hidden="true"
+      className={cn(
+        'flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-2xs font-bold tabular-nums',
+        leading ? 'bg-primary text-on-primary' : 'bg-surface-tint text-text-muted',
+        className,
+      )}
+    >
+      {rank}
+    </span>
+  );
+}
+
+/**
+ * Ligne d'activité du fil de famille : qui, quoi, sur quoi, quand — puis les
+ * réactions. Une seule forme pour les trois types d'événement.
+ */
+export function ActivityRow({
+  actor,
+  action,
+  target,
+  when,
+  reactions,
+  className,
+}: {
+  actor: string;
+  action: ReactNode;
+  target?: ReactNode;
+  when: string;
+  reactions?: ReactNode;
+  className?: string;
+}) {
+  return (
+    <div className={cn('family-activity-row', className)}>
+      <MemberAvatar name={actor} size={36} />
+      <div className="min-w-0 flex-1">
+        <p className="text-sm leading-relaxed text-text-primary">
+          <span className="font-semibold">{actor}</span> {action}
+          {target !== undefined && (
+            <>
+              {' '}
+              <span className="font-semibold">{target}</span>
+            </>
+          )}
+        </p>
+        <p className="mt-0.5 text-xs text-text-muted">{when}</p>
+        {reactions && <div className="mt-2 flex flex-wrap gap-1.5">{reactions}</div>}
+      </div>
     </div>
   );
 }

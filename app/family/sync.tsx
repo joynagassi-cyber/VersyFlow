@@ -55,8 +55,8 @@ export default function FamilySyncScreen() {
       title={t('familyPlus.syncTitle', 'Synchronisation')}
       subtitle={family?.name}
       backPath="/family/home"
-    >
-      <div className="flex flex-col gap-4">
+     column="wide">
+      <div className="space-y-4">
         <SectionCard>
           <div className="flex items-center gap-3">
             <span

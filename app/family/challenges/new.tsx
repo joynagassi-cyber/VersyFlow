@@ -73,7 +73,7 @@ export default function FamilyChallengeNewScreen() {
       subtitle={family?.name}
       backPath="/family/challenges"
     >
-      <div className="flex flex-col gap-4">
+      <div className="space-y-4">
         <SectionCard title={t('familyPlus.challengeKind', 'Type de défi')}>
           <div className="flex flex-col gap-2">
             {KINDS.map((k) => {
