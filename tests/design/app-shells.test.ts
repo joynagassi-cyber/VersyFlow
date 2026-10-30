@@ -149,10 +149,14 @@ describe('laboratoire de prévisualisation — development only', () => {
     expect(lab).toMatch(/<iframe/);
     expect(lab).toMatch(/width: 390/);
     expect(lab).toMatch(/width: 1440/);
-    // La mise à l'échelle est une projection visuelle : la largeur interne
-    // reste celle du viewport visé.
-    expect(lab).toMatch(/transform: `scale\(\$\{scale\}\)`/);
+    // La largeur interne de l'iframe est la largeur visée, telle quelle.
     expect(lab).toMatch(/width: spec\.width/);
+    // La projection visuelle (coque + échelle) vit dans le module de coques ;
+    // l'iframe elle-même n'est jamais transformée, sinon la largeur de mise
+    // en page changerait et les media queries mentiraient.
+    const cases = read('src', 'dev', 'device-frames.tsx');
+    expect(cases).toMatch(/transform: `scale\(\$\{scale\}\)`/);
+    expect(lab).not.toMatch(/transform: `scale/);
   });
 
   it('isole le stockage avant tout module et refuse de démarrer sinon', () => {

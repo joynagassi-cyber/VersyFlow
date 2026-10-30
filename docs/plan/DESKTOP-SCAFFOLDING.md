@@ -3,8 +3,8 @@
 Document de travail **et** rapport de livraison. Chaque affirmation renvoie à un
 fichier du dépôt ou à une sortie de commande.
 
-État : **première version fonctionnelle livrée** le 2026-10-30 sur
-`arena/1faeda0f-versyflow` (scaffolding + laboratoire + tests + rapport).
+État : **livré** le 2026-10-30 sur `arena/1faeda0f-versyflow` (scaffolding +
+laboratoire + coques d'appareils + tests + rapport).
 Reste à faire : voir §7.
 
 ---
@@ -61,6 +61,8 @@ toucher aux 94 routes ni à un seul écran métier.
 | `app/__dev/responsive-preview.tsx` | Laboratoire : deux iframes réelles (390×844 et 1440×900), sélecteur d'écran synchronisé, gel par frame, thème partagé, remise à zéro. |
 | `tests/design/app-shells.test.ts` | Vérifie les trois contextes, l'unicité du shell monté, l'absence de duplication d'écrans et de services. |
 | `tests/unit/dev/preview-isolation.test.ts` | Vérifie le jeu de démonstration déterministe, l'isolation mémoire et l'absence du laboratoire en production. |
+| `src/dev/device-frames.tsx` | Coques d'appareils (téléphone, écran de bureau) autour des aperçus ; `deviceOuterSize()` est une fonction pure. |
+| `tests/design/device-cases.test.tsx` | Prouve que chaque aperçu est dans sa coque, que la largeur interne des iframes ne bouge pas et que le décor est masqué aux lecteurs d'écran. |
 
 ### Modifiés
 
@@ -124,10 +126,34 @@ media queries :
 | A — mobile | `preview-frame.html?preview=mobile` | **390 × 844** |
 | B — desktop | `preview-frame.html?preview=desktop` | **1440 × 900** |
 
-L'iframe desktop est réduite visuellement par `transform: scale(k)` pour tenir
-dans la largeur du laboratoire ; la transformation ne change **pas** le viewport
-interne : la frame dispose bien de 1440 px de large et déclenche les règles
-`@media (min-width: 1024px)`.
+### Coques d'appareils (`src/dev/device-frames.tsx`)
+
+Chaque aperçu est posé dans une coque dessinée en CSS : **téléphone** (bordure
+noire, boutons latéraux, îlot, indicateur d'accueil) pour le mobile, **écran de
+bureau** (bordure, menton, pied) pour le desktop. La coque est un décor
+extérieur, jamais une imitation de la mise en page :
+
+- l'iframe garde **exactement** 390 px / 1440 px de largeur interne (valeur
+  posée en style inline, aucune transformation sur l'iframe elle-même) ;
+- c'est l'**appareil entier** qui est projeté (`transform: scale(k)`,
+  `transformOrigin: top left`) ; une transformation CSS ne modifie pas la
+  largeur de mise en page, donc les media queries du produit voient toujours la
+  vraie largeur ;
+- le conteneur réserve la place **après** projection
+  (`deviceOuterSize(...) × k`), sinon la grille du laboratoire serait fausse ;
+- l'encoche, l'indicateur d'accueil et le pied sont `aria-hidden` : le décor
+  n'est pas annoncé, les iframes le sont (titre explicite).
+
+Dimensions extérieures, calculées par `deviceOuterSize()` (fonction pure donc
+testable sans navigateur) :
+
+| Coque | Écran | Ajout | Extérieur |
+|---|---|---|---|
+| Téléphone | 390 × 844 | bordure 12 px × 2 | **414 × 868** |
+| Bureau | 1440 × 900 | bordure 14 px × 2, menton 26, bras 62, semelle 10 | **1468 × 1026** |
+
+Aucune fiche technique de constructeur n'est affichée : seules les dimensions
+réellement utilisées le sont.
 
 **Pas de mutation sur un vrai compte** : `preview-frame.html` remplace
 `window.localStorage` par un `Storage` en mémoire **avant** le chargement du

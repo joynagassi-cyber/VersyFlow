@@ -16,6 +16,12 @@
  *  - `preview-session.ts` sème un jeu de démonstration déterministe (profil
  *    « Léa », famille « Famille Étoile », thème `quantum-rose`).
  *
+ * Ce que montre la page : chaque aperçu est posé dans une **coque d'appareil**
+ * (`src/dev/device-frames.tsx`) — un téléphone pour le mobile, un écran avec
+ * son pied pour le bureau. La coque est un décor extérieur : la largeur
+ * interne des iframes reste 390 px / 1440 px, et c'est la coque entière qui
+ * est projetée (`transform: scale`), jamais l'iframe.
+ *
  * Ce qui est synchronisé : la **route** choisie ici, le **thème** appliqué ici,
  * et le **rechargement**. Ce qui ne l'est pas : les saisies, les sessions de
  * mémorisation, toute mutation métier — c'est volontaire, un laboratoire ne
@@ -40,6 +46,7 @@ import {
 } from '@hugeicons/core-free-icons';
 import { useAppearanceStore } from '@/store/appearance-store';
 import { PREVIEW_SCREENS, DEFAULT_PREVIEW_SCREEN, type PreviewScreen } from '@/dev/preview-screens';
+import { DeviceCase, deviceOuterSize } from '@/dev/device-frames';
 import { cn } from '@/lib/utils';
 
 type Role = 'mobile' | 'desktop';
@@ -122,11 +129,14 @@ function ScaledFrame({
   useEffect(() => {
     const element = wrapperRef.current;
     if (!element) return;
+    // L'échelle se calcule sur la taille de l'APPAREIL (écran + coque) :
+    // l'écran, lui, garde sa largeur interne de référence.
+    const outer = deviceOuterSize(spec.role, spec.width, spec.height).width;
     const compute = () => {
       const available = element.clientWidth;
       if (available <= 0) return;
       // marge de 8 px de chaque côté pour ne pas coller aux bords
-      const next = Math.min(1, Math.max(0.28, (available - 16) / spec.width));
+      const next = Math.min(1, Math.max(0.28, (available - 16) / outer));
       setScale((current) => (Math.abs(current - next) > 0.01 ? next : current));
     };
     compute();
@@ -137,7 +147,7 @@ function ScaledFrame({
     }
     window.addEventListener('resize', compute);
     return () => window.removeEventListener('resize', compute);
-  }, [spec.width]);
+  }, [spec.role, spec.width, spec.height]);
 
   // La source de la frame ne change JAMAIS après le montage : la navigation
   // passe par `postMessage`. Sinon un cadre « gelé » se rechargerait quand
@@ -152,6 +162,9 @@ function ScaledFrame({
       <header className="flex flex-wrap items-center gap-2">
         <DuoIcon icon={spec.icon} size={18} className="text-primary" />
         <h2 className="text-sm font-bold text-text-primary">{spec.label}</h2>
+        <span className="text-[11px] font-semibold text-text-muted">
+          {spec.role === 'mobile' ? 'dans une coque de téléphone' : 'dans un écran de bureau'}
+        </span>
         <span className="rounded-full bg-surface-tint px-2 py-0.5 text-[11px] font-semibold tabular-nums text-text-secondary">
           {spec.width} × {spec.height} px · {Math.round(scale * 100)} %
         </span>
@@ -213,25 +226,20 @@ function ScaledFrame({
         interne
       </p>
 
-      <div ref={wrapperRef} className="w-full">
-        <div
-          className="overflow-hidden rounded-2xl border border-border bg-background shadow-sm"
-          style={{ height: spec.height * scale }}
-        >
+      <div ref={wrapperRef} className="flex w-full justify-center">
+        {/* Coque de téléphone ou écran de bureau : décor autour de l'écran.
+            L'iframe garde exactement `spec.width` px de largeur interne, donc
+            les media queries du produit se déclenchent pour de vrai. */}
+        <DeviceCase role={spec.role} width={spec.width} height={spec.height} scale={scale}>
           <iframe
             ref={iframeRef}
             src={src}
             onLoad={onLoaded}
             title={`Prévisualisation ${spec.label} — ${spec.width} px`}
             className="border-0 bg-background"
-            style={{
-              width: spec.width,
-              height: spec.height,
-              transform: `scale(${scale})`,
-              transformOrigin: 'top left',
-            }}
+            style={{ width: spec.width, height: spec.height, display: 'block' }}
           />
-        </div>
+        </DeviceCase>
       </div>
     </section>
   );
