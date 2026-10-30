@@ -114,7 +114,7 @@ export default function ReviewQueueScreen() {
                   <p className="text-base font-bold text-text-primary">{ref}</p>
                   <span
                     className={cn(
-                      'rounded-full px-2.5 py-1 text-[11px] font-semibold text-white',
+                      'rounded-full px-2.5 py-1 text-[11px] font-semibold text-[color:var(--on)]',
                       over ? 'bg-error' : 'bg-primary',
                     )}
                   >
@@ -151,7 +151,7 @@ export default function ReviewQueueScreen() {
     return (
       <FullScreenPage title={t('review.todayReviews', 'Révisions du jour')} backPath="/tabs/home" column="narrow">
         <div className="flex flex-col items-center py-20 text-center">
-          <div className="flex h-24 w-24 items-center justify-center rounded-full bg-icon-bg-green">
+          <div className="flex h-24 w-24 items-center justify-center rounded-full icon-chip">
             <DuoIcon icon={CheckCircle} size={40} className="text-success" />
           </div>
           <h2 className="mt-6 text-2xl font-bold text-text-primary">
@@ -179,7 +179,7 @@ export default function ReviewQueueScreen() {
           {t('review.totalDue', { count: totalDue })}
         </span>
         {overdue.length > 0 && (
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-error px-3 py-1.5 text-[13px] font-semibold text-white">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-error px-3 py-1.5 text-[13px] font-semibold text-[color:var(--on)]">
             <DuoIcon icon={AlertCircle} size={14} />
             {overdue.length} {t('review.overdue', 'en retard')}
           </span>
@@ -206,7 +206,7 @@ export default function ReviewQueueScreen() {
         <Button className="w-full" onClick={() => navigate(`/review/session?recordId=${encodeURIComponent(items[0].record.id)}`)}>
           <DuoIcon icon={Play} size={18} />
           {t('review.startReview', 'Commencer la révision')}
-          <span className="text-white/80">({totalDue})</span>
+          <span className="text-[color:color-mix(in_srgb,var(--on)_80%,transparent)]">({totalDue})</span>
         </Button>
       </div>
       <div className="h-24" />

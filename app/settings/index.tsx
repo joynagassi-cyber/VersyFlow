@@ -256,7 +256,7 @@ export default function SettingsScreen() {
       {/* Confirm modal */}
       {showConfirm && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-6"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-[color:var(--scrim-strong)] p-6"
           onClick={() => setShowConfirm(false)}
         >
           <div

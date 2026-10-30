@@ -293,7 +293,7 @@ export default function TranslationComparisonScreen() {
         {/* "Add a version" bottom sheet */}
         {addOpen && (
           <div className="modal-sheet">
-            <div className="absolute inset-0 bg-black/40" onClick={() => setAddOpen(false)} />
+            <div className="absolute inset-0 bg-[color:var(--scrim)]" onClick={() => setAddOpen(false)} />
             <div className="modal-sheet-panel p-4">
               <div className="mb-3 flex items-center justify-between">
                 <p className="flex items-center gap-2 text-sm font-bold text-text-primary">

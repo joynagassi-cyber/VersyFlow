@@ -38,7 +38,7 @@ export function HamburgerMenu() {
     <div className={cn('fixed inset-0 z-50', !menuOpen && 'pointer-events-none')} aria-hidden={!menuOpen}>
       <div
         className={cn(
-          'absolute inset-0 bg-black/40 transition-opacity duration-200',
+          'absolute inset-0 bg-[color:var(--scrim)] transition-opacity duration-200',
           menuOpen ? 'opacity-100' : 'opacity-0',
         )}
         onClick={closeMenu}

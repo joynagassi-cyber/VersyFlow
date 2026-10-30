@@ -98,7 +98,7 @@ export default function ProfileScreen() {
                     onChange={(e) => setName(e.target.value)}
                     onBlur={() => setEditing(false)}
                     onKeyDown={(e) => e.key === 'Enter' && setEditing(false)}
-                    className="w-full rounded-lg bg-surface/20 px-2 py-1 text-2xl font-extrabold text-white outline-none"
+                    className="w-full rounded-lg bg-surface/20 px-2 py-1 text-2xl font-extrabold text-[color:var(--on)] outline-none"
                   />
                 ) : (
                   <h1 className="text-primary truncate text-3xl font-extrabold leading-tight">
@@ -117,7 +117,7 @@ export default function ProfileScreen() {
               {/* Optional user slogan (set at profile creation) as the
                   subtitle under the display name; falls back to the
                   account id / local-mode label when unset. */}
-              <p className="mt-1 truncate text-sm text-white/80">
+              <p className="mt-1 truncate text-sm text-[color:color-mix(in_srgb,var(--on)_80%,transparent)]">
                 {slogan || user?.userId || t('profile.localMode', 'Mode local')}
               </p>
               <span className="mt-2 inline-block rounded-full bg-surface/20 px-2.5 py-0.5 text-xs font-semibold">

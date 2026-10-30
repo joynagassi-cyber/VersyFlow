@@ -48,8 +48,8 @@ export default function ExploreScreen() {
               className="flex items-center justify-between rounded-xl bg-surface p-4 text-left shadow-sm transition-transform active:scale-[0.99]"
             >
               <div className="flex items-center gap-3">
-                <span className="flex h-10 w-10 items-center justify-center rounded-full bg-icon-bg-rose">
-                  <DuoIcon icon={BookOpen} size={18} className="text-primary" />
+                <span className="flex h-10 w-10 items-center justify-center rounded-full icon-chip">
+                  <DuoIcon icon={BookOpen} size={18} />
                 </span>
                 <div>
                   <p className="text-base font-semibold text-text-primary">
@@ -93,8 +93,8 @@ export default function ExploreScreen() {
         className="mb-6 flex items-center justify-between rounded-xl bg-surface p-4 text-left shadow-sm transition-transform active:scale-[0.99]"
       >
         <div className="flex items-center gap-3">
-          <span className="flex h-10 w-10 items-center justify-center rounded-full bg-icon-bg-purple">
-            <DuoIcon icon={Network} size={18} className="text-primary" />
+          <span className="flex h-10 w-10 items-center justify-center rounded-full icon-chip">
+            <DuoIcon icon={Network} size={18} />
           </span>
           <div>
             <p className="text-base font-semibold text-text-primary">

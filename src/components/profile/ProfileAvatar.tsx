@@ -69,7 +69,7 @@ export function ProfileAvatar({ photo, name, size = 64, className }: ProfileAvat
           {/* 3. Initial on a gradient tile, under the illustration. */}
           <div className="bg-primary absolute inset-0 flex items-center justify-center">
             <span
-              className="font-extrabold text-white/90"
+              className="font-extrabold text-[color:color-mix(in_srgb,var(--on)_90%,transparent)]"
               style={{ fontSize: Math.round(size * 0.4), opacity: 0.35 }}
             >
               {initial}

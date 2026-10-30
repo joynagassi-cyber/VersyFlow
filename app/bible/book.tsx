@@ -41,8 +41,8 @@ export default function BookScreen() {
           onClick={() => navigate('/bible/explorer')}
           className="mb-2 flex w-full items-center gap-3 rounded-xl bg-surface p-4 text-left shadow-sm"
         >
-          <span className="flex h-10 w-10 items-center justify-center rounded-full bg-icon-bg-rose">
-            <DuoIcon icon={BookOpen} size={18} className="text-primary" />
+          <span className="flex h-10 w-10 items-center justify-center rounded-full icon-chip">
+            <DuoIcon icon={BookOpen} size={18} />
           </span>
           <span className="flex-1 text-sm font-semibold text-primary">
             {t('bible.explorer', 'Revenir à l\'explorateur')}

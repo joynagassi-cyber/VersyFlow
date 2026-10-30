@@ -165,7 +165,7 @@ export default function ReviewCalendarScreen() {
               {due > 0 && (
                 <span
                   className={cn(
-                    'mt-0.5 rounded-full px-1.5 text-[10px] font-bold text-white',
+                    'mt-0.5 rounded-full px-1.5 text-[10px] font-bold text-[color:var(--on)]',
                     due > 3 ? 'bg-error' : 'bg-primary',
                   )}
                 >

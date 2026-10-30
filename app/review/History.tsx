@@ -54,13 +54,13 @@ function ratingConfig(rating: Rating | string) {
       : rating;
   switch (r) {
     case Rating.AGAIN:
-      return { cls: 'bg-error text-white', label: 'A revoir', Icon: RefreshCw };
+      return { cls: 'bg-error text-[color:var(--on)]', label: 'A revoir', Icon: RefreshCw };
     case Rating.HARD:
-      return { cls: 'bg-warning text-white', label: 'Difficile', Icon: RefreshCw };
+      return { cls: 'bg-warning text-[color:var(--on)]', label: 'Difficile', Icon: RefreshCw };
     case Rating.GOOD:
-      return { cls: 'bg-success text-white', label: 'Bon', Icon: CheckCircle2 };
+      return { cls: 'bg-success text-[color:var(--on)]', label: 'Bon', Icon: CheckCircle2 };
     case Rating.EASY:
-      return { cls: 'bg-info text-white', label: 'Facile', Icon: CheckCircle2 };
+      return { cls: 'bg-info text-[color:var(--on)]', label: 'Facile', Icon: CheckCircle2 };
     default:
       return { cls: 'bg-primary text-on-primary', label: 'Bon', Icon: CheckCircle2 };
   }

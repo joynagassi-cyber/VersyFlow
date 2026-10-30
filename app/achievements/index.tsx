@@ -262,7 +262,7 @@ export default function AchievementScreen() {
                 </span>
                 {a.unlocked && (
                   <span
-                    className="flex h-6 w-6 items-center justify-center rounded-full text-white"
+                    className="flex h-6 w-6 items-center justify-center rounded-full text-[color:var(--on)]"
                     style={{ backgroundColor: a.color }}
                   >
                     <DuoIcon icon={Check} size={14} />

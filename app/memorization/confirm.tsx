@@ -35,7 +35,7 @@ export default function MemorizationConfirm() {
     { max: 0, label: t('session.ratingAgain', 'À revoir'), color: 'text-error' },
     { max: 1, label: t('session.ratingHard', 'Difficile'), color: 'text-warning' },
     { max: 2, label: t('session.ratingGood', 'Bon'), color: 'text-success' },
-    { max: Infinity, label: t('session.ratingEasy', 'Facile'), color: 'text-info' },
+    { max: Infinity, label: t('session.ratingEasy', 'Facile'), color: 'text-success' },
   ];
   const meta = ratingMeta.find((m) => (state.rating ?? 0) <= m.max) ?? ratingMeta[2];
 

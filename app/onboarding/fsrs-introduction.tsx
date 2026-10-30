@@ -31,22 +31,16 @@ export default function FSRSIntroductionScreen() {
       icon: Timer,
       title: t('onboarding.benefit1Title', 'Rythme optimal'),
       desc: t('onboarding.benefit1Desc', 'Révisez chaque verset juste avant de l\'oublier, maximisant la rétention avec un effort minimal.'),
-      bg: 'bg-icon-bg-rose',
-      color: 'text-primary',
     },
     {
       icon: CheckCircle,
       title: t('onboarding.benefit2Title', 'Moins de révisions'),
       desc: t('onboarding.benefit2Desc', 'Ne perdez pas de temps sur ce que vous savez déjà. Concentrez-vous sur ce qui nécessite votre attention.'),
-      bg: 'bg-icon-bg-purple',
-      color: 'text-text-secondary',
     },
     {
       icon: FlaskConical,
       title: t('onboarding.benefit3Title', 'Scientifiquement prouvé'),
       desc: t('onboarding.benefit3Desc', 'Basé sur la recherche cognitive avancée (Free Spaced Repetition Scheduler).'),
-      bg: 'bg-success',
-      color: 'text-white',
     },
   ];
 
@@ -113,10 +107,10 @@ export default function FSRSIntroductionScreen() {
 
       {/* Benefits */}
       <div className="mt-8 flex flex-col gap-4 px-6">
-        {benefits.map(({ icon: Icon, title, desc, bg, color }) => (
+        {benefits.map(({ icon: Icon, title, desc }) => (
           <div key={title} className="flex items-start gap-4 rounded-2xl bg-surface p-4 shadow-sm">
-            <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-full ${bg}`}>
-              <DuoIcon icon={Icon} size={22} className={color} />
+            <div className="icon-chip flex h-12 w-12 shrink-0 items-center justify-center rounded-full">
+              <DuoIcon icon={Icon} size={22} />
             </div>
             <div className="flex-1">
               <p className="text-base font-semibold text-text-primary">{title}</p>

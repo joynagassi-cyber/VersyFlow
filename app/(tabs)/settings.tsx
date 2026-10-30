@@ -98,12 +98,12 @@ function DataTab() {
   const { t } = useTranslation();
 
   const cards = [
-    { icon: BarChart3, label: t('analytics.title', 'Statistiques'), sub: t('settings.version', 'Courbes & rétention'), color: 'text-primary', bg: 'bg-icon-bg-rose', to: '/analytics/dashboard' },
-    { icon: TrendingUp, label: t('progress.yourProgress', 'Progression'), sub: t('progress.inProgress', 'En cours & à réviser'), color: 'text-success', bg: 'bg-icon-bg-green', to: '/tabs/progress' },
-    { icon: Repeat, label: t('home.review', 'Réviser'), sub: t('home.reviewDesc', 'File de révision'), color: 'text-info', bg: 'bg-icon-bg-blue', to: '/review/queue' },
-    { icon: CloudUpload, label: t('settings.backup', 'Sauvegarde & Sync'), sub: t('settings.data', 'Exporter / importer'), color: 'text-warning', bg: 'bg-icon-bg-orange', to: '/settings/backup' },
-    { icon: History, label: t('nav.history', 'Historique'), sub: t('review.summary', 'Révisions passées'), color: 'text-info', bg: 'bg-icon-bg-indigo', to: '/review/history' },
-    { icon: Layers, label: t('nav.collections', 'Collections'), sub: t('collections.createHint', 'Organisez vos versets'), color: 'text-primary', bg: 'bg-icon-bg-purple', to: '/collections' },
+    { icon: BarChart3, label: t('analytics.title', 'Statistiques'), sub: t('settings.version', 'Courbes & rétention'), to: '/analytics/dashboard' },
+    { icon: TrendingUp, label: t('progress.yourProgress', 'Progression'), sub: t('progress.inProgress', 'En cours & à réviser'), to: '/tabs/progress' },
+    { icon: Repeat, label: t('home.review', 'Réviser'), sub: t('home.reviewDesc', 'File de révision'), to: '/review/queue' },
+    { icon: CloudUpload, label: t('settings.backup', 'Sauvegarde & Sync'), sub: t('settings.data', 'Exporter / importer'), to: '/settings/backup' },
+    { icon: History, label: t('nav.history', 'Historique'), sub: t('review.summary', 'Révisions passées'), to: '/review/history' },
+    { icon: Layers, label: t('nav.collections', 'Collections'), sub: t('collections.createHint', 'Organisez vos versets'), to: '/collections' },
   ];
 
   return (
@@ -114,8 +114,8 @@ function DataTab() {
           onClick={() => navigate(c.to)}
           className="flex w-full items-center gap-4 rounded-2xl bg-surface p-4 text-left shadow-sm transition active:scale-[0.99]"
         >
-          <span className={cn('flex h-11 w-11 shrink-0 items-center justify-center rounded-full', c.bg)}>
-            <DuoIcon icon={c.icon} size={20} className={c.color} />
+          <span className="icon-chip flex h-11 w-11 shrink-0 items-center justify-center rounded-full">
+            <DuoIcon icon={c.icon} size={20} />
           </span>
           <span className="flex-1">
             <span className="block text-base font-semibold text-text-primary">{c.label}</span>
@@ -158,29 +158,29 @@ function ParamsTab() {
     {
       title: t('settings.apparence', 'Apparence'),
       rows: [
-        { icon: <DuoIcon icon={Languages} size={20} />, bg: 'bg-icon-bg-purple', color: 'text-primary', label: t('settings.uiLanguage', "Langue de l'interface"), sub: getLanguageName(currentLanguage), onClick: () => setLanguageModalOpen(true) },
-        { icon: <DuoIcon icon={BookText} size={20} />, bg: 'bg-surface-tint', color: 'text-text-secondary', label: t('settings.bibleTranslation', 'Traduction biblique'), sub: `${bibleTranslationDisplayName(bibleTranslation)} · ${t('settings.downloadTranslations', 'Télécharger d’autres versions')}`, onClick: () => navigate('/settings/available-translations') },
-        { icon: <DuoIcon icon={Moon} size={20} />, bg: 'bg-icon-bg-blue', color: 'text-info', label: t('settings.theme', 'Thème & accent'), sub: t('settings.fontSize', 'Clair, sombre, taille, accent'), onClick: () => navigate('/settings/appearance') },
+        { icon: <DuoIcon icon={Languages} size={20} />, label: t('settings.uiLanguage', "Langue de l'interface"), sub: getLanguageName(currentLanguage), onClick: () => setLanguageModalOpen(true) },
+        { icon: <DuoIcon icon={BookText} size={20} />, label: t('settings.bibleTranslation', 'Traduction biblique'), sub: `${bibleTranslationDisplayName(bibleTranslation)} · ${t('settings.downloadTranslations', 'Télécharger d’autres versions')}`, onClick: () => navigate('/settings/available-translations') },
+        { icon: <DuoIcon icon={Moon} size={20} />, label: t('settings.theme', 'Thème & accent'), sub: t('settings.fontSize', 'Clair, sombre, taille, accent'), onClick: () => navigate('/settings/appearance') },
       ],
     },
     {
       title: t('settings.sessionReminders', 'Session & Rappels'),
       rows: [
-        { icon: <DuoIcon icon={LayoutGrid} size={20} />, bg: 'bg-surface-tint', color: 'text-primary', label: t('settings.session', 'Session'), sub: t('settings.reminders', 'Objectif & durée'), onClick: () => navigate('/settings/session') },
-        { icon: <DuoIcon icon={CloudUpload} size={20} />, bg: 'bg-icon-bg-green', color: 'text-success', label: t('settings.reminders', 'Rappels'), sub: t('settings.data', 'Heures & fréquence'), onClick: () => navigate('/settings/reminders') },
+        { icon: <DuoIcon icon={LayoutGrid} size={20} />, label: t('settings.session', 'Session'), sub: t('settings.reminders', 'Objectif & durée'), onClick: () => navigate('/settings/session') },
+        { icon: <DuoIcon icon={CloudUpload} size={20} />, label: t('settings.reminders', 'Rappels'), sub: t('settings.data', 'Heures & fréquence'), onClick: () => navigate('/settings/reminders') },
       ],
     },
     {
       title: t('settings.confidentialite', 'Confidentialité'),
       rows: [
-        { icon: <DuoIcon icon={ShieldCheck} size={20} />, bg: 'bg-icon-bg-blue', color: 'text-info', label: t('settings.privacyTitle', 'Données & confidentialité'), sub: t('settings.downloadData', 'Télémétrie & données'), onClick: () => navigate('/settings/privacy') },
+        { icon: <DuoIcon icon={ShieldCheck} size={20} />, label: t('settings.privacyTitle', 'Données & confidentialité'), sub: t('settings.downloadData', 'Télémétrie & données'), onClick: () => navigate('/settings/privacy') },
       ],
     },
     {
       title: t('settings.about', 'À propos'),
       rows: [
-        { icon: <DuoIcon icon={Info} size={20} />, bg: 'bg-surface-tint', color: 'text-text-tertiary', label: t('settings.about', 'À propos'), sub: `${t('common.appName', 'VersyFlow')} v0.1.0`, onClick: () => navigate('/settings/about') },
-        { icon: <DuoIcon icon={HelpCircle} size={20} />, bg: 'bg-icon-bg-green', color: 'text-success', label: t('settings.helpSupport', 'Aide & Support'), sub: t('settings.documentation', 'Guides et contact'), onClick: () => navigate('/settings/about') },
+        { icon: <DuoIcon icon={Info} size={20} />, label: t('settings.about', 'À propos'), sub: `${t('common.appName', 'VersyFlow')} v0.1.0`, onClick: () => navigate('/settings/about') },
+        { icon: <DuoIcon icon={HelpCircle} size={20} />, label: t('settings.helpSupport', 'Aide & Support'), sub: t('settings.documentation', 'Guides et contact'), onClick: () => navigate('/settings/about') },
       ],
     },
   ];
@@ -225,8 +225,8 @@ function ParamsTab() {
           <div className="overflow-hidden rounded-2xl bg-surface shadow-sm">
             {group.rows.map((row, i) => (
               <button key={i} onClick={row.onClick} className={cn('flex w-full items-center gap-3 p-4 text-left', i < group.rows.length - 1 && 'border-b border-divider')}>
-                <span className={cn('flex h-10 w-10 shrink-0 items-center justify-center rounded-full', row.bg)}>
-                  <span className={row.color}>{row.icon}</span>
+                <span className="icon-chip flex h-10 w-10 shrink-0 items-center justify-center rounded-full">
+                  {row.icon}
                 </span>
                 <span className="flex-1">
                   <span className="block text-base text-text-primary">{row.label}</span>
@@ -350,9 +350,9 @@ function ProfileTab() {
   };
 
   const actions = [
-    { icon: UserRound, label: t('profile.manageProfiles', 'Gérer les profils'), sub: t('profile.select', 'Choisir qui apprend'), to: '/profile/select', color: 'text-primary', bg: 'bg-icon-bg-rose' },
-    { icon: Plus, label: t('profile.createProfile', 'Ajouter un profil'), sub: t('profile.selectHint', 'Plusieurs apprenants'), to: '/profile/create', color: 'text-success', bg: 'bg-icon-bg-green' },
-    { icon: Download, label: t('settings.exportData', 'Exporter mes données'), sub: t('settings.data', 'Sauvegarde locale'), to: '/settings/backup', color: 'text-warning', bg: 'bg-icon-bg-orange' },
+    { icon: UserRound, label: t('profile.manageProfiles', 'Gérer les profils'), sub: t('profile.select', 'Choisir qui apprend'), to: '/profile/select' },
+    { icon: Plus, label: t('profile.createProfile', 'Ajouter un profil'), sub: t('profile.selectHint', 'Plusieurs apprenants'), to: '/profile/create' },
+    { icon: Download, label: t('settings.exportData', 'Exporter mes données'), sub: t('settings.data', 'Sauvegarde locale'), to: '/settings/backup' },
   ];
 
   return (
@@ -412,7 +412,7 @@ function ProfileTab() {
               {isAuthenticated ? t('profile.connected', 'Connecté') : t('profile.local', 'Local')}
             </span>
             {activeFamily && (
-              <span className="inline-flex items-center gap-1 rounded-full bg-icon-bg-rose px-2.5 py-1 text-xs font-semibold text-primary">
+              <span className="inline-flex items-center gap-1 rounded-full bg-surface-tint px-2.5 py-1 text-xs font-semibold text-text-secondary">
                 {activeFamily.name}
               </span>
             )}
@@ -425,8 +425,8 @@ function ProfileTab() {
         <div className="overflow-hidden rounded-2xl bg-surface shadow-sm">
           {actions.map((a, i) => (
             <button key={i} onClick={() => navigate(a.to)} className={cn('flex w-full items-center gap-3 p-4 text-left', i < actions.length - 1 && 'border-b border-divider')}>
-              <span className={cn('flex h-10 w-10 shrink-0 items-center justify-center rounded-full', a.bg)}>
-                <DuoIcon icon={a.icon} size={18} className={a.color} />
+              <span className="icon-chip flex h-10 w-10 shrink-0 items-center justify-center rounded-full">
+                <DuoIcon icon={a.icon} size={18} />
               </span>
               <span className="flex-1">
                 <span className="block text-base text-text-primary">{a.label}</span>

@@ -227,7 +227,7 @@ export default function FlashcardScreen() {
           </button>
           <button
             onClick={() => advance('right')}
-            className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-success py-4 font-bold text-white active:scale-[0.99]"
+            className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-success py-4 font-bold text-[color:var(--on)] active:scale-[0.99]"
           >
             <DuoIcon icon={Check} size={20} />
             {t('session.mastered', 'Maitrise')}

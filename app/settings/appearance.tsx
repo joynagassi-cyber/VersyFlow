@@ -229,7 +229,7 @@ export default function AppearanceScreen() {
                       ))}
                     </div>
                   </div>
-                  <div className="flex items-center justify-between bg-black/[0.04] px-3 py-2">
+                  <div className="flex items-center justify-between bg-[color:var(--scrim-soft)] px-3 py-2">
                     <span className="text-[11px] font-bold leading-tight text-text-primary">
                       {preset.label}
                       {preset.hybrid && (
@@ -327,7 +327,7 @@ export default function AppearanceScreen() {
                       active ? 'border-text-primary' : 'border-transparent',
                     )}
                   >
-                    <span className="rounded-full bg-black/25 px-2 py-0.5 text-[10px] font-bold capitalize text-white">
+                    <span className="rounded-full bg-[color:var(--scrim)] px-2 py-0.5 text-[10px] font-bold capitalize text-[color:var(--on)]">
                       {g.id.replace(/-/g, ' ')}
                     </span>
                   </button>
@@ -367,7 +367,7 @@ export default function AppearanceScreen() {
                               (e.target as HTMLImageElement).style.display = 'none';
                             }}
                           />
-                          {active && <Check size={16} className="absolute text-white" />}
+                          {active && <Check size={16} className="absolute text-[color:var(--on)]" />}
                         </button>
                       );
                     })}

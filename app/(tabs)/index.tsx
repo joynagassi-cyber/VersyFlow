@@ -121,14 +121,14 @@ export default function HomeScreen() {
   });
 
   const quickActions = [
-    { icon: Compass, label: t('home.explore', 'Explorer la Bible'), desc: t('home.exploreDesc', 'Livre & chapitre'), color: 'text-primary', bg: 'bg-icon-bg-rose', action: () => navigate('/bible/explorer') },
-    { icon: Gem, label: t('session.memorizing', 'Mémorisation'), desc: 'Nouveau verset', color: 'text-primary', bg: 'bg-icon-bg-purple', action: () => navigate('/memorization/session') },
-    { icon: ScrollText, label: t('home.passage', 'Passage'), desc: t('home.passageDesc', 'Multi-versets'), color: 'text-info', bg: 'bg-icon-bg-blue', action: () => navigate('/bible/chapter') },
-    { icon: CalendarClock, label: t('home.review', 'Réviser'), desc: t('home.reviewDesc', 'Méthode FSRS'), color: 'text-success', bg: 'bg-icon-bg-green', action: () => navigate('/review/queue') },
-    { icon: TrendingUp, label: t('home.progress', 'Progression'), desc: t('home.progressDesc', 'Statistiques'), color: 'text-primary', bg: 'bg-icon-bg-rose', action: () => navigate('/analytics/dashboard') },
-    { icon: HeartHandshake, label: t('home.family', 'Famille'), desc: t('home.familyDesc', 'Partager'), color: 'text-warning', bg: 'bg-icon-bg-orange', action: () => navigate('/family/home') },
-    { icon: Library, label: t('home.bibleVersions', 'Versions de la Bible'), desc: t('home.bibleVersionsDesc', 'Téléchargées'), color: 'text-info', bg: 'bg-icon-bg-blue', action: () => navigate('/settings/available-translations') },
-    { icon: Feather, label: t('home.notes', 'Notes & tags'), desc: 'Mémoire sémantique', color: 'text-primary', bg: 'bg-icon-bg-teal', action: () => navigate('/semantic') },
+    { icon: Compass, label: t('home.explore', 'Explorer la Bible'), desc: t('home.exploreDesc', 'Livre & chapitre'), action: () => navigate('/bible/explorer') },
+    { icon: Gem, label: t('session.memorizing', 'Mémorisation'), desc: 'Nouveau verset', action: () => navigate('/memorization/session') },
+    { icon: ScrollText, label: t('home.passage', 'Passage'), desc: t('home.passageDesc', 'Multi-versets'), action: () => navigate('/bible/chapter') },
+    { icon: CalendarClock, label: t('home.review', 'Réviser'), desc: t('home.reviewDesc', 'Méthode FSRS'), action: () => navigate('/review/queue') },
+    { icon: TrendingUp, label: t('home.progress', 'Progression'), desc: t('home.progressDesc', 'Statistiques'), action: () => navigate('/analytics/dashboard') },
+    { icon: HeartHandshake, label: t('home.family', 'Famille'), desc: t('home.familyDesc', 'Partager'), action: () => navigate('/family/home') },
+    { icon: Library, label: t('home.bibleVersions', 'Versions de la Bible'), desc: t('home.bibleVersionsDesc', 'Téléchargées'), action: () => navigate('/settings/available-translations') },
+    { icon: Feather, label: t('home.notes', 'Notes & tags'), desc: 'Mémoire sémantique', action: () => navigate('/semantic') },
   ];
 
   return (
@@ -140,7 +140,7 @@ export default function HomeScreen() {
           <h1 className="mt-2 text-[32px] font-extrabold leading-none tracking-tight text-text-primary">{t('home.greeting', 'Bonjour')}</h1>
           <p className="mt-2 text-sm capitalize text-text-muted">{dateLabel}</p>
           {activeFamily && (
-            <span className="mt-2 inline-flex items-center gap-1 rounded-full bg-icon-bg-rose px-2.5 py-1 text-xs font-semibold text-primary">
+            <span className="mt-2 inline-flex items-center gap-1 rounded-full bg-surface-tint px-2.5 py-1 text-xs font-semibold text-text-secondary">
               <DuoIcon icon={Users} size={12} />
               {activeFamily.name}
             </span>
@@ -164,16 +164,16 @@ export default function HomeScreen() {
       >
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-widest text-white/80 tabular-nums">
+            <p className="text-xs font-semibold uppercase tracking-widest text-[color:color-mix(in_srgb,var(--on)_80%,transparent)] tabular-nums">
               {t('home.streakLabel', 'Série de jours')}
             </p>
             <p className="mt-1 flex items-end gap-2">
               <span className="text-5xl font-black leading-none tabular-nums">
                 {streak ?? '–'}
               </span>
-              <DuoIcon icon={Flame} size={26} className="mb-1 text-white/90" />
+              <DuoIcon icon={Flame} size={26} className="mb-1 text-[color:color-mix(in_srgb,var(--on)_90%,transparent)]" />
             </p>
-            <p className="mt-1 text-xs text-white/80 tabular-nums">
+            <p className="mt-1 text-xs text-[color:color-mix(in_srgb,var(--on)_80%,transparent)] tabular-nums">
               {t('home.streak', { count: streak ?? 1 })}
             </p>
           </div>
@@ -198,7 +198,7 @@ export default function HomeScreen() {
               <span className="block text-sm font-bold tabular-nums">
                 {t('home.reviewDue', { count: reviewsDue })}
               </span>
-              <span className="block text-[11px] text-white/80">
+              <span className="block text-[11px] text-[color:color-mix(in_srgb,var(--on)_80%,transparent)]">
                 {t('home.noReviews', 'Ne perdez pas votre progression — révisez maintenant')}
               </span>
             </span>
@@ -212,14 +212,14 @@ export default function HomeScreen() {
         {t('home.quickActions', 'Actions rapides')}
       </h2>
       <div className="grid grid-cols-2 gap-3">
-        {quickActions.map(({ icon: Icon, label, desc, color, bg, action }) => (
+        {quickActions.map(({ icon: Icon, label, desc, action }) => (
           <button
             key={label}
             onClick={action}
-            className="flex flex-col items-center rounded-3xl border border-border/60 bg-card p-4 shadow-[0_4px_20px_-2px_rgba(0,0,0,0.04)] transition-transform active:scale-[0.98]"
+            className="action-card flex flex-col items-center rounded-3xl border border-border/60 bg-card p-4 shadow-[0_4px_20px_-2px_rgba(0,0,0,0.04)] transition-transform active:scale-[0.98]"
           >
-            <span className={cn('mb-2 flex h-12 w-12 items-center justify-center rounded-full', bg)}>
-              <DuoIcon icon={Icon} size={24} className={color} />
+            <span className="icon-chip mb-2 flex h-12 w-12 items-center justify-center rounded-full">
+              <DuoIcon icon={Icon} size={24} />
             </span>
             <span className="text-sm font-bold text-text-primary">{label}</span>
             <span className="mt-0.5 text-center text-[11px] text-text-muted">{desc}</span>
@@ -294,7 +294,7 @@ export default function HomeScreen() {
           rotates every 4 seconds, to stay with the user. */}
       <div className="mt-8 rounded-2xl border border-success/20 bg-success/5 p-4">
         <div className="flex items-start gap-3">
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-success text-white shadow-sm">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-success text-[color:var(--on)] shadow-sm">
             <DuoIcon icon={Star} size={16} />
           </span>
           <div className="min-w-0 flex-1">

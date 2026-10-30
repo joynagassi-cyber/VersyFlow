@@ -218,10 +218,10 @@ export default function ReviewSessionScreen() {
 
   const ratingOptions = useMemo(
     () => [
-      { rating: Rating.AGAIN, icon: <DuoIcon icon={RotateCcw} size={20} />, cls: 'bg-error text-white' },
-      { rating: Rating.HARD, icon: <DuoIcon icon={X} size={20} />, cls: 'bg-warning text-white' },
-      { rating: Rating.GOOD, icon: <DuoIcon icon={Check} size={20} />, cls: 'bg-success text-white' },
-      { rating: Rating.EASY, icon: <DuoIcon icon={Star} size={20} />, cls: 'bg-info text-white' },
+      { rating: Rating.AGAIN, icon: <DuoIcon icon={RotateCcw} size={20} />, cls: 'bg-error text-[color:var(--on)]' },
+      { rating: Rating.HARD, icon: <DuoIcon icon={X} size={20} />, cls: 'bg-warning text-[color:var(--on)]' },
+      { rating: Rating.GOOD, icon: <DuoIcon icon={Check} size={20} />, cls: 'bg-success text-[color:var(--on)]' },
+      { rating: Rating.EASY, icon: <DuoIcon icon={Star} size={20} />, cls: 'bg-info text-[color:var(--on)]' },
     ],
     [],
   );

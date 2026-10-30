@@ -198,7 +198,7 @@ export default function BibleExplorerScreen() {
               key: 'new',
               label: t('bible.newTestament', 'Nouveau Testament'),
               list: newTestamentFiltered,
-              icon: <DuoIcon icon={Cross} size={16} className="text-white" />,
+              icon: <DuoIcon icon={Cross} size={16} className="text-[color:var(--on)]" />,
               iconBg: 'bg-success',
             },
           ].map((section) =>

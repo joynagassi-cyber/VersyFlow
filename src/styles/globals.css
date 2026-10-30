@@ -958,3 +958,72 @@ html[data-contrast='high']::before {
   outline: 3px solid var(--color-text-primary);
   outline-offset: 2px;
 }
+
+/* ── AVENANT SOBRIÉTÉ — trois familles de couleurs, pas quatre ────────────
+ * Règle : neutres + UN accent + états sémantiques. Rien d'autre.
+ * Aucune couleur n'est inventée ici : chaque jeton ci-dessous est un ALIAS
+ * d'un jeton existant du thème (donc du preset tweakcn actif).
+ *
+ *   --text / --muted ............ texte (fixe, ne suit pas l'image)
+ *   --glass / --glass-border .... surfaces translucides (fixes)
+ *   --acc / --acc2 / --tint ..... accent, dérivé de l'image de fond
+ *   --on ........................ texte posé SUR l'accent (contraste)
+ *   --success / --danger / --warning ... messages d'état uniquement
+ */
+:root {
+  --text: var(--color-text-primary);
+  --muted: var(--color-text-muted);
+  --glass: color-mix(in srgb, var(--color-surface) 55%, transparent);
+  --glass-border: color-mix(in srgb, var(--color-border) 100%, transparent);
+  --acc: var(--color-primary);
+  --acc2: var(--color-accent);
+  --on: var(--color-on-primary);
+  --success: var(--color-success);
+  --danger: var(--color-error);
+  --warning: var(--color-warning);
+  /* Voiles de superposition : une densité de noir, pas une couleur de
+     palette. Déclarés ici (fichier de variables) et consommés par les
+     composants via `bg-[color:var(--scrim…)]`. */
+  --scrim: color-mix(in srgb, #000 45%, transparent);
+  --scrim-strong: color-mix(in srgb, #000 55%, transparent);
+  --scrim-soft: color-mix(in srgb, #000 8%, transparent);
+}
+
+/* Règle 1 — une icône n'a jamais de couleur propre : elle hérite du texte.
+   `DuoIcon` est déjà en `currentColor` (fill et stroke) ; cette règle couvre
+   les icônes rendues par un composant tiers. */
+.icon-chip svg,
+.icon-chip ion-icon {
+  color: var(--muted);
+}
+
+/* Règle 3 — pastille d'icône NEUTRE : une teinte calculée sur le texte, pas
+   une couleur par fonctionnalité. Pas de `border-radius` ici : les composants
+   posent déjà `rounded-full`, et une classe nue battrait cette utilité
+   Tailwind (la pastille deviendrait un carré). */
+.icon-chip {
+  background: color-mix(in srgb, var(--text) 8%, transparent);
+}
+
+/* Règle 2c/3 — au survol ou à l'activation SEULEMENT, la pastille prend
+   l'accent et l'icône passe en --acc. */
+.action-card:hover .icon-chip,
+.action-card:focus-visible .icon-chip {
+  background: color-mix(in srgb, var(--acc) 16%, transparent);
+}
+.action-card:hover .icon-chip svg,
+.action-card:focus-visible .icon-chip svg {
+  color: var(--acc);
+}
+
+/* Règle 2a — l'élément actif (onglet, entrée de menu) porte l'accent. */
+.nav-item.active ion-icon,
+ion-tab-button.tab-selected ion-icon {
+  color: var(--acc);
+}
+
+/* Règle 2b — icône dans un bouton principal : elle prend `--on`. */
+.btn-grad svg,
+[data-variant='primary'] svg {
+  color: var(--on);
+}

@@ -31,7 +31,7 @@ export const ListItem = React.memo(function ListItem({
   onClick,
   showChevron,
   trailing,
-  iconBgClass = 'bg-icon-bg-rose text-primary',
+  iconBgClass = 'icon-chip',
   className,
 }: ListItemProps) {
   const content = (

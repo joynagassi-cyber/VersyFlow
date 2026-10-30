@@ -100,8 +100,8 @@ export default function ConceptView() {
       <div className="screen-column min-h-full overflow-y-auto bg-background p-4 pb-24">
         {/* Header */}
         <div className="mb-4 flex items-center gap-3">
-          <span className="flex h-11 w-11 items-center justify-center rounded-full bg-icon-bg-rose">
-            <DuoIcon icon={BrainCircuit} size={20} className="text-primary" />
+          <span className="flex h-11 w-11 items-center justify-center rounded-full icon-chip">
+            <DuoIcon icon={BrainCircuit} size={20} />
           </span>
           <div>
             <h1 className="text-xl font-bold text-text-primary">
