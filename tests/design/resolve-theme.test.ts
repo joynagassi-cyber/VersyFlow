@@ -14,14 +14,15 @@ import {
   ACCENT_VARS,
   applyThemePlan,
   imagePath,
+  DEFAULT_PRESET_ID,
   resolveTheme,
   type ThemeInput,
   type ThemePlan,
 } from '../../src/theme/resolve-theme';
 
 const base: ThemeInput = {
-  presetId: 'quantum-rose',
-  accent: 'quantum-rose',
+  presetId: 'lara-red',
+  accent: 'lara-red',
   backgroundType: 'none',
   gradientId: null,
   colorThemeId: null,
@@ -42,24 +43,29 @@ const accent = {
 describe('resolveTheme — décision pure', () => {
   it('pose le preset actif et n’invente rien quand aucun fond n’est choisi', () => {
     const plan = resolveTheme(base);
-    expect(plan.attributes['data-preset']).toBe('quantum-rose');
+    expect(plan.attributes['data-preset']).toBe('lara-red');
     expect(plan.vars['--app-bg-image']).toBeUndefined();
     expect(plan.vars['--theme-image']).toBeUndefined();
     // Aucune variable d'accent maison : le preset tweakcn est la source.
     expect(Object.keys(plan.vars).filter((k) => ACCENT_VARS.includes(k as never))).toEqual([]);
   });
 
-  it('retombe sur Quantum Rose si aucun preset n’est persisté', () => {
-    expect(resolveTheme({ ...base, presetId: null }).attributes['data-preset']).toBe('quantum-rose');
+  it('retombe sur le thème par défaut Lara Red si aucun preset n’est persisté', () => {
+    // Le défaut a changé au contrat n°3 : `lara-red` (tweakcn
+    // cmvukmb1k000004iifp7x5wji) remplace `quantum-rose`. La constante est
+    // lue depuis le module généré pour qu'un futur changement reste prouvé ici.
+    expect(DEFAULT_PRESET_ID).toBe('lara-red');
+    expect(resolveTheme({ ...base, presetId: null }).attributes['data-preset']).toBe('lara-red');
   });
 
-  it('un dégradé remplace le fond et n’écrase aucun accent', () => {
+  it('un dégradé remplace le fond et fournit ses couleurs d’accent', () => {
     const plan = resolveTheme({ ...base, backgroundType: 'gradient', gradientId: 'warm-flame' });
     expect(plan.attributes['data-app-bg']).toBe('gradient');
     expect(plan.vars['--app-bg-image']).toContain('linear-gradient');
     expect(plan.removedVars).toContain('--theme-image');
     expect(plan.removedAttributes).toContain('data-theme-image');
-    expect(Object.keys(plan.vars).filter((k) => ACCENT_VARS.includes(k as never))).toEqual([]);
+    expect(plan.vars['--color-primary']).toBe('#ff9a9e');
+    expect(plan.vars['--color-accent']).toBe('#fad0c4');
   });
 
   it('un thème image pose l’accent et l’illustration, sans attends l’extraction', () => {
@@ -89,12 +95,17 @@ describe('resolveTheme — décision pure', () => {
     expect(imagePath('esprit-pentecote', true)).toContain('-landscape.png');
   });
 
-  it('n’écrit aucune variable d’accent tant que l’extraction n’a pas eu lieu', () => {
+  it('pose l’image de fond sans attendre l’extraction de l’accent', () => {
     const plan = resolveTheme({ ...base, backgroundType: 'image', colorThemeId: 'esprit-feu' });
+    // Le fond est une décision synchrone : l'image est TOUJOURS posée, même
+    // quand l'échantillonnage des pixels (asynchrone) n'a pas encore eu lieu.
+    // C'est ce qui manquait : `--theme-image` n'était écrit que si
+    // `accentValues` existait déjà, donc le fond restait blanc.
+    expect(plan.vars['--theme-image']).toContain('-portrait.png');
+    expect(plan.attributes['data-theme-image']).toBe('on');
+    expect(plan.removedVars).not.toContain('--theme-image');
+    // …et aucun accent n'est inventé tant que l'extraction n'a pas eu lieu.
     expect(plan.vars['--color-primary']).toBeUndefined();
-    expect(plan.vars['--theme-image']).toBeUndefined();
-    // … mais le nettoyage reste prévu, pour ne pas garder l'ancien thème.
-    expect(plan.removedVars).toContain('--theme-image');
   });
 
   it('traduit les réglages d’accessibilité en attributs', () => {
@@ -175,7 +186,7 @@ describe('applyThemePlan — l’unique écrivain', () => {
     const root = fakeRoot();
     const plan: ThemePlan = resolveTheme({ ...base, backgroundType: 'image', colorThemeId: 'esprit-feu', accentValues: accent });
     applyThemePlan(root, plan);
-    expect(root.attributes.get('data-preset')).toBe('quantum-rose');
+    expect(root.attributes.get('data-preset')).toBe('lara-red');
     expect(root.attributes.get('data-theme-image')).toBe('on');
     expect(root.vars.get('--color-primary')).toBe('#e6067a');
     expect(root.calls.indexOf('rm:--color-primary')).toBeLessThan(root.calls.indexOf('set:--color-primary'));

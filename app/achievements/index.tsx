@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { HugeiconsIcon } from '@hugeicons/react';
+import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   BookOpen01Icon as BookOpen,
   FlameIcon as Flame,
@@ -15,7 +15,7 @@ import {
   FolderOpenIcon as FolderOpen,
   GlobeIcon as Globe,
   SchoolIcon as School,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { ProgressRing } from '@/components/ui/ProgressRing';
 import { useActiveProfile } from '@/hooks/useActiveProfile';
@@ -181,7 +181,7 @@ export default function AchievementScreen() {
       showBack
       right={
         <span className="flex items-center gap-1 rounded-full bg-surface-tint px-3 py-1 text-sm font-semibold text-primary">
-          <HugeiconsIcon icon={Star} size={14} className="text-warning tabular-nums" />
+          <DuoIcon icon={Star} size={14} className="text-warning tabular-nums" />
           {unlockedCount}/{achievements.length}
         </span>
       }
@@ -238,7 +238,7 @@ export default function AchievementScreen() {
                     backgroundColor: achievementTint(a.color),
                   }}
                 >
-                  <HugeiconsIcon icon={Icon} size={26} />
+                  <DuoIcon icon={Icon} size={26} />
                 </span>
                 <span className="min-w-0 flex-1">
                   <span
@@ -262,10 +262,10 @@ export default function AchievementScreen() {
                 </span>
                 {a.unlocked && (
                   <span
-                    className="flex h-6 w-6 items-center justify-center rounded-full text-white"
+                    className="flex h-6 w-6 items-center justify-center rounded-full text-[color:var(--on)]"
                     style={{ backgroundColor: a.color }}
                   >
-                    <HugeiconsIcon icon={Check} size={14} />
+                    <DuoIcon icon={Check} size={14} />
                   </span>
                 )}
               </button>
@@ -314,7 +314,7 @@ export default function AchievementScreen() {
               t('achievements.tip3', 'Creez des collections thematiques'),
             ].map((tip, i) => (
               <p key={i} className="flex items-center gap-2 text-sm text-text-secondary">
-                <HugeiconsIcon icon={CheckCircle2} size={16} className="text-primary" />
+                <DuoIcon icon={CheckCircle2} size={16} className="text-primary" />
                 {tip}
               </p>
             ))}

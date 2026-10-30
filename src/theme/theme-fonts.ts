@@ -98,7 +98,9 @@ export function applyReadingVars(vars: ReadingVars): void {
  */
 export interface UiFontEntry { id: string; label: string; family: string; style: string }
 export const UI_FONTS: UiFontEntry[] = [
-  { id: 'system', label: 'Inter — Moderne', family: "'Inter', -apple-system, 'Segoe UI', sans-serif", style: 'Clair et contemporain' },
+  // `system` ne force aucune police : l'interface suit `--font-sans` du preset
+  // actif (Inter pour le thème par défaut, Geist pour Emerald, etc.).
+  { id: 'system', label: 'Police du thème', family: '', style: 'Suit le thème choisi' },
   { id: 'playfair-display', label: 'Playfair — Éditorial', family: "'Playfair Display', Georgia, serif", style: 'Élégant, haut de gamme' },
   { id: 'lora', label: 'Lora — Littéraire', family: "'Lora', Georgia, serif", style: 'Doux et chaleureux' },
   { id: 'spectral', label: 'Spectral — Raffiné', family: "'Spectral', Georgia, serif", style: 'Fin et précieux' },
@@ -108,3 +110,15 @@ export const UI_FONTS: UiFontEntry[] = [
 export function findUiFont(id: string | null | undefined): UiFontEntry {
   return UI_FONTS.find((f) => f.id === id) ?? UI_FONTS[0];
 }
+
+/** Famille à POSER explicitement, ou `undefined` pour laisser le thème décider. */
+export function uiFontFamilyOf(id: string | null | undefined): string | undefined {
+  const font = findUiFont(id);
+  return font.id === 'system' || !font.family ? undefined : font.family;
+}
+
+/** Options affichées dans Apparence ; les anciens identifiants restent lisibles. */
+export const APPEARANCE_UI_FONTS = UI_FONTS.filter((font) => ['system', 'lora', 'spectral'].includes(font.id));
+export const APPEARANCE_READING_FONTS = BIBLE_FONTS.filter((font) =>
+  ['source-serif-4', 'lora', 'eb-garamond', 'crimson-pro', 'merriweather', 'playfair-display'].includes(font.id),
+);

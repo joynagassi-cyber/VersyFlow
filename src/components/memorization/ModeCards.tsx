@@ -16,12 +16,12 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { HugeiconsIcon } from '@hugeicons/react';
+import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   CheckIcon as Check,
   Maximize01Icon as Maximize2,
   Minimize01Icon as Minimize2,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import { cn } from '@/lib/utils';
 import { Rating as FsrsRating } from '@/services/review-rating-service';
 import { RatingBar } from '@/components/ui/RatingBar';
@@ -158,7 +158,7 @@ export function ModeCards({
               className="mem-pill-ghost"
               style={{ marginTop: 8 }}
             >
-              <HugeiconsIcon icon={Check} size={14} />
+              <DuoIcon icon={Check} size={14} />
               {t('workspace.flip', 'Retourner la carte')}
             </button>
           </div>
@@ -180,7 +180,7 @@ export function ModeCards({
           className="mem-flashcard-zoom"
           aria-label={fullscreen ? t('workspace.exitFullscreen', 'Quitter le plein écran') : t('workspace.fullscreen', 'Plein écran')}
         >
-          {fullscreen ? <HugeiconsIcon icon={Minimize2} size={16} /> : <HugeiconsIcon icon={Maximize2} size={16} />}
+          {fullscreen ? <DuoIcon icon={Minimize2} size={16} /> : <DuoIcon icon={Maximize2} size={16} />}
         </button>
       </div>
 
@@ -209,7 +209,7 @@ export function ModeCards({
           <div className="flex items-center gap-3">
             <span className="mem-success-celebration">
               <span className="ring" />
-              <span className="ic"><HugeiconsIcon icon={Check} size={22} /></span>
+              <span className="ic"><DuoIcon icon={Check} size={22} /></span>
             </span>
             <div className="min-w-0 flex-1">
               <p className="text-sm font-extrabold text-success">
@@ -218,7 +218,7 @@ export function ModeCards({
             </div>
           </div>
           <button type="button" onClick={onNextMode} className="mem-cta-success mt-3">
-            <HugeiconsIcon icon={Check} size={16} />
+            <DuoIcon icon={Check} size={16} />
             {t('workspace.passNextMode', 'Passer au mode Écrire')}
           </button>
         </div>

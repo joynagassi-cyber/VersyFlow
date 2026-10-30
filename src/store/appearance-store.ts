@@ -7,6 +7,8 @@
 import { create } from 'zustand';
 import { MmkvStorage } from '@/infrastructure/storage';
 import { DEFAULT_ACCENT, type AccentKey } from '@/theme/theme-presets';
+import { DEFAULT_VENDORED_PRESET_ID } from '@/theme/vendored-themes';
+import { findFixedAccent } from '@/theme/fixed-accents';
 
 const storage = new MmkvStorage();
 
@@ -14,9 +16,34 @@ const STORAGE_KEY = 'versyflow:appearance:settings';
 
 export type ThemeMode = 'light' | 'dark' | 'system';
 
+export type GlassSettings = { bgBlur: number; glassBlur: number; glassAlpha: number; veilAlpha: number };
+export const GLASS_PRESETS: Record<'net' | 'equilibre' | 'doux' | 'opaque', GlassSettings> = {
+  net: { bgBlur: 0, glassBlur: 10, glassAlpha: 30, veilAlpha: 70 },
+  equilibre: { bgBlur: 10, glassBlur: 22, glassAlpha: 42, veilAlpha: 100 },
+  doux: { bgBlur: 24, glassBlur: 32, glassAlpha: 58, veilAlpha: 100 },
+  opaque: { bgBlur: 0, glassBlur: 0, glassAlpha: 85, veilAlpha: 100 },
+};
+
+export function normalizeGlassSettings(input: Partial<GlassSettings> | null | undefined): GlassSettings {
+  const defaults = GLASS_PRESETS.equilibre;
+  const clamp = (value: unknown, fallback: number, min: number, max: number) =>
+    typeof value === 'number' && Number.isFinite(value) ? Math.max(min, Math.min(max, value)) : fallback;
+  return {
+    bgBlur: clamp(input?.bgBlur, defaults.bgBlur, 0, 24),
+    glassBlur: clamp(input?.glassBlur, defaults.glassBlur, 0, 40),
+    glassAlpha: clamp(input?.glassAlpha, defaults.glassAlpha, 20, 85),
+    veilAlpha: clamp(input?.veilAlpha, defaults.veilAlpha, 0, 100),
+  };
+}
+
 export interface AppearanceState {
+  glassSettings: GlassSettings;
+  glassPreset: keyof typeof GLASS_PRESETS | 'custom';
+  applyGlassPreset: (preset: keyof typeof GLASS_PRESETS) => void;
+  setGlassSettings: (settings: Partial<GlassSettings>) => void;
   themeMode: ThemeMode;
   accent: AccentKey;
+  fixedAccentId: string | null;
   /** Preset officiel tweakcn actif (src/styles/tweakcn-presets.css) — null
    *  quand l'accent VersyFlow ou un thème image est utilisé. */
   presetId: string | null;
@@ -50,6 +77,7 @@ export interface AppearanceState {
 
   setThemeMode: (mode: ThemeMode) => void;
   setAccent: (key: AccentKey) => void;
+  setFixedAccentId: (id: string | null) => void;
   setPreset: (id: string | null) => void;
   setGradient: (id: string | null) => void;
   setUiFontId: (id: string) => void;
@@ -69,13 +97,17 @@ export interface AppearanceState {
   setBibleLineHeight: (value: number) => void;
   setBibleLetterSpacing: (value: number) => void;
   setBibleLineLength: (value: number) => void;
+  resetTextSettings: () => void;
   resetToDefaults: () => void;
 }
 
 const DEFAULTS: Pick<
   AppearanceState,
+  | 'glassSettings'
+  | 'glassPreset'
   | 'themeMode'
   | 'accent'
+  | 'fixedAccentId'
   | 'presetId'
   | 'backgroundType'
   | 'gradientId'
@@ -96,9 +128,12 @@ const DEFAULTS: Pick<
   | 'bibleLetterSpacing'
   | 'bibleLineLength'
 > = {
+  glassSettings: GLASS_PRESETS.equilibre,
+  glassPreset: 'equilibre',
   themeMode: 'system',
-  accent: DEFAULT_ACCENT,
-  presetId: 'quantum-rose',
+  accent: DEFAULT_VENDORED_PRESET_ID,
+  fixedAccentId: null,
+  presetId: DEFAULT_VENDORED_PRESET_ID,
   backgroundType: 'none',
   gradientId: null,
   uiFontId: 'system',
@@ -121,6 +156,16 @@ const DEFAULTS: Pick<
 
 export const useAppearanceStore = create<AppearanceState>(() => ({
   ...DEFAULTS,
+  setGlassSettings(settings) {
+    const next = normalizeGlassSettings({ ...useAppearanceStore.getState().glassSettings, ...settings });
+    useAppearanceStore.setState({ glassSettings: next, glassPreset: 'custom' });
+    void appearanceStorePersist.save();
+  },
+
+  applyGlassPreset(preset) {
+    useAppearanceStore.setState({ glassSettings: { ...GLASS_PRESETS[preset] }, glassPreset: preset });
+    void appearanceStorePersist.save();
+  },
 
   setThemeMode(mode: ThemeMode) {
     useAppearanceStore.setState({ themeMode: mode });
@@ -129,6 +174,11 @@ export const useAppearanceStore = create<AppearanceState>(() => ({
 
   setAccent(key: AccentKey) {
     useAppearanceStore.setState({ accent: key, colorThemeId: null, backgroundType: 'none', gradientId: null });
+    void appearanceStorePersist.save();
+  },
+
+  setFixedAccentId(id: string | null) {
+    useAppearanceStore.setState({ fixedAccentId: findFixedAccent(id)?.id ?? null });
     void appearanceStorePersist.save();
   },
 
@@ -247,6 +297,19 @@ export const useAppearanceStore = create<AppearanceState>(() => ({
     void appearanceStorePersist.save();
   },
 
+  resetTextSettings() {
+    useAppearanceStore.setState({
+      uiFontId: DEFAULTS.uiFontId,
+      fontSize: DEFAULTS.fontSize,
+      bibleFontFamily: DEFAULTS.bibleFontFamily,
+      bibleFontSize: DEFAULTS.bibleFontSize,
+      bibleLineHeight: DEFAULTS.bibleLineHeight,
+      bibleLetterSpacing: DEFAULTS.bibleLetterSpacing,
+      bibleLineLength: DEFAULTS.bibleLineLength,
+    });
+    void appearanceStorePersist.save();
+  },
+
   resetToDefaults() {
     useAppearanceStore.setState(DEFAULTS);
     void appearanceStorePersist.save();
@@ -254,8 +317,11 @@ export const useAppearanceStore = create<AppearanceState>(() => ({
 }));
 
 const PERSISTED_KEYS: (keyof AppearanceState)[] = [
+  'glassSettings',
+  'glassPreset',
   'themeMode',
   'accent',
+  'fixedAccentId',
   'presetId',
   'backgroundType',
   'gradientId',
@@ -267,6 +333,8 @@ const PERSISTED_KEYS: (keyof AppearanceState)[] = [
   'reminderEnabled',
   'sessionGoal',
   'focusMode',
+  'reducedTransparency',
+  'highContrast',
   'reminderTime',
   'bibleFontFamily',
   'bibleFontSize',
@@ -286,8 +354,14 @@ export const appearanceStorePersist = {
         const v = parsed[k];
         if (v !== undefined) (patch as Record<string, unknown>)[k] = v;
       }
+      patch.glassSettings = normalizeGlassSettings(parsed.glassSettings);
+      const validPresets = ['net', 'equilibre', 'doux', 'opaque', 'custom'];
+      const storedPreset = parsed.glassPreset;
+      const matches = storedPreset && storedPreset !== 'custom' && Object.keys(GLASS_PRESETS[storedPreset] ?? {}).every((key) => patch.glassSettings?.[key as keyof GlassSettings] === GLASS_PRESETS[storedPreset][key as keyof GlassSettings]);
+      patch.glassPreset = storedPreset && validPresets.includes(storedPreset) && (storedPreset === 'custom' || matches) ? storedPreset : parsed.glassSettings ? 'custom' : 'equilibre';
       if (parsed.themeMode) patch.themeMode = parsed.themeMode;
       if (parsed.accent) patch.accent = parsed.accent;
+      patch.fixedAccentId = findFixedAccent(parsed.fixedAccentId)?.id ?? null;
       useAppearanceStore.setState(patch);
     } catch {
       /* ignore */
@@ -296,8 +370,11 @@ export const appearanceStorePersist = {
   save: async () => {
     const s = useAppearanceStore.getState();
     const value = JSON.stringify({
+      glassSettings: s.glassSettings,
+      glassPreset: s.glassPreset,
       themeMode: s.themeMode,
       accent: s.accent,
+      fixedAccentId: s.fixedAccentId,
       presetId: s.presetId,
       backgroundType: s.backgroundType,
       gradientId: s.gradientId,

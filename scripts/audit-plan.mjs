@@ -64,9 +64,18 @@ const HEX = /^#[0-9a-fA-F]{6}$/;
 /* ------------------------------------------------------------------- lecture */
 
 const presetCss = read('src/styles/tweakcn-presets.css');
+/** Thèmes ajoutés au contrat n°3 (registre officiel tweakcn). */
+const vendoredCss = read('src/styles/vendored-themes.css');
+const vendoredTs = read('src/theme/vendored-themes.ts');
 const globals = read('src/styles/globals.css');
 const tailwind = read('tailwind.config.js');
+// Depuis le scaffolding desktop, la structure ne vit plus dans le layout de
+// route : `app/(tabs)/_layout.tsx` délègue à `src/shells/`. On lit donc la
+// coquille entière (aiguillage + shells) — le contrôle reste le même, il suit
+// simplement le code.
 const layout = read('app/(tabs)/_layout.tsx');
+const shellFiles = walk('src/shells', /\.tsx?$/).map(read).join('\n');
+const shell = layout + '\n' + shellFiles;
 const appearance = read('app/settings/appearance.tsx');
 const appearanceStore = read('src/store/appearance-store.ts');
 const themeManager = read('src/components/ThemeManager.tsx');
@@ -76,7 +85,7 @@ const isDesktop = read('src/hooks/useIsDesktop.ts');
 const themePicker = read('app/settings/theme-picker.tsx');
 
 const PRESET_BLOCK = /(:root((?:\[[^\]]+\])+)\s*\{)([^}]*)(\})/g;
-const presetBlocks = [...presetCss.matchAll(PRESET_BLOCK)]
+const presetBlocks = [...(presetCss + '\n' + vendoredCss).matchAll(PRESET_BLOCK)]
   .filter((m) => /data-preset=/.test(m[2]))
   .map((m) => ({
     selector: m[2],
@@ -148,11 +157,13 @@ const record = (id, section, label, verdict, detail, proof) =>
     }
   }
   const names = new Set(presetBlocks.map((b) => b.name));
+  // 25 presets historiques + 14 thèmes ajoutés (contrat n°3) = 39 presets,
+  // soit 78 blocs (clair + sombre pour chacun).
   record(
     'C02',
     '§2.1',
     'Chaque preset définit les 14 jetons du contrat (clair + sombre)',
-    missing.length === 0 && names.size === 25 && presetBlocks.length === 50 ? 'PASS' : 'FAIL',
+    missing.length === 0 && names.size === 39 && presetBlocks.length === 78 ? 'PASS' : 'FAIL',
     `${presetBlocks.length} blocs, ${names.size} presets, ${missing.length} jeton(s) manquant(s)`,
     'node scripts/audit-plan.mjs',
   );
@@ -301,19 +312,25 @@ const record = (id, section, label, verdict, detail, proof) =>
   // 1024 px = colonne de lecture. Le rail apparaît dès 768 px, donc c'est lui
   // qui conditionne le montage exclusif avec les navigations mobiles.
   const threshold =
-    /DESKTOP_MIN_WIDTH = 1024/.test(isDesktop) && /TABLET_MIN_WIDTH = 768/.test(isDesktop);
+    /DESKTOP_MIN_WIDTH = 1100/.test(isDesktop) && /TABLET_MIN_WIDTH = 700/.test(isDesktop);
+  // Un seul shell monté : `AppShell` choisit MobileShell OU DesktopShell, et
+  // chaque shell ne contient que SA navigation (pas de rail dans le mobile,
+  // pas d'onglets bas dans le bureau).
   const exclusif =
-    /\{isRail && <DesktopRail/.test(layout) &&
-    ['HamburgerMenu', 'QuickDock', 'BottomTabs'].every((c) =>
-      new RegExp(`\\{!isRail && <${c}`).test(layout),
-    );
-  const noPixels = !/\b(264|88)px/.test(layout);
+    /kind === 'mobile' \? <MobileShell \/> : <DesktopShell \/>/.test(shellFiles) &&
+    /<HamburgerMenu \/>/.test(shellFiles) &&
+    /<QuickDock \/>/.test(shellFiles) &&
+    /<BottomTabs \/>/.test(shellFiles) &&
+    /<DesktopRail \/>/.test(shellFiles) &&
+    !/DesktopRail/.test(read('src/shells/MobileShell.tsx')) &&
+    !/BottomTabs/.test(read('src/shells/DesktopShell.tsx'));
+  const noPixels = !/\b(264|88)px/.test(shell);
   record(
     'C09',
     '§6.1',
-    'Deux seuils, un rôle chacun (768 px rail, 1024 px colonne), une seule navigation montée',
+    'Deux seuils, un rôle chacun (700 px rail, 1100 px bureau), une seule navigation montée',
     threshold && exclusif && noPixels ? 'PASS' : 'FAIL',
-    `seuils: ${threshold} · montage exclusif: ${exclusif} · zéro px en dur: ${noPixels}`,
+    `seuils: ${threshold} · montage exclusif: ${exclusif} · zéro px en dur: ${noPixels} · shells: ${shellFiles ? 'lus' : 'absents'}`,
     'npx vitest run tests/design/desktop-shell.test.ts',
   );
 }
@@ -324,13 +341,13 @@ const record = (id, section, label, verdict, detail, proof) =>
   const width = /\.desktop-rail\s*\{[\s\S]{0,80}width:\s*var\(--rail\)/.test(globals);
   const collapsed = /data-collapsed='true'\] \.rail-label/.test(globals) && /clip-path:\s*inset\(50%\)/.test(globals);
   const ariaLabels = /aria-current=\{active \? 'page'/.test(rail) && /aria-label=/.test(rail);
-  const hugeiconsOnly = /@hugeicons\/react/.test(rail) && !/lucide-react/.test(rail);
+  const solarOnly = /solar-icons/.test(rail) && !/lucide-react/.test(rail);
   record(
     'C10',
     '§6.2',
     'Rail : une variable de largeur, repli accessible, état actif non colorimétrique',
-    singleVar && width && collapsed && ariaLabels && hugeiconsOnly ? 'PASS' : 'FAIL',
-    `variable unique: ${singleVar} · largeur: ${width} · repli sr-only: ${collapsed} · aria: ${ariaLabels} · Hugeicons seuls: ${hugeiconsOnly}`,
+    singleVar && width && collapsed && ariaLabels && solarOnly ? 'PASS' : 'FAIL',
+    `variable unique: ${singleVar} · largeur: ${width} · repli sr-only: ${collapsed} · aria: ${ariaLabels} · Solar : ${solarOnly}`,
     'npx vitest run tests/design/desktop-shell.test.ts',
   );
 }
@@ -341,8 +358,11 @@ const record = (id, section, label, verdict, detail, proof) =>
   const shells = ['src/components/layout/FullScreenPage.tsx', 'src/components/onboarding/OnboardingShell.tsx'];
   const shellHasColumn = shells.every((f) => exists(f) && /screen-column/.test(read(f)));
   // Un écran est couvert s'il porte la classe, ou s'il passe par une coquille qui la porte.
+  // `app/__dev/**` est exclu : c'est un outil de développement (laboratoire
+  // responsive), pas un écran de contenu, et il n'existe pas dans le build de
+  // production. Un canevas de travail doit pouvoir occuper toute la largeur.
   const screens = walk('app', /\.tsx$/).filter(
-    (f) => !/(_layout|\(tabs\)\/_layout|splash|\.test\.)/.test(f),
+    (f) => !/(_layout|\(tabs\)\/_layout|splash|__dev|\.test\.)/.test(f),
   );
   const covered = screens.filter((f) => {
     const src = read(f);
@@ -365,7 +385,7 @@ const record = (id, section, label, verdict, detail, proof) =>
   record(
     'C12',
     '§5.1',
-    'Une seule bibliothèque d’icônes (Hugeicons)',
+    'Une seule bibliothèque d’icônes (Solar)',
     lucide.length === 0 ? 'PASS' : 'PARTIAL',
     `${total - lucide.length}/${total} fichiers sans Lucide · ${lucide.length} à migrer`,
     'grep -rIl "lucide-react" --include=*.tsx app src | wc -l',
@@ -491,6 +511,38 @@ const record = (id, section, label, verdict, detail, proof) =>
   );
 }
 
+/* §4.7 — thème par défaut (contrat n°3) ------------------------------------ */
+{
+  const resolveTs = read('src/theme/resolve-theme.ts');
+  const mainTsx = read('src/main.tsx');
+  const tailwind = read('tailwind.config.js');
+  const defaultId = (vendoredTs.match(/DEFAULT_VENDORED_PRESET_ID =\s*\n?\s*'([a-z0-9-]+)'/) ?? [])[1];
+  const defaultBlock = (vendoredCss.match(/:root\[data-preset='([a-z0-9-]+)'\] \{([^}]*)\}/g) ?? [])
+    .map((bloc) => ({
+      id: (bloc.match(/data-preset='([a-z0-9-]+)'/) ?? [])[1],
+      body: bloc,
+    }))
+    .find((b) => b.id === defaultId);
+  const checks = {
+    'défaut déclaré une seule fois': Boolean(defaultId),
+    'resolve-theme lit le défaut généré': /DEFAULT_PRESET_ID = DEFAULT_VENDORED_PRESET_ID/.test(resolveTs),
+    'primaire du défaut = couleur demandée': /--primary:\s*#fb2c36;/.test(defaultBlock?.body ?? ''),
+    'polices chargées réellement': /@fontsource\/inter\/latin-400\.css/.test(mainTsx) && /@fontsource\/jetbrains-mono\/latin-400\.css/.test(mainTsx),
+    'CSS des thèmes ajoutés importé': /styles\/vendored-themes\.css/.test(mainTsx),
+    'rayons proportionnels branchés': /var\(--radius-scale, 1\)/.test(tailwind),
+  };
+  const missing = Object.entries(checks).filter(([, ok]) => !ok).map(([k]) => k);
+  record(
+    'C18',
+    '§4.7',
+    'Thème par défaut : preset officiel appliqué, polices et forme réellement chargées',
+    missing.length === 0 ? 'PASS' : 'FAIL',
+    `défaut: ${defaultId ?? 'aucun'} · ${Object.keys(checks).length - missing.length}/${Object.keys(checks).length} contrôles` +
+      (missing.length ? ` · manquants: ${missing.join(', ')}` : ''),
+    "node scripts/import-vendored-themes.mjs --check && npx vitest run tests/design/vendored-themes.test.ts",
+  );
+}
+
 /* --------------------------------------------------- non vérifiable ici ---- */
 
 const unverifiable = [
@@ -499,24 +551,28 @@ const unverifiable = [
     section: '§11.3',
     label: 'Rendu visuel réel aux largeurs 390 / 768 / 1024 / 1440 px',
     reason: 'Aucun navigateur ni outil de capture dans l’environnement de développement.',
+    check: 'docs/plan/verification-manuelle.md §1 — ou `node scripts/visual-check.mjs` (Playwright)',
   },
   {
     id: 'U02',
     section: '§11.3',
     label: 'Absence de débordement horizontal et positions réelles',
     reason: 'jsdom ne calcule pas de mise en page ; seule l’inspection à l’écran peut le prouver.',
+    check: 'docs/plan/verification-manuelle.md §2 — le script mesure scrollWidth − clientWidth',
   },
   {
     id: 'U03',
     section: '§4.5',
     label: 'Rendu effectif du verre (backdrop-filter) sur les cartes',
     reason: 'Le CSS est prouvé, l’effet composité ne l’est pas sans moteur de rendu.',
+    check: 'docs/plan/verification-manuelle.md §3 — thème image + cartes .surface-glass',
   },
   {
     id: 'U04',
     section: '§7',
     label: 'Parcours métier complets (mémorisation, révisions) sur données réelles',
     reason: 'Les jeux bibliques multi-traductions sont absents du poste (données non versionnées).',
+    check: 'docs/plan/verification-manuelle.md §4 — restaurer data/bible depuis l’historique puis jouer les 6 étapes',
   },
 ];
 
@@ -540,7 +596,10 @@ if (JSON_ONLY) {
     console.log(`${' '.repeat(23)}${r.detail}`);
   }
   console.log('\nNon vérifiable dans cet environnement :');
-  for (const u of unverifiable) console.log(`  ${u.id} ${u.section} ${u.label}\n     → ${u.reason}`);
+  for (const u of unverifiable) {
+    console.log(`  ${u.id} ${u.section} ${u.label}\n     → ${u.reason}`);
+    if (u.check) console.log(`     ↳ pour le vérifier : ${u.check}`);
+  }
   console.log(
     `\nBilan : ${counts.PASS ?? 0} PASS · ${counts.PARTIAL ?? 0} PARTIEL · ${counts.FAIL ?? 0} FAIL · ${unverifiable.length} non vérifiable(s)`,
   );
@@ -561,9 +620,9 @@ if (!JSON_ONLY) {
     '',
     '## Non vérifiable ici',
     '',
-    '| ID | § | Élément | Raison |',
-    '| --- | --- | --- | --- |',
-    ...unverifiable.map((u) => `| ${u.id} | ${u.section} | ${u.label} | ${u.reason} |`),
+    '| ID | § | Élément | Raison | Comment le vérifier |',
+    '| --- | --- | --- | --- | --- |',
+    ...unverifiable.map((u) => `| ${u.id} | ${u.section} | ${u.label} | ${u.reason} | ${u.check ?? '—'} |`),
     '',
     '## Commandes de preuve',
     '',

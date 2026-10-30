@@ -8,13 +8,13 @@
 
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { HugeiconsIcon } from '@hugeicons/react';
+import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   Home01Icon,
   BookOpen01Icon,
   ChartBarLineIcon,
   Settings01Icon,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import { ALL_TABS, useUiStore, type TabId } from '@/store/ui-store';
 import { cn } from '@/lib/utils';
 
@@ -36,7 +36,7 @@ export function BottomTabs() {
   return (
     <nav
       aria-label="Navigation principale"
-      className="border-t border-border bg-surface/95 pb-[env(safe-area-inset-bottom)] backdrop-blur"
+      className="mobile-tabs g1"
     >
       <div className="mx-auto flex max-w-md items-stretch justify-between px-3 py-2">
         {tabs.map((tab) => {
@@ -57,11 +57,11 @@ export function BottomTabs() {
                   active ? 'bg-primary/12' : 'bg-transparent',
                 )}
               >
-                <HugeiconsIcon
+                <DuoIcon
                   icon={Icon}
                   size={23}
-                  strokeWidth={active ? 2.4 : 1.8}
-                  color={active ? 'var(--color-primary)' : 'var(--color-text-muted)'}
+                  strokeWidth={1.75}
+                  color={active ? 'var(--acc-text)' : 'var(--mut)'}
                 />
               </span>
               {active && <span className="h-1 w-1 rounded-full bg-primary" />}

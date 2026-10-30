@@ -10,10 +10,10 @@
 
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { HugeiconsIcon } from '@hugeicons/react';
+import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   CheckIcon as Check,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { useAppearanceStore } from '@/store/appearance-store';
 import {
@@ -125,7 +125,7 @@ export default function ThemePickerScreen() {
                           </span>
                           {active && (
                             <span className="ml-auto flex h-5 w-5 items-center justify-center rounded-full bg-primary text-on-primary">
-                              <HugeiconsIcon icon={Check} size={11} />
+                              <DuoIcon icon={Check} size={11} />
                             </span>
                           )}
                         </div>

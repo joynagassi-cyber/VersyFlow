@@ -5,14 +5,14 @@
 
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { HugeiconsIcon } from '@hugeicons/react';
+import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   ArrowRight01Icon as ArrowRight,
   BrainIcon as Brain,
   CheckmarkCircle01Icon as CheckCircle,
   Timer01Icon as Timer,
   FlaskConicalIcon as FlaskConical,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import { Button } from '@/components/ui/button';
 import { useSettingsStore } from '@/store/settings-store';
 
@@ -31,22 +31,16 @@ export default function FSRSIntroductionScreen() {
       icon: Timer,
       title: t('onboarding.benefit1Title', 'Rythme optimal'),
       desc: t('onboarding.benefit1Desc', 'Révisez chaque verset juste avant de l\'oublier, maximisant la rétention avec un effort minimal.'),
-      bg: 'bg-icon-bg-rose',
-      color: 'text-primary',
     },
     {
       icon: CheckCircle,
       title: t('onboarding.benefit2Title', 'Moins de révisions'),
       desc: t('onboarding.benefit2Desc', 'Ne perdez pas de temps sur ce que vous savez déjà. Concentrez-vous sur ce qui nécessite votre attention.'),
-      bg: 'bg-icon-bg-purple',
-      color: 'text-text-secondary',
     },
     {
       icon: FlaskConical,
       title: t('onboarding.benefit3Title', 'Scientifiquement prouvé'),
       desc: t('onboarding.benefit3Desc', 'Basé sur la recherche cognitive avancée (Free Spaced Repetition Scheduler).'),
-      bg: 'bg-success',
-      color: 'text-white',
     },
   ];
 
@@ -55,7 +49,7 @@ export default function FSRSIntroductionScreen() {
       {/* Hero */}
       <div className="flex flex-col items-center px-6 pb-6 pt-10">
         <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-surface-tint">
-          <HugeiconsIcon icon={Brain} size={28} className="text-primary" />
+          <DuoIcon icon={Brain} size={28} className="text-primary" />
         </div>
         <h1 className="text-center text-lg font-semibold text-text-primary">
           {t('onboarding.fsrsTitle', 'La science de la mémorisation')}
@@ -113,10 +107,10 @@ export default function FSRSIntroductionScreen() {
 
       {/* Benefits */}
       <div className="mt-8 flex flex-col gap-4 px-6">
-        {benefits.map(({ icon: Icon, title, desc, bg, color }) => (
+        {benefits.map(({ icon: Icon, title, desc }) => (
           <div key={title} className="flex items-start gap-4 rounded-2xl bg-surface p-4 shadow-sm">
-            <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-full ${bg}`}>
-              <HugeiconsIcon icon={Icon} size={22} className={color} />
+            <div className="icon-chip flex h-12 w-12 shrink-0 items-center justify-center rounded-full">
+              <DuoIcon icon={Icon} size={22} />
             </div>
             <div className="flex-1">
               <p className="text-base font-semibold text-text-primary">{title}</p>
@@ -130,7 +124,7 @@ export default function FSRSIntroductionScreen() {
       <div className="mt-8 border-t border-border/50 bg-surface/80 p-6 backdrop-blur">
         <Button className="w-full" onClick={handleStartMemorization}>
           {t('onboarding.getStarted', 'Commencer à mémoriser')}
-          <HugeiconsIcon icon={ArrowRight} size={16} />
+          <DuoIcon icon={ArrowRight} size={16} />
         </Button>
       </div>
     </div>

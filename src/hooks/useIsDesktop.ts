@@ -9,8 +9,8 @@ import { useEffect, useState } from 'react';
  * 1024 px : le bureau. Le rail peut se déplier et le contenu cesse de
  *           s'étirer (`.screen-column`).
  */
-export const TABLET_MIN_WIDTH = 768;
-export const DESKTOP_MIN_WIDTH = 1024;
+export const TABLET_MIN_WIDTH = 700;
+export const DESKTOP_MIN_WIDTH = 1100;
 
 const DESKTOP_QUERY = `(min-width: ${DESKTOP_MIN_WIDTH}px)`;
 const TABLET_QUERY = `(min-width: ${TABLET_MIN_WIDTH}px)`;

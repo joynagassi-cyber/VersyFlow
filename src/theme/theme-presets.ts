@@ -26,7 +26,7 @@ export type AccentValues = ResolvedAccent;
  * (data-preset) ou de l'accent extrait de l'image de fond. Il ne reste
  * ici que l'application de l'accent dynamique d'image.
  */
-export const DEFAULT_ACCENT: AccentKey = 'quantum-rose';
+export const DEFAULT_ACCENT: AccentKey = 'lara-red';
 
 /**
  * Build an AccentValues set for a color-based image theme (public/themes/…).
@@ -57,23 +57,30 @@ export function applyAccentPreset(
   const src = themeImagePath(colorThemeId);
   // On pose tout de suite les couleurs du catalogue (aucun flash), puis on
   // affine avec la palette réellement extraite de l'illustration.
-  applyThemeToDocument(accentPlan(fallback, src, isDark));
+  const applyImageAccent = (values: AccentValues) => {
+    // Check at write time: an extraction may finish after the user chose a fixed accent.
+    const plan = accentPlan(values, src, isDark, !!useAppearanceStore.getState().fixedAccentId);
+    applyThemeToDocument(plan);
+  };
+  applyImageAccent(fallback);
   void extractImageAccent(colorThemeId, src, fallback).then((values) => {
     // Garde : le thème a pu changer pendant l'échantillonnage.
     if (useAppearanceStore.getState().colorThemeId !== colorThemeId) return;
-    applyThemeToDocument(accentPlan(values, src, isDark));
+    applyImageAccent(values);
   });
 }
 
 /** Plan partiel : accent + illustration (appliqué par l'unique écrivain). */
-export function accentPlan(values: AccentValues, src: string, isDark: boolean): ThemePlan {
+export function accentPlan(values: AccentValues, src: string, isDark: boolean, preserveFixedTint = false): ThemePlan {
+  const vars: Record<string, string> = { ...accentVars(values), '--theme-image': `url(${src})` };
+  if (preserveFixedTint) delete vars['--tint'];
   return {
     attributes: {
       'data-theme-image': 'on',
       'data-theme-image-mode': isDark ? 'dark' : 'light',
     },
     removedAttributes: [],
-    vars: { ...accentVars(values), '--theme-image': `url(${src})` },
+    vars,
     removedVars: [],
   };
 }

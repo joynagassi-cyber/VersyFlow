@@ -113,7 +113,10 @@ describe('jetons — format', () => {
     expect(missing).toEqual([]);
   });
 
-  it('le catalogue compte 25 presets, en clair et en sombre', () => {
+  // Ce fichier ne contient que les 25 presets historiques ; les 14 thèmes
+  // ajoutés au contrat n°3 vivent dans vendored-themes.css et sont couverts
+  // par tests/design/vendored-themes.test.ts (total du catalogue : 39).
+  it('le fichier historique compte 25 presets, en clair et en sombre', () => {
     expect(new Set(blocks.map((b) => b.name)).size).toBe(25);
     expect(blocks.filter((b) => b.dark).length).toBe(25);
   });

@@ -13,6 +13,7 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils';
+import { formatChapterCount } from '@/lib/chapter-count';
 import type { BibleVerseData } from '@/domains/bible/repository-local';
 import type { ChapterSemanticTags } from '@/hooks/useSemanticTags';
 import { useHighlightStore, type HighlightState } from '@/store/highlight-store';
@@ -39,20 +40,12 @@ export function ManuscriptView({
   onSelectVerse,
   showSemanticTags = true,
 }: ManuscriptViewProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const tagsByVerse = useMemo(
     () => new Map((tags?.entries ?? []).map((e) => [e.verse, e.concepts])),
     [tags],
   );
-
-  if (verses.length === 0) {
-    return (
-      <p className="px-1 py-6 text-sm italic text-text-muted">
-        {t('errors.verseNotFound', 'Verset non disponible dans cette traduction')}
-      </p>
-    );
-  }
 
   const selectedConcepts = selectedVerse != null ? tagsByVerse.get(selectedVerse) ?? [] : [];
   const selectedIsUser = selectedVerse != null ? (tags?.entries.find((e) => e.verse === selectedVerse)?.source ?? null) === 'user' : false;
@@ -65,6 +58,15 @@ export function ManuscriptView({
     [highlightKeys],
   );
 
+  if (verses.length === 0) {
+    return (
+      <p className="px-1 py-6 text-sm italic text-text-muted">
+        {t('errors.verseNotFound', 'Verset non disponible dans cette traduction')}
+      </p>
+    );
+  }
+
+
   return (
     <div className="mx-auto w-full">
       {/* Continuous manuscript text — .bible-card gets the premium
@@ -75,7 +77,7 @@ export function ManuscriptView({
             {t('bible.chapter', 'Chapitre')} {chapter}
           </span>
           <p className="mt-1 text-xs text-text-muted">
-            {verses.length} {t('bible.verses', 'versets')}
+            {formatChapterCount(t('bible.verseCount', { count: verses.length }), verses.length, i18n.resolvedLanguage || i18n.language)}
           </p>
         </div>
 

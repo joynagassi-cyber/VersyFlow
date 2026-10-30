@@ -18,7 +18,26 @@ import type { CommonPowerSyncDatabase } from '@powersync/common';
 
 import { buildPowerSyncSchema } from './powersync-schema';
 
-const DB_FILENAME = 'versyflow.db';
+/**
+ * Nom de la base locale.
+ *
+ * En prévisualisation (`preview-frame.html`), deux iframes tournent en même
+ * temps : si elles ouvraient le même fichier SQLite, la seconde échouerait ou
+ * verrait les données de la première. Chaque cadre reçoit donc **sa** base,
+ * dérivée du rôle posé par la page hôte. Hors prévisualisation, le nom est
+ * exactement celui d'avant — aucune migration, aucune donnée déplacée.
+ */
+function databaseFilename(): string {
+  const role =
+    typeof window !== 'undefined'
+      ? (window as unknown as { __VF_PREVIEW_ROLE__?: unknown }).__VF_PREVIEW_ROLE__
+      : undefined;
+  return typeof role === 'string' && role.length > 0
+    ? `versyflow-preview-${role}.db`
+    : 'versyflow.db';
+}
+
+const DB_FILENAME = databaseFilename();
 
 /**
  * URL of the pre-bundled PowerSync web worker, copied into `public/` from

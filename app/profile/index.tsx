@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { HugeiconsIcon } from '@hugeicons/react';
+import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   PencilIcon as Pencil,
   LogOutIcon as LogOut,
@@ -10,7 +10,7 @@ import {
   BookTextIcon as BookText,
   Download01Icon as Download,
   UsersRoundIcon as UsersRound,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { ListItem } from '@/components/ui/ListItem';
 import { Button } from '@/components/ui/button';
@@ -25,19 +25,23 @@ import type { ProgressStats } from '@/services/stats-calculator';
 import { cn } from '@/lib/utils';
 import { getTranslationDisplayInfo } from '@/services/bible-translation-names';
 import { fireAndForget } from '@/lib/fire-and-forget';
+import { localProfileCover } from '@/theme/profile-cover';
+import { themeLandscapeUrl } from '@/theme/theme-catalog';
+import { useAppearanceStore } from '@/store/appearance-store';
+import { formatProgressLabel } from '@/lib/progress-label';
 
-function StatTile({ value, label }: { value: number; label: string }) {
+function StatTile({ value, label }: { value: number | null; label: string }) {
   return (
-    <div className="rounded-2xl bg-surface p-3 text-center shadow-sm">
-      <p className="text-2xl font-extrabold text-primary">{value}</p>
-      <p className="mt-1 text-[11px] font-medium uppercase tracking-wide text-text-muted">{label}</p>
+    <div className="g2 profile-stat">
+      <p className="profile-stat-value">{value ?? '–'}</p>
+      <p className="profile-stat-label">{label}</p>
     </div>
   );
 }
 
 export default function ProfileScreen() {
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const user = useAuthStore((s) => s.user);
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   const signOut = useAuthStore((s) => s.signOut);
@@ -47,7 +51,16 @@ export default function ProfileScreen() {
   // Optional personal slogan (entity field, synced via PowerSync).
   const slogan = activeProfile?.slogan;
   const [editing, setEditing] = useState(false);
-  const [name, setName] = useState(user?.display_name || activeProfile?.displayName || '');
+  const [name, setName] = useState(() => localStorage.getItem('versyflow:profile:name') || user?.display_name || activeProfile?.displayName || '');
+  const [photo] = useState(() => localStorage.getItem('versyflow:profile:avatar') || '');
+  const imageTheme = useAppearanceStore((s) => s.colorThemeId);
+  const [cover, setCover] = useState<string | null>(null);
+  useEffect(() => {
+    let active = true;
+    void localProfileCover(photo).then((result) => { if (active) setCover(result); });
+    return () => { active = false; };
+  }, [photo]);
+  const saveName = () => { localStorage.setItem('versyflow:profile:name', name); setEditing(false); };
   const [stats, setStats] = useState<ProgressStats | null>(null);
 
   const profileId = activeProfile?.id ?? 'default';
@@ -83,62 +96,28 @@ export default function ProfileScreen() {
   };
 
   return (
-    <FullScreenPage title={t('common.profil', 'Profil')} showBack>
-      <div className="screen-column space-y-5">
-        {/* ── Header card: gradient name (very large) + photo on the right ── */}
-        <div className="bg-primary overflow-hidden rounded-3xl p-5 text-on-primary">
-          <div className="flex items-center gap-4">
-            <div className="min-w-0 flex-1">
-              {/* Big gradient display name — the name is the hero. */}
-              <div className="flex items-center gap-2">
-                {editing ? (
-                  <input
-                    value={name}
-                    autoFocus
-                    onChange={(e) => setName(e.target.value)}
-                    onBlur={() => setEditing(false)}
-                    onKeyDown={(e) => e.key === 'Enter' && setEditing(false)}
-                    className="w-full rounded-lg bg-surface/20 px-2 py-1 text-2xl font-extrabold text-white outline-none"
-                  />
-                ) : (
-                  <h1 className="text-primary truncate text-3xl font-extrabold leading-tight">
-                    {displayName || t('profile.setName', 'Definir un nom')}
-                  </h1>
-                )}
-                <button
-                  onClick={() => setEditing(true)}
-                  className="shrink-0 rounded-full bg-surface/20 p-1.5 active:bg-surface/30"
-                  aria-label={t('common.edit', 'Modifier')}
-                >
-                  <HugeiconsIcon icon={Pencil} size={14} />
-                </button>
+    <FullScreenPage title={t('common.profil', 'Profil')} showBack column={false}>
+      <div className="profile-premium space-y-5">
+        <div className="profile-hero" style={{ backgroundImage: `url("${cover ?? themeLandscapeUrl(imageTheme && imageTheme !== 'obj-miroir' ? imageTheme : 'nat-trees')}")` }}>
+          <div className="profile-hero-content">
+            <div className="profile-hero-text">
+              <p className="profile-eyebrow">{isAuthenticated ? t('profile.connected', 'Connecté') : t('profile.localMode', 'Mode local')}</p>
+              <div className="profile-name-row">
+                {editing ? <input value={name} autoFocus onChange={(e) => setName(e.target.value)} onBlur={saveName} onKeyDown={(e) => { if (e.key === 'Enter') saveName(); }} aria-label={t('profile.setName', 'Définir un nom')} className="profile-name-input" /> : <h1>{displayName || t('profile.setName', 'Définir un nom')}</h1>}
+                <button type="button" onClick={() => setEditing(true)} className="profile-name-edit" aria-label={t('common.edit', 'Modifier')}><DuoIcon icon={Pencil} size={18} /></button>
               </div>
-
-              {/* Optional user slogan (set at profile creation) as the
-                  subtitle under the display name; falls back to the
-                  account id / local-mode label when unset. */}
-              <p className="mt-1 truncate text-sm text-white/80">
-                {slogan || user?.userId || t('profile.localMode', 'Mode local')}
-              </p>
-              <span className="mt-2 inline-block rounded-full bg-surface/20 px-2.5 py-0.5 text-xs font-semibold">
-                {isAuthenticated
-                  ? t('profile.connected', 'Connecte')
-                  : t('profile.local', 'Local')}
-              </span>
+              <p className="profile-slogan">{slogan || user?.userId || t('profile.localMode', 'Mode local')}</p>
             </div>
-
-            {/* Photo on the right — a real image if set, otherwise a vector
-                illustration (theme catalog) as the default fallback. */}
-            <ProfileAvatar name={displayName} size={72} className="shadow-lg" />
+            <ProfileAvatar photo={photo.startsWith('data:image/') ? photo : null} name={displayName} size={144} className="profile-avatar" />
           </div>
         </div>
 
         {/* ── Stats band ── */}
         <div className="grid grid-cols-2 gap-3">
-          <StatTile value={stats?.streakCount ?? 0} label={t('progress.streak', 'Serie')} />
-          <StatTile value={stats?.masteredVerses ?? 0} label={t('progress.mastered', 'Maitres')} />
-          <StatTile value={stats?.totalVerses ?? 0} label={t('progress.versesMemorized', 'Versets')} />
-          <StatTile value={stats?.dueForReview ?? 0} label={t('progress.toReview', 'A reviser')} />
+          <StatTile value={stats?.streakCount ?? null} label={t('progress.streak', 'Serie')} />
+          <StatTile value={stats?.masteredVerses ?? null} label={formatProgressLabel(t('progress.mastered', 'Maîtrisés'), stats?.masteredVerses ?? 0, i18n.resolvedLanguage || i18n.language)} />
+          <StatTile value={stats?.totalVerses ?? null} label={formatProgressLabel(t('progress.versesMemorized', 'Versets mémorisés'), stats?.totalVerses ?? 0, i18n.resolvedLanguage || i18n.language)} />
+          <StatTile value={stats?.dueForReview ?? null} label={t('progress.toReview', 'A reviser')} />
         </div>
 
         {/* ── Preferences ── */}
@@ -184,18 +163,18 @@ export default function ProfileScreen() {
         {/* ── Actions ── */}
         <div className="flex flex-col gap-3">
           <Button variant="outline" onClick={() => navigate('/settings/backup')}>
-            <HugeiconsIcon icon={Download} size={18} />
+            <DuoIcon icon={Download} size={18} />
             {t('settings.exportData', 'Exporter mes donnees')}
           </Button>
           {profiles.length > 1 && (
             <Button variant="ghost" onClick={() => navigate('/profile/select')}>
-              <HugeiconsIcon icon={UsersRound} size={18} />
+              <DuoIcon icon={UsersRound} size={18} />
               {t('profile.manageProfiles', 'Gerer les profils')}
             </Button>
           )}
           {isAuthenticated && (
             <Button variant="ghost" className={cn('text-error')} onClick={() => fireAndForget(handleSignOut(), 'profile:signOut')}>
-              <HugeiconsIcon icon={LogOut} size={18} />
+              <DuoIcon icon={LogOut} size={18} />
               {t('nav.signOut', 'Se deconnecter')}
             </Button>
           )}

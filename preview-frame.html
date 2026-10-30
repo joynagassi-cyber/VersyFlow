@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="/icons/versyflow_icon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>VersyFlow — cadre de prévisualisation</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        height: 100%;
+        overflow: hidden;
+      }
+      #root {
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root">
+      <div
+        id="boot-splash"
+        style="min-height: 100vh; display: flex; align-items: center; justify-content: center; background: #fbf9f9; color: #d81b60; font-family: Georgia, serif; font-size: 22px; font-weight: 700"
+      >
+        VersyFlow…
+      </div>
+    </div>
+
+    <!--
+      CADRE DE PRÉVISUALISATION — outil de développement, jamais livré.
+
+      Ce fichier n'est pas une entrée de build : `vite.config.ts` ne déclare
+      que `index.html` dans `rollupOptions.input`, et `preview-frame.html` n'est
+      pas dans `public/`. Il n'existe donc que sous `vite dev`.
+
+      Rôle : donner à chaque iframe du laboratoire `__dev/responsive-preview`
+
+        1. une VRAIE largeur de viewport (390 px / 1440 px) — c'est la seule
+           façon d'obtenir les media queries réelles sans les imiter ;
+        2. un stockage ISOLÉ et jetable : `window.localStorage` est remplacé par
+           une implémentation en mémoire AVANT le chargement du moindre module.
+           Les stores Zustand, `MmkvStorage` et les clés `versyflow:*` écrivent
+           donc dans cette copie, jamais dans le compte de l'utilisateur.
+
+      Si l'isolation échoue (navigateur qui refuse de redéfinir `localStorage`),
+      l'application n'est **pas** démarrée : mieux vaut un cadre vide expliqué
+      qu'une écriture réelle provoquée par un outil de développement.
+    -->
+    <script>
+      (function () {
+        var PREFIX = 'vf-preview:';
+        var params = new URLSearchParams(window.location.search);
+        var role = params.get('preview');
+        // `window.name` survit à un rechargement de la frame : même un F5
+        // interne reste en mode prévisualisation.
+        if (!role && typeof window.name === 'string' && window.name.indexOf(PREFIX) === 0) {
+          role = window.name.slice(PREFIX.length);
+        }
+        if (role !== 'mobile' && role !== 'desktop' && role !== 'tablet') return;
+
+        try {
+          window.name = PREFIX + role;
+        } catch (error) {
+          /* ignore */
+        }
+        window.__VF_PREVIEW_ROLE__ = role;
+
+        function MemoryStorage() {
+          var data = Object.create(null);
+          this.getItem = function (key) {
+            var k = String(key);
+            return Object.prototype.hasOwnProperty.call(data, k) ? data[k] : null;
+          };
+          this.setItem = function (key, value) {
+            data[String(key)] = String(value);
+          };
+          this.removeItem = function (key) {
+            delete data[String(key)];
+          };
+          this.clear = function () {
+            data = Object.create(null);
+          };
+          this.key = function (index) {
+            var keys = Object.keys(data);
+            return index >= 0 && index < keys.length ? keys[index] : null;
+          };
+          Object.defineProperty(this, 'length', {
+            get: function () {
+              return Object.keys(data).length;
+            },
+          });
+        }
+
+        var realStorage = null;
+        try {
+          realStorage = window.localStorage;
+        } catch (error) {
+          realStorage = null;
+        }
+
+        var isolated = false;
+        try {
+          Object.defineProperty(window, 'localStorage', {
+            configurable: true,
+            value: new MemoryStorage(),
+          });
+          isolated = !!realStorage && window.localStorage !== realStorage;
+        } catch (error) {
+          isolated = false;
+        }
+
+        // Preuve, pas supposition : on écrit une sonde, puis on vérifie que le
+        // vrai stockage ne l'a pas reçue.
+        if (isolated) {
+          try {
+            window.localStorage.setItem('__vf_preview_probe__', '1');
+            isolated = realStorage.getItem('__vf_preview_probe__') === null;
+            window.localStorage.removeItem('__vf_preview_probe__');
+          } catch (error) {
+            isolated = false;
+          }
+        }
+
+        window.__VF_PREVIEW_STORAGE_ISOLATED__ = isolated;
+
+        if (!isolated) {
+          var splash = document.getElementById('boot-splash');
+          if (splash) {
+            splash.style.color = '#8a1c1c';
+            splash.style.fontSize = '13px';
+            splash.style.fontWeight = '400';
+            splash.style.padding = '24px';
+            splash.style.textAlign = 'center';
+            splash.textContent =
+              'Prévisualisation impossible : ce navigateur refuse d’isoler localStorage. ' +
+              'L’application n’a pas été démarrée pour ne pas écrire dans le compte réel.';
+          }
+          return;
+        }
+
+        var script = document.createElement('script');
+        script.type = 'module';
+        script.src = '/src/main.tsx';
+        document.body.appendChild(script);
+      })();
+    </script>
+  </body>
+</html>

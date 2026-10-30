@@ -2,14 +2,14 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { HugeiconsIcon } from '@hugeicons/react';
+import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   Copy01Icon as Copy,
   Share08Icon as Share2,
   InformationCircleIcon as Info,
   Loading03Icon as Loader2,
   CheckIcon as Check,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { Button } from '@/components/ui/button';
@@ -131,12 +131,12 @@ export default function FamilyInviteScreen() {
                 className="rounded-full bg-surface-tint p-2 active:bg-primary/10"
                 aria-label={copied ? t('common.saved', 'Copié') : t('common.copy', 'Copier')}
               >
-                {copied ? <HugeiconsIcon icon={Check} size={18} className="text-success" /> : <HugeiconsIcon icon={Copy} size={18} className="text-primary" />}
+                {copied ? <DuoIcon icon={Check} size={18} className="text-success" /> : <DuoIcon icon={Copy} size={18} className="text-primary" />}
               </button>
             </div>
           ) : (
             <Button variant="default" onClick={() => fireAndForget(handleGenerateCode(), 'family:generate-code')} disabled={isLoading}>
-              {isLoading ? <HugeiconsIcon icon={Loader2} size={18} className="animate-spin" /> : t('family.generateCode', 'Generer un code')}
+              {isLoading ? <DuoIcon icon={Loader2} size={18} className="animate-spin" /> : t('family.generateCode', 'Generer un code')}
             </Button>
           )}
           <span className="text-xs text-text-muted">
@@ -151,15 +151,15 @@ export default function FamilyInviteScreen() {
           disabled={isLoading || !inviteCode || sharing}
         >
           {sharing ? (
-            <HugeiconsIcon icon={Loader2} size={18} className="animate-spin" />
+            <DuoIcon icon={Loader2} size={18} className="animate-spin" />
           ) : (
-            <HugeiconsIcon icon={Share2} size={18} />
+            <DuoIcon icon={Share2} size={18} />
           )}
           {t('family.shareCode', 'Partager le code')}
         </Button>
 
         <div className="flex items-start gap-3 rounded-2xl bg-surface-tint p-4">
-          <HugeiconsIcon icon={Info} size={18} className="mt-0.5 text-info" />
+          <DuoIcon icon={Info} size={18} className="mt-0.5 text-info" />
           <p className="flex-1 text-sm text-text-secondary">
             {t('family.inviteHint', 'Chaque membre utilise ce code pour rejoindre votre famille.')}
           </p>

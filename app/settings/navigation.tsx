@@ -11,7 +11,7 @@
  */
 
 import { useTranslation } from 'react-i18next';
-import { HugeiconsIcon } from '@hugeicons/react';
+import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   BarChartIcon as BarChart3,
   BookOpen01Icon as BookOpen,
@@ -25,8 +25,8 @@ import {
   HistoryIcon as History,
   GitCompareIcon as GitCompare,
   UsersIcon as Users,
-} from '@hugeicons/core-free-icons';
-import type { EyeIcon } from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
+import type { EyeIcon } from '@/components/ui/solar-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { useUiStore, ALL_MENU_ITEMS, type TabId } from '@/store/ui-store';
 
@@ -86,7 +86,7 @@ export default function NavigationSettingsScreen() {
         </p>
 
         {/* Section 1 — bottom bar toggles */}
-        <div className="overflow-hidden rounded-2xl bg-surface shadow-sm">
+        <div className="glass overflow-hidden rounded-2xl bg-surface shadow-sm">
           <div className="px-4 pt-4">
             <p className="text-xs font-bold uppercase tracking-wide text-text-muted">
               {t('settings.navigationBottomBar', 'Barre de navigation')}
@@ -102,7 +102,7 @@ export default function NavigationSettingsScreen() {
                   className="flex w-full items-center justify-between px-4 py-3.5 text-left"
                 >
                   <span className="flex items-center gap-3">
-                    <HugeiconsIcon icon={Icon} size={18} className={visible ? 'text-primary' : 'text-text-muted'} />
+                    <DuoIcon icon={Icon} size={18} className={visible ? 'text-primary' : 'text-text-muted'} />
                     <span className="text-base text-text-primary">{t(i18nKey, defaultLabel)}</span>
                   </span>
                   <span className={pillClass(visible)}>
@@ -115,7 +115,7 @@ export default function NavigationSettingsScreen() {
         </div>
 
         {/* Section 2 — one toggle per hamburger-menu item */}
-        <div className="overflow-hidden rounded-2xl bg-surface shadow-sm">
+        <div className="glass overflow-hidden rounded-2xl bg-surface shadow-sm">
           <div className="px-4 pt-4">
             <p className="text-xs font-bold uppercase tracking-wide text-text-muted">
               {t('settings.navigationMenu', 'Menu hamburger')}
@@ -135,7 +135,7 @@ export default function NavigationSettingsScreen() {
                   className="flex w-full items-center justify-between px-4 py-3.5 text-left"
                 >
                   <span className="flex items-center gap-3">
-                    <HugeiconsIcon icon={Icon} size={18} className={visible ? 'text-primary' : 'text-text-muted'} />
+                    <DuoIcon icon={Icon} size={18} className={visible ? 'text-primary' : 'text-text-muted'} />
                     <span className="text-base text-text-primary">{t(labelKey, label)}</span>
                   </span>
                   <span className={pillClass(visible)}>

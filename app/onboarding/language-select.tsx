@@ -6,13 +6,13 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { HugeiconsIcon } from '@hugeicons/react';
+import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   CheckIcon as Check,
   ArrowLeft01Icon as ArrowLeft,
   ArrowRight01Icon as ArrowRight,
   LanguagesIcon as Languages,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { SUPPORTED_LANGUAGES, isRTL } from '@/services/i18n-service';
@@ -40,7 +40,7 @@ export default function LanguagePickerScreen() {
           className="flex h-10 w-10 items-center justify-center rounded-full bg-surface shadow-sm"
           aria-label={t('common.back')}
         >
-          <HugeiconsIcon icon={ArrowLeft} size={20} className="text-text-secondary" />
+          <DuoIcon icon={ArrowLeft} size={20} className="text-text-secondary" />
         </button>
         <div>
           <h1 className="text-2xl font-bold text-text-primary">
@@ -65,7 +65,7 @@ export default function LanguagePickerScreen() {
             >
               <div>
                 <div className="flex items-center gap-2">
-                  <HugeiconsIcon icon={Languages} size={18} className="text-primary" />
+                  <DuoIcon icon={Languages} size={18} className="text-primary" />
                   <span className="text-lg font-semibold text-text-primary">
                     {lang.name}
                   </span>
@@ -82,7 +82,7 @@ export default function LanguagePickerScreen() {
                   </p>
                 )}
               </div>
-              {isSelected && <HugeiconsIcon icon={Check} size={22} className="text-primary" />}
+              {isSelected && <DuoIcon icon={Check} size={22} className="text-primary" />}
             </button>
           );
         })}
@@ -90,12 +90,12 @@ export default function LanguagePickerScreen() {
 
       <div className="mt-6 flex gap-4">
         <Button variant="outline" className="flex-1" onClick={() => navigate('/onboarding/welcome')}>
-          <HugeiconsIcon icon={ArrowLeft} size={16} />
+          <DuoIcon icon={ArrowLeft} size={16} />
           {t('common.back')}
         </Button>
         <Button className="flex-1" onClick={() => navigate('/onboarding/translation-select')}>
           {t('common.continue')}
-          <HugeiconsIcon icon={ArrowRight} size={16} />
+          <DuoIcon icon={ArrowRight} size={16} />
         </Button>
       </div>
     </div>
