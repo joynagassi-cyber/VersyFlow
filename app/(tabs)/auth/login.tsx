@@ -2,15 +2,15 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
-import { HugeiconsIcon } from '@hugeicons/react';
+import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   Loading03Icon as Loader2,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { Logo } from '@/components/brand/Logo';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { SupabaseAuthService } from '@/auth';
+import { getAuthService } from '@/auth';
 import { fireAndForget } from '@/lib/fire-and-forget';
 
 const LOGIN = z.object({
@@ -30,7 +30,7 @@ export default function LoginScreen({ onSkip }: Props) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const auth = new SupabaseAuthService();
+  const auth = getAuthService();
 
   const handleLogin = async () => {
     const parsed = LOGIN.safeParse({ email, name });
@@ -88,7 +88,7 @@ export default function LoginScreen({ onSkip }: Props) {
             disabled={loading}
           >
             {loading ? (
-              <HugeiconsIcon icon={Loader2} size={18} className="animate-spin" />
+              <DuoIcon icon={Loader2} size={18} className="animate-spin" />
             ) : (
               t('auth.continue', 'Continuer')
             )}

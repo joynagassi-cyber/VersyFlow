@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import type { IconSvgElement } from '@hugeicons/react';
-import { HugeiconsIcon } from '@hugeicons/react';
+import type { Icon as IconSvgElement } from '@solar-icons/react/lib/types';
+import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   CloudIcon as Cloud,
   PaletteIcon as Palette,
@@ -13,18 +13,20 @@ import {
   LogOutIcon as LogOut,
   ChevronRightIcon as ChevronRight,
   SparklesIcon as Sparkles,
+  BeakerIcon as Beaker,
   LayoutGridIcon as LayoutGrid,
   Layers01Icon as Layers,
   StarIcon as Star,
   BookTextIcon as BookText,
   SlidersHorizontalIcon as SlidersHorizontal,
   ListChecksIcon as ListChecks,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import { cn } from '@/lib/utils';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { Button } from '@/components/ui/button';
 import { ProfileAvatar } from '@/components/profile/ProfileAvatar';
 import { useAuthStore } from '@/store/auth-store';
+import { isMockMode } from '@/dev/mode';
 import { useSettingsStore, type BibleVersionType } from '@/store/settings-store';
 import { getTranslationDisplayInfo } from '@/services/bible-translation-names';
 import { fireAndForget } from '@/lib/fire-and-forget';
@@ -137,6 +139,22 @@ export default function SettingsScreen() {
         { label: t('settings.versions', 'Versions de la Bible'), icon: BookText, to: '/settings/available-translations' },
       ],
     },
+    // Mock-mode only: the test control room (seed / reset / local API).
+    ...(isMockMode()
+      ? [
+          {
+            title: t('settings.devSection', 'Test & Développement'),
+            icon: Beaker,
+            items: [
+              {
+                label: t('settings.devPanel', 'Panneau de test (mock, données locales)'),
+                icon: Beaker,
+                to: '/dev',
+              },
+            ],
+          },
+        ]
+      : []),
   ];
 
   return (
@@ -156,13 +174,13 @@ export default function SettingsScreen() {
               {isAuthenticated ? t('settings.connected', 'Connecte') : t('settings.localMode', 'Mode local')}
             </span>
           </span>
-          <HugeiconsIcon icon={ChevronRight} size={18} className="text-text-muted" />
+          <DuoIcon icon={ChevronRight} size={18} className="text-text-muted" />
         </button>
 
         {/* Active translation pill (abbreviation + full name, subtitle). */}
         <div className="flex items-center gap-3 rounded-2xl bg-surface p-4 shadow-sm">
           <span className="flex h-10 w-10 items-center justify-center rounded-full bg-surface-tint text-primary">
-            <HugeiconsIcon icon={BookText} size={18} />
+            <DuoIcon icon={BookText} size={18} />
           </span>
           <div className="min-w-0 flex-1">
             <p className="truncate text-sm font-bold text-text-primary">
@@ -204,7 +222,7 @@ export default function SettingsScreen() {
               </div>
             </div>
           </div>
-          <HugeiconsIcon icon={ChevronRight}
+          <DuoIcon icon={ChevronRight}
             size={18}
             className="cursor-pointer text-text-muted"
             onClick={() => navigate('/settings/available-translations')}
@@ -215,7 +233,7 @@ export default function SettingsScreen() {
         {groups.map((group, gi) => (
           <div key={gi}>
             <p className="mb-2 flex items-center gap-2 px-1 text-xs font-bold uppercase tracking-wide text-text-muted">
-              <HugeiconsIcon icon={group.icon} size={13} className="text-primary" />
+              <DuoIcon icon={group.icon} size={13} className="text-primary" />
               {group.title}
             </p>
             <div className="overflow-hidden rounded-2xl bg-surface shadow-sm">
@@ -231,10 +249,10 @@ export default function SettingsScreen() {
                   }
                 >
                   <span className="flex items-center gap-3">
-                    <HugeiconsIcon icon={item.icon} size={18} className="text-text-muted" />
+                    <DuoIcon icon={item.icon} size={18} className="text-text-muted" />
                     <span className="text-base text-text-primary">{item.label}</span>
                   </span>
-                  <HugeiconsIcon icon={ChevronRight} size={16} className="text-text-muted" />
+                  <DuoIcon icon={ChevronRight} size={16} className="text-text-muted" />
                 </button>
               ))}
             </div>
@@ -247,7 +265,7 @@ export default function SettingsScreen() {
             onClick={() => setShowConfirm(true)}
             className="flex w-full items-center justify-center gap-2 rounded-2xl bg-surface py-3.5 font-semibold text-error shadow-sm"
           >
-            <HugeiconsIcon icon={LogOut} size={18} />
+            <DuoIcon icon={LogOut} size={18} />
             {t('settings.signOut', 'Se deconnecter')}
           </button>
         )}
@@ -256,7 +274,7 @@ export default function SettingsScreen() {
       {/* Confirm modal */}
       {showConfirm && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-6"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-[color:var(--scrim-strong)] p-6"
           onClick={() => setShowConfirm(false)}
         >
           <div

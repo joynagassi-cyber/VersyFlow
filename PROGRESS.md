@@ -1,5 +1,84 @@
 # PROGRESS — VersyFlow Senior Rescue (2026-10-06)
 
+## Chantier démo & accessibilité — 2026-10-30
+
+### Lot « 40 images » — 2026-10-30 (après-midi)
+
+- **Fait et testé** : chaîne d'import complète (`scripts/themes/photo-scenes.mjs`,
+  `scripts/themes/import-photo-themes.mjs`, `npm run themes:photos`), 20 scènes
+  décrites, recadrage 1248×832 / 832×1248 en WebP + vignettes 320 px, refus des
+  agrandissements et des copies, mode `--check`, `themeThumbUrl`, catégories photo
+  concaténées au catalogue (inertes tant qu'aucun fichier n'existe).
+- **Preuve** : 40 images synthétiques importées temporairement → catalogue à 120
+  entrées, `npx vitest run tests/design` = 39 fichiers / 267 tests OK ; nettoyées
+  ensuite. Détail : `docs/design/photo-themes.md`.
+- **Bloqué** : aucune des 40 vraies photos — 5ᵉ tentative de génération le 30/10,
+  toujours `403 PERMISSION_DENIED` (« account flagged for suspicious activity »).
+  Recherche d'images : uniquement des banques sous licence, inutilisables.
+
+### Isolation réelle de la démo (fait, testé)
+
+- `src/dev/mock/storage-scope.ts` : en mode démo, **tous** les accès
+  `localStorage` sont redirigés sous `versyflow:mock-scope:v1:`. Cela couvre ce
+  que les repositories mock ne couvraient pas : collections, historique de
+  recherche, profil (nom/photo), stores Zustand persistés (famille, apparence,
+  contexte), rappels, etc. `clear()` en démo ne supprime que l'espace de démo.
+- `src/dev/mock/install-isolation.ts` est le **premier import** de
+  `src/main.tsx`, donc la redirection précède toute hydratation de store.
+- Démo **par défaut** pendant le chantier (`DEMO_IS_DEFAULT` dans
+  `src/dev/mode.ts`), sortie explicite par `?data=live`, « Quitter la démo »
+  (`/settings/data`, `/dev`) ou `VITE_DEMO_DEFAULT=off`.
+- Graine Famille (`src/dev/mock/family-room-seed.ts`) : défis, séances et fil
+  d'activité, plus deux profils de membres (`SEED_COMPANIONS`) pour que la
+  liste des membres et le classement soient testables.
+- Pastille « Démo » dans les deux coques + panneau d'explication
+  (`src/components/dev/`), avec durée de vie, limites et réinitialisation.
+- `docs/design/demo-mode.md` décrit garanties, cycle de vie et limites.
+
+### Accessibilité mesurée (fait, testé)
+
+- `--color-text-muted` / `--color-text-tertiary` n'étaient surchargés par aucun
+  preset : 2,75:1 (clair) et 2,75–3,07:1 (sombre) sur 375 libellés. Ils
+  dérivent maintenant de `--color-text-secondary` (le `muted-foreground` du
+  preset), mesuré ≥ 4,5:1 sur les 78 blocs de preset.
+- Verre sur photo : plancher d'opacité `--glass-alpha-min: .8` appliqué aux
+  cartes `g1/g2/g3` et aux surfaces `.card-glass/.surface-glass/.bible-card`.
+  À 42 %, le texte secondaire tombait à ~2,9:1 sur une photo sombre.
+- `tests/design/contrast-surfaces.test.ts` calcule ces ratios (pas de simples
+  assertions de jetons).
+
+### Bible (fait, testé)
+
+- Le dataset LSG ne contient que des sigles (`GEN`, `EXO`) ; `useBibleBooks`
+  les superposait au référentiel complet. `resolveBookName()` garde désormais
+  le nom complet (« Genèse ») et `looksAbbreviated()` ne remplace jamais un
+  vrai nom court (« Job », « Marc »). Testé sur le dataset local (66 livres).
+
+### Revue (fait, testé)
+
+- Calendrier : la timeline utilise désormais les journaux de révision
+  append-only (toutes les révisions du jour), plus seulement « dernière
+  révision » ; ajout d'un historique récent et d'un lien vers l'historique
+  complet.
+
+### Profil (fait, partiellement vérifié)
+
+- Changement de photo depuis le grand profil (data URL locale, aucun envoi),
+  couverture dérivée localement de la photo (`localProfileCover`).
+- Contraste du hero protégé par le voile CSS existant ; non vérifié à l'écran
+  faute de navigateur dans l'environnement.
+
+### Non fait / bloqué
+
+- **40 images de fonds (20 scènes × 2 formats)** : la génération d'images
+  échoue en HTTP 403 (compte signalé côté fournisseur), vérifié le 30/10 à
+  3 reprises. Aucune image créée, aucun catalogue photo ajouté.
+- Photo réelle sur la carte « verset du jour » : dépend des mêmes ressources.
+- Vérification visuelle 390/768/1280, captures : aucun navigateur disponible
+  dans l'environnement (`U01`–`U04` de l'audit restent « non vérifiable »).
+- Notifications natives : non testables sans appareil physique.
+
+
 ## Phase 0 — Discovery & Stack Detection
 
 | Item | Value |

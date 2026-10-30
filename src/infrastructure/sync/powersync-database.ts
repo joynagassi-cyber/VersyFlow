@@ -16,9 +16,29 @@
 import { PowerSyncDatabase } from '@powersync/capacitor';
 import type { CommonPowerSyncDatabase } from '@powersync/common';
 
+import { isMockMode, MockModeGuardError } from '@/dev/mode';
 import { buildPowerSyncSchema } from './powersync-schema';
 
-const DB_FILENAME = 'versyflow.db';
+/**
+ * Nom de la base locale.
+ *
+ * En prévisualisation (`preview-frame.html`), deux iframes tournent en même
+ * temps : si elles ouvraient le même fichier SQLite, la seconde échouerait ou
+ * verrait les données de la première. Chaque cadre reçoit donc **sa** base,
+ * dérivée du rôle posé par la page hôte. Hors prévisualisation, le nom est
+ * exactement celui d'avant — aucune migration, aucune donnée déplacée.
+ */
+function databaseFilename(): string {
+  const role =
+    typeof window !== 'undefined'
+      ? (window as unknown as { __VF_PREVIEW_ROLE__?: unknown }).__VF_PREVIEW_ROLE__
+      : undefined;
+  return typeof role === 'string' && role.length > 0
+    ? `versyflow-preview-${role}.db`
+    : 'versyflow.db';
+}
+
+const DB_FILENAME = databaseFilename();
 
 /**
  * URL of the pre-bundled PowerSync web worker, copied into `public/` from
@@ -46,6 +66,11 @@ let instance: CommonPowerSyncDatabase | null = null;
  * guarantees the SQLite schema is available before the first query.
  */
 export function getPowerSyncDatabase(): CommonPowerSyncDatabase {
+  // Frontend-only sessions must never open (or download) a sync replica:
+  // mock mode serves everything from `src/dev/mock/db.ts`.
+  if (isMockMode()) {
+    throw new MockModeGuardError('La base PowerSync');
+  }
   if (!instance) {
     instance = new PowerSyncDatabase({
       schema: buildPowerSyncSchema(),

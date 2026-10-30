@@ -26,7 +26,6 @@ export interface ReminderConfig {
   time: string;
 }
 
-const NOTIFICATION_CHANNEL = 'versyflow-reminders';
 
 /**
  * Cached permission state so we don't re-prompt / re-query on every call.
@@ -62,13 +61,15 @@ export class NotificationService {
       // `display` is the only permission state this plugin exposes:
       // 'granted' | 'prompt' | 'denied' | 'disabled'.
       permissionGranted = result.display === 'granted';
-      permissionChecked = true;
+      // Un état « prompt » obtenu au démarrage ne doit pas empêcher la
+      // demande de permission déclenchée plus tard par l'utilisateur.
+      permissionChecked = result.display !== 'prompt';
       return permissionGranted;
     } catch {
-      // Plugin unavailable — treat as granted so scheduling proceeds (no-op).
-      permissionGranted = true;
-      permissionChecked = true;
-      return true;
+      // An unavailable native plugin cannot schedule notifications.
+      permissionGranted = false;
+      permissionChecked = false;
+      return false;
     }
   }
 
@@ -101,8 +102,8 @@ export class NotificationService {
           permissionGranted = await this.checkPermission();
           permissionChecked = true;
         } catch {
-          // Web / no plugin — proceed with the in-app fallback.
-          permissionGranted = true;
+          // A native plugin failure is not a successful permission request.
+          permissionGranted = false;
           permissionChecked = true;
         } finally {
           permissionRequestInFlight = null;
@@ -131,9 +132,13 @@ export class NotificationService {
     reminders: ReminderConfig,
     body: string,
   ): Promise<ScheduledReminder[]> {
-    const { enabled, frequency, time } = reminders;
-
-    if (!enabled) return [];
+    const { enabled, time } = reminders;
+    if (!enabled) {
+      if (isNativePlatform()) await this.cancelAll();
+      return [];
+    }
+    if (!/^([01]\d|2[0-3]):[0-5]\d$/.test(time)) throw new Error('invalid-time');
+    const frequency = Math.max(1, Math.min(24, Math.floor(reminders.frequency) || 1));
 
     const scheduled: ScheduledReminder[] = Array.from({ length: frequency }, (_, i) => ({
       id: i + 1,
@@ -141,36 +146,21 @@ export class NotificationService {
       frequency,
     }));
 
-    // On native Capacitor, schedule via the plugin. Permission is requested
-    // just-in-time by the UI (`ensurePermissions`); here we only check and
-    // silently fall back to the web path when it hasn't been granted yet.
-    try {
-      if (isNativePlatform()) {
-        const granted = await this.checkPermission();
-        if (!granted) {
-          // Permission not granted yet — do NOT prompt here (that happens on
-          // user action). The in-app fallback still returns the schedule so
-          // the UI can surface reminder banners.
-          return scheduled;
-        }
-        const { LocalNotifications } = await import('@capacitor/local-notifications');
-        await LocalNotifications.createChannel({ id: NOTIFICATION_CHANNEL, name: 'VersyFlow' });
-        for (const reminder of scheduled) {
-          await LocalNotifications.schedule({
-            notifications: [
-              {
-                id: reminder.id,
-                title: 'VersyFlow',
-                body,
-                channelId: NOTIFICATION_CHANNEL,
-              },
-            ],
-          });
-        }
-        return scheduled;
-      }
-    } catch {
-      // Web / no plugin — fall back silently.
+    // Les notifications natives doivent avoir un horaire récurrent explicite ;
+    // sinon le plugin les délivre immédiatement. Remplacer seulement nos IDs.
+    if (isNativePlatform()) {
+      if (!await this.checkPermission()) throw new Error('permission-denied');
+      const { LocalNotifications } = await import('@capacitor/local-notifications');
+      const pending = await LocalNotifications.getPending();
+      const ours = pending.notifications.filter(({ id }) => id >= 1 && id <= 24);
+      if (ours.length) await LocalNotifications.cancel({ notifications: ours.map(({ id }) => ({ id })) });
+      await LocalNotifications.schedule({
+        notifications: scheduled.map((reminder) => {
+          const [hour, minute] = reminder.time.split(':').map(Number);
+          return { id: reminder.id, title: 'VersyFlow', body, schedule: { on: { hour, minute }, repeats: true } };
+        }),
+      });
+      return scheduled;
     }
 
     // Web fallback: no system notification, but we still return the schedule
@@ -179,8 +169,8 @@ export class NotificationService {
   }
 
   /**
-   * Cancel all scheduled local reminders and reset the cached permission
-   * state so a later user-initiated request re-queries the OS.
+   * Cancel the legacy daily reminders (IDs 1–24), leaving weekly and other
+   * notifications alone, and invalidate the cached permission state.
    *
    * Resetting the cache here is deliberate: a reminder off/on cycle can
    * otherwise leave a stale `granted`/`denied` result in place, and the
@@ -190,7 +180,9 @@ export class NotificationService {
     try {
       if (isNativePlatform()) {
         const { LocalNotifications } = await import('@capacitor/local-notifications');
-        await LocalNotifications.cancelAll();
+        const pending = await LocalNotifications.getPending();
+        const ours = pending.notifications.filter(({ id }) => id >= 1 && id <= 24);
+        if (ours.length) await LocalNotifications.cancel({ notifications: ours.map(({ id }) => ({ id })) });
       }
     } catch {
       /* no plugin — nothing to cancel */
@@ -208,7 +200,7 @@ export class NotificationService {
   private offsetTime(base: string, index: number, total: number): string {
     if (total <= 1) return base;
     const [h, m] = base.split(':').map(Number);
-    const stepMinutes = Math.floor(1440 / total) * (index + 1);
+    const stepMinutes = Math.floor(1440 / total) * index;
     const totalMinutes = ((h * 60 + (m || 0)) + stepMinutes) % 1440;
     const hh = Math.floor(totalMinutes / 60).toString().padStart(2, '0');
     const mm = (totalMinutes % 60).toString().padStart(2, '0');

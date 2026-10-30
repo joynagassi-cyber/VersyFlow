@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as DialogPrimitive from '@radix-ui/react-dialog';
-import { HugeiconsIcon } from '@hugeicons/react';
-import { Cancel01Icon } from '@hugeicons/core-free-icons';
+import { DuoIcon } from '@/components/ui/DuoIcon';
+import { Cancel01Icon } from '@/components/ui/solar-icons';
 import { cn } from '@/lib/utils';
 
 const Dialog = DialogPrimitive.Root;
@@ -15,7 +15,7 @@ const DialogOverlay = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <DialogPrimitive.Overlay
     ref={ref}
-    className={cn('fixed inset-0 z-50 bg-black/50', className)}
+    className={cn('fixed inset-0 z-50 bg-[color:var(--scrim-strong)]', className)}
     {...props}
   />
 ));
@@ -40,7 +40,7 @@ const DialogContent = React.forwardRef<
     >
       {children}
       <DialogPrimitive.Close className="absolute right-4 top-4 rounded-full p-1 text-text-muted hover:text-text-primary">
-        <HugeiconsIcon icon={Cancel01Icon} size={20} />
+        <DuoIcon icon={Cancel01Icon} size={20} />
         <span className="sr-only">Fermer</span>
       </DialogPrimitive.Close>
     </DialogPrimitive.Content>

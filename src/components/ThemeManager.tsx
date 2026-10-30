@@ -17,13 +17,20 @@ import { useEffect, useState } from 'react';
 import { useAppearanceStore } from '@/store/appearance-store';
 import { useTheme } from '@/theme/useTheme';
 import { applyAccentPreset } from '@/theme/theme-presets';
-import { applyReadingVars, findBibleFont, findUiFont, loadBibleFont } from '@/theme/theme-fonts';
+import {
+  applyReadingVars,
+  findBibleFont,
+  findUiFont,
+  loadBibleFont,
+  uiFontFamilyOf,
+} from '@/theme/theme-fonts';
 import { applyThemeToDocument, resolveTheme } from '@/theme/resolve-theme';
 import { applyAppIcon } from '@/theme/app-icons';
 
 export function ThemeManager() {
-  const themeMode = useAppearanceStore((s) => s.themeMode);
+  const glassSettings = useAppearanceStore((s) => s.glassSettings);
   const accent = useAppearanceStore((s) => s.accent);
+  const fixedAccentId = useAppearanceStore((s) => s.fixedAccentId);
   const presetId = useAppearanceStore((s) => s.presetId);
   const reducedTransparency = useAppearanceStore((s) => s.reducedTransparency);
   const highContrast = useAppearanceStore((s) => s.highContrast);
@@ -49,12 +56,6 @@ export function ThemeManager() {
     return () => window.removeEventListener('resize', onResize);
   }, []);
 
-  // Follow a manual override; for 'system' the useTheme hook tracks the OS.
-  useEffect(() => {
-    if (themeMode === 'system') return;
-    theme.setThemeMode(themeMode);
-  }, [themeMode, theme]);
-
   /**
    * Thème : UNE décision (`resolveTheme`, pure) puis UNE écriture
    * (`applyThemeToDocument`). L'effet ne décide plus rien lui-même — il
@@ -64,14 +65,19 @@ export function ThemeManager() {
     applyThemeToDocument(
       resolveTheme({
         presetId,
+        glassSettings,
         accent,
+        fixedAccentId,
         backgroundType,
         gradientId,
         colorThemeId,
         isDark: theme.isDark,
         reducedTransparency,
         highContrast,
-        uiFontFamily: findUiFont(uiFontId).family,
+        // `system` = « suite du thème » : aucune famille fournie, sinon
+        // `--font-sans` écraserait la police du preset (Inter, Geist, DM Sans,
+        // Outfit…). Un choix explicite de l'utilisateur, lui, l'emporte.
+        uiFontFamily: uiFontFamilyOf(uiFontId),
         wide: viewportWide,
       }),
     );
@@ -82,9 +88,11 @@ export function ThemeManager() {
     }
   }, [
     accent,
+    fixedAccentId,
     backgroundType,
     colorThemeId,
     gradientId,
+    glassSettings,
     highContrast,
     presetId,
     reducedTransparency,

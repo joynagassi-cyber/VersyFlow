@@ -1,3 +1,4 @@
+import { goBackSafely } from '@/lib/navigation';
 /**
  * Settings — Session Configuration Screen
  *
@@ -7,13 +8,13 @@
 
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { HugeiconsIcon } from '@hugeicons/react';
+import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   ArrowLeft01Icon as ArrowLeft,
   Target01Icon as Target,
   FocusIcon as Focus,
   CheckIcon as Check,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { useAppearanceStore } from '@/store/appearance-store';
@@ -32,11 +33,11 @@ export default function SettingsSessionScreen() {
     <div className="screen-column-narrow flex h-full flex-col overflow-y-auto p-6">
       <header className="mb-6 flex items-center gap-3">
         <button
-          onClick={() => navigate(-1)}
+          onClick={() => goBackSafely(navigate)}
           className="flex h-10 w-10 items-center justify-center rounded-full bg-surface shadow-sm"
           aria-label={t('common.back')}
         >
-          <HugeiconsIcon icon={ArrowLeft} size={20} className="text-text-secondary" />
+          <DuoIcon icon={ArrowLeft} size={20} className="text-text-secondary" />
         </button>
         <h1 className="text-2xl font-bold text-text-primary">
           {t('settings.sessionConfig', 'Configuration de session')}
@@ -46,7 +47,7 @@ export default function SettingsSessionScreen() {
       <div className="flex flex-1 flex-col gap-6">
         <div>
           <div className="mb-3 flex items-center gap-2">
-            <HugeiconsIcon icon={Target} size={18} className="text-primary" />
+            <DuoIcon icon={Target} size={18} className="text-primary" />
             <span className="text-base font-semibold text-text-primary">
               {t('onboarding.sessionGoal')}
             </span>
@@ -66,7 +67,7 @@ export default function SettingsSessionScreen() {
                   )}
                 >
                   {g}
-                  {selected && <HugeiconsIcon icon={Check} className="ml-1" size={16} />}
+                  {selected && <DuoIcon icon={Check} className="ml-1" size={16} />}
                 </button>
               );
             })}
@@ -86,7 +87,7 @@ export default function SettingsSessionScreen() {
               focusMode ? 'bg-primary text-on-primary' : 'bg-surface-tint text-primary',
             )}
           >
-            <HugeiconsIcon icon={Focus} size={22} />
+            <DuoIcon icon={Focus} size={22} />
           </div>
           <div className="flex-1">
             <p className="text-base font-semibold text-text-primary">
@@ -102,14 +103,14 @@ export default function SettingsSessionScreen() {
               focusMode ? 'border-primary bg-primary' : 'border-text-muted',
             )}
           >
-            {focusMode && <HugeiconsIcon icon={Check} size={14} className="text-white" />}
+            {focusMode && <DuoIcon icon={Check} size={14} className="text-[color:var(--on)]" />}
           </div>
         </button>
       </div>
 
       <div className="mt-6 flex gap-4">
-        <Button variant="outline" className="flex-1" onClick={() => navigate(-1)}>
-          <HugeiconsIcon icon={ArrowLeft} size={16} />
+        <Button variant="outline" className="flex-1" onClick={() => goBackSafely(navigate)}>
+          <DuoIcon icon={ArrowLeft} size={16} />
           {t('common.back')}
         </Button>
       </div>

@@ -1,9 +1,9 @@
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { HugeiconsIcon } from '@hugeicons/react';
+import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   Cancel01Icon as X,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import { Logo } from '@/components/brand/Logo';
 import { useAuthStore } from '@/store/auth-store';
 import { useUiStore, ALL_MENU_ITEMS } from '@/store/ui-store';
@@ -38,7 +38,7 @@ export function HamburgerMenu() {
     <div className={cn('fixed inset-0 z-50', !menuOpen && 'pointer-events-none')} aria-hidden={!menuOpen}>
       <div
         className={cn(
-          'absolute inset-0 bg-black/40 transition-opacity duration-200',
+          'absolute inset-0 bg-[color:var(--scrim)] transition-opacity duration-200',
           menuOpen ? 'opacity-100' : 'opacity-0',
         )}
         onClick={closeMenu}
@@ -62,7 +62,7 @@ export function HamburgerMenu() {
             className="rounded-full p-1.5 active:bg-surface-tint"
             aria-label="Fermer"
           >
-            <HugeiconsIcon icon={X} size={20} className="text-text-muted" />
+            <DuoIcon icon={X} size={20} className="text-text-muted" />
           </button>
         </div>
 

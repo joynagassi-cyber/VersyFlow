@@ -11,16 +11,17 @@
 
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { HugeiconsIcon } from '@hugeicons/react';
+import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   BarChartIcon as BarChart3,
   ListChecksIcon as ListChecks,
   Tag01Icon as Tag,
   HistoryIcon as History,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { ListItem } from '@/components/ui/ListItem';
 import { useHighlightStore } from '@/store/highlight-store';
+import { DemoModePanel } from '@/components/dev/DemoModePanel';
 
 export default function SettingsDataScreen() {
   const { t } = useTranslation();
@@ -35,9 +36,9 @@ export default function SettingsDataScreen() {
     >
       <div className="screen-column space-y-5">
         {/* Highlights summary card */}
-        <div className="rounded-2xl bg-surface p-4 shadow-sm">
+        <div className="glass rounded-2xl bg-surface p-4 shadow-sm">
           <p className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-text-muted">
-            <HugeiconsIcon icon={ListChecks} size={13} className="text-primary" />
+            <DuoIcon icon={ListChecks} size={13} className="text-primary" />
             {t('settings.dataHighlights', 'Mes highlights')}
           </p>
           <p className="text-sm text-text-secondary">
@@ -45,8 +46,11 @@ export default function SettingsDataScreen() {
           </p>
         </div>
 
+        {/* Démo / données réelles — visible en permanence, pas seulement en démo */}
+        <DemoModePanel />
+
         {/* Activity links */}
-        <div className="overflow-hidden rounded-2xl bg-surface shadow-sm">
+        <div className="glass overflow-hidden rounded-2xl bg-surface shadow-sm">
           <div className="px-4 pt-4">
             <p className="text-xs font-bold uppercase tracking-wide text-text-muted">
               {t('settings.dataActivities', 'Mes activités')}

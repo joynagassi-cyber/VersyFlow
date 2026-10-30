@@ -1,3 +1,4 @@
+import { goBackSafely } from '@/lib/navigation';
 /**
  * Memorization Session Screen
  * Drives a MemorizationSessionEngine from URL params (passage or single
@@ -6,13 +7,13 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';import { useTranslation } from 'react-i18next';
-import { HugeiconsIcon } from '@hugeicons/react';
+import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   Cancel01Icon as X,
   ArrowLeft01Icon as ArrowLeft,
   ArrowRight01Icon as ArrowRight,
   CheckmarkCircle01Icon as CheckCircle,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import FullScreenPage from '@/components/layout/FullScreenPage';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -249,7 +250,7 @@ export default function MemorizationSession() {
       <FullScreenPage title={t('session.memorizing', 'Mémorisation')} backPath="/tabs/home" column="narrow">
         <div className="flex flex-col items-center py-16 text-center">
           <p className="text-base text-error">{error}</p>
-          <Button className="mt-6" variant="secondary" onClick={() => navigate(-1)}>
+          <Button className="mt-6" variant="secondary" onClick={() => goBackSafely(navigate)}>
             {t('common.back', 'Retour')}
           </Button>
         </div>
@@ -285,7 +286,7 @@ export default function MemorizationSession() {
       },
     });
     engine.abandon();
-    navigate(-1);
+    goBackSafely(navigate);
   };
 
   const rateVerse = async (rating: Rating) => {
@@ -321,7 +322,7 @@ export default function MemorizationSession() {
           onClick={() => fireAndForget(closeSession(), 'session:abandon')}
           className="flex items-center gap-1 text-sm font-semibold text-text-secondary"
         >
-          <HugeiconsIcon icon={X} size={16} />
+          <DuoIcon icon={X} size={16} />
           {t('common.close', 'Fermer')}
         </button>
       }
@@ -376,7 +377,7 @@ export default function MemorizationSession() {
             refresh();
           }}
         >
-          <HugeiconsIcon icon={ArrowLeft} size={15} />
+          <DuoIcon icon={ArrowLeft} size={15} />
           {t('session.goBack', 'Retour')}
         </Button>
         <Button
@@ -384,13 +385,13 @@ export default function MemorizationSession() {
           onClick={() => fireAndForget(proceedSession(), 'session:proceed')}
         >
           {t('session.proceed', 'Continuer')}
-          <HugeiconsIcon icon={ArrowRight} size={15} />
+          <DuoIcon icon={ArrowRight} size={15} />
         </Button>
       </div>
 
       {complete && (
         <div className="mt-5 flex items-center justify-center gap-2 rounded-xl bg-success-light p-4 text-success">
-          <HugeiconsIcon icon={CheckCircle} size={18} />
+          <DuoIcon icon={CheckCircle} size={18} />
           <span className="text-base font-semibold">
             {t('session.passageComplete', 'Passage terminé!')}
           </span>

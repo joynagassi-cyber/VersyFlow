@@ -1,3 +1,4 @@
+import { goBackSafely } from '@/lib/navigation';
 /**
  * Memorization Workspace — unified verse practice screen (unified croquis D/E/F/G).
  *
@@ -23,11 +24,11 @@
 import { useMemo, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { HugeiconsIcon } from '@hugeicons/react';
+import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   ArrowLeft01Icon as ArrowLeft,
   ArrowLeftRightIcon as ArrowLeftRight,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 
 import { useSettingsStore } from '@/store/settings-store';
 import { useMemorizationWorkspace, parseWorkspaceReference } from '@/hooks/useMemorizationWorkspace';
@@ -180,14 +181,14 @@ export default function MemorizationWorkspace() {
         <ShellHeader
           title={referenceLabel}
           subtitle={`${statusLabel(tone, t)}${dueLabel ? ` · ${dueLabel}` : ''}`}
-          onBack={() => navigate(-1)}
+          onBack={() => goBackSafely(navigate)}
           right={
             <button
               onClick={() => navigate(`/comparison/translation?bookId=${coords.bookId}&chapter=${coords.chapter}&verse=${coords.verse}`)}
               className="flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-surface text-text-primary shadow-sm active:scale-95"
               aria-label={t('workspace.compare', 'Comparer')}
             >
-              <HugeiconsIcon icon={ArrowLeftRight} size={18} />
+              <DuoIcon icon={ArrowLeftRight} size={18} />
             </button>
           }
           subtitleExtra={
@@ -261,7 +262,7 @@ function ShellHeader({
           className="flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-surface text-text-primary shadow-sm active:scale-95"
           aria-label="Retour"
         >
-          <HugeiconsIcon icon={ArrowLeft} size={18} />
+          <DuoIcon icon={ArrowLeft} size={18} />
         </button>
         <div className="flex min-w-0 flex-1 flex-col items-center">
           <h1 className="truncate text-lg font-bold text-text-primary">{title}</h1>

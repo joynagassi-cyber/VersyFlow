@@ -7,14 +7,14 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { HugeiconsIcon } from '@hugeicons/react';
+import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   ChevronLeftIcon as ChevronLeft,
   ChevronRightIcon as ChevronRight,
   FlameIcon as Flame,
   BookOpen01Icon as BookOpen,
   TrendingUpIcon as TrendingUp,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import FullScreenPage from '@/components/layout/FullScreenPage';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -23,8 +23,29 @@ import { getFsrsEngine } from '@/services/fsrs-factory';
 import { ProgressService } from '@/services/progress-service';
 import { getMemorizationService } from '@/services/memorization-service-factory';
 import type { ProgressStats } from '@/services/stats-calculator';
+import type {
+  MemorizationRecord,
+  ReviewLogEntry,
+} from '@/domains/memorization/entities';
+import { getReviewLogRepository, getSyncUserIdProvider } from '@/infrastructure/repository/powersync-repositories';
+import { formatProgressLabel } from '@/lib/progress-label';
 
 const WEEKDAYS = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
+
+const RATING_LABELS: Record<ReviewLogEntry['rating'], { fr: string; en: string }> = {
+  again: { fr: 'À revoir', en: 'Again' },
+  hard: { fr: 'Difficile', en: 'Hard' },
+  good: { fr: 'Bon', en: 'Good' },
+  easy: { fr: 'Facile', en: 'Easy' },
+};
+
+interface DayEvent {
+  id: string;
+  at: number;
+  kind: 'review' | 'created';
+  reference: string;
+  rating?: ReviewLogEntry['rating'];
+}
 
 export default function ReviewCalendarScreen() {
   const navigate = useNavigate();
@@ -35,6 +56,9 @@ export default function ReviewCalendarScreen() {
   const [stats, setStats] = useState<ProgressStats | null>(null);
   const [dueByDay, setDueByDay] = useState<Map<string, number>>(new Map());
   const [month, setMonth] = useState(() => new Date());
+  const [selectedDay, setSelectedDay] = useState(() => new Date());
+  const [records, setRecords] = useState<MemorizationRecord[]>([]);
+  const [logs, setLogs] = useState<ReviewLogEntry[]>([]);
 
   useEffect(() => {
     let cancelled = false;
@@ -45,8 +69,16 @@ export default function ReviewCalendarScreen() {
           new ProgressService(service, getFsrsEngine(), undefined, profileId).getStats(),
           service.getAllMemorized(),
         ]);
+        // Historique complet : les journaux de révision sont append-only, ils
+        // portent chaque révision (pas seulement la dernière du verset).
+        const userId = await getSyncUserIdProvider().resolveUserId();
+        const reviewLogs = userId
+          ? await getReviewLogRepository().listByUser(userId).catch(() => [])
+          : [];
         if (cancelled) return;
         setStats(progress);
+        setRecords(records);
+        setLogs(reviewLogs);
         const map = new Map<string, number>();
         for (const r of records) {
           if (!r.nextReviewAt) continue;
@@ -77,6 +109,54 @@ export default function ReviewCalendarScreen() {
   }, [month]);
 
   const today = new Date();
+  const dayKey = (ts: number) => new Date(ts).toDateString();
+
+  const recordsById = useMemo(
+    () => new Map(records.map((record) => [record.id, record])),
+    [records],
+  );
+
+  /**
+   * Agenda complet : une entrée par révision (`review_logs`, append-only) plus
+   * une entrée par mémorisation ajoutée. On n'affiche donc plus seulement la
+   * « dernière révision » de chaque verset.
+   */
+  const eventsByDay = useMemo(() => {
+    const map = new Map<string, DayEvent[]>();
+    const push = (ts: number, event: DayEvent) => {
+      const key = dayKey(ts);
+      const list = map.get(key) ?? [];
+      list.push(event);
+      map.set(key, list);
+    };
+    for (const log of logs) {
+      const record = recordsById.get(log.memorizationRecordId);
+      push(log.answeredAt, {
+        id: `log-${log.id}`,
+        at: log.answeredAt,
+        kind: 'review',
+        reference: record?.bibleVerseReference ?? t('reviewCalendar.unknownVerse', 'Verset'),
+        rating: log.rating,
+      });
+    }
+    for (const record of records) {
+      if (!record.createdAt) continue;
+      push(record.createdAt, {
+        id: `created-${record.id}`,
+        at: record.createdAt,
+        kind: 'created',
+        reference: record.bibleVerseReference,
+      });
+    }
+    for (const list of map.values()) list.sort((a, b) => b.at - a.at);
+    return map;
+  }, [logs, records, recordsById, t]);
+
+  const selectedEvents = eventsByDay.get(selectedDay.toDateString()) ?? [];
+  const recentReviews = useMemo(
+    () => [...logs].sort((a, b) => b.answeredAt - a.answeredAt).slice(0, 8),
+    [logs],
+  );
   const monthLabel = month.toLocaleDateString(i18n.language, {
     month: 'long',
     year: 'numeric',
@@ -84,9 +164,7 @@ export default function ReviewCalendarScreen() {
 
   const shiftMonth = (delta: number) => {
     setMonth((prev) => {
-      const d = new Date(prev);
-      d.setMonth(d.getMonth() + delta);
-      return d;
+      return new Date(prev.getFullYear(), prev.getMonth() + delta, 1);
     });
   };
 
@@ -97,17 +175,17 @@ export default function ReviewCalendarScreen() {
 
   const legendItems = [
     { key: 'review', label: t('review.dueSoon', "À réviser"), cls: 'bg-primary' },
-    { key: 'overdue', label: t('review.overdue', 'En retard'), cls: 'bg-error' },
+    { key: 'memorized', label: t('reviewCalendar.created', 'Mémorisation ajoutée'), cls: 'bg-primary' },
     { key: 'today', label: i18n.language === 'fr' ? "Aujourd'hui" : 'Today', cls: 'bg-surface-tint ring-2 ring-primary' },
   ];
 
   const monthSummary = [
-    { value: stats?.streakCount ?? 0, label: t('progress.streak', 'Jours de série'), icon: <HugeiconsIcon icon={Flame} size={14} /> },
-    { value: stats?.totalVerses ?? 0, label: t('progress.versesMemorized', 'Verset(s) révisés'), icon: <HugeiconsIcon icon={BookOpen} size={14} /> },
+    { value: stats?.streakCount ?? 0, label: t('progress.streak', 'Jours de série'), icon: <DuoIcon icon={Flame} size={14} /> },
+    { value: stats?.totalVerses ?? 0, label: formatProgressLabel(t('progress.versesMemorized', 'Versets mémorisés'), stats?.totalVerses ?? 0, i18n.resolvedLanguage || i18n.language), icon: <DuoIcon icon={BookOpen} size={14} /> },
     {
       value: `${stats ? Math.round((stats.masteredVerses / Math.max(1, stats.totalVerses)) * 100) : 0}%`,
       label: t('progress.retention', 'Taux de rétention'),
-      icon: <HugeiconsIcon icon={TrendingUp} size={14} />,
+      icon: <DuoIcon icon={TrendingUp} size={14} />,
     },
   ];
 
@@ -120,7 +198,7 @@ export default function ReviewCalendarScreen() {
           className="flex h-10 w-10 items-center justify-center rounded-full bg-surface shadow-sm"
           aria-label="Mois précédent"
         >
-          <HugeiconsIcon icon={ChevronLeft} size={20} className="text-primary" />
+          <DuoIcon icon={ChevronLeft} size={20} className="text-primary" />
         </button>
         <h2 className="text-lg font-bold text-text-primary">
           {changeMonth(monthLabel)}
@@ -130,7 +208,7 @@ export default function ReviewCalendarScreen() {
           className="flex h-10 w-10 items-center justify-center rounded-full bg-surface shadow-sm"
           aria-label="Mois suivant"
         >
-          <HugeiconsIcon icon={ChevronRight} size={20} className="text-primary" />
+          <DuoIcon icon={ChevronRight} size={20} className="text-primary" />
         </button>
       </div>
 
@@ -149,24 +227,37 @@ export default function ReviewCalendarScreen() {
           if (!date) return <div key={`empty-${i}`} className="aspect-square" />;
           const isToday = date.toDateString() === today.toDateString();
           const due = dueByDay.get(date.toDateString()) ?? 0;
+          const created = records.filter((record) => new Date(record.createdAt).toDateString() === date.toDateString()).length;
+          const reviewed = (eventsByDay.get(date.toDateString()) ?? []).filter(
+            (event) => event.kind === 'review',
+          ).length;
+          const selected = date.toDateString() === selectedDay.toDateString();
           return (
             <button
               key={date.toDateString()}
-              onClick={() => due > 0 && navigate('/review/queue')}
+              onClick={() => setSelectedDay(date)}
+              aria-pressed={selected}
+              aria-label={`${date.toLocaleDateString(i18n.resolvedLanguage || i18n.language, { dateStyle: 'full' })} · ${t('reviewCalendar.createdCount', { count: created, defaultValue: '{{count}} ajout(s)' })} · ${t('reviewCalendar.reviewedCount', { count: reviewed, defaultValue: '{{count}} révision(s)' })} · ${t('reviewCalendar.dueCount', { count: due, defaultValue: '{{count}} à réviser' })}`}
               className={cn(
                 'relative flex aspect-square flex-col items-center justify-center rounded-lg text-sm',
                 due > 0 && 'bg-primary/10 font-semibold text-primary',
-                isToday && 'ring-2 ring-primary',
+                (isToday || selected) && 'ring-2 ring-primary',
               )}
             >
               <span className={cn(isToday ? 'font-bold text-primary' : 'text-text-primary')}>
                 {date.getDate()}
               </span>
+              {created > 0 && <span className="review-calendar-dot" aria-hidden="true" />}
+              {reviewed > 0 && (
+                <span className="text-[9px] font-semibold leading-none text-text-muted" aria-hidden="true">
+                  {reviewed}
+                </span>
+              )}
               {due > 0 && (
                 <span
                   className={cn(
-                    'mt-0.5 rounded-full px-1.5 text-[10px] font-bold text-white',
-                    due > 3 ? 'bg-error' : 'bg-primary',
+                    'mt-0.5 rounded-full px-1.5 text-[10px] font-bold text-[color:var(--on)]',
+                    'bg-primary',
                   )}
                 >
                   {due}
@@ -204,6 +295,88 @@ export default function ReviewCalendarScreen() {
           ))}
         </div>
       </div>
+
+      <section
+        className="g2 review-timeline"
+        aria-label={t('reviewCalendar.timeline', 'Activité du jour')}
+      >
+        <h3>{t('reviewCalendar.timeline', 'Activité du jour')}</h3>
+        <p>{selectedDay.toLocaleDateString(i18n.resolvedLanguage || i18n.language, { dateStyle: 'full' })}</p>
+        {selectedEvents.length === 0 ? (
+          <p>{t('reviewCalendar.empty', 'Aucune activité enregistrée ce jour.')}</p>
+        ) : (
+          <ol>
+            {selectedEvents.map((event) => {
+              const record = event.kind === 'review'
+                ? recordsById.get(event.id.replace(/^log-/, ''))
+                : undefined;
+              return (
+                <li key={event.id}>
+                  <strong>{event.reference}</strong>
+                  <span>
+                    {new Date(event.at).toLocaleTimeString(
+                      i18n.resolvedLanguage || i18n.language,
+                      { hour: '2-digit', minute: '2-digit' },
+                    )}
+                    {' · '}
+                    {event.kind === 'review'
+                      ? t(
+                          'reviewCalendar.reviewRated',
+                          'Révision notée « {{rating}} »',
+                          {
+                            rating: event.rating
+                              ? RATING_LABELS[event.rating][
+                                  (i18n.resolvedLanguage || i18n.language).startsWith('fr')
+                                    ? 'fr'
+                                    : 'en'
+                                ]
+                              : '—',
+                          },
+                        )
+                      : t('reviewCalendar.added', 'Ajouté à la mémorisation')}
+                  </span>
+                  {record?.bibleVerseText && <p>{record.bibleVerseText}</p>}
+                </li>
+              );
+            })}
+          </ol>
+        )}
+      </section>
+
+      <section className="g2 review-timeline" aria-label={t('reviewCalendar.historyTitle', 'Historique récent')}>
+        <h3>{t('reviewCalendar.historyTitle', 'Historique récent')}</h3>
+        {recentReviews.length === 0 ? (
+          <p>{t('reviewCalendar.emptyHistory', 'Aucune révision enregistrée pour l’instant.')}</p>
+        ) : (
+          <ol>
+            {recentReviews.map((log) => {
+              const record = recordsById.get(log.memorizationRecordId);
+              return (
+                <li key={log.id}>
+                  <strong>{record?.bibleVerseReference ?? t('reviewCalendar.unknownVerse', 'Verset')}</strong>
+                  <span>
+                    {new Date(log.answeredAt).toLocaleDateString(
+                      i18n.resolvedLanguage || i18n.language,
+                      { dateStyle: 'medium' },
+                    )}
+                    {' · '}
+                    {RATING_LABELS[log.rating][
+                      (i18n.resolvedLanguage || i18n.language).startsWith('fr') ? 'fr' : 'en'
+                    ]}
+                  </span>
+                </li>
+              );
+            })}
+          </ol>
+        )}
+        <Button
+          className="mt-3 w-full"
+          variant="outline"
+          onClick={() => navigate('/review/history')}
+        >
+          {t('reviewCalendar.openHistory', 'Ouvrir l’historique complet')}
+        </Button>
+      </section>
 
       <Button className="mt-4 w-full" onClick={() => navigate('/review/queue')}>
         {t('review.startReview', 'Commencer la révision')}

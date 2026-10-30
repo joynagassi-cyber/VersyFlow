@@ -14,6 +14,7 @@
  * until a live instance appears, then attaches permanently.
  */
 
+import { isMockMode } from '@/dev/mode';
 import { useFamilySyncStore } from '@/store/family-sync-store';
 import { useProfileSyncStore } from '@/store/profile-sync-store';
 import {
@@ -33,6 +34,14 @@ export function attachSyncCompletionHandlers(): void {
   const db = peekPowerSyncDatabase();
   if (db) {
     _subscribers = [attachToDb(db)];
+    return;
+  }
+
+  // Mock mode has no PowerSync replica, so a DB will never appear: mark the
+  // stores as synced instead of polling forever (which would leak a timer).
+  if (isMockMode()) {
+    useFamilySyncStore.getState().setLastSyncAt(Date.now());
+    useProfileSyncStore.getState().setLastSyncAt(Date.now());
     return;
   }
 

@@ -41,9 +41,36 @@ export default defineConfig({
         },
         chunkSizeWarningLimit: 500,
     },
-    server: {
-        port: 3000,
-        host: '0.0.0.0',
-        allowedHosts: true,
+  server: {
+    port: 3000,
+    host: '0.0.0.0',
+    allowedHosts: true,
+    // Local test API + its dashboard. Both are proxied under the app origin so
+    // the browser never has to reach `localhost` directly (works behind the
+    // HTTPS sandbox preview as well as on a normal dev machine).
+    proxy: {
+      '/api': {
+        target: 'http://127.0.0.1:4000',
+        changeOrigin: true,
+      },
+      '/mock-dashboard': {
+        target: 'http://127.0.0.1:4000',
+        changeOrigin: true,
+        rewrite: (p) => p.replace(/^\/mock-dashboard/, '') || '/',
+      },
     },
+  },
+  preview: {
+    port: 3000,
+    host: '0.0.0.0',
+    allowedHosts: true,
+    proxy: {
+      '/api': { target: 'http://127.0.0.1:4000', changeOrigin: true },
+      '/mock-dashboard': {
+        target: 'http://127.0.0.1:4000',
+        changeOrigin: true,
+        rewrite: (p) => p.replace(/^\/mock-dashboard/, '') || '/',
+      },
+    },
+  },
 });

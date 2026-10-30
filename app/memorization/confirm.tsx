@@ -6,13 +6,13 @@
 
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { HugeiconsIcon } from '@hugeicons/react';
+import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   PartyPopperIcon as PartyPopper,
   CalendarClockIcon as CalendarClock,
   ArrowRight01Icon as ArrowRight,
   Home01Icon as Home,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import FullScreenPage from '@/components/layout/FullScreenPage';
 import { Button } from '@/components/ui/button';
 
@@ -35,7 +35,7 @@ export default function MemorizationConfirm() {
     { max: 0, label: t('session.ratingAgain', 'À revoir'), color: 'text-error' },
     { max: 1, label: t('session.ratingHard', 'Difficile'), color: 'text-warning' },
     { max: 2, label: t('session.ratingGood', 'Bon'), color: 'text-success' },
-    { max: Infinity, label: t('session.ratingEasy', 'Facile'), color: 'text-info' },
+    { max: Infinity, label: t('session.ratingEasy', 'Facile'), color: 'text-success' },
   ];
   const meta = ratingMeta.find((m) => (state.rating ?? 0) <= m.max) ?? ratingMeta[2];
 
@@ -64,7 +64,7 @@ export default function MemorizationConfirm() {
         </div>
         <div className="mt-4 flex items-center justify-between border-t border-divider pt-4">
           <span className="flex items-center gap-1.5 text-sm text-text-muted">
-            <HugeiconsIcon icon={CalendarClock} size={15} />
+            <DuoIcon icon={CalendarClock} size={15} />
             {t('session.nextReview', { days: interval })}
           </span>
           <span className={`text-sm font-semibold ${meta.color}`}>{meta.label}</span>
@@ -74,11 +74,11 @@ export default function MemorizationConfirm() {
       {/* Actions */}
       <div className="mt-6 flex flex-col gap-3">
         <Button onClick={() => navigate('/memorization/session')}>
-          <HugeiconsIcon icon={PartyPopper} size={16} />
+          <DuoIcon icon={PartyPopper} size={16} />
           {t('session.proceed', 'Continuer à mémoriser')}
         </Button>
         <Button variant="outline" onClick={() => navigate('/tabs/home')}>
-          <HugeiconsIcon icon={Home} size={16} />
+          <DuoIcon icon={Home} size={16} />
           {t('common.done', "Retour à l'accueil")}
         </Button>
         <button
@@ -86,7 +86,7 @@ export default function MemorizationConfirm() {
           className="mx-auto mt-1 flex items-center gap-1 text-sm font-semibold text-primary"
         >
           {t('review.startReview', 'Voir mes révisions')}
-          <HugeiconsIcon icon={ArrowRight} size={14} />
+          <DuoIcon icon={ArrowRight} size={14} />
         </button>
       </div>
     </FullScreenPage>

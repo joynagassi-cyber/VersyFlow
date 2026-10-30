@@ -28,7 +28,7 @@ export default function SyncStatusIndicator() {
   let color: string = colors.textMuted;
   if (phase === 'ready' && lastSyncAt) {
     label = `${t('sync.lastSynced', 'Synchronisé')} ${formatElapsed(Date.now() - lastSyncAt)}`;
-    color = colors.success;
+    color = 'var(--color-primary)';
   } else if (phase === 'connecting') {
     label = t('sync.connecting', 'Connexion…');
     color = colors.info;

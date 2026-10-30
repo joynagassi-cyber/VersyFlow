@@ -7,7 +7,7 @@ import { capacitorStorage } from '@/infrastructure/storage';
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import type { UserProfile } from '@/auth';
-import { SupabaseAuthService, AuthError } from '@/auth';
+import { getAuthService, AuthError } from '@/auth';
 import { useSyncStore, syncService } from '@/store/sync-store';
 import { invalidateSyncUserIdProvider } from '@/infrastructure/repository/powersync-repositories';
 import {
@@ -31,8 +31,8 @@ interface AuthState {
   setActiveProfileId: (id: string | null) => void;
 }
 
-// Auth service singleton
-const authService = new SupabaseAuthService();
+// Active auth service (mock in frontend-only mode, Supabase in live mode).
+const authService = getAuthService();
 
 /**
  * Le service d'authentification renvoie l'utilisateur brut (forme Supabase) :

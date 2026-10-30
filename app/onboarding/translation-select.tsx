@@ -11,7 +11,7 @@
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { HugeiconsIcon } from '@hugeicons/react';
+import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   ArrowLeft01Icon as ArrowLeft,
   ArrowRight01Icon as ArrowRight,
@@ -19,7 +19,7 @@ import {
   CheckIcon as Check,
   Layers01Icon as Layers,
   LanguagesIcon as Languages,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { useSettingsStore, type BibleVersionType } from '@/store/settings-store';
@@ -108,7 +108,7 @@ export default function TranslationPickerScreen() {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-surface-tint">
-              <HugeiconsIcon icon={BookText} size={18} className="text-primary" />
+              <DuoIcon icon={BookText} size={18} className="text-primary" />
             </div>
             <div>
               <p className="text-base font-extrabold text-text-primary">
@@ -125,7 +125,7 @@ export default function TranslationPickerScreen() {
             </div>
           </div>
           <div className="flex flex-col items-end gap-1">
-            {isSelected && <HugeiconsIcon icon={Check} size={18} className="text-primary" />}
+            {isSelected && <DuoIcon icon={Check} size={18} className="text-primary" />}
             {!available && (
               <span className="rounded-full bg-warning/10 px-2 py-0.5 text-[10px] font-bold uppercase text-warning">
                 {t('onboarding.remoteVersion', 'Téléchargement requis')}
@@ -145,7 +145,7 @@ export default function TranslationPickerScreen() {
           className="flex h-10 w-10 items-center justify-center rounded-full bg-surface shadow-sm"
           aria-label={t('common.back')}
         >
-          <HugeiconsIcon icon={ArrowLeft} size={20} className="text-text-secondary" />
+          <DuoIcon icon={ArrowLeft} size={20} className="text-text-secondary" />
         </button>
         <div>
           <h1 className="text-2xl font-bold text-text-primary">{t('onboarding.selectTranslation')}</h1>
@@ -158,7 +158,7 @@ export default function TranslationPickerScreen() {
       {/* Type de version — the user's reading style */}
       <div className="mb-4">
         <p className="mb-2 flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-text-muted">
-          <HugeiconsIcon icon={Layers} size={13} className="text-primary" />
+          <DuoIcon icon={Layers} size={13} className="text-primary" />
           {t('onboarding.versionType', 'Type de version')}
         </p>
         <div className="flex gap-2">
@@ -185,7 +185,7 @@ export default function TranslationPickerScreen() {
           <div key={group.language}>
             <div className="mb-2 flex items-center justify-between px-1">
               <p className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-text-secondary">
-                <HugeiconsIcon icon={Languages} size={13} className="text-primary" />
+                <DuoIcon icon={Languages} size={13} className="text-primary" />
                 {group.language}
               </p>
               <span className="rounded-full bg-surface-tint px-2 py-0.5 text-[11px] font-bold text-text-secondary">
@@ -199,12 +199,12 @@ export default function TranslationPickerScreen() {
 
       <div className="mt-6 flex gap-4">
         <Button variant="outline" className="flex-1" onClick={() => navigate('/onboarding/language-select')}>
-          <HugeiconsIcon icon={ArrowLeft} size={16} />
+          <DuoIcon icon={ArrowLeft} size={16} />
           {t('common.back')}
         </Button>
         <Button className="flex-1" onClick={() => navigate('/onboarding/session-config')}>
           {t('common.continue')}
-          <HugeiconsIcon icon={ArrowRight} size={16} />
+          <DuoIcon icon={ArrowRight} size={16} />
         </Button>
       </div>
     </div>

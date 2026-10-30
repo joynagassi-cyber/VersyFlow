@@ -2,6 +2,23 @@
 <html lang="fr">
   <head>
     <meta charset="UTF-8" />
+    <script>
+      // Réglages disponibles dès le premier paint (MmkvStorage utilise localStorage).
+      (function () {
+        try {
+          var data = JSON.parse(localStorage.getItem('versyflow:appearance:settings') || '{}');
+          var mode = data.themeMode === 'light' || data.themeMode === 'dark' ? data.themeMode : (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+          var root = document.documentElement; root.dataset.theme = mode;
+          var values = data.glassSettings || {};
+          function bounded(value, fallback, min, max) { return typeof value === 'number' && isFinite(value) ? Math.min(max, Math.max(min, value)) : fallback; }
+          root.style.setProperty('--bg-blur', bounded(values.bgBlur, 10, 0, 24) + 'px');
+          root.style.setProperty('--glass-blur', bounded(values.glassBlur, 22, 0, 40) + 'px');
+          root.style.setProperty('--glass-alpha', String(bounded(values.glassAlpha, 42, 20, 85) / 100));
+          root.style.setProperty('--veil-alpha', String(bounded(values.veilAlpha, 100, 0, 100) / 100));
+        } catch (_) { document.documentElement.dataset.theme = 'light'; }
+      })();
+    </script>
+
     <link rel="icon" type="image/png" href="/icons/app-icons/01-rose-origine.png" />
     <link rel="apple-touch-icon" href="/icons/app-icons/01-rose-origine.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
@@ -42,16 +59,31 @@
       </div>
     </div>
     <script>
-      window.addEventListener('error', function (e) {
+      // Si le module principal ne peut pas se charger, éviter un splash infini.
+      function showBootFailure(message) {
         var el = document.getElementById('boot-splash');
-        if (el) {
-          el.style.color = '#ba1a1a';
-          el.style.fontSize = '14px';
-          el.style.padding = '24px';
-          el.textContent =
-            'Erreur de démarrage : ' + (e.message || 'script introuvable');
-        }
+        if (!el) return;
+        el.textContent = '';
+        el.style.display = 'flex';
+        el.style.flexDirection = 'column';
+        el.style.gap = '16px';
+        el.style.padding = '24px';
+        var text = document.createElement('p');
+        text.textContent = message;
+        var retry = document.createElement('button');
+        retry.textContent = 'Réessayer';
+        retry.onclick = function () { window.location.reload(); };
+        el.append(text, retry);
+      }
+      window.addEventListener('error', function (event) {
+        if (event.message) showBootFailure('Erreur de démarrage : ' + event.message);
       });
+      window.addEventListener('unhandledrejection', function () {
+        showBootFailure('Impossible de démarrer VersyFlow. Vérifiez votre connexion puis réessayez.');
+      });
+      setTimeout(function () {
+        showBootFailure('Le démarrage prend trop de temps. Vérifiez votre connexion puis réessayez.');
+      }, 20000);
     </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
