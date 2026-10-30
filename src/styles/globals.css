@@ -2026,6 +2026,21 @@ ion-tab-button::part(native):focus-visible {
   color: var(--tx, var(--color-text-primary));
   margin: 0;
 }
+/* Titre de carte — la même famille que les titres d'écran, à l'échelle d'une
+   carte. Il a deux porteurs, et c'est la structure qui décide : `<h2 class=
+   "card-title">` quand la carte est un contenu ; `<span class="card-title">`
+   quand la carte EST une commande (le contenu d'un `<button>` est du texte
+   phrasé, un titre n'y a pas sa place). Ainsi la graisse et la famille ne
+   dépendent plus de l'auteur de l'écran. */
+.card-title {
+  font-family: var(--font-serif, Georgia), serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.35;
+  letter-spacing: -0.005em;
+  color: var(--tx, var(--color-text-primary));
+  margin: 0;
+}
 /* Titre d'état vide : la serif du preset à l'échelle d'une carte. Un état vide
    n'est pas un titre d'écran (22–26 px) mais il n'est pas non plus un
    paragraphe : 19–20 px, interligne 1.3, encre principale. */

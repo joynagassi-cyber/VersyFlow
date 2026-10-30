@@ -71,9 +71,9 @@ export default function ComparisonResultScreen({ record, userAnswer }: Props) {
         {/* Substitutions */}
         {lastVerification.substitutedWords.length > 0 && (
           <div className="g2 p-4">
-            <p className="mb-2 text-base font-bold text-text-primary">
+            <h2 className="card-title mb-2">
               {t('comparison.substitutions', 'Substitutions')}
-            </p>
+            </h2>
             <div className="space-y-2">
               {lastVerification.substitutedWords.map((sub, i) => (
                 <p key={i} className="text-sm">
@@ -89,9 +89,9 @@ export default function ComparisonResultScreen({ record, userAnswer }: Props) {
         {/* Missing */}
         {lastVerification.missingWords.length > 0 && (
           <div className="g2 p-4">
-            <p className="mb-2 text-base font-bold text-text-primary">
+            <h2 className="card-title mb-2">
               {t('comparison.missingWords', 'Mots manquants')}
-            </p>
+            </h2>
             <div className="flex flex-wrap gap-2">
               {lastVerification.missingWords.map((word, i) => (
                 <span
@@ -108,9 +108,9 @@ export default function ComparisonResultScreen({ record, userAnswer }: Props) {
         {/* Fragile portions */}
         {lastVerification.fragilePortions.length > 0 && (
           <div className="g2 p-4">
-            <p className="mb-2 text-base font-bold text-text-primary">
+            <h2 className="card-title mb-2">
               {t('comparison.fragilePortions', 'Portions fragiles')}
-            </p>
+            </h2>
             <div className="space-y-2">
               {lastVerification.fragilePortions.map((portion, i) => (
                 <div key={i} className="flex items-center justify-between text-sm">

@@ -261,7 +261,7 @@ export default function TranslationComparisonScreen() {
                 <button
                   type="button"
                   onClick={() => remove(r.id)}
-                  className="rounded-full p-1 text-text-muted active:bg-surface-tint"
+                  className="touch-target shrink-0 rounded-full text-text-muted active:bg-surface-tint"
                   aria-label={t('common.remove', 'Retirer')}
                 >
                   <DuoIcon icon={X} size={15} />

@@ -126,9 +126,9 @@ export default function FamilyChallengesScreen() {
                             ? t('familyPlus.kindCollectif', 'Objectif collectif')
                             : t('familyPlus.kindSerie', 'Série collective')}
                       </p>
-                      <p className="mt-1 truncate text-base font-bold text-text-primary">
+                      <span className="card-title mt-1 truncate">
                         {challenge.title}
-                      </p>
+                      </span>
                       <p className="mt-0.5 text-xs text-text-muted">{challenge.passage}</p>
                     </div>
                     {challenge.status === 'active' && (

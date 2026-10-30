@@ -10,6 +10,7 @@ import {
 } from '@/components/ui/solar-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { Button } from '@/components/ui/button';
+import { Switch } from '@/components/ui/Switch';
 import { useAuthStore } from '@/store/auth-store';
 import { useActiveProfile } from '@/hooks/useActiveProfile';
 import { getMemorizationService } from '@/services/memorization-service-factory';
@@ -40,10 +41,18 @@ export default function BackupScreen() {
       a.download = 'versyflow-backup-' + stamp + '.json';
       a.click();
       URL.revokeObjectURL(url);
-      setStatus({ kind: 'ok', message: records.length + " verset(s) exporte(s)" });
+      setStatus({
+        kind: 'ok',
+        message: t('settings.backup.exported', '{{count}} verset(s) exporté(s)', {
+          count: records.length,
+        }),
+      });
     } catch (e) {
       console.error('[Backup] export failed', e);
-      setStatus({ kind: 'error', message: "Export impossible pour le moment" });
+      setStatus({
+        kind: 'error',
+        message: t('settings.backup.exportFailed', 'Export impossible pour le moment'),
+      });
     } finally {
       setBusy(false);
     }
@@ -71,31 +80,17 @@ export default function BackupScreen() {
         await service.saveMemorizedRecord(rest, activeProfile?.id ?? 'default');
         count += 1;
       }
-      setStatus({ kind: 'ok', message: count + " verset(s) importe(s)" });
+      setStatus({
+        kind: 'ok',
+        message: t('settings.backup.imported', '{{count}} verset(s) importé(s)', { count }),
+      });
     } catch {
-      setStatus({ kind: 'error', message: 'Fichier illisible (JSON attendu)' });
+      setStatus({
+        kind: 'error',
+        message: t('settings.backup.invalidFile', 'Fichier illisible (JSON attendu)'),
+      });
     }
   };
-
-  const Toggle = ({ on, onChange, disabled }: { on: boolean; onChange: () => void; disabled?: boolean }) => (
-    <button
-      onClick={onChange}
-      disabled={disabled}
-      className={
-        'relative h-7 w-12 shrink-0 rounded-full transition ' +
-        (on ? 'bg-primary' : 'bg-[color:var(--color-divider)]') +
-        (disabled ? ' opacity-40' : '')
-      }
-      aria-pressed={on}
-    >
-      <span
-        className={
-          'absolute top-0.5 h-6 w-6 rounded-full bg-surface transition-all ' +
-          (on ? 'left-[calc(100%-1.625rem)]' : 'left-0.5')
-        }
-      />
-    </button>
-  );
 
   return (
     <FullScreenPage
@@ -105,18 +100,22 @@ export default function BackupScreen() {
     >
       <div className="screen-column space-y-4">
         <div className="glass space-y-3 rounded-2xl p-4">
-          <p className="text-base font-bold text-text-primary">
-            {t('settings.backup.title', 'Sauvegarde')}
-          </p>
+          <h2>
+            {t('settings.backupScreen.title', 'Sauvegarde')}
+          </h2>
           <div className="flex items-center justify-between">
             <span className="text-base text-text-primary">
-              {t('settings.backup.auto', 'Sauvegarde automatique')}
+              {t('settings.backupScreen.auto', 'Sauvegarde automatique')}
             </span>
-            <Toggle on={autoBackup} onChange={() => setAutoBackup((v) => !v)} />
+            <Switch
+              checked={autoBackup}
+              onCheckedChange={setAutoBackup}
+              label={t('settings.backupScreen.auto', 'Sauvegarde automatique')}
+            />
           </div>
           <Button variant="default" className="w-full" onClick={() => fireAndForget(handleExport(), 'settings:export')} disabled={busy}>
             {busy ? <DuoIcon icon={Loader2} size={18} className="animate-spin" /> : <DuoIcon icon={Download} size={18} />}
-            {t('settings.backup.export', 'Exporter mes donnees')}
+            {t('settings.backupScreen.export', 'Exporter mes donnees')}
           </Button>
           <Button
             variant="secondary"
@@ -124,7 +123,7 @@ export default function BackupScreen() {
             onClick={() => fileRef.current?.click()}
           >
             <DuoIcon icon={Upload} size={18} />
-            {t('settings.backup.import', 'Importer des donnees')}
+            {t('settings.backupScreen.import', 'Importer des donnees')}
           </Button>
           <input
             ref={fileRef}
@@ -146,19 +145,24 @@ export default function BackupScreen() {
         </div>
 
         <div className="glass space-y-3 rounded-2xl p-4">
-          <p className="text-base font-bold text-text-primary">
-            {t('settings.backup.cloud', 'Synchronisation Cloud')}
-          </p>
+          <h2>
+            {t('settings.backupScreen.cloud', 'Synchronisation Cloud')}
+          </h2>
           <div className="flex items-center justify-between">
             <span className="flex items-center gap-2 text-base text-text-primary">
               <DuoIcon icon={Cloud} size={18} className="text-primary" />
-              {t('settings.backup.sync', 'Sync automatique')}
+              {t('settings.backupScreen.sync', 'Sync automatique')}
             </span>
-            <Toggle on={syncEnabled} onChange={() => setSyncEnabled((v) => !v)} disabled={!isAuthenticated} />
+            <Switch
+              checked={syncEnabled}
+              onCheckedChange={setSyncEnabled}
+              label={t('settings.backupScreen.sync', 'Synchronisation automatique')}
+              disabled={!isAuthenticated}
+            />
           </div>
           {!isAuthenticated && (
             <p className="text-sm text-text-muted">
-              {t('settings.backup.loginForSync', 'Connectez-vous pour activer la synchronisation cloud')}
+              {t('settings.backupScreen.loginForSync', 'Connectez-vous pour activer la synchronisation cloud')}
             </p>
           )}
         </div>

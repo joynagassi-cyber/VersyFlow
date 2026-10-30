@@ -67,13 +67,13 @@ export default function FamilySyncScreen() {
               <DuoIcon icon={healthy ? CheckCircle : AlertCircle} size={22} />
             </span>
             <div>
-              <p className="text-base font-bold text-text-primary">
+              <h2 className="card-title">
                 {healthy
                   ? t('familyPlus.allUpToDate', 'Tout est à jour')
                   : sync.error
                     ? t('familyPlus.syncError', 'La synchronisation a échoué')
                     : t('familyPlus.notSyncedYet', 'Pas encore synchronisé')}
-              </p>
+              </h2>
               <p className="text-xs text-text-muted">
                 {t('familyPlus.lastSync', 'Dernière synchronisation')} ·{' '}
                 {formatAgo(sync.elapsedMs, t)}

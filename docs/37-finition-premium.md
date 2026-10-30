@@ -151,12 +151,29 @@ utilisée existe en `fr` **et** en `en`.
 - `tests/design/premium-finish.test.ts` : la règle serif admet désormais ses
   exemptions explicites (`.section-label`, `.stat-label`, `.micro-label`).
 
+## 4 ter. Lot G — les détails qui restaient « presque » justes
+
+Trois détails mesurés après les lots E–F, et corrigés au niveau système.
+
+| Défaut | Mesure avant | Correction |
+| --- | --- | --- |
+| « Verset du jour » fabriqué | 5 versets français écrits dans `app/(tabs)/index.tsx`, affichés **quelle que soit la langue et la traduction** ; le commentaire promettait « real records preferred » alors que le code ne lisait jamais les versets mémorisés | Le verset du jour est l'un des versets réellement mémorisés (choix déterministe par jour), dans la traduction de l'utilisateur ; sans verset, la carte invite à en choisir un (`home.firstVerseTitle/Hint`) au lieu d'afficher un texte étranger à l'interface |
+| Interrupteurs maison | 2 écrans de réglages redessinaient la piste et la pastille (28 px et 24 px, `aria-pressed`) | `ui/Switch` partout : 40 px, `role="switch"`, `aria-checked`, nom accessible obligatoire, mouvement du thème |
+| Commandes icône seule sous 40 px | retrait d'une traduction comparée à **23 px** (`p-1`) | `.touch-target` (40 px) : c'est la dernière cible sous le seuil |
+| Titres de carte | **23** `<p class="text-base font-bold text-text-primary">` dans 15 fichiers alors que `h1|h2|h3` portent la serif du preset : deux rôles de titre pour la même fonction | `.card-title` (serif du preset, 16 px, graisse 400) porté par `<h2>`/`<h3>` quand la carte est un contenu, par `<span>` quand la carte **est** une commande |
+| Statuts dupliqués en français | `« N verset(s) exporte(s) »` concaténé dans l'écran, et des clés `settings.backup.*` qui ne se résolvaient pas (`settings.backup` est une **chaîne**, pas un objet) | `settings.backupScreen.*` en `fr` et `en` (exporté / importé / échec / fichier illisible), plus les deux explications de bascule |
+
+Contrat : `tests/design/controls-and-headings.test.ts` (7) — aucun faux
+interrupteur, les réglages à bascule passent par `ui/Switch`, aucune commande
+icône seule sous la cible tactile, aucun titre de carte en `<p>` gras,
+`aria-expanded` + nom accessible sur une commande qui déplie du contenu.
+
 ## 5. Prochaines finitions possibles (mesurées, non faites)
 
 | Sujet | Mesure | Pourquoi pas maintenant |
 | --- | --- | --- |
 | États vides résiduels | 27 blocs écrits à la main pour 23 fichiers qui utilisent déjà `EmptyState` | Les derniers sont des zones d'action pointillées (scan QR) ou des encarts d'explication, pas des vides |
-| Hiérarchie des titres | `<h1>` d'écran unifiés (`.page-title`) ; restent les titres de section de 4 écrans profonds | Changement de rythme vertical, à valider sur captures |
 | Relecture contrastée | `data-contrast='high'` couvert partiellement | Demande des captures sur les 39 presets, hors de portée en CI |
 | Micro-copie | quelques libellés secondaires sans clé i18n | Chaque clé primaire doit être traduite dans 45 locales |
-| Cibles tactiles | commandes icône seule ≥ 40 px dans les coquilles | Les puces de texte restent à 32 px par choix (densité des listes) |
+| Cibles tactiles | puces de texte à 32 px | Choix assumé : agrandir une puce casserait la densité des listes |
+| Copie française hors interface | `app/dev/index.tsx` (10 chaînes), `app/__dev/responsive-preview.tsx` (6) | Atelier de développement, jamais livré |

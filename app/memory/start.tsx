@@ -97,7 +97,7 @@ export default function MemorizationStartScreen({ verseData }: Props) {
                   <DuoIcon icon={Icon} size={22} />
                 </span>
                 <span className="min-w-0 flex-1">
-                  <span className="block text-base font-bold text-text-primary">
+                  <span className="card-title block">
                     {t(s.key, s.id)}
                   </span>
                   <span className="text-sm text-text-muted">{t(s.key + '.desc', s.id)}</span>

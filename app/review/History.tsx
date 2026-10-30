@@ -215,7 +215,7 @@ export default function ReviewHistoryScreen() {
         </div>
 
         <div>
-          <h2 className="mb-3 text-base font-bold text-text-primary">
+          <h2 className="card-title mb-3">
             {t('history.timeline', 'Chronologie des revisions')}
           </h2>
           <div className="space-y-3">
@@ -274,7 +274,7 @@ export default function ReviewHistoryScreen() {
         </div>
 
         <div>
-          <h2 className="mb-3 text-base font-bold text-text-primary">
+          <h2 className="card-title mb-3">
             {t('history.stats', 'Statistiques')}
           </h2>
           <div className="grid grid-cols-2 gap-3">
@@ -307,9 +307,9 @@ export default function ReviewHistoryScreen() {
         <div className="g2 p-5">
           <div className="mb-3 flex items-center gap-2">
             <DuoIcon icon={Medal} size={20} className="text-warning" />
-            <p className="text-base font-bold text-text-primary">
+            <h2 className="card-title">
               {t('history.mastery', 'Niveau de maitrise')}
-            </p>
+            </h2>
           </div>
           <span className="inline-block rounded-full bg-surface-tint px-4 py-1.5 text-sm font-semibold text-primary">
             {verse.masteryLevel}

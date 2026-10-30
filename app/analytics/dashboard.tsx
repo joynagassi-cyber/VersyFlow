@@ -140,9 +140,9 @@ export default function AnalyticsDashboardScreen() {
         {/* Weekly trend */}
         {stats?.weeklyTrend && (
           <div className="glass rounded-3xl p-5">
-            <p className="mb-3 text-base font-bold text-text-primary">
+            <h2 className="card-title mb-3">
               {t('analytics.weeklyTrend', 'Tendance hebdomadaire')}
-            </p>
+            </h2>
             <div className="grid grid-cols-2 gap-3 text-center">
               <div className="rounded-2xl bg-surface-tint p-4">
                 <p className="stat-value text-2xl">
@@ -191,9 +191,9 @@ export default function AnalyticsDashboardScreen() {
 
         {/* Verses by status */}
         <div>
-          <p className="mb-3 text-base font-bold text-text-primary">
+          <h2 className="card-title mb-3">
             {t('analytics.byStatus', 'Verset par statut')}
-          </p>
+          </h2>
           <div className="glass overflow-hidden rounded-3xl">
             {[
               { label: t('analytics.mastered', 'Maitrises'), value: stats?.masteredVerses || 0, dot: 'var(--color-success)', to: '/tabs/progress' },

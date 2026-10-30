@@ -113,9 +113,9 @@ export default function FamilyCreateScreen() {
               <DuoIcon icon={Users} size={22} />
             </span>
             <div>
-              <p className="text-base font-bold text-text-primary">
+              <h2 className="card-title">
                 {name.trim() || t('familyPlus.namePlaceholder', 'Famille Étoile')}
-              </p>
+              </h2>
               <p className="text-xs text-text-muted">
                 {t('familyPlus.previewHint', 'Voici comment votre famille apparaîtra.')}
               </p>

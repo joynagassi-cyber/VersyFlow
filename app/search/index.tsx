@@ -304,7 +304,7 @@ export default function SearchScreen() {
             {results.map((result) => (
               <div key={result.id} className="glass bible-card rounded-2xl p-4">
                 <div className="mb-2 flex items-center justify-between">
-                  <p className="text-base font-bold text-text-primary">{result.reference}</p>
+                  <h3 className="card-title">{result.reference}</h3>
                   <span
                     className={
                       'rounded-full px-2 py-0.5 text-xs font-semibold ' +

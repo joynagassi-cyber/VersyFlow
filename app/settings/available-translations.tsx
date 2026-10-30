@@ -225,12 +225,12 @@ export default function AvailableTranslationsScreen() {
           </span>
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-2">
-              <p className="text-base font-bold text-text-primary">
+              <h3 className="card-title">
                 {info.abbreviation}
                 {info.abbreviation !== info.name && (
                   <span className="ml-1.5 text-sm font-medium text-text-muted">{info.name}</span>
                 )}
-              </p>
+              </h3>
               {isActive && (
                 <span className="rounded-full bg-primary px-2 py-0.5 text-3xs font-bold uppercase tracking-wide text-on-primary">
                   {t('common.active', 'Active')}

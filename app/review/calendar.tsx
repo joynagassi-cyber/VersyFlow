@@ -198,7 +198,7 @@ export default function ReviewCalendarScreen() {
 
       {/* Month summary */}
       <div className="g2 mt-4 p-5">
-        <h3 className="mb-4 text-base font-bold text-text-primary">
+        <h3 className="card-title mb-4">
           {t('progress.yourProgress', 'Résumé du mois')}
         </h3>
         <div className="flex justify-around">

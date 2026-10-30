@@ -94,9 +94,9 @@ export default function FamilyProfileScreen() {
           <div className="flex items-center gap-3">
             <MemberAvatar name={firstName || 'L'} size={44} />
             <div>
-              <p className="text-base font-bold text-text-primary">
+              <h2 className="card-title">
                 {firstName.trim() || t('familyPlus.firstName', 'Prénom')}
-              </p>
+              </h2>
               <p className="text-sm italic text-text-muted">
                 {alias.trim() || t('familyPlus.aliasPlaceholder', 'Gardienne du Psaume 23')}
               </p>

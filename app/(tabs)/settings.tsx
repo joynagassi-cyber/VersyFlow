@@ -53,6 +53,7 @@ const TAB_DEFS: { id: SettingsTab; key: string; label: string }[] = [
 
 import { bibleTranslationDisplayName } from '@/services/bible-translation-names';
 import { fireAndForget } from '@/lib/fire-and-forget';
+import { Switch } from '@/components/ui/Switch';
 
 const AVATAR_KEY = 'versyflow:profile:avatar';
 const NAME_KEY = 'versyflow:profile:name';
@@ -222,9 +223,12 @@ function ParamsTab() {
                     {on ? t('settings.tabEnabled', 'Affiché dans la barre') : t('settings.tabHidden', 'Masqué')}
                   </span>
                 </span>
-                <button onClick={() => setVisibleTab(tabItem.id, !on)} className={cn('settings-toggle relative h-6 w-11 shrink-0 rounded-full transition-colors', on ? 'bg-primary' : 'bg-border')} aria-pressed={on} aria-label={t(tabItem.labelKey, tabItem.label)} disabled={tabItem.id === 'settings'}>
-                  <span className={cn('absolute top-0.5 h-5 w-5 rounded-full bg-surface shadow transition-all', on ? 'left-[22px]' : 'left-0.5')} />
-                </button>
+                <Switch
+                  checked={on}
+                  onCheckedChange={() => setVisibleTab(tabItem.id, !on)}
+                  label={t(tabItem.labelKey, tabItem.label)}
+                  disabled={tabItem.id === 'settings'}
+                />
               </div>
             );
           })}

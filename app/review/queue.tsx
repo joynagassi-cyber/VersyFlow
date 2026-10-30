@@ -81,7 +81,7 @@ export default function ReviewQueueScreen() {
       <section className="mt-5">
         <div className="mb-3 flex items-center gap-2">
           {icon}
-          <h2 className="flex-1 text-base font-bold text-text-primary">{title}</h2>
+          <h2 className="card-title flex-1">{title}</h2>
           <span className="rounded-full bg-surface-tint px-2.5 py-0.5 text-sm font-semibold text-text-muted">
             {list.length}
           </span>
@@ -109,7 +109,7 @@ export default function ReviewQueueScreen() {
                   )}
                 />
                 <div className="flex items-center justify-between">
-                  <p className="text-base font-bold text-text-primary">{ref}</p>
+                  <span className="card-title">{ref}</span>
                   <span
                     className={cn(
                       'rounded-full px-2.5 py-1 text-2xs font-semibold',

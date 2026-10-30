@@ -6,7 +6,9 @@ describe('Réglages premium', () => {
   it('conserve les trois sections et rend leur sélection accessible', () => {
     for (const id of ['data', 'params', 'profile']) expect(source).toContain(`id: '${id}'`);
     expect(source).toContain('aria-pressed={tab === d.id}');
-    expect(source).toContain('aria-label={t(tabItem.labelKey, tabItem.label)}');
+    // Le nom accessible de l'interrupteur de visibilité d'onglet vit désormais
+    // sur la commande partagée `ui/Switch` (rôle, état et cible de 40 px).
+    expect(source).toMatch(/<Switch[\s\S]{0,200}?label=\{t\(tabItem\.labelKey, tabItem\.label\)\}/);
   });
   it('place le panneau partagé hors du header flouté', () => {
     const panel = readFileSync('src/components/ui/BackgroundPanel.tsx', 'utf8');

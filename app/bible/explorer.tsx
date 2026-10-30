@@ -201,7 +201,7 @@ export default function BibleExplorerScreen() {
                   >
                     {section.icon}
                   </span>
-                  <h2 className="flex-1 text-base font-bold text-text-primary">
+                  <h2 className="card-title flex-1">
                     {section.label}
                   </h2>
                   <span className="text-sm text-text-muted">
@@ -243,7 +243,7 @@ export default function BibleExplorerScreen() {
                 onClick={() => openChapter(chapter)}
                 className="g2 flex flex-col items-center py-3"
               >
-                <span className="text-base font-bold text-text-primary">{chapter}</span>
+                <span className="card-title">{chapter}</span>
               </button>
             ),
           )}
