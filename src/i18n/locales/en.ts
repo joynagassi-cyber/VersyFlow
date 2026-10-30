@@ -147,6 +147,20 @@ export const en = {
     unread: 'unread',
     title: 'Notifications',
   },
+  onboardingJourney: {
+    chooseTheme: 'Choose this theme',
+    saveError: 'Your space could not be saved. Please try again.',
+    shareTitle: 'Share your journey', shareDesc: 'Invitations and group learning are still in development.',
+
+    demoBible: 'In the local demo, only the bundled Louis Segond translation is available on this device.',
+    demoNotice: 'Local demo: use fictional credentials, not a personal password. This account will not be synced.',
+    welcomeKicker: 'A journey of faith, one verse at a time.', welcomeLabel: 'WELCOME HOME', welcomeTitle: 'Keep the Word close to your heart.',
+    welcomeMessage: 'Resist the devil with the Word. Preserve an eternal legacy.', welcomeDesc: 'Memorize Scripture, grow at your own pace and pass on what matters, together.',
+    createAccount: 'Create my account', signIn: 'Sign in', signInTitle: 'Welcome back', signInDesc: 'Sign in to return to your space.', signUpTitle: 'Let’s begin together', signUpDesc: 'Create an account to prepare your personal space.', password: 'Password', alreadyAccount: 'Already have an account? Sign in', confirmEmail: 'Check your email to confirm your account, then sign in.',
+    introTitle: 'A journey that begins with you', introDesc: 'Discover how VersyFlow supports you, then create a space that feels like yours.', visualCaption: 'The Word accompanies you every day.', step: 'YOUR JOURNEY', ready: 'ALL SET',
+    bibleTitle: 'The Bible, close at hand', bibleDesc: 'Explore the books and find the passages that accompany you.', memorizeTitle: 'Keep the Word in your heart', memorizeDesc: 'Choose your verses and move at your own pace, one session at a time.', reviewTitle: 'Review at the right time', reviewDesc: 'Spaced repetition and FSRS adapt reviews to your progress.', familyTitle: 'Grow together', familyDesc: 'Explore the Family demo and imagine memorizing with loved ones. Real invitations are still being finalized.', progressTitle: 'Every step matters', progressDesc: 'Follow your progress and see how far you have come.', personalizeTitle: 'A space that feels like you', personalizeDesc: 'Personalize your profile and the colors of your space.',
+    profileTitle: 'Your space, your story', profileDesc: 'Choose a name and your illustration appears automatically.', colorsTitle: 'Choose your colors', colorsDesc: 'Your choice appears immediately. You can change it later.', successTitle: 'Congratulations, you have taken a big step!', successDesc: 'Your space is ready. The next part of your journey starts now.', enter: 'Enter my space',
+  },
   onboarding: {
     welcomeTitle: 'Memorise the Word, at your own pace',
     welcomeSubtitle:
@@ -227,6 +241,18 @@ export const en = {
     noMemorizedYet: 'No memorized verse yet',
   },
   bible: {
+    verseLayout: 'Verse layout',
+    verseFlow: 'Continuous text',
+    verseBlocks: 'Verse blocks',
+    readingMode: 'Chapter navigation',
+    continuousMode: 'Continuous reading',
+    chapterMode: 'One chapter at a time',
+    previousChapter: 'Previous chapter',
+    nextChapter: 'Next chapter',
+
+    continuousReading: 'Continuous reading',
+    previousPassages: 'Previous passages',
+    nextPassages: 'Show more',
     bookCount: '{count} book{plural}',
     noResults: 'No results for',
     explorer: 'Bible Explorer',
@@ -823,6 +849,12 @@ export const en = {
     search: 'Search',
   },
   demo: {
+    familyTitle: 'Family · demo', familyKicker: 'Demo space', familyName: 'Horizon family',
+    familyNotice: 'Fictional data, kept in memory only. Changes disappear when you leave this screen and do not affect your real family.',
+    familyReal: 'Open real family space', familyMembers: 'Fictional members', familyParent: 'parent', familyChild: 'child',
+    familyReviews: '{{count}} simulated reviews', familyActivity: 'Test activity', familyReviews_one: '{{count}} simulated review', familyReviews_other: '{{count}} simulated reviews', familyAddReview: 'Simulate a review',
+    familyChallenge: 'Test challenge', familyChallengeStarted: 'Fictional challenge in progress', familyChallengeReady: 'Ready to memorize together?', familyResetChallenge: 'Reset challenge', familyStartChallenge: 'Start fictional challenge',
+
     enter: 'View demo',
     exit: 'Exit demo',
     enterLongPreview: 'Simulate 6 months',

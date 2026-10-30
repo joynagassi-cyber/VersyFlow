@@ -16,6 +16,7 @@ const storage = new MmkvStorage();
 const STORAGE_KEY = 'versyflow:appearance:settings';
 
 export type ThemeMode = 'light' | 'dark' | 'system';
+export type BibleVerseLayout = 'flow' | 'blocks';
 
 export type GlassSettings = { bgBlur: number; glassBlur: number; glassAlpha: number; veilAlpha: number };
 export const GLASS_PRESETS: Record<'net' | 'equilibre' | 'doux' | 'opaque', GlassSettings> = {
@@ -72,6 +73,8 @@ export interface AppearanceState {
   highContrast: boolean;
   reminderTime: string;
   /** Reading (Bible) typography settings — applied live via theme-fonts.ts. */
+  bibleVerseLayout: BibleVerseLayout;
+  bibleContinuous: boolean;
   bibleFontFamily: string;
   bibleFontSize: number;
   bibleLineHeight: number;
@@ -96,6 +99,8 @@ export interface AppearanceState {
   setReducedTransparency: (enabled: boolean) => void;
   setHighContrast: (enabled: boolean) => void;
   setReminderTime: (time: string) => void;
+  setBibleVerseLayout: (layout: BibleVerseLayout) => void;
+  setBibleContinuous: (continuous: boolean) => void;
   setBibleFontFamily: (id: string) => void;
   setBibleFontSize: (size: number) => void;
   setBibleLineHeight: (value: number) => void;
@@ -127,6 +132,8 @@ const DEFAULTS: Pick<
   | 'reducedTransparency'
   | 'highContrast'
   | 'reminderTime'
+  | 'bibleVerseLayout'
+  | 'bibleContinuous'
   | 'bibleFontFamily'
   | 'bibleFontSize'
   | 'bibleLineHeight'
@@ -153,6 +160,8 @@ const DEFAULTS: Pick<
   reducedTransparency: false,
   highContrast: false,
   reminderTime: '09:00',
+  bibleVerseLayout: 'flow',
+  bibleContinuous: true,
   bibleFontFamily: 'source-serif-4',
   bibleFontSize: 19,
   bibleLineHeight: 1.75,
@@ -279,6 +288,16 @@ export const useAppearanceStore = create<AppearanceState>(() => ({
     void appearanceStorePersist.save();
   },
 
+  setBibleVerseLayout(layout: BibleVerseLayout) {
+    useAppearanceStore.setState({ bibleVerseLayout: layout });
+    void appearanceStorePersist.save();
+  },
+
+  setBibleContinuous(continuous: boolean) {
+    useAppearanceStore.setState({ bibleContinuous: continuous });
+    void appearanceStorePersist.save();
+  },
+
   setBibleFontFamily(id: string) {
     useAppearanceStore.setState({ bibleFontFamily: id });
     void appearanceStorePersist.save();
@@ -312,6 +331,8 @@ export const useAppearanceStore = create<AppearanceState>(() => ({
     useAppearanceStore.setState({
       uiFontId: DEFAULTS.uiFontId,
       fontSize: DEFAULTS.fontSize,
+      bibleVerseLayout: DEFAULTS.bibleVerseLayout,
+      bibleContinuous: DEFAULTS.bibleContinuous,
       bibleFontFamily: DEFAULTS.bibleFontFamily,
       bibleFontSize: DEFAULTS.bibleFontSize,
       bibleLineHeight: DEFAULTS.bibleLineHeight,
@@ -348,6 +369,8 @@ const PERSISTED_KEYS: (keyof AppearanceState)[] = [
   'reducedTransparency',
   'highContrast',
   'reminderTime',
+  'bibleVerseLayout',
+  'bibleContinuous',
   'bibleFontFamily',
   'bibleFontSize',
   'bibleLineHeight',
@@ -366,6 +389,8 @@ export const appearanceStorePersist = {
         const v = parsed[k];
         if (v !== undefined) (patch as Record<string, unknown>)[k] = v;
       }
+      patch.bibleVerseLayout = parsed.bibleVerseLayout === 'blocks' ? 'blocks' : 'flow';
+      patch.bibleContinuous = typeof parsed.bibleContinuous === 'boolean' ? parsed.bibleContinuous : true;
       patch.glassSettings = normalizeGlassSettings(parsed.glassSettings);
       const validPresets = ['net', 'equilibre', 'doux', 'opaque', 'custom'];
       const storedPreset = parsed.glassPreset;
@@ -402,6 +427,8 @@ export const appearanceStorePersist = {
       reducedTransparency: s.reducedTransparency,
       highContrast: s.highContrast,
       reminderTime: s.reminderTime,
+      bibleVerseLayout: s.bibleVerseLayout,
+      bibleContinuous: s.bibleContinuous,
       bibleFontFamily: s.bibleFontFamily,
       bibleFontSize: s.bibleFontSize,
       bibleLineHeight: s.bibleLineHeight,

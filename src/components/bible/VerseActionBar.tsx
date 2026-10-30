@@ -48,27 +48,23 @@ function ActionButton({
   icon: Icon,
   label,
   active,
-  toggleable,
   onClick,
 }: {
   icon: typeof BrainCircuit;
   label: string;
   active?: boolean;
-  toggleable?: boolean;
   onClick: () => void;
 }) {
   return (
     <button
-      type="button"
-      aria-pressed={toggleable ? Boolean(active) : undefined}
       onClick={onClick}
       className={cn(
-        'flex min-w-0 flex-col items-center justify-center gap-1 rounded-xl px-1.5 py-2 text-[11px] font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary active:scale-95 sm:w-[62px]',
+        'flex w-[64px] flex-col items-center gap-1 rounded-xl py-2 text-[11px] font-semibold transition active:scale-95',
         active ? 'bg-primary/10 text-primary' : 'text-text-secondary active:bg-surface-tint',
       )}
     >
       <DuoIcon icon={Icon} size={19} />
-      <span className="max-w-full truncate leading-tight">{label}</span>
+      <span className="leading-tight">{label}</span>
     </button>
   );
 }
@@ -282,16 +278,9 @@ export default function VerseActionBar({
 
   return (
     <>
-      <div
-        role="region"
-        aria-label={`${t('bible.verse', 'Verset')} ${reference}`}
-        className="sticky bottom-3 z-30 mx-auto w-full max-w-xl rounded-2xl border border-border bg-surface/95 shadow-lg backdrop-blur-md"
-      >
-        <div className="px-3 pt-2 text-center sm:hidden">
-          <span className="text-xs font-bold text-text-secondary">{reference}</span>
-        </div>
-        <div className="grid grid-cols-4 items-center gap-1 px-2 py-2 sm:flex sm:flex-wrap sm:justify-center">
-          <span className="hidden max-w-[116px] truncate px-2 text-xs font-bold text-text-secondary sm:inline-block">
+      <div role="region" aria-label={`${t('bible.verse', 'Verset')} ${reference}`} className="reading-actions sticky bottom-3 z-30 mx-auto w-full max-w-full">
+        <div className="reading-actions-row">
+          <span className="reading-actions-reference">
             {reference}
           </span>
           <ActionButton
@@ -314,14 +303,12 @@ export default function VerseActionBar({
             icon={PenLine}
             label={t('settings.verseBar.note', 'Note')}
             active={noteOpen || noteSaved}
-            toggleable
             onClick={() => void openNote()}
           />
           <ActionButton
             icon={Tag}
             label={t('settings.verseBar.tag', 'Taguer')}
             active={tagged || tagOpen}
-            toggleable
             onClick={() => setTagOpen((o) => !o)}
           />
           <ActionButton
@@ -337,14 +324,12 @@ export default function VerseActionBar({
             icon={Heart}
             label={t('settings.verseBar.favorite', 'Favori')}
             active={isFavorite}
-            toggleable
             onClick={() => void toggleFavoriteAction()}
           />
           <ActionButton
             icon={Highlighter}
             label={t('settings.verseBar.highlight', 'Surligner')}
             active={isHighlighted}
-            toggleable
             onClick={toggleHighlightAction}
           />
         </div>
@@ -357,7 +342,6 @@ export default function VerseActionBar({
             <input
               autoFocus
               type="text"
-              aria-label={t('settings.verseBar.tagTo', 'Taguer ce verset avec le concept')}
               value={tagName}
               onChange={(e) => {
                 setTagName(e.target.value);
@@ -365,10 +349,9 @@ export default function VerseActionBar({
               }}
               onKeyDown={(e) => {
                 if (e.key === 'Enter') void tagVerse();
-                if (e.key === 'Escape') setTagOpen(false);
               }}
               placeholder={t('settings.verseBar.tagPlaceholder', 'ex. foi, pardon, Éternel…')}
-              className="w-full rounded-xl bg-surface-tint p-3 text-sm text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+              className="w-full rounded-xl bg-surface-tint p-3 text-sm text-text-primary outline-none"
             />
             <div className="mt-2 flex items-center justify-between gap-2">
               <p className="text-[11px] text-text-muted">
@@ -376,17 +359,15 @@ export default function VerseActionBar({
               </p>
               <div className="flex gap-2">
                 <button
-                  type="button"
                   onClick={() => setTagOpen(false)}
-                  className="rounded-full px-4 py-2 text-xs font-semibold text-text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary active:bg-surface-tint"
+                  className="rounded-full px-4 py-2 text-xs font-semibold text-text-muted active:bg-surface-tint"
                 >
                   {t('common.cancel', 'Annuler')}
                 </button>
                 <button
-                  type="button"
                   onClick={() => void tagVerse()}
                   disabled={tagSaving}
-                  className="rounded-full bg-primary px-4 py-2 text-xs font-semibold text-on-primary shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary disabled:opacity-50"
+                  className="rounded-full bg-primary px-4 py-2 text-xs font-semibold text-on-primary shadow-sm disabled:opacity-50"
                 >
                   {tagSaving ? t('common.saving', 'Enregistrement…') : t('common.save', 'Enregistrer')}
                 </button>
@@ -409,31 +390,25 @@ export default function VerseActionBar({
             </div>
             <textarea
               autoFocus
-              aria-label={t('bible.noteTitle', 'Note personnelle')}
               value={noteText}
               onChange={(e) => {
                 setNoteText(e.target.value);
                 setNoteSaved(false);
               }}
-              onKeyDown={(e) => {
-                if (e.key === 'Escape') setNoteOpen(false);
-              }}
               rows={3}
               placeholder={t('bible.notePlaceholder', 'Écrivez une note sur ce verset...')}
-              className="w-full resize-none rounded-xl bg-surface-tint p-3 text-sm text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+              className="w-full resize-none rounded-xl bg-surface-tint p-3 text-sm text-text-primary outline-none"
             />
             <div className="mt-2 flex justify-end gap-2">
               <button
-                type="button"
                 onClick={() => setNoteOpen(false)}
-                className="rounded-full px-4 py-2 text-xs font-semibold text-text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary active:bg-surface-tint"
+                className="rounded-full px-4 py-2 text-xs font-semibold text-text-muted active:bg-surface-tint"
               >
                 {t('common.cancel', 'Annuler')}
               </button>
               <button
-                type="button"
                 onClick={() => void saveNote()}
-                className="rounded-full bg-primary px-4 py-2 text-xs font-semibold text-on-primary shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                className="rounded-full bg-primary px-4 py-2 text-xs font-semibold text-on-primary shadow-sm"
               >
                 {t('common.save', 'Enregistrer')}
               </button>

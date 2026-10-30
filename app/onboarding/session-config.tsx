@@ -19,7 +19,6 @@ import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { OnboardingShell } from '@/components/onboarding/OnboardingShell';
 import { useAppearanceStore } from '@/store/appearance-store';
-import { useSettingsStore } from '@/store/settings-store';
 
 const GOALS = [1, 3, 5, 7, 10];
 
@@ -30,12 +29,6 @@ export default function OnboardingSessionConfig() {
   const focusMode = useAppearanceStore((s) => s.focusMode);
   const setSessionGoal = useAppearanceStore((s) => s.setSessionGoal);
   const setFocusMode = useAppearanceStore((s) => s.setFocusMode);
-  const completeOnboarding = useSettingsStore((s) => s.completeOnboarding);
-
-  const skip = () => {
-    completeOnboarding();
-    navigate('/tabs/home', { replace: true });
-  };
 
   return (
     <OnboardingShell
@@ -45,17 +38,15 @@ export default function OnboardingSessionConfig() {
         'onboarding.sessionDesc',
         'Choisissez un objectif quotidien réaliste et activez le mode concentration si vous le souhaitez.',
       )}
-      onBack={() => navigate('/onboarding/translation-select')}
+      onBack={() => navigate('/onboarding/journey/profile')}
       backLabel={t('common.back', 'Retour')}
-      onSkip={skip}
-      skipLabel={t('common.skip', 'Passer')}
       footer={
         <div className="flex gap-3">
           <Button
             type="button"
             variant="outline"
             className="flex-1"
-            onClick={() => navigate('/onboarding/translation-select')}
+            onClick={() => navigate('/onboarding/journey/profile')}
           >
             <DuoIcon icon={ArrowLeft} size={16} />
             {t('common.back', 'Retour')}

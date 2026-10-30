@@ -6,6 +6,7 @@
  * Web fallback notice on browser).
  */
 
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { DuoIcon } from '@/components/ui/DuoIcon';
@@ -20,8 +21,13 @@ import {
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { OnboardingShell } from '@/components/onboarding/OnboardingShell';
-import { useAppearanceStore } from '@/store/appearance-store';
-import { useSettingsStore } from '@/store/settings-store';
+import { useAppearanceStore, appearanceStorePersist } from '@/store/appearance-store';
+import { settingsStorePersist } from '@/store/settings-store';
+import { useAuthStore } from '@/store/auth-store';
+import { useActiveProfile } from '@/hooks/useActiveProfile';
+import { useLearnerProfile } from '@/hooks/useLearnerProfile';
+import { markOnboardingReady } from '@/onboarding/progress';
+import { isMockMode } from '@/dev/mode';
 import { notificationService } from '@/services/notification-service';
 import { isNativePlatform } from '@/lib/platform';
 
@@ -36,26 +42,29 @@ export default function OnboardingReminderConfig() {
   const setReminderFrequency = useAppearanceStore((s) => s.setReminderFrequency);
   const toggleReminders = useAppearanceStore((s) => s.toggleReminders);
   const setReminderTime = useAppearanceStore((s) => s.setReminderTime);
-  const completeOnboarding = useSettingsStore((s) => s.completeOnboarding);
-
+  const user = useAuthStore((s) => s.user);
+  const { activeProfile } = useActiveProfile();
+  const { getScopedProfile } = useLearnerProfile();
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState(false);
   const finish = async () => {
+    setSaving(true);
+    setSaveError(false);
     try {
-      if (reminderEnabled) {
-        await notificationService.ensurePermissions(true);
+      if (!user || !activeProfile || activeProfile.accountId !== user.userId || !await getScopedProfile(activeProfile.id)) throw new Error('Profile not saved');
+      await settingsStorePersist.save();
+      await appearanceStorePersist.save();
+      if (!localStorage.getItem('versyflow-settings-storage') || !localStorage.getItem('versyflow:appearance:settings')) throw new Error('Settings not saved');
+      if (!isMockMode()) {
+        try {
+          if (reminderEnabled) await notificationService.ensurePermissions(true);
+          await notificationService.scheduleDailyReminders({ enabled: reminderEnabled, frequency: reminderFrequency, time: reminderTime }, t('reminders.notificationBody', 'Temps de révision !'));
+        } catch { /* Preference remains saved if permissions are refused. */ }
       }
-      await notificationService.scheduleDailyReminders(
-        { enabled: reminderEnabled, frequency: reminderFrequency, time: reminderTime },
-        t('reminders.notificationBody', 'Temps de révision !'),
-      );
-    } catch {
-      /* permission refused or invalid time — preference still saved */
-    }
-    navigate('/onboarding/fsrs-introduction');
-  };
-
-  const skip = () => {
-    completeOnboarding();
-    navigate('/tabs/home', { replace: true });
+      markOnboardingReady(user.userId, activeProfile.id);
+      navigate('/onboarding/journey/success');
+    } catch { setSaveError(true); }
+    finally { setSaving(false); }
   };
 
   return (
@@ -68,10 +77,10 @@ export default function OnboardingReminderConfig() {
       )}
       onBack={() => navigate('/onboarding/session-config')}
       backLabel={t('common.back', 'Retour')}
-      onSkip={skip}
-      skipLabel={t('common.skip', 'Passer')}
       footer={
-        <div className="flex gap-3">
+        <div className="flex flex-col gap-3">
+          {saveError && <p role="alert" className="text-error">{t('onboardingJourney.saveError', 'Impossible d’enregistrer votre espace. Réessayez.')}</p>}
+          <div className="flex gap-3">
           <Button
             type="button"
             variant="outline"
@@ -81,10 +90,11 @@ export default function OnboardingReminderConfig() {
             <DuoIcon icon={ArrowLeft} size={16} />
             {t('common.back', 'Retour')}
           </Button>
-          <Button type="button" className="flex-1" onClick={() => void finish()}>
-            {t('common.continue', 'Continuer')}
+          <Button type="button" className="flex-1" disabled={saving} onClick={() => void finish()}>
+            {saving ? t('common.saving', 'Enregistrement…') : t('common.continue', 'Continuer')}
             <DuoIcon icon={ArrowRight} size={16} />
           </Button>
+          </div>
         </div>
       }
     >

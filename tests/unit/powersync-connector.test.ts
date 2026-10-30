@@ -21,6 +21,9 @@ const mockSupabase: any = {
 const builders: Record<string, any> = {};
 const mockFrom = vi.fn();
 
+// Exercise the live connector; mock isolation is covered by demo-isolation tests.
+vi.mock('@/dev/demo-mode', () => ({ isDemoMode: false }));
+
 vi.mock('@supabase/supabase-js', () => ({
   createClient: vi.fn(() => mockSupabase),
 }));

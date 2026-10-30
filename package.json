@@ -5,6 +5,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "vite",
+    "dev:demo": "node scripts/dev-mock.mjs",
     "dev:mock": "node scripts/dev-mock.mjs",
     "mock:server": "node server/mock-api.mjs",
     "build:mock": "vite build --mode mock",

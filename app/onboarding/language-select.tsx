@@ -23,7 +23,6 @@ export default function LanguagePickerScreen() {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const setUiLanguage = useSettingsStore((s) => s.setUiLanguage);
-  const completeOnboarding = useSettingsStore((s) => s.completeOnboarding);
   const uiLanguage = useSettingsStore((s) => s.uiLanguage);
   const [selected, setSelected] = useState(uiLanguage || 'fr');
 
@@ -32,11 +31,6 @@ export default function LanguagePickerScreen() {
     setUiLanguage(code);
     void i18n.changeLanguage(code);
     document.documentElement.dir = isRTL(code) ? 'rtl' : 'ltr';
-  };
-
-  const skip = () => {
-    completeOnboarding();
-    navigate('/tabs/home', { replace: true });
   };
 
   return (
@@ -49,8 +43,6 @@ export default function LanguagePickerScreen() {
       )}
       onBack={() => navigate('/onboarding/welcome')}
       backLabel={t('common.back', 'Retour')}
-      onSkip={skip}
-      skipLabel={t('common.skip', 'Passer')}
       footer={
         <div className="flex gap-3">
           <Button

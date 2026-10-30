@@ -22,6 +22,7 @@ import {
 } from '@/components/ui/solar-icons';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import { isDemoMode } from '@/dev/demo-mode';
 import { OnboardingShell } from '@/components/onboarding/OnboardingShell';
 import { useSettingsStore, type BibleVersionType } from '@/store/settings-store';
 import { useTranslationPreference } from '@/hooks/useTranslationPreference';
@@ -63,12 +64,11 @@ export default function TranslationPickerScreen() {
   const bibleTranslation = useSettingsStore((s) => s.bibleTranslation);
   const setBibleVersionType = useSettingsStore((s) => s.setBibleVersionType);
   const bibleVersionType = useSettingsStore((s) => s.bibleVersionType);
-  const completeOnboarding = useSettingsStore((s) => s.completeOnboarding);
   const { setPreference } = useTranslationPreference();
 
   const [selected, setSelected] = useState(bibleTranslation || 'lsg');
   const [activeType, setActiveType] = useState<BibleVersionType>(
-    bibleVersionType === 'classical' || bibleVersionType === 'modern' || bibleVersionType === 'revised'
+    (!isDemoMode || bibleVersionType !== 'modern') && (bibleVersionType === 'classical' || bibleVersionType === 'modern' || bibleVersionType === 'revised')
       ? bibleVersionType
       : 'classical',
   );
@@ -85,12 +85,7 @@ export default function TranslationPickerScreen() {
     setBibleVersionType(type);
   };
 
-  const skip = () => {
-    completeOnboarding();
-    navigate('/tabs/home', { replace: true });
-  };
-
-  const filtered = TRANSLATION_CHOICES.filter((c) => c.versionTypes.includes(activeType));
+  const filtered = TRANSLATION_CHOICES.filter((c) => c.versionTypes.includes(activeType) && (!isDemoMode || c.id === 'lsg'));
   const languageGroups = useMemo(
     () => groupTranslationsByLanguage(filtered.map((c) => c.id)),
     [filtered],
@@ -153,8 +148,6 @@ export default function TranslationPickerScreen() {
       )}
       onBack={() => navigate('/onboarding/language-select')}
       backLabel={t('common.back', 'Retour')}
-      onSkip={skip}
-      skipLabel={t('common.skip', 'Passer')}
       footer={
         <div className="flex gap-3">
           <Button
@@ -169,7 +162,7 @@ export default function TranslationPickerScreen() {
           <Button
             type="button"
             className="flex-1"
-            onClick={() => navigate('/onboarding/session-config')}
+            onClick={() => navigate('/onboarding/journey/intro')}
           >
             {t('common.continue', 'Continuer')}
             <DuoIcon icon={ArrowRight} size={16} />
@@ -177,13 +170,14 @@ export default function TranslationPickerScreen() {
         </div>
       }
     >
+      {isDemoMode && <p className="mb-4 text-sm text-text-secondary">{t('onboardingJourney.demoBible', 'En démo locale, seule la traduction Louis Segond est disponible sur cet appareil.')}</p>}
       <div className="mb-4">
         <p className="mb-2 flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-text-muted">
           <DuoIcon icon={Layers} size={13} className="text-primary" />
           {t('onboarding.versionType', 'Type de version')}
         </p>
         <div className="flex gap-2" role="group" aria-label={t('onboarding.versionType', 'Type de version')}>
-          {VERSION_TYPES.map(({ id, i18nKey, label }) => (
+          {VERSION_TYPES.filter(({ id }) => !isDemoMode || id !== 'modern').map(({ id, i18nKey, label }) => (
             <button
               type="button"
               key={id}

@@ -18,9 +18,12 @@ import type { BibleVerseData } from '@/domains/bible/repository-local';
 import type { ChapterSemanticTags } from '@/hooks/useSemanticTags';
 import { useHighlightStore, type HighlightState } from '@/store/highlight-store';
 import VerseSemanticTags from '@/components/semantic/VerseSemanticTags';
+import { useAppearanceStore } from '@/store/appearance-store';
 
 interface ManuscriptViewProps {
   bookId: string;
+  bookName?: string;
+  translationId?: string;
   chapter: number;
   verses: BibleVerseData[];
   /** Chapter semantic tags (verse → concepts), already locale-resolved. */
@@ -29,18 +32,26 @@ interface ManuscriptViewProps {
   onSelectVerse: (verse: number) => void;
   /** Show per-verse concept chips in-flow for the selected verse (default true). */
   showSemanticTags?: boolean;
+  embedded?: boolean;
+  showBookTitle?: boolean;
 }
 
 export function ManuscriptView({
   bookId,
+  bookName,
+  translationId,
   chapter,
   verses,
   tags,
   selectedVerse,
   onSelectVerse,
   showSemanticTags = true,
+  embedded = false,
+  showBookTitle = true,
 }: ManuscriptViewProps) {
   const { t, i18n } = useTranslation();
+  const verseLayout = useAppearanceStore((s) => s.bibleVerseLayout);
+  const showVerseNumbers = useAppearanceStore((s) => s.showVerseNumbers);
 
   const tagsByVerse = useMemo(
     () => new Map((tags?.entries ?? []).map((e) => [e.verse, e.concepts])),
@@ -71,47 +82,45 @@ export function ManuscriptView({
     <div className="mx-auto w-full">
       {/* Continuous manuscript text — .bible-card gets the premium
          translucent/blur surface over the image theme (globals.css). */}
-      <div className="bible-card mx-auto rounded-3xl bg-surface px-5 py-6 shadow-sm sm:px-7">
-        <div className="text-center">
-          <span className="text-sm font-semibold text-text-primary">
-            {t('bible.chapter', 'Chapitre')} {chapter}
-          </span>
-          <p className="mt-1 text-xs text-text-muted">
-            {formatChapterCount(t('bible.verseCount', { count: verses.length }), verses.length, i18n.resolvedLanguage || i18n.language)}
-          </p>
+      <article className={cn(embedded ? "reading-chapter" : "bible-card reading-card mx-auto")}>
+        <div className={embedded ? "reading-chapter-heading" : "reading-card-heading"}>
+          <div className="reading-meta">
+            <span>{embedded && bookName ? `${bookName} · ` : ''}{t('bible.chapter', 'Chapitre')} {chapter}</span>
+            {translationId && <span className="reading-translation">{translationId.toUpperCase()}</span>}
+          </div>
+          {bookName && showBookTitle && <h2>{bookName}</h2>}
+          <p>{formatChapterCount(t('bible.verseCount', { count: verses.length }), verses.length, i18n.resolvedLanguage || i18n.language)}</p>
         </div>
 
-        <p className="verse-flow mt-6 text-text-primary">
+        <p className={cn("verse-flow mt-6 text-text-primary", verseLayout === "blocks" && "verse-flow-blocks")}>
+          <span className="chapter-dropcap" aria-hidden="true">{chapter}</span>
           {verses.map((verse, i) => {
             const isSelected = selectedVerse === verse.number;
             const isHighlighted = highlightKeySet.has(`${bookId}:${chapter}:${verse.number}`);
             return (
               <span
                 key={verse.number}
-                role="button"
-                tabIndex={0}
-                aria-pressed={isSelected}
-                aria-label={`${t('bible.verse', 'Verset')} ${verse.number}`}
                 className={cn(
                   'manuscript-verse',
                   isSelected && 'is-selected',
                   isHighlighted && 'is-highlighted',
-                  i > 0 && 'ml-2',
+                  i > 0 && verseLayout === 'flow' && 'ml-2',
                 )}
+                role="button"
+                tabIndex={0}
+                aria-pressed={isSelected}
+                aria-label={`${t('bible.selectVerseAria', { n: verse.number, defaultValue: `Sélectionner le verset ${verse.number}` })} : ${verse.text ?? ''}`}
                 onClick={() => onSelectVerse(verse.number)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    onSelectVerse(verse.number);
-                  }
+                onKeyDown={(event) => {
+                  if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); onSelectVerse(verse.number); }
                 }}
               >
-                <sup
+                {showVerseNumbers && verse.number !== 1 && <sup
                   className={cn('verse-flow-number', isSelected && 'is-selected')}
                   aria-hidden="true"
                 >
                   {verse.number}
-                </sup>
+                </sup>}
                 {verse.text ? verse.text : (
                   <em className="text-sm text-text-muted not-italic">
                     {t('bible.emptyVerse', 'Verset vide dans cette traduction')}
@@ -132,7 +141,7 @@ export function ManuscriptView({
             <VerseSemanticTags concepts={selectedConcepts} userSource={selectedIsUser} />
           </div>
         )}
-      </div>
+      </article>
     </div>
   );
 }

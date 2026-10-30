@@ -15,16 +15,13 @@ import {
 } from '@/components/ui/solar-icons';
 import { Button } from '@/components/ui/button';
 import { OnboardingShell } from '@/components/onboarding/OnboardingShell';
-import { useSettingsStore } from '@/store/settings-store';
 
 export default function FSRSIntroductionScreen() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const completeOnboarding = useSettingsStore((s) => s.completeOnboarding);
 
   const handleStartMemorization = () => {
-    void completeOnboarding();
-    navigate('/tabs/home', { replace: true });
+    navigate('/onboarding/journey/success', { replace: true });
   };
 
   const benefits = [
