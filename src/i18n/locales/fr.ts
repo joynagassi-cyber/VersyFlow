@@ -148,6 +148,19 @@ export const fr = {
     title: 'Notifications',
     unread: 'non lues',
   },
+  onboardingJourney: {
+    saveError: 'Impossible d’enregistrer votre espace. Réessayez.',
+    shareTitle: 'Partagez votre parcours', shareDesc: 'Les invitations et l’apprentissage collectif sont encore en développement.',
+
+    demoBible: 'En démo locale, seule la traduction Louis Segond est disponible sur cet appareil.',
+    demoNotice: 'Démo locale : utilisez des identifiants fictifs, sans mot de passe personnel. Ce compte ne sera pas synchronisé.',
+    welcomeKicker: 'Un chemin de foi, un verset à la fois.', welcomeLabel: 'BIENVENUE CHEZ VOUS', welcomeTitle: 'La Parole, près de votre cœur.',
+    welcomeMessage: 'Résister au diable par la Parole. Conserver un héritage éternel.', welcomeDesc: 'Mémorisez les Écritures, grandissez à votre rythme et transmettez ce qui compte, ensemble.',
+    createAccount: 'Créer mon compte', signIn: 'Se connecter', signInTitle: 'Heureux de vous revoir', signInDesc: 'Connectez-vous pour retrouver votre espace.', signUpTitle: 'Commençons ensemble', signUpDesc: 'Créez votre compte pour préparer votre espace personnel.', password: 'Mot de passe', alreadyAccount: 'Vous avez déjà un compte ? Se connecter', confirmEmail: 'Vérifiez votre e-mail pour confirmer votre compte, puis connectez-vous.',
+    introTitle: 'Un chemin qui commence avec vous', introDesc: 'Découvrez comment VersyFlow vous accompagne, puis créez un espace qui vous ressemble.', visualCaption: 'La Parole vous accompagne, chaque jour.', step: 'VOTRE PARCOURS', ready: 'TOUT EST PRÊT',
+    bibleTitle: 'La Bible, tout près de vous', bibleDesc: 'Explorez les livres et retrouvez les passages qui vous accompagnent.', memorizeTitle: 'Gardez la Parole dans votre cœur', memorizeDesc: 'Choisissez vos versets et avancez à votre rythme, séance après séance.', reviewTitle: 'Révisez au bon moment', reviewDesc: 'La répétition espacée et FSRS adaptent les révisions à votre progression.', familyTitle: 'Grandissez ensemble', familyDesc: 'Découvrez la démo du mode Famille pour imaginer la mémorisation avec vos proches. Les invitations réelles restent à finaliser.', progressTitle: 'Chaque pas compte', progressDesc: 'Suivez votre progression et retrouvez le chemin parcouru.', personalizeTitle: 'Un espace à votre image', personalizeDesc: 'Personnalisez votre profil et les couleurs de votre espace.',
+    profileTitle: 'Votre espace, votre histoire', profileDesc: 'Choisissez un nom : votre illustration apparaît automatiquement.', colorsTitle: 'Choisissez vos couleurs', colorsDesc: 'Votre choix prend vie immédiatement. Vous pourrez le modifier plus tard.', successTitle: 'Bravo, vous avez fait un grand pas !', successDesc: 'Votre espace est prêt. La suite de votre chemin commence maintenant.', enter: 'Entrer dans mon espace',
+  },
   onboarding: {
     welcome: 'Bienvenue dans VersyFlow',
     welcomeTitle: 'Mémorisez la Parole, à votre rythme',
@@ -214,6 +227,18 @@ export const fr = {
     bibleVersionsDesc: 'Téléchargées',
   },
   bible: {
+    verseLayout: 'Présentation des versets',
+    verseFlow: 'Texte ensemble',
+    verseBlocks: 'Versets en blocs',
+    readingMode: 'Défilement des chapitres',
+    continuousMode: 'Lecture continue',
+    chapterMode: 'Chapitre par chapitre',
+    previousChapter: 'Chapitre précédent',
+    nextChapter: 'Chapitre suivant',
+
+    continuousReading: 'Lecture continue',
+    previousPassages: 'Passages précédents',
+    nextPassages: 'Afficher la suite',
     bookCount: '{count} livre{plural}',
     explorer: 'Explorer la Bible',
     book: 'Livre',
@@ -775,6 +800,12 @@ export const fr = {
     search: 'Recherche',
   },
   demo: {
+    familyTitle: 'Famille · démo', familyKicker: 'Espace de démonstration', familyName: 'Famille Horizon',
+    familyNotice: 'Données fictives, gardées en mémoire uniquement. Les modifications disparaissent en quittant cet écran et ne touchent pas votre famille réelle.',
+    familyReal: 'Ouvrir l’espace réel', familyMembers: 'Membres fictifs', familyParent: 'parent', familyChild: 'enfant',
+    familyActivity: 'Activité de test', familyReviews_one: '{{count}} révision simulée', familyReviews_other: '{{count}} révisions simulées', familyAddReview: 'Simuler une révision',
+    familyChallenge: 'Défi de test', familyChallengeStarted: 'Défi fictif en cours', familyChallengeReady: 'Prêts à mémoriser ensemble ?', familyResetChallenge: 'Réinitialiser le défi', familyStartChallenge: 'Démarrer le défi fictif',
+
     enter: 'Voir la démo',
     exit: 'Quitter la démo',
     notice: 'Données fictives pour cet écran uniquement. Vos données réelles ne sont pas modifiées.',

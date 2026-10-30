@@ -17,6 +17,7 @@ import { PowerSyncDatabase } from '@powersync/capacitor';
 import type { CommonPowerSyncDatabase } from '@powersync/common';
 
 import { buildPowerSyncSchema } from './powersync-schema';
+import { isDemoMode } from '@/dev/demo-mode';
 
 /**
  * Nom de la base locale.
@@ -28,6 +29,7 @@ import { buildPowerSyncSchema } from './powersync-schema';
  * exactement celui d'avant — aucune migration, aucune donnée déplacée.
  */
 function databaseFilename(): string {
+  if (isDemoMode) return 'versyflow-demo-isolated.db';
   const role =
     typeof window !== 'undefined'
       ? (window as unknown as { __VF_PREVIEW_ROLE__?: unknown }).__VF_PREVIEW_ROLE__

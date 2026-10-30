@@ -8,13 +8,15 @@ import { useCallback } from 'react';
 import { useAuthStore } from '@/store/auth-store';
 import { LearnerProfileService } from '@/services/learner-profile-service';
 import { getLearnerProfileRepository } from '@/infrastructure/repository/powersync-repositories';
+import { LearnerProfileRepositoryDemo } from '@/infrastructure/repository/learner-profile-repository-demo';
+import { isDemoMode } from '@/dev/demo-mode';
 import type { LearnerProfile } from '@/domains/learner-profile';
 
 let _service: LearnerProfileService | null = null;
 
 function getService(): LearnerProfileService {
   if (!_service) {
-    _service = new LearnerProfileService(getLearnerProfileRepository());
+    _service = new LearnerProfileService(isDemoMode ? new LearnerProfileRepositoryDemo() : getLearnerProfileRepository());
   }
   return _service;
 }

@@ -278,9 +278,9 @@ export default function VerseActionBar({
 
   return (
     <>
-      <div className="sticky bottom-3 z-30 mx-auto w-fit max-w-full rounded-2xl border border-border bg-surface/95 shadow-lg backdrop-blur-md">
-        <div className="flex items-center justify-center gap-1 px-2 py-2">
-          <span className="max-w-[96px] truncate px-2 text-xs font-bold text-text-muted">
+      <div className="reading-actions sticky bottom-3 z-30 mx-auto w-full max-w-full">
+        <div className="reading-actions-row">
+          <span className="reading-actions-reference">
             {reference}
           </span>
           <ActionButton

@@ -5,6 +5,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "vite",
+    "dev:demo": "cross-env VITE_DEMO_MODE=true vite --host 0.0.0.0 --port 3000 --strictPort",
     "build": "node scripts/copy-bible-bundled.mjs && tsc -b tsconfig.build.json && vite build",
     "preview": "vite preview",
     "start": "serve -s www -l ${PORT:-3000}",

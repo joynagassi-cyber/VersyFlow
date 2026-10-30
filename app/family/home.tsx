@@ -35,6 +35,7 @@ import {
   Settings02Icon as Settings,
 } from '@/components/ui/solar-icons';
 import FullScreenPage from '@/components/layout/FullScreenPage';
+import { FamilyDemo } from '@/components/family/FamilyDemo';
 import { Button } from '@/components/ui/button';
 import { HintNote, MemberAvatar, ProgressBar, SectionCard } from '@/components/family/FamilyKit';
 import { cn } from '@/lib/utils';
@@ -54,7 +55,7 @@ const startOfDay = (ts: number) => {
   return d.getTime();
 };
 
-export default function FamilyHomeScreen() {
+function RealFamilyHomeScreen() {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const families = useFamilySyncStore((s) => s.families);
@@ -492,4 +493,10 @@ export default function FamilyHomeScreen() {
       </div>
     </FullScreenPage>
   );
+}
+
+/** Le prototype famille est séparé des services et données de la famille réelle. */
+export default function FamilyHomeScreen() {
+  const [real, setReal] = useState(false);
+  return real ? <RealFamilyHomeScreen /> : <FamilyDemo onReal={() => setReal(true)} />;
 }

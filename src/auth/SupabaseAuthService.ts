@@ -1,4 +1,5 @@
 import { createClient, SupabaseClient, User } from '@supabase/supabase-js';
+import { isDemoMode } from '@/dev/demo-mode';
 
 export interface UserProfile {
   userId: string;
@@ -36,7 +37,7 @@ export class SupabaseAuthService {
     // méthodes réseau renvoient une AuthError propre au lieu de lever.
     // (Avant : ce `throw` dans le constructeur, instancié au niveau module
     // par les stores, donnait un écran blanc « Uncaught AuthError ».)
-    if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+    if (isDemoMode || !SUPABASE_URL || !SUPABASE_ANON_KEY) {
       console.warn('[auth] Supabase non configuré — mode local uniquement.');
       this.supabase = null;
       this.isConfigured = false;

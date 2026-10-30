@@ -1,4 +1,6 @@
 import { capacitorStorage } from '@/infrastructure/storage';
+import { isDemoMode } from '@/dev/demo-mode';
+import { createDemoAccount, loginDemoAccount } from '@/dev/demo-auth';
 /**
  * Auth Store — User Authentication State Management
  * Handles login, signup, logout, and session persistence
@@ -59,6 +61,11 @@ export const useAuthStore = create<AuthState>()(
       signIn: async (email: string, password: string) => {
         set({ isLoading: true, error: null });
         try {
+          if (isDemoMode) {
+            const user = await loginDemoAccount(email, password);
+            set({ user: { userId: user.id, email: user.email }, isAuthenticated: true, isLoading: false });
+            return;
+          }
           const { user, error: authErr } = await authService.signIn(email, password);
           if (authErr || !user) throw authErr || new AuthError('No user returned');
           set({
@@ -75,7 +82,7 @@ export const useAuthStore = create<AuthState>()(
           // Idempotent — a no-op when there is nothing to migrate.
           void useSyncStore.getState().runMmkvMigrationOnce();
         } catch (err) {
-          const error = err instanceof AuthError ? err : new AuthError('Failed to sign in');
+          const error = err instanceof AuthError ? err : new AuthError(err instanceof Error ? err.message : 'Failed to sign in');
           set({ error: error.message, isLoading: false });
           throw error;
         }
@@ -84,17 +91,23 @@ export const useAuthStore = create<AuthState>()(
       signUp: async (email: string, password: string) => {
         set({ isLoading: true, error: null });
         try {
+          if (isDemoMode) {
+            const user = await createDemoAccount(email, password);
+            set({ user: { userId: user.id, email: user.email }, isAuthenticated: true, isLoading: false });
+            return;
+          }
           const { error: authErr } = await authService.signUp(email, password);
           if (authErr) throw authErr;
           set({ isLoading: false });
         } catch (err) {
-          const error = err instanceof AuthError ? err : new AuthError('Failed to sign up');
+          const error = err instanceof AuthError ? err : new AuthError(err instanceof Error ? err.message : 'Failed to sign up');
           set({ error: error.message, isLoading: false });
           throw error;
         }
       },
 
       signOut: async () => {
+        if (isDemoMode) { set({ user: null, isAuthenticated: false, isLoading: false, error: null }); return; }
         set({ isLoading: true });
         try {
           const { error: authErr } = await authService.signOut();
@@ -128,6 +141,7 @@ export const useAuthStore = create<AuthState>()(
       },
 
       checkSession: async () => {
+        if (isDemoMode) return;
         set({ isLoading: true });
         try {
           const user = await authService.getCurrentUser();
@@ -146,15 +160,16 @@ export const useAuthStore = create<AuthState>()(
             // Idempotent — a no-op when there is nothing to migrate.
             void useSyncStore.getState().runMmkvMigrationOnce();
           } else {
-            set({ isLoading: false });
+            set({ user: null, isAuthenticated: false, isLoading: false });
           }
         } catch {
-          set({ isLoading: false });
+          set({ user: null, isAuthenticated: false, isLoading: false });
         }
       },
 
       clearError: () => set({ error: null }),
       refreshSession: async () => {
+        if (isDemoMode) return;
         try {
           const { user: refreshed, error: refreshError } = await authService.refreshSession();
           if (refreshError) {

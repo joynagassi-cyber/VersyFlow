@@ -7,7 +7,7 @@
  * from the Supabase Storage bucket `bible-datasets`.
  */
 
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { DuoIcon } from '@/components/ui/DuoIcon';
@@ -27,10 +27,9 @@ import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 import { useBibleBooks, type BookMeta } from '@/hooks/useBibleBooks';
 import { bibleTranslationDisplayName } from '@/services/bible-translation-names';
-import { useChapterSemanticTags } from '@/hooks/useSemanticTags';
 import { useBibleData } from '@/hooks/useBibleData';
-import ManuscriptView from '@/components/bible/ManuscriptView';
-import VerseActionBar from '@/components/bible/VerseActionBar';
+import ContinuousBibleReader from '@/components/bible/ContinuousBibleReader';
+import { useAppearanceStore } from '@/store/appearance-store';
 
 type ViewMode = 'books' | 'chapters' | 'verses';
 
@@ -49,8 +48,8 @@ export default function BibleExplorerScreen() {
   const navigate = useNavigate();
   const params = useParams();
   const { t, i18n } = useTranslation();
+  const continuous = useAppearanceStore((s) => s.bibleContinuous);
   const [query, setQuery] = useState('');
-  const [selectedVerse, setSelectedVerse] = useState<number | null>(null);
 
   const { byId, translationId } = useBibleBooks();
 
@@ -67,28 +66,6 @@ export default function BibleExplorerScreen() {
     selectedBookId != null ? byId.get(selectedBookId) ?? null : null;
 
   const { books, status, error, remoteEntry, downloadPercent, download } = useBibleData();
-
-  // Reset the verse selection whenever the route (book/chapter) changes.
-  useEffect(() => {
-    setSelectedVerse(null);
-  }, [selectedBookId, selectedChapter]);
-
-  const { tags } = useChapterSemanticTags(selectedBookId, selectedChapter);
-
-  const activeBookData =
-    selectedBookId != null ? books?.find((b) => b.id === selectedBookId) : undefined;
-  const activeChapterData =
-    selectedChapter != null
-      ? activeBookData?.chapters.find((c) => c.number === selectedChapter)
-      : undefined;
-
-  const verseTexts = useMemo(() => {
-    const map: Record<number, string> = {};
-    activeChapterData?.verses.forEach((v) => {
-      map[v.number] = v.text;
-    });
-    return map;
-  }, [activeChapterData]);
 
   const filteredBooks = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -126,7 +103,7 @@ export default function BibleExplorerScreen() {
       : viewMode === 'chapters' && selectedBook
         ? selectedBook.displayName
         : viewMode === 'verses' && selectedBook && selectedChapter
-          ? `${selectedBook.displayName} ${selectedChapter}`
+          ? t('bible.explorer', 'Bible')
           : t('bible.explorer', 'Bible');
 
   return (
@@ -136,7 +113,7 @@ export default function BibleExplorerScreen() {
         viewMode === 'chapters' && selectedBook
           ? formatChapterCount(t('bible.chapterCount', { count: selectedBook.chapterCount }), selectedBook.chapterCount, i18n.resolvedLanguage || i18n.language)
           : viewMode === 'verses' && selectedChapter
-            ? t('bible.chapter', 'Chapitre') + ` ${selectedChapter}`
+            ? (continuous ? t('bible.continuousReading', 'Lecture continue') : t('bible.chapterMode', 'Chapitre par chapitre'))
             : undefined
       }
       showBack
@@ -309,25 +286,7 @@ export default function BibleExplorerScreen() {
               <div className="h-4 w-1/2 animate-pulse rounded bg-surface-tint" />
             </div>
           ) : (
-            <ManuscriptView
-              bookId={selectedBook.id}
-              chapter={selectedChapter}
-              verses={activeChapterData?.verses ?? []}
-              tags={tags}
-              selectedVerse={selectedVerse}
-              onSelectVerse={setSelectedVerse}
-            />
-          )}
-
-          {/* Contextual action bar for the selected verse */}
-          {selectedVerse != null && (
-            <VerseActionBar
-              bookId={selectedBook.id}
-              chapter={selectedChapter}
-              verse={selectedVerse}
-              verseText={verseTexts[selectedVerse]}
-              translationId={translationId}
-            />
+            books && <ContinuousBibleReader key={`${translationId}:${selectedBook.id}:${selectedChapter}`} books={books} initialBookId={selectedBook.id} initialChapter={selectedChapter} translationId={translationId} />
           )}
         </div>
       )}

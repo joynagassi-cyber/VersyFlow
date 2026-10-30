@@ -41,7 +41,6 @@ import {
 } from '@/components/ui/solar-icons';
 import { ALL_MENU_ITEMS, ALL_TABS, useUiStore, type TabId } from '@/store/ui-store';
 import { useIsDesktop } from '@/hooks/useIsDesktop';
-import { Logo } from '@/components/brand/Logo';
 import { cn } from '@/lib/utils';
 
 /** Type des icônes Solar : celui de la bibliothèque, pas une approximation. */
@@ -120,7 +119,6 @@ export function DesktopRail() {
           className={cn(itemBase, 'gap-2.5 px-1 hover:bg-surface-tint')}
           aria-label={t('nav.brandHome', 'VersyFlow — Accueil')}
         >
-          <span className="brand-tile"><Logo size={28} /></span>
           <span className="rail-label text-primary text-base font-extrabold">VersyFlow</span>
         </button>
         {isDesktop && (

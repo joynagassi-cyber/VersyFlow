@@ -6,6 +6,7 @@
  * reaching the FSRS intro / start.
  */
 
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { DuoIcon } from '@/components/ui/DuoIcon';
@@ -19,7 +20,12 @@ import {
 } from '@/components/ui/solar-icons';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import { useAppearanceStore } from '@/store/appearance-store';
+import { useAppearanceStore, appearanceStorePersist } from '@/store/appearance-store';
+import { settingsStorePersist } from '@/store/settings-store';
+import { useAuthStore } from '@/store/auth-store';
+import { useActiveProfile } from '@/hooks/useActiveProfile';
+import { useLearnerProfile } from '@/hooks/useLearnerProfile';
+import { markOnboardingReady } from '@/onboarding/progress';
 
 const FREQUENCIES = [1, 2, 3, 5];
 
@@ -33,7 +39,23 @@ export default function OnboardingReminderConfig() {
   const toggleReminders = useAppearanceStore((s) => s.toggleReminders);
   const setReminderTime = useAppearanceStore((s) => s.setReminderTime);
 
-  const finish = () => navigate('/onboarding/fsrs-introduction');
+  const user = useAuthStore((s) => s.user);
+  const { activeProfile } = useActiveProfile();
+  const { getScopedProfile } = useLearnerProfile();
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState(false);
+  const finish = async () => {
+    setSaving(true); setSaveError(false);
+    try {
+      if (!user || !activeProfile || activeProfile.accountId !== user.userId || !await getScopedProfile(activeProfile.id)) throw new Error('Profile not saved');
+      await settingsStorePersist.save();
+      await appearanceStorePersist.save();
+      if (!localStorage.getItem('versyflow-settings-storage') || !localStorage.getItem('versyflow:appearance:settings')) throw new Error('Settings not saved');
+      markOnboardingReady(user.userId, activeProfile.id);
+      navigate('/onboarding/journey/success');
+    } catch { setSaveError(true); }
+    finally { setSaving(false); }
+  };
 
   return (
     <div className="screen-column-narrow flex min-h-full flex-col p-6">
@@ -146,6 +168,7 @@ export default function OnboardingReminderConfig() {
         </div>
       </div>
 
+      {saveError && <p role="alert" className="text-error">{t('onboardingJourney.saveError', 'Impossible d’enregistrer votre espace. Réessayez.')}</p>}
       <div className="mt-6 flex gap-4">
         <Button
           variant="outline"
@@ -155,8 +178,8 @@ export default function OnboardingReminderConfig() {
           <DuoIcon icon={ArrowLeft} size={16} />
           {t('common.back')}
         </Button>
-        <Button className="flex-1" onClick={finish}>
-          {t('common.continue')}
+        <Button className="flex-1" disabled={saving} onClick={() => { void finish(); }}>
+          {saving ? t('common.saving', 'Enregistrement…') : t('common.continue')}
           <DuoIcon icon={ArrowRight} size={16} />
         </Button>
       </div>

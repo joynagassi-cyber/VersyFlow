@@ -25,6 +25,7 @@ import type { CrudEntry } from '@powersync/common';
 import { UpdateType } from '@powersync/common';
 
 import { SupabaseAuthService } from '@/auth';
+import { isDemoMode } from '@/dev/demo-mode';
 
 const DEFAULT_BATCH_SIZE = 50;
 
@@ -57,7 +58,7 @@ export class SupabasePowerSyncConnector implements PowerSyncBackendConnector {
     // est simplement inactive (fetchCredentials → null, PowerSync au repos).
     // (Avant : ces `throw`, via l'instanciation au niveau module dans
     // sync-store, cassaient le démarrage sans `.env`.)
-    if (!url || !anonKey || !powersyncUrl) {
+    if (isDemoMode || !url || !anonKey || !powersyncUrl) {
       console.warn('[PowerSync] Cloud non configuré — synchronisation inactive.');
       this.supabase = null;
       this.isConfigured = false;

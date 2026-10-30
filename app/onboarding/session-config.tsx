@@ -33,7 +33,7 @@ export default function OnboardingSessionConfig() {
     <div className="screen-column-narrow flex min-h-full flex-col p-6">
       <header className="mb-6 flex items-center gap-3">
         <button
-          onClick={() => navigate('/onboarding/translation-select')}
+          onClick={() => navigate('/onboarding/journey/profile')}
           className="flex h-10 w-10 items-center justify-center rounded-full bg-surface shadow-sm"
           aria-label={t('common.back')}
         >
@@ -118,7 +118,7 @@ export default function OnboardingSessionConfig() {
         <Button
           variant="outline"
           className="flex-1"
-          onClick={() => navigate('/onboarding/translation-select')}
+          onClick={() => navigate('/onboarding/journey/profile')}
         >
           <DuoIcon icon={ArrowLeft} size={16} />
           {t('common.back')}

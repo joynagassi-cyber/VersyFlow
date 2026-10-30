@@ -25,6 +25,7 @@ import { Button } from '@/components/ui/button';
 import { useSettingsStore, type BibleVersionType } from '@/store/settings-store';
 import { useTranslationPreference } from '@/hooks/useTranslationPreference';
 import { BIBLE_DATASET_CATALOG } from '@/services/bible-text-service';
+import { isDemoMode } from '@/dev/demo-mode';
 import {
   getTranslationDisplayInfo,
   groupTranslationsByLanguage,
@@ -86,7 +87,7 @@ export default function TranslationPickerScreen() {
     setBibleVersionType(type);
   };
 
-  const filtered = TRANSLATION_CHOICES.filter((c) => c.versionTypes.includes(activeType));
+  const filtered = TRANSLATION_CHOICES.filter((c) => c.versionTypes.includes(activeType) && (!isDemoMode || c.id === 'lsg'));
   const languageGroups = useMemo(
     () => groupTranslationsByLanguage(filtered.map((c) => c.id)),
     [filtered],
@@ -155,6 +156,7 @@ export default function TranslationPickerScreen() {
         </div>
       </header>
 
+      {isDemoMode && <p className="mb-4 text-sm text-text-secondary">{t('onboardingJourney.demoBible', 'En démo locale, seule la traduction Louis Segond est disponible sur cet appareil.')}</p>}
       {/* Type de version — the user's reading style */}
       <div className="mb-4">
         <p className="mb-2 flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-text-muted">
@@ -162,7 +164,7 @@ export default function TranslationPickerScreen() {
           {t('onboarding.versionType', 'Type de version')}
         </p>
         <div className="flex gap-2">
-          {VERSION_TYPES.map(({ id, i18nKey, label }) => (
+          {VERSION_TYPES.filter(({ id }) => !isDemoMode || id !== 'modern').map(({ id, i18nKey, label }) => (
             <button
               key={id}
               onClick={() => chooseType(id)}
@@ -202,7 +204,7 @@ export default function TranslationPickerScreen() {
           <DuoIcon icon={ArrowLeft} size={16} />
           {t('common.back')}
         </Button>
-        <Button className="flex-1" onClick={() => navigate('/onboarding/session-config')}>
+        <Button className="flex-1" onClick={() => navigate('/onboarding/journey/intro')}>
           {t('common.continue')}
           <DuoIcon icon={ArrowRight} size={16} />
         </Button>

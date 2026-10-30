@@ -32,6 +32,7 @@ import { useBibleData } from '@/hooks/useBibleData';
 import { useTranslation } from 'react-i18next';
 import { BIBLE_BOOKS, type BibleBook } from '@/domains/bible/entities';
 import type { BibleBookData } from '@/domains/bible/repository-local';
+import { bibleBookName } from '@/lib/bible-book-name';
 
 export interface BookMeta {
   id: string;
@@ -73,7 +74,7 @@ export function useBibleBooks(): UseBibleBooks {
         testament: s.testament,
         orderIndex: s.orderIndex,
         chapterCount: s.chapterCount,
-        displayName: pickDisplayName(s.name, s.id, lang),
+        displayName: bibleBookName(s.id, lang, s.name),
       });
     }
     // Overlay the real dataset book structure on top of the static one:
@@ -87,7 +88,7 @@ export function useBibleBooks(): UseBibleBooks {
           testament: b.testament,
           orderIndex: b.orderIndex ?? fallback?.orderIndex ?? m.size + 1,
           chapterCount: b.chapters.length,
-          displayName: pickDisplayName(b.name, b.id, lang),
+          displayName: bibleBookName(b.id, lang, b.name),
         });
       }
     }
@@ -111,20 +112,6 @@ export function useBibleBooks(): UseBibleBooks {
     newTestament,
     translationId: data.translationId,
   };
-}
-
-/**
- * Localized name lookup with a graceful fallback chain.
- * Dataset `name` is a `Record<string, string>` with keys `fr`, `en`, and
- * sometimes the translation's own language code (`ar`, `ko`, …).
- */
-function pickDisplayName(
-  name: Record<string, string>,
-  id: string,
-  lang: string,
-): string {
-  const base = lang?.split('-')?.[0] ?? lang;
-  return name[lang] ?? name[base] ?? name.fr ?? name.en ?? id;
 }
 
 export default useBibleBooks;

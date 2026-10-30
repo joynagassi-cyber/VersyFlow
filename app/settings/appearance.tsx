@@ -118,6 +118,10 @@ export default function AppearanceScreen() {
   const highContrast = useAppearanceStore((s) => s.highContrast);
   const setReducedTransparency = useAppearanceStore((s) => s.setReducedTransparency);
   const setHighContrast = useAppearanceStore((s) => s.setHighContrast);
+  const bibleVerseLayout = useAppearanceStore((s) => s.bibleVerseLayout);
+  const bibleContinuous = useAppearanceStore((s) => s.bibleContinuous);
+  const setBibleVerseLayout = useAppearanceStore((s) => s.setBibleVerseLayout);
+  const setBibleContinuous = useAppearanceStore((s) => s.setBibleContinuous);
   const bibleFontFamily = useAppearanceStore((s) => s.bibleFontFamily);
   const bibleFontSize = useAppearanceStore((s) => s.bibleFontSize);
   const bibleLineHeight = useAppearanceStore((s) => s.bibleLineHeight);
@@ -303,24 +307,17 @@ export default function AppearanceScreen() {
 
           {backgroundType === 'gradient' && <>
             {gradientId && !BACKGROUND_GRADIENTS.some((g) => g.id === gradientId) && <p className="appearance-hint">{t('appearanceEditor.currentGradient', 'Dégradé actuel')} : {gradientId.replace(/-/g, ' ')}</p>}
-            <div className="grid grid-cols-2 gap-2">
+            <div className="appearance-gradient-grid" role="group" aria-label={t('settings.bgGradient', 'Dégradé')}>
               {BACKGROUND_GRADIENTS.map((g) => {
                 const active = gradientId === g.id;
+                const label = g.id.replace(/^colorbase-/, '').replace(/-/g, ' ');
                 return (
-                  <button
-                    key={g.id}
-                    onClick={() => setGradient(g.id)}
-                    style={{ backgroundImage: g.css }}
-                    aria-pressed={active}
-                    className={cn(
-                      'appearance-gradient h-16 rounded-2xl p-2 text-left transition',
-                      g.className,
-                      active && 'is-active',
-                    )}
-                  >
-                    <span className="appearance-gradient-label rounded-full px-2 py-0.5 text-[10px] font-bold capitalize">
-                      {g.id.replace(/^colorbase-/, '').replace(/-/g, ' ')}
+                  <button type="button" key={g.id} onClick={() => setGradient(g.id)} aria-pressed={active}
+                    className="appearance-gradient-option">
+                    <span className={cn('appearance-gradient-swatch', active && 'is-active')} style={{ backgroundImage: g.css }}>
+                      {active && <span className="appearance-gradient-check"><Check size={15} /></span>}
                     </span>
+                    <span className="appearance-gradient-name">{label}</span>
                   </button>
                 );
               })}
@@ -377,6 +374,20 @@ export default function AppearanceScreen() {
           </div>
         </Section>
         <Section title={t('settings.reading', 'Lecture')}>
+          <div className="reading-preferences">
+            <fieldset><legend>{t('bible.verseLayout', 'Présentation des versets')}</legend>
+              <div className="reading-preferences-options">
+                <button type="button" aria-pressed={bibleVerseLayout === 'flow'} onClick={() => setBibleVerseLayout('flow')}>{t('bible.verseFlow', 'Texte ensemble')}</button>
+                <button type="button" aria-pressed={bibleVerseLayout === 'blocks'} onClick={() => setBibleVerseLayout('blocks')}>{t('bible.verseBlocks', 'Versets en blocs')}</button>
+              </div>
+            </fieldset>
+            <fieldset><legend>{t('bible.readingMode', 'Défilement des chapitres')}</legend>
+              <div className="reading-preferences-options">
+                <button type="button" aria-pressed={bibleContinuous} onClick={() => setBibleContinuous(true)}>{t('bible.continuousMode', 'Lecture continue')}</button>
+                <button type="button" aria-pressed={!bibleContinuous} onClick={() => setBibleContinuous(false)}>{t('bible.chapterMode', 'Chapitre par chapitre')}</button>
+              </div>
+            </fieldset>
+          </div>
           <p className="appearance-hint">{t('appearanceEditor.readingFontHint', 'Choisissez la police des passages bibliques.')}</p>
           {fontLoadFailed && <p role="status" className="appearance-font-legacy">{t('appearanceEditor.fontLoadError', 'Certaines polices ne sont pas disponibles ; une police de secours est affichée.')}</p>}
           {!APPEARANCE_READING_FONTS.some((font) => font.id === bibleFontFamily) && <p className="appearance-font-legacy">{t('appearanceEditor.currentFont', 'Police actuelle : {{font}}', { font: findBibleFont(bibleFontFamily).label })}</p>}

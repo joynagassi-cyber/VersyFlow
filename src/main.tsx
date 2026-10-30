@@ -1,3 +1,5 @@
+import { isDemoMode } from '@/dev/demo-mode';
+import { readOnboardingProgress } from '@/onboarding/progress';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { IonApp } from '@ionic/react';
@@ -55,6 +57,7 @@ const NotFound = lazy(() => import('../app/+not-found'));
 // Onboarding
 const OnboardingLayout = lazy(() => import('../app/onboarding/_layout'));
 const OnboardingWelcome = lazy(() => import('../app/onboarding/welcome'));
+const OnboardingJourney = lazy(() => import('../app/onboarding/journey'));
 const OnboardingLanguage = lazy(() => import('../app/onboarding/language-select'));
 const OnboardingTranslation = lazy(() => import('../app/onboarding/translation-select'));
 const OnboardingFsrs = lazy(() => import('../app/onboarding/fsrs-introduction'));
@@ -240,15 +243,23 @@ const bootStoresPromise = (async () => {
     initializeSettingsStore(),
     initializeAppearanceStore(),
     initializeUiStore(),
+    useAuthStore.persist.rehydrate(),
   ]);
+  // Never treat the old local identity or a stale persisted flag as a session
+  // for a new onboarding. Existing completed installations are not migrated.
+  if (!useSettingsStore.getState().onboardingCompleted && useAuthStore.getState().isAuthenticated) {
+    await useAuthStore.getState().checkSession();
+  }
   // Sync-side wiring runs after the stores are hydrated so the
   // `initializeSettingsStore()` side-effects above (language sync,
   // persisted flag restore) have already landed in the Zustand state.
-  attachSyncCompletionHandlers();
-  wireAppTelemetry();
-  wireStreakCoordinator();
-  wireSessionRefresh();
-  void scheduleBootReminders().catch((error: unknown) => console.warn('[reminders] Échec de programmation', error));
+  if (!isDemoMode) {
+    attachSyncCompletionHandlers();
+    wireAppTelemetry();
+    wireStreakCoordinator();
+    wireSessionRefresh();
+    void scheduleBootReminders().catch((error: unknown) => console.warn('[reminders] Échec de programmation', error));
+  }
 })();
 
 /** Boot-time reminder scheduling with the notification body translated in
@@ -288,12 +299,20 @@ function RequireOnboarded() {
   return <Outlet />;
 }
 
+/** The welcome is public; every subsequent onboarding step requires a real session. */
+function RequireOnboardingAuth() {
+  const authenticated = useAuthStore((s) => s.isAuthenticated);
+  return authenticated ? <Outlet /> : <Navigate to="/onboarding/welcome" replace />;
+}
+
 /** Root redirect: onboarding or home depending on completion state */
 function RootRedirect() {
   const onboardingCompleted = useSettingsStore(
     (s) => s.onboardingCompleted,
   );
-  return <Navigate to={onboardingCompleted ? '/tabs/home' : '/onboarding/welcome'} replace />;
+  const user = useAuthStore((s) => s.user);
+  const authenticated = useAuthStore((s) => s.isAuthenticated);
+  return <Navigate to={onboardingCompleted ? '/tabs/home' : authenticated ? readOnboardingProgress(user?.userId) : '/onboarding/welcome'} replace />;
 }
 
 /** Applies RTL/LTR document direction whenever the i18n language changes */
@@ -318,17 +337,14 @@ function DirSync() {
  *  offline-safe and re-sync on the `initialized` event. */
 function SyncBridges() {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
-  useFamilySyncBridge(isAuthenticated);
-  useProfileSyncBridge(isAuthenticated);
+  useFamilySyncBridge(isAuthenticated && !isDemoMode);
+  useProfileSyncBridge(isAuthenticated && !isDemoMode);
   return null;
 }
 
 /** Auth gate with navigation handlers */
 function AuthGateRoute() {
-  const navigate = useNavigate();
-  return (
-    <AuthIndex onSkip={() => navigate('/tabs/home')} />
-  );
+  return <AuthIndex />;
 }
 
 /** Splash that continues to the root redirect on finish */
@@ -377,6 +393,7 @@ function App() {
       <BrowserRouter>
         <IonApp>
           <ErrorBoundary>
+            {isDemoMode && <div className="demo-mode-label" role="status">DÉMO LOCALE · données fictives</div>}
             <Routes>
             <Route path="/" element={<RootRedirect />} />
 
@@ -384,12 +401,18 @@ function App() {
             <Route path="/onboarding" element={<OnboardingLayout />}>
               <Route index element={<Navigate to="/onboarding/welcome" replace />} />
               <Route path="welcome" element={<OnboardingWelcome />} />
+              <Route element={<RequireOnboardingAuth />}>
               <Route path="language-select" element={<OnboardingLanguage />} />
+              <Route path="journey/:step" element={<OnboardingJourney />} />
               <Route path="translation-select" element={<OnboardingTranslation />} />
               <Route path="session-config" element={<OnboardingSessionConfig />} />
               <Route path="reminder-config" element={<OnboardingReminderConfig />} />
               <Route path="fsrs-introduction" element={<OnboardingFsrs />} />
+              </Route>
             </Route>
+
+            <Route path="/auth/login" element={<AuthLogin />} />
+            <Route path="/auth/signup" element={<AuthSignup />} />
 
             {/* Main tabs (guarded by onboarding) */}
             <Route element={<RequireOnboarded />}>
@@ -403,8 +426,6 @@ function App() {
 
               {/* Auth */}
               <Route path="/auth" element={<AuthGateRoute />} />
-              <Route path="/auth/login" element={<AuthLogin />} />
-              <Route path="/auth/signup" element={<AuthSignup />} />
 
               {/* Bible — the explorer is URL-driven: each view is a route */}
               <Route path="/bible/explorer" element={<BibleExplorer />} />

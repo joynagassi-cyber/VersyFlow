@@ -23,6 +23,7 @@ import {
   parseTranslationData,
   filterCanonicalBooks,
 } from '@/domains/bible/repository-local';
+import { isDemoMode } from '@/dev/demo-mode';
 import { BibleJsonFileSource } from '@/infrastructure/bible/bible-json-source';
 import {
   createBibleDatasetCache,
@@ -72,7 +73,7 @@ export const BIBLE_DATASET_CATALOG: BibleDatasetCatalogEntry[] =
 export function findRemoteDatasetEntry(
   translationId: string,
 ): BibleDatasetCatalogEntry | null {
-  return BIBLE_DATASET_CATALOG.find((e) => e.id === translationId) ?? null;
+  return isDemoMode ? null : BIBLE_DATASET_CATALOG.find((e) => e.id === translationId) ?? null;
 }
 
 /**
