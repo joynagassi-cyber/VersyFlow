@@ -11,6 +11,7 @@
 
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { LoadingBlock } from '@/components/ui/Skeleton';
 import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   BrainCircuitIcon as BrainCircuit,
@@ -48,7 +49,7 @@ export default function SemanticIndex() {
     <FullScreenPage title={t('semantic.title', 'Mémoire sémantique')}>
       <div className="screen-column min-h-full overflow-y-auto bg-background p-4 pb-24">
         {loading ? (
-          <p className="text-sm text-text-muted">{t('common.loading', 'Chargement...')}</p>
+          <LoadingBlock label={t('common.loading', 'Chargement…')} className="py-10" />
         ) : (
           <>
             {/* User's personal semantic tree */}

@@ -8,7 +8,6 @@ import {
   Cancel01Icon as X,
   Clock01Icon as Clock,
   GraduationCapIcon as GraduationCap,
-  Bookmark01Icon as Bookmark,
   AlertCircleIcon as AlertCircle,
 } from '@/components/ui/solar-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';

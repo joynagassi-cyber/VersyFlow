@@ -18,6 +18,7 @@ import {
   Compass01Icon as Compass,
 } from '@/components/ui/solar-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
+import { LoadingBlock } from '@/components/ui/Skeleton';
 import { DuoIcon } from '@/components/ui/DuoIcon';
 import { Button } from '@/components/ui/button';
 import { HintNote, SectionCard, StatTile } from '@/components/family/FamilyKit';
@@ -49,7 +50,7 @@ export default function SemanticTreeScreen() {
   if (loading) {
     return (
       <FullScreenPage title={t('tree.treeTitle', 'Arbre')} backPath="/semantic/tags">
-        <p className="text-sm text-text-muted">{t('common.loading', 'Chargement...')}</p>
+        <LoadingBlock label={t('common.loading', 'Chargement…')} className="py-10" />
       </FullScreenPage>
     );
   }

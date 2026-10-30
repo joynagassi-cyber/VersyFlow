@@ -13,6 +13,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { LoadingBlock } from '@/components/ui/Skeleton';
 import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   BrainCircuitIcon as BrainCircuit,
@@ -76,7 +77,7 @@ export default function VerseView() {
     return (
       <FullScreenPage title={formatVerseKey(verseRef ?? '')}>
         <div className="p-4">
-          <p className="text-sm text-text-muted">{t('common.loading', 'Chargement...')}</p>
+          <LoadingBlock label={t('common.loading', 'Chargement…')} className="py-10" />
         </div>
       </FullScreenPage>
     );

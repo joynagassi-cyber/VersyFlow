@@ -87,6 +87,25 @@ export default function SettingsScreen() {
 
 /* ── Section A: Données ─────────────────────────────────────────────── */
 
+/**
+ * Déconnexion — une seule commande pour les deux dispositions (téléphone et
+ * bureau). Elle était recopiée à l'identique deux fois dans ce fichier : deux
+ * endroits à corriger quand la copie ou l'action change.
+ */
+function SignOutButton({ onSignOut }: { onSignOut: () => Promise<void> }) {
+  const { t } = useTranslation();
+  return (
+    <button
+      type="button"
+      onClick={() => fireAndForget(onSignOut(), 'settings:signOut')}
+      className="flex min-h-14 w-full items-center justify-center gap-2 rounded-full bg-surface px-4 text-base font-semibold text-error shadow-sm"
+    >
+      <DuoIcon icon={LogOut} size={18} />
+      {t('settings.signOut', 'Se déconnecter')}
+    </button>
+  );
+}
+
 function DataTab() {
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -265,10 +284,7 @@ function ParamsTab() {
       </section>
 
       {isAuthenticated && (
-        <button onClick={() => fireAndForget(handleSignOut(), 'settings:signOut')} className="flex w-full items-center justify-center gap-2 rounded-full bg-surface p-4 text-base font-semibold text-error shadow-sm">
-          <DuoIcon icon={LogOut} size={18} />
-          {t('settings.signOut', 'Se déconnecter')}
-        </button>
+        <SignOutButton onSignOut={handleSignOut} />
       )}
 
       {/* Language dialog */}
@@ -400,7 +416,7 @@ function ProfileTab() {
             {isAuthenticated ? user?.email ?? t('profile.local', 'Local') : t('profile.local', 'Mode local')}
           </p>
           <div className="mt-3 flex items-center gap-2">
-            <span className={cn('inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold', isAuthenticated ? 'bg-surface-tint text-text-muted' : 'bg-surface-tint text-text-muted')}>
+            <span className="inline-flex items-center gap-1 rounded-full bg-surface-tint px-2.5 py-1 text-xs font-semibold text-text-muted">
               {isAuthenticated ? t('profile.connected', 'Connecté') : t('profile.local', 'Local')}
             </span>
             {activeFamily && (
@@ -431,10 +447,7 @@ function ProfileTab() {
       </section>
 
       {isAuthenticated && (
-        <button onClick={() => fireAndForget(handleSignOut(), 'settings:signOut')} className="flex w-full items-center justify-center gap-2 rounded-full bg-surface p-4 text-base font-semibold text-error shadow-sm">
-          <DuoIcon icon={LogOut} size={18} />
-          {t('settings.signOut', 'Se déconnecter')}
-        </button>
+        <SignOutButton onSignOut={handleSignOut} />
       )}
     </div>
   );

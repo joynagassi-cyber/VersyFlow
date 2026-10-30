@@ -144,7 +144,7 @@ export default function MasteryScreen() {
           <span className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-surface/20">
             <DuoIcon icon={CurrentIcon} size={40} />
           </span>
-          <p className="text-2xl font-extrabold">{currentLevel.name}</p>
+          <p className="stat-value text-2xl">{currentLevel.name}</p>
           <p className="mt-1 text-sm opacity-90">{currentLevel.description}</p>
         </div>
 
@@ -171,7 +171,7 @@ export default function MasteryScreen() {
 
         {/* Stats */}
         <div>
-          <h2 className="mb-3 text-base font-bold text-text-primary">
+          <h2 className="mb-3">
             {t('mastery.stats', 'Statistiques')}
           </h2>
           <div className="grid grid-cols-2 gap-3">
@@ -190,7 +190,7 @@ export default function MasteryScreen() {
                   <DuoIcon icon={c.icon} size={22} />
                 </span>
                 <div className={i === 0 ? '' : 'mt-1'}>
-                  <p className="text-2xl font-extrabold text-text-primary">{c.value}</p>
+                  <p className="stat-value text-2xl">{c.value}</p>
                   <p className="text-xs text-text-muted">{c.label}</p>
                 </div>
               </div>
@@ -200,7 +200,7 @@ export default function MasteryScreen() {
 
         {/* Levels */}
         <div>
-          <h2 className="mb-3 text-base font-bold text-text-primary">
+          <h2 className="mb-3">
             {t('mastery.levels', 'Niveaux de maitrise')}
           </h2>
           <div className="space-y-3">
@@ -259,7 +259,7 @@ export default function MasteryScreen() {
 
         {/* Tips */}
         <div className="g2 p-4">
-          <h2 className="mb-2 text-base font-bold text-text-primary">
+          <h2 className="mb-2">
             {t('mastery.tips', 'Conseils pour progresser')}
           </h2>
           <div className="space-y-2">

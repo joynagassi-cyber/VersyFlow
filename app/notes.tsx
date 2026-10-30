@@ -21,6 +21,7 @@ import {
   ArrowRight01Icon as ArrowRight,
 } from '@/components/ui/solar-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
+import { LoadingBlock } from '@/components/ui/Skeleton';
 import { DuoIcon } from '@/components/ui/DuoIcon';
 import { Button } from '@/components/ui/button';
 import { HintNote, SectionCard, Segmented } from '@/components/family/FamilyKit';
@@ -85,7 +86,7 @@ export default function NotesScreen() {
         />
 
         {loading ? (
-          <p className="text-sm text-text-muted">{t('common.loading', 'Chargement...')}</p>
+          <LoadingBlock label={t('common.loading', 'Chargement…')} className="py-10" />
         ) : notes.length === 0 ? (
           <EmptyState
             title={t('notes.empty', 'Aucune note pour l’instant')}

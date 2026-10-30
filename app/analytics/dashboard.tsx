@@ -6,10 +6,10 @@ import {
   RefreshIcon as RefreshCw,
   TrendingUpIcon as TrendingUp,
   TrendingDownIcon as TrendingDown,
-  Loading03Icon as Loader2,
   ChartLineData01Icon as LineChart,
 } from '@/components/ui/solar-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
+import { LoadingBlock } from '@/components/ui/Skeleton';
 import { useTranslation } from 'react-i18next';
 import { useAnalyticsCapability } from '@/capabilities/analytics/store';
 import { fireAndForget } from '@/lib/fire-and-forget';
@@ -45,12 +45,10 @@ export default function AnalyticsDashboardScreen() {
   if (loading) {
     return (
       <FullScreenPage title={t('analytics.title', 'Progression')} showBack>
-        <div className="flex min-h-[50vh] flex-col items-center justify-center gap-3">
-          <DuoIcon icon={Loader2} size={28} className="animate-spin text-primary" />
-          <p className="stat-label mt-1">
-            {t('analytics.loading', 'Chargement des statistiques...')}
-          </p>
-        </div>
+        <LoadingBlock
+          className="min-h-[50vh] justify-center py-0"
+          label={t('analytics.loading', 'Chargement des statistiques…')}
+        />
       </FullScreenPage>
     );
   }
@@ -107,9 +105,7 @@ export default function AnalyticsDashboardScreen() {
         {/* Retention chart */}
         <div className="glass rounded-3xl p-5">
           <div className="mb-4 flex items-center justify-between">
-            <p className="text-base font-bold text-text-primary">
-              {t('analytics.retention30', 'Retention sur 30 jours')}
-            </p>
+            <h2>{t('analytics.retention30', 'Retention sur 30 jours')}</h2>
           </div>
           {curve.length > 0 ? (
             <div className="flex h-40 items-end gap-1">

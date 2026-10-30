@@ -11,6 +11,7 @@
 
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { LoadingBlock } from '@/components/ui/Skeleton';
 import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   MapIcon as Map,
@@ -49,7 +50,7 @@ export default function CommunityView() {
     return (
       <FullScreenPage title={t('semantic.community', 'Communauté')}>
         <div className="p-4">
-          <p className="text-sm text-text-muted">{t('common.loading', 'Chargement...')}</p>
+          <LoadingBlock label={t('common.loading', 'Chargement…')} className="py-10" />
         </div>
       </FullScreenPage>
     );

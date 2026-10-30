@@ -10,7 +10,7 @@ import {
   AlertCircleIcon as AlertCircle,
 } from '@/components/ui/solar-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
-import { FamilySubnav, MemberRow, SectionCard } from '@/components/family/FamilyKit';
+import { FamilySubnav, MemberRow } from '@/components/family/FamilyKit';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { LoadingBlock } from '@/components/ui/Skeleton';
 import { useFamilySyncStore } from '@/store/family-sync-store';

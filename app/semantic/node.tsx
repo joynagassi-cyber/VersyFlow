@@ -16,6 +16,7 @@ import {
   Link02Icon as Link,
 } from '@/components/ui/solar-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
+import { LoadingBlock } from '@/components/ui/Skeleton';
 import { DuoIcon } from '@/components/ui/DuoIcon';
 import { Button } from '@/components/ui/button';
 import { HintNote, SectionCard, StatTile } from '@/components/family/FamilyKit';
@@ -47,7 +48,7 @@ export default function SemanticNodeScreen() {
   if (!data) {
     return (
       <FullScreenPage title={t('tree.nodeTitle', 'Nœud')} backPath="/semantic/tree">
-        <p className="text-sm text-text-muted">{t('common.loading', 'Chargement...')}</p>
+        <LoadingBlock label={t('common.loading', 'Chargement…')} className="py-10" />
       </FullScreenPage>
     );
   }

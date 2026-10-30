@@ -2063,6 +2063,33 @@ ion-tab-button::part(native):focus-visible {
   .link-action:hover { background: color-mix(in srgb, var(--acc, var(--color-primary)) 10%, transparent); }
 }
 
+/* Une carte qui EST un bouton répond au pointeur.
+   Les écrans premium écrivaient chacun leur survol (`.action-card`,
+   `.explore-book`, `.settings-data-card`, `.home-action-card`) ; les cartes
+   `.g1/.g2/.g3` des autres écrans ne bougeaient pas d'un pixel, ce qui se
+   sent immédiatement au trackpad. Ici, la règle est unique et ne concerne que
+   les cartes réellement actionnables. Sur écran tactile (pointeur grossier),
+   aucun survol : l'état resterait collé après le tap. */
+:where(button, a):is(.g1, .g2, .g3) {
+  transition:
+    transform var(--motion-fast) var(--ease-standard),
+    box-shadow var(--motion-fast) var(--ease-standard),
+    background-color var(--motion-fast) var(--ease-standard);
+}
+@media (hover: hover) and (pointer: fine) {
+  :where(button, a):is(.g1, .g2, .g3):not([aria-disabled='true']):hover {
+    transform: translateY(-1px);
+    box-shadow: inset 0 1px 0 var(--hi), 0 14px 40px var(--sh);
+  }
+}
+:where(button, a):is(.g1, .g2, .g3):not([aria-disabled='true']):active {
+  transform: translateY(0) scale(0.995);
+}
+@media (prefers-reduced-motion: reduce) {
+  :where(button, a):is(.g1, .g2, .g3):hover,
+  :where(button, a):is(.g1, .g2, .g3):active { transform: none; }
+}
+
 /* Titres DANS une carte premium : la même famille que les titres d'écran.
    Les cartes historiques écrivaient `<h2 class="text-base font-bold">` : un
    titre sans-serif gras, frère du titre serif de l'en-tête. Ici le titre de

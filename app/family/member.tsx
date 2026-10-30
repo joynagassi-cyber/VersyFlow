@@ -83,7 +83,7 @@ export default function FamilyMemberScreen() {
 
   return (
     <FullScreenPage
-      title={member?.name ?? t('common.loading', 'Chargement...')}
+      title={member?.name ?? '—'}
       subtitle={family.name}
       backPath="/family/members"
     >

@@ -21,7 +21,6 @@ import { Chip } from '@/components/ui/Chip';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { useFamilyRoom } from '@/hooks/useFamilyRoom';
 import { useFamilyRoomStore, type ActivityKind } from '@/store/family-room-store';
-import { cn } from '@/lib/utils';
 
 type Filter = 'all' | 'challenges' | 'levels';
 

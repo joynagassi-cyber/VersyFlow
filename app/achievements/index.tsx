@@ -304,9 +304,9 @@ export default function AchievementScreen() {
 
         {/* Tips */}
         <div className="g2 p-4">
-          <p className="mb-2 text-base font-bold text-text-primary">
+          <h2 className="mb-2">
             {t('achievements.howTo', 'Comment debloquer des succes')}
-          </p>
+          </h2>
           <div className="space-y-2">
             {[
               t('achievements.tip1', 'Memorisez des versets regulierement'),
