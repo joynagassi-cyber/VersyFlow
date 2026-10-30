@@ -108,7 +108,7 @@ export default function FlashcardScreen() {
       right={
         <button
           onClick={() => goBackSafely(navigate)}
-          className="flex h-9 w-9 items-center justify-center rounded-full bg-surface shadow-sm"
+          className="flex h-10 w-10 items-center justify-center rounded-full bg-surface-tint"
           aria-label={t('common.close', 'Fermer')}
         >
           <DuoIcon icon={Settings2} size={18} className="text-text-secondary" />

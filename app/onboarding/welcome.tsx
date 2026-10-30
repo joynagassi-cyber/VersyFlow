@@ -29,7 +29,7 @@ export default function WelcomeScreen() {
       footer={
         <button
           onClick={() => navigate('/onboarding/language-select')}
-          className="flex min-h-[54px] w-full items-center justify-center gap-2 rounded-full bg-primary text-[15px] font-bold text-primary-foreground shadow-[0_8px_24px_-6px_var(--ring)] transition active:scale-[0.98]"
+          className="flex min-h-[54px] w-full items-center justify-center gap-2 rounded-full bg-primary text-md font-bold text-primary-foreground shadow-[0_8px_24px_-6px_var(--ring)] transition active:scale-[0.98]"
         >
           {t('common.continue', 'Continuer')}
           <DuoIcon icon={ArrowRight01Icon} size={19} />
@@ -46,7 +46,7 @@ export default function WelcomeScreen() {
               <DuoIcon icon={BookOpen01Icon} size={16} color="var(--color-primary)" />
               {t('onboarding.slide1Title', 'Mémorisez la Parole avec science')}
             </p>
-            <p className="mt-1 text-[13px] leading-relaxed text-text-secondary">
+            <p className="mt-1 text-sm leading-relaxed text-text-secondary">
               {t(
                 'onboarding.slide1Desc',
                 'Un moteur de répétition espacée (FSRS) au service de votre foi.',
@@ -54,10 +54,10 @@ export default function WelcomeScreen() {
             </p>
           </div>
         </div>
-        <p className="border-t border-[var(--color-border)] pt-4 font-serif text-[17px] italic leading-relaxed text-text-primary">
+        <p className="border-t border-[var(--color-border)] pt-4 font-serif text-xl italic leading-relaxed text-text-primary">
           « Ta parole est une lampe à mes pieds, et une lumière sur mon sentier. »
         </p>
-        <p className="mt-2 text-[11px] font-bold uppercase tracking-[0.08em] text-primary">
+        <p className="mt-2 text-2xs font-bold uppercase tracking-[0.08em] text-primary">
           Psaumes 119:105 · LSG
         </p>
       </div>

@@ -84,7 +84,7 @@ export default function FamilySessionLiveScreen() {
         <SectionCard>
           <div className="flex items-center justify-between gap-2">
             <span
-              className={`flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-bold ${
+              className={`flex items-center gap-1 rounded-full px-2.5 py-1 text-2xs font-bold ${
                 online ? 'bg-success-light text-success' : 'bg-warning-light text-warning'
               }`}
             >

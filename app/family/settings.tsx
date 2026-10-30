@@ -107,7 +107,7 @@ export default function FamilySettingsScreen() {
               />
             ))}
             <span
-              className="ml-auto rounded-full px-2 py-1 text-[11px] font-semibold text-text-primary"
+              className="ml-auto rounded-full px-2 py-1 text-2xs font-semibold text-text-primary"
               style={{ backgroundColor: familyTint(family.color) }}
             >
               {t('familyPlus.currentColor', 'Couleur actuelle')}

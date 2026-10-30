@@ -107,7 +107,7 @@ export default function NotesScreen() {
                       <span className="text-sm font-semibold text-text-primary">
                         {formatVerseKey(note.verseKey)}
                       </span>
-                      <span className="ml-auto rounded-full bg-surface px-2 py-0.5 text-[10px] font-semibold text-text-muted">
+                      <span className="ml-auto rounded-full bg-surface px-2 py-0.5 text-3xs font-semibold text-text-muted">
                         {t('notes.private', 'Privé')}
                       </span>
                     </div>

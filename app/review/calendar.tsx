@@ -18,6 +18,7 @@ import {
 import FullScreenPage from '@/components/layout/FullScreenPage';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { relativeDayLabel } from '@/lib/relative-day';
 import { useActiveProfile } from '@/hooks/useActiveProfile';
 import { getFsrsEngine } from '@/services/fsrs-factory';
 import { ProgressService } from '@/services/progress-service';
@@ -101,7 +102,7 @@ export default function ReviewCalendarScreen() {
   const legendItems = [
     { key: 'review', label: t('review.dueSoon', "À réviser"), cls: 'bg-primary' },
     { key: 'memorized', label: t('reviewCalendar.created', 'Mémorisation ajoutée'), cls: 'bg-primary' },
-    { key: 'today', label: i18n.language === 'fr' ? "Aujourd'hui" : 'Today', cls: 'bg-surface-tint ring-2 ring-primary' },
+    { key: 'today', label: relativeDayLabel(Date.now(), i18n.resolvedLanguage || i18n.language), cls: 'bg-surface-tint ring-2 ring-primary' },
   ];
 
   const monthSummary = [
@@ -173,7 +174,7 @@ export default function ReviewCalendarScreen() {
               {due > 0 && (
                 <span
                   className={cn(
-                    'mt-0.5 rounded-full px-1.5 text-[10px] font-bold text-on-primary',
+                    'mt-0.5 rounded-full px-1.5 text-3xs font-bold text-on-primary',
                     'bg-primary',
                   )}
                 >

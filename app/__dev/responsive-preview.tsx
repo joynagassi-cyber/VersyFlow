@@ -178,27 +178,27 @@ function ScaledFrame({
       <header className="flex flex-wrap items-center gap-2">
         <DuoIcon icon={spec.icon} size={18} className="text-primary" />
         <h2 className="text-sm font-bold text-text-primary">{spec.label}</h2>
-        <span className="text-[11px] font-semibold text-text-muted">
+        <span className="text-2xs font-semibold text-text-muted">
           {spec.role === 'mobile' ? 'dans une coque de téléphone' : 'dans un écran de bureau'}
         </span>
-        <span className="rounded-full bg-surface-tint px-2 py-0.5 text-[11px] font-semibold tabular-nums text-text-secondary">
+        <span className="rounded-full bg-surface-tint px-2 py-0.5 text-2xs font-semibold tabular-nums text-text-secondary">
           {spec.width} × {spec.height} px · {Math.round(scale * 100)} %
         </span>
 
         {status.isolated === true && (
-          <span className="flex items-center gap-1 rounded-full bg-surface-tint px-2 py-0.5 text-[11px] font-semibold text-success">
+          <span className="flex items-center gap-1 rounded-full bg-surface-tint px-2 py-0.5 text-2xs font-semibold text-success">
             <DuoIcon icon={Ok} size={12} />
             stockage isolé
           </span>
         )}
         {status.isolated === false && (
-          <span className="flex items-center gap-1 rounded-full bg-surface-tint px-2 py-0.5 text-[11px] font-semibold text-error">
+          <span className="flex items-center gap-1 rounded-full bg-surface-tint px-2 py-0.5 text-2xs font-semibold text-error">
             <DuoIcon icon={Warn} size={12} />
             stockage non isolé — app non démarrée
           </span>
         )}
         {status.isolated === null && (
-          <span className="rounded-full bg-surface-tint px-2 py-0.5 text-[11px] font-semibold text-text-muted">
+          <span className="rounded-full bg-surface-tint px-2 py-0.5 text-2xs font-semibold text-text-muted">
             en attente
           </span>
         )}
@@ -209,7 +209,7 @@ function ScaledFrame({
             onClick={onToggleFreeze}
             aria-pressed={frozen}
             className={cn(
-              'rounded-lg px-2 py-1 text-[11px] font-semibold transition-colors',
+              'rounded-lg px-2 py-1 text-2xs font-semibold transition-colors',
               frozen
                 ? 'bg-primary text-on-primary'
                 : 'bg-surface-tint text-text-secondary hover:text-text-primary',
@@ -237,7 +237,7 @@ function ScaledFrame({
         </span>
       </header>
 
-      <p className="truncate text-[11px] text-text-muted">
+      <p className="truncate text-2xs text-text-muted">
         {status.path ?? '—'} · <span className="tabular-nums">{spec.width} px</span> de viewport
         interne
       </p>
@@ -257,7 +257,7 @@ function ScaledFrame({
           />
         </DeviceCase>
 
-        <p className="mt-2 text-center text-[11px] text-text-muted">
+        <p className="mt-2 text-center text-2xs text-text-muted">
           {spec.role === 'mobile'
             ? 'Coque de téléphone — la version mobile y tourne sur 390 px de large'
             : 'Écran de bureau — la version desktop y tourne sur 1440 px de large'}
@@ -377,7 +377,7 @@ export default function ResponsivePreviewPage() {
         </button>
         <div className="me-2">
           <h1 className="text-sm font-bold text-text-primary">Laboratoire responsive</h1>
-          <p className="text-[11px] text-text-muted">
+          <p className="text-2xs text-text-muted">
             Deux contextes réels · données de démonstration · aucun compte touché
           </p>
         </div>
@@ -418,7 +418,7 @@ export default function ResponsivePreviewPage() {
 
       {/* Ce que l'écran sélectionné peut réellement montrer */}
       {current && (
-        <div className="flex flex-wrap items-center gap-2 border-b border-border bg-surface px-4 py-2 text-[11px]">
+        <div className="flex flex-wrap items-center gap-2 border-b border-border bg-surface px-4 py-2 text-2xs">
           <span className="font-semibold text-text-primary">{current.path}</span>
           <span
             className={cn(
@@ -459,7 +459,7 @@ export default function ResponsivePreviewPage() {
         ))}
       </div>
 
-      <footer className="flex flex-wrap items-center gap-3 border-t border-border bg-surface px-4 py-2 text-[11px] text-text-muted">
+      <footer className="flex flex-wrap items-center gap-3 border-t border-border bg-surface px-4 py-2 text-2xs text-text-muted">
         <span className="flex items-center gap-1">
           <DuoIcon icon={Lock} size={12} />
           Chaque cadre a son propre stockage en mémoire : rien n’est écrit sur le compte réel.

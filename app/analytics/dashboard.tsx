@@ -47,7 +47,7 @@ export default function AnalyticsDashboardScreen() {
       <FullScreenPage title={t('analytics.title', 'Progression')} showBack>
         <div className="flex min-h-[50vh] flex-col items-center justify-center gap-3">
           <DuoIcon icon={Loader2} size={28} className="animate-spin text-primary" />
-          <p className="text-sm text-text-muted">
+          <p className="stat-label mt-1">
             {t('analytics.loading', 'Chargement des statistiques...')}
           </p>
         </div>
@@ -65,7 +65,8 @@ export default function AnalyticsDashboardScreen() {
       right={
         <button
           onClick={() => fireAndForget(loadData(), 'analytics:reload')}
-          className="flex h-9 w-9 items-center justify-center rounded-full bg-surface-tint"
+          aria-label={t('analytics.reload', 'Actualiser')}
+          className="flex h-10 w-10 items-center justify-center rounded-full bg-surface-tint"
         >
           <DuoIcon icon={RefreshCw} size={16} className="text-primary" />
         </button>
@@ -79,27 +80,27 @@ export default function AnalyticsDashboardScreen() {
               <DuoIcon icon={BookOpen} size={22} />
             </span>
             <div>
-              <p className="text-3xl font-extrabold text-text-primary tabular-nums">
+              <p className="stat-value text-3xl">
                 {stats?.totalVerses || 0}
               </p>
-              <p className="text-xs text-text-muted">
+              <p className="stat-label mt-1">
                 {t('analytics.versesMemorized', 'Versets memorises')}
               </p>
             </div>
           </div>
           <div className="glass rounded-2xl p-4 text-center">
-            <p className="text-2xl font-extrabold text-success tabular-nums">
+            <p className="stat-value text-2xl">
               {stats?.masteredVerses || 0}
             </p>
-            <p className="text-xs text-text-muted">
+            <p className="stat-label mt-1">
               {t('analytics.mastered', 'Maitrises')}
             </p>
           </div>
           <div className="glass rounded-2xl p-4 text-center">
-            <p className="text-2xl font-extrabold text-error tabular-nums">
+            <p className="stat-value text-2xl">
               {stats?.streakCount || 0}
             </p>
-            <p className="text-xs text-text-muted">{t('analytics.streak', 'Streak')}</p>
+            <p className="stat-label mt-1">{t('analytics.streak', 'Streak')}</p>
           </div>
         </div>
 
@@ -121,7 +122,7 @@ export default function AnalyticsDashboardScreen() {
                       backgroundColor: barColor(p.retention),
                     }}
                   />
-                  <span className="text-[10px] text-text-muted">
+                  <span className="text-3xs text-text-muted">
                     {new Date(p.date).getDate()}
                   </span>
                 </div>
@@ -133,7 +134,7 @@ export default function AnalyticsDashboardScreen() {
               <p className="text-sm font-semibold text-text-primary">
                 {t('analytics.noData', 'Aucune donnee de retention')}
               </p>
-              <p className="text-xs text-text-muted">
+              <p className="stat-label mt-1">
                 {t('analytics.noDataHint', 'Commencez a memoriser pour voir vos courbes')}
               </p>
             </div>
@@ -148,18 +149,18 @@ export default function AnalyticsDashboardScreen() {
             </p>
             <div className="grid grid-cols-2 gap-3 text-center">
               <div className="rounded-2xl bg-surface-tint p-4">
-                <p className="text-2xl font-extrabold text-text-primary tabular-nums">
+                <p className="stat-value text-2xl">
                   {stats.weeklyTrend.thisWeek}
                 </p>
-                <p className="text-xs text-text-muted">
+                <p className="stat-label mt-1">
                   {t('analytics.thisWeek', 'Cette semaine')}
                 </p>
               </div>
               <div className="rounded-2xl bg-surface-tint p-4">
-                <p className="text-2xl font-extrabold text-text-primary tabular-nums">
+                <p className="stat-value text-2xl">
                   {stats.weeklyTrend.lastWeek}
                 </p>
-                <p className="text-xs text-text-muted">
+                <p className="stat-label mt-1">
                   {t('analytics.lastWeek', 'Semaine derniere')}
                 </p>
               </div>
@@ -223,10 +224,10 @@ export default function AnalyticsDashboardScreen() {
 
         {/* Learning time */}
         <div className="glass rounded-3xl p-5 text-center">
-          <p className="text-3xl font-extrabold text-text-primary">
+          <p className="stat-value text-3xl">
             {getLearningTime()} min
           </p>
-          <p className="text-xs text-text-muted tabular-nums">
+          <p className="stat-label mt-1">
             {t('analytics.totalTime', 'Temps total d\'apprentissage')}
           </p>
         </div>

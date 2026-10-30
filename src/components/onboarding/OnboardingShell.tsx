@@ -34,7 +34,7 @@ export function OnboardingShell({
   return (
     <div className="screen-column-narrow flex min-h-full flex-col px-6 pb-8 pt-4">
       <div className="flex items-center justify-between">
-        <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-[11px] font-bold text-primary">
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-2xs font-bold text-primary">
           <DuoIcon icon={SparklesIcon} size={13} />
           VersyFlow
         </span>
@@ -54,11 +54,11 @@ export function OnboardingShell({
         transition={{ duration: 0.45, ease: 'easeOut' }}
         className="mt-10"
       >
-        <h1 className="font-serif text-[38px] font-normal leading-[1.06] tracking-tight text-text-primary">
+        <h1 className="font-serif text-display font-normal leading-[1.06] tracking-tight text-text-primary">
           {title}
         </h1>
         {subtitle && (
-          <p className="mt-3 text-[15px] leading-relaxed text-text-secondary">{subtitle}</p>
+          <p className="mt-3 text-md leading-relaxed text-text-secondary">{subtitle}</p>
         )}
       </motion.div>
 

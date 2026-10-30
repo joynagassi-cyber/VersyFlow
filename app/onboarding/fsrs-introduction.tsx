@@ -87,7 +87,7 @@ export default function FSRSIntroductionScreen() {
             ))}
           </svg>
           {/* X-axis labels */}
-          <div className="absolute inset-x-8 bottom-0 flex justify-between text-[10px] text-text-secondary">
+          <div className="absolute inset-x-8 bottom-0 flex justify-between text-3xs text-text-secondary">
             <span>Jour 1</span>
             <span>Jour 7</span>
             <span>Mois 1</span>

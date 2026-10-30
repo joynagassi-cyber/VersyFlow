@@ -187,7 +187,7 @@ export function DesktopRail() {
 
         <div className="my-2 h-px bg-border" role="presentation" />
 
-        <p className="rail-label px-2.5 pb-1 text-[11px] font-bold uppercase tracking-wide text-text-muted tabular-nums">
+        <p className="rail-label px-2.5 pb-1 text-2xs font-bold uppercase tracking-wide text-text-muted tabular-nums">
           {t('nav.menu', 'Navigation')}
         </p>
         <div className="flex flex-col gap-0.5">

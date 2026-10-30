@@ -169,7 +169,7 @@ export default function CollectionsScreen() {
       right={
         <button
           onClick={() => setCreating(true)}
-          className="flex h-9 w-9 items-center justify-center rounded-full bg-surface-tint"
+          className="flex h-10 w-10 items-center justify-center rounded-full bg-surface-tint"
         >
           <DuoIcon icon={Plus} size={18} className="text-primary" />
         </button>
@@ -344,6 +344,7 @@ export default function CollectionsScreen() {
             </button>
             <button
               onClick={submitCreate}
+              aria-label={t('collections.create', 'Créer la collection')}
               className="flex h-11 w-11 items-center justify-center rounded-full bg-primary text-on-primary"
             >
               <DuoIcon icon={Plus} size={20} />

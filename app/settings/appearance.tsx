@@ -275,7 +275,7 @@ export default function AppearanceScreen() {
               );
             })}
           </div>
-          <p className="mt-3 text-[11px] leading-relaxed text-text-muted">
+          <p className="mt-3 text-2xs leading-relaxed text-text-muted">
             {t('settings.themePresetHint', 'Thèmes officiels tweakcn — le mode Clair/Sombre ci-dessus choisit la variante de chaque thème.')}
           </p>
         </Section>
@@ -318,7 +318,7 @@ export default function AppearanceScreen() {
                       active && 'is-active',
                     )}
                   >
-                    <span className="appearance-gradient-label rounded-full px-2 py-0.5 text-[10px] font-bold capitalize">
+                    <span className="appearance-gradient-label rounded-full px-2 py-0.5 text-3xs font-bold capitalize">
                       {g.id.replace(/^colorbase-/, '').replace(/-/g, ' ')}
                     </span>
                   </button>
@@ -350,7 +350,7 @@ export default function AppearanceScreen() {
           )}
 
           {backgroundType === 'none' && (
-            <p className="text-[11px] leading-relaxed text-text-muted">
+            <p className="text-2xs leading-relaxed text-text-muted">
               {t('settings.bgNoneHint', 'Le fond suit simplement le thème choisi ci-dessus.')}
             </p>
           )}

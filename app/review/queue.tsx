@@ -17,11 +17,13 @@ import {
 import FullScreenPage from '@/components/layout/FullScreenPage';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { relativeDayLabel } from '@/lib/relative-day';
 import { useActiveProfile } from '@/hooks/useActiveProfile';
 import { getMemorizationService } from '@/services/memorization-service-factory';
 import { getFsrsEngine } from '@/services/fsrs-factory';
 import { ReviewQueueService } from '@/services/review-queue-service';
 import type { MemorizationRecord } from '@/domains/memorization/entities';
+import { LoadingBlock } from '@/components/ui/Skeleton';
 
 interface ReviewItem {
   record: MemorizationRecord;
@@ -67,16 +69,11 @@ export default function ReviewQueueScreen() {
   const totalDue = items.length;
   const estimatedTime = Math.ceil(totalDue * 2.5);
 
-  const formatDate = (timestamp: number | null) => {
-    if (!timestamp) return '';
-    const diffDays = Math.ceil((timestamp - Date.now()) / 86400000);
-    if (diffDays < 0) {
-      return t('review.overdue', `En retard de ${Math.abs(diffDays)} jour(s)`);
-    }
-    if (diffDays === 0) return i18n.language === 'fr' ? "Aujourd'hui" : 'Today';
-    if (diffDays === 1) return i18n.language === 'fr' ? 'Demain' : 'Tomorrow';
-    return i18n.language === 'fr' ? `Dans ${diffDays} jours` : `In ${diffDays} days`;
-  };
+  // Une seule règle de date pour toute l'app : le jour de CALENDRIER local,
+  // formaté par Intl dans la langue de l'utilisateur (45 locales), et non un
+  // ternaire français/anglais doublé d'un arrondi en tranches de 24 h.
+  const formatDate = (timestamp: number | null) =>
+    timestamp ? relativeDayLabel(timestamp, i18n.resolvedLanguage || i18n.language) : '';
 
   const renderSection = (title: string, list: ReviewItem[], icon: React.ReactNode) =>
     list.length === 0 ? null : (
@@ -114,7 +111,7 @@ export default function ReviewQueueScreen() {
                   <p className="text-base font-bold text-text-primary">{ref}</p>
                   <span
                     className={cn(
-                      'rounded-full px-2.5 py-1 text-[11px] font-semibold',
+                      'rounded-full px-2.5 py-1 text-2xs font-semibold',
                       over ? 'bg-error text-on-status' : 'bg-primary text-on-primary',
                     )}
                   >
@@ -137,12 +134,7 @@ export default function ReviewQueueScreen() {
   if (loading) {
     return (
       <FullScreenPage title={t('review.todayReviews', 'Révisions du jour')} backPath="/tabs/home" column="narrow">
-        <div className="flex flex-col items-center py-24">
-          <div className="screen-column animate-pulse space-y-3 px-6" aria-hidden><div className="h-4 w-2/5 rounded-full bg-surface-tint" /><div className="h-24 rounded-3xl bg-surface-tint" /><div className="h-24 rounded-3xl bg-surface-tint" /></div>
-          <p className="mt-4 text-sm text-text-muted">
-            {t('common.loading', 'Chargement des révisions...')}
-          </p>
-        </div>
+        <LoadingBlock label={t('common.loading', 'Chargement des révisions...')} />
       </FullScreenPage>
     );
   }
@@ -158,12 +150,10 @@ export default function ReviewQueueScreen() {
             {t('home.noReviews', 'Tout est à jour ! ✓')}
           </h2>
           <p className="mt-2 text-sm text-text-muted">
-            {i18n.language === 'fr'
-              ? 'Vous n\'avez aucune révision à faire pour le moment.'
-              : 'You have no reviews to do right now.'}
+            {t('review.historyEmptyHint', 'Vous n’avez aucune révision à faire pour le moment.')}
           </p>
           <Button className="mt-8" onClick={() => navigate('/tabs/home')}>
-            {i18n.language === 'fr' ? 'Retour à l\'accueil' : 'Back to home'}
+            {t('common.backToHome', 'Retour à l’accueil')}
           </Button>
         </div>
       </FullScreenPage>
@@ -174,17 +164,17 @@ export default function ReviewQueueScreen() {
     <FullScreenPage title={t('review.todayReviews', 'Révisions du jour')} backPath="/tabs/home" column="narrow">
       {/* Summary strip */}
       <div className="mb-4 flex flex-wrap items-center justify-center gap-2">
-        <span className="inline-flex items-center gap-1.5 rounded-full bg-primary px-3 py-1.5 text-[13px] font-semibold text-on-primary">
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-primary px-3 py-1.5 text-sm font-semibold text-on-primary">
           <DuoIcon icon={List} size={14} />
           {t('review.totalDue', { count: totalDue })}
         </span>
         {overdue.length > 0 && (
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-error px-3 py-1.5 text-[13px] font-semibold text-on-status">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-error px-3 py-1.5 text-sm font-semibold text-on-status">
             <DuoIcon icon={AlertCircle} size={14} />
             {overdue.length} {t('review.overdue', 'en retard')}
           </span>
         )}
-        <span className="inline-flex items-center gap-1.5 rounded-full bg-surface-tint px-3 py-1.5 text-[13px] font-semibold text-text-secondary">
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-surface-tint px-3 py-1.5 text-sm font-semibold text-text-secondary">
           <DuoIcon icon={Clock} size={14} />
           {t('review.estimatedTime', { minutes: estimatedTime })}
         </span>

@@ -112,7 +112,7 @@ export function QuickDock() {
                     <span className="icon-chip mb-2 flex h-11 w-11 items-center justify-center rounded-full">
                       <DuoIcon icon={Icon} size={20} />
                     </span>
-                    <span className="text-[11px] font-semibold text-text-primary">
+                    <span className="text-2xs font-semibold text-text-primary">
                       {t(a.key, DOCK_LABELS[a.key.split('.').pop() ?? ''])}
                     </span>
                   </button>

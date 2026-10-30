@@ -18,6 +18,7 @@ import { useActiveProfile } from '@/hooks/useActiveProfile';
 import { getMemorizationService } from '@/services/memorization-service-factory';
 import { getReviewLogRepository } from '@/infrastructure/repository/powersync-repositories';
 import type { ReviewLogEntry as DomainReviewLogEntry } from '@/domains/memorization/entities';
+import { LoadingBlock } from '@/components/ui/Skeleton';
 
 interface ReviewLogEntry {
   id: string;
@@ -157,10 +158,7 @@ export default function ReviewHistoryScreen() {
   if (loading) {
     return (
       <FullScreenPage title={t('nav.history', 'Historique')} showBack>
-        <div className="flex min-h-[50vh] flex-col items-center justify-center gap-3">
-          <div className="screen-column animate-pulse space-y-3 px-6" aria-hidden><div className="h-4 w-2/5 rounded-full bg-surface-tint" /><div className="h-24 rounded-3xl bg-surface-tint" /><div className="h-24 rounded-3xl bg-surface-tint" /></div>
-          <p className="text-sm text-text-muted">{t('common.loading', 'Chargement...')}</p>
-        </div>
+        <LoadingBlock className="min-h-[50vh] justify-center py-0" label={t('common.loading', 'Chargement...')} />
       </FullScreenPage>
     );
   }
@@ -201,17 +199,17 @@ export default function ReviewHistoryScreen() {
           <div className="mt-4 grid grid-cols-3 divide-x divide-[color:var(--color-divider)] text-center">
             <div>
               <p className="text-xl font-extrabold text-primary tabular-nums">{verse.totalReviews}</p>
-              <p className="text-[11px] text-text-muted">{t('history.reviews', 'Revisions')}</p>
+              <p className="text-2xs text-text-muted">{t('history.reviews', 'Revisions')}</p>
             </div>
             <div>
               <p className="text-xl font-extrabold text-primary tabular-nums">
                 {verse.averageStability.toFixed(1)}j
               </p>
-              <p className="text-[11px] text-text-muted">{t('history.stability', 'Stabilite')}</p>
+              <p className="text-2xs text-text-muted">{t('history.stability', 'Stabilite')}</p>
             </div>
             <div>
               <p className="text-xl font-extrabold text-primary">{progress}%</p>
-              <p className="text-[11px] text-text-muted">{t('history.success', 'Reussite')}</p>
+              <p className="text-2xs text-text-muted">{t('history.success', 'Reussite')}</p>
             </div>
           </div>
         </div>
@@ -248,7 +246,7 @@ export default function ReviewHistoryScreen() {
                     </div>
                     <div className="flex gap-4 text-xs">
                       <div>
-                        <p className="text-[10px] uppercase tracking-wide text-text-muted">
+                        <p className="text-3xs uppercase tracking-wide text-text-muted">
                           {t('history.stability', 'Stabilite')}
                         </p>
                         <p className="font-medium text-text-primary tabular-nums">
@@ -258,7 +256,7 @@ export default function ReviewHistoryScreen() {
                         </p>
                       </div>
                       <div>
-                        <p className="text-[10px] uppercase tracking-wide text-text-muted">
+                        <p className="text-3xs uppercase tracking-wide text-text-muted">
                           {t('history.difficulty', 'Difficulte')}
                         </p>
                         <p className="font-medium text-text-primary tabular-nums">
@@ -285,23 +283,23 @@ export default function ReviewHistoryScreen() {
                 <DuoIcon icon={TrendingUp} size={20} />
               </span>
               <div>
-                <p className="text-2xl font-extrabold text-text-primary tabular-nums">
+                <p className="stat-value text-2xl">
                   {(verse.averageStability * 10).toFixed(0)}%
                 </p>
-                <p className="text-xs text-text-muted">
+                <p className="stat-label mt-1">
                   {t('history.retention', 'Retention estimee')}
                 </p>
               </div>
             </div>
             <div className="g2 p-4 text-center">
-              <p className="text-2xl font-extrabold text-success">{goodOrEasy}</p>
-              <p className="text-xs text-text-muted">{t('history.goodEasy', 'Bon / Facile')}</p>
+              <p className="stat-value text-2xl">{goodOrEasy}</p>
+              <p className="stat-label mt-1">{t('history.goodEasy', 'Bon / Facile')}</p>
             </div>
             <div className="g2 p-4 text-center">
-              <p className="text-2xl font-extrabold text-error tabular-nums">
+              <p className="stat-value text-2xl">
                 {logs.filter((h) => h.rating === Rating.AGAIN).length}
               </p>
-              <p className="text-xs text-text-muted">{t('history.toReview', 'A revoir')}</p>
+              <p className="stat-label mt-1">{t('history.toReview', 'A revoir')}</p>
             </div>
           </div>
         </div>

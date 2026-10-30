@@ -41,7 +41,7 @@ export function MobileShell() {
           <div className="mobile-header g1 flex items-center justify-between px-4 py-2">
             <button
               onClick={openMenu}
-              className="rounded-full p-1.5 active:bg-surface-tint"
+              className="touch-target rounded-full active:bg-surface-tint"
               aria-label={t('shell.openMenu', 'Ouvrir le menu')}
             >
               <DuoIcon icon={Menu01Icon} size={23} color="var(--color-text-primary)" />

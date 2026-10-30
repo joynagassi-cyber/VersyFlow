@@ -31,6 +31,7 @@ import { useChapterSemanticTags } from '@/hooks/useSemanticTags';
 import { useBibleData } from '@/hooks/useBibleData';
 import ManuscriptView from '@/components/bible/ManuscriptView';
 import VerseActionBar from '@/components/bible/VerseActionBar';
+import { Skeleton } from '@/components/ui/Skeleton';
 
 type ViewMode = 'books' | 'chapters' | 'verses';
 
@@ -161,7 +162,8 @@ export default function BibleExplorerScreen() {
           {query && (
             <button
               onClick={() => setQuery('')}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted"
+              aria-label={t('common.clear', 'Effacer la recherche')}
+              className="touch-target absolute right-0 top-1/2 -translate-y-1/2 text-text-muted"
             >
               <DuoIcon icon={X} size={16} />
             </button>
@@ -303,10 +305,10 @@ export default function BibleExplorerScreen() {
               with tappable inline verse numbers. */}
           {status === 'loading' ? (
             <div className="g2 space-y-3 p-5">
-              <div className="h-4 w-3/4 animate-pulse rounded bg-surface-tint" />
-              <div className="h-4 w-2/3 animate-pulse rounded bg-surface-tint" />
-              <div className="h-4 w-full animate-pulse rounded bg-surface-tint" />
-              <div className="h-4 w-1/2 animate-pulse rounded bg-surface-tint" />
+              <Skeleton className="h-4 w-3/4 rounded" />
+              <Skeleton className="h-4 w-2/3 rounded" />
+              <Skeleton className="h-4 w-full rounded" />
+              <Skeleton className="h-4 w-1/2 rounded" />
             </div>
           ) : (
             <ManuscriptView

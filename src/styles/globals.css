@@ -1786,3 +1786,202 @@ html[data-app-bg='gradient'] .text-primary { color: var(--acc-text); }
   html[data-app-bg='gradient'] button[class*='bg-primary/'] { background-image: var(--glass-gradient); color: var(--tx); }
   html[data-app-bg='gradient'] .settings-premium .settings-toggle[aria-pressed='true'] { background: var(--gradient-action); }
 }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   FINITION — les invariants d'interaction, écrits une seule fois
+   ══════════════════════════════════════════════════════════════════════════
+   Ce bloc ne dépend d'aucun écran, d'aucun preset, d'aucun composant. Il
+   répare ce que l'œil remarque immédiatement dans une application « presque
+   finie » : pas d'anneau de focus au clavier, état désactivé incohérent,
+   sélection de texte bleue du navigateur, flash gris au tap, animations qui
+   ignorent `prefers-reduced-motion`, durées de transition improvisées.
+
+   Aucune couleur littérale, aucune priorité forcée : tout vient du thème actif.
+   Ces règles sont volontairement NON layerisées : elles gagnent sur les
+   utilitaires Tailwind, sans écraser les composants qui définissent déjà
+   leur propre traitement (spécificité nulle via `:where`). */
+
+:root {
+  /* Durées et courbes nommées : un mouvement se choisit, il ne s'invente pas. */
+  --motion-instant: 90ms;
+  --motion-fast: 140ms;
+  --motion-base: 200ms;
+  --motion-slow: 320ms;
+  --ease-standard: cubic-bezier(0.2, 0.6, 0.3, 1);
+  --ease-emphasized: cubic-bezier(0.22, 0.61, 0.36, 1);
+  /* Un seul anneau de focus, une seule cible tactile minimale. */
+  --focus-ring-width: 2px;
+  --focus-ring-offset: 2px;
+  --tap-min: 40px;
+}
+
+/* 1. Focus clavier — visible, contrasté, identique partout.
+   `:where()` garde une spécificité nulle : les écrans qui dessinent déjà leur
+   propre anneau (Apparence, Réglages) le conservent, les autres héritent de
+   celui-ci. Les champs de saisie sont exclus : ils portent leur propre
+   traitement (bordure d'accent + halo), un contour externe les alourdirait. */
+:where(a, button, [role='button'], [role='tab'], [role='menuitem'],
+  [role='option'], [role='switch'], summary, [tabindex]:not([tabindex='-1'])):focus-visible {
+  outline: var(--focus-ring-width) solid var(--acc-text, var(--color-primary));
+  outline-offset: var(--focus-ring-offset);
+}
+:where(input, textarea, select):focus-visible { outline: none; }
+
+/* 2. État désactivé — un seul gréement, jamais une confusion avec un survol. */
+:where(button, [role='button'], [role='tab']):is([disabled], [aria-disabled='true']) {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* 3. Sélection de texte teintée par l'accent du thème, pas le bleu du système. */
+::selection {
+  background: color-mix(in srgb, var(--acc, var(--color-primary)) 26%, transparent);
+  color: inherit;
+}
+/* Curseur de saisie au même accent. */
+:where(input, textarea, [contenteditable='true']) { caret-color: var(--acc, var(--color-primary)); }
+
+/* 4. Ressenti natif : aucun flash gris au tap, aucun délai de double-tap. */
+html { -webkit-tap-highlight-color: transparent; }
+:where(a, button, [role='button'], summary, label[for]) { touch-action: manipulation; }
+
+/* 5. Mouvement réduit, respecté GLOBALEMENT (pas écran par écran).
+   Les indicateurs de chargement restent animés : sans eux, l'attente devient
+   invisible — c'est le seul mouvement qui porte de l'information. */
+@media (prefers-reduced-motion: reduce) {
+  :where(*, *::before, *::after) {
+    animation: none;
+    transition: none;
+    scroll-behavior: auto;
+  }
+  .animate-spin { animation: spin 1.4s linear infinite; }
+  .skeleton::after { animation: none; opacity: 0; }
+}
+
+/* 6. Cible tactile minimale — pour les commandes icône seule des coquilles.
+   On ne force rien sur les puces de texte (`px-2 py-0.5`) : une cible plus
+   grande qu'une ligne de texte casserait les listes denses. */
+.touch-target {
+  display: inline-grid;
+  place-items: center;
+  min-width: var(--tap-min);
+  min-height: var(--tap-min);
+}
+
+/* 7. Squelette de chargement — un seul matériau, un seul rythme.
+   Le balayage est un dégradé du TEXTE du thème (jamais un gris figé) ; il est
+   supprimé par la règle 5 en mouvement réduit, et le bloc reste lisible. */
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--tx, var(--color-text-primary)) 9%, transparent);
+  border-radius: 12px;
+}
+.skeleton::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--tx, var(--color-text-primary)) 7%, transparent),
+    transparent
+  );
+  animation: skeleton-sweep 1.4s var(--ease-standard) infinite;
+}
+@keyframes skeleton-sweep {
+  to { transform: translateX(100%); }
+}
+
+/* 8. Champs de saisie — un seul traitement de focus, identique partout.
+   Les composants (`Input`, `Select`, `textarea`) partageaient trois
+   conventions : bordure seule, anneau Tailwind, ou rien. Le halo ci-dessous
+   est calculé sur l'accent du thème (`color-mix`), donc il reste lisible sur
+   les 39 presets ; il remplace les `focus:ring-*` locaux, qui pointaient vers
+   un accent brut parfois invisible en sombre. Les cases et boutons radio sont
+   exclus : leur état est déjà porté par la coche. */
+:where(input:not([type='checkbox']):not([type='radio']), textarea, select, [role='combobox']):focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 18%, transparent);
+}
+
+/* 9. Titres et chiffres — deux familles, jamais trois.
+   Les écrans premium titrent en serif regular (`.progress-heading h1`,
+   `.home-greeting h1`) ; les écrans profonds titraient en sans-serif gras.
+   Une seule règle suffit : les titres prennent la serif du preset et la
+   graisse 400, les utilitaires `font-bold`/`font-extrabold` ne servent plus
+   qu'à du texte courant. Les composants qui définissent déjà leur titre
+   gardent leur taille — seule la famille change. */
+:is(h1, h2, h3) {
+  font-family: var(--font-serif, Georgia), serif;
+  font-weight: 400;
+}
+
+/* Chiffre clé : serif, tabulaire, accent lisible. `.stat-value` ne fixe PAS
+   la taille — chaque écran garde son échelle (`text-2xl`, `text-3xl`…). */
+.stat-value {
+  font-family: var(--font-serif, Georgia), serif;
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+  line-height: 1.05;
+  color: var(--acc-text, var(--color-primary));
+}
+/* Libellé de statistique : micro-capitale discrète, la même que les écrans
+   premium (`.home-label`, `.progress-label`). */
+.stat-label {
+  color: var(--mut, var(--color-text-muted));
+  font-family: var(--font-sans, Inter), sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* 10. Les composants Ionic (FAB, boutons, onglets natifs) vivent dans un
+   Shadow DOM : l'anneau global ne les atteint pas. Ces trois `::part`
+   couvrent les seules commandes Ionic réellement utilisées par l'app. */
+ion-fab-button::part(native):focus-visible,
+ion-button::part(native):focus-visible,
+ion-tab-button::part(native):focus-visible {
+  outline: var(--focus-ring-width) solid var(--acc-text, var(--color-primary));
+  outline-offset: var(--focus-ring-offset);
+}
+
+/* 11. Affordance d'une carte cliquable — un seul comportement, partout.
+   ~90 cartes sont devenues des boutons `.g2`/`.glass` ; sans règle commune,
+   chacune héritait du survol du navigateur ou d'un `active:scale` local.
+   Ici : un liseré qui prend l'accent, une élévation de 1 px au pointeur, un
+   enfoncement de 1,5 % au doigt. Aucun déplacement au clavier (`:hover` ne
+   s'applique pas), et rien en mouvement réduit (règle 5 : transitions nulles,
+   l'élévation est neutralisée explicitement ci-dessous). */
+@media (hover: hover) and (pointer: fine) {
+  :is(button, a, [role='button']):is(.g1, .g2, .g3, .glass) {
+    transition:
+      transform var(--motion-fast) var(--ease-standard),
+      border-color var(--motion-fast) var(--ease-standard),
+      box-shadow var(--motion-fast) var(--ease-standard);
+  }
+  :is(button, a, [role='button']):is(.g1, .g2, .g3, .glass):hover {
+    border-color: color-mix(in srgb, var(--acc, var(--color-primary)) 40%, var(--bd));
+    transform: translateY(-1px);
+    box-shadow: inset 0 1px 0 var(--hi), 0 14px 38px var(--sh);
+  }
+  :is(button, a, [role='button']):is(.g1, .g2, .g3, .glass):active {
+    transform: translateY(0) scale(0.997);
+  }
+}
+@media (pointer: coarse) {
+  :is(button, a, [role='button']):is(.g1, .g2, .g3, .glass):active {
+    transform: scale(0.985);
+    transition: transform var(--motion-instant) var(--ease-standard);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  :is(button, a, [role='button']):is(.g1, .g2, .g3, .glass):hover,
+  :is(button, a, [role='button']):is(.g1, .g2, .g3, .glass):active {
+    transform: none;
+  }
+}

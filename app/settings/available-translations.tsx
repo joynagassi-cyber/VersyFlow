@@ -232,12 +232,12 @@ export default function AvailableTranslationsScreen() {
                 )}
               </p>
               {isActive && (
-                <span className="rounded-full bg-primary px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-on-primary">
+                <span className="rounded-full bg-primary px-2 py-0.5 text-3xs font-bold uppercase tracking-wide text-on-primary">
                   {t('common.active', 'Active')}
                 </span>
               )}
               {isLocal && !isActive && (
-                <span className="inline-flex items-center gap-1 rounded-full bg-success-light px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-success">
+                <span className="inline-flex items-center gap-1 rounded-full bg-success-light px-2 py-0.5 text-3xs font-bold uppercase tracking-wide text-success">
                   <DuoIcon icon={CircleCheck} size={11} />
                   {t('settings.localAvailable', 'En local')}
                 </span>
@@ -251,7 +251,7 @@ export default function AvailableTranslationsScreen() {
             {/* Real streaming progress — percent + Mo reçus / total + cancel */}
             {downloading && (
               <div className="mt-2.5">
-                <div className="mb-1 flex items-center justify-between text-[11px] font-semibold">
+                <div className="mb-1 flex items-center justify-between text-2xs font-semibold">
                   <span className="text-primary">{Math.round(state.percent)} %</span>
                   <span className="tabular-nums text-text-muted">
                     {formatBytes(state.receivedBytes)} / {formatBytes(entry.sizeBytes)}
@@ -359,20 +359,20 @@ export default function AvailableTranslationsScreen() {
             </span>
             <div>
               <p className="text-sm font-bold text-text-primary">{groupLabel}</p>
-              <p className="text-[11px] text-text-muted">
+              <p className="text-2xs text-text-muted">
                 {t('settings.langVersionsCount', { count: ids.length })}
               </p>
             </div>
           </div>
           {local.length > 0 && (
-            <span className="rounded-full bg-success-light px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-success">
+            <span className="rounded-full bg-success-light px-2.5 py-1 text-3xs font-bold uppercase tracking-wide text-success">
               {local.length} {t('settings.localAvailable', 'en local')}
             </span>
           )}
         </div>
 
         {local.length > 0 && (
-          <div className="mb-2 flex items-center gap-1.5 px-1 text-[11px] font-bold uppercase tracking-wide text-text-tertiary">
+          <div className="mb-2 flex items-center gap-1.5 px-1 text-2xs font-bold uppercase tracking-wide text-text-tertiary">
             <DuoIcon icon={CircleCheck} size={13} className="text-success" />
             {t('settings.localVersions', 'Disponible en local')}
           </div>
@@ -381,7 +381,7 @@ export default function AvailableTranslationsScreen() {
 
         {remote.length > 0 && (
           <>
-            <div className="mt-3 mb-2 flex items-center gap-1.5 px-1 text-[11px] font-bold uppercase tracking-wide text-text-tertiary">
+            <div className="mt-3 mb-2 flex items-center gap-1.5 px-1 text-2xs font-bold uppercase tracking-wide text-text-tertiary">
               <DuoIcon icon={Download} size={13} />
               {t('settings.toDownload', 'À télécharger')}
             </div>

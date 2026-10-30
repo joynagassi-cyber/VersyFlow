@@ -75,6 +75,7 @@ export default function FlashcardScreen() {
           </button>
           <button
             onClick={() => setRevealed(0)}
+            aria-label={t('memory.restartReveal', 'Revoir depuis le début')}
             className="flex items-center justify-center gap-2 rounded-2xl border border-border px-4 text-text-secondary"
           >
             <DuoIcon icon={RotateCcw} size={18} />

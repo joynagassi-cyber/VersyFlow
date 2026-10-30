@@ -70,7 +70,7 @@ export default function LanguagePickerScreen() {
                     {lang.name}
                   </span>
                   {lang.rtl && (
-                    <span className="rounded bg-surface-tint px-2 py-0.5 text-[11px] font-semibold text-primary">
+                    <span className="rounded bg-surface-tint px-2 py-0.5 text-2xs font-semibold text-primary">
                       RTL
                     </span>
                   )}

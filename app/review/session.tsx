@@ -29,6 +29,7 @@ import { Rating } from '@/services/review-rating-service';
 import type { MemorizationRecord } from '@/domains/memorization/entities';
 import { eventBus, DomainEventTypes } from '@/services/events-service';
 import { fireAndForget } from '@/lib/fire-and-forget';
+import { LoadingBlock } from '@/components/ui/Skeleton';
 
 interface ReviewItem {
   record: MemorizationRecord;
@@ -229,12 +230,7 @@ export default function ReviewSessionScreen() {
   if (loading) {
     return (
       <FullScreenPage title={t('review.startReview', 'Révision')} backPath="/review/queue">
-        <div className="flex flex-col items-center py-24">
-          <div className="screen-column animate-pulse space-y-3 px-6" aria-hidden><div className="h-4 w-2/5 rounded-full bg-surface-tint" /><div className="h-24 rounded-3xl bg-surface-tint" /><div className="h-24 rounded-3xl bg-surface-tint" /></div>
-          <p className="mt-4 text-sm text-text-muted">
-            {t('common.loading', 'Chargement de la session...')}
-          </p>
-        </div>
+        <LoadingBlock label={t('common.loading', 'Chargement de la session...')} />
       </FullScreenPage>
     );
   }

@@ -723,6 +723,7 @@ export const fr = {
   },
   analytics: {
     title: 'Progression',
+    reload: 'Actualiser',
     loading: 'Chargement des statistiques...',
     versesMemorized: 'Versets mémorisés',
     mastered: 'Maîtrisés',
@@ -742,6 +743,7 @@ export const fr = {
   },
   memory: {
     flashcard: 'Flashcard',
+    restartReveal: 'Revoir depuis le début',
     reveal: 'Révéler',
     chooseMethod: 'Choisir une méthode',
     start: 'Commencer',

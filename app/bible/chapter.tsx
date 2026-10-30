@@ -23,6 +23,7 @@ import { useChapterSemanticTags } from '@/hooks/useSemanticTags';
 import { useBibleData } from '@/hooks/useBibleData';
 import ManuscriptView from '@/components/bible/ManuscriptView';
 import VerseActionBar from '@/components/bible/VerseActionBar';
+import { Skeleton } from '@/components/ui/Skeleton';
 
 function formatBytes(bytes: number): string {
   if (bytes < 1024 * 1024) return `${Math.ceil(bytes / 1024)} Ko`;
@@ -121,7 +122,7 @@ export default function ChapterScreen() {
                         style={{ width: `${Math.max(2, downloadPercent)}%` }}
                       />
                     </div>
-                    <p className="mt-1 text-right text-[11px] font-semibold tabular-nums text-primary">
+                    <p className="mt-1 text-right text-2xs font-semibold tabular-nums text-primary">
                       {Math.round(downloadPercent)} %
                     </p>
                   </div>
@@ -158,10 +159,10 @@ export default function ChapterScreen() {
             with tappable inline verse numbers. */}
         {status === 'loading' ? (
           <div className="g2 space-y-3 p-5">
-            <div className="h-4 w-3/4 animate-pulse rounded bg-surface-tint" />
-            <div className="h-4 w-2/3 animate-pulse rounded bg-surface-tint" />
-            <div className="h-4 w-full animate-pulse rounded bg-surface-tint" />
-            <div className="h-4 w-1/2 animate-pulse rounded bg-surface-tint" />
+            <Skeleton className="h-4 w-3/4 rounded" />
+            <Skeleton className="h-4 w-2/3 rounded" />
+            <Skeleton className="h-4 w-full rounded" />
+            <Skeleton className="h-4 w-1/2 rounded" />
           </div>
         ) : (
           <ManuscriptView

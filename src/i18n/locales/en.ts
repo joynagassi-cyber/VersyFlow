@@ -720,6 +720,7 @@ export const en = {
   },
   analytics: {
     title: 'Progress',
+    reload: 'Refresh',
     loading: 'Loading statistics...',
     versesMemorized: 'Verses memorized',
     mastered: 'Mastered',
@@ -739,6 +740,7 @@ export const en = {
   },
   memory: {
     flashcard: 'Flashcard',
+    restartReveal: 'Start over',
     reveal: 'Reveal',
     chooseMethod: 'Choose a method',
     start: 'Start',

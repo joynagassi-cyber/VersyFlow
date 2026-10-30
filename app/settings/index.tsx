@@ -201,7 +201,7 @@ export default function SettingsScreen() {
             {/* Compact version-type switch — writes bibleVersionType, which
                 filters the onboarding translation picker. */}
             <div className="mt-2 flex items-center gap-1.5">
-              <span className="text-[10px] font-semibold uppercase tracking-wide text-text-muted">
+              <span className="text-3xs font-semibold uppercase tracking-wide text-text-muted">
                 {t('settings.versionTypeBadge', 'Type de version')}
               </span>
               <div className="flex gap-1">
@@ -210,7 +210,7 @@ export default function SettingsScreen() {
                     key={v.id}
                     onClick={() => setBibleVersionType(v.id)}
                     className={cn(
-                      'rounded-full px-2 py-0.5 text-[11px] font-semibold transition',
+                      'rounded-full px-2 py-0.5 text-2xs font-semibold transition',
                       bibleVersionType === v.id
                         ? 'bg-primary text-on-primary'
                         : 'bg-surface-tint text-text-secondary',

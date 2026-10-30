@@ -45,7 +45,7 @@ export default function LanguageSettingsScreen() {
                 <span className="flex items-center gap-2">
                   <span className="text-lg font-semibold text-text-primary">{lang.name}</span>
                   {lang.rtl && (
-                    <span className="rounded bg-surface-tint px-1.5 py-0.5 text-[10px] font-bold text-primary">
+                    <span className="rounded bg-surface-tint px-1.5 py-0.5 text-3xs font-bold text-primary">
                       RTL
                     </span>
                   )}

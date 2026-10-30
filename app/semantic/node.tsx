@@ -110,7 +110,7 @@ export default function SemanticNodeScreen() {
                     <span className="min-w-0 flex-1 truncate text-sm text-text-primary">
                       {conceptLabel(child.concept, lang)}
                     </span>
-                    <span className="text-[11px] text-text-muted">
+                    <span className="text-2xs text-text-muted">
                       {child.via?.relationType ?? 'RELATED'}
                     </span>
                   </button>
