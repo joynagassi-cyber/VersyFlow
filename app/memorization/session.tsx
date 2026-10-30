@@ -339,7 +339,7 @@ export default function MemorizationSession() {
       </div>
 
       {/* Verse text */}
-      <div className="rounded-2xl border border-border bg-surface p-5 shadow-sm">
+      <div className="g2 p-5">
         <p className="bible-text text-base leading-7 text-text-primary">{verseData?.text}</p>
         <p className="mt-3 text-xs text-text-tertiary">
           {t('session.tapToReveal', 'Appuyez pour révéler')}

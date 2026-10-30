@@ -38,7 +38,7 @@ export default function PrivacyScreen() {
       backPath="/settings"
     >
       <div className="screen-column space-y-4">
-        <div className="glass space-y-1 rounded-2xl bg-surface p-2 shadow-sm">
+        <div className="glass space-y-1 rounded-2xl p-2">
           <p className="px-3 pt-2 text-base font-bold text-text-primary">
             {t('settings.privacyTitle', 'Donnees & confidentialite')}
           </p>
@@ -56,7 +56,7 @@ export default function PrivacyScreen() {
           </div>
         </div>
 
-        <div className="glass overflow-hidden rounded-2xl bg-surface shadow-sm">
+        <div className="glass overflow-hidden rounded-2xl">
           <p className="px-4 pt-3 text-base font-bold text-text-primary">
             {t('settings.dataManagement', 'Gestion des donnees')}
           </p>

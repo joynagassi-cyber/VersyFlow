@@ -30,7 +30,7 @@ export function SectionCard({
   className?: string;
 }) {
   return (
-    <section className={cn('rounded-2xl border border-border bg-surface p-4 shadow-sm', className)}>
+    <section className={cn('g2 p-4', className)}>
       {(title || action) && (
         <header className="mb-3 flex items-center justify-between gap-2">
           {title && (
@@ -58,7 +58,7 @@ export function StatTile({
 }) {
   return (
     <div className={cn('rounded-xl bg-surface-tint p-3 text-center', className)}>
-      <p className="text-xl font-bold tabular-nums text-text-primary">{value}</p>
+      <p className="text-[22px] font-normal tabular-nums text-primary">{value}</p>
       <p className="mt-0.5 text-[11px] font-semibold uppercase tracking-wide text-text-muted">
         {label}
       </p>

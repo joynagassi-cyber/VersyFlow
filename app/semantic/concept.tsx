@@ -147,7 +147,7 @@ export default function ConceptView() {
                   <button
                     key={key}
                     onClick={() => navigate(`/semantic/verse?verseRef=${encodeURIComponent(key)}`)}
-                    className="flex items-center justify-between rounded-xl bg-surface p-3 text-left shadow-sm transition-transform active:scale-[0.99]"
+                    className="g2 flex items-center justify-between p-3 text-left transition-transform active:scale-[0.99]"
                   >
                     <div>
                       <p className="text-sm font-semibold text-text-primary">{key}</p>
@@ -177,7 +177,7 @@ export default function ConceptView() {
                 <button
                   key={c.id}
                   onClick={() => navigate(`/semantic/community?communityId=${encodeURIComponent(c.id)}`)}
-                  className="flex items-center justify-between rounded-xl bg-surface p-3 text-left shadow-sm transition-transform active:scale-[0.99]"
+                  className="g2 flex items-center justify-between p-3 text-left transition-transform active:scale-[0.99]"
                 >
                   <div>
                     <p className="text-sm font-semibold text-text-primary">{c.name}</p>
@@ -206,7 +206,7 @@ export default function ConceptView() {
                 <button
                   key={node.concept.id}
                   onClick={() => navigate(`/semantic/concept?conceptId=${encodeURIComponent(node.concept.id)}`)}
-                  className="flex items-center justify-between rounded-xl bg-surface p-3 text-left shadow-sm transition-transform active:scale-[0.99]"
+                  className="g2 flex items-center justify-between p-3 text-left transition-transform active:scale-[0.99]"
                 >
                   <div className="flex items-center gap-2">
                     <DuoIcon icon={GitBranch} size={14} className="text-text-muted" />

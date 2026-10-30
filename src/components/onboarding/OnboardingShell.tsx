@@ -54,7 +54,7 @@ export function OnboardingShell({
         transition={{ duration: 0.45, ease: 'easeOut' }}
         className="mt-10"
       >
-        <h1 className="text-[34px] font-extrabold leading-[1.08] tracking-tight text-text-primary">
+        <h1 className="font-serif text-[38px] font-normal leading-[1.06] tracking-tight text-text-primary">
           {title}
         </h1>
         {subtitle && (

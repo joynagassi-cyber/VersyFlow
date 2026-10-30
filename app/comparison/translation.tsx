@@ -240,7 +240,7 @@ export default function TranslationComparisonScreen() {
             <div
               key={r.id}
               className={cn(
-                'bible-card rounded-2xl bg-surface p-4 shadow-sm transition',
+                'bible-card rounded-2xl p-4 transition',
                 r.id === bibleTranslation && 'ring-1 ring-primary/40',
               )}
             >

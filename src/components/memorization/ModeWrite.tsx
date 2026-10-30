@@ -68,7 +68,7 @@ export function ModeWrite({
   return (
     <div className="space-y-3">
       {/* Title case — separate from the verse (per user requirement) */}
-      <div className="rounded-2xl bg-surface p-4 shadow-sm">
+      <div className="g2 p-4">
         <p className="mem-label">{t('workspace.titleCase', 'TITRE DU VERSET')}</p>
         <p className="text-base font-bold text-text-primary">{referenceLabel}</p>
       </div>

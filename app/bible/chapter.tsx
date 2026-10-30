@@ -90,7 +90,7 @@ export default function ChapterScreen() {
       <div className="flex flex-col gap-3">
         {/* Download-on-demand banner */}
         {showDownloadBanner && (
-          <div className="rounded-2xl bg-surface p-4 shadow-sm">
+          <div className="g2 p-4">
             <div className="flex items-start gap-3">
               <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-surface-tint text-primary">
                 {status === 'downloading' ? (
@@ -157,7 +157,7 @@ export default function ChapterScreen() {
         {/* Manuscript flow: the chapter as one continuous serif text,
             with tappable inline verse numbers. */}
         {status === 'loading' ? (
-          <div className="space-y-3 rounded-3xl bg-surface p-5 shadow-sm">
+          <div className="g2 space-y-3 p-5">
             <div className="h-4 w-3/4 animate-pulse rounded bg-surface-tint" />
             <div className="h-4 w-2/3 animate-pulse rounded bg-surface-tint" />
             <div className="h-4 w-full animate-pulse rounded bg-surface-tint" />

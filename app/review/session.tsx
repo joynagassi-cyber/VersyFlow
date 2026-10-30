@@ -218,10 +218,10 @@ export default function ReviewSessionScreen() {
 
   const ratingOptions = useMemo(
     () => [
-      { rating: Rating.AGAIN, icon: <DuoIcon icon={RotateCcw} size={20} />, cls: 'bg-error text-[color:var(--on)]' },
-      { rating: Rating.HARD, icon: <DuoIcon icon={X} size={20} />, cls: 'bg-warning text-[color:var(--on)]' },
-      { rating: Rating.GOOD, icon: <DuoIcon icon={Check} size={20} />, cls: 'bg-success text-[color:var(--on)]' },
-      { rating: Rating.EASY, icon: <DuoIcon icon={Star} size={20} />, cls: 'bg-info text-[color:var(--on)]' },
+      { rating: Rating.AGAIN, icon: <DuoIcon icon={RotateCcw} size={20} />, cls: 'bg-error text-on-status' },
+      { rating: Rating.HARD, icon: <DuoIcon icon={X} size={20} />, cls: 'bg-warning text-on-status' },
+      { rating: Rating.GOOD, icon: <DuoIcon icon={Check} size={20} />, cls: 'bg-success text-on-status' },
+      { rating: Rating.EASY, icon: <DuoIcon icon={Star} size={20} />, cls: 'bg-info text-on-status' },
     ],
     [],
   );
@@ -278,7 +278,7 @@ export default function ReviewSessionScreen() {
       </div>
 
       {/* Card */}
-      <div className="rounded-2xl bg-surface p-6 shadow-lg">
+      <div className="g2 p-6">
         <span className="mb-4 inline-flex items-center gap-1.5 rounded-full bg-surface-tint px-3 py-1.5 text-xs font-semibold text-primary">
           <DuoIcon icon={Bookmark} size={14} />
           {current.reference}
@@ -343,7 +343,7 @@ export default function ReviewSessionScreen() {
 
       {/* Feedback */}
       {showRating && feedback && selected && (
-        <div className="mt-5 rounded-2xl bg-surface p-5 shadow-md">
+        <div className="g2 mt-5 p-5">
           <div className="mb-3 flex items-center gap-2">
             <DuoIcon icon={Check} size={22} className="text-success" />
             <p className="text-lg font-bold text-text-primary">{feedback.label}</p>

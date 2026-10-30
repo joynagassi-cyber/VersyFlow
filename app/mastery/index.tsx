@@ -150,7 +150,7 @@ export default function MasteryScreen() {
 
         {/* Progress to next */}
         {nextLevel && (
-          <div className="rounded-2xl bg-surface p-4 shadow-sm">
+          <div className="g2 p-4">
             <div className="mb-2 flex items-center justify-between">
               <p className="text-sm font-semibold text-text-primary">
                 {t('mastery.nextLevel', 'Prochain niveau')} : {nextLevel.name}
@@ -179,7 +179,7 @@ export default function MasteryScreen() {
               <div
                 key={i}
                 className={
-                  'rounded-2xl bg-surface p-4 shadow-sm ' +
+                  'g2 p-4 ' +
                   (i === 0 ? 'col-span-2 flex items-center gap-4' : 'text-center')
                 }
               >
@@ -215,7 +215,7 @@ export default function MasteryScreen() {
                 <div
                   key={level.id}
                   className={
-                    'flex items-center gap-4 rounded-2xl bg-surface p-4 shadow-sm ' +
+                    'g2 flex items-center gap-4 p-4 ' +
                     (!isUnlocked ? 'opacity-60' : '')
                   }
                 >
@@ -258,7 +258,7 @@ export default function MasteryScreen() {
         </div>
 
         {/* Tips */}
-        <div className="rounded-2xl bg-surface p-4 shadow-sm">
+        <div className="g2 p-4">
           <h2 className="mb-2 text-base font-bold text-text-primary">
             {t('mastery.tips', 'Conseils pour progresser')}
           </h2>

@@ -79,12 +79,12 @@ export default function ReviewSummaryScreen() {
     <FullScreenPage title={t('review.summary', 'Résumé de session')} backPath="/review/queue">
       {/* Streak hero */}
       <div className="mb-5 flex flex-col items-center rounded-2xl bg-primary p-6 text-on-primary shadow">
-        <span className="flex items-center gap-1.5 text-sm text-[color:color-mix(in_srgb,var(--on)_90%,transparent)]">
+        <span className="flex items-center gap-1.5 text-sm text-on-primary/90">
           <DuoIcon icon={Flame} size={16} />
           {t('progress.streak', 'Série quotidienne')} 🔥
         </span>
         <span className="mt-2 text-5xl font-extrabold">{stats?.streakCount ?? 0}</span>
-        <span className="mt-1 text-sm text-[color:color-mix(in_srgb,var(--on)_90%,transparent)]">
+        <span className="mt-1 text-sm text-on-primary/90">
           {t('home.streak', { count: stats?.streakCount ?? 0 })}
         </span>
       </div>
@@ -92,7 +92,7 @@ export default function ReviewSummaryScreen() {
       {/* Stat grid */}
       <div className="mb-5 grid grid-cols-2 gap-3">
         {statCards.map((card) => (
-          <div key={card.label} className="flex flex-col items-center rounded-xl bg-surface p-4 shadow-sm">
+          <div key={card.label} className="g2 flex flex-col items-center p-4">
             <span className="flex h-9 w-9 items-center justify-center rounded-full bg-surface-tint text-primary">
               {card.icon}
             </span>
@@ -103,7 +103,7 @@ export default function ReviewSummaryScreen() {
       </div>
 
       {/* Retention bar */}
-      <div className="mb-5 rounded-xl bg-surface p-4 shadow-sm">
+      <div className="g2 mb-5 p-4">
         <p className="text-base font-semibold text-text-primary">
           {t('progress.retention', 'Taux de rétention')}
         </p>

@@ -71,7 +71,7 @@ export function ManuscriptView({
     <div className="mx-auto w-full">
       {/* Continuous manuscript text — .bible-card gets the premium
          translucent/blur surface over the image theme (globals.css). */}
-      <div className="bible-card mx-auto rounded-3xl bg-surface px-5 py-6 shadow-sm sm:px-7">
+      <div className="bible-card mx-auto rounded-3xl px-5 py-6 sm:px-7">
         <div className="text-center">
           <span className="text-sm font-semibold text-text-primary">
             {t('bible.chapter', 'Chapitre')} {chapter}

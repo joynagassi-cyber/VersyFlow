@@ -376,7 +376,7 @@ export default function FamilyHomeScreen() {
                   key={shortcut.to}
                   type="button"
                   onClick={() => navigate(shortcut.to)}
-                  className="flex items-center gap-2 rounded-2xl border border-border bg-surface p-3 text-left shadow-sm"
+                  className="g2 flex items-center gap-2 p-3 text-left"
                 >
                   <DuoIcon icon={shortcut.icon} size={18} className="shrink-0 text-primary" />
                   <span className="truncate text-xs font-semibold text-text-primary">
@@ -394,7 +394,7 @@ export default function FamilyHomeScreen() {
             </HintNote>
           </>
         ) : (
-          <div className="flex flex-col items-center rounded-2xl bg-surface p-8 text-center shadow-sm">
+          <div className="g2 flex flex-col items-center p-8 text-center">
             <span className="text-5xl">👨‍👩‍👧‍👦</span>
             <p className="mt-4 text-lg font-bold text-text-primary tabular-nums">
               {families.length === 0

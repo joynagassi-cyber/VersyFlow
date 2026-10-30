@@ -60,7 +60,7 @@ export default function FSRSIntroductionScreen() {
       </div>
 
       {/* Retention curve (simple SVG) */}
-      <div className="mx-6 overflow-hidden rounded-3xl bg-surface p-6 shadow-sm">
+      <div className="g2 mx-6 overflow-hidden p-6">
         <div className="relative h-48">
           <svg viewBox="0 0 300 180" className="h-full w-full" aria-hidden>
             {/* grid lines */}
@@ -108,7 +108,7 @@ export default function FSRSIntroductionScreen() {
       {/* Benefits */}
       <div className="mt-8 flex flex-col gap-4 px-6">
         {benefits.map(({ icon: Icon, title, desc }) => (
-          <div key={title} className="flex items-start gap-4 rounded-2xl bg-surface p-4 shadow-sm">
+          <div key={title} className="g2 flex items-start gap-4 p-4">
             <div className="icon-chip flex h-12 w-12 shrink-0 items-center justify-center rounded-full">
               <DuoIcon icon={Icon} size={22} />
             </div>

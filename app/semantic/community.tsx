@@ -104,7 +104,7 @@ export default function CommunityView() {
                 <button
                   key={concept.id}
                   onClick={() => navigate(`/semantic/concept?conceptId=${encodeURIComponent(concept.id)}`)}
-                  className="flex items-center justify-between rounded-xl bg-surface p-3 text-left shadow-sm transition-transform active:scale-[0.99]"
+                  className="g2 flex items-center justify-between p-3 text-left transition-transform active:scale-[0.99]"
                 >
                   <div>
                     <p className="text-sm font-semibold text-text-primary">
@@ -133,7 +133,7 @@ export default function CommunityView() {
                 <button
                   key={key}
                   onClick={() => navigate(`/semantic/verse?verseRef=${encodeURIComponent(key)}`)}
-                  className="flex items-center justify-between rounded-xl bg-surface p-3 text-left shadow-sm transition-transform active:scale-[0.99]"
+                  className="g2 flex items-center justify-between p-3 text-left transition-transform active:scale-[0.99]"
                 >
                   <p className="text-sm font-semibold text-text-primary">{formatVerseKey(key)}</p>
                   <DuoIcon icon={ChevronRight} size={16} className="text-primary" />

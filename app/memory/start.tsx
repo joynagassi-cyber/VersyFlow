@@ -65,7 +65,7 @@ export default function MemorizationStartScreen({ verseData }: Props) {
     >
       <div className="screen-column space-y-5">
         {/* Verse preview */}
-        <div className="rounded-3xl bg-surface p-5 shadow-sm">
+        <div className="g2 p-5">
           <p className="text-sm font-semibold text-primary">{verseData.reference}</p>
           <p className="mt-2 font-serif text-base leading-relaxed text-text-primary">
             {verseData.text}

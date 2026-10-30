@@ -81,14 +81,14 @@ export default function AboutScreen() {
     >
       <div className="screen-column space-y-4">
         {/* Header */}
-        <div className="glass flex flex-col items-center gap-2 rounded-3xl bg-surface p-6 shadow-sm">
+        <div className="glass flex flex-col items-center gap-2 rounded-3xl p-6">
           <Logo size={72} />
           <p className="text-2xl font-extrabold text-text-primary">VersyFlow</p>
           <p className="text-sm text-text-muted">Version {VERSION}</p>
         </div>
 
         {/* What's new */}
-        <div className="glass rounded-2xl bg-surface p-4 shadow-sm">
+        <div className="glass rounded-2xl p-4">
           <button
             className="flex w-full items-center justify-between"
             onClick={() => setShowWhatNew((v) => !v)}
@@ -132,7 +132,7 @@ export default function AboutScreen() {
         </div>
 
         {/* About */}
-        <div className="glass rounded-2xl bg-surface p-4 shadow-sm">
+        <div className="glass rounded-2xl p-4">
           <p className="mb-2 flex items-center gap-2 text-base font-bold text-text-primary">
             <DuoIcon icon={BookOpen} size={18} className="text-primary" />
             {t('settings.about', "A propos")}
@@ -144,7 +144,7 @@ export default function AboutScreen() {
         </div>
 
         {/* Links */}
-        <div className="glass overflow-hidden rounded-2xl bg-surface shadow-sm">
+        <div className="glass overflow-hidden rounded-2xl">
           {[
             { label: t('settings.documentation', 'Documentation'), url: 'https://github.com/your-org/versyflow' },
             { label: t('settings.supportLink', 'Support'), url: 'mailto:support@versyflow.com' },
@@ -162,7 +162,7 @@ export default function AboutScreen() {
         </div>
 
         {/* Credits */}
-        <div className="glass space-y-2 rounded-2xl bg-surface p-4 text-center shadow-sm">
+        <div className="glass space-y-2 rounded-2xl p-4 text-center">
           <p className="flex items-center justify-center gap-2 text-sm text-text-secondary">
             <DuoIcon icon={Heart} size={14} className="text-primary" />
             {t('settings.creditMission', 'Developpe avec amour pour la gloire de Dieu')}

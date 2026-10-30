@@ -121,7 +121,7 @@ export default function ProfileScreen() {
         </div>
 
         {/* ── Preferences ── */}
-        <div className="overflow-hidden rounded-2xl bg-surface shadow-sm">
+        <div className="g2 overflow-hidden">
           <h2 className="px-4 pt-4 text-xs font-bold uppercase tracking-wide text-text-muted">
             {t('profile.preferences', 'Preferences')}
           </h2>

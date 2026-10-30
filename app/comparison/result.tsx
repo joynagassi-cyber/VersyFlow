@@ -53,7 +53,7 @@ export default function ComparisonResultScreen({ record, userAnswer }: Props) {
     <FullScreenPage title={t('comparison.result', 'Resultat')} showBack>
       <div className="screen-column space-y-4">
         {/* Score */}
-        <div className="flex flex-col items-center rounded-3xl bg-surface p-6 shadow-sm">
+        <div className="g2 flex flex-col items-center p-6">
           <p className="text-sm text-text-muted">
             {t('comparison.accuracyScore', 'Score de precision')}
           </p>
@@ -70,7 +70,7 @@ export default function ComparisonResultScreen({ record, userAnswer }: Props) {
 
         {/* Substitutions */}
         {lastVerification.substitutedWords.length > 0 && (
-          <div className="rounded-2xl bg-surface p-4 shadow-sm">
+          <div className="g2 p-4">
             <p className="mb-2 text-base font-bold text-text-primary">
               {t('comparison.substitutions', 'Substitutions')}
             </p>
@@ -88,7 +88,7 @@ export default function ComparisonResultScreen({ record, userAnswer }: Props) {
 
         {/* Missing */}
         {lastVerification.missingWords.length > 0 && (
-          <div className="rounded-2xl bg-surface p-4 shadow-sm">
+          <div className="g2 p-4">
             <p className="mb-2 text-base font-bold text-text-primary">
               {t('comparison.missingWords', 'Mots manquants')}
             </p>
@@ -107,7 +107,7 @@ export default function ComparisonResultScreen({ record, userAnswer }: Props) {
 
         {/* Fragile portions */}
         {lastVerification.fragilePortions.length > 0 && (
-          <div className="rounded-2xl bg-surface p-4 shadow-sm">
+          <div className="g2 p-4">
             <p className="mb-2 text-base font-bold text-text-primary">
               {t('comparison.fragilePortions', 'Portions fragiles')}
             </p>

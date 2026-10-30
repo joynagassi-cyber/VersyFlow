@@ -243,7 +243,7 @@ export default function SearchScreen() {
 
         {/* Index load failure hint */}
         {indexError && (
-          <div className="glass mt-4 flex items-center gap-3 rounded-2xl bg-surface p-4 shadow-sm">
+          <div className="glass mt-4 flex items-center gap-3 rounded-2xl p-4">
             <DuoIcon icon={AlertCircle} size={20} className="shrink-0 text-error" />
             <p className="flex-1 text-sm text-error">{indexError}</p>
             <button
@@ -303,7 +303,7 @@ export default function SearchScreen() {
           <div className="mt-5 space-y-3 pb-6">
             <p className="text-sm text-text-muted">{results.length} {t('search.results', 'resultat(s)')}</p>
             {results.map((result) => (
-              <div key={result.id} className="glass bible-card rounded-2xl bg-surface p-4 shadow-sm">
+              <div key={result.id} className="glass bible-card rounded-2xl p-4">
                 <div className="mb-2 flex items-center justify-between">
                   <p className="text-base font-bold text-text-primary">{result.reference}</p>
                   <span

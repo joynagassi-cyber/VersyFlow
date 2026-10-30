@@ -103,7 +103,7 @@ export default function FamilyMembersScreen() {
             {t('common.loading', 'Chargement...')}
           </p>
         ) : loadError ? (
-          <div className="flex flex-col items-center gap-3 rounded-2xl bg-surface p-6 text-center shadow-sm">
+          <div className="g2 flex flex-col items-center gap-3 p-6 text-center">
             <DuoIcon icon={AlertCircle} size={28} className="text-error" />
             <p className="text-sm text-error">{loadError}</p>
             <button
@@ -120,7 +120,7 @@ export default function FamilyMembersScreen() {
             {members.map((m) => (
               <div
                 key={m.id}
-                className="flex items-center gap-3 rounded-2xl bg-surface p-3 shadow-sm"
+                className="g2 flex items-center gap-3 p-3"
               >
                 <span className="flex h-11 w-11 items-center justify-center rounded-full bg-surface-tint text-lg font-bold text-primary">
                   {(m.profile?.displayName || m.accountId || '?').charAt(0).toUpperCase()}

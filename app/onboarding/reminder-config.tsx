@@ -91,7 +91,7 @@ export default function OnboardingReminderConfig() {
                 : 'border-text-muted',
             )}
           >
-            {reminderEnabled && <DuoIcon icon={Check} size={14} className="text-[color:var(--on)]" />}
+            {reminderEnabled && <DuoIcon icon={Check} size={14} className="text-on-primary" />}
           </div>
         </button>
 

@@ -50,6 +50,9 @@ const config = {
         'warning-light': 'var(--color-warning-light)',
         info: 'var(--color-info)',
         'info-light': 'var(--color-info-light)',
+        // Encre des surfaces d'état (voir globals.css, `--on-status`) : le
+        // seul jeton à poser sur `bg-error`/`bg-success`/`bg-warning`/`bg-info`.
+        'on-status': 'var(--on-status)',
         'icon-bg-rose': 'var(--color-icon-bg-rose)',
         'icon-bg-purple': 'var(--color-icon-bg-purple)',
         'icon-bg-blue': 'var(--color-icon-bg-blue)',

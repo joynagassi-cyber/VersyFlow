@@ -173,7 +173,7 @@ export default function ReviewCalendarScreen() {
               {due > 0 && (
                 <span
                   className={cn(
-                    'mt-0.5 rounded-full px-1.5 text-[10px] font-bold text-[color:var(--on)]',
+                    'mt-0.5 rounded-full px-1.5 text-[10px] font-bold text-on-primary',
                     'bg-primary',
                   )}
                 >
@@ -196,7 +196,7 @@ export default function ReviewCalendarScreen() {
       </div>
 
       {/* Month summary */}
-      <div className="mt-4 rounded-2xl bg-surface p-5 shadow-sm">
+      <div className="g2 mt-4 p-5">
         <h3 className="mb-4 text-base font-bold text-text-primary">
           {t('progress.yourProgress', 'Résumé du mois')}
         </h3>

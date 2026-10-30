@@ -25,7 +25,7 @@ const ToastViewport = React.forwardRef<
 ToastViewport.displayName = 'ToastViewport';
 
 const toastVariants = cva(
-  'pointer-events-auto rounded-lg border border-border bg-surface p-4 shadow-lg',
+  'g2 pointer-events-auto p-4',
   {
     variants: {
       variant: {

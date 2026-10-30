@@ -177,7 +177,7 @@ export default function CollectionsScreen() {
     >
       <div className="screen-column space-y-4">
         {loadError && (
-          <div className="flex flex-col items-center gap-3 rounded-2xl bg-surface p-4 text-center shadow-sm">
+          <div className="g2 flex flex-col items-center gap-3 p-4 text-center">
             <DuoIcon icon={AlertCircle} size={24} className="text-error" />
             <p className="text-sm text-error">{loadError}</p>
             <button
@@ -235,7 +235,7 @@ export default function CollectionsScreen() {
                         `/bible/chapter?book=${encodeURIComponent(rec.bookId)}&chapter=${rec.chapterNumber}&verse=${rec.verseNumber}`,
                       )
                     }
-                    className="flex w-full items-center gap-3 rounded-xl bg-surface p-3 text-left shadow-sm active:bg-surface-tint"
+                    className="g2 flex w-full items-center gap-3 p-3 text-left active:bg-surface-tint"
                   >
                     <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-error/10">
                       <DuoIcon icon={Heart} size={16} className="text-error" />
@@ -275,7 +275,7 @@ export default function CollectionsScreen() {
                 onClick={() =>
                   setExpandedId(expanded ? null : collection.id)
                 }
-                className="flex w-full items-center gap-4 rounded-2xl bg-surface p-4 text-left shadow-sm"
+                className="g2 flex w-full items-center gap-4 p-4 text-left"
               >
                 <span
                   className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full"

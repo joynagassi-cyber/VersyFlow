@@ -90,7 +90,7 @@ export default function VerseView() {
     <FullScreenPage title={verseRef ? formatVerseKey(verseRef) : undefined} column="narrow">
       <div className="screen-column min-h-full overflow-y-auto bg-background p-4 pb-24">
         {/* Verse text */}
-        <div className="mb-5 rounded-xl bg-surface p-4 shadow-sm">
+        <div className="g2 mb-5 p-4">
           <div className="mb-2 flex items-center gap-2">
             <DuoIcon icon={FileText} size={16} className="text-primary" />
             <span className="text-sm font-semibold text-text-primary">
@@ -118,7 +118,7 @@ export default function VerseView() {
                 <button
                   key={concept.id}
                   onClick={() => navigate(`/semantic/concept?conceptId=${encodeURIComponent(concept.id)}`)}
-                  className="flex items-center justify-between rounded-xl bg-surface p-3 text-left shadow-sm transition-transform active:scale-[0.99]"
+                  className="g2 flex items-center justify-between p-3 text-left transition-transform active:scale-[0.99]"
                 >
                   <div>
                     <p className="text-sm font-semibold text-text-primary">
@@ -149,7 +149,7 @@ export default function VerseView() {
                 <button
                   key={`${r.verseKey}-${r.relation.type}`}
                   onClick={() => navigate(`/semantic/verse?verseRef=${encodeURIComponent(r.verseKey)}`)}
-                  className="flex items-center justify-between rounded-xl bg-surface p-3 text-left shadow-sm transition-transform active:scale-[0.99]"
+                  className="g2 flex items-center justify-between p-3 text-left transition-transform active:scale-[0.99]"
                 >
                   <div>
                     <p className="text-sm font-semibold text-text-primary">
@@ -173,7 +173,7 @@ export default function VerseView() {
           {community ? (
             <button
               onClick={() => navigate(`/semantic/community?communityId=${encodeURIComponent(community.id)}`)}
-              className="flex items-center justify-between rounded-xl bg-surface p-3 text-left shadow-sm transition-transform active:scale-[0.99] w-full"
+              className="g2 flex items-center justify-between p-3 text-left transition-transform active:scale-[0.99] w-full"
             >
               <div>
                 <p className="text-sm font-semibold text-text-primary">{community.name}</p>

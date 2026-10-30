@@ -54,13 +54,13 @@ function ratingConfig(rating: Rating | string) {
       : rating;
   switch (r) {
     case Rating.AGAIN:
-      return { cls: 'bg-error text-[color:var(--on)]', label: 'A revoir', Icon: RefreshCw };
+      return { cls: 'bg-error text-on-status', label: 'A revoir', Icon: RefreshCw };
     case Rating.HARD:
-      return { cls: 'bg-warning text-[color:var(--on)]', label: 'Difficile', Icon: RefreshCw };
+      return { cls: 'bg-warning text-on-status', label: 'Difficile', Icon: RefreshCw };
     case Rating.GOOD:
-      return { cls: 'bg-success text-[color:var(--on)]', label: 'Bon', Icon: CheckCircle2 };
+      return { cls: 'bg-success text-on-status', label: 'Bon', Icon: CheckCircle2 };
     case Rating.EASY:
-      return { cls: 'bg-info text-[color:var(--on)]', label: 'Facile', Icon: CheckCircle2 };
+      return { cls: 'bg-info text-on-status', label: 'Facile', Icon: CheckCircle2 };
     default:
       return { cls: 'bg-primary text-on-primary', label: 'Bon', Icon: CheckCircle2 };
   }
@@ -188,7 +188,7 @@ export default function ReviewHistoryScreen() {
   return (
     <FullScreenPage title={t('nav.history', 'Historique')} showBack backPath="/review/queue">
       <div className="screen-column space-y-6">
-        <div className="rounded-3xl bg-surface p-5 shadow-sm">
+        <div className="g2 p-5">
           <div className="flex gap-3">
             <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-surface-tint">
               <DuoIcon icon={BookOpen} size={22} className="text-primary" />
@@ -235,7 +235,7 @@ export default function ReviewHistoryScreen() {
                       <span className="mt-1 w-0.5 flex-1 bg-[color:var(--color-divider)]" />
                     )}
                   </div>
-                  <div className="flex-1 rounded-2xl bg-surface p-4 shadow-sm">
+                  <div className="g2 flex-1 p-4">
                     <div className="mb-2 flex items-center justify-between">
                       <span className="text-sm font-semibold text-text-primary">
                         {formatTimestamp(log.answeredAt)}
@@ -280,7 +280,7 @@ export default function ReviewHistoryScreen() {
             {t('history.stats', 'Statistiques')}
           </h2>
           <div className="grid grid-cols-2 gap-3">
-            <div className="col-span-2 flex items-center gap-3 rounded-2xl bg-surface p-4 shadow-sm">
+            <div className="g2 col-span-2 flex items-center gap-3 p-4">
               <span className="flex h-11 w-11 items-center justify-center rounded-full bg-primary text-on-primary">
                 <DuoIcon icon={TrendingUp} size={20} />
               </span>
@@ -293,11 +293,11 @@ export default function ReviewHistoryScreen() {
                 </p>
               </div>
             </div>
-            <div className="rounded-2xl bg-surface p-4 text-center shadow-sm">
+            <div className="g2 p-4 text-center">
               <p className="text-2xl font-extrabold text-success">{goodOrEasy}</p>
               <p className="text-xs text-text-muted">{t('history.goodEasy', 'Bon / Facile')}</p>
             </div>
-            <div className="rounded-2xl bg-surface p-4 text-center shadow-sm">
+            <div className="g2 p-4 text-center">
               <p className="text-2xl font-extrabold text-error tabular-nums">
                 {logs.filter((h) => h.rating === Rating.AGAIN).length}
               </p>
@@ -306,7 +306,7 @@ export default function ReviewHistoryScreen() {
           </div>
         </div>
 
-        <div className="rounded-3xl bg-surface p-5 shadow-sm">
+        <div className="g2 p-5">
           <div className="mb-3 flex items-center gap-2">
             <DuoIcon icon={Medal} size={20} className="text-warning" />
             <p className="text-base font-bold text-text-primary">

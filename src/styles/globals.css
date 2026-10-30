@@ -729,6 +729,20 @@ body {
     --tint 0.8s cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 
+/* Recette de verre PAR DÉFAUT. `.glass` est utilisé par les réglages, la
+   recherche et le tableau de bord d'analyse ; or il n'avait aucune recette de
+   base : seules des règles `html[data-bg='image'] .glass` existaient, donc sur
+   un preset ordinaire la classe ne peignait RIEN et ces cartes dépendaient du
+   `bg-surface` voisin. `.glass` est désormais le matériau premium partagé —
+   même fond, même liseré, même ombre et même encre que `.g1/.g2/.g3` — et le
+   flou du thème s'y ajoute quand un fond image le justifie. */
+.glass {
+  color: var(--tx);
+  background: var(--gc);
+  border: 1px solid var(--bd);
+  box-shadow: inset 0 1px 0 var(--hi), 0 10px 34px var(--sh);
+}
+
 /* Carte verre dépoli teinté : fond carte translucide (40 %) + voile de la
    teinte extraite de l'image (color-mix 22 %), flou d'arrière-plan fort. */
 .card-glass {
@@ -969,6 +983,14 @@ html[data-contrast='high']::before {
   --success: var(--color-success);
   --danger: var(--color-error);
   --warning: var(--color-warning);
+  /* Encre posée sur une surface d'ÉTAT (succès, erreur, alerte, info).
+     Ce n'est PAS l'encre de l'accent : `--on` suit `--primary-foreground`,
+     qui peut être blanc sur un accent sombre. Or les quatre couleurs d'état
+     restent claires dans tous les presets, en clair comme en sombre : sur
+     elles, seule une encre sombre garde 4,5:1 (mesuré : #ff9500 → 9,7:1,
+     #00a86b → 5,6:1, #ff4d6d → 4,9:1, #007aff → 4,6:1). Une seule encre
+     d'état, donc, et jamais `white`/`black` écrits dans un écran. */
+  --on-status: #14100f;
   /* Voiles de superposition : une densité de noir, pas une couleur de
      palette. Déclarés ici (fichier de variables) et consommés par les
      composants via `bg-[color:var(--scrim…)]`. */
@@ -997,6 +1019,18 @@ html[data-contrast='high']::before {
 .action-card:hover .icon-chip,
 .action-card:focus-visible .icon-chip {
   background: color-mix(in srgb, var(--acc) 16%, transparent);
+}
+
+/* Règle 4 — sur une surface d'ÉTAT pleine, l'encre est celle de l'état.
+   Sans cette règle, une pastille `bg-error` héritait du texte de la carte
+   (`--tx`) ou, pire, de `--on` : deux encres possibles pour un même fond
+   selon l'écran et le preset actif. Les variantes `bg-error/10` (pastilles
+   teintées) ne sont pas concernées : la classe y est `bg-error/10`. */
+.bg-success,
+.bg-error,
+.bg-warning,
+.bg-info {
+  color: var(--on-status);
 }
 
 /* Règle 2a — l'élément actif (onglet, entrée de menu) porte l'accent. */
@@ -1100,6 +1134,20 @@ html[data-bg='image']::after {
 html[data-bg='image'][data-theme='dark']::after {
   background: linear-gradient(to bottom, rgba(18,18,18,.85), rgba(8,8,8,.90));
 }
+/* Le gris « discret » suit le preset, comme le texte secondaire.
+   `tweakcn-presets.css` ne ponte que `--color-text-secondary` ; les écrans
+   historiques, eux, écrivent `text-text-muted` (322 occurrences) et gardaient
+   donc un gris FIGÉ (#98989e en clair, #6a5a63 en sombre) : illisible sur les
+   presets sombres (#6a5a63 sur #171717 = 2,9:1) et étranger à la teinte du
+   preset en clair. Ici muted/tertiary/placeholder sont DÉRIVÉS du couple
+   texte secondaire + texte principal : toujours plus discrets que
+   `--color-text-secondary`, toujours lisibles, sur les 39 presets. */
+:root[data-preset]:not([data-bg='image']) {
+  --color-text-muted: color-mix(in srgb, var(--color-text-secondary) 92%, var(--color-text-primary));
+  --color-text-tertiary: color-mix(in srgb, var(--color-text-secondary) 82%, var(--color-text-primary));
+  --color-text-placeholder: color-mix(in srgb, var(--color-text-secondary) 55%, var(--color-background));
+}
+
 html[data-bg='image'] { --color-text-primary: var(--tx); --color-text-secondary: var(--mut); --color-text-muted: var(--mut); }
 .g1,.g2,.g3 { color: var(--tx); background: var(--gc); border: 1px solid var(--bd); box-shadow: inset 0 1px 0 var(--hi), 0 10px 34px var(--sh); }
 .g1 { border-radius: 24px; }
@@ -1117,6 +1165,66 @@ html[data-bg='image'] .g3 { background: rgba(var(--gc-rgb), calc(var(--ga) * .5 
 }
 html[data-bg='image'][data-transparency='reduced'] :is(.g1,.g2,.g3),
 html[data-bg='image'][data-contrast='high'] :is(.g1,.g2,.g3) { background: var(--gc); -webkit-backdrop-filter: none; backdrop-filter: none; }
+/* ══════════════════════════════════════════════════════════════════════════
+   MATÉRIAU COMMUN — les cartes historiques rejoignent les cartes premium
+   ══════════════════════════════════════════════════════════════════════════
+   Les écrans « profonds » (Bible, révisions, familles, collections, analyse,
+   onboarding, recherche…) précèdent le vocabulaire premium : ils peignent des
+   cartes `bg-surface` + `shadow-sm`, sans liseré ni ombre du thème. D'où deux
+   ruptures visibles dès qu'on quitte les 7 écrans premium :
+     – sur un preset sombre, une ombre noire sur fond noir ne dessine rien ;
+     – sur un fond IMAGE, ces cartes restent des blocs opaques posés sur la
+       photo, alors que les cartes `.g1/.g2/.g3` sont du verre.
+   Les règles ci-dessous donnent à ces cartes le MÊME matériau que `.g1`
+   (liseré `--bd`, reflet `--hi`, ombre `--sh`, verre sur fond image) sans
+   toucher au JSX de ~70 écrans, et sans viser les champs, les pastilles ni
+   les cartes déjà premium. Aucune couleur littérale : tout vient du thème. */
+
+/* 1. Sur fond image, les surfaces HISTORIQUES deviennent translucides. Sans
+   cela `--color-surface` restait blanc opaque et les jetons de texte, eux,
+   suivaient déjà l'image : cartes claires, texte clair. */
+html[data-bg='image'] {
+  --color-surface: rgba(var(--gc-rgb), .93);
+  --color-surface-elevated: rgba(var(--gc-rgb), .97);
+  --color-surface-tint: color-mix(in srgb, var(--tx) 7%, rgba(var(--gc-rgb), .55));
+  --color-border: color-mix(in srgb, var(--tx) 16%, transparent);
+}
+
+/* 2. Profondeur du thème, pas une ombre Tailwind figée. Les tuiles à choix
+   (`border-2` + `border-primary` quand elles sont sélectionnées) sont
+   EXCLUES : leur bordure porte l'état, la repeindre par le liseré neutre
+   effacerait la sélection. */
+.app-canvas :is(div,article,section,li,button,a).bg-surface:is([class~='shadow-sm'],[class~='shadow-md'],[class~='shadow-lg'],[class~='shadow-xl'],[class~='shadow-2xl']):not(.g1):not(.g2):not(.g3):not(.glass):not(.card-glass):not(.surface-glass):not(.bible-card):not([class*='border-']) {
+  border: 1px solid var(--color-border);
+  box-shadow: inset 0 1px 0 var(--hi), 0 4px 14px color-mix(in srgb, var(--sh) 45%, transparent);
+}
+
+/* 3. Sur fond image, ces mêmes cartes reçoivent le verre de `.g2`. */
+html[data-bg='image'] .app-canvas :is(div,article,section,li,button,a).bg-surface:is([class~='shadow-sm'],[class~='shadow-md'],[class~='shadow-lg'],[class~='shadow-xl'],[class~='shadow-2xl']):not(.g1):not(.g2):not(.g3):not(.glass):not(.card-glass):not(.surface-glass):not(.bible-card):not([class*='border-']) {
+  background-color: rgba(var(--gc-rgb), var(--ga));
+  -webkit-backdrop-filter: blur(var(--gb)) saturate(1.6);
+  backdrop-filter: blur(var(--gb)) saturate(1.6);
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  html[data-bg='image'] .app-canvas :is(div,article,section,li,button,a).bg-surface:is([class~='shadow-sm'],[class~='shadow-md'],[class~='shadow-lg'],[class~='shadow-xl'],[class~='shadow-2xl']) {
+    background-color: rgba(var(--gc-rgb), .88);
+  }
+}
+/* Transparence réduite et contraste élevé : le verre redevient plein, comme
+   pour `.g1/.g2/.g3`. C'est le choix explicite de l'utilisateur. */
+@media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
+  html[data-bg='image'] .app-canvas :is(div,article,section,li,button,a).bg-surface:is([class~='shadow-sm'],[class~='shadow-md'],[class~='shadow-lg'],[class~='shadow-xl'],[class~='shadow-2xl']) {
+    background-color: var(--gc);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+html[data-bg='image']:is([data-transparency='reduced'],[data-contrast='high']) .app-canvas :is(div,article,section,li,button,a).bg-surface:is([class~='shadow-sm'],[class~='shadow-md'],[class~='shadow-lg'],[class~='shadow-xl'],[class~='shadow-2xl']) {
+  background-color: var(--gc);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
 /* Icônes neutres au repos ; état actif et actions principales en accent. */
 .solar.solar-accent { color: var(--mut); }
 [aria-current='page'] .solar.solar-accent, .home-primary .solar.solar-accent { color: var(--acc); }
@@ -1180,7 +1288,24 @@ html[data-bg='image'][data-contrast='high'] :is(.g1,.g2,.g3) { background: var(-
 .home-premium.screen-column { max-width: none; }
 
 .brand-tile { display: inline-grid; place-items: center; flex: none; border-radius: 12px; padding: 4px; background: linear-gradient(135deg,var(--acc),var(--acc2)); }
-.g1 .bg-surface-tint { background: color-mix(in srgb,var(--tx) 8%,transparent); }
+:is(.g1,.g2,.g3,.glass) .bg-surface-tint { background: color-mix(in srgb,var(--tx) 8%,transparent); }
+/* Encre d'une carte premium : elle suit la CARTE, pas le preset.
+   Une carte `.g1/.g2/.g3` peint `--gc` et pose `color: var(--tx)` ; mais les
+   écrans historiques écrivent encore `text-text-primary` / `text-text-muted`
+   à l'intérieur. Ces utilitaires pointaient vers les jetons du preset, donc
+   deux encres différentes dans la même carte selon l'écran. On les ramène
+   aux jetons de la carte : un seul texte, un seul gris, partout. */
+:is(.g1,.g2,.g3,.glass) .text-text-primary { color: var(--tx); }
+:is(.g1,.g2,.g3,.glass) :is(.text-text-secondary,.text-text-tertiary,.text-text-muted,.text-text-placeholder) { color: var(--mut); }
+/* L'accent écrit dans une carte est l'accent LISIBLE (`--acc-text`), celui
+   que les écrans premium utilisent déjà pour leurs liens et leurs chiffres. */
+:is(.g1,.g2,.g3,.glass) .text-primary { color: var(--acc-text); }
+/* Titre DANS une carte : serif, comme les titres premium. Les écrans
+   historiques écrivaient leurs titres de section en sans-serif gras à 16 px ;
+   les cartes premium titrent en serif. Une seule famille de titres pour
+   l'application, donc, et la graisse de la carte reste celle de la carte
+   (la taille vient toujours de l'écran, jamais de cette règle). */
+:is(.g1,.g2,.g3,.glass) :is(h2,h3) { font-family: var(--font-serif, Georgia), serif; font-weight: 400; }
 .desktop-rail [aria-current='page'] { background: color-mix(in srgb,var(--acc) 22%,transparent); color: var(--acc-text); }
 .home-ring { position: relative; border: 0; }
 .home-ring svg { position: absolute; inset: 0; width: 100%; height: 100%; transform: rotate(-90deg); }
@@ -1467,11 +1592,38 @@ html[data-fixed-accent] .desktop-rail button.bg-primary .solar { color: var(--pr
 .home-daily-card::before { content: ''; position: absolute; inset: 0; z-index: -2; background: var(--daily-image) center / cover no-repeat; }
 .home-daily-card::after { content: ''; position: absolute; inset: 0; z-index: -1; background: color-mix(in srgb,var(--gc) 90%,transparent); }
 /* En-tête partagé des pages profondes et retour visible sur mobile et bureau. */
-.full-screen-header { display: flex; align-items: center; gap: 12px; flex: none; min-height: 64px; padding: 10px 16px; color: var(--tx); background: var(--gc); border-bottom: 1px solid var(--bd); }
+/* En-tête des écrans « profonds » : une pastille de verre FLOTTANTE, comme
+   l'en-tête des onglets, et non plus une barre pleine collée au bord. C'est
+   le même matériau que `.g1` (liseré `--bd`, reflet `--hi`, ombre `--sh`,
+   verre sur fond image), donc le même rendu sur les 39 presets, en clair,
+   en sombre, en dégradé et en image. Le titre passe en serif, comme les
+   titres premium (Accueil, Progrès, Profil) : une seule échelle de titres
+   pour toute l'application. */
+.full-screen-header {
+  display: flex; align-items: center; gap: 12px; flex: none; min-height: 64px;
+  margin: max(12px, env(safe-area-inset-top, 0px)) 14px 0; padding: 8px 14px;
+  color: var(--tx); background: var(--gc);
+  border: 1px solid var(--bd); border-radius: 24px;
+  box-shadow: inset 0 1px 0 var(--hi), 0 10px 34px var(--sh);
+}
+html[data-bg='image'] .full-screen-header {
+  background: rgba(var(--gc-rgb), var(--ga));
+  -webkit-backdrop-filter: blur(var(--gb)) saturate(1.6);
+  backdrop-filter: blur(var(--gb)) saturate(1.6);
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  html[data-bg='image'] .full-screen-header { background: rgba(var(--gc-rgb), .88); }
+}
+@media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
+  html[data-bg='image'] .full-screen-header { background: var(--gc); -webkit-backdrop-filter: none; backdrop-filter: none; }
+}
+html[data-bg='image']:is([data-transparency='reduced'],[data-contrast='high']) .full-screen-header {
+  background: var(--gc); -webkit-backdrop-filter: none; backdrop-filter: none;
+}
 .full-screen-back { display: grid; place-items: center; width: 44px; height: 44px; flex: none; border-radius: 50%; color: var(--tx); background: color-mix(in srgb,var(--tx) 8%,transparent); }
 .full-screen-back:focus-visible { outline: 2px solid var(--acc-text); outline-offset: 3px; }
 .full-screen-title { min-width: 0; flex: 1; }
-.full-screen-title h1 { margin: 0; font: 600 16px/1.3 var(--font-sans,Inter),sans-serif; }
+.full-screen-title h1 { margin: 0; font: 400 clamp(20px,2.2vw,24px)/1.25 var(--font-serif, Georgia),serif; }
 .full-screen-title p { margin: 2px 0 0; color: var(--mut); font-size: 12px; }
 .profile-stat { padding: 20px; text-align: center; }
 .profile-stat-value { color: var(--acc-text); font-size: 28px; font-weight: 700; }

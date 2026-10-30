@@ -104,7 +104,7 @@ export default function BackupScreen() {
       backPath="/settings"
     >
       <div className="screen-column space-y-4">
-        <div className="glass space-y-3 rounded-2xl bg-surface p-4 shadow-sm">
+        <div className="glass space-y-3 rounded-2xl p-4">
           <p className="text-base font-bold text-text-primary">
             {t('settings.backup.title', 'Sauvegarde')}
           </p>
@@ -145,7 +145,7 @@ export default function BackupScreen() {
           )}
         </div>
 
-        <div className="glass space-y-3 rounded-2xl bg-surface p-4 shadow-sm">
+        <div className="glass space-y-3 rounded-2xl p-4">
           <p className="text-base font-bold text-text-primary">
             {t('settings.backup.cloud', 'Synchronisation Cloud')}
           </p>

@@ -103,7 +103,7 @@ export default function SettingsSessionScreen() {
               focusMode ? 'border-primary bg-primary' : 'border-text-muted',
             )}
           >
-            {focusMode && <DuoIcon icon={Check} size={14} className="text-[color:var(--on)]" />}
+            {focusMode && <DuoIcon icon={Check} size={14} className="text-on-primary" />}
           </div>
         </button>
       </div>

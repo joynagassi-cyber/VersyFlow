@@ -59,7 +59,7 @@ export default function ProfileSelectionScreen() {
                 key={profile.id}
                 onClick={() => handleSelect(profile.id)}
                 className={cn(
-                  'flex w-full items-center gap-3 rounded-2xl bg-surface p-4 text-left shadow-sm transition active:scale-[0.99]',
+                  'g2 flex w-full items-center gap-3 p-4 text-left transition active:scale-[0.99]',
                   active && 'ring-2 ring-primary',
                 )}
               >
@@ -88,7 +88,7 @@ export default function ProfileSelectionScreen() {
         </Button>
 
         {showCreate && (
-          <div className="space-y-3 rounded-2xl bg-surface p-4 shadow-sm">
+          <div className="g2 space-y-3 p-4">
             <Input
               value={newName}
               onChange={(e) => setNewName(e.target.value)}

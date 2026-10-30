@@ -209,7 +209,7 @@ export default function AvailableTranslationsScreen() {
       <div
         key={entry.id}
         className={cn(
-          'rounded-2xl bg-surface p-4 shadow-sm transition',
+          'g2 p-4 transition',
           isActive && 'ring-2 ring-primary',
           downloading && 'ring-1 ring-primary/30',
         )}
@@ -352,7 +352,7 @@ export default function AvailableTranslationsScreen() {
     const groupLabel = language || t('settings.unknownLanguageGroup', 'Autres versions');
     return (
       <section key={language || 'unknown'} className="mb-6">
-        <div className="mb-3 flex items-center justify-between rounded-2xl bg-surface px-4 py-3 shadow-sm">
+        <div className="g2 mb-3 flex items-center justify-between px-4 py-3">
           <div className="flex items-center gap-2.5">
             <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/12 text-primary">
               <DuoIcon icon={Languages} size={18} />

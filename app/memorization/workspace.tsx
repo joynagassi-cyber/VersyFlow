@@ -208,7 +208,7 @@ export default function MemorizationWorkspace() {
           )}
 
           {status === 'error' && (
-            <div className="rounded-3xl bg-surface p-6 text-center shadow-sm">
+            <div className="g2 p-6 text-center">
               <p className="text-sm text-error">
                 {statusMessage ?? t('errors.verseNotFound', 'Verset non disponible')}
               </p>

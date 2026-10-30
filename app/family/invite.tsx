@@ -117,7 +117,7 @@ export default function FamilyInviteScreen() {
         </div>
 
         {/* Code card */}
-        <div className="flex flex-col items-center gap-3 rounded-3xl bg-surface p-6 shadow-sm">
+        <div className="g2 flex flex-col items-center gap-3 p-6">
           <span className="text-sm font-semibold text-text-secondary">
             {t('family.inviteCode', 'Code d\'invitation')}
           </span>

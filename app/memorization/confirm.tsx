@@ -55,7 +55,7 @@ export default function MemorizationConfirm() {
       </div>
 
       {/* Result card */}
-      <div className="rounded-2xl border border-border bg-surface p-6 shadow-sm">
+      <div className="g2 p-6">
         <div className="flex items-center justify-between">
           <span className="text-sm text-text-muted">
             {t('session.nextReview', 'Prochain rappel')}

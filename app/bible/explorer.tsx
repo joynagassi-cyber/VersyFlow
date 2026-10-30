@@ -184,7 +184,7 @@ export default function BibleExplorerScreen() {
               key: 'new',
               label: t('bible.newTestament', 'Nouveau Testament'),
               list: newTestamentFiltered,
-              icon: <DuoIcon icon={Cross} size={16} className="text-[color:var(--on)]" />,
+              icon: <DuoIcon icon={Cross} size={16} className="text-on-status" />,
               iconBg: 'bg-success',
             },
           ].map((section) =>
@@ -211,7 +211,7 @@ export default function BibleExplorerScreen() {
                     <button
                       key={book.id}
                       onClick={() => openBook(book.id)}
-                      className="flex items-center justify-between rounded-xl bg-surface p-4 text-left shadow-sm"
+                      className="g2 flex items-center justify-between p-4 text-left"
                     >
                       <div>
                         <p className="text-base font-semibold text-text-primary">
@@ -239,7 +239,7 @@ export default function BibleExplorerScreen() {
               <button
                 key={chapter}
                 onClick={() => openChapter(chapter)}
-                className="flex flex-col items-center rounded-xl bg-surface py-3 shadow-sm"
+                className="g2 flex flex-col items-center py-3"
               >
                 <span className="text-base font-bold text-text-primary">{chapter}</span>
               </button>
@@ -253,7 +253,7 @@ export default function BibleExplorerScreen() {
         <div className="flex flex-col gap-3">
           {/* Download-on-demand banner */}
           {showDownloadBanner && (
-            <div className="rounded-2xl bg-surface p-4 shadow-sm">
+            <div className="g2 p-4">
               <div className="flex items-start gap-3">
                 <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-surface-tint text-primary">
                   {status === 'downloading' ? (
@@ -302,7 +302,7 @@ export default function BibleExplorerScreen() {
           {/* Manuscript flow: the chapter as one continuous serif text,
               with tappable inline verse numbers. */}
           {status === 'loading' ? (
-            <div className="space-y-3 rounded-3xl bg-surface p-5 shadow-sm">
+            <div className="g2 space-y-3 p-5">
               <div className="h-4 w-3/4 animate-pulse rounded bg-surface-tint" />
               <div className="h-4 w-2/3 animate-pulse rounded bg-surface-tint" />
               <div className="h-4 w-full animate-pulse rounded bg-surface-tint" />

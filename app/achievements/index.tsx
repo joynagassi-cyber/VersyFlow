@@ -188,7 +188,7 @@ export default function AchievementScreen() {
     >
       <div className="screen-column space-y-5">
         {/* Overall */}
-        <div className="flex items-center gap-4 rounded-3xl bg-surface p-5 shadow-sm">
+        <div className="g2 flex items-center gap-4 p-5">
           <ProgressRing value={Math.round(overall)} size={72} />
           <div className="flex-1">
             <p className="text-sm font-semibold text-text-primary">
@@ -229,7 +229,7 @@ export default function AchievementScreen() {
               <button
                 key={a.id}
                 onClick={() => setSelectedId(selectedId === a.id ? null : a.id)}
-                className="flex w-full items-center gap-4 rounded-2xl bg-surface p-4 text-left shadow-sm"
+                className="g2 flex w-full items-center gap-4 p-4 text-left"
               >
                 <span
                   className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full"
@@ -262,7 +262,7 @@ export default function AchievementScreen() {
                 </span>
                 {a.unlocked && (
                   <span
-                    className="flex h-6 w-6 items-center justify-center rounded-full text-[color:var(--on)]"
+                    className="flex h-6 w-6 items-center justify-center rounded-full text-on-status"
                     style={{ backgroundColor: a.color }}
                   >
                     <DuoIcon icon={Check} size={14} />
@@ -275,7 +275,7 @@ export default function AchievementScreen() {
 
         {selected && (
           <div
-            className="rounded-2xl bg-surface p-4 shadow-sm"
+            className="g2 p-4"
             style={{ borderColor: achievementTintBorder(selected.color) }}
           >
             <p className="text-base font-bold" style={{ color: selected.color }}>
@@ -303,7 +303,7 @@ export default function AchievementScreen() {
         )}
 
         {/* Tips */}
-        <div className="rounded-2xl bg-surface p-4 shadow-sm">
+        <div className="g2 p-4">
           <p className="mb-2 text-base font-bold text-text-primary">
             {t('achievements.howTo', 'Comment debloquer des succes')}
           </p>
