@@ -782,6 +782,7 @@ export const fr = {
     enter: 'Voir la démo',
     exit: 'Quitter la démo',
     notice: 'Données fictives pour cet écran uniquement. Vos données réelles ne sont pas modifiées.',
+    isolationUnavailable: 'Ce navigateur refuse l’isolation du stockage : la démo tourne, mais vos préférences réelles peuvent être modifiées. Utilisez un navigateur récent ou quittez la démo.',
     badge: 'Démo',
     badgeAria: 'Mode démo : données fictives, isolées de vos données réelles. Ouvrir le panneau de démonstration.',
     panelTitle: 'Mode démo',

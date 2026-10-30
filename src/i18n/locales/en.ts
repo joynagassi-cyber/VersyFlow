@@ -779,6 +779,7 @@ export const en = {
     enter: 'View demo',
     exit: 'Exit demo',
     notice: 'Sample data for this screen only. Your real data is not changed.',
+    isolationUnavailable: 'This browser rejects storage isolation: the demo runs, but your real preferences may be changed. Use a recent browser or leave the demo.',
     badge: 'Demo',
     badgeAria: 'Demo mode: fictional data, isolated from your real data. Open the demo panel.',
     panelTitle: 'Demo mode',

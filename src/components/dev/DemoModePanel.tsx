@@ -136,6 +136,21 @@ export function DemoModePanel({ compact = false }: { compact?: boolean }) {
             )}
           </p>
 
+          {!info.isolationInstalled && (
+            <p
+              className="mt-2 flex items-start gap-2 rounded-xl bg-surface-tint px-3 py-2 text-xs text-text-secondary"
+              role="alert"
+            >
+              <DuoIcon icon={Alert} size={14} className="mt-0.5 shrink-0 text-primary" />
+              <span>
+                {t(
+                  'demo.isolationUnavailable',
+                  'Ce navigateur refuse l’isolation du stockage : la démo tourne, mais vos préférences réelles peuvent être modifiées. Utilisez un navigateur récent ou quittez la démo.',
+                )}
+              </span>
+            </p>
+          )}
+
           <p className="mt-2 flex items-start gap-2 rounded-xl bg-surface-tint px-3 py-2 text-xs text-text-secondary">
             <DuoIcon icon={Alert} size={14} className="mt-0.5 shrink-0 text-primary" />
             <span>

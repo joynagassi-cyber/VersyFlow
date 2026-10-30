@@ -199,21 +199,39 @@ export function installStorageIsolation(): boolean {
     clear: wrapClear as unknown as (...args: never[]) => unknown,
   };
 
-  for (const method of STORAGE_METHODS) {
-    const original = proto[method] as unknown as (...args: never[]) => unknown;
-    saved[method] = original;
-    const wrappedMethod = wrapped[method];
-    (proto as unknown as Record<string, unknown>)[method] = function (
-      this: unknown,
-      ...args: unknown[]
-    ) {
-      // Seul `window.localStorage` est redirigé : `sessionStorage` et les
-      // instances de test restent intactes.
-      if (!isLocalStorageReceiver(this)) {
-        return (original as (...a: unknown[]) => unknown).apply(this, args);
+  const applied: StorageMethod[] = [];
+  try {
+    for (const method of STORAGE_METHODS) {
+      const original = proto[method] as unknown as (...args: never[]) => unknown;
+      saved[method] = original;
+      const wrappedMethod = wrapped[method];
+      (proto as unknown as Record<string, unknown>)[method] = function (
+        this: unknown,
+        ...args: unknown[]
+      ) {
+        // Seul `window.localStorage` est redirigé : `sessionStorage` et les
+        // instances de test restent intactes.
+        if (!isLocalStorageReceiver(this)) {
+          return (original as (...a: unknown[]) => unknown).apply(this, args);
+        }
+        return (wrappedMethod as (...a: unknown[]) => unknown).apply(this, args);
+      };
+      applied.push(method);
+    }
+  } catch (error) {
+    // Un navigateur exotique peut refuser la réécriture du prototype : on
+    // restaure ce qui a été posé et on laisse l'application démarrer (le
+    // panneau Démo signale alors l'isolation indisponible).
+    for (const method of applied) {
+      try {
+        (proto as unknown as Record<string, unknown>)[method] = saved[method];
+      } catch {
+        /* ignore */
       }
-      return (wrappedMethod as (...a: unknown[]) => unknown).apply(this, args);
-    };
+    }
+    console.error('[démo] isolation du stockage indisponible', error);
+    originals = null;
+    return false;
   }
 
   originals = saved;
