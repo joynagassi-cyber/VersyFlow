@@ -285,10 +285,24 @@ export function attachPreviewBridge(): () => void {
       case 'vf:preview:reload':
         window.location.reload();
         break;
+      case 'vf:preview:hello':
+        // Le laboratoire redemande l'état (au chargement de la frame, ou après
+        // un rechargement) : sans cela, un simple décalage d'ordre entre le
+        // montage du parent et le boot de la frame laisserait le cadre muet.
+        announce();
+        break;
       default:
         break;
     }
   };
+
+  const announce = () =>
+    postToParent({
+      type: 'vf:preview:ready',
+      role,
+      path: window.location.pathname,
+      isolated: previewStorageIsolated(),
+    });
 
   const announceRoute = () =>
     postToParent({ type: 'vf:preview:route', role, path: window.location.pathname });
@@ -297,12 +311,7 @@ export function attachPreviewBridge(): () => void {
   window.addEventListener('popstate', announceRoute);
   window.addEventListener('pageshow', announceRoute);
 
-  postToParent({
-    type: 'vf:preview:ready',
-    role,
-    path: window.location.pathname,
-    isolated: previewStorageIsolated(),
-  });
+  announce();
 
   return () => {
     window.removeEventListener('message', onMessage);

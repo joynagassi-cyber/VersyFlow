@@ -169,8 +169,11 @@ describe('laboratoire de prévisualisation — development only', () => {
   it('ne synchronise que route, thème et rechargement', () => {
     const session = read('src', 'dev', 'preview-session.ts');
     const handled = [...session.matchAll(/case '(vf:preview:[a-z]+)'/g)].map((m) => m[1]).sort();
+    // `hello` n'est qu'un accusé de réception (re-demande d'état) : il ne
+    // transporte aucune donnée applicative.
     expect(handled).toEqual([
       'vf:preview:appearance',
+      'vf:preview:hello',
       'vf:preview:navigate',
       'vf:preview:reload',
     ]);

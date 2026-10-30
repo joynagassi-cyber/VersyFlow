@@ -104,6 +104,7 @@ function ScaledFrame({
   status,
   onToggleFreeze,
   onReload,
+  onLoaded,
   iframeRef,
 }: {
   spec: FrameSpec;
@@ -112,6 +113,7 @@ function ScaledFrame({
   status: FrameStatus;
   onToggleFreeze: () => void;
   onReload: () => void;
+  onLoaded: () => void;
   iframeRef: (node: HTMLIFrameElement | null) => void;
 }) {
   const wrapperRef = useRef<HTMLDivElement | null>(null);
@@ -219,6 +221,7 @@ function ScaledFrame({
           <iframe
             ref={iframeRef}
             src={src}
+            onLoad={onLoaded}
             title={`Prévisualisation ${spec.label} — ${spec.width} px`}
             className="border-0 bg-background"
             style={{
@@ -418,6 +421,7 @@ export default function ResponsivePreviewPage() {
               setFrozen((prev) => ({ ...prev, [spec.role]: !prev[spec.role] }))
             }
             onReload={() => post(spec.role, { type: 'vf:preview:reload' })}
+            onLoaded={() => post(spec.role, { type: 'vf:preview:hello' })}
             iframeRef={(node) => {
               frameRefs.current[spec.role] = node;
             }}
