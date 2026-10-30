@@ -17,7 +17,13 @@ import { useEffect, useState } from 'react';
 import { useAppearanceStore } from '@/store/appearance-store';
 import { useTheme } from '@/theme/useTheme';
 import { applyAccentPreset } from '@/theme/theme-presets';
-import { applyReadingVars, findBibleFont, findUiFont, loadBibleFont } from '@/theme/theme-fonts';
+import {
+  applyReadingVars,
+  findBibleFont,
+  findUiFont,
+  loadBibleFont,
+  uiFontFamilyOf,
+} from '@/theme/theme-fonts';
 import { applyThemeToDocument, resolveTheme } from '@/theme/resolve-theme';
 
 export function ThemeManager() {
@@ -69,7 +75,10 @@ export function ThemeManager() {
         isDark: theme.isDark,
         reducedTransparency,
         highContrast,
-        uiFontFamily: findUiFont(uiFontId).family,
+        // `system` = « suite du thème » : aucune famille fournie, sinon
+        // `--font-sans` écraserait la police du preset (Inter, Geist, DM Sans,
+        // Outfit…). Un choix explicite de l'utilisateur, lui, l'emporte.
+        uiFontFamily: uiFontFamilyOf(uiFontId),
         wide: viewportWide,
       }),
     );

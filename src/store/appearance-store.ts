@@ -7,6 +7,7 @@
 import { create } from 'zustand';
 import { MmkvStorage } from '@/infrastructure/storage';
 import { DEFAULT_ACCENT, type AccentKey } from '@/theme/theme-presets';
+import { DEFAULT_VENDORED_PRESET_ID } from '@/theme/vendored-themes';
 
 const storage = new MmkvStorage();
 
@@ -97,8 +98,8 @@ const DEFAULTS: Pick<
   | 'bibleLineLength'
 > = {
   themeMode: 'system',
-  accent: DEFAULT_ACCENT,
-  presetId: 'quantum-rose',
+  accent: DEFAULT_VENDORED_PRESET_ID,
+  presetId: DEFAULT_VENDORED_PRESET_ID,
   backgroundType: 'none',
   gradientId: null,
   uiFontId: 'system',

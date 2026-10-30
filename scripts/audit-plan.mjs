@@ -64,6 +64,9 @@ const HEX = /^#[0-9a-fA-F]{6}$/;
 /* ------------------------------------------------------------------- lecture */
 
 const presetCss = read('src/styles/tweakcn-presets.css');
+/** Thèmes ajoutés au contrat n°3 (registre officiel tweakcn). */
+const vendoredCss = read('src/styles/vendored-themes.css');
+const vendoredTs = read('src/theme/vendored-themes.ts');
 const globals = read('src/styles/globals.css');
 const tailwind = read('tailwind.config.js');
 // Depuis le scaffolding desktop, la structure ne vit plus dans le layout de
@@ -82,7 +85,7 @@ const isDesktop = read('src/hooks/useIsDesktop.ts');
 const themePicker = read('app/settings/theme-picker.tsx');
 
 const PRESET_BLOCK = /(:root((?:\[[^\]]+\])+)\s*\{)([^}]*)(\})/g;
-const presetBlocks = [...presetCss.matchAll(PRESET_BLOCK)]
+const presetBlocks = [...(presetCss + '\n' + vendoredCss).matchAll(PRESET_BLOCK)]
   .filter((m) => /data-preset=/.test(m[2]))
   .map((m) => ({
     selector: m[2],
@@ -154,11 +157,13 @@ const record = (id, section, label, verdict, detail, proof) =>
     }
   }
   const names = new Set(presetBlocks.map((b) => b.name));
+  // 25 presets historiques + 14 thèmes ajoutés (contrat n°3) = 39 presets,
+  // soit 78 blocs (clair + sombre pour chacun).
   record(
     'C02',
     '§2.1',
     'Chaque preset définit les 14 jetons du contrat (clair + sombre)',
-    missing.length === 0 && names.size === 25 && presetBlocks.length === 50 ? 'PASS' : 'FAIL',
+    missing.length === 0 && names.size === 39 && presetBlocks.length === 78 ? 'PASS' : 'FAIL',
     `${presetBlocks.length} blocs, ${names.size} presets, ${missing.length} jeton(s) manquant(s)`,
     'node scripts/audit-plan.mjs',
   );
@@ -503,6 +508,38 @@ const record = (id, section, label, verdict, detail, proof) =>
       ? `exception: ${documented ? 'documentée' : 'NON documentée'} · dette gelée mesurée: ${measured ? `${frozen} avertissements` : 'non mesurable (eslint absent)'}`
       : 'aucune exception : tout le périmètre est linté strictement',
     'npx eslint src/components/ui/Primitives.tsx --rule \'{"@typescript-eslint/no-explicit-any":"warn"}\'',
+  );
+}
+
+/* §4.7 — thème par défaut (contrat n°3) ------------------------------------ */
+{
+  const resolveTs = read('src/theme/resolve-theme.ts');
+  const mainTsx = read('src/main.tsx');
+  const tailwind = read('tailwind.config.js');
+  const defaultId = (vendoredTs.match(/DEFAULT_VENDORED_PRESET_ID =\s*\n?\s*'([a-z0-9-]+)'/) ?? [])[1];
+  const defaultBlock = (vendoredCss.match(/:root\[data-preset='([a-z0-9-]+)'\] \{([^}]*)\}/g) ?? [])
+    .map((bloc) => ({
+      id: (bloc.match(/data-preset='([a-z0-9-]+)'/) ?? [])[1],
+      body: bloc,
+    }))
+    .find((b) => b.id === defaultId);
+  const checks = {
+    'défaut déclaré une seule fois': Boolean(defaultId),
+    'resolve-theme lit le défaut généré': /DEFAULT_PRESET_ID = DEFAULT_VENDORED_PRESET_ID/.test(resolveTs),
+    'primaire du défaut = couleur demandée': /--primary:\s*#fb2c36;/.test(defaultBlock?.body ?? ''),
+    'polices chargées réellement': /@fontsource\/inter\/latin-400\.css/.test(mainTsx) && /@fontsource\/jetbrains-mono\/latin-400\.css/.test(mainTsx),
+    'CSS des thèmes ajoutés importé': /styles\/vendored-themes\.css/.test(mainTsx),
+    'rayons proportionnels branchés': /var\(--radius-scale, 1\)/.test(tailwind),
+  };
+  const missing = Object.entries(checks).filter(([, ok]) => !ok).map(([k]) => k);
+  record(
+    'C18',
+    '§4.7',
+    'Thème par défaut : preset officiel appliqué, polices et forme réellement chargées',
+    missing.length === 0 ? 'PASS' : 'FAIL',
+    `défaut: ${defaultId ?? 'aucun'} · ${Object.keys(checks).length - missing.length}/${Object.keys(checks).length} contrôles` +
+      (missing.length ? ` · manquants: ${missing.join(', ')}` : ''),
+    "node scripts/import-vendored-themes.mjs --check && npx vitest run tests/design/vendored-themes.test.ts",
   );
 }
 

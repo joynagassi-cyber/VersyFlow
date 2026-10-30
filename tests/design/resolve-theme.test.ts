@@ -14,14 +14,15 @@ import {
   ACCENT_VARS,
   applyThemePlan,
   imagePath,
+  DEFAULT_PRESET_ID,
   resolveTheme,
   type ThemeInput,
   type ThemePlan,
 } from '../../src/theme/resolve-theme';
 
 const base: ThemeInput = {
-  presetId: 'quantum-rose',
-  accent: 'quantum-rose',
+  presetId: 'lara-red',
+  accent: 'lara-red',
   backgroundType: 'none',
   gradientId: null,
   colorThemeId: null,
@@ -42,15 +43,19 @@ const accent = {
 describe('resolveTheme — décision pure', () => {
   it('pose le preset actif et n’invente rien quand aucun fond n’est choisi', () => {
     const plan = resolveTheme(base);
-    expect(plan.attributes['data-preset']).toBe('quantum-rose');
+    expect(plan.attributes['data-preset']).toBe('lara-red');
     expect(plan.vars['--app-bg-image']).toBeUndefined();
     expect(plan.vars['--theme-image']).toBeUndefined();
     // Aucune variable d'accent maison : le preset tweakcn est la source.
     expect(Object.keys(plan.vars).filter((k) => ACCENT_VARS.includes(k as never))).toEqual([]);
   });
 
-  it('retombe sur Quantum Rose si aucun preset n’est persisté', () => {
-    expect(resolveTheme({ ...base, presetId: null }).attributes['data-preset']).toBe('quantum-rose');
+  it('retombe sur le thème par défaut Lara Red si aucun preset n’est persisté', () => {
+    // Le défaut a changé au contrat n°3 : `lara-red` (tweakcn
+    // cmvukmb1k000004iifp7x5wji) remplace `quantum-rose`. La constante est
+    // lue depuis le module généré pour qu'un futur changement reste prouvé ici.
+    expect(DEFAULT_PRESET_ID).toBe('lara-red');
+    expect(resolveTheme({ ...base, presetId: null }).attributes['data-preset']).toBe('lara-red');
   });
 
   it('un dégradé remplace le fond et n’écrase aucun accent', () => {
@@ -175,7 +180,7 @@ describe('applyThemePlan — l’unique écrivain', () => {
     const root = fakeRoot();
     const plan: ThemePlan = resolveTheme({ ...base, backgroundType: 'image', colorThemeId: 'esprit-feu', accentValues: accent });
     applyThemePlan(root, plan);
-    expect(root.attributes.get('data-preset')).toBe('quantum-rose');
+    expect(root.attributes.get('data-preset')).toBe('lara-red');
     expect(root.attributes.get('data-theme-image')).toBe('on');
     expect(root.vars.get('--color-primary')).toBe('#e6067a');
     expect(root.calls.indexOf('rm:--color-primary')).toBeLessThan(root.calls.indexOf('set:--color-primary'));

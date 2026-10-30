@@ -94,8 +94,8 @@ export function seedPreviewStorage(): void {
     'versyflow:appearance:settings',
     JSON.stringify({
       themeMode: 'light',
-      accent: 'quantum-rose',
-      presetId: 'quantum-rose',
+      accent: 'lara-red',
+      presetId: 'lara-red',
       backgroundType: 'none',
       gradientId: null,
       uiFontId: 'system',

@@ -7,7 +7,8 @@ function Check({ size = 18, className }: { size?: number; className?: string }) 
 }
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { useAppearanceStore } from '@/store/appearance-store';
-import { TWEAKCN_PRESETS, GRADIENTS } from '@/theme/tweakcn-presets';
+import { GRADIENTS } from '@/theme/tweakcn-presets';
+import { DEFAULT_PRESET, PRESET_CATALOG } from '@/theme/preset-catalog';
 import { UI_FONTS } from '@/theme/theme-fonts';
 import { themeLandscapeUrl } from '@/theme/theme-catalog';
 import { THEME_CATEGORIES } from '@/theme/theme-catalog';
@@ -169,8 +170,8 @@ export default function AppearanceScreen() {
               avec les VRAIS tokens du thème — l'utilisateur voit exactement
               à quoi l'app ressemblera avant de choisir. */}
           <div className="grid grid-cols-2 gap-3">
-            {TWEAKCN_PRESETS.map((preset) => {
-              const active = (presetId ?? 'quantum-rose') === preset.id;
+            {PRESET_CATALOG.map((preset) => {
+              const active = (presetId ?? DEFAULT_PRESET) === preset.id;
               return (
                 <button
                   key={preset.id}

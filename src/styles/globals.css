@@ -662,29 +662,51 @@ html[data-theme-image='on'] body {
   --shadow-card:
     0 1px 2px color-mix(in srgb, var(--color-text-primary) 6%, transparent),
     0 6px 16px -8px color-mix(in srgb, var(--color-text-primary) 12%, transparent);
-  --shadow-float:
+  /* Les presets qui définissent leurs propres ombres (voir
+     vendored-themes.css) les imposent ; les autres gardent la recette
+     historique, d'où le repli explicite. */
+  --shadow-float: var(
+    --shadow-preset-sm,
     0 2px 6px color-mix(in srgb, var(--color-text-primary) 8%, transparent),
-    0 16px 32px -12px color-mix(in srgb, var(--color-text-primary) 18%, transparent);
-  --shadow-lift:
+    0 16px 32px -12px color-mix(in srgb, var(--color-text-primary) 18%, transparent)
+  );
+  --shadow-lift: var(
+    --shadow-preset-lg,
     0 4px 10px color-mix(in srgb, var(--color-text-primary) 10%, transparent),
-    0 24px 48px -16px color-mix(in srgb, var(--color-text-primary) 24%, transparent);
+    0 24px 48px -16px color-mix(in srgb, var(--color-text-primary) 24%, transparent)
+  );
 }
 
-@property --primary { syntax: '<color>'; inherits: true; initial-value: #e10677; }
-@property --ring { syntax: '<color>'; inherits: true; initial-value: #e10677; }
-@property --accent { syntax: '<color>'; inherits: true; initial-value: #ffc1e3; }
-@property --tint { syntax: '<color>'; inherits: true; initial-value: #e10677; }
+/* Valeurs initiales = thème par défaut `lara-red` (oklch(0.6370 0.2370
+   25.3310) → #fb2c36). Elles ne servent qu'avant l'application du preset. */
+@property --primary { syntax: '<color>'; inherits: true; initial-value: #fb2c36; }
+@property --ring { syntax: '<color>'; inherits: true; initial-value: #fb2c36; }
+@property --accent { syntax: '<color>'; inherits: true; initial-value: #fb2c36; }
+@property --tint { syntax: '<color>'; inherits: true; initial-value: #fb2c36; }
 
 /* Socle : les jetons shadcn existent AVANT qu'un preset soit appliqué.
    Sans ce bloc, --accent/--tint valaient noir tant que React n'avait pas posé
    data-preset. Les règles [data-preset] restent prioritaires. */
+/* Socle = thème par défaut `lara-red` (voir src/styles/vendored-themes.css).
+   Ces valeurs n'existent que pour l'instant d'avant l'hydratation. */
 :root {
-  --primary: #e10677;
-  --primary-foreground: #ffffff;
-  --ring: #e10677;
-  --accent: #ffc1e3;
-  --tint: #e10677;
-  --color-on-primary: #ffffff;
+  --primary: #fb2c36;
+  --primary-foreground: #000000;
+  --ring: #fb2c36;
+  --accent: #fb2c36;
+  --tint: #fb2c36;
+  --color-on-primary: #000000;
+  /* Forme : multiplicateur de rayons (1 = design system historique) et
+     interlettrage global. Les presets écrivent ces deux variables. */
+  --radius-scale: 1;
+  --tracking-normal: 0em;
+}
+
+/* Interlettrage du thème : 0 par défaut, donc aucun changement de rendu pour
+   le thème par défaut ; les thèmes à 0.075em (Emerald) ou −0.02em écartent
+   ou resserrent l'interface comme prévu par leur auteur. */
+body {
+  letter-spacing: var(--tracking-normal, 0em);
 }
 @property --app-bg-image { syntax: '*'; inherits: false; initial-value: none; }
 

@@ -18,10 +18,17 @@
  * (`theme-fonts.applyReadingVars`) : c'est un réglage de lecture, pas un thème.
  */
 import { GRADIENTS } from './tweakcn-presets';
+import { DEFAULT_VENDORED_PRESET_ID } from './vendored-themes';
 import { themeLandscapeUrl, themePortraitUrl } from './theme-catalog';
 
 /** Preset tweakcn appliqué quand aucun choix explicite n'est persisté. */
-export const DEFAULT_PRESET_ID = 'quantum-rose';
+/**
+ * Thème appliqué au premier lancement : `lara-red`, c'est-à-dire le thème
+ * tweakcn `cmvukmb1k000004iifp7x5wji` (Inter / Noto Serif Georgian / JetBrains
+ * Mono, radius 0.5rem, primaire rouge oklch(0.6370 0.2370 25.3310)).
+ * La valeur vient du fichier généré, jamais d'une chaîne recopiée à la main.
+ */
+export const DEFAULT_PRESET_ID = DEFAULT_VENDORED_PRESET_ID;
 
 export type BackgroundType = 'none' | 'gradient' | 'image';
 

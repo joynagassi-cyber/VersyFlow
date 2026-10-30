@@ -14,6 +14,7 @@ import { I18nextProvider } from 'react-i18next';
 import { Suspense, lazy, useEffect } from 'react';
 import '@/styles/globals.css';
 import '@/styles/tweakcn-presets.css';
+import '@/styles/vendored-themes.css';
 import '@/styles/gradients.css';
 
 // Serif font bundle for bible text (referenced by `--vf-font-bible` and
@@ -26,6 +27,18 @@ import '@fontsource/source-serif-4/400.css';
 import '@fontsource/source-serif-4/400-italic.css';
 import '@fontsource/source-serif-4/600.css';
 import '@fontsource/source-serif-4/700.css';
+
+// Polices du thème par défaut (`lara-red`) : Inter pour l'interface, Noto
+// Serif Georgian pour les titres, JetBrains Mono pour le code. Servies par
+// @fontsource (woff2 embarqués, aucun appel réseau) et limitées aux sous-
+// ensembles réellement utilisés pour ne pas gonfler le bundle.
+import '@fontsource/inter/latin-400.css';
+import '@fontsource/inter/latin-500.css';
+import '@fontsource/inter/latin-600.css';
+import '@fontsource/inter/latin-700.css';
+import '@fontsource/noto-serif-georgian/latin-400.css';
+import '@fontsource/noto-serif-georgian/georgian-400.css';
+import '@fontsource/jetbrains-mono/latin-400.css';
 
 // Lazy loaded route pages
 const TabLayout = lazy(() => import('../app/(tabs)/_layout'));

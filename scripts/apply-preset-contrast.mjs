@@ -167,291 +167,303 @@ export function ensurePair(bg, fg, label = '') {
 
 /* -------------------------------------------------------------- traitement */
 
-const css = readFileSync(CSS_PATH, 'utf8');
-// Deux blocs par preset : `:root[data-preset='x']` (clair) et
-// `:root[data-theme='dark'][data-preset='x']` (sombre). Le sélecteur est lu
-// en entier pour ne jamais laisser le mode sombre sous le seuil.
-const blockRe = /(:root((?:\[[^\]]+\])+)\s*\{)([^}]*)(\})/g;
-const presetBlocks = (source) =>
-  [...source.matchAll(blockRe)]
-    .filter((m) => /data-preset=/.test(m[2]))
-    .map((m) => ({
-      whole: m[0],
-      open: m[1],
-      body: m[3],
-      close: m[4],
-      name: (m[2].match(/data-preset=['"]([a-z0-9-]+)['"]/) || [])[1],
-      dark: /data-theme=['"]dark['"]/.test(m[2]),
-    }));
-const adjustments = [];
-let updatedCss = css;
-let corrections = 0;
+/* ------------------------------------------------------------------ main */
+/*
+ * Le module est importable SANS effet de bord : `import-vendored-themes.mjs`
+ * réutilise `ensurePair` / `contrast` pour garantir le même seuil AA sur les
+ * thèmes ajoutés au contrat n°3. Le traitement ci-dessous ne s'exécute donc
+ * que si le fichier est lancé directement (`node scripts/apply-preset-contrast.mjs`).
+ */
+const IS_MAIN =
+  Boolean(process.argv[1]) && resolve(process.argv[1]) === fileURLToPath(import.meta.url);
 
-for (const block of presetBlocks(css)) {
-  const { whole, open, name, body, close, dark } = block;
-  const label = `${name}${dark ? ' (sombre)' : ''}`;
-  const read = (token) => {
-    const m = body.match(new RegExp(`--${token}:\\s*(#[0-9a-fA-F]{6});`));
-    return m ? m[1] : null;
-  };
+if (IS_MAIN) {
+  const css = readFileSync(CSS_PATH, 'utf8');
+  // Deux blocs par preset : `:root[data-preset='x']` (clair) et
+  // `:root[data-theme='dark'][data-preset='x']` (sombre). Le sélecteur est lu
+  // en entier pour ne jamais laisser le mode sombre sous le seuil.
+  const blockRe = /(:root((?:\[[^\]]+\])+)\s*\{)([^}]*)(\})/g;
+  const presetBlocks = (source) =>
+    [...source.matchAll(blockRe)]
+      .filter((m) => /data-preset=/.test(m[2]))
+      .map((m) => ({
+        whole: m[0],
+        open: m[1],
+        body: m[3],
+        close: m[4],
+        name: (m[2].match(/data-preset=['"]([a-z0-9-]+)['"]/) || [])[1],
+        dark: /data-theme=['"]dark['"]/.test(m[2]),
+      }));
+  const adjustments = [];
+  let updatedCss = css;
+  let corrections = 0;
 
-  const bg = read('background');
-  const card = read('card');
-  const primary = read('primary');
-  const primaryFg = read('primary-foreground');
-  const mutedFg = read('muted-foreground');
-  if (!bg || !primary || !primaryFg) continue;
+  for (const block of presetBlocks(css)) {
+    const { whole, open, name, body, close, dark } = block;
+    const label = `${name}${dark ? ' (sombre)' : ''}`;
+    const read = (token) => {
+      const m = body.match(new RegExp(`--${token}:\\s*(#[0-9a-fA-F]{6});`));
+      return m ? m[1] : null;
+    };
 
-  let nextBody = body;
+    const bg = read('background');
+    const card = read('card');
+    const primary = read('primary');
+    const primaryFg = read('primary-foreground');
+    const mutedFg = read('muted-foreground');
+    if (!bg || !primary || !primaryFg) continue;
 
-  // a. texte posé sur l'accent
-  const onPrimary = ensurePair(primary, primaryFg, `${label} / --primary-foreground`);
-  if (onPrimary.changed) {
-    corrections++;
-    adjustments.push({ preset: label, pair: 'primary-foreground sur primary', from: contrast(primary, primaryFg), to: onPrimary.ratio, note: onPrimary.reason });
-    if (onPrimary.bg.toLowerCase() !== primary.toLowerCase()) {
-      nextBody = nextBody.replace(/--primary:\s*#[0-9a-fA-F]{6};/, `--primary: ${onPrimary.bg};`);
-      // --ring suit l'accent : un anneau de focus d'une autre couleur que l'action trompe.
-      nextBody = nextBody.replace(/--ring:\s*#[0-9a-fA-F]{6};/, `--ring: ${onPrimary.bg};`);
+    let nextBody = body;
+
+    // a. texte posé sur l'accent
+    const onPrimary = ensurePair(primary, primaryFg, `${label} / --primary-foreground`);
+    if (onPrimary.changed) {
+      corrections++;
+      adjustments.push({ preset: label, pair: 'primary-foreground sur primary', from: contrast(primary, primaryFg), to: onPrimary.ratio, note: onPrimary.reason });
+      if (onPrimary.bg.toLowerCase() !== primary.toLowerCase()) {
+        nextBody = nextBody.replace(/--primary:\s*#[0-9a-fA-F]{6};/, `--primary: ${onPrimary.bg};`);
+        // --ring suit l'accent : un anneau de focus d'une autre couleur que l'action trompe.
+        nextBody = nextBody.replace(/--ring:\s*#[0-9a-fA-F]{6};/, `--ring: ${onPrimary.bg};`);
+      }
+      if (onPrimary.fg !== primaryFg) {
+        nextBody = nextBody.replace(/--primary-foreground:\s*#[0-9a-fA-F]{6};/, `--primary-foreground: ${onPrimary.fg};`);
+      }
     }
-    if (onPrimary.fg !== primaryFg) {
-      nextBody = nextBody.replace(/--primary-foreground:\s*#[0-9a-fA-F]{6};/, `--primary-foreground: ${onPrimary.fg};`);
-    }
-  }
 
-  // b. texte secondaire : doit passer 4,5:1 sur le fond ET sur la carte.
-  if (mutedFg) {
-    const surfaces = [bg, card].filter(Boolean);
-    const worstRatio = Math.min(...surfaces.map((surface) => contrast(surface, mutedFg)));
-    if (worstRatio < TARGET) {
-      const [h, sat, l] = rgbToHsl(hexToRgb(mutedFg));
-      // On ne touche pas au fond (identité de la palette) : on éloigne le texte.
-      // Les deux directions sont essayées, la plus petite qui satisfait gagne.
-      let bestFix = null;
-      for (const dir of [-1, 1]) {
-        for (let step = 1; step <= 60; step++) {
-          const candidate = rgbToHex(hslToRgb([h, sat, Math.max(0, Math.min(1, l + dir * 0.01 * step))]));
-          const ratios = surfaces.map((surface) => contrast(surface, candidate));
-          if (Math.min(...ratios) >= TARGET) {
-            if (!bestFix || step < bestFix.step) {
-              bestFix = { hex: candidate, step, ratio: Math.min(...ratios) };
+    // b. texte secondaire : doit passer 4,5:1 sur le fond ET sur la carte.
+    if (mutedFg) {
+      const surfaces = [bg, card].filter(Boolean);
+      const worstRatio = Math.min(...surfaces.map((surface) => contrast(surface, mutedFg)));
+      if (worstRatio < TARGET) {
+        const [h, sat, l] = rgbToHsl(hexToRgb(mutedFg));
+        // On ne touche pas au fond (identité de la palette) : on éloigne le texte.
+        // Les deux directions sont essayées, la plus petite qui satisfait gagne.
+        let bestFix = null;
+        for (const dir of [-1, 1]) {
+          for (let step = 1; step <= 60; step++) {
+            const candidate = rgbToHex(hslToRgb([h, sat, Math.max(0, Math.min(1, l + dir * 0.01 * step))]));
+            const ratios = surfaces.map((surface) => contrast(surface, candidate));
+            if (Math.min(...ratios) >= TARGET) {
+              if (!bestFix || step < bestFix.step) {
+                bestFix = { hex: candidate, step, ratio: Math.min(...ratios) };
+              }
+              break;
             }
-            break;
           }
         }
+        if (bestFix) {
+          corrections++;
+          adjustments.push({
+            preset: label,
+            pair: 'muted-foreground sur background/card',
+            from: worstRatio,
+            to: bestFix.ratio,
+            note: `${label} / --muted-foreground : luminosité ajustée de ${bestFix.step} %`,
+          });
+          nextBody = nextBody.replace(/--muted-foreground:\s*#[0-9a-fA-F]{6};/, `--muted-foreground: ${bestFix.hex};`);
+        }
       }
-      if (bestFix) {
-        corrections++;
-        adjustments.push({
-          preset: label,
-          pair: 'muted-foreground sur background/card',
-          from: worstRatio,
-          to: bestFix.ratio,
-          note: `${label} / --muted-foreground : luminosité ajustée de ${bestFix.step} %`,
-        });
-        nextBody = nextBody.replace(/--muted-foreground:\s*#[0-9a-fA-F]{6};/, `--muted-foreground: ${bestFix.hex};`);
+    }
+
+    // c. autres couples texte/surface (secondaire, accent, destructif) : même
+    //    règle que (a) — on garde la teinte et on ajuste la luminosité du fond,
+    //    jamais l'inverse, pour que « rouge destructif » reste rouge.
+    for (const [fgToken, bgToken] of [
+      ['secondary-foreground', 'secondary'],
+      ['accent-foreground', 'accent'],
+      ['destructive-foreground', 'destructive'],
+    ]) {
+      const fg = read(fgToken);
+      const surface = read(bgToken);
+      if (!fg || !surface) continue;
+      const fixed = ensurePair(surface, fg, `${label} / --${bgToken}`);
+      if (!fixed.changed) continue;
+      corrections++;
+      adjustments.push({
+        preset: label,
+        pair: `${fgToken} sur ${bgToken}`,
+        from: contrast(surface, fg),
+        to: fixed.ratio,
+        note: fixed.reason,
+      });
+      if (fixed.bg.toLowerCase() !== surface.toLowerCase()) {
+        nextBody = nextBody.replace(
+          new RegExp(`--${bgToken}:\\s*#[0-9a-fA-F]{6};`),
+          `--${bgToken}: ${fixed.bg};`,
+        );
       }
+      if (fixed.fg.toLowerCase() !== fg.toLowerCase()) {
+        nextBody = nextBody.replace(
+          new RegExp(`--${fgToken}:\\s*#[0-9a-fA-F]{6};`),
+          `--${fgToken}: ${fixed.fg};`,
+        );
+      }
+    }
+
+    if (nextBody !== body) {
+      updatedCss = updatedCss.replace(whole, `${open}${nextBody}${close}`);
     }
   }
 
-  // c. autres couples texte/surface (secondaire, accent, destructif) : même
-  //    règle que (a) — on garde la teinte et on ajuste la luminosité du fond,
-  //    jamais l'inverse, pour que « rouge destructif » reste rouge.
-  for (const [fgToken, bgToken] of [
+  if (CHECK_ONLY) {
+    if (updatedCss !== css) {
+      console.error(`[preset-contrast] ${corrections} correction(s) de contraste resteraient à appliquer.`);
+      process.exit(1);
+    }
+    console.log('[preset-contrast] tous les presets sont conformes (≥ 4,5:1).');
+    process.exit(0);
+  }
+
+  if (updatedCss !== css) {
+    writeFileSync(CSS_PATH, updatedCss);
+    console.log(`[preset-contrast] ${corrections} correction(s) → ${CSS_PATH}`);
+  }
+
+  /* --------- synchronisation des métadonnées TS (aucune divergence possible) */
+
+  let ts = readFileSync(TS_PATH, 'utf8');
+  let tsChanged = 0;
+  for (const { name, body, dark } of presetBlocks(updatedCss)) {
+    if (dark) continue;
+    const read = (token) => {
+      const m = body.match(new RegExp(`--${token}:\\s*(#[0-9a-fA-F]{6});`));
+      return m ? m[1] : null;
+    };
+    // Tous les jetons exposés par les métadonnées TS suivent le CSS : une
+    // pastille de choix de thème ne peut pas afficher une couleur que le thème
+    // n'applique plus.
+    const fields = {
+      bg: 'background',
+      card: 'card',
+      fg: 'foreground',
+      primary: 'primary',
+      primaryFg: 'primary-foreground',
+      accent: 'accent',
+      muted: 'muted',
+    };
+    const lineStart = ts.indexOf(`{ id: '${name}',`);
+    if (lineStart === -1) continue;
+    const lineEnd = ts.indexOf('\n', lineStart);
+    const line = ts.slice(lineStart, lineEnd);
+    let nextLine = line;
+    for (const [field, token] of Object.entries(fields)) {
+      const value = read(token);
+      if (!value) continue;
+      nextLine = nextLine.replace(
+        new RegExp(`(${field}: ')#[0-9a-fA-F]{6}(')`),
+        `$1${value}$2`,
+      );
+    }
+    if (nextLine !== line) {
+      ts = ts.slice(0, lineStart) + nextLine + ts.slice(lineEnd);
+      tsChanged++;
+    }
+  }
+  if (tsChanged) {
+    writeFileSync(TS_PATH, ts);
+    console.log(`[preset-contrast] ${tsChanged} entrée(s) de PRESETS resynchronisée(s)`);
+  }
+
+
+  /* ------------------------------------------------------- journal des accents */
+
+  /**
+   * Paires texte/surface mesurées pour CHAQUE preset, dans les deux modes.
+   * Dix paires par preset et par mode : ce sont les dix endroits où un texte
+   * est réellement posé sur une surface de la palette.
+   * 25 presets × 10 paires × 2 modes = 500 paires.
+   */
+  const PAIRS = [
+    ['foreground', 'background'],
+    ['foreground', 'card'],
+    ['card-foreground', 'card'],
+    ['popover-foreground', 'popover'],
+    ['muted-foreground', 'background'],
+    ['muted-foreground', 'card'],
+    ['primary-foreground', 'primary'],
     ['secondary-foreground', 'secondary'],
     ['accent-foreground', 'accent'],
     ['destructive-foreground', 'destructive'],
-  ]) {
-    const fg = read(fgToken);
-    const surface = read(bgToken);
-    if (!fg || !surface) continue;
-    const fixed = ensurePair(surface, fg, `${label} / --${bgToken}`);
-    if (!fixed.changed) continue;
-    corrections++;
-    adjustments.push({
-      preset: label,
-      pair: `${fgToken} sur ${bgToken}`,
-      from: contrast(surface, fg),
-      to: fixed.ratio,
-      note: fixed.reason,
-    });
-    if (fixed.bg.toLowerCase() !== surface.toLowerCase()) {
-      nextBody = nextBody.replace(
-        new RegExp(`--${bgToken}:\\s*#[0-9a-fA-F]{6};`),
-        `--${bgToken}: ${fixed.bg};`,
-      );
-    }
-    if (fixed.fg.toLowerCase() !== fg.toLowerCase()) {
-      nextBody = nextBody.replace(
-        new RegExp(`--${fgToken}:\\s*#[0-9a-fA-F]{6};`),
-        `--${fgToken}: ${fixed.fg};`,
-      );
+  ];
+
+  const journal = [];
+  for (const { name, body, dark } of presetBlocks(updatedCss)) {
+    const read = (token) => {
+      const m = body.match(new RegExp(`--${token}:\\s*(#[0-9a-fA-F]{6});`));
+      return m ? m[1] : null;
+    };
+    for (const [fgToken, bgToken] of PAIRS) {
+      const fg = read(fgToken);
+      const bg = read(bgToken);
+      if (!fg || !bg) continue;
+      const ratio = Number(contrast(fg, bg).toFixed(2));
+      journal.push({
+        preset: name,
+        mode: dark ? 'dark' : 'light',
+        pair: `${fgToken} / ${bgToken}`,
+        fg,
+        bg,
+        ratio,
+        verdict: ratio >= TARGET ? 'ok' : 'below-threshold',
+      });
     }
   }
 
-  if (nextBody !== body) {
-    updatedCss = updatedCss.replace(whole, `${open}${nextBody}${close}`);
-  }
+  const ratios = journal.map((e) => e.ratio);
+  const minimum = ratios.length ? Math.min(...ratios) : null;
+  const below = journal.filter((e) => e.verdict !== 'ok');
+
+  writeFileSync(
+    JOURNAL_PATH,
+    `${JSON.stringify(
+      {
+        note: 'Généré par scripts/apply-preset-contrast.mjs — ne pas éditer à la main.',
+        threshold: TARGET,
+        cssSha256: createHash('sha256').update(updatedCss).digest('hex').slice(0, 16),
+        presets: new Set(journal.map((e) => e.preset)).size,
+        pairs: journal.length,
+        minimum,
+        belowThreshold: below.length,
+        adjustments: adjustments.map((a) => ({
+          preset: a.preset,
+          pair: a.pair,
+          from: Number(a.from.toFixed(2)),
+          to: Number(a.to.toFixed(2)),
+          decision: a.note,
+        })),
+        entries: journal,
+      },
+      null,
+      2,
+    )}\n`,
+  );
+  console.log(
+    `[preset-contrast] journal → ${JOURNAL_PATH} (${journal.length} paires, min ${minimum}:1)`,
+  );
+
+  /* ---------------------------------------------------------------- rapport */
+
+  const lines = [
+    '# Rapport de contraste des presets',
+    '',
+    'Généré par `node scripts/apply-preset-contrast.mjs`. Ne pas éditer à la main.',
+    '',
+    `Seuil appliqué : **${TARGET}:1** (WCAG AA, texte courant).`,
+    '',
+    adjustments.length
+      ? '| Preset | Couple | Avant | Après | Décision |'
+      : 'Aucun ajustement nécessaire : toutes les paires passent déjà le seuil.',
+    ...(adjustments.length ? ['| --- | --- | --- | --- | --- |'] : []),
+    ...adjustments.map(
+      (a) => `| ${a.preset} | ${a.pair} | ${a.from.toFixed(2)}:1 | ${a.to.toFixed(2)}:1 | ${a.note} |`,
+    ),
+    '',
+    `Paires texte/surface mesurées sur les 25 presets (clair et sombre) : **${journal.length}**,`,
+    `minimum **${minimum}:1**, sous le seuil : **${below.length}**.`,
+    '',
+    'Journal machine : `docs/design/accent-adjustments.json` (`node scripts/theme-journal-check.mjs`).',
+    '',
+  ];
+  writeFileSync(REPORT_PATH, lines.join('\n'));
+  console.log(`[preset-contrast] rapport → ${REPORT_PATH}`);
 }
-
-if (CHECK_ONLY) {
-  if (updatedCss !== css) {
-    console.error(`[preset-contrast] ${corrections} correction(s) de contraste resteraient à appliquer.`);
-    process.exit(1);
-  }
-  console.log('[preset-contrast] tous les presets sont conformes (≥ 4,5:1).');
-  process.exit(0);
-}
-
-if (updatedCss !== css) {
-  writeFileSync(CSS_PATH, updatedCss);
-  console.log(`[preset-contrast] ${corrections} correction(s) → ${CSS_PATH}`);
-}
-
-/* --------- synchronisation des métadonnées TS (aucune divergence possible) */
-
-let ts = readFileSync(TS_PATH, 'utf8');
-let tsChanged = 0;
-for (const { name, body, dark } of presetBlocks(updatedCss)) {
-  if (dark) continue;
-  const read = (token) => {
-    const m = body.match(new RegExp(`--${token}:\\s*(#[0-9a-fA-F]{6});`));
-    return m ? m[1] : null;
-  };
-  // Tous les jetons exposés par les métadonnées TS suivent le CSS : une
-  // pastille de choix de thème ne peut pas afficher une couleur que le thème
-  // n'applique plus.
-  const fields = {
-    bg: 'background',
-    card: 'card',
-    fg: 'foreground',
-    primary: 'primary',
-    primaryFg: 'primary-foreground',
-    accent: 'accent',
-    muted: 'muted',
-  };
-  const lineStart = ts.indexOf(`{ id: '${name}',`);
-  if (lineStart === -1) continue;
-  const lineEnd = ts.indexOf('\n', lineStart);
-  const line = ts.slice(lineStart, lineEnd);
-  let nextLine = line;
-  for (const [field, token] of Object.entries(fields)) {
-    const value = read(token);
-    if (!value) continue;
-    nextLine = nextLine.replace(
-      new RegExp(`(${field}: ')#[0-9a-fA-F]{6}(')`),
-      `$1${value}$2`,
-    );
-  }
-  if (nextLine !== line) {
-    ts = ts.slice(0, lineStart) + nextLine + ts.slice(lineEnd);
-    tsChanged++;
-  }
-}
-if (tsChanged) {
-  writeFileSync(TS_PATH, ts);
-  console.log(`[preset-contrast] ${tsChanged} entrée(s) de PRESETS resynchronisée(s)`);
-}
-
-
-/* ------------------------------------------------------- journal des accents */
-
-/**
- * Paires texte/surface mesurées pour CHAQUE preset, dans les deux modes.
- * Dix paires par preset et par mode : ce sont les dix endroits où un texte
- * est réellement posé sur une surface de la palette.
- * 25 presets × 10 paires × 2 modes = 500 paires.
- */
-const PAIRS = [
-  ['foreground', 'background'],
-  ['foreground', 'card'],
-  ['card-foreground', 'card'],
-  ['popover-foreground', 'popover'],
-  ['muted-foreground', 'background'],
-  ['muted-foreground', 'card'],
-  ['primary-foreground', 'primary'],
-  ['secondary-foreground', 'secondary'],
-  ['accent-foreground', 'accent'],
-  ['destructive-foreground', 'destructive'],
-];
-
-const journal = [];
-for (const { name, body, dark } of presetBlocks(updatedCss)) {
-  const read = (token) => {
-    const m = body.match(new RegExp(`--${token}:\\s*(#[0-9a-fA-F]{6});`));
-    return m ? m[1] : null;
-  };
-  for (const [fgToken, bgToken] of PAIRS) {
-    const fg = read(fgToken);
-    const bg = read(bgToken);
-    if (!fg || !bg) continue;
-    const ratio = Number(contrast(fg, bg).toFixed(2));
-    journal.push({
-      preset: name,
-      mode: dark ? 'dark' : 'light',
-      pair: `${fgToken} / ${bgToken}`,
-      fg,
-      bg,
-      ratio,
-      verdict: ratio >= TARGET ? 'ok' : 'below-threshold',
-    });
-  }
-}
-
-const ratios = journal.map((e) => e.ratio);
-const minimum = ratios.length ? Math.min(...ratios) : null;
-const below = journal.filter((e) => e.verdict !== 'ok');
-
-writeFileSync(
-  JOURNAL_PATH,
-  `${JSON.stringify(
-    {
-      note: 'Généré par scripts/apply-preset-contrast.mjs — ne pas éditer à la main.',
-      threshold: TARGET,
-      cssSha256: createHash('sha256').update(updatedCss).digest('hex').slice(0, 16),
-      presets: new Set(journal.map((e) => e.preset)).size,
-      pairs: journal.length,
-      minimum,
-      belowThreshold: below.length,
-      adjustments: adjustments.map((a) => ({
-        preset: a.preset,
-        pair: a.pair,
-        from: Number(a.from.toFixed(2)),
-        to: Number(a.to.toFixed(2)),
-        decision: a.note,
-      })),
-      entries: journal,
-    },
-    null,
-    2,
-  )}\n`,
-);
-console.log(
-  `[preset-contrast] journal → ${JOURNAL_PATH} (${journal.length} paires, min ${minimum}:1)`,
-);
-
-/* ---------------------------------------------------------------- rapport */
-
-const lines = [
-  '# Rapport de contraste des presets',
-  '',
-  'Généré par `node scripts/apply-preset-contrast.mjs`. Ne pas éditer à la main.',
-  '',
-  `Seuil appliqué : **${TARGET}:1** (WCAG AA, texte courant).`,
-  '',
-  adjustments.length
-    ? '| Preset | Couple | Avant | Après | Décision |'
-    : 'Aucun ajustement nécessaire : toutes les paires passent déjà le seuil.',
-  ...(adjustments.length ? ['| --- | --- | --- | --- | --- |'] : []),
-  ...adjustments.map(
-    (a) => `| ${a.preset} | ${a.pair} | ${a.from.toFixed(2)}:1 | ${a.to.toFixed(2)}:1 | ${a.note} |`,
-  ),
-  '',
-  `Paires texte/surface mesurées sur les 25 presets (clair et sombre) : **${journal.length}**,`,
-  `minimum **${minimum}:1**, sous le seuil : **${below.length}**.`,
-  '',
-  'Journal machine : `docs/design/accent-adjustments.json` (`node scripts/theme-journal-check.mjs`).',
-  '',
-];
-writeFileSync(REPORT_PATH, lines.join('\n'));
-console.log(`[preset-contrast] rapport → ${REPORT_PATH}`);

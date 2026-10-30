@@ -26,7 +26,7 @@ export type AccentValues = ResolvedAccent;
  * (data-preset) ou de l'accent extrait de l'image de fond. Il ne reste
  * ici que l'application de l'accent dynamique d'image.
  */
-export const DEFAULT_ACCENT: AccentKey = 'quantum-rose';
+export const DEFAULT_ACCENT: AccentKey = 'lara-red';
 
 /**
  * Build an AccentValues set for a color-based image theme (public/themes/…).
