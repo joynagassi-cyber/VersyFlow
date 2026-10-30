@@ -85,6 +85,9 @@ export const en = {
     error: 'Sync error',
   },
   workspace: {
+    'status.new': 'New',
+    'status.due': 'Due',
+    'status.consolidated': 'Consolidated',
     title: 'Memorization',
     loading: 'Loading verse…',
     openBible: 'Open Bible',
@@ -154,6 +157,14 @@ export const en = {
     home: 'Home',
   },
   onboarding: {
+    benefit1Title: 'The right moment',
+    benefit1Desc:
+      'Review each verse just before you forget it: maximum retention for minimal effort.',
+    benefit2Title: 'Fewer reviews',
+    benefit2Desc:
+      'No time wasted on what you already know. Focus on what still needs your attention.',
+    benefit3Title: 'Backed by research',
+    benefit3Desc: 'Built on advanced cognitive research (Free Spaced Repetition Scheduler).',
     welcomeTitle: 'Memorise the Word, at your own pace',
     welcomeSubtitle:
       'Anchored verses, spaced review and tracked progress — nothing around the text.',

@@ -164,6 +164,7 @@ Trois détails mesurés après les lots E–F, et corrigés au niveau système.
 | Statuts dupliqués en français | `« N verset(s) exporte(s) »` concaténé dans l'écran, et des clés `settings.backup.*` qui ne se résolvaient pas (`settings.backup` est une **chaîne**, pas un objet) | `settings.backupScreen.*` en `fr` et `en` (exporté / importé / échec / fichier illisible), plus les deux explications de bascule |
 
 | Chiffres clés en sans-serif gras | **11** grands nombres encore en `font-extrabold` (scores, compteurs, `404`, jours avant rappel) alors que `.stat-value` existait | `.stat-value` partout (serif, tabulaire, `--acc-text`) ; seuls les logotypes et les pastilles d'état gardent leur graisse |
+| Clés invisibles au contrat i18n | 12 clés à **deux points** (`workspace.status.new`, `onboarding.benefit1Title`…) n'existaient pas : les 43 locales non fr/en affichaient la valeur de repli française. `parity.test.ts` ne les voyait pas (son expression régulière n'accepte qu'un point) | Clés ajoutées en `fr` et `en` ; nouveau contrat `tests/unit/i18n/keys-exist.test.ts` qui aplatit les locales comme `i18next-init.ts` et vérifie **toutes** les clés littérales |
 | Étiquettes de note en français | `« A revoir », « Difficile », « Bon », « Facile »` écrits dans `History.tsx` | Clés `session.rating*` (déjà traduites en 45 langues) |
 | Chargements en phrase | `progress.tsx` posait « Chargement des statistiques… » dans une carte alors que 6 écrans avaient déjà un squelette | `ProgressSkeleton` : quatre tuiles puis deux cartes aux mêmes paddings que le vrai contenu, `role="status"` + `aria-busy` + libellé `sr-only` |
 
@@ -183,4 +184,5 @@ surface de squelette issue du thème.
 | Relecture contrastée | `data-contrast='high'` couvert partiellement | Demande des captures sur les 39 presets, hors de portée en CI |
 | Micro-copie | quelques libellés secondaires sans clé i18n | Chaque clé primaire doit être traduite dans 45 locales |
 | Cibles tactiles | puces de texte à 32 px | Choix assumé : agrandir une puce casserait la densité des listes |
+| Clés primaires hors `fr`/`en` | 12 clés récentes (`onboarding.benefit*`, `workspace.status.*`) ne sont traduites qu'en `fr`/`en` | Les 43 autres locales retombent sur `en` ; la traduction demande des relecteurs |
 | Copie française hors interface | `app/dev/index.tsx` (10 chaînes), `app/__dev/responsive-preview.tsx` (6) | Atelier de développement, jamais livré |

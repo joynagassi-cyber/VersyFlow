@@ -43,7 +43,7 @@ export default function BackupScreen() {
       URL.revokeObjectURL(url);
       setStatus({
         kind: 'ok',
-        message: t('settings.backup.exported', '{{count}} verset(s) exporté(s)', {
+        message: t('settings.backupScreen.exported', '{{count}} verset(s) exporté(s)', {
           count: records.length,
         }),
       });
@@ -51,7 +51,7 @@ export default function BackupScreen() {
       console.error('[Backup] export failed', e);
       setStatus({
         kind: 'error',
-        message: t('settings.backup.exportFailed', 'Export impossible pour le moment'),
+        message: t('settings.backupScreen.exportFailed', 'Export impossible pour le moment'),
       });
     } finally {
       setBusy(false);
@@ -82,12 +82,12 @@ export default function BackupScreen() {
       }
       setStatus({
         kind: 'ok',
-        message: t('settings.backup.imported', '{{count}} verset(s) importé(s)', { count }),
+        message: t('settings.backupScreen.imported', '{{count}} verset(s) importé(s)', { count }),
       });
     } catch {
       setStatus({
         kind: 'error',
-        message: t('settings.backup.invalidFile', 'Fichier illisible (JSON attendu)'),
+        message: t('settings.backupScreen.invalidFile', 'Fichier illisible (JSON attendu)'),
       });
     }
   };

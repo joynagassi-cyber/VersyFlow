@@ -86,6 +86,9 @@ export const fr = {
     error: 'Erreur de synchronisation',
   },
   workspace: {
+    'status.new': 'Nouveau',
+    'status.due': 'À revoir',
+    'status.consolidated': 'Consolidation',
     title: 'Mémorisation',
     loading: 'Chargement du verset…',
     openBible: 'Ouvrir la Bible',
@@ -155,6 +158,15 @@ export const fr = {
     home: 'Accueil',
   },
   onboarding: {
+    benefit1Title: 'Rythme optimal',
+    benefit1Desc:
+      'Révisez chaque verset juste avant de l’oublier : la rétention est maximale pour un effort minimal.',
+    benefit2Title: 'Moins de révisions',
+    benefit2Desc:
+      'Ne perdez pas de temps sur ce que vous savez déjà. Concentrez-vous sur ce qui demande votre attention.',
+    benefit3Title: 'Scientifiquement prouvé',
+    benefit3Desc:
+      'Basé sur la recherche cognitive avancée (Free Spaced Repetition Scheduler).',
     welcome: 'Bienvenue dans VersyFlow',
     welcomeTitle: 'Mémorisez la Parole, à votre rythme',
     welcomeSubtitle:
