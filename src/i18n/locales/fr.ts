@@ -479,6 +479,8 @@ export const fr = {
     appearanceSection: 'Apparence & Lecture',
     dataSection: 'Données & Synchronisation',
     newFeaturesSection: 'Nouveautés',
+    devSection: 'Test & Développement',
+    devPanel: 'Panneau de test (mock, données locales)',
     bibleSection: 'Bible',
     versions: 'Versions de la Bible',
     whatsNew: 'Nouveautés',

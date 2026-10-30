@@ -536,6 +536,8 @@ export const en = {
     learningSection: 'Semantic Learning',
     dataSection: 'Data & Sync',
     newFeaturesSection: "What's New",
+    devSection: 'Testing & Development',
+    devPanel: 'Test panel (mock, local data)',
     semanticTree: 'Semantic tree & modes',
     navigationSection: 'Navigation & Pages',
     navigationSettings: 'Visible pages & menu',
