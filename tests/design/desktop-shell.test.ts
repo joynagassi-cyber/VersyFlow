@@ -10,7 +10,7 @@
  * Et on calcule les contrastes au lieu de les estimer.
  */
 
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 import { execSync } from 'node:child_process';
 import { join } from 'node:path';
 import { DESKTOP_MIN_WIDTH } from '@/hooks/useIsDesktop';
@@ -93,20 +93,38 @@ describe('coquille bureau — largeur pilotée par une seule variable', () => {
   });
 
   it('ne pose aucune largeur de rail en dur dans un composant', () => {
-    const layout = readFileSync(join(root, 'app', '(tabs)', '_layout.tsx'), 'utf8');
-    expect(layout).not.toMatch(/\b(264|88)px/);
-    expect(layout).toMatch(/useIsDesktop/);
+    // Depuis le scaffolding desktop, la structure vit dans `src/shells/` ;
+    // le layout de route délègue. On vérifie donc la coquille entière.
+    const files = [
+      join(root, 'app', '(tabs)', '_layout.tsx'),
+      ...readdirSync(join(root, 'src', 'shells'))
+        .filter((name) => name.endsWith('.tsx'))
+        .map((name) => join(root, 'src', 'shells', name)),
+    ];
+    for (const file of files) {
+      const src = readFileSync(file, 'utf8');
+      expect(src).not.toMatch(/\b(264|88)px/);
+    }
+    expect(readFileSync(join(root, 'src', 'shells', 'DesktopShell.tsx'), 'utf8')).toMatch(
+      /useIsDesktop|isReadingRoute/,
+    );
   });
 
   it('ne monte jamais deux navigations à la fois', () => {
-    const layout = readFileSync(join(root, 'app', '(tabs)', '_layout.tsx'), 'utf8');
-    // Depuis L8, c'est le rail qui apparaît dès 768 px : chaque navigation
-    // mobile est conditionnée par !isRail, le rail par isRail. Une seule
-    // navigation est montée, quel que soit le palier.
+    const appShell = readFileSync(join(root, 'src', 'shells', 'AppShell.tsx'), 'utf8');
+    const mobile = readFileSync(join(root, 'src', 'shells', 'MobileShell.tsx'), 'utf8');
+    const desktop = readFileSync(join(root, 'src', 'shells', 'DesktopShell.tsx'), 'utf8');
+
+    // Un seul shell à la fois : c'est l'aiguillage qui le garantit.
+    expect(appShell).toMatch(/kind === 'mobile' \? <MobileShell \/> : <DesktopShell \/>/);
+
+    // Chaque navigation n'existe que dans SON shell.
     for (const component of ['HamburgerMenu', 'QuickDock', 'BottomTabs']) {
-      expect(layout).toMatch(new RegExp(`\\{!isRail && <${component}`));
+      expect(mobile).toMatch(new RegExp(`<${component} />`));
+      expect(desktop).not.toMatch(new RegExp(`<${component}`));
     }
-    expect(layout).toMatch(/\{isRail && <DesktopRail/);
+    expect(desktop).toMatch(/<DesktopRail \/>/);
+    expect(mobile).not.toMatch(/DesktopRail/);
   });
 });
 

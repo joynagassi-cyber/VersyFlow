@@ -66,7 +66,13 @@ const HEX = /^#[0-9a-fA-F]{6}$/;
 const presetCss = read('src/styles/tweakcn-presets.css');
 const globals = read('src/styles/globals.css');
 const tailwind = read('tailwind.config.js');
+// Depuis le scaffolding desktop, la structure ne vit plus dans le layout de
+// route : `app/(tabs)/_layout.tsx` délègue à `src/shells/`. On lit donc la
+// coquille entière (aiguillage + shells) — le contrôle reste le même, il suit
+// simplement le code.
 const layout = read('app/(tabs)/_layout.tsx');
+const shellFiles = walk('src/shells', /\.tsx?$/).map(read).join('\n');
+const shell = layout + '\n' + shellFiles;
 const appearance = read('app/settings/appearance.tsx');
 const appearanceStore = read('src/store/appearance-store.ts');
 const themeManager = read('src/components/ThemeManager.tsx');
@@ -302,18 +308,24 @@ const record = (id, section, label, verdict, detail, proof) =>
   // qui conditionne le montage exclusif avec les navigations mobiles.
   const threshold =
     /DESKTOP_MIN_WIDTH = 1024/.test(isDesktop) && /TABLET_MIN_WIDTH = 768/.test(isDesktop);
+  // Un seul shell monté : `AppShell` choisit MobileShell OU DesktopShell, et
+  // chaque shell ne contient que SA navigation (pas de rail dans le mobile,
+  // pas d'onglets bas dans le bureau).
   const exclusif =
-    /\{isRail && <DesktopRail/.test(layout) &&
-    ['HamburgerMenu', 'QuickDock', 'BottomTabs'].every((c) =>
-      new RegExp(`\\{!isRail && <${c}`).test(layout),
-    );
-  const noPixels = !/\b(264|88)px/.test(layout);
+    /kind === 'mobile' \? <MobileShell \/> : <DesktopShell \/>/.test(shellFiles) &&
+    /<HamburgerMenu \/>/.test(shellFiles) &&
+    /<QuickDock \/>/.test(shellFiles) &&
+    /<BottomTabs \/>/.test(shellFiles) &&
+    /<DesktopRail \/>/.test(shellFiles) &&
+    !/DesktopRail/.test(read('src/shells/MobileShell.tsx')) &&
+    !/BottomTabs/.test(read('src/shells/DesktopShell.tsx'));
+  const noPixels = !/\b(264|88)px/.test(shell);
   record(
     'C09',
     '§6.1',
     'Deux seuils, un rôle chacun (768 px rail, 1024 px colonne), une seule navigation montée',
     threshold && exclusif && noPixels ? 'PASS' : 'FAIL',
-    `seuils: ${threshold} · montage exclusif: ${exclusif} · zéro px en dur: ${noPixels}`,
+    `seuils: ${threshold} · montage exclusif: ${exclusif} · zéro px en dur: ${noPixels} · shells: ${shellFiles ? 'lus' : 'absents'}`,
     'npx vitest run tests/design/desktop-shell.test.ts',
   );
 }
@@ -341,8 +353,11 @@ const record = (id, section, label, verdict, detail, proof) =>
   const shells = ['src/components/layout/FullScreenPage.tsx', 'src/components/onboarding/OnboardingShell.tsx'];
   const shellHasColumn = shells.every((f) => exists(f) && /screen-column/.test(read(f)));
   // Un écran est couvert s'il porte la classe, ou s'il passe par une coquille qui la porte.
+  // `app/__dev/**` est exclu : c'est un outil de développement (laboratoire
+  // responsive), pas un écran de contenu, et il n'existe pas dans le build de
+  // production. Un canevas de travail doit pouvoir occuper toute la largeur.
   const screens = walk('app', /\.tsx$/).filter(
-    (f) => !/(_layout|\(tabs\)\/_layout|splash|\.test\.)/.test(f),
+    (f) => !/(_layout|\(tabs\)\/_layout|splash|__dev|\.test\.)/.test(f),
   );
   const covered = screens.filter((f) => {
     const src = read(f);

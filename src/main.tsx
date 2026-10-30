@@ -133,6 +133,17 @@ const SemanticReview = lazy(() => import('../app/semantic/review'));
 const SemanticAttach = lazy(() => import('../app/semantic/attach'));
 const SemanticData = lazy(() => import('../app/semantic/data'));
 
+/**
+ * Laboratoire de prévisualisation — **développement uniquement**.
+ *
+ * Le `import()` est dans une branche que Vite remplace par `false` en
+ * production : le module, la route et les iframes n'existent pas dans le
+ * bundle livré (vérifié par `grep` sur `www/assets` après `npm run build`).
+ */
+const ResponsivePreview = import.meta.env.DEV
+  ? lazy(() => import('../app/__dev/responsive-preview'))
+  : null;
+
 import i18next, { initI18next } from '@/i18n/i18next-init';
 import { initializeSettingsStore, useSettingsStore } from '@/store/settings-store';
 import { initializeAppearanceStore, useAppearanceStore } from '@/store/appearance-store';
@@ -164,7 +175,43 @@ import { isRTL, DEFAULT_LANGUAGE, normalizeLocaleCode } from '@/domains/i18n/con
 // redirect after it has pushed to a sub-route. The reads are
 // localStorage-backed (MmkvStorage), so they resolve in <1 ms on the
 // deployed SPA host and add no perceptible startup cost.
+/**
+ * Module de prévisualisation, chargé **à la demande** et seulement dans une
+ * frame ouverte par `preview-frame.html` (`window.__VF_PREVIEW_ROLE__`).
+ *
+ * Une double barrière empêche sa présence en production :
+ *  1. `import.meta.env.DEV` est remplacé par `false` au build, donc tout le
+ *     corps ci-dessous — y compris le `import()` — est éliminé ;
+ *  2. la frame doit avoir été marquée par `preview-frame.html`, fichier absent
+ *     du build.
+ */
+type PreviewModule = typeof import('@/dev/preview-session');
+let previewModule: PreviewModule | null = null;
+
+function isPreviewFrame(): boolean {
+  return typeof window !== 'undefined' && typeof window.__VF_PREVIEW_ROLE__ === 'string';
+}
+
+async function loadPreviewModule(): Promise<PreviewModule | null> {
+  if (!import.meta.env.DEV) return null;
+  if (!isPreviewFrame()) return null;
+  const module = await import('@/dev/preview-session');
+  previewModule = module;
+  return module;
+}
+
 const bootStoresPromise = (async () => {
+  // Cadre de prévisualisation : le stockage est déjà en mémoire (posé par
+  // `preview-frame.html`), on y sème le jeu de démonstration AVANT toute
+  // hydratation — sinon les stores partiraient sur l'onboarding ou sans
+  // profil — et on place l'URL sur l'écran demandé avant le montage du
+  // routeur. Aucun effet hors prévisualisation, aucun effet en production.
+  const preview = await loadPreviewModule();
+  if (preview?.isPreviewRequest()) {
+    preview.seedPreviewStorage();
+    preview.applyInitialPath();
+  }
+
   await initI18next();
   const activeLanguage = normalizeLocaleCode(i18next.language ?? DEFAULT_LANGUAGE);
   document.documentElement.dir = isRTL(activeLanguage) ? 'rtl' : 'ltr';
@@ -430,6 +477,15 @@ function App() {
             </Route>
 
             {/* Public routes */}
+            {/*
+              Laboratoire responsive (dev uniquement) : hors du garde
+              d'onboarding, justement pour pouvoir l'ouvrir sans session et
+              sans dépendre de l'état persisté d'un vrai utilisateur.
+            */}
+            {import.meta.env.DEV && ResponsivePreview && (
+              <Route path="/__dev/responsive-preview" element={<ResponsivePreview />} />
+            )}
+
             <Route path="/splash" element={<SplashRoute />} />
             <Route path="*" element={<NotFound />} />
             </Routes>
@@ -592,6 +648,11 @@ function renderApp() {
     </I18nextProvider>,
   );
   preloadAllPages();
+  // Le pont n'est branché que dans une frame de prévisualisation : il relaie
+  // la navigation et le thème envoyés par le laboratoire.
+  if (import.meta.env.DEV && previewModule?.isPreviewRequest()) {
+    previewModule.attachPreviewBridge();
+  }
 }
 
 // Ne jamais rester sur un écran blanc : si l'initialisation (i18n, stores,

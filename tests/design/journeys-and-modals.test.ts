@@ -86,10 +86,19 @@ describe('L8 — rail de tablette et en-tête', () => {
     expect(hook).toMatch(/DESKTOP_MIN_WIDTH\s*=\s*1024/);
     expect(hook).toMatch(/export function useIsRail/);
 
-    const layout = read('app/(tabs)/_layout.tsx');
-    expect(layout).toMatch(/\{isRail && <DesktopRail \/>\}/);
-    expect(layout).toMatch(/\{!isRail && <BottomTabs \/>\}/);
-    expect(layout).toMatch(/\{!isRail && <QuickDock \/>\}/);
+    // Depuis le scaffolding desktop, la structure vit dans `src/shells/` :
+    // le rail n'est monté que par la coquille de bureau, les onglets bas et le
+    // dock uniquement par la coquille mobile. Le contrat est identique.
+    const appShell = read('src/shells/AppShell.tsx');
+    const mobile = read('src/shells/MobileShell.tsx');
+    const desktop = read('src/shells/DesktopShell.tsx');
+    expect(appShell).toMatch(/kind === 'mobile' \? <MobileShell \/> : <DesktopShell \/>/);
+    expect(desktop).toMatch(/<DesktopRail \/>/);
+    expect(mobile).toMatch(/<BottomTabs \/>/);
+    expect(mobile).toMatch(/<QuickDock \/>/);
+    // Et surtout : aucun des deux ne contient la navigation de l'autre.
+    expect(desktop).not.toMatch(/BottomTabs|QuickDock|HamburgerMenu/);
+    expect(mobile).not.toMatch(/DesktopRail/);
   });
 
   it('le CSS applique le rail replié dès 768 px, dépliable à 1024 px', () => {
