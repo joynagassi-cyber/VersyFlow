@@ -5,7 +5,7 @@
  * Tailwind + i18n + Lucide.
  */
 
-import { useState, useEffect, type CSSProperties } from 'react';
+import { useState, useEffect, useMemo, type CSSProperties } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { normalizeLocaleCode } from '@/domains/i18n/config';
@@ -31,15 +31,6 @@ import { getMemorizationService } from '@/services/memorization-service-factory'
 import type { MemorizationRecord } from '@/domains/memorization/entities';
 import { useAppearanceStore } from '@/store/appearance-store';
 import { themeLandscapeUrl } from '@/theme/theme-catalog';
-
-// Fallback "verse of the day" rotation (real records preferred when present)
-const DAILY_VERSES_FALLBACK = [
-  { ref: 'Jean 3:16', text: "Car Dieu a tant aimé le monde qu'il a donné son Fils unique, afin que quiconque croit en lui ne périsse point, mais qu'il ait la vie éternelle." },
-  { ref: 'Psaumes 23:1', text: "L'Éternel est mon berger: je ne manquerai de rien." },
-  { ref: 'Philippiens 4:13', text: "Je puis tout par celui qui me fortifie." },
-  { ref: 'Romains 8:28', text: "Nous savons au contraire que toutes choses concourent au bien de ceux qui aiment Dieu." },
-  { ref: 'Ésaïe 40:31', text: "Mais ceux qui espèrent en l'Éternel renaîtront de nouvelles forces." },
-];
 
 export default function HomeScreen() {
   const navigate = useNavigate();
@@ -93,9 +84,18 @@ export default function HomeScreen() {
     };
   }, [profileId]);
 
-  const todayVerse = DAILY_VERSES_FALLBACK[
-    Math.floor(Date.now() / 86400000) % DAILY_VERSES_FALLBACK.length
-  ];
+  /* « Verset du jour » : le premier verset mémorisé de la journée, dans la
+     traduction de l'utilisateur. Sans verset, la carte propose d'en mémoriser
+     un — elle n'affiche pas un texte français dans une interface arabe. */
+  const todayVerse = useMemo(() => {
+    if (recentVerses.length === 0) return null;
+    const dayIndex = Math.floor(Date.now() / 86_400_000);
+    const record = recentVerses[dayIndex % recentVerses.length];
+    const reference =
+      record.bibleVerseReference ||
+      `${record.bookId} ${record.chapterNumber}:${record.verseNumber}`;
+    return { ref: reference, text: record.bibleVerseText ?? '' };
+  }, [recentVerses]);
 
   const locale = normalizeLocaleCode(i18n.resolvedLanguage || i18n.language);
   const dateLabel = new Date().toLocaleDateString(locale, {
@@ -127,8 +127,22 @@ export default function HomeScreen() {
         <div className="home-feature-grid">
           <article className="g3 home-verse home-daily-card" style={{ '--daily-image': `url("${dailyVisual}")` } as CSSProperties}>
             <p className="home-label">{t('home.dailyVerse', 'Verset du jour')}</p>
-            <h2>{todayVerse.ref}</h2>
-            <p className="home-verse-text">{todayVerse.text}</p>
+            {todayVerse ? (
+              <>
+                <h2>{todayVerse.ref}</h2>
+                <p className="home-verse-text">{todayVerse.text}</p>
+              </>
+            ) : (
+              <>
+                <h2>{t('home.firstVerseTitle', 'Votre premier verset')}</h2>
+                <p className="home-verse-text">
+                  {t(
+                    'home.firstVerseHint',
+                    'Choisissez un passage : il devient votre verset du jour, dans la traduction que vous avez choisie.',
+                  )}
+                </p>
+              </>
+            )}
             <div className="home-actions">
               <button className="home-primary" onClick={() => navigate('/memorization/session')}>{t('bible.memorize', 'Mémoriser')}</button>
               <button className="home-secondary" onClick={() => navigate('/bible/explorer')}>{t('home.explore', 'Explorer la Bible')}</button>

@@ -199,6 +199,9 @@ export const fr = {
     tagline: 'Mémorisation biblique intuitive',
   },
   home: {
+    firstVerseTitle: 'Votre premier verset',
+    firstVerseHint:
+      'Choisissez un passage : il devient votre verset du jour, dans la traduction que vous avez choisie.',
     greeting: 'Bonjour',
     today: "Aujourd'hui",
     reviewDue: '{count} verset{plural} à réviser',

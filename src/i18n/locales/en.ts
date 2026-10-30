@@ -198,6 +198,9 @@ export const en = {
     tagline: 'Intuitive biblical memorization',
   },
   home: {
+    firstVerseTitle: 'Your first verse',
+    firstVerseHint:
+      'Pick a passage: it becomes your verse of the day, in the translation you chose.',
     today: 'Today',
     greeting: 'Hello',
     reviewDue: '{count} verse{plural} to review',
