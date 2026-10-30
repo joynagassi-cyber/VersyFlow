@@ -32,7 +32,7 @@ export default function SettingsDataScreen() {
     <FullScreenPage
       title={t('settings.activitiesSection', 'Activités & Données')}
       showBack
-      backPath="/settings"
+      backPath="/tabs/settings"
     >
       <div className="screen-column space-y-5">
         {/* Highlights summary card */}

@@ -88,6 +88,10 @@ export function ManuscriptView({
             return (
               <span
                 key={verse.number}
+                role="button"
+                tabIndex={0}
+                aria-pressed={isSelected}
+                aria-label={`${t('bible.verse', 'Verset')} ${verse.number}`}
                 className={cn(
                   'manuscript-verse',
                   isSelected && 'is-selected',
@@ -95,14 +99,16 @@ export function ManuscriptView({
                   i > 0 && 'ml-2',
                 )}
                 onClick={() => onSelectVerse(verse.number)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    onSelectVerse(verse.number);
+                  }
+                }}
               >
                 <sup
                   className={cn('verse-flow-number', isSelected && 'is-selected')}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onSelectVerse(verse.number);
-                  }}
-                  aria-label={t('bible.selectVerseAria', { n: verse.number, defaultValue: `Sélectionner le verset ${verse.number}` })}
+                  aria-hidden="true"
                 >
                   {verse.number}
                 </sup>

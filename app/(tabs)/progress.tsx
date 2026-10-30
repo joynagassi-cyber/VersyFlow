@@ -14,6 +14,7 @@ import {
   TrendingDownIcon as TrendingDown,
 } from '@/components/ui/solar-icons';
 import { useActiveProfile } from '@/hooks/useActiveProfile';
+import { isMockMode } from '@/dev/mode';
 import { getFsrsEngine } from '@/services/fsrs-factory';
 import { ProgressService } from '@/services/progress-service';
 import type { ProgressStats } from '@/services/stats-calculator';
@@ -78,7 +79,15 @@ export default function ProgressScreen() {
         <header className="g1 progress-heading">
           <p className="progress-label">{t('nav.progress', 'Progression')}</p>
           <h1>{t('progress.yourProgress', 'Votre progression')}</h1>
-          <button type="button" className="progress-demo-toggle" aria-pressed={demo} onClick={() => setDemo((value) => !value)}>{demo ? t('demo.exit', 'Quitter la démo') : t('demo.enter', 'Voir la démo')}</button>
+          <button type="button" className="progress-demo-toggle" aria-pressed={demo} onClick={() => setDemo((value) => !value)}>
+            {demo
+              ? isMockMode()
+                ? t('demo.exitLongPreview', 'Revenir à la session démo')
+                : t('demo.exit', 'Quitter la démo')
+              : isMockMode()
+                ? t('demo.enterLongPreview', 'Simuler 6 mois')
+                : t('demo.enter', 'Voir la démo')}
+          </button>
           {demo && <p className="progress-demo-notice" role="status">{t('demo.notice', 'Données fictives pour cet écran uniquement. Vos données réelles ne sont pas modifiées.')}</p>}
         </header>
         {loading && !demo ? (

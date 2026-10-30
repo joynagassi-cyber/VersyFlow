@@ -6,7 +6,6 @@ import {
   RefreshIcon as RefreshCw,
   TrendingUpIcon as TrendingUp,
   TrendingDownIcon as TrendingDown,
-  Loading03Icon as Loader2,
   ChartLineData01Icon as LineChart,
 } from '@/components/ui/solar-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
@@ -45,9 +44,13 @@ export default function AnalyticsDashboardScreen() {
   if (loading) {
     return (
       <FullScreenPage title={t('analytics.title', 'Progression')} showBack>
-        <div className="flex min-h-[50vh] flex-col items-center justify-center gap-3">
-          <DuoIcon icon={Loader2} size={28} className="animate-spin text-primary" />
-          <p className="text-sm text-text-muted">
+        <div className="screen-column space-y-4" role="status">
+          <div className="glass h-24 rounded-3xl bg-surface p-4 shadow-sm" />
+          <div className="grid grid-cols-2 gap-3">
+            <div className="glass h-20 rounded-2xl bg-surface p-4 shadow-sm" />
+            <div className="glass h-20 rounded-2xl bg-surface p-4 shadow-sm" />
+          </div>
+          <p className="text-center text-sm text-text-muted">
             {t('analytics.loading', 'Chargement des statistiques...')}
           </p>
         </div>

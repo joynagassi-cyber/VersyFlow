@@ -180,7 +180,7 @@ export default function AppearanceScreen() {
         <button type="button" onClick={() => goBackSafely(navigate)} aria-label={t('common.back', 'Retour')}><DuoIcon icon={ArrowLeft01Icon} size={22} /></button>
         <h1>{t('nav.theme', 'Thème et apparence')}</h1>
       </header>
-      <div className="app-canvas appearance-page h-full overflow-y-auto p-4"><div className="appearance-editor">
+      <div className="app-canvas appearance-page h-full overflow-y-auto p-4 pb-24"><div className="appearance-editor screen-column">
         <aside className="appearance-preview" data-theme={previewMode}>
           <div className="appearance-preview-heading"><strong>{t('appearanceEditor.preview', 'Aperçu')}</strong>
             <div className="appearance-preview-actions" role="group" aria-label={t('appearanceEditor.previewMode', 'Mode de l’aperçu')}>
@@ -309,24 +309,29 @@ export default function AppearanceScreen() {
 
           {backgroundType === 'gradient' && <>
             {gradientId && !BACKGROUND_GRADIENTS.some((g) => g.id === gradientId) && <p className="appearance-hint">{t('appearanceEditor.currentGradient', 'Dégradé actuel')} : {gradientId.replace(/-/g, ' ')}</p>}
-            <div className="grid grid-cols-2 gap-2">
+            <div className="appearance-gradient-grid">
               {BACKGROUND_GRADIENTS.map((g) => {
                 const active = gradientId === g.id;
+                const gradientName = g.id.replace(/^colorbase-/, '').replace(/-/g, ' ');
                 return (
                   <button
+                    type="button"
                     key={g.id}
                     onClick={() => setGradient(g.id)}
-                    style={{ backgroundImage: g.css }}
                     aria-pressed={active}
-                    className={cn(
-                      'appearance-gradient h-16 rounded-2xl p-2 text-left transition',
-                      g.className,
-                      active && 'is-active',
-                    )}
+                    className="appearance-gradient-option"
                   >
-                    <span className="appearance-gradient-label rounded-full px-2 py-0.5 text-[10px] font-bold capitalize">
-                      {g.id.replace(/^colorbase-/, '').replace(/-/g, ' ')}
+                    <span
+                      style={{ backgroundImage: g.css }}
+                      className={cn(
+                        'appearance-gradient',
+                        g.className,
+                        active && 'is-active',
+                      )}
+                    >
+                      {active && <Check size={20} className="appearance-thumbnail-check" />}
                     </span>
+                    <span className="appearance-gradient-name">{gradientName}</span>
                   </button>
                 );
               })}

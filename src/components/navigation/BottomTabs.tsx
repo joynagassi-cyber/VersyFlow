@@ -47,9 +47,10 @@ export function BottomTabs() {
           return (
             <button
               key={tab.id}
+              type="button"
               onClick={() => navigate(tab.path)}
               aria-current={active ? 'page' : undefined}
-              className="flex min-w-0 flex-1 flex-col items-center gap-1 rounded-2xl py-1.5"
+              className="flex min-w-0 flex-1 flex-col items-center gap-1 rounded-2xl py-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
             >
               <span
                 className={cn(
