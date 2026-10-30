@@ -212,7 +212,7 @@ Contrat : `tests/design/family-mode.test.ts` passe de 9 à **15 tests**
 (coquille des hubs, rang en pastille, barre dans la ligne, colonne large,
 jetons des nouvelles briques, fil d'activité).
 
-## 4 quinquies. Lot L — trois pas de titre, un interrupteur, une ligne vide
+## 4 quinquies. Lots L + M — trois pas de titre, un interrupteur, un en-tête, un focus
 
 L'audit, en comptant (`app/`, hors atelier `__dev`) :
 
