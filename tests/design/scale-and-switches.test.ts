@@ -122,3 +122,17 @@ describe('en-têtes d’onglet — un matériau, un padding, une eyebrow', () =>
     for (const path of tabs) expect(read(path), path).toContain('className="section-label"');
   });
 });
+
+describe('focus clavier — un seul anneau', () => {
+  it('la feuille donne un contour à TOUS les contrôles, pas seulement aux réglages', () => {
+    expect(globals).toMatch(
+      /:where\(a, button, \[role='button'\][^{]*\):focus-visible\s*\{[\s\S]{0,160}?outline:\s*2px solid var\(--acc-text/,
+    );
+  });
+
+  it('le contour suit l’accent du preset, jamais un bleu système', () => {
+    const block = globals.match(/:where\(a, button[^{]*\):focus-visible\s*\{[^}]*\}/)?.[0] ?? '';
+    expect(block).not.toBe('');
+    expect(block).not.toMatch(/#[0-9a-f]{3,6}|rgb\(/i);
+  });
+});

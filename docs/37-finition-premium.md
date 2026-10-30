@@ -224,13 +224,14 @@ L'audit, en comptant (`app/`, hors atelier `__dev`) :
 | Recherche sans état vide | l'explorateur affichait « Aucun résultat pour « x » » dans une carte de texte, sans action | `EmptyState tone="inline"` : icône, titre, requête rappelée, action « Effacer » |
 | Famille sans famille | l'écran Réglages Famille, sans famille active, affichait un `HintNote` sans issue | `EmptyState` avec l'action « Choisir une famille » |
 | En-têtes d'onglet | quatre matériaux et quatre paddings pour le même bloc, dont l'accueil en `g2` quand les trois autres sont en `g1` | `g1 tab-heading` sur les quatre ; `.home-greeting/.explore-heading/.progress-heading/.settings-heading` réduits à leur rôle (padding supprimé) |
+| Focus clavier | l'anneau n'était décrit que dans neuf blocs (réglages, apparence, contraste élevé) : ailleurs, le contour venait du navigateur, donc d'un bleu système sur un thème framboise | règle unique `:where(a, button, [role='button'], [role='switch'], [role='tab'], summary):focus-visible` à 2 px, couleur `--acc-text` du preset |
 | Eyebrows | `home-label`, `explore-label`, `progress-label` (mêmes 12 px / 0,14 em, encre `--mut`) et `settings-eyebrow` (encre `--tx`, donc plus contrastée que les trois autres) | `.section-label` partout, une seule règle d'eyebrow dans l'app |
 
 Nouvelles règles : `.display-title`, `.empty-line`, `.tab-heading`. Contrat :
-`tests/design/scale-and-switches.test.ts` (**10 tests**) — trois pas tous en
+`tests/design/scale-and-switches.test.ts` (**12 tests**) — trois pas tous en
 `clamp()` et en `--font-serif`, `.display-title` limité à deux écrans, les
 quatre onglets sur `g1 tab-heading` avec un seul eyebrow `.section-label`,
-`Switch` unique et cible 40 px, `.empty-line` branchée sur le thème. Le contrat existant
+`Switch` unique et cible 40 px, `.empty-line` branchée sur le thème, anneau de focus commun à tous les contrôles. Le contrat existant
 `theme-adaptive-screens.test.ts` **se resserre** : les exemptions
 `home-|explore-|progress-|settings-|profile-` disparaissent au profit de
 `display-title` seul.

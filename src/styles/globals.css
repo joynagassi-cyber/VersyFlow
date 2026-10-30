@@ -928,6 +928,16 @@ html[data-bg='image'] .modal-sheet-panel {
   }
 }
 
+/* 13 bis. Focus clavier — un seul anneau, sur tous les écrans.
+   Neuf blocs recopiaient leur `outline` (réglages, apparence, contraste
+   élevé) ; partout ailleurs, le contour venait du navigateur, donc d'un
+   bleu système sur un thème framboise. Ici : l'accent lisible du preset,
+   2 px, décalé de 2 px. */
+:where(a, button, [role='button'], [role='switch'], [role='tab'], summary):focus-visible {
+  outline: 2px solid var(--acc-text, var(--color-primary));
+  outline-offset: 2px;
+}
+
 /* 14. Champs de saisie — un seul focus, quel que soit le champ.
    Les utilitaires `focus:ring-*` étaient posés écran par écran (parfois avec
    un bleu système) ; la règle ci-dessous ne dépend que de l'accent du thème.
