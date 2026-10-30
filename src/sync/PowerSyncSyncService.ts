@@ -22,7 +22,7 @@
  */
 
 import type { ISyncService, SyncStatus } from '@/sync/ISyncService';
-import type { SupabaseAuthService } from '@/auth';
+import type { IAuthService } from '@/auth/types';
 import type { SyncStreamSubscription } from '@powersync/common';
 import {
   getPowerSyncDatabase,
@@ -32,7 +32,7 @@ import {
 import { SupabasePowerSyncConnector } from '@/infrastructure/sync/supabase-power-sync-connector';
 
 export class PowerSyncSyncService implements ISyncService {
-  private readonly authService: SupabaseAuthService;
+  private readonly authService: IAuthService;
   private readonly powersyncUrl: string;
   private readonly connector: SupabasePowerSyncConnector;
 
@@ -46,7 +46,7 @@ export class PowerSyncSyncService implements ISyncService {
   /** Live on-demand stream subscriptions, keyed by stream name. */
   private streams = new Map<string, SyncStreamSubscription>();
 
-  constructor(authService: SupabaseAuthService, powersyncUrl: string) {
+  constructor(authService: IAuthService, powersyncUrl: string) {
     this.authService = authService;
     this.powersyncUrl = powersyncUrl;
     this.connector = new SupabasePowerSyncConnector(authService, powersyncUrl);

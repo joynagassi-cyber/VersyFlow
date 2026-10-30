@@ -91,6 +91,7 @@ Toute la documentation du projet se trouve dans le dossier `docs/` :
 | [15-implementation-plan.md](docs/15-implementation-plan.md) | Plan d'implémentation |
 | [16-ai-dev-guide.md](docs/16-ai-dev-guide.md) | Guide développement IA |
 | [17-workflows-systeme.md](docs/17-workflows-systeme.md) | Workflows système |
+| [35-frontend-only-mock-mode.md](docs/35-frontend-only-mock-mode.md) | Mode frontend seul (mock) + collecteur de tests |
 
 ## 🛠️ Prérequis
 
@@ -122,6 +123,29 @@ npx expo start
 npx expo run:ios   # iOS
 npx expo run:android  # Android
 ```
+
+## 🧪 Mode frontend seul (mock) — tester sans backend
+
+L'application peut tourner **100 % en frontend** : aucun appel à Supabase,
+aucune base PowerSync, aucun réseau. Les données viennent d'un magasin
+local (localStorage) pré-rempli de versets/révisions/famille, et tout ce que
+vous faites pendant un test manuel est envoyé à une petite API locale qui
+l'affiche dans un tableau de bord.
+
+```bash
+# API de test (:4000) + Vite en mode mock (:3000)
+npm run dev:mock
+
+#   App          → http://localhost:3000
+#   Panneau dev  → http://localhost:3000/dev
+#   Collecteur   → http://localhost:4000
+```
+
+- Bascule mock ↔ live via `/dev`, `?data=mock|live`, ou `VITE_DATA_MODE`.
+- `npm run mock:server` : API de test seule.
+- `npm run build:mock` : build de production en mode mock.
+- Voir [docs/35-frontend-only-mock-mode.md](docs/35-frontend-only-mock-mode.md)
+  (architecture du découplage, endpoints, limites).
 
 ## 🧪 Tests
 

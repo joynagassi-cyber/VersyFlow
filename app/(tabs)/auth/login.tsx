@@ -10,7 +10,7 @@ import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { Logo } from '@/components/brand/Logo';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { SupabaseAuthService } from '@/auth';
+import { getAuthService } from '@/auth';
 import { fireAndForget } from '@/lib/fire-and-forget';
 
 const LOGIN = z.object({
@@ -30,7 +30,7 @@ export default function LoginScreen({ onSkip }: Props) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const auth = new SupabaseAuthService();
+  const auth = getAuthService();
 
   const handleLogin = async () => {
     const parsed = LOGIN.safeParse({ email, name });

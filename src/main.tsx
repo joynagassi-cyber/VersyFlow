@@ -106,6 +106,8 @@ const SemanticIndex = lazy(() => import('../app/semantic/index'));
 const SemanticConcept = lazy(() => import('../app/semantic/concept'));
 const SemanticVerse = lazy(() => import('../app/semantic/verse'));
 const SemanticCommunity = lazy(() => import('../app/semantic/community'));
+// Dev panel (mock-mode testing: seed / reset / local API)
+const DevPanel = lazy(() => import('../app/dev/index'));
 
 import i18next, { initI18next } from '@/i18n/i18next-init';
 import { initializeSettingsStore, useSettingsStore } from '@/store/settings-store';
@@ -123,6 +125,9 @@ import { wireStreakCoordinator } from '@/services/streak-wiring';
 import { notificationService } from '@/services/notification-service';
 import type { MemorizationRecord } from '@/domains/memorization/entities';
 import { isRTL, DEFAULT_LANGUAGE, normalizeLocaleCode } from '@/domains/i18n/config';
+import { isMockMode } from '@/dev/mode';
+import { bootstrapDevBackend } from '@/dev/bootstrap';
+import { recordTestEvent } from '@/dev/local-backend';
 
 // Initialize i18n + boot-time one-shot wiring (PowerSync lifecycle,
 // telemetry listener + periodic flush, streak event-driven writer).
@@ -139,6 +144,9 @@ import { isRTL, DEFAULT_LANGUAGE, normalizeLocaleCode } from '@/domains/i18n/con
 // localStorage-backed (MmkvStorage), so they resolve in <1 ms on the
 // deployed SPA host and add no perceptible startup cost.
 const bootStoresPromise = (async () => {
+  // Mock mode: seed the in-browser test database and announce the active
+  // backend BEFORE the first render, so every screen has data immediately.
+  bootstrapDevBackend();
   await initI18next();
   const activeLanguage = normalizeLocaleCode(i18next.language ?? DEFAULT_LANGUAGE);
   document.documentElement.dir = isRTL(activeLanguage) ? 'rtl' : 'ltr';
@@ -155,6 +163,12 @@ const bootStoresPromise = (async () => {
   wireStreakCoordinator();
   wireSessionRefresh();
   void scheduleBootReminders();
+  // Mock mode: the local identity always resolves, so run the same session
+  // check the live app runs on resume — the UI then shows the tester as
+  // signed in and the family/profile bridges hydrate immediately.
+  if (isMockMode()) {
+    void useAuthStore.getState().checkSession();
+  }
 })();
 
 /** Boot-time reminder scheduling with the notification body translated in
@@ -219,13 +233,33 @@ function DirSync() {
   return null;
 }
 
+/**
+ * Records in-app navigation in mock mode (`nav.visit` events) so a manual
+ * test session can be replayed step by step from the local dashboard.
+ * No-op in live mode.
+ */
+function DevRouteRecorder() {
+  const location = useLocation();
+  useEffect(() => {
+    if (!isMockMode()) return;
+    recordTestEvent('nav.visit', {
+      path: location.pathname,
+      search: location.search,
+    });
+  }, [location.pathname, location.search]);
+  return null;
+}
+
 /** Mounts the PowerSync → store bridges for family & profile data.
  *  Activated whenever the user is authenticated; the bridges are
  *  offline-safe and re-sync on the `initialized` event. */
 function SyncBridges() {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
-  useFamilySyncBridge(isAuthenticated);
-  useProfileSyncBridge(isAuthenticated);
+  // In mock mode there is no cloud session to wait for: the local identity is
+  // always available, so the bridges can hydrate profiles/families right away.
+  const enabled = isAuthenticated || isMockMode();
+  useFamilySyncBridge(enabled);
+  useProfileSyncBridge(enabled);
   return null;
 }
 
@@ -279,6 +313,7 @@ function App() {
     <StrictMode>
       <DirSync />
       <ThemeManager />
+      <DevRouteRecorder />
       <SyncBridges />
       <BrowserRouter>
         <IonApp>
@@ -376,6 +411,9 @@ function App() {
               <Route path="/semantic/verse" element={<SemanticVerse />} />
               <Route path="/semantic/community" element={<SemanticCommunity />} />
             </Route>
+
+            {/* Dev panel — reachable without onboarding (mock testing) */}
+            <Route path="/dev" element={<DevPanel />} />
 
             {/* Public routes */}
             <Route path="/splash" element={<SplashRoute />} />

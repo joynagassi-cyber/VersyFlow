@@ -150,3 +150,6 @@ data/bible/*
 !data/bible/dataset-catalog.json
 # public/themes/ : VERSIONNÉ (200 visuels, 140 Mo) — décision du 29/10 : les
 # thèmes image font partie de la livraison, ils ne sont plus ignorés.
+
+# Mock-mode manual test collector output (regenerable, local-only)
+data/mock-backend/

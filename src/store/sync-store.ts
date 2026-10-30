@@ -1,30 +1,42 @@
 /**
- * Sync Store — Zustand store exposing the PowerSync sync service to the UI.
+ * Sync Store — Zustand store exposing the app's sync service to the UI.
  *
- * Holds the single `ISyncService` instance (PowerSync) and mirrors its status
- * for the UI (e.g. a sync indicator in the app bar).
+ * Holds the single `ISyncService` instance and mirrors its status for the UI
+ * (sync indicator in the app bar, settings screen).
+ *
+ * Two implementations, picked at boot by the data mode:
+ *   - live : `PowerSyncSyncService` (Supabase ↔ PowerSync, cloud sync)
+ *   - mock : `MockSyncService` (no cloud — pushes a snapshot to the local
+ *            test collector so manual sessions can be inspected)
  */
 
 import { create } from 'zustand';
 import type { ISyncService, SyncStatus } from '@/sync/ISyncService';
+import { isMockMode } from '@/dev/mode';
+import { MockSyncService } from '@/dev/mock/sync';
+import { getAuthService } from '@/auth';
+import { recordTestEvent } from '@/dev/local-backend';
 import { PowerSyncSyncService } from '@/sync/PowerSyncSyncService';
-import { SupabaseAuthService } from '@/auth';
 import { getSyncUserIdProvider } from '@/infrastructure/repository/powersync-repositories';
 import { migrateMmkvToPowerSync } from '@/sync/migration-mmkv-powersync';
 
 const POWERSYNC_URL = import.meta.env.VITE_POWERSYNC_URL || import.meta.env.POWERSYNC_URL;
 
-const authService = new SupabaseAuthService();
+function createSyncService(): ISyncService {
+  if (isMockMode()) return new MockSyncService();
+  return new PowerSyncSyncService(getAuthService(), POWERSYNC_URL ?? '');
+}
 
 /**
- * The app's single sync service. PowerSync is the only sync implementation.
- * Exported so composition roots (and tests) can access it without re-creating
- * the instance.
+ * The app's single sync service. Exported so composition roots (and tests)
+ * can access it without re-creating the instance.
  */
-export const syncService: ISyncService = new PowerSyncSyncService(
-  authService,
-  POWERSYNC_URL ?? '',
-);
+export const syncService: ISyncService = createSyncService();
+
+/** Live-only capabilities, absent on the mock implementation. */
+function liveSyncService(): PowerSyncSyncService | null {
+  return syncService instanceof PowerSyncSyncService ? syncService : null;
+}
 
 /**
  * Module-level flag for the idempotent MMKV → PowerSync migration.
@@ -42,7 +54,7 @@ export interface SyncStore {
   syncNow: () => Promise<void>;
   /**
    * Run the idempotent MMKV → PowerSync migration once per session.
-   * No-op if already ran, or if there is no authenticated user.
+   * No-op if already ran, if there is no authenticated user, or in mock mode.
    * Returns the number of records/logs migrated (0 when nothing to do).
    */
   runMmkvMigrationOnce: () => Promise<{ migratedRecords: number; migratedLogs: number }>;
@@ -54,8 +66,11 @@ export const useSyncStore = create<SyncStore>()((set, get) => ({
   status: syncService.getStatus(),
   // Honesty (O-3): a configured service must actually point at a PowerSync
   // endpoint; an empty URL means "not configured", not "configured but offline".
-  isConfigured: (syncService as PowerSyncSyncService).isConfigured(),
-  isLive: (syncService as PowerSyncSyncService).isLive(),
+  // Mock mode is always "configured": the browser store is the backend.
+  isConfigured: isMockMode()
+    ? true
+    : (liveSyncService()?.isConfigured() ?? false),
+  isLive: !isMockMode() && (liveSyncService()?.isLive() ?? false),
 
   refreshStatus: () => set({ status: syncService.getStatus() }),
 
@@ -66,11 +81,12 @@ export const useSyncStore = create<SyncStore>()((set, get) => ({
 
   syncNow: async () => {
     // Resolve the current user before opening the user-scoped on-demand
-    // streams (O-1). If there is no session, `sync()` still runs but the
-    // streams will receive no rows (RLS + `user_id = auth.user_id()`).
-    const userId = await getSyncUserIdProvider().resolveUserId();
-    if (userId) {
-      await (syncService as PowerSyncSyncService).startUserStreams(userId);
+    // streams (O-1). In mock mode there is no stream — the mock service
+    // simply snapshots the local store.
+    const live = liveSyncService();
+    if (live) {
+      const userId = await getSyncUserIdProvider().resolveUserId();
+      if (userId) await live.startUserStreams(userId);
     }
     await syncService.sync();
     set({ status: syncService.getStatus() });
@@ -78,6 +94,12 @@ export const useSyncStore = create<SyncStore>()((set, get) => ({
 
   runMmkvMigrationOnce: async () => {
     if (mmkvMigrationRan) {
+      return { migratedRecords: 0, migratedLogs: 0 };
+    }
+    // Mock mode has no legacy MMKV data to reconcile with a cloud replica.
+    if (isMockMode()) {
+      mmkvMigrationRan = true;
+      recordTestEvent('sync.migration.skipped', { reason: 'mock-mode' });
       return { migratedRecords: 0, migratedLogs: 0 };
     }
     const result = await migrateMmkvToPowerSync(getSyncUserIdProvider());

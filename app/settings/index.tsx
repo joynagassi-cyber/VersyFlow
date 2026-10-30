@@ -25,6 +25,7 @@ import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { Button } from '@/components/ui/button';
 import { ProfileAvatar } from '@/components/profile/ProfileAvatar';
 import { useAuthStore } from '@/store/auth-store';
+import { isMockMode } from '@/dev/mode';
 import { useSettingsStore, type BibleVersionType } from '@/store/settings-store';
 import { getTranslationDisplayInfo } from '@/services/bible-translation-names';
 import { fireAndForget } from '@/lib/fire-and-forget';
@@ -137,6 +138,22 @@ export default function SettingsScreen() {
         { label: t('settings.versions', 'Versions de la Bible'), icon: BookText, to: '/settings/available-translations' },
       ],
     },
+    // Mock-mode only: the test control room (seed / reset / local API).
+    ...(isMockMode()
+      ? [
+          {
+            title: t('settings.devSection', 'Test & Développement'),
+            icon: Sparkles,
+            items: [
+              {
+                label: t('settings.devPanel', 'Panneau de test (mock, données locales)'),
+                icon: Sparkles,
+                to: '/dev',
+              },
+            ],
+          },
+        ]
+      : []),
   ];
 
   return (

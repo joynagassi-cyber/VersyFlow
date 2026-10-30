@@ -24,6 +24,7 @@ import {
   filterCanonicalBooks,
 } from '@/domains/bible/repository-local';
 import { BibleJsonFileSource } from '@/infrastructure/bible/bible-json-source';
+import { isMockMode } from '@/dev/mode';
 import {
   createBibleDatasetCache,
   type IBibleDatasetCache,
@@ -238,6 +239,16 @@ export async function downloadAndLoadTranslationData(
 
   if (options.signal?.aborted) {
     throw new DOMException('Download aborted', 'AbortError');
+  }
+
+  // Frontend-only mode is strictly offline: the remote bucket is a Supabase
+  // Storage endpoint (i.e. "the backend"). Cached datasets above still load;
+  // anything not bundled simply reports it is unavailable in mock mode.
+  if (isMockMode() && !options.fetchImpl) {
+    throw new Error(
+      `Traduction « ${translationId} » non disponible hors ligne. ` +
+        'Passez en mode LIVE (?data=live) pour télécharger les datasets.',
+    );
   }
 
   // `fetch` must keep its global receiver (detached calls throw
