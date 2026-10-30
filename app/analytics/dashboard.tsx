@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { HugeiconsIcon } from '@hugeicons/react';
+import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   BookOpen01Icon as BookOpen,
   RefreshIcon as RefreshCw,
@@ -8,7 +8,7 @@ import {
   TrendingDownIcon as TrendingDown,
   Loading03Icon as Loader2,
   ChartLineData01Icon as LineChart,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { useTranslation } from 'react-i18next';
 import { useAnalyticsCapability } from '@/capabilities/analytics/store';
@@ -46,7 +46,7 @@ export default function AnalyticsDashboardScreen() {
     return (
       <FullScreenPage title={t('analytics.title', 'Progression')} showBack>
         <div className="flex min-h-[50vh] flex-col items-center justify-center gap-3">
-          <HugeiconsIcon icon={Loader2} size={28} className="animate-spin text-primary" />
+          <DuoIcon icon={Loader2} size={28} className="animate-spin text-primary" />
           <p className="text-sm text-text-muted">
             {t('analytics.loading', 'Chargement des statistiques...')}
           </p>
@@ -67,16 +67,16 @@ export default function AnalyticsDashboardScreen() {
           onClick={() => fireAndForget(loadData(), 'analytics:reload')}
           className="flex h-9 w-9 items-center justify-center rounded-full bg-surface-tint"
         >
-          <HugeiconsIcon icon={RefreshCw} size={16} className="text-primary" />
+          <DuoIcon icon={RefreshCw} size={16} className="text-primary" />
         </button>
       }
     >
       <div className="screen-column space-y-6">
         {/* Stats */}
         <div className="grid grid-cols-2 gap-3">
-          <div className="col-span-2 flex items-center gap-4 rounded-3xl bg-surface p-4 shadow-sm">
+          <div className="glass col-span-2 flex items-center gap-4 rounded-3xl bg-surface p-4 shadow-sm">
             <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary text-on-primary">
-              <HugeiconsIcon icon={BookOpen} size={22} />
+              <DuoIcon icon={BookOpen} size={22} />
             </span>
             <div>
               <p className="text-3xl font-extrabold text-text-primary tabular-nums">
@@ -87,7 +87,7 @@ export default function AnalyticsDashboardScreen() {
               </p>
             </div>
           </div>
-          <div className="rounded-2xl bg-surface p-4 text-center shadow-sm">
+          <div className="glass rounded-2xl bg-surface p-4 text-center shadow-sm">
             <p className="text-2xl font-extrabold text-success tabular-nums">
               {stats?.masteredVerses || 0}
             </p>
@@ -95,7 +95,7 @@ export default function AnalyticsDashboardScreen() {
               {t('analytics.mastered', 'Maitrises')}
             </p>
           </div>
-          <div className="rounded-2xl bg-surface p-4 text-center shadow-sm">
+          <div className="glass rounded-2xl bg-surface p-4 text-center shadow-sm">
             <p className="text-2xl font-extrabold text-error tabular-nums">
               {stats?.streakCount || 0}
             </p>
@@ -104,7 +104,7 @@ export default function AnalyticsDashboardScreen() {
         </div>
 
         {/* Retention chart */}
-        <div className="rounded-3xl bg-surface p-5 shadow-sm">
+        <div className="glass rounded-3xl bg-surface p-5 shadow-sm">
           <div className="mb-4 flex items-center justify-between">
             <p className="text-base font-bold text-text-primary">
               {t('analytics.retention30', 'Retention sur 30 jours')}
@@ -129,7 +129,7 @@ export default function AnalyticsDashboardScreen() {
             </div>
           ) : (
             <div className="flex flex-col items-center gap-2 py-8 text-center">
-              <HugeiconsIcon icon={LineChart} size={32} className="text-text-muted" />
+              <DuoIcon icon={LineChart} size={32} className="text-text-muted" />
               <p className="text-sm font-semibold text-text-primary">
                 {t('analytics.noData', 'Aucune donnee de retention')}
               </p>
@@ -142,7 +142,7 @@ export default function AnalyticsDashboardScreen() {
 
         {/* Weekly trend */}
         {stats?.weeklyTrend && (
-          <div className="rounded-3xl bg-surface p-5 shadow-sm">
+          <div className="glass rounded-3xl bg-surface p-5 shadow-sm">
             <p className="mb-3 text-base font-bold text-text-primary">
               {t('analytics.weeklyTrend', 'Tendance hebdomadaire')}
             </p>
@@ -173,9 +173,9 @@ export default function AnalyticsDashboardScreen() {
               }
             >
               {stats.weeklyTrend.changePercentage >= 0 ? (
-                <HugeiconsIcon icon={TrendingUp} size={16} />
+                <DuoIcon icon={TrendingUp} size={16} />
               ) : (
-                <HugeiconsIcon icon={TrendingDown} size={16} />
+                <DuoIcon icon={TrendingDown} size={16} />
               )}
               <span className="font-bold">
                 {(stats.weeklyTrend.changePercentage >= 0 ? '+' : '') +
@@ -197,7 +197,7 @@ export default function AnalyticsDashboardScreen() {
           <p className="mb-3 text-base font-bold text-text-primary">
             {t('analytics.byStatus', 'Verset par statut')}
           </p>
-          <div className="overflow-hidden rounded-3xl bg-surface shadow-sm">
+          <div className="glass overflow-hidden rounded-3xl bg-surface shadow-sm">
             {[
               { label: t('analytics.mastered', 'Maitrises'), value: stats?.masteredVerses || 0, dot: 'var(--color-success)', to: '/tabs/progress' },
               { label: t('analytics.inProgress', 'En cours'), value: stats?.inProgressVerses || 0, dot: 'var(--color-primary)', to: '/review/queue' },
@@ -222,7 +222,7 @@ export default function AnalyticsDashboardScreen() {
         </div>
 
         {/* Learning time */}
-        <div className="rounded-3xl bg-surface p-5 text-center shadow-sm">
+        <div className="glass rounded-3xl bg-surface p-5 text-center shadow-sm">
           <p className="text-3xl font-extrabold text-text-primary">
             {getLearningTime()} min
           </p>

@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { HugeiconsIcon } from '@hugeicons/react';
-import { ArrowRight01Icon, BookOpen01Icon } from '@hugeicons/core-free-icons';
+import { DuoIcon } from '@/components/ui/DuoIcon';
+import { ArrowRight01Icon, BookOpen01Icon } from '@/components/ui/solar-icons';
 import { Logo } from '@/components/brand/Logo';
 import { OnboardingShell } from '@/components/onboarding/OnboardingShell';
 import { useSettingsStore } from '@/store/settings-store';
@@ -32,7 +32,7 @@ export default function WelcomeScreen() {
           className="flex min-h-[54px] w-full items-center justify-center gap-2 rounded-full bg-primary text-[15px] font-bold text-primary-foreground shadow-[0_8px_24px_-6px_var(--ring)] transition active:scale-[0.98]"
         >
           {t('common.continue', 'Continuer')}
-          <HugeiconsIcon icon={ArrowRight01Icon} size={19} />
+          <DuoIcon icon={ArrowRight01Icon} size={19} />
         </button>
       }
     >
@@ -43,7 +43,7 @@ export default function WelcomeScreen() {
           </span>
           <div>
             <p className="flex items-center gap-1.5 text-sm font-bold text-text-primary">
-              <HugeiconsIcon icon={BookOpen01Icon} size={16} color="var(--color-primary)" />
+              <DuoIcon icon={BookOpen01Icon} size={16} color="var(--color-primary)" />
               {t('onboarding.slide1Title', 'Mémorisez la Parole avec science')}
             </p>
             <p className="mt-1 text-[13px] leading-relaxed text-text-secondary">

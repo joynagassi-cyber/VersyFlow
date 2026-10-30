@@ -1,23 +1,32 @@
+import { goBackSafely } from '@/lib/navigation';
+import { BackgroundControls } from '@/components/ui/BackgroundControls';
 import { useTranslation } from 'react-i18next';
-import { HugeiconsIcon } from '@hugeicons/react';
-import { Sun01Icon, Moon01Icon, ComputerIcon, Tick01Icon } from '@hugeicons/core-free-icons';
+import { DuoIcon } from '@/components/ui/DuoIcon';
+import { Sun01Icon, Moon01Icon, ComputerIcon, Tick01Icon } from '@/components/ui/solar-icons';
 
 function Check({ size = 18, className }: { size?: number; className?: string }) {
-  return <HugeiconsIcon icon={Tick01Icon} size={size} className={className} color="currentColor" />;
+  return <DuoIcon icon={Tick01Icon} size={size} className={className} color="currentColor" />;
 }
-import { FullScreenPage } from '@/components/layout/FullScreenPage';
+import { IonPage } from '@ionic/react';
+import { useNavigate } from 'react-router-dom';
+import { ArrowLeft01Icon } from '@/components/ui/solar-icons';
+import { useEffect, useState, type CSSProperties } from 'react';
+import HomeScreen from '../(tabs)/index';
 import { useAppearanceStore } from '@/store/appearance-store';
-import { TWEAKCN_PRESETS, GRADIENTS } from '@/theme/tweakcn-presets';
-import { UI_FONTS } from '@/theme/theme-fonts';
-import { themeLandscapeUrl } from '@/theme/theme-catalog';
+import { GRADIENTS } from '@/theme/gradients';
+import { DEFAULT_PRESET, PRESET_CATALOG } from '@/theme/preset-catalog';
+import { FIXED_ACCENTS } from '@/theme/fixed-accents';
+import { APPEARANCE_UI_FONTS, APPEARANCE_READING_FONTS, findBibleFont, findUiFont, loadBibleFont } from '@/theme/theme-fonts';
+import { themeLandscapeUrl, themePortraitUrl } from '@/theme/theme-catalog';
 import { THEME_CATEGORIES } from '@/theme/theme-catalog';
-import { BIBLE_FONTS } from '@/theme/theme-fonts';
 import { cn } from '@/lib/utils';
 
 type ThemeMode = 'light' | 'dark' | 'system';
+type AppearanceTab = 'background' | 'colors' | 'text' | 'glass';
+const BACKGROUND_GRADIENTS = GRADIENTS.filter((gradient) => !['sunny-morning', 'malibu-beach', 'true-sunset'].includes(gradient.id));
 
 const FONT_SIZE_MIN = 14;
-const FONT_SIZE_MAX = 28;
+const FONT_SIZE_MAX = 22;
 const LINE_HEIGHT_MIN = 1.2;
 const LINE_HEIGHT_MAX = 2.2;
 const LETTER_SPACING_MIN = -0.02;
@@ -25,23 +34,24 @@ const LETTER_SPACING_MAX = 0.12;
 const LINE_LENGTH_MIN = 28;
 const LINE_LENGTH_MAX = 80;
 
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
+function Section({ title, children, action }: { title: string; children: React.ReactNode; action?: React.ReactNode }) {
   return (
-    <section className="mb-5 rounded-2xl bg-surface p-4 shadow-sm">
-      <h2 className="mb-3 text-sm font-bold uppercase tracking-wide text-text-muted">{title}</h2>
+    <section className="g2 appearance-section mb-5 p-4">
+      <div className="appearance-section-heading"><h2 className="mb-3 text-sm font-bold uppercase tracking-wide text-text-muted">{title}</h2>{action}</div>
       {children}
     </section>
   );
 }
 
-function Toggle({ on, onChange }: { on: boolean; onChange: () => void }) {
+function Toggle({ on, onChange, label }: { on: boolean; onChange: () => void; label: string }) {
   return (
     <button
       onClick={onChange}
       aria-pressed={on}
-      className={cn('relative h-6 w-11 shrink-0 rounded-full transition-colors', on ? 'bg-primary' : 'bg-border')}
+      aria-label={label}
+      className="appearance-toggle"
     >
-      <span className={cn('absolute top-0.5 h-5 w-5 rounded-full bg-surface shadow transition-all', on ? 'left-[22px]' : 'left-0.5')} />
+      <span />
     </button>
   );
 }
@@ -67,8 +77,8 @@ function SliderRow({
   return (
     <div className="mb-3 last:mb-0">
       <div className="mb-1 flex items-center justify-between">
-        <span className="text-xs font-semibold text-text-secondary">{label}</span>
-        <span className="text-xs font-bold tabular-nums text-primary">{display}</span>
+        <span className="appearance-slider-label">{label}</span>
+        <span className="appearance-slider-value">{display}</span>
       </div>
       <input
         type="range"
@@ -77,7 +87,8 @@ function SliderRow({
         step={step}
         value={value}
         onChange={(e) => onChange(Number(e.target.value))}
-        className="h-1.5 w-full cursor-pointer appearance-none rounded-full bg-surface-tint accent-[var(--color-primary)]"
+        className="appearance-range"
+        style={{ '--range-progress': `${Math.max(0, Math.min(100, ((value - min) / (max - min)) * 100))}%` } as CSSProperties}
         aria-label={label}
       />
     </div>
@@ -86,9 +97,14 @@ function SliderRow({
 
 export default function AppearanceScreen() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
+  const [tab, setTab] = useState<AppearanceTab>('background');
+  const [category, setCategory] = useState('all');
   const themeMode = useAppearanceStore((s) => s.themeMode);
   const colorThemeId = useAppearanceStore((s) => s.colorThemeId);
   const presetId = useAppearanceStore((s) => s.presetId);
+  const fixedAccentId = useAppearanceStore((s) => s.fixedAccentId);
+  const setFixedAccentId = useAppearanceStore((s) => s.setFixedAccentId);
   const setPreset = useAppearanceStore((s) => s.setPreset);
   const backgroundType = useAppearanceStore((s) => s.backgroundType);
   const gradientId = useAppearanceStore((s) => s.gradientId);
@@ -96,7 +112,6 @@ export default function AppearanceScreen() {
   const setBackgroundType = useAppearanceStore((s) => s.setBackgroundType);
   const uiFontId = useAppearanceStore((s) => s.uiFontId);
   const setUiFontId = useAppearanceStore((s) => s.setUiFontId);
-  const fontSize = useAppearanceStore((s) => s.fontSize);
   const showVerseNumbers = useAppearanceStore((s) => s.showVerseNumbers);
   const focusMode = useAppearanceStore((s) => s.focusMode);
   const reducedTransparency = useAppearanceStore((s) => s.reducedTransparency);
@@ -110,7 +125,6 @@ export default function AppearanceScreen() {
   const bibleLineLength = useAppearanceStore((s) => s.bibleLineLength);
   const setThemeMode = useAppearanceStore((s) => s.setThemeMode);
   const setColorTheme = useAppearanceStore((s) => s.setColorTheme);
-  const setFontSize = useAppearanceStore((s) => s.setFontSize);
   const toggleVerseNumbers = useAppearanceStore((s) => s.toggleVerseNumbers);
   const setFocusMode = useAppearanceStore((s) => s.setFocusMode);
   const setBibleFontFamily = useAppearanceStore((s) => s.setBibleFontFamily);
@@ -118,6 +132,35 @@ export default function AppearanceScreen() {
   const setBibleLineHeight = useAppearanceStore((s) => s.setBibleLineHeight);
   const setBibleLetterSpacing = useAppearanceStore((s) => s.setBibleLetterSpacing);
   const setBibleLineLength = useAppearanceStore((s) => s.setBibleLineLength);
+  const resetTextSettings = useAppearanceStore((s) => s.resetTextSettings);
+  const [fontLoadFailed, setFontLoadFailed] = useState(false);
+  useEffect(() => {
+    if (tab !== 'text') return;
+    let active = true;
+    void Promise.allSettled([...APPEARANCE_READING_FONTS, ...APPEARANCE_UI_FONTS].map((font) => loadBibleFont(font.id))).then((results) => {
+      if (active) setFontLoadFailed(results.some((result) => result.status === 'rejected'));
+    });
+    return () => { active = false; };
+  }, [tab]);
+  const [previewMode, setPreviewMode] = useState<'light' | 'dark'>(() =>
+    themeMode === 'system' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : themeMode,
+  );
+  useEffect(() => {
+    const media = window.matchMedia('(prefers-color-scheme: dark)');
+    const sync = () => setPreviewMode(themeMode === 'system' ? (media.matches ? 'dark' : 'light') : themeMode);
+    sync();
+    media.addEventListener('change', sync);
+    return () => media.removeEventListener('change', sync);
+  }, [themeMode]);
+  const previewBackground = backgroundType === 'image' && colorThemeId
+    ? `url("${themePortraitUrl(colorThemeId)}")`
+    : backgroundType === 'gradient' ? GRADIENTS.find((g) => g.id === gradientId)?.css ?? 'none' : 'none';
+  const tabs: { id: AppearanceTab; label: string }[] = [
+    { id: 'background', label: t('appearanceEditor.background', 'Fond') },
+    { id: 'colors', label: t('appearanceEditor.colors', 'Couleurs') },
+    { id: 'text', label: t('appearanceEditor.text', 'Texte') },
+    { id: 'glass', label: t('appearanceEditor.glass', 'Verre') },
+  ];
 
   const themeOptions: { value: ThemeMode; label: string; Icon: typeof Sun01Icon }[] = [
     { value: 'light', label: t('settings.themeLight', 'Clair'), Icon: Sun01Icon },
@@ -126,8 +169,53 @@ export default function AppearanceScreen() {
   ];
 
   return (
-    <FullScreenPage title={t('settings.theme', 'Thème')}>
-      <div className="screen-column">
+    <IonPage className="appearance-shell">
+      <header className="appearance-header">
+        <button type="button" onClick={() => goBackSafely(navigate)} aria-label={t('common.back', 'Retour')}><DuoIcon icon={ArrowLeft01Icon} size={22} /></button>
+        <h1>{t('nav.theme', 'Thème et apparence')}</h1>
+      </header>
+      <div className="app-canvas appearance-page h-full overflow-y-auto p-4"><div className="appearance-editor">
+        <aside className="appearance-preview" data-theme={previewMode}>
+          <div className="appearance-preview-heading"><strong>{t('appearanceEditor.preview', 'Aperçu')}</strong>
+            <div className="appearance-preview-actions" role="group" aria-label={t('appearanceEditor.previewMode', 'Mode de l’aperçu')}>
+              <button type="button" aria-pressed={previewMode === 'light'} onClick={() => setPreviewMode('light')}>{t('settings.light', 'Clair')}</button>
+              <button type="button" aria-pressed={previewMode === 'dark'} onClick={() => setPreviewMode('dark')}>{t('settings.dark', 'Sombre')}</button>
+              <button type="button" className="appearance-apply" onClick={() => setThemeMode(previewMode)}>{t('appearanceEditor.apply', 'Appliquer')}</button>
+            </div>
+          </div>
+          <div className="appearance-preview-window" data-preview-background={backgroundType}>
+            <div className="appearance-preview-image" aria-hidden="true" style={{ backgroundImage: previewBackground }} />
+            <div className="appearance-mini-stage" aria-hidden="true" ref={(node) => node?.setAttribute('inert', '')}><HomeScreen /></div>
+          </div>
+        </aside>
+        <div className="appearance-controls">
+          <nav className="appearance-tabs" aria-label={t('settings.theme', 'Thème')}>
+            {tabs.map((item) => <button type="button" key={item.id} aria-pressed={tab === item.id} onClick={() => setTab(item.id)}>{item.label}</button>)}
+          </nav>
+        {tab === 'colors' && <>
+        <Section title={t('appearanceEditor.accent', 'Accent')} action={<button type="button" className="appearance-reset" onClick={() => setFixedAccentId(null)}>{t('appearanceEditor.reset', 'Réinitialiser')}</button>}>
+          <p className="appearance-hint">{t('appearanceEditor.accentHint', 'Un seul accent pour les boutons, éléments actifs, progrès, interrupteurs et voile.')}</p>
+          <div className="appearance-accent-choices" role="group" aria-label={t('appearanceEditor.accent', 'Accent')}>
+            <button type="button" className="appearance-accent-auto" aria-pressed={fixedAccentId === null} onClick={() => setFixedAccentId(null)}>
+              {t('appearanceEditor.fromImage', 'Depuis l’image')}{fixedAccentId === null && <Check size={18} />}
+            </button>
+            <div className="appearance-accent-swatches">
+              {FIXED_ACCENTS.map((option) => <button type="button" key={option.id} aria-label={option.label} title={option.label} aria-pressed={fixedAccentId === option.id} onClick={() => setFixedAccentId(option.id)}>
+                <span className="appearance-accent-swatch" style={{ backgroundColor: option.color }} />
+                {fixedAccentId === option.id && <Check size={16} />}
+              </button>)}
+            </div>
+          </div>
+          {fixedAccentId === null && backgroundType !== 'image' && <p className="appearance-hint appearance-accent-note">{t('appearanceEditor.imageAccentHint', 'Choisissez une image pour en extraire l’accent ; sinon l’accent du thème reste actif.')}</p>}
+        </Section>
+        <Section title={t('appearanceEditor.accentPreview', 'Aperçu de l’accent')}>
+          <div className="appearance-accent-examples" aria-label={t('appearanceEditor.accentPreview', 'Aperçu de l’accent')}>
+            <span className="appearance-example-button">{t('appearanceEditor.button', 'Bouton')}</span>
+            <span className="appearance-example-active">{t('appearanceEditor.activeTab', 'Onglet actif')}</span>
+            <span className="appearance-example-ring" role="img" aria-label={t('appearanceEditor.progressRing', 'Anneau de progression')} />
+          </div>
+        </Section>
+        <details className="appearance-existing"><summary>{t('appearanceEditor.existingThemes', 'Modes et thèmes existants')}</summary>
         <Section title={t('settings.themeMode', 'Mode')}>
           <div className="flex flex-col gap-2">
             {themeOptions.map(({ value, label, Icon }) => {
@@ -136,23 +224,24 @@ export default function AppearanceScreen() {
                 <button
                   key={value}
                   onClick={() => setThemeMode(value)}
+                  aria-pressed={active}
                   className={cn(
-                    'flex items-center gap-3 rounded-xl p-3 text-left transition',
-                    active ? 'bg-surface-tint' : 'active:bg-surface-tint/50',
+                    'appearance-mode flex items-center gap-3 rounded-xl p-3 text-left transition',
+                    active && 'is-active',
                   )}
                 >
                   <span
                     className={cn(
                       'flex h-9 w-9 items-center justify-center rounded-full',
-                      active ? 'bg-primary text-on-primary' : 'bg-surface-tint text-primary',
+                      'appearance-mode-icon',
                     )}
                   >
-                    <HugeiconsIcon icon={Icon} size={19} />
+                    <DuoIcon icon={Icon} size={19} />
                   </span>
-                  <span className={cn('flex-1 text-sm font-medium', active ? 'text-primary' : 'text-text-primary')}>
+                  <span className="flex-1 text-sm font-medium">
                     {label}
                   </span>
-                  {active && <Check size={18} className="text-primary" />}
+                  {active && <Check size={18} />}
                 </button>
               );
             })}
@@ -169,76 +258,19 @@ export default function AppearanceScreen() {
               avec les VRAIS tokens du thème — l'utilisateur voit exactement
               à quoi l'app ressemblera avant de choisir. */}
           <div className="grid grid-cols-2 gap-3">
-            {TWEAKCN_PRESETS.map((preset) => {
-              const active = (presetId ?? 'quantum-rose') === preset.id;
+            {PRESET_CATALOG.map((preset) => {
+              const active = (presetId ?? DEFAULT_PRESET) === preset.id;
               return (
                 <button
                   key={preset.id}
                   onClick={() => setPreset(preset.id)}
                   aria-pressed={active}
-                  className={cn(
-                    'overflow-hidden rounded-2xl border-2 text-left transition active:scale-[0.98]',
-                    active ? 'border-text-primary shadow-md' : 'border-[var(--color-border)]',
-                  )}
-                  style={{ backgroundColor: preset.bg }}
+                  className="appearance-preset-choice"
                 >
-                  <div className="p-3">
-                    <div className="mb-2 flex items-center justify-between">
-                      <span
-                        className="h-2.5 w-16 rounded-full"
-                        style={{ backgroundColor: preset.fg }}
-                      />
-                      <span
-                        className="h-4 w-4 rounded-full"
-                        style={{ backgroundColor: preset.accent }}
-                      />
-                    </div>
-                    <div
-                      className="mb-2 rounded-xl p-2.5 shadow-sm"
-                      style={{ backgroundColor: preset.card }}
-                    >
-                      <span
-                        className="mb-1.5 block h-1.5 w-10 rounded-full"
-                        style={{ backgroundColor: preset.primary }}
-                      />
-                      <span
-                        className="mb-1 block h-1.5 w-full rounded-full opacity-70"
-                        style={{ backgroundColor: preset.muted }}
-                      />
-                      <span
-                        className="block h-1.5 w-4/5 rounded-full opacity-70"
-                        style={{ backgroundColor: preset.muted }}
-                      />
-                    </div>
-                    <span
-                      className="mb-2 inline-flex rounded-full px-3 py-1 text-[10px] font-bold"
-                      style={{ backgroundColor: preset.primary, color: preset.primaryFg }}
-                    >
-                      Mémoriser
-                    </span>
-                    <div className="flex items-center justify-between px-1">
-                      {[0, 1, 2, 3].map((i) => (
-                        <span
-                          key={i}
-                          className="h-3.5 w-3.5 rounded-full"
-                          style={{
-                            backgroundColor: i === 0 ? preset.primary : preset.muted,
-                          }}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                  <div className="flex items-center justify-between bg-black/[0.04] px-3 py-2">
-                    <span className="text-[11px] font-bold leading-tight text-text-primary">
-                      {preset.label}
-                      {preset.hybrid && (
-                        <span className="block text-[9px] font-bold uppercase tracking-wide text-primary">
-                          {t('settings.hybrid', 'Fusion')}
-                        </span>
-                      )}
-                    </span>
-                    {active && <Check size={16} className="shrink-0 text-primary" />}
-                  </div>
+                  <span>{preset.label}</span>
+                  {preset.hybrid && <small>{t('settings.hybrid', 'Fusion')}</small>}
+                  {preset.darkOnly && <small>{t('settings.darkOnly', 'Sombre')}</small>}
+                  {active && <Check size={16} /> }
                 </button>
               );
             })}
@@ -247,39 +279,10 @@ export default function AppearanceScreen() {
             {t('settings.themePresetHint', 'Thèmes officiels tweakcn — le mode Clair/Sombre ci-dessus choisit la variante de chaque thème.')}
           </p>
         </Section>
-
-        <Section title={t('settings.uiFont', "Police de l'interface")}>
-          <div className="grid grid-cols-2 gap-2">
-            {UI_FONTS.map((font) => {
-              const active = uiFontId === font.id;
-              return (
-                <button
-                  key={font.id}
-                  onClick={() => setUiFontId(font.id)}
-                  aria-pressed={active}
-                  className={cn(
-                    'rounded-xl border-2 p-3 text-left transition active:scale-[0.98]',
-                    active ? 'border-primary bg-primary/5' : 'border-[var(--color-border)]',
-                  )}
-                >
-                  <span
-                    className="block text-lg leading-tight text-text-primary"
-                    style={{ fontFamily: font.family }}
-                  >
-                    Ag VersyFlow
-                  </span>
-                  <span className="mt-1 block text-[11px] font-bold text-text-primary">
-                    {font.label}
-                  </span>
-                  <span className="block text-[10px] text-text-muted">{font.style}</span>
-                </button>
-              );
-            })}
-          </div>
-        </Section>
-
-        <Section title={t('settings.background', "Fond de l'app")}>
-          <div className="mb-4 flex gap-2">
+        </details>
+        </>}
+        {tab === 'background' && <Section title={t('settings.background', "Fond de l'app")} action={<button type="button" className="appearance-reset" onClick={() => { setBackgroundType('none'); setCategory('all'); }}>{t('appearanceEditor.reset', 'Réinitialiser')}</button>}>
+          <div className="appearance-segment mb-4 flex gap-2">
             {(
               [
                 { value: 'none', label: t('settings.bgNone', 'Aucun') },
@@ -289,88 +292,60 @@ export default function AppearanceScreen() {
             ).map((opt) => (
               <button
                 key={opt.value}
-                onClick={() => setBackgroundType(opt.value)}
+                onClick={() => opt.value === 'gradient' ? setGradient(GRADIENTS.some((g) => g.id === gradientId) ? gradientId : GRADIENTS[0].id) : setBackgroundType(opt.value)}
                 aria-pressed={backgroundType === opt.value}
-                className={cn(
-                  'flex-1 rounded-full px-3 py-2 text-xs font-bold transition',
-                  backgroundType === opt.value
-                    ? 'bg-primary text-primary-foreground'
-                    : 'bg-surface-tint text-text-secondary',
-                )}
+                className="appearance-segment-button"
               >
                 {opt.label}
               </button>
             ))}
           </div>
 
-          {backgroundType === 'gradient' && (
+          {backgroundType === 'gradient' && <>
+            {gradientId && !BACKGROUND_GRADIENTS.some((g) => g.id === gradientId) && <p className="appearance-hint">{t('appearanceEditor.currentGradient', 'Dégradé actuel')} : {gradientId.replace(/-/g, ' ')}</p>}
             <div className="grid grid-cols-2 gap-2">
-              {GRADIENTS.map((g) => {
+              {BACKGROUND_GRADIENTS.map((g) => {
                 const active = gradientId === g.id;
                 return (
                   <button
                     key={g.id}
                     onClick={() => setGradient(g.id)}
+                    style={{ backgroundImage: g.css }}
                     aria-pressed={active}
                     className={cn(
-                      'h-16 rounded-2xl border-2 p-2 text-left transition',
+                      'appearance-gradient h-16 rounded-2xl p-2 text-left transition',
                       g.className,
-                      active ? 'border-text-primary' : 'border-transparent',
+                      active && 'is-active',
                     )}
                   >
-                    <span className="rounded-full bg-black/25 px-2 py-0.5 text-[10px] font-bold capitalize text-white">
-                      {g.id.replace(/-/g, ' ')}
+                    <span className="appearance-gradient-label rounded-full px-2 py-0.5 text-[10px] font-bold capitalize">
+                      {g.id.replace(/^colorbase-/, '').replace(/-/g, ' ')}
                     </span>
                   </button>
                 );
               })}
-            </div>
-          )}
+            </div></>}
 
           {backgroundType === 'image' && (
-            <div className="flex flex-col gap-4">
-              {THEME_CATEGORIES.map((cat) => (
-                <div key={cat.id}>
-                  <p className="mb-2 text-[11px] font-bold uppercase tracking-wider text-text-muted">
-                    {cat.name}
-                  </p>
-                  <div className="grid grid-cols-5 gap-2">
-                    {cat.themes.map((entry) => {
-                      const active = colorThemeId === entry.id;
-                      return (
-                        <button
-                          key={entry.id}
-                          onClick={() => setColorTheme(entry.id)}
-                          aria-pressed={active}
-                          title={entry.name}
-                          className={cn(
-                            'flex aspect-square items-center justify-center overflow-hidden rounded-2xl border-2 transition',
-                            active ? 'border-text-primary' : 'border-transparent',
-                          )}
-                          style={{ backgroundColor: entry.color }}
-                        >
-                          <img
-                            src={themeLandscapeUrl(entry.id)}
-                            alt=""
-                            loading="lazy"
-                            className="h-full w-full object-cover"
-                            onError={(e) => {
-                              (e.target as HTMLImageElement).style.display = 'none';
-                            }}
-                          />
-                          {active && <Check size={16} className="absolute text-white" />}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-              ))}
-              <p className="text-[11px] leading-relaxed text-text-muted">
-                {t(
-                  'settings.bgImageHint',
-                  "L'accent de l'app est extrait automatiquement de l'image choisie (couleurs, anneau, voile des cartes).",
-                )}
-              </p>
+            <div className="appearance-image-picker">
+              <p className="appearance-hint">{t('appearanceEditor.calmImages', 'Les images calmes donnent de meilleurs résultats')}</p>
+              <div className="appearance-categories" role="group" aria-label={t('appearanceEditor.categories', 'Catégories')}>
+                <button type="button" aria-pressed={category === 'all'} onClick={() => setCategory('all')}>{t('appearanceEditor.all', 'Tous')}</button>
+                {THEME_CATEGORIES.map((cat) => <button type="button" key={cat.id} aria-pressed={category === cat.id} onClick={() => setCategory(cat.id)}>{cat.name}</button>)}
+              </div>
+              <div className="appearance-image-grid">
+                {THEME_CATEGORIES.filter((cat) => category === 'all' || category === cat.id).flatMap((cat) => cat.themes.map((entry) => {
+                  const active = colorThemeId === entry.id;
+                  const available = entry.id !== 'obj-miroir'; // Both original images are absent from the catalog assets.
+                  return <button type="button" key={entry.id} onClick={() => setColorTheme(entry.id)} aria-pressed={active} disabled={!available} className="appearance-image-option">
+                    <span className={cn('appearance-thumbnail', active && 'is-active')}>
+                      {available ? <picture><source type="image/webp" srcSet={themeLandscapeUrl(entry.id).replace('-landscape.png', '-thumb.webp')} />
+                        <img src={themeLandscapeUrl(entry.id)} alt="" loading="lazy" decoding="async" /></picture> : <span className="appearance-image-unavailable">{t('appearanceEditor.imageUnavailable', 'Image indisponible')}</span>}
+                      {active && <Check size={20} className="appearance-thumbnail-check" />}
+                    </span><span className="appearance-image-title">{entry.name}</span>
+                  </button>;
+                }))}
+              </div>
             </div>
           )}
 
@@ -379,119 +354,65 @@ export default function AppearanceScreen() {
               {t('settings.bgNoneHint', 'Le fond suit simplement le thème choisi ci-dessus.')}
             </p>
           )}
-        </Section>
+        </Section>}
 
-        {/* ── Lecture : full Bible reading controls (font + fine spacing) ── */}
+        {tab === 'glass' && (
+          <Section title={t('appearanceEditor.glass', 'Verre')}>
+            <p className="appearance-hint">{t('appearanceEditor.glassHint', 'Réglez le flou, la transparence et le voile. L’aperçu utilise les surfaces de l’accueil.')}</p>
+            {(backgroundType !== 'image' || !colorThemeId) && <p className="appearance-glass-note" role="status">{t('appearanceEditor.glassNeedsImage', 'Ces réglages sont enregistrés et s’appliqueront lorsque vous choisirez une image de fond.')}</p>}
+            <BackgroundControls showPreview={false} />
+          </Section>
+        )}
+
+        {tab === 'text' && <>
+        <Section title={t('settings.uiFont', "Police de l'interface")} action={<button type="button" className="appearance-reset" onClick={resetTextSettings}>{t('appearanceEditor.resetText', 'Réinitialiser le texte')}</button>}>
+          <p className="appearance-hint">{t('appearanceEditor.uiFontHint', 'Choisissez la police des éléments de l’interface.')}</p>
+          {!APPEARANCE_UI_FONTS.some((font) => font.id === uiFontId) && <p className="appearance-font-legacy">{t('appearanceEditor.currentFont', 'Police actuelle : {{font}}', { font: findUiFont(uiFontId).label })}</p>}
+          <div className="appearance-font-grid" role="group" aria-label={t('settings.uiFont', "Police de l'interface")}>
+            {APPEARANCE_UI_FONTS.map((font) => <button type="button" key={font.id} onClick={() => setUiFontId(font.id)} aria-pressed={uiFontId === font.id} className="appearance-choice appearance-font-card" aria-label={font.id === 'system' ? t('appearanceEditor.themeFont', 'Police du thème') : font.label}>
+              <span aria-hidden="true" className="appearance-font-sample" style={{ fontFamily: font.family || 'var(--theme-font-sans, var(--font-sans))' }}><strong>Ag</strong><span>{t('appearanceEditor.psalmText', "L’Éternel est mon berger : je ne manquerai de rien.")}</span></span>
+              <span className="appearance-font-name">{font.id === 'system' ? t('appearanceEditor.themeFont', 'Police du thème') : font.label}</span>
+              <span className="appearance-font-caption">{t('appearanceEditor.psalmRef', 'Psaume 23:1 · Louis Segond')}</span>
+            </button>)}
+          </div>
+        </Section>
         <Section title={t('settings.reading', 'Lecture')}>
-          {/* Font family selector — 10 premium serifs, live preview in own family */}
-          <div className="grid grid-cols-2 gap-2">
-            {BIBLE_FONTS.map((font) => {
-              const active = bibleFontFamily === font.id;
-              return (
-                <button
-                  key={font.id}
-                  onClick={() => setBibleFontFamily(font.id)}
-                  aria-pressed={active}
-                  className={cn(
-                    'flex flex-col items-start gap-1 rounded-xl border-2 p-2.5 text-left transition',
-                    active
-                      ? 'border-primary bg-primary/5'
-                      : 'border-border bg-surface-tint/40 active:bg-surface-tint',
-                  )}
-                >
-                  <span
-                    className="text-base leading-tight text-text-primary"
-                    style={{ fontFamily: font.family }}
-                  >
-                    {t('settings.fonts.' + font.id, font.label)}
-                  </span>
-                  <span
-                    className={cn(
-                      'text-[10px] font-bold uppercase tracking-wide',
-                      active ? 'text-primary' : 'text-text-muted',
-                    )}
-                  >
-                    Aa · {font.label}
-                  </span>
-                </button>
-              );
-            })}
+          <p className="appearance-hint">{t('appearanceEditor.readingFontHint', 'Choisissez la police des passages bibliques.')}</p>
+          {fontLoadFailed && <p role="status" className="appearance-font-legacy">{t('appearanceEditor.fontLoadError', 'Certaines polices ne sont pas disponibles ; une police de secours est affichée.')}</p>}
+          {!APPEARANCE_READING_FONTS.some((font) => font.id === bibleFontFamily) && <p className="appearance-font-legacy">{t('appearanceEditor.currentFont', 'Police actuelle : {{font}}', { font: findBibleFont(bibleFontFamily).label })}</p>}
+          <div className="appearance-font-grid" role="group" aria-label={t('settings.reading', 'Lecture')}>
+            {APPEARANCE_READING_FONTS.map((font) => <button type="button" key={font.id} onClick={() => setBibleFontFamily(font.id)} aria-pressed={bibleFontFamily === font.id} className="appearance-choice appearance-font-card" aria-label={font.label}>
+              <span aria-hidden="true" className="appearance-font-sample" style={{ fontFamily: font.family }}><strong>Ag</strong><span>{t('appearanceEditor.psalmText', "L’Éternel est mon berger : je ne manquerai de rien.")}</span></span>
+              <span className="appearance-font-name">{font.label}</span>
+              <span className="appearance-font-caption">{t('appearanceEditor.psalmRef', 'Psaume 23:1 · Louis Segond')}</span>
+            </button>)}
           </div>
-
-          {/* Fine spacing controls */}
-          <div className="mt-4 border-t border-[color:var(--color-divider)] pt-3">
-            <SliderRow
-              label={t('settings.reading.size', 'Taille')}
-              value={bibleFontSize}
-              display={`${bibleFontSize}px`}
-              min={FONT_SIZE_MIN}
-              max={FONT_SIZE_MAX}
-              step={1}
-              onChange={setBibleFontSize}
-            />
-            <SliderRow
-              label={t('settings.reading.lineHeight', 'Interlignage')}
-              value={bibleLineHeight}
-              display={bibleLineHeight.toFixed(2)}
-              min={LINE_HEIGHT_MIN}
-              max={LINE_HEIGHT_MAX}
-              step={0.05}
-              onChange={setBibleLineHeight}
-            />
-            <SliderRow
-              label={t('settings.reading.letterSpacing', 'Espacement des lettres')}
-              value={bibleLetterSpacing}
-              display={`${(bibleLetterSpacing * 100).toFixed(1)}‱`}
-              min={LETTER_SPACING_MIN}
-              max={LETTER_SPACING_MAX}
-              step={0.005}
-              onChange={setBibleLetterSpacing}
-            />
-            <SliderRow
-              label={t('settings.reading.lineLength', 'Largeur de colonne')}
-              value={bibleLineLength}
-              display={`${bibleLineLength} em`}
-              min={LINE_LENGTH_MIN}
-              max={LINE_LENGTH_MAX}
-              step={1}
-              onChange={setBibleLineLength}
-            />
+          <div className="appearance-reading-controls">
+            <SliderRow label={t('settings.reading.size', 'Taille')} value={bibleFontSize} display={`${bibleFontSize} px`} min={FONT_SIZE_MIN} max={FONT_SIZE_MAX} step={1} onChange={setBibleFontSize} />
+            {bibleFontSize > FONT_SIZE_MAX && <p className="appearance-font-legacy">{t('appearanceEditor.legacySize', 'Votre taille enregistrée est conservée ; le curseur propose 14 à 22 px.')}</p>}
+            <SliderRow label={t('settings.reading.lineHeight', 'Interlignage')} value={bibleLineHeight} display={bibleLineHeight.toFixed(2)} min={LINE_HEIGHT_MIN} max={LINE_HEIGHT_MAX} step={0.05} onChange={setBibleLineHeight} />
+            <SliderRow label={t('settings.reading.letterSpacing', 'Espacement des lettres')} value={bibleLetterSpacing} display={`${bibleLetterSpacing.toFixed(3)} em`} min={LETTER_SPACING_MIN} max={LETTER_SPACING_MAX} step={0.005} onChange={setBibleLetterSpacing} />
+            <SliderRow label={t('settings.reading.lineLength', 'Largeur de colonne')} value={bibleLineLength} display={`${bibleLineLength} em`} min={LINE_LENGTH_MIN} max={LINE_LENGTH_MAX} step={1} onChange={setBibleLineLength} />
+          </div>
+          <div className="appearance-reading-preview">
+            <span className="appearance-font-caption">{t('appearanceEditor.liveReading', 'Aperçu de lecture')} · {t('appearanceEditor.psalmRef', 'Psaume 23:1 · Louis Segond')}</span>
+            <p style={{ fontFamily: findBibleFont(bibleFontFamily).family, fontSize: `${bibleFontSize}px`, lineHeight: bibleLineHeight, letterSpacing: `${bibleLetterSpacing}em`, maxWidth: `${bibleLineLength}em` }}>{t('appearanceEditor.psalmText', "L’Éternel est mon berger : je ne manquerai de rien.")}</p>
           </div>
         </Section>
-
-        <Section title={t('settings.fontSize', 'Taille du texte')}>
-          <div className="flex justify-between gap-2">
-            {[14, 16, 18, 20, 22].map((size) => {
-              const active = fontSize === size;
-              return (
-                <button
-                  key={size}
-                  onClick={() => setFontSize(size)}
-                  className={cn(
-                    'flex-1 rounded-xl py-2.5 text-sm font-semibold transition',
-                    active ? 'bg-primary text-on-primary' : 'bg-surface-tint text-text-primary',
-                  )}
-                >
-                  {size}
-                </button>
-              );
-            })}
-          </div>
-        </Section>
-
-        <Section title={t('settings.display', 'Affichage')}>
+        </>}
+        {tab === 'glass' && <Section title={t('settings.display', 'Affichage')}>
           <div className="flex flex-col gap-3">
             <div className="flex items-center justify-between">
               <span className="text-sm text-text-primary">
                 {t('settings.verseNumbers', 'Numéros de versets')}
               </span>
-              <Toggle on={showVerseNumbers} onChange={toggleVerseNumbers} />
+              <Toggle label={t('settings.verseNumbers', 'Numéros de versets')} on={showVerseNumbers} onChange={toggleVerseNumbers} />
             </div>
             <div className="flex items-center justify-between">
               <span className="text-sm text-text-primary">
                 {t('settings.focusMode', 'Mode concentration')}
               </span>
-              <Toggle on={focusMode} onChange={() => setFocusMode(!focusMode)} />
+              <Toggle label={t('settings.focusMode', 'Mode concentration')} on={focusMode} onChange={() => setFocusMode(!focusMode)} />
             </div>
 
             <div className="flex items-center justify-between gap-3 py-2">
@@ -502,6 +423,7 @@ export default function AppearanceScreen() {
                 </span>
               </span>
               <Toggle
+                label={t('settings.reducedTransparency', 'Réduire la transparence')}
                 on={reducedTransparency}
                 onChange={() => setReducedTransparency(!reducedTransparency)}
               />
@@ -514,11 +436,11 @@ export default function AppearanceScreen() {
                   {t('settings.highContrastHint', 'Contours renforcés, fond décoratif atténué.')}
                 </span>
               </span>
-              <Toggle on={highContrast} onChange={() => setHighContrast(!highContrast)} />
+              <Toggle label={t('settings.highContrast', 'Contraste élevé')} on={highContrast} onChange={() => setHighContrast(!highContrast)} />
             </div>
           </div>
-        </Section>
-      </div>
-    </FullScreenPage>
+        </Section>}
+      </div></div></div>
+    </IonPage>
   );
 }

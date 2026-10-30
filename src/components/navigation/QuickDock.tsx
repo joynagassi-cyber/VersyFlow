@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { HugeiconsIcon } from '@hugeicons/react';
+import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   CalendarClockIcon as CalendarClock,
   CompassIcon as Compass,
@@ -12,26 +12,23 @@ import {
   MessageCircleHeartIcon as MessageCircleHeart,
   Search01Icon as Search,
   Cancel01Icon as X,
-} from '@hugeicons/core-free-icons';
-import { cn } from '@/lib/utils';
+} from '@/components/ui/solar-icons';
 
 interface QuickAction {
   icon: typeof BrainCircuit;
   key: string;
   path: string;
-  color: string;
-  bg: string;
 }
 
 const ACTIONS: QuickAction[] = [
-  { icon: Gem, key: 'dock.memorize', path: '/memorization/session', color: 'text-primary', bg: 'bg-icon-bg-rose' },
-  { icon: CalendarClock, key: 'dock.review', path: '/review/queue', color: 'text-success', bg: 'bg-icon-bg-green' },
-  { icon: Compass, key: 'dock.explore', path: '/bible/explorer', color: 'text-info', bg: 'bg-icon-bg-blue' },
-  { icon: Library, key: 'dock.versions', path: '/settings/available-translations', color: 'text-info', bg: 'bg-icon-bg-indigo' },
-  { icon: GitCompareArrows, key: 'dock.compare', path: '/comparison/translation', color: 'text-warning', bg: 'bg-icon-bg-orange' },
-  { icon: BrainCircuit, key: 'dock.semantic', path: '/semantic', color: 'text-primary', bg: 'bg-icon-bg-purple' },
-  { icon: MessageCircleHeart, key: 'dock.family', path: '/family/home', color: 'text-error', bg: 'bg-icon-bg-rose' },
-  { icon: Search, key: 'dock.search', path: '/search', color: 'text-text-secondary', bg: 'bg-surface-tint' },
+  { icon: Gem, key: 'dock.memorize', path: '/memorization/session' },
+  { icon: CalendarClock, key: 'dock.review', path: '/review/queue' },
+  { icon: Compass, key: 'dock.explore', path: '/bible/explorer' },
+  { icon: Library, key: 'dock.versions', path: '/settings/available-translations' },
+  { icon: GitCompareArrows, key: 'dock.compare', path: '/comparison/translation' },
+  { icon: BrainCircuit, key: 'dock.semantic', path: '/semantic' },
+  { icon: MessageCircleHeart, key: 'dock.family', path: '/family/home' },
+  { icon: Search, key: 'dock.search', path: '/search' },
 ];
 
 const DOCK_LABELS: Record<string, string> = {
@@ -76,7 +73,7 @@ export function QuickDock() {
       {open && (
         <div className="modal-sheet">
           <button
-            className="absolute inset-0 h-full w-full bg-black/40"
+            className="absolute inset-0 h-full w-full bg-[color:var(--scrim)]"
             onClick={() => setOpen(false)}
             aria-label={t('common.close', 'Fermer')}
           />
@@ -98,7 +95,7 @@ export function QuickDock() {
                 className="rounded-full p-1.5 text-text-muted active:bg-surface-tint"
                 aria-label={t('common.close', 'Fermer')}
               >
-                <HugeiconsIcon icon={X} size={20} />
+                <DuoIcon icon={X} size={20} />
               </button>
             </div>
 
@@ -112,8 +109,8 @@ export function QuickDock() {
                     onClick={() => go(a.path)}
                     className="flex flex-col items-center rounded-2xl bg-surface-tint/60 p-3 text-center transition active:scale-[0.97]"
                   >
-                    <span className={cn('mb-2 flex h-11 w-11 items-center justify-center rounded-full', a.bg)}>
-                      <HugeiconsIcon icon={Icon} size={20} className={a.color} />
+                    <span className="icon-chip mb-2 flex h-11 w-11 items-center justify-center rounded-full">
+                      <DuoIcon icon={Icon} size={20} />
                     </span>
                     <span className="text-[11px] font-semibold text-text-primary">
                       {t(a.key, DOCK_LABELS[a.key.split('.').pop() ?? ''])}

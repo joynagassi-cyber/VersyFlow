@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { HugeiconsIcon } from '@hugeicons/react';
+import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   BookOpen01Icon as BookOpen,
   ArrowRight01Icon as ArrowRight,
@@ -9,7 +9,7 @@ import {
   CheckmarkCircle02Icon as CheckCircle2,
   RefreshIcon as RefreshCw,
   Medal01Icon as Medal,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { Button } from '@/components/ui/button';
@@ -54,13 +54,13 @@ function ratingConfig(rating: Rating | string) {
       : rating;
   switch (r) {
     case Rating.AGAIN:
-      return { cls: 'bg-error text-white', label: 'A revoir', Icon: RefreshCw };
+      return { cls: 'bg-error text-[color:var(--on)]', label: 'A revoir', Icon: RefreshCw };
     case Rating.HARD:
-      return { cls: 'bg-warning text-white', label: 'Difficile', Icon: RefreshCw };
+      return { cls: 'bg-warning text-[color:var(--on)]', label: 'Difficile', Icon: RefreshCw };
     case Rating.GOOD:
-      return { cls: 'bg-success text-white', label: 'Bon', Icon: CheckCircle2 };
+      return { cls: 'bg-success text-[color:var(--on)]', label: 'Bon', Icon: CheckCircle2 };
     case Rating.EASY:
-      return { cls: 'bg-info text-white', label: 'Facile', Icon: CheckCircle2 };
+      return { cls: 'bg-info text-[color:var(--on)]', label: 'Facile', Icon: CheckCircle2 };
     default:
       return { cls: 'bg-primary text-on-primary', label: 'Bon', Icon: CheckCircle2 };
   }
@@ -191,7 +191,7 @@ export default function ReviewHistoryScreen() {
         <div className="rounded-3xl bg-surface p-5 shadow-sm">
           <div className="flex gap-3">
             <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-surface-tint">
-              <HugeiconsIcon icon={BookOpen} size={22} className="text-primary" />
+              <DuoIcon icon={BookOpen} size={22} className="text-primary" />
             </span>
             <div className="min-w-0 flex-1">
               <p className="font-bold text-text-primary">{verse.reference}</p>
@@ -229,7 +229,7 @@ export default function ReviewHistoryScreen() {
                     <span
                       className={'flex h-8 w-8 items-center justify-center rounded-full ' + cfg.cls}
                     >
-                      <HugeiconsIcon icon={cfg.Icon} size={14} />
+                      <DuoIcon icon={cfg.Icon} size={14} />
                     </span>
                     {i < logs.length - 1 && (
                       <span className="mt-1 w-0.5 flex-1 bg-[color:var(--color-divider)]" />
@@ -253,7 +253,7 @@ export default function ReviewHistoryScreen() {
                         </p>
                         <p className="font-medium text-text-primary tabular-nums">
                           {log.stabilityBefore.toFixed(1)}
-                          <HugeiconsIcon icon={ArrowRight} size={10} className="mx-1 inline text-text-muted tabular-nums" />
+                          <DuoIcon icon={ArrowRight} size={10} className="mx-1 inline text-text-muted tabular-nums" />
                           {log.stabilityAfter.toFixed(1)}j
                         </p>
                       </div>
@@ -263,7 +263,7 @@ export default function ReviewHistoryScreen() {
                         </p>
                         <p className="font-medium text-text-primary tabular-nums">
                           {log.difficultyBefore.toFixed(1)}
-                          <HugeiconsIcon icon={ArrowRight} size={10} className="mx-1 inline text-text-muted tabular-nums" />
+                          <DuoIcon icon={ArrowRight} size={10} className="mx-1 inline text-text-muted tabular-nums" />
                           {log.difficultyAfter.toFixed(1)}
                         </p>
                       </div>
@@ -282,7 +282,7 @@ export default function ReviewHistoryScreen() {
           <div className="grid grid-cols-2 gap-3">
             <div className="col-span-2 flex items-center gap-3 rounded-2xl bg-surface p-4 shadow-sm">
               <span className="flex h-11 w-11 items-center justify-center rounded-full bg-primary text-on-primary">
-                <HugeiconsIcon icon={TrendingUp} size={20} />
+                <DuoIcon icon={TrendingUp} size={20} />
               </span>
               <div>
                 <p className="text-2xl font-extrabold text-text-primary tabular-nums">
@@ -308,7 +308,7 @@ export default function ReviewHistoryScreen() {
 
         <div className="rounded-3xl bg-surface p-5 shadow-sm">
           <div className="mb-3 flex items-center gap-2">
-            <HugeiconsIcon icon={Medal} size={20} className="text-warning" />
+            <DuoIcon icon={Medal} size={20} className="text-warning" />
             <p className="text-base font-bold text-text-primary">
               {t('history.mastery', 'Niveau de maitrise')}
             </p>

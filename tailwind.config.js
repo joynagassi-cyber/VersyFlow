@@ -56,13 +56,17 @@ const config = {
         'icon-bg-green': 'var(--color-icon-bg-green)',
         'icon-bg-orange': 'var(--color-icon-bg-orange)',
       },
+      // Rayons pilotés par le preset actif : `--radius-scale` vaut 1 pour le
+      // thème par défaut (0.5rem), donc 8/12/16/20/24 px restent EXACTEMENT
+      // les valeurs historiques. Un thème à 1.875rem (Emerald) donne 3.75 et
+      // arrondit l'interface proportionnellement. Voir vendored-themes.css.
       borderRadius: {
-        sm: '8px',
-        md: '12px',
-        lg: '16px',
-        xl: '20px',
-        '2xl': '24px',
-        '3xl': '32px',
+        sm: 'calc(8px * var(--radius-scale, 1))',
+        md: 'calc(12px * var(--radius-scale, 1))',
+        lg: 'calc(16px * var(--radius-scale, 1))',
+        xl: 'calc(20px * var(--radius-scale, 1))',
+        '2xl': 'calc(24px * var(--radius-scale, 1))',
+        '3xl': 'calc(32px * var(--radius-scale, 1))',
         full: '9999px',
       },
       spacing: {
@@ -81,12 +85,15 @@ const config = {
         float: 'var(--shadow-float)',
         lift: 'var(--shadow-lift)',
       },
+      // `--font-sans` est posée par le preset actif ; Inter en repli pour que
+      // l'interface reste identique si le CSS du preset n'est pas encore chargé.
       fontFamily: {
         sans: [
-          'Inter', '-apple-system', 'BlinkMacSystemFont', 'SF Pro Text',
-          'Roboto', 'Segoe UI', 'sans-serif',
+          'var(--font-sans, Inter)', '-apple-system', 'BlinkMacSystemFont',
+          'SF Pro Text', 'Roboto', 'Segoe UI', 'sans-serif',
         ],
-        serif: ['Source Serif 4', 'Georgia', 'serif'],
+        serif: ['var(--font-serif, "Source Serif 4")', 'Georgia', 'serif'],
+        mono: ['var(--font-mono, ui-monospace)', 'SFMono-Regular', 'monospace'],
       },
       // Échelle typographique explicite (interface). Les tailles de contenu
       // biblique restent pilotées par les réglages de lecture (theme-fonts.ts).

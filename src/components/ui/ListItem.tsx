@@ -1,9 +1,9 @@
 import * as React from 'react';
-import { HugeiconsIcon } from '@hugeicons/react';
+import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   ChevronRightIcon as ChevronRight,
-} from '@hugeicons/core-free-icons';
-import type { IconSvgElement } from '@hugeicons/react';
+} from '@/components/ui/solar-icons';
+import type { Icon as IconSvgElement } from '@solar-icons/react/lib/types';
 import { cn } from '@/lib/utils';
 
 interface ListItemProps {
@@ -31,7 +31,7 @@ export const ListItem = React.memo(function ListItem({
   onClick,
   showChevron,
   trailing,
-  iconBgClass = 'bg-icon-bg-rose text-primary',
+  iconBgClass = 'icon-chip',
   className,
 }: ListItemProps) {
   const content = (
@@ -43,14 +43,14 @@ export const ListItem = React.memo(function ListItem({
             iconBgClass,
           )}
         >
-          <HugeiconsIcon icon={Icon} size={18} />
+          <DuoIcon icon={Icon} size={18} />
         </span>
       )}
       <span className="flex-1 text-sm font-medium text-text-primary">{label}</span>
       {value && <span className="text-sm text-text-muted">{value}</span>}
       {trailing}
       {showChevron && (
-        <HugeiconsIcon icon={ChevronRight} size={18} className="shrink-0 text-text-muted rtl:rotate-180" />
+        <DuoIcon icon={ChevronRight} size={18} className="shrink-0 text-text-muted rtl:rotate-180" />
       )}
     </>
   );

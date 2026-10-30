@@ -9,12 +9,12 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { HugeiconsIcon } from '@hugeicons/react';
+import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   CheckIcon as Check,
   ChevronDownIcon as ChevronDown,
   Loading03Icon as Loader2,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import { cn } from '@/lib/utils';
 import { useSettingsStore } from '@/store/settings-store';
 import { BIBLE_DATASET_CATALOG } from '@/services/bible-text-service';
@@ -68,7 +68,7 @@ export function TranslationMenu({
         className="flex items-center gap-1 rounded-full bg-surface-tint px-2.5 py-1 text-xs font-bold text-primary transition active:scale-95"
       >
         {display}
-        <HugeiconsIcon icon={ChevronDown} size={11} />
+        <DuoIcon icon={ChevronDown} size={11} />
       </button>
 
       {open && (
@@ -94,9 +94,9 @@ export function TranslationMenu({
                   {bibleTranslationDisplayName(entry.id)}
                 </span>
                 {isBusy ? (
-                  <HugeiconsIcon icon={Loader2} size={13} className="animate-spin text-text-muted" />
+                  <DuoIcon icon={Loader2} size={13} className="animate-spin text-text-muted" />
                 ) : isCurrent ? (
-                  <HugeiconsIcon icon={Check} size={13} />
+                  <DuoIcon icon={Check} size={13} />
                 ) : null}
               </button>
             );

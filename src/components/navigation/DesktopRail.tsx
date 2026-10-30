@@ -9,14 +9,15 @@
  *    entrée en double avec la barre d'onglets ;
  *  - jamais deux navigations montées en même temps : ce composant n'est rendu
  *    que ≥ 1024 px, et la barre basse n'est pas rendue au-delà ;
- *  - icônes : Hugeicons uniquement, 20 px, `strokeWidth` renforcé sur l'actif
+ *  - icônes : Solar duotone, 20 px, `strokeWidth` renforcé sur l'actif
  *    et `aria-current` (un état ne se signale jamais par la seule couleur).
  */
 
 import { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { HugeiconsIcon } from '@hugeicons/react';
+import type { Icon as IconSvgElement } from '@solar-icons/react/lib/types';
+import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   Home01Icon,
   BookOpen01Icon,
@@ -37,13 +38,14 @@ import {
   GitCompareIcon,
   UserGroupIcon,
   UserCircleIcon,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import { ALL_MENU_ITEMS, ALL_TABS, useUiStore, type TabId } from '@/store/ui-store';
 import { useIsDesktop } from '@/hooks/useIsDesktop';
 import { Logo } from '@/components/brand/Logo';
 import { cn } from '@/lib/utils';
 
-type IconType = typeof Home01Icon;
+/** Type des icônes Solar : celui de la bibliothèque, pas une approximation. */
+type IconType = IconSvgElement;
 
 const TAB_ICONS: Record<TabId, IconType> = {
   home: Home01Icon,
@@ -98,7 +100,7 @@ export function DesktopRail() {
   }, [collapsed]);
 
   const tabs = ALL_TABS.filter((tab) => visibleTabs.includes(tab.id));
-  const menuItems = ALL_MENU_ITEMS.filter((item) => visibleMenuPaths.includes(item.path));
+  const menuItems = ALL_MENU_ITEMS.filter((item) => visibleMenuPaths.includes(item.path) && !(item.path === '/bible/explorer' && visibleTabs.includes('explore')));
 
   const itemBase =
     'group flex h-9 w-full items-center gap-3 rounded-xl px-2.5 text-start text-sm font-medium transition-colors';
@@ -107,7 +109,7 @@ export function DesktopRail() {
   return (
     <aside
       aria-label="Navigation principale"
-      className="desktop-rail fixed inset-y-0 start-0 z-30 flex flex-col border-e border-border bg-surface"
+      className="desktop-rail g1 fixed inset-y-0 start-0 z-30 flex flex-col"
       data-collapsed={collapsed ? 'true' : 'false'}
     >
       {/* En-tête : marque + un seul contrôle de repli */}
@@ -118,7 +120,7 @@ export function DesktopRail() {
           className={cn(itemBase, 'gap-2.5 px-1 hover:bg-surface-tint')}
           aria-label={t('nav.brandHome', 'VersyFlow — Accueil')}
         >
-          <Logo size={28} />
+          <span className="brand-tile"><Logo size={28} /></span>
           <span className="rail-label text-primary text-base font-extrabold">VersyFlow</span>
         </button>
         {isDesktop && (
@@ -131,7 +133,7 @@ export function DesktopRail() {
           aria-expanded={!collapsed}
           className="ms-auto flex h-8 w-8 flex-none items-center justify-center rounded-lg text-text-muted hover:bg-surface-tint hover:text-text-primary"
         >
-          <HugeiconsIcon icon={SidebarLeft01Icon} size={19} />
+          <DuoIcon icon={SidebarLeft01Icon} size={19} />
         </button>
         )}
       </div>
@@ -147,7 +149,7 @@ export function DesktopRail() {
           )}
           aria-label={t('nav.newSession', 'Nouvelle session')}
         >
-          <HugeiconsIcon icon={PlusSignIcon} size={19} strokeWidth={2.2} />
+          <DuoIcon icon={PlusSignIcon} size={19} strokeWidth={1.75} />
           <span className="rail-label text-sm font-semibold">{t('nav.newSession', 'Nouvelle session')}</span>
         </button>
       </div>
@@ -155,7 +157,7 @@ export function DesktopRail() {
       <nav className="min-h-0 flex-1 overflow-y-auto px-2 pb-3">
         <div className="flex flex-col gap-0.5">
           {tabs.map((tab) => {
-            const active = isActive(location.pathname, tab.path);
+            const active = isActive(location.pathname, tab.path) || (tab.id === 'explore' && location.pathname.startsWith('/bible/'));
             return (
               <button
                 key={tab.id}
@@ -171,10 +173,10 @@ export function DesktopRail() {
                 )}
               >
                 <span className={iconColumn}>
-                  <HugeiconsIcon
+                  <DuoIcon
                     icon={TAB_ICONS[tab.id]}
                     size={20}
-                    strokeWidth={active ? 2.3 : 1.8}
+                    strokeWidth={1.75}
                   />
                 </span>
                 <span className="rail-label truncate">{t(tab.labelKey, tab.label)}</span>
@@ -208,7 +210,7 @@ export function DesktopRail() {
                 )}
               >
                 <span className={iconColumn}>
-                  <HugeiconsIcon icon={Icon} size={20} strokeWidth={active ? 2.3 : 1.8} />
+                  <DuoIcon icon={Icon} size={20} strokeWidth={1.75} />
                 </span>
                 <span className="rail-label truncate">{t(item.labelKey, item.label)}</span>
               </button>
@@ -232,7 +234,7 @@ export function DesktopRail() {
           )}
         >
           <span className={iconColumn}>
-            <HugeiconsIcon icon={UserCircleIcon} size={20} />
+            <DuoIcon icon={UserCircleIcon} size={20} />
           </span>
           <span className="rail-label truncate">{t('nav.profile', 'Profil')}</span>
         </button>

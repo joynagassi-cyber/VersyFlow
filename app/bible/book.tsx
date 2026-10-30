@@ -5,18 +5,19 @@
 
 import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { HugeiconsIcon } from '@hugeicons/react';
+import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   ChevronRightIcon as ChevronRight,
   BookOpen01Icon as BookOpen,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import FullScreenPage from '@/components/layout/FullScreenPage';
+import { formatChapterCount } from '@/lib/chapter-count';
 import { useBibleBooks } from '@/hooks/useBibleBooks';
 
 export default function BookScreen() {
   const { bookId } = useParams();
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const { byId } = useBibleBooks();
   const book = bookId ? byId.get(bookId) : undefined;
@@ -33,7 +34,7 @@ export default function BookScreen() {
   return (
     <FullScreenPage
       title={book.displayName}
-      subtitle={t('bible.chapterCount', { count: book.chapterCount })}
+      subtitle={formatChapterCount(t('bible.chapterCount', { count: book.chapterCount }), book.chapterCount, i18n.resolvedLanguage || i18n.language)}
       backPath="/tabs/explore"
     >
       <div className="flex flex-col gap-2">
@@ -41,8 +42,8 @@ export default function BookScreen() {
           onClick={() => navigate('/bible/explorer')}
           className="mb-2 flex w-full items-center gap-3 rounded-xl bg-surface p-4 text-left shadow-sm"
         >
-          <span className="flex h-10 w-10 items-center justify-center rounded-full bg-icon-bg-rose">
-            <HugeiconsIcon icon={BookOpen} size={18} className="text-primary" />
+          <span className="flex h-10 w-10 items-center justify-center rounded-full icon-chip">
+            <DuoIcon icon={BookOpen} size={18} />
           </span>
           <span className="flex-1 text-sm font-semibold text-primary">
             {t('bible.explorer', 'Revenir à l\'explorateur')}
@@ -62,7 +63,7 @@ export default function BookScreen() {
                 {t('bible.chapter', 'Chapitre')} {chapter}
               </span>
             </span>
-            <HugeiconsIcon icon={ChevronRight} size={18} className="text-text-muted" />
+            <DuoIcon icon={ChevronRight} size={18} className="text-text-muted" />
           </button>
         ))}
       </div>

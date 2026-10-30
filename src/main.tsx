@@ -14,6 +14,7 @@ import { I18nextProvider } from 'react-i18next';
 import { Suspense, lazy, useEffect } from 'react';
 import '@/styles/globals.css';
 import '@/styles/tweakcn-presets.css';
+import '@/styles/vendored-themes.css';
 import '@/styles/gradients.css';
 
 // Serif font bundle for bible text (referenced by `--vf-font-bible` and
@@ -26,6 +27,18 @@ import '@fontsource/source-serif-4/400.css';
 import '@fontsource/source-serif-4/400-italic.css';
 import '@fontsource/source-serif-4/600.css';
 import '@fontsource/source-serif-4/700.css';
+
+// Polices du thème par défaut (`lara-red`) : Inter pour l'interface, Noto
+// Serif Georgian pour les titres, JetBrains Mono pour le code. Servies par
+// @fontsource (woff2 embarqués, aucun appel réseau) et limitées aux sous-
+// ensembles réellement utilisés pour ne pas gonfler le bundle.
+import '@fontsource/inter/latin-400.css';
+import '@fontsource/inter/latin-500.css';
+import '@fontsource/inter/latin-600.css';
+import '@fontsource/inter/latin-700.css';
+import '@fontsource/noto-serif-georgian/latin-400.css';
+import '@fontsource/noto-serif-georgian/georgian-400.css';
+import '@fontsource/jetbrains-mono/latin-400.css';
 
 // Lazy loaded route pages
 const TabLayout = lazy(() => import('../app/(tabs)/_layout'));
@@ -71,6 +84,24 @@ const FamilyHome = lazy(() => import('../app/family/home'));
 const FamilyMembers = lazy(() => import('../app/family/members'));
 const FamilyInvite = lazy(() => import('../app/family/invite'));
 const FamilyJoin = lazy(() => import('../app/family/join'));
+const FamilyPresentation = lazy(() => import('../app/family/presentation'));
+const FamilyCreate = lazy(() => import('../app/family/create'));
+const FamilyProfile = lazy(() => import('../app/family/profile'));
+const FamilySelectProfile = lazy(() => import('../app/family/select-profile'));
+const FamilyMember = lazy(() => import('../app/family/member'));
+const FamilyLeaderboard = lazy(() => import('../app/family/leaderboard'));
+const FamilyPoints = lazy(() => import('../app/family/points'));
+const FamilyChallenges = lazy(() => import('../app/family/challenges/index'));
+const FamilyChallengeNew = lazy(() => import('../app/family/challenges/new'));
+const FamilyChallengeDetail = lazy(() => import('../app/family/challenges/detail'));
+const FamilyChallengeResults = lazy(() => import('../app/family/challenges/results'));
+const FamilySettings = lazy(() => import('../app/family/settings'));
+const FamilySessionPrepare = lazy(() => import('../app/family/session/prepare'));
+const FamilySessionLive = lazy(() => import('../app/family/session/live'));
+const FamilySessionSummary = lazy(() => import('../app/family/session/summary'));
+const FamilyActivity = lazy(() => import('../app/family/activity'));
+const FamilySync = lazy(() => import('../app/family/sync'));
+const NotesPage = lazy(() => import('../app/notes'));
 
 // Settings sub-pages
 const SettingsLanguages = lazy(() => import('../app/settings/languages'));
@@ -108,6 +139,33 @@ const SemanticVerse = lazy(() => import('../app/semantic/verse'));
 const SemanticCommunity = lazy(() => import('../app/semantic/community'));
 // Dev panel (mock-mode testing: seed / reset / local API)
 const DevPanel = lazy(() => import('../app/dev/index'));
+const SemanticTags = lazy(() => import('../app/semantic/tags'));
+const SemanticTagNew = lazy(() => import('../app/semantic/tags/new'));
+const SemanticTree = lazy(() => import('../app/semantic/tree'));
+const SemanticNode = lazy(() => import('../app/semantic/node'));
+const SemanticSuggestions = lazy(() => import('../app/semantic/suggestions'));
+const SemanticReview = lazy(() => import('../app/semantic/review'));
+const SemanticAttach = lazy(() => import('../app/semantic/attach'));
+const SemanticData = lazy(() => import('../app/semantic/data'));
+
+/**
+ * Laboratoire de prévisualisation — **développement uniquement**.
+ *
+ * Le `import()` est dans une branche que Vite remplace par `false` en
+ * production : le module, la route et les iframes n'existent pas dans le
+ * bundle livré (vérifié par `grep` sur `www/assets` après `npm run build`).
+ */
+const ResponsivePreview = import.meta.env.DEV
+  ? lazy(() => import('../app/__dev/responsive-preview'))
+  : null;
+
+/**
+ * Raccourci vers le laboratoire, également **développement uniquement** : sans
+ * lui, il fallait connaître l'URL par cœur pour voir les coques d'appareils.
+ */
+const DevLabShortcut = import.meta.env.DEV
+  ? lazy(() => import('../src/dev/lab-shortcut'))
+  : null;
 
 import i18next, { initI18next } from '@/i18n/i18next-init';
 import { initializeSettingsStore, useSettingsStore } from '@/store/settings-store';
@@ -143,10 +201,48 @@ import { recordTestEvent } from '@/dev/local-backend';
 // redirect after it has pushed to a sub-route. The reads are
 // localStorage-backed (MmkvStorage), so they resolve in <1 ms on the
 // deployed SPA host and add no perceptible startup cost.
+/**
+ * Module de prévisualisation, chargé **à la demande** et seulement dans une
+ * frame ouverte par `preview-frame.html` (`window.__VF_PREVIEW_ROLE__`).
+ *
+ * Une double barrière empêche sa présence en production :
+ *  1. `import.meta.env.DEV` est remplacé par `false` au build, donc tout le
+ *     corps ci-dessous — y compris le `import()` — est éliminé ;
+ *  2. la frame doit avoir été marquée par `preview-frame.html`, fichier absent
+ *     du build.
+ */
+type PreviewModule = typeof import('@/dev/preview-session');
+let previewModule: PreviewModule | null = null;
+
+function isPreviewFrame(): boolean {
+  return typeof window !== 'undefined' && typeof window.__VF_PREVIEW_ROLE__ === 'string';
+}
+
+async function loadPreviewModule(): Promise<PreviewModule | null> {
+  if (!import.meta.env.DEV) return null;
+  if (!isPreviewFrame()) return null;
+  const module = await import('@/dev/preview-session');
+  previewModule = module;
+  return module;
+}
+
 const bootStoresPromise = (async () => {
+  // Cadre de prévisualisation : le stockage est déjà en mémoire (posé par
+  // `preview-frame.html`), on y sème le jeu de démonstration AVANT toute
+  // hydratation — sinon les stores partiraient sur l'onboarding ou sans
+  // profil — et on place l'URL sur l'écran demandé avant le montage du
+  // routeur. Aucun effet hors prévisualisation, aucun effet en production.
+  const preview = await loadPreviewModule();
+  if (preview?.isPreviewRequest()) {
+    preview.seedPreviewStorage();
+    preview.applyInitialPath();
+  }
+
   // Mock mode: seed the in-browser test database and announce the active
   // backend BEFORE the first render, so every screen has data immediately.
+  // (No-op in live mode and inside the preview frame, which has its own seed.)
   bootstrapDevBackend();
+
   await initI18next();
   const activeLanguage = normalizeLocaleCode(i18next.language ?? DEFAULT_LANGUAGE);
   document.documentElement.dir = isRTL(activeLanguage) ? 'rtl' : 'ltr';
@@ -162,7 +258,7 @@ const bootStoresPromise = (async () => {
   wireAppTelemetry();
   wireStreakCoordinator();
   wireSessionRefresh();
-  void scheduleBootReminders();
+  void scheduleBootReminders().catch((error: unknown) => console.warn('[reminders] Échec de programmation', error));
   // Mock mode: the local identity always resolves, so run the same session
   // check the live app runs on resume — the UI then shows the tester as
   // signed in and the family/profile bridges hydrate immediately.
@@ -374,6 +470,23 @@ function App() {
               <Route path="/family/members" element={<FamilyMembers />} />
               <Route path="/family/invite" element={<FamilyInvite />} />
               <Route path="/family/join" element={<FamilyJoin />} />
+              <Route path="/family/presentation" element={<FamilyPresentation />} />
+              <Route path="/family/create" element={<FamilyCreate />} />
+              <Route path="/family/profile" element={<FamilyProfile />} />
+              <Route path="/family/select-profile" element={<FamilySelectProfile />} />
+              <Route path="/family/member/:accountId" element={<FamilyMember />} />
+              <Route path="/family/leaderboard" element={<FamilyLeaderboard />} />
+              <Route path="/family/points" element={<FamilyPoints />} />
+              <Route path="/family/challenges" element={<FamilyChallenges />} />
+              <Route path="/family/challenges/new" element={<FamilyChallengeNew />} />
+              <Route path="/family/challenges/:challengeId" element={<FamilyChallengeDetail />} />
+              <Route path="/family/challenges/:challengeId/results" element={<FamilyChallengeResults />} />
+              <Route path="/family/settings" element={<FamilySettings />} />
+              <Route path="/family/session/prepare" element={<FamilySessionPrepare />} />
+              <Route path="/family/session/live" element={<FamilySessionLive />} />
+              <Route path="/family/session/summary" element={<FamilySessionSummary />} />
+              <Route path="/family/activity" element={<FamilyActivity />} />
+              <Route path="/family/sync" element={<FamilySync />} />
 
               {/* Settings sub-pages */}
               <Route path="/settings" element={<SettingsIndex />} />
@@ -392,6 +505,7 @@ function App() {
               {/* Misc */}
               <Route path="/search" element={<SearchPage />} />
               <Route path="/notifications" element={<NotificationsPage />} />
+              <Route path="/notes" element={<NotesPage />} />
               <Route path="/mastery" element={<MasteryPage />} />
               <Route path="/achievements" element={<AchievementsPage />} />
               <Route path="/analytics/dashboard" element={<AnalyticsDashboard />} />
@@ -410,15 +524,36 @@ function App() {
               <Route path="/semantic/concept" element={<SemanticConcept />} />
               <Route path="/semantic/verse" element={<SemanticVerse />} />
               <Route path="/semantic/community" element={<SemanticCommunity />} />
+              <Route path="/semantic/tags" element={<SemanticTags />} />
+              <Route path="/semantic/tags/new" element={<SemanticTagNew />} />
+              <Route path="/semantic/tree" element={<SemanticTree />} />
+              <Route path="/semantic/node" element={<SemanticNode />} />
+              <Route path="/semantic/suggestions" element={<SemanticSuggestions />} />
+              <Route path="/semantic/review" element={<SemanticReview />} />
+              <Route path="/semantic/attach" element={<SemanticAttach />} />
+              <Route path="/semantic/data" element={<SemanticData />} />
             </Route>
 
             {/* Dev panel — reachable without onboarding (mock testing) */}
             <Route path="/dev" element={<DevPanel />} />
 
             {/* Public routes */}
+            {/*
+              Laboratoire responsive (dev uniquement) : hors du garde
+              d'onboarding, justement pour pouvoir l'ouvrir sans session et
+              sans dépendre de l'état persisté d'un vrai utilisateur.
+            */}
+            {import.meta.env.DEV && ResponsivePreview && (
+              <Route path="/__dev/responsive-preview" element={<ResponsivePreview />} />
+            )}
+
             <Route path="/splash" element={<SplashRoute />} />
             <Route path="*" element={<NotFound />} />
             </Routes>
+
+            {/* Raccourci de développement vers les coques d'appareils : présent
+                sur tous les écrans de l'app, absent du build de production. */}
+            {import.meta.env.DEV && DevLabShortcut && <DevLabShortcut />}
           </ErrorBoundary>
           <ToastProvider />
         </IonApp>
@@ -493,6 +628,23 @@ function preloadAllPages() {
     void import('../app/family/invite');
     void import('../app/family/join');
     void import('../app/family/members');
+    void import('../app/family/activity');
+    void import('../app/family/challenges/detail');
+    void import('../app/family/challenges/index');
+    void import('../app/family/challenges/new');
+    void import('../app/family/challenges/results');
+    void import('../app/family/create');
+    void import('../app/family/leaderboard');
+    void import('../app/family/member');
+    void import('../app/family/points');
+    void import('../app/family/presentation');
+    void import('../app/family/profile');
+    void import('../app/family/select-profile');
+    void import('../app/family/session/live');
+    void import('../app/family/session/prepare');
+    void import('../app/family/session/summary');
+    void import('../app/family/settings');
+    void import('../app/family/sync');
     void import('../app/mastery/index');
     void import('../app/memorization/confirm');
     void import('../app/memorization/flashcard');
@@ -522,6 +674,15 @@ function preloadAllPages() {
     void import('../app/semantic/concept');
     void import('../app/semantic/index');
     void import('../app/semantic/verse');
+    void import('../app/semantic/attach');
+    void import('../app/semantic/data');
+    void import('../app/semantic/node');
+    void import('../app/semantic/review');
+    void import('../app/semantic/suggestions');
+    void import('../app/semantic/tags');
+    void import('../app/semantic/tags/new');
+    void import('../app/semantic/tree');
+    void import('../app/notes');
     void import('../app/settings/about');
     void import('../app/settings/appearance');
     void import('../app/settings/available-translations');
@@ -552,6 +713,11 @@ function renderApp() {
     </I18nextProvider>,
   );
   preloadAllPages();
+  // Le pont n'est branché que dans une frame de prévisualisation : il relaie
+  // la navigation et le thème envoyés par le laboratoire.
+  if (import.meta.env.DEV && previewModule?.isPreviewRequest()) {
+    previewModule.attachPreviewBridge();
+  }
 }
 
 // Ne jamais rester sur un écran blanc : si l'initialisation (i18n, stores,

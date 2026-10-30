@@ -1,10 +1,10 @@
 import * as React from 'react';
 import * as SelectPrimitive from '@radix-ui/react-select';
-import { HugeiconsIcon } from '@hugeicons/react';
+import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   CheckIcon as Check,
   ChevronDownIcon as ChevronDown,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import { cn } from '@/lib/utils';
 
 const Select = SelectPrimitive.Root;
@@ -25,7 +25,7 @@ const SelectTrigger = React.forwardRef<
   >
     {children}
     <SelectPrimitive.Icon asChild>
-      <HugeiconsIcon icon={ChevronDown} size={16} className="text-text-muted" />
+      <DuoIcon icon={ChevronDown} size={16} className="text-text-muted" />
     </SelectPrimitive.Icon>
   </SelectPrimitive.Trigger>
 ));
@@ -77,7 +77,7 @@ const SelectItem = React.forwardRef<
     {...props}
   >
     <SelectPrimitive.ItemIndicator className="ml-auto">
-      <HugeiconsIcon icon={Check} size={14} className="text-primary" />
+      <DuoIcon icon={Check} size={14} className="text-primary" />
     </SelectPrimitive.ItemIndicator>
     <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
   </SelectPrimitive.Item>

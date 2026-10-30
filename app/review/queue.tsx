@@ -6,14 +6,14 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { HugeiconsIcon } from '@hugeicons/react';
+import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   ListIcon as List,
   AlertCircleIcon as AlertCircle,
   CheckmarkCircle01Icon as CheckCircle,
   Clock01Icon as Clock,
   PlayIcon as Play,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import FullScreenPage from '@/components/layout/FullScreenPage';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -114,7 +114,7 @@ export default function ReviewQueueScreen() {
                   <p className="text-base font-bold text-text-primary">{ref}</p>
                   <span
                     className={cn(
-                      'rounded-full px-2.5 py-1 text-[11px] font-semibold text-white',
+                      'rounded-full px-2.5 py-1 text-[11px] font-semibold text-[color:var(--on)]',
                       over ? 'bg-error' : 'bg-primary',
                     )}
                   >
@@ -151,8 +151,8 @@ export default function ReviewQueueScreen() {
     return (
       <FullScreenPage title={t('review.todayReviews', 'Révisions du jour')} backPath="/tabs/home" column="narrow">
         <div className="flex flex-col items-center py-20 text-center">
-          <div className="flex h-24 w-24 items-center justify-center rounded-full bg-icon-bg-green">
-            <HugeiconsIcon icon={CheckCircle} size={40} className="text-success" />
+          <div className="flex h-24 w-24 items-center justify-center rounded-full icon-chip">
+            <DuoIcon icon={CheckCircle} size={40} className="text-success" />
           </div>
           <h2 className="mt-6 text-2xl font-bold text-text-primary">
             {t('home.noReviews', 'Tout est à jour ! ✓')}
@@ -175,17 +175,17 @@ export default function ReviewQueueScreen() {
       {/* Summary strip */}
       <div className="mb-4 flex flex-wrap items-center justify-center gap-2">
         <span className="inline-flex items-center gap-1.5 rounded-full bg-primary px-3 py-1.5 text-[13px] font-semibold text-on-primary">
-          <HugeiconsIcon icon={List} size={14} />
+          <DuoIcon icon={List} size={14} />
           {t('review.totalDue', { count: totalDue })}
         </span>
         {overdue.length > 0 && (
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-error px-3 py-1.5 text-[13px] font-semibold text-white">
-            <HugeiconsIcon icon={AlertCircle} size={14} />
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-error px-3 py-1.5 text-[13px] font-semibold text-[color:var(--on)]">
+            <DuoIcon icon={AlertCircle} size={14} />
             {overdue.length} {t('review.overdue', 'en retard')}
           </span>
         )}
         <span className="inline-flex items-center gap-1.5 rounded-full bg-surface-tint px-3 py-1.5 text-[13px] font-semibold text-text-secondary">
-          <HugeiconsIcon icon={Clock} size={14} />
+          <DuoIcon icon={Clock} size={14} />
           {t('review.estimatedTime', { minutes: estimatedTime })}
         </span>
       </div>
@@ -193,20 +193,20 @@ export default function ReviewQueueScreen() {
       {renderSection(
         t('review.overdue', 'En retard'),
         overdue,
-        <HugeiconsIcon icon={AlertCircle} size={18} className="text-error" />,
+        <DuoIcon icon={AlertCircle} size={18} className="text-error" />,
       )}
       {renderSection(
         t('review.dueSoon', "À l'heure"),
         due,
-        <HugeiconsIcon icon={CheckCircle} size={18} className="text-primary" />,
+        <DuoIcon icon={CheckCircle} size={18} className="text-primary" />,
       )}
 
       {/* Start CTA */}
       <div className="fixed inset-x-0 bottom-0 border-t border-border bg-surface/95 p-4 backdrop-blur">
         <Button className="w-full" onClick={() => navigate(`/review/session?recordId=${encodeURIComponent(items[0].record.id)}`)}>
-          <HugeiconsIcon icon={Play} size={18} />
+          <DuoIcon icon={Play} size={18} />
           {t('review.startReview', 'Commencer la révision')}
-          <span className="text-white/80">({totalDue})</span>
+          <span className="text-[color:color-mix(in_srgb,var(--on)_80%,transparent)]">({totalDue})</span>
         </Button>
       </div>
       <div className="h-24" />

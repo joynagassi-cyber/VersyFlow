@@ -14,20 +14,20 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { HugeiconsIcon } from '@hugeicons/react';
-import type { IconSvgElement } from '@hugeicons/react';
+import type { Icon } from '@solar-icons/react/lib/types';
+import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   ArrowRight01Icon as ArrowRight,
   RefreshIcon as Refresh,
-  Database02Icon as Database,
+  Database01Icon as Database,
   CloudUploadIcon as Upload,
-  Download04Icon as Download,
+  Download01Icon as Download,
   Delete02Icon as Trash,
   CheckmarkCircle02Icon as Check,
   AlertCircleIcon as Alert,
-  Link01Icon as ExternalLink,
-  Settings02Icon as Settings,
-} from '@hugeicons/core-free-icons';
+  ExternalLinkIcon as ExternalLink,
+  Settings01Icon as Settings,
+} from '@/components/ui/solar-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { Button } from '@/components/ui/button';
 import {
@@ -77,14 +77,14 @@ function Card({
   className,
 }: {
   title: string;
-  icon: IconSvgElement;
+  icon: Icon;
   children: React.ReactNode;
   className?: string;
 }) {
   return (
     <section className={cn('rounded-2xl bg-surface p-4 shadow-sm', className)}>
       <p className="mb-3 flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-text-muted">
-        <HugeiconsIcon icon={icon} size={14} className="text-primary" />
+        <DuoIcon icon={icon} size={14} className="text-primary" />
         {title}
       </p>
       {children}
@@ -219,7 +219,7 @@ export default function DevPanelScreen() {
       right={
         <Button variant="ghost" size="sm" onClick={() => navigate('/tabs/home')}>
           App
-          <HugeiconsIcon icon={ArrowRight} size={16} />
+          <DuoIcon icon={ArrowRight} size={16} />
         </Button>
       }
     >
@@ -278,7 +278,7 @@ export default function DevPanelScreen() {
             onClick={handleSkipOnboarding}
             disabled={busy !== null}
           >
-            <HugeiconsIcon icon={ArrowRight} size={15} />
+            <DuoIcon icon={ArrowRight} size={15} />
             Sauter l'onboarding et ouvrir l'app
           </Button>
         </Card>
@@ -331,16 +331,16 @@ export default function DevPanelScreen() {
           )}
           <div className="mt-3 flex flex-wrap gap-2">
             <Button size="sm" variant="secondary" onClick={handleFlush} disabled={busy !== null}>
-              <HugeiconsIcon icon={Refresh} size={15} />
+              <DuoIcon icon={Refresh} size={15} />
               Vider la file
             </Button>
             <Button size="sm" variant="outline" onClick={handleSnapshot} disabled={busy !== null}>
-              <HugeiconsIcon icon={Upload} size={15} />
+              <DuoIcon icon={Upload} size={15} />
               Envoyer l'instantané
             </Button>
             <Button size="sm" variant="ghost" asChild>
               <a href={localBackend.dashboardUrl()} target="_blank" rel="noreferrer">
-                <HugeiconsIcon icon={ExternalLink} size={15} />
+                <DuoIcon icon={ExternalLink} size={15} />
                 Tableau de bord
               </a>
             </Button>
@@ -366,15 +366,15 @@ export default function DevPanelScreen() {
           </div>
           <div className="mt-3 flex flex-wrap gap-2">
             <Button size="sm" variant="secondary" onClick={handleSeed} disabled={busy !== null}>
-              <HugeiconsIcon icon={Refresh} size={15} />
+              <DuoIcon icon={Refresh} size={15} />
               Re-seeder
             </Button>
             <Button size="sm" variant="outline" onClick={handleExport} disabled={busy !== null}>
-              <HugeiconsIcon icon={Download} size={15} />
+              <DuoIcon icon={Download} size={15} />
               Exporter en JSON
             </Button>
             <Button size="sm" variant="destructive" onClick={handleReset} disabled={busy !== null}>
-              <HugeiconsIcon icon={Trash} size={15} />
+              <DuoIcon icon={Trash} size={15} />
               Tout réinitialiser
             </Button>
           </div>
@@ -394,7 +394,7 @@ export default function DevPanelScreen() {
           )}
           {events.length === 0 ? (
             <p className="flex items-center gap-2 text-sm text-text-muted">
-              <HugeiconsIcon icon={Alert} size={16} />
+              <DuoIcon icon={Alert} size={16} />
               Aucun événement reçu. Démarrez l'API locale, puis naviguez dans l'app.
             </p>
           ) : (

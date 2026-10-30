@@ -17,11 +17,19 @@
  * La typographie de lecture (`--reading-*`) garde son propre écrivain
  * (`theme-fonts.applyReadingVars`) : c'est un réglage de lecture, pas un thème.
  */
-import { GRADIENTS } from './tweakcn-presets';
+import { GRADIENTS, gradientSurfaceWash, translucentGradient } from './gradients';
+import { findFixedAccent } from './fixed-accents';
+import { DEFAULT_VENDORED_PRESET_ID } from './vendored-themes';
 import { themeLandscapeUrl, themePortraitUrl } from './theme-catalog';
 
 /** Preset tweakcn appliqué quand aucun choix explicite n'est persisté. */
-export const DEFAULT_PRESET_ID = 'quantum-rose';
+/**
+ * Thème appliqué au premier lancement : `lara-red`, c'est-à-dire le thème
+ * tweakcn `cmvukmb1k000004iifp7x5wji` (Inter / Noto Serif Georgian / JetBrains
+ * Mono, radius 0.5rem, primaire rouge oklch(0.6370 0.2370 25.3310)).
+ * La valeur vient du fichier généré, jamais d'une chaîne recopiée à la main.
+ */
+export const DEFAULT_PRESET_ID = DEFAULT_VENDORED_PRESET_ID;
 
 export type BackgroundType = 'none' | 'gradient' | 'image';
 
@@ -40,10 +48,12 @@ export interface ResolvedAccent {
 export interface ThemeInput {
   presetId: string | null;
   accent: string;
+  fixedAccentId?: string | null;
   backgroundType: BackgroundType;
   gradientId: string | null;
   colorThemeId: string | null;
   isDark: boolean;
+  glassSettings?: { bgBlur: number; glassBlur: number; glassAlpha: number; veilAlpha: number };
   reducedTransparency: boolean;
   highContrast: boolean;
   /** Famille de police d'interface déjà résolue (vide = ne pas toucher). */
@@ -109,9 +119,20 @@ export function resolveTheme(input: ThemeInput): ThemePlan {
   const attributes: Record<string, string> = {
     'data-preset': input.presetId ?? DEFAULT_PRESET_ID,
   };
-  const removedAttributes: string[] = ['data-app-bg', 'data-theme-image', 'data-theme-image-mode'];
-  const vars: Record<string, string> = {};
-  const removedVars: string[] = [...ACCENT_VARS, '--app-bg-image', '--theme-image'];
+  const removedAttributes: string[] = ['data-app-bg', 'data-theme-image', 'data-theme-image-mode', 'data-bg', 'data-fixed-accent'];
+  const vars: Record<string, string> = input.glassSettings ? {
+    '--bg-blur': `${input.glassSettings.bgBlur}px`,
+    '--glass-blur': `${input.glassSettings.glassBlur}px`,
+    '--glass-alpha': String(input.glassSettings.glassAlpha / 100),
+    '--veil-alpha': String(input.glassSettings.veilAlpha / 100),
+  } : {};
+  const removedVars: string[] = [...ACCENT_VARS, '--app-bg-image', '--theme-image', '--fixed-accent', '--font-sans', '--gradient-wash-light', '--gradient-wash-dark', '--glass-gradient'];
+  const fixedAccent = findFixedAccent(input.fixedAccentId);
+  if (fixedAccent) {
+    attributes['data-fixed-accent'] = fixedAccent.id;
+    vars['--fixed-accent'] = fixedAccent.color;
+    vars['--tint'] = fixedAccent.color;
+  }
 
   // Accessibilité : deux états globaux lus par le CSS. Le verre est un
   // confort, jamais une condition de lisibilité.
@@ -122,25 +143,49 @@ export function resolveTheme(input: ThemeInput): ThemePlan {
 
   if (input.uiFontFamily) vars['--font-sans'] = input.uiFontFamily;
 
-  // 1. Un dégradé prime sur tout le reste : il remplace le fond, et aucun
-  //    accent n'est écrasé (les couleurs viennent du preset tweakcn actif).
+  // 1. Le dégradé choisi pilote également les accents, sans modifier
+  //    les préférences de couleur conservées pour les autres fonds.
   if (input.backgroundType === 'gradient' && input.gradientId) {
     attributes['data-app-bg'] = 'gradient';
+    delete attributes['data-fixed-accent'];
+    delete vars['--fixed-accent'];
+    delete vars['--tint'];
     removedAttributes.push('data-theme-image', 'data-theme-image-mode');
     const gradient = GRADIENTS.find((g) => g.id === input.gradientId);
-    if (gradient) vars['--app-bg-image'] = gradient.css;
+    if (gradient) {
+      const stops = gradient.css.match(/#[0-9a-fA-F]{6}\b/g) ?? [];
+      const first = stops[0];
+      const last = stops[stops.length - 1];
+      if (first && last) {
+        Object.assign(vars, accentVars({ primary: first, primaryLight: last, primaryDark: first, accent: last, accentLight: last, accentSecondary: last, tint: first, primaryForeground: 'var(--tx)' }));
+      }
+      vars['--app-bg-image'] = gradient.css;
+      vars['--glass-gradient'] = translucentGradient(gradient.css);
+      vars['--gradient-wash-light'] = `${gradientSurfaceWash(gradient.css, false)}%`;
+      vars['--gradient-wash-dark'] = `${gradientSurfaceWash(gradient.css, true)}%`;
+    }
     return finalize({ attributes, removedAttributes, vars, removedVars });
   }
 
-  // 2. Thème image : l'accent vient de l'illustration elle-même.
+  // 2. Thème image : l'illustration est le fond, l'accent en est tiré.
+  //
+  // L'IMAGE N'ATTEND PAS L'ACCENT. L'échantillonnage des pixels est
+  // asynchrone (et peut échouer : image pas encore décodée, canvas refusé) ;
+  // l'ancienne version ne posait `--theme-image` que si `accentValues` était
+  // déjà connu, et retirait la variable sinon — le fond restait donc absent
+  // tant que l'accent n'était pas calculé, et redevenait absent à chaque
+  // changement de largeur avant la fin de l'échantillonnage. Le fond est une
+  // décision synchrone : il est toujours posé. Les accents, eux, restent
+  // optionnels et se posent quand ils arrivent.
   if (input.backgroundType === 'image' && input.colorThemeId) {
     if (input.accentValues) {
       Object.assign(vars, accentVars(input.accentValues));
-      vars['--theme-image'] = `url(${imagePath(input.colorThemeId, input.wide)})`;
-      attributes['data-theme-image'] = 'on';
-      attributes['data-theme-image-mode'] = input.isDark ? 'dark' : 'light';
-      removedAttributes.push('data-theme-image', 'data-theme-image-mode');
+      if (fixedAccent) vars['--tint'] = fixedAccent.color;
     }
+    vars['--theme-image'] = `url(${imagePath(input.colorThemeId, input.wide)})`;
+    attributes['data-theme-image'] = 'on';
+    attributes['data-bg'] = 'image';
+    attributes['data-theme-image-mode'] = input.isDark ? 'dark' : 'light';
     return finalize({ attributes, removedAttributes, vars, removedVars });
   }
 
@@ -189,5 +234,14 @@ export function applyThemePlan(
 /** Applique un plan au document courant (no-op hors navigateur). */
 export function applyThemeToDocument(plan: ThemePlan): void {
   if (typeof document === 'undefined') return;
-  applyThemePlan(document.documentElement, plan);
+  const root = document.documentElement;
+  applyThemePlan(root, plan);
+  // Conserver la police du preset pour sa vignette même si l’utilisateur
+  // a forcé une autre police. La mesure est faite avant le prochain rendu.
+  const override = root.style.getPropertyValue('--font-sans');
+  if (override) root.style.removeProperty('--font-sans');
+  const presetFont = getComputedStyle(root).getPropertyValue('--font-sans').trim();
+  if (override) root.style.setProperty('--font-sans', override);
+  if (presetFont) root.style.setProperty('--theme-font-sans', presetFont);
+  else root.style.removeProperty('--theme-font-sans');
 }

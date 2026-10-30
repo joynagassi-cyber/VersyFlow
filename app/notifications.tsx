@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { TFunction } from 'i18next';
-import { HugeiconsIcon } from '@hugeicons/react';
+import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   BellIcon as Bell,
   TrophyIcon as Trophy,
@@ -9,7 +9,7 @@ import {
   UsersIcon as Users,
   BellOffIcon as BellOff,
   CheckIcon as Check,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { useActiveProfile } from '@/hooks/useActiveProfile';
@@ -210,7 +210,7 @@ export default function NotificationsScreen() {
           onClick={markAllAsRead}
           className="flex items-center gap-1 text-sm font-semibold text-primary"
         >
-          <HugeiconsIcon icon={Check} size={14} />
+          <DuoIcon icon={Check} size={14} />
           {t('notifications.markAllRead', 'Tout lire')}
         </button>
       }
@@ -261,7 +261,7 @@ export default function NotificationsScreen() {
                     className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full"
                     style={{ color, backgroundColor: color.replace(')', '') + '20' }}
                   >
-                    <HugeiconsIcon icon={Icon} size={18} />
+                    <DuoIcon icon={Icon} size={18} />
                   </span>
                   <span className="min-w-0 flex-1">
                     <span className="flex items-center justify-between gap-2">
@@ -297,7 +297,7 @@ export default function NotificationsScreen() {
                   ? t('notifications.emptyUnread', 'Vous avez tout lu !')
                   : t('notifications.emptyAll', 'Vos notifications apparaitront ici')
               }
-              icon={<HugeiconsIcon icon={BellOff} size={40} className="text-text-muted" />}
+              icon={<DuoIcon icon={BellOff} size={40} className="text-text-muted" />}
               showLogo={false}
             />
           </div>

@@ -2,10 +2,10 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
-import { HugeiconsIcon } from '@hugeicons/react';
+import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   Loading03Icon as Loader2,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { Logo } from '@/components/brand/Logo';
 import { Input } from '@/components/ui/input';
@@ -88,7 +88,7 @@ export default function LoginScreen({ onSkip }: Props) {
             disabled={loading}
           >
             {loading ? (
-              <HugeiconsIcon icon={Loader2} size={18} className="animate-spin" />
+              <DuoIcon icon={Loader2} size={18} className="animate-spin" />
             ) : (
               t('auth.continue', 'Continuer')
             )}

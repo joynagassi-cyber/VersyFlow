@@ -7,19 +7,20 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { HugeiconsIcon } from '@hugeicons/react';
+import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   Search01Icon as Search,
   BookOpen01Icon as BookOpen,
   ChevronRightIcon as ChevronRight,
   NetworkIcon as Network,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import { Input } from '@/components/ui/input';
+import { formatChapterCount } from '@/lib/chapter-count';
 import { useBibleBooks, type BookMeta } from '@/hooks/useBibleBooks';
 
 export default function ExploreScreen() {
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [query, setQuery] = useState('');
 
   const { byId } = useBibleBooks();
@@ -38,29 +39,17 @@ export default function ExploreScreen() {
 
   const renderSection = (title: string, list: BookMeta[]) =>
     list.length > 0 ? (
-      <section className="mb-6">
-        <h2 className="mb-3 px-1 text-lg font-semibold text-text-primary">{title}</h2>
-        <div className="flex flex-col gap-2">
+      <section className="g2 explore-section" aria-label={title}>
+        <h2>{title}</h2>
+        <div className="explore-book-list">
           {list.map((book) => (
-            <button
-              key={book.id}
-              onClick={() => navigate(`/bible/book/${book.id}`)}
-              className="flex items-center justify-between rounded-xl bg-surface p-4 text-left shadow-sm transition-transform active:scale-[0.99]"
-            >
-              <div className="flex items-center gap-3">
-                <span className="flex h-10 w-10 items-center justify-center rounded-full bg-icon-bg-rose">
-                  <HugeiconsIcon icon={BookOpen} size={18} className="text-primary" />
-                </span>
-                <div>
-                  <p className="text-base font-semibold text-text-primary">
-                    {book.displayName}
-                  </p>
-                  <p className="text-sm text-text-muted">
-                    {t('bible.chapterCount', { count: book.chapterCount })}
-                  </p>
-                </div>
-              </div>
-              <HugeiconsIcon icon={ChevronRight} size={18} className="text-primary" />
+            <button key={book.id} type="button" onClick={() => navigate(`/bible/book/${book.id}`)} className="explore-book">
+              <span className="icon-chip explore-icon"><DuoIcon icon={BookOpen} size={20} /></span>
+              <span className="explore-book-details">
+                <span className="explore-book-title">{book.displayName}</span>
+                <span className="explore-book-subtitle">{formatChapterCount(t('bible.chapterCount', { count: book.chapterCount }), book.chapterCount, i18n.resolvedLanguage || i18n.language)}</span>
+              </span>
+              <DuoIcon icon={ChevronRight} size={20} />
             </button>
           ))}
         </div>
@@ -68,58 +57,30 @@ export default function ExploreScreen() {
     ) : null;
 
   return (
-    <div className="screen-column h-full overflow-y-auto bg-background p-4 pb-24">
-      <h1 className="mb-4 text-2xl font-bold text-text-primary">
-        {t('bible.explorer', 'Explorer la Bible')}
-      </h1>
-
-      {/* Search */}
-      <div className="relative mb-6">
-        <HugeiconsIcon icon={Search}
-          size={18}
-          className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-muted"
-        />
-        <Input
-          placeholder={t('bible.search', 'Rechercher un livre...')}
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          className="pl-10"
-        />
-      </div>
-
-      {/* Semantic memory — tree views into the local semantic store */}
-      <button
-        onClick={() => navigate('/semantic')}
-        className="mb-6 flex items-center justify-between rounded-xl bg-surface p-4 text-left shadow-sm transition-transform active:scale-[0.99]"
-      >
-        <div className="flex items-center gap-3">
-          <span className="flex h-10 w-10 items-center justify-center rounded-full bg-icon-bg-purple">
-            <HugeiconsIcon icon={Network} size={18} className="text-primary" />
-          </span>
-          <div>
-            <p className="text-base font-semibold text-text-primary">
-              {t('semantic.title', 'Mémoire sémantique')}
-            </p>
-            <p className="text-sm text-text-muted">
-              {t('semantic.subtitle', 'Concepts, versets et communautés')}
-            </p>
+    <div className="screen-column explore-premium h-full overflow-y-auto">
+      <div className="explore-content">
+        <header className="g1 explore-heading">
+          <p className="explore-label">{t('nav.bible', 'Bible')}</p>
+          <h1>{t('bible.explorer', 'Explorer la Bible')}</h1>
+          <div className="explore-search">
+            <DuoIcon icon={Search} size={20} className="explore-search-icon" />
+            <Input type="search" aria-label={t('bible.search', 'Rechercher un livre')} placeholder={t('bible.search', 'Rechercher un livre')} value={query} onChange={(e) => setQuery(e.target.value)} className="explore-search-input" />
           </div>
-        </div>
-        <HugeiconsIcon icon={ChevronRight} size={18} className="text-primary" />
-      </button>
-
-      {oldTestamentFiltered.length === 0 && newTestamentFiltered.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-border p-8 text-center">
-          <p className="text-sm text-text-muted">
-            {t('bible.verse', 'Aucun résultat pour')} « {query} »
-          </p>
-        </div>
-      ) : (
-        <>
-          {renderSection(t('bible.oldTestament', 'Ancien Testament'), oldTestamentFiltered)}
-          {renderSection(t('bible.newTestament', 'Nouveau Testament'), newTestamentFiltered)}
-        </>
-      )}
+        </header>
+        <button type="button" onClick={() => navigate('/semantic')} className="g2 explore-semantic">
+          <span className="icon-chip explore-icon"><DuoIcon icon={Network} size={24} /></span>
+          <span className="explore-book-details"><span className="explore-book-title">{t('semantic.title', 'Mémoire sémantique')}</span><span className="explore-book-subtitle">{t('semantic.subtitle', 'Concepts, versets et communautés')}</span></span>
+          <DuoIcon icon={ChevronRight} size={20} />
+        </button>
+        {oldTestamentFiltered.length === 0 && newTestamentFiltered.length === 0 ? (
+          <div className="g3 explore-empty" role="status">{t('bible.noResults', 'Aucun résultat pour')} « {query} »</div>
+        ) : (
+          <div className="explore-testaments">
+            {renderSection(t('bible.oldTestament', 'Ancien Testament'), oldTestamentFiltered)}
+            {renderSection(t('bible.newTestament', 'Nouveau Testament'), newTestamentFiltered)}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

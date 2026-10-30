@@ -1,3 +1,4 @@
+import { goBackSafely } from '@/lib/navigation';
 /**
  * Ionic Navigation Hook
  *
@@ -43,8 +44,8 @@ export function useRouter(): Router {
     }
   };
 
-  const back = () => navigate(-1);
-  const dismiss = () => navigate(-1);
+  const back = () => goBackSafely(navigate);
+  const dismiss = () => goBackSafely(navigate);
 
   return { push, replace, back, dismiss };
 }

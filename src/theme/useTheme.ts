@@ -10,6 +10,7 @@
  */
 
 import { useEffect, useMemo, useState } from 'react';
+import { useAppearanceStore } from '@/store/appearance-store';
 import {
   ColorsDark,
   Typography,
@@ -21,18 +22,6 @@ import {
 } from './tokens';
 
 export type ThemeMode = 'light' | 'dark';
-
-const THEME_MODE_KEY = 'versyflow:theme:mode';
-
-function resolveThemeMode(): ThemeMode {
-  try {
-    const stored = localStorage.getItem(THEME_MODE_KEY);
-    if (stored === 'light' || stored === 'dark') return stored;
-  } catch {
-    /* ignore */
-  }
-  return window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-}
 
 function applyThemeAttributes(mode: ThemeMode) {
   const root = document.documentElement;
@@ -47,36 +36,18 @@ function applyThemeAttributes(mode: ThemeMode) {
 }
 
 export function useTheme() {
-  const [themeMode, setMode] = useState<ThemeMode>(resolveThemeMode);
-
+  const choice = useAppearanceStore((s) => s.themeMode);
+  const setChoice = useAppearanceStore((s) => s.setThemeMode);
+  const [systemDark, setSystemDark] = useState(() => typeof window !== 'undefined' && !!window.matchMedia?.('(prefers-color-scheme: dark)').matches);
+  const themeMode: ThemeMode = choice === 'system' ? (systemDark ? 'dark' : 'light') : choice;
+  useEffect(() => { applyThemeAttributes(themeMode); }, [themeMode]);
   useEffect(() => {
-    applyThemeAttributes(themeMode);
-  }, [themeMode]);
-
-  // Follow system scheme when no manual override is stored
-  useEffect(() => {
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    const handler = (e: MediaQueryListEvent) => {
-      try {
-        const stored = localStorage.getItem(THEME_MODE_KEY);
-        if (stored === 'light' || stored === 'dark') return;
-      } catch {
-        /* ignore */
-      }
-      setMode(e.matches ? 'dark' : 'light');
-    };
-    mediaQuery.addEventListener('change', handler);
-    return () => mediaQuery.removeEventListener('change', handler);
+    const mq = window.matchMedia('(prefers-color-scheme: dark)');
+    const onChange = (event: MediaQueryListEvent) => setSystemDark(event.matches);
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
   }, []);
-
-  const setThemeMode = (mode: ThemeMode) => {
-    try {
-      localStorage.setItem(THEME_MODE_KEY, mode);
-    } catch {
-      /* ignore */
-    }
-    setMode(mode);
-  };
+  const setThemeMode = (mode: ThemeMode) => setChoice(mode);
 
   const isDark = themeMode === 'dark';
   const colors = useMemo(() => getThemeColors(themeMode), [themeMode]);
