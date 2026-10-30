@@ -14,7 +14,7 @@ Parcours inventoriés : **16** — actifs **16**, partiels **0**, absents **0**.
 | Lire un chapitre | 2 | `tests/api/navigation-api.test.ts`<br>`tests/design/app-shells.test.ts`<br>`tests/design/bible-book-names.test.ts`<br>+18 | présentes | **actif** |
 | Mémoriser un verset | 4 | `tests/api/navigation-api.test.ts`<br>`tests/design/app-shells.test.ts`<br>`tests/e2e/memorization-flow.test.ts`<br>+10 | présentes | **actif** |
 | Réviser (FSRS) | 5 | `tests/api/navigation-api.test.ts`<br>`tests/design/preview-lab.test.tsx`<br>`tests/design/settings-premium.test.ts`<br>+6 | présentes | **actif** |
-| Comparer les traductions | 2 | `tests/api/navigation-api.test.ts`<br>`tests/api/theme-api.test.ts`<br>`tests/design/batch-navigation.test.ts`<br>+10 | présentes | **actif** |
+| Comparer les traductions | 2 | `tests/api/navigation-api.test.ts`<br>`tests/api/theme-api.test.ts`<br>`tests/design/batch-navigation.test.ts`<br>+11 | présentes | **actif** |
 | Mémoire sémantique | 12 | `tests/semantic/align.test.ts`<br>`tests/semantic/communities.test.ts`<br>`tests/semantic/import.test.ts`<br>+6 | présentes | **actif** |
 | Collections et succès | 2 | `tests/api/navigation-api.test.ts`<br>`tests/design/settings-premium.test.ts`<br>`tests/e2e/collections-achievements-flow.test.ts` | — | **actif** |
 | Maîtrise et analytique | 2 | `tests/api/navigation-api.test.ts`<br>`tests/api/progress-service-api.test.ts`<br>`tests/design/demo-progress.test.ts`<br>+6 | — | **actif** |

@@ -17,7 +17,7 @@ import { GRADIENTS } from '@/theme/gradients';
 import { DEFAULT_PRESET, PRESET_CATALOG } from '@/theme/preset-catalog';
 import { FIXED_ACCENTS } from '@/theme/fixed-accents';
 import { APPEARANCE_UI_FONTS, APPEARANCE_READING_FONTS, findBibleFont, findUiFont, loadBibleFont } from '@/theme/theme-fonts';
-import { themeLandscapeUrl, themePortraitUrl } from '@/theme/theme-catalog';
+import { themeLandscapeUrl, themePortraitUrl, themeThumbUrl } from '@/theme/theme-catalog';
 import { THEME_CATEGORIES } from '@/theme/theme-catalog';
 import { cn } from '@/lib/utils';
 
@@ -339,7 +339,7 @@ export default function AppearanceScreen() {
                   const available = entry.id !== 'obj-miroir'; // Both original images are absent from the catalog assets.
                   return <button type="button" key={entry.id} onClick={() => setColorTheme(entry.id)} aria-pressed={active} disabled={!available} className="appearance-image-option">
                     <span className={cn('appearance-thumbnail', active && 'is-active')}>
-                      {available ? <picture><source type="image/webp" srcSet={themeLandscapeUrl(entry.id).replace('-landscape.png', '-thumb.webp')} />
+                      {available ? <picture><source type="image/webp" srcSet={themeThumbUrl(entry.id)} />
                         <img src={themeLandscapeUrl(entry.id)} alt="" loading="lazy" decoding="async" /></picture> : <span className="appearance-image-unavailable">{t('appearanceEditor.imageUnavailable', 'Image indisponible')}</span>}
                       {active && <Check size={20} className="appearance-thumbnail-check" />}
                     </span><span className="appearance-image-title">{entry.name}</span>

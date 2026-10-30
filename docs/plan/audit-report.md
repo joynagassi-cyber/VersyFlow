@@ -1,7 +1,7 @@
 # Rapport d’audit — plan « Interface web + thèmes »
 
 Généré par `node scripts/audit-plan.mjs`. **Ne pas éditer à la main.**
-Exécuté le 2026-10-30 14:45 (UTC).
+Exécuté le 2026-10-30 18:44 (UTC).
 
 **Bilan : 17 PASS · 1 PARTIEL · 0 FAIL · 4 non vérifiable(s).**
 
@@ -20,7 +20,7 @@ Exécuté le 2026-10-30 14:45 (UTC).
 | C11 | §6.4 | **PARTIAL** | Mesure de lecture définie et appliquée à tous les écrans de contenu | 86/87 écrans couverts (classe directe ou coquille) · coquilles: ok · jetons absents |
 | C12 | §5.1 | **PASS** | Une seule bibliothèque d’icônes (Solar) | 144/144 fichiers sans Lucide · 0 à migrer |
 | C13 | §4.4 | **PASS** | Accent d’image : trois rôles, texte choisi par contraste, pas de promesse pendante | 3 rôles: true · garde-fou de chargement: true · texte au ratio: true |
-| C14 | §11.2 | **PASS** | Chaque famille de contrat a un test dédié | 34 fichiers · 7/7 familles couvertes |
+| C14 | §11.2 | **PASS** | Chaque famille de contrat a un test dédié | 35 fichiers · 7/7 familles couvertes |
 | C15 | §0 | **PASS** | Les libellés ajoutés existent en français et en anglais | fr manquants: aucun · en manquants: aucun |
 | C16 | §4.6 | **PASS** | Registres de thèmes : presets, dégradés et thèmes image déclarés une seule fois | 39 presets · 15 dégradés · 101 thèmes image |
 | C17 | §11.1 | **PASS** | Dette de lint du shim React Native : exception documentée ET mesurée, jamais masquée | exception: documentée · dette gelée mesurée: 123 avertissements |

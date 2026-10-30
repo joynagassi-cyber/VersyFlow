@@ -13,6 +13,8 @@
  * a preset key when they picked a plain accent color).
  */
 
+import { buildPhotoCategories, photoThemeExt } from './photo-themes';
+
 export interface ThemeCatalogEntry {
   id: string;
   category: string;
@@ -27,7 +29,7 @@ export interface ThemeCategory {
   themes: Omit<ThemeCatalogEntry, 'category'>[];
 }
 
-export const THEME_CATEGORIES: ThemeCategory[] = [
+const BASE_THEME_CATEGORIES: ThemeCategory[] = [
   {
     id: 'esprit',
     name: 'Esprit',
@@ -190,7 +192,16 @@ export const THEME_CATEGORIES: ThemeCategory[] = [
   },
 ];
 
-/** All themes flattened (100 entries). */
+/**
+ * Catalogue effectif = dix catégories illustrées + catégories photo
+ * réellement importées (vide au départ, voir `photo-themes.ts`).
+ */
+export const THEME_CATEGORIES: ThemeCategory[] = [
+  ...BASE_THEME_CATEGORIES,
+  ...buildPhotoCategories(),
+];
+
+/** All themes flattened (100 illustrated entries, plus imported photos). */
 export const ALL_THEMES: ThemeCatalogEntry[] = THEME_CATEGORIES.flatMap((c) =>
   c.themes.map((t) => ({ ...t, category: c.id })),
 );
@@ -213,9 +224,17 @@ export function themePortraitUrl(id: string): string {
   // Le dossier est la CATÉGORIE du thème (esprit, evenements…), comme
   // l'écrit scripts/generate-themes.mjs — pas les segments de l'id.
   const category = findThemeById(id)?.category ?? id.split('-')[0];
-  return `/themes/${category}/${id}-portrait.png`;
+  // Les illustrations sont en PNG, les photos importées en WebP.
+  const ext = photoThemeExt(id) ?? 'png';
+  return `/themes/${category}/${id}-portrait.${ext}`;
 }
 export function themeLandscapeUrl(id: string): string {
   const category = findThemeById(id)?.category ?? id.split('-')[0];
-  return `/themes/${category}/${id}-landscape.png`;
+  const ext = photoThemeExt(id) ?? 'png';
+  return `/themes/${category}/${id}-landscape.${ext}`;
+}
+/** Vignette du sélecteur — toujours en WebP, quel que soit le format source. */
+export function themeThumbUrl(id: string): string {
+  const category = findThemeById(id)?.category ?? id.split('-')[0];
+  return `/themes/${category}/${id}-thumb.webp`;
 }

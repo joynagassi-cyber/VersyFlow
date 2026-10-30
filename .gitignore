@@ -156,3 +156,6 @@ data/bible/*
 
 # Mock-mode manual test collector output (regenerable, local-only)
 data/mock-backend/
+
+# Sources brutes des 20 scènes photo (lot en attente) — jamais versionnées
+/artifacts/photos-src/
