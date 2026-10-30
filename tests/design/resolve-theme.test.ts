@@ -94,12 +94,17 @@ describe('resolveTheme — décision pure', () => {
     expect(imagePath('esprit-pentecote', true)).toContain('-landscape.png');
   });
 
-  it('n’écrit aucune variable d’accent tant que l’extraction n’a pas eu lieu', () => {
+  it('pose l’image de fond sans attendre l’extraction de l’accent', () => {
     const plan = resolveTheme({ ...base, backgroundType: 'image', colorThemeId: 'esprit-feu' });
+    // Le fond est une décision synchrone : l'image est TOUJOURS posée, même
+    // quand l'échantillonnage des pixels (asynchrone) n'a pas encore eu lieu.
+    // C'est ce qui manquait : `--theme-image` n'était écrit que si
+    // `accentValues` existait déjà, donc le fond restait blanc.
+    expect(plan.vars['--theme-image']).toContain('-portrait.png');
+    expect(plan.attributes['data-theme-image']).toBe('on');
+    expect(plan.removedVars).not.toContain('--theme-image');
+    // …et aucun accent n'est inventé tant que l'extraction n'a pas eu lieu.
     expect(plan.vars['--color-primary']).toBeUndefined();
-    expect(plan.vars['--theme-image']).toBeUndefined();
-    // … mais le nettoyage reste prévu, pour ne pas garder l'ancien thème.
-    expect(plan.removedVars).toContain('--theme-image');
   });
 
   it('traduit les réglages d’accessibilité en attributs', () => {

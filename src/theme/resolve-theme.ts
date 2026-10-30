@@ -139,15 +139,21 @@ export function resolveTheme(input: ThemeInput): ThemePlan {
     return finalize({ attributes, removedAttributes, vars, removedVars });
   }
 
-  // 2. Thème image : l'accent vient de l'illustration elle-même.
+  // 2. Thème image : l'illustration est le fond, l'accent en est tiré.
+  //
+  // L'IMAGE N'ATTEND PAS L'ACCENT. L'échantillonnage des pixels est
+  // asynchrone (et peut échouer : image pas encore décodée, canvas refusé) ;
+  // l'ancienne version ne posait `--theme-image` que si `accentValues` était
+  // déjà connu, et retirait la variable sinon — le fond restait donc absent
+  // tant que l'accent n'était pas calculé, et redevenait absent à chaque
+  // changement de largeur avant la fin de l'échantillonnage. Le fond est une
+  // décision synchrone : il est toujours posé. Les accents, eux, restent
+  // optionnels et se posent quand ils arrivent.
   if (input.backgroundType === 'image' && input.colorThemeId) {
-    if (input.accentValues) {
-      Object.assign(vars, accentVars(input.accentValues));
-      vars['--theme-image'] = `url(${imagePath(input.colorThemeId, input.wide)})`;
-      attributes['data-theme-image'] = 'on';
-      attributes['data-theme-image-mode'] = input.isDark ? 'dark' : 'light';
-      removedAttributes.push('data-theme-image', 'data-theme-image-mode');
-    }
+    if (input.accentValues) Object.assign(vars, accentVars(input.accentValues));
+    vars['--theme-image'] = `url(${imagePath(input.colorThemeId, input.wide)})`;
+    attributes['data-theme-image'] = 'on';
+    attributes['data-theme-image-mode'] = input.isDark ? 'dark' : 'light';
     return finalize({ attributes, removedAttributes, vars, removedVars });
   }
 

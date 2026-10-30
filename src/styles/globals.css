@@ -114,6 +114,11 @@
   html {
     height: 100%;
     overflow: hidden;
+    /* La couleur de base est peinte par <html> : elle reste le repli si
+       aucune image n'est choisie, et elle est recouverte par la couche de
+       fond (voir « É1 » plus bas). */
+    background-color: var(--color-background);
+    position: relative;
   }
   body {
     margin: 0;
@@ -121,70 +126,101 @@
     font-family:
       -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Roboto',
       'Segoe UI', sans-serif;
-    background-color: var(--color-background);
+    /* Le fond ne vit plus ici : il vit sur une seule couche fixe. */
+    background-color: transparent;
     color: var(--color-text-primary);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
   #root {
     height: 100%;
-  }
-
-  /*
-   * Image-based color theme — when the user picks an image theme from the
-   * catalog (theme-catalog), ThemeManager sets `--theme-image` on <html>.
-   * The applied portrait illustration covers the app background.
-   *
-   * The treatment is a soft depth-of-field wash, NOT a raw photo:
-   *  - a large gaussian blur makes the illustration ambient (creative,
-   *    fluid, "in background") instead of a sharp sticker pasted on white
-   *  - a slight scale-up avoids the blurred edges revealing the base color
-   *  - the base (#FFFFFF light / #121212 dark) shows through at the edges,
-   *    so the illustration reads as color light rather than a rectangle
-   */
-  html {
+    /* Le contenu passe au-dessus de la couche de fond. */
     position: relative;
+    z-index: 1;
   }
+}
+
+/* ── É1 — LA couche de fond, unique ────────────────────────────────────────
+   Une seule couche pour tous les fonds possibles :
+     • image de thème  → --theme-image  (posée par resolve-theme)
+     • dégradé         → --app-bg-image (posé par resolve-theme)
+     • rien            → la couleur de base de <html> reste visible
+   Elle est fixe, sous le contenu (z-index 0 / contenu z-index 1), jamais
+   `background-attachment: fixed` (cassé sur iOS), sans flou destructeur :
+   l'image doit rester LISIBLE, pas devenir une tache.
+*/
+html::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  /* Repli couleur unie : si `color-mix` manque (Safari < 16.2), la
+     déclaration de voile ci-dessous est ignorée en bloc, et l'image — posée
+     par une déclaration SÉPARÉE — reste affichée. */
+  background-color: var(--color-background);
+  background-image: var(--app-bg-image, var(--theme-image, none));
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  /* 0–3 px : 0 en mobile (net), 2 px sur grand écran pour adoucir un
+     agrandissement déjà modéré. Jamais 22–32 px. */
+  filter: saturate(1.1);
+  transform: scale(1.05);
+  transition: opacity 400ms ease;
+}
+
+/* Voile dégradé 0,15 → 0,45 par-dessus l'image, pour que le texte garde du
+   contraste sans éteindre la photo. Séparé pour offrir le repli ci-dessus. */
+@supports (background: color-mix(in srgb, red 50%, transparent)) {
   html::before {
-    content: '';
-    position: fixed;
-    inset: -4%;
-    z-index: -1;
-    background-image: var(--theme-image, none);
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    opacity: 0;
-    transition: opacity 400ms ease, filter 400ms ease;
-    pointer-events: none;
-    /* Depth-of-field treatment: strong blur so the illustration reads as
-       an ambient wash; scale-up hides the soft blurred edges. */
-    filter: blur(32px);
-    transform: scale(1.12);
+    background-image:
+      linear-gradient(
+        to bottom,
+        color-mix(in srgb, var(--color-background) 15%, transparent) 0%,
+        color-mix(in srgb, var(--color-background) 45%, transparent) 100%
+      ),
+      var(--app-bg-image, var(--theme-image, none));
+    background-size: cover, cover;
   }
-  html[data-theme-image='on']::before {
-    opacity: 0.94;
+}
+
+/* Le mode sombre n'inverse plus l'illustration : `invert(.85)
+   hue-rotate(180deg)` transformait toute image chaude en tache bleue
+   (voir docs/design/AUDIT-FOND-VERRE.md §6). Le voile, lui, suit
+   automatiquement `--color-background` : plus dense en sombre. */
+
+@media (min-width: 1024px) {
+  html::before {
+    filter: saturate(1.1) blur(2px);
   }
-  /* In dark mode the illustration is inverted so it reads as a dark
-     landscape over #121212; the blur/scale is kept for consistency. */
-  html[data-theme='dark'][data-theme-image='on']::before {
-    filter: blur(32px) invert(0.85) hue-rotate(180deg);
-  }
-  /*
-   * Desktop/web (>= 1024 px) : le fond servi est la composition PAYSAGE
-   * large (16:9) dessinée pour cet écran, pas le portrait mobile recadré.
-   * Le flou est donc réduit pour laisser lire la composition, et le
-   * scale-up est plus discret puisque l'image couvre déjà le viewport.
-   */
-  @media (min-width: 1024px) {
-    html::before {
-      filter: blur(22px);
-      transform: scale(1.06);
-    }
-    html[data-theme='dark'][data-theme-image='on']::before {
-      filter: blur(22px) invert(0.85) hue-rotate(180deg);
-    }
-  }
+}
+
+/* ── É1 — la chaîne de transparence, jusqu'au scroll interne d'Ionic ─────── */
+body,
+#root,
+ion-app,
+.ion-app,
+ion-page,
+.ion-page,
+ion-content {
+  background-color: transparent;
+}
+ion-content {
+  --background: transparent;
+}
+ion-content::part(background) {
+  background: transparent;
+}
+
+/* Toiles d'écran : elles ne peignent plus de fond, la photo reste visible
+   derrière. Les surfaces (cartes, champs) gardent leur propre couleur. */
+.app-canvas,
+.app-main,
+.screen-column,
+.screen-column-narrow,
+[class*='bg-background']:is(div) {
+  background-color: transparent;
 }
 
 /* Brand utility layer */
@@ -637,19 +673,6 @@ ion-scroll,
  * corps devient transparent pour laisser le fond respirer derrière des
  * cartes en verre dépoli.
  */
-html[data-app-bg='gradient']::before {
-  background-image: var(--app-bg-image, none);
-  background-size: cover;
-  background-position: center;
-  opacity: 1;
-  filter: none;
-  transform: none;
-}
-html[data-app-bg='gradient'] body,
-html[data-theme-image='on'] body {
-  background-color: transparent;
-}
-
 /* Accent dynamique : variables enregistrées pour un fondu de 0,8 s quand
    l'accent extrait de l'image de fond change. */
 /* Les valeurs initiales sont les couleurs du preset par défaut (quantum-rose),
@@ -740,20 +763,6 @@ body {
     color-mix(in srgb, var(--tint) 22%, transparent),
     color-mix(in srgb, var(--tint) 22%, transparent)
   );
-}
-
-/* Quand un fond personnalisé est actif (dégradé ou image), les toiles des
-   écrans deviennent transparentes pour le laisser apparaître en entier. */
-html[data-app-bg='gradient'] .app-canvas,
-html[data-theme-image='on'] .app-canvas {
-  background-color: transparent;
-}
-
-/* Fond personnalisé actif : tous les fonds de page deviennent transparents
-   (les cartes gardent leur surface). */
-html[data-app-bg='gradient'] [class*='bg-background'],
-html[data-theme-image='on'] [class*='bg-background'] {
-  background-color: transparent;
 }
 
 /* Polices du preset tweakcn actif : --font-sans/--font-serif d'origine. */
