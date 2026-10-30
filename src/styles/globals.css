@@ -1951,18 +1951,6 @@ html { -webkit-tap-highlight-color: transparent; }
   line-height: 1.05;
   color: var(--acc-text, var(--color-primary));
 }
-/* Libellé de statistique : micro-capitale discrète, la même que les écrans
-   premium (`.home-label`, `.progress-label`). */
-.stat-label {
-  color: var(--mut, var(--color-text-muted));
-  font-family: var(--font-sans, Inter), sans-serif;
-  font-size: 11px;
-  font-weight: 600;
-  line-height: 1.4;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
 /* 10. Les composants Ionic (FAB, boutons, onglets natifs) vivent dans un
    Shadow DOM : l'anneau global ne les atteint pas. Ces trois `::part`
    couvrent les seules commandes Ionic réellement utilisées par l'app. */
@@ -2017,7 +2005,8 @@ ion-tab-button::part(native):focus-visible {
    la graisse 600 et l'interlettrage. `.section-label` est aussi la classe qui
    exempte l'élément de la règle serif (voir règle 9). */
 .section-label,
-.micro-label {
+.micro-label,
+.stat-label {
   font-family: var(--font-sans, Inter), sans-serif;
   font-size: 11px;
   font-weight: 600;

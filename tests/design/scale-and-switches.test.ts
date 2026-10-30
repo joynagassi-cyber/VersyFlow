@@ -136,3 +136,12 @@ describe('focus clavier — un seul anneau', () => {
     expect(block).not.toMatch(/#[0-9a-f]{3,6}|rgb\(/i);
   });
 });
+
+describe('micro-capitale — une seule recette', () => {
+  it('`.section-label`, `.micro-label` et `.stat-label` partagent la même règle', () => {
+    expect(globals).toMatch(/\.section-label,\s*\n\.micro-label,\s*\n\.stat-label\s*\{/);
+    // Aucun des trois n'a de règle propre qui rejouerait la recette.
+    expect(globals).not.toMatch(/\.stat-label\s*\{\s*color:/);
+    expect(globals).not.toMatch(/\.micro-label\s*\{\s*font-family:/);
+  });
+});

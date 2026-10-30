@@ -15,6 +15,7 @@ sur `app/` + `src/components` :
 | Détail | Avant | Pourquoi ce n'est pas « fini » |
 | --- | --- | --- |
 | Tailles de police littérales | **84** `text-[10px]`/`text-[11px]`/… | Une échelle de 11 pas existait déjà (`tailwind.config.js`), mais 84 endroits la contournaient : impossible de faire évoluer la typographie |
+| Micro-capitale | `.section-label` (11 px, 0,12 em, `--mut`), `.micro-label` et `.stat-label` rejouaient mot pour mot la même recette ; un commentaire renvoyait encore à `.home-label`/`.progress-label`, supprimées | une seule règle pour les trois classes, un seul commentaire |
 | Focus clavier | **2 fichiers** seulement | Aucun anneau sur 95 % des boutons et liens : navigation clavier invisible |
 | `prefers-reduced-motion` | règle **écran par écran** (7 blocs) | Un nouvel écran animé échappait automatiquement au réglage système |
 | Sélection de texte / curseur | couleurs du navigateur | Bleu système sur un thème framboise/ocre |
@@ -228,10 +229,10 @@ L'audit, en comptant (`app/`, hors atelier `__dev`) :
 | Eyebrows | `home-label`, `explore-label`, `progress-label` (mêmes 12 px / 0,14 em, encre `--mut`) et `settings-eyebrow` (encre `--tx`, donc plus contrastée que les trois autres) | `.section-label` partout, une seule règle d'eyebrow dans l'app |
 
 Nouvelles règles : `.display-title`, `.empty-line`, `.tab-heading`. Contrat :
-`tests/design/scale-and-switches.test.ts` (**12 tests**) — trois pas tous en
+`tests/design/scale-and-switches.test.ts` (**13 tests**) — trois pas tous en
 `clamp()` et en `--font-serif`, `.display-title` limité à deux écrans, les
 quatre onglets sur `g1 tab-heading` avec un seul eyebrow `.section-label`,
-`Switch` unique et cible 40 px, `.empty-line` branchée sur le thème, anneau de focus commun à tous les contrôles. Le contrat existant
+`Switch` unique et cible 40 px, `.empty-line` branchée sur le thème, anneau de focus commun à tous les contrôles, une seule recette de micro-capitale. Le contrat existant
 `theme-adaptive-screens.test.ts` **se resserre** : les exemptions
 `home-|explore-|progress-|settings-|profile-` disparaissent au profit de
 `display-title` seul.
