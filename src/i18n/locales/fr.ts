@@ -149,6 +149,7 @@ export const fr = {
     unread: 'non lues',
   },
   onboardingJourney: {
+    chooseTheme: 'Choisir ce thème',
     saveError: 'Impossible d’enregistrer votre espace. Réessayez.',
     shareTitle: 'Partagez votre parcours', shareDesc: 'Les invitations et l’apprentissage collectif sont encore en développement.',
 
@@ -854,7 +855,7 @@ export const fr = {
     familyTitle: 'Famille · démo', familyKicker: 'Espace de démonstration', familyName: 'Famille Horizon',
     familyNotice: 'Données fictives, gardées en mémoire uniquement. Les modifications disparaissent en quittant cet écran et ne touchent pas votre famille réelle.',
     familyReal: 'Ouvrir l’espace réel', familyMembers: 'Membres fictifs', familyParent: 'parent', familyChild: 'enfant',
-    familyActivity: 'Activité de test', familyReviews_one: '{{count}} révision simulée', familyReviews_other: '{{count}} révisions simulées', familyAddReview: 'Simuler une révision',
+    familyReviews: '{{count}} révisions simulées', familyActivity: 'Activité de test', familyReviews_one: '{{count}} révision simulée', familyReviews_other: '{{count}} révisions simulées', familyAddReview: 'Simuler une révision',
     familyChallenge: 'Défi de test', familyChallengeStarted: 'Défi fictif en cours', familyChallengeReady: 'Prêts à mémoriser ensemble ?', familyResetChallenge: 'Réinitialiser le défi', familyStartChallenge: 'Démarrer le défi fictif',
 
     enter: 'Voir la démo',

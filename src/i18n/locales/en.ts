@@ -148,6 +148,7 @@ export const en = {
     title: 'Notifications',
   },
   onboardingJourney: {
+    chooseTheme: 'Choose this theme',
     saveError: 'Your space could not be saved. Please try again.',
     shareTitle: 'Share your journey', shareDesc: 'Invitations and group learning are still in development.',
 
@@ -851,7 +852,7 @@ export const en = {
     familyTitle: 'Family · demo', familyKicker: 'Demo space', familyName: 'Horizon family',
     familyNotice: 'Fictional data, kept in memory only. Changes disappear when you leave this screen and do not affect your real family.',
     familyReal: 'Open real family space', familyMembers: 'Fictional members', familyParent: 'parent', familyChild: 'child',
-    familyActivity: 'Test activity', familyReviews_one: '{{count}} simulated review', familyReviews_other: '{{count}} simulated reviews', familyAddReview: 'Simulate a review',
+    familyReviews: '{{count}} simulated reviews', familyActivity: 'Test activity', familyReviews_one: '{{count}} simulated review', familyReviews_other: '{{count}} simulated reviews', familyAddReview: 'Simulate a review',
     familyChallenge: 'Test challenge', familyChallengeStarted: 'Fictional challenge in progress', familyChallengeReady: 'Ready to memorize together?', familyResetChallenge: 'Reset challenge', familyStartChallenge: 'Start fictional challenge',
 
     enter: 'View demo',
