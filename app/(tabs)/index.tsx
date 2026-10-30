@@ -118,15 +118,15 @@ export default function HomeScreen() {
   return (
     <div className="screen-column home-premium h-full overflow-y-auto">
       <div className="home-content">
-        <section className="g2 home-greeting">
-          <p className="home-label">{dateLabel}</p>
+        <section className="g1 tab-heading home-greeting">
+          <p className="section-label">{dateLabel}</p>
           <h1 className="display-title mt-2">{t('home.greeting', 'Bonjour')}{activeProfile?.displayName ? `, ${activeProfile.displayName}` : ''}</h1>
           {activeFamily && <p className="home-muted"><DuoIcon icon={Users} size={16} /> {activeFamily.name}</p>}
           <button onClick={() => navigate('/tabs/settings')} className="home-profile" aria-label={t('settings.settings', 'Paramètres')}><DuoIcon icon={CircleUserRound} size={24} /></button>
         </section>
         <div className="home-feature-grid">
           <article className="g3 home-verse home-daily-card" style={{ '--daily-image': `url("${dailyVisual}")` } as CSSProperties}>
-            <p className="home-label">{t('home.dailyVerse', 'Verset du jour')}</p>
+            <p className="section-label">{t('home.dailyVerse', 'Verset du jour')}</p>
             {todayVerse ? (
               <>
                 <h2>{todayVerse.ref}</h2>
@@ -149,7 +149,7 @@ export default function HomeScreen() {
             </div>
           </article>
           <article className="g2 home-streak">
-            <p className="home-label"><DuoIcon icon={Flame} size={20} /> {t('home.streakLabel', 'Série de jours')}</p>
+            <p className="section-label"><DuoIcon icon={Flame} size={20} /> {t('home.streakLabel', 'Série de jours')}</p>
             <div
               className="home-ring"
               aria-label={
@@ -189,7 +189,7 @@ export default function HomeScreen() {
             [t('review.due', 'Révisions à faire'), reviewsDue],
           ].map(([label, value]) => (
             <div className="g2 home-stat" key={String(label)}>
-              <span className="home-label">{label}</span>
+              <span className="section-label">{label}</span>
               <strong>{value ?? '—'}</strong>
             </div>
           ))}

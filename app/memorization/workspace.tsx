@@ -202,7 +202,7 @@ export default function MemorizationWorkspace() {
           {status === 'loading' && (
             <div className="flex flex-col items-center py-16">
               <SkeletonScreen />
-              <p className="mt-3 text-sm text-text-tertiary">
+              <p className="sr-only" role="status">
                 {t('workspace.loading', 'Chargement du verset...')}
               </p>
             </div>

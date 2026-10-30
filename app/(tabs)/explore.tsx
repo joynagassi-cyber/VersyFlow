@@ -60,8 +60,8 @@ export default function ExploreScreen() {
   return (
     <div className="screen-column explore-premium h-full overflow-y-auto">
       <div className="explore-content">
-        <header className="g1 explore-heading">
-          <p className="explore-label">{t('nav.bible', 'Bible')}</p>
+        <header className="g1 tab-heading explore-heading">
+          <p className="section-label">{t('nav.bible', 'Bible')}</p>
           <h1 className="page-title mt-2 mb-5">{t('bible.explorer', 'Explorer la Bible')}</h1>
           <div className="explore-search">
             <DuoIcon icon={Search} size={20} className="explore-search-icon" />

@@ -17,7 +17,7 @@ describe('Réglages premium', () => {
   });
   it('conserve les destinations et utilise les surfaces du contrat', () => {
     for (const route of ['/analytics/dashboard', '/tabs/progress', '/review/queue', '/settings/backup', '/review/history', '/collections', '/settings/appearance', '/profile/select']) expect(source).toContain(route);
-    expect(source).toContain('g1 settings-heading');
+    expect(source).toContain('g1 tab-heading settings-heading');
     expect(source).toContain('g2 settings-data-card');
     expect(source).toContain('g2 settings-group-card');
     expect(source).not.toMatch(/className="glass/);

@@ -1178,6 +1178,11 @@ html[data-bg='image'][data-theme='dark']::after {
 html[data-bg='image'] { --color-text-primary: var(--tx); --color-text-secondary: var(--mut); --color-text-muted: var(--mut); }
 .g1,.g2,.g3 { color: var(--tx); background: var(--gc); border: 1px solid var(--bd); box-shadow: inset 0 1px 0 var(--hi), 0 10px 34px var(--sh); }
 .g1 { border-radius: 24px; }
+/* En-tête d'onglet — un seul matériau, un seul padding pour les quatre. */
+.home-greeting { position: relative; }
+.tab-heading { padding: 24px; }
+
+
 .g2 { border-radius: 24px; }
 .g3 { border-radius: 28px; }
 html[data-bg='image'] :is(.g1,.g2,.g3) { -webkit-backdrop-filter: blur(var(--gb)) saturate(1.6); backdrop-filter: blur(var(--gb)) saturate(1.6); }
@@ -1259,8 +1264,6 @@ html[data-bg='image']:is([data-transparency='reduced'],[data-contrast='high']) .
 
 .home-premium { font-family: var(--font-sans, Inter), sans-serif; color: var(--tx); padding: 24px 16px 144px; }
 .home-content { max-width: 1180px; margin: auto; display: grid; gap: 24px; }
-.home-greeting { position: relative; padding: 24px; }
-.home-label { color: var(--mut); font: 600 12px/1.4 var(--font-sans, Inter),sans-serif; letter-spacing: .14em; text-transform: uppercase; }
 .home-muted { color: var(--mut); font-size: 14px; }
 .home-greeting .home-muted { margin-top: 8px; display: flex; align-items: center; gap: 6px; }
 .home-profile { position: absolute; top: 24px; right: 24px; padding: 8px; border-radius: 50%; background: transparent; }
@@ -1273,7 +1276,7 @@ html[data-bg='image']:is([data-transparency='reduced'],[data-contrast='high']) .
 .home-primary { background: linear-gradient(110deg,var(--acc),var(--acc2)); color: var(--premium-on); }
 .home-secondary { background: color-mix(in srgb,var(--tx) 8%,transparent); color: var(--tx); }
 .home-streak { display: flex; flex-direction: column; gap: 16px; align-items: flex-start; }
-.home-streak .home-label { display: flex; align-items: center; gap: 8px; }
+.home-streak .section-label { display: flex; align-items: center; gap: 8px; }
 .home-ring { display: grid; place-items: center; width: 104px; height: 104px; border: 6px solid var(--acc); border-radius: 50%; }
 .home-ring strong,.home-stat strong { font: 400 42px/1 var(--font-serif, Georgia), serif; font-variant-numeric: tabular-nums; color: var(--acc-text); }
 .home-stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; }
@@ -1347,8 +1350,6 @@ html[data-bg='image']:is([data-transparency='reduced'],[data-contrast='high']) .
 /* Écran Bible / Explorer : deux surfaces de liste, pas un flou par ligne. */
 .explore-premium.screen-column { max-width: none; padding: 24px 16px 144px; color: var(--tx); font-family: var(--font-sans, Inter), sans-serif; }
 .explore-content { max-width: 1180px; margin: 0 auto; display: grid; gap: 24px; }
-.explore-heading { padding: 24px; }
-.explore-label { color: var(--mut); font: 600 12px/1.4 var(--font-sans, Inter),sans-serif; letter-spacing: .14em; text-transform: uppercase; }
 .explore-search { position: relative; }
 .explore-search-icon { position: absolute; z-index: 1; inset-inline-start: 14px; top: 50%; transform: translateY(-50%); pointer-events: none; }
 .explore-search-input { padding-inline-start: 44px; background: var(--gc); color: var(--tx); border-color: var(--bd); border-radius: 16px; }
@@ -1373,8 +1374,6 @@ html[data-bg='image']:is([data-transparency='reduced'],[data-contrast='high']) .
 /* Écran Progression : mêmes surfaces et mêmes données de ProgressService. */
 .progress-premium.screen-column { max-width: none; padding: 24px 16px 144px; color: var(--tx); font-family: var(--font-sans, Inter),sans-serif; }
 .progress-content { max-width: 1180px; margin: 0 auto; display: grid; gap: 24px; }
-.progress-heading { padding: 24px; }
-.progress-label { color: var(--mut); font: 600 12px/1.4 var(--font-sans, Inter),sans-serif; letter-spacing: .14em; text-transform: uppercase; }
 .progress-stat-grid { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 16px; }
 .progress-stat { padding: 24px; display: grid; gap: 16px; align-content: start; }
 .progress-stat strong,.progress-trend-values strong,.progress-mastery strong,.progress-metric strong { color: var(--acc-text); font: 400 42px/1 var(--font-serif, Georgia), serif; font-variant-numeric: tabular-nums; }
@@ -1398,8 +1397,6 @@ html[data-bg='image']:is([data-transparency='reduced'],[data-contrast='high']) .
 /* Réglages : verre doux sans surfaces floutées imbriquées. */
 .settings-premium.screen-column { max-width: none; padding: 24px 16px 144px; color: var(--tx); font-family: var(--font-sans, Inter),sans-serif; }
 .settings-content { max-width: 1180px; margin: auto; display: grid; gap: 24px; }
-.settings-heading { padding: 24px; }
-.settings-eyebrow { color: var(--tx); font: 600 12px/1.4 var(--font-sans, Inter),sans-serif; letter-spacing: .14em; text-transform: uppercase; }
 .settings-tabs { display: flex; gap: 4px; max-width: 500px; padding: 4px; border-radius: 18px; background: color-mix(in srgb,var(--tx) 8%,transparent); }
 .settings-tabs button { flex: 1; padding: 10px 8px; border-radius: 14px; color: var(--mut); font-size: 14px; font-weight: 600; transition: background 200ms,color 200ms; }
 .settings-tabs button[aria-pressed='true'] { background: var(--gc); color: var(--acc-text); box-shadow: inset 0 1px 0 var(--hi); }
@@ -1924,12 +1921,11 @@ html { -webkit-tap-highlight-color: transparent; }
 }
 
 /* 9. Titres et chiffres — deux familles, jamais trois.
-   Les écrans premium titrent en serif regular (`.progress-heading h1`,
-   `.home-greeting h1`) ; les écrans profonds titraient en sans-serif gras.
-   Une seule règle suffit : les titres prennent la serif du preset et la
-   graisse 400, les utilitaires `font-bold`/`font-extrabold` ne servent plus
-   qu'à du texte courant. Les composants qui définissent déjà leur titre
-   gardent leur taille — seule la famille change. */
+   Une seule règle : les titres prennent la serif du preset et la graisse
+   400 ; les utilitaires `font-bold`/`font-extrabold` ne servent plus qu'à du
+   texte courant. Les composants qui définissent déjà leur taille la gardent
+   (`.page-title`, `.page-title-lg`, `.display-title`) — seule la famille
+   change. */
 :is(h1, h2, h3):not(.section-label):not(.stat-label):not(.micro-label) {
   font-family: var(--font-serif, Georgia), serif;
   font-weight: 400;

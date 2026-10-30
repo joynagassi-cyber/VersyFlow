@@ -12,7 +12,7 @@ describe('Bible : explorer', () => {
   });
   it('utilise les surfaces de premier niveau et conserve la recherche accessible', () => {
     const screen = readFileSync('app/(tabs)/explore.tsx', 'utf8');
-    expect(screen).toContain('g1 explore-heading');
+    expect(screen).toContain('g1 tab-heading explore-heading');
     expect(screen).toContain('g2 explore-section');
     expect(screen).toContain('type="search"');
     expect(screen).toContain('aria-label={t(\'bible.search\'');

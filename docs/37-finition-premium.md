@@ -223,12 +223,14 @@ L'audit, en comptant (`app/`, hors atelier `__dev`) :
 | Ligne vide à trois tailles | la phrase de sous-liste vide s'écrivait en `text-sm text-text-muted` (7 écrans) et en `text-xs` (3 écrans), sans jeton commun | `.empty-line` : `var(--mut)` + le pas `0.875rem` de l'échelle, appliquée aux 10 sous-listes sémantiques |
 | Recherche sans état vide | l'explorateur affichait « Aucun résultat pour « x » » dans une carte de texte, sans action | `EmptyState tone="inline"` : icône, titre, requête rappelée, action « Effacer » |
 | Famille sans famille | l'écran Réglages Famille, sans famille active, affichait un `HintNote` sans issue | `EmptyState` avec l'action « Choisir une famille » |
+| En-têtes d'onglet | quatre matériaux et quatre paddings pour le même bloc, dont l'accueil en `g2` quand les trois autres sont en `g1` | `g1 tab-heading` sur les quatre ; `.home-greeting/.explore-heading/.progress-heading/.settings-heading` réduits à leur rôle (padding supprimé) |
+| Eyebrows | `home-label`, `explore-label`, `progress-label` (mêmes 12 px / 0,14 em, encre `--mut`) et `settings-eyebrow` (encre `--tx`, donc plus contrastée que les trois autres) | `.section-label` partout, une seule règle d'eyebrow dans l'app |
 
-Nouvelles règles : `.display-title`, `.empty-line`. Contrat :
-`tests/design/scale-and-switches.test.ts` (**8 tests**) — trois pas tous en
-`clamp()` et en `--font-serif`, `.display-title` limité à deux écrans,
-en-têtes d'onglet plus redessinés, `Switch` unique et cible 40 px,
-`.empty-line` branchée sur le thème. Le contrat existant
+Nouvelles règles : `.display-title`, `.empty-line`, `.tab-heading`. Contrat :
+`tests/design/scale-and-switches.test.ts` (**10 tests**) — trois pas tous en
+`clamp()` et en `--font-serif`, `.display-title` limité à deux écrans, les
+quatre onglets sur `g1 tab-heading` avec un seul eyebrow `.section-label`,
+`Switch` unique et cible 40 px, `.empty-line` branchée sur le thème. Le contrat existant
 `theme-adaptive-screens.test.ts` **se resserre** : les exemptions
 `home-|explore-|progress-|settings-|profile-` disparaissent au profit de
 `display-title` seul.

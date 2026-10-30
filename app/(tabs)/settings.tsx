@@ -65,8 +65,8 @@ export default function SettingsScreen() {
   return (
     <div className="screen-column settings-premium h-full overflow-y-auto">
       <div className="settings-content">
-        <header className="g1 settings-heading">
-          <p className="settings-eyebrow">VersyFlow</p>
+        <header className="g1 tab-heading settings-heading">
+          <p className="section-label">VersyFlow</p>
           <h1 className="page-title mt-2 mb-5">{t('nav.settings', 'Réglages')}</h1>
           <div className="settings-tabs" role="group" aria-label={t('settings.settings', 'Paramètres')}>
             {TAB_DEFS.map((d) => (

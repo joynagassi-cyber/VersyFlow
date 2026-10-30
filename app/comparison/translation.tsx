@@ -218,7 +218,7 @@ export default function TranslationComparisonScreen() {
               <select
                 value={targetLang ?? ''}
                 onChange={(e) => changeLanguage(e.target.value)}
-                className="h-7 min-w-0 flex-1 rounded-lg border border-[color:var(--color-border)] bg-surface-tint px-2 text-xs font-semibold text-text-primary outline-none"
+                className="h-10 min-w-0 flex-1 rounded-lg border border-[color:var(--color-border)] bg-surface-tint px-2 text-xs font-semibold text-text-primary outline-none focus-visible:ring-2 focus-visible:ring-primary"
                 aria-label={t('comparison.language', 'Langue de comparaison')}
               >
                 <option value="">
@@ -275,10 +275,7 @@ export default function TranslationComparisonScreen() {
               ) : r.error ? (
                 <p className="text-xs italic text-text-muted">{r.error}</p>
               ) : r.text ? (
-                <p
-                  className="bible-text text-md text-text-primary"
-                  style={{ fontFamily: 'var(--reading-font-family, "Source Serif 4", Georgia, serif)' }}
-                >
+                <p className="bible-text text-text-primary">
                   {r.text}
                 </p>
               ) : (

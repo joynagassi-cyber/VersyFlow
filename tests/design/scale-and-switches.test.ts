@@ -99,3 +99,26 @@ describe('lignes vides — une seule classe', () => {
     }
   });
 });
+
+describe('en-têtes d’onglet — un matériau, un padding, une eyebrow', () => {
+  const tabs = ['app/(tabs)/index.tsx', 'app/(tabs)/explore.tsx', 'app/(tabs)/progress.tsx', 'app/(tabs)/settings.tsx'];
+
+  it('les quatre onglets ouvrent sur le même matériau (`g1 tab-heading`)', () => {
+    for (const path of tabs) {
+      const text = read(path);
+      expect(text, path).toMatch(/className="g1 tab-heading \w+-\w+"/);
+      expect(text, `${path} ne descend pas d’un cran de matériau`).not.toContain('g2 home-greeting');
+    }
+    expect(globals, 'un seul padding d’en-tête').toMatch(/\.tab-heading\s*\{[^}]*padding:\s*24px/);
+    for (const selector of ['.explore-heading {', '.progress-heading {', '.settings-heading {']) {
+      expect(globals, `${selector} a disparu`).not.toContain(selector);
+    }
+  });
+
+  it('l’eyebrow d’un écran est `.section-label`, pas quatre classes maison', () => {
+    for (const selector of ['.home-label', '.explore-label', '.progress-label', '.settings-eyebrow']) {
+      expect(globals, selector).not.toContain(selector);
+    }
+    for (const path of tabs) expect(read(path), path).toContain('className="section-label"');
+  });
+});

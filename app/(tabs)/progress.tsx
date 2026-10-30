@@ -105,8 +105,8 @@ export default function ProgressScreen() {
   return (
     <div className="screen-column progress-premium h-full overflow-y-auto">
       <div className="progress-content">
-        <header className="g1 progress-heading">
-          <p className="progress-label">{t('nav.progress', 'Progression')}</p>
+        <header className="g1 tab-heading progress-heading">
+          <p className="section-label">{t('nav.progress', 'Progression')}</p>
           <h1 className="page-title mt-2">{t('progress.yourProgress', 'Votre progression')}</h1>
           <button type="button" className="progress-demo-toggle" aria-pressed={demo} onClick={() => setDemo((value) => !value)}>{demo ? t('demo.exit', 'Quitter la démo') : t('demo.enter', 'Voir la démo')}</button>
           {demo && <p className="progress-demo-notice" role="status">{t('demo.notice', 'Données fictives pour cet écran uniquement. Vos données réelles ne sont pas modifiées.')}</p>}
@@ -122,7 +122,7 @@ export default function ProgressScreen() {
         ) : (
           <>
             <div className="progress-stat-grid">
-              {statCards.map(({ label, value }) => <article className="g2 progress-stat" key={label}><p className="progress-label">{label}</p><strong>{value}</strong></article>)}
+              {statCards.map(({ label, value }) => <article className="g2 progress-stat" key={label}><p className="section-label">{label}</p><strong>{value}</strong></article>)}
             </div>
             <div className="progress-detail-grid">
               <section className="g2 progress-card">
