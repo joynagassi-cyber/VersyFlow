@@ -16,13 +16,15 @@ import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { DuoIcon } from '@/components/ui/DuoIcon';
 import { Button } from '@/components/ui/button';
 import {
+  FamilySubnav,
   HintNote,
-  MemberAvatar,
+  MemberRow,
   ProgressBar,
   SectionCard,
   Segmented,
 } from '@/components/family/FamilyKit';
 import { EmptyState } from '@/components/ui/EmptyState';
+import { LoadingBlock } from '@/components/ui/Skeleton';
 import { useFamilyRoom } from '@/hooks/useFamilyRoom';
 import { useFamilyRoomStore } from '@/store/family-room-store';
 import { pointsForChallenge } from '@/services/family-scoring';
@@ -70,6 +72,8 @@ export default function FamilyLeaderboardScreen() {
       backPath="/family/home"
     >
       <div className="flex flex-col gap-4">
+        <FamilySubnav />
+
         <Segmented<Period>
           label={t('familyPlus.periodLabel', 'Période')}
           value={period}
@@ -82,7 +86,7 @@ export default function FamilyLeaderboardScreen() {
         />
 
         {loading ? (
-          <p className="px-1 text-sm text-text-muted">{t('common.loading', 'Chargement...')}</p>
+          <LoadingBlock label={t('common.loading', 'Chargement…')} className="py-12" />
         ) : rows.length === 0 ? (
           <EmptyState
             title={t('familyPlus.noMembers', 'Aucun membre pour l’instant')}
@@ -95,35 +99,27 @@ export default function FamilyLeaderboardScreen() {
           />
         ) : (
           <SectionCard>
-            <ul className="flex flex-col gap-3">
+            <ul className="flex flex-col">
               {rows.map((row, index) => (
                 <li key={row.accountId}>
-                  <button
-                    type="button"
+                  <MemberRow
+                    name={row.name}
+                    avatarSize={36}
+                    meta={`${index + 1}`}
                     onClick={() => navigate(`/family/member/${encodeURIComponent(row.accountId)}`)}
-                    className="flex w-full items-center gap-3 rounded-xl p-1 text-left"
-                  >
-                    <span className="w-5 text-center text-sm font-bold tabular-nums text-text-muted">
-                      {index + 1}
-                    </span>
-                    <MemberAvatar name={row.name} size={36} />
-                    <span className="min-w-0 flex-1">
-                      <span className="flex items-baseline justify-between gap-2">
-                        <span className="truncate text-sm font-semibold text-text-primary">
-                          {row.name}
-                        </span>
-                        <span className="shrink-0 text-sm font-bold tabular-nums text-primary">
-                          {row.points} {t('familyPlus.pts', 'pts')}
-                        </span>
+                    trailing={
+                      <span className="flex shrink-0 items-baseline gap-1 tabular-nums">
+                        <span className="text-sm font-semibold text-primary">{row.points}</span>
+                        <span className="text-2xs text-text-muted">{t('familyPlus.pts', 'pts')}</span>
                       </span>
-                      <ProgressBar
-                        value={row.points}
-                        max={maxPoints}
-                        label={row.name}
-                        className="mt-1.5"
-                      />
-                    </span>
-                  </button>
+                    }
+                  />
+                  <ProgressBar
+                    value={row.points}
+                    max={maxPoints}
+                    label={row.name}
+                    className="-mt-1 mb-2 ml-12 mr-1"
+                  />
                 </li>
               ))}
             </ul>

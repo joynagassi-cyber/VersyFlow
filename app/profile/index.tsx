@@ -122,7 +122,7 @@ export default function ProfileScreen() {
 
         {/* ── Preferences ── */}
         <div className="g2 overflow-hidden">
-          <h2 className="px-4 pt-4 text-xs font-bold uppercase tracking-wide text-text-muted">
+          <h2 className="px-4 pt-4 section-label">
             {t('profile.preferences', 'Preferences')}
           </h2>
           <div className="mt-2 flex flex-col divide-y divide-[color:var(--color-divider)]">

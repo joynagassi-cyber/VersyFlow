@@ -232,7 +232,7 @@ export default function SettingsScreen() {
         {/* Divided vertical sections */}
         {groups.map((group, gi) => (
           <div key={gi}>
-            <p className="mb-2 flex items-center gap-2 px-1 text-xs font-bold uppercase tracking-wide text-text-muted">
+            <p className="mb-2 flex items-center gap-2 px-1 section-label">
               <DuoIcon icon={group.icon} size={13} className="text-primary" />
               {group.title}
             </p>

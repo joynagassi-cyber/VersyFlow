@@ -157,7 +157,7 @@ export default function TranslationPickerScreen() {
 
       {/* Type de version — the user's reading style */}
       <div className="mb-4">
-        <p className="mb-2 flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-text-muted">
+        <p className="mb-2 flex items-center gap-1.5 section-label">
           <DuoIcon icon={Layers} size={13} className="text-primary" />
           {t('onboarding.versionType', 'Type de version')}
         </p>
@@ -184,7 +184,7 @@ export default function TranslationPickerScreen() {
         {languageGroups.map((group) => (
           <div key={group.language}>
             <div className="mb-2 flex items-center justify-between px-1">
-              <p className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-text-secondary">
+              <p className="flex items-center gap-1.5 section-label text-text-secondary">
                 <DuoIcon icon={Languages} size={13} className="text-primary" />
                 {group.language}
               </p>

@@ -1234,14 +1234,14 @@ html[data-bg='image']:is([data-transparency='reduced'],[data-contrast='high']) .
 .home-content { max-width: 1180px; margin: auto; display: grid; gap: 24px; }
 .home-greeting { position: relative; padding: 24px; }
 .home-label { color: var(--mut); font: 600 12px/1.4 var(--font-sans, Inter),sans-serif; letter-spacing: .14em; text-transform: uppercase; }
-.home-greeting h1 { font: 400 clamp(40px,4vw,52px)/1.1 Georgia,serif; margin-top: 8px; }
+.home-greeting h1 { font: 400 clamp(40px,4vw,52px)/1.1 var(--font-serif, Georgia), serif; margin-top: 8px; }
 .home-muted { color: var(--mut); font-size: 14px; }
 .home-greeting .home-muted { margin-top: 8px; display: flex; align-items: center; gap: 6px; }
 .home-profile { position: absolute; top: 24px; right: 24px; padding: 8px; border-radius: 50%; background: transparent; }
 .home-feature-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; }
 .home-verse,.home-streak { padding: 28px; }
-.home-verse h2 { color: var(--acc-text); font: 500 21px/1.3 Georgia,serif; margin: 16px 0 8px; }
-.home-verse-text { max-width: 70ch; font: 400 clamp(28px,2.8vw,34px)/1.38 Georgia,serif; }
+.home-verse h2 { color: var(--acc-text); font: 500 21px/1.3 var(--font-serif, Georgia), serif; margin: 16px 0 8px; }
+.home-verse-text { max-width: 70ch; font: 400 clamp(28px,2.8vw,34px)/1.38 var(--font-serif, Georgia), serif; }
 .home-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 24px; }
 .home-primary,.home-secondary { padding: 12px 18px; border-radius: 20px; font-size: 14px; font-weight: 600; }
 .home-primary { background: linear-gradient(110deg,var(--acc),var(--acc2)); color: var(--premium-on); }
@@ -1249,10 +1249,10 @@ html[data-bg='image']:is([data-transparency='reduced'],[data-contrast='high']) .
 .home-streak { display: flex; flex-direction: column; gap: 16px; align-items: flex-start; }
 .home-streak .home-label { display: flex; align-items: center; gap: 8px; }
 .home-ring { display: grid; place-items: center; width: 104px; height: 104px; border: 6px solid var(--acc); border-radius: 50%; }
-.home-ring strong,.home-stat strong { font: 400 42px/1 Georgia,serif; font-variant-numeric: tabular-nums; color: var(--acc-text); }
+.home-ring strong,.home-stat strong { font: 400 42px/1 var(--font-serif, Georgia), serif; font-variant-numeric: tabular-nums; color: var(--acc-text); }
 .home-stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; }
 .home-stat { padding: 24px; display: flex; flex-direction: column; gap: 12px; }
-.home-section-title { padding: 12px 20px; font: 400 24px/1.3 Georgia,serif; }
+.home-section-title { padding: 12px 20px; font: 400 24px/1.3 var(--font-serif, Georgia), serif; }
 .home-quick-grid { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 16px; }
 .home-action-card { display: flex; flex-direction: column; align-items: flex-start; text-align: left; gap: 16px; padding: 24px; transition: transform 200ms, background 200ms; }
 .home-action-card:hover { transform: translateY(-3px); }
@@ -1273,7 +1273,7 @@ html[data-bg='image']:is([data-transparency='reduced'],[data-contrast='high']) .
 .appearance-trigger { display: flex; align-items: center; gap: 6px; padding: 8px; border-radius: 20px; color: var(--mut); font-size: 12px; }
 .background-panel { position: fixed; z-index: 90; right: 16px; top: 80px; width: min(380px,calc(100vw - 32px)); max-height: calc(100dvh - 96px); overflow: auto; padding: 24px; }
 .background-panel-heading,.background-control-heading,.background-control-ends { display: flex; justify-content: space-between; gap: 12px; }
-.background-panel-heading h2 { font: 400 24px Georgia,serif; }
+.background-panel-heading h2 { font: 400 24px var(--font-serif, Georgia), serif; }
 .background-controls { display: grid; gap: 16px; font: 400 14px/1.4 var(--font-sans, Inter),sans-serif; color: var(--tx); }
 .background-presets { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
 .background-presets button,.background-reset,.background-custom { border-radius: 20px; padding: 8px 12px; background: var(--gc); color: var(--tx); border: 1px solid var(--bd); }
@@ -1323,7 +1323,7 @@ html[data-bg='image']:is([data-transparency='reduced'],[data-contrast='high']) .
 .explore-content { max-width: 1180px; margin: 0 auto; display: grid; gap: 24px; }
 .explore-heading { padding: 24px; }
 .explore-label { color: var(--mut); font: 600 12px/1.4 var(--font-sans, Inter),sans-serif; letter-spacing: .14em; text-transform: uppercase; }
-.explore-heading h1 { margin: 8px 0 20px; font: 400 24px/1.2 Georgia,serif; }
+.explore-heading h1 { margin: 8px 0 20px; font: 400 24px/1.2 var(--font-serif, Georgia), serif; }
 .explore-search { position: relative; }
 .explore-search-icon { position: absolute; z-index: 1; inset-inline-start: 14px; top: 50%; transform: translateY(-50%); pointer-events: none; }
 .explore-search-input { padding-inline-start: 44px; background: var(--gc); color: var(--tx); border-color: var(--bd); border-radius: 16px; }
@@ -1337,7 +1337,7 @@ html[data-bg='image']:is([data-transparency='reduced'],[data-contrast='high']) .
 .explore-book-subtitle { font-size: 14px; color: var(--mut); }
 .explore-testaments { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); align-items: start; gap: 24px; }
 .explore-section { overflow: hidden; padding: 24px; }
-.explore-section h2 { font: 400 24px/1.3 Georgia,serif; margin-bottom: 12px; }
+.explore-section h2 { font: 400 24px/1.3 var(--font-serif, Georgia), serif; margin-bottom: 12px; }
 .explore-book { padding: 12px 0; border-bottom: 1px solid var(--bd); background: transparent; }
 .explore-book:last-child { border-bottom: 0; }
 .explore-book:hover .explore-book-title,.explore-book:focus-visible .explore-book-title { color: var(--acc-text); }
@@ -1350,13 +1350,13 @@ html[data-bg='image']:is([data-transparency='reduced'],[data-contrast='high']) .
 .progress-content { max-width: 1180px; margin: 0 auto; display: grid; gap: 24px; }
 .progress-heading { padding: 24px; }
 .progress-label { color: var(--mut); font: 600 12px/1.4 var(--font-sans, Inter),sans-serif; letter-spacing: .14em; text-transform: uppercase; }
-.progress-heading h1 { margin: 8px 0 0; font: 400 24px/1.2 Georgia,serif; }
+.progress-heading h1 { margin: 8px 0 0; font: 400 24px/1.2 var(--font-serif, Georgia), serif; }
 .progress-stat-grid { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 16px; }
 .progress-stat { padding: 24px; display: grid; gap: 16px; align-content: start; }
-.progress-stat strong,.progress-trend-values strong,.progress-mastery strong,.progress-metric strong { color: var(--acc-text); font: 400 42px/1 Georgia,serif; font-variant-numeric: tabular-nums; }
+.progress-stat strong,.progress-trend-values strong,.progress-mastery strong,.progress-metric strong { color: var(--acc-text); font: 400 42px/1 var(--font-serif, Georgia), serif; font-variant-numeric: tabular-nums; }
 .progress-detail-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 24px; }
 .progress-card,.progress-message { padding: 24px; }
-.progress-card h2,.progress-message h2 { font: 400 24px/1.3 Georgia,serif; }
+.progress-card h2,.progress-message h2 { font: 400 24px/1.3 var(--font-serif, Georgia), serif; }
 .progress-trend-values { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 16px; margin-top: 24px; }
 .progress-trend-values div { display: grid; gap: 8px; }
 .progress-trend-values span,.progress-mastery p,.progress-metric p,.progress-message p,.progress-streak small { color: var(--mut); font-size: 14px; }
@@ -1375,7 +1375,7 @@ html[data-bg='image']:is([data-transparency='reduced'],[data-contrast='high']) .
 .settings-premium.screen-column { max-width: none; padding: 24px 16px 144px; color: var(--tx); font-family: var(--font-sans, Inter),sans-serif; }
 .settings-content { max-width: 1180px; margin: auto; display: grid; gap: 24px; }
 .settings-heading { padding: 24px; }
-.settings-heading h1 { margin: 8px 0 20px; font: 400 24px/1.2 Georgia,serif; }
+.settings-heading h1 { margin: 8px 0 20px; font: 400 24px/1.2 var(--font-serif, Georgia), serif; }
 .settings-eyebrow { color: var(--tx); font: 600 12px/1.4 var(--font-sans, Inter),sans-serif; letter-spacing: .14em; text-transform: uppercase; }
 .settings-tabs { display: flex; gap: 4px; max-width: 500px; padding: 4px; border-radius: 18px; background: color-mix(in srgb,var(--tx) 8%,transparent); }
 .settings-tabs button { flex: 1; padding: 10px 8px; border-radius: 14px; color: var(--mut); font-size: 14px; font-weight: 600; transition: background 200ms,color 200ms; }
@@ -1450,7 +1450,7 @@ html[data-bg='image']:is([data-transparency='reduced'],[data-contrast='high']) .
 .appearance-controls { grid-column: 1; grid-row: 1; min-width: 0; }
 .appearance-preview { grid-column: 2; grid-row: 1; position: sticky; top: 0; min-width: 0; color: var(--tx); }
 .appearance-preview-heading { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 10px; color: var(--tx); }
-.appearance-preview-heading strong { font: 400 21px/1.3 Georgia,serif; }
+.appearance-preview-heading strong { font: 400 21px/1.3 var(--font-serif, Georgia), serif; }
 .appearance-preview-actions { display: flex; align-items: center; gap: 4px; }
 .appearance-preview-actions button,.appearance-tabs button,.appearance-categories button,.appearance-reset { border: 1px solid var(--bd); background: color-mix(in srgb,var(--tx) 6%,transparent); color: var(--tx); border-radius: 16px; padding: 8px 12px; font-size: 14px; font-weight: 600; }
 .appearance-preview-actions button[aria-pressed='true'],.appearance-categories button[aria-pressed='true'] { outline: 2px solid var(--acc); outline-offset: -2px; }
@@ -1581,7 +1581,7 @@ html[data-fixed-accent] .desktop-rail button.bg-primary .solar { color: var(--pr
 .profile-hero-text { min-width: 0; }
 .profile-eyebrow { color: var(--mut); font-size: 13px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
 .profile-name-row { display: flex; align-items: center; gap: 16px; }
-.profile-name-row h1,.profile-name-input { color: var(--tx); font: 400 clamp(42px,7vw,84px)/1.05 Georgia,serif; overflow-wrap: anywhere; }
+.profile-name-row h1,.profile-name-input { color: var(--tx); font: 400 clamp(42px,7vw,84px)/1.05 var(--font-serif, Georgia), serif; overflow-wrap: anywhere; }
 .profile-name-input { max-width: 100%; background: var(--gc); border: 1px solid var(--bd); border-radius: 12px; }
 .profile-name-edit { display: grid; place-items: center; flex: none; width: 40px; height: 40px; border-radius: 50%; color: var(--tx); background: color-mix(in srgb,var(--tx) 10%,transparent); }
 .profile-slogan { margin-top: 12px; color: var(--mut); font-size: 15px; }
@@ -1631,7 +1631,7 @@ html[data-bg='image']:is([data-transparency='reduced'],[data-contrast='high']) .
 .profile-premium :is(.text-text-muted,.text-text-secondary) { color: var(--mut); }
 .review-calendar-dot { width: 5px; height: 5px; margin-top: 3px; border-radius: 50%; background: var(--acc); }
 .review-timeline { margin-top: 16px; padding: 22px; }
-.review-timeline h3 { font: 400 22px/1.3 Georgia,serif; }
+.review-timeline h3 { font: 400 22px/1.3 var(--font-serif, Georgia), serif; }
 .review-timeline > p { margin-top: 8px; color: var(--mut); font-size: 14px; }
 .review-timeline ol { display: grid; gap: 14px; margin-top: 16px; }
 .review-timeline li { padding: 12px 0 12px 16px; border-inline-start: 2px solid var(--acc); }
@@ -1640,7 +1640,7 @@ html[data-bg='image']:is([data-transparency='reduced'],[data-contrast='high']) .
 /* Un socle commun pour les étapes d’accueil, sans modifier leur logique. */
 .onboarding-experience { color: var(--tx); font-family: var(--font-sans,Inter),sans-serif; }
 .onboarding-experience .screen-column-narrow { padding-top: 32px; padding-bottom: 40px; }
-.onboarding-experience h1 { color: var(--tx); font-family: Georgia,serif; line-height: 1.12; }
+.onboarding-experience h1 { color: var(--tx); font-family: var(--font-serif, Georgia), serif; line-height: 1.12; }
 .onboarding-experience :is(.text-text-primary,.text-text-secondary) { color: var(--tx); }
 .onboarding-experience .text-text-muted { color: var(--mut); }
 .onboarding-experience :is(.bg-surface,.card-glass) { background: var(--gc); border: 1px solid var(--bd); box-shadow: 0 10px 34px var(--sh); }
@@ -1656,7 +1656,7 @@ html[data-app-bg='gradient'] .icon-chip {
   color: var(--tx);
 }
 .weekly-planner { display: grid; gap: 16px; margin-top: 24px; padding: 22px; color: var(--tx); }
-.weekly-planner h2 { font: 400 24px/1.3 Georgia,serif; }
+.weekly-planner h2 { font: 400 24px/1.3 var(--font-serif, Georgia), serif; }
 .weekly-planner h3 { color: var(--tx); font-size: 15px; font-weight: 600; }
 .weekly-planner-hint { color: var(--mut); font-size: 14px; line-height: 1.5; }
 .weekly-planner-group { display: grid; gap: 12px; padding-top: 16px; border-top: 1px solid var(--bd); }
@@ -1913,7 +1913,7 @@ html { -webkit-tap-highlight-color: transparent; }
    graisse 400, les utilitaires `font-bold`/`font-extrabold` ne servent plus
    qu'à du texte courant. Les composants qui définissent déjà leur titre
    gardent leur taille — seule la famille change. */
-:is(h1, h2, h3) {
+:is(h1, h2, h3):not(.section-label):not(.stat-label):not(.micro-label) {
   font-family: var(--font-serif, Georgia), serif;
   font-weight: 400;
 }
@@ -1984,4 +1984,205 @@ ion-tab-button::part(native):focus-visible {
   :is(button, a, [role='button']):is(.g1, .g2, .g3, .glass):active {
     transform: none;
   }
+}
+
+
+/* 12. Micro-libellé de section — la contrepartie sans-serif des titres.
+   Les cartes de section titraient en `text-xs font-bold uppercase` ; depuis
+   que h1/h2/h3 sont en serif, ce libellé serait devenu une capitale serif.
+   Une micro-capitale est un repère, pas un titre : elle garde la sans-serif,
+   la graisse 600 et l'interlettrage. `.section-label` est aussi la classe qui
+   exempte l'élément de la règle serif (voir règle 9). */
+.section-label,
+.micro-label {
+  font-family: var(--font-sans, Inter), sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--mut, var(--color-text-muted));
+}
+
+/* 13. Titre d'écran — une seule échelle pour les titres posés dans le corps
+   d'un écran (les en-têtes `FullScreenPage` ont la leur). Trois tailles
+   littérales (`text-2xl`, `text-3xl`, `text-5xl`) coexistaient pour le même
+   rôle ; elles convergent ici. */
+.page-title {
+  font-family: var(--font-serif, Georgia), serif;
+  font-weight: 400;
+  font-size: clamp(22px, 2.4vw, 26px);
+  line-height: 1.22;
+  letter-spacing: -0.01em;
+  color: var(--tx, var(--color-text-primary));
+  margin: 0;
+}
+.page-title-lg {
+  font-family: var(--font-serif, Georgia), serif;
+  font-weight: 400;
+  font-size: clamp(28px, 3.4vw, 38px);
+  line-height: 1.12;
+  letter-spacing: -0.015em;
+  color: var(--tx, var(--color-text-primary));
+  margin: 0;
+}
+/* Titre d'état vide : la serif du preset à l'échelle d'une carte. Un état vide
+   n'est pas un titre d'écran (22–26 px) mais il n'est pas non plus un
+   paragraphe : 19–20 px, interligne 1.3, encre principale. */
+.empty-title {
+  color: var(--text, var(--color-text-primary));
+  font-family: var(--font-serif, Georgia), serif;
+  font-size: clamp(18px, 2.2vw, 20px);
+  font-weight: 400;
+  line-height: 1.3;
+  letter-spacing: -0.005em;
+}
+
+.page-subtitle {
+  color: var(--mut, var(--color-text-muted));
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* 14. Lien d'action secondaire (« Voir tout », « Changer ») : une cible
+   tactile réelle, jamais un texte de 12 px sans zone. */
+.link-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 32px;
+  padding-inline: 8px;
+  border-radius: 9999px;
+  color: var(--acc-text, var(--color-primary));
+  font-family: var(--font-sans, Inter), sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  transition: background-color var(--motion-fast) var(--ease-standard);
+}
+@media (hover: hover) and (pointer: fine) {
+  .link-action:hover { background: color-mix(in srgb, var(--acc, var(--color-primary)) 10%, transparent); }
+}
+
+/* Titres DANS une carte premium : la même famille que les titres d'écran.
+   Les cartes historiques écrivaient `<h2 class="text-base font-bold">` : un
+   titre sans-serif gras, frère du titre serif de l'en-tête. Ici le titre de
+   carte reprend la serif du preset (donc Playfair/Lora/Source Serif selon le
+   thème), sans changer sa taille — chaque écran garde son échelle. Les
+   micro-capitales (`.section-label`, `.micro-label`, `.stat-label`) restent
+   en sans-serif : ce sont des libellés, pas des titres. */
+:is(.g1, .g2, .g3) :is(h2, h3):not(.section-label):not(.micro-label):not(.stat-label) {
+  font-family: var(--font-serif, Georgia), serif;
+  font-weight: 400;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   MODE FAMILLE — une section, pas huit pages isolées
+   ══════════════════════════════════════════════════════════════════════════
+   Les briques `FamilyKit` (V2) posent la structure ; ces règles posent le
+   matériau. Tout vient du thème : aucune couleur, aucune durée, aucun rayon
+   littéral. La sous-navigation défile horizontalement au lieu de passer à la
+   ligne (une pastille coupée en deux serait un défaut d'exécution). */
+
+.family-subnav {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 9999px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x proximity;
+}
+.family-subnav::-webkit-scrollbar { display: none; }
+.family-subnav-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex: none;
+  min-height: 36px;
+  padding-inline: 12px;
+  border-radius: 9999px;
+  color: var(--mut);
+  font-family: var(--font-sans, Inter), sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  scroll-snap-align: start;
+  transition:
+    background-color var(--motion-fast) var(--ease-standard),
+    color var(--motion-fast) var(--ease-standard);
+}
+/* L'onglet actif prend une teinte d'accent, jamais un aplat d'accent :
+   aucun risque de contraste, quel que soit le preset (clair, sombre, jaune,
+   rouge). Le texte passe à l'accent lisible. */
+.family-subnav-item[aria-current='page'] {
+  background: color-mix(in srgb, var(--acc) 14%, transparent);
+  color: var(--acc-text);
+}
+.family-subnav-item .solar { color: currentColor; }
+@media (hover: hover) and (pointer: fine) {
+  .family-subnav-item:not([aria-current='page']):hover {
+    background: color-mix(in srgb, var(--tx) 6%, transparent);
+    color: var(--tx);
+  }
+}
+
+/* En-tête de valeur : un libellé, un chiffre, un anneau, une rangée d'avatars. */
+.family-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas: 'main ring' 'avatars avatars' 'foot foot';
+  gap: 14px 16px;
+  padding: 20px;
+}
+.family-hero-main { grid-area: main; display: grid; gap: 6px; align-content: start; }
+.family-hero-value { display: flex; align-items: baseline; gap: 8px; }
+.family-hero-value .stat-value { font-size: clamp(34px, 6vw, 44px); line-height: 1; }
+.family-hero-unit { color: var(--mut); font-size: 13px; font-weight: 600; }
+.family-hero-caption { color: var(--mut); font-size: 13px; line-height: 1.45; }
+.family-hero-ring { grid-area: ring; align-self: start; }
+.family-hero-avatars { grid-area: avatars; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.family-hero-foot {
+  grid-area: foot;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding-top: 12px;
+  border-top: 1px solid var(--bd);
+  color: var(--mut);
+  font-size: 13px;
+  line-height: 1.45;
+}
+@media (max-width: 359px) {
+  .family-hero { grid-template-columns: 1fr; grid-template-areas: 'main' 'ring' 'avatars' 'foot'; }
+}
+
+/* Ligne de membre : une seule hauteur, une seule zone tactile. */
+.family-member-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 52px;
+  padding: 6px 4px;
+  border-radius: 12px;
+  text-align: left;
+  transition: background-color var(--motion-fast) var(--ease-standard);
+}
+@media (hover: hover) and (pointer: fine) {
+  button.family-member-row:hover { background: color-mix(in srgb, var(--tx) 4%, transparent); }
+}
+
+/* Ligne de métrique : libellé discret, valeur tabulaire. */
+.family-metric { display: grid; gap: 2px; }
+.family-metric-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.family-metric-label { color: var(--mut); font-size: 13px; }
+.family-metric-value {
+  color: var(--tx);
+  font-size: 13px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
 }

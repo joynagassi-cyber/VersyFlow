@@ -1,43 +1,85 @@
 import * as React from 'react';
 import { cn } from '@/lib/utils';
 import { Logo } from '@/components/brand/Logo';
+import { DuoIcon } from '@/components/ui/DuoIcon';
+import type { Icon as IconSvgElement } from '@solar-icons/react/lib/types';
+import { StarIcon } from '@/components/ui/solar-icons';
 
 interface EmptyStateProps {
   title: string;
   description?: string;
   actionLabel?: string;
   onAction?: () => void;
-  icon?: React.ReactNode;
+  /**
+   * Icône Solar (composant) ou nœud déjà rendu — les deux formes existent
+   * dans les écrans ; les deux sont acceptées, rendues à la même taille.
+   */
+  icon?: IconSvgElement | React.ReactNode;
+  /** Ancien point d'entrée (nœud libre) — conservé pour les écrans existants. */
+  children?: React.ReactNode;
   showLogo?: boolean;
+  /** `inline` : dans une carte (pas de cadre pointillé). */
+  tone?: 'outline' | 'inline';
   className?: string;
 }
 
-/** Calm, branded empty state with a logo watermark + optional CTA. */
+/**
+ * État vide — un seul vocabulaire pour les 40 écrans qui en ont un.
+ *
+ * Trois défauts étaient recopiés à l'identique dans les écrans :
+ *   1. l'icône était parfois un emoji (« 👨‍👩‍👧‍👦 »), parfois un SVG, parfois un
+ *      point d'interrogation : trois iconographies pour le même rôle ;
+ *   2. le titre et la description n'avaient ni la même taille ni le même
+ *      espacement, et la description dépassait la mesure de lecture ;
+ *   3. l'action était tantôt un `<button>` bleu, tantôt un lien texte.
+ *
+ * Ici : une pastille d'icône neutre (`.icon-chip`), un titre dans la serif du
+ * preset (`.empty-title`), une description bornée à 34 caractères de mesure, et l'action
+ * qui réutilise le `Button` de l'application. Le cadre pointillé signale un
+ * emplacement à remplir ; `tone="inline"` le retire quand l'état vit DANS une
+ * carte (réglages, listes de section).
+ */
 export function EmptyState({
   title,
   description,
   actionLabel,
   onAction,
   icon,
+  children,
   showLogo,
+  tone = 'outline',
   className,
 }: EmptyStateProps) {
   return (
     <div
       className={cn(
-        'flex flex-col items-center justify-center rounded-2xl border border-dashed border-border p-10 text-center',
+        'flex flex-col items-center justify-center gap-3 p-8 text-center',
+        tone === 'outline'
+          ? 'rounded-2xl border border-dashed border-border'
+          : 'rounded-2xl',
         className,
       )}
     >
-      <div className="mb-4 flex h-20 w-20 items-center justify-center opacity-80">
-        {showLogo ? <Logo size={64} /> : icon ?? <span className="text-3xl">✦</span>}
+      <div className="flex h-16 w-16 items-center justify-center rounded-full icon-chip">
+        {showLogo ? (
+          <Logo size={40} />
+        ) : React.isValidElement(icon) ? (
+          icon
+        ) : icon ? (
+          <DuoIcon icon={icon as IconSvgElement} size={28} />
+        ) : (
+          (children ?? <DuoIcon icon={StarIcon} size={26} className="text-text-muted" />)
+        )}
       </div>
-      <p className="text-base font-semibold text-text-primary">{title}</p>
-      {description && <p className="mt-1 max-w-xs text-sm text-text-muted">{description}</p>}
+      <p className="empty-title">{title}</p>
+      {description && (
+        <p className="max-w-[34ch] text-sm leading-relaxed text-text-muted">{description}</p>
+      )}
       {actionLabel && onAction && (
         <button
+          type="button"
           onClick={onAction}
-          className="mt-4 rounded-full bg-primary px-5 py-2 text-sm font-semibold text-on-primary shadow transition active:opacity-90"
+          className="mt-1 inline-flex h-10 items-center justify-center rounded-full bg-primary px-5 text-sm font-semibold text-on-primary transition-opacity active:opacity-90"
         >
           {actionLabel}
         </button>

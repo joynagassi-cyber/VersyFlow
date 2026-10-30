@@ -24,6 +24,7 @@ import { getFsrsEngine } from '@/services/fsrs-factory';
 import { ReviewQueueService } from '@/services/review-queue-service';
 import type { MemorizationRecord } from '@/domains/memorization/entities';
 import { LoadingBlock } from '@/components/ui/Skeleton';
+import { EmptyState } from '@/components/ui/EmptyState';
 
 interface ReviewItem {
   record: MemorizationRecord;
@@ -142,20 +143,17 @@ export default function ReviewQueueScreen() {
   if (totalDue === 0) {
     return (
       <FullScreenPage title={t('review.todayReviews', 'Révisions du jour')} backPath="/tabs/home" column="narrow">
-        <div className="flex flex-col items-center py-20 text-center">
-          <div className="flex h-24 w-24 items-center justify-center rounded-full icon-chip">
-            <DuoIcon icon={CheckCircle} size={40} className="text-success" />
-          </div>
-          <h2 className="mt-6 text-2xl font-bold text-text-primary">
-            {t('home.noReviews', 'Tout est à jour ! ✓')}
-          </h2>
-          <p className="mt-2 text-sm text-text-muted">
-            {t('review.historyEmptyHint', 'Vous n’avez aucune révision à faire pour le moment.')}
-          </p>
-          <Button className="mt-8" onClick={() => navigate('/tabs/home')}>
-            {t('common.backToHome', 'Retour à l’accueil')}
-          </Button>
-        </div>
+        <EmptyState
+          className="border-0 py-16"
+          icon={<DuoIcon icon={CheckCircle} size={32} className="text-success" />}
+          title={t('home.noReviews', 'Tout est à jour')}
+          description={t(
+            'review.historyEmptyHint',
+            'Vous n’avez aucune révision à faire pour le moment.',
+          )}
+          actionLabel={t('common.backToHome', 'Retour à l’accueil')}
+          onAction={() => navigate('/tabs/home')}
+        />
       </FullScreenPage>
     );
   }

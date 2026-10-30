@@ -36,7 +36,7 @@ export default function SettingsDataScreen() {
       <div className="screen-column space-y-5">
         {/* Highlights summary card */}
         <div className="glass rounded-2xl p-4">
-          <p className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-text-muted">
+          <p className="mb-2 flex items-center gap-2 section-label">
             <DuoIcon icon={ListChecks} size={13} className="text-primary" />
             {t('settings.dataHighlights', 'Mes highlights')}
           </p>
@@ -48,7 +48,7 @@ export default function SettingsDataScreen() {
         {/* Activity links */}
         <div className="glass overflow-hidden rounded-2xl">
           <div className="px-4 pt-4">
-            <p className="text-xs font-bold uppercase tracking-wide text-text-muted">
+            <p className="section-label">
               {t('settings.dataActivities', 'Mes activités')}
             </p>
           </div>

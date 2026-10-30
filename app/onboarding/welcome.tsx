@@ -55,10 +55,10 @@ export default function WelcomeScreen() {
           </div>
         </div>
         <p className="border-t border-[var(--color-border)] pt-4 font-serif text-xl italic leading-relaxed text-text-primary">
-          « Ta parole est une lampe à mes pieds, et une lumière sur mon sentier. »
+          « {t('onboarding.slide1Verse', 'Ta parole est une lampe à mes pieds, et une lumière sur mon sentier.')} »
         </p>
-        <p className="mt-2 text-2xs font-bold uppercase tracking-[0.08em] text-primary">
-          Psaumes 119:105 · LSG
+        <p className="micro-label mt-2 text-primary">
+          {t('onboarding.slide1VerseRef', 'Psaumes 119:105 · LSG')}
         </p>
       </div>
     </OnboardingShell>

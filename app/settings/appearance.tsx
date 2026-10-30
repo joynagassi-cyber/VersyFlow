@@ -37,7 +37,7 @@ const LINE_LENGTH_MAX = 80;
 function Section({ title, children, action }: { title: string; children: React.ReactNode; action?: React.ReactNode }) {
   return (
     <section className="g2 appearance-section mb-5 p-4">
-      <div className="appearance-section-heading"><h2 className="mb-3 text-sm font-bold uppercase tracking-wide text-text-muted">{title}</h2>{action}</div>
+      <div className="appearance-section-heading"><h2 className="section-label mb-3">{title}</h2>{action}</div>
       {children}
     </section>
   );

@@ -14,10 +14,11 @@ import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { DuoIcon } from '@/components/ui/DuoIcon';
 import { Button } from '@/components/ui/button';
 import {
+  FamilySubnav,
+  FamilyHero,
   HintNote,
-  ProgressBar,
+  MetricRow,
   SectionCard,
-  StatTile,
 } from '@/components/family/FamilyKit';
 import { useFamilyRoom } from '@/hooks/useFamilyRoom';
 import { useFamilyPoints } from '@/hooks/useFamilyPoints';
@@ -44,42 +45,46 @@ export default function FamilyPointsScreen() {
       backPath="/family/home"
     >
       <div className="flex flex-col gap-4">
-        <SectionCard>
-          <div className="flex items-end justify-between gap-3">
-            <div>
-              <p className="text-xs font-bold uppercase tracking-wide text-text-muted">
-                {t('familyPlus.levelLabel', 'NIVEAU {{level}}', { level: summary.level.level })}
-              </p>
-              <p className="mt-1 text-3xl font-extrabold tabular-nums text-text-primary">
-                {summary.available ? summary.total.toLocaleString() : '—'}
-              </p>
-              <p className="text-sm text-text-muted">{t('familyPlus.points', 'points')}</p>
-            </div>
-            <div className="text-right text-xs text-text-muted">
-              {t('familyPlus.nextTier', 'Prochain palier : {{points}}', {
-                points: summary.level.next.toLocaleString(),
-              })}
-            </div>
-          </div>
-          <ProgressBar
-            className="mt-3"
-            value={summary.total - summary.level.floor}
-            max={summary.level.next - summary.level.floor}
-            label={t('familyPlus.pointsTitle', 'Points et niveaux')}
-          />
-          <div className="mt-3 grid grid-cols-3 gap-2">
-            <StatTile value={summary.available ? summary.verseCount : '—'} label={t('familyPlus.verses', 'Versets')} />
-            <StatTile value={summary.available ? summary.masteredCount : '—'} label={t('familyPlus.mastered', 'Maîtrisés')} />
-            <StatTile value={summary.available ? summary.fromChallenges : '—'} label={t('familyPlus.fromChallenges', 'Défis')} />
-          </div>
-        </SectionCard>
+        <FamilySubnav />
+
+        <FamilyHero
+          label={t('familyPlus.levelLabel', 'NIVEAU {{level}}', { level: summary.level.level })}
+          value={summary.available ? summary.total.toLocaleString() : '—'}
+          unit={t('familyPlus.points', 'points')}
+          caption={t('familyPlus.nextTier', 'Prochain palier : {{points}}', {
+            points: summary.level.next.toLocaleString(),
+          })}
+          ring={Math.min(
+            100,
+            Math.round(
+              ((summary.total - summary.level.floor) /
+                Math.max(1, summary.level.next - summary.level.floor)) *
+                100,
+            ),
+          )}
+          ringLabel={t('familyPlus.pointsTitle', 'Points et niveaux')}
+          footnote={
+            <>
+              <span>
+                {t('familyPlus.verses', 'Versets')} · {summary.available ? summary.verseCount : '—'}
+              </span>
+              <span>
+                {t('familyPlus.mastered', 'Maîtrisés')} ·{' '}
+                {summary.available ? summary.masteredCount : '—'}
+              </span>
+              <span>
+                {t('familyPlus.fromChallenges', 'Défis')} ·{' '}
+                {summary.available ? summary.fromChallenges : '—'}
+              </span>
+            </>
+          }
+        />
 
         <SectionCard title={t('familyPlus.howToEarn', 'Comment gagner des points')}>
           <ul className="flex flex-col divide-y divide-divider">
             {scale.map((row) => (
-              <li key={row.key} className="flex items-center justify-between py-2">
-                <span className="text-sm text-text-primary">{row.label}</span>
-                <span className="text-sm font-bold tabular-nums text-primary">+{row.value}</span>
+              <li key={row.key} className="py-1">
+                <MetricRow label={row.label} value={`+${row.value}`} />
               </li>
             ))}
           </ul>
@@ -104,9 +109,8 @@ export default function FamilyPointsScreen() {
           ) : (
             <ul className="flex flex-col divide-y divide-divider">
               {summary.challengePoints.map((row) => (
-                <li key={row.id} className="flex items-center justify-between py-2">
-                  <span className="text-sm text-text-primary">🏅 {row.title}</span>
-                  <span className="text-sm font-bold tabular-nums text-primary">+{row.points}</span>
+                <li key={row.id}>
+                  <MetricRow label={row.title} value={`+${row.points}`} />
                 </li>
               ))}
             </ul>

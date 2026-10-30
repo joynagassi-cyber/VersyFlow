@@ -88,15 +88,15 @@ export default function FSRSIntroductionScreen() {
           </svg>
           {/* X-axis labels */}
           <div className="absolute inset-x-8 bottom-0 flex justify-between text-3xs text-text-secondary">
-            <span>Jour 1</span>
-            <span>Jour 7</span>
-            <span>Mois 1</span>
+            <span>{t('onboarding.fsrsDay1', 'Jour 1')}</span>
+            <span>{t('onboarding.fsrsDay7', 'Jour 7')}</span>
+            <span>{t('onboarding.fsrsMonth1', 'Mois 1')}</span>
           </div>
         </div>
         <div className="mt-4 flex gap-6">
           <div className="flex items-center gap-2">
             <span className="h-0.5 w-3 rounded-full bg-primary" />
-            <span className="text-xs text-text-primary">Rétention Optimale</span>
+            <span className="text-xs text-text-primary">{t('onboarding.fsrsRetentionOptimal', 'Rétention optimale')}</span>
           </div>
           <div className="flex items-center gap-2">
             <span className="h-0.5 w-3 border-t-2 border-dashed border-text-muted" />

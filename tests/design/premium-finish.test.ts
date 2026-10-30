@@ -106,9 +106,14 @@ describe('finition — échelle typographique', () => {
   });
 
   it('réserve la serif aux titres, quel que soit le preset', () => {
+    // Les micro-capitales sont des LIBELLÉS, pas des titres : `.section-label`,
+    // `.stat-label` et `.micro-label` sont explicitement exemptés de la serif
+    // (sinon « NIVEAU 3 » s'afficherait en Playfair, ce qui n'est pas une
+    // décision mais un accident de sélecteur).
     expect(globals).toMatch(
-      /:is\(h1, h2, h3\)\s*\{[^}]*font-family:\s*var\(--font-serif[^}]*font-weight:\s*400/,
+      /:is\(h1, h2, h3\)(?::not\([^)]*\))*\s*\{[^}]*font-family:\s*var\(--font-serif[^}]*font-weight:\s*400/,
     );
+    expect(globals).toMatch(/:is\(h1, h2, h3\):not\(\.section-label\):not\(\.stat-label\):not\(\.micro-label\)/);
   });
 
   it('donne aux chiffres clés une seule recette, tabulaire et accentuée', () => {

@@ -10,7 +10,11 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { AlertCircleIcon as AlertCircle, Tick02Icon as Tick } from '@/components/ui/solar-icons';
+import {
+  AlertCircleIcon as AlertCircle,
+  Tick02Icon as Tick,
+  UsersRoundIcon as Users,
+} from '@/components/ui/solar-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { DuoIcon } from '@/components/ui/DuoIcon';
 import { Button } from '@/components/ui/button';
@@ -102,11 +106,11 @@ export default function FamilyCreateScreen() {
         <SectionCard title={t('familyPlus.preview', 'Aperçu')}>
           <div className="flex items-center gap-3">
             <span
-              className="flex h-12 w-12 items-center justify-center rounded-full text-xl"
+              className="flex h-12 w-12 items-center justify-center rounded-full text-primary"
               style={{ backgroundColor: familyTint(color, 20) }}
               aria-hidden="true"
             >
-              👨‍👩‍👧‍👦
+              <DuoIcon icon={Users} size={22} />
             </span>
             <div>
               <p className="text-base font-bold text-text-primary">

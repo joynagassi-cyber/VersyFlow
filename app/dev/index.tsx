@@ -83,7 +83,7 @@ function Card({
 }) {
   return (
     <section className={cn('rounded-2xl bg-surface p-4 shadow-sm', className)}>
-      <p className="mb-3 flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-text-muted">
+      <p className="mb-3 flex items-center gap-2 section-label">
         <DuoIcon icon={icon} size={14} className="text-primary" />
         {title}
       </p>

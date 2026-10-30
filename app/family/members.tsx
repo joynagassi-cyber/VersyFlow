@@ -10,7 +10,9 @@ import {
   AlertCircleIcon as AlertCircle,
 } from '@/components/ui/solar-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
+import { FamilySubnav, MemberRow, SectionCard } from '@/components/family/FamilyKit';
 import { EmptyState } from '@/components/ui/EmptyState';
+import { LoadingBlock } from '@/components/ui/Skeleton';
 import { useFamilySyncStore } from '@/store/family-sync-store';
 import { useActiveProfile } from '@/hooks/useActiveProfile';
 import { useFamilyService } from '@/hooks/useFamilyService';
@@ -86,60 +88,60 @@ export default function FamilyMembersScreen() {
       backPath="/family/home"
       right={
         <button
+          type="button"
           onClick={() => navigate('/family/invite')}
-          className="rounded-full bg-surface-tint p-2 active:bg-primary/10"
+          aria-label={t('family.inviteMember', 'Inviter un membre')}
+          className="touch-target rounded-full bg-surface-tint text-primary active:bg-primary/10"
         >
-          <DuoIcon icon={UserPlus} size={18} className="text-primary" />
+          <DuoIcon icon={UserPlus} size={18} />
         </button>
       }
     >
       <div className="screen-column space-y-4">
-        <h2 className="text-xs font-bold uppercase tracking-wide text-text-muted">
-          {t('family.members', 'Membres')}
-        </h2>
+        <FamilySubnav />
+
+        <h2 className="section-label">{t('family.members', 'Membres')}</h2>
 
         {isLoading ? (
-          <p className="py-8 text-center text-sm text-text-muted">
-            {t('common.loading', 'Chargement...')}
-          </p>
+          <LoadingBlock label={t('common.loading', 'Chargement…')} className="py-12" />
         ) : loadError ? (
-          <div className="g2 flex flex-col items-center gap-3 p-6 text-center">
-            <DuoIcon icon={AlertCircle} size={28} className="text-error" />
-            <p className="text-sm text-error">{loadError}</p>
-            <button
-              onClick={() => loadMembers(family.id)}
-              className="rounded-full bg-primary px-5 py-2 text-sm font-semibold text-on-primary active:opacity-90"
-            >
-              {t('common.retry', 'Réessayer')}
-            </button>
-          </div>
+          <EmptyState
+            tone="inline"
+            icon={AlertCircle}
+            title={t('family.loadFailed', 'Membres indisponibles')}
+            description={loadError}
+            actionLabel={t('common.retry', 'Réessayer')}
+            onAction={() => void loadMembers(family.id)}
+          />
         ) : members.length === 0 ? (
-          <EmptyState title={t('family.emptyMembers', 'Aucun membre')} />
+          <EmptyState
+            icon={UserPlus}
+            title={t('family.emptyMembers', 'Aucun membre')}
+            description={t(
+              'family.emptyMembersHint',
+              'Invitez la première personne : la série et le classement se remplissent dès sa première révision.',
+            )}
+            actionLabel={t('family.inviteMember', 'Inviter un membre')}
+            onAction={() => navigate('/family/invite')}
+          />
         ) : (
-          <div className="space-y-2">
+          <ul className="flex flex-col gap-1">
             {members.map((m) => (
-              <div
-                key={m.id}
-                className="g2 flex items-center gap-3 p-3"
-              >
-                <span className="flex h-11 w-11 items-center justify-center rounded-full bg-surface-tint text-lg font-bold text-primary">
-                  {(m.profile?.displayName || m.accountId || '?').charAt(0).toUpperCase()}
-                </span>
-                <div className="flex-1">
-                  <p className="text-base font-semibold text-text-primary">
-                    {m.profile?.displayName || m.accountId}
-                  </p>
-                  <p className="text-xs text-text-muted">{roleLabel(m.role)}</p>
-                </div>
-                <DuoIcon icon={CheckCircle2} size={20} className="text-success" />
-              </div>
+              <li key={m.id}>
+                <MemberRow
+                  name={m.profile?.displayName || m.accountId}
+                  meta={roleLabel(m.role)}
+                  trailing={<DuoIcon icon={CheckCircle2} size={20} className="text-success" />}
+                />
+              </li>
             ))}
-          </div>
+          </ul>
         )}
 
         <button
+          type="button"
           onClick={() => navigate('/family/invite')}
-          className="flex w-full items-center gap-3 rounded-2xl bg-surface-tint p-4 text-left active:opacity-90"
+          className="g2 flex w-full items-center gap-3 p-4 text-left"
         >
           <span className="flex h-11 w-11 items-center justify-center rounded-full bg-primary text-on-primary">
             <DuoIcon icon={UserPlus} size={20} />

@@ -19,11 +19,13 @@ import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { DuoIcon } from '@/components/ui/DuoIcon';
 import { Button } from '@/components/ui/button';
 import {
+  FamilySubnav,
   HintNote,
   InfoRow,
   SectionCard,
   Segmented,
 } from '@/components/family/FamilyKit';
+import { Switch } from '@/components/ui/Switch';
 import { useFamilyRoom } from '@/hooks/useFamilyRoom';
 import { useFamilyRoomStore, type ResetDay } from '@/store/family-room-store';
 import { FAMILY_SWATCHES, familyTint } from '@/theme/family-palette';
@@ -88,6 +90,8 @@ export default function FamilySettingsScreen() {
       backPath="/family/home"
     >
       <div className="flex flex-col gap-4">
+        <FamilySubnav />
+
         <SectionCard title={t('familyPlus.familySection', 'Famille')}>
           <InfoRow
             label={t('familyPlus.familyNameLabel', 'Nom')}
@@ -140,24 +144,11 @@ export default function FamilySettingsScreen() {
               label={t('familyPlus.showScores', 'Afficher les scores détaillés')}
               icon={Ranking}
               trailing={
-                <button
-                  type="button"
-                  role="switch"
-                  aria-checked={current.showScores}
-                  aria-label={t('familyPlus.showScores', 'Afficher les scores détaillés')}
-                  onClick={() => updateSettings(family.id, { showScores: !current.showScores })}
-                  className={cn(
-                    'h-6 w-11 rounded-full p-0.5 transition',
-                    current.showScores ? 'bg-primary' : 'bg-surface-tint',
-                  )}
-                >
-                  <span
-                    className={cn(
-                      'block h-5 w-5 rounded-full bg-surface shadow-sm transition-transform',
-                      current.showScores ? 'translate-x-5' : 'translate-x-0',
-                    )}
-                  />
-                </button>
+                <Switch
+                  checked={current.showScores}
+                  label={t('familyPlus.showScores', 'Afficher les scores détaillés')}
+                  onCheckedChange={(v) => updateSettings(family.id, { showScores: v })}
+                />
               }
             />
             <HintNote>
@@ -169,24 +160,11 @@ export default function FamilySettingsScreen() {
             <InfoRow
               label={t('familyPlus.showAliases', 'Afficher les alias')}
               trailing={
-                <button
-                  type="button"
-                  role="switch"
-                  aria-checked={current.showAliases}
-                  aria-label={t('familyPlus.showAliases', 'Afficher les alias')}
-                  onClick={() => updateSettings(family.id, { showAliases: !current.showAliases })}
-                  className={cn(
-                    'h-6 w-11 rounded-full p-0.5 transition',
-                    current.showAliases ? 'bg-primary' : 'bg-surface-tint',
-                  )}
-                >
-                  <span
-                    className={cn(
-                      'block h-5 w-5 rounded-full bg-surface shadow-sm transition-transform',
-                      current.showAliases ? 'translate-x-5' : 'translate-x-0',
-                    )}
-                  />
-                </button>
+                <Switch
+                  checked={current.showAliases}
+                  label={t('familyPlus.showAliases', 'Afficher les alias')}
+                  onCheckedChange={(v) => updateSettings(family.id, { showAliases: v })}
+                />
               }
             />
           </div>

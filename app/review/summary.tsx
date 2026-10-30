@@ -77,13 +77,16 @@ export default function ReviewSummaryScreen() {
   return (
     <FullScreenPage title={t('review.summary', 'Résumé de session')} backPath="/review/queue">
       {/* Streak hero */}
-      <div className="mb-5 flex flex-col items-center rounded-2xl bg-primary p-6 text-on-primary shadow">
-        <span className="flex items-center gap-1.5 text-sm text-on-primary/90">
-          <DuoIcon icon={Flame} size={16} />
-          {t('progress.streak', 'Série quotidienne')} 🔥
+      {/* Série : un chiffre clé, pas un aplat d'accent. Le libellé est une
+          micro-capitale du système, la valeur suit `.stat-value` (serif,
+          tabulaire, encre d'accent lisible sur les 39 presets). */}
+      <div className="g1 mb-5 flex flex-col items-center p-6 text-center">
+        <span className="section-label flex items-center gap-1.5">
+          <DuoIcon icon={Flame} size={14} />
+          {t('progress.streak', 'Série quotidienne')}
         </span>
-        <span className="mt-2 text-5xl font-extrabold">{stats?.streakCount ?? 0}</span>
-        <span className="mt-1 text-sm text-on-primary/90">
+        <span className="stat-value mt-2 text-5xl">{stats?.streakCount ?? 0}</span>
+        <span className="mt-1 text-sm text-text-muted">
           {t('home.streak', { count: stats?.streakCount ?? 0 })}
         </span>
       </div>

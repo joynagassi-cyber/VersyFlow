@@ -27,16 +27,14 @@ import {
   AlertCircleIcon as AlertCircle,
   Loading03Icon as Loader2,
   UserMultiple02Icon as Users,
-  ChampionIcon as Trophy,
-  FireIcon as Flame,
   NoteIcon as Note,
   HierarchyIcon as Tree,
-  Time04Icon as Clock,
-  Settings02Icon as Settings,
+  CloudUploadIcon as Cloud,
 } from '@/components/ui/solar-icons';
 import FullScreenPage from '@/components/layout/FullScreenPage';
 import { Button } from '@/components/ui/button';
-import { HintNote, MemberAvatar, ProgressBar, SectionCard } from '@/components/family/FamilyKit';
+import { EmptyState } from '@/components/ui/EmptyState';
+import { FamilyHero, FamilySubnav, HintNote, MemberAvatar, MemberRow, ProgressBar, SectionCard } from '@/components/family/FamilyKit';
 import { cn } from '@/lib/utils';
 import { useFamilySyncStore } from '@/store/family-sync-store';
 import { useFamilyService } from '@/hooks/useFamilyService';
@@ -154,14 +152,15 @@ export default function FamilyHomeScreen() {
       .slice(0, 3);
   }, [challenges, familyId, members]);
 
+  /* Les six sections de la famille vivent dans la sous-navigation ; ces
+     raccourcis ne portent donc que les OUTILS qui ne sont pas des sections.
+     Auparavant, sept tuiles reprenaient Membres/Défis/Points/Activité/Réglages
+     juste sous une barre qui les proposait déjà : deux chemins pour un même
+     écran, donc aucun chemin évident. */
   const shortcuts = [
-    { label: t('familyPlus.members', 'Membres'), icon: Users, to: '/family/members' },
-    { label: t('familyPlus.challengesTitle', 'Défis d’équipe'), icon: Trophy, to: '/family/challenges' },
-    { label: t('familyPlus.pointsTitle', 'Points et niveaux'), icon: Flame, to: '/family/points' },
-    { label: t('familyPlus.activityTitle', 'Activité'), icon: Clock, to: '/family/activity' },
     { label: t('familyPlus.semanticTree', 'Arbre sémantique'), icon: Tree, to: '/semantic/tags' },
     { label: t('notes.title', 'Notes'), icon: Note, to: '/notes' },
-    { label: t('familyPlus.familySettingsTitle', 'Réglages famille'), icon: Settings, to: '/family/settings' },
+    { label: t('familyPlus.syncTitle', 'Synchronisation'), icon: Cloud, to: '/family/sync' },
   ];
 
   return (
@@ -184,6 +183,7 @@ export default function FamilyHomeScreen() {
       }
     >
       <div className="flex flex-col gap-4">
+        <FamilySubnav />
         {activeFamily ? (
           <>
             {/* Profil actif */}
@@ -208,72 +208,56 @@ export default function FamilyHomeScreen() {
               </div>
             </SectionCard>
 
-            {/* Carte série */}
-            <div className="relative overflow-hidden rounded-[28px] bg-primary p-5 text-on-primary shadow-lg">
-              <div className="flex items-start justify-between gap-4">
-                <div className="min-w-0">
-                  <p className="text-2xs font-bold uppercase tracking-wider opacity-80">
-                    {t('familyPlus.familyStreak', 'Série de la famille')}
-                  </p>
-                  <p className="mt-1 text-4xl font-bold tabular-nums">
-                    {streak === null ? '—' : streak}
-                    {streak !== null && (
-                      <span className="ml-2 text-sm font-semibold opacity-80">
-                        {t('familyPlus.unitDays', 'jours')}
-                      </span>
+            {/* Série de la famille — un chiffre clé, pas un dégradé décoratif.
+                `FamilyHero` porte le libellé, la valeur (`.stat-value`), l'anneau
+                de participation et les avatars ; tout vient du thème. */}
+            <FamilyHero
+              label={t('familyPlus.familyStreak', 'Série de la famille')}
+              value={streak === null ? '—' : streak}
+              unit={streak === null ? undefined : t('familyPlus.unitDays', 'jours')}
+              caption={
+                streak === null ? t('familyPlus.notMeasured', 'non mesuré') : undefined
+              }
+              ring={todayPct}
+              ringLabel={t(
+                'familyPlus.todayRatio',
+                '{{done}} membres sur {{total}} ont révisé aujourd’hui',
+                { done: todayReviewed, total: members.length },
+              )}
+              avatars={
+                members.slice(0, 5).map((member) => (
+                  <span
+                    key={member.accountId}
+                    className={cn(
+                      'rounded-full ring-2 ring-border',
+                      todayActors.has(member.name) ? 'opacity-100' : 'opacity-45',
                     )}
-                  </p>
-                  {streak === null && (
-                    <p className="mt-1 text-xs opacity-80">{t('familyPlus.notMeasured', 'non mesuré')}</p>
-                  )}
-                </div>
-                <div
-                  className="grid h-16 w-16 shrink-0 place-items-center rounded-full"
-                  style={{
-                    background: `conic-gradient(var(--color-primary-foreground, #fff) ${todayPct}%, color-mix(in srgb, var(--color-primary-foreground, #fff) 22%, transparent) 0)`,
-                  }}
-                  role="img"
-                  aria-label={t('familyPlus.todayRatio', '{{done}} membres sur {{total}} ont révisé aujourd’hui', {
-                    done: todayReviewed,
-                    total: members.length,
-                  })}
-                >
-                  <span className="grid h-12 w-12 place-items-center rounded-full bg-primary text-sm font-bold tabular-nums">
-                    {todayPct}%
+                  >
+                    <MemberAvatar name={member.name} size={26} muted={!todayActors.has(member.name)} />
                   </span>
-                </div>
-              </div>
-
-              <div className="mt-4 flex items-center gap-2">
-                <div className="flex -space-x-2">
-                  {members.slice(0, 5).map((member) => (
-                    <span
-                      key={member.accountId}
-                      className={cn(
-                        'ring-2 ring-primary',
-                        todayActors.has(member.name) ? 'opacity-100' : 'opacity-50',
-                      )}
-                    >
-                      <MemberAvatar name={member.name} size={26} muted={!todayActors.has(member.name)} />
-                    </span>
-                  ))}
-                </div>
-                <p className="text-xs opacity-90">
-                  {t('familyPlus.todayRatio', '{{done}} membres sur {{total}} ont révisé aujourd’hui', {
-                    done: todayReviewed,
-                    total: members.length,
-                  })}
-                </p>
-              </div>
-            </div>
+                ))
+              }
+              footnote={
+                <>
+                  <span>
+                    {t('familyPlus.todayRatio', '{{done}} membres sur {{total}} ont révisé aujourd’hui', {
+                      done: todayReviewed,
+                      total: members.length,
+                    })}
+                  </span>
+                  <span className="tabular-nums">{todayPct}%</span>
+                </>
+              }
+            />
 
             {/* Défi en cours */}
             <SectionCard
               title={t('familyPlus.runningChallenge', 'Défi en cours')}
               action={
                 <button
+                  type="button"
                   onClick={() => navigate('/family/challenges')}
-                  className="text-xs font-semibold text-primary"
+                  className="link-action"
                 >
                   {t('familyPlus.seeAll', 'Voir tout')}
                 </button>
@@ -332,8 +316,9 @@ export default function FamilyHomeScreen() {
               title={t('familyPlus.weeklyLeaderboard', 'Classement de la semaine')}
               action={
                 <button
+                  type="button"
                   onClick={() => navigate('/family/leaderboard')}
-                  className="text-xs font-semibold text-primary"
+                  className="link-action"
                 >
                   {t('familyPlus.seeAll', 'Voir tout')}
                 </button>
@@ -344,42 +329,37 @@ export default function FamilyHomeScreen() {
                   {t('familyPlus.noMembers', 'Aucun membre pour l’instant')}
                 </p>
               ) : (
-                <ul className="flex flex-col gap-2">
+                <ul className="flex flex-col">
                   {leaderRows.map((row, index) => (
                     <li key={row.accountId}>
-                      <button
-                        type="button"
+                      <MemberRow
+                        name={row.name}
+                        avatarSize={32}
+                        meta={`${index + 1}${index === 0 ? ' · ' + t('familyPlus.leader', 'en tête') : ''}`}
                         onClick={() => navigate(`/family/member/${encodeURIComponent(row.accountId)}`)}
-                        className="flex w-full items-center gap-3 rounded-xl p-1 text-left"
-                      >
-                        <span className="w-4 text-center text-sm font-bold tabular-nums text-text-muted">
-                          {index + 1}
-                        </span>
-                        <MemberAvatar name={row.name} size={32} />
-                        <span className="min-w-0 flex-1 truncate text-sm font-semibold text-text-primary">
-                          {row.name}
-                        </span>
-                        <span className="shrink-0 text-sm font-bold tabular-nums text-primary">
-                          {row.points} {t('familyPlus.pts', 'pts')}
-                        </span>
-                      </button>
+                        trailing={
+                          <span className="shrink-0 text-sm font-semibold tabular-nums text-primary">
+                            {row.points} {t('familyPlus.pts', 'pts')}
+                          </span>
+                        }
+                      />
                     </li>
                   ))}
                 </ul>
               )}
             </SectionCard>
 
-            {/* Raccourcis */}
-            <div className="grid grid-cols-2 gap-2">
+            {/* Outils liés à la famille (hors sections, déjà dans la sous-nav) */}
+            <div className="grid grid-cols-3 gap-2">
               {shortcuts.map((shortcut) => (
                 <button
                   key={shortcut.to}
                   type="button"
                   onClick={() => navigate(shortcut.to)}
-                  className="g2 flex items-center gap-2 p-3 text-left"
+                  className="g2 flex min-h-20 flex-col items-center justify-center gap-1.5 p-3 text-center"
                 >
                   <DuoIcon icon={shortcut.icon} size={18} className="shrink-0 text-primary" />
-                  <span className="truncate text-xs font-semibold text-text-primary">
+                  <span className="text-2xs font-semibold leading-tight text-text-primary">
                     {shortcut.label}
                   </span>
                 </button>
@@ -394,25 +374,22 @@ export default function FamilyHomeScreen() {
             </HintNote>
           </>
         ) : (
-          <div className="g2 flex flex-col items-center p-8 text-center">
-            <span className="text-5xl">👨‍👩‍👧‍👦</span>
-            <p className="mt-4 text-lg font-bold text-text-primary tabular-nums">
-              {families.length === 0
+          <EmptyState
+            tone="inline"
+            icon={Users}
+            title={
+              families.length === 0
                 ? t('family.noFamiliesYet', 'Aucune famille pour l’instant')
-                : t('family.noFamily', 'Aucune famille active')}
-            </p>
-            <p className="mt-1 text-sm text-text-muted">
-              {t('family.createFamily', 'Créez une famille')} {t('family.shareDesc', 'pour partager votre progression')}
-            </p>
-            {!signedIn && (
-              <p className="mt-3 text-xs text-text-muted">
-                {t('family.signedInRequired', 'Connectez-vous pour créer ou rejoindre une famille')}
-              </p>
-            )}
-            <Button className="mt-4" onClick={() => navigate('/family/create')}>
-              {t('family.createFamily', 'Créer une famille')}
-            </Button>
-          </div>
+                : t('family.noFamily', 'Aucune famille active')
+            }
+            description={
+              signedIn
+                ? `${t('family.createFamily', 'Créez une famille')} ${t('family.shareDesc', 'pour partager votre progression')}`
+                : t('family.signedInRequired', 'Connectez-vous pour créer ou rejoindre une famille')
+            }
+            actionLabel={t('family.createFamily', 'Créer une famille')}
+            onAction={() => navigate('/family/create')}
+          />
         )}
 
         {/* Créer / rejoindre, toujours accessible */}
@@ -424,7 +401,7 @@ export default function FamilyHomeScreen() {
               placeholder={t('family.familyNamePlaceholder', 'Ex. Famille Martin')}
               aria-label={t('family.familyName', 'Nom de la famille')}
               maxLength={40}
-              className="rounded-xl border border-border bg-surface px-4 py-3 text-base text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-1 focus:ring-primary"
+              className="h-11 rounded-xl border border-border bg-surface px-4 text-base text-text-primary placeholder:text-text-placeholder"
             />
             {createError && (
               <p className="flex items-center gap-1.5 rounded-xl bg-error/10 px-3 py-2 text-sm text-error">

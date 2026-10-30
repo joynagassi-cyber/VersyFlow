@@ -328,10 +328,6 @@ export default function SearchScreen() {
                     <DuoIcon icon={GraduationCap} size={14} />
                     {t('search.memorize', 'Memoriser')}
                   </button>
-                  <button className="flex items-center gap-1.5 rounded-full bg-surface-tint px-3 py-1.5 text-sm font-medium text-primary">
-                    <DuoIcon icon={Bookmark} size={14} />
-                    {t('search.save', 'Sauvegarder')}
-                  </button>
                 </div>
               </div>
             ))}

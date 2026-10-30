@@ -15,6 +15,7 @@ import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { DuoIcon } from '@/components/ui/DuoIcon';
 import { Button } from '@/components/ui/button';
 import {
+  FamilySubnav,
   HintNote,
   MemberAvatar,
   ProgressBar,
@@ -77,6 +78,8 @@ export default function FamilyChallengesScreen() {
       }
     >
       <div className="flex flex-col gap-4">
+        <FamilySubnav />
+
         <Segmented<Tab>
           label={t('familyPlus.challengeTabs', 'Filtres des défis')}
           value={tab}
@@ -116,7 +119,7 @@ export default function FamilyChallengesScreen() {
                 >
                   <div className="flex items-start justify-between gap-2">
                     <div className="min-w-0">
-                      <p className="text-2xs font-bold uppercase tracking-wide text-primary">
+                      <p className="micro-label text-primary">
                         {challenge.kind === 'passage'
                           ? t('familyPlus.kindPassage', 'Passage commun')
                           : challenge.kind === 'collectif'
@@ -129,7 +132,7 @@ export default function FamilyChallengesScreen() {
                       <p className="mt-0.5 text-xs text-text-muted">{challenge.passage}</p>
                     </div>
                     {challenge.status === 'active' && (
-                      <span className="rounded-full bg-surface-tint px-2 py-1 text-2xs font-bold tabular-nums text-primary">
+                      <span className="inline-flex shrink-0 items-center rounded-full bg-surface-tint px-2 py-1 text-2xs font-semibold tabular-nums text-primary">
                         {t('familyPlus.daysLeft', 'J-{{days}}', { days: daysLeft(challenge) })}
                       </span>
                     )}

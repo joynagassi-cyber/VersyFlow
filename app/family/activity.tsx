@@ -11,11 +11,13 @@ import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import {
+  FamilySubnav,
   HintNote,
   MemberAvatar,
   SectionCard,
   Segmented,
 } from '@/components/family/FamilyKit';
+import { Chip } from '@/components/ui/Chip';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { useFamilyRoom } from '@/hooks/useFamilyRoom';
 import { useFamilyRoomStore, type ActivityKind } from '@/store/family-room-store';
@@ -66,6 +68,8 @@ export default function FamilyActivityScreen() {
       backPath="/family/home"
     >
       <div className="flex flex-col gap-4">
+        <FamilySubnav />
+
         <Segmented<Filter>
           label={t('familyPlus.activityFilter', 'Filtrer l’activité')}
           value={filter}
@@ -86,16 +90,16 @@ export default function FamilyActivityScreen() {
             )}
           />
         ) : (
-          <ul className="flex flex-col gap-3">
-            {entries.map((entry) => {
-              const label = KIND_LABEL[entry.kind];
-              return (
-                <li key={entry.id}>
-                  <SectionCard>
+          <SectionCard>
+            <ul className="flex flex-col divide-y divide-divider">
+              {entries.map((entry) => {
+                const label = KIND_LABEL[entry.kind];
+                return (
+                  <li key={entry.id} className="py-3 first:pt-0 last:pb-0">
                     <div className="flex items-start gap-3">
                       <MemberAvatar name={entry.actor || '?'} size={36} />
                       <div className="min-w-0 flex-1">
-                        <p className="text-sm text-text-primary">
+                        <p className="text-sm leading-relaxed text-text-primary">
                           <span className="font-semibold">{entry.actor || t('familyPlus.someone', 'Un membre')}</span>{' '}
                           {t(label.key, label.fallback)}{' '}
                           <span className="font-semibold">{entry.target}</span>
@@ -105,39 +109,32 @@ export default function FamilyActivityScreen() {
                         <div className="mt-2 flex flex-wrap gap-1.5">
                           {REACTIONS.map((reaction) => {
                             const count = entry.reactions[reaction.key] ?? 0;
+                            const reactionLabel = t(
+                              reaction.key === 'cheer'
+                                ? 'familyPlus.reactCheer'
+                                : reaction.key === 'courage'
+                                  ? 'familyPlus.reactCourage'
+                                  : 'familyPlus.reactKeepGoing',
+                              reaction.label,
+                            );
                             return (
-                              <button
+                              <Chip
                                 key={reaction.key}
-                                type="button"
+                                active={count > 0}
                                 onClick={() => react(entry.id, reaction.key)}
-                                className={cn(
-                                  'rounded-full px-2.5 py-1 text-2xs font-semibold transition',
-                                  count > 0
-                                    ? 'bg-surface-tint text-primary'
-                                    : 'bg-surface-tint/60 text-text-muted',
-                                )}
-                                aria-label={`${t(reaction.key === 'cheer' ? 'familyPlus.reactCheer' : reaction.key === 'courage' ? 'familyPlus.reactCourage' : 'familyPlus.reactKeepGoing', reaction.label)} ${entry.actor}`}
-                              >
-                                {t(
-                                  reaction.key === 'cheer'
-                                    ? 'familyPlus.reactCheer'
-                                    : reaction.key === 'courage'
-                                      ? 'familyPlus.reactCourage'
-                                      : 'familyPlus.reactKeepGoing',
-                                  reaction.label,
-                                )}
-                                {count > 0 ? ` · ${count}` : ''}
-                              </button>
+                                label={count > 0 ? `${reactionLabel} · ${count}` : reactionLabel}
+                                className="min-h-8 px-2.5 text-2xs"
+                              />
                             );
                           })}
                         </div>
                       </div>
                     </div>
-                  </SectionCard>
-                </li>
-              );
-            })}
-          </ul>
+                  </li>
+                );
+              })}
+            </ul>
+          </SectionCard>
         )}
 
         <HintNote>

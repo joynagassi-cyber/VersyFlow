@@ -106,13 +106,13 @@ export default function HomeScreen() {
 
   const quickActions = [
     { icon: Compass, label: t('home.explore', 'Explorer la Bible'), desc: t('home.exploreDesc', 'Livre & chapitre'), action: () => navigate('/bible/explorer') },
-    { icon: Gem, label: t('session.memorizing', 'Mémorisation'), desc: 'Nouveau verset', action: () => navigate('/memorization/session') },
+    { icon: Gem, label: t('session.memorizing', 'Mémorisation'), desc: t('home.memorizeDesc', 'Nouveau verset'), action: () => navigate('/memorization/session') },
     { icon: ScrollText, label: t('home.passage', 'Passage'), desc: t('home.passageDesc', 'Multi-versets'), action: () => navigate('/bible/chapter') },
     { icon: CalendarClock, label: t('home.review', 'Réviser'), desc: t('home.reviewDesc', 'Méthode FSRS'), action: () => navigate('/review/queue') },
     { icon: TrendingUp, label: t('home.progress', 'Progression'), desc: t('home.progressDesc', 'Statistiques'), action: () => navigate('/analytics/dashboard') },
     { icon: HeartHandshake, label: t('home.family', 'Famille'), desc: t('home.familyDesc', 'Partager'), action: () => navigate('/family/home') },
     { icon: Library, label: t('home.bibleVersions', 'Versions de la Bible'), desc: t('home.bibleVersionsDesc', 'Téléchargées'), action: () => navigate('/settings/available-translations') },
-    { icon: Feather, label: t('home.notes', 'Notes & tags'), desc: 'Mémoire sémantique', action: () => navigate('/semantic') },
+    { icon: Feather, label: t('home.notes', 'Notes & tags'), desc: t('home.notesDesc', 'Mémoire sémantique'), action: () => navigate('/semantic') },
   ];
 
   return (
@@ -136,19 +136,49 @@ export default function HomeScreen() {
           </article>
           <article className="g2 home-streak">
             <p className="home-label"><DuoIcon icon={Flame} size={20} /> {t('home.streakLabel', 'Série de jours')}</p>
-            <div className="home-ring" aria-label={streak === null ? 'Série indisponible' : `${Math.min(streak, 7)} jours sur les 7 derniers`}>
+            <div
+              className="home-ring"
+              aria-label={
+                streak === null
+                  ? t('home.streakUnavailable', 'Série indisponible')
+                  : t('home.streakRing', '{{done}} jours sur les 7 derniers', {
+                      done: Math.min(streak, 7),
+                    })
+              }
+            >
               <svg viewBox="0 0 100 100" aria-hidden="true"><circle className="home-ring-track" cx="50" cy="50" r="44" fill="none" strokeWidth="6" /><circle className="home-ring-progress" cx="50" cy="50" r="44" fill="none" strokeWidth="6" strokeDasharray={`${Math.min(streak ?? 0, 7) / 7 * 276.46} 276.46`} /></svg>
-              <strong>{streak ?? '–'}</strong>
+              <strong>{streak ?? '—'}</strong>
             </div>
-            <div className="home-week" aria-label="Série sur les sept derniers jours en temps universel">
+            <div
+              className="home-week"
+              aria-label={t(
+                'home.streakWeekLabel',
+                'Série sur les sept derniers jours, en temps universel',
+              )}
+            >
               {Array.from({ length: 7 }, (_, index) => { const daysAgo = 6 - index; const day = new Date(Date.now() - daysAgo * 86400000); return <span key={daysAgo} data-active={streak !== null && daysAgo < streak} title={day.toLocaleDateString(locale, { timeZone: 'UTC', dateStyle: 'medium' })}>{day.toLocaleDateString(locale, { timeZone: 'UTC', weekday: 'narrow' })}</span>; })}
             </div>
-            <p className="home-muted">{streak === null ? 'Données indisponibles' : `${streak} ${streak > 1 ? 'jours consécutifs' : 'jour consécutif'}`}</p>
-            <button className="home-secondary" onClick={() => navigate('/tabs/progress')}>Voir la progression</button>
+            <p className="home-muted">
+              {streak === null
+                ? t('home.dataUnavailable', 'Données indisponibles')
+                : t('home.streakDays', '{{count}} jours consécutifs', { count: streak })}
+            </p>
+            <button className="home-secondary" onClick={() => navigate('/tabs/progress')}>
+              {t('home.viewProgress', 'Voir la progression')}
+            </button>
           </article>
         </div>
         <div className="home-stats">
-          {[['Versets mémorisés', total], ['Versets maîtrisés', mastered], ['Révisions à faire', reviewsDue]].map(([label, value]) => <div className="g2 home-stat" key={label}><span className="home-label">{label}</span><strong>{value ?? '–'}</strong></div>)}
+          {[
+            [t('progress.versesMemorized', 'Versets mémorisés'), total],
+            [t('progress.mastered', 'Versets maîtrisés'), mastered],
+            [t('review.due', 'Révisions à faire'), reviewsDue],
+          ].map(([label, value]) => (
+            <div className="g2 home-stat" key={String(label)}>
+              <span className="home-label">{label}</span>
+              <strong>{value ?? '—'}</strong>
+            </div>
+          ))}
         </div>
         <h2 className="g1 home-section-title">{t('home.quickActions', 'Actions rapides')}</h2>
         <div className="home-quick-grid">
@@ -156,7 +186,15 @@ export default function HomeScreen() {
         </div>
         <h2 className="g1 home-section-title">{t('home.recentVerses', 'Récemment mémorisés')}</h2>
         <div className="home-recent">
-          {recentVerses.length === 0 ? <p className="g2 home-empty">{total === null ? 'Données indisponibles' : 'Aucun verset mémorisé pour le moment'}</p> : recentVerses.map((verse) => <button key={verse.id} className="g2 home-recent-card" onClick={() => navigate(verse.bookId && verse.chapterNumber ? `/bible/chapter/${verse.bookId}/${verse.chapterNumber}` : '/bible/chapter')}><strong>{verse.bibleVerseReference || `${verse.bookId} ${verse.chapterNumber}:${verse.verseNumber}`}</strong><span>{verse.bibleVerseText}</span><small>{verse.status === 'mastered' ? 'Maîtrisé' : 'En cours'}</small><span className="home-mastery" aria-hidden="true"><i style={{ width: verse.status === 'mastered' ? '100%' : '0%' }} /></span></button>)}
+          {recentVerses.length === 0 ? <p className="g2 home-empty">
+              {total === null
+                ? t('home.dataUnavailable', 'Données indisponibles')
+                : t('home.noRecentVerses', 'Aucun verset mémorisé pour le moment')}
+            </p> : recentVerses.map((verse) => <button key={verse.id} className="g2 home-recent-card" onClick={() => navigate(verse.bookId && verse.chapterNumber ? `/bible/chapter/${verse.bookId}/${verse.chapterNumber}` : '/bible/chapter')}><strong>{verse.bibleVerseReference || `${verse.bookId} ${verse.chapterNumber}:${verse.verseNumber}`}</strong><span>{verse.bibleVerseText}</span><small>
+                {verse.status === 'mastered'
+                  ? t('progress.mastered', 'Maîtrisé')
+                  : t('progress.inProgress', 'En cours')}
+              </small><span className="home-mastery" aria-hidden="true"><i style={{ width: verse.status === 'mastered' ? '100%' : '0%' }} /></span></button>)}
         </div>
       </div>
     </div>

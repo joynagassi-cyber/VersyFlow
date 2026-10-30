@@ -120,7 +120,7 @@ export function ManuscriptView({
         {/* Semantic concepts for the selected verse, in-flow */}
         {showSemanticTags && selectedVerse != null && selectedConcepts.length > 0 && (
           <div className="mt-5 border-t border-[color:var(--color-divider)] pt-4">
-            <p className="mb-2 text-xs font-bold uppercase tracking-wide text-text-muted">
+            <p className="mb-2 section-label">
               {t('semantic.concepts', 'Concepts')} · {t('bible.verse', 'Verset')} {selectedVerse}
             </p>
             <VerseSemanticTags concepts={selectedConcepts} userSource={selectedIsUser} />

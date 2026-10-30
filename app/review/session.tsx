@@ -16,8 +16,10 @@ import {
   RotateCcwIcon as RotateCcw,
   StarIcon as Star,
   CheckIcon as Check,
+  CheckmarkCircle01Icon as CheckCircle,
   Cancel01Icon as X,
 } from '@/components/ui/solar-icons';
+import { EmptyState } from '@/components/ui/EmptyState';
 import FullScreenPage from '@/components/layout/FullScreenPage';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -238,14 +240,13 @@ export default function ReviewSessionScreen() {
   if (!current) {
     return (
       <FullScreenPage title={t('review.todayReviews', 'Révisions du jour')} backPath="/review/queue">
-        <div className="flex flex-col items-center py-20 text-center">
-          <p className="text-lg font-semibold text-text-primary">
-            {t('home.noReviews', 'Tout est à jour ! ✓')}
-          </p>
-          <Button className="mt-6" onClick={() => navigate('/review/queue')}>
-            {t('review.startReview', 'Retour à la file')}
-          </Button>
-        </div>
+        <EmptyState
+          className="border-0 py-16"
+          icon={<DuoIcon icon={CheckCircle} size={32} className="text-success" />}
+          title={t('home.noReviews', 'Tout est à jour')}
+          actionLabel={t('review.startReview', 'Retour à la file')}
+          onAction={() => navigate('/review/queue')}
+        />
       </FullScreenPage>
     );
   }

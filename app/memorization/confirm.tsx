@@ -45,9 +45,11 @@ export default function MemorizationConfirm() {
       backPath={reference ? '/memorization/session' : '/tabs/home'}
     >
       <div className="flex flex-col items-center py-8">
-        <span className="text-6xl">✨</span>
-        <h1 className="mt-4 text-2xl font-bold text-text-primary">
-          {t('session.verseComplete', "Verset mémorisé! ✨")}
+        <span className="icon-chip flex h-16 w-16 items-center justify-center rounded-full" aria-hidden="true">
+          <DuoIcon icon={PartyPopper} size={30} className="text-primary" />
+        </span>
+        <h1 className="page-title mt-4">
+          {t('session.verseComplete', 'Verset mémorisé')}
         </h1>
         {reference && (
           <p className="mt-2 text-base font-semibold text-primary">{reference}</p>

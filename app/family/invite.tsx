@@ -123,12 +123,13 @@ export default function FamilyInviteScreen() {
           </span>
           {inviteCode ? (
             <div className="flex items-center gap-3">
-              <span className="text-3xl font-extrabold tracking-widest text-primary">
+              <span className="stat-value text-3xl tracking-[0.18em] text-primary">
                 {inviteCode}
               </span>
               <button
+                type="button"
                 onClick={() => fireAndForget(handleCopy(), 'family:copy')}
-                className="rounded-full bg-surface-tint p-2 active:bg-primary/10"
+                className="touch-target rounded-full bg-surface-tint text-primary active:bg-primary/10"
                 aria-label={copied ? t('common.saved', 'Copié') : t('common.copy', 'Copier')}
               >
                 {copied ? <DuoIcon icon={Check} size={18} className="text-success" /> : <DuoIcon icon={Copy} size={18} className="text-primary" />}
