@@ -36,12 +36,6 @@ interface Collection {
 // src/styles/globals.css) so collections adapt to light/dark themes.
 // Legacy localStorage data may still hold raw hex values — both render fine
 // since the consumers use color-mix() and plain `color` styles.
-const SAMPLE_COLLECTIONS: Collection[] = [
-  { id: '1', name: 'Mes favoris', description: 'Versets sauvegardes', verseCount: 12, lastUpdated: "Aujourd'hui", color: 'var(--color-primary)', icon: 'heart', verses: ['Jean 3:16', 'Psaume 23:1', 'Romains 8:28'] },
-  { id: '2', name: 'Psaumes', description: 'Collection de psaumes', verseCount: 8, lastUpdated: 'Hier', color: 'var(--color-info)', icon: 'musicalNotes', verses: ['Psaume 23', 'Psaume 91', 'Psaume 119'] },
-  { id: '3', name: 'Evangiles', description: 'Paroles de Jesus', verseCount: 15, lastUpdated: 'Il y a 3 jours', color: 'var(--color-success)', icon: 'book', verses: ['Matthieu 5:3', 'Jean 14:6'] },
-  { id: '4', name: 'Memorises', description: 'Verset en cours de memorisation', verseCount: 5, lastUpdated: "Aujourd'hui", color: 'var(--color-warning)', icon: 'bulb', verses: ['Jean 3:16', 'Philippiens 4:13'] },
-];
 
 const STORAGE_KEY = 'versyflow:collections';
 const NEW_COLLECTION_COLORS = [
@@ -76,7 +70,7 @@ export default function CollectionsScreen() {
     } catch {
       /* fall back to seed */
     }
-    return SAMPLE_COLLECTIONS;
+    return [];
   });
   const [loadError, setLoadError] = useState<string | null>(() => {
     // localStorage read itself cannot throw a typed error we need to
@@ -182,7 +176,12 @@ export default function CollectionsScreen() {
             <p className="text-sm text-error">{loadError}</p>
             <button
               onClick={() => {
-                setCollections(SAMPLE_COLLECTIONS);
+                try {
+                  localStorage.removeItem(STORAGE_KEY);
+                } catch {
+                  /* stockage indisponible : on reste en mémoire */
+                }
+                setCollections([]);
                 setLoadError(null);
               }}
               className="rounded-full bg-primary px-5 py-2 text-sm font-semibold text-on-primary active:opacity-90"
@@ -258,7 +257,7 @@ export default function CollectionsScreen() {
         ) : filtered.length === 0 ? (
           <EmptyState
             title={t('collections.empty', 'Aucune collection')}
-            description={t('collections.emptyHint', 'Créez votre premiere collection.')}
+            description={t('collections.emptyHint', 'Créez votre première collection.')}
             actionLabel={t('collections.create', 'Creer une collection')}
             onAction={() => setCreating(true)}
             showLogo={false}

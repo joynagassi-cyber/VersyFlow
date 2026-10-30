@@ -282,6 +282,11 @@ export const en = {
     completePrompt: 'Complete this verse:',
     downloadingTranslation: 'Downloading translation…',
     flashcards: 'Flashcards',
+    noFlashcards: 'No cards to review',
+    noFlashcardsHint:
+      'Cards fill up with the verses you memorise on this device.',
+    memorizeVerse: 'Memorise a verse',
+    masteredCount: 'mastered',
     fullVerse: 'Full verse',
     mastered: 'Mastery',
     review: 'To review',
@@ -909,6 +914,8 @@ export const en = {
   },
 
   familyPlus: {
+    noParticipantsHint:
+      'This session’s points appear as soon as a member finishes their part.',
     overview: 'Overview',
     sections: 'Family sections',
     leader: 'leading',

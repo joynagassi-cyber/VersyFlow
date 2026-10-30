@@ -135,6 +135,7 @@ utilisée existe en `fr` **et** en `en`.
 | Chaînes françaises en dur (accueil, FSRS, onboarding, `ErrorBoundary`, panneau de fond) | Clés i18n (`home.memorizeDesc`, `onboarding.fsrs*`, `errorBoundary.*`, `appearanceEditor.*`) |
 | Commandes mortes (« Sauvegarder » sans action, suppression de compte inerte) | Bouton supprimé ; l'export mène à « Activités & Données », la suppression explique pourquoi elle exige une session connectée |
 | Cartes non actionnables au survol | `:where(button,a):is(.g1,.g2,.g3)` : élévation de 1 px au pointeur fin, neutralisée en mouvement réduit |
+| Faux contenu présenté comme réel : « Mes favoris » (12 versets inventés) et flashcards (3 cartes en dur, sans service) | Collections vides au premier lancement ; flashcards lues dans le service de mémorisation, avec `EmptyState` honnête quand il n'y a rien à réviser |
 
 ### Contrats ajoutés
 
@@ -142,10 +143,11 @@ utilisée existe en `fr` **et** en `en`.
   `aria-current` unique, styles `.family-subnav*`, aucun `conic-gradient`,
   `MemberRow` pour les listes, aucun rayon littéral, aucun emoji, aucun
   « Chargement… » nu, `EmptyState` seul pour les vides.
-- `tests/design/theme-adaptive-screens.test.ts` (15) : surfaces translucides en
+- `tests/design/theme-adaptive-screens.test.ts` (16) : surfaces translucides en
   fond image, matériau des cartes historiques, aucune police en dur, encre
   `text-on-status`, aucun `<button>` sans action, un seul `role="switch"`,
-  échelle de titres unique et fluide.
+  échelle de titres unique et fluide, **aucune donnée fabriquée** dans un
+  écran.
 - `tests/design/premium-finish.test.ts` : la règle serif admet désormais ses
   exemptions explicites (`.section-label`, `.stat-label`, `.micro-label`).
 

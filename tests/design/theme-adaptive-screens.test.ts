@@ -61,14 +61,6 @@ function uiSources(): { path: string; text: string }[] {
 
 const sources = uiSources();
 
-/** Un sélecteur précis du fichier de thème, commentaires retirés. */
-function cssHas(selector: string, declaration: RegExp): boolean {
-  const index = globals.indexOf(selector);
-  if (index === -1) return false;
-  const block = globals.slice(index, globals.indexOf('}', index));
-  return declaration.test(block);
-}
-
 describe('thème — les surfaces historiques suivent le fond actif', () => {
   it('sur fond image, la surface n’est plus un blanc opaque', () => {
     // Le fichier contient plusieurs blocs `html[data-bg='image']` : on cherche
@@ -182,7 +174,7 @@ describe('thème — aucun contrôle décoratif', () => {
     for (const m of code.matchAll(re)) {
       let depth = 0;
       let quote: string | null = null;
-      let i = m.index! + 7;
+      let i = (m.index ?? 0) + 7;
       for (; i < code.length; i += 1) {
         const ch = code[i];
         if (quote) {
@@ -194,7 +186,8 @@ describe('thème — aucun contrôle décoratif', () => {
         else if (ch === '}') depth -= 1;
         else if (ch === '>' && depth === 0) break;
       }
-      out.push({ tag: code.slice(m.index!, i + 1), index: m.index! });
+      const start = m.index ?? 0;
+      out.push({ tag: code.slice(start, i + 1), index: start });
     }
     return out;
   }
@@ -259,5 +252,18 @@ describe('thème — une seule échelle de titres', () => {
   it('l’échelle des titres est fluide, pas une taille fixe par écran', () => {
     expect(globals).toMatch(/\.page-title\s*\{[\s\S]{0,200}?font-size:\s*clamp\(/);
     expect(globals).toMatch(/\.page-title-lg\s*\{[\s\S]{0,200}?font-size:\s*clamp\(/);
+  });
+});
+
+describe('données — un écran ne fabrique pas de contenu', () => {
+  it('aucun écran ne présente de fausses données comme les vôtres', () => {
+    // Deux écrans le faisaient : « Mes favoris » (12 versets inventés) et
+    // les flashcards (trois cartes écrites en dur, sans lecture du service).
+    // Un contenu fabriqué n'est pas un détail de finition : c'est un mensonge
+    // sur l'état de l'utilisateur.
+    const guilty = sources
+      .filter(({ path }) => !path.startsWith('app/dev/') && !path.includes('__dev'))
+      .filter(({ text }) => /\b(SAMPLE|FAKE|MOCK)_[A-Z0-9_]+/.test(stripCodeComments(text)));
+    expect(guilty.map((g) => g.path)).toEqual([]);
   });
 });

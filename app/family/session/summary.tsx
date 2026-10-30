@@ -14,7 +14,12 @@ import { Add01Icon as PlusSign, ChampionIcon as Trophy } from '@/components/ui/s
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { DuoIcon } from '@/components/ui/DuoIcon';
 import { Button } from '@/components/ui/button';
-import { HintNote, MemberAvatar, SectionCard, StatTile } from '@/components/family/FamilyKit';
+import {
+  HintNote,
+  MemberRow,
+  SectionCard,
+  StatTile,
+} from '@/components/family/FamilyKit';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { useFamilyRoomStore } from '@/store/family-room-store';
 import { FAMILY_POINTS } from '@/services/family-scoring';
@@ -75,23 +80,29 @@ export default function FamilySessionSummaryScreen() {
 
         <SectionCard title={t('familyPlus.pointsEarned', 'Points gagnés')}>
           {entries.length === 0 ? (
-            <p className="text-sm text-text-muted">
-              {t('familyPlus.noParticipants', 'Aucun participant enregistré pour cette séance.')}
-            </p>
+            <EmptyState
+              tone="inline"
+              title={t('familyPlus.noParticipants', 'Aucun participant enregistré')}
+              description={t(
+                'familyPlus.noParticipantsHint',
+                'Les points de cette séance apparaîtront dès qu’un membre aura terminé sa part.',
+              )}
+            />
           ) : (
-            <ul className="flex flex-col divide-y divide-divider">
+            <ul className="flex flex-col">
               {entries.map((entry) => (
-                <li key={entry.name} className="flex items-center gap-3 py-2">
-                  <MemberAvatar name={entry.name} size={30} muted={entry.known === 0} />
-                  <span className="min-w-0 flex-1 truncate text-sm text-text-primary">
-                    {entry.name}
-                  </span>
-                  <span className="text-xs tabular-nums text-text-muted">
-                    {entry.known}/{entry.total || '—'}
-                  </span>
-                  <span className="w-10 text-right text-sm font-bold tabular-nums text-primary">
-                    +{entry.known * 5}
-                  </span>
+                <li key={entry.name}>
+                  <MemberRow
+                    name={entry.name}
+                    avatarSize={36}
+                    muted={entry.known === 0}
+                    meta={`${entry.known}/${entry.total || '—'}`}
+                    trailing={
+                      <span className="shrink-0 text-sm font-semibold tabular-nums text-primary">
+                        +{entry.known * 5}
+                      </span>
+                    }
+                  />
                 </li>
               ))}
             </ul>

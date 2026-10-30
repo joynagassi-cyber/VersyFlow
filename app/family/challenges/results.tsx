@@ -13,7 +13,12 @@ import { ChampionIcon as Trophy, Add01Icon as PlusSign } from '@/components/ui/s
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { DuoIcon } from '@/components/ui/DuoIcon';
 import { Button } from '@/components/ui/button';
-import { HintNote, MemberAvatar, SectionCard, StatTile } from '@/components/family/FamilyKit';
+import {
+  HintNote,
+  MemberRow,
+  SectionCard,
+  StatTile,
+} from '@/components/family/FamilyKit';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { useFamilyRoom } from '@/hooks/useFamilyRoom';
 import { useFamilyRoomStore } from '@/store/family-room-store';
@@ -72,20 +77,20 @@ export default function FamilyChallengeResultsScreen() {
         </SectionCard>
 
         <SectionCard title={t('familyPlus.leaderboardTitle', 'Classement')}>
-          <ul className="flex flex-col divide-y divide-divider">
+          <ul className="flex flex-col">
             {rows.map((row, index) => (
-              <li key={row.name} className="flex items-center gap-3 py-2">
-                <span className="w-4 text-center text-xs font-bold tabular-nums text-text-muted">
-                  {index + 1}
-                </span>
-                <MemberAvatar name={row.name} size={30} muted={index > 0} />
-                <span className="min-w-0 flex-1 truncate text-sm text-text-primary">{row.name}</span>
-                <span className="text-xs tabular-nums text-text-muted">
-                  {row.value} / {challenge.target}
-                </span>
-                <span className="w-12 text-right text-sm font-bold tabular-nums text-primary">
-                  +{row.points}
-                </span>
+              <li key={row.name}>
+                <MemberRow
+                  name={row.name}
+                  avatarSize={36}
+                  muted={index > 0}
+                  meta={`${index + 1} · ${row.value} / ${challenge.target}`}
+                  trailing={
+                    <span className="shrink-0 text-sm font-semibold tabular-nums text-primary">
+                      +{row.points}
+                    </span>
+                  }
+                />
               </li>
             ))}
           </ul>

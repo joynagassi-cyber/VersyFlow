@@ -282,6 +282,11 @@ export const fr = {
     completePrompt: 'Complétez ce verset :',
     downloadingTranslation: 'Téléchargement de la traduction…',
     flashcards: 'Flashcards',
+    noFlashcards: 'Aucune carte à réviser',
+    noFlashcardsHint:
+      'Les cartes se remplissent avec les versets que vous mémorisez sur cet appareil.',
+    memorizeVerse: 'Mémoriser un verset',
+    masteredCount: 'maîtrisées',
     fullVerse: 'Verset complet',
     mastered: 'Maîtrise',
     review: 'À revoir',
@@ -911,6 +916,8 @@ export const fr = {
   },
 
   familyPlus: {
+    noParticipantsHint:
+      'Les points de cette séance apparaîtront dès qu’un membre aura terminé sa part.',
     overview: 'Vue d’ensemble',
     sections: 'Sections de la famille',
     leader: 'en tête',
