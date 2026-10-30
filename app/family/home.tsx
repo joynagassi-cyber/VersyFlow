@@ -33,7 +33,7 @@ import {
   HierarchyIcon as Tree,
   Time04Icon as Clock,
   Settings02Icon as Settings,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import FullScreenPage from '@/components/layout/FullScreenPage';
 import { Button } from '@/components/ui/button';
 import { HintNote, MemberAvatar, ProgressBar, SectionCard } from '@/components/family/FamilyKit';

@@ -21,7 +21,7 @@ import {
   ArrowRight01Icon as ArrowRight,
   CheckIcon as Check,
   PlayIcon as Play,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import { cn } from '@/lib/utils';
 
 export interface ModeRevealProps {

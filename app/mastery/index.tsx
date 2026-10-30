@@ -12,7 +12,7 @@ import {
   BarChartIcon as BarChart3,
   CheckmarkCircle02Icon as CheckCircle2,
   Clock01Icon as Clock,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { useActiveProfile } from '@/hooks/useActiveProfile';
 import { getMemorizationService } from '@/services/memorization-service-factory';

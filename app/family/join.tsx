@@ -6,7 +6,7 @@ import {
   ScanLineIcon as ScanLine,
   Loading03Icon as Loader2,
   LogInIcon as LogIn,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';

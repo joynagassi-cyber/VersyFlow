@@ -58,13 +58,14 @@ describe('resolveTheme — décision pure', () => {
     expect(resolveTheme({ ...base, presetId: null }).attributes['data-preset']).toBe('lara-red');
   });
 
-  it('un dégradé remplace le fond et n’écrase aucun accent', () => {
+  it('un dégradé remplace le fond et fournit ses couleurs d’accent', () => {
     const plan = resolveTheme({ ...base, backgroundType: 'gradient', gradientId: 'warm-flame' });
     expect(plan.attributes['data-app-bg']).toBe('gradient');
     expect(plan.vars['--app-bg-image']).toContain('linear-gradient');
     expect(plan.removedVars).toContain('--theme-image');
     expect(plan.removedAttributes).toContain('data-theme-image');
-    expect(Object.keys(plan.vars).filter((k) => ACCENT_VARS.includes(k as never))).toEqual([]);
+    expect(plan.vars['--color-primary']).toBe('#ff9a9e');
+    expect(plan.vars['--color-accent']).toBe('#fad0c4');
   });
 
   it('un thème image pose l’accent et l’illustration, sans attends l’extraction', () => {

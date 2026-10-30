@@ -4,7 +4,7 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   Cancel01Icon as X,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import { cn } from '@/lib/utils';
 
 const ToastProvider = ToastPrimitives.Provider;

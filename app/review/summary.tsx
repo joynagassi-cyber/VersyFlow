@@ -14,7 +14,7 @@ import {
   CheckmarkCircle01Icon as CheckCircle,
   Clock01Icon as Clock,
   BookOpen01Icon as BookOpen,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import FullScreenPage from '@/components/layout/FullScreenPage';
 import { Button } from '@/components/ui/button';
 import { useActiveProfile } from '@/hooks/useActiveProfile';

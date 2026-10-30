@@ -10,7 +10,7 @@ import {
   PenLineIcon as PenLine,
   Target01Icon as Target,
   ChevronRightIcon as ChevronRight,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { Button } from '@/components/ui/button';
 import type { ExerciseStrategy } from '@/domains/memorization/entities';

@@ -5,7 +5,7 @@ import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   LogInIcon as LogIn,
   ArrowRight01Icon as ArrowRight,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import { Logo } from '@/components/brand/Logo';
 import { Button } from '@/components/ui/button';
 import { useAuthStore } from '@/store/auth-store';

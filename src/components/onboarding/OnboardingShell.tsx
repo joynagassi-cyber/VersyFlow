@@ -7,7 +7,7 @@
 import type { ReactNode } from 'react';
 import { motion } from 'motion/react';
 import { DuoIcon } from '@/components/ui/DuoIcon';
-import { SparklesIcon } from '@hugeicons/core-free-icons';
+import { SparklesIcon } from '@/components/ui/solar-icons';
 import { cn } from '@/lib/utils';
 
 interface OnboardingShellProps {

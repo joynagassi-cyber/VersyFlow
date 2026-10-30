@@ -23,7 +23,7 @@ import {
   EyeOffIcon as EyeOff,
   Layers01Icon as Layers,
   PenLineIcon as PenLine,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import { cn } from '@/lib/utils';
 
 export type ModeId = 'reveal' | 'mask' | 'cards' | 'write';

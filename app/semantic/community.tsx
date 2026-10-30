@@ -17,7 +17,7 @@ import {
   BrainCircuitIcon as BrainCircuit,
   BookMarkedIcon as BookMarked,
   ChevronRightIcon as ChevronRight,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import FullScreenPage from '@/components/layout/FullScreenPage';
 import { useCommunityView } from '@/hooks/useSemanticViews';
 

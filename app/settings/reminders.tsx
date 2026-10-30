@@ -1,3 +1,4 @@
+import { goBackSafely } from '@/lib/navigation';
 /**
  * Settings — Reminder Configuration Screen
  *
@@ -17,11 +18,13 @@ import {
   Clock01Icon as Clock,
   CheckIcon as Check,
   RefreshIcon as RefreshCw,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { useAppearanceStore } from '@/store/appearance-store';
 import { notificationService } from '@/services/notification-service';
+import { WeeklyReminderPlanner } from '@/components/reminders/WeeklyReminderPlanner';
+import { isNativePlatform } from '@/lib/platform';
 
 const FREQUENCIES = [1, 2, 3, 5, 8, 12];
 
@@ -34,14 +37,14 @@ export default function SettingsRemindersScreen() {
   const setReminderFrequency = useAppearanceStore((s) => s.setReminderFrequency);
   const toggleReminders = useAppearanceStore((s) => s.toggleReminders);
   const setReminderTime = useAppearanceStore((s) => s.setReminderTime);
-  const [pushStatus, setPushStatus] = useState<'idle' | 'scheduled' | 'error'>('idle');
+  const [pushStatus, setPushStatus] = useState<'idle' | 'scheduled' | 'web' | 'error'>('idle');
 
   const schedulePush = async () => {
     try {
       // Just-in-time permission request (user-initiated), then schedule.
       // The service is store/i18n-free: read the reminder config from the
       // store and translate the body here, then pass both as arguments.
-      await notificationService.ensurePermissions(reminderEnabled);
+      if (!await notificationService.ensurePermissions(reminderEnabled)) throw new Error('permission-denied');
       await notificationService.scheduleDailyReminders(
         {
           enabled: reminderEnabled,
@@ -50,7 +53,7 @@ export default function SettingsRemindersScreen() {
         },
         t('reminders.notificationBody', 'Temps de révision !'),
       );
-      setPushStatus('scheduled');
+      setPushStatus(isNativePlatform() ? 'scheduled' : 'web');
     } catch {
       setPushStatus('error');
     }
@@ -65,10 +68,10 @@ export default function SettingsRemindersScreen() {
   };
 
   return (
-    <div className="screen-column-narrow flex h-full flex-col overflow-y-auto p-6">
+    <div className="screen-column-narrow reminders-page flex h-full flex-col overflow-y-auto p-6">
       <header className="mb-6 flex items-center gap-3">
         <button
-          onClick={() => navigate(-1)}
+          onClick={() => goBackSafely(navigate)}
           className="flex h-10 w-10 items-center justify-center rounded-full bg-surface shadow-sm"
           aria-label={t('common.back')}
         >
@@ -82,7 +85,8 @@ export default function SettingsRemindersScreen() {
       <div className="flex flex-1 flex-col gap-6">
         {/* On / off toggle */}
         <button
-          onClick={toggleReminders}
+          onClick={() => { if (reminderEnabled) void cancelPush(); toggleReminders(); }}
+          aria-pressed={reminderEnabled}
           className={cn(
             'flex items-center gap-4 rounded-2xl border-2 p-4 text-left transition-colors',
             reminderEnabled
@@ -131,7 +135,7 @@ export default function SettingsRemindersScreen() {
                 <button
                   key={f}
                   disabled={!reminderEnabled}
-                  onClick={() => setReminderFrequency(f)}
+                  onClick={() => { setReminderFrequency(f); setPushStatus('idle'); }}
                   className={cn(
                     'flex h-14 min-w-14 items-center justify-center rounded-2xl border-2 px-4 text-lg font-semibold transition-colors disabled:opacity-40',
                     selected
@@ -160,13 +164,13 @@ export default function SettingsRemindersScreen() {
               type="time"
               value={reminderTime}
               disabled={!reminderEnabled}
-              onChange={(e) => setReminderTime(e.target.value)}
+              onChange={(e) => { if (e.target.value) { setReminderTime(e.target.value); setPushStatus('idle'); } }}
               className="mt-1 h-11 rounded-lg border border-border bg-surface px-3 text-base text-text-primary disabled:opacity-40"
             />
           </div>
         </div>
         {/* Notification push locales */}
-        <div className="rounded-2xl bg-surface p-4 shadow-sm">
+        <div className="glass rounded-2xl bg-surface p-4 shadow-sm">
           <div className="mb-3 flex items-center gap-2">
             <DuoIcon icon={BellRing} size={18} className="text-primary" />
             <span className="text-base font-semibold text-text-primary">
@@ -190,7 +194,6 @@ export default function SettingsRemindersScreen() {
               variant="outline"
               className="w-full"
               onClick={() => void cancelPush()}
-              disabled={pushStatus === 'idle'}
             >
               <DuoIcon icon={RefreshCw} size={16} />
               {t('settings.notificationCancel', 'Annuler les rappels planifiés')}
@@ -199,8 +202,11 @@ export default function SettingsRemindersScreen() {
         </div>
       </div>
 
+      {pushStatus === 'web' && <p role="status" className="weekly-planner-hint">{t('weeklyReminders.web', 'Planning enregistré. Sur le navigateur, les notifications en arrière-plan ne sont pas programmées.')}</p>}
+      {pushStatus === 'error' && <p role="status" className="weekly-planner-hint">{t('weeklyReminders.error', 'Impossible de programmer les rappels. Vérifiez les autorisations et réessayez.')}</p>}
+      <WeeklyReminderPlanner />
       <div className="mt-6 flex gap-4">
-        <Button variant="outline" className="flex-1" onClick={() => navigate(-1)}>
+        <Button variant="outline" className="flex-1" onClick={() => goBackSafely(navigate)}>
           <DuoIcon icon={ArrowLeft} size={16} />
           {t('common.back')}
         </Button>

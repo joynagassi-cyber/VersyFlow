@@ -1,3 +1,4 @@
+import { BackgroundPanel } from '@/components/ui/BackgroundPanel';
 /**
  * DesktopHeader — l'en-tête de bureau (et de tablette) de VersyFlow.
  *
@@ -25,7 +26,7 @@ import {
   Search01Icon as Search,
   Notification01Icon as Bell,
   UserCircleIcon as UserCircle,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import SyncStatusIndicator from '@/components/common/SyncStatusIndicator';
 import { useIsDesktop } from '@/hooks/useIsDesktop';
 
@@ -83,7 +84,7 @@ export function DesktopHeader() {
   }, [navigate]);
 
   return (
-    <header className="flex h-14 shrink-0 items-center gap-3 border-b border-border bg-surface px-4">
+    <header className="desktop-header g1 sticky top-0 z-10 flex h-14 shrink-0 items-center gap-3 px-4">
       <div className="min-w-0">
         {isDesktop ? (
           <p className="truncate text-sm font-semibold text-text-primary">
@@ -98,6 +99,7 @@ export function DesktopHeader() {
 
       {/* Barre de commande : une seule, toujours au même endroit. */}
       <div className="ms-auto flex items-center gap-1.5">
+        <BackgroundPanel />
         <button
           type="button"
           onClick={() => navigate('/search')}

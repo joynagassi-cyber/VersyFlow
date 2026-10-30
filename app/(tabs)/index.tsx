@@ -5,16 +5,15 @@
  * Tailwind + i18n + Lucide.
  */
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, type CSSProperties } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { normalizeLocaleCode } from '@/domains/i18n/config';
 import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   UsersIcon as Users,
   FlameIcon as Flame,
-  StarIcon as Star,
   Clock01Icon as Clock,
-  ChevronRightIcon as ChevronRight,
   UserCircleIcon as CircleUserRound,
   CompassIcon as Compass,
   GemIcon as Gem,
@@ -24,14 +23,14 @@ import {
   HeartHandshakeIcon as HeartHandshake,
   LibraryIcon as Library,
   FeatherIcon as Feather,
-} from '@hugeicons/core-free-icons';
-import { cn } from '@/lib/utils';
-import { motion } from 'motion/react';
+} from '@/components/ui/solar-icons';
 import { useActiveProfile } from '@/hooks/useActiveProfile';
 import { useFamilyStore } from '@/store/family-store';
 import { StreakService } from '@/services/streak-service';
 import { getMemorizationService } from '@/services/memorization-service-factory';
 import type { MemorizationRecord } from '@/domains/memorization/entities';
+import { useAppearanceStore } from '@/store/appearance-store';
+import { themeLandscapeUrl } from '@/theme/theme-catalog';
 
 // Fallback "verse of the day" rotation (real records preferred when present)
 const DAILY_VERSES_FALLBACK = [
@@ -42,28 +41,20 @@ const DAILY_VERSES_FALLBACK = [
   { ref: 'Ésaïe 40:31', text: "Mais ceux qui espèrent en l'Éternel renaîtront de nouvelles forces." },
 ];
 
-// Encouragement verses — rotates every 4 seconds in the "Verse of the
-// week" footer block. The user's requirement: the word of God is useful,
-// and this is an eternal heritage that endures through time.
-const ENCOURAGEMENT_VERSES: Array<{ ref: string; text: string }> = [
-  { ref: 'Jérémie 1:9', text: "Je mets mes paroles dans ta bouche, tu es consacré comme phare pour les nations." },
-  { ref: 'Psaumes 119:105', text: "Ta parole est une lampe à mes pieds, et une lumière sur mon sentier." },
-  { ref: 'Ésaïe 40:8', text: "L'herbe flétrit, la fleur se faner, mais la parole de notre Dieu est éternelle." },
-  { ref: 'Psaumes 119:89', text: "Éternel, ta parole est affermie dans les cieux, elle subsiste à jamais." },
-  { ref: 'Jérémie 15:16', text: "Tes paroles se sont offert à moi, j'ai dévoré, elles ont été pour moi une joie et une allégresse." },
-];
-
 export default function HomeScreen() {
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
   const { activeProfile } = useActiveProfile();
   const families = useFamilyStore((s) => s.families);
   const activeFamilyId = useFamilyStore((s) => s.activeFamilyId);
+  const imageTheme = useAppearanceStore((s) => s.colorThemeId);
+  const dailyVisual = themeLandscapeUrl(imageTheme && imageTheme !== 'obj-miroir' ? imageTheme : 'nat-trees');
 
   const [streak, setStreak] = useState<number | null>(null);
   const [reviewsDue, setReviewsDue] = useState<number | null>(null);
   const [recentVerses, setRecentVerses] = useState<MemorizationRecord[]>([]);
-  const [encouragementIdx, setEncouragementIdx] = useState(0);
+  const [total, setTotal] = useState<number | null>(null);
+  const [mastered, setMastered] = useState<number | null>(null);
 
   const activeFamily = families.find((f) => f.id === activeFamilyId) || null;
   const profileId = activeProfile?.id ?? 'default';
@@ -81,6 +72,8 @@ export default function HomeScreen() {
         if (cancelled) return;
         setReviewsDue(due.length);
         setStreak(streakCount);
+        setTotal(allRecords.length);
+        setMastered(allRecords.filter((record) => record.status === 'mastered').length);
         setRecentVerses(
           [...allRecords]
             .sort((a, b) => (b.lastReviewedAt ?? b.createdAt) - (a.lastReviewedAt ?? a.createdAt))
@@ -89,8 +82,8 @@ export default function HomeScreen() {
       } catch (error) {
         console.error('[Home] Data load failed:', error);
         if (!cancelled) {
-          setReviewsDue(0);
-          setStreak(0);
+          setReviewsDue(null);
+          setStreak(null);
         }
       }
     };
@@ -100,21 +93,12 @@ export default function HomeScreen() {
     };
   }, [profileId]);
 
-  // Rotate the encouragement verse every 4 s (no autoplay sound, no
-  // confetti — just a calm, ever-present banner at the bottom of the page).
-  useEffect(() => {
-    const id = setInterval(() => {
-      setEncouragementIdx((i) => (i + 1) % ENCOURAGEMENT_VERSES.length);
-    }, 4000);
-    return () => clearInterval(id);
-  }, []);
-
-  const encouragement = ENCOURAGEMENT_VERSES[encouragementIdx];
   const todayVerse = DAILY_VERSES_FALLBACK[
     Math.floor(Date.now() / 86400000) % DAILY_VERSES_FALLBACK.length
   ];
 
-  const dateLabel = new Date().toLocaleDateString(i18n.language, {
+  const locale = normalizeLocaleCode(i18n.resolvedLanguage || i18n.language);
+  const dateLabel = new Date().toLocaleDateString(locale, {
     weekday: 'long',
     day: 'numeric',
     month: 'long',
@@ -132,187 +116,48 @@ export default function HomeScreen() {
   ];
 
   return (
-    <div className="screen-column h-full overflow-y-auto px-5 pb-28">
-      {/* Header */}
-      <div className="flex items-start justify-between">
-        <div className="flex-1">
-          <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-primary">{t('home.today', "Aujourd'hui")}</p>
-          <h1 className="mt-2 text-[32px] font-extrabold leading-none tracking-tight text-text-primary">{t('home.greeting', 'Bonjour')}</h1>
-          <p className="mt-2 text-sm capitalize text-text-muted">{dateLabel}</p>
-          {activeFamily && (
-            <span className="mt-2 inline-flex items-center gap-1 rounded-full bg-surface-tint px-2.5 py-1 text-xs font-semibold text-text-secondary">
-              <DuoIcon icon={Users} size={12} />
-              {activeFamily.name}
-            </span>
-          )}
+    <div className="screen-column home-premium h-full overflow-y-auto">
+      <div className="home-content">
+        <section className="g2 home-greeting">
+          <p className="home-label">{dateLabel}</p>
+          <h1>{t('home.greeting', 'Bonjour')}{activeProfile?.displayName ? `, ${activeProfile.displayName}` : ''}</h1>
+          {activeFamily && <p className="home-muted"><DuoIcon icon={Users} size={16} /> {activeFamily.name}</p>}
+          <button onClick={() => navigate('/tabs/settings')} className="home-profile" aria-label={t('settings.settings', 'Paramètres')}><DuoIcon icon={CircleUserRound} size={24} /></button>
+        </section>
+        <div className="home-feature-grid">
+          <article className="g3 home-verse home-daily-card" style={{ '--daily-image': `url("${dailyVisual}")` } as CSSProperties}>
+            <p className="home-label">{t('home.dailyVerse', 'Verset du jour')}</p>
+            <h2>{todayVerse.ref}</h2>
+            <p className="home-verse-text">{todayVerse.text}</p>
+            <div className="home-actions">
+              <button className="home-primary" onClick={() => navigate('/memorization/session')}>{t('bible.memorize', 'Mémoriser')}</button>
+              <button className="home-secondary" onClick={() => navigate('/bible/explorer')}>{t('home.explore', 'Explorer la Bible')}</button>
+            </div>
+          </article>
+          <article className="g2 home-streak">
+            <p className="home-label"><DuoIcon icon={Flame} size={20} /> {t('home.streakLabel', 'Série de jours')}</p>
+            <div className="home-ring" aria-label={streak === null ? 'Série indisponible' : `${Math.min(streak, 7)} jours sur les 7 derniers`}>
+              <svg viewBox="0 0 100 100" aria-hidden="true"><circle className="home-ring-track" cx="50" cy="50" r="44" fill="none" strokeWidth="6" /><circle className="home-ring-progress" cx="50" cy="50" r="44" fill="none" strokeWidth="6" strokeDasharray={`${Math.min(streak ?? 0, 7) / 7 * 276.46} 276.46`} /></svg>
+              <strong>{streak ?? '–'}</strong>
+            </div>
+            <div className="home-week" aria-label="Série sur les sept derniers jours en temps universel">
+              {Array.from({ length: 7 }, (_, index) => { const daysAgo = 6 - index; const day = new Date(Date.now() - daysAgo * 86400000); return <span key={daysAgo} data-active={streak !== null && daysAgo < streak} title={day.toLocaleDateString(locale, { timeZone: 'UTC', dateStyle: 'medium' })}>{day.toLocaleDateString(locale, { timeZone: 'UTC', weekday: 'narrow' })}</span>; })}
+            </div>
+            <p className="home-muted">{streak === null ? 'Données indisponibles' : `${streak} ${streak > 1 ? 'jours consécutifs' : 'jour consécutif'}`}</p>
+            <button className="home-secondary" onClick={() => navigate('/tabs/progress')}>Voir la progression</button>
+          </article>
         </div>
-        <button
-          onClick={() => navigate('/tabs/settings')}
-          className="rounded-full bg-surface-tint p-2.5"
-          aria-label={t('settings.settings', 'Paramètres')}
-        >
-          <DuoIcon icon={CircleUserRound} size={28} className="text-primary" />
-        </button>
-      </div>
-
-      {/* Hero card — streak + due reviews, premium gradient */}
-      <motion.div
-        initial={{ opacity: 0, y: 16 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.45, ease: 'easeOut' }}
-        className="relative mt-5 overflow-hidden rounded-[28px] bg-primary p-6 text-primary-foreground shadow-[0_8px_24px_-4px_var(--ring)]"
-      >
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-widest text-[color:color-mix(in_srgb,var(--on)_80%,transparent)] tabular-nums">
-              {t('home.streakLabel', 'Série de jours')}
-            </p>
-            <p className="mt-1 flex items-end gap-2">
-              <span className="text-5xl font-black leading-none tabular-nums">
-                {streak ?? '–'}
-              </span>
-              <DuoIcon icon={Flame} size={26} className="mb-1 text-[color:color-mix(in_srgb,var(--on)_90%,transparent)]" />
-            </p>
-            <p className="mt-1 text-xs text-[color:color-mix(in_srgb,var(--on)_80%,transparent)] tabular-nums">
-              {t('home.streak', { count: streak ?? 1 })}
-            </p>
-          </div>
-          <button
-            onClick={() => navigate('/tabs/progress')}
-            className="flex h-11 w-11 items-center justify-center rounded-full bg-surface/20 backdrop-blur active:scale-95"
-            aria-label={t('home.goodJob', 'Voir détails')}
-          >
-            <DuoIcon icon={TrendingUp} size={20} />
-          </button>
+        <div className="home-stats">
+          {[['Versets mémorisés', total], ['Versets maîtrisés', mastered], ['Révisions à faire', reviewsDue]].map(([label, value]) => <div className="g2 home-stat" key={label}><span className="home-label">{label}</span><strong>{value ?? '–'}</strong></div>)}
         </div>
-
-        {reviewsDue !== null && reviewsDue > 0 && (
-          <button
-            onClick={() => navigate('/review/queue')}
-            className="mt-5 flex w-full items-center gap-3 rounded-2xl bg-surface/15 p-3.5 text-left backdrop-blur transition active:scale-[0.99]"
-          >
-            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-surface/25">
-              <DuoIcon icon={Clock} size={18} />
-            </span>
-            <span className="flex-1">
-              <span className="block text-sm font-bold tabular-nums">
-                {t('home.reviewDue', { count: reviewsDue })}
-              </span>
-              <span className="block text-[11px] text-[color:color-mix(in_srgb,var(--on)_80%,transparent)]">
-                {t('home.noReviews', 'Ne perdez pas votre progression — révisez maintenant')}
-              </span>
-            </span>
-            <DuoIcon icon={ChevronRight} size={18} />
-          </button>
-        )}
-      </motion.div>
-
-      {/* Quick actions grid */}
-      <h2 className="mb-3 mt-8 text-xl font-bold tracking-tight text-text-primary">
-        {t('home.quickActions', 'Actions rapides')}
-      </h2>
-      <div className="grid grid-cols-2 gap-3">
-        {quickActions.map(({ icon: Icon, label, desc, action }) => (
-          <button
-            key={label}
-            onClick={action}
-            className="action-card flex flex-col items-center rounded-3xl border border-border/60 bg-card p-4 shadow-[0_4px_20px_-2px_rgba(0,0,0,0.04)] transition-transform active:scale-[0.98]"
-          >
-            <span className="icon-chip mb-2 flex h-12 w-12 items-center justify-center rounded-full">
-              <DuoIcon icon={Icon} size={24} />
-            </span>
-            <span className="text-sm font-bold text-text-primary">{label}</span>
-            <span className="mt-0.5 text-center text-[11px] text-text-muted">{desc}</span>
-          </button>
-        ))}
-      </div>
-
-      {/* Verse of the day */}
-      <h2 className="mb-3 mt-8 text-xl font-bold tracking-tight text-text-primary">
-        {t('home.dailyVerse', 'Verset du jour')}
-      </h2>
-      <div className="card-glass p-6">
-        <div className="mb-3 flex items-center justify-between">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-surface-tint px-3 py-1.5 text-xs font-semibold text-primary">
-            <DuoIcon icon={Star} size={13} />
-            {t('home.dailyVerse', "Aujourd'hui")}
-          </span>
-          <button
-            onClick={() => navigate('/memorization/session')}
-            className="rounded-full bg-primary px-4 py-1.5 text-xs font-semibold text-on-primary"
-          >
-            {t('bible.memorize', 'Mémoriser')}
-          </button>
+        <h2 className="g1 home-section-title">{t('home.quickActions', 'Actions rapides')}</h2>
+        <div className="home-quick-grid">
+          {quickActions.map(({ icon: Icon, label, desc, action }) => <button key={label} onClick={action} className="g2 action-card home-action-card"><span className="icon-chip"><DuoIcon icon={Icon} size={24} /></span><span><strong>{label}</strong><small>{desc}</small></span></button>)}
         </div>
-        <p className="text-lg font-bold text-text-primary">{todayVerse.ref}</p>
-        <p className="bible-text mt-2 text-base leading-7 text-text-secondary">
-          {todayVerse.text}
-        </p>
-      </div>
-
-      {/* Recently memorized */}
-      <h2 className="mb-3 mt-8 text-xl font-bold tracking-tight text-text-primary">
-        {t('progress.recentVerses', 'Récemment mémorisés')}
-      </h2>
-      <div className="flex gap-4 overflow-x-auto pb-2">
-        {recentVerses.length === 0 ? (
-          <div className="w-full rounded-xl border border-dashed border-border p-6 text-center text-sm text-text-muted">
-            {t('bible.memorize', 'Aucun verset mémorisé pour le moment')}
-          </div>
-        ) : (
-          recentVerses.map((verse) => (
-            <button
-              key={verse.id}
-              onClick={() =>
-                navigate(
-                  verse.bookId && verse.chapterNumber
-                    ? `/bible/chapter/${verse.bookId}/${verse.chapterNumber}`
-                    : '/bible/chapter',
-                )
-              }
-              className="w-40 shrink-0 rounded-3xl border border-border/60 bg-card p-4 text-left shadow-[0_4px_20px_-2px_rgba(0,0,0,0.04)]"
-            >
-              <span
-                className={cn(
-                  'mb-2 inline-block h-2 w-2 rounded-full',
-                  verse.status === 'mastered' ? 'bg-success' : verse.status === 'in-progress' ? 'bg-primary' : 'bg-text-muted',
-                )}
-              />
-              <p className="text-sm font-bold text-text-primary">
-                {verse.bibleVerseReference || `${verse.bookId} ${verse.chapterNumber}:${verse.verseNumber}`}
-              </p>
-              <p className="mt-1 line-clamp-2 text-xs leading-4 text-text-secondary">
-                {verse.bibleVerseText}
-              </p>
-            </button>
-          ))
-        )}
-      </div>
-
-      {/* Encouragement verse of the week — a quiet, ever-present footer
-          block. No confetti, no stats: just one verse of God's word that
-          rotates every 4 seconds, to stay with the user. */}
-      <div className="mt-8 rounded-2xl border border-success/20 bg-success/5 p-4">
-        <div className="flex items-start gap-3">
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-success text-[color:var(--on)] shadow-sm">
-            <DuoIcon icon={Star} size={16} />
-          </span>
-          <div className="min-w-0 flex-1">
-            <p className="text-xs font-bold uppercase tracking-wider text-success">
-              {t('home.encouragementTitle', "L'héritage éternel")}
-            </p>
-            <p className="mt-1 text-sm font-bold text-text-primary">{encouragement.ref}</p>
-            <p className="bible-text mt-1 text-sm leading-6 text-text-secondary">
-              {encouragement.text}
-            </p>
-          </div>
+        <h2 className="g1 home-section-title">{t('home.recentVerses', 'Récemment mémorisés')}</h2>
+        <div className="home-recent">
+          {recentVerses.length === 0 ? <p className="g2 home-empty">{total === null ? 'Données indisponibles' : 'Aucun verset mémorisé pour le moment'}</p> : recentVerses.map((verse) => <button key={verse.id} className="g2 home-recent-card" onClick={() => navigate(verse.bookId && verse.chapterNumber ? `/bible/chapter/${verse.bookId}/${verse.chapterNumber}` : '/bible/chapter')}><strong>{verse.bibleVerseReference || `${verse.bookId} ${verse.chapterNumber}:${verse.verseNumber}`}</strong><span>{verse.bibleVerseText}</span><small>{verse.status === 'mastered' ? 'Maîtrisé' : 'En cours'}</small><span className="home-mastery" aria-hidden="true"><i style={{ width: verse.status === 'mastered' ? '100%' : '0%' }} /></span></button>)}
         </div>
-        <p className="mt-3 text-[11px] italic text-text-muted">
-          {t(
-            'home.encouragementCaption',
-            'La parole de Dieu est utile et importante, un héritage éternel qui perdure à travers les temps.',
-          )}
-        </p>
       </div>
     </div>
   );

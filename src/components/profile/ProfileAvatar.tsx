@@ -14,7 +14,7 @@ import { ALL_THEMES, themeLandscapeUrl } from '@/theme/theme-catalog';
 
 /** Pick a deterministic theme illustration from a string seed (name/id/etc). */
 function pickTheme(seed: string) {
-  const themes = ALL_THEMES;
+  const themes = ALL_THEMES.filter((theme) => theme.id !== 'obj-miroir');
   if (!themes.length) return null;
   let hash = 0;
   for (let i = 0; i < seed.length; i += 1) {
@@ -56,25 +56,20 @@ export function ProfileAvatar({ photo, name, size = 64, className }: ProfileAvat
         <img src={photo} alt="" className="h-full w-full object-cover" />
       ) : (
         <>
-          {/* 2. Vector illustration fallback (theme catalog, offline). */}
+          {/* L'initiale sert de repli sous l'illustration. */}
+          <div className="bg-primary absolute inset-0 flex items-center justify-center">
+            <span className="font-extrabold text-[color:var(--on)]" style={{ fontSize: Math.round(size * 0.4) }}>{initial}</span>
+          </div>
           {fallback && (
             <img
               src={fallback.src}
               alt={fallback.label}
               title={fallback.label}
-              className="h-full w-full object-cover"
+              className="absolute inset-0 h-full w-full object-cover"
+              onError={(event) => { event.currentTarget.style.display = 'none'; }}
             />
           )}
 
-          {/* 3. Initial on a gradient tile, under the illustration. */}
-          <div className="bg-primary absolute inset-0 flex items-center justify-center">
-            <span
-              className="font-extrabold text-[color:color-mix(in_srgb,var(--on)_90%,transparent)]"
-              style={{ fontSize: Math.round(size * 0.4), opacity: 0.35 }}
-            >
-              {initial}
-            </span>
-          </div>
         </>
       )}
     </div>

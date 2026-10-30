@@ -7,7 +7,7 @@ import {
   Upload01Icon as Upload,
   CloudIcon as Cloud,
   Loading03Icon as Loader2,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { Button } from '@/components/ui/button';
 import { useAuthStore } from '@/store/auth-store';
@@ -104,7 +104,7 @@ export default function BackupScreen() {
       backPath="/settings"
     >
       <div className="screen-column space-y-4">
-        <div className="space-y-3 rounded-2xl bg-surface p-4 shadow-sm">
+        <div className="glass space-y-3 rounded-2xl bg-surface p-4 shadow-sm">
           <p className="text-base font-bold text-text-primary">
             {t('settings.backup.title', 'Sauvegarde')}
           </p>
@@ -145,7 +145,7 @@ export default function BackupScreen() {
           )}
         </div>
 
-        <div className="space-y-3 rounded-2xl bg-surface p-4 shadow-sm">
+        <div className="glass space-y-3 rounded-2xl bg-surface p-4 shadow-sm">
           <p className="text-base font-bold text-text-primary">
             {t('settings.backup.cloud', 'Synchronisation Cloud')}
           </p>

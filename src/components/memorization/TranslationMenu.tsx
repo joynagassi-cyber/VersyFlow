@@ -14,7 +14,7 @@ import {
   CheckIcon as Check,
   ChevronDownIcon as ChevronDown,
   Loading03Icon as Loader2,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import { cn } from '@/lib/utils';
 import { useSettingsStore } from '@/store/settings-store';
 import { BIBLE_DATASET_CATALOG } from '@/services/bible-text-service';

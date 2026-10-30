@@ -5,7 +5,7 @@ import {
   ChevronRightIcon as ChevronRight,
   Download01Icon as Download,
   Delete02Icon as Trash2,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 
 export default function PrivacyScreen() {
@@ -38,7 +38,7 @@ export default function PrivacyScreen() {
       backPath="/settings"
     >
       <div className="screen-column space-y-4">
-        <div className="space-y-1 rounded-2xl bg-surface p-2 shadow-sm">
+        <div className="glass space-y-1 rounded-2xl bg-surface p-2 shadow-sm">
           <p className="px-3 pt-2 text-base font-bold text-text-primary">
             {t('settings.privacyTitle', 'Donnees & confidentialite')}
           </p>
@@ -56,7 +56,7 @@ export default function PrivacyScreen() {
           </div>
         </div>
 
-        <div className="overflow-hidden rounded-2xl bg-surface shadow-sm">
+        <div className="glass overflow-hidden rounded-2xl bg-surface shadow-sm">
           <p className="px-4 pt-3 text-base font-bold text-text-primary">
             {t('settings.dataManagement', 'Gestion des donnees')}
           </p>

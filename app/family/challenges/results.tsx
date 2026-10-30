@@ -9,7 +9,7 @@
 
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { ChampionIcon as Trophy, Add01Icon as PlusSign } from '@hugeicons/core-free-icons';
+import { ChampionIcon as Trophy, Add01Icon as PlusSign } from '@/components/ui/solar-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { DuoIcon } from '@/components/ui/DuoIcon';
 import { Button } from '@/components/ui/button';

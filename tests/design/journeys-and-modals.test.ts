@@ -82,8 +82,8 @@ describe('L7 — feuille modale, deux formes', () => {
 describe('L8 — rail de tablette et en-tête', () => {
   it('le seuil tablette est 768 px et il pilote le rail', () => {
     const hook = read('src/hooks/useIsDesktop.ts');
-    expect(hook).toMatch(/TABLET_MIN_WIDTH\s*=\s*768/);
-    expect(hook).toMatch(/DESKTOP_MIN_WIDTH\s*=\s*1024/);
+    expect(hook).toMatch(/TABLET_MIN_WIDTH\s*=\s*700/);
+    expect(hook).toMatch(/DESKTOP_MIN_WIDTH\s*=\s*1100/);
     expect(hook).toMatch(/export function useIsRail/);
 
     // Depuis le scaffolding desktop, la structure vit dans `src/shells/` :
@@ -102,10 +102,10 @@ describe('L8 — rail de tablette et en-tête', () => {
   });
 
   it('le CSS applique le rail replié dès 768 px, dépliable à 1024 px', () => {
-    const tablet = globals.match(/@media \(min-width: 768px\) \{[\s\S]*?--rail:\s*var\(--rail-collapsed\);/);
+    const tablet = globals.match(/@media \(min-width: 700px\) \{[\s\S]*?--rail:\s*var\(--rail-collapsed\);/);
     expect(tablet).not.toBeNull();
     const desktop = globals.match(
-      /@media \(min-width: 1024px\) \{[\s\S]*?:root\[data-rail='expanded'\][\s\S]*?--rail:\s*var\(--rail-expanded\);/,
+      /@media \(min-width: 1100px\) \{[\s\S]*?:root\[data-rail='expanded'\][\s\S]*?--rail:\s*var\(--rail-expanded\);/,
     );
     expect(desktop).not.toBeNull();
   });
@@ -117,8 +117,8 @@ describe('L8 — rail de tablette et en-tête', () => {
   });
 
   it('la largeur du rail reste une seule variable, écrite par le rail', () => {
-    expect(globals).toMatch(/--rail-expanded:\s*264px/);
-    expect(globals).toMatch(/--rail-collapsed:\s*88px/);
+    expect(globals).toMatch(/--rail-expanded:\s*236px/);
+    expect(globals).toMatch(/--rail-collapsed:\s*72px/);
     expect(globals).toMatch(/\.app-main\s*\{[^}]*margin-inline-start:\s*var\(--rail\)/);
   });
 });

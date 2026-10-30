@@ -4,7 +4,7 @@ import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   RotateCcwIcon as RotateCcw,
   ScaleIcon as Scale,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { Button } from '@/components/ui/button';
 import { useLocalSearchParams } from '@/hooks/useIonicNavigation';

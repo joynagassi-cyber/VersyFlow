@@ -16,7 +16,7 @@ import {
   ArrowRight01Icon as ArrowRight,
   HierarchyIcon as Tree,
   Compass01Icon as Compass,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { DuoIcon } from '@/components/ui/DuoIcon';
 import { Button } from '@/components/ui/button';

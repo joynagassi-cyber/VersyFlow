@@ -12,7 +12,7 @@ import {
   CheckmarkCircle01Icon as CheckCircle,
   Timer01Icon as Timer,
   FlaskConicalIcon as FlaskConical,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import { Button } from '@/components/ui/button';
 import { useSettingsStore } from '@/store/settings-store';
 

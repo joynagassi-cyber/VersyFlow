@@ -25,8 +25,8 @@ import {
   HistoryIcon as History,
   GitCompareIcon as GitCompare,
   UsersIcon as Users,
-} from '@hugeicons/core-free-icons';
-import type { EyeIcon } from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
+import type { EyeIcon } from '@/components/ui/solar-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { useUiStore, ALL_MENU_ITEMS, type TabId } from '@/store/ui-store';
 
@@ -86,7 +86,7 @@ export default function NavigationSettingsScreen() {
         </p>
 
         {/* Section 1 — bottom bar toggles */}
-        <div className="overflow-hidden rounded-2xl bg-surface shadow-sm">
+        <div className="glass overflow-hidden rounded-2xl bg-surface shadow-sm">
           <div className="px-4 pt-4">
             <p className="text-xs font-bold uppercase tracking-wide text-text-muted">
               {t('settings.navigationBottomBar', 'Barre de navigation')}
@@ -115,7 +115,7 @@ export default function NavigationSettingsScreen() {
         </div>
 
         {/* Section 2 — one toggle per hamburger-menu item */}
-        <div className="overflow-hidden rounded-2xl bg-surface shadow-sm">
+        <div className="glass overflow-hidden rounded-2xl bg-surface shadow-sm">
           <div className="px-4 pt-4">
             <p className="text-xs font-bold uppercase tracking-wide text-text-muted">
               {t('settings.navigationMenu', 'Menu hamburger')}

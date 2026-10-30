@@ -17,7 +17,7 @@ import {
   ListChecksIcon as ListChecks,
   Tag01Icon as Tag,
   HistoryIcon as History,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { ListItem } from '@/components/ui/ListItem';
 import { useHighlightStore } from '@/store/highlight-store';
@@ -35,7 +35,7 @@ export default function SettingsDataScreen() {
     >
       <div className="screen-column space-y-5">
         {/* Highlights summary card */}
-        <div className="rounded-2xl bg-surface p-4 shadow-sm">
+        <div className="glass rounded-2xl bg-surface p-4 shadow-sm">
           <p className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-text-muted">
             <DuoIcon icon={ListChecks} size={13} className="text-primary" />
             {t('settings.dataHighlights', 'Mes highlights')}
@@ -46,7 +46,7 @@ export default function SettingsDataScreen() {
         </div>
 
         {/* Activity links */}
-        <div className="overflow-hidden rounded-2xl bg-surface shadow-sm">
+        <div className="glass overflow-hidden rounded-2xl bg-surface shadow-sm">
           <div className="px-4 pt-4">
             <p className="text-xs font-bold uppercase tracking-wide text-text-muted">
               {t('settings.dataActivities', 'Mes activités')}

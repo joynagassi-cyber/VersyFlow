@@ -14,7 +14,7 @@ import {
   Add01Icon as PlusSign,
   Compass01Icon as Compass,
   Link02Icon as Link,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { DuoIcon } from '@/components/ui/DuoIcon';
 import { Button } from '@/components/ui/button';

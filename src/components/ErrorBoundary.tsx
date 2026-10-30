@@ -3,7 +3,7 @@ import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   RefreshIcon as RefreshCw,
   Home01Icon as Home,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import { useNavigate } from 'react-router-dom';
 
 interface Props {

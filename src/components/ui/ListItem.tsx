@@ -2,8 +2,8 @@ import * as React from 'react';
 import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   ChevronRightIcon as ChevronRight,
-} from '@hugeicons/core-free-icons';
-import type { IconSvgElement } from '@hugeicons/react';
+} from '@/components/ui/solar-icons';
+import type { Icon as IconSvgElement } from '@solar-icons/react/lib/types';
 import { cn } from '@/lib/utils';
 
 interface ListItemProps {

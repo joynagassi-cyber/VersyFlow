@@ -116,3 +116,9 @@ export function uiFontFamilyOf(id: string | null | undefined): string | undefine
   const font = findUiFont(id);
   return font.id === 'system' || !font.family ? undefined : font.family;
 }
+
+/** Options affichées dans Apparence ; les anciens identifiants restent lisibles. */
+export const APPEARANCE_UI_FONTS = UI_FONTS.filter((font) => ['system', 'lora', 'spectral'].includes(font.id));
+export const APPEARANCE_READING_FONTS = BIBLE_FONTS.filter((font) =>
+  ['source-serif-4', 'lora', 'eb-garamond', 'crimson-pro', 'merriweather', 'playfair-display'].includes(font.id),
+);

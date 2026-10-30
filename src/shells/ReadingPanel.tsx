@@ -27,7 +27,7 @@ import {
   Clock01Icon as Clock,
   NoteIcon as Note,
   RefreshIcon as Reset,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import { useAppearanceStore } from '@/store/appearance-store';
 import { Button } from '@/components/ui/button';
 

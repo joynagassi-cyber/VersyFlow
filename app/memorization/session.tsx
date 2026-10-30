@@ -1,3 +1,4 @@
+import { goBackSafely } from '@/lib/navigation';
 /**
  * Memorization Session Screen
  * Drives a MemorizationSessionEngine from URL params (passage or single
@@ -12,7 +13,7 @@ import {
   ArrowLeft01Icon as ArrowLeft,
   ArrowRight01Icon as ArrowRight,
   CheckmarkCircle01Icon as CheckCircle,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import FullScreenPage from '@/components/layout/FullScreenPage';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -249,7 +250,7 @@ export default function MemorizationSession() {
       <FullScreenPage title={t('session.memorizing', 'Mémorisation')} backPath="/tabs/home" column="narrow">
         <div className="flex flex-col items-center py-16 text-center">
           <p className="text-base text-error">{error}</p>
-          <Button className="mt-6" variant="secondary" onClick={() => navigate(-1)}>
+          <Button className="mt-6" variant="secondary" onClick={() => goBackSafely(navigate)}>
             {t('common.back', 'Retour')}
           </Button>
         </div>
@@ -285,7 +286,7 @@ export default function MemorizationSession() {
       },
     });
     engine.abandon();
-    navigate(-1);
+    goBackSafely(navigate);
   };
 
   const rateVerse = async (rating: Rating) => {

@@ -5,7 +5,7 @@ import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   PlusSignIcon as Plus,
   CheckIcon as Check,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import { z } from 'zod';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { Button } from '@/components/ui/button';

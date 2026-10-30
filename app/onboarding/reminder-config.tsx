@@ -16,7 +16,7 @@ import {
   BellRingIcon as BellRing,
   Clock01Icon as Clock,
   CheckIcon as Check,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { useAppearanceStore } from '@/store/appearance-store';

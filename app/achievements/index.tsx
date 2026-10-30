@@ -15,7 +15,7 @@ import {
   FolderOpenIcon as FolderOpen,
   GlobeIcon as Globe,
   SchoolIcon as School,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { ProgressRing } from '@/components/ui/ProgressRing';
 import { useActiveProfile } from '@/hooks/useActiveProfile';

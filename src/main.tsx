@@ -248,7 +248,7 @@ const bootStoresPromise = (async () => {
   wireAppTelemetry();
   wireStreakCoordinator();
   wireSessionRefresh();
-  void scheduleBootReminders();
+  void scheduleBootReminders().catch((error: unknown) => console.warn('[reminders] Échec de programmation', error));
 })();
 
 /** Boot-time reminder scheduling with the notification body translated in

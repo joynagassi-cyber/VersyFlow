@@ -12,7 +12,7 @@ import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   BrainCircuitIcon as BrainCircuit,
   UserRoundIcon as UserRound,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import type { Concept } from '@/domains/semantic-memory';
 import { conceptLabel } from '@/hooks/useSemanticTags';
 import { cn } from '@/lib/utils';

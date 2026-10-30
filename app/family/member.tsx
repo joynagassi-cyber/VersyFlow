@@ -20,7 +20,7 @@ import {
   ChartLineData01Icon as Chart,
   ChampionIcon as Trophy,
   ArrowRight01Icon as ArrowRight,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { DuoIcon } from '@/components/ui/DuoIcon';
 import { Button } from '@/components/ui/button';

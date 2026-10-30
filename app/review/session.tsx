@@ -17,7 +17,7 @@ import {
   StarIcon as Star,
   CheckIcon as Check,
   Cancel01Icon as X,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import FullScreenPage from '@/components/layout/FullScreenPage';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';

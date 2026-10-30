@@ -17,7 +17,7 @@ import {
   MapIcon as Map,
   ChevronRightIcon as ChevronRight,
   UserIcon as User,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import FullScreenPage from '@/components/layout/FullScreenPage';
 import { useSemanticIndex, useMyConcepts } from '@/hooks/useSemanticViews';
 import type { Community } from '@/domains/semantic-memory';

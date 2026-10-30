@@ -21,7 +21,7 @@ import {
   CheckIcon as Check,
   Maximize01Icon as Maximize2,
   Minimize01Icon as Minimize2,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import { cn } from '@/lib/utils';
 import { Rating as FsrsRating } from '@/services/review-rating-service';
 import { RatingBar } from '@/components/ui/RatingBar';

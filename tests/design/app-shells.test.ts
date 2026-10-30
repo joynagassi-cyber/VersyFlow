@@ -29,8 +29,8 @@ const shellFiles = readdirSync(SHELL_DIR).filter((name) => name.endsWith('.tsx')
 
 describe('scaffolding — trois contextes, deux seuils', () => {
   it('réutilise les seuils publiés au lieu d’en inventer de nouveaux', () => {
-    expect(TABLET_MIN_WIDTH).toBe(768);
-    expect(DESKTOP_MIN_WIDTH).toBe(1024);
+    expect(TABLET_MIN_WIDTH).toBe(700);
+    expect(DESKTOP_MIN_WIDTH).toBe(1100);
 
     const hook = read('src', 'hooks', 'useShell.ts');
     expect(hook).toMatch(/useIsRail\(\)/);

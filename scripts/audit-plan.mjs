@@ -312,7 +312,7 @@ const record = (id, section, label, verdict, detail, proof) =>
   // 1024 px = colonne de lecture. Le rail apparaît dès 768 px, donc c'est lui
   // qui conditionne le montage exclusif avec les navigations mobiles.
   const threshold =
-    /DESKTOP_MIN_WIDTH = 1024/.test(isDesktop) && /TABLET_MIN_WIDTH = 768/.test(isDesktop);
+    /DESKTOP_MIN_WIDTH = 1100/.test(isDesktop) && /TABLET_MIN_WIDTH = 700/.test(isDesktop);
   // Un seul shell monté : `AppShell` choisit MobileShell OU DesktopShell, et
   // chaque shell ne contient que SA navigation (pas de rail dans le mobile,
   // pas d'onglets bas dans le bureau).
@@ -328,7 +328,7 @@ const record = (id, section, label, verdict, detail, proof) =>
   record(
     'C09',
     '§6.1',
-    'Deux seuils, un rôle chacun (768 px rail, 1024 px colonne), une seule navigation montée',
+    'Deux seuils, un rôle chacun (700 px rail, 1100 px bureau), une seule navigation montée',
     threshold && exclusif && noPixels ? 'PASS' : 'FAIL',
     `seuils: ${threshold} · montage exclusif: ${exclusif} · zéro px en dur: ${noPixels} · shells: ${shellFiles ? 'lus' : 'absents'}`,
     'npx vitest run tests/design/desktop-shell.test.ts',
@@ -341,13 +341,13 @@ const record = (id, section, label, verdict, detail, proof) =>
   const width = /\.desktop-rail\s*\{[\s\S]{0,80}width:\s*var\(--rail\)/.test(globals);
   const collapsed = /data-collapsed='true'\] \.rail-label/.test(globals) && /clip-path:\s*inset\(50%\)/.test(globals);
   const ariaLabels = /aria-current=\{active \? 'page'/.test(rail) && /aria-label=/.test(rail);
-  const hugeiconsOnly = /@hugeicons\/react/.test(rail) && !/lucide-react/.test(rail);
+  const solarOnly = /solar-icons/.test(rail) && !/lucide-react/.test(rail);
   record(
     'C10',
     '§6.2',
     'Rail : une variable de largeur, repli accessible, état actif non colorimétrique',
-    singleVar && width && collapsed && ariaLabels && hugeiconsOnly ? 'PASS' : 'FAIL',
-    `variable unique: ${singleVar} · largeur: ${width} · repli sr-only: ${collapsed} · aria: ${ariaLabels} · Hugeicons seuls: ${hugeiconsOnly}`,
+    singleVar && width && collapsed && ariaLabels && solarOnly ? 'PASS' : 'FAIL',
+    `variable unique: ${singleVar} · largeur: ${width} · repli sr-only: ${collapsed} · aria: ${ariaLabels} · Solar : ${solarOnly}`,
     'npx vitest run tests/design/desktop-shell.test.ts',
   );
 }
@@ -385,7 +385,7 @@ const record = (id, section, label, verdict, detail, proof) =>
   record(
     'C12',
     '§5.1',
-    'Une seule bibliothèque d’icônes (Hugeicons)',
+    'Une seule bibliothèque d’icônes (Solar)',
     lucide.length === 0 ? 'PASS' : 'PARTIAL',
     `${total - lucide.length}/${total} fichiers sans Lucide · ${lucide.length} à migrer`,
     'grep -rIl "lucide-react" --include=*.tsx app src | wc -l',

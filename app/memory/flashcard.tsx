@@ -1,3 +1,4 @@
+import { goBackSafely } from '@/lib/navigation';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -6,7 +7,7 @@ import {
   EyeIcon as Eye,
   RotateCcwIcon as RotateCcw,
   ArrowLeft01Icon as ArrowLeft,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { useLocalSearchParams } from '@/hooks/useIonicNavigation';
 import { useMemoryCapability } from '@/capabilities/memory/store';
@@ -81,7 +82,7 @@ export default function FlashcardScreen() {
         </div>
 
         <button
-          onClick={() => navigate(-1)}
+          onClick={() => goBackSafely(navigate)}
           className="flex w-full items-center justify-center gap-2 py-3 text-sm text-text-muted"
         >
           <DuoIcon icon={ArrowLeft} size={16} />

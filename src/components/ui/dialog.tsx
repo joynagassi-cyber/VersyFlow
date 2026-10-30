@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as DialogPrimitive from '@radix-ui/react-dialog';
 import { DuoIcon } from '@/components/ui/DuoIcon';
-import { Cancel01Icon } from '@hugeicons/core-free-icons';
+import { Cancel01Icon } from '@/components/ui/solar-icons';
 import { cn } from '@/lib/utils';
 
 const Dialog = DialogPrimitive.Root;

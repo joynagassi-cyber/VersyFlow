@@ -1,3 +1,4 @@
+import { goBackSafely } from '@/lib/navigation';
 /**
  * Memorization Workspace — unified verse practice screen (unified croquis D/E/F/G).
  *
@@ -27,7 +28,7 @@ import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   ArrowLeft01Icon as ArrowLeft,
   ArrowLeftRightIcon as ArrowLeftRight,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 
 import { useSettingsStore } from '@/store/settings-store';
 import { useMemorizationWorkspace, parseWorkspaceReference } from '@/hooks/useMemorizationWorkspace';
@@ -180,7 +181,7 @@ export default function MemorizationWorkspace() {
         <ShellHeader
           title={referenceLabel}
           subtitle={`${statusLabel(tone, t)}${dueLabel ? ` · ${dueLabel}` : ''}`}
-          onBack={() => navigate(-1)}
+          onBack={() => goBackSafely(navigate)}
           right={
             <button
               onClick={() => navigate(`/comparison/translation?bookId=${coords.bookId}&chapter=${coords.chapter}&verse=${coords.verse}`)}

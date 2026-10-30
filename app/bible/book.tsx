@@ -9,14 +9,15 @@ import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   ChevronRightIcon as ChevronRight,
   BookOpen01Icon as BookOpen,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import FullScreenPage from '@/components/layout/FullScreenPage';
+import { formatChapterCount } from '@/lib/chapter-count';
 import { useBibleBooks } from '@/hooks/useBibleBooks';
 
 export default function BookScreen() {
   const { bookId } = useParams();
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const { byId } = useBibleBooks();
   const book = bookId ? byId.get(bookId) : undefined;
@@ -33,7 +34,7 @@ export default function BookScreen() {
   return (
     <FullScreenPage
       title={book.displayName}
-      subtitle={t('bible.chapterCount', { count: book.chapterCount })}
+      subtitle={formatChapterCount(t('bible.chapterCount', { count: book.chapterCount }), book.chapterCount, i18n.resolvedLanguage || i18n.language)}
       backPath="/tabs/explore"
     >
       <div className="flex flex-col gap-2">

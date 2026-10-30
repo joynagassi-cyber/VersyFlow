@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { DuoIcon } from '@/components/ui/DuoIcon';
-import { ArrowRight01Icon, BookOpen01Icon } from '@hugeicons/core-free-icons';
+import { ArrowRight01Icon, BookOpen01Icon } from '@/components/ui/solar-icons';
 import { Logo } from '@/components/brand/Logo';
 import { OnboardingShell } from '@/components/onboarding/OnboardingShell';
 import { useSettingsStore } from '@/store/settings-store';

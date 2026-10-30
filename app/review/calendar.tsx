@@ -14,7 +14,7 @@ import {
   FlameIcon as Flame,
   BookOpen01Icon as BookOpen,
   TrendingUpIcon as TrendingUp,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import FullScreenPage from '@/components/layout/FullScreenPage';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -23,6 +23,8 @@ import { getFsrsEngine } from '@/services/fsrs-factory';
 import { ProgressService } from '@/services/progress-service';
 import { getMemorizationService } from '@/services/memorization-service-factory';
 import type { ProgressStats } from '@/services/stats-calculator';
+import type { MemorizationRecord } from '@/domains/memorization/entities';
+import { formatProgressLabel } from '@/lib/progress-label';
 
 const WEEKDAYS = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
 
@@ -35,6 +37,8 @@ export default function ReviewCalendarScreen() {
   const [stats, setStats] = useState<ProgressStats | null>(null);
   const [dueByDay, setDueByDay] = useState<Map<string, number>>(new Map());
   const [month, setMonth] = useState(() => new Date());
+  const [selectedDay, setSelectedDay] = useState(() => new Date());
+  const [records, setRecords] = useState<MemorizationRecord[]>([]);
 
   useEffect(() => {
     let cancelled = false;
@@ -47,6 +51,7 @@ export default function ReviewCalendarScreen() {
         ]);
         if (cancelled) return;
         setStats(progress);
+        setRecords(records);
         const map = new Map<string, number>();
         for (const r of records) {
           if (!r.nextReviewAt) continue;
@@ -84,9 +89,7 @@ export default function ReviewCalendarScreen() {
 
   const shiftMonth = (delta: number) => {
     setMonth((prev) => {
-      const d = new Date(prev);
-      d.setMonth(d.getMonth() + delta);
-      return d;
+      return new Date(prev.getFullYear(), prev.getMonth() + delta, 1);
     });
   };
 
@@ -97,13 +100,13 @@ export default function ReviewCalendarScreen() {
 
   const legendItems = [
     { key: 'review', label: t('review.dueSoon', "À réviser"), cls: 'bg-primary' },
-    { key: 'overdue', label: t('review.overdue', 'En retard'), cls: 'bg-error' },
+    { key: 'memorized', label: t('reviewCalendar.created', 'Mémorisation ajoutée'), cls: 'bg-primary' },
     { key: 'today', label: i18n.language === 'fr' ? "Aujourd'hui" : 'Today', cls: 'bg-surface-tint ring-2 ring-primary' },
   ];
 
   const monthSummary = [
     { value: stats?.streakCount ?? 0, label: t('progress.streak', 'Jours de série'), icon: <DuoIcon icon={Flame} size={14} /> },
-    { value: stats?.totalVerses ?? 0, label: t('progress.versesMemorized', 'Verset(s) révisés'), icon: <DuoIcon icon={BookOpen} size={14} /> },
+    { value: stats?.totalVerses ?? 0, label: formatProgressLabel(t('progress.versesMemorized', 'Versets mémorisés'), stats?.totalVerses ?? 0, i18n.resolvedLanguage || i18n.language), icon: <DuoIcon icon={BookOpen} size={14} /> },
     {
       value: `${stats ? Math.round((stats.masteredVerses / Math.max(1, stats.totalVerses)) * 100) : 0}%`,
       label: t('progress.retention', 'Taux de rétention'),
@@ -149,24 +152,29 @@ export default function ReviewCalendarScreen() {
           if (!date) return <div key={`empty-${i}`} className="aspect-square" />;
           const isToday = date.toDateString() === today.toDateString();
           const due = dueByDay.get(date.toDateString()) ?? 0;
+          const created = records.filter((record) => new Date(record.createdAt).toDateString() === date.toDateString()).length;
+          const selected = date.toDateString() === selectedDay.toDateString();
           return (
             <button
               key={date.toDateString()}
-              onClick={() => due > 0 && navigate('/review/queue')}
+              onClick={() => setSelectedDay(date)}
+              aria-pressed={selected}
+              aria-label={`${date.toLocaleDateString(i18n.resolvedLanguage || i18n.language, { dateStyle: 'full' })} · ${t('reviewCalendar.createdCount', { count: created, defaultValue: '{{count}} ajout(s)' })} · ${t('reviewCalendar.dueCount', { count: due, defaultValue: '{{count}} à réviser' })}`}
               className={cn(
                 'relative flex aspect-square flex-col items-center justify-center rounded-lg text-sm',
                 due > 0 && 'bg-primary/10 font-semibold text-primary',
-                isToday && 'ring-2 ring-primary',
+                (isToday || selected) && 'ring-2 ring-primary',
               )}
             >
               <span className={cn(isToday ? 'font-bold text-primary' : 'text-text-primary')}>
                 {date.getDate()}
               </span>
+              {created > 0 && <span className="review-calendar-dot" aria-hidden="true" />}
               {due > 0 && (
                 <span
                   className={cn(
                     'mt-0.5 rounded-full px-1.5 text-[10px] font-bold text-[color:var(--on)]',
-                    due > 3 ? 'bg-error' : 'bg-primary',
+                    'bg-primary',
                   )}
                 >
                   {due}
@@ -204,6 +212,18 @@ export default function ReviewCalendarScreen() {
           ))}
         </div>
       </div>
+
+      <section className="g2 review-timeline" aria-label={t('reviewCalendar.timeline', 'Activité du jour')}>
+        <h3>{t('reviewCalendar.timeline', 'Activité du jour')}</h3>
+        <p>{selectedDay.toLocaleDateString(i18n.resolvedLanguage || i18n.language, { dateStyle: 'full' })}</p>
+        {records.filter((record) => new Date(record.createdAt).toDateString() === selectedDay.toDateString() || (record.lastReviewedAt && new Date(record.lastReviewedAt).toDateString() === selectedDay.toDateString())).length === 0 ?
+          <p>{t('reviewCalendar.empty', 'Aucune activité enregistrée ce jour.')}</p> :
+          <ol>{records.filter((record) => new Date(record.createdAt).toDateString() === selectedDay.toDateString() || (record.lastReviewedAt && new Date(record.lastReviewedAt).toDateString() === selectedDay.toDateString())).sort((a, b) => (b.lastReviewedAt ?? b.createdAt) - (a.lastReviewedAt ?? a.createdAt)).map((record) => <li key={record.id}>
+            <strong>{record.bibleVerseReference}</strong>
+            <span>{record.lastReviewedAt && new Date(record.lastReviewedAt).toDateString() === selectedDay.toDateString() ? t('reviewCalendar.reviewed', 'Dernière révision') : t('reviewCalendar.added', 'Ajouté à la mémorisation')}</span>
+            <p>{record.bibleVerseText}</p>
+          </li>)}</ol>}
+      </section>
 
       <Button className="mt-4 w-full" onClick={() => navigate('/review/queue')}>
         {t('review.startReview', 'Commencer la révision')}

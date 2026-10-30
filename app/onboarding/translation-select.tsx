@@ -19,7 +19,7 @@ import {
   CheckIcon as Check,
   Layers01Icon as Layers,
   LanguagesIcon as Languages,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { useSettingsStore, type BibleVersionType } from '@/store/settings-store';

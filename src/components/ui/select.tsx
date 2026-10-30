@@ -4,7 +4,7 @@ import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   CheckIcon as Check,
   ChevronDownIcon as ChevronDown,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import { cn } from '@/lib/utils';
 
 const Select = SelectPrimitive.Root;

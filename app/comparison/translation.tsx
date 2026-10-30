@@ -21,7 +21,7 @@ import {
   LanguagesIcon as Languages,
   CheckIcon as Check,
   GlobeIcon as Globe,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { BIBLE_TRANSLATION_REGISTRY as DEFAULT_BIBLE_TRANSLATIONS } from '@/services/translation-preference-service';
 import { getTranslationDisplayInfo } from '@/services/bible-translation-names';

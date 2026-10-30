@@ -12,7 +12,7 @@ import {
   LightbulbIcon as Lightbulb,
   Clock01Icon as Clock,
   AlertCircleIcon as AlertCircle,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { colorTintAlpha } from '@/lib/platform';

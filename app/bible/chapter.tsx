@@ -16,7 +16,7 @@ import {
   Loading03Icon as Loader2,
   AlertCircleIcon as AlertCircle,
   Cancel01Icon as X,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import FullScreenPage from '@/components/layout/FullScreenPage';
 import { useBibleBooks } from '@/hooks/useBibleBooks';
 import { useChapterSemanticTags } from '@/hooks/useSemanticTags';

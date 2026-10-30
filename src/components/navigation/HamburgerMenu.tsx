@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   Cancel01Icon as X,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import { Logo } from '@/components/brand/Logo';
 import { useAuthStore } from '@/store/auth-store';
 import { useUiStore, ALL_MENU_ITEMS } from '@/store/ui-store';

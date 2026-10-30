@@ -12,7 +12,7 @@ import {
   MessageCircleHeartIcon as MessageCircleHeart,
   Search01Icon as Search,
   Cancel01Icon as X,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 
 interface QuickAction {
   icon: typeof BrainCircuit;

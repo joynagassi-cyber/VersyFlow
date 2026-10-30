@@ -13,7 +13,7 @@ import {
   CheckmarkCircle01Icon as CheckCircle,
   Clock01Icon as Clock,
   PlayIcon as Play,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import FullScreenPage from '@/components/layout/FullScreenPage';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';

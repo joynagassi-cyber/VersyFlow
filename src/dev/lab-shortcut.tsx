@@ -13,12 +13,12 @@
 
 import { Link, useLocation } from 'react-router-dom';
 import { DuoIcon } from '@/components/ui/DuoIcon';
-import { SmartPhone01Icon, BeakerIcon } from '@hugeicons/core-free-icons';
+import { SmartPhone01Icon, BeakerIcon } from '@/components/ui/solar-icons';
 
 export default function DevLabShortcut() {
   const { pathname } = useLocation();
   // Dans le laboratoire lui-même, le raccourci n'aurait aucun sens.
-  if (pathname.startsWith('/__dev/')) return null;
+  if (pathname.startsWith('/__dev/') || import.meta.env.VITE_SHOW_LAB_SHORTCUT !== 'true') return null;
 
   return (
     <Link

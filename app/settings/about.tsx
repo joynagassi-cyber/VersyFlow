@@ -8,7 +8,7 @@ import {
   CpuIcon as Cpu,
   SparklesIcon as Sparkles,
   ChevronDownIcon as ChevronDown,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { Button } from '@/components/ui/button';
 import { Logo } from '@/components/brand/Logo';
@@ -81,14 +81,14 @@ export default function AboutScreen() {
     >
       <div className="screen-column space-y-4">
         {/* Header */}
-        <div className="flex flex-col items-center gap-2 rounded-3xl bg-surface p-6 shadow-sm">
+        <div className="glass flex flex-col items-center gap-2 rounded-3xl bg-surface p-6 shadow-sm">
           <Logo size={72} />
           <p className="text-2xl font-extrabold text-text-primary">VersyFlow</p>
           <p className="text-sm text-text-muted">Version {VERSION}</p>
         </div>
 
         {/* What's new */}
-        <div className="rounded-2xl bg-surface p-4 shadow-sm">
+        <div className="glass rounded-2xl bg-surface p-4 shadow-sm">
           <button
             className="flex w-full items-center justify-between"
             onClick={() => setShowWhatNew((v) => !v)}
@@ -132,7 +132,7 @@ export default function AboutScreen() {
         </div>
 
         {/* About */}
-        <div className="rounded-2xl bg-surface p-4 shadow-sm">
+        <div className="glass rounded-2xl bg-surface p-4 shadow-sm">
           <p className="mb-2 flex items-center gap-2 text-base font-bold text-text-primary">
             <DuoIcon icon={BookOpen} size={18} className="text-primary" />
             {t('settings.about', "A propos")}
@@ -144,7 +144,7 @@ export default function AboutScreen() {
         </div>
 
         {/* Links */}
-        <div className="overflow-hidden rounded-2xl bg-surface shadow-sm">
+        <div className="glass overflow-hidden rounded-2xl bg-surface shadow-sm">
           {[
             { label: t('settings.documentation', 'Documentation'), url: 'https://github.com/your-org/versyflow' },
             { label: t('settings.supportLink', 'Support'), url: 'mailto:support@versyflow.com' },
@@ -162,7 +162,7 @@ export default function AboutScreen() {
         </div>
 
         {/* Credits */}
-        <div className="space-y-2 rounded-2xl bg-surface p-4 text-center shadow-sm">
+        <div className="glass space-y-2 rounded-2xl bg-surface p-4 text-center shadow-sm">
           <p className="flex items-center justify-center gap-2 text-sm text-text-secondary">
             <DuoIcon icon={Heart} size={14} className="text-primary" />
             {t('settings.creditMission', 'Developpe avec amour pour la gloire de Dieu')}

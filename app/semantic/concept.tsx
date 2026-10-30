@@ -21,7 +21,7 @@ import {
   BookOpen01Icon as BookOpen,
   ChevronRightIcon as ChevronRight,
   GitBranchIcon as GitBranch,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import FullScreenPage from '@/components/layout/FullScreenPage';
 import { useConceptView } from '@/hooks/useSemanticViews';
 import { loadTranslationBooks } from '@/services/bible-text-service';

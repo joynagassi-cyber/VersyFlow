@@ -1,3 +1,4 @@
+import { goBackSafely } from '@/lib/navigation';
 /**
  * Settings — Session Configuration Screen
  *
@@ -13,7 +14,7 @@ import {
   Target01Icon as Target,
   FocusIcon as Focus,
   CheckIcon as Check,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { useAppearanceStore } from '@/store/appearance-store';
@@ -32,7 +33,7 @@ export default function SettingsSessionScreen() {
     <div className="screen-column-narrow flex h-full flex-col overflow-y-auto p-6">
       <header className="mb-6 flex items-center gap-3">
         <button
-          onClick={() => navigate(-1)}
+          onClick={() => goBackSafely(navigate)}
           className="flex h-10 w-10 items-center justify-center rounded-full bg-surface shadow-sm"
           aria-label={t('common.back')}
         >
@@ -108,7 +109,7 @@ export default function SettingsSessionScreen() {
       </div>
 
       <div className="mt-6 flex gap-4">
-        <Button variant="outline" className="flex-1" onClick={() => navigate(-1)}>
+        <Button variant="outline" className="flex-1" onClick={() => goBackSafely(navigate)}>
           <DuoIcon icon={ArrowLeft} size={16} />
           {t('common.back')}
         </Button>

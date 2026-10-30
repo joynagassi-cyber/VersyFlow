@@ -1,3 +1,4 @@
+import { goBackSafely } from '@/lib/navigation';
 // Fixed: UX — member list hydrate failure now shows a visible error + retry instead of an empty list
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -7,7 +8,7 @@ import {
   UserPlusIcon as UserPlus,
   CheckmarkCircle02Icon as CheckCircle2,
   AlertCircleIcon as AlertCircle,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { useFamilySyncStore } from '@/store/family-sync-store';
@@ -64,7 +65,7 @@ export default function FamilyMembersScreen() {
             title={t('family.noFamily', 'Aucune famille active')}
             description={t('family.noFamilyHint', 'Commencez par rejoindre ou creer une famille.')}
             actionLabel={t('common.back', 'Retour')}
-            onAction={() => navigate(-1)}
+            onAction={() => goBackSafely(navigate)}
           />
         </div>
       </FullScreenPage>

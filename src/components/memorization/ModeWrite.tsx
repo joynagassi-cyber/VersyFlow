@@ -21,7 +21,7 @@ import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   CheckIcon as Check,
   PenLineIcon as PenLine,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import { cn } from '@/lib/utils';
 import { getComparisonEngine } from '@/services/recall-comparison-service';
 import type { WrittenRecallResult } from '@/domains/memorization/comparison-engine';

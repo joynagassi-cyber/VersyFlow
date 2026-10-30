@@ -1,3 +1,4 @@
+import { goBackSafely } from '@/lib/navigation';
 // Fixed: Structure — memorization flashcard screen now wrapped in FullScreenPage shell; icon-only buttons carry aria-labels
 import { useState, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -11,7 +12,7 @@ import {
   BookOpen01Icon as BookOpen,
   RefreshIcon as RefreshCw,
   HandIcon as Hand,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import FullScreenPage from '@/components/layout/FullScreenPage';
 
 interface Flashcard {
@@ -106,7 +107,7 @@ export default function FlashcardScreen() {
       subtitle={`${currentIndex + 1} / ${cards.length}`}
       right={
         <button
-          onClick={() => navigate(-1)}
+          onClick={() => goBackSafely(navigate)}
           className="flex h-9 w-9 items-center justify-center rounded-full bg-surface shadow-sm"
           aria-label={t('common.close', 'Fermer')}
         >

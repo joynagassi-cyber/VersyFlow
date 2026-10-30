@@ -20,7 +20,7 @@ import {
   BookMarkedIcon as BookMarked,
   ChevronRightIcon as ChevronRight,
   FileTextIcon as FileText,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import FullScreenPage from '@/components/layout/FullScreenPage';
 import { useVerseView } from '@/hooks/useSemanticViews';
 import { formatVerseKey } from '@/hooks/useSemanticTags';

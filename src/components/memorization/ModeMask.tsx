@@ -22,7 +22,7 @@ import {
   ArrowRight01Icon as ArrowRight,
   CheckIcon as Check,
   SparklesIcon as Sparkles,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import { cn } from '@/lib/utils';
 import { getComparisonEngine } from '@/services/recall-comparison-service';
 import type { WrittenRecallResult } from '@/domains/memorization/comparison-engine';

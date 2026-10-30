@@ -12,7 +12,7 @@ import {
   ArrowLeft01Icon as ArrowLeft,
   ArrowRight01Icon as ArrowRight,
   LanguagesIcon as Languages,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { SUPPORTED_LANGUAGES, isRTL } from '@/services/i18n-service';

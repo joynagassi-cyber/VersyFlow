@@ -1,3 +1,4 @@
+import { goBackSafely } from '@/lib/navigation';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -5,7 +6,7 @@ import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   ArrowRight01Icon as ArrowRight,
   CheckIcon as Check,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { Button } from '@/components/ui/button';
 import { useComparisonCapability } from '@/capabilities/comparison/store';
@@ -126,7 +127,7 @@ export default function ComparisonResultScreen({ record, userAnswer }: Props) {
         )}
 
         <div className="space-y-3 pt-2">
-          <Button variant="default" className="w-full" onClick={() => navigate(-1)}>
+          <Button variant="default" className="w-full" onClick={() => goBackSafely(navigate)}>
             <DuoIcon icon={Check} size={18} />
             {t('comparison.finish', 'Terminer')}
           </Button>

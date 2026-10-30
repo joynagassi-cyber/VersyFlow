@@ -43,7 +43,7 @@ import {
   AlertCircleIcon as Warn,
   LockIcon as Lock,
   Link01Icon as External,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import { useAppearanceStore } from '@/store/appearance-store';
 import { PREVIEW_SCREENS, DEFAULT_PREVIEW_SCREEN, type PreviewScreen } from '@/dev/preview-screens';
 import { DeviceCase, fitScale } from '@/dev/device-frames';

@@ -13,7 +13,7 @@ import {
   BookOpen01Icon as BookOpen,
   Tick02Icon as Tick,
   Add01Icon as PlusSign,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { DuoIcon } from '@/components/ui/DuoIcon';
 import { Button } from '@/components/ui/button';

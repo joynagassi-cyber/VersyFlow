@@ -26,7 +26,7 @@ import {
   PenLineIcon as PenLine,
   Tag01Icon as Tag,
   ArrowLeftRightIcon as ArrowLeftRight,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import { BIBLE_BOOKS_LIST as BIBLE_BOOKS } from '@/services/memorization-session-service';
 import { eventBus, DomainEventTypes } from '@/services/events-service';
 import { getVerseNote, saveVerseNote } from '@/services/verse-note-service';

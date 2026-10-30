@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import type { IconSvgElement } from '@hugeicons/react';
+import type { Icon as IconSvgElement } from '@solar-icons/react/lib/types';
 import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   CloudIcon as Cloud,
@@ -19,7 +19,7 @@ import {
   BookTextIcon as BookText,
   SlidersHorizontalIcon as SlidersHorizontal,
   ListChecksIcon as ListChecks,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import { cn } from '@/lib/utils';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { Button } from '@/components/ui/button';

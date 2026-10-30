@@ -12,7 +12,7 @@ import {
   CalendarClockIcon as CalendarClock,
   ArrowRight01Icon as ArrowRight,
   Home01Icon as Home,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import FullScreenPage from '@/components/layout/FullScreenPage';
 import { Button } from '@/components/ui/button';
 

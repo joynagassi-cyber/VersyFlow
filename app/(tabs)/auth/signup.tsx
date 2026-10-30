@@ -7,7 +7,7 @@ import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   Loading03Icon as Loader2,
   CheckmarkCircle02Icon as CheckCircle2,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { Logo } from '@/components/brand/Logo';
 import { Input } from '@/components/ui/input';

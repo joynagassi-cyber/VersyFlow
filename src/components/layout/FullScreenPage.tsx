@@ -4,18 +4,13 @@
  */
 
 import * as React from 'react';
-import {
-  IonPage,
-  IonHeader,
-  IonToolbar,
-  IonTitle,
-  IonButtons,
-  IonButton,
-} from '@ionic/react';
+import { IonPage } from '@ionic/react';
 import { DuoIcon } from '@/components/ui/DuoIcon';
-import { ArrowLeft01Icon } from '@hugeicons/core-free-icons';
+import { ArrowLeft01Icon } from '@/components/ui/solar-icons';
 import { useNavigate } from 'react-router-dom';
 import { cn } from '@/lib/utils';
+import { useTranslation } from 'react-i18next';
+import { goBackSafely } from '@/lib/navigation';
 
 interface FullScreenPageProps {
   title?: string;
@@ -44,39 +39,23 @@ export function FullScreenPage({
   column = 'narrow',
 }: FullScreenPageProps) {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const handleBack = () => {
     if (backPath) navigate(backPath, { replace: true });
-    else navigate(-1);
+    else goBackSafely(navigate);
   };
 
   return (
     <IonPage>
       {title && (
-        <IonHeader className="bg-surface">
-          <IonToolbar>
-            {showBack && (
-              <IonButtons slot="start">
-                <IonButton
-                  onClick={handleBack}
-                  className="h-10 w-10 p-0"
-                  shape="round"
-                >
-                  <DuoIcon icon={ArrowLeft01Icon} size={22} color="var(--color-text-secondary)" />
-                </IonButton>
-              </IonButtons>
-            )}
-            <IonTitle className="!text-text-primary">
-              <span className="text-base font-semibold">{title}</span>
-              {subtitle && (
-                <span className="block text-xs font-normal text-text-muted">
-                  {subtitle}
-                </span>
-              )}
-            </IonTitle>
-            {right && <div slot="end">{right}</div>}
-          </IonToolbar>
-        </IonHeader>
+        <header className="full-screen-header">
+          {showBack && <button type="button" onClick={handleBack} aria-label={t('common.back', 'Retour')} className="full-screen-back">
+            <DuoIcon icon={ArrowLeft01Icon} size={22} />
+          </button>}
+          <div className="full-screen-title"><h1>{title}</h1>{subtitle && <p>{subtitle}</p>}</div>
+          {right && <div className="full-screen-right">{right}</div>}
+        </header>
       )}
       <div className={cn('app-canvas h-full overflow-y-auto bg-background p-4', className)}>
         <div

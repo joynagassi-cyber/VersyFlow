@@ -9,11 +9,11 @@ import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { DuoIcon } from '@/components/ui/DuoIcon';
+import { ThemeAppearanceIcon } from '@/components/ui/ThemeAppearanceIcon';
 import {
   ChevronRightIcon as ChevronRight,
   LanguagesIcon as Languages,
   BookTextIcon as BookText,
-  Moon01Icon as Moon,
   CloudUploadIcon as CloudUpload,
   Download01Icon as Download,
   ShieldCheckIcon as ShieldCheck,
@@ -33,7 +33,7 @@ import {
   Mail01Icon as Mail,
   UserRoundIcon as UserRound,
   PlusSignIcon as Plus,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import { cn } from '@/lib/utils';
 import { useAuthStore } from '@/store/auth-store';
 import { ALL_TABS, useUiStore } from '@/store/ui-store';
@@ -62,30 +62,24 @@ export default function SettingsScreen() {
   const [tab, setTab] = useState<SettingsTab>('data');
 
   return (
-    <div className="flex h-full flex-col bg-background">
-      {/* Segmented control */}
-      <div className="px-4 pt-4">
-        <div className="flex rounded-full bg-surface-tint p-1">
-          {TAB_DEFS.map((d) => (
-            <button
-              key={d.id}
-              onClick={() => setTab(d.id)}
-              className={cn(
-                'flex-1 rounded-full py-2 text-sm font-semibold transition',
-                tab === d.id ? 'bg-surface text-primary shadow-sm' : 'text-text-muted',
-              )}
-            >
-              {t(d.key, d.label)}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Scrollable content */}
-      <div className="screen-column-narrow min-h-0 flex-1 overflow-y-auto p-4 pb-24">
-        {tab === 'data' && <DataTab />}
-        {tab === 'params' && <ParamsTab />}
-        {tab === 'profile' && <ProfileTab />}
+    <div className="screen-column settings-premium h-full overflow-y-auto">
+      <div className="settings-content">
+        <header className="g1 settings-heading">
+          <p className="settings-eyebrow">VersyFlow</p>
+          <h1>{t('nav.settings', 'Réglages')}</h1>
+          <div className="settings-tabs" role="group" aria-label={t('settings.settings', 'Paramètres')}>
+            {TAB_DEFS.map((d) => (
+              <button key={d.id} type="button" onClick={() => setTab(d.id)} aria-pressed={tab === d.id}>
+                {t(d.key, d.label)}
+              </button>
+            ))}
+          </div>
+        </header>
+        <main className="settings-panel">
+          {tab === 'data' && <DataTab />}
+          {tab === 'params' && <ParamsTab />}
+          {tab === 'profile' && <ProfileTab />}
+        </main>
       </div>
     </div>
   );
@@ -98,21 +92,21 @@ function DataTab() {
   const { t } = useTranslation();
 
   const cards = [
-    { icon: BarChart3, label: t('analytics.title', 'Statistiques'), sub: t('settings.version', 'Courbes & rétention'), to: '/analytics/dashboard' },
-    { icon: TrendingUp, label: t('progress.yourProgress', 'Progression'), sub: t('progress.inProgress', 'En cours & à réviser'), to: '/tabs/progress' },
-    { icon: Repeat, label: t('home.review', 'Réviser'), sub: t('home.reviewDesc', 'File de révision'), to: '/review/queue' },
-    { icon: CloudUpload, label: t('settings.backup', 'Sauvegarde & Sync'), sub: t('settings.data', 'Exporter / importer'), to: '/settings/backup' },
-    { icon: History, label: t('nav.history', 'Historique'), sub: t('review.summary', 'Révisions passées'), to: '/review/history' },
-    { icon: Layers, label: t('nav.collections', 'Collections'), sub: t('collections.createHint', 'Organisez vos versets'), to: '/collections' },
+    { icon: BarChart3, label: t('settingsHub.analytics', 'Statistiques détaillées'), sub: t('settingsHub.analyticsHint', 'Courbes et rétention'), to: '/analytics/dashboard' },
+    { icon: TrendingUp, label: t('settingsHub.progress', 'Progression'), sub: t('settingsHub.progressHint', 'En cours et à réviser'), to: '/tabs/progress' },
+    { icon: Repeat, label: t('home.review', 'Réviser'), sub: t('settingsHub.reviewHint', 'File de révision'), to: '/review/queue' },
+    { icon: CloudUpload, label: t('settings.backup', 'Sauvegarde & Sync'), sub: t('settingsHub.backupHint', 'Exporter ou importer'), to: '/settings/backup' },
+    { icon: History, label: t('nav.history', 'Historique'), sub: t('settingsHub.historyHint', 'Révisions passées'), to: '/review/history' },
+    { icon: Layers, label: t('nav.collections', 'Collections'), sub: t('settingsHub.collectionsHint', 'Organisez vos versets'), to: '/collections' },
   ];
 
   return (
-    <div className="space-y-3">
+    <div className="settings-data-grid">
       {cards.map((c, i) => (
         <button
           key={i}
           onClick={() => navigate(c.to)}
-          className="flex w-full items-center gap-4 rounded-2xl bg-surface p-4 text-left shadow-sm transition active:scale-[0.99]"
+          className="g2 settings-data-card"
         >
           <span className="icon-chip flex h-11 w-11 shrink-0 items-center justify-center rounded-full">
             <DuoIcon icon={c.icon} size={20} />
@@ -160,20 +154,20 @@ function ParamsTab() {
       rows: [
         { icon: <DuoIcon icon={Languages} size={20} />, label: t('settings.uiLanguage', "Langue de l'interface"), sub: getLanguageName(currentLanguage), onClick: () => setLanguageModalOpen(true) },
         { icon: <DuoIcon icon={BookText} size={20} />, label: t('settings.bibleTranslation', 'Traduction biblique'), sub: `${bibleTranslationDisplayName(bibleTranslation)} · ${t('settings.downloadTranslations', 'Télécharger d’autres versions')}`, onClick: () => navigate('/settings/available-translations') },
-        { icon: <DuoIcon icon={Moon} size={20} />, label: t('settings.theme', 'Thème & accent'), sub: t('settings.fontSize', 'Clair, sombre, taille, accent'), onClick: () => navigate('/settings/appearance') },
+        { icon: <ThemeAppearanceIcon />, label: t('nav.theme', 'Thème et apparence'), sub: t('settingsHub.themeHint', 'Clair, sombre et accent'), onClick: () => navigate('/settings/appearance') },
       ],
     },
     {
       title: t('settings.sessionReminders', 'Session & Rappels'),
       rows: [
-        { icon: <DuoIcon icon={LayoutGrid} size={20} />, label: t('settings.session', 'Session'), sub: t('settings.reminders', 'Objectif & durée'), onClick: () => navigate('/settings/session') },
-        { icon: <DuoIcon icon={CloudUpload} size={20} />, label: t('settings.reminders', 'Rappels'), sub: t('settings.data', 'Heures & fréquence'), onClick: () => navigate('/settings/reminders') },
+        { icon: <DuoIcon icon={LayoutGrid} size={20} />, label: t('settings.session', 'Session'), sub: t('settingsHub.sessionHint', 'Objectif et durée'), onClick: () => navigate('/settings/session') },
+        { icon: <DuoIcon icon={CloudUpload} size={20} />, label: t('settings.reminders', 'Rappels'), sub: t('settingsHub.remindersHint', 'Heures et fréquence'), onClick: () => navigate('/settings/reminders') },
       ],
     },
     {
       title: t('settings.confidentialite', 'Confidentialité'),
       rows: [
-        { icon: <DuoIcon icon={ShieldCheck} size={20} />, label: t('settings.privacyTitle', 'Données & confidentialité'), sub: t('settings.downloadData', 'Télémétrie & données'), onClick: () => navigate('/settings/privacy') },
+        { icon: <DuoIcon icon={ShieldCheck} size={20} />, label: t('settings.privacyTitle', 'Données & confidentialité'), sub: t('settingsHub.privacyHint', 'Télémétrie et données'), onClick: () => navigate('/settings/privacy') },
       ],
     },
     {
@@ -191,14 +185,14 @@ function ParamsTab() {
   }
 
   return (
-    <div className="space-y-5">
+    <div className="settings-groups">
       {/* Navigation — enable/disable tabs */}
       <section>
-        <h2 className="mb-2 flex items-center gap-2 px-1 text-sm font-semibold uppercase tracking-wide text-text-tertiary">
-          <DuoIcon icon={LayoutGrid} size={16} />
-          {t('settings.navigation', 'Navigation')}
-        </h2>
-        <div className="overflow-hidden rounded-2xl bg-surface shadow-sm">
+        <div className="g2 settings-group-card overflow-hidden">
+          <h2 className="flex items-center gap-2">
+            <DuoIcon icon={LayoutGrid} size={16} />
+            {t('settings.navigation', 'Navigation')}
+          </h2>
           {ALL_TABS.map((tabItem, i) => {
             const on = visibleTabs.includes(tabItem.id);
             return (
@@ -209,7 +203,7 @@ function ParamsTab() {
                     {on ? t('settings.tabEnabled', 'Affiché dans la barre') : t('settings.tabHidden', 'Masqué')}
                   </span>
                 </span>
-                <button onClick={() => setVisibleTab(tabItem.id, !on)} className={cn('relative h-6 w-11 shrink-0 rounded-full transition-colors', on ? 'bg-primary' : 'bg-border')} aria-pressed={on}>
+                <button onClick={() => setVisibleTab(tabItem.id, !on)} className={cn('settings-toggle relative h-6 w-11 shrink-0 rounded-full transition-colors', on ? 'bg-primary' : 'bg-border')} aria-pressed={on} aria-label={t(tabItem.labelKey, tabItem.label)} disabled={tabItem.id === 'settings'}>
                   <span className={cn('absolute top-0.5 h-5 w-5 rounded-full bg-surface shadow transition-all', on ? 'left-[22px]' : 'left-0.5')} />
                 </button>
               </div>
@@ -221,8 +215,8 @@ function ParamsTab() {
       {/* Groups */}
       {groups.map((group) => (
         <section key={group.title}>
-          <h2 className="mb-2 px-1 text-sm font-semibold uppercase tracking-wide text-text-tertiary">{group.title}</h2>
-          <div className="overflow-hidden rounded-2xl bg-surface shadow-sm">
+          <div className="g2 settings-group-card overflow-hidden">
+            <h2>{group.title}</h2>
             {group.rows.map((row, i) => (
               <button key={i} onClick={row.onClick} className={cn('flex w-full items-center gap-3 p-4 text-left', i < group.rows.length - 1 && 'border-b border-divider')}>
                 <span className="icon-chip flex h-10 w-10 shrink-0 items-center justify-center rounded-full">
@@ -241,10 +235,8 @@ function ParamsTab() {
 
       {/* Danger zone */}
       <section>
-        <h2 className="mb-2 px-1 text-sm font-semibold uppercase tracking-wide text-text-tertiary">
-          {t('settings.resetProgress', 'Zone de danger')}
-        </h2>
-        <div className="overflow-hidden rounded-2xl bg-surface shadow-sm">
+        <div className="g2 settings-group-card overflow-hidden">
+          <h2>{t('settingsHub.danger', 'Zone de danger')}</h2>
           <button
             onClick={() => {
               if (window.confirm(t('settings.resetConfirmText', 'Cela supprimera TOUS vos versets mémorisés.'))) {
@@ -350,15 +342,15 @@ function ProfileTab() {
   };
 
   const actions = [
-    { icon: UserRound, label: t('profile.manageProfiles', 'Gérer les profils'), sub: t('profile.select', 'Choisir qui apprend'), to: '/profile/select' },
-    { icon: Plus, label: t('profile.createProfile', 'Ajouter un profil'), sub: t('profile.selectHint', 'Plusieurs apprenants'), to: '/profile/create' },
-    { icon: Download, label: t('settings.exportData', 'Exporter mes données'), sub: t('settings.data', 'Sauvegarde locale'), to: '/settings/backup' },
+    { icon: UserRound, label: t('profile.manageProfiles', 'Gérer les profils'), sub: t('settingsHub.chooseLearner', 'Choisir qui apprend'), to: '/profile/select' },
+    { icon: Plus, label: t('profile.createProfile', 'Ajouter un profil'), sub: t('settingsHub.multipleLearners', 'Plusieurs apprenants'), to: '/profile/create' },
+    { icon: Download, label: t('settings.exportData', 'Exporter mes données'), sub: t('settingsHub.localBackup', 'Sauvegarde locale'), to: '/settings/backup' },
   ];
 
   return (
-    <div className="space-y-5">
+    <div className="settings-groups">
       {/* Identity card */}
-      <div className="flex flex-col items-center rounded-3xl bg-surface p-6 shadow-md">
+      <div className="g2 settings-profile-card flex flex-col items-center p-6">
         <button
           onClick={() => fileRef.current?.click()}
           className="relative h-24 w-24 overflow-hidden rounded-full bg-surface-tint active:scale-95"
@@ -408,7 +400,7 @@ function ProfileTab() {
             {isAuthenticated ? user?.email ?? t('profile.local', 'Local') : t('profile.local', 'Mode local')}
           </p>
           <div className="mt-3 flex items-center gap-2">
-            <span className={cn('inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold', isAuthenticated ? 'bg-success-light text-success' : 'bg-surface-tint text-text-muted')}>
+            <span className={cn('inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold', isAuthenticated ? 'bg-surface-tint text-text-muted' : 'bg-surface-tint text-text-muted')}>
               {isAuthenticated ? t('profile.connected', 'Connecté') : t('profile.local', 'Local')}
             </span>
             {activeFamily && (
@@ -422,7 +414,7 @@ function ProfileTab() {
 
       {/* Data actions */}
       <section>
-        <div className="overflow-hidden rounded-2xl bg-surface shadow-sm">
+        <div className="g2 settings-group-card overflow-hidden">
           {actions.map((a, i) => (
             <button key={i} onClick={() => navigate(a.to)} className={cn('flex w-full items-center gap-3 p-4 text-left', i < actions.length - 1 && 'border-b border-divider')}>
               <span className="icon-chip flex h-10 w-10 shrink-0 items-center justify-center rounded-full">

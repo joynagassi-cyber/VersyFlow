@@ -20,8 +20,9 @@ import {
   Download01Icon as Download,
   Loading03Icon as Loader2,
   AlertCircleIcon as AlertCircle,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import FullScreenPage from '@/components/layout/FullScreenPage';
+import { formatChapterCount } from '@/lib/chapter-count';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 import { useBibleBooks, type BookMeta } from '@/hooks/useBibleBooks';
@@ -47,7 +48,7 @@ function formatBytes(bytes: number): string {
 export default function BibleExplorerScreen() {
   const navigate = useNavigate();
   const params = useParams();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [query, setQuery] = useState('');
   const [selectedVerse, setSelectedVerse] = useState<number | null>(null);
 
@@ -109,14 +110,6 @@ export default function BibleExplorerScreen() {
     if (selectedBookId) navigate(`/bible/explorer/${selectedBookId}/${chapter}`);
   };
 
-  const goBack = () => {
-    if (viewMode === 'verses' && selectedBookId) {
-      navigate(`/bible/explorer/${selectedBookId}`);
-    } else {
-      navigate('/bible/explorer');
-    }
-  };
-
   // Manual retry (auto-download already runs inside the hook on a cache miss).
   const handleDownload = () => {
     void download();
@@ -141,25 +134,18 @@ export default function BibleExplorerScreen() {
       title={title}
       subtitle={
         viewMode === 'chapters' && selectedBook
-          ? t('bible.chapterCount', { count: selectedBook.chapterCount })
+          ? formatChapterCount(t('bible.chapterCount', { count: selectedBook.chapterCount }), selectedBook.chapterCount, i18n.resolvedLanguage || i18n.language)
           : viewMode === 'verses' && selectedChapter
             ? t('bible.chapter', 'Chapitre') + ` ${selectedChapter}`
             : undefined
       }
-      showBack={viewMode !== 'books'}
+      showBack
       backPath={
         viewMode === 'verses' && selectedBookId
           ? `/bible/explorer/${selectedBookId}`
           : viewMode === 'chapters'
             ? '/bible/explorer'
             : '/tabs/explore'
-      }
-      right={
-        viewMode !== 'books' ? (
-          <button onClick={goBack} className="text-sm font-semibold text-primary">
-            {t('common.back', 'Retour')}
-          </button>
-        ) : undefined
       }
     >
       {/* Search */}
@@ -217,7 +203,7 @@ export default function BibleExplorerScreen() {
                     {section.label}
                   </h2>
                   <span className="text-sm text-text-muted">
-                    {section.list.length} {t('bible.book', 'livres')}
+                    {formatChapterCount(t('bible.bookCount', { count: section.list.length }), section.list.length, i18n.resolvedLanguage || i18n.language)}
                   </span>
                 </div>
                 <div className="flex flex-col gap-2">
@@ -232,7 +218,7 @@ export default function BibleExplorerScreen() {
                           {book.displayName}
                         </p>
                         <p className="text-sm text-text-muted">
-                          {t('bible.chapterCount', { count: book.chapterCount })}
+                          {formatChapterCount(t('bible.chapterCount', { count: book.chapterCount }), book.chapterCount, i18n.resolvedLanguage || i18n.language)}
                         </p>
                       </div>
                       <DuoIcon icon={ChevronRight} size={18} className="text-text-muted" />

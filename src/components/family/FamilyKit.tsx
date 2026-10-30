@@ -14,7 +14,7 @@
 
 import type { ReactNode } from 'react';
 import { DuoIcon } from '@/components/ui/DuoIcon';
-import type { IconSvgElement } from '@hugeicons/react';
+import type { Icon as IconSvgElement } from '@solar-icons/react/lib/types';
 import { cn } from '@/lib/utils';
 
 /** Carte de section : titre, action éventuelle, contenu. */

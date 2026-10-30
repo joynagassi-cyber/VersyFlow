@@ -1,3 +1,4 @@
+import { goBackSafely } from '@/lib/navigation';
 /**
  * Fixed: Visual polish — "Détail" block now shows chapter + verse counts
  * for every translation (getTranslationStats, 24h localStorage cache),
@@ -18,7 +19,7 @@ import {
   ChevronDownIcon as ChevronDown,
   CircleCheckIcon as CircleCheck,
   Cancel01Icon as X,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import { cn } from '@/lib/utils';
 import { useSettingsStore } from '@/store/settings-store';
 import {
@@ -395,7 +396,7 @@ export default function AvailableTranslationsScreen() {
     <div className="screen-column-narrow h-full overflow-y-auto bg-background p-4 pb-24">
       <div className="mb-4 flex items-center gap-2">
         <button
-          onClick={() => navigate(-1)}
+          onClick={() => goBackSafely(navigate)}
           className="rounded-full p-2 text-text-muted active:bg-surface-tint"
           aria-label={t('common.back', 'Retour')}
         >

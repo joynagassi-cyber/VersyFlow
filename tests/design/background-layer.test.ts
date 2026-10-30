@@ -54,17 +54,19 @@ describe('couche de fond — É1', () => {
     expect(css).not.toMatch(/hue-rotate\(/);
   });
 
-  it('applique un voile dégradé de 0,15 à 0,45', () => {
+  it('sépare le voile réglable de l’image', () => {
     const block = layerBlock();
-    expect(block).toContain('color-mix(in srgb, var(--color-background) 15%, transparent)');
-    expect(block).toContain('color-mix(in srgb, var(--color-background) 45%, transparent)');
+    expect(block).toContain("html[data-bg='image']::after");
+    expect(block).toContain('var(--veil-alpha)');
+    expect(block).toContain('z-index: 1');
+    expect(block).toContain("html[data-bg='image'] #root { z-index: 2; }");
   });
 
   it('offre un repli couleur unie si `color-mix` manque', () => {
     const block = layerBlock();
     // L'image est posée par une déclaration séparée, hors du bloc @supports :
     // sans `color-mix`, seule la déclaration fautive disparaît.
-    const beforeSupports = block.slice(0, block.indexOf('@supports'));
+    const beforeSupports = block;
     expect(beforeSupports).toContain('background-color: var(--color-background)');
     expect(beforeSupports).toContain('background-image: var(--app-bg-image, var(--theme-image, none))');
   });

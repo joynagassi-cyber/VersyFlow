@@ -19,7 +19,7 @@ import {
   BookOpen01Icon as BookOpen,
   Delete02Icon as Trash,
   ArrowRight01Icon as ArrowRight,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { DuoIcon } from '@/components/ui/DuoIcon';
 import { Button } from '@/components/ui/button';

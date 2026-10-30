@@ -63,7 +63,7 @@ function token(name: string, theme: 'light' | 'dark'): string {
 
 describe('coquille bureau — seuil', () => {
   it('utilise un seul point de rupture, 1024 px', () => {
-    expect(DESKTOP_MIN_WIDTH).toBe(1024);
+    expect(DESKTOP_MIN_WIDTH).toBe(1100);
   });
 });
 

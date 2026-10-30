@@ -9,7 +9,7 @@ import {
   UsersIcon as Users,
   BellOffIcon as BellOff,
   CheckIcon as Check,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { useActiveProfile } from '@/hooks/useActiveProfile';

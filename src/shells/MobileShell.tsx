@@ -1,3 +1,4 @@
+import { BackgroundPanel } from '@/components/ui/BackgroundPanel';
 /**
  * MobileShell — la structure mobile, extraite telle quelle de
  * `app/(tabs)/_layout.tsx` (aucun changement de comportement).
@@ -17,8 +18,7 @@ import { IonFab, IonFabButton, IonPage } from '@ionic/react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { DuoIcon } from '@/components/ui/DuoIcon';
-import { Menu01Icon, PlusSignIcon } from '@hugeicons/core-free-icons';
-import SyncStatusIndicator from '@/components/common/SyncStatusIndicator';
+import { Menu01Icon, PlusSignIcon } from '@/components/ui/solar-icons';
 import { BottomTabs } from '@/components/navigation/BottomTabs';
 import { QuickDock } from '@/components/navigation/QuickDock';
 import { HamburgerMenu } from '@/components/navigation/HamburgerMenu';
@@ -38,7 +38,7 @@ export function MobileShell() {
           id="main-content"
           className="app-main app-canvas relative flex h-full flex-col overflow-hidden bg-background"
         >
-          <div className="flex items-center justify-between px-4 py-2">
+          <div className="mobile-header g1 flex items-center justify-between px-4 py-2">
             <button
               onClick={openMenu}
               className="rounded-full p-1.5 active:bg-surface-tint"
@@ -47,15 +47,15 @@ export function MobileShell() {
               <DuoIcon icon={Menu01Icon} size={23} color="var(--color-text-primary)" />
             </button>
             <div className="flex items-center gap-2">
-              <Logo size={24} />
+              <span className="brand-tile"><Logo size={24} /></span>
               <span className="text-primary text-base font-extrabold">VersyFlow</span>
             </div>
-            <div className="flex w-12 items-center justify-end">
-              <SyncStatusIndicator />
+            <div className="flex items-center justify-end">
+              <BackgroundPanel />
             </div>
           </div>
 
-          <div className="min-h-0 flex-1 overflow-hidden">
+          <div className="mobile-content min-h-0 flex-1 overflow-hidden">
             <Outlet />
           </div>
 

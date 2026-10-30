@@ -27,8 +27,9 @@ import {
 import { applyThemeToDocument, resolveTheme } from '@/theme/resolve-theme';
 
 export function ThemeManager() {
-  const themeMode = useAppearanceStore((s) => s.themeMode);
+  const glassSettings = useAppearanceStore((s) => s.glassSettings);
   const accent = useAppearanceStore((s) => s.accent);
+  const fixedAccentId = useAppearanceStore((s) => s.fixedAccentId);
   const presetId = useAppearanceStore((s) => s.presetId);
   const reducedTransparency = useAppearanceStore((s) => s.reducedTransparency);
   const highContrast = useAppearanceStore((s) => s.highContrast);
@@ -53,12 +54,6 @@ export function ThemeManager() {
     return () => window.removeEventListener('resize', onResize);
   }, []);
 
-  // Follow a manual override; for 'system' the useTheme hook tracks the OS.
-  useEffect(() => {
-    if (themeMode === 'system') return;
-    theme.setThemeMode(themeMode);
-  }, [themeMode, theme]);
-
   /**
    * Thème : UNE décision (`resolveTheme`, pure) puis UNE écriture
    * (`applyThemeToDocument`). L'effet ne décide plus rien lui-même — il
@@ -68,7 +63,9 @@ export function ThemeManager() {
     applyThemeToDocument(
       resolveTheme({
         presetId,
+        glassSettings,
         accent,
+        fixedAccentId,
         backgroundType,
         gradientId,
         colorThemeId,
@@ -89,9 +86,11 @@ export function ThemeManager() {
     }
   }, [
     accent,
+    fixedAccentId,
     backgroundType,
     colorThemeId,
     gradientId,
+    glassSettings,
     highContrast,
     presetId,
     reducedTransparency,

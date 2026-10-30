@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   CheckIcon as Check,
-} from '@hugeicons/core-free-icons';
+} from '@/components/ui/solar-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { SUPPORTED_LANGUAGES } from '@/services/i18n-service';
 import { useSettingsStore } from '@/store/settings-store';
