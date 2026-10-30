@@ -19,6 +19,9 @@ import { ensureMockSeed } from './mock/seed';
 import { mockDb } from './mock/db';
 import { getMockIdentity } from './mock/identity';
 import { localBackend, recordTestEvent } from './local-backend';
+import { installStorageIsolation } from './mock/storage-scope';
+import { seedMockFamilyRoom } from './mock/family-room-seed';
+import { markDemoSessionStarted } from './demo-session';
 
 let booted = false;
 
@@ -39,8 +42,15 @@ export function bootstrapDevBackend(): MockBootInfo | null {
   booted = true;
 
   try {
+    // Filet de sécurité : si `install-isolation.ts` n'a pas été évalué en
+    // premier (ordre d'import modifié, test, aperçu), on l'installe ici avant
+    // la moindre lecture de stockage applicative.
+    installStorageIsolation();
+
     const seed = ensureMockSeed();
+    const familyRoom = seedMockFamilyRoom();
     const identity = getMockIdentity();
+    markDemoSessionStarted();
     bootInfo = {
       userId: seed.userId,
       profileId: seed.profileId,
@@ -55,7 +65,8 @@ export function bootstrapDevBackend(): MockBootInfo | null {
       'background:#D81B97;color:#fff;font-weight:700;border-radius:4px',
       `\n${describeDataMode()}`,
       `\nIdentité : ${identity.displayName} <${identity.email}> · ${identity.id}`,
-      `\nDonnées : ${seed.records} versets, ${seed.reviewLogs} révisions`,
+      `\nDonnées : ${seed.records} versets, ${seed.reviewLogs} révisions` +
+        ` · famille de démo : ${familyRoom.challenges} défis, ${familyRoom.sessions} séance(s)`,
       `\nAPI de test : ${localBackend.getStats().baseUrl} · tableau de bord : ${localBackend.dashboardUrl()}`,
       `\nPanneau dev : /dev`,
     );

@@ -39,7 +39,10 @@ describe('fonds et icônes', () => {
       expect(readFileSync(p, 'utf8')).toMatch(/className="[^"]*glass/);
     }
     const css = readFileSync('src/styles/globals.css', 'utf8');
-    expect(css).toContain('max(var(--glass-alpha), .62)');
+    // Plancher mesuré (voir tests/design/contrast-surfaces.test.ts) : la
+    // valeur vit dans un jeton, plus en dur dans la recette du verre.
+    expect(css).toContain('max(var(--glass-alpha), var(--glass-alpha-min))');
+    expect(css).toMatch(/--glass-alpha-min:\s*\.8;/);
     expect(css).toContain('prefers-reduced-transparency');
   });
 });

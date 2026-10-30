@@ -104,6 +104,7 @@
   "devDependencies": {
     "@capacitor/cli": "^8.5.1",
     "@powersync/node": "^1.0.1",
+    "@testing-library/dom": "^10.4.2",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.3",
     "@types/better-sqlite3": "^9.6.0",

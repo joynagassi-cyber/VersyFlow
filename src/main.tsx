@@ -1,3 +1,8 @@
+// ⚠️ Premier import volontaire : installe l'isolation de stockage de la démo
+// AVANT toute lecture de `localStorage` par les stores persistés / i18n.
+// Hors mode mock, le module ne fait rien. Voir src/dev/mock/storage-scope.ts.
+import '@/dev/mock/install-isolation';
+
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { IonApp } from '@ionic/react';

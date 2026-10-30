@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { DuoIcon } from '@/components/ui/DuoIcon';
@@ -10,6 +10,7 @@ import {
   BookTextIcon as BookText,
   Download01Icon as Download,
   UsersRoundIcon as UsersRound,
+  Camera01Icon as Camera,
 } from '@/components/ui/solar-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { ListItem } from '@/components/ui/ListItem';
@@ -52,7 +53,22 @@ export default function ProfileScreen() {
   const slogan = activeProfile?.slogan;
   const [editing, setEditing] = useState(false);
   const [name, setName] = useState(() => localStorage.getItem('versyflow:profile:name') || user?.display_name || activeProfile?.displayName || '');
-  const [photo] = useState(() => localStorage.getItem('versyflow:profile:avatar') || '');
+  // Photo et nom vivent dans le stockage local de l'appareil (en démo : espace
+  // isolé). Aucun envoi réseau : `FileReader` produit une data URL locale.
+  const [photo, setPhoto] = useState(() => localStorage.getItem('versyflow:profile:avatar') || '');
+  const fileRef = useRef<HTMLInputElement>(null);
+  const pickPhoto = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const url = typeof reader.result === 'string' ? reader.result : '';
+      if (!url) return;
+      localStorage.setItem('versyflow:profile:avatar', url);
+      setPhoto(url);
+    };
+    reader.readAsDataURL(file);
+  };
   const imageTheme = useAppearanceStore((s) => s.colorThemeId);
   const [cover, setCover] = useState<string | null>(null);
   useEffect(() => {
@@ -108,7 +124,30 @@ export default function ProfileScreen() {
               </div>
               <p className="profile-slogan">{slogan || user?.userId || t('profile.localMode', 'Mode local')}</p>
             </div>
-            <ProfileAvatar photo={photo.startsWith('data:image/') ? photo : null} name={displayName} size={144} className="profile-avatar" />
+            <div className="profile-avatar-wrap">
+              <ProfileAvatar
+                photo={photo.startsWith('data:image/') ? photo : null}
+                name={displayName}
+                size={144}
+                className="profile-avatar"
+              />
+              <button
+                type="button"
+                onClick={() => fileRef.current?.click()}
+                className="profile-avatar-edit"
+                aria-label={t('profile.changePhoto', 'Changer la photo de profil')}
+              >
+                <DuoIcon icon={Camera} size={18} />
+              </button>
+              <input
+                ref={fileRef}
+                type="file"
+                accept="image/*"
+                onChange={pickPhoto}
+                className="hidden"
+                aria-label={t('profile.changePhoto', 'Changer la photo de profil')}
+              />
+            </div>
           </div>
         </div>
 
