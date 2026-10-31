@@ -37,7 +37,22 @@ function isSameOrigin(url: string): boolean {
     if (['blob:', 'data:', 'file:', 'about:'].includes(parsed.protocol)) return true;
     // Un chemin relatif est, par construction, de même origine.
     if (!/^[a-z]+:/i.test(url)) return true;
-    return parsed.origin === globalThis.location?.origin;
+
+    // `new URL('ws://x').origin` vaut `ws://x`, alors que `location.origin`
+    // vaut `http://x` : comparer les origines brutes bloquerait le WebSocket
+    // de la MÊME origine (PowerSync local, HMR). On compare donc hôte + port,
+    // en traitant ws/wss comme http/https et en ignorant http (80) / https (443).
+    const scheme = (protocol: string) =>
+      protocol === 'ws:' ? 'http:' : protocol === 'wss:' ? 'https:' : protocol;
+    const port = (p: string, s: string) =>
+      p || (s === 'https:' ? '443' : s === 'http:' ? '80' : '');
+    const here = globalThis.location;
+    if (!here) return false;
+    return (
+      scheme(parsed.protocol) === scheme(here.protocol) &&
+      parsed.hostname === here.hostname &&
+      port(parsed.port, scheme(parsed.protocol)) === port(here.port, scheme(here.protocol))
+    );
   } catch {
     return false;
   }
