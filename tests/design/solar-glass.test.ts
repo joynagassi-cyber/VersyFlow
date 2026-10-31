@@ -13,8 +13,12 @@ describe('fonds et icônes', () => {
     const plan = resolveTheme({ presetId: null, accent: '', backgroundType: 'image', colorThemeId: 'example', gradientId: null, isDark: false, reducedTransparency: false, highContrast: false, wide: false, glassSettings: GLASS_PRESETS.equilibre });
     expect(plan.attributes['data-bg']).toBe('image');
     expect(plan.vars['--glass-alpha']).toBe('0.42');
-    expect(plan.vars['--bg-blur']).toBe('10px');
-    expect(plan.vars['--veil-alpha']).toBe('1');
+    // Le fond ne doit plus effacer l'image : 2 px de flou et un voile à 62 %,
+    // là où le preset par défaut appliquait 10 px et un voile opaque.
+    expect(plan.vars['--bg-blur']).toBe('2px');
+    expect(plan.vars['--veil-alpha']).toBe('0.62');
+    // À 2 px, le filtre de fond est composé ; à 0 px il serait `none`.
+    expect(plan.vars['--bg-filter']).toContain('blur(2px)');
   });
   it('normalise les valeurs persistées et distingue les réglages personnalisés', () => {
     expect(normalizeGlassSettings({ bgBlur: 99, glassBlur: -1, glassAlpha: 10, veilAlpha: 500 })).toEqual({ bgBlur: 24, glassBlur: 0, glassAlpha: 20, veilAlpha: 100 });

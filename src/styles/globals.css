@@ -168,17 +168,23 @@ html::before {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  /* 0–3 px : 0 en mobile (net), 2 px sur grand écran pour adoucir un
-     agrandissement déjà modéré. Jamais 22–32 px. */
-  filter: saturate(1.1);
-  transform: scale(1.05);
+  /* Le flou de fond est un réglage utilisateur (`--bg-blur`). À 0, on ne
+     déclare AUCUN filtre : un `blur(0px)` suffit à créer une couche de
+     composition et à adoucir le rendu sur mobile.
+     `background-position` vise 38 % de la hauteur : nos portraits sont
+     composés avec le sujet dans le haut et une zone calme en bas, un cadrage
+     au centre tronquait le sujet sur un écran 19,5:9. */
+  background-position: center 38%;
+  filter: var(--bg-filter, none);
+  /* 1.02 : assez pour masquer un bord d'arrondi, assez peu pour ne pas
+     re-agrandir une image déjà calibrée. */
+  transform: scale(1.02);
   transition: opacity 400ms ease;
 }
 
 /* Un seul fond image et un voile distinct, derrière toute l'interface. */
 html[data-bg='image']::before {
   background-image: var(--theme-image, none);
-  filter: blur(var(--bg-blur)) saturate(1.1);
 }
 html[data-bg='image']::after {
   content: '';
@@ -1183,14 +1189,27 @@ html[data-bg='image'][data-contrast='high'] :is(.card-glass, .surface-glass, .bi
   --v2: color-mix(in srgb, var(--tint) 50%, rgba(8,8,8,.78));
   --acc-text: var(--tx); --acc-text: color-mix(in srgb, var(--acc) 70%, #fff);
 }
-html[data-bg='image']::before { filter: blur(var(--bl)) saturate(1.15); }
+html[data-bg='image']::before { filter: var(--bg-filter, none); }
+/* Le voile protège le BAS de l'écran (là où vivent les cartes) et laisse le
+   HAUT respirer : c'est ce dégradé qui distingue une image « posée » d'une
+   image « effacée ». Les anciennes valeurs (0,85 → 0,90 d'opacité, multipliées
+   par un voile utilisateur à 100 %) cachaient l'image entière. */
 html[data-bg='image']::after {
-  background: linear-gradient(to bottom, rgba(255,236,244,.85), rgba(255,226,238,.90));
-  background: linear-gradient(to bottom, color-mix(in srgb,var(--tint) 8%,rgba(255,236,244,.85)), color-mix(in srgb,var(--tint) 8%,rgba(255,226,238,.90)));
+  background: linear-gradient(
+    to bottom,
+    rgba(255,236,244,0) 0%,
+    color-mix(in srgb, var(--tint) 6%, rgba(255,236,244,.30)) 55%,
+    color-mix(in srgb, var(--tint) 8%, rgba(255,236,244,.62)) 100%
+  );
   opacity: var(--veil);
 }
 html[data-bg='image'][data-theme='dark']::after {
-  background: linear-gradient(to bottom, rgba(18,18,18,.85), rgba(8,8,8,.90));
+  background: linear-gradient(
+    to bottom,
+    rgba(8,8,8,0) 0%,
+    color-mix(in srgb, var(--tint) 18%, rgba(8,8,8,.38)) 55%,
+    color-mix(in srgb, var(--tint) 22%, rgba(8,8,8,.66)) 100%
+  );
 }
 /* Le gris « discret » suit le preset, comme le texte secondaire.
    `tweakcn-presets.css` ne ponte que `--color-text-secondary` ; les écrans
@@ -1524,7 +1543,23 @@ html[data-bg='image']:is([data-transparency='reduced'],[data-contrast='high']) .
 .appearance-categories button { white-space: nowrap; flex: none; }
 .appearance-image-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 16px 10px; }
 .appearance-image-option { min-width: 0; text-align: start; color: var(--tx); }
-.appearance-image-option .appearance-thumbnail { position: relative; display: block; aspect-ratio: 4/3; overflow: hidden; border-radius: 16px; }
+/* 3/2 = le ratio exact des visuels produits (1248x832, 832x1248 recadrés en
+   paysage). En 4/3, `object-fit: cover` rognait 15 % de la hauteur : le sujet
+   des portraits composés « haut » disparaissait de la vignette.
+   L'anneau intérieur sépare une vignette claire du fond clair de la page,
+   sans ajouter de bordure qui mange la surface utile. */
+.appearance-image-option .appearance-thumbnail {
+  position: relative;
+  display: block;
+  aspect-ratio: 3 / 2;
+  overflow: hidden;
+  border-radius: 14px;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .08), 0 1px 2px rgba(0, 0, 0, .06);
+  transition: transform 160ms ease, box-shadow 160ms ease;
+}
+.appearance-image-option:hover .appearance-thumbnail { transform: translateY(-1px); box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .10), 0 4px 10px rgba(0, 0, 0, .12); }
+.appearance-image-option :is(picture, img) { object-position: center 38%; }
+.appearance-image-option[aria-pressed='true'] .appearance-thumbnail { box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .10), 0 6px 16px color-mix(in srgb, var(--acc) 22%, transparent); }
 .appearance-image-option picture,.appearance-image-option img { display: block; width: 100%; height: 100%; object-fit: cover; }
 .appearance-image-option .appearance-thumbnail-check { position: absolute; inset: 8px 8px auto auto; }
 .appearance-image-title { display: block; margin-top: 6px; font-size: 14px; line-height: 1.3; }

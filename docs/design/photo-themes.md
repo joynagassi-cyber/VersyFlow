@@ -1,19 +1,31 @@
 # Thèmes photo — lot « 40 images »
 
-État au **30 octobre 2026** : **livré et validé** (`20/20` scènes importées, soit **40 visuels WebP**
+État au **31 octobre 2026** : **livré et validé** (`20/20` scènes importées, soit **40 visuels WebP**
 et **20 vignettes WebP** dans `public/themes/photos-nature/` et `public/themes/photos-vie/`,
-et catalogue `ALL_THEMES` porté à **120 thèmes** : 100 illustrés + 20 photographiques).
+catalogue `ALL_THEMES` porté à **120 thèmes** : 100 illustrés + 20 photographiques).
 
-> **Note de transparence sur la provenance** : l'outil de génération synthétique de l'espace de
-> travail (`gemini-3.1-flash-image`) répond toujours `403 PERMISSION_DENIED` lors des relances.
-> Pour livrer de **vraies photographies haute définition** sans aucune simulation ni image
-> basse résolution agrandie, les 40 sources (`3000 px` de large côté source, licence
-> **Unsplash License** gratuite — `images.unsplash.com`, à l'exclusion stricte de
-> `plus.unsplash.com`, iStock ou Shutterstock) ont été déposées dans `artifacts/photos-src/`
-> (non versionné), auditées visuellement sur planches-contacts 40/40 (zéro filigrane, zéro logo
-> de marque, zéro enseigne commerciale, zéro visage identifiable au premier plan, cadrages
-> paysage et portrait photographiquement distincts), puis converties via
-> `npm run themes:photos`.
+> **Note de transparence sur la provenance — lot régénéré le 31 octobre 2026.**
+> Le lot du 30 octobre n'avait pas été généré : l'outil synthétique de l'espace de travail
+> (`gemini-3.1-flash-image`) répondait `403 PERMISSION_DENIED`, et les 40 sources avaient donc été
+> **empruntées à Unsplash** pour ne pas bloquer la livraison. Le prompt, lui, demandait de les
+> créer. Ce lot est **régénéré intégralement par génération d'images** à partir des prompts du
+> dépôt (`buildPrompt()` de `scripts/themes/photo-scenes.mjs`, repris mot pour mot), et les
+> 60 fichiers WebP d'origine ont été **supprimés puis remplacés** — le script d'import conserve
+> par principe toute scène déjà présente, la suppression préalable est obligatoire.
+>
+> - Sources : `artifacts/photos-src/{id}-{landscape,portrait}.png`, **1536 × 1024** et
+>   **1024 × 1536**, non versionnées (113 Mo ; `artifacts/photos-src/` est dans `.gitignore`).
+> - Ratios source et cible **identiques** (1.2308 des deux côtés) : la conversion est un
+>   **ré-échantillonnage pur**, sans recadrage — le cadrage composé à la génération est conservé.
+> - Poids total des 60 fichiers : **4,1 Mo** (contre 7,1 Mo pour le lot précédent).
+> - Planche de contrôle : `docs/artwork/lot-40-planches-reunies.jpg`.
+>
+> **Limites constatées à la revue visuelle**, à corriger si le besoin d'unité l'emporte : des
+> figures humaines lointaines apparaissent sur `pho-aurore`, `pho-dunes`, `pho-lac` et
+> `pho-lavande`, une lectrice assise sur `pho-bibliotheque`, un buste et des mains sur
+> `pho-cuisine` (scène qui demandait explicitement « hands preparing vegetables »). Aucun visage
+> identifiable au premier plan, aucun texte, logo, filigrane ni enseigne : les interdits du
+> prompt sont tenus.
 
 ## 1. Contrat de fichiers
 
@@ -96,4 +108,7 @@ portrait `< 1024 px` et paysage `>= 1024 px`, persistance `accent = id` et repli
 | Contrat de nommage, formats, tailles | fait et testé |
 | Import automatique + contrôle de synchro (`themes:photos:check`) | fait et testé |
 | Intégration catalogue / URLs / vignettes (`ALL_THEMES = 120`) | fait et testé |
-| **40 visuels réels + 20 vignettes WebP** | **livré et vérifié** (`tests/design/photo-themes.test.ts` : 9/9 tests OK) |
+| **40 visuels générés + 20 vignettes WebP** | **livré et vérifié** (`tests/design/photo-themes.test.ts` : 9/9 OK ; `tests/design` : 392/392) |
+| Provenance (généré, plus Unsplash) | documentée ci-dessus, sources hors dépôt |
+| Traitement | tirage `theme-treat.mjs` (densité, netteté) appliqué aux 40 visuels |
+| Revue visuelle des 40 | planche `docs/artwork/lot-40-planches-reunies.jpg` ; réserves listées ci-dessus |

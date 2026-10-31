@@ -125,8 +125,8 @@ describe('intégration au catalogue de thèmes', () => {
       );
       expect(themeThumbUrl(theme.id)).toBe(`/themes/${theme.category}/${theme.id}-thumb.webp`);
     }
-    // Les illustrations conservent leur PNG et leur vignette WebP.
-    expect(themePortraitUrl('nat-trees')).toBe('/themes/natures/nat-trees-portrait.png');
+    // Tout le catalogue est en WebP depuis le lot du 31/10/2026 (163 -> 17 Mo).
+    expect(themePortraitUrl('nat-trees')).toBe('/themes/natures/nat-trees-portrait.webp');
     expect(themeThumbUrl('nat-trees')).toBe('/themes/natures/nat-trees-thumb.webp');
   });
 });
