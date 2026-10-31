@@ -21,6 +21,7 @@
  */
 
 import { useEffect } from 'react';
+import { isDemoMode } from '@/dev/demo-mode';
 import { useSettingsStore } from '@/store/settings-store';
 import {
   getKnownTranslationIds,
@@ -42,6 +43,7 @@ export function useTranslationPreference() {
   // On mount, if the session value is still the default but the user has a
   // persisted (synced) preference, rehydrate from PowerSync.
   useEffect(() => {
+    if (isDemoMode) return;
     const settings = useSettingsStore.getState();
     if (settings.bibleTranslation === 'lsg') {
       void getTranslationPreferenceRepository()
@@ -60,6 +62,7 @@ export function useTranslationPreference() {
   const setPreference = (id: string) => {
     if (!CATALOG.includes(id)) return; // never persist an unknown id
     setBibleTranslation(id); // local, immediate (works offline)
+    if (isDemoMode) return;
     void getTranslationPreferenceRepository()
       .set(id, CATALOG)
       .catch(() => {

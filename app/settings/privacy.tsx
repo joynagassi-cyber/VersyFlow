@@ -38,7 +38,7 @@ export default function PrivacyScreen() {
     <FullScreenPage
       title={t('settings.privacyTitle', 'Données & confidentialité')}
       showBack
-      backPath="/settings"
+      backPath="/tabs/settings"
     >
       <div className="screen-column space-y-4">
         <section className="g1 p-4">

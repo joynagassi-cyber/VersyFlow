@@ -5,6 +5,7 @@
  */
 
 import { useState, useEffect } from 'react';
+import { Skeleton } from '@/components/ui/Skeleton';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { DuoIcon } from '@/components/ui/DuoIcon';
@@ -14,16 +15,13 @@ import {
   TrendingDownIcon as TrendingDown,
 } from '@/components/ui/solar-icons';
 import { useActiveProfile } from '@/hooks/useActiveProfile';
+import { isMockMode } from '@/dev/mode';
 import { getFsrsEngine } from '@/services/fsrs-factory';
 import { ProgressService } from '@/services/progress-service';
 import type { ProgressStats } from '@/services/stats-calculator';
 import { getMemorizationService } from '@/services/memorization-service-factory';
 import { formatProgressLabel } from '@/lib/progress-label';
-import { Skeleton } from '@/components/ui/Skeleton';
 
-/** Chargement qui garde la forme du contenu : quatre tuiles puis deux cartes,
- *  aux mêmes paddings que les vraies. Un squelette qui ne ressemble pas à la
- *  page fait sauter la mise en page à l'arrivée des chiffres. */
 function ProgressSkeleton({ label }: { label: string }) {
   return (
     <div role="status" aria-live="polite" aria-busy="true">
@@ -108,7 +106,15 @@ export default function ProgressScreen() {
         <header className="g1 tab-heading progress-heading">
           <p className="section-label">{t('nav.progress', 'Progression')}</p>
           <h1 className="page-title mt-2">{t('progress.yourProgress', 'Votre progression')}</h1>
-          <button type="button" className="progress-demo-toggle" aria-pressed={demo} onClick={() => setDemo((value) => !value)}>{demo ? t('demo.exit', 'Quitter la démo') : t('demo.enter', 'Voir la démo')}</button>
+          <button type="button" className="progress-demo-toggle" aria-pressed={demo} onClick={() => setDemo((value) => !value)}>
+            {demo
+              ? isMockMode()
+                ? t('demo.exitLongPreview', 'Revenir à la session démo')
+                : t('demo.exit', 'Quitter la démo')
+              : isMockMode()
+                ? t('demo.enterLongPreview', 'Simuler 6 mois')
+                : t('demo.enter', 'Voir la démo')}
+          </button>
           {demo && <p className="progress-demo-notice" role="status">{t('demo.notice', 'Données fictives pour cet écran uniquement. Vos données réelles ne sont pas modifiées.')}</p>}
         </header>
         {loading && !demo ? (
@@ -122,7 +128,7 @@ export default function ProgressScreen() {
         ) : (
           <>
             <div className="progress-stat-grid">
-              {statCards.map(({ label, value }) => <article className="g2 progress-stat" key={label}><p className="section-label">{label}</p><strong>{value}</strong></article>)}
+              {statCards.map(({ label, value }) => <article className="g2 progress-stat" key={label}><p className="progress-label">{label}</p><strong>{value}</strong></article>)}
             </div>
             <div className="progress-detail-grid">
               <section className="g2 progress-card">

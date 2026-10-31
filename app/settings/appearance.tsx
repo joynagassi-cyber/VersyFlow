@@ -1,14 +1,14 @@
 import { goBackSafely } from '@/lib/navigation';
-import { Switch } from '@/components/ui/Switch';
 import { BackgroundControls } from '@/components/ui/BackgroundControls';
 import { useTranslation } from 'react-i18next';
 import { DuoIcon } from '@/components/ui/DuoIcon';
-import { Sun01Icon, Moon01Icon, ComputerIcon, Tick01Icon } from '@/components/ui/solar-icons';
+import { Sun01Icon, Moon01Icon, ComputerIcon, Tick01Icon, StarIcon, PartyPopperIcon } from '@/components/ui/solar-icons';
 
 function Check({ size = 18, className }: { size?: number; className?: string }) {
   return <DuoIcon icon={Tick01Icon} size={size} className={className} color="currentColor" />;
 }
 import { IonPage } from '@ionic/react';
+import { Switch } from '@/components/ui/Switch';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft01Icon } from '@/components/ui/solar-icons';
 import { useEffect, useState, type CSSProperties } from 'react';
@@ -18,12 +18,13 @@ import { GRADIENTS } from '@/theme/gradients';
 import { DEFAULT_PRESET, PRESET_CATALOG } from '@/theme/preset-catalog';
 import { FIXED_ACCENTS } from '@/theme/fixed-accents';
 import { APPEARANCE_UI_FONTS, APPEARANCE_READING_FONTS, findBibleFont, findUiFont, loadBibleFont } from '@/theme/theme-fonts';
-import { themeLandscapeUrl, themePortraitUrl } from '@/theme/theme-catalog';
+import { themeLandscapeUrl, themePortraitUrl, themeThumbUrl } from '@/theme/theme-catalog';
 import { THEME_CATEGORIES } from '@/theme/theme-catalog';
+import { APP_ICONS, APP_ICON_FAMILIES, DEFAULT_APP_ICON_ID, findAppIcon, getAppIconUrl } from '@/theme/app-icons';
 import { cn } from '@/lib/utils';
 
 type ThemeMode = 'light' | 'dark' | 'system';
-type AppearanceTab = 'background' | 'colors' | 'text' | 'glass';
+type AppearanceTab = 'background' | 'colors' | 'icon' | 'text' | 'glass';
 const BACKGROUND_GRADIENTS = GRADIENTS.filter((gradient) => !['sunny-morning', 'malibu-beach', 'true-sunset'].includes(gradient.id));
 
 const FONT_SIZE_MIN = 14;
@@ -38,7 +39,7 @@ const LINE_LENGTH_MAX = 80;
 function Section({ title, children, action }: { title: string; children: React.ReactNode; action?: React.ReactNode }) {
   return (
     <section className="g2 appearance-section mb-5 p-4">
-      <div className="appearance-section-heading"><h2 className="section-label mb-3">{title}</h2>{action}</div>
+      <div className="appearance-section-heading"><h2 className="mb-3 text-sm font-bold uppercase tracking-wide text-text-muted">{title}</h2>{action}</div>
       {children}
     </section>
   );
@@ -106,12 +107,20 @@ export default function AppearanceScreen() {
   const setBackgroundType = useAppearanceStore((s) => s.setBackgroundType);
   const uiFontId = useAppearanceStore((s) => s.uiFontId);
   const setUiFontId = useAppearanceStore((s) => s.setUiFontId);
+  const appIconId = useAppearanceStore((s) => s.appIconId);
+  const setAppIconId = useAppearanceStore((s) => s.setAppIconId);
+  const selectedIcon = findAppIcon(appIconId);
+  const selectedIconFamily = APP_ICON_FAMILIES.find((item) => item.id === selectedIcon.family);
   const showVerseNumbers = useAppearanceStore((s) => s.showVerseNumbers);
   const focusMode = useAppearanceStore((s) => s.focusMode);
   const reducedTransparency = useAppearanceStore((s) => s.reducedTransparency);
   const highContrast = useAppearanceStore((s) => s.highContrast);
   const setReducedTransparency = useAppearanceStore((s) => s.setReducedTransparency);
   const setHighContrast = useAppearanceStore((s) => s.setHighContrast);
+  const bibleVerseLayout = useAppearanceStore((s) => s.bibleVerseLayout);
+  const bibleContinuous = useAppearanceStore((s) => s.bibleContinuous);
+  const setBibleVerseLayout = useAppearanceStore((s) => s.setBibleVerseLayout);
+  const setBibleContinuous = useAppearanceStore((s) => s.setBibleContinuous);
   const bibleFontFamily = useAppearanceStore((s) => s.bibleFontFamily);
   const bibleFontSize = useAppearanceStore((s) => s.bibleFontSize);
   const bibleLineHeight = useAppearanceStore((s) => s.bibleLineHeight);
@@ -152,8 +161,9 @@ export default function AppearanceScreen() {
   const tabs: { id: AppearanceTab; label: string }[] = [
     { id: 'background', label: t('appearanceEditor.background', 'Fond') },
     { id: 'colors', label: t('appearanceEditor.colors', 'Couleurs') },
+    { id: 'icon', label: t('settings.appIconTab', 'Icône') },
     { id: 'text', label: t('appearanceEditor.text', 'Texte') },
-    { id: 'glass', label: t('appearanceEditor.glass', 'Verre') },
+    { id: 'glass', label: t('appearanceEditor.glass', 'Glass') },
   ];
 
   const themeOptions: { value: ThemeMode; label: string; Icon: typeof Sun01Icon }[] = [
@@ -166,9 +176,9 @@ export default function AppearanceScreen() {
     <IonPage className="appearance-shell">
       <header className="appearance-header">
         <button type="button" onClick={() => goBackSafely(navigate)} aria-label={t('common.back', 'Retour')}><DuoIcon icon={ArrowLeft01Icon} size={22} /></button>
-        <h1>{t('nav.theme', 'Thème et apparence')}</h1>
+        <h1 className="toolbar-title">{t('nav.theme', 'Thème et apparence')}</h1>
       </header>
-      <div className="app-canvas appearance-page h-full overflow-y-auto p-4"><div className="appearance-editor">
+      <div className="app-canvas appearance-page h-full overflow-y-auto p-4 pb-24"><div className="appearance-editor screen-column">
         <aside className="appearance-preview" data-theme={previewMode}>
           <div className="appearance-preview-heading"><strong>{t('appearanceEditor.preview', 'Aperçu')}</strong>
             <div className="appearance-preview-actions" role="group" aria-label={t('appearanceEditor.previewMode', 'Mode de l’aperçu')}>
@@ -297,24 +307,29 @@ export default function AppearanceScreen() {
 
           {backgroundType === 'gradient' && <>
             {gradientId && !BACKGROUND_GRADIENTS.some((g) => g.id === gradientId) && <p className="appearance-hint">{t('appearanceEditor.currentGradient', 'Dégradé actuel')} : {gradientId.replace(/-/g, ' ')}</p>}
-            <div className="grid grid-cols-2 gap-2">
+            <div className="appearance-gradient-grid" role="group" aria-label={t('settings.bgGradient', 'Dégradé')}>
               {BACKGROUND_GRADIENTS.map((g) => {
                 const active = gradientId === g.id;
+                const gradientName = g.id.replace(/^colorbase-/, '').replace(/-/g, ' ');
                 return (
                   <button
+                    type="button"
                     key={g.id}
                     onClick={() => setGradient(g.id)}
-                    style={{ backgroundImage: g.css }}
                     aria-pressed={active}
-                    className={cn(
-                      'appearance-gradient h-16 rounded-2xl p-2 text-left transition',
-                      g.className,
-                      active && 'is-active',
-                    )}
+                    className="appearance-gradient-option"
                   >
-                    <span className="appearance-gradient-label rounded-full px-2 py-0.5 text-3xs font-bold capitalize">
-                      {g.id.replace(/^colorbase-/, '').replace(/-/g, ' ')}
+                    <span
+                      style={{ backgroundImage: g.css }}
+                      className={cn(
+                        'appearance-gradient',
+                        g.className,
+                        active && 'is-active',
+                      )}
+                    >
+                      {active && <Check size={20} className="appearance-thumbnail-check" />}
                     </span>
+                    <span className="appearance-gradient-name">{gradientName}</span>
                   </button>
                 );
               })}
@@ -333,7 +348,7 @@ export default function AppearanceScreen() {
                   const available = entry.id !== 'obj-miroir'; // Both original images are absent from the catalog assets.
                   return <button type="button" key={entry.id} onClick={() => setColorTheme(entry.id)} aria-pressed={active} disabled={!available} className="appearance-image-option">
                     <span className={cn('appearance-thumbnail', active && 'is-active')}>
-                      {available ? <picture><source type="image/webp" srcSet={themeLandscapeUrl(entry.id).replace('-landscape.png', '-thumb.webp')} />
+                      {available ? <picture><source type="image/webp" srcSet={themeThumbUrl(entry.id)} />
                         <img src={themeLandscapeUrl(entry.id)} alt="" loading="lazy" decoding="async" /></picture> : <span className="appearance-image-unavailable">{t('appearanceEditor.imageUnavailable', 'Image indisponible')}</span>}
                       {active && <Check size={20} className="appearance-thumbnail-check" />}
                     </span><span className="appearance-image-title">{entry.name}</span>
@@ -350,8 +365,108 @@ export default function AppearanceScreen() {
           )}
         </Section>}
 
+        {tab === 'icon' && (
+          <Section
+            title={t('settings.appIconSection', "Icône de l'application")}
+            action={
+              appIconId !== DEFAULT_APP_ICON_ID ? (
+                <button type="button" className="appearance-reset" onClick={() => setAppIconId(DEFAULT_APP_ICON_ID)}>
+                  {t('appearanceEditor.reset', 'Réinitialiser')}
+                </button>
+              ) : undefined
+            }
+          >
+            <div className="mb-4 flex items-center gap-4 rounded-2xl border border-border/60 p-3">
+              <img
+                src={getAppIconUrl(selectedIcon.id)}
+                alt={selectedIcon.name}
+                className="h-16 w-16 shrink-0 rounded-[22%] object-cover shadow-card ring-1 ring-border/70"
+              />
+              <div className="min-w-0 flex-1">
+                <p className="card-title truncate">{selectedIcon.name}</p>
+                <p className="mt-0.5 text-xs text-text-muted">
+                  {selectedIconFamily ? t(selectedIconFamily.labelKey, selectedIconFamily.defaultLabel) : ''}
+                </p>
+                <span
+                  className={cn(
+                    'mt-1.5 inline-flex items-center gap-1 rounded-full bg-surface-tint px-2.5 py-0.5 text-2xs font-semibold',
+                    selectedIcon.tier === 'premium' ? 'text-warning' : 'text-primary',
+                  )}
+                >
+                  {selectedIcon.tier === 'premium' && <DuoIcon icon={StarIcon} size={12} color="currentColor" />}
+                  {selectedIcon.tier === 'seasonal' && <DuoIcon icon={PartyPopperIcon} size={12} color="currentColor" />}
+                  {selectedIcon.tier === 'free' && t('settings.appIconFree', 'Par défaut')}
+                  {selectedIcon.tier === 'seasonal' && t('settings.appIconSeasonal', 'Édition saisonnière offerte')}
+                  {selectedIcon.tier === 'premium' && t('settings.appIconPremium', 'Collection')}
+                </span>
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-5">
+              {APP_ICON_FAMILIES.map((family) => {
+                const familyIcons = APP_ICONS.filter((item) => item.family === family.id);
+                if (familyIcons.length === 0) return null;
+                return (
+                  <div key={family.id}>
+                    <p className="mb-2.5 text-2xs font-bold uppercase tracking-wider text-text-muted">
+                      {t(family.labelKey, family.defaultLabel)}
+                    </p>
+                    <div className="grid grid-cols-4 gap-4 sm:gap-5">
+                      {familyIcons.map((icon) => {
+                        const active = selectedIcon.id === icon.id;
+                        return (
+                          <button
+                            key={icon.id}
+                            type="button"
+                            onClick={() => setAppIconId(icon.id)}
+                            aria-pressed={active}
+                            aria-label={icon.name}
+                            title={icon.name}
+                            className="group relative mx-auto aspect-square w-full max-w-[82px] transition-transform active:scale-95"
+                          >
+                            <div
+                              className={cn(
+                                'relative h-full w-full overflow-hidden rounded-[22%] shadow-card ring-1 transition',
+                                active ? 'ring-2 ring-primary' : 'ring-border/60 group-hover:ring-primary/50',
+                              )}
+                            >
+                              <img src={getAppIconUrl(icon.id)} alt={icon.name} loading="lazy" className="h-full w-full object-cover" />
+                              {icon.tier === 'premium' && (
+                                <span
+                                  aria-hidden="true"
+                                  className="absolute bottom-0 right-0 flex h-5 w-6 items-center justify-center rounded-tl-lg bg-warning text-on-primary shadow-sm"
+                                >
+                                  <DuoIcon icon={StarIcon} size={12} color="currentColor" />
+                                </span>
+                              )}
+                            </div>
+                            {active && (
+                              <span
+                                aria-hidden="true"
+                                className="absolute -right-1.5 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-on-primary shadow-card ring-2 ring-surface"
+                              >
+                                <Check size={12} />
+                              </span>
+                            )}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+            <p className="mt-4 text-2xs leading-relaxed text-text-muted">
+              {t(
+                'settings.appIconHint',
+                "Sur mobile, modifie l'icône de l'écran d'accueil. Sur navigateur et bureau, met à jour l'icône d'onglet et la marque de l'application.",
+              )}
+            </p>
+          </Section>
+        )}
+
         {tab === 'glass' && (
-          <Section title={t('appearanceEditor.glass', 'Verre')}>
+          <Section title={t('appearanceEditor.glass', 'Glass')}>
             <p className="appearance-hint">{t('appearanceEditor.glassHint', 'Réglez le flou, la transparence et le voile. L’aperçu utilise les surfaces de l’accueil.')}</p>
             {(backgroundType !== 'image' || !colorThemeId) && <p className="appearance-glass-note" role="status">{t('appearanceEditor.glassNeedsImage', 'Ces réglages sont enregistrés et s’appliqueront lorsque vous choisirez une image de fond.')}</p>}
             <BackgroundControls showPreview={false} />
@@ -371,6 +486,20 @@ export default function AppearanceScreen() {
           </div>
         </Section>
         <Section title={t('settings.reading', 'Lecture')}>
+          <div className="reading-preferences">
+            <fieldset><legend>{t('bible.verseLayout', 'Présentation des versets')}</legend>
+              <div className="reading-preferences-options">
+                <button type="button" aria-pressed={bibleVerseLayout === 'flow'} onClick={() => setBibleVerseLayout('flow')}>{t('bible.verseFlow', 'Texte ensemble')}</button>
+                <button type="button" aria-pressed={bibleVerseLayout === 'blocks'} onClick={() => setBibleVerseLayout('blocks')}>{t('bible.verseBlocks', 'Versets en blocs')}</button>
+              </div>
+            </fieldset>
+            <fieldset><legend>{t('bible.readingMode', 'Défilement des chapitres')}</legend>
+              <div className="reading-preferences-options">
+                <button type="button" aria-pressed={bibleContinuous} onClick={() => setBibleContinuous(true)}>{t('bible.continuousMode', 'Lecture continue')}</button>
+                <button type="button" aria-pressed={!bibleContinuous} onClick={() => setBibleContinuous(false)}>{t('bible.chapterMode', 'Chapitre par chapitre')}</button>
+              </div>
+            </fieldset>
+          </div>
           <p className="appearance-hint">{t('appearanceEditor.readingFontHint', 'Choisissez la police des passages bibliques.')}</p>
           {fontLoadFailed && <p role="status" className="appearance-font-legacy">{t('appearanceEditor.fontLoadError', 'Certaines polices ne sont pas disponibles ; une police de secours est affichée.')}</p>}
           {!APPEARANCE_READING_FONTS.some((font) => font.id === bibleFontFamily) && <p className="appearance-font-legacy">{t('appearanceEditor.currentFont', 'Police actuelle : {{font}}', { font: findBibleFont(bibleFontFamily).label })}</p>}
@@ -413,7 +542,7 @@ export default function AppearanceScreen() {
               <span className="flex-1 text-sm font-medium text-text-primary">
                 {t('settings.reducedTransparency', 'Réduire la transparence')}
                 <span className="mt-0.5 block text-xs font-normal text-text-muted">
-                  {t('settings.reducedTransparencyHint', 'Surfaces opaques, sans effet de verre.')}
+                  {t('settings.reducedTransparencyHint', 'Surfaces opaques, sans effet Glass.')}
                 </span>
               </span>
               <Toggle

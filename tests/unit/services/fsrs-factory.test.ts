@@ -40,8 +40,8 @@ describe('fsrs-factory', () => {
   });
 
   describe('isWasmAvailable()', () => {
-    it('always returns false in this environment', () => {
-      expect(isWasmAvailable()).toBe(false);
+    it('returns true because the compiled WASM artifact is checked in', () => {
+      expect(isWasmAvailable()).toBe(true);
     });
   });
 

@@ -25,6 +25,7 @@ import type { CrudEntry } from '@powersync/common';
 import { UpdateType } from '@powersync/common';
 
 import type { IAuthService } from '@/auth/types';
+import { isDemoMode } from '@/dev/demo-mode';
 
 const DEFAULT_BATCH_SIZE = 50;
 
@@ -48,16 +49,24 @@ export class SupabasePowerSyncConnector implements PowerSyncBackendConnector {
   /** False when Supabase/PowerSync are not configured (local-only mode). */
   readonly isConfigured: boolean;
 
-  constructor(auth: IAuthService, powersyncUrl: string) {
-    const url = import.meta.env.VITE_SUPABASE_URL || import.meta.env.SUPABASE_URL;
+  constructor(_auth: IAuthService, powersyncUrl: string) {
+    const procEnv = typeof process !== 'undefined' ? process.env : undefined;
+    const url =
+      import.meta.env.VITE_SUPABASE_URL ||
+      import.meta.env.SUPABASE_URL ||
+      procEnv?.VITE_SUPABASE_URL ||
+      procEnv?.SUPABASE_URL;
     const anonKey =
-      import.meta.env.VITE_SUPABASE_ANON_KEY || import.meta.env.SUPABASE_ANON_KEY;
+      import.meta.env.VITE_SUPABASE_ANON_KEY ||
+      import.meta.env.SUPABASE_ANON_KEY ||
+      procEnv?.VITE_SUPABASE_ANON_KEY ||
+      procEnv?.SUPABASE_ANON_KEY;
 
     // Ne jamais planter au démarrage : sans configuration cloud, la synchro
     // est simplement inactive (fetchCredentials → null, PowerSync au repos).
     // (Avant : ces `throw`, via l'instanciation au niveau module dans
     // sync-store, cassaient le démarrage sans `.env`.)
-    if (!url || !anonKey || !powersyncUrl) {
+    if (isDemoMode || !url || !anonKey || !powersyncUrl) {
       console.warn('[PowerSync] Cloud non configuré — synchronisation inactive.');
       this.supabase = null;
       this.isConfigured = false;

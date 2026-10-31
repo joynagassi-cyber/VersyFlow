@@ -21,6 +21,9 @@ const mockSupabase: any = {
 const builders: Record<string, any> = {};
 const mockFrom = vi.fn();
 
+// Exercise the live connector; mock isolation is covered by demo-isolation tests.
+vi.mock('@/dev/demo-mode', () => ({ isDemoMode: false }));
+
 vi.mock('@supabase/supabase-js', () => ({
   createClient: vi.fn(() => mockSupabase),
 }));
@@ -60,11 +63,8 @@ describe('SupabasePowerSyncConnector', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     resetFromMock();
-    (import.meta as any).env = {
-      ...origMetaEnv,
-      VITE_SUPABASE_URL: SUPABASE_URL,
-      VITE_SUPABASE_ANON_KEY: SUPABASE_KEY,
-    };
+    vi.stubEnv('VITE_SUPABASE_URL', SUPABASE_URL);
+    vi.stubEnv('VITE_SUPABASE_ANON_KEY', SUPABASE_KEY);
     mockSupabase.from = mockFrom;
     mockSupabase.auth.getSession.mockResolvedValue({
       data: { session: { access_token: 'jwt', refresh_token: 'refresh' } },
@@ -79,13 +79,14 @@ describe('SupabasePowerSyncConnector', () => {
   });
 
   afterEach(() => {
+    vi.unstubAllEnvs();
     (import.meta as any).env = origMetaEnv;
   });
 
-  it('constructs and throws when the PowerSync URL is missing', () => {
-    expect(() => new SupabasePowerSyncConnector({} as any, '')).toThrow(
-      /VITE_POWERSYNC_URL/,
-    );
+  it('constructs as unconfigured (never crashes boot) when the PowerSync URL is missing', async () => {
+    const unconfigured = new SupabasePowerSyncConnector({} as any, '');
+    expect(unconfigured.isConfigured).toBe(false);
+    await expect(unconfigured.fetchCredentials()).resolves.toBeNull();
   });
 
   it('fetchCredentials returns endpoint + user JWT', async () => {

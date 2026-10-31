@@ -1,4 +1,59 @@
-/**
+  // Coquilles qui possèdent leur titre : un écran « hero » plein écran dont
+  // la feuille fixe elle-même l'échelle (parcours d'accueil, connexion,
+  // barre d'outils d'apparence). Ce n'est pas une permission donnée aux
+  // écrans : c'est une liste NOMMÉE, et le test vérifie juste en dessous que
+  // chaque coquille tire bien sa taille d'un `clamp()` et sa famille de
+  // `--font-serif` — sinon l'exemption ne vaut rien.
+  const SHELL_OWNED: Record<string, string> = {
+    'app/(tabs)/auth/index.tsx': '.onboard-auth h1',
+    'app/(tabs)/auth/login.tsx': '.onboard-auth h1',
+    'app/(tabs)/auth/signup.tsx': '.onboard-auth h1',
+    'app/onboarding/welcome.tsx': '.journey-copy h1',
+    'app/onboarding/journey.tsx': '.journey-copy h1',
+    'src/components/layout/FullScreenPage.tsx': '.full-screen-title h1',
+  };
+
+  it('les titres d’écran passent par `.page-title` / `.page-title-lg`', () => {
+    const offenders: string[] = [];
+    for (const { path, text } of sources) {
+      const code = stripCodeComments(text);
+      // TOUT `<h1>`, avec ou sans `className` : un titre nu n'échappe plus.
+      for (const m of code.matchAll(/<h1\b([^>]*)>/g)) {
+        if (path.includes('__dev')) continue;
+        const attrs = m[1];
+        const cls = attrs.match(/className="([^"]*)"/)?.[1] ?? '';
+
+        if (/page-title/.test(cls)) continue;
+        // Logotype de l'écran de démarrage.
+        if (path.endsWith('app/splash.tsx')) continue;
+        // Titre « display » de l'onboarding (une fois par écran).
+        if (/\btext-display\b/.test(cls)) continue;
+        // Titre « display » (accueil, profil) : un prénom ou un nom, pas un écran.
+        if (/\bdisplay-title\b/.test(cls)) continue;
+        // Rappel du contexte d'une séance (18 px, tronqué) : pas un titre d'écran.
+        if (/\btruncate\b/.test(cls) && /\btext-lg\b/.test(cls)) continue;
+        // Titre de barre d'outils (16 px, une ligne, jamais dans le corps) :
+        // `toolbar-title` le NOMME au lieu de le laisser anonyme.
+        if (/\btoolbar-title\b/.test(cls)) continue;
+        // Coquille hero nommée : son `<h1>` est stylé par la feuille.
+        if (path in SHELL_OWNED && !cls) continue;
+
+        offenders.push(`${path}: <h1 ${attrs.trim().slice(0, 60)}>`);
+      }
+    }
+    expect(offenders).toEqual([]);
+  });
+
+  it('chaque coquille hero tire son titre de la serif du preset, en `clamp()`', () => {
+    for (const [path, selector] of Object.entries(SHELL_OWNED)) {
+      expect(read(path), path).toContain('<h1');
+      const esc = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const rule = globals.match(new RegExp(`${esc}[^{]*\\{[^}]*\\}`))?.[0] ?? '';
+      expect(rule, `${selector} existe dans la feuille`).not.toBe('');
+      expect(rule, `${selector} est fluide`).toContain('clamp(');
+      expect(rule, `${selector} prend la serif du preset`).toContain('var(--font-serif');
+    }
+  });/**
  * Contrat « TOUS LES ÉCRANS SUIVENT LE THÈME ».
  *
  * Les écrans premium (Accueil, Explorer, Progrès, Réglages, Profil, Bible) ont

@@ -59,7 +59,9 @@ describe('mock mode — seed', () => {
     const counts = mockDb.counts();
     expect(counts.memorization_records).toBe(SEED_VERSES.length);
     expect(counts.review_logs).toBeGreaterThan(0);
-    expect(counts.learner_profiles).toBe(2);
+    // 2 profils pour le compte + 2 profils des membres de la famille de démo
+    // (`SEED_COMPANIONS`) : sans eux, la liste des membres Famille serait vide.
+    expect(counts.learner_profiles).toBe(4);
     expect(counts.families).toBe(1);
     expect(counts.family_memberships).toBe(3);
     expect(counts.streaks).toBeGreaterThan(0);

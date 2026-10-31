@@ -78,7 +78,7 @@ export default function AboutScreen() {
     <FullScreenPage
       title={t('settings.about', "A propos")}
       showBack
-      backPath="/settings"
+      backPath="/tabs/settings"
     >
       <div className="screen-column space-y-4">
         {/* Header */}

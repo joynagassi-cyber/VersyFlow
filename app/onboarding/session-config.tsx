@@ -1,8 +1,8 @@
 /**
- * Onboarding — Session Configuration Screen
+ * Onboarding — Session Configuration Screen (step 4/6)
  *
  * Lets the learner pick a verses-per-session goal and enable focus mode
- * before the final step. Accessible, large targets for elderly users.
+ * before reminders & FSRS introduction. Accessible, large targets.
  */
 
 import { useTranslation } from 'react-i18next';
@@ -17,6 +17,7 @@ import {
 } from '@/components/ui/solar-icons';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import { OnboardingShell } from '@/components/onboarding/OnboardingShell';
 import { useAppearanceStore } from '@/store/appearance-store';
 
 const GOALS = [1, 3, 5, 7, 10];
@@ -30,41 +31,60 @@ export default function OnboardingSessionConfig() {
   const setFocusMode = useAppearanceStore((s) => s.setFocusMode);
 
   return (
-    <div className="screen-column-narrow flex min-h-full flex-col p-6">
-      <header className="mb-6 flex items-center gap-3">
-        <button
-          onClick={() => navigate('/onboarding/translation-select')}
-          className="flex h-10 w-10 items-center justify-center rounded-full bg-surface shadow-sm"
-          aria-label={t('common.back')}
-        >
-          <DuoIcon icon={ArrowLeft} size={20} className="text-text-secondary" />
-        </button>
-        <h1 className="page-title">
-          {t('onboarding.sessionTitle')}
-        </h1>
-      </header>
-
-      <p className="mb-6 text-sm leading-6 text-text-secondary">
-        {t('onboarding.sessionDesc')}
-      </p>
-
-      <div className="flex flex-1 flex-col gap-6">
+    <OnboardingShell
+      step={4}
+      title={t('onboarding.sessionTitle', 'Votre rythme de session')}
+      subtitle={t(
+        'onboarding.sessionDesc',
+        'Choisissez un objectif quotidien réaliste et activez le mode concentration si vous le souhaitez.',
+      )}
+      onBack={() => navigate('/onboarding/journey/profile')}
+      backLabel={t('common.back', 'Retour')}
+      footer={
+        <div className="flex gap-3">
+          <Button
+            type="button"
+            variant="outline"
+            className="flex-1"
+            onClick={() => navigate('/onboarding/journey/profile')}
+          >
+            <DuoIcon icon={ArrowLeft} size={16} />
+            {t('common.back', 'Retour')}
+          </Button>
+          <Button
+            type="button"
+            className="flex-1"
+            onClick={() => navigate('/onboarding/reminder-config')}
+          >
+            {t('common.continue', 'Continuer')}
+            <DuoIcon icon={ArrowRight} size={16} />
+          </Button>
+        </div>
+      }
+    >
+      <div className="flex flex-col gap-6">
         <div>
           <div className="mb-3 flex items-center gap-2">
             <DuoIcon icon={Target} size={18} className="text-primary" />
             <span className="text-base font-semibold text-text-primary">
-              {t('onboarding.sessionGoal')}
+              {t('onboarding.sessionGoal', 'Versets par session')}
             </span>
           </div>
-          <div className="flex flex-wrap gap-2">
+          <div
+            className="flex flex-wrap gap-2"
+            role="group"
+            aria-label={t('onboarding.sessionGoal', 'Versets par session')}
+          >
             {GOALS.map((g) => {
               const selected = sessionGoal === g;
               return (
                 <button
+                  type="button"
                   key={g}
+                  aria-pressed={selected}
                   onClick={() => setSessionGoal(g)}
                   className={cn(
-                    'flex h-14 min-w-14 items-center justify-center rounded-2xl border-2 px-4 text-lg font-semibold transition-colors',
+                    'flex h-14 min-w-14 items-center justify-center rounded-2xl border-2 px-4 text-lg font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
                     selected
                       ? 'border-primary bg-surface-tint text-primary'
                       : 'border-transparent bg-surface text-text-secondary shadow-sm',
@@ -79,9 +99,11 @@ export default function OnboardingSessionConfig() {
         </div>
 
         <button
+          type="button"
+          aria-pressed={focusMode}
           onClick={() => setFocusMode(!focusMode)}
           className={cn(
-            'flex items-center gap-4 rounded-2xl border-2 p-4 text-left transition-colors',
+            'flex items-center gap-4 rounded-2xl border-2 p-4 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
             focusMode
               ? 'border-primary bg-surface-tint'
               : 'border-transparent bg-surface shadow-sm',
@@ -97,10 +119,13 @@ export default function OnboardingSessionConfig() {
           </div>
           <div className="flex-1">
             <p className="text-base font-semibold text-text-primary">
-              {t('onboarding.sessionFocusTitle')}
+              {t('onboarding.sessionFocusTitle', 'Mode concentration')}
             </p>
             <p className="mt-1 text-sm leading-6 text-text-secondary">
-              {t('onboarding.sessionFocusDesc')}
+              {t(
+                'onboarding.sessionFocusDesc',
+                'Masque les éléments secondaires pendant la récitation.',
+              )}
             </p>
           </div>
           <div
@@ -109,25 +134,10 @@ export default function OnboardingSessionConfig() {
               focusMode ? 'border-primary bg-primary' : 'border-text-muted',
             )}
           >
-            {focusMode && <DuoIcon icon={Check} size={14} className="text-on-primary" />}
+            {focusMode && <DuoIcon icon={Check} size={14} className="text-on-status" />}
           </div>
         </button>
       </div>
-
-      <div className="mt-6 flex gap-4">
-        <Button
-          variant="outline"
-          className="flex-1"
-          onClick={() => navigate('/onboarding/translation-select')}
-        >
-          <DuoIcon icon={ArrowLeft} size={16} />
-          {t('common.back')}
-        </Button>
-        <Button className="flex-1" onClick={() => navigate('/onboarding/reminder-config')}>
-          {t('common.continue')}
-          <DuoIcon icon={ArrowRight} size={16} />
-        </Button>
-      </div>
-    </div>
+    </OnboardingShell>
   );
 }

@@ -36,14 +36,16 @@ export class BibleJsonFileSource implements IBibleTextSource {
   private readonly fetchImpl: typeof fetch | null;
 
   constructor(options: BibleJsonSourceOptions = {}) {
-    this.dataDir = options.dataDir ?? 'data/bible';
     const hasFetch = typeof fetch === 'function' || options.fetchImpl != null;
     this.useNodeFs = options.useNodeFs ?? !hasFetch;
+    // Relative fetch paths resolve against the current route (e.g. /bible/chapter/…).
+    // Resolve the bundled dataset against Vite's deployment base instead.
+    this.dataDir = options.dataDir ?? (this.useNodeFs ? 'data/bible' : `${import.meta.env.BASE_URL}data/bible`);
     // `fetch` must keep its global receiver: storing the bare reference and
     // calling it detached throws "Illegal invocation" in WebKit.
     this.fetchImpl =
       options.fetchImpl ??
-      (typeof fetch === 'function' ? (fetch.bind(globalThis) as typeof fetch) : null);
+      (typeof fetch === 'function' ? fetch.bind(globalThis) : null);
   }
 
   private resolvePath(translationId: string): string {

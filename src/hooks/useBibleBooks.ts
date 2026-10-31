@@ -32,6 +32,7 @@ import { useBibleData } from '@/hooks/useBibleData';
 import { useTranslation } from 'react-i18next';
 import { BIBLE_BOOKS, type BibleBook } from '@/domains/bible/entities';
 import type { BibleBookData } from '@/domains/bible/repository-local';
+import { bibleBookName } from '@/lib/bible-book-name';
 
 export interface BookMeta {
   id: string;
@@ -73,7 +74,7 @@ export function useBibleBooks(): UseBibleBooks {
         testament: s.testament,
         orderIndex: s.orderIndex,
         chapterCount: s.chapterCount,
-        displayName: pickDisplayName(s.name, s.id, lang),
+        displayName: bibleBookName(s.id, lang, s.name),
       });
     }
     // Overlay the real dataset book structure on top of the static one:
@@ -87,7 +88,7 @@ export function useBibleBooks(): UseBibleBooks {
           testament: b.testament,
           orderIndex: b.orderIndex ?? fallback?.orderIndex ?? m.size + 1,
           chapterCount: b.chapters.length,
-          displayName: pickDisplayName(b.name, b.id, lang),
+          displayName: bibleBookName(b.id, lang, b.name),
         });
       }
     }
@@ -111,6 +112,35 @@ export function useBibleBooks(): UseBibleBooks {
     newTestament,
     translationId: data.translationId,
   };
+}
+
+/**
+ * Un libellé de dataset est-il une abréviation ?
+ *
+ * Règle prudente : 4 caractères maximum **et** entièrement en capitales.
+ * « GEN », « EXO », « PSA » → oui. « Job », « Ruth », « Marc » → non (casse
+ * normale), donc un vrai nom court n'est jamais remplacé.
+ */
+export function looksAbbreviated(value: string | undefined | null): boolean {
+  if (!value) return false;
+  const trimmed = value.trim();
+  if (trimmed.length === 0 || trimmed.length > 4) return false;
+  return trimmed === trimmed.toUpperCase() && /[A-Z]/.test(trimmed);
+}
+
+/**
+ * Nom affiché d'un livre : le dataset gagne **sauf** s'il n'apporte qu'un
+ * sigle, auquel cas on garde le nom complet du catalogue statique.
+ */
+export function resolveBookName(
+  datasetName: Record<string, string> | undefined,
+  staticName: string | undefined,
+  id: string,
+  lang: string,
+): string {
+  const fromDataset = datasetName ? pickDisplayName(datasetName, id, lang) : '';
+  if (!looksAbbreviated(fromDataset)) return fromDataset || staticName || id;
+  return staticName || fromDataset || id;
 }
 
 /**

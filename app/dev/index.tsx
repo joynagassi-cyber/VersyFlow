@@ -36,7 +36,6 @@ import {
   type MockCollectionName,
 } from '@/dev/mock/db';
 import {
-  resetMockDatabase,
   seedMockDatabase,
   SEED_VERSES,
 } from '@/dev/mock/seed';
@@ -53,6 +52,8 @@ import {
   type TestEvent,
 } from '@/dev/local-backend';
 import { getMockBootInfo } from '@/dev/bootstrap';
+import { DemoModePanel } from '@/components/dev/DemoModePanel';
+import { resetDemoSession } from '@/dev/demo-session';
 import { useSettingsStore } from '@/store/settings-store';
 import { cn } from '@/lib/utils';
 
@@ -156,9 +157,17 @@ export default function DevPanelScreen() {
 
   const handleReset = () =>
     withBusy('reset', () => {
-      resetMockDatabase();
-      recordTestEvent('dev.reset', {});
-      setNotice('Base de test vidée puis re-seedée.');
+      // Efface TOUT l'espace de démo (base mock + préférences isolées :
+      // apparence, profil, famille, historique de recherche…), puis re-sème.
+      // Les clés réelles ne sont jamais touchées.
+      const { clearedKeys, seeded } = resetDemoSession();
+      recordTestEvent('dev.reset', { clearedKeys, seeded });
+      setNotice(
+        `Démo réinitialisée : ${clearedKeys} ${clearedKeys > 1 ? 'clés' : 'clé'} de démo ${
+          clearedKeys > 1 ? 'effacées' : 'effacée'
+        }, base re-seedée. Rechargement…`,
+      );
+      window.setTimeout(() => window.location.reload(), 350);
     });
 
   const handleSkipOnboarding = () =>
@@ -224,6 +233,9 @@ export default function DevPanelScreen() {
       }
     >
       <div className="space-y-4 pb-10">
+        {/* ---------------- Démo / réel ---------------- */}
+        <DemoModePanel compact />
+
         {/* ---------------- Mode ---------------- */}
         <Card title="Mode de données" icon={Database}>
           <div className="flex items-center justify-between gap-3">
@@ -275,7 +287,7 @@ export default function DevPanelScreen() {
             className="mt-3"
             size="sm"
             variant="outline"
-            onClick={handleSkipOnboarding}
+            onClick={() => void handleSkipOnboarding()}
             disabled={busy !== null}
           >
             <DuoIcon icon={ArrowRight} size={15} />
@@ -330,11 +342,11 @@ export default function DevPanelScreen() {
             </p>
           )}
           <div className="mt-3 flex flex-wrap gap-2">
-            <Button size="sm" variant="secondary" onClick={handleFlush} disabled={busy !== null}>
+            <Button size="sm" variant="secondary" onClick={() => void handleFlush()} disabled={busy !== null}>
               <DuoIcon icon={Refresh} size={15} />
               Vider la file
             </Button>
-            <Button size="sm" variant="outline" onClick={handleSnapshot} disabled={busy !== null}>
+            <Button size="sm" variant="outline" onClick={() => void handleSnapshot()} disabled={busy !== null}>
               <DuoIcon icon={Upload} size={15} />
               Envoyer l'instantané
             </Button>
@@ -365,15 +377,15 @@ export default function DevPanelScreen() {
             ))}
           </div>
           <div className="mt-3 flex flex-wrap gap-2">
-            <Button size="sm" variant="secondary" onClick={handleSeed} disabled={busy !== null}>
+            <Button size="sm" variant="secondary" onClick={() => void handleSeed()} disabled={busy !== null}>
               <DuoIcon icon={Refresh} size={15} />
               Re-seeder
             </Button>
-            <Button size="sm" variant="outline" onClick={handleExport} disabled={busy !== null}>
+            <Button size="sm" variant="outline" onClick={() => void handleExport()} disabled={busy !== null}>
               <DuoIcon icon={Download} size={15} />
               Exporter en JSON
             </Button>
-            <Button size="sm" variant="destructive" onClick={handleReset} disabled={busy !== null}>
+            <Button size="sm" variant="destructive" onClick={() => void handleReset()} disabled={busy !== null}>
               <DuoIcon icon={Trash} size={15} />
               Tout réinitialiser
             </Button>

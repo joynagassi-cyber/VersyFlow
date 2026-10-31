@@ -41,7 +41,6 @@ import {
 } from '@/components/ui/solar-icons';
 import { ALL_MENU_ITEMS, ALL_TABS, useUiStore, type TabId } from '@/store/ui-store';
 import { useIsDesktop } from '@/hooks/useIsDesktop';
-import { Logo } from '@/components/brand/Logo';
 import { cn } from '@/lib/utils';
 
 /** Type des icônes Solar : celui de la bibliothèque, pas une approximation. */
@@ -103,7 +102,7 @@ export function DesktopRail() {
   const menuItems = ALL_MENU_ITEMS.filter((item) => visibleMenuPaths.includes(item.path) && !(item.path === '/bible/explorer' && visibleTabs.includes('explore')));
 
   const itemBase =
-    'group flex h-9 w-full items-center gap-3 rounded-xl px-2.5 text-start text-sm font-medium transition-colors';
+    'group flex h-9 w-full items-center gap-3 rounded-xl px-2.5 text-start text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary';
   const iconColumn = 'flex h-6 w-6 flex-none items-center justify-center';
 
   return (
@@ -120,7 +119,6 @@ export function DesktopRail() {
           className={cn(itemBase, 'gap-2.5 px-1 hover:bg-surface-tint')}
           aria-label={t('nav.brandHome', 'VersyFlow — Accueil')}
         >
-          <span className="brand-tile"><Logo size={28} /></span>
           <span className="rail-label text-primary text-base font-extrabold">VersyFlow</span>
         </button>
         {isDesktop && (

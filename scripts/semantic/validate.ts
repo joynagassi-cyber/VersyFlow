@@ -99,13 +99,17 @@ export function runHChecks(
   const orphanThreshold = opts.orphanThreshold ?? 0.2;
   const violations: HViolation[] = [];
 
+  const scalarText = (v: unknown): string =>
+    typeof v === 'string' || typeof v === 'number' ? String(v) : '';
+
   const add = (check: string, rows: Record<string, unknown>[]) => {
     if (rows.length === 0) return;
     const ids = rows
       .slice(0, maxRows)
       .map(
         (r) =>
-          String(r.id ?? `${r.concept_id ?? ''}:${r.from_concept_id ?? ''}:${r.to_concept_id ?? ''}`)
+          scalarText(r.id) ||
+          `${scalarText(r.concept_id)}:${scalarText(r.from_concept_id)}:${scalarText(r.to_concept_id)}`
       );
     violations.push({ check, detail: `${rows.length} row(s)`, rows: ids });
   };
@@ -507,7 +511,11 @@ export function runHChecksInMemory(rows: InMemoryRows, opts: { orphanThreshold?:
   );
   add(
     'unique_verse_relation',
-    uniq(rows.verse_relations, (r) => `${r.fromVerseId}|${r.toVerseId}|${r.relationType}|${r.conceptId ?? ''}|${r.communityId ?? ''}`),
+    uniq(
+      rows.verse_relations,
+      (r) =>
+        `${String(r.fromVerseId)}|${String(r.toVerseId)}|${String(r.relationType)}|${typeof r.conceptId === 'string' ? r.conceptId : ''}|${typeof r.communityId === 'string' ? r.communityId : ''}`
+    ),
     'duplicate (from, to, type, concept, community) quintuple'
   );
 

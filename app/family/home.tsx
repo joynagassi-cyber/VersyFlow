@@ -45,6 +45,8 @@ import {
 import { cn } from '@/lib/utils';
 import { useFamilySyncStore } from '@/store/family-sync-store';
 import { useFamilyService } from '@/hooks/useFamilyService';
+import { FamilyDemo } from '@/components/family/FamilyDemo';
+import { isMockMode } from '@/dev/mode';
 import { useFamilyRoom } from '@/hooks/useFamilyRoom';
 import { useFamilyRoomStore } from '@/store/family-room-store';
 import { useActiveProfile } from '@/hooks/useActiveProfile';
@@ -59,7 +61,7 @@ const startOfDay = (ts: number) => {
   return d.getTime();
 };
 
-export default function FamilyHomeScreen() {
+function RealFamilyHomeScreen() {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const families = useFamilySyncStore((s) => s.families);
@@ -486,4 +488,10 @@ export default function FamilyHomeScreen() {
       )}
     </FamilyHubPage>
   );
+}
+
+/** Le prototype famille est séparé des services et données de la famille réelle. */
+export default function FamilyHomeScreen() {
+  const [real, setReal] = useState(false);
+  return isMockMode() || real ? <RealFamilyHomeScreen /> : <FamilyDemo onReal={() => setReal(true)} />;
 }

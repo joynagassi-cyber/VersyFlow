@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Switch } from '@/components/ui/Switch';
 import { useTranslation } from 'react-i18next';
+import { normalizeLocaleCode } from '@/domains/i18n/config';
 import { applyWeeklyPlan, loadWeeklyPlan, type ReminderDay, type WeeklyReminderKind } from '@/services/weekly-reminder-plan';
 
 const DAYS: ReminderDay[] = [2, 3, 4, 5, 6, 7, 1];
@@ -24,7 +25,7 @@ export function WeeklyReminderPlanner() {
       setStatus('error');
     }
   };
-  const locale = i18n.resolvedLanguage || i18n.language;
+  const locale = normalizeLocaleCode(i18n.resolvedLanguage || i18n.language);
   return <section className="g2 weekly-planner">
     <h2>{t('weeklyReminders.title', 'Planning hebdomadaire')}</h2>
     <p className="weekly-planner-hint">{t('weeklyReminders.intro', 'Choisissez séparément les jours et l’heure de vos révisions et de votre mémorisation.')}</p>

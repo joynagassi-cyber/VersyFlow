@@ -1,5 +1,5 @@
 /**
- * Language Picker Screen — Onboarding step 1
+ * Language Picker Screen — Onboarding step 2/6
  * 5 languages in cards, RTL badge for Arabic, sets UI language + i18next.
  */
 
@@ -15,6 +15,7 @@ import {
 } from '@/components/ui/solar-icons';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import { OnboardingShell } from '@/components/onboarding/OnboardingShell';
 import { SUPPORTED_LANGUAGES, isRTL } from '@/services/i18n-service';
 import { useSettingsStore } from '@/store/settings-store';
 
@@ -33,42 +34,55 @@ export default function LanguagePickerScreen() {
   };
 
   return (
-    <div className="screen-column-narrow flex min-h-full flex-col p-6">
-      <header className="mb-6 flex items-center gap-3">
-        <button
-          onClick={() => navigate('/onboarding/welcome')}
-          className="flex h-10 w-10 items-center justify-center rounded-full bg-surface shadow-sm"
-          aria-label={t('common.back')}
-        >
-          <DuoIcon icon={ArrowLeft} size={20} className="text-text-secondary" />
-        </button>
-        <div>
-          <h1 className="page-title">
-            {t('onboarding.selectLanguage')}
-          </h1>
+    <OnboardingShell
+      step={2}
+      title={t('onboarding.selectLanguage', 'Choisir votre langue')}
+      subtitle={t(
+        'onboarding.selectLanguageHint',
+        'L’interface s’adapte immédiatement à votre langue de lecture.',
+      )}
+      onBack={() => navigate('/onboarding/welcome')}
+      backLabel={t('common.back', 'Retour')}
+      footer={
+        <div className="flex gap-3">
+          <Button
+            type="button"
+            variant="outline"
+            className="flex-1"
+            onClick={() => navigate('/onboarding/welcome')}
+          >
+            <DuoIcon icon={ArrowLeft} size={16} />
+            {t('common.back', 'Retour')}
+          </Button>
+          <Button
+            type="button"
+            className="flex-1"
+            onClick={() => navigate('/onboarding/translation-select')}
+          >
+            {t('common.continue', 'Continuer')}
+            <DuoIcon icon={ArrowRight} size={16} />
+          </Button>
         </div>
-      </header>
-
-      <div className="flex flex-1 flex-col gap-3">
+      }
+    >
+      <div className="flex flex-col gap-3">
         {SUPPORTED_LANGUAGES.map((lang) => {
           const isSelected = selected === lang.code;
           return (
             <button
+              type="button"
               key={lang.code}
+              aria-pressed={isSelected}
               onClick={() => selectLanguage(lang.code)}
               className={cn(
-                'flex items-center justify-between rounded-xl border-2 bg-surface p-4 text-left shadow-sm transition-colors',
-                isSelected
-                  ? 'border-primary bg-surface-tint'
-                  : 'border-transparent',
+                'flex items-center justify-between rounded-2xl border-2 bg-surface p-4 text-left shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
+                isSelected ? 'border-primary bg-surface-tint' : 'border-transparent',
               )}
             >
               <div>
                 <div className="flex items-center gap-2">
                   <DuoIcon icon={Languages} size={18} className="text-primary" />
-                  <span className="text-lg font-semibold text-text-primary">
-                    {lang.name}
-                  </span>
+                  <span className="text-lg font-semibold text-text-primary">{lang.name}</span>
                   {lang.rtl && (
                     <span className="rounded bg-surface-tint px-2 py-0.5 text-2xs font-semibold text-primary">
                       RTL
@@ -77,9 +91,7 @@ export default function LanguagePickerScreen() {
                 </div>
                 <p className="mt-1 text-sm text-text-muted">{lang.displayName}</p>
                 {lang.rtl && (
-                  <p className="mt-1 text-xs text-primary">
-                    {t('onboarding.rtlWarning')}
-                  </p>
+                  <p className="mt-1 text-xs text-primary">{t('onboarding.rtlWarning')}</p>
                 )}
               </div>
               {isSelected && <DuoIcon icon={Check} size={22} className="text-primary" />}
@@ -87,17 +99,6 @@ export default function LanguagePickerScreen() {
           );
         })}
       </div>
-
-      <div className="mt-6 flex gap-4">
-        <Button variant="outline" className="flex-1" onClick={() => navigate('/onboarding/welcome')}>
-          <DuoIcon icon={ArrowLeft} size={16} />
-          {t('common.back')}
-        </Button>
-        <Button className="flex-1" onClick={() => navigate('/onboarding/translation-select')}>
-          {t('common.continue')}
-          <DuoIcon icon={ArrowRight} size={16} />
-        </Button>
-      </div>
-    </div>
+    </OnboardingShell>
   );
 }

@@ -7,7 +7,8 @@
  * from the Supabase Storage bucket `bible-datasets`.
  */
 
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo } from 'react';
+import { SkeletonLines } from '@/components/ui/Skeleton';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { DuoIcon } from '@/components/ui/DuoIcon';
@@ -27,11 +28,9 @@ import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 import { useBibleBooks, type BookMeta } from '@/hooks/useBibleBooks';
 import { bibleTranslationDisplayName } from '@/services/bible-translation-names';
-import { useChapterSemanticTags } from '@/hooks/useSemanticTags';
 import { useBibleData } from '@/hooks/useBibleData';
-import ManuscriptView from '@/components/bible/ManuscriptView';
-import VerseActionBar from '@/components/bible/VerseActionBar';
-import { Skeleton } from '@/components/ui/Skeleton';
+import ContinuousBibleReader from '@/components/bible/ContinuousBibleReader';
+import { useAppearanceStore } from '@/store/appearance-store';
 
 type ViewMode = 'books' | 'chapters' | 'verses';
 
@@ -50,8 +49,8 @@ export default function BibleExplorerScreen() {
   const navigate = useNavigate();
   const params = useParams();
   const { t, i18n } = useTranslation();
+  const continuous = useAppearanceStore((s) => s.bibleContinuous);
   const [query, setQuery] = useState('');
-  const [selectedVerse, setSelectedVerse] = useState<number | null>(null);
 
   const { byId, translationId } = useBibleBooks();
 
@@ -68,28 +67,6 @@ export default function BibleExplorerScreen() {
     selectedBookId != null ? byId.get(selectedBookId) ?? null : null;
 
   const { books, status, error, remoteEntry, downloadPercent, download } = useBibleData();
-
-  // Reset the verse selection whenever the route (book/chapter) changes.
-  useEffect(() => {
-    setSelectedVerse(null);
-  }, [selectedBookId, selectedChapter]);
-
-  const { tags } = useChapterSemanticTags(selectedBookId, selectedChapter);
-
-  const activeBookData =
-    selectedBookId != null ? books?.find((b) => b.id === selectedBookId) : undefined;
-  const activeChapterData =
-    selectedChapter != null
-      ? activeBookData?.chapters.find((c) => c.number === selectedChapter)
-      : undefined;
-
-  const verseTexts = useMemo(() => {
-    const map: Record<number, string> = {};
-    activeChapterData?.verses.forEach((v) => {
-      map[v.number] = v.text;
-    });
-    return map;
-  }, [activeChapterData]);
 
   const filteredBooks = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -127,7 +104,7 @@ export default function BibleExplorerScreen() {
       : viewMode === 'chapters' && selectedBook
         ? selectedBook.displayName
         : viewMode === 'verses' && selectedBook && selectedChapter
-          ? `${selectedBook.displayName} ${selectedChapter}`
+          ? t('bible.explorer', 'Bible')
           : t('bible.explorer', 'Bible');
 
   return (
@@ -137,7 +114,7 @@ export default function BibleExplorerScreen() {
         viewMode === 'chapters' && selectedBook
           ? formatChapterCount(t('bible.chapterCount', { count: selectedBook.chapterCount }), selectedBook.chapterCount, i18n.resolvedLanguage || i18n.language)
           : viewMode === 'verses' && selectedChapter
-            ? t('bible.chapter', 'Chapitre') + ` ${selectedChapter}`
+            ? (continuous ? t('bible.continuousReading', 'Lecture continue') : t('bible.chapterMode', 'Chapitre par chapitre'))
             : undefined
       }
       showBack
@@ -161,9 +138,10 @@ export default function BibleExplorerScreen() {
           />
           {query && (
             <button
+              type="button"
               onClick={() => setQuery('')}
-              aria-label={t('common.clear', 'Effacer la recherche')}
-              className="touch-target absolute right-0 top-1/2 -translate-y-1/2 text-text-muted"
+              aria-label={t('bible.clearSearch', 'Effacer la recherche')}
+              className="touch-target absolute right-1 top-1/2 -translate-y-1/2 rounded-full text-text-muted active:bg-surface-tint"
             >
               <DuoIcon icon={X} size={16} />
             </button>
@@ -213,7 +191,7 @@ export default function BibleExplorerScreen() {
                     <button
                       key={book.id}
                       onClick={() => openBook(book.id)}
-                      className="g2 flex items-center justify-between p-4 text-left"
+                      className="flex items-center justify-between rounded-xl bg-surface p-4 text-left shadow-sm"
                     >
                       <div>
                         <p className="text-base font-semibold text-text-primary">
@@ -241,9 +219,9 @@ export default function BibleExplorerScreen() {
               <button
                 key={chapter}
                 onClick={() => openChapter(chapter)}
-                className="g2 flex flex-col items-center py-3"
+                className="flex flex-col items-center rounded-xl bg-surface py-3 shadow-sm"
               >
-                <span className="card-title">{chapter}</span>
+                <span className="text-base font-semibold text-text-primary">{chapter}</span>
               </button>
             ),
           )}
@@ -255,7 +233,7 @@ export default function BibleExplorerScreen() {
         <div className="flex flex-col gap-3">
           {/* Download-on-demand banner */}
           {showDownloadBanner && (
-            <div className="g2 p-4">
+            <div className="rounded-2xl bg-surface p-4 shadow-sm">
               <div className="flex items-start gap-3">
                 <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-surface-tint text-primary">
                   {status === 'downloading' ? (
@@ -304,32 +282,11 @@ export default function BibleExplorerScreen() {
           {/* Manuscript flow: the chapter as one continuous serif text,
               with tappable inline verse numbers. */}
           {status === 'loading' ? (
-            <div className="g2 space-y-3 p-5">
-              <Skeleton className="h-4 w-3/4 rounded" />
-              <Skeleton className="h-4 w-2/3 rounded" />
-              <Skeleton className="h-4 w-full rounded" />
-              <Skeleton className="h-4 w-1/2 rounded" />
-            </div>
+            <div className="space-y-3 rounded-3xl bg-surface p-5 shadow-sm">
+            <SkeletonLines lines={4} />
+          </div>
           ) : (
-            <ManuscriptView
-              bookId={selectedBook.id}
-              chapter={selectedChapter}
-              verses={activeChapterData?.verses ?? []}
-              tags={tags}
-              selectedVerse={selectedVerse}
-              onSelectVerse={setSelectedVerse}
-            />
-          )}
-
-          {/* Contextual action bar for the selected verse */}
-          {selectedVerse != null && (
-            <VerseActionBar
-              bookId={selectedBook.id}
-              chapter={selectedChapter}
-              verse={selectedVerse}
-              verseText={verseTexts[selectedVerse]}
-              translationId={translationId}
-            />
+            books && <ContinuousBibleReader key={`${translationId}:${selectedBook.id}:${selectedChapter}`} books={books} initialBookId={selectedBook.id} initialChapter={selectedChapter} translationId={translationId} />
           )}
         </div>
       )}

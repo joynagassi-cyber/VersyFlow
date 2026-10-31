@@ -7,8 +7,8 @@
  * (Mémoriser · Tag · Note · Comparer).
  */
 
-import { useState, useMemo } from 'react';
 import { useSearchParams, useParams } from 'react-router-dom';
+import { SkeletonLines } from '@/components/ui/Skeleton';
 import { useTranslation } from 'react-i18next';
 import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
@@ -19,11 +19,9 @@ import {
 } from '@/components/ui/solar-icons';
 import FullScreenPage from '@/components/layout/FullScreenPage';
 import { useBibleBooks } from '@/hooks/useBibleBooks';
-import { useChapterSemanticTags } from '@/hooks/useSemanticTags';
 import { useBibleData } from '@/hooks/useBibleData';
-import ManuscriptView from '@/components/bible/ManuscriptView';
-import VerseActionBar from '@/components/bible/VerseActionBar';
-import { Skeleton } from '@/components/ui/Skeleton';
+import ContinuousBibleReader from '@/components/bible/ContinuousBibleReader';
+import { useAppearanceStore } from '@/store/appearance-store';
 
 function formatBytes(bytes: number): string {
   if (bytes < 1024 * 1024) return `${Math.ceil(bytes / 1024)} Ko`;
@@ -34,6 +32,7 @@ export default function ChapterScreen() {
   const [params] = useSearchParams();
   const urlParams = useParams();
   const { t } = useTranslation();
+  const continuous = useAppearanceStore((s) => s.bibleContinuous);
   const { byId } = useBibleBooks();
 
   // URL params (canon route /bible/chapter/:bookId/:chapterNumber) win,
@@ -45,8 +44,6 @@ export default function ChapterScreen() {
   // The static structure (BIBLE_BOOKS, 66 books) guarantees at least `gen`
   // and `mat` resolve; `byId.get()` therefore never returns undefined here.
   const book = byId.get(bookId) ?? byId.get('gen')!;
-
-  const [selectedVerse, setSelectedVerse] = useState<number | null>(null);
 
   const {
     books,
@@ -60,19 +57,6 @@ export default function ChapterScreen() {
     cancelDownload,
   } = useBibleData();
 
-  const { tags } = useChapterSemanticTags(book.id, chapter);
-
-  const chapterData = books?.find((x) => x.id === bookId)?.chapters.find(
-    (c) => c.number === chapter,
-  );
-  const verseTexts = useMemo(() => {
-    const map: Record<number, string> = {};
-    chapterData?.verses.forEach((v) => {
-      map[v.number] = v.text;
-    });
-    return map;
-  }, [chapterData]);
-
   const showDownloadBanner =
     remoteEntry != null && status !== 'loading' && status !== 'ready';
 
@@ -83,15 +67,17 @@ export default function ChapterScreen() {
 
   return (
     <FullScreenPage
-      title={`${book.displayName} ${chapter}`}
-      subtitle={t('bible.chapter', 'Chapitre')}
+      title={t('bible.explorer', 'Bible')}
+      subtitle={continuous ? t('bible.continuousReading', 'Lecture continue') : t('bible.chapterMode', 'Chapitre par chapitre')}
       backPath={`/bible/book/${book.id}`}
       column="narrow"
+      className="reading-screen"
+      headerClassName="reading-header"
     >
       <div className="flex flex-col gap-3">
         {/* Download-on-demand banner */}
         {showDownloadBanner && (
-          <div className="g2 p-4">
+          <div className="rounded-2xl bg-surface p-4 shadow-sm">
             <div className="flex items-start gap-3">
               <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-surface-tint text-primary">
                 {status === 'downloading' ? (
@@ -158,33 +144,14 @@ export default function ChapterScreen() {
         {/* Manuscript flow: the chapter as one continuous serif text,
             with tappable inline verse numbers. */}
         {status === 'loading' ? (
-          <div className="g2 space-y-3 p-5">
-            <Skeleton className="h-4 w-3/4 rounded" />
-            <Skeleton className="h-4 w-2/3 rounded" />
-            <Skeleton className="h-4 w-full rounded" />
-            <Skeleton className="h-4 w-1/2 rounded" />
+          <div className="space-y-3 rounded-3xl bg-surface p-5 shadow-sm">
+            <SkeletonLines lines={4} />
           </div>
         ) : (
-          <ManuscriptView
-            bookId={book.id}
-            chapter={chapter}
-            verses={chapterData?.verses ?? []}
-            tags={tags}
-            selectedVerse={selectedVerse}
-            onSelectVerse={setSelectedVerse}
-          />
+          books && <ContinuousBibleReader key={`${translationId}:${book.id}:${chapter}`} books={books} initialBookId={bookId} initialChapter={chapter} translationId={translationId} />
         )}
 
-        {/* Contextual action bar for the selected verse */}
-        {selectedVerse != null && (
-          <VerseActionBar
-            bookId={book.id}
-            chapter={chapter}
-            verse={selectedVerse}
-            verseText={verseTexts[selectedVerse]}
-            translationId={translationId}
-          />
-        )}
+
       </div>
     </FullScreenPage>
   );

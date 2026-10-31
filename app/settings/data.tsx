@@ -21,6 +21,7 @@ import {
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { ListItem } from '@/components/ui/ListItem';
 import { useHighlightStore } from '@/store/highlight-store';
+import { DemoModePanel } from '@/components/dev/DemoModePanel';
 
 export default function SettingsDataScreen() {
   const { t } = useTranslation();
@@ -31,7 +32,7 @@ export default function SettingsDataScreen() {
     <FullScreenPage
       title={t('settings.activitiesSection', 'Activités & Données')}
       showBack
-      backPath="/settings"
+      backPath="/tabs/settings"
     >
       <div className="screen-column space-y-5">
         {/* Highlights summary card */}
@@ -44,6 +45,9 @@ export default function SettingsDataScreen() {
             {t('settings.dataHighlightsCount', { count: highlightCount })}
           </p>
         </div>
+
+        {/* Démo / données réelles — visible en permanence, pas seulement en démo */}
+        <DemoModePanel />
 
         {/* Activity links */}
         <div className="glass overflow-hidden rounded-2xl">

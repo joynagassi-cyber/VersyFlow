@@ -4,7 +4,6 @@ import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   Cancel01Icon as X,
 } from '@/components/ui/solar-icons';
-import { Logo } from '@/components/brand/Logo';
 import { useAuthStore } from '@/store/auth-store';
 import { useUiStore, ALL_MENU_ITEMS } from '@/store/ui-store';
 import { cn } from '@/lib/utils';
@@ -51,7 +50,6 @@ export function HamburgerMenu() {
       >
         <div className="flex items-center justify-between gap-3 border-b border-border px-5 py-4">
           <div className="flex items-center gap-3">
-            <Logo size={38} />
             <div className="leading-tight">
               <span className="text-primary text-base font-extrabold">VersyFlow</span>
               <div className="text-xs text-text-muted">

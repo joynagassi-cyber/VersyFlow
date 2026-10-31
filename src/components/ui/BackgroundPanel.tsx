@@ -18,12 +18,10 @@ export function BackgroundPanel() {
   if (!active) return null;
   return <>
     <button type="button" className="appearance-trigger" aria-expanded={open} aria-controls="background-panel" onClick={() => setOpen(!open)}>
-      <DuoIcon icon={Settings01Icon} size={20} />
-      <span>{t('appearanceEditor.trigger', 'Apparence')}</span>
+      <DuoIcon icon={Settings01Icon} size={20} /><span>{t('appearanceEditor.glass', 'Glass')}</span>
     </button>
-    {open && createPortal(<aside id="background-panel" className="background-panel g3" aria-label={t('appearanceEditor.panelLabel', 'Réglages d’arrière-plan')}>
-      <div className="background-panel-heading"><h2>{t('appearanceEditor.panelTitle', 'Arrière-plan')}</h2>
-        <button type="button" onClick={() => setOpen(false)} aria-label={t('appearanceEditor.close', 'Fermer')}><DuoIcon icon={Cancel01Icon} size={20} /></button></div>
+    {open && createPortal(<aside id="background-panel" className="background-panel g3" aria-label={t('appearanceEditor.backgroundSettings', 'Réglages Glass et arrière-plan')}>
+      <div className="background-panel-heading"><h2>{t('appearanceEditor.backgroundPanelHeading', 'Glass & arrière-plan')}</h2><button type="button" onClick={() => setOpen(false)} aria-label={t('common.close', 'Fermer')}><DuoIcon icon={Cancel01Icon} size={20} /></button></div>
       <BackgroundControls />
     </aside>, document.body)}
   </>;
