@@ -251,68 +251,103 @@ ion-content::part(background) {
     hyphens: auto;
     max-width: var(--reading-line-length, 42em);
     margin-inline: auto;
+    /* Le numéral de chapitre flotte : sans contexte de formatage il
+       déborderait sur l'en-tête du chapitre suivant. */
+    display: flow-root;
   }
 
+  /* Le verset n'a plus de fond ni de marge négative : il n'est plus une
+     pastille cliquable, mais une plage de texte. Toute la surface visuelle
+     est désormais réservée au SURLIGNAGE — la sélection, elle, se signale
+     par un trait. Deux états qui partageaient le même canal (un fond) ne se
+     distinguaient pas quand un verset était à la fois sélectionné et
+     surligné. */
   .manuscript-verse {
-    border-radius: 12px;
-    padding: 2px 4px;
-    margin: 0 -4px;
     cursor: pointer;
-    transition: background-color 160ms ease;
+    transition: text-decoration-color 160ms ease;
   }
 
   .manuscript-verse:focus-visible {
     outline: 2px solid var(--acc-text, var(--color-primary));
-    outline-offset: 2px;
+    outline-offset: 3px;
+    border-radius: 4px;
   }
 
+  /* SÉLECTION — un soulignement fin pointillé, et rien d'autre. C'est le seul
+     signal : ni fond, ni gras, ni changement d'encre. Il reste lisible en
+     niveaux de gris, et il ne peut pas être confondu avec un surlignage. */
   .manuscript-verse.is-selected {
-    background-color: color-mix(in srgb, var(--color-primary) 8%, transparent);
+    text-decoration-line: underline;
+    text-decoration-style: dotted;
+    text-decoration-thickness: 1px;
+    text-decoration-color: var(--acc-text, var(--color-primary));
+    text-underline-offset: 0.32em;
   }
 
-  /* User highlight (light, fluid, translucent) — readable on #FFFFFF and
-     #121212. A translucent tint of the accent color with a soft glow. */
-  .manuscript-verse.is-highlighted {
-    background: linear-gradient(
+  /* SURLIGNAGE — un lavis léger qui court sous TOUT le texte du verset :
+     les espaces entre les mots en font partie, puisque le fond s'applique à
+     l'élément inline et non aux mots. `box-decoration-break: clone` répète le
+     lavis sur chaque ligne d'un verset qui en occupe plusieurs, au lieu de le
+     laisser ouvert aux extrémités.
+     La teinte vient de `--hl`, elle-même fixée par `data-hl` : aucune couleur
+     n'est écrite ici, donc les cinq pastilles suivent thème et presets. */
+  .manuscript-verse[data-hl] {
+    --hl-alpha: 34%;
+    background-image: linear-gradient(
       to bottom,
-      color-mix(in srgb, var(--color-primary) 14%, transparent),
-      color-mix(in srgb, var(--color-primary) 22%, transparent)
+      transparent 0 58%,
+      color-mix(in srgb, var(--hl) var(--hl-alpha), transparent) 58% 92%,
+      transparent 92%
     );
-    box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-primary) 18%, transparent) inset;
-    border-radius: 10px;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+    padding-block: 0.06em;
   }
 
-  .manuscript-verse.is-highlighted.is-selected {
-    background: linear-gradient(
-      to bottom,
-      color-mix(in srgb, var(--color-primary) 20%, transparent),
-      color-mix(in srgb, var(--color-primary) 28%, transparent)
-    );
-  }
-
+  /* Le numéro de verset : plus grand qu'avant (0,62 → 0,76 em) et dans la
+     couleur de l'accent actif. `--acc-text` est l'accent corrigé pour rester
+     lisible sur la surface du preset — c'est la même teinte, pas un gris. */
   .verse-flow-number {
     font-family: inherit;
-    font-size: 0.62em;
+    font-size: 0.76em;
     font-weight: 700;
     line-height: 1;
+    font-variant-numeric: tabular-nums;
     color: var(--acc-text, var(--color-primary));
     cursor: pointer;
     user-select: none;
     -webkit-user-select: none;
     vertical-align: super;
-    margin: 0 0.3em 0 0.12em;
-    padding: 2px 4px;
-    border-radius: 6px;
+    margin: 0 0.34em 0 0.1em;
+    padding: 0 2px;
+    border-radius: 5px;
     transition: background-color 140ms ease;
   }
 
   .verse-flow-number:active {
-    background-color: color-mix(in srgb, var(--color-primary) 18%, transparent);
+    background-color: color-mix(in srgb, var(--acc) 20%, transparent);
   }
 
+  /* Le numéro d'un verset sélectionné ne change plus de fond : c'est le
+     soulignement du verset qui porte l'état, du numéro à la fin du texte. */
   .verse-flow-number.is-selected {
-    background-color: var(--color-primary);
-    color: var(--color-on-primary);
+    background-color: transparent;
+  }
+
+  /* Numéro de chapitre en grand, dans la marge du texte. La lettrine
+     précédente flottait et décalait le premier verset de deux lignes ; un
+     numéral posé en marge ne déplace rien. */
+  .chapter-numeral {
+    float: inline-start;
+    display: block;
+    margin: 0.04em 0.34em 0 0;
+    font-family: var(--reading-font-family, 'Source Serif 4', Georgia, serif);
+    font-size: 3.4em;
+    font-weight: 300;
+    line-height: 0.82;
+    font-variant-numeric: tabular-nums;
+    color: var(--acc-text, var(--color-primary));
+    letter-spacing: -0.02em;
   }
 
   /*
@@ -1118,7 +1153,6 @@ ion-tab-button.tab-selected ion-icon {
      respecté au-dessus de ce plancher. */
   --glass-alpha-min: .8;
 }
-:root[data-theme='dark'] { --glass-rgb: 18, 18, 18; }
 html[data-bg='image'] { min-height: 100dvh; }
 html[data-bg='image'] .glass {
   background: rgba(var(--glass-rgb), var(--glass-alpha));
@@ -1158,58 +1192,130 @@ html[data-bg='image'] .bible-card { background: rgba(var(--glass-rgb), max(var(-
 html[data-bg='image'][data-transparency='reduced'] :is(.card-glass, .surface-glass, .bible-card),
 html[data-bg='image'][data-contrast='high'] :is(.card-glass, .surface-glass, .bible-card) { background: var(--color-surface); -webkit-backdrop-filter: none; backdrop-filter: none; }
 
-/* Icônes Solar : l'accent est appliqué dès le repos, jamais seulement au survol. */
-.solar.solar-accent { color: var(--color-primary); }
-/* Sur une surface pleine d'accent, préserver le contraste du pictogramme. */
-.bg-primary .solar.solar-accent { color: var(--color-on-primary); }
-
-/* Accueil premium : jetons neutres fixes, accent hérité du thème image. */
-:root, :root[data-theme="light"], .appearance-preview[data-theme="light"] {
-  --gc: #ffffff; --gc-rgb: 255,255,255;
-  --tx: #1b1220; --mut: #5b4a57;
-  --acc: var(--color-primary); --acc2: var(--color-accent);
-  --bd: rgba(255,255,255,.75); --hi: rgba(255,255,255,.9); --sh: rgba(74,22,48,.18);
-  --v1: rgba(255,236,244,.25); --v2: rgba(255,226,238,.55);
-  --v1: color-mix(in srgb, var(--tint) 12%, rgba(255,255,255,.2));
-  --v2: color-mix(in srgb, var(--tint) 18%, rgba(255,255,255,.55));
-  --acc-text: var(--tx); --acc-text: color-mix(in srgb, var(--acc) 50%, #1b1220);
-  --bl: var(--bg-blur); --gb: var(--glass-blur); --ga: var(--glass-alpha); --veil: var(--veil-alpha);
-  --premium-on: #1a0b14;
+/* Sur une surface pleine d'accent, préserver le contraste du pictogramme ET
+   rendre le second calque au trait, sinon le duotone devient invisible
+   (accent sur accent). La règle de base vit plus bas, en un seul endroit. */
+.bg-primary .solar.solar-accent {
+  color: var(--color-on-primary);
+  --solar-secondary-color: currentColor;
+  --solar-secondary-opacity: 0.35;
 }
+
+/* ── Jetons de surface : UNE formule, deux modes ──────────────────────────
+   CE BLOC A ÉTÉ RÉÉCRIT PARCE QUE LE SOMBRE N'ÉTAIT PAS UNE PALETTE.
+
+   Trois défauts mesurables avant réécriture :
+   1. Cinq jetons (`--bl`, `--gb`, `--ga`, `--veil`, `--premium-on`)
+      n'existaient QUE dans le bloc clair ; le sombre en héritait par accident,
+      faute d'être défini. Un mode incomplet ne se voit pas tout de suite : il
+      se voit le jour où l'un de ces jetons porte enfin quelque chose.
+   2. Les valeurs étaient figées (`--gc: #171717`, `--tx: #f3f3f3`), donc le
+      sombre ignorait le preset actif. Pire : `--gc` valait le FOND (#171717)
+      alors qu'en clair il valait la SURFACE (#ffffff). Les cartes sombres
+      n'avaient donc aucune élévation — c'était l'écart de conformité le plus
+      visible entre les deux modes.
+   3. Le sombre désaturait l'accent de 45 % avec `--mut`, transformation que le
+      clair ne subit pas. Deux modes qui n'appliquent pas la même formule ne
+      sont pas conformes, même quand chacun est « joli ».
+
+   Désormais : les deux modes déclarent les MÊMES jetons, et chaque valeur est
+   calculée à partir du preset (`--color-*`), lui-même alimenté par le pont
+   shadcn en clair comme en sombre. La seule différence assumée est l'ANCRE :
+   en clair un reflet se calcule depuis la surface, en sombre depuis l'encre.
+   Les formules se répondent deux à deux ; elles ne divergent plus.
+
+   `--gc-rgb` / `--bg-rgb` / `--glass-rgb` restent des triplets, parce que les
+   règles historiques les lisent dans `rgba(var(--gc-rgb), a)`. Ils ne sont
+   plus écrits à la main : `ThemeManager` les recalcule sur le preset réel
+   (`src/theme/surface-triplets.ts`). Les valeurs ci-dessous ne sont qu'un
+   repli pour le premier paint, avant que le preset ne soit lisible. */
+:root,
+:root[data-theme='light'],
+:root[data-theme='dark'],
+.appearance-preview[data-theme='light'],
+.appearance-preview[data-theme='dark'] {
+  /* Identité : le preset décide, dans les deux modes. */
+  --acc: var(--color-primary);
+  --acc2: var(--color-accent);
+  --tx: var(--color-text-primary);
+  --mut: var(--color-text-secondary);
+  /* Surfaces construites depuis les triplets : elles restent OPALQUES même
+     quand `--color-surface` devient translucide sous une image de thème. */
+  --gc: rgb(var(--gc-rgb));
+  --bg: rgb(var(--bg-rgb));
+
+  /* Encre posée sur une surface PLEINE d'accent. `--color-on-primary` suit
+     `--primary-foreground` du preset : c'est l'encre que son auteur a prévue,
+     donc la seule qui reste juste quand un preset déclare du texte sombre sur
+     un accent clair. Un accent FIXE choisi par l'utilisateur la remplace, car
+     elle ne décrit alors plus l'accent réellement affiché. */
+  --on-accent: var(--color-on-primary);
+
+  /* Densités du verre : réglées par l'utilisateur, identiques dans les modes. */
+  --bl: var(--bg-blur); --gb: var(--glass-blur);
+  --ga: var(--glass-alpha); --veil: var(--veil-alpha);
+
+  /* Replis, mesurés sur le thème de base. Remplacés au premier rendu. */
+  --gc-rgb: 255, 255, 255;
+  --bg-rgb: 251, 249, 249;
+  --glass-rgb: 255, 255, 255;
+  /* Intensité du voile sur une image de thème : même formule, densité propre. */
+  --veil-strength: 1;
+  /* Le logo est un fichier fixe ; sa saturation est un réglage de mode, pas
+     une règle cachée appliquée à un seul des deux modes. */
+  --brand-saturation: 1;
+}
+
+:root, :root[data-theme='light'], .appearance-preview[data-theme='light'] {
+  --bd: color-mix(in srgb, var(--gc) 75%, transparent);
+  --hi: color-mix(in srgb, var(--gc) 90%, transparent);
+  --sh: color-mix(in srgb, var(--tx) 18%, transparent);
+  --v1: color-mix(in srgb, var(--tint) 12%, color-mix(in srgb, var(--gc) 20%, transparent));
+  --v2: color-mix(in srgb, var(--tint) 18%, color-mix(in srgb, var(--gc) 55%, transparent));
+  --acc-text: color-mix(in srgb, var(--acc) 50%, var(--tx));
+  /* Encre posée sur un DÉGRADÉ acc → acc2. Mesuré : sur l'accent de marque
+     (#e6067a), seul un noir presque pur dépasse 4,5:1 — le blanc y plafonne à
+     4,50 et s'effondre à 1,50 sur l'extrémité claire du dégradé. On garde donc
+     une encre sombre, dérivée de l'encre du thème, et on ne prétend pas qu'elle
+     atteint AA sur l'accent : c'est une paire de marque préexistante (4,24:1
+     avant réécriture, 4,05:1 ici). Elle est constante sur le dégradé entier,
+     ce qui est le point qui compte pour un texte posé sur un fond mouvant. */
+  --premium-on: color-mix(in srgb, var(--acc) 4%, var(--tx));
+}
+
 :root[data-theme='dark'], .appearance-preview[data-theme='dark'] {
-  --gc: #171717; --gc-rgb: 23,23,23;
-  --tx: #f3f3f3; --mut: #c3c3c3;
-  /* Accent de l'image atténué avec le neutre existant, uniquement en sombre. */
-  --acc: var(--color-primary); --acc2: var(--color-accent);
-  --acc: color-mix(in srgb, var(--color-primary) 45%, var(--mut));
-  --acc2: color-mix(in srgb, var(--color-accent) 45%, var(--mut));
-  --bd: rgba(255,255,255,.14); --hi: rgba(255,255,255,.20); --sh: rgba(0,0,0,.35);
-  --v1: rgba(18,18,18,.30); --v2: rgba(8,8,8,.72);
+  /* Replis sombres : surface de carte (#1e1e1e), fond (#121212). */
+  --gc-rgb: 30, 30, 30;
+  --bg-rgb: 18, 18, 18;
+  --glass-rgb: 18, 18, 18;
+  --veil-strength: 1.1;
+  --brand-saturation: .55;
+  --bd: color-mix(in srgb, var(--tx) 14%, transparent);
+  --hi: color-mix(in srgb, var(--tx) 20%, transparent);
+  --sh: color-mix(in srgb, var(--bg) 35%, transparent);
   --v1: color-mix(in srgb, var(--tint) 30%, transparent);
-  --v2: color-mix(in srgb, var(--tint) 50%, rgba(8,8,8,.78));
-  --acc-text: var(--tx); --acc-text: color-mix(in srgb, var(--acc) 70%, #fff);
+  --v2: color-mix(in srgb, var(--tint) 50%, color-mix(in srgb, var(--bg) 78%, transparent));
+  --acc-text: color-mix(in srgb, var(--acc) 70%, var(--tx));
+  /* Encre posée sur l'accent : on part du FOND sombre, pas d'un blanc qui
+     rendrait le texte illisible sur un dégradé clair. */
+  --premium-on: color-mix(in srgb, var(--acc) 4%, var(--bg));
 }
 html[data-bg='image']::before { filter: var(--bg-filter, none); }
 /* Le voile protège le BAS de l'écran (là où vivent les cartes) et laisse le
    HAUT respirer : c'est ce dégradé qui distingue une image « posée » d'une
    image « effacée ». Les anciennes valeurs (0,85 → 0,90 d'opacité, multipliées
    par un voile utilisateur à 100 %) cachaient l'image entière. */
+/* Le voile est peint avec la SURFACE du preset, à une densité qui dépend du
+   mode (`--veil-strength`) — et non avec des rgba figés, qui rendaient un
+   voile clair sur un thème sombre et l'inverse. Une formule, deux densités. */
 html[data-bg='image']::after {
   background: linear-gradient(
     to bottom,
-    rgba(255,236,244,0) 0%,
-    color-mix(in srgb, var(--tint) 6%, rgba(255,236,244,.30)) 55%,
-    color-mix(in srgb, var(--tint) 8%, rgba(255,236,244,.62)) 100%
+    transparent 0%,
+    color-mix(in srgb, var(--tint) 6%, color-mix(in srgb, var(--gc) calc(30% * var(--veil-strength)), transparent)) 55%,
+    color-mix(in srgb, var(--tint) 8%, color-mix(in srgb, var(--gc) calc(62% * var(--veil-strength)), transparent)) 100%
   );
   opacity: var(--veil);
-}
-html[data-bg='image'][data-theme='dark']::after {
-  background: linear-gradient(
-    to bottom,
-    rgba(8,8,8,0) 0%,
-    color-mix(in srgb, var(--tint) 18%, rgba(8,8,8,.38)) 55%,
-    color-mix(in srgb, var(--tint) 22%, rgba(8,8,8,.66)) 100%
-  );
 }
 /* Le gris « discret » suit le preset, comme le texte secondaire.
    `tweakcn-presets.css` ne ponte que `--color-text-secondary` ; les écrans
@@ -1310,10 +1416,104 @@ html[data-bg='image']:is([data-transparency='reduced'],[data-contrast='high']) .
   backdrop-filter: none;
 }
 
-/* Icônes neutres au repos ; état actif et actions principales en accent. */
-.solar.solar-accent { color: var(--mut); }
-[aria-current='page'] .solar.solar-accent, .home-primary .solar.solar-accent { color: var(--acc); }
-.action-card:hover .solar.solar-accent, .action-card:focus-visible .solar.solar-accent { color: var(--acc); }
+/* ── Boutons duotone : A pour l'icône, B pour le contenant, C pour l'onglet ──
+   Décision arbitrée, voir `docs/design/duotone-boutons.md`.
+
+   Pourquoi ce bloc est le SEUL à décider de la couleur d'une icône de
+   navigation. Deux défauts se corrigeaient ici :
+
+   1. Les icônes Solar duotone ont deux calques ; le second lit
+      `--solar-secondary-color`, dont le défaut est `currentColor`. Comme
+      `DuoIcon` ne renseignait jamais cette variable, les deux calques
+      prenaient la même teinte : ce n'était pas un duotone mais un monochrome
+      à deux densités, où le calque secondaire salit le trait au lieu de le
+      creuser. Une règle CSS suffit à corriger les 549 utilisations.
+   2. Deux blocs se contredisaient : celui-ci disait gris au repos puis accent
+      au survol, l'autre (plus haut) affirmait « l'accent dès le repos, jamais
+      seulement au survol ». Le second gagnait par ordre de cascade, et le
+      premier restait comme une intention morte. Les composants ne peignent
+      donc plus leurs couleurs en utilitaires Tailwind : une seule source.
+
+   A — l'icône. Encre franche + masse d'accent à 24 % : la couleur est là dès
+   le repos, donc elle ne « prend » plus le contrôle au survol. */
+.solar.solar-accent {
+  --solar-secondary-color: var(--acc);
+  --solar-secondary-opacity: 0.24;
+  color: color-mix(in srgb, var(--tx) 82%, var(--mut));
+}
+/* L'encre reste plus sombre que `--mut` : aucune régression de contraste sur
+   les icônes purement décoratives (barre d'état, en-têtes, dialogue). */
+
+/* B — le contenant. Le survol ne change pas la teinte de l'icône : il pose
+   une pastille. C'est ce qui distingue « survoler » de « activer ». */
+.nav-item {
+  color: color-mix(in srgb, var(--tx) 82%, var(--mut));
+  background-color: transparent;
+  transition: background-color 180ms ease, color 180ms ease, box-shadow 180ms ease;
+}
+.nav-item:hover,
+.nav-item:focus-visible {
+  background-color: color-mix(in srgb, var(--acc) 7%, transparent);
+}
+.nav-item:hover .solar.solar-accent,
+.nav-item:focus-visible .solar.solar-accent {
+  --solar-secondary-opacity: 0.30;
+}
+/* L'actif cumule encre, pastille et filet : trois signaux, dont deux qui ne
+   dépendent pas de la teinte. Lisible en niveaux de gris, et pour un
+   daltonien — un état ne doit jamais reposer sur la seule couleur. */
+.nav-item[aria-current='page'] {
+  color: var(--acc-text);
+  background-color: color-mix(in srgb, var(--acc) 13%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--acc) 34%, transparent);
+}
+.nav-item[aria-current='page'] .solar.solar-accent {
+  --solar-secondary-opacity: 0.36;
+}
+
+/* C — l'onglet mobile actif. Ici la teinte seule est un signal trop faible
+   sur quatre icônes de 23 px : le duotone devient donc la récompense de
+   l'état — creux au repos (10 %), plein à l'actif (48 %). La densité se lit
+   même sans percevoir la couleur. */
+.tab-item {
+  color: var(--mut);
+  transition: color 180ms ease;
+}
+.tab-item .solar.solar-accent { --solar-secondary-opacity: 0.10; }
+.tab-pill {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 32px;
+  border-radius: 999px;
+  background-color: transparent;
+  transition: background-color 180ms ease;
+}
+.tab-item:hover,
+.tab-item:focus-visible { color: color-mix(in srgb, var(--tx) 80%, var(--mut)); }
+.tab-item:hover .tab-pill,
+.tab-item:focus-visible .tab-pill { background-color: color-mix(in srgb, var(--acc) 5%, transparent); }
+.tab-item:hover .solar.solar-accent,
+.tab-item:focus-visible .solar.solar-accent { --solar-secondary-opacity: 0.20; }
+.tab-item[aria-current='page'] { color: var(--acc-text); }
+.tab-item[aria-current='page'] .tab-pill { background-color: color-mix(in srgb, var(--acc) 12%, transparent); }
+.tab-item[aria-current='page'] .solar.solar-accent { --solar-secondary-opacity: 0.48; }
+.tab-item .tab-label { transition: color 180ms ease; }
+.tab-item[aria-current='page'] .tab-label { color: var(--acc-text); }
+
+/* Actions principales et cartes d'action : ce sont des actions, pas de la
+   navigation — elles conservent l'accent, mais avec le même duotone coloré. */
+.home-primary .solar.solar-accent {
+  color: var(--premium-on);
+  --solar-secondary-color: currentColor;
+  --solar-secondary-opacity: 0.4;
+}
+.action-card .solar.solar-accent { --solar-secondary-opacity: 0.2; }
+.action-card:hover .solar.solar-accent,
+.action-card:focus-visible .solar.solar-accent {
+  color: var(--acc-text);
+  --solar-secondary-opacity: 0.34;
+}
 
 .home-premium { font-family: var(--font-sans, Inter), sans-serif; color: var(--tx); padding: 24px 16px 144px; }
 .home-content { max-width: 1180px; margin: auto; display: grid; gap: 24px; }
@@ -1554,12 +1754,15 @@ html[data-bg='image']:is([data-transparency='reduced'],[data-contrast='high']) .
   aspect-ratio: 3 / 2;
   overflow: hidden;
   border-radius: 14px;
-  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .08), 0 1px 2px rgba(0, 0, 0, .06);
+  /* L'anneau était noir : invisible sur un fond sombre, donc la vignette
+     perdait son contour exactement dans le mode qui en avait besoin. Il suit
+     désormais l'encre du thème, clair comme sombre. */
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--tx) 8%, transparent), 0 1px 2px color-mix(in srgb, var(--tx) 6%, transparent);
   transition: transform 160ms ease, box-shadow 160ms ease;
 }
-.appearance-image-option:hover .appearance-thumbnail { transform: translateY(-1px); box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .10), 0 4px 10px rgba(0, 0, 0, .12); }
+.appearance-image-option:hover .appearance-thumbnail { transform: translateY(-1px); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--tx) 10%, transparent), 0 4px 10px color-mix(in srgb, var(--tx) 12%, transparent); }
 .appearance-image-option :is(picture, img) { object-position: center 38%; }
-.appearance-image-option[aria-pressed='true'] .appearance-thumbnail { box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .10), 0 6px 16px color-mix(in srgb, var(--acc) 22%, transparent); }
+.appearance-image-option[aria-pressed='true'] .appearance-thumbnail { box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--tx) 10%, transparent), 0 6px 16px color-mix(in srgb, var(--acc) 22%, transparent); }
 .appearance-image-option picture,.appearance-image-option img { display: block; width: 100%; height: 100%; object-fit: cover; }
 .appearance-image-option .appearance-thumbnail-check { position: absolute; inset: 8px 8px auto auto; }
 .appearance-image-title { display: block; margin-top: 6px; font-size: 14px; line-height: 1.3; }
@@ -1583,45 +1786,65 @@ html[data-bg='image']:is([data-transparency='reduced'],[data-contrast='high']) .
 .appearance-image-option:disabled { cursor: not-allowed; }
 
 /* Même voile dans l'aperçu qui réutilise les composants Accueil. */
-.appearance-preview[data-theme='light'] .appearance-preview-window::before {
-  background: linear-gradient(to bottom, rgba(255,236,244,.85), rgba(255,226,238,.90));
-  background: linear-gradient(to bottom, color-mix(in srgb,var(--tint) 8%,rgba(255,236,244,.85)), color-mix(in srgb,var(--tint) 8%,rgba(255,226,238,.90)));
-}
-.appearance-preview[data-theme='dark'] .appearance-preview-window::before {
-  background: linear-gradient(to bottom, rgba(18,18,18,.85), rgba(8,8,8,.90));
+.appearance-preview .appearance-preview-window::before {
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--tint) 8%, color-mix(in srgb, var(--gc) 85%, transparent)),
+    color-mix(in srgb, var(--tint) 8%, color-mix(in srgb, var(--gc) 90%, transparent))
+  );
 }
 
-/* Le mode sombre reste discret, sans recolorer l'image d'origine. */
-html[data-theme='dark'] .mobile-header .text-primary,
-html[data-theme='dark'] .mobile-tabs [aria-current='page'] .text-primary { color: var(--acc-text); }
-html[data-theme='dark'] .mobile-tabs [aria-current='page'] > .bg-primary { background-color: var(--acc); }
-html[data-theme='dark'] .brand-tile img { filter: saturate(.55); }
-html[data-theme='dark'] .desktop-rail .rail-label.text-primary { color: var(--acc-text); }
-html[data-theme='dark'] .desktop-rail button.bg-primary { background: var(--acc); color: var(--premium-on); }
-html[data-theme='dark'] .desktop-rail button.bg-primary .solar { color: var(--premium-on); }
-/* Bouton Ionic existant : aspect cohérent avec la coque sombre. */
-html[data-theme='dark'] .app-main ion-fab-button::part(native) { width: 48px; height: 48px; border: 1px solid var(--bd); border-radius: 50%; background: var(--gc); color: var(--mut); box-shadow: 0 10px 34px var(--sh); }
+/* ── Encre d'accent : une règle, deux modes ────────────────────────────────
+   Ces six règles étaient écrites deux fois, une fois neutre et une fois
+   préfixée `html[data-theme='dark']`, parce que `text-primary` (le magenta
+   vif) ne tenait pas sur le fond sombre. Le correctif vivait donc dans le
+   mode qui souffrait, et tout composant ajouté ensuite en héritait le défaut.
+   Elles s'appuient maintenant sur `--acc-text`, calculé PAR MODE à partir de
+   l'accent : le clair obtient un accent assombri, le sombre un accent
+   éclairci, avec la même règle. */
+.mobile-header .text-primary,
+.mobile-tabs [aria-current='page'] .text-primary,
+.desktop-rail .rail-label.text-primary { color: var(--acc-text); }
+
+.mobile-tabs [aria-current='page'] > .bg-primary,
+.desktop-rail button.bg-primary,
+.settings-premium .settings-toggle[aria-pressed='true'] {
+  background-color: var(--acc);
+  color: var(--on-accent);
+}
+.desktop-rail button.bg-primary .solar { color: var(--on-accent); }
+
+/* Le logo est un fichier unique : sa désaturation était une règle sombre
+   posée à côté, invisible depuis le clair. C'est désormais un jeton de mode. */
+.brand-tile img { filter: saturate(var(--brand-saturation)); }
+
+/* Bouton Ionic : même matériau que le reste, dans les deux modes. */
+.app-main ion-fab-button::part(native) {
+  width: 48px; height: 48px;
+  border: 1px solid var(--bd);
+  border-radius: 50%;
+  background: var(--gc);
+  color: var(--mut);
+  box-shadow: 0 10px 34px var(--sh);
+}
 html[data-theme='dark'] .app-main ion-fab-button::part(close-icon) { display: none; }
-html[data-theme='dark'] .settings-premium .settings-toggle[aria-pressed='true'] { background: var(--acc); }
 
-/* Accent fixe optionnel : issu du catalogue existant, limité aux rôles d'accent. */
-:root[data-fixed-accent], :root[data-fixed-accent] .appearance-preview[data-theme='light'] {
-  --acc: var(--fixed-accent); --acc2: var(--fixed-accent);
-  --acc: color-mix(in srgb, var(--fixed-accent) 75%, #fff);
-  --acc2: color-mix(in srgb, var(--fixed-accent) 75%, #fff);
+/* Accent fixe optionnel : issu du catalogue existant, limité aux rôles d'accent.
+   Il suivait lui aussi deux règles différentes — 75 % vers le blanc en clair,
+   45 % vers le gris `--mut` en sombre — si bien qu'un même accent choisi par
+   l'utilisateur n'avait ni la même teinte ni la même vivacité selon le mode.
+   Une seule formule, ancrée sur la SURFACE : le mode se contente de fournir
+   l'ancre, il n'applique plus de transformation qui lui soit propre. */
+:root[data-fixed-accent],
+:root[data-fixed-accent] .appearance-preview {
+  --acc: color-mix(in srgb, var(--fixed-accent) 75%, var(--gc));
+  --acc2: color-mix(in srgb, var(--fixed-accent) 75%, var(--gc));
+  /* Un accent imposé n'est plus celui du preset : l'encre déclarée par le
+     preset ne décrit donc plus la surface, on reprend celle des dégradés
+     (sombre, constante). C'était déjà le comportement des boutons en mode
+     accent fixe — il est simplement nommé au lieu d'être répété quatre fois. */
+  --on-accent: var(--premium-on);
 }
-:root[data-theme='dark'][data-fixed-accent], :root[data-fixed-accent] .appearance-preview[data-theme='dark'] {
-  --acc: var(--fixed-accent); --acc2: var(--fixed-accent);
-  --acc: color-mix(in srgb, var(--fixed-accent) 45%, var(--mut));
-  --acc2: color-mix(in srgb, var(--fixed-accent) 45%, var(--mut));
-}
-html[data-fixed-accent] .mobile-header .text-primary,
-html[data-fixed-accent] .mobile-tabs [aria-current='page'] .text-primary,
-html[data-fixed-accent] .desktop-rail .rail-label.text-primary { color: var(--acc-text); }
-html[data-fixed-accent] .mobile-tabs [aria-current='page'] > .bg-primary,
-html[data-fixed-accent] .settings-premium .settings-toggle[aria-pressed='true'] { background-color: var(--acc); }
-html[data-fixed-accent] .desktop-rail button.bg-primary { background: var(--acc); color: var(--premium-on); }
-html[data-fixed-accent] .desktop-rail button.bg-primary .solar { color: var(--premium-on); }
 .appearance-accent-choices { display: grid; gap: 16px; }
 .appearance-accent-auto { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; border: 1px solid var(--bd); border-radius: 16px; background: color-mix(in srgb,var(--tx) 6%,transparent); color: var(--tx); font-size: 14px; font-weight: 600; }
 .appearance-accent-auto[aria-pressed='true'] { outline: 2px solid var(--acc); outline-offset: -2px; }
@@ -1895,6 +2118,9 @@ html[data-app-bg='gradient'] {
   html[data-app-bg='gradient'] .desktop-rail button.bg-primary { background: var(--gradient-action); color: var(--tx); }
   html[data-app-bg='gradient'] .desktop-rail button.bg-primary .solar { color: var(--tx); }
   html[data-app-bg='gradient'] .mobile-tabs [aria-current='page'] > .bg-primary { background: var(--gradient-action); }
+  /* La pastille choisie est un contrôle actif de la barre de verset : elle
+     suit elle aussi le dégradé, comme les boutons actifs d'Apparence. */
+  html[data-app-bg='gradient'] .verse-action-btn.is-primary { background: var(--gradient-action); color: var(--tx); }
 }
 /* Les libellés restent lisibles même si le premier arrêt est très clair ou
    très sombre ; leur teinte vient néanmoins du dégradé sélectionné. */
@@ -1905,8 +2131,7 @@ html[data-app-bg='gradient'] .text-primary { color: var(--acc-text); }
   html[data-app-bg='gradient'] .appearance-segment-button[aria-pressed='true'],
   html[data-app-bg='gradient'] .appearance-tabs button[aria-pressed='true'],
   html[data-app-bg='gradient'] .appearance-apply,
-  html[data-app-bg='gradient'] .appearance-example-button,
-  html[data-app-bg='gradient'] .verse-flow-number.is-selected { background: var(--gradient-action); color: var(--tx); }
+  html[data-app-bg='gradient'] .appearance-example-button { background: var(--gradient-action); color: var(--tx); }
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
@@ -2439,45 +2664,283 @@ ion-tab-button::part(native):focus-visible {
 /* Lecture : un canevas opaque sous le texte long, adapté aux jetons actifs. */
 .reading-screen { padding: clamp(16px, 3vw, 32px); padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px)); }
 .reading-header { background: var(--color-surface); color: var(--color-text-primary); }
-.reading-card { padding: clamp(24px, 5vw, 48px); border-radius: 28px; background: var(--color-surface); color: var(--color-text-primary); border: 1px solid var(--color-border); box-shadow: 0 12px 36px var(--sh); }
-.reading-card-heading { padding-bottom: 20px; border-bottom: 1px solid var(--color-border); }
-.reading-meta { display: flex; justify-content: space-between; align-items: center; gap: 12px; color: var(--color-text-secondary); font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
-.reading-translation { padding: 5px 10px; border-radius: 999px; background: color-mix(in srgb,var(--color-text-primary) 8%,transparent); letter-spacing: .04em; }
+.reading-card {
+  padding: clamp(22px, 4.4vw, 44px);
+  border-radius: 24px;
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border);
+  box-shadow: 0 10px 30px color-mix(in srgb, var(--sh) 70%, transparent);
+}
+.reading-card-heading { padding-bottom: 18px; border-bottom: 1px solid var(--color-border); display: grid; gap: 2px; }
+/* Métadonnées de chapitre : petites capitales espacées, une seule ligne.
+   Avant, « Genèse · Chapitre 1 » vivait dans un paragraphe de 13 px, au même
+   poids visuel que le compteur de versets qui le suivait. */
+.reading-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  color: var(--mut);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+}
+.reading-translation {
+  flex: none;
+  padding: 2px 8px;
+  border: 1px solid var(--bd);
+  border-radius: 999px;
+  letter-spacing: .04em;
+  font-size: 10px;
+}
 .reading-card-heading h2 { margin: 16px 0 4px; font: 400 clamp(30px, 5vw, 42px)/1.15 var(--reading-font-family, Georgia), serif; color: inherit; }
 .reading-card-heading p { color: var(--color-text-secondary); font-size: 13px; }
-.reading-card .verse-flow { color: inherit; text-align: start; overflow-wrap: anywhere; }
-.reading-card .manuscript-verse { cursor: pointer; }
-.reading-card .manuscript-verse:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
-.reading-card .verse-flow-number { color: var(--color-text-secondary); }
-.reading-card .verse-flow-number.is-selected { background: var(--color-text-primary); color: var(--color-surface); }
-.reading-actions { border: 1px solid var(--color-border); border-radius: 20px; background: var(--color-surface); color: var(--color-text-primary); box-shadow: 0 12px 36px var(--sh); }
-.reading-actions-row { display: flex; align-items: center; gap: 4px; overflow-x: auto; padding: 8px; }
-.reading-actions-row > button, .reading-actions-reference { flex: 0 0 auto; }
-.reading-actions-reference { padding: 0 8px; color: var(--color-text-secondary); font-size: 12px; font-weight: 700; white-space: nowrap; }
+.reading-card .verse-flow { color: inherit; text-align: start; overflow-wrap: break-word; }
+/* ── Palette de surlignage ─────────────────────────────────────────────────
+   Cinq teintes, dont la première EST l'accent actif : c'est celle qui
+   s'applique par défaut, donc celle qui suit le preset et le mode. Les quatre
+   autres sont des teintes de repérage, volontairement distinctes de l'accent
+   pour qu'on ne les confonde pas avec lui.
+
+   Elles sont déclarées une seule fois, ici. La pastille et le lavis lisent la
+   même variable `--hl`, donc la couleur qu'on voit dans la barre est
+   exactement celle qui se pose sur le texte. Une seule source. */
+:root {
+  --hl-gold: #c88a00;
+  --hl-leaf: #1f9e63;
+  --hl-sky: #2f7fdb;
+  --hl-violet: #8b5cf6;
+  --hl-alpha: 34%;
+}
+/* En sombre, les teintes de repérage sont éclaircies : mélangées à
+   `transparent`, elles passeraient sous le texte sur un fond noir. */
+:root[data-theme='dark'] {
+  --hl-gold: #e0aa2e;
+  --hl-leaf: #3fbf7f;
+  --hl-sky: #5b9bf0;
+  --hl-violet: #a78bfa;
+  --hl-alpha: 42%;
+}
+
+[data-hl='accent'] { --hl: var(--acc); }
+[data-hl='gold'] { --hl: var(--hl-gold); }
+[data-hl='leaf'] { --hl: var(--hl-leaf); }
+[data-hl='sky'] { --hl: var(--hl-sky); }
+[data-hl='violet'] { --hl: var(--hl-violet); }
+
+.hl-swatch {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid color-mix(in srgb, var(--hl) 55%, var(--bd));
+  background: color-mix(in srgb, var(--hl) var(--hl-alpha), transparent);
+  color: var(--tx);
+  transition: transform 140ms ease, box-shadow 140ms ease;
+}
+.hl-swatch:active { transform: scale(0.92); }
+.hl-swatch.is-applied {
+  background: var(--hl);
+  color: var(--gc);
+  box-shadow: 0 0 0 2px var(--gc), 0 0 0 3px var(--hl);
+}
+
+/* ── Barre d'actions du verset ─────────────────────────────────────────────
+   Deux rangées plutôt qu'une : un en-tête (référence + sortie) puis les
+   actions. Sur une seule ligne, la référence et sept boutons se disputaient
+   la largeur d'un téléphone, et la barre débordait en défilement horizontal.
+   Ici les boutons se partagent la rangée à parts égales (`flex: 1 1 0`), donc
+   la barre ne peut pas dépasser, quelle que soit la largeur. */
+.verse-bar {
+  position: sticky;
+  bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+  z-index: 30;
+  margin: 18px auto 0;
+  width: 100%;
+  max-width: 560px;
+  padding: 6px 8px 8px;
+  border: 1px solid var(--bd);
+  border-radius: 18px;
+  background: var(--gc);
+  color: var(--tx);
+  box-shadow: 0 14px 38px var(--sh);
+}
+.verse-bar-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 2px 4px;
+  min-width: 0;
+}
+.verse-bar-reference {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--mut);
+}
+.verse-bar-reference-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+.verse-bar-count {
+  flex: none;
+  font-weight: 600;
+  color: var(--acc-text);
+  font-variant-numeric: tabular-nums;
+}
+.verse-bar-row { display: flex; align-items: center; gap: 2px; }
+.verse-action-btn {
+  flex: 1 1 0;
+  min-width: 0;
+  display: grid;
+  place-items: center;
+  height: 38px;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  color: var(--tx);
+  transition: background-color 150ms ease, color 150ms ease;
+}
+.verse-action-btn:focus-visible { outline: 2px solid var(--acc); outline-offset: -2px; }
+.verse-action-btn:active { background: color-mix(in srgb, var(--tx) 8%, transparent); }
+.verse-action-btn.is-active {
+  background: color-mix(in srgb, var(--acc) 13%, transparent);
+  color: var(--acc-text);
+}
+/* L'action principale de la barre : mémoriser. Un seul bouton plein, sinon
+   trois boutons colorés se neutralisent. */
+.verse-action-btn.is-primary { background: var(--acc); color: var(--on-accent); }
+.verse-action-btn.is-muted { color: var(--mut); }
+.verse-bar-head .verse-action-btn {
+  flex: 0 0 auto;
+  width: 30px;
+  height: 30px;
+}
+
+.verse-bar-palette {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 6px;
+  padding: 8px 2px 2px;
+  border-top: 1px solid var(--bd);
+}
+.verse-bar-palette-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--mut);
+}
+.verse-bar-swatches { display: flex; gap: 8px; margin-inline-start: auto; }
+.verse-bar-clear {
+  border: 0;
+  background: transparent;
+  color: var(--mut);
+  font-size: 11.5px;
+  font-weight: 700;
+  padding: 4px 2px;
+}
+.verse-bar-clear:hover { color: var(--tx); }
+
+.verse-bar-field {
+  margin-top: 6px;
+  padding: 8px 2px 2px;
+  border-top: 1px solid var(--bd);
+}
+.verse-bar-field-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+.verse-bar-field-title {
+  margin: 0 0 6px;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--mut);
+}
+.verse-bar-field-head .verse-bar-field-title { margin: 0; }
+.verse-bar-saved {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--color-success);
+}
+.verse-bar-input,
+.verse-bar-textarea {
+  width: 100%;
+  border: 1px solid var(--bd);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--tx) 5%, transparent);
+  color: var(--tx);
+  font-size: 13px;
+  padding: 9px 11px;
+  outline: none;
+}
+.verse-bar-textarea { resize: none; }
+.verse-bar-input:focus,
+.verse-bar-textarea:focus { border-color: var(--acc); }
+.verse-bar-field-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+  margin-top: 8px;
+}
+.verse-bar-ghost,
+.verse-bar-primary {
+  border: 0;
+  border-radius: 999px;
+  padding: 7px 14px;
+  font-size: 12px;
+  font-weight: 700;
+}
+.verse-bar-ghost { background: transparent; color: var(--mut); }
+.verse-bar-primary { background: var(--acc); color: var(--on-accent); }
+.verse-bar-primary:disabled { opacity: 0.5; }
+html:is([data-bg='image'],[data-app-bg='gradient']) .reading-header .full-screen-back { color: var(--tx); }
+/* La barre d'actions se peint avec `--gc`, la surface opaque du preset : sur
+   une image ou un dégradé elle reste lisible sans règle dédiée. */
+html:is([data-bg='image'],[data-app-bg='gradient']) .verse-bar { background: var(--gc); color: var(--tx); }
+html:is([data-bg='image'],[data-app-bg='gradient']) .verse-bar :is(.verse-bar-reference,.verse-bar-palette-label,.verse-bar-field-title,.verse-action-btn.is-muted) { color: var(--mut); }
+/* Les raccourcis du lecteur utilisent les jetons du fond effectivement
+   affiché, y compris pour les presets sombres activés en mode clair. */
+.reading-header .full-screen-back { color: var(--color-text-primary); background: color-mix(in srgb,var(--color-text-primary) 8%,transparent); }
 html[data-bg='image'] .reading-card { background: var(--gc); color: var(--tx); backdrop-filter: none; -webkit-backdrop-filter: none; }
-html[data-bg='image'] .reading-card :is(.reading-meta,.reading-card-heading p,.verse-flow-number) { color: var(--mut); }
+html[data-bg='image'] .reading-card :is(.reading-meta,.reading-card-heading p) { color: var(--mut); }
 html[data-app-bg='gradient'] .reading-card { background-color: var(--gc); background-image: linear-gradient(color-mix(in srgb,var(--gc) var(--gradient-wash),transparent),color-mix(in srgb,var(--gc) var(--gradient-wash),transparent)),var(--app-bg-image); color: var(--tx); backdrop-filter: none; -webkit-backdrop-filter: none; }
-html[data-app-bg='gradient'] .reading-card :is(.reading-meta,.reading-card-heading p,.verse-flow-number) { color: var(--mut); }
+html[data-app-bg='gradient'] .reading-card :is(.reading-meta,.reading-card-heading p) { color: var(--mut); }
 @media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
   html[data-app-bg='gradient'] .reading-card { background: var(--gc); }
 }
 html[data-app-bg='gradient']:is([data-transparency='reduced'],[data-contrast='high']) .reading-card { background: var(--gc); }
-html:is([data-bg='image'],[data-app-bg='gradient']) .reading-card .verse-flow-number.is-selected { background: var(--tx); color: var(--gc); }
-html:is([data-bg='image'],[data-app-bg='gradient']) :is(.reading-header,.reading-actions) { background-color: var(--gc); color: var(--tx); }
-html:is([data-bg='image'],[data-app-bg='gradient']) :is(.reading-actions-reference,.reading-actions .text-text-secondary,.reading-actions .text-text-muted,.reading-header .full-screen-title p) { color: var(--mut); }
-html[data-app-bg='gradient'] :is(.reading-header,.reading-actions) { background-image: linear-gradient(color-mix(in srgb,var(--gc) var(--gradient-wash),transparent),color-mix(in srgb,var(--gc) var(--gradient-wash),transparent)),var(--app-bg-image); }
-@media (prefers-reduced-transparency: reduce), (prefers-contrast: more) { html[data-app-bg='gradient'] :is(.reading-header,.reading-actions) { background-image: none; } }
-html[data-app-bg='gradient']:is([data-transparency='reduced'],[data-contrast='high']) :is(.reading-header,.reading-actions) { background-image: none; }
-/* Les raccourcis du lecteur utilisent les jetons du fond effectivement
-   affiché, y compris pour les presets sombres activés en mode clair. */
-.reading-header .full-screen-back { color: var(--color-text-primary); background: color-mix(in srgb,var(--color-text-primary) 8%,transparent); }
-.reading-actions .reading-actions-row button { color: var(--color-text-primary); }
-html:is([data-bg='image'],[data-app-bg='gradient']) .reading-header .full-screen-back,
-html:is([data-bg='image'],[data-app-bg='gradient']) .reading-actions .reading-actions-row button { color: var(--tx); }
+html:is([data-bg='image'],[data-app-bg='gradient']) .reading-header { background-color: var(--gc); }
+html:is([data-bg='image'],[data-app-bg='gradient']) .reading-header .full-screen-title p { color: var(--mut); }
+html[data-app-bg='gradient'] .reading-header { background-image: linear-gradient(color-mix(in srgb,var(--gc) var(--gradient-wash),transparent),color-mix(in srgb,var(--gc) var(--gradient-wash),transparent)),var(--app-bg-image); }
+@media (prefers-reduced-transparency: reduce), (prefers-contrast: more) { html[data-app-bg='gradient'] .reading-header { background-image: none; } }
+html[data-app-bg='gradient']:is([data-transparency='reduced'],[data-contrast='high']) .reading-header { background-image: none; }
+
 /* Un seul manuscrit pour les chapitres successifs, sans cartes intercalées. */
 .continuous-reader { overflow-anchor: none; }
 .continuous-manuscript { padding-top: clamp(20px,4vw,36px); }
-.reading-chapter + .reading-chapter { margin-top: 42px; }
+.reading-chapter + .reading-chapter { margin-top: 34px; }
+/* Le grand numéral suffit à marquer une nouvelle prise de parole : un filet
+   de plus par chapitre finissait par dessiner une grille de traits dans une
+   lecture continue de six chapitres. */
+.reading-chapter-heading[data-continuation='true'] { border-bottom: 0; padding-bottom: 4px; }
+.reading-chapter-heading[data-continuation='true'] p { font-size: 11.5px; }
 .reading-chapter-heading { padding-bottom: 14px; border-bottom: 1px solid var(--color-border); }
 .reading-chapter-heading h2 { margin: 14px 0 4px; font: 400 clamp(30px,5vw,42px)/1.15 var(--reading-font-family,Georgia),serif; color: inherit; }
 .reading-chapter-heading p { color: var(--color-text-secondary); font-size: 13px; }
@@ -2487,12 +2950,14 @@ html:is([data-bg='image'],[data-app-bg='gradient']) .reading-chapter-heading p {
 .continuous-more:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
 .continuous-boundary:empty { display: none; }
 /* Lecture biblique : le numéro du chapitre joue le rôle de lettrine. */
-.chapter-dropcap { float: inline-start; font-family: var(--reading-font-family, Georgia), serif; font-size: 5.4em; line-height: .78; margin: .06em .12em 0 0; color: var(--color-text-primary); }
 .reading-card .verse-flow { display: flow-root; }
-.reading-card .verse-flow-number { font-size: .8em; }
 .verse-flow-blocks .manuscript-verse { display: block; margin: 0 0 .8em; }
-.verse-flow-blocks .verse-flow-number { vertical-align: baseline; font-size: .9em; margin-inline: 0 .35em; }
-html:is([data-bg='image'],[data-app-bg='gradient']) .chapter-dropcap { color: var(--tx); }
+/* Disposition « blocs » : une ligne par verset, donc le numéro n'est plus un
+   exposant mais un repère de début de ligne. Il garde la taille du flux
+   (.76em) et perd seulement son décalage vertical — deux tailles différentes
+   pour la même information donnaient l'impression d'une lecture instable
+   quand on passait d'une disposition à l'autre. */
+.verse-flow-blocks .verse-flow-number { vertical-align: baseline; font-size: .76em; margin-inline: 0 .35em; }
 .reading-preferences { display: grid; gap: 16px; margin-bottom: 24px; }
 .reading-preferences fieldset { min-width: 0; }
 .reading-preferences legend { margin-bottom: 8px; color: var(--tx); font-weight: 700; font-size: 14px; }

@@ -13,7 +13,7 @@
  */
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import type { Icon } from '@solar-icons/react/lib/types';
 import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
@@ -235,6 +235,25 @@ export default function DevPanelScreen() {
       <div className="space-y-4 pb-10">
         {/* ---------------- Démo / réel ---------------- */}
         <DemoModePanel compact />
+
+        {/* ---------------- Laboratoire duotone ---------------- */}
+        {/* Le panneau dev est le seul endroit qu'on ouvre « pour régler un
+            détail d'affichage » : c'est donc là que doit se trouver l'entrée
+            vers le laboratoire, plutôt qu'une URL à retenir par cœur. */}
+        {import.meta.env.DEV && (
+          <Link
+            to="/__dev/duotone"
+            className="flex items-center justify-between gap-3 rounded-2xl bg-surface p-4 shadow-sm"
+          >
+            <span>
+              <span className="block text-sm font-bold text-text-primary">Boutons duotone</span>
+              <span className="block text-xs text-text-muted">
+                Cinq règles de couleur côte à côte : repos, survol, actif.
+              </span>
+            </span>
+            <DuoIcon icon={ArrowRight} size={18} />
+          </Link>
+        )}
 
         {/* ---------------- Mode ---------------- */}
         <Card title="Mode de données" icon={Database}>

@@ -283,6 +283,19 @@ export const fr = {
     previousChapter: 'Chapitre précédent',
     nextChapter: 'Chapitre suivant',
 
+    /* Surlignage et sélection multiple */
+    selectionCount: '{count} versets',
+    highlightColor: 'Couleur du surlignage',
+    highlightClear: 'Retirer',
+    highlightRemove: 'retirer',
+    highlightColors: {
+      accent: 'Accent du thème',
+      gold: 'Miel',
+      leaf: 'Feuille',
+      sky: 'Ciel',
+      violet: 'Violette',
+    },
+
     continuousReading: 'Lecture continue',
     previousPassages: 'Passages précédents',
     nextPassages: 'Afficher la suite',

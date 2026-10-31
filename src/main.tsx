@@ -170,6 +170,17 @@ const ResponsivePreview = import.meta.env.DEV
   : null;
 
 /**
+ * Laboratoire des boutons duotone — **développement uniquement**.
+ *
+ * Il sert à trancher une question d'affichage (quelle règle de couleur pour
+ * les icônes) en la voyant, pas en la décrivant. Même garde que le
+ * laboratoire responsive : le module n'entre pas dans le bundle livré.
+ */
+const DuotoneLab = import.meta.env.DEV
+  ? lazy(() => import('../app/__dev/duotone-lab'))
+  : null;
+
+/**
  * Raccourci vers le laboratoire, également **développement uniquement** : sans
  * lui, il fallait connaître l'URL par cœur pour voir les coques d'appareils.
  */
@@ -564,6 +575,10 @@ function App() {
             */}
             {import.meta.env.DEV && ResponsivePreview && (
               <Route path="/__dev/responsive-preview" element={<ResponsivePreview />} />
+            )}
+
+            {import.meta.env.DEV && DuotoneLab && (
+              <Route path="/__dev/duotone" element={<DuotoneLab />} />
             )}
 
             <Route path="/splash" element={<SplashRoute />} />

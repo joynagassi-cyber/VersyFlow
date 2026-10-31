@@ -1,18 +1,29 @@
 /**
- * VerseActionBar — floating contextual bar shown when a verse is selected.
+ * VerseActionBar — barre flottante contextuelle de la lecture biblique.
  *
- * Six actions on the selected verse:
- *   Mémoriser · Copier · Note · Tag · Comparer · Surligner
- *  - "Tag" marks the verse in the personal semantic tree (highlight-store
- *    flag) and routes to `/semantic/verse?verseRef=…` where the concepts
- *    for that verse are browsed/added.
- *  - "Surligner" toggles a translucent light highlight of the verse in the
- *    manuscript text (light + fluid on both #FFFFFF and #121212).
- *  - "Copier" copies the verse text + reference to the clipboard.
- * The bar emits VERSE_SELECTED so other screens can react to the choice.
+ * COMPACITÉ. La version précédente alignait sept boutons de 64 px avec leur
+ * libellé sous l'icône, plus la référence : à 4,4 rem rien que pour le premier
+ * bouton, la rangée débordait et devenait une zone de défilement horizontal
+ * dont on ne voyait jamais la fin. Ici, les actions sont des boutons ICÔNE de
+ * 36 px, la référence est un pilule tronquée à gauche, et la totalité tient
+ * dans la largeur d'un téléphone de 360 px sans défilement. Les libellés
+ * deviennent des `aria-label` et des `title` : l'information n'est pas perdue,
+ * elle n'occupe simplement plus la surface.
+ *
+ * MULTI-SÉLECTION. La barre agit sur `verses: number[]`. Les services qui ne
+ * savent traiter qu'un verset (note, tag, favori, mémorisation) s'appuient sur
+ * le verset de tête et l'annoncent par le compte (« 4 versets ») — agir
+ * silencieusement sur un seul verset en laissant croire à quatre serait pire
+ * que de ne rien faire.
+ *
+ * SURLIGNAGE. Cinq pastilles, dont la première est l'accent actif. Une
+ * pastille applique sa couleur à TOUTE la sélection ; retoucher la pastille
+ * déjà appliquée partout retire le surlignage. C'est le seul modèle qui évite
+ * un mode « couleur courante » invisible, qu'on oublie et qui surligne tout
+ * de travers.
  */
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import i18next from 'i18next';
@@ -26,22 +37,32 @@ import {
   PenLineIcon as PenLine,
   Tag01Icon as Tag,
   ArrowLeftRightIcon as ArrowLeftRight,
+  Cancel01Icon as Close,
 } from '@/components/ui/solar-icons';
 import { BIBLE_BOOKS_LIST as BIBLE_BOOKS } from '@/services/memorization-session-service';
 import { eventBus, DomainEventTypes } from '@/services/events-service';
 import { getVerseNote, saveVerseNote } from '@/services/verse-note-service';
 import { getSemanticService } from '@/services/semantic-query-service';
 import { getMemorizationService } from '@/services/memorization-service-factory';
-import { useHighlightStore, type HighlightState } from '@/store/highlight-store';
+import {
+  useHighlightStore,
+  HIGHLIGHT_COLOR_IDS,
+  DEFAULT_HIGHLIGHT_COLOR,
+  type HighlightColorId,
+  type HighlightState,
+} from '@/store/highlight-store';
 import { cn } from '@/lib/utils';
 import { DEFAULT_TRANSLATION_ID } from '@/domains/bible/registry';
+import { formatSelectionReference } from '@/lib/verse-selection';
 
 interface VerseActionBarProps {
   bookId: string;
   chapter: number;
-  verse: number;
+  verses: number[];
   verseText?: string;
   translationId?: string;
+  /** Ferme la barre et vide la sélection. */
+  onClearSelection?: () => void;
 }
 
 function ActionButton({
@@ -49,22 +70,27 @@ function ActionButton({
   label,
   active,
   onClick,
+  tone = 'default',
 }: {
   icon: typeof BrainCircuit;
   label: string;
   active?: boolean;
   onClick: () => void;
+  tone?: 'default' | 'primary';
 }) {
   return (
     <button
+      type="button"
       onClick={onClick}
+      aria-label={label}
+      title={label}
       className={cn(
-        'flex w-[64px] flex-col items-center gap-1 rounded-xl py-2 text-2xs font-semibold transition active:scale-95',
-        active ? 'bg-primary/10 text-primary' : 'text-text-secondary active:bg-surface-tint',
+        'verse-action-btn',
+        active && 'is-active',
+        tone === 'primary' && 'is-primary',
       )}
     >
-      <DuoIcon icon={Icon} size={19} />
-      <span className="leading-tight">{label}</span>
+      <DuoIcon icon={Icon} size={18} />
     </button>
   );
 }
@@ -72,9 +98,10 @@ function ActionButton({
 export default function VerseActionBar({
   bookId,
   chapter,
-  verse,
+  verses,
   verseText,
   translationId,
+  onClearSelection,
 }: VerseActionBarProps) {
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -83,15 +110,33 @@ export default function VerseActionBar({
   // `name[lang] → fr → en → bookId` fallback chain.
   const lang = i18next.language?.split('-')[0] ?? 'fr';
   const bookName = book?.name?.[lang] ?? book?.name?.fr ?? bookId;
-  const reference = `${bookName} ${chapter}:${verse}`;
+
+  const sortedVerses = useMemo(() => [...verses].sort((a, b) => a - b), [verses]);
+  const verse = sortedVerses[0];
+  const isMulti = sortedVerses.length > 1;
+  const reference = formatSelectionReference(bookName, chapter, sortedVerses);
+  const verseKeys = useMemo(
+    () => sortedVerses.map((n) => `${bookId}:${chapter}:${n}`),
+    [bookId, chapter, sortedVerses],
+  );
   const verseKey = `${bookId}:${chapter}:${verse}`;
   // The active translation falls back to the app default (`lsg`), not a
   // literal duplicated in two places.
   const translation = translationId ?? DEFAULT_TRANSLATION_ID;
 
-  const isHighlighted = useHighlightStore((s: HighlightState) => s.keys.includes(verseKey));
+  const marks = useHighlightStore((s: HighlightState) => s.marks);
+  const markVerses = useHighlightStore((s: HighlightState) => s.mark);
+  const clearMarks = useHighlightStore((s: HighlightState) => s.clear);
   const toggleHighlight = useHighlightStore((s: HighlightState) => s.toggle);
 
+  /** Couleur commune à toute la sélection, ou `null` si elle est hétérogène. */
+  const commonColor = useMemo<HighlightColorId | null>(() => {
+    const colors = verseKeys.map((key) => marks[key]);
+    if (colors.some((c) => c == null)) return null;
+    return colors.every((c) => c === colors[0]) ? colors[0] : null;
+  }, [marks, verseKeys]);
+
+  const [paletteOpen, setPaletteOpen] = useState(false);
   const [noteOpen, setNoteOpen] = useState(false);
   const [noteText, setNoteText] = useState('');
   const [noteSaved, setNoteSaved] = useState(false);
@@ -140,9 +185,19 @@ export default function VerseActionBar({
     setTagOpen(false);
     setTagName('');
     setTagged(false);
-    // The bar re-anchors on verse change; `reference` is derived from the
-    // same inputs, so the deps list is intentionally narrow.
-  }, [bookId, chapter, verse]);
+    // La barre se ré-ancre quand la sélection change ; `reference` dérive des
+    // mêmes entrées, donc la liste de dépendances reste volontairement étroite.
+  }, [bookId, chapter, verse, reference]);
+
+  /**
+   * Applique une couleur. Si la pastille est déjà celle de toute la sélection,
+   * elle la retire : une seconde pression défait un choix, comme ailleurs.
+   */
+  const applyColor = (color: HighlightColorId) => {
+    if (commonColor === color) clearMarks(verseKeys);
+    else markVerses(verseKeys, color);
+    setPaletteOpen(false);
+  };
 
   const copyToClipboard = async () => {
     if (!verseText) return;
@@ -175,7 +230,7 @@ export default function VerseActionBar({
     if (tagName.trim().length === 0) {
       // No name given: just mark the verse and route to its concept page
       // (where the user can browse/attach existing concepts).
-      if (!isHighlighted) toggleHighlight(verseKey);
+      if (marks[verseKey] == null) toggleHighlight(verseKey, DEFAULT_HIGHLIGHT_COLOR);
       navigate(`/semantic/verse?verseRef=${encodeURIComponent(verseKey)}`);
       return;
     }
@@ -201,10 +256,6 @@ export default function VerseActionBar({
     } finally {
       setTagSaving(false);
     }
-  };
-
-  const toggleHighlightAction = () => {
-    toggleHighlight(verseKey);
   };
 
   /**
@@ -276,16 +327,46 @@ export default function VerseActionBar({
     }
   };
 
+  const countLabel = isMulti
+    ? t('bible.selectionCount', {
+        count: sortedVerses.length,
+        defaultValue: '{{count}} versets',
+      })
+    : null;
+
   return (
     <>
-      <div role="region" aria-label={`${t('bible.verse', 'Verset')} ${reference}`} className="reading-actions sticky bottom-3 z-30 mx-auto w-full max-w-full">
-        <div className="reading-actions-row">
-          <span className="reading-actions-reference">
-            {reference}
+      <div
+        role="region"
+        aria-label={`${t('bible.verse', 'Verset')} ${reference}`}
+        className="verse-bar"
+      >
+        {/* En-tête : la référence, le compte, la sortie. Sur sa propre ligne,
+            elle ne dispute plus la largeur aux actions — c'est ce partage
+            qui rendait la barre « trop longue ». */}
+        <div className="verse-bar-head">
+          <span className="verse-bar-reference" title={reference}>
+            <span className="verse-bar-reference-text">{reference}</span>
+            {countLabel && <span className="verse-bar-count">{countLabel}</span>}
           </span>
+          {onClearSelection && (
+            <button
+              type="button"
+              onClick={onClearSelection}
+              aria-label={t('common.close', 'Fermer')}
+              title={t('common.close', 'Fermer')}
+              className="verse-action-btn is-muted"
+            >
+              <DuoIcon icon={Close} size={16} />
+            </button>
+          )}
+        </div>
+
+        <div className="verse-bar-row">
           <ActionButton
             icon={BrainCircuit}
             label={t('settings.verseBar.memorize', 'Mémoriser')}
+            tone="primary"
             onClick={() => {
               const params = new URLSearchParams();
               params.set('reference', reference);
@@ -303,13 +384,28 @@ export default function VerseActionBar({
             icon={PenLine}
             label={t('settings.verseBar.note', 'Note')}
             active={noteOpen || noteSaved}
-            onClick={() => void openNote()}
+            onClick={() => {
+              setPaletteOpen(false);
+              void openNote();
+            }}
           />
           <ActionButton
             icon={Tag}
             label={t('settings.verseBar.tag', 'Taguer')}
             active={tagged || tagOpen}
-            onClick={() => setTagOpen((o) => !o)}
+            onClick={() => {
+              setPaletteOpen(false);
+              setTagOpen((o) => !o);
+            }}
+          />
+          <ActionButton
+            icon={Highlighter}
+            label={t('settings.verseBar.highlight', 'Surligner')}
+            active={paletteOpen || commonColor != null}
+            onClick={() => {
+              setTagOpen(false);
+              setPaletteOpen((o) => !o);
+            }}
           />
           <ActionButton
             icon={ArrowLeftRight}
@@ -326,17 +422,52 @@ export default function VerseActionBar({
             active={isFavorite}
             onClick={() => void toggleFavoriteAction()}
           />
-          <ActionButton
-            icon={Highlighter}
-            label={t('settings.verseBar.highlight', 'Surligner')}
-            active={isHighlighted}
-            onClick={toggleHighlightAction}
-          />
         </div>
 
+        {/* Palette de surlignage : cinq pastilles, l'accent en tête. */}
+        {paletteOpen && (
+          <div className="verse-bar-palette" role="group" aria-label={t('bible.highlightColor', 'Couleur du surlignage')}>
+            <span className="verse-bar-palette-label">
+              {t('bible.highlightColor', 'Couleur du surlignage')}
+            </span>
+            <div className="verse-bar-swatches">
+              {HIGHLIGHT_COLOR_IDS.map((color) => {
+                const applied = commonColor === color;
+                const name = t(`bible.highlightColors.${color}`, color);
+                return (
+                  <button
+                    key={color}
+                    type="button"
+                    onClick={() => applyColor(color)}
+                    aria-label={applied ? `${name} — ${t('bible.highlightRemove', 'retirer')}` : name}
+                    aria-pressed={applied}
+                    title={name}
+                    className={cn('hl-swatch', `hl-${color}`, applied && 'is-applied')}
+                    data-hl={color}
+                  >
+                    {applied && <DuoIcon icon={Check} size={12} />}
+                  </button>
+                );
+              })}
+            </div>
+            {commonColor != null && (
+              <button
+                type="button"
+                className="verse-bar-clear"
+                onClick={() => {
+                  clearMarks(verseKeys);
+                  setPaletteOpen(false);
+                }}
+              >
+                {t('bible.highlightClear', 'Retirer')}
+              </button>
+            )}
+          </div>
+        )}
+
         {tagOpen && (
-          <div className="border-t border-[color:var(--color-divider)] p-3">
-            <p className="mb-2 text-xs font-bold text-text-muted">
+          <div className="verse-bar-field">
+            <p className="verse-bar-field-title">
               {t('settings.verseBar.tagTo', 'Taguer ce verset avec le concept')}
             </p>
             <input
@@ -351,39 +482,32 @@ export default function VerseActionBar({
                 if (e.key === 'Enter') void tagVerse();
               }}
               placeholder={t('settings.verseBar.tagPlaceholder', 'ex. foi, pardon, Éternel…')}
-              className="w-full rounded-xl bg-surface-tint p-3 text-sm text-text-primary outline-none"
+              className="verse-bar-input"
             />
-            <div className="mt-2 flex items-center justify-between gap-2">
-              <p className="text-2xs text-text-muted">
-                {t('settings.verseBar.tagHint', 'Ajouté immédiatement à votre arbre sémantique')}
-              </p>
-              <div className="flex gap-2">
-                <button
-                  onClick={() => setTagOpen(false)}
-                  className="rounded-full px-4 py-2 text-xs font-semibold text-text-muted active:bg-surface-tint"
-                >
-                  {t('common.cancel', 'Annuler')}
-                </button>
-                <button
-                  onClick={() => void tagVerse()}
-                  disabled={tagSaving}
-                  className="rounded-full bg-primary px-4 py-2 text-xs font-semibold text-on-primary shadow-sm disabled:opacity-50"
-                >
-                  {tagSaving ? t('common.saving', 'Enregistrement…') : t('common.save', 'Enregistrer')}
-                </button>
-              </div>
+            <div className="verse-bar-field-actions">
+              <button type="button" className="verse-bar-ghost" onClick={() => setTagOpen(false)}>
+                {t('common.cancel', 'Annuler')}
+              </button>
+              <button
+                type="button"
+                onClick={() => void tagVerse()}
+                disabled={tagSaving}
+                className="verse-bar-primary"
+              >
+                {tagSaving ? t('common.saving', 'Enregistrement…') : t('common.save', 'Enregistrer')}
+              </button>
             </div>
           </div>
         )}
 
         {noteOpen && (
-          <div className="border-t border-[color:var(--color-divider)] p-3">
-            <div className="mb-2 flex items-center justify-between">
-              <p className="text-xs font-bold text-text-muted">
+          <div className="verse-bar-field">
+            <div className="verse-bar-field-head">
+              <p className="verse-bar-field-title">
                 {t('bible.noteTitle', 'Note personnelle')} — {reference}
               </p>
               {noteSaved ? (
-                <span className="flex items-center gap-1 text-xs font-semibold text-success">
+                <span className="verse-bar-saved">
                   <DuoIcon icon={Check} size={13} /> {t('common.saved', 'Enregistré')}
                 </span>
               ) : null}
@@ -397,19 +521,13 @@ export default function VerseActionBar({
               }}
               rows={3}
               placeholder={t('bible.notePlaceholder', 'Écrivez une note sur ce verset...')}
-              className="w-full resize-none rounded-xl bg-surface-tint p-3 text-sm text-text-primary outline-none"
+              className="verse-bar-textarea"
             />
-            <div className="mt-2 flex justify-end gap-2">
-              <button
-                onClick={() => setNoteOpen(false)}
-                className="rounded-full px-4 py-2 text-xs font-semibold text-text-muted active:bg-surface-tint"
-              >
+            <div className="verse-bar-field-actions">
+              <button type="button" className="verse-bar-ghost" onClick={() => setNoteOpen(false)}>
                 {t('common.cancel', 'Annuler')}
               </button>
-              <button
-                onClick={() => void saveNote()}
-                className="rounded-full bg-primary px-4 py-2 text-xs font-semibold text-on-primary shadow-sm"
-              >
+              <button type="button" onClick={() => void saveNote()} className="verse-bar-primary">
                 {t('common.save', 'Enregistrer')}
               </button>
             </div>

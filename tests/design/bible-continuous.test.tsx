@@ -7,7 +7,7 @@ import ContinuousBibleReader, { flattenBibleChapters } from '@/components/bible/
 import type { BibleBookData } from '@/domains/bible/repository-local';
 
 vi.mock('@/hooks/useSemanticTags', () => ({ useChapterSemanticTags: () => ({ tags: null, loading: false }) }));
-vi.mock('@/components/bible/VerseActionBar', () => ({ default: ({ bookId, chapter, verse }: { bookId: string; chapter: number; verse: number }) => <output>{`${bookId}:${chapter}:${verse}`}</output> }));
+vi.mock('@/components/bible/VerseActionBar', () => ({ default: ({ bookId, chapter, verses }: { bookId: string; chapter: number; verses: number[] }) => <output>{`${bookId}:${chapter}:${verses.join(',')}`}</output> }));
 vi.mock('react-i18next', () => ({ useTranslation: () => ({ i18n: { language: 'fr', resolvedLanguage: 'fr' }, t: (_key: string, fallback: string | { count: number }) => typeof fallback === 'string' ? fallback : `${fallback.count} versets` }) }));
 const books: BibleBookData[] = [
   { id: 'gen', name: { fr: 'GEN' }, testament: 'old', chapterCount: 2, chapters: [{ number: 1, verses: [{ number: 1, text: 'Texte un' }] }, { number: 2, verses: [{ number: 1, text: 'Texte deux' }] }] },
@@ -23,7 +23,9 @@ describe('manuscrit biblique continu', () => {
     const root = createRoot(host);
     await act(async () => { root.render(<MemoryRouter><ContinuousBibleReader books={books} initialBookId="gen" initialChapter={2} translationId="lsg" /></MemoryRouter>); });
     expect(host.querySelectorAll('.reading-chapter')).toHaveLength(2);
-    expect(host.querySelectorAll('.chapter-dropcap')).toHaveLength(2);
+    // La lettrine flottante a cédé la place à un numéral de chapitre posé en
+    // marge : elle décalait le premier verset de deux lignes à chaque chapitre.
+    expect(host.querySelectorAll('.chapter-numeral')).toHaveLength(2);
     expect(host.querySelectorAll('.verse-flow-number')).toHaveLength(0);
     expect(host.textContent).toContain('Genèse');
     expect(host.textContent).toContain('Exode');

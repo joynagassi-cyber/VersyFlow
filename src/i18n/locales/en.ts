@@ -282,6 +282,18 @@ export const en = {
     previousChapter: 'Previous chapter',
     nextChapter: 'Next chapter',
 
+    selectionCount: '{count} verses',
+    highlightColor: 'Highlight colour',
+    highlightClear: 'Remove',
+    highlightRemove: 'remove',
+    highlightColors: {
+      accent: 'Theme accent',
+      gold: 'Honey',
+      leaf: 'Leaf',
+      sky: 'Sky',
+      violet: 'Violet',
+    },
+
     continuousReading: 'Continuous reading',
     previousPassages: 'Previous passages',
     nextPassages: 'Show more',
