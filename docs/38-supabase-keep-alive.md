@@ -1,8 +1,9 @@
 # 38 — Empêcher Supabase de se mettre en pause (et sauvegarder la base)
 
-> Concerne le projet Supabase **`dspqvyesfngxuwqhceog`** (`https://dspqvyesfngxuwqhceog.supabase.co`),
-> celui que le dépôt référence : `supabase/config.toml`, `.mcp.json`,
-> `src/services/bible-text-service.ts:85`.
+> Concerne le projet Supabase **`dspqvyesfngxuwqhceog`**
+> (`https://dspqvyesfngxuwqhceog.supabase.co`, région constatée le 2026-10-31 :
+> **eu-central-1**), celui que le dépôt référence : `supabase/config.toml`,
+> `.mcp.json`, `src/services/bible-text-service.ts:85`.
 
 ## 1. Ce qui se passe réellement quand un projet « s'éteint »
 
