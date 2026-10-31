@@ -23,10 +23,20 @@ Ne me dis jamais « c'est fait » sans la preuve correspondante. Si une étape
 ────────────────────────────────────────────────────────────────────────
 CONTEXTE
 ────────────────────────────────────────────────────────────────────────
-- Projet : VersyFlow, Supabase, région eu-west-2, Postgres 17, plan FREE.
-- Réf. du projet : dspqvyesfngxuwqhceog   (URL : https://dspqvyesfngxuwqhceog.supabase.co)
+- Projet : VersyFlow, Supabase, plan FREE.
+  Réf. : dspqvyesfngxuwqhceog   (URL : https://dspqvyesfngxuwqhceog.supabase.co)
+  Région CONSTATÉE le 2026-10-31 : eu-central-1, Postgres 17.6.1.166.
+  → La région et la version se LISENT dans `list_projects`, elles ne se
+    supposent pas : ce prompt peut se tromper, la réponse de l'API non.
   → Si `list_projects` ne contient PAS cette réf, ARRÊTE-TOI et demande-moi
     avant de créer ou modifier quoi que ce soit. Ne devine jamais un projet.
+- ÉTAT CONNU AU 2026-10-31 : `public.keep_alive` EXISTE DÉJÀ dans ce projet,
+  avec une structure inconnue et sans colonne `pinged_at` (vérifié :
+  `to_regclass('public.keep_alive')` → `keep_alive`,
+  `to_regprocedure('public.keep_alive_ping(text)')` → `null`).
+  → Cette table ne t'appartient pas. Tu ne l'altères pas, tu ne la supprimes
+    pas, tu ne l'utilises pas : le heartbeat de l'annexe 1 porte donc un nom
+    NEUF et distinct, `public.keep_alive_heartbeat`.
 - Le schéma public contient déjà ~26 tables produit (bible_books, bible_verses,
   bible_translations, users, learner_profiles, memorization_records, review_logs,
   families, family_memberships, concepts, collections, settings, streaks, …).
@@ -43,12 +53,20 @@ RÈGLES ABSOLUES
    pas de reset de mot de passe, pas de suppression de projet ou de branche.
 2. Aucune clé service_role dans un workflow, un dépôt Git ou un log. La seule clé
    qui a le droit de vivre dans GitHub est la clé anon/publishable.
-3. Le keep-alive ne doit RIEN écrire dans les tables produit. La seule écriture
-   autorisée est le heartbeat décrit en annexe 1 (une table dédiée, purgée).
-4. Tu ajoutes des policies RLS, tu ne modifies ni ne supprimes celles qui existent.
-5. Toute fonction SQL que tu crées doit fixer `search_path` (sinon le linter
+3. L'INSPECTION EN LECTURE SEULE DE L'EXISTANT T'EST AUTORISÉE, sans me
+   redemander : `information_schema`, `pg_class`, `pg_proc`, `pg_policies`,
+   `pg_description`, les COMMENT sur les objets. C'est le seul moyen de ne pas
+   créer une collision — et tu viens d'en trouver une. Ce qui reste interdit,
+   c'est d'ÉCRIRE sur un objet que tu n'as pas créé.
+4. Le keep-alive ne doit RIEN écrire dans les tables produit, ni dans le
+   `keep_alive` préexistant. La seule écriture autorisée est le heartbeat
+   décrit en annexe 1 : `public.keep_alive_heartbeat`, une table dédiée que TU
+   crées, purgée automatiquement.
+5. Tu ajoutes des policies RLS, tu ne modifies ni ne supprimes celles qui
+   existent.
+6. Toute fonction SQL que tu crées doit fixer `search_path` (sinon le linter
    Supabase la signale) et être révocable sans casser l'existant.
-6. Tu affiches les sorties brutes (JSON, tableaux) — pas de résumé à leur place.
+7. Tu affiches les sorties brutes (JSON, tableaux) — pas de résumé à leur place.
 
 ────────────────────────────────────────────────────────────────────────
 PARTIE A — MODIFICATIONS
@@ -58,28 +76,47 @@ A1. ÉTAT DES LIEUX. Donne : nom, réf, région, statut (`ACTIVE_HEALTHY` ou
     et demande-moi de le réveiller (le bouton « Resume project » du dashboard) :
     aucune requête ne réveille un projet en pause.
 
-A2. HEARTBEAT. Exécute le SQL de l'ANNEXE 1. Il crée :
-      - `public.keep_alive` (journal horodaté, RLS activée, aucune policy de
-        lecture : ni anon ni authenticated ne la lisent directement) ;
+A2. PRÉFLIGHT — avant toute création, inventorie ce qui existe déjà, en
+    LECTURE SEULE (autorisé, cf. règle 3), et colle les deux sorties :
+      - l'ANNEXE 2, commande 3 (objets `keep_alive%` : type, colonnes, policies)
+      - l'ANNEXE 2, commande 4 (signature des fonctions `keep_alive%`)
+    Règle de décision, à appliquer sans me demander :
+      • `keep_alive_heartbeat` n'existe pas → continue en A3.
+      • `keep_alive_heartbeat` existe → ARRÊTE-TOI et montre-moi sa structure.
+      • `public.keep_alive` existe (c'est le cas aujourd'hui) → ne le touche
+        pas, ne t'en sers pas, et dis-moi en une ligne ce qu'il contient.
+        Ce n'est PAS un obstacle : le heartbeat porte un autre nom.
+
+A3. HEARTBEAT. Exécute le SQL de l'ANNEXE 1. Il crée :
+      - `public.keep_alive_heartbeat` — nom NEUF, choisi pour ne pas heurter le
+        `public.keep_alive` déjà présent — journal horodaté, RLS activée,
+        aucune policy de lecture : ni anon ni authenticated ne le lisent ;
       - `public.keep_alive_ping(source text)` en `security definer`, seule voie
         d'écriture, avec purge automatique au-delà de 400 lignes ;
       - les privilèges : `anon` et `authenticated` peuvent EXÉCUTER la fonction,
         rien d'autre.
+    Puis prouve que la table porte bien les colonnes attendues (ANNEXE 2,
+    commande 5) : `id`, `pinged_at`, `source`. Si le `create table if not
+    exists` a silencieusement réutilisé une table d'une autre forme, tu le
+    verras ici — c'est exactement l'erreur qu'un `if not exists` masque.
 
-A3. VÉRIFIE LES PRIVILÈGES et colle les sorties :
+A4. VÉRIFIE LES PRIVILÈGES et colle les sorties :
       - `select has_function_privilege('anon', 'public.keep_alive_ping(text)', 'execute');`
         → doit renvoyer `true`
-      - `select has_table_privilege('anon', 'public.keep_alive', 'select');`
+      - `select has_table_privilege('anon', 'public.keep_alive_heartbeat', 'select');`
         → doit renvoyer `false`
-      - `select relrowsecurity from pg_class where oid = 'public.keep_alive'::regclass;`
+      - `select relrowsecurity from pg_class where oid = 'public.keep_alive_heartbeat'::regclass;`
         → doit renvoyer `true`
 
-A4. TESTE LE PING toi-même, avec la clé anon (jamais la service_role), et donne
+A5. TESTE LE PING toi-même, avec la clé anon (jamais la service_role), et donne
     les deux sorties brutes :
       - l'appel RPC (ANNEXE 2, commande 1) → attendu : HTTP 200 et un JSON
         `{"ok": true, "pings": N, "last": "..."}`
       - la relecture côté base (ANNEXE 2, commande 2) → le compte a augmenté et
         `max(pinged_at)` est postérieur à l'appel.
+    → Si l'appel renvoie `function public.keep_alive_ping(text) does not exist`
+    alors que tu viens de la créer, c'est un cache de schéma PostgREST :
+    `notify pgrst, 'reload schema';` puis réessaie UNE fois.
 
 ────────────────────────────────────────────────────────────────────────
 PARTIE B — LA PREUVE (c'est ici que la plupart des « keep-alive » échouent)
@@ -164,14 +201,36 @@ RAPPORT FINAL ATTENDU (format exact)
 ────────────────────────────────────────────────────────────────────────
 ANNEXE 1 — SQL du heartbeat (à exécuter tel quel)
 ────────────────────────────────────────────────────────────────────────
-create table if not exists public.keep_alive (
+-- Nom DISTINCT de `public.keep_alive`, qui existe déjà dans ce projet et
+-- n'appartient pas à cette installation. Un `create table if not exists` sur
+-- `keep_alive` aurait silencieusement réutilisé l'autre table : c'est
+-- exactement la collision constatée le 2026-10-31.
+create table if not exists public.keep_alive_heartbeat (
   id        bigint generated always as identity primary key,
   pinged_at timestamptz not null default now(),
   source    text not null default 'unknown'
 );
 
-alter table public.keep_alive enable row level security;
-comment on table public.keep_alive is
+-- Garde-fou AVANT toute modification : si le nom existait déjà sous une autre
+-- forme, on échoue ici — avant `alter table` et `comment on`, qui sinon
+-- auraient déjà touché une table qui n'est pas la nôtre. `create table if not
+-- exists` est un no-op dans ce cas, donc rien n'a encore été modifié.
+do $$
+begin
+  if not exists (
+    select 1 from information_schema.columns
+     where table_schema = 'public'
+       and table_name = 'keep_alive_heartbeat'
+       and column_name = 'pinged_at'
+  ) then
+    raise exception
+      'public.keep_alive_heartbeat existe sans colonne pinged_at : arrêt avant toute écriture (structure inattendue).';
+  end if;
+end;
+$$;
+
+alter table public.keep_alive_heartbeat enable row level security;
+comment on table public.keep_alive_heartbeat is
   'Journal des pings keep-alive. Écrit uniquement via public.keep_alive_ping(). Aucune policy : lecture impossible pour anon/authenticated.';
 
 create or replace function public.keep_alive_ping(p_source text default 'external')
@@ -184,14 +243,16 @@ declare
   v_pings bigint;
   v_last  timestamptz;
 begin
-  insert into public.keep_alive (source)
+  insert into public.keep_alive_heartbeat (source)
   values (left(coalesce(nullif(trim(p_source), ''), 'external'), 40));
 
   -- Rétention : 400 pings suffisent à prouver une année de battement.
-  delete from public.keep_alive
-   where id <= coalesce((select max(id) - 400 from public.keep_alive), 0);
+  delete from public.keep_alive_heartbeat
+   where id <= coalesce((select max(id) - 400 from public.keep_alive_heartbeat), 0);
 
-  select count(*), max(pinged_at) into v_pings, v_last from public.keep_alive;
+  select count(*), max(pinged_at)
+    into v_pings, v_last
+    from public.keep_alive_heartbeat;
 
   return jsonb_build_object('ok', true, 'pings', v_pings, 'last', v_last);
 end;
@@ -212,7 +273,32 @@ curl -sS -w '\nHTTP %{http_code}\n' \
   -d '{"p_source":"manual"}'
 
 # 2) La trace côté base (via MCP ou psql)
-select count(*) as pings, max(pinged_at) as dernier from public.keep_alive;
+select count(*) as pings, max(pinged_at) as dernier from public.keep_alive_heartbeat;
+
+# 3) PRÉFLIGHT — ce qui existe déjà sous ce nom (lecture seule)
+select c.relname as objet,
+       c.relkind as type,
+       c.relrowsecurity as rls,
+       (select string_agg(a.attname, ', ' order by a.attnum)
+          from pg_attribute a
+         where a.attrelid = c.oid and a.attnum > 0 and not a.attisdropped) as colonnes
+  from pg_class c
+  join pg_namespace n on n.oid = c.relnamespace
+ where n.nspname = 'public' and c.relname like 'keep_alive%'
+ order by c.relname;
+
+# 4) PRÉFLIGHT — fonctions existantes (nom + signature)
+select p.proname as fonction,
+       pg_get_function_identity_arguments(p.oid) as arguments
+  from pg_proc p
+  join pg_namespace n on n.oid = p.pronamespace
+ where n.nspname = 'public' and p.proname like 'keep_alive%';
+
+# 5) Colonnes réellement présentes sur le heartbeat (après création)
+select column_name, data_type
+  from information_schema.columns
+ where table_schema = 'public' and table_name = 'keep_alive_heartbeat'
+ order by ordinal_position;
 
 # 3) La sonde publique, sans clé (utile pour un moniteur externe)
 curl -sS -o /dev/null -w 'HTTP %{http_code}\n' \
@@ -274,3 +360,51 @@ Exécuté hors GitHub contre un faux serveur, quatre scénarios :
 
 C'est le test négatif (deux dernières lignes) qui fait la différence entre un
 keep-alive et un voyant toujours vert.
+
+## 5. Réponse à coller à l'agent qui s'est arrêté
+
+L'agent a trouvé une collision (`public.keep_alive` existe déjà, sans
+`pinged_at`) et a demandé l'autorisation d'inspecter. Voici la réponse qui
+débloque la situation sans rien lui faire modifier d'existant :
+
+```text
+Oui, l'inspection en lecture seule est autorisée, et elle l'était déjà
+(annexe 2, commandes 3 et 4). Tu n'as pas besoin de me redemander avant de
+LIRE : information_schema, pg_class, pg_proc, pg_policies. La seule chose
+interdite reste d'écrire sur un objet que tu n'as pas créé.
+
+Deux corrections à ma consigne initiale, tirées de ce que tu viens d'observer :
+
+1. La région réelle est `eu-central-1`. Je m'étais trompé (`eu-west-2`).
+   Le prompt est corrigé : la région et la version se lisent dans
+   `list_projects`, elles ne se supposent pas.
+
+2. Le heartbeat porte désormais un nom NEUF : `public.keep_alive_heartbeat`,
+   et non `public.keep_alive`. Un `create table if not exists` sur un nom
+   déjà pris réutilise la table existante en silence — c'est précisément le
+   piège dans lequel l'annexe 1 allait tomber. La nouvelle version :
+   - ne touche pas `public.keep_alive`, ne s'en sert pas, et le laisse tel quel
+     (dis-moi juste en une ligne ce qu'il contient) ;
+   - échoue AVANT toute écriture si le nom neuf existe sous une autre forme
+     (bloc `do $$ … raise exception`), avec un message lisible ;
+   - se termine par la vérification des colonnes réellement présentes.
+
+Reprends à l'étape A2 avec cette version corrigée, et arrête-toi de nouveau
+si `keep_alive_heartbeat` existe déjà sous une forme inattendue.
+
+Le mot de passe Postgres reste à faire tourner, mais après la partie B : je ne
+veux pas mélanger une rotation de secret avec une mise en service.
+```
+
+## 6. Ce que cette correction a appris sur le prompt lui-même
+
+| Élément | Ce que j'avais écrit | Ce que le projet a montré |
+| --- | --- | --- |
+| Région | `eu-west-2` | **`eu-central-1`** — jamais lire une région dans une consigne, toujours dans l'API |
+| Nom du heartbeat | `public.keep_alive` | **déjà pris** par un autre usage → nom dédié `keep_alive_heartbeat` |
+| `create table if not exists` | présenté comme sûr | il **masque** une collision de forme : d'où le garde-fou `raise exception` |
+| Autorisation de lire | implicite | l'agent s'est arrêté pour demander → désormais **explicite** dans les règles |
+
+C'est le comportement attendu d'un audit honnête : le prompt s'est fait
+corriger par le terrain, et la correction est ici, pas seulement dans la
+conversation.
