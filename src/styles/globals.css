@@ -1158,10 +1158,14 @@ html[data-bg='image'] .bible-card { background: rgba(var(--glass-rgb), max(var(-
 html[data-bg='image'][data-transparency='reduced'] :is(.card-glass, .surface-glass, .bible-card),
 html[data-bg='image'][data-contrast='high'] :is(.card-glass, .surface-glass, .bible-card) { background: var(--color-surface); -webkit-backdrop-filter: none; backdrop-filter: none; }
 
-/* Icônes Solar : l'accent est appliqué dès le repos, jamais seulement au survol. */
-.solar.solar-accent { color: var(--color-primary); }
-/* Sur une surface pleine d'accent, préserver le contraste du pictogramme. */
-.bg-primary .solar.solar-accent { color: var(--color-on-primary); }
+/* Sur une surface pleine d'accent, préserver le contraste du pictogramme ET
+   rendre le second calque au trait, sinon le duotone devient invisible
+   (accent sur accent). La règle de base vit plus bas, en un seul endroit. */
+.bg-primary .solar.solar-accent {
+  color: var(--color-on-primary);
+  --solar-secondary-color: currentColor;
+  --solar-secondary-opacity: 0.35;
+}
 
 /* Accueil premium : jetons neutres fixes, accent hérité du thème image. */
 :root, :root[data-theme="light"], .appearance-preview[data-theme="light"] {
@@ -1310,10 +1314,104 @@ html[data-bg='image']:is([data-transparency='reduced'],[data-contrast='high']) .
   backdrop-filter: none;
 }
 
-/* Icônes neutres au repos ; état actif et actions principales en accent. */
-.solar.solar-accent { color: var(--mut); }
-[aria-current='page'] .solar.solar-accent, .home-primary .solar.solar-accent { color: var(--acc); }
-.action-card:hover .solar.solar-accent, .action-card:focus-visible .solar.solar-accent { color: var(--acc); }
+/* ── Boutons duotone : A pour l'icône, B pour le contenant, C pour l'onglet ──
+   Décision arbitrée, voir `docs/design/duotone-boutons.md`.
+
+   Pourquoi ce bloc est le SEUL à décider de la couleur d'une icône de
+   navigation. Deux défauts se corrigeaient ici :
+
+   1. Les icônes Solar duotone ont deux calques ; le second lit
+      `--solar-secondary-color`, dont le défaut est `currentColor`. Comme
+      `DuoIcon` ne renseignait jamais cette variable, les deux calques
+      prenaient la même teinte : ce n'était pas un duotone mais un monochrome
+      à deux densités, où le calque secondaire salit le trait au lieu de le
+      creuser. Une règle CSS suffit à corriger les 549 utilisations.
+   2. Deux blocs se contredisaient : celui-ci disait gris au repos puis accent
+      au survol, l'autre (plus haut) affirmait « l'accent dès le repos, jamais
+      seulement au survol ». Le second gagnait par ordre de cascade, et le
+      premier restait comme une intention morte. Les composants ne peignent
+      donc plus leurs couleurs en utilitaires Tailwind : une seule source.
+
+   A — l'icône. Encre franche + masse d'accent à 24 % : la couleur est là dès
+   le repos, donc elle ne « prend » plus le contrôle au survol. */
+.solar.solar-accent {
+  --solar-secondary-color: var(--acc);
+  --solar-secondary-opacity: 0.24;
+  color: color-mix(in srgb, var(--tx) 82%, var(--mut));
+}
+/* L'encre reste plus sombre que `--mut` : aucune régression de contraste sur
+   les icônes purement décoratives (barre d'état, en-têtes, dialogue). */
+
+/* B — le contenant. Le survol ne change pas la teinte de l'icône : il pose
+   une pastille. C'est ce qui distingue « survoler » de « activer ». */
+.nav-item {
+  color: color-mix(in srgb, var(--tx) 82%, var(--mut));
+  background-color: transparent;
+  transition: background-color 180ms ease, color 180ms ease, box-shadow 180ms ease;
+}
+.nav-item:hover,
+.nav-item:focus-visible {
+  background-color: color-mix(in srgb, var(--acc) 7%, transparent);
+}
+.nav-item:hover .solar.solar-accent,
+.nav-item:focus-visible .solar.solar-accent {
+  --solar-secondary-opacity: 0.30;
+}
+/* L'actif cumule encre, pastille et filet : trois signaux, dont deux qui ne
+   dépendent pas de la teinte. Lisible en niveaux de gris, et pour un
+   daltonien — un état ne doit jamais reposer sur la seule couleur. */
+.nav-item[aria-current='page'] {
+  color: var(--acc-text);
+  background-color: color-mix(in srgb, var(--acc) 13%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--acc) 34%, transparent);
+}
+.nav-item[aria-current='page'] .solar.solar-accent {
+  --solar-secondary-opacity: 0.36;
+}
+
+/* C — l'onglet mobile actif. Ici la teinte seule est un signal trop faible
+   sur quatre icônes de 23 px : le duotone devient donc la récompense de
+   l'état — creux au repos (10 %), plein à l'actif (48 %). La densité se lit
+   même sans percevoir la couleur. */
+.tab-item {
+  color: var(--mut);
+  transition: color 180ms ease;
+}
+.tab-item .solar.solar-accent { --solar-secondary-opacity: 0.10; }
+.tab-pill {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 32px;
+  border-radius: 999px;
+  background-color: transparent;
+  transition: background-color 180ms ease;
+}
+.tab-item:hover,
+.tab-item:focus-visible { color: color-mix(in srgb, var(--tx) 80%, var(--mut)); }
+.tab-item:hover .tab-pill,
+.tab-item:focus-visible .tab-pill { background-color: color-mix(in srgb, var(--acc) 5%, transparent); }
+.tab-item:hover .solar.solar-accent,
+.tab-item:focus-visible .solar.solar-accent { --solar-secondary-opacity: 0.20; }
+.tab-item[aria-current='page'] { color: var(--acc-text); }
+.tab-item[aria-current='page'] .tab-pill { background-color: color-mix(in srgb, var(--acc) 12%, transparent); }
+.tab-item[aria-current='page'] .solar.solar-accent { --solar-secondary-opacity: 0.48; }
+.tab-item .tab-label { transition: color 180ms ease; }
+.tab-item[aria-current='page'] .tab-label { color: var(--acc-text); }
+
+/* Actions principales et cartes d'action : ce sont des actions, pas de la
+   navigation — elles conservent l'accent, mais avec le même duotone coloré. */
+.home-primary .solar.solar-accent {
+  color: var(--premium-on);
+  --solar-secondary-color: currentColor;
+  --solar-secondary-opacity: 0.4;
+}
+.action-card .solar.solar-accent { --solar-secondary-opacity: 0.2; }
+.action-card:hover .solar.solar-accent,
+.action-card:focus-visible .solar.solar-accent {
+  color: var(--acc-text);
+  --solar-secondary-opacity: 0.34;
+}
 
 .home-premium { font-family: var(--font-sans, Inter), sans-serif; color: var(--tx); padding: 24px 16px 144px; }
 .home-content { max-width: 1180px; margin: auto; display: grid; gap: 24px; }

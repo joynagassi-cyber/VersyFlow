@@ -165,9 +165,11 @@ export function DesktopRail() {
                 className={cn(
                   itemBase,
                   collapsed && 'justify-center px-0',
-                  active
-                    ? 'bg-primary/10 font-semibold text-primary'
-                    : 'text-text-secondary hover:bg-surface-tint hover:text-text-primary',
+                  /* La couleur ne se peint plus ici : `nav-item` la porte
+                     depuis globals.css, en un seul endroit. Deux sources de
+                     vérité, c'est exactement ce qui faisait basculer l'icône
+                     au survol. */
+                  active ? 'nav-item font-semibold' : 'nav-item',
                 )}
               >
                 <span className={iconColumn}>
@@ -202,9 +204,11 @@ export function DesktopRail() {
                 className={cn(
                   itemBase,
                   collapsed && 'justify-center px-0',
-                  active
-                    ? 'bg-primary/10 font-semibold text-primary'
-                    : 'text-text-secondary hover:bg-surface-tint hover:text-text-primary',
+                  /* La couleur ne se peint plus ici : `nav-item` la porte
+                     depuis globals.css, en un seul endroit. Deux sources de
+                     vérité, c'est exactement ce qui faisait basculer l'icône
+                     au survol. */
+                  active ? 'nav-item font-semibold' : 'nav-item',
                 )}
               >
                 <span className={iconColumn}>
@@ -226,9 +230,7 @@ export function DesktopRail() {
           className={cn(
             itemBase,
             collapsed && 'justify-center px-0',
-            isActive(location.pathname, '/profile')
-              ? 'bg-primary/10 font-semibold text-primary'
-              : 'text-text-secondary hover:bg-surface-tint hover:text-text-primary',
+            isActive(location.pathname, '/profile') ? 'nav-item font-semibold' : 'nav-item',
           )}
         >
           <span className={iconColumn}>

@@ -55,8 +55,8 @@ const VARIANTS: readonly Variant[] = [
   {
     id: 'dl-v0',
     tag: '0',
-    title: 'Aujourd’hui — gris, puis l’accent reprend la main',
-    note: 'Les deux calques partagent la teinte : le second, à 50 % d’opacité, ne creuse pas de profondeur, il salit le trait. Au survol, la teinte bascule d’un coup. Rien entre les deux.',
+    title: 'Avant — gris, puis l’accent reprend la main',
+    note: 'Ce qui était affiché jusqu’ici, conservé pour comparer. Les deux calques partagent la teinte : le second, à 50 % d’opacité, ne creuse pas de profondeur, il salit le trait. Au survol, la teinte bascule d’un coup. Rien entre les deux.',
   },
   {
     id: 'dl-vA',
@@ -124,14 +124,13 @@ export function DuotoneLab() {
   return (
     <div className="dl-page">
       <div className="dl-head">
-        <h1>Boutons duotone — cinq règles, une décision</h1>
+        <h1>Boutons duotone — la décision appliquée</h1>
         <p>
-          Le problème n’est pas le jeu d’icônes. Les icônes Solar « duotone » ont deux calques ;
-          <code>DuoIcon</code> ne passe jamais de seconde couleur, donc les deux calques ont la même
-          teinte et l’on voit un monochrome dégradé. Et dans <code>globals.css</code>, une seconde
-          règle (l.&nbsp;1314) écrase la première (l.&nbsp;1162) : gris au repos, accent au survol.
-          Tout se joue donc sur une poignée de lignes de CSS — aucune des 549 utilisations n’est à
-          toucher.
+          <strong>A pour l’icône, B pour le contenant, C pour l’onglet mobile actif.</strong> Appliqué
+          dans <code>globals.css</code> ; les composants ne peignent plus leurs couleurs, ils portent
+          seulement les classes <code>nav-item</code> et <code>tab-item</code>. La variante 0 est
+          conservée comme historique : c’est l’état d’avant, celui où le duotone était monochrome et
+          où l’accent basculait au survol.
         </p>
       </div>
 
@@ -167,6 +166,55 @@ export function DuotoneLab() {
             </div>
           </section>
         ))}
+
+        <section className="dl-situation dl-live">
+          <h2>Ce qui est en vigueur — les classes réelles</h2>
+          <p>
+            Ce bloc n’utilise pas les règles du laboratoire mais <code>nav-item</code>,
+            <code>tab-item</code> et <code>tab-pill</code>, c’est-à-dire exactement ce que rendent
+            le rail et la barre d’onglets de l’application. Si le laboratoire et l’app divergent,
+            c’est ici qu’on le voit.
+          </p>
+          <div className="dl-rail">
+            <button type="button" className="group flex h-9 w-full items-center gap-3 rounded-xl px-2.5 text-start text-sm font-medium nav-item font-semibold" aria-current="page">
+              <DuoIcon icon={Home01Icon} size={20} strokeWidth={1.75} />
+              <span className="dl-label">Accueil</span>
+            </button>
+            <button type="button" className="group flex h-9 w-full items-center gap-3 rounded-xl px-2.5 text-start text-sm font-medium nav-item">
+              <DuoIcon icon={BookOpen01Icon} size={20} strokeWidth={1.75} />
+              <span className="dl-label">Explorer</span>
+            </button>
+            <button type="button" className="group flex h-9 w-full items-center gap-3 rounded-xl px-2.5 text-start text-sm font-medium nav-item">
+              <DuoIcon icon={ChartBarLineIcon} size={20} strokeWidth={1.75} />
+              <span className="dl-label">Progrès</span>
+            </button>
+            <button type="button" className="group flex h-9 w-full items-center gap-3 rounded-xl px-2.5 text-start text-sm font-medium nav-item">
+              <DuoIcon icon={Settings01Icon} size={20} strokeWidth={1.75} />
+              <span className="dl-label">Réglages</span>
+            </button>
+          </div>
+          <div className="dl-tabbar">
+            {[
+              { icon: Home01Icon, label: 'Accueil', active: true },
+              { icon: BookOpen01Icon, label: 'Explorer', active: false },
+              { icon: ChartBarLineIcon, label: 'Progrès', active: false },
+              { icon: Settings01Icon, label: 'Réglages', active: false },
+            ].map(({ icon: Icon, label, active }) => (
+              <button
+                key={label}
+                type="button"
+                className="flex min-w-0 flex-1 flex-col items-center gap-1 rounded-2xl py-1.5 tab-item"
+                aria-current={active ? 'page' : undefined}
+              >
+                <span className="tab-pill">
+                  <DuoIcon icon={Icon} size={23} strokeWidth={1.75} />
+                </span>
+                <span aria-hidden="true" className={`h-1 w-1 rounded-full transition-colors ${active ? 'bg-primary' : 'bg-transparent'}`} />
+                <span className={`tab-label ${active ? 'is-active' : ''}`}>{label}</span>
+              </button>
+            ))}
+          </div>
+        </section>
 
         <section className="dl-situation dl-live">
           <h2>En situation — taille réelle</h2>
