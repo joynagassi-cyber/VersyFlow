@@ -251,68 +251,103 @@ ion-content::part(background) {
     hyphens: auto;
     max-width: var(--reading-line-length, 42em);
     margin-inline: auto;
+    /* Le numéral de chapitre flotte : sans contexte de formatage il
+       déborderait sur l'en-tête du chapitre suivant. */
+    display: flow-root;
   }
 
+  /* Le verset n'a plus de fond ni de marge négative : il n'est plus une
+     pastille cliquable, mais une plage de texte. Toute la surface visuelle
+     est désormais réservée au SURLIGNAGE — la sélection, elle, se signale
+     par un trait. Deux états qui partageaient le même canal (un fond) ne se
+     distinguaient pas quand un verset était à la fois sélectionné et
+     surligné. */
   .manuscript-verse {
-    border-radius: 12px;
-    padding: 2px 4px;
-    margin: 0 -4px;
     cursor: pointer;
-    transition: background-color 160ms ease;
+    transition: text-decoration-color 160ms ease;
   }
 
   .manuscript-verse:focus-visible {
     outline: 2px solid var(--acc-text, var(--color-primary));
-    outline-offset: 2px;
+    outline-offset: 3px;
+    border-radius: 4px;
   }
 
+  /* SÉLECTION — un soulignement fin pointillé, et rien d'autre. C'est le seul
+     signal : ni fond, ni gras, ni changement d'encre. Il reste lisible en
+     niveaux de gris, et il ne peut pas être confondu avec un surlignage. */
   .manuscript-verse.is-selected {
-    background-color: color-mix(in srgb, var(--color-primary) 8%, transparent);
+    text-decoration-line: underline;
+    text-decoration-style: dotted;
+    text-decoration-thickness: 1px;
+    text-decoration-color: var(--acc-text, var(--color-primary));
+    text-underline-offset: 0.32em;
   }
 
-  /* User highlight (light, fluid, translucent) — readable on #FFFFFF and
-     #121212. A translucent tint of the accent color with a soft glow. */
-  .manuscript-verse.is-highlighted {
-    background: linear-gradient(
+  /* SURLIGNAGE — un lavis léger qui court sous TOUT le texte du verset :
+     les espaces entre les mots en font partie, puisque le fond s'applique à
+     l'élément inline et non aux mots. `box-decoration-break: clone` répète le
+     lavis sur chaque ligne d'un verset qui en occupe plusieurs, au lieu de le
+     laisser ouvert aux extrémités.
+     La teinte vient de `--hl`, elle-même fixée par `data-hl` : aucune couleur
+     n'est écrite ici, donc les cinq pastilles suivent thème et presets. */
+  .manuscript-verse[data-hl] {
+    --hl-alpha: 34%;
+    background-image: linear-gradient(
       to bottom,
-      color-mix(in srgb, var(--color-primary) 14%, transparent),
-      color-mix(in srgb, var(--color-primary) 22%, transparent)
+      transparent 0 58%,
+      color-mix(in srgb, var(--hl) var(--hl-alpha), transparent) 58% 92%,
+      transparent 92%
     );
-    box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-primary) 18%, transparent) inset;
-    border-radius: 10px;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+    padding-block: 0.06em;
   }
 
-  .manuscript-verse.is-highlighted.is-selected {
-    background: linear-gradient(
-      to bottom,
-      color-mix(in srgb, var(--color-primary) 20%, transparent),
-      color-mix(in srgb, var(--color-primary) 28%, transparent)
-    );
-  }
-
+  /* Le numéro de verset : plus grand qu'avant (0,62 → 0,76 em) et dans la
+     couleur de l'accent actif. `--acc-text` est l'accent corrigé pour rester
+     lisible sur la surface du preset — c'est la même teinte, pas un gris. */
   .verse-flow-number {
     font-family: inherit;
-    font-size: 0.62em;
+    font-size: 0.76em;
     font-weight: 700;
     line-height: 1;
+    font-variant-numeric: tabular-nums;
     color: var(--acc-text, var(--color-primary));
     cursor: pointer;
     user-select: none;
     -webkit-user-select: none;
     vertical-align: super;
-    margin: 0 0.3em 0 0.12em;
-    padding: 2px 4px;
-    border-radius: 6px;
+    margin: 0 0.34em 0 0.1em;
+    padding: 0 2px;
+    border-radius: 5px;
     transition: background-color 140ms ease;
   }
 
   .verse-flow-number:active {
-    background-color: color-mix(in srgb, var(--color-primary) 18%, transparent);
+    background-color: color-mix(in srgb, var(--acc) 20%, transparent);
   }
 
+  /* Le numéro d'un verset sélectionné ne change plus de fond : c'est le
+     soulignement du verset qui porte l'état, du numéro à la fin du texte. */
   .verse-flow-number.is-selected {
-    background-color: var(--color-primary);
-    color: var(--color-on-primary);
+    background-color: transparent;
+  }
+
+  /* Numéro de chapitre en grand, dans la marge du texte. La lettrine
+     précédente flottait et décalait le premier verset de deux lignes ; un
+     numéral posé en marge ne déplace rien. */
+  .chapter-numeral {
+    float: inline-start;
+    display: block;
+    margin: 0.04em 0.34em 0 0;
+    font-family: var(--reading-font-family, 'Source Serif 4', Georgia, serif);
+    font-size: 3.4em;
+    font-weight: 300;
+    line-height: 0.82;
+    font-variant-numeric: tabular-nums;
+    color: var(--acc-text, var(--color-primary));
+    letter-spacing: -0.02em;
   }
 
   /*
@@ -2083,6 +2118,9 @@ html[data-app-bg='gradient'] {
   html[data-app-bg='gradient'] .desktop-rail button.bg-primary { background: var(--gradient-action); color: var(--tx); }
   html[data-app-bg='gradient'] .desktop-rail button.bg-primary .solar { color: var(--tx); }
   html[data-app-bg='gradient'] .mobile-tabs [aria-current='page'] > .bg-primary { background: var(--gradient-action); }
+  /* La pastille choisie est un contrôle actif de la barre de verset : elle
+     suit elle aussi le dégradé, comme les boutons actifs d'Apparence. */
+  html[data-app-bg='gradient'] .verse-action-btn.is-primary { background: var(--gradient-action); color: var(--tx); }
 }
 /* Les libellés restent lisibles même si le premier arrêt est très clair ou
    très sombre ; leur teinte vient néanmoins du dégradé sélectionné. */
@@ -2093,8 +2131,7 @@ html[data-app-bg='gradient'] .text-primary { color: var(--acc-text); }
   html[data-app-bg='gradient'] .appearance-segment-button[aria-pressed='true'],
   html[data-app-bg='gradient'] .appearance-tabs button[aria-pressed='true'],
   html[data-app-bg='gradient'] .appearance-apply,
-  html[data-app-bg='gradient'] .appearance-example-button,
-  html[data-app-bg='gradient'] .verse-flow-number.is-selected { background: var(--gradient-action); color: var(--tx); }
+  html[data-app-bg='gradient'] .appearance-example-button { background: var(--gradient-action); color: var(--tx); }
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
@@ -2627,45 +2664,283 @@ ion-tab-button::part(native):focus-visible {
 /* Lecture : un canevas opaque sous le texte long, adapté aux jetons actifs. */
 .reading-screen { padding: clamp(16px, 3vw, 32px); padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px)); }
 .reading-header { background: var(--color-surface); color: var(--color-text-primary); }
-.reading-card { padding: clamp(24px, 5vw, 48px); border-radius: 28px; background: var(--color-surface); color: var(--color-text-primary); border: 1px solid var(--color-border); box-shadow: 0 12px 36px var(--sh); }
-.reading-card-heading { padding-bottom: 20px; border-bottom: 1px solid var(--color-border); }
-.reading-meta { display: flex; justify-content: space-between; align-items: center; gap: 12px; color: var(--color-text-secondary); font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
-.reading-translation { padding: 5px 10px; border-radius: 999px; background: color-mix(in srgb,var(--color-text-primary) 8%,transparent); letter-spacing: .04em; }
+.reading-card {
+  padding: clamp(22px, 4.4vw, 44px);
+  border-radius: 24px;
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border);
+  box-shadow: 0 10px 30px color-mix(in srgb, var(--sh) 70%, transparent);
+}
+.reading-card-heading { padding-bottom: 18px; border-bottom: 1px solid var(--color-border); display: grid; gap: 2px; }
+/* Métadonnées de chapitre : petites capitales espacées, une seule ligne.
+   Avant, « Genèse · Chapitre 1 » vivait dans un paragraphe de 13 px, au même
+   poids visuel que le compteur de versets qui le suivait. */
+.reading-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  color: var(--mut);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+}
+.reading-translation {
+  flex: none;
+  padding: 2px 8px;
+  border: 1px solid var(--bd);
+  border-radius: 999px;
+  letter-spacing: .04em;
+  font-size: 10px;
+}
 .reading-card-heading h2 { margin: 16px 0 4px; font: 400 clamp(30px, 5vw, 42px)/1.15 var(--reading-font-family, Georgia), serif; color: inherit; }
 .reading-card-heading p { color: var(--color-text-secondary); font-size: 13px; }
-.reading-card .verse-flow { color: inherit; text-align: start; overflow-wrap: anywhere; }
-.reading-card .manuscript-verse { cursor: pointer; }
-.reading-card .manuscript-verse:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
-.reading-card .verse-flow-number { color: var(--color-text-secondary); }
-.reading-card .verse-flow-number.is-selected { background: var(--color-text-primary); color: var(--color-surface); }
-.reading-actions { border: 1px solid var(--color-border); border-radius: 20px; background: var(--color-surface); color: var(--color-text-primary); box-shadow: 0 12px 36px var(--sh); }
-.reading-actions-row { display: flex; align-items: center; gap: 4px; overflow-x: auto; padding: 8px; }
-.reading-actions-row > button, .reading-actions-reference { flex: 0 0 auto; }
-.reading-actions-reference { padding: 0 8px; color: var(--color-text-secondary); font-size: 12px; font-weight: 700; white-space: nowrap; }
+.reading-card .verse-flow { color: inherit; text-align: start; overflow-wrap: break-word; }
+/* ── Palette de surlignage ─────────────────────────────────────────────────
+   Cinq teintes, dont la première EST l'accent actif : c'est celle qui
+   s'applique par défaut, donc celle qui suit le preset et le mode. Les quatre
+   autres sont des teintes de repérage, volontairement distinctes de l'accent
+   pour qu'on ne les confonde pas avec lui.
+
+   Elles sont déclarées une seule fois, ici. La pastille et le lavis lisent la
+   même variable `--hl`, donc la couleur qu'on voit dans la barre est
+   exactement celle qui se pose sur le texte. Une seule source. */
+:root {
+  --hl-gold: #c88a00;
+  --hl-leaf: #1f9e63;
+  --hl-sky: #2f7fdb;
+  --hl-violet: #8b5cf6;
+  --hl-alpha: 34%;
+}
+/* En sombre, les teintes de repérage sont éclaircies : mélangées à
+   `transparent`, elles passeraient sous le texte sur un fond noir. */
+:root[data-theme='dark'] {
+  --hl-gold: #e0aa2e;
+  --hl-leaf: #3fbf7f;
+  --hl-sky: #5b9bf0;
+  --hl-violet: #a78bfa;
+  --hl-alpha: 42%;
+}
+
+[data-hl='accent'] { --hl: var(--acc); }
+[data-hl='gold'] { --hl: var(--hl-gold); }
+[data-hl='leaf'] { --hl: var(--hl-leaf); }
+[data-hl='sky'] { --hl: var(--hl-sky); }
+[data-hl='violet'] { --hl: var(--hl-violet); }
+
+.hl-swatch {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid color-mix(in srgb, var(--hl) 55%, var(--bd));
+  background: color-mix(in srgb, var(--hl) var(--hl-alpha), transparent);
+  color: var(--tx);
+  transition: transform 140ms ease, box-shadow 140ms ease;
+}
+.hl-swatch:active { transform: scale(0.92); }
+.hl-swatch.is-applied {
+  background: var(--hl);
+  color: var(--gc);
+  box-shadow: 0 0 0 2px var(--gc), 0 0 0 3px var(--hl);
+}
+
+/* ── Barre d'actions du verset ─────────────────────────────────────────────
+   Deux rangées plutôt qu'une : un en-tête (référence + sortie) puis les
+   actions. Sur une seule ligne, la référence et sept boutons se disputaient
+   la largeur d'un téléphone, et la barre débordait en défilement horizontal.
+   Ici les boutons se partagent la rangée à parts égales (`flex: 1 1 0`), donc
+   la barre ne peut pas dépasser, quelle que soit la largeur. */
+.verse-bar {
+  position: sticky;
+  bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+  z-index: 30;
+  margin: 18px auto 0;
+  width: 100%;
+  max-width: 560px;
+  padding: 6px 8px 8px;
+  border: 1px solid var(--bd);
+  border-radius: 18px;
+  background: var(--gc);
+  color: var(--tx);
+  box-shadow: 0 14px 38px var(--sh);
+}
+.verse-bar-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 2px 4px;
+  min-width: 0;
+}
+.verse-bar-reference {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--mut);
+}
+.verse-bar-reference-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+.verse-bar-count {
+  flex: none;
+  font-weight: 600;
+  color: var(--acc-text);
+  font-variant-numeric: tabular-nums;
+}
+.verse-bar-row { display: flex; align-items: center; gap: 2px; }
+.verse-action-btn {
+  flex: 1 1 0;
+  min-width: 0;
+  display: grid;
+  place-items: center;
+  height: 38px;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  color: var(--tx);
+  transition: background-color 150ms ease, color 150ms ease;
+}
+.verse-action-btn:focus-visible { outline: 2px solid var(--acc); outline-offset: -2px; }
+.verse-action-btn:active { background: color-mix(in srgb, var(--tx) 8%, transparent); }
+.verse-action-btn.is-active {
+  background: color-mix(in srgb, var(--acc) 13%, transparent);
+  color: var(--acc-text);
+}
+/* L'action principale de la barre : mémoriser. Un seul bouton plein, sinon
+   trois boutons colorés se neutralisent. */
+.verse-action-btn.is-primary { background: var(--acc); color: var(--on-accent); }
+.verse-action-btn.is-muted { color: var(--mut); }
+.verse-bar-head .verse-action-btn {
+  flex: 0 0 auto;
+  width: 30px;
+  height: 30px;
+}
+
+.verse-bar-palette {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 6px;
+  padding: 8px 2px 2px;
+  border-top: 1px solid var(--bd);
+}
+.verse-bar-palette-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--mut);
+}
+.verse-bar-swatches { display: flex; gap: 8px; margin-inline-start: auto; }
+.verse-bar-clear {
+  border: 0;
+  background: transparent;
+  color: var(--mut);
+  font-size: 11.5px;
+  font-weight: 700;
+  padding: 4px 2px;
+}
+.verse-bar-clear:hover { color: var(--tx); }
+
+.verse-bar-field {
+  margin-top: 6px;
+  padding: 8px 2px 2px;
+  border-top: 1px solid var(--bd);
+}
+.verse-bar-field-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+.verse-bar-field-title {
+  margin: 0 0 6px;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--mut);
+}
+.verse-bar-field-head .verse-bar-field-title { margin: 0; }
+.verse-bar-saved {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--color-success);
+}
+.verse-bar-input,
+.verse-bar-textarea {
+  width: 100%;
+  border: 1px solid var(--bd);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--tx) 5%, transparent);
+  color: var(--tx);
+  font-size: 13px;
+  padding: 9px 11px;
+  outline: none;
+}
+.verse-bar-textarea { resize: none; }
+.verse-bar-input:focus,
+.verse-bar-textarea:focus { border-color: var(--acc); }
+.verse-bar-field-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+  margin-top: 8px;
+}
+.verse-bar-ghost,
+.verse-bar-primary {
+  border: 0;
+  border-radius: 999px;
+  padding: 7px 14px;
+  font-size: 12px;
+  font-weight: 700;
+}
+.verse-bar-ghost { background: transparent; color: var(--mut); }
+.verse-bar-primary { background: var(--acc); color: var(--on-accent); }
+.verse-bar-primary:disabled { opacity: 0.5; }
+html:is([data-bg='image'],[data-app-bg='gradient']) .reading-header .full-screen-back { color: var(--tx); }
+/* La barre d'actions se peint avec `--gc`, la surface opaque du preset : sur
+   une image ou un dégradé elle reste lisible sans règle dédiée. */
+html:is([data-bg='image'],[data-app-bg='gradient']) .verse-bar { background: var(--gc); color: var(--tx); }
+html:is([data-bg='image'],[data-app-bg='gradient']) .verse-bar :is(.verse-bar-reference,.verse-bar-palette-label,.verse-bar-field-title,.verse-action-btn.is-muted) { color: var(--mut); }
+/* Les raccourcis du lecteur utilisent les jetons du fond effectivement
+   affiché, y compris pour les presets sombres activés en mode clair. */
+.reading-header .full-screen-back { color: var(--color-text-primary); background: color-mix(in srgb,var(--color-text-primary) 8%,transparent); }
 html[data-bg='image'] .reading-card { background: var(--gc); color: var(--tx); backdrop-filter: none; -webkit-backdrop-filter: none; }
-html[data-bg='image'] .reading-card :is(.reading-meta,.reading-card-heading p,.verse-flow-number) { color: var(--mut); }
+html[data-bg='image'] .reading-card :is(.reading-meta,.reading-card-heading p) { color: var(--mut); }
 html[data-app-bg='gradient'] .reading-card { background-color: var(--gc); background-image: linear-gradient(color-mix(in srgb,var(--gc) var(--gradient-wash),transparent),color-mix(in srgb,var(--gc) var(--gradient-wash),transparent)),var(--app-bg-image); color: var(--tx); backdrop-filter: none; -webkit-backdrop-filter: none; }
-html[data-app-bg='gradient'] .reading-card :is(.reading-meta,.reading-card-heading p,.verse-flow-number) { color: var(--mut); }
+html[data-app-bg='gradient'] .reading-card :is(.reading-meta,.reading-card-heading p) { color: var(--mut); }
 @media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
   html[data-app-bg='gradient'] .reading-card { background: var(--gc); }
 }
 html[data-app-bg='gradient']:is([data-transparency='reduced'],[data-contrast='high']) .reading-card { background: var(--gc); }
-html:is([data-bg='image'],[data-app-bg='gradient']) .reading-card .verse-flow-number.is-selected { background: var(--tx); color: var(--gc); }
-html:is([data-bg='image'],[data-app-bg='gradient']) :is(.reading-header,.reading-actions) { background-color: var(--gc); color: var(--tx); }
-html:is([data-bg='image'],[data-app-bg='gradient']) :is(.reading-actions-reference,.reading-actions .text-text-secondary,.reading-actions .text-text-muted,.reading-header .full-screen-title p) { color: var(--mut); }
-html[data-app-bg='gradient'] :is(.reading-header,.reading-actions) { background-image: linear-gradient(color-mix(in srgb,var(--gc) var(--gradient-wash),transparent),color-mix(in srgb,var(--gc) var(--gradient-wash),transparent)),var(--app-bg-image); }
-@media (prefers-reduced-transparency: reduce), (prefers-contrast: more) { html[data-app-bg='gradient'] :is(.reading-header,.reading-actions) { background-image: none; } }
-html[data-app-bg='gradient']:is([data-transparency='reduced'],[data-contrast='high']) :is(.reading-header,.reading-actions) { background-image: none; }
-/* Les raccourcis du lecteur utilisent les jetons du fond effectivement
-   affiché, y compris pour les presets sombres activés en mode clair. */
-.reading-header .full-screen-back { color: var(--color-text-primary); background: color-mix(in srgb,var(--color-text-primary) 8%,transparent); }
-.reading-actions .reading-actions-row button { color: var(--color-text-primary); }
-html:is([data-bg='image'],[data-app-bg='gradient']) .reading-header .full-screen-back,
-html:is([data-bg='image'],[data-app-bg='gradient']) .reading-actions .reading-actions-row button { color: var(--tx); }
+html:is([data-bg='image'],[data-app-bg='gradient']) .reading-header { background-color: var(--gc); }
+html:is([data-bg='image'],[data-app-bg='gradient']) .reading-header .full-screen-title p { color: var(--mut); }
+html[data-app-bg='gradient'] .reading-header { background-image: linear-gradient(color-mix(in srgb,var(--gc) var(--gradient-wash),transparent),color-mix(in srgb,var(--gc) var(--gradient-wash),transparent)),var(--app-bg-image); }
+@media (prefers-reduced-transparency: reduce), (prefers-contrast: more) { html[data-app-bg='gradient'] .reading-header { background-image: none; } }
+html[data-app-bg='gradient']:is([data-transparency='reduced'],[data-contrast='high']) .reading-header { background-image: none; }
+
 /* Un seul manuscrit pour les chapitres successifs, sans cartes intercalées. */
 .continuous-reader { overflow-anchor: none; }
 .continuous-manuscript { padding-top: clamp(20px,4vw,36px); }
-.reading-chapter + .reading-chapter { margin-top: 42px; }
+.reading-chapter + .reading-chapter { margin-top: 34px; }
+/* Le grand numéral suffit à marquer une nouvelle prise de parole : un filet
+   de plus par chapitre finissait par dessiner une grille de traits dans une
+   lecture continue de six chapitres. */
+.reading-chapter-heading[data-continuation='true'] { border-bottom: 0; padding-bottom: 4px; }
+.reading-chapter-heading[data-continuation='true'] p { font-size: 11.5px; }
 .reading-chapter-heading { padding-bottom: 14px; border-bottom: 1px solid var(--color-border); }
 .reading-chapter-heading h2 { margin: 14px 0 4px; font: 400 clamp(30px,5vw,42px)/1.15 var(--reading-font-family,Georgia),serif; color: inherit; }
 .reading-chapter-heading p { color: var(--color-text-secondary); font-size: 13px; }
@@ -2675,12 +2950,14 @@ html:is([data-bg='image'],[data-app-bg='gradient']) .reading-chapter-heading p {
 .continuous-more:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
 .continuous-boundary:empty { display: none; }
 /* Lecture biblique : le numéro du chapitre joue le rôle de lettrine. */
-.chapter-dropcap { float: inline-start; font-family: var(--reading-font-family, Georgia), serif; font-size: 5.4em; line-height: .78; margin: .06em .12em 0 0; color: var(--color-text-primary); }
 .reading-card .verse-flow { display: flow-root; }
-.reading-card .verse-flow-number { font-size: .8em; }
 .verse-flow-blocks .manuscript-verse { display: block; margin: 0 0 .8em; }
-.verse-flow-blocks .verse-flow-number { vertical-align: baseline; font-size: .9em; margin-inline: 0 .35em; }
-html:is([data-bg='image'],[data-app-bg='gradient']) .chapter-dropcap { color: var(--tx); }
+/* Disposition « blocs » : une ligne par verset, donc le numéro n'est plus un
+   exposant mais un repère de début de ligne. Il garde la taille du flux
+   (.76em) et perd seulement son décalage vertical — deux tailles différentes
+   pour la même information donnaient l'impression d'une lecture instable
+   quand on passait d'une disposition à l'autre. */
+.verse-flow-blocks .verse-flow-number { vertical-align: baseline; font-size: .76em; margin-inline: 0 .35em; }
 .reading-preferences { display: grid; gap: 16px; margin-bottom: 24px; }
 .reading-preferences fieldset { min-width: 0; }
 .reading-preferences legend { margin-bottom: 8px; color: var(--tx); font-weight: 700; font-size: 14px; }

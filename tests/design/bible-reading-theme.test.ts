@@ -11,7 +11,10 @@ describe('lecture biblique et thèmes', () => {
   });
   it('utilise les couleurs du thème pour le retour et les actions, et permet la sélection au clavier', () => {
     expect(css).toContain('.reading-header .full-screen-back { color: var(--color-text-primary)');
-    expect(css).toContain('.reading-actions .reading-actions-row button { color: var(--color-text-primary)');
+    // La barre d'actions se peint avec la surface du preset, comme les cartes.
+    expect(css).toContain('.verse-bar {');
+    expect(css).toContain('background: var(--gc)');
+    expect(css).toContain('.verse-action-btn {');
     expect(view).toContain('tabIndex={0}');
     expect(view).toContain("event.key === 'Enter'");
     expect(view).toContain("event.key === ' '");

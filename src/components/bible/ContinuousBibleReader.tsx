@@ -7,6 +7,7 @@ import { bibleBookName } from '@/lib/bible-book-name';
 import { useChapterSemanticTags } from '@/hooks/useSemanticTags';
 import ManuscriptView from './ManuscriptView';
 import VerseActionBar from './VerseActionBar';
+import { toggleVerseInSelection, type VerseSelection } from '@/lib/verse-selection';
 
 export interface ReaderChapter { book: BibleBookData; chapter: BibleChapterData }
 
@@ -26,8 +27,17 @@ export default function ContinuousBibleReader({ books, initialBookId, initialCha
   const chapters = useMemo(() => flattenBibleChapters(books), [books]);
   const initial = chapters.findIndex(({ book, chapter }) => book.id === initialBookId && chapter.number === initialChapter);
   const [range, setRange] = useState(() => ({ start: initial, end: Math.min(chapters.length, initial + 2) }));
-  const [selected, setSelected] = useState<{ bookId: string; chapter: number; verse: number; text: string } | null>(null);
-  const { tags } = useChapterSemanticTags(selected?.bookId ?? null, selected?.chapter ?? null);
+  /**
+   * Sélection MULTIPLE, bornée à un seul chapitre.
+   *
+   * Une sélection qui traverserait les chapitres rendrait la barre d'actions
+   * ambiguë (« surligner 12 versets répartis sur 3 chapitres, dans quelle
+   * couleur ? ») pour un bénéfice nul : on surligne un passage, pas un
+   * intervalle canonique. Changer de chapitre vide donc la sélection — mais
+   * seulement si les versets choisis n'appartiennent pas au nouveau chapitre.
+   */
+  const [selection, setSelection] = useState<VerseSelection | null>(null);
+  const { tags } = useChapterSemanticTags(selection?.bookId ?? null, selection?.chapter ?? null);
   const root = useRef<HTMLDivElement>(null);
   const before = useRef<HTMLDivElement>(null);
   const after = useRef<HTMLDivElement>(null);
@@ -45,8 +55,13 @@ export default function ContinuousBibleReader({ books, initialBookId, initialCha
 
   useLayoutEffect(() => {
     setRange({ start: initial, end: Math.min(chapters.length, initial + 2) });
-    setSelected(null);
+    setSelection(null);
   }, [initial, chapters.length, translationId]);
+
+  /** Appui = ajoute. Second appui sur le même verset = retire. */
+  const toggleVerse = useCallback((bookId: string, chapter: number, verse: number) => {
+    setSelection((current) => toggleVerseInSelection(current, bookId, chapter, verse));
+  }, []);
 
   useLayoutEffect(() => {
     const pending = pendingScroll.current;
@@ -85,14 +100,15 @@ export default function ContinuousBibleReader({ books, initialBookId, initialCha
         {continuous && range.start > 0 && <button type="button" className="continuous-more" onClick={loadPrevious}>{t('bible.previousPassages', 'Afficher les passages précédents')}</button>}
       </div>
       {chapters.slice(continuous ? range.start : initial, continuous ? range.end : initial + 1).map(({ book, chapter }, offset) => {
-        const isSelectedChapter = selected?.bookId === book.id && selected.chapter === chapter.number;
+        const isSelectedChapter = selection?.bookId === book.id && selection.chapter === chapter.number;
         const index = (continuous ? range.start : initial) + offset;
         const showBook = !continuous || index === range.start || chapters[index - 1]?.book.id !== book.id;
         return <ManuscriptView key={`${book.id}:${chapter.number}`} embedded bookId={book.id}
           bookName={bibleBookName(book.id, i18n.resolvedLanguage || i18n.language, book.name)} showBookTitle={showBook}
           translationId={showBook ? translationId : undefined} chapter={chapter.number} verses={chapter.verses}
-          tags={isSelectedChapter ? tags : null} selectedVerse={isSelectedChapter ? selected.verse : null}
-          onSelectVerse={(verse) => setSelected({ bookId: book.id, chapter: chapter.number, verse, text: chapter.verses.find((item) => item.number === verse)?.text ?? '' })} />;
+          tags={isSelectedChapter ? tags : null}
+          selectedVerses={isSelectedChapter ? selection?.verses ?? [] : []}
+          onToggleVerse={(verse) => toggleVerse(book.id, chapter.number, verse)} />;
       })}
       <div ref={after} className="continuous-boundary">
         {continuous && range.end < chapters.length && <button type="button" className="continuous-more" onClick={loadNext}>{t('bible.nextPassages', 'Afficher la suite')}</button>}
@@ -102,6 +118,19 @@ export default function ContinuousBibleReader({ books, initialBookId, initialCha
       <button type="button" disabled={initial === 0} onClick={() => navigateChapter(initial - 1)}>{t('bible.previousChapter', 'Chapitre précédent')}</button>
       <button type="button" disabled={initial === chapters.length - 1} onClick={() => navigateChapter(initial + 1)}>{t('bible.nextChapter', 'Chapitre suivant')}</button>
     </nav>}
-    {selected && <VerseActionBar bookId={selected.bookId} chapter={selected.chapter} verse={selected.verse} verseText={selected.text} translationId={translationId} />}
+    {selection && (
+      <VerseActionBar
+        bookId={selection.bookId}
+        chapter={selection.chapter}
+        verses={selection.verses}
+        // Texte du verset de tête seulement : la barre n'en affiche qu'un
+        // extrait, et concaténer dix versets écraserait la référence.
+        verseText={chapters
+          .find(({ book, chapter }) => book.id === selection.bookId && chapter.number === selection.chapter)
+          ?.chapter.verses.find((item) => item.number === selection.verses[0])?.text ?? ''}
+        translationId={translationId}
+        onClearSelection={() => setSelection(null)}
+      />
+    )}
   </div>;
 }

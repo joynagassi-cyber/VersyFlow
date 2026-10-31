@@ -10,7 +10,14 @@ describe('icônes Solar duotone', () => {
     const html = renderToStaticMarkup(createElement(DuoIcon, { icon: Home01Icon, size: 20 }));
     expect(html).toContain('solar-home-smile-line-duotone');
     expect(html).toContain('solar-accent');
-    expect(html).toContain('--solar-secondary-opacity:0.5');
+    // La densité du second calque ne doit PAS être figée sur la racine du SVG :
+    // elle vient du thème (cf. `.solar.solar-accent` dans globals.css). Le
+    // `var(--solar-secondary-opacity, .5)` des tracés est le repli de la
+    // bibliothèque, donc surchargeable — c'est ce qu'on veut.
+    if (html.includes('style="width')) {
+      const rootStyle = html.slice(html.indexOf('style="width'), html.indexOf('"', html.indexOf('style="width') + 8));
+      expect(rootStyle).not.toContain('--solar-secondary-opacity');
+    }
   });
   it('utilise une variante bold duotone pour les distinctions', () => {
     const html = renderToStaticMarkup(createElement(DuoIcon, { icon: FlameIcon }));

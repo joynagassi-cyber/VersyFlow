@@ -46,7 +46,10 @@ describe('Lot 2 — Sélecteur de dégradés, mode sombre neutre et garde-fous C
     expect(css).toContain(
       "html[data-app-bg='gradient'] .appearance-segment-button[aria-pressed='true']",
     );
-    expect(css).toContain("html[data-app-bg='gradient'] .verse-flow-number.is-selected");
+    // Le numéro de verset sélectionné n'a plus de fond (la sélection est un
+    // soulignement pointillé) : le contrôle actif de la lecture est désormais
+    // l'action principale de la barre de verset.
+    expect(css).toContain("html[data-app-bg='gradient'] .verse-action-btn.is-primary");
   });
 
   it('maintient un mode sombre neutre quasi noir sans règle background-attachment: fixed', () => {
