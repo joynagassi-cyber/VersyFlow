@@ -1118,7 +1118,6 @@ ion-tab-button.tab-selected ion-icon {
      respecté au-dessus de ce plancher. */
   --glass-alpha-min: .8;
 }
-:root[data-theme='dark'] { --glass-rgb: 18, 18, 18; }
 html[data-bg='image'] { min-height: 100dvh; }
 html[data-bg='image'] .glass {
   background: rgba(var(--glass-rgb), var(--glass-alpha));
@@ -1167,53 +1166,121 @@ html[data-bg='image'][data-contrast='high'] :is(.card-glass, .surface-glass, .bi
   --solar-secondary-opacity: 0.35;
 }
 
-/* Accueil premium : jetons neutres fixes, accent hérité du thème image. */
-:root, :root[data-theme="light"], .appearance-preview[data-theme="light"] {
-  --gc: #ffffff; --gc-rgb: 255,255,255;
-  --tx: #1b1220; --mut: #5b4a57;
-  --acc: var(--color-primary); --acc2: var(--color-accent);
-  --bd: rgba(255,255,255,.75); --hi: rgba(255,255,255,.9); --sh: rgba(74,22,48,.18);
-  --v1: rgba(255,236,244,.25); --v2: rgba(255,226,238,.55);
-  --v1: color-mix(in srgb, var(--tint) 12%, rgba(255,255,255,.2));
-  --v2: color-mix(in srgb, var(--tint) 18%, rgba(255,255,255,.55));
-  --acc-text: var(--tx); --acc-text: color-mix(in srgb, var(--acc) 50%, #1b1220);
-  --bl: var(--bg-blur); --gb: var(--glass-blur); --ga: var(--glass-alpha); --veil: var(--veil-alpha);
-  --premium-on: #1a0b14;
+/* ── Jetons de surface : UNE formule, deux modes ──────────────────────────
+   CE BLOC A ÉTÉ RÉÉCRIT PARCE QUE LE SOMBRE N'ÉTAIT PAS UNE PALETTE.
+
+   Trois défauts mesurables avant réécriture :
+   1. Cinq jetons (`--bl`, `--gb`, `--ga`, `--veil`, `--premium-on`)
+      n'existaient QUE dans le bloc clair ; le sombre en héritait par accident,
+      faute d'être défini. Un mode incomplet ne se voit pas tout de suite : il
+      se voit le jour où l'un de ces jetons porte enfin quelque chose.
+   2. Les valeurs étaient figées (`--gc: #171717`, `--tx: #f3f3f3`), donc le
+      sombre ignorait le preset actif. Pire : `--gc` valait le FOND (#171717)
+      alors qu'en clair il valait la SURFACE (#ffffff). Les cartes sombres
+      n'avaient donc aucune élévation — c'était l'écart de conformité le plus
+      visible entre les deux modes.
+   3. Le sombre désaturait l'accent de 45 % avec `--mut`, transformation que le
+      clair ne subit pas. Deux modes qui n'appliquent pas la même formule ne
+      sont pas conformes, même quand chacun est « joli ».
+
+   Désormais : les deux modes déclarent les MÊMES jetons, et chaque valeur est
+   calculée à partir du preset (`--color-*`), lui-même alimenté par le pont
+   shadcn en clair comme en sombre. La seule différence assumée est l'ANCRE :
+   en clair un reflet se calcule depuis la surface, en sombre depuis l'encre.
+   Les formules se répondent deux à deux ; elles ne divergent plus.
+
+   `--gc-rgb` / `--bg-rgb` / `--glass-rgb` restent des triplets, parce que les
+   règles historiques les lisent dans `rgba(var(--gc-rgb), a)`. Ils ne sont
+   plus écrits à la main : `ThemeManager` les recalcule sur le preset réel
+   (`src/theme/surface-triplets.ts`). Les valeurs ci-dessous ne sont qu'un
+   repli pour le premier paint, avant que le preset ne soit lisible. */
+:root,
+:root[data-theme='light'],
+:root[data-theme='dark'],
+.appearance-preview[data-theme='light'],
+.appearance-preview[data-theme='dark'] {
+  /* Identité : le preset décide, dans les deux modes. */
+  --acc: var(--color-primary);
+  --acc2: var(--color-accent);
+  --tx: var(--color-text-primary);
+  --mut: var(--color-text-secondary);
+  /* Surfaces construites depuis les triplets : elles restent OPALQUES même
+     quand `--color-surface` devient translucide sous une image de thème. */
+  --gc: rgb(var(--gc-rgb));
+  --bg: rgb(var(--bg-rgb));
+
+  /* Encre posée sur une surface PLEINE d'accent. `--color-on-primary` suit
+     `--primary-foreground` du preset : c'est l'encre que son auteur a prévue,
+     donc la seule qui reste juste quand un preset déclare du texte sombre sur
+     un accent clair. Un accent FIXE choisi par l'utilisateur la remplace, car
+     elle ne décrit alors plus l'accent réellement affiché. */
+  --on-accent: var(--color-on-primary);
+
+  /* Densités du verre : réglées par l'utilisateur, identiques dans les modes. */
+  --bl: var(--bg-blur); --gb: var(--glass-blur);
+  --ga: var(--glass-alpha); --veil: var(--veil-alpha);
+
+  /* Replis, mesurés sur le thème de base. Remplacés au premier rendu. */
+  --gc-rgb: 255, 255, 255;
+  --bg-rgb: 251, 249, 249;
+  --glass-rgb: 255, 255, 255;
+  /* Intensité du voile sur une image de thème : même formule, densité propre. */
+  --veil-strength: 1;
+  /* Le logo est un fichier fixe ; sa saturation est un réglage de mode, pas
+     une règle cachée appliquée à un seul des deux modes. */
+  --brand-saturation: 1;
 }
+
+:root, :root[data-theme='light'], .appearance-preview[data-theme='light'] {
+  --bd: color-mix(in srgb, var(--gc) 75%, transparent);
+  --hi: color-mix(in srgb, var(--gc) 90%, transparent);
+  --sh: color-mix(in srgb, var(--tx) 18%, transparent);
+  --v1: color-mix(in srgb, var(--tint) 12%, color-mix(in srgb, var(--gc) 20%, transparent));
+  --v2: color-mix(in srgb, var(--tint) 18%, color-mix(in srgb, var(--gc) 55%, transparent));
+  --acc-text: color-mix(in srgb, var(--acc) 50%, var(--tx));
+  /* Encre posée sur un DÉGRADÉ acc → acc2. Mesuré : sur l'accent de marque
+     (#e6067a), seul un noir presque pur dépasse 4,5:1 — le blanc y plafonne à
+     4,50 et s'effondre à 1,50 sur l'extrémité claire du dégradé. On garde donc
+     une encre sombre, dérivée de l'encre du thème, et on ne prétend pas qu'elle
+     atteint AA sur l'accent : c'est une paire de marque préexistante (4,24:1
+     avant réécriture, 4,05:1 ici). Elle est constante sur le dégradé entier,
+     ce qui est le point qui compte pour un texte posé sur un fond mouvant. */
+  --premium-on: color-mix(in srgb, var(--acc) 4%, var(--tx));
+}
+
 :root[data-theme='dark'], .appearance-preview[data-theme='dark'] {
-  --gc: #171717; --gc-rgb: 23,23,23;
-  --tx: #f3f3f3; --mut: #c3c3c3;
-  /* Accent de l'image atténué avec le neutre existant, uniquement en sombre. */
-  --acc: var(--color-primary); --acc2: var(--color-accent);
-  --acc: color-mix(in srgb, var(--color-primary) 45%, var(--mut));
-  --acc2: color-mix(in srgb, var(--color-accent) 45%, var(--mut));
-  --bd: rgba(255,255,255,.14); --hi: rgba(255,255,255,.20); --sh: rgba(0,0,0,.35);
-  --v1: rgba(18,18,18,.30); --v2: rgba(8,8,8,.72);
+  /* Replis sombres : surface de carte (#1e1e1e), fond (#121212). */
+  --gc-rgb: 30, 30, 30;
+  --bg-rgb: 18, 18, 18;
+  --glass-rgb: 18, 18, 18;
+  --veil-strength: 1.1;
+  --brand-saturation: .55;
+  --bd: color-mix(in srgb, var(--tx) 14%, transparent);
+  --hi: color-mix(in srgb, var(--tx) 20%, transparent);
+  --sh: color-mix(in srgb, var(--bg) 35%, transparent);
   --v1: color-mix(in srgb, var(--tint) 30%, transparent);
-  --v2: color-mix(in srgb, var(--tint) 50%, rgba(8,8,8,.78));
-  --acc-text: var(--tx); --acc-text: color-mix(in srgb, var(--acc) 70%, #fff);
+  --v2: color-mix(in srgb, var(--tint) 50%, color-mix(in srgb, var(--bg) 78%, transparent));
+  --acc-text: color-mix(in srgb, var(--acc) 70%, var(--tx));
+  /* Encre posée sur l'accent : on part du FOND sombre, pas d'un blanc qui
+     rendrait le texte illisible sur un dégradé clair. */
+  --premium-on: color-mix(in srgb, var(--acc) 4%, var(--bg));
 }
 html[data-bg='image']::before { filter: var(--bg-filter, none); }
 /* Le voile protège le BAS de l'écran (là où vivent les cartes) et laisse le
    HAUT respirer : c'est ce dégradé qui distingue une image « posée » d'une
    image « effacée ». Les anciennes valeurs (0,85 → 0,90 d'opacité, multipliées
    par un voile utilisateur à 100 %) cachaient l'image entière. */
+/* Le voile est peint avec la SURFACE du preset, à une densité qui dépend du
+   mode (`--veil-strength`) — et non avec des rgba figés, qui rendaient un
+   voile clair sur un thème sombre et l'inverse. Une formule, deux densités. */
 html[data-bg='image']::after {
   background: linear-gradient(
     to bottom,
-    rgba(255,236,244,0) 0%,
-    color-mix(in srgb, var(--tint) 6%, rgba(255,236,244,.30)) 55%,
-    color-mix(in srgb, var(--tint) 8%, rgba(255,236,244,.62)) 100%
+    transparent 0%,
+    color-mix(in srgb, var(--tint) 6%, color-mix(in srgb, var(--gc) calc(30% * var(--veil-strength)), transparent)) 55%,
+    color-mix(in srgb, var(--tint) 8%, color-mix(in srgb, var(--gc) calc(62% * var(--veil-strength)), transparent)) 100%
   );
   opacity: var(--veil);
-}
-html[data-bg='image'][data-theme='dark']::after {
-  background: linear-gradient(
-    to bottom,
-    rgba(8,8,8,0) 0%,
-    color-mix(in srgb, var(--tint) 18%, rgba(8,8,8,.38)) 55%,
-    color-mix(in srgb, var(--tint) 22%, rgba(8,8,8,.66)) 100%
-  );
 }
 /* Le gris « discret » suit le preset, comme le texte secondaire.
    `tweakcn-presets.css` ne ponte que `--color-text-secondary` ; les écrans
@@ -1652,12 +1719,15 @@ html[data-bg='image']:is([data-transparency='reduced'],[data-contrast='high']) .
   aspect-ratio: 3 / 2;
   overflow: hidden;
   border-radius: 14px;
-  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .08), 0 1px 2px rgba(0, 0, 0, .06);
+  /* L'anneau était noir : invisible sur un fond sombre, donc la vignette
+     perdait son contour exactement dans le mode qui en avait besoin. Il suit
+     désormais l'encre du thème, clair comme sombre. */
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--tx) 8%, transparent), 0 1px 2px color-mix(in srgb, var(--tx) 6%, transparent);
   transition: transform 160ms ease, box-shadow 160ms ease;
 }
-.appearance-image-option:hover .appearance-thumbnail { transform: translateY(-1px); box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .10), 0 4px 10px rgba(0, 0, 0, .12); }
+.appearance-image-option:hover .appearance-thumbnail { transform: translateY(-1px); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--tx) 10%, transparent), 0 4px 10px color-mix(in srgb, var(--tx) 12%, transparent); }
 .appearance-image-option :is(picture, img) { object-position: center 38%; }
-.appearance-image-option[aria-pressed='true'] .appearance-thumbnail { box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .10), 0 6px 16px color-mix(in srgb, var(--acc) 22%, transparent); }
+.appearance-image-option[aria-pressed='true'] .appearance-thumbnail { box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--tx) 10%, transparent), 0 6px 16px color-mix(in srgb, var(--acc) 22%, transparent); }
 .appearance-image-option picture,.appearance-image-option img { display: block; width: 100%; height: 100%; object-fit: cover; }
 .appearance-image-option .appearance-thumbnail-check { position: absolute; inset: 8px 8px auto auto; }
 .appearance-image-title { display: block; margin-top: 6px; font-size: 14px; line-height: 1.3; }
@@ -1681,45 +1751,65 @@ html[data-bg='image']:is([data-transparency='reduced'],[data-contrast='high']) .
 .appearance-image-option:disabled { cursor: not-allowed; }
 
 /* Même voile dans l'aperçu qui réutilise les composants Accueil. */
-.appearance-preview[data-theme='light'] .appearance-preview-window::before {
-  background: linear-gradient(to bottom, rgba(255,236,244,.85), rgba(255,226,238,.90));
-  background: linear-gradient(to bottom, color-mix(in srgb,var(--tint) 8%,rgba(255,236,244,.85)), color-mix(in srgb,var(--tint) 8%,rgba(255,226,238,.90)));
-}
-.appearance-preview[data-theme='dark'] .appearance-preview-window::before {
-  background: linear-gradient(to bottom, rgba(18,18,18,.85), rgba(8,8,8,.90));
+.appearance-preview .appearance-preview-window::before {
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--tint) 8%, color-mix(in srgb, var(--gc) 85%, transparent)),
+    color-mix(in srgb, var(--tint) 8%, color-mix(in srgb, var(--gc) 90%, transparent))
+  );
 }
 
-/* Le mode sombre reste discret, sans recolorer l'image d'origine. */
-html[data-theme='dark'] .mobile-header .text-primary,
-html[data-theme='dark'] .mobile-tabs [aria-current='page'] .text-primary { color: var(--acc-text); }
-html[data-theme='dark'] .mobile-tabs [aria-current='page'] > .bg-primary { background-color: var(--acc); }
-html[data-theme='dark'] .brand-tile img { filter: saturate(.55); }
-html[data-theme='dark'] .desktop-rail .rail-label.text-primary { color: var(--acc-text); }
-html[data-theme='dark'] .desktop-rail button.bg-primary { background: var(--acc); color: var(--premium-on); }
-html[data-theme='dark'] .desktop-rail button.bg-primary .solar { color: var(--premium-on); }
-/* Bouton Ionic existant : aspect cohérent avec la coque sombre. */
-html[data-theme='dark'] .app-main ion-fab-button::part(native) { width: 48px; height: 48px; border: 1px solid var(--bd); border-radius: 50%; background: var(--gc); color: var(--mut); box-shadow: 0 10px 34px var(--sh); }
+/* ── Encre d'accent : une règle, deux modes ────────────────────────────────
+   Ces six règles étaient écrites deux fois, une fois neutre et une fois
+   préfixée `html[data-theme='dark']`, parce que `text-primary` (le magenta
+   vif) ne tenait pas sur le fond sombre. Le correctif vivait donc dans le
+   mode qui souffrait, et tout composant ajouté ensuite en héritait le défaut.
+   Elles s'appuient maintenant sur `--acc-text`, calculé PAR MODE à partir de
+   l'accent : le clair obtient un accent assombri, le sombre un accent
+   éclairci, avec la même règle. */
+.mobile-header .text-primary,
+.mobile-tabs [aria-current='page'] .text-primary,
+.desktop-rail .rail-label.text-primary { color: var(--acc-text); }
+
+.mobile-tabs [aria-current='page'] > .bg-primary,
+.desktop-rail button.bg-primary,
+.settings-premium .settings-toggle[aria-pressed='true'] {
+  background-color: var(--acc);
+  color: var(--on-accent);
+}
+.desktop-rail button.bg-primary .solar { color: var(--on-accent); }
+
+/* Le logo est un fichier unique : sa désaturation était une règle sombre
+   posée à côté, invisible depuis le clair. C'est désormais un jeton de mode. */
+.brand-tile img { filter: saturate(var(--brand-saturation)); }
+
+/* Bouton Ionic : même matériau que le reste, dans les deux modes. */
+.app-main ion-fab-button::part(native) {
+  width: 48px; height: 48px;
+  border: 1px solid var(--bd);
+  border-radius: 50%;
+  background: var(--gc);
+  color: var(--mut);
+  box-shadow: 0 10px 34px var(--sh);
+}
 html[data-theme='dark'] .app-main ion-fab-button::part(close-icon) { display: none; }
-html[data-theme='dark'] .settings-premium .settings-toggle[aria-pressed='true'] { background: var(--acc); }
 
-/* Accent fixe optionnel : issu du catalogue existant, limité aux rôles d'accent. */
-:root[data-fixed-accent], :root[data-fixed-accent] .appearance-preview[data-theme='light'] {
-  --acc: var(--fixed-accent); --acc2: var(--fixed-accent);
-  --acc: color-mix(in srgb, var(--fixed-accent) 75%, #fff);
-  --acc2: color-mix(in srgb, var(--fixed-accent) 75%, #fff);
+/* Accent fixe optionnel : issu du catalogue existant, limité aux rôles d'accent.
+   Il suivait lui aussi deux règles différentes — 75 % vers le blanc en clair,
+   45 % vers le gris `--mut` en sombre — si bien qu'un même accent choisi par
+   l'utilisateur n'avait ni la même teinte ni la même vivacité selon le mode.
+   Une seule formule, ancrée sur la SURFACE : le mode se contente de fournir
+   l'ancre, il n'applique plus de transformation qui lui soit propre. */
+:root[data-fixed-accent],
+:root[data-fixed-accent] .appearance-preview {
+  --acc: color-mix(in srgb, var(--fixed-accent) 75%, var(--gc));
+  --acc2: color-mix(in srgb, var(--fixed-accent) 75%, var(--gc));
+  /* Un accent imposé n'est plus celui du preset : l'encre déclarée par le
+     preset ne décrit donc plus la surface, on reprend celle des dégradés
+     (sombre, constante). C'était déjà le comportement des boutons en mode
+     accent fixe — il est simplement nommé au lieu d'être répété quatre fois. */
+  --on-accent: var(--premium-on);
 }
-:root[data-theme='dark'][data-fixed-accent], :root[data-fixed-accent] .appearance-preview[data-theme='dark'] {
-  --acc: var(--fixed-accent); --acc2: var(--fixed-accent);
-  --acc: color-mix(in srgb, var(--fixed-accent) 45%, var(--mut));
-  --acc2: color-mix(in srgb, var(--fixed-accent) 45%, var(--mut));
-}
-html[data-fixed-accent] .mobile-header .text-primary,
-html[data-fixed-accent] .mobile-tabs [aria-current='page'] .text-primary,
-html[data-fixed-accent] .desktop-rail .rail-label.text-primary { color: var(--acc-text); }
-html[data-fixed-accent] .mobile-tabs [aria-current='page'] > .bg-primary,
-html[data-fixed-accent] .settings-premium .settings-toggle[aria-pressed='true'] { background-color: var(--acc); }
-html[data-fixed-accent] .desktop-rail button.bg-primary { background: var(--acc); color: var(--premium-on); }
-html[data-fixed-accent] .desktop-rail button.bg-primary .solar { color: var(--premium-on); }
 .appearance-accent-choices { display: grid; gap: 16px; }
 .appearance-accent-auto { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; border: 1px solid var(--bd); border-radius: 16px; background: color-mix(in srgb,var(--tx) 6%,transparent); color: var(--tx); font-size: 14px; font-weight: 600; }
 .appearance-accent-auto[aria-pressed='true'] { outline: 2px solid var(--acc); outline-offset: -2px; }
