@@ -1,5 +1,11 @@
 // Storage isolation must run before persisted stores are evaluated.
 import '@/dev/mock/install-isolation';
+// En mode mock, toute requête hors origine est refusée AVANT de partir : le
+// frontend ne peut pas joindre le backend, même par accident. Installé avant
+// tout autre module pour intercepter les clients créés à l'import.
+import { installNetworkGuard } from '@/dev/network-guard';
+
+installNetworkGuard();
 import { readOnboardingProgress } from '@/onboarding/progress';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
