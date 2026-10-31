@@ -224,13 +224,14 @@ export function themePortraitUrl(id: string): string {
   // Le dossier est la CATÉGORIE du thème (esprit, evenements…), comme
   // l'écrit scripts/generate-themes.mjs — pas les segments de l'id.
   const category = findThemeById(id)?.category ?? id.split('-')[0];
-  // Les illustrations sont en PNG, les photos importées en WebP.
-  const ext = photoThemeExt(id) ?? 'png';
+  // Tout le catalogue est servi en WebP depuis le lot du 31/10/2026 : les
+  // PNG d'origine (163 Mo) ont été convertis, le poids total passe à 17 Mo.
+  const ext = photoThemeExt(id) ?? 'webp';
   return `/themes/${category}/${id}-portrait.${ext}`;
 }
 export function themeLandscapeUrl(id: string): string {
   const category = findThemeById(id)?.category ?? id.split('-')[0];
-  const ext = photoThemeExt(id) ?? 'png';
+  const ext = photoThemeExt(id) ?? 'webp';
   return `/themes/${category}/${id}-landscape.${ext}`;
 }
 /** Vignette du sélecteur — toujours en WebP, quel que soit le format source. */

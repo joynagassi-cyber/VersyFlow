@@ -120,8 +120,12 @@ après en bas, même ordre).
 3. **La vibrance n'est pas implémentée.** ImageMagick 6 n'en a pas
    l'équivalent : la recette plafonne la saturation au lieu de la moduler par
    zone. C'est un compromis assumé, pas la solution idéale.
-4. **Aucune application en masse n'a été faite.** Les 240 fichiers de
-   `public/themes/` sont intacts.
+4. **Le lot est appliqué** (31/10/2026, décision de l'auteur après revue de
+   l'échantillon) : 100 illustrations et 40 photos traitées, PNG convertis en
+   WebP, `public/themes/` passe de **163 Mo à 17 Mo**. Planche de contrôle :
+   `docs/artwork/themes-100-avant-apres.jpg` (avant en haut, après en bas).
+   Réserve constatée après application : une poignée de scènes très colorées
+   (magenta, rouge) paraissent **suraaturées** au plafond de 112 %.
 
 ## 6. Outils
 

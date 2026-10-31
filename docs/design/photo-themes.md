@@ -110,4 +110,5 @@ portrait `< 1024 px` et paysage `>= 1024 px`, persistance `accent = id` et repli
 | Intégration catalogue / URLs / vignettes (`ALL_THEMES = 120`) | fait et testé |
 | **40 visuels générés + 20 vignettes WebP** | **livré et vérifié** (`tests/design/photo-themes.test.ts` : 9/9 OK ; `tests/design` : 392/392) |
 | Provenance (généré, plus Unsplash) | documentée ci-dessus, sources hors dépôt |
+| Traitement | tirage `theme-treat.mjs` (densité, netteté) appliqué aux 40 visuels |
 | Revue visuelle des 40 | planche `docs/artwork/lot-40-planches-reunies.jpg` ; réserves listées ci-dessus |
