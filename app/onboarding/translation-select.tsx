@@ -128,7 +128,7 @@ export default function TranslationPickerScreen() {
           <div className="flex shrink-0 flex-col items-end gap-1">
             {isSelected && <DuoIcon icon={Check} size={18} className="text-primary" />}
             {!available && (
-              <span className="rounded-full bg-warning/10 px-2 py-0.5 text-[10px] font-bold uppercase text-warning">
+              <span className="rounded-full bg-warning/10 px-2 py-0.5 text-3xs font-bold uppercase text-warning">
                 {t('onboarding.remoteVersion', 'Téléchargement requis')}
               </span>
             )}
@@ -204,7 +204,7 @@ export default function TranslationPickerScreen() {
                 <DuoIcon icon={Languages} size={13} className="text-primary" />
                 {group.language}
               </p>
-              <span className="rounded-full bg-surface-tint px-2 py-0.5 text-[11px] font-bold text-text-secondary">
+              <span className="rounded-full bg-surface-tint px-2 py-0.5 text-2xs font-bold text-text-secondary">
                 {t('onboarding.langVersionsCount', { count: group.ids.length })}
               </span>
             </div>

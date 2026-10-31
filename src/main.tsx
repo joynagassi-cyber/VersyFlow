@@ -601,9 +601,9 @@ function BootSplash() {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        background: '#fbf9f9',
+        background: 'var(--background, #fbf9f9)',
         color: 'var(--color-primary, #e6067a)',
-        fontFamily: 'Georgia, serif',
+        fontFamily: 'var(--font-serif, Georgia), serif',
         fontSize: 22,
         fontWeight: 700,
       }}

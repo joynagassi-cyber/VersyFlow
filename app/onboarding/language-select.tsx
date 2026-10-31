@@ -84,7 +84,7 @@ export default function LanguagePickerScreen() {
                   <DuoIcon icon={Languages} size={18} className="text-primary" />
                   <span className="text-lg font-semibold text-text-primary">{lang.name}</span>
                   {lang.rtl && (
-                    <span className="rounded bg-surface-tint px-2 py-0.5 text-[11px] font-semibold text-primary">
+                    <span className="rounded bg-surface-tint px-2 py-0.5 text-2xs font-semibold text-primary">
                       RTL
                     </span>
                   )}

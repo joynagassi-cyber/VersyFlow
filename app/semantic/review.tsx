@@ -15,6 +15,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Compass01Icon as Compass } from '@/components/ui/solar-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
+import { LoadingBlock } from '@/components/ui/Skeleton';
 import { DuoIcon } from '@/components/ui/DuoIcon';
 import { Button } from '@/components/ui/button';
 import { HintNote, SectionCard, StatTile } from '@/components/family/FamilyKit';
@@ -92,7 +93,7 @@ export default function SemanticReviewScreen() {
   if (loading || !data) {
     return (
       <FullScreenPage title={t('tree.reviseBranch', 'Réviser une branche')} backPath="/semantic/tree">
-        <p className="text-sm text-text-muted">{t('common.loading', 'Chargement...')}</p>
+        <LoadingBlock label={t('common.loading', 'Chargement…')} className="py-10" />
       </FullScreenPage>
     );
   }

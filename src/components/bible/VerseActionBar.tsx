@@ -59,7 +59,7 @@ function ActionButton({
     <button
       onClick={onClick}
       className={cn(
-        'flex w-[64px] flex-col items-center gap-1 rounded-xl py-2 text-[11px] font-semibold transition active:scale-95',
+        'flex w-[64px] flex-col items-center gap-1 rounded-xl py-2 text-2xs font-semibold transition active:scale-95',
         active ? 'bg-primary/10 text-primary' : 'text-text-secondary active:bg-surface-tint',
       )}
     >
@@ -354,7 +354,7 @@ export default function VerseActionBar({
               className="w-full rounded-xl bg-surface-tint p-3 text-sm text-text-primary outline-none"
             />
             <div className="mt-2 flex items-center justify-between gap-2">
-              <p className="text-[11px] text-text-muted">
+              <p className="text-2xs text-text-muted">
                 {t('settings.verseBar.tagHint', 'Ajouté immédiatement à votre arbre sémantique')}
               </p>
               <div className="flex gap-2">

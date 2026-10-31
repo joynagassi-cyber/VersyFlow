@@ -38,7 +38,7 @@ export default function ThemePickerScreen() {
       <div className="screen-column">
         {/* Pure white / black quick reset */}
         <div className="mb-4 rounded-2xl bg-surface p-3 shadow-sm">
-          <p className="mb-2 text-xs font-bold uppercase tracking-wide text-text-muted">
+          <p className="mb-2 section-label">
             {t('settings.themeReset', 'Fond par défaut')}
           </p>
           <div className="flex gap-2">

@@ -50,6 +50,9 @@ const config = {
         'warning-light': 'var(--color-warning-light)',
         info: 'var(--color-info)',
         'info-light': 'var(--color-info-light)',
+        // Encre des surfaces d'état (voir globals.css, `--on-status`) : le
+        // seul jeton à poser sur `bg-error`/`bg-success`/`bg-warning`/`bg-info`.
+        'on-status': 'var(--on-status)',
         'icon-bg-rose': 'var(--color-icon-bg-rose)',
         'icon-bg-purple': 'var(--color-icon-bg-purple)',
         'icon-bg-blue': 'var(--color-icon-bg-blue)',
@@ -98,6 +101,11 @@ const config = {
       // Échelle typographique explicite (interface). Les tailles de contenu
       // biblique restent pilotées par les réglages de lecture (theme-fonts.ts).
       fontSize: {
+        // Deux pas ajoutés pour supprimer les tailles littérales : le micro-
+        // libellé (10 px, pastilles et légendes de graphique) et le titre
+        // d'accueil de l'onboarding (38 px). Toute taille de l'interface est
+        // désormais nommée — voir tests/design/premium-finish.test.ts.
+        '3xs': ['10px', { lineHeight: '13px' }],
         '2xs': ['11px', { lineHeight: '14px' }],
         xs: ['12px', { lineHeight: '16px' }],
         sm: ['13px', { lineHeight: '18px' }],
@@ -109,6 +117,7 @@ const config = {
         '3xl': ['22px', { lineHeight: '28px' }],
         '4xl': ['26px', { lineHeight: '32px' }],
         '5xl': ['30px', { lineHeight: '36px' }],
+        display: ['38px', { lineHeight: '42px' }],
       },
       // Largeurs de contenu : la mesure de lecture, pas la largeur de l'écran.
       maxWidth: {

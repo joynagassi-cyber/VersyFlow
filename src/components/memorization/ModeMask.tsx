@@ -116,7 +116,7 @@ export function ModeMask({
               className={cn(
                 'rounded-full px-3.5 py-1.5 text-xs font-bold transition',
                 maskMode === 'manual'
-                  ? 'bg-text-primary text-[color:var(--on)] shadow-sm'
+                  ? 'bg-text-primary text-background shadow-sm'
                   : 'text-text-secondary',
               )}
             >
@@ -128,7 +128,7 @@ export function ModeMask({
               className={cn(
                 'flex items-center gap-1 rounded-full px-3.5 py-1.5 text-xs font-bold transition',
                 maskMode === 'auto'
-                  ? 'bg-text-primary text-[color:var(--on)] shadow-sm'
+                  ? 'bg-text-primary text-background shadow-sm'
                   : 'text-text-secondary',
               )}
             >
@@ -204,7 +204,7 @@ export function ModeMask({
             <span className="mem-label">{t('workspace.result', 'RÉSULTAT')} · {t('workspace.diffWord', 'diff mot à mot')}</span>
             <span
               className={cn(
-                'text-2xl font-extrabold',
+                'stat-value text-2xl',
                 verified.matchScore >= 0.9
                   ? 'text-success'
                   : verified.matchScore >= 0.7

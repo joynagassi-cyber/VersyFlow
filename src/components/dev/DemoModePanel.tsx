@@ -99,25 +99,25 @@ export function DemoModePanel({ compact = false }: { compact?: boolean }) {
         <>
           <dl className="mt-3 grid grid-cols-2 gap-2 text-sm">
             <div className="rounded-xl bg-surface-tint px-3 py-2">
-              <dt className="text-[11px] uppercase tracking-wide text-text-muted">
+              <dt className="text-2xs uppercase tracking-wide text-text-muted">
                 {t('demo.statVerses', 'Versets fictifs')}
               </dt>
               <dd className="font-extrabold text-text-primary">{records}</dd>
             </div>
             <div className="rounded-xl bg-surface-tint px-3 py-2">
-              <dt className="text-[11px] uppercase tracking-wide text-text-muted">
+              <dt className="text-2xs uppercase tracking-wide text-text-muted">
                 {t('demo.statReviews', 'Révisions fictives')}
               </dt>
               <dd className="font-extrabold text-text-primary">{reviews}</dd>
             </div>
             <div className="rounded-xl bg-surface-tint px-3 py-2">
-              <dt className="text-[11px] uppercase tracking-wide text-text-muted">
+              <dt className="text-2xs uppercase tracking-wide text-text-muted">
                 {t('demo.statFamilies', 'Familles fictives')}
               </dt>
               <dd className="font-extrabold text-text-primary">{families}</dd>
             </div>
             <div className="rounded-xl bg-surface-tint px-3 py-2">
-              <dt className="text-[11px] uppercase tracking-wide text-text-muted">
+              <dt className="text-2xs uppercase tracking-wide text-text-muted">
                 {t('demo.statStorage', 'Espace de démo')}
               </dt>
               <dd className="font-extrabold text-text-primary">{formatBytes(info.storageBytes)}</dd>
@@ -186,7 +186,7 @@ export function DemoModePanel({ compact = false }: { compact?: boolean }) {
       </div>
 
       {!compact && (
-        <p className="mt-3 text-[11px] leading-relaxed text-text-muted">
+        <p className="mt-3 text-2xs leading-relaxed text-text-muted">
           {t(
             'demo.exitHint',
             'Quitter la démo recharge l’application sur vos données réelles. Pour revenir ensuite : ouvrez /settings/data et choisissez « Voir la démo », ou ajoutez ?data=mock à l’adresse.',

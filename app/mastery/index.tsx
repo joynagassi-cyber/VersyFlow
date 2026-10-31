@@ -144,13 +144,13 @@ export default function MasteryScreen() {
           <span className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-surface/20">
             <DuoIcon icon={CurrentIcon} size={40} />
           </span>
-          <p className="text-2xl font-extrabold">{currentLevel.name}</p>
+          <p className="stat-value text-2xl">{currentLevel.name}</p>
           <p className="mt-1 text-sm opacity-90">{currentLevel.description}</p>
         </div>
 
         {/* Progress to next */}
         {nextLevel && (
-          <div className="rounded-2xl bg-surface p-4 shadow-sm">
+          <div className="g2 p-4">
             <div className="mb-2 flex items-center justify-between">
               <p className="text-sm font-semibold text-text-primary">
                 {t('mastery.nextLevel', 'Prochain niveau')} : {nextLevel.name}
@@ -171,7 +171,7 @@ export default function MasteryScreen() {
 
         {/* Stats */}
         <div>
-          <h2 className="mb-3 text-base font-bold text-text-primary">
+          <h2 className="mb-3">
             {t('mastery.stats', 'Statistiques')}
           </h2>
           <div className="grid grid-cols-2 gap-3">
@@ -179,7 +179,7 @@ export default function MasteryScreen() {
               <div
                 key={i}
                 className={
-                  'rounded-2xl bg-surface p-4 shadow-sm ' +
+                  'g2 p-4 ' +
                   (i === 0 ? 'col-span-2 flex items-center gap-4' : 'text-center')
                 }
               >
@@ -190,7 +190,7 @@ export default function MasteryScreen() {
                   <DuoIcon icon={c.icon} size={22} />
                 </span>
                 <div className={i === 0 ? '' : 'mt-1'}>
-                  <p className="text-2xl font-extrabold text-text-primary">{c.value}</p>
+                  <p className="stat-value text-2xl">{c.value}</p>
                   <p className="text-xs text-text-muted">{c.label}</p>
                 </div>
               </div>
@@ -200,7 +200,7 @@ export default function MasteryScreen() {
 
         {/* Levels */}
         <div>
-          <h2 className="mb-3 text-base font-bold text-text-primary">
+          <h2 className="mb-3">
             {t('mastery.levels', 'Niveaux de maitrise')}
           </h2>
           <div className="space-y-3">
@@ -215,7 +215,7 @@ export default function MasteryScreen() {
                 <div
                   key={level.id}
                   className={
-                    'flex items-center gap-4 rounded-2xl bg-surface p-4 shadow-sm ' +
+                    'g2 flex items-center gap-4 p-4 ' +
                     (!isUnlocked ? 'opacity-60' : '')
                   }
                 >
@@ -258,8 +258,8 @@ export default function MasteryScreen() {
         </div>
 
         {/* Tips */}
-        <div className="rounded-2xl bg-surface p-4 shadow-sm">
-          <h2 className="mb-2 text-base font-bold text-text-primary">
+        <div className="g2 p-4">
+          <h2 className="mb-2">
             {t('mastery.tips', 'Conseils pour progresser')}
           </h2>
           <div className="space-y-2">

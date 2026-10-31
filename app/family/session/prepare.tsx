@@ -59,7 +59,7 @@ export default function FamilySessionPrepareScreen() {
       subtitle={t('familyPlus.eachOwnDevice', 'Chacun sur son appareil')}
       backPath="/family/home"
     >
-      <div className="flex flex-col gap-4">
+      <div className="space-y-4">
         <SectionCard title={t('familyPlus.passageLabel', 'Passage')}>
           <div className="flex items-center gap-2">
             <span className="flex h-9 w-9 items-center justify-center rounded-full bg-surface-tint text-primary">
@@ -113,7 +113,7 @@ export default function FamilySessionPrepareScreen() {
                       <p className="truncate text-sm font-semibold text-text-primary">
                         {member.name}
                         {isMe && (
-                          <span className="ml-1 text-[11px] font-normal text-text-muted">
+                          <span className="ml-1 text-2xs font-normal text-text-muted">
                             ({t('familyPlus.you', 'vous')})
                           </span>
                         )}
@@ -135,7 +135,7 @@ export default function FamilySessionPrepareScreen() {
                       }
                       aria-pressed={isOnline}
                       className={cn(
-                        'flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-semibold transition',
+                        'flex items-center gap-1 rounded-full px-2.5 py-1 text-2xs font-semibold transition',
                         isOnline ? 'bg-primary text-on-primary' : 'bg-surface-tint text-primary',
                       )}
                     >

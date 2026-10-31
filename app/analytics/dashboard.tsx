@@ -9,6 +9,8 @@ import {
   ChartLineData01Icon as LineChart,
 } from '@/components/ui/solar-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
+import { EmptyState } from '@/components/ui/EmptyState';
+import { LoadingBlock } from '@/components/ui/Skeleton';
 import { useTranslation } from 'react-i18next';
 import { useAnalyticsCapability } from '@/capabilities/analytics/store';
 import { fireAndForget } from '@/lib/fire-and-forget';
@@ -44,16 +46,10 @@ export default function AnalyticsDashboardScreen() {
   if (loading) {
     return (
       <FullScreenPage title={t('analytics.title', 'Progression')} showBack>
-        <div className="screen-column space-y-4" role="status">
-          <div className="glass h-24 rounded-3xl bg-surface p-4 shadow-sm" />
-          <div className="grid grid-cols-2 gap-3">
-            <div className="glass h-20 rounded-2xl bg-surface p-4 shadow-sm" />
-            <div className="glass h-20 rounded-2xl bg-surface p-4 shadow-sm" />
-          </div>
-          <p className="text-center text-sm text-text-muted">
-            {t('analytics.loading', 'Chargement des statistiques...')}
-          </p>
-        </div>
+        <LoadingBlock
+          className="min-h-[50vh] justify-center py-0"
+          label={t('analytics.loading', 'Chargement des statistiques…')}
+        />
       </FullScreenPage>
     );
   }
@@ -68,7 +64,8 @@ export default function AnalyticsDashboardScreen() {
       right={
         <button
           onClick={() => fireAndForget(loadData(), 'analytics:reload')}
-          className="flex h-9 w-9 items-center justify-center rounded-full bg-surface-tint"
+          aria-label={t('analytics.reload', 'Actualiser')}
+          className="flex h-10 w-10 items-center justify-center rounded-full bg-surface-tint"
         >
           <DuoIcon icon={RefreshCw} size={16} className="text-primary" />
         </button>
@@ -77,41 +74,39 @@ export default function AnalyticsDashboardScreen() {
       <div className="screen-column space-y-6">
         {/* Stats */}
         <div className="grid grid-cols-2 gap-3">
-          <div className="glass col-span-2 flex items-center gap-4 rounded-3xl bg-surface p-4 shadow-sm">
+          <div className="glass col-span-2 flex items-center gap-4 rounded-3xl p-4">
             <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary text-on-primary">
               <DuoIcon icon={BookOpen} size={22} />
             </span>
             <div>
-              <p className="text-3xl font-extrabold text-text-primary tabular-nums">
+              <p className="stat-value text-3xl">
                 {stats?.totalVerses || 0}
               </p>
-              <p className="text-xs text-text-muted">
+              <p className="stat-label mt-1">
                 {t('analytics.versesMemorized', 'Versets memorises')}
               </p>
             </div>
           </div>
-          <div className="glass rounded-2xl bg-surface p-4 text-center shadow-sm">
-            <p className="text-2xl font-extrabold text-success tabular-nums">
+          <div className="glass rounded-2xl p-4 text-center">
+            <p className="stat-value text-2xl">
               {stats?.masteredVerses || 0}
             </p>
-            <p className="text-xs text-text-muted">
+            <p className="stat-label mt-1">
               {t('analytics.mastered', 'Maitrises')}
             </p>
           </div>
-          <div className="glass rounded-2xl bg-surface p-4 text-center shadow-sm">
-            <p className="text-2xl font-extrabold text-error tabular-nums">
+          <div className="glass rounded-2xl p-4 text-center">
+            <p className="stat-value text-2xl">
               {stats?.streakCount || 0}
             </p>
-            <p className="text-xs text-text-muted">{t('analytics.streak', 'Streak')}</p>
+            <p className="stat-label mt-1">{t('analytics.streak', 'Streak')}</p>
           </div>
         </div>
 
         {/* Retention chart */}
-        <div className="glass rounded-3xl bg-surface p-5 shadow-sm">
+        <div className="glass rounded-3xl p-5">
           <div className="mb-4 flex items-center justify-between">
-            <p className="text-base font-bold text-text-primary">
-              {t('analytics.retention30', 'Retention sur 30 jours')}
-            </p>
+            <h2>{t('analytics.retention30', 'Retention sur 30 jours')}</h2>
           </div>
           {curve.length > 0 ? (
             <div className="flex h-40 items-end gap-1">
@@ -124,45 +119,45 @@ export default function AnalyticsDashboardScreen() {
                       backgroundColor: barColor(p.retention),
                     }}
                   />
-                  <span className="text-[10px] text-text-muted">
+                  <span className="text-3xs text-text-muted">
                     {new Date(p.date).getDate()}
                   </span>
                 </div>
               ))}
             </div>
           ) : (
-            <div className="flex flex-col items-center gap-2 py-8 text-center">
-              <DuoIcon icon={LineChart} size={32} className="text-text-muted" />
-              <p className="text-sm font-semibold text-text-primary">
-                {t('analytics.noData', 'Aucune donnee de retention')}
-              </p>
-              <p className="text-xs text-text-muted">
-                {t('analytics.noDataHint', 'Commencez a memoriser pour voir vos courbes')}
-              </p>
-            </div>
+            <EmptyState
+              tone="inline"
+              icon={LineChart}
+              title={t('analytics.noData', 'Aucune donnée de rétention')}
+              description={t(
+                'analytics.noDataHint',
+                'Commencez à mémoriser pour voir vos courbes.',
+              )}
+            />
           )}
         </div>
 
         {/* Weekly trend */}
         {stats?.weeklyTrend && (
-          <div className="glass rounded-3xl bg-surface p-5 shadow-sm">
-            <p className="mb-3 text-base font-bold text-text-primary">
+          <div className="glass rounded-3xl p-5">
+            <h2 className="card-title mb-3">
               {t('analytics.weeklyTrend', 'Tendance hebdomadaire')}
-            </p>
+            </h2>
             <div className="grid grid-cols-2 gap-3 text-center">
               <div className="rounded-2xl bg-surface-tint p-4">
-                <p className="text-2xl font-extrabold text-text-primary tabular-nums">
+                <p className="stat-value text-2xl">
                   {stats.weeklyTrend.thisWeek}
                 </p>
-                <p className="text-xs text-text-muted">
+                <p className="stat-label mt-1">
                   {t('analytics.thisWeek', 'Cette semaine')}
                 </p>
               </div>
               <div className="rounded-2xl bg-surface-tint p-4">
-                <p className="text-2xl font-extrabold text-text-primary tabular-nums">
+                <p className="stat-value text-2xl">
                   {stats.weeklyTrend.lastWeek}
                 </p>
-                <p className="text-xs text-text-muted">
+                <p className="stat-label mt-1">
                   {t('analytics.lastWeek', 'Semaine derniere')}
                 </p>
               </div>
@@ -197,14 +192,14 @@ export default function AnalyticsDashboardScreen() {
 
         {/* Verses by status */}
         <div>
-          <p className="mb-3 text-base font-bold text-text-primary">
+          <h2 className="card-title mb-3">
             {t('analytics.byStatus', 'Verset par statut')}
-          </p>
-          <div className="glass overflow-hidden rounded-3xl bg-surface shadow-sm">
+          </h2>
+          <div className="glass overflow-hidden rounded-3xl">
             {[
-              { label: t('analytics.mastered', 'Maitrises'), value: stats?.masteredVerses || 0, dot: 'var(--color-success)', to: '/tabs/progress' },
-              { label: t('analytics.inProgress', 'En cours'), value: stats?.inProgressVerses || 0, dot: 'var(--color-primary)', to: '/review/queue' },
-              { label: t('analytics.toReview', 'A reviser'), value: stats?.dueForReview || 0, dot: 'var(--color-error)', to: '/review/queue' },
+              { label: t('analytics.mastered', 'Maîtrisés'), value: stats?.masteredVerses ?? 0, dot: 'bg-success', to: '/tabs/progress' },
+              { label: t('analytics.inProgress', 'En cours'), value: stats?.inProgressVerses ?? 0, dot: 'bg-primary', to: '/review/queue' },
+              { label: t('analytics.toReview', 'À réviser'), value: stats?.dueForReview ?? 0, dot: 'bg-warning', to: '/review/queue' },
             ].map((row, i) => (
               <button
                 key={i}
@@ -212,24 +207,21 @@ export default function AnalyticsDashboardScreen() {
                 className="flex w-full items-center justify-between border-b border-[color:var(--color-divider)] px-4 py-4 last:border-0"
               >
                 <span className="flex items-center gap-3">
-                  <span
-                    className="h-3 w-3 rounded-full"
-                    style={{ backgroundColor: row.dot }}
-                  />
+                  <span className={'h-2.5 w-2.5 shrink-0 rounded-full ' + row.dot} />
                   <span className="text-base font-medium text-text-primary">{row.label}</span>
                 </span>
-                <span className="text-lg font-bold text-primary">{row.value}</span>
+                <span className="stat-value text-lg">{row.value}</span>
               </button>
             ))}
           </div>
         </div>
 
         {/* Learning time */}
-        <div className="glass rounded-3xl bg-surface p-5 text-center shadow-sm">
-          <p className="text-3xl font-extrabold text-text-primary">
+        <div className="glass rounded-3xl p-5 text-center">
+          <p className="stat-value text-3xl">
             {getLearningTime()} min
           </p>
-          <p className="text-xs text-text-muted tabular-nums">
+          <p className="stat-label mt-1">
             {t('analytics.totalTime', 'Temps total d\'apprentissage')}
           </p>
         </div>

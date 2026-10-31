@@ -35,11 +35,14 @@ export interface ModeWriteProps {
   onRecommendNext?: (score: number) => void;
 }
 
-const RATING_OPTIONS: Parameters<typeof RatingBar>[0]['options'] = [
-  { value: FsrsRating.AGAIN, label: 'À revoir', className: 'bg-error-light text-error' },
-  { value: FsrsRating.HARD, label: 'Difficile', className: 'bg-warning-light text-warning' },
-  { value: FsrsRating.GOOD, label: 'Bon', className: 'bg-primary text-on-primary' },
-  { value: FsrsRating.EASY, label: 'Facile', className: 'bg-success-light text-success' },
+/** Les libellés sont traduits au rendu : le module ne fige aucune langue. */
+type RatingOption = { value: FsrsRating; labelKey: string; label: string; className: string };
+
+const RATING_KEYS: RatingOption[] = [
+  { value: FsrsRating.AGAIN, labelKey: 'session.ratingAgain', label: 'À revoir', className: 'bg-error-light text-error' },
+  { value: FsrsRating.HARD, labelKey: 'session.ratingHard', label: 'Difficile', className: 'bg-warning-light text-warning' },
+  { value: FsrsRating.GOOD, labelKey: 'session.ratingGood', label: 'Bon', className: 'bg-primary text-on-primary' },
+  { value: FsrsRating.EASY, labelKey: 'session.ratingEasy', label: 'Facile', className: 'bg-success-light text-success' },
 ];
 
 export function ModeWrite({
@@ -49,6 +52,7 @@ export function ModeWrite({
   onRecommendNext,
 }: ModeWriteProps) {
   const { t } = useTranslation();
+  const options = RATING_KEYS.map((option) => ({ ...option, label: t(option.labelKey, option.label) }));
   const [written, setWritten] = useState('');
   const [verified, setVerified] = useState<WrittenRecallResult | null>(null);
 
@@ -68,7 +72,7 @@ export function ModeWrite({
   return (
     <div className="space-y-3">
       {/* Title case — separate from the verse (per user requirement) */}
-      <div className="rounded-2xl bg-surface p-4 shadow-sm">
+      <div className="g2 p-4">
         <p className="mem-label">{t('workspace.titleCase', 'TITRE DU VERSET')}</p>
         <p className="text-base font-bold text-text-primary">{referenceLabel}</p>
       </div>
@@ -133,7 +137,7 @@ export function ModeWrite({
             <span className="mem-label">{t('workspace.result', 'RÉSULTAT')} · {t('workspace.diffWord', 'diff mot à mot')}</span>
             <span
               className={cn(
-                'text-2xl font-extrabold',
+                'stat-value text-2xl',
                 verified.matchScore >= 0.9
                   ? 'text-success'
                   : verified.matchScore >= 0.7
@@ -186,7 +190,7 @@ export function ModeWrite({
 
           {/* 4 FSRS buttons at the bottom of the mode */}
           <p className="mem-label mt-4">{t('workspace.commentWasIt', 'COMMENT C\'ÉTAIT ?')}</p>
-          <RatingBar options={RATING_OPTIONS} onSelect={(v) => void handleRate(v)} />
+          <RatingBar options={options} onSelect={(v) => void handleRate(v)} />
         </div>
       )}
     </div>

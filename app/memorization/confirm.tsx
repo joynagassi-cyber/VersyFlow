@@ -45,9 +45,11 @@ export default function MemorizationConfirm() {
       backPath={reference ? '/memorization/session' : '/tabs/home'}
     >
       <div className="flex flex-col items-center py-8">
-        <span className="text-6xl">✨</span>
-        <h1 className="mt-4 text-2xl font-bold text-text-primary">
-          {t('session.verseComplete', "Verset mémorisé! ✨")}
+        <span className="icon-chip flex h-16 w-16 items-center justify-center rounded-full" aria-hidden="true">
+          <DuoIcon icon={PartyPopper} size={30} className="text-primary" />
+        </span>
+        <h1 className="page-title mt-4">
+          {t('session.verseComplete', 'Verset mémorisé')}
         </h1>
         {reference && (
           <p className="mt-2 text-base font-semibold text-primary">{reference}</p>
@@ -55,12 +57,12 @@ export default function MemorizationConfirm() {
       </div>
 
       {/* Result card */}
-      <div className="rounded-2xl border border-border bg-surface p-6 shadow-sm">
+      <div className="g2 p-6">
         <div className="flex items-center justify-between">
           <span className="text-sm text-text-muted">
             {t('session.nextReview', 'Prochain rappel')}
           </span>
-          <span className="text-3xl font-bold text-primary">{interval}j</span>
+          <span className="stat-value text-3xl">{interval}j</span>
         </div>
         <div className="mt-4 flex items-center justify-between border-t border-divider pt-4">
           <span className="flex items-center gap-1.5 text-sm text-text-muted">

@@ -174,7 +174,7 @@ export function ModeReveal({
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20M4 19.5A2.5 2.5 0 0 0 6.5 22H20V2H6.5A2.5 2.5 0 0 0 4 4.5v15z"/></svg>
             {referenceLabel}
           </span>
-          <span className="text-xs font-bold uppercase tracking-wider text-text-muted">
+          <span className="section-label text-text-muted">
             {t('workspace.revealProgress', {
               current: Math.min(revealed + 1, blocks.length),
               total: blocks.length,

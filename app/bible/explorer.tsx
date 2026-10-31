@@ -8,6 +8,7 @@
  */
 
 import { useState, useMemo } from 'react';
+import { SkeletonLines } from '@/components/ui/Skeleton';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { DuoIcon } from '@/components/ui/DuoIcon';
@@ -137,8 +138,10 @@ export default function BibleExplorerScreen() {
           />
           {query && (
             <button
+              type="button"
               onClick={() => setQuery('')}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted"
+              aria-label={t('bible.clearSearch', 'Effacer la recherche')}
+              className="touch-target absolute right-1 top-1/2 -translate-y-1/2 rounded-full text-text-muted active:bg-surface-tint"
             >
               <DuoIcon icon={X} size={16} />
             </button>
@@ -161,7 +164,7 @@ export default function BibleExplorerScreen() {
               key: 'new',
               label: t('bible.newTestament', 'Nouveau Testament'),
               list: newTestamentFiltered,
-              icon: <DuoIcon icon={Cross} size={16} className="text-[color:var(--on)]" />,
+              icon: <DuoIcon icon={Cross} size={16} className="text-on-status" />,
               iconBg: 'bg-success',
             },
           ].map((section) =>
@@ -176,7 +179,7 @@ export default function BibleExplorerScreen() {
                   >
                     {section.icon}
                   </span>
-                  <h2 className="flex-1 text-base font-bold text-text-primary">
+                  <h2 className="card-title flex-1">
                     {section.label}
                   </h2>
                   <span className="text-sm text-text-muted">
@@ -218,7 +221,7 @@ export default function BibleExplorerScreen() {
                 onClick={() => openChapter(chapter)}
                 className="flex flex-col items-center rounded-xl bg-surface py-3 shadow-sm"
               >
-                <span className="text-base font-bold text-text-primary">{chapter}</span>
+                <span className="text-base font-semibold text-text-primary">{chapter}</span>
               </button>
             ),
           )}
@@ -280,11 +283,8 @@ export default function BibleExplorerScreen() {
               with tappable inline verse numbers. */}
           {status === 'loading' ? (
             <div className="space-y-3 rounded-3xl bg-surface p-5 shadow-sm">
-              <div className="h-4 w-3/4 animate-pulse rounded bg-surface-tint" />
-              <div className="h-4 w-2/3 animate-pulse rounded bg-surface-tint" />
-              <div className="h-4 w-full animate-pulse rounded bg-surface-tint" />
-              <div className="h-4 w-1/2 animate-pulse rounded bg-surface-tint" />
-            </div>
+            <SkeletonLines lines={4} />
+          </div>
           ) : (
             books && <ContinuousBibleReader key={`${translationId}:${selectedBook.id}:${selectedChapter}`} books={books} initialBookId={selectedBook.id} initialChapter={selectedChapter} translationId={translationId} />
           )}

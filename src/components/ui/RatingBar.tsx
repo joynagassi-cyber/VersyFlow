@@ -35,7 +35,7 @@ export const RatingBar = React.memo(function RatingBar({ options, onSelect, disa
           )}
         >
           <span>{o.label}</span>
-          {o.hint && <span className="mt-0.5 text-[10px] font-medium opacity-80">{o.hint}</span>}
+          {o.hint && <span className="mt-0.5 text-3xs font-medium opacity-80">{o.hint}</span>}
         </button>
       ))}
     </div>

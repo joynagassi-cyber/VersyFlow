@@ -6,7 +6,9 @@ describe('Réglages premium', () => {
   it('conserve les trois sections et rend leur sélection accessible', () => {
     for (const id of ['data', 'params', 'profile']) expect(source).toContain(`id: '${id}'`);
     expect(source).toContain('aria-pressed={tab === d.id}');
-    expect(source).toContain('aria-label={t(tabItem.labelKey, tabItem.label)}');
+    // Le nom accessible de l'interrupteur de visibilité d'onglet vit désormais
+    // sur la commande partagée `ui/Switch` (rôle, état et cible de 40 px).
+    expect(source).toMatch(/<Switch[\s\S]{0,200}?label=\{t\(tabItem\.labelKey, tabItem\.label\)\}/);
   });
   it('place le panneau partagé hors du header flouté', () => {
     const panel = readFileSync('src/components/ui/BackgroundPanel.tsx', 'utf8');
@@ -15,7 +17,7 @@ describe('Réglages premium', () => {
   });
   it('conserve les destinations et utilise les surfaces du contrat', () => {
     for (const route of ['/analytics/dashboard', '/tabs/progress', '/review/queue', '/settings/backup', '/review/history', '/collections', '/settings/appearance', '/profile/select']) expect(source).toContain(route);
-    expect(source).toContain('g1 settings-heading');
+    expect(source).toContain('g1 tab-heading settings-heading');
     expect(source).toContain('g2 settings-data-card');
     expect(source).toContain('g2 settings-group-card');
     expect(source).not.toMatch(/className="glass/);

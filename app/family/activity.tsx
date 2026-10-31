@@ -9,17 +9,18 @@
 
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FullScreenPage } from '@/components/layout/FullScreenPage';
+import { Time04Icon as Time04 } from '@/components/ui/solar-icons';
 import {
+  ActivityRow,
+  FamilyHubPage,
   HintNote,
-  MemberAvatar,
   SectionCard,
   Segmented,
 } from '@/components/family/FamilyKit';
+import { Chip } from '@/components/ui/Chip';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { useFamilyRoom } from '@/hooks/useFamilyRoom';
 import { useFamilyRoomStore, type ActivityKind } from '@/store/family-room-store';
-import { cn } from '@/lib/utils';
 
 type Filter = 'all' | 'challenges' | 'levels';
 
@@ -60,93 +61,81 @@ export default function FamilyActivityScreen() {
   }, [activities, familyId, filter]);
 
   return (
-    <FullScreenPage
-      title={t('familyPlus.activityTitle', 'Activité')}
-      subtitle={family?.name}
-      backPath="/family/home"
-    >
-      <div className="flex flex-col gap-4">
-        <Segmented<Filter>
-          label={t('familyPlus.activityFilter', 'Filtrer l’activité')}
-          value={filter}
-          onChange={setFilter}
-          options={[
-            { value: 'all', label: t('familyPlus.all', 'Tout') },
-            { value: 'challenges', label: t('familyPlus.challengesTitle', 'Défis') },
-            { value: 'levels', label: t('familyPlus.levels', 'Niveaux') },
-          ]}
-        />
+    <FamilyHubPage title={t('familyPlus.activityTitle', 'Activité')} subtitle={family?.name}>
+      <Segmented<Filter>
+        label={t('familyPlus.activityFilter', 'Filtrer l’activité')}
+        value={filter}
+        onChange={setFilter}
+        options={[
+          { value: 'all', label: t('familyPlus.all', 'Tout') },
+          { value: 'challenges', label: t('familyPlus.challengesTitle', 'Défis') },
+          { value: 'levels', label: t('familyPlus.levels', 'Niveaux') },
+        ]}
+      />
 
-        {entries.length === 0 ? (
-          <EmptyState
-            title={t('familyPlus.noActivity', 'Aucune activité pour l’instant')}
-            description={t(
-              'familyPlus.noActivityDesc',
-              'Lancez un défi ou une séance : ce que fait chaque membre apparaîtra ici.',
-            )}
-          />
-        ) : (
-          <ul className="flex flex-col gap-3">
+      {entries.length === 0 ? (
+        <EmptyState
+          tone="inline"
+          icon={Time04}
+          title={t('familyPlus.noActivity', 'Aucune activité pour l’instant')}
+          description={t(
+            'familyPlus.noActivityDesc',
+            'Lancez un défi ou une séance : ce que fait chaque membre apparaîtra ici.',
+          )}
+        />
+      ) : (
+        <SectionCard
+          title={t('familyPlus.activityFeed', 'Fil de la famille')}
+          action={
+            <span className="text-2xs text-text-muted tabular-nums">
+              {t('familyPlus.entriesCount', '{{count}} entrées', { count: entries.length })}
+            </span>
+          }
+        >
+          <ul className="flex flex-col divide-y divide-divider">
             {entries.map((entry) => {
               const label = KIND_LABEL[entry.kind];
               return (
-                <li key={entry.id}>
-                  <SectionCard>
-                    <div className="flex items-start gap-3">
-                      <MemberAvatar name={entry.actor || '?'} size={36} />
-                      <div className="min-w-0 flex-1">
-                        <p className="text-sm text-text-primary">
-                          <span className="font-semibold">{entry.actor || t('familyPlus.someone', 'Un membre')}</span>{' '}
-                          {t(label.key, label.fallback)}{' '}
-                          <span className="font-semibold">{entry.target}</span>
-                        </p>
-                        <p className="mt-0.5 text-xs text-text-muted">{relativeTime(entry.at, t)}</p>
-
-                        <div className="mt-2 flex flex-wrap gap-1.5">
-                          {REACTIONS.map((reaction) => {
-                            const count = entry.reactions[reaction.key] ?? 0;
-                            return (
-                              <button
-                                key={reaction.key}
-                                type="button"
-                                onClick={() => react(entry.id, reaction.key)}
-                                className={cn(
-                                  'rounded-full px-2.5 py-1 text-[11px] font-semibold transition',
-                                  count > 0
-                                    ? 'bg-surface-tint text-primary'
-                                    : 'bg-surface-tint/60 text-text-muted',
-                                )}
-                                aria-label={`${t(reaction.key === 'cheer' ? 'familyPlus.reactCheer' : reaction.key === 'courage' ? 'familyPlus.reactCourage' : 'familyPlus.reactKeepGoing', reaction.label)} ${entry.actor}`}
-                              >
-                                {t(
-                                  reaction.key === 'cheer'
-                                    ? 'familyPlus.reactCheer'
-                                    : reaction.key === 'courage'
-                                      ? 'familyPlus.reactCourage'
-                                      : 'familyPlus.reactKeepGoing',
-                                  reaction.label,
-                                )}
-                                {count > 0 ? ` · ${count}` : ''}
-                              </button>
-                            );
-                          })}
-                        </div>
-                      </div>
-                    </div>
-                  </SectionCard>
+                <li key={entry.id} className="py-3 first:pt-0 last:pb-0">
+                  <ActivityRow
+                    actor={entry.actor || t('familyPlus.someone', 'Un membre')}
+                    action={t(label.key, label.fallback)}
+                    target={entry.target}
+                    when={relativeTime(entry.at, t)}
+                    reactions={REACTIONS.map((reaction) => {
+                      const count = entry.reactions[reaction.key] ?? 0;
+                      const reactionLabel = t(
+                        reaction.key === 'cheer'
+                          ? 'familyPlus.reactCheer'
+                          : reaction.key === 'courage'
+                            ? 'familyPlus.reactCourage'
+                            : 'familyPlus.reactKeepGoing',
+                        reaction.label,
+                      );
+                      return (
+                        <Chip
+                          key={reaction.key}
+                          active={count > 0}
+                          onClick={() => react(entry.id, reaction.key)}
+                          label={count > 0 ? `${reactionLabel} · ${count}` : reactionLabel}
+                          className="min-h-8 px-2.5 text-2xs"
+                        />
+                      );
+                    })}
+                  />
                 </li>
               );
             })}
           </ul>
-        )}
+        </SectionCard>
+      )}
 
-        <HintNote>
-          {t(
-            'familyPlus.reactionsNote',
-            'Réactions prédéfinies uniquement, sans texte libre : personne ne peut écrire quelque chose de blessant dans le fil.',
-          )}
-        </HintNote>
-      </div>
-    </FullScreenPage>
+      <HintNote>
+        {t(
+          'familyPlus.reactionsNote',
+          'Réactions prédéfinies uniquement, sans texte libre : personne ne peut écrire quelque chose de blessant dans le fil.',
+        )}
+      </HintNote>
+    </FamilyHubPage>
   );
 }

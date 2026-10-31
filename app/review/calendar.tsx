@@ -18,6 +18,7 @@ import {
 import FullScreenPage from '@/components/layout/FullScreenPage';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { relativeDayLabel } from '@/lib/relative-day';
 import { useActiveProfile } from '@/hooks/useActiveProfile';
 import { getFsrsEngine } from '@/services/fsrs-factory';
 import { ProgressService } from '@/services/progress-service';
@@ -221,7 +222,7 @@ export default function ReviewCalendarScreen() {
   const legendItems = [
     { key: 'review', label: t('review.dueSoon', "À réviser"), cls: 'bg-primary' },
     { key: 'memorized', label: t('reviewCalendar.created', 'Mémorisation ajoutée'), cls: 'bg-primary' },
-    { key: 'today', label: i18n.language === 'fr' ? "Aujourd'hui" : 'Today', cls: 'bg-surface-tint ring-2 ring-primary' },
+    { key: 'today', label: relativeDayLabel(Date.now(), i18n.resolvedLanguage || i18n.language), cls: 'bg-surface-tint ring-2 ring-primary' },
   ];
 
   const monthSummary = [
@@ -295,14 +296,14 @@ export default function ReviewCalendarScreen() {
               </span>
               {created > 0 && <span className="review-calendar-dot" aria-hidden="true" />}
               {reviewed > 0 && (
-                <span className="text-[9px] font-semibold leading-none text-text-muted" aria-hidden="true">
+                <span className="text-3xs font-semibold leading-none text-text-muted" aria-hidden="true">
                   {reviewed}
                 </span>
               )}
               {due > 0 && (
                 <span
                   className={cn(
-                    'mt-0.5 rounded-full px-1.5 text-[10px] font-bold text-[color:var(--on)]',
+                    'mt-0.5 rounded-full px-1.5 text-3xs font-bold text-on-primary',
                     'bg-primary',
                   )}
                 >
@@ -325,8 +326,8 @@ export default function ReviewCalendarScreen() {
       </div>
 
       {/* Month summary */}
-      <div className="mt-4 rounded-2xl bg-surface p-5 shadow-sm">
-        <h3 className="mb-4 text-base font-bold text-text-primary">
+      <div className="g2 mt-4 p-5">
+        <h3 className="card-title mb-4">
           {t('progress.yourProgress', 'Résumé du mois')}
         </h3>
         <div className="flex justify-around">
@@ -335,7 +336,7 @@ export default function ReviewCalendarScreen() {
               <span className="flex h-8 w-8 items-center justify-center rounded-full bg-surface-tint text-primary">
                 {item.icon}
               </span>
-              <p className="mt-2 text-2xl font-extrabold text-primary">{item.value}</p>
+              <p className="stat-value mt-2 text-2xl">{item.value}</p>
               <p className="text-xs text-text-tertiary">{item.label}</p>
             </div>
           ))}

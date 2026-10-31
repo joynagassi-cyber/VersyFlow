@@ -8,6 +8,7 @@
  */
 
 import { useSearchParams, useParams } from 'react-router-dom';
+import { SkeletonLines } from '@/components/ui/Skeleton';
 import { useTranslation } from 'react-i18next';
 import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
@@ -107,7 +108,7 @@ export default function ChapterScreen() {
                         style={{ width: `${Math.max(2, downloadPercent)}%` }}
                       />
                     </div>
-                    <p className="mt-1 text-right text-[11px] font-semibold tabular-nums text-primary">
+                    <p className="mt-1 text-right text-2xs font-semibold tabular-nums text-primary">
                       {Math.round(downloadPercent)} %
                     </p>
                   </div>
@@ -144,10 +145,7 @@ export default function ChapterScreen() {
             with tappable inline verse numbers. */}
         {status === 'loading' ? (
           <div className="space-y-3 rounded-3xl bg-surface p-5 shadow-sm">
-            <div className="h-4 w-3/4 animate-pulse rounded bg-surface-tint" />
-            <div className="h-4 w-2/3 animate-pulse rounded bg-surface-tint" />
-            <div className="h-4 w-full animate-pulse rounded bg-surface-tint" />
-            <div className="h-4 w-1/2 animate-pulse rounded bg-surface-tint" />
+            <SkeletonLines lines={4} />
           </div>
         ) : (
           books && <ContinuousBibleReader key={`${translationId}:${book.id}:${chapter}`} books={books} initialBookId={bookId} initialChapter={chapter} translationId={translationId} />

@@ -50,43 +50,49 @@ const RATING_MAP: Record<DomainReviewLogEntry['rating'], Rating> = {
   easy: Rating.EASY,
 };
 
-function ratingConfig(rating: Rating | 'legacy', isFr: boolean) {
+function ratingConfig(rating: Rating | 'legacy') {
   if (rating === 'legacy') {
     return {
       cls: 'bg-surface-tint text-text-primary',
-      label: isFr ? 'Dernière connue' : 'Last known',
+      labelKey: 'history.lastKnown',
+      label: 'Dernière connue',
       Icon: CalendarClock,
     };
   }
   switch (rating) {
     case Rating.AGAIN:
       return {
-        cls: 'bg-error text-[color:var(--on)]',
-        label: isFr ? 'À revoir' : 'Again',
+        cls: 'bg-error text-on-status',
+        labelKey: 'session.ratingAgain',
+        label: 'À revoir',
         Icon: RefreshCw,
       };
     case Rating.HARD:
       return {
-        cls: 'bg-warning text-[color:var(--on)]',
-        label: isFr ? 'Difficile' : 'Hard',
+        cls: 'bg-warning text-on-status',
+        labelKey: 'session.ratingHard',
+        label: 'Difficile',
         Icon: RefreshCw,
       };
     case Rating.GOOD:
       return {
-        cls: 'bg-success text-[color:var(--on)]',
-        label: isFr ? 'Bon' : 'Good',
+        cls: 'bg-success text-on-status',
+        labelKey: 'session.ratingGood',
+        label: 'Bon',
         Icon: CheckCircle2,
       };
     case Rating.EASY:
       return {
-        cls: 'bg-info text-[color:var(--on)]',
-        label: isFr ? 'Facile' : 'Easy',
+        cls: 'bg-info text-on-status',
+        labelKey: 'session.ratingEasy',
+        label: 'Facile',
         Icon: CheckCircle2,
       };
     default:
       return {
         cls: 'bg-primary text-on-primary',
-        label: isFr ? 'Bon' : 'Good',
+        labelKey: 'session.ratingGood',
+        label: 'Bon',
         Icon: CheckCircle2,
       };
   }
@@ -96,7 +102,6 @@ export default function ReviewHistoryScreen() {
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
   const locale = normalizeLocaleCode(i18n.resolvedLanguage || i18n.language);
-  const isFr = locale.startsWith('fr');
 
   const [items, setItems] = useState<HistoryItem[]>([]);
   const [reviewedRecords, setReviewedRecords] = useState<MemorizationRecord[]>([]);
@@ -320,7 +325,7 @@ export default function ReviewHistoryScreen() {
           ) : (
             <div className="grid grid-cols-3 gap-3 text-center">
               <div>
-                <p className="text-2xl font-extrabold text-primary tabular-nums">{items.length}</p>
+                <p className="stat-value text-2xl">{items.length}</p>
                 <p className="mt-0.5 text-xs text-text-muted">
                   {formatProgressLabel(
                     t('history.sessionsCount', 'Séances'),
@@ -330,9 +335,7 @@ export default function ReviewHistoryScreen() {
                 </p>
               </div>
               <div>
-                <p className="text-2xl font-extrabold text-primary tabular-nums">
-                  {reviewedRecords.length}
-                </p>
+                <p className="stat-value text-2xl">{reviewedRecords.length}</p>
                 <p className="mt-0.5 text-xs text-text-muted">
                   {formatProgressLabel(
                     t('progress.versesMemorized', 'Versets mémorisés'),
@@ -342,9 +345,7 @@ export default function ReviewHistoryScreen() {
                 </p>
               </div>
               <div>
-                <p className="text-2xl font-extrabold text-primary tabular-nums">
-                  {avgStability.toFixed(1)} j
-                </p>
+                <p className="stat-value text-2xl">{avgStability.toFixed(1)} j</p>
                 <p className="mt-0.5 text-xs text-text-muted">
                   {t('history.avgStability', 'Stabilité moy.')}
                 </p>
@@ -404,7 +405,7 @@ export default function ReviewHistoryScreen() {
               </h3>
               <ol className="relative space-y-3 border-s-2 border-border/70 ps-4">
                 {group.entries.map((entry) => {
-                  const cfg = ratingConfig(entry.rating, isFr);
+                  const cfg = ratingConfig(entry.rating);
                   const Icon = cfg.Icon;
                   const delta = entry.stabilityAfter - entry.stabilityBefore;
                   return (
@@ -435,7 +436,7 @@ export default function ReviewHistoryScreen() {
                           )}
                         >
                           <DuoIcon icon={Icon} size={13} />
-                          {cfg.label}
+                          {t(cfg.labelKey, cfg.label)}
                         </span>
                       </div>
 

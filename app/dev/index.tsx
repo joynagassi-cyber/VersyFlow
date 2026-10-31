@@ -84,7 +84,7 @@ function Card({
 }) {
   return (
     <section className={cn('rounded-2xl bg-surface p-4 shadow-sm', className)}>
-      <p className="mb-3 flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-text-muted">
+      <p className="mb-3 flex items-center gap-2 section-label">
         <DuoIcon icon={icon} size={14} className="text-primary" />
         {title}
       </p>
@@ -96,7 +96,7 @@ function Card({
 function Stat({ label, value }: { label: string; value: string | number }) {
   return (
     <div className="rounded-xl bg-surface-tint px-3 py-2">
-      <p className="text-[11px] uppercase tracking-wide text-text-muted">{label}</p>
+      <p className="text-2xs uppercase tracking-wide text-text-muted">{label}</p>
       <p className="text-lg font-extrabold text-text-primary">{value}</p>
     </div>
   );
@@ -278,7 +278,7 @@ export default function DevPanelScreen() {
               Utiliser le backend réel
             </Button>
           </div>
-          <p className="mt-3 text-[11px] text-text-muted">
+          <p className="mt-3 text-2xs text-text-muted">
             Le changement recharge l'application. Vous pouvez aussi forcer le mode via
             l'URL : <code className="rounded bg-surface-tint px-1">?data=mock</code> ou{' '}
             <code className="rounded bg-surface-tint px-1">?data=live</code>.
@@ -367,7 +367,7 @@ export default function DevPanelScreen() {
                 key={name}
                 className="rounded-xl bg-surface-tint px-3 py-2"
               >
-                <p className="text-[11px] uppercase tracking-wide text-text-muted">
+                <p className="text-2xs uppercase tracking-wide text-text-muted">
                   {COLLECTION_LABELS[name]}
                 </p>
                 <p className="text-base font-extrabold text-text-primary">
@@ -390,7 +390,7 @@ export default function DevPanelScreen() {
               Tout réinitialiser
             </Button>
           </div>
-          <p className="mt-3 text-[11px] text-text-muted">
+          <p className="mt-3 text-2xs text-text-muted">
             {SEED_VERSES.length} versets de démonstration (LSG) sont disponibles dans
             le seed, dont {SEED_VERSES.filter((v) => v.dueInDays <= 0).length} à
             réviser aujourd'hui.
@@ -419,7 +419,7 @@ export default function DevPanelScreen() {
                       {new Date(event.at).toLocaleTimeString()}
                     </span>
                   </div>
-                  <pre className="mt-1 max-h-24 overflow-auto whitespace-pre-wrap break-all rounded bg-surface-tint p-2 text-[10px] text-text-secondary">
+                  <pre className="mt-1 max-h-24 overflow-auto whitespace-pre-wrap break-all rounded bg-surface-tint p-2 text-3xs text-text-secondary">
                     {JSON.stringify(event.payload ?? {}, null, 2)}
                   </pre>
                 </li>

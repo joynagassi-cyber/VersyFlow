@@ -264,9 +264,9 @@ export default function HomeScreen() {
   return (
     <div className="screen-column home-premium h-full overflow-y-auto">
       <div className="home-content">
-        <section className="g2 home-greeting">
-          <p className="home-label">{dateLabel}</p>
-          <h1>
+        <section className="g1 tab-heading home-greeting">
+          <p className="section-label">{dateLabel}</p>
+          <h1 className="display-title mt-2">
             {t('home.greeting', 'Bonjour')}
             {greetingName ? `, ${greetingName}` : ''}
           </h1>
@@ -289,7 +289,7 @@ export default function HomeScreen() {
             className="g3 home-verse home-daily-card"
             style={{ '--daily-image': `url("${dailyVisual}")` } as CSSProperties}
           >
-            <p className="home-label">{t('home.dailyVerse', 'Verset du jour')}</p>
+            <p className="section-label">{t('home.dailyVerse', 'Verset du jour')}</p>
             <h2>{todayVerse.ref}</h2>
             <p className="home-verse-text">{todayVerse.text}</p>
             <div className="home-actions">
@@ -310,7 +310,7 @@ export default function HomeScreen() {
             </div>
           </article>
           <article className="g2 home-streak">
-            <p className="home-label">
+            <p className="section-label">
               <DuoIcon icon={Flame} size={20} /> {t('home.streakLabel', 'Série de jours')}
             </p>
             <div
@@ -386,7 +386,7 @@ export default function HomeScreen() {
         <div className="home-stats">
           {statItems.map(([label, value]) => (
             <div className="g2 home-stat" key={label}>
-              <span className="home-label">{label}</span>
+              <span className="section-label">{label}</span>
               <strong>{value ?? '–'}</strong>
             </div>
           ))}

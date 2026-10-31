@@ -9,7 +9,7 @@ import { useUiStore, ALL_MENU_ITEMS } from '@/store/ui-store';
 import { cn } from '@/lib/utils';
 
 const itemClass =
-  'rounded-xl px-4 py-3 text-start text-sm font-medium text-text-primary transition active:bg-surface-tint';
+  'flex min-h-11 items-center rounded-xl px-4 py-3 text-start text-sm font-medium text-text-primary transition-colors hover:bg-surface-tint active:bg-surface-tint';
 
 /** Self-managed slide-in drawer (RTL-safe), driven by ui-store menuOpen. */
 export function HamburgerMenu() {
@@ -52,20 +52,23 @@ export function HamburgerMenu() {
           <div className="flex items-center gap-3">
             <div className="leading-tight">
               <span className="text-primary text-base font-extrabold">VersyFlow</span>
-              <div className="text-xs text-text-muted">{user?.display_name || 'Mode local'}</div>
+              <div className="text-xs text-text-muted">
+                {user?.display_name || t('profile.localMode', 'Mode local')}
+              </div>
             </div>
           </div>
           <button
+            type="button"
             onClick={closeMenu}
-            className="rounded-full p-1.5 active:bg-surface-tint"
-            aria-label="Fermer"
+            className="touch-target shrink-0 rounded-full text-text-muted active:bg-surface-tint"
+            aria-label={t('common.close', 'Fermer')}
           >
             <DuoIcon icon={X} size={20} className="text-text-muted" />
           </button>
         </div>
 
         <nav className="flex-1 overflow-y-auto p-3">
-          <p className="px-2 pt-1 text-xs font-bold uppercase tracking-wide text-text-muted">
+          <p className="px-2 pt-1 section-label">
             {t('nav.menu', 'Navigation')}
           </p>
           <div className="mt-1 flex flex-col gap-1">
@@ -77,7 +80,7 @@ export function HamburgerMenu() {
           </div>
 
           <div className="my-2 h-px bg-border" />
-          <p className="px-2 text-xs font-bold uppercase tracking-wide text-text-muted">
+          <p className="px-2 section-label">
             {t('nav.account', 'Compte')}
           </p>
           <div className="mt-1 flex flex-col gap-1">

@@ -80,7 +80,7 @@ export default function RecallWritingScreen() {
     >
       <div className="screen-column space-y-4">
         {expectedVerse && (
-          <div className="rounded-2xl bg-surface p-4 shadow-sm">
+          <div className="g2 p-4">
             <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-text-muted">
               {t('semantic.expected', 'Texte attendu')}
             </p>
@@ -94,7 +94,7 @@ export default function RecallWritingScreen() {
           value={text}
           onChange={(e) => setText(e.target.value)}
           placeholder={t('recallWriting.placeholder', "Ecrivez le verset de memoire...")}
-          className="min-h-[150px] w-full resize-y rounded-2xl bg-surface p-4 text-base text-text-primary shadow-sm outline-none focus:ring-2 focus:ring-[color:var(--color-primary)]"
+          className="g2 min-h-[150px] w-full resize-y p-4 text-base text-text-primary outline-none focus:ring-2 focus:ring-[color:var(--color-primary)]"
         />
 
         <div className="flex gap-3">
@@ -116,12 +116,12 @@ export default function RecallWritingScreen() {
         </div>
 
         {result && (
-          <div className="rounded-2xl bg-surface p-4 shadow-sm">
+          <div className="g2 p-4">
             <div className="mb-4 flex items-center justify-between">
               <span className="text-xs font-semibold uppercase tracking-wide text-text-muted">
                 {t('recallWriting.matchScore', 'Similarite')}
               </span>
-              <span className="text-3xl font-extrabold" style={{ color: scoreColor }}>
+              <span className="stat-value text-3xl">
                 {Math.round(result.matchScore * 100)}%
               </span>
             </div>

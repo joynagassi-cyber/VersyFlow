@@ -86,9 +86,9 @@ export default function NavigationSettingsScreen() {
         </p>
 
         {/* Section 1 — bottom bar toggles */}
-        <div className="glass overflow-hidden rounded-2xl bg-surface shadow-sm">
+        <div className="glass overflow-hidden rounded-2xl">
           <div className="px-4 pt-4">
-            <p className="text-xs font-bold uppercase tracking-wide text-text-muted">
+            <p className="section-label">
               {t('settings.navigationBottomBar', 'Barre de navigation')}
             </p>
           </div>
@@ -115,9 +115,9 @@ export default function NavigationSettingsScreen() {
         </div>
 
         {/* Section 2 — one toggle per hamburger-menu item */}
-        <div className="glass overflow-hidden rounded-2xl bg-surface shadow-sm">
+        <div className="glass overflow-hidden rounded-2xl">
           <div className="px-4 pt-4">
-            <p className="text-xs font-bold uppercase tracking-wide text-text-muted">
+            <p className="section-label">
               {t('settings.navigationMenu', 'Menu hamburger')}
             </p>
             <p className="mt-1 px-4 text-xs text-text-muted">

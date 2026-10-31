@@ -139,7 +139,7 @@ export default function OnboardingReminderConfig() {
             )}
           >
             {reminderEnabled && (
-              <DuoIcon icon={Check} size={14} className="text-[color:var(--on)]" />
+              <DuoIcon icon={Check} size={14} className="text-on-status" />
             )}
           </div>
         </button>

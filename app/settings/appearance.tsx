@@ -8,6 +8,7 @@ function Check({ size = 18, className }: { size?: number; className?: string }) 
   return <DuoIcon icon={Tick01Icon} size={size} className={className} color="currentColor" />;
 }
 import { IonPage } from '@ionic/react';
+import { Switch } from '@/components/ui/Switch';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft01Icon } from '@/components/ui/solar-icons';
 import { useEffect, useState, type CSSProperties } from 'react';
@@ -44,17 +45,10 @@ function Section({ title, children, action }: { title: string; children: React.R
   );
 }
 
+/** Un interrupteur, une implémentation : `ui/Switch` (rôle, cible 40 px,
+ *  pouce `--on-primary`). L'écran ne redessine pas la sienne. */
 function Toggle({ on, onChange, label }: { on: boolean; onChange: () => void; label: string }) {
-  return (
-    <button
-      onClick={onChange}
-      aria-pressed={on}
-      aria-label={label}
-      className="appearance-toggle"
-    >
-      <span />
-    </button>
-  );
+  return <Switch checked={on} onCheckedChange={onChange} label={label} />;
 }
 
 /** Labeled range control for a single reading parameter. */
@@ -182,7 +176,7 @@ export default function AppearanceScreen() {
     <IonPage className="appearance-shell">
       <header className="appearance-header">
         <button type="button" onClick={() => goBackSafely(navigate)} aria-label={t('common.back', 'Retour')}><DuoIcon icon={ArrowLeft01Icon} size={22} /></button>
-        <h1>{t('nav.theme', 'Thème et apparence')}</h1>
+        <h1 className="toolbar-title">{t('nav.theme', 'Thème et apparence')}</h1>
       </header>
       <div className="app-canvas appearance-page h-full overflow-y-auto p-4 pb-24"><div className="appearance-editor screen-column">
         <aside className="appearance-preview" data-theme={previewMode}>
@@ -285,7 +279,7 @@ export default function AppearanceScreen() {
               );
             })}
           </div>
-          <p className="mt-3 text-[11px] leading-relaxed text-text-muted">
+          <p className="mt-3 text-2xs leading-relaxed text-text-muted">
             {t('settings.themePresetHint', 'Thèmes officiels tweakcn — le mode Clair/Sombre ci-dessus choisit la variante de chaque thème.')}
           </p>
         </Section>
@@ -365,7 +359,7 @@ export default function AppearanceScreen() {
           )}
 
           {backgroundType === 'none' && (
-            <p className="text-[11px] leading-relaxed text-text-muted">
+            <p className="text-2xs leading-relaxed text-text-muted">
               {t('settings.bgNoneHint', 'Le fond suit simplement le thème choisi ci-dessus.')}
             </p>
           )}
@@ -389,13 +383,13 @@ export default function AppearanceScreen() {
                 className="h-16 w-16 shrink-0 rounded-[22%] object-cover shadow-card ring-1 ring-border/70"
               />
               <div className="min-w-0 flex-1">
-                <p className="truncate text-base font-bold text-text-primary">{selectedIcon.name}</p>
+                <p className="card-title truncate">{selectedIcon.name}</p>
                 <p className="mt-0.5 text-xs text-text-muted">
                   {selectedIconFamily ? t(selectedIconFamily.labelKey, selectedIconFamily.defaultLabel) : ''}
                 </p>
                 <span
                   className={cn(
-                    'mt-1.5 inline-flex items-center gap-1 rounded-full bg-surface-tint px-2.5 py-0.5 text-[11px] font-semibold',
+                    'mt-1.5 inline-flex items-center gap-1 rounded-full bg-surface-tint px-2.5 py-0.5 text-2xs font-semibold',
                     selectedIcon.tier === 'premium' ? 'text-warning' : 'text-primary',
                   )}
                 >
@@ -414,7 +408,7 @@ export default function AppearanceScreen() {
                 if (familyIcons.length === 0) return null;
                 return (
                   <div key={family.id}>
-                    <p className="mb-2.5 text-[11px] font-bold uppercase tracking-wider text-text-muted">
+                    <p className="mb-2.5 text-2xs font-bold uppercase tracking-wider text-text-muted">
                       {t(family.labelKey, family.defaultLabel)}
                     </p>
                     <div className="grid grid-cols-4 gap-4 sm:gap-5">
@@ -462,7 +456,7 @@ export default function AppearanceScreen() {
                 );
               })}
             </div>
-            <p className="mt-4 text-[11px] leading-relaxed text-text-muted">
+            <p className="mt-4 text-2xs leading-relaxed text-text-muted">
               {t(
                 'settings.appIconHint',
                 "Sur mobile, modifie l'icône de l'écran d'accueil. Sur navigateur et bureau, met à jour l'icône d'onglet et la marque de l'application.",

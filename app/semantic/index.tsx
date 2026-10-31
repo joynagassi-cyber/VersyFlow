@@ -11,6 +11,7 @@
 
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { LoadingBlock } from '@/components/ui/Skeleton';
 import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   BrainCircuitIcon as BrainCircuit,
@@ -48,7 +49,7 @@ export default function SemanticIndex() {
     <FullScreenPage title={t('semantic.title', 'Mémoire sémantique')}>
       <div className="screen-column min-h-full overflow-y-auto bg-background p-4 pb-24">
         {loading ? (
-          <p className="text-sm text-text-muted">{t('common.loading', 'Chargement...')}</p>
+          <LoadingBlock label={t('common.loading', 'Chargement…')} className="py-10" />
         ) : (
           <>
             {/* User's personal semantic tree */}
@@ -69,7 +70,7 @@ export default function SemanticIndex() {
                       onClick={() =>
                         navigate(`/semantic/concept?conceptId=${encodeURIComponent(item.concept.id)}`)
                       }
-                      className="flex items-center justify-between rounded-xl bg-surface p-4 text-left shadow-sm transition-transform active:scale-[0.99]"
+                      className="g2 flex items-center justify-between p-4 text-left transition-transform active:scale-[0.99]"
                     >
                       <div className="min-w-0">
                         <p className="truncate text-base font-semibold text-text-primary">
@@ -98,7 +99,7 @@ export default function SemanticIndex() {
                 {t('semantic.concept', 'Concept')}s
               </h2>
               {featuredConcepts.length === 0 ? (
-                <p className="text-sm text-text-muted">{t('semantic.noConcepts', 'Aucun concept actif')}</p>
+                <p className="empty-line">{t('semantic.noConcepts', 'Aucun concept actif')}</p>
               ) : (
                 <div className="flex flex-col gap-2">
                   {featuredConcepts.map((item) => (
@@ -107,7 +108,7 @@ export default function SemanticIndex() {
                       onClick={() =>
                         navigate(`/semantic/concept?conceptId=${encodeURIComponent(item.concept.id)}`)
                       }
-                      className="flex items-center justify-between rounded-xl bg-surface p-4 text-left shadow-sm transition-transform active:scale-[0.99]"
+                      className="g2 flex items-center justify-between p-4 text-left transition-transform active:scale-[0.99]"
                     >
                       <div>
                         <p className="text-base font-semibold text-text-primary">
@@ -129,7 +130,7 @@ export default function SemanticIndex() {
                 {t('semantic.community', 'Communauté')}
               </h2>
               {communities.length === 0 ? (
-                <p className="text-sm text-text-muted">{t('semantic.noCommunity', 'Aucune communauté')}</p>
+                <p className="empty-line">{t('semantic.noCommunity', 'Aucune communauté')}</p>
               ) : (
                 <div className="flex flex-col gap-2">
                   {communities.slice(0, 20).map((c: Community) => (
@@ -138,7 +139,7 @@ export default function SemanticIndex() {
                       onClick={() =>
                         navigate(`/semantic/community?communityId=${encodeURIComponent(c.id)}`)
                       }
-                      className="flex items-center justify-between rounded-xl bg-surface p-4 text-left shadow-sm transition-transform active:scale-[0.99]"
+                      className="g2 flex items-center justify-between p-4 text-left transition-transform active:scale-[0.99]"
                     >
                       <div>
                         <p className="text-base font-semibold text-text-primary">{c.name}</p>
