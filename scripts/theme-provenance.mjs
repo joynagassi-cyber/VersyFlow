@@ -21,6 +21,7 @@
  */
 import { readFileSync, writeFileSync, existsSync, readdirSync } from 'node:fs';
 import { createHash } from 'node:crypto';
+import { execFileSync } from 'node:child_process';
 import { inflateSync } from 'node:zlib';
 import { join, dirname } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -139,49 +140,77 @@ const PROVENANCE = {
   promptStyle: 'nature photoréaliste, scène complète, lavis teinté dans la famille du thème',
   licence: 'contenu généré pour VersyFlow — aucune image tierce, aucun visuel sous licence externe',
   formats: {
-    portrait: '1024×1536 (mobile, appliqué comme fond)',
-    landscape: '1536×1024 (bureau, sélection et bandeau)',
+    portrait: '832×1248 (mobile, appliqué comme fond)',
+    landscape: '1248×832 (bureau, sélection et bandeau)',
   },
 };
+
+/** Extensions servies par le catalogue, par ordre de préférence. */
+const ASSET_EXTENSIONS = ['webp', 'png', 'jpg'];
+
+/**
+ * Retrouve le fichier d'une déclinaison, quel que soit son format.
+ * Le catalogue est passé en WebP le 31/10/2026 (163 Mo -> 17 Mo) ; les PNG
+ * d'origine ne sont plus livrés, mais le script doit rester capable de lire
+ * un poste qui en contient encore.
+ */
+function findAsset(category, id, kind) {
+  for (const ext of ASSET_EXTENSIONS) {
+    const file = join(THEMES_DIR, category, `${id}-${kind}.${ext}`);
+    if (existsSync(file)) return { file, ext };
+  }
+  return null;
+}
+
+/**
+ * Dimensions et couleur moyenne. Le décodeur PNG maison reste la référence
+ * hors ligne ; pour le WebP on interroge ImageMagick quand il est présent.
+ * Sans lui, on renvoie `null` plutôt qu'un chiffre inventé — c'est la règle
+ * du script depuis le début.
+ */
+function probe(asset) {
+  if (!asset) return { present: false };
+  const buffer = readFileSync(asset.file);
+  const base = {
+    present: true,
+    path: asset.file.slice(asset.file.indexOf('public') + 'public'.length),
+    bytes: buffer.length,
+    sha256: createHash('sha256').update(buffer).digest('hex').slice(0, 16),
+    ext: asset.ext,
+  };
+  if (asset.ext === 'png') {
+    const mean = pngMeanColor(buffer);
+    return { ...base, width: mean?.width ?? null, height: mean?.height ?? null, meanColor: mean?.color ?? null };
+  }
+  try {
+    const out = execFileSync('identify', ['-format', '%w %h', asset.file], { encoding: 'utf8' })
+      .trim()
+      .split(/\s+/)
+      .map(Number);
+    return { ...base, width: out[0] ?? null, height: out[1] ?? null, meanColor: null };
+  } catch {
+    return { ...base, width: null, height: null, meanColor: null };
+  }
+}
 
 function main() {
 const themes = readCatalog();
 const entries = themes.map((theme) => {
-  const portrait = join(THEMES_DIR, theme.category, `${theme.id}-portrait.png`);
-  const landscape = join(THEMES_DIR, theme.category, `${theme.id}-landscape.png`);
-  const entry = {
+  const portrait = probe(findAsset(theme.category, theme.id, 'portrait'));
+  const landscape = probe(findAsset(theme.category, theme.id, 'landscape'));
+  return {
     id: theme.id,
     category: theme.category,
     label: theme.label,
     declaredColor: theme.color,
-    portrait: { path: `/themes/${theme.category}/${theme.id}-portrait.png`, present: false },
-    landscape: { path: `/themes/${theme.category}/${theme.id}-landscape.png`, present: false },
-    measured: null,
+    portrait: portrait.present
+      ? portrait
+      : { path: `/themes/${theme.category}/${theme.id}-portrait.webp`, present: false },
+    landscape: landscape.present
+      ? landscape
+      : { path: `/themes/${theme.category}/${theme.id}-landscape.webp`, present: false },
+    measured: portrait.present ? (portrait.meanColor ?? null) : null,
   };
-  if (existsSync(portrait)) {
-    const buffer = readFileSync(portrait);
-    const mean = pngMeanColor(buffer);
-    entry.portrait = {
-      ...entry.portrait,
-      present: true,
-      bytes: buffer.length,
-      sha256: createHash('sha256').update(buffer).digest('hex').slice(0, 16),
-      width: mean?.width ?? null,
-      height: mean?.height ?? null,
-    };
-    entry.measured = mean?.color ?? null;
-  }
-  if (existsSync(landscape)) {
-    const buffer = readFileSync(landscape);
-    entry.landscape = {
-      ...entry.landscape,
-      present: true,
-      bytes: buffer.length,
-      sha256: createHash('sha256').update(buffer).digest('hex').slice(0, 16),
-      width: pngMeanColor(buffer)?.width ?? null,
-    };
-  }
-  return entry;
 });
 
 const present = entries.filter((e) => e.portrait.present);
@@ -192,11 +221,16 @@ const expected = new Set(
   entries.flatMap((e) => [e.portrait.path.split('/').pop(), e.landscape.path.split('/').pop()]),
 );
 const strays = [];
+// Les catégories photo sont décrites par `photo-themes.generated.ts` et
+// contrôlées par `tests/design/photo-themes.test.ts` : elles ne sont pas des
+// orphelines du catalogue illustré.
+const PHOTO_CATEGORIES = new Set(['photos-nature', 'photos-vie']);
 for (const category of readdirSync(THEMES_DIR)) {
+  if (PHOTO_CATEGORIES.has(category)) continue;
   const dir = join(THEMES_DIR, category);
   try {
     for (const file of readdirSync(dir)) {
-      if (file.endsWith('.png') && !expected.has(file)) strays.push(`${category}/${file}`);
+      if (/\.(png|webp|jpe?g)$/.test(file) && !file.includes('-thumb.') && !expected.has(file)) strays.push(`${category}/${file}`);
     }
   } catch {
     /* pas un dossier */

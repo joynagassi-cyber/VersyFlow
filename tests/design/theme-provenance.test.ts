@@ -96,10 +96,10 @@ describe('L6 — manifeste de provenance', () => {
     for (const entry of manifest.entries) {
       expect(entry.declaredColor).toMatch(/^#[0-9a-fA-F]{6}$/);
       expect(entry.portrait.path).toBe(
-        `/themes/${entry.category}/${entry.id}-portrait.png`,
+        `/themes/${entry.category}/${entry.id}-portrait.webp`,
       );
       expect(entry.landscape.path).toBe(
-        `/themes/${entry.category}/${entry.id}-landscape.png`,
+        `/themes/${entry.category}/${entry.id}-landscape.webp`,
       );
     }
   });
@@ -110,14 +110,15 @@ describe('L6 — manifeste de provenance', () => {
       encoding: 'utf8',
     })
       .split('\n')
-      .filter((f) => f.endsWith('.png'));
-    // 100 thèmes × 2 formats, moins le seul thème jamais généré (obj-miroir).
-    expect(tracked.length).toBe(198);
-    expect(tracked.filter((f) => f.includes('-portrait.png')).length).toBeGreaterThanOrEqual(99);
+      .filter((f) => f.endsWith('.webp') && !f.includes('-thumb.'));
+    // 99 thèmes illustrés × 2 formats (obj-miroir n'a jamais été généré)
+    // + 20 scènes photo × 2 cadrages générés le 31 octobre 2026.
+    expect(tracked.length).toBe(238);
+    expect(tracked.filter((f) => f.includes('-portrait.webp')).length).toBeGreaterThanOrEqual(99);
     // Le dossier ne doit plus être ignoré : un visuel ajouté doit pouvoir être versionné.
     let ignored = '';
     try {
-      ignored = execFileSync('git', ['check-ignore', 'public/themes/esprit/esprit-feu-portrait.png'], {
+      ignored = execFileSync('git', ['check-ignore', 'public/themes/esprit/esprit-feu-portrait.webp'], {
         cwd: root,
         encoding: 'utf8',
       });
@@ -133,8 +134,8 @@ describe('L6 — manifeste de provenance', () => {
     // Deux fichiers au nom accentué (« obj-clé ») ne correspondent à aucun
     // thème : ils sont signalés, pas effacés.
     expect(manifest.strays).toEqual([
-      'objets/obj-clé-landscape.png',
-      'objets/obj-clé-portrait.png',
+      'objets/obj-clé-landscape.webp',
+      'objets/obj-clé-portrait.webp',
     ]);
   });
 

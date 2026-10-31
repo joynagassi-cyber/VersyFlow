@@ -19,10 +19,26 @@ export type ThemeMode = 'light' | 'dark' | 'system';
 export type BibleVerseLayout = 'flow' | 'blocks';
 
 export type GlassSettings = { bgBlur: number; glassBlur: number; glassAlpha: number; veilAlpha: number };
+/**
+ * Réglages de verre et de fond.
+ *
+ * Le fond portait auparavant `bgBlur: 10` et `veilAlpha: 100` : l'image était
+ * floutée de 10 px PUIS recouverte d'un voile noir opaque. Autrement dit, on
+ * retouchait soigneusement des visuels que l'affichage détruisait ensuite —
+ * d'où l'impression de rendu « vieux » alors que les fichiers étaient nets.
+ *
+ * La lisibilité du texte n'est pas assurée par le voile mais par le plancher
+ * d'opacité des cartes (`--glass-alpha-min`, 0.8), vérifié par
+ * `tests/design/contrast-surfaces.test.ts` quel que soit le voile. On peut
+ * donc laisser respirer l'image sans perdre le contraste AA.
+ */
 export const GLASS_PRESETS: Record<'net' | 'equilibre' | 'doux' | 'opaque', GlassSettings> = {
-  net: { bgBlur: 0, glassBlur: 10, glassAlpha: 30, veilAlpha: 70 },
-  equilibre: { bgBlur: 10, glassBlur: 22, glassAlpha: 42, veilAlpha: 100 },
-  doux: { bgBlur: 24, glassBlur: 32, glassAlpha: 58, veilAlpha: 100 },
+  // Le plus fidèle : image nette, voile léger — les cartes font le reste.
+  net: { bgBlur: 0, glassBlur: 10, glassAlpha: 30, veilAlpha: 28 },
+  // Défaut : un voile en dégradé qui protège le bas de l'écran, sans effacer
+  // le sujet. 62 % (et non 100 %) : au-delà, l'image n'est plus qu'une tache.
+  equilibre: { bgBlur: 2, glassBlur: 22, glassAlpha: 42, veilAlpha: 62 },
+  doux: { bgBlur: 16, glassBlur: 32, glassAlpha: 58, veilAlpha: 78 },
   opaque: { bgBlur: 0, glassBlur: 0, glassAlpha: 85, veilAlpha: 100 },
 };
 
