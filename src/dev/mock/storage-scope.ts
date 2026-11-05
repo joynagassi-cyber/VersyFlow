@@ -220,8 +220,8 @@ export function installStorageIsolation(): boolean {
     }
   } catch (error) {
     // Un navigateur exotique peut refuser la réécriture du prototype : on
-    // restaure ce qui a été posé et on laisse l'application démarrer (le
-    // panneau Démo signale alors l'isolation indisponible).
+    // restaure ce qui a été posé. L’installateur de démarrage bloque ensuite
+    // la démo pour éviter de lire les vraies clés sans isolation.
     for (const method of applied) {
       try {
         (proto as unknown as Record<string, unknown>)[method] = saved[method];

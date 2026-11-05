@@ -77,6 +77,25 @@ describe('résolution du mode de données', () => {
     expect(localStorage.getItem('versyflow:data-mode')).toBe('live');
   });
 
+  it('prépare la sortie sans exposer les clés réelles avant le rechargement', async () => {
+    window.history.replaceState({}, '', '/family/home?data=mock&tab=members#top');
+    const { mode, scope } = await loadScopeModule();
+    expect(mode.getDataMode()).toBe('mock');
+    scope.installStorageIsolation();
+    localStorage.setItem(REAL_COLLECTIONS, '["demo"]');
+    mode.reloadWithDataMode('live');
+    expect(mode.getDataMode()).toBe('mock');
+    expect(localStorage.getItem(REAL_COLLECTIONS)).toBe('["demo"]');
+    expect(rawGet('versyflow:data-mode')).toBe('live');
+    expect(window.location.search).toBe('?tab=members');
+    expect(window.location.hash).toBe('#top');
+    // Reload is simulated with fresh modules (jsdom cannot navigate).
+    scope.uninstallStorageIsolation();
+    vi.resetModules();
+    const afterReload = await import('@/dev/mode');
+    expect(afterReload.getDataMode()).toBe('live');
+  });
+
   it('permet de désactiver la démo par défaut via VITE_DEMO_DEFAULT=off', async () => {
     const mode = await loadModeModule();
     expect(mode.isDemoDefaultEnabled({})).toBe(true);

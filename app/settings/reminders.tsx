@@ -25,6 +25,7 @@ import { useAppearanceStore } from '@/store/appearance-store';
 import { notificationService } from '@/services/notification-service';
 import { WeeklyReminderPlanner } from '@/components/reminders/WeeklyReminderPlanner';
 import { isNativePlatform } from '@/lib/platform';
+import { isMockMode } from '@/dev/mode';
 
 const FREQUENCIES = [1, 2, 3, 5, 8, 12];
 
@@ -37,7 +38,7 @@ export default function SettingsRemindersScreen() {
   const setReminderFrequency = useAppearanceStore((s) => s.setReminderFrequency);
   const toggleReminders = useAppearanceStore((s) => s.toggleReminders);
   const setReminderTime = useAppearanceStore((s) => s.setReminderTime);
-  const [pushStatus, setPushStatus] = useState<'idle' | 'scheduled' | 'web' | 'error'>('idle');
+  const [pushStatus, setPushStatus] = useState<'idle' | 'scheduled' | 'web' | 'demo' | 'error'>('idle');
 
   const schedulePush = async () => {
     try {
@@ -53,7 +54,7 @@ export default function SettingsRemindersScreen() {
         },
         t('reminders.notificationBody', 'Temps de révision !'),
       );
-      setPushStatus(isNativePlatform() ? 'scheduled' : 'web');
+      setPushStatus(isMockMode() ? 'demo' : isNativePlatform() ? 'scheduled' : 'web');
     } catch {
       setPushStatus('error');
     }
@@ -202,6 +203,7 @@ export default function SettingsRemindersScreen() {
         </div>
       </div>
 
+      {pushStatus === 'demo' && <p role="status" className="weekly-planner-hint">{t('weeklyReminders.demo', 'Démo : planning fictif enregistré, aucune notification programmée ou annulée.')}</p>}
       {pushStatus === 'web' && <p role="status" className="weekly-planner-hint">{t('weeklyReminders.web', 'Planning enregistré. Sur le navigateur, les notifications en arrière-plan ne sont pas programmées.')}</p>}
       {pushStatus === 'error' && <p role="status" className="weekly-planner-hint">{t('weeklyReminders.error', 'Impossible de programmer les rappels. Vérifiez les autorisations et réessayez.')}</p>}
       <WeeklyReminderPlanner />

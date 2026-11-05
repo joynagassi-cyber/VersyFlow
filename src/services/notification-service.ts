@@ -13,6 +13,7 @@
 // Fixed: Capacitor — notification permission request is now just-in-time (user-initiated), not fired at app launch
 
 import { isNativePlatform } from '@/lib/platform';
+import { isMockMode } from '@/dev/mode';
 
 export interface ScheduledReminder {
   id: number;
@@ -45,6 +46,7 @@ export class NotificationService {
    * state so subsequent calls are cheap.
    */
   async checkPermission(): Promise<boolean> {
+    if (isMockMode()) return false;
     if (permissionChecked && permissionGranted !== null) {
       return permissionGranted;
     }
@@ -84,6 +86,8 @@ export class NotificationService {
    * from the appearance store, keeping this service store-free.
    */
   async ensurePermissions(reminderEnabled: boolean): Promise<boolean> {
+    // No OS permission request in demo; the caller can simulate the action.
+    if (isMockMode()) return reminderEnabled;
     if (!reminderEnabled) {
       // Reminders are off — no reason to prompt the OS.
       return false;
@@ -134,7 +138,7 @@ export class NotificationService {
   ): Promise<ScheduledReminder[]> {
     const { enabled, time } = reminders;
     if (!enabled) {
-      if (isNativePlatform()) await this.cancelAll();
+      if (isNativePlatform() && !isMockMode()) await this.cancelAll();
       return [];
     }
     if (!/^([01]\d|2[0-3]):[0-5]\d$/.test(time)) throw new Error('invalid-time');
@@ -148,7 +152,7 @@ export class NotificationService {
 
     // Les notifications natives doivent avoir un horaire récurrent explicite ;
     // sinon le plugin les délivre immédiatement. Remplacer seulement nos IDs.
-    if (isNativePlatform()) {
+    if (isNativePlatform() && !isMockMode()) {
       if (!await this.checkPermission()) throw new Error('permission-denied');
       const { LocalNotifications } = await import('@capacitor/local-notifications');
       const pending = await LocalNotifications.getPending();
@@ -178,7 +182,7 @@ export class NotificationService {
    */
   async cancelAll(): Promise<void> {
     try {
-      if (isNativePlatform()) {
+      if (isNativePlatform() && !isMockMode()) {
         const { LocalNotifications } = await import('@capacitor/local-notifications');
         const pending = await LocalNotifications.getPending();
         const ours = pending.notifications.filter(({ id }) => id >= 1 && id <= 24);

@@ -6,7 +6,7 @@ const DAYS: ReminderDay[] = [2, 3, 4, 5, 6, 7, 1];
 export function WeeklyReminderPlanner() {
   const { t, i18n } = useTranslation();
   const [plan, setPlan] = useState(loadWeeklyPlan);
-  const [status, setStatus] = useState<'idle' | 'working' | 'native' | 'web' | 'error'>('idle');
+  const [status, setStatus] = useState<'idle' | 'working' | 'native' | 'web' | 'demo' | 'error'>('idle');
   const update = (kind: WeeklyReminderKind, patch: Partial<typeof plan.review>) => {
     setPlan((current) => ({ ...current, [kind]: { ...current[kind], ...patch } }));
     setStatus('idle');
@@ -42,6 +42,6 @@ export function WeeklyReminderPlanner() {
       <label className="weekly-time">{t('weeklyReminders.time', 'Heure')} <input type="time" disabled={!plan[kind].enabled} value={plan[kind].time} onChange={(event) => { if (event.target.value) update(kind, { time: event.target.value }); }} /></label>
     </div>)}
     <button type="button" className="weekly-save" disabled={status === 'working'} onClick={() => void save()}>{t('weeklyReminders.save', 'Enregistrer le planning')}</button>
-    {status !== 'idle' && <p className="weekly-planner-hint" role="status">{status === 'native' ? t('weeklyReminders.native', 'Planning enregistré et transmis à l’appareil.') : status === 'web' ? t('weeklyReminders.web', 'Planning enregistré. Sur le navigateur, les notifications en arrière-plan ne sont pas programmées.') : status === 'error' ? t('weeklyReminders.error', 'Impossible de programmer les rappels. Vérifiez les autorisations et réessayez.') : t('weeklyReminders.working', 'Enregistrement…')}</p>}
+    {status !== 'idle' && <p className="weekly-planner-hint" role="status">{status === 'demo' ? t('weeklyReminders.demo', 'Démo : planning fictif enregistré, aucune notification programmée ou annulée.') : status === 'native' ? t('weeklyReminders.native', 'Planning enregistré et transmis à l’appareil.') : status === 'web' ? t('weeklyReminders.web', 'Planning enregistré. Sur le navigateur, les notifications en arrière-plan ne sont pas programmées.') : status === 'error' ? t('weeklyReminders.error', 'Impossible de programmer les rappels. Vérifiez les autorisations et réessayez.') : t('weeklyReminders.working', 'Enregistrement…')}</p>}
   </section>;
 }

@@ -4,16 +4,18 @@ import { NotificationService } from '@/services/notification-service';
 
 const mocks = vi.hoisted(() => ({
   native: false,
+  mock: false,
   requestPermissions: vi.fn(async () => ({ display: 'granted' })),
   checkPermissions: vi.fn(async () => ({ display: 'granted' })),
   getPending: vi.fn(async () => ({ notifications: [{ id: 1 }, { id: 101 }, { id: 108 }, { id: 113 }, { id: 999 }] })),
   cancel: vi.fn(async () => undefined),
   schedule: vi.fn(async () => ({ notifications: [] })),
 }));
+vi.mock('@/dev/mode', () => ({ isMockMode: () => mocks.mock }));
 vi.mock('@/lib/platform', () => ({ isNativePlatform: () => mocks.native }));
 vi.mock('@capacitor/local-notifications', () => ({ LocalNotifications: mocks }));
 
-beforeEach(() => { mocks.native = false; vi.clearAllMocks(); localStorage.clear(); });
+beforeEach(() => { mocks.native = false; mocks.mock = false; vi.clearAllMocks(); localStorage.clear(); });
 const bodies = { review: 'review', memorization: 'memorization' };
 
 describe('planning hebdomadaire', () => {
@@ -42,6 +44,24 @@ describe('planning hebdomadaire', () => {
     await expect(applyWeeklyPlan({ ...DEFAULT_WEEKLY_PLAN, review: { enabled: true, time: '09:00', days: [2] } }, bodies)).rejects.toThrow('permission-denied');
     expect(mocks.schedule).not.toHaveBeenCalled();
     expect(localStorage.getItem(WEEKLY_PLAN_KEY)).toBeNull();
+  });
+  it('en démo native, ne consulte ni ne modifie les notifications de l’appareil', async () => {
+    mocks.native = true;
+    mocks.mock = true;
+    const plan = { ...DEFAULT_WEEKLY_PLAN, review: { enabled: true, time: '09:30', days: [2] as 2[] } };
+    expect(await applyWeeklyPlan(plan, bodies)).toBe('demo');
+    expect(JSON.parse(localStorage.getItem(WEEKLY_PLAN_KEY)!)).toEqual(plan);
+    const service = new NotificationService();
+    expect(await service.checkPermission()).toBe(false);
+    expect(await service.ensurePermissions(true)).toBe(true);
+    expect(await service.scheduleDailyReminders({ enabled: true, frequency: 1, time: '08:00' }, 'demo')).toHaveLength(1);
+    await service.scheduleDailyReminders({ enabled: false, frequency: 1, time: '08:00' }, 'demo');
+    await service.cancelAll();
+    expect(mocks.requestPermissions).not.toHaveBeenCalled();
+    expect(mocks.checkPermissions).not.toHaveBeenCalled();
+    expect(mocks.getPending).not.toHaveBeenCalled();
+    expect(mocks.cancel).not.toHaveBeenCalled();
+    expect(mocks.schedule).not.toHaveBeenCalled();
   });
   it('un état prompt au démarrage autorise ensuite une demande explicite', async () => {
     mocks.native = true;

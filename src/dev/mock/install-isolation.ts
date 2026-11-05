@@ -12,5 +12,13 @@
  */
 
 import { installStorageIsolation } from './storage-scope';
+import { isMockMode } from '@/dev/mode';
 
-installStorageIsolation();
+if (typeof window !== 'undefined' && isMockMode() && !installStorageIsolation()) {
+  // Fail closed: continuing would hydrate stores from real, unscoped keys.
+  const root = document.getElementById('root');
+  if (root) root.textContent = 'Démo indisponible : isolation du stockage impossible. Aucune donnée n’a été chargée par l’application.';
+  throw new Error('Isolation du stockage de démo indisponible');
+} else if (!isMockMode()) {
+  installStorageIsolation();
+}

@@ -1,23 +1,9 @@
 /**
- * Local test backend client.
- *
- * In mock mode the app never talks to Supabase. Instead, every meaningful
- * interaction (login, memorization, review rating, navigation, settings
- * change, error…) is spooled here and pushed to the tiny local API in
- * `server/mock-api.mjs` — which stores it as JSONL and renders a dashboard.
- * That is the "collect manual test data" half of the frontend-only mode.
- *
- * Design constraints:
- *   - never break the UI : every failure is swallowed and the event stays
- *     queued for the next flush,
- *   - offline-safe : the queue is persisted in localStorage, so closing the
- *     tab (or running without the API server) loses nothing,
- *   - same-origin : the base URL is a *relative* path (`/api`) proxied by
- *     Vite, so it also works behind the sandbox HTTPS preview where
- *     `localhost` is not reachable from the browser.
+ * Ancien collecteur de test : désactivé pendant le chantier de démo.
+ * Aucun événement, instantané ou état ne doit être envoyé à un service,
+ * même si VITE_MOCK_API est activé ou si une ancienne file existe.
  */
 
-import { isMockMode } from './mode';
 import type { MockDbSnapshot } from './mock/db';
 
 export const OUTBOX_STORAGE_KEY = 'versyflow:mock:outbox:v1';
@@ -93,14 +79,12 @@ export function localBackendBaseUrl(): string {
 }
 
 /**
- * Collection is only active in mock mode (never in live/cloud builds), and
- * can be disabled explicitly with `VITE_MOCK_API=off`.
+ * Le collecteur est désactivé sans option de réactivation pendant ce chantier.
  */
 export function localBackendEnabled(): boolean {
-  if (!isMockMode()) return false;
-  const env = readEnv();
-  if (env.VITE_MOCK_API === 'off' || env.VITE_MOCK_API === 'false') return false;
-  return true;
+  // Demo data must stay on this device, even in `vite --mode mock` or when
+  // an old outbox / remote collector URL exists. There is no opt-in override.
+  return false;
 }
 
 type StatsListener = (stats: LocalBackendStats) => void;
@@ -111,7 +95,7 @@ class LocalBackendClient {
   private flushTimer: ReturnType<typeof setTimeout> | null = null;
   private interval: ReturnType<typeof setInterval> | null = null;
   private flushing = false;
-  private session = sessionId();
+  private session = '';
 
   private stats: LocalBackendStats = {
     health: 'unknown',
@@ -125,6 +109,8 @@ class LocalBackendClient {
   };
 
   constructor() {
+    if (!this.stats.enabled) return;
+    this.session = sessionId();
     this.loadQueue();
     if (typeof window === 'undefined') return;
     this.interval = setInterval(() => {

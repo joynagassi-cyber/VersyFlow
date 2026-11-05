@@ -87,11 +87,11 @@ export function DemoModePanel({ compact = false }: { compact?: boolean }) {
         {info.active
           ? t(
               'demo.activeBody',
-              'Tout ce que vous voyez et modifiez ici est fictif : versets, révisions, statistiques, profil, famille, défis, notes et rappels. Les écritures sont isolées dans un espace de stockage séparé ; vos vraies données ne sont ni lues, ni écrasées, ni synchronisées.',
+              'Démo en chantier : plusieurs données sont fictives et enregistrées séparément. L’isolation complète de tous les parcours reste à vérifier ; évitez les données personnelles pendant les essais.',
             )
           : t(
               'demo.inactiveBody',
-              'La démonstration est désactivée. Vos données réelles sont intactes ; les données de démo sont conservées de côté et vous pouvez y revenir à tout moment.',
+              'La démonstration est désactivée. Le retour aux données réelles active les services et données réels configurés.',
             )}
       </p>
 
@@ -145,7 +145,7 @@ export function DemoModePanel({ compact = false }: { compact?: boolean }) {
               <span>
                 {t(
                   'demo.isolationUnavailable',
-                  'Ce navigateur refuse l’isolation du stockage : la démo tourne, mais vos préférences réelles peuvent être modifiées. Utilisez un navigateur récent ou quittez la démo.',
+                  'L’isolation du stockage est indisponible ; la démo ne doit pas démarrer.',
                 )}
               </span>
             </p>
@@ -156,7 +156,7 @@ export function DemoModePanel({ compact = false }: { compact?: boolean }) {
             <span>
               {t(
                 'demo.limits',
-                'Actions simulées : les notifications ne sont pas programmées sur l’appareil, la synchronisation et l’envoi de données sont désactivés, et rien n’est partagé avec un autre utilisateur.',
+                'Les notifications de démo et le collecteur de test sont désactivés. L’isolation des autres parcours n’est pas encore entièrement vérifiée.',
               )}
             </span>
           </p>

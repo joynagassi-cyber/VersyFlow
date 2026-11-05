@@ -1,4 +1,5 @@
 import { isNativePlatform } from '@/lib/platform';
+import { isMockMode } from '@/dev/mode';
 import type { Weekday } from '@capacitor/local-notifications';
 
 /** Sunday=1 through Saturday=7, the convention used by Capacitor. */
@@ -33,8 +34,12 @@ export function loadWeeklyPlan(): WeeklyReminderPlan {
 /** The web view has no background scheduler. Persist the plan, but never
  * claim notifications were scheduled there. On native, only our own IDs are
  * replaced; other app notifications and the legacy daily reminders survive. */
-export async function applyWeeklyPlan(plan: WeeklyReminderPlan, bodies: Record<WeeklyReminderKind, string>): Promise<'native' | 'web'> {
+export async function applyWeeklyPlan(plan: WeeklyReminderPlan, bodies: Record<WeeklyReminderKind, string>): Promise<'native' | 'web' | 'demo'> {
   const normalized = normalizeWeeklyPlan(plan);
+  if (isMockMode()) {
+    localStorage.setItem(WEEKLY_PLAN_KEY, JSON.stringify(normalized));
+    return 'demo';
+  }
   if (!isNativePlatform()) {
     localStorage.setItem(WEEKLY_PLAN_KEY, JSON.stringify(normalized));
     return 'web';
