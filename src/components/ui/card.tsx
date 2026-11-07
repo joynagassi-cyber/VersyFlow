@@ -8,17 +8,16 @@ interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 const variantClasses: Record<CardVariant, string> = {
-  surface: 'glass bg-surface shadow-md',
-  hero: 'bg-primary text-on-primary shadow',
-  tint: 'bg-surface-tint shadow-sm',
+  surface: 'glass rounded-3xl bg-surface p-5 shadow-md',
+  hero: 'rounded-3xl bg-primary p-5 text-on-primary shadow',
+  tint: 'bento-inset rounded-2xl bg-surface-tint p-4 shadow-sm',
 };
 
-/** Reusable surface container. `hero` renders the magenta-to-accent gradient. */
+/** Reusable surface container with concentric outer/inner card radii. */
 export function Card({ variant = 'surface', className, ...props }: CardProps) {
   return (
     <div
       className={cn(
-        'rounded-2xl p-4',
         variantClasses[variant],
         className,
       )}

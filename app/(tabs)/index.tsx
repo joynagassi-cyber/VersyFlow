@@ -10,6 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { normalizeLocaleCode } from '@/domains/i18n/config';
 import { DuoIcon } from '@/components/ui/DuoIcon';
+import { EmptyState } from '@/components/ui/EmptyState';
 import {
   UsersIcon as Users,
   FlameIcon as Flame,
@@ -22,6 +23,10 @@ import {
   HeartHandshakeIcon as HeartHandshake,
   LibraryIcon as Library,
   FeatherIcon as Feather,
+  BookOpen01Icon as BookOpen,
+  ChevronRightIcon as ChevronRight,
+  CircleCheckIcon as CircleCheck,
+  SparklesIcon as Sparkles,
 } from '@/components/ui/solar-icons';
 import { useActiveProfile } from '@/hooks/useActiveProfile';
 import { useFamilyStore } from '@/store/family-store';
@@ -234,63 +239,99 @@ export default function HomeScreen() {
     },
   ];
 
-  const statItems: Array<[string, number | null]> = [
-    [
-      formatProgressLabel(
+  const statItems = [
+    {
+      label: formatProgressLabel(
         t('progress.versesMemorized', 'Versets mémorisés'),
         total ?? 0,
         locale,
       ),
-      total,
-    ],
-    [
-      formatProgressLabel(
+      value: total,
+      icon: BookOpen,
+      onClick: () => navigate('/memorization/workspace'),
+    },
+    {
+      label: formatProgressLabel(
         t('progress.versesMastered', 'Versets maîtrisés'),
         mastered ?? 0,
         locale,
       ),
-      mastered,
-    ],
-    [
-      formatProgressLabel(
+      value: mastered,
+      icon: CircleCheck,
+      onClick: () => navigate('/mastery'),
+    },
+    {
+      label: formatProgressLabel(
         t('home.reviewsDue', 'Révisions à faire'),
         reviewsDue ?? 0,
         locale,
       ),
-      reviewsDue,
-    ],
+      value: reviewsDue,
+      icon: CalendarClock,
+      onClick: () => navigate('/review/queue'),
+    },
   ];
 
   return (
     <div className="screen-column home-premium h-full overflow-y-auto">
       <div className="home-content">
         <section className="g1 tab-heading home-greeting">
-          <p className="section-label">{dateLabel}</p>
+          <div className="home-greeting-top">
+            <p className="section-label">{dateLabel}</p>
+            <button
+              type="button"
+              onClick={() => navigate('/profile')}
+              className="home-profile touch-target"
+              aria-label={t('common.profil', 'Profil')}
+            >
+              <DuoIcon icon={CircleUserRound} size={22} />
+            </button>
+          </div>
           <h1 className="display-title mt-2">
             {t('home.greeting', 'Bonjour')}
             {greetingName ? `, ${greetingName}` : ''}
           </h1>
-          {activeFamily && (
-            <p className="home-muted">
-              <DuoIcon icon={Users} size={16} /> {activeFamily.name}
-            </p>
+          {(activeFamily || reviewsDue !== null) && (
+            <div className="home-meta-pills">
+              {activeFamily && (
+                <span className="pill-badge">
+                  <DuoIcon icon={Users} size={15} /> {activeFamily.name}
+                </span>
+              )}
+              {reviewsDue !== null && reviewsDue > 0 && (
+                <button
+                  type="button"
+                  onClick={() => navigate('/review/queue')}
+                  className="pill-badge-accent home-due-pill"
+                >
+                  <DuoIcon icon={CalendarClock} size={15} />
+                  <span>
+                    {reviewsDue} · {t('home.reviewsDue', 'Révisions à faire')}
+                  </span>
+                </button>
+              )}
+              {reviewsDue === 0 && (
+                <span className="pill-badge">
+                  <DuoIcon icon={CircleCheck} size={15} /> {t('home.noReviews', 'Tout est à jour')}
+                </span>
+              )}
+            </div>
           )}
-          <button
-            type="button"
-            onClick={() => navigate('/profile')}
-            className="home-profile"
-            aria-label={t('common.profil', 'Profil')}
-          >
-            <DuoIcon icon={CircleUserRound} size={24} />
-          </button>
         </section>
         <div className="home-feature-grid">
           <article
             className="g3 home-verse home-daily-card"
             style={{ '--daily-image': `url("${dailyVisual}")` } as CSSProperties}
           >
-            <p className="section-label">{t('home.dailyVerse', 'Verset du jour')}</p>
-            <h2>{todayVerse.ref}</h2>
+            <div className="home-verse-head">
+              <div>
+                <span className="pill-badge-accent">
+                  <DuoIcon icon={Sparkles} size={14} /> {t('home.dailyVerse', 'Verset du jour')}
+                </span>
+                <h2>{todayVerse.ref}</h2>
+              </div>
+              <span className="home-daily-art" aria-hidden="true" />
+            </div>
             <p className="home-verse-text">{todayVerse.text}</p>
             <div className="home-actions">
               <button
@@ -298,52 +339,61 @@ export default function HomeScreen() {
                 className="home-primary"
                 onClick={() => navigate('/memorization/session')}
               >
-                {t('bible.memorize', 'Mémoriser')}
+                <DuoIcon icon={Gem} size={18} />
+                <span>{t('bible.memorize', 'Mémoriser')}</span>
               </button>
               <button
                 type="button"
                 className="home-secondary"
                 onClick={() => navigate('/bible/explorer')}
               >
-                {t('home.explore', 'Explorer la Bible')}
+                <DuoIcon icon={Compass} size={18} />
+                <span>{t('home.explore', 'Explorer la Bible')}</span>
               </button>
             </div>
           </article>
           <article className="g2 home-streak">
             <p className="section-label">
-              <DuoIcon icon={Flame} size={20} /> {t('home.streakLabel', 'Série de jours')}
+              <DuoIcon icon={Flame} size={18} /> {t('home.streakLabel', 'Série de jours')}
             </p>
-            <div
-              className="home-ring"
-              aria-label={
-                streak === null
-                  ? t('home.streakUnavailable', 'Série indisponible')
-                  : formatLastSevenDaysAria(streak, locale)
-              }
-            >
-              <svg viewBox="0 0 100 100" aria-hidden="true">
-                <circle
-                  className="home-ring-track"
-                  cx="50"
-                  cy="50"
-                  r="44"
-                  fill="none"
-                  strokeWidth="6"
-                />
-                <circle
-                  className="home-ring-progress"
-                  cx="50"
-                  cy="50"
-                  r="44"
-                  fill="none"
-                  strokeWidth="6"
-                  strokeDasharray={`${(Math.min(streak ?? 0, 7) / 7) * 276.46} 276.46`}
-                />
-              </svg>
-              <strong>{streak ?? '–'}</strong>
+            <div className="bento-inset home-ring-stage">
+              <div
+                className="home-ring"
+                aria-label={
+                  streak === null
+                    ? t('home.streakUnavailable', 'Série indisponible')
+                    : formatLastSevenDaysAria(streak, locale)
+                }
+              >
+                <svg viewBox="0 0 100 100" aria-hidden="true">
+                  <circle
+                    className="home-ring-track"
+                    cx="50"
+                    cy="50"
+                    r="44"
+                    fill="none"
+                    strokeWidth="6"
+                  />
+                  <circle
+                    className="home-ring-progress"
+                    cx="50"
+                    cy="50"
+                    r="44"
+                    fill="none"
+                    strokeWidth="6"
+                    strokeDasharray={`${(Math.min(streak ?? 0, 7) / 7) * 276.46} 276.46`}
+                  />
+                </svg>
+                <strong>{streak ?? '–'}</strong>
+              </div>
+              <p className="home-muted">
+                {streak === null
+                  ? t('home.dataUnavailable', 'Données indisponibles')
+                  : formatStreakDaysLabel(streak, locale)}
+              </p>
             </div>
             <div
-              className="home-week"
+              className="bento-inset home-week"
               aria-label={t(
                 'home.weekAria',
                 'Série sur les sept derniers jours en temps universel',
@@ -369,31 +419,47 @@ export default function HomeScreen() {
                 );
               })}
             </div>
-            <p className="home-muted">
-              {streak === null
-                ? t('home.dataUnavailable', 'Données indisponibles')
-                : formatStreakDaysLabel(streak, locale)}
-            </p>
             <button
               type="button"
               className="home-secondary"
               onClick={() => navigate('/tabs/progress')}
             >
-              {t('home.viewProgress', 'Voir la progression')}
+              <DuoIcon icon={TrendingUp} size={18} />
+              <span>{t('home.viewProgress', 'Voir la progression')}</span>
             </button>
           </article>
         </div>
         <div className="home-stats">
-          {statItems.map(([label, value]) => (
-            <div className="g2 home-stat" key={label}>
-              <span className="section-label">{label}</span>
+          {statItems.map(({ label, value, icon: StatIcon, onClick }) => (
+            <button
+              type="button"
+              onClick={onClick}
+              className="g2 action-card home-stat"
+              key={label}
+            >
+              <span className="home-stat-head">
+                <span className="section-label">{label}</span>
+                <span className="icon-chip">
+                  <DuoIcon icon={StatIcon} size={18} />
+                </span>
+              </span>
               <strong>{value ?? '–'}</strong>
-            </div>
+            </button>
           ))}
         </div>
-        <h2 className="g1 home-section-title">
-          {t('home.quickActions', 'Actions rapides')}
-        </h2>
+        <div className="home-section-head">
+          <h2 className="home-section-title">
+            {t('home.quickActions', 'Actions rapides')}
+          </h2>
+          <button
+            type="button"
+            onClick={() => navigate('/bible/explorer')}
+            className="home-section-link"
+          >
+            <span>{t('home.explore', 'Explorer la Bible')}</span>
+            <DuoIcon icon={ChevronRight} size={15} />
+          </button>
+        </div>
         <div className="home-quick-grid">
           {quickActions.map(({ icon: Icon, label, desc, action }) => (
             <button
@@ -402,8 +468,13 @@ export default function HomeScreen() {
               onClick={action}
               className="g2 action-card home-action-card"
             >
-              <span className="icon-chip">
-                <DuoIcon icon={Icon} size={24} />
+              <span className="home-action-top">
+                <span className="icon-chip">
+                  <DuoIcon icon={Icon} size={22} />
+                </span>
+                <span className="home-action-arrow" aria-hidden="true">
+                  <DuoIcon icon={ChevronRight} size={18} />
+                </span>
               </span>
               <span>
                 <strong>{label}</strong>
@@ -412,18 +483,26 @@ export default function HomeScreen() {
             </button>
           ))}
         </div>
-        <h2 className="g1 home-section-title">
-          {t('home.recentVerses', 'Récemment mémorisés')}
-        </h2>
-        <div className="home-recent">
-          {recentVerses.length === 0 ? (
-            <p className="g2 home-empty">
-              {total === null
-                ? t('home.dataUnavailable', 'Données indisponibles')
-                : t('home.noMemorizedYet', 'Aucun verset mémorisé pour le moment')}
-            </p>
+        <div className="home-section-head">
+          <h2 className="home-section-title">
+            {t('home.recentVerses', 'Récemment mémorisés')}
+          </h2>
+        </div>
+        {recentVerses.length === 0 ? (
+          total === null ? (
+            <p className="g2 home-empty">{t('home.dataUnavailable', 'Données indisponibles')}</p>
           ) : (
-            recentVerses.map((verse) => (
+            <EmptyState
+              tone="inline"
+              icon={BookOpen}
+              title={t('home.noMemorizedYet', 'Aucun verset mémorisé pour le moment')}
+              actionLabel={t('home.explore', 'Explorer la Bible')}
+              onAction={() => navigate('/bible/explorer')}
+            />
+          )
+        ) : (
+          <div className="home-recent">
+            {recentVerses.map((verse) => (
               <button
                 type="button"
                 key={verse.id}
@@ -436,23 +515,29 @@ export default function HomeScreen() {
                   )
                 }
               >
-                <strong>
-                  {verse.bibleVerseReference ||
-                    `${verse.bookId} ${verse.chapterNumber}:${verse.verseNumber}`}
-                </strong>
+                <span className="home-recent-top">
+                  <strong>
+                    {verse.bibleVerseReference ||
+                      `${verse.bookId} ${verse.chapterNumber}:${verse.verseNumber}`}
+                  </strong>
+                  <small
+                    className={
+                      verse.status === 'mastered' ? 'pill-badge-accent' : 'pill-badge'
+                    }
+                  >
+                    {verse.status === 'mastered'
+                      ? t('progress.masteredSingle', 'Maîtrisé')
+                      : t('progress.inProgressSingle', 'En cours')}
+                  </small>
+                </span>
                 <span>{verse.bibleVerseText}</span>
-                <small>
-                  {verse.status === 'mastered'
-                    ? t('progress.masteredSingle', 'Maîtrisé')
-                    : t('progress.inProgressSingle', 'En cours')}
-                </small>
                 <span className="home-mastery" aria-hidden="true">
-                  <i style={{ width: verse.status === 'mastered' ? '100%' : '0%' }} />
+                  <i style={{ width: verse.status === 'mastered' ? '100%' : '36%' }} />
                 </span>
               </button>
-            ))
-          )}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
