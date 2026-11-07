@@ -4,7 +4,10 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 
 const buttonVariants = cva(
-  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary disabled:pointer-events-none disabled:opacity-50',
+  // Le focus clavier est dessiné UNE fois, dans globals.css (`--focus-ring-*`).
+  // Deux traitements concurrents (ring Tailwind + contour global) donnaient un
+  // double liseré sur les boutons et un simple changement de bordure ailleurs.
+  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-semibold transition-colors disabled:pointer-events-none disabled:opacity-50',
   {
     variants: {
       variant: {
@@ -12,7 +15,7 @@ const buttonVariants = cva(
         secondary: 'bg-surface-tint text-primary hover:opacity-80',
         outline: 'border border-border bg-transparent text-primary hover:bg-surface-tint',
         ghost: 'bg-transparent text-primary hover:bg-surface-tint',
-        destructive: 'bg-error text-[color:var(--on)] hover:opacity-90',
+        destructive: 'bg-error text-on-status hover:opacity-90',
         link: 'bg-transparent text-primary underline underline-offset-4',
       },
       size: {

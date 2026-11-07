@@ -15,16 +15,13 @@ import {
 } from '@/components/ui/solar-icons';
 import { Button } from '@/components/ui/button';
 import { OnboardingShell } from '@/components/onboarding/OnboardingShell';
-import { useSettingsStore } from '@/store/settings-store';
 
 export default function FSRSIntroductionScreen() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const completeOnboarding = useSettingsStore((s) => s.completeOnboarding);
 
   const handleStartMemorization = () => {
-    void completeOnboarding();
-    navigate('/tabs/home', { replace: true });
+    navigate('/onboarding/journey/success', { replace: true });
   };
 
   const benefits = [
@@ -114,7 +111,7 @@ export default function FSRSIntroductionScreen() {
                 <circle key={x} cx={x} cy="38" r="4" fill="var(--color-primary)" />
               ))}
             </svg>
-            <div className="absolute inset-x-6 bottom-0 flex justify-between text-[11px] font-medium text-text-secondary">
+            <div className="absolute inset-x-6 bottom-0 flex justify-between text-2xs font-medium text-text-secondary">
               <span>{t('onboarding.day1', 'Jour 1')}</span>
               <span>{t('onboarding.day7', 'Jour 7')}</span>
               <span>{t('onboarding.month1', 'Mois 1')}</span>

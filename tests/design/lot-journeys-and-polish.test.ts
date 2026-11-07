@@ -46,7 +46,10 @@ describe('Lot 2 — Sélecteur de dégradés, mode sombre neutre et garde-fous C
     expect(css).toContain(
       "html[data-app-bg='gradient'] .appearance-segment-button[aria-pressed='true']",
     );
-    expect(css).toContain("html[data-app-bg='gradient'] .verse-flow-number.is-selected");
+    // Le numéro de verset sélectionné n'a plus de fond (la sélection est un
+    // soulignement pointillé) : le contrôle actif de la lecture est désormais
+    // l'action principale de la barre de verset.
+    expect(css).toContain("html[data-app-bg='gradient'] .verse-action-btn.is-primary");
   });
 
   it('maintient un mode sombre neutre quasi noir sans règle background-attachment: fixed', () => {
@@ -54,8 +57,16 @@ describe('Lot 2 — Sélecteur de dégradés, mode sombre neutre et garde-fous C
     const gradientsCss = stripCssComments(read('src/styles/gradients.css'));
     expect(css).not.toMatch(/background-attachment\s*:\s*fixed/i);
     expect(gradientsCss).not.toMatch(/background-attachment\s*:\s*fixed/i);
-    expect(css).toContain('--gc: #171717; --gc-rgb: 23,23,23;');
-    expect(css).toContain(':root[data-theme=\'dark\'] { --glass-rgb: 18, 18, 18; }');
+    // Le sombre se vérifie par sa STRUCTURE, pas par un gris précis : il doit
+    // déclarer ses triplets dans son propre bloc (surface, fond, verre), et
+    // aucun `--glass-rgb` ne doit subsister hors de ces blocs — c'était
+    // précisément la valeur figée qui empêchait le verre de suivre un preset.
+    const darkBlock = css.slice(css.indexOf(":root[data-theme='dark'], .appearance-preview[data-theme='dark'] {"));
+    const darkBody = darkBlock.slice(0, darkBlock.indexOf('\n}'));
+    expect(darkBody).toContain('--gc-rgb:');
+    expect(darkBody).toContain('--bg-rgb:');
+    expect(darkBody).toContain('--glass-rgb:');
+    expect(css).not.toMatch(/^:root\[data-theme='dark'\] \{ --glass-rgb:/m);
   });
 
   it('assure une navigation flottante sans bande réservée tout en dégageant le bas de défilement', () => {

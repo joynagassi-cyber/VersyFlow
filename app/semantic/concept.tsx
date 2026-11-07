@@ -14,6 +14,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { LoadingBlock } from '@/components/ui/Skeleton';
 import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   BrainCircuitIcon as BrainCircuit,
@@ -76,7 +77,7 @@ export default function ConceptView() {
     return (
       <FullScreenPage title={t('semantic.concept', 'Concept')}>
         <div className="p-4">
-          <p className="text-sm text-text-muted">{t('common.loading', 'Chargement...')}</p>
+          <LoadingBlock label={t('common.loading', 'Chargement…')} className="py-10" />
         </div>
       </FullScreenPage>
     );
@@ -104,7 +105,7 @@ export default function ConceptView() {
             <DuoIcon icon={BrainCircuit} size={20} />
           </span>
           <div>
-            <h1 className="text-xl font-bold text-text-primary">
+            <h1 className="page-title">
               {displayLabel(concept, lang)}
             </h1>
             <p className="text-xs text-text-muted">{concept.canonical_name}</p>
@@ -138,7 +139,7 @@ export default function ConceptView() {
             {t('semantic.verses', 'Verset{count}', { count: verseKeys.length })}
           </h2>
           {verseKeys.length === 0 ? (
-            <p className="text-sm text-text-muted">{t('semantic.noVerses', 'Aucun verset lié')}</p>
+            <p className="empty-line">{t('semantic.noVerses', 'Aucun verset lié')}</p>
           ) : (
             <div className="flex flex-col gap-2">
               {verseKeys.slice(0, 12).map((key) => {
@@ -147,7 +148,7 @@ export default function ConceptView() {
                   <button
                     key={key}
                     onClick={() => navigate(`/semantic/verse?verseRef=${encodeURIComponent(key)}`)}
-                    className="flex items-center justify-between rounded-xl bg-surface p-3 text-left shadow-sm transition-transform active:scale-[0.99]"
+                    className="g2 flex items-center justify-between p-3 text-left transition-transform active:scale-[0.99]"
                   >
                     <div>
                       <p className="text-sm font-semibold text-text-primary">{key}</p>
@@ -170,14 +171,14 @@ export default function ConceptView() {
             {t('semantic.community', 'Communauté')}
           </h2>
           {communities.length === 0 ? (
-            <p className="text-sm text-text-muted">{t('semantic.noCommunity', 'Aucune communauté')}</p>
+            <p className="empty-line">{t('semantic.noCommunity', 'Aucune communauté')}</p>
           ) : (
             <div className="flex flex-col gap-2">
               {communities.map((c) => (
                 <button
                   key={c.id}
                   onClick={() => navigate(`/semantic/community?communityId=${encodeURIComponent(c.id)}`)}
-                  className="flex items-center justify-between rounded-xl bg-surface p-3 text-left shadow-sm transition-transform active:scale-[0.99]"
+                  className="g2 flex items-center justify-between p-3 text-left transition-transform active:scale-[0.99]"
                 >
                   <div>
                     <p className="text-sm font-semibold text-text-primary">{c.name}</p>
@@ -199,14 +200,14 @@ export default function ConceptView() {
             {t('semantic.related', 'Concepts liés')}
           </h2>
           {relations.length === 0 ? (
-            <p className="text-sm text-text-muted">{t('semantic.noRelated', 'Aucun lien direct')}</p>
+            <p className="empty-line">{t('semantic.noRelated', 'Aucun lien direct')}</p>
           ) : (
             <div className="flex flex-col gap-2">
               {relations.map((node) => (
                 <button
                   key={node.concept.id}
                   onClick={() => navigate(`/semantic/concept?conceptId=${encodeURIComponent(node.concept.id)}`)}
-                  className="flex items-center justify-between rounded-xl bg-surface p-3 text-left shadow-sm transition-transform active:scale-[0.99]"
+                  className="g2 flex items-center justify-between p-3 text-left transition-transform active:scale-[0.99]"
                 >
                   <div className="flex items-center gap-2">
                     <DuoIcon icon={GitBranch} size={14} className="text-text-muted" />

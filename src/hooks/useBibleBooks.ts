@@ -32,6 +32,7 @@ import { useBibleData } from '@/hooks/useBibleData';
 import { useTranslation } from 'react-i18next';
 import { BIBLE_BOOKS, type BibleBook } from '@/domains/bible/entities';
 import type { BibleBookData } from '@/domains/bible/repository-local';
+import { bibleBookName } from '@/lib/bible-book-name';
 
 export interface BookMeta {
   id: string;
@@ -73,7 +74,7 @@ export function useBibleBooks(): UseBibleBooks {
         testament: s.testament,
         orderIndex: s.orderIndex,
         chapterCount: s.chapterCount,
-        displayName: pickDisplayName(s.name, s.id, lang),
+        displayName: bibleBookName(s.id, lang, s.name),
       });
     }
     // Overlay the real dataset book structure on top of the static one:
@@ -87,10 +88,7 @@ export function useBibleBooks(): UseBibleBooks {
           testament: b.testament,
           orderIndex: b.orderIndex ?? fallback?.orderIndex ?? m.size + 1,
           chapterCount: b.chapters.length,
-          // Le dataset LSG ne porte que des sigles (`GEN`, `EXO`, `PSA`).
-          // On garde le nom complet du référentiel statique quand le dataset
-          // n'a qu'une abréviation : « Genèse », pas « GEN ».
-          displayName: resolveBookName(b.name, fallback?.displayName, b.id, lang),
+          displayName: bibleBookName(b.id, lang, b.name),
         });
       }
     }

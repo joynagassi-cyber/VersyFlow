@@ -13,6 +13,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { LoadingBlock } from '@/components/ui/Skeleton';
 import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   BrainCircuitIcon as BrainCircuit,
@@ -76,7 +77,7 @@ export default function VerseView() {
     return (
       <FullScreenPage title={formatVerseKey(verseRef ?? '')}>
         <div className="p-4">
-          <p className="text-sm text-text-muted">{t('common.loading', 'Chargement...')}</p>
+          <LoadingBlock label={t('common.loading', 'Chargement…')} className="py-10" />
         </div>
       </FullScreenPage>
     );
@@ -90,7 +91,7 @@ export default function VerseView() {
     <FullScreenPage title={verseRef ? formatVerseKey(verseRef) : undefined} column="narrow">
       <div className="screen-column min-h-full overflow-y-auto bg-background p-4 pb-24">
         {/* Verse text */}
-        <div className="mb-5 rounded-xl bg-surface p-4 shadow-sm">
+        <div className="g2 mb-5 p-4">
           <div className="mb-2 flex items-center gap-2">
             <DuoIcon icon={FileText} size={16} className="text-primary" />
             <span className="text-sm font-semibold text-text-primary">
@@ -111,14 +112,14 @@ export default function VerseView() {
             {t('semantic.concept', 'Concept')}s — {t('semantic.related', 'Concepts liés')}
           </h2>
           {concepts.length === 0 ? (
-            <p className="text-sm text-text-muted">{t('semantic.noConcepts', 'Aucun concept rattaché')}</p>
+            <p className="empty-line">{t('semantic.noConcepts', 'Aucun concept rattaché')}</p>
           ) : (
             <div className="flex flex-col gap-2">
               {concepts.map(({ concept, role }) => (
                 <button
                   key={concept.id}
                   onClick={() => navigate(`/semantic/concept?conceptId=${encodeURIComponent(concept.id)}`)}
-                  className="flex items-center justify-between rounded-xl bg-surface p-3 text-left shadow-sm transition-transform active:scale-[0.99]"
+                  className="g2 flex items-center justify-between p-3 text-left transition-transform active:scale-[0.99]"
                 >
                   <div>
                     <p className="text-sm font-semibold text-text-primary">
@@ -142,14 +143,14 @@ export default function VerseView() {
             {t('semantic.crossRefs', 'Références croisées')}
           </h2>
           {relatedVerses.length === 0 ? (
-            <p className="text-sm text-text-muted">{t('semantic.noCrossRefs', 'Aucune référence croisée')}</p>
+            <p className="empty-line">{t('semantic.noCrossRefs', 'Aucune référence croisée')}</p>
           ) : (
             <div className="flex flex-col gap-2">
               {relatedVerses.slice(0, 10).map((r) => (
                 <button
                   key={`${r.verseKey}-${r.relation.type}`}
                   onClick={() => navigate(`/semantic/verse?verseRef=${encodeURIComponent(r.verseKey)}`)}
-                  className="flex items-center justify-between rounded-xl bg-surface p-3 text-left shadow-sm transition-transform active:scale-[0.99]"
+                  className="g2 flex items-center justify-between p-3 text-left transition-transform active:scale-[0.99]"
                 >
                   <div>
                     <p className="text-sm font-semibold text-text-primary">
@@ -173,7 +174,7 @@ export default function VerseView() {
           {community ? (
             <button
               onClick={() => navigate(`/semantic/community?communityId=${encodeURIComponent(community.id)}`)}
-              className="flex items-center justify-between rounded-xl bg-surface p-3 text-left shadow-sm transition-transform active:scale-[0.99] w-full"
+              className="g2 flex items-center justify-between p-3 text-left transition-transform active:scale-[0.99] w-full"
             >
               <div>
                 <p className="text-sm font-semibold text-text-primary">{community.name}</p>
@@ -184,7 +185,7 @@ export default function VerseView() {
               <DuoIcon icon={ChevronRight} size={16} className="text-primary" />
             </button>
           ) : (
-            <p className="text-sm text-text-muted">{t('semantic.noCommunity', 'Aucune communauté')}</p>
+            <p className="empty-line">{t('semantic.noCommunity', 'Aucune communauté')}</p>
           )}
         </section>
       </div>

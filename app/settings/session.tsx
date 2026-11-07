@@ -39,7 +39,7 @@ export default function SettingsSessionScreen() {
         >
           <DuoIcon icon={ArrowLeft} size={20} className="text-text-secondary" />
         </button>
-        <h1 className="text-2xl font-bold text-text-primary">
+        <h1 className="page-title">
           {t('settings.sessionConfig', 'Configuration de session')}
         </h1>
       </header>
@@ -103,7 +103,7 @@ export default function SettingsSessionScreen() {
               focusMode ? 'border-primary bg-primary' : 'border-text-muted',
             )}
           >
-            {focusMode && <DuoIcon icon={Check} size={14} className="text-[color:var(--on)]" />}
+            {focusMode && <DuoIcon icon={Check} size={14} className="text-on-primary" />}
           </div>
         </button>
       </div>

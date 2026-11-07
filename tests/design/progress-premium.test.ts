@@ -14,7 +14,7 @@ describe('Progression premium', () => {
     expect(screen).toContain('progressService.getStats()');
     expect(screen).toContain('stats?.weeklyTrend.lastWeek ?? 0');
     expect(screen).toContain("t('progress.noComparison'");
-    expect(screen).toContain('g1 progress-heading');
+    expect(screen).toContain('g1 tab-heading progress-heading');
     expect(screen).toContain('g2 progress-stat');
   });
 });

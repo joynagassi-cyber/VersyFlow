@@ -53,6 +53,7 @@ const TAB_DEFS: { id: SettingsTab; key: string; label: string }[] = [
 
 import { bibleTranslationDisplayName } from '@/services/bible-translation-names';
 import { fireAndForget } from '@/lib/fire-and-forget';
+import { Switch } from '@/components/ui/Switch';
 
 const AVATAR_KEY = 'versyflow:profile:avatar';
 const NAME_KEY = 'versyflow:profile:name';
@@ -64,9 +65,9 @@ export default function SettingsScreen() {
   return (
     <div className="screen-column settings-premium h-full overflow-y-auto">
       <div className="settings-content">
-        <header className="g1 settings-heading">
-          <p className="settings-eyebrow">VersyFlow</p>
-          <h1>{t('nav.settings', 'Réglages')}</h1>
+        <header className="g1 tab-heading settings-heading">
+          <p className="section-label">VersyFlow</p>
+          <h1 className="page-title mt-2 mb-5">{t('nav.settings', 'Réglages')}</h1>
           <div className="settings-tabs" role="group" aria-label={t('settings.settings', 'Paramètres')}>
             {TAB_DEFS.map((d) => (
               <button key={d.id} type="button" onClick={() => setTab(d.id)} aria-pressed={tab === d.id}>
@@ -86,6 +87,25 @@ export default function SettingsScreen() {
 }
 
 /* ── Section A: Données ─────────────────────────────────────────────── */
+
+/**
+ * Déconnexion — une seule commande pour les deux dispositions (téléphone et
+ * bureau). Elle était recopiée à l'identique deux fois dans ce fichier : deux
+ * endroits à corriger quand la copie ou l'action change.
+ */
+function SignOutButton({ onSignOut }: { onSignOut: () => Promise<void> }) {
+  const { t } = useTranslation();
+  return (
+    <button
+      type="button"
+      onClick={() => fireAndForget(onSignOut(), 'settings:signOut')}
+      className="flex min-h-14 w-full items-center justify-center gap-2 rounded-full bg-surface px-4 text-base font-semibold text-error shadow-sm"
+    >
+      <DuoIcon icon={LogOut} size={18} />
+      {t('settings.signOut', 'Se déconnecter')}
+    </button>
+  );
+}
 
 function DataTab() {
   const navigate = useNavigate();
@@ -203,9 +223,12 @@ function ParamsTab() {
                     {on ? t('settings.tabEnabled', 'Affiché dans la barre') : t('settings.tabHidden', 'Masqué')}
                   </span>
                 </span>
-                <button onClick={() => setVisibleTab(tabItem.id, !on)} className={cn('settings-toggle relative h-6 w-11 shrink-0 rounded-full transition-colors', on ? 'bg-primary' : 'bg-border')} aria-pressed={on} aria-label={t(tabItem.labelKey, tabItem.label)} disabled={tabItem.id === 'settings'}>
-                  <span className={cn('absolute top-0.5 h-5 w-5 rounded-full bg-surface shadow transition-all', on ? 'left-[22px]' : 'left-0.5')} />
-                </button>
+                <Switch
+                  checked={on}
+                  onCheckedChange={() => setVisibleTab(tabItem.id, !on)}
+                  label={t(tabItem.labelKey, tabItem.label)}
+                  disabled={tabItem.id === 'settings'}
+                />
               </div>
             );
           })}
@@ -265,10 +288,7 @@ function ParamsTab() {
       </section>
 
       {isAuthenticated && (
-        <button onClick={() => fireAndForget(handleSignOut(), 'settings:signOut')} className="flex w-full items-center justify-center gap-2 rounded-full bg-surface p-4 text-base font-semibold text-error shadow-sm">
-          <DuoIcon icon={LogOut} size={18} />
-          {t('settings.signOut', 'Se déconnecter')}
-        </button>
+        <SignOutButton onSignOut={handleSignOut} />
       )}
 
       {/* Language dialog */}
@@ -400,7 +420,7 @@ function ProfileTab() {
             {isAuthenticated ? user?.email ?? t('profile.local', 'Local') : t('profile.local', 'Mode local')}
           </p>
           <div className="mt-3 flex items-center gap-2">
-            <span className={cn('inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold', isAuthenticated ? 'bg-surface-tint text-text-muted' : 'bg-surface-tint text-text-muted')}>
+            <span className="inline-flex items-center gap-1 rounded-full bg-surface-tint px-2.5 py-1 text-xs font-semibold text-text-muted">
               {isAuthenticated ? t('profile.connected', 'Connecté') : t('profile.local', 'Local')}
             </span>
             {activeFamily && (
@@ -431,10 +451,7 @@ function ProfileTab() {
       </section>
 
       {isAuthenticated && (
-        <button onClick={() => fireAndForget(handleSignOut(), 'settings:signOut')} className="flex w-full items-center justify-center gap-2 rounded-full bg-surface p-4 text-base font-semibold text-error shadow-sm">
-          <DuoIcon icon={LogOut} size={18} />
-          {t('settings.signOut', 'Se déconnecter')}
-        </button>
+        <SignOutButton onSignOut={handleSignOut} />
       )}
     </div>
   );

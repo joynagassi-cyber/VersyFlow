@@ -23,7 +23,6 @@ export default function LanguagePickerScreen() {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const setUiLanguage = useSettingsStore((s) => s.setUiLanguage);
-  const completeOnboarding = useSettingsStore((s) => s.completeOnboarding);
   const uiLanguage = useSettingsStore((s) => s.uiLanguage);
   const [selected, setSelected] = useState(uiLanguage || 'fr');
 
@@ -32,11 +31,6 @@ export default function LanguagePickerScreen() {
     setUiLanguage(code);
     void i18n.changeLanguage(code);
     document.documentElement.dir = isRTL(code) ? 'rtl' : 'ltr';
-  };
-
-  const skip = () => {
-    completeOnboarding();
-    navigate('/tabs/home', { replace: true });
   };
 
   return (
@@ -49,8 +43,6 @@ export default function LanguagePickerScreen() {
       )}
       onBack={() => navigate('/onboarding/welcome')}
       backLabel={t('common.back', 'Retour')}
-      onSkip={skip}
-      skipLabel={t('common.skip', 'Passer')}
       footer={
         <div className="flex gap-3">
           <Button
@@ -92,7 +84,7 @@ export default function LanguagePickerScreen() {
                   <DuoIcon icon={Languages} size={18} className="text-primary" />
                   <span className="text-lg font-semibold text-text-primary">{lang.name}</span>
                   {lang.rtl && (
-                    <span className="rounded bg-surface-tint px-2 py-0.5 text-[11px] font-semibold text-primary">
+                    <span className="rounded bg-surface-tint px-2 py-0.5 text-2xs font-semibold text-primary">
                       RTL
                     </span>
                   )}

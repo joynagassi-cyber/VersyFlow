@@ -226,13 +226,13 @@ export function themePortraitUrl(id: string): string {
   // Le dossier est la CATÉGORIE du thème (esprit, evenements…), comme
   // l'écrit scripts/generate-themes.mjs — pas les segments de l'id.
   const category = findThemeById(id)?.category ?? id.split('-')[0];
-  // Les illustrations classiques sont en PNG, les collections sacrées et photo en WebP.
-  const ext = sacredThemeExt(id) ?? photoThemeExt(id) ?? 'png';
+  // Tout le catalogue (collections sacrées, photos et illustrations) est servi en WebP.
+  const ext = sacredThemeExt(id) ?? photoThemeExt(id) ?? 'webp';
   return `/themes/${category}/${id}-portrait.${ext}`;
 }
 export function themeLandscapeUrl(id: string): string {
   const category = findThemeById(id)?.category ?? id.split('-')[0];
-  const ext = sacredThemeExt(id) ?? photoThemeExt(id) ?? 'png';
+  const ext = sacredThemeExt(id) ?? photoThemeExt(id) ?? 'webp';
   return `/themes/${category}/${id}-landscape.${ext}`;
 }
 /** Vignette du sélecteur — toujours en WebP, quel que soit le format source. */

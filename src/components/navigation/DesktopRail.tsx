@@ -41,7 +41,6 @@ import {
 } from '@/components/ui/solar-icons';
 import { ALL_MENU_ITEMS, ALL_TABS, useUiStore, type TabId } from '@/store/ui-store';
 import { useIsDesktop } from '@/hooks/useIsDesktop';
-import { Logo } from '@/components/brand/Logo';
 import { cn } from '@/lib/utils';
 
 /** Type des icônes Solar : celui de la bibliothèque, pas une approximation. */
@@ -120,7 +119,6 @@ export function DesktopRail() {
           className={cn(itemBase, 'gap-2.5 px-1 hover:bg-surface-tint')}
           aria-label={t('nav.brandHome', 'VersyFlow — Accueil')}
         >
-          <span className="brand-tile"><Logo size={28} /></span>
           <span className="rail-label text-primary text-base font-extrabold">VersyFlow</span>
         </button>
         {isDesktop && (
@@ -167,9 +165,11 @@ export function DesktopRail() {
                 className={cn(
                   itemBase,
                   collapsed && 'justify-center px-0',
-                  active
-                    ? 'bg-primary/10 font-semibold text-primary'
-                    : 'text-text-secondary hover:bg-surface-tint hover:text-text-primary',
+                  /* La couleur ne se peint plus ici : `nav-item` la porte
+                     depuis globals.css, en un seul endroit. Deux sources de
+                     vérité, c'est exactement ce qui faisait basculer l'icône
+                     au survol. */
+                  active ? 'nav-item font-semibold' : 'nav-item',
                 )}
               >
                 <span className={iconColumn}>
@@ -187,7 +187,7 @@ export function DesktopRail() {
 
         <div className="my-2 h-px bg-border" role="presentation" />
 
-        <p className="rail-label px-2.5 pb-1 text-[11px] font-bold uppercase tracking-wide text-text-muted tabular-nums">
+        <p className="rail-label px-2.5 pb-1 text-2xs font-bold uppercase tracking-wide text-text-muted tabular-nums">
           {t('nav.menu', 'Navigation')}
         </p>
         <div className="flex flex-col gap-0.5">
@@ -204,9 +204,11 @@ export function DesktopRail() {
                 className={cn(
                   itemBase,
                   collapsed && 'justify-center px-0',
-                  active
-                    ? 'bg-primary/10 font-semibold text-primary'
-                    : 'text-text-secondary hover:bg-surface-tint hover:text-text-primary',
+                  /* La couleur ne se peint plus ici : `nav-item` la porte
+                     depuis globals.css, en un seul endroit. Deux sources de
+                     vérité, c'est exactement ce qui faisait basculer l'icône
+                     au survol. */
+                  active ? 'nav-item font-semibold' : 'nav-item',
                 )}
               >
                 <span className={iconColumn}>
@@ -228,9 +230,7 @@ export function DesktopRail() {
           className={cn(
             itemBase,
             collapsed && 'justify-center px-0',
-            isActive(location.pathname, '/profile')
-              ? 'bg-primary/10 font-semibold text-primary'
-              : 'text-text-secondary hover:bg-surface-tint hover:text-text-primary',
+            isActive(location.pathname, '/profile') ? 'nav-item font-semibold' : 'nav-item',
           )}
         >
           <span className={iconColumn}>

@@ -58,7 +58,7 @@ export function ProfileAvatar({ photo, name, size = 64, className }: ProfileAvat
         <>
           {/* L'initiale sert de repli sous l'illustration. */}
           <div className="bg-primary absolute inset-0 flex items-center justify-center">
-            <span className="font-extrabold text-[color:var(--on)]" style={{ fontSize: Math.round(size * 0.4) }}>{initial}</span>
+            <span className="font-extrabold text-on-status" style={{ fontSize: Math.round(size * 0.4) }}>{initial}</span>
           </div>
           {fallback && (
             <img

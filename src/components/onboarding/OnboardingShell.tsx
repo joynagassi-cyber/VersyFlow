@@ -52,7 +52,7 @@ export function OnboardingShell({
               <DuoIcon icon={ArrowLeft01Icon} size={20} />
             </button>
           )}
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-[11px] font-bold text-primary">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-2xs font-bold text-primary">
             <DuoIcon icon={SparklesIcon} size={13} />
             VersyFlow · {step}/{totalSteps}
           </span>
@@ -74,11 +74,11 @@ export function OnboardingShell({
         transition={reducedMotion ? { duration: 0 } : { duration: 0.45, ease: 'easeOut' }}
         className="mt-8"
       >
-        <h1 className="text-[30px] font-extrabold leading-[1.1] tracking-tight text-text-primary sm:text-[34px]">
+        <h1 className="font-serif text-display font-normal leading-[1.08] tracking-tight text-text-primary">
           {title}
         </h1>
         {subtitle && (
-          <p className="mt-3 text-[15px] leading-relaxed text-text-secondary">{subtitle}</p>
+          <p className="mt-3 text-sm leading-relaxed text-text-secondary">{subtitle}</p>
         )}
       </motion.div>
 

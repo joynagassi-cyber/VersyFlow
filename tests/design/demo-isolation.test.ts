@@ -325,13 +325,13 @@ describe('parcours démo : navigation directe, rechargement, sortie', () => {
     expect(rawGet('versyflow:semantic:mock:v1')).toBeNull();
   });
 
-  it('marque l’onboarding comme prêt dans la démo sans toucher le drapeau réel', async () => {
+  it('ne termine pas automatiquement l’onboarding au démarrage de la démo', async () => {
     const { scope } = await loadScopeModule();
     scope.installStorageIsolation();
     const { ensureMockSeed } = await import('@/dev/mock/seed');
     ensureMockSeed();
 
-    expect(localStorage.getItem('versyflow:onboarding:completed')).toBe('true');
+    expect(localStorage.getItem('versyflow:onboarding:completed')).toBeNull();
     expect(rawGet('versyflow:onboarding:completed')).toBeNull();
   });
 

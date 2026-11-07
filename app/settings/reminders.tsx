@@ -79,7 +79,7 @@ export default function SettingsRemindersScreen() {
         >
           <DuoIcon icon={ArrowLeft} size={20} className="text-text-secondary" />
         </button>
-        <h1 className="text-2xl font-bold text-text-primary">
+        <h1 className="page-title">
           {t('settings.reminderConfig', 'Rappels de révision')}
         </h1>
       </header>
@@ -127,7 +127,7 @@ export default function SettingsRemindersScreen() {
               reminderEnabled ? 'border-primary bg-primary' : 'border-text-muted',
             )}
           >
-            {reminderEnabled && <DuoIcon icon={Check} size={14} className="text-[color:var(--on)]" />}
+            {reminderEnabled && <DuoIcon icon={Check} size={14} className="text-on-primary" />}
           </div>
         </button>
 
@@ -181,7 +181,7 @@ export default function SettingsRemindersScreen() {
           </div>
         </div>
         {/* Notification push locales */}
-        <div className="glass rounded-2xl bg-surface p-4 shadow-sm">
+        <div className="glass rounded-2xl p-4">
           <div className="mb-3 flex items-center gap-2">
             <DuoIcon icon={BellRing} size={18} className="text-primary" />
             <span className="text-base font-semibold text-text-primary">

@@ -22,6 +22,7 @@ import { getFsrsEngine } from '@/services/fsrs-factory';
 import { ProgressService } from '@/services/progress-service';
 import { getMemorizationService } from '@/services/memorization-service-factory';
 import type { ProgressStats } from '@/services/stats-calculator';
+import { LoadingBlock } from '@/components/ui/Skeleton';
 
 export default function ReviewSummaryScreen() {
   const navigate = useNavigate();
@@ -56,9 +57,7 @@ export default function ReviewSummaryScreen() {
   if (loading) {
     return (
       <FullScreenPage title={t('review.summary', 'Résumé de session')} backPath="/review/queue">
-        <div className="flex flex-col items-center py-24">
-          <div className="screen-column animate-pulse space-y-3 px-6" aria-hidden><div className="h-4 w-2/5 rounded-full bg-surface-tint" /><div className="h-24 rounded-3xl bg-surface-tint" /><div className="h-24 rounded-3xl bg-surface-tint" /></div>
-        </div>
+        <LoadingBlock label={t('common.loading', 'Chargement du résumé...')} />
       </FullScreenPage>
     );
   }
@@ -78,13 +77,16 @@ export default function ReviewSummaryScreen() {
   return (
     <FullScreenPage title={t('review.summary', 'Résumé de session')} backPath="/review/queue">
       {/* Streak hero */}
-      <div className="mb-5 flex flex-col items-center rounded-2xl bg-primary p-6 text-on-primary shadow">
-        <span className="flex items-center gap-1.5 text-sm text-[color:color-mix(in_srgb,var(--on)_90%,transparent)]">
-          <DuoIcon icon={Flame} size={16} />
-          {t('progress.streak', 'Série quotidienne')} 🔥
+      {/* Série : un chiffre clé, pas un aplat d'accent. Le libellé est une
+          micro-capitale du système, la valeur suit `.stat-value` (serif,
+          tabulaire, encre d'accent lisible sur les 39 presets). */}
+      <div className="g1 mb-5 flex flex-col items-center p-6 text-center">
+        <span className="section-label flex items-center gap-1.5">
+          <DuoIcon icon={Flame} size={14} />
+          {t('progress.streak', 'Série quotidienne')}
         </span>
-        <span className="mt-2 text-5xl font-extrabold">{stats?.streakCount ?? 0}</span>
-        <span className="mt-1 text-sm text-[color:color-mix(in_srgb,var(--on)_90%,transparent)]">
+        <span className="stat-value mt-2 text-5xl">{stats?.streakCount ?? 0}</span>
+        <span className="mt-1 text-sm text-text-muted">
           {t('home.streak', { count: stats?.streakCount ?? 0 })}
         </span>
       </div>
@@ -92,18 +94,18 @@ export default function ReviewSummaryScreen() {
       {/* Stat grid */}
       <div className="mb-5 grid grid-cols-2 gap-3">
         {statCards.map((card) => (
-          <div key={card.label} className="flex flex-col items-center rounded-xl bg-surface p-4 shadow-sm">
+          <div key={card.label} className="g2 flex flex-col items-center p-4">
             <span className="flex h-9 w-9 items-center justify-center rounded-full bg-surface-tint text-primary">
               {card.icon}
             </span>
-            <p className="mt-2 text-2xl font-bold text-text-primary">{card.value}</p>
+            <p className="stat-value mt-2 text-2xl">{card.value}</p>
             <p className="text-xs text-text-muted">{card.label}</p>
           </div>
         ))}
       </div>
 
       {/* Retention bar */}
-      <div className="mb-5 rounded-xl bg-surface p-4 shadow-sm">
+      <div className="g2 mb-5 p-4">
         <p className="text-base font-semibold text-text-primary">
           {t('progress.retention', 'Taux de rétention')}
         </p>

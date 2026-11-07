@@ -40,7 +40,7 @@ export default function BookScreen() {
       <div className="flex flex-col gap-2">
         <button
           onClick={() => navigate('/bible/explorer')}
-          className="mb-2 flex w-full items-center gap-3 rounded-xl bg-surface p-4 text-left shadow-sm"
+          className="g2 mb-2 flex w-full items-center gap-3 p-4 text-left"
         >
           <span className="flex h-10 w-10 items-center justify-center rounded-full icon-chip">
             <DuoIcon icon={BookOpen} size={18} />
@@ -53,7 +53,7 @@ export default function BookScreen() {
           <button
             key={chapter}
             onClick={() => navigate(`/bible/chapter/${book.id}/${chapter}`)}
-            className="flex items-center justify-between rounded-xl bg-surface p-4 text-left shadow-sm"
+            className="g2 flex items-center justify-between p-4 text-left"
           >
             <span className="flex items-center gap-3">
               <span className="flex h-9 w-9 items-center justify-center rounded-full bg-surface-tint text-sm font-bold text-primary">

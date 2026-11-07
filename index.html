@@ -15,6 +15,10 @@
           root.style.setProperty('--glass-blur', bounded(values.glassBlur, 22, 0, 40) + 'px');
           root.style.setProperty('--glass-alpha', String(bounded(values.glassAlpha, 42, 20, 85) / 100));
           root.style.setProperty('--veil-alpha', String(bounded(values.veilAlpha, 100, 0, 100) / 100));
+          // Barre du navigateur dès le premier paint : sans cela elle restait
+          // claire au-dessus d'un écran sombre pendant le chargement.
+          var meta = document.querySelector('meta[name="theme-color"]');
+          if (meta) meta.setAttribute('content', mode === 'dark' ? '#121212' : '#f9f6f7');
         } catch (_) { document.documentElement.dataset.theme = 'light'; }
       })();
     </script>
@@ -22,7 +26,9 @@
     <link rel="icon" type="image/png" href="/icons/app-icons/01-rose-origine.png" />
     <link rel="apple-touch-icon" href="/icons/app-icons/01-rose-origine.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
-    <meta name="theme-color" content="#D81B97" />
+    <!-- Repli avant l'application du thème ; `ThemeManager` le remplace par le fond
+         réel du preset (#D81B97 n'était ni le fond ni la marque). -->
+    <meta name="theme-color" content="#f9f6f7" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <meta name="apple-mobile-web-app-title" content="VersyFlow" />

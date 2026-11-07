@@ -61,8 +61,9 @@ supabase migration up --migration-file supabase/migrations/001_create_core_table
 ## 🚀 Méthode 3: Via psql (si installé localement)
 
 ```bash
-# Se connecter
-psql "postgresql://postgres:Nw6eHBdMtXL1qWTu@db.dspqvyesfngxuwqhceog.supabase.co:5432/postgres"
+# Se connecter — le mot de passe ne s'écrit JAMAIS dans un fichier versionné :
+# le lire depuis .env.local (git-ignoré) ou le secret GitHub SUPABASE_DB_PASSWORD.
+psql "postgresql://postgres:<MOT_DE_PASSE>@db.dspqvyesfngxuwqhceog.supabase.co:5432/postgres"
 
 # Appliquer les migrations
 \i supabase/migrations/001_create_core_tables.sql

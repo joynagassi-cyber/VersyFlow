@@ -106,7 +106,7 @@ export function DesktopHeader() {
           type="button"
           onClick={() => navigate('/search')}
           aria-label={t('shell.search', 'Recherche')}
-          className="flex h-9 items-center gap-2 rounded-xl bg-surface-tint px-2.5 text-sm text-text-muted transition-colors hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+          className="flex h-10 items-center gap-2 rounded-xl bg-surface-tint px-2.5 text-sm text-text-muted transition-colors hover:text-text-primary"
         >
           <DuoIcon icon={Search} size={18} />
           {isDesktop && (
@@ -130,7 +130,7 @@ export function DesktopHeader() {
           type="button"
           onClick={() => navigate('/notifications')}
           aria-label={t('shell.notifications', 'Notifications')}
-          className="flex h-9 w-9 items-center justify-center rounded-xl text-text-secondary transition-colors hover:bg-surface-tint hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+          className="flex h-10 w-10 items-center justify-center rounded-xl text-text-secondary transition-colors hover:bg-surface-tint hover:text-text-primary"
         >
           <DuoIcon icon={Bell} size={19} />
         </button>
@@ -139,7 +139,7 @@ export function DesktopHeader() {
           type="button"
           onClick={() => navigate('/profile')}
           aria-label={t('shell.profile', 'Profil')}
-          className="flex h-9 w-9 items-center justify-center rounded-xl text-text-secondary transition-colors hover:bg-surface-tint hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+          className="flex h-10 w-10 items-center justify-center rounded-xl text-text-secondary transition-colors hover:bg-surface-tint hover:text-text-primary"
         >
           <DuoIcon icon={UserCircle} size={20} />
         </button>

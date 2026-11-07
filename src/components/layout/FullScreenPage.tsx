@@ -21,6 +21,7 @@ interface FullScreenPageProps {
   right?: React.ReactNode;
   children: React.ReactNode;
   className?: string;
+  headerClassName?: string;
   /**
    * Mesure de la colonne. Deep pages lisent (720 px), les listes respirent
    * (1060 px). `false` = pleine largeur, réservé aux canevas/éditeurs.
@@ -36,6 +37,7 @@ export function FullScreenPage({
   right,
   children,
   className,
+  headerClassName,
   column = 'narrow',
 }: FullScreenPageProps) {
   const navigate = useNavigate();
@@ -48,7 +50,7 @@ export function FullScreenPage({
   return (
     <IonPage>
       {title && (
-        <header className="full-screen-header">
+        <header className={cn('full-screen-header', headerClassName)}>
           {showBack && <button type="button" onClick={handleBack} aria-label={t('common.back', 'Retour')} className="full-screen-back">
             <DuoIcon icon={ArrowLeft01Icon} size={22} />
           </button>}

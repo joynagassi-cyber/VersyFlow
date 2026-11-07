@@ -489,8 +489,8 @@ export function seedMockDatabase(options: SeedOptions = {}): SeedResult {
 }
 
 /**
- * Seeds isolated localStorage keys (onboarding completion for direct route
- * access, personal verse notes, and semantic concepts) ONLY when storage
+ * Seeds isolated localStorage keys (personal verse notes and semantic concepts)
+ * ONLY when storage
  * isolation is active, so real user keys can never be touched.
  */
 function seedScopedLocalPreferences(force: boolean): void {
@@ -498,20 +498,6 @@ function seedScopedLocalPreferences(force: boolean): void {
   if (!isolation.installed || !isolation.scopeActive) return;
 
   try {
-    if (force || localStorage.getItem('versyflow:onboarding:completed') === null) {
-      localStorage.setItem('versyflow:onboarding:completed', 'true');
-    }
-    if (force || localStorage.getItem('versyflow:settings') === null) {
-      localStorage.setItem(
-        'versyflow:settings',
-        JSON.stringify({
-          uiLanguage: 'fr',
-          bibleTranslation: 'lsg',
-          bibleVersionType: 'protestant',
-          onboardingCompleted: true,
-        }),
-      );
-    }
     if (force || localStorage.getItem('versyflow:note:psa:23:1') === null) {
       localStorage.setItem(
         'versyflow:note:psa:23:1',

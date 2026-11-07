@@ -274,7 +274,8 @@ const record = (id, section, label, verdict, detail, proof) =>
   const applied =
     /data-transparency/.test(resolver) &&
     /data-contrast/.test(resolver) &&
-    /applyThemeToDocument\(\s*\n?\s*resolveTheme\(/.test(themeManager);
+    (/applyThemeToDocument\(\s*\n?\s*resolveTheme\(/.test(themeManager) ||
+      (/resolveTheme\(/.test(themeManager) && /applyThemeToDocument\(/.test(themeManager)));
   record(
     'C07',
     '§9.2',

@@ -255,7 +255,7 @@ export default function ProfileScreen() {
                       className="profile-name-input"
                     />
                   ) : (
-                    <h1>{displayName || t('profile.setName', 'Définir un nom')}</h1>
+                    <h1 className="display-title">{displayName || t('profile.setName', 'Définir un nom')}</h1>
                   )}
                   <button
                     type="button"

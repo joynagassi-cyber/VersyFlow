@@ -55,8 +55,8 @@ export default function FamilySyncScreen() {
       title={t('familyPlus.syncTitle', 'Synchronisation')}
       subtitle={family?.name}
       backPath="/family/home"
-    >
-      <div className="flex flex-col gap-4">
+     column="wide">
+      <div className="space-y-4">
         <SectionCard>
           <div className="flex items-center gap-3">
             <span
@@ -67,13 +67,13 @@ export default function FamilySyncScreen() {
               <DuoIcon icon={healthy ? CheckCircle : AlertCircle} size={22} />
             </span>
             <div>
-              <p className="text-base font-bold text-text-primary">
+              <h2 className="card-title">
                 {healthy
                   ? t('familyPlus.allUpToDate', 'Tout est à jour')
                   : sync.error
                     ? t('familyPlus.syncError', 'La synchronisation a échoué')
                     : t('familyPlus.notSyncedYet', 'Pas encore synchronisé')}
-              </p>
+              </h2>
               <p className="text-xs text-text-muted">
                 {t('familyPlus.lastSync', 'Dernière synchronisation')} ·{' '}
                 {formatAgo(sync.elapsedMs, t)}
@@ -114,7 +114,7 @@ export default function FamilySyncScreen() {
                 </p>
               </div>
               <span
-                className={`rounded-full px-2 py-1 text-[11px] font-bold ${
+                className={`rounded-full px-2 py-1 text-2xs font-bold ${
                   healthy ? 'bg-success-light text-success' : 'bg-warning-light text-warning'
                 }`}
               >

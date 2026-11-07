@@ -1,8 +1,12 @@
-// ⚠️ Premier import volontaire : installe l'isolation de stockage de la démo
-// AVANT toute lecture de `localStorage` par les stores persistés / i18n.
-// Hors mode mock, le module ne fait rien. Voir src/dev/mock/storage-scope.ts.
+// Storage isolation must run before persisted stores are evaluated.
 import '@/dev/mock/install-isolation';
+// En mode mock, toute requête hors origine est refusée AVANT de partir : le
+// frontend ne peut pas joindre le backend, même par accident. Installé avant
+// tout autre module pour intercepter les clients créés à l'import.
+import { installNetworkGuard } from '@/dev/network-guard';
 
+installNetworkGuard();
+import { readOnboardingProgress } from '@/onboarding/progress';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { IonApp } from '@ionic/react';
@@ -60,6 +64,7 @@ const NotFound = lazy(() => import('../app/+not-found'));
 // Onboarding
 const OnboardingLayout = lazy(() => import('../app/onboarding/_layout'));
 const OnboardingWelcome = lazy(() => import('../app/onboarding/welcome'));
+const OnboardingJourney = lazy(() => import('../app/onboarding/journey'));
 const OnboardingLanguage = lazy(() => import('../app/onboarding/language-select'));
 const OnboardingTranslation = lazy(() => import('../app/onboarding/translation-select'));
 const OnboardingFsrs = lazy(() => import('../app/onboarding/fsrs-introduction'));
@@ -165,6 +170,17 @@ const ResponsivePreview = import.meta.env.DEV
   : null;
 
 /**
+ * Laboratoire des boutons duotone — **développement uniquement**.
+ *
+ * Il sert à trancher une question d'affichage (quelle règle de couleur pour
+ * les icônes) en la voyant, pas en la décrivant. Même garde que le
+ * laboratoire responsive : le module n'entre pas dans le bundle livré.
+ */
+const DuotoneLab = import.meta.env.DEV
+  ? lazy(() => import('../app/__dev/duotone-lab'))
+  : null;
+
+/**
  * Raccourci vers le laboratoire, également **développement uniquement** : sans
  * lui, il fallait connaître l'URL par cœur pour voir les coques d'appareils.
  */
@@ -255,7 +271,13 @@ const bootStoresPromise = (async () => {
     initializeSettingsStore(),
     initializeAppearanceStore(),
     initializeUiStore(),
+    useAuthStore.persist.rehydrate(),
   ]);
+  // Never treat the old local identity or a stale persisted flag as a session
+  // for a new onboarding. Existing completed installations are not migrated.
+  if (!useSettingsStore.getState().onboardingCompleted && useAuthStore.getState().isAuthenticated) {
+    await useAuthStore.getState().checkSession();
+  }
   // Sync-side wiring runs after the stores are hydrated so the
   // `initializeSettingsStore()` side-effects above (language sync,
   // persisted flag restore) have already landed in the Zustand state.
@@ -263,12 +285,8 @@ const bootStoresPromise = (async () => {
   wireAppTelemetry();
   wireStreakCoordinator();
   wireSessionRefresh();
-  void scheduleBootReminders().catch((error: unknown) => console.warn('[reminders] Échec de programmation', error));
-  // Mock mode: the local identity always resolves, so run the same session
-  // check the live app runs on resume — the UI then shows the tester as
-  // signed in and the family/profile bridges hydrate immediately.
-  if (isMockMode()) {
-    void useAuthStore.getState().checkSession();
+  if (!isMockMode()) {
+    void scheduleBootReminders().catch((error: unknown) => console.warn('[reminders] Échec de programmation', error));
   }
 })();
 
@@ -309,12 +327,20 @@ function RequireOnboarded() {
   return <Outlet />;
 }
 
+/** The welcome is public; every subsequent onboarding step requires a real session. */
+function RequireOnboardingAuth() {
+  const authenticated = useAuthStore((s) => s.isAuthenticated);
+  return authenticated ? <Outlet /> : <Navigate to="/onboarding/welcome" replace />;
+}
+
 /** Root redirect: onboarding or home depending on completion state */
 function RootRedirect() {
   const onboardingCompleted = useSettingsStore(
     (s) => s.onboardingCompleted,
   );
-  return <Navigate to={onboardingCompleted ? '/tabs/home' : '/onboarding/welcome'} replace />;
+  const user = useAuthStore((s) => s.user);
+  const authenticated = useAuthStore((s) => s.isAuthenticated);
+  return <Navigate to={onboardingCompleted ? '/tabs/home' : authenticated ? readOnboardingProgress(user?.userId) : '/onboarding/welcome'} replace />;
 }
 
 /** Applies RTL/LTR document direction whenever the i18n language changes */
@@ -356,8 +382,6 @@ function DevRouteRecorder() {
  *  offline-safe and re-sync on the `initialized` event. */
 function SyncBridges() {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
-  // In mock mode there is no cloud session to wait for: the local identity is
-  // always available, so the bridges can hydrate profiles/families right away.
   const enabled = isAuthenticated || isMockMode();
   useFamilySyncBridge(enabled);
   useProfileSyncBridge(enabled);
@@ -366,10 +390,7 @@ function SyncBridges() {
 
 /** Auth gate with navigation handlers */
 function AuthGateRoute() {
-  const navigate = useNavigate();
-  return (
-    <AuthIndex onSkip={() => navigate('/tabs/home')} />
-  );
+  return <AuthIndex />;
 }
 
 /** Splash that continues to the root redirect on finish */
@@ -414,9 +435,9 @@ function App() {
     <StrictMode>
       <DirSync />
       <ThemeManager />
-      <DevRouteRecorder />
       <SyncBridges />
       <BrowserRouter>
+        <DevRouteRecorder />
         <IonApp>
           <ErrorBoundary>
             <Routes>
@@ -426,12 +447,18 @@ function App() {
             <Route path="/onboarding" element={<OnboardingLayout />}>
               <Route index element={<Navigate to="/onboarding/welcome" replace />} />
               <Route path="welcome" element={<OnboardingWelcome />} />
+              <Route element={<RequireOnboardingAuth />}>
               <Route path="language-select" element={<OnboardingLanguage />} />
+              <Route path="journey/:step" element={<OnboardingJourney />} />
               <Route path="translation-select" element={<OnboardingTranslation />} />
               <Route path="session-config" element={<OnboardingSessionConfig />} />
               <Route path="reminder-config" element={<OnboardingReminderConfig />} />
               <Route path="fsrs-introduction" element={<OnboardingFsrs />} />
+              </Route>
             </Route>
+
+            <Route path="/auth/login" element={<AuthLogin />} />
+            <Route path="/auth/signup" element={<AuthSignup />} />
 
             {/* Main tabs (guarded by onboarding) */}
             <Route element={<RequireOnboarded />}>
@@ -445,8 +472,6 @@ function App() {
 
               {/* Auth */}
               <Route path="/auth" element={<AuthGateRoute />} />
-              <Route path="/auth/login" element={<AuthLogin />} />
-              <Route path="/auth/signup" element={<AuthSignup />} />
 
               {/* Bible — the explorer is URL-driven: each view is a route */}
               <Route path="/bible/explorer" element={<BibleExplorer />} />
@@ -552,6 +577,10 @@ function App() {
               <Route path="/__dev/responsive-preview" element={<ResponsivePreview />} />
             )}
 
+            {import.meta.env.DEV && DuotoneLab && (
+              <Route path="/__dev/duotone" element={<DuotoneLab />} />
+            )}
+
             <Route path="/splash" element={<SplashRoute />} />
             <Route path="*" element={<NotFound />} />
             </Routes>
@@ -593,9 +622,9 @@ function BootSplash() {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        background: '#fbf9f9',
+        background: 'var(--background, #fbf9f9)',
         color: 'var(--color-primary, #e6067a)',
-        fontFamily: 'Georgia, serif',
+        fontFamily: 'var(--font-serif, Georgia), serif',
         fontSize: 22,
         fontWeight: 700,
       }}

@@ -33,7 +33,7 @@ const DialogContent = React.forwardRef<
         // Téléphone : presque plein cadre. Bureau : boîte centrée de 680 px,
         // la largeur où un formulaire reste lisible sans devenir une colonne
         // perdue au milieu de l’écran.
-        'dialog-box fixed left-1/2 top-1/2 z-50 w-[calc(100vw-32px)] -translate-x-1/2 -translate-y-1/2 rounded-3xl bg-surface p-6 shadow-xl',
+        'g3 dialog-box fixed left-1/2 top-1/2 z-50 w-[calc(100vw-32px)] -translate-x-1/2 -translate-y-1/2 p-6',
         className,
       )}
       {...props}

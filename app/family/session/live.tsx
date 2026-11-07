@@ -48,7 +48,7 @@ export default function FamilySessionLiveScreen() {
 
   if (!session) {
     return (
-      <FullScreenPage title={t('familyPlus.liveTitle', 'Séance en direct')} backPath="/family/session/prepare">
+      <FullScreenPage title={t('familyPlus.liveTitle', 'Séance en direct')} backPath="/family/session/prepare" column="wide">
         <EmptyState
           title={t('familyPlus.sessionNotFound', 'Séance introuvable')}
           description={t(
@@ -80,11 +80,11 @@ export default function FamilySessionLiveScreen() {
       subtitle={t('familyPlus.familySession', 'Séance en famille')}
       backPath="/family/session/prepare"
     >
-      <div className="flex flex-col gap-4">
+      <div className="space-y-4">
         <SectionCard>
           <div className="flex items-center justify-between gap-2">
             <span
-              className={`flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-bold ${
+              className={`flex items-center gap-1 rounded-full px-2.5 py-1 text-2xs font-bold ${
                 online ? 'bg-success-light text-success' : 'bg-warning-light text-warning'
               }`}
             >

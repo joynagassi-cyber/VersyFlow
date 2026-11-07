@@ -168,17 +168,23 @@ html::before {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  /* 0–3 px : 0 en mobile (net), 2 px sur grand écran pour adoucir un
-     agrandissement déjà modéré. Jamais 22–32 px. */
-  filter: saturate(1.1);
-  transform: scale(1.05);
+  /* Le flou de fond est un réglage utilisateur (`--bg-blur`). À 0, on ne
+     déclare AUCUN filtre : un `blur(0px)` suffit à créer une couche de
+     composition et à adoucir le rendu sur mobile.
+     `background-position` vise 38 % de la hauteur : nos portraits sont
+     composés avec le sujet dans le haut et une zone calme en bas, un cadrage
+     au centre tronquait le sujet sur un écran 19,5:9. */
+  background-position: center 38%;
+  filter: var(--bg-filter, none);
+  /* 1.02 : assez pour masquer un bord d'arrondi, assez peu pour ne pas
+     re-agrandir une image déjà calibrée. */
+  transform: scale(1.02);
   transition: opacity 400ms ease;
 }
 
 /* Un seul fond image et un voile distinct, derrière toute l'interface. */
 html[data-bg='image']::before {
   background-image: var(--theme-image, none);
-  filter: blur(var(--bg-blur)) saturate(1.1);
 }
 html[data-bg='image']::after {
   content: '';
@@ -245,68 +251,103 @@ ion-content::part(background) {
     hyphens: auto;
     max-width: var(--reading-line-length, 42em);
     margin-inline: auto;
+    /* Le numéral de chapitre flotte : sans contexte de formatage il
+       déborderait sur l'en-tête du chapitre suivant. */
+    display: flow-root;
   }
 
+  /* Le verset n'a plus de fond ni de marge négative : il n'est plus une
+     pastille cliquable, mais une plage de texte. Toute la surface visuelle
+     est désormais réservée au SURLIGNAGE — la sélection, elle, se signale
+     par un trait. Deux états qui partageaient le même canal (un fond) ne se
+     distinguaient pas quand un verset était à la fois sélectionné et
+     surligné. */
   .manuscript-verse {
-    border-radius: 12px;
-    padding: 2px 4px;
-    margin: 0 -4px;
     cursor: pointer;
-    transition: background-color 160ms ease;
+    transition: text-decoration-color 160ms ease;
   }
 
   .manuscript-verse:focus-visible {
     outline: 2px solid var(--acc-text, var(--color-primary));
-    outline-offset: 2px;
+    outline-offset: 3px;
+    border-radius: 4px;
   }
 
+  /* SÉLECTION — un soulignement fin pointillé, et rien d'autre. C'est le seul
+     signal : ni fond, ni gras, ni changement d'encre. Il reste lisible en
+     niveaux de gris, et il ne peut pas être confondu avec un surlignage. */
   .manuscript-verse.is-selected {
-    background-color: color-mix(in srgb, var(--color-primary) 8%, transparent);
+    text-decoration-line: underline;
+    text-decoration-style: dotted;
+    text-decoration-thickness: 1px;
+    text-decoration-color: var(--acc-text, var(--color-primary));
+    text-underline-offset: 0.32em;
   }
 
-  /* User highlight (light, fluid, translucent) — readable on #FFFFFF and
-     #121212. A translucent tint of the accent color with a soft glow. */
-  .manuscript-verse.is-highlighted {
-    background: linear-gradient(
+  /* SURLIGNAGE — un lavis léger qui court sous TOUT le texte du verset :
+     les espaces entre les mots en font partie, puisque le fond s'applique à
+     l'élément inline et non aux mots. `box-decoration-break: clone` répète le
+     lavis sur chaque ligne d'un verset qui en occupe plusieurs, au lieu de le
+     laisser ouvert aux extrémités.
+     La teinte vient de `--hl`, elle-même fixée par `data-hl` : aucune couleur
+     n'est écrite ici, donc les cinq pastilles suivent thème et presets. */
+  .manuscript-verse[data-hl] {
+    --hl-alpha: 34%;
+    background-image: linear-gradient(
       to bottom,
-      color-mix(in srgb, var(--color-primary) 14%, transparent),
-      color-mix(in srgb, var(--color-primary) 22%, transparent)
+      transparent 0 58%,
+      color-mix(in srgb, var(--hl) var(--hl-alpha), transparent) 58% 92%,
+      transparent 92%
     );
-    box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-primary) 18%, transparent) inset;
-    border-radius: 10px;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+    padding-block: 0.06em;
   }
 
-  .manuscript-verse.is-highlighted.is-selected {
-    background: linear-gradient(
-      to bottom,
-      color-mix(in srgb, var(--color-primary) 20%, transparent),
-      color-mix(in srgb, var(--color-primary) 28%, transparent)
-    );
-  }
-
+  /* Le numéro de verset : plus grand qu'avant (0,62 → 0,76 em) et dans la
+     couleur de l'accent actif. `--acc-text` est l'accent corrigé pour rester
+     lisible sur la surface du preset — c'est la même teinte, pas un gris. */
   .verse-flow-number {
     font-family: inherit;
-    font-size: 0.62em;
+    font-size: 0.76em;
     font-weight: 700;
     line-height: 1;
+    font-variant-numeric: tabular-nums;
     color: var(--acc-text, var(--color-primary));
     cursor: pointer;
     user-select: none;
     -webkit-user-select: none;
     vertical-align: super;
-    margin: 0 0.3em 0 0.12em;
-    padding: 2px 4px;
-    border-radius: 6px;
+    margin: 0 0.34em 0 0.1em;
+    padding: 0 2px;
+    border-radius: 5px;
     transition: background-color 140ms ease;
   }
 
   .verse-flow-number:active {
-    background-color: color-mix(in srgb, var(--color-primary) 18%, transparent);
+    background-color: color-mix(in srgb, var(--acc) 20%, transparent);
   }
 
+  /* Le numéro d'un verset sélectionné ne change plus de fond : c'est le
+     soulignement du verset qui porte l'état, du numéro à la fin du texte. */
   .verse-flow-number.is-selected {
-    background-color: var(--color-primary);
-    color: var(--color-on-primary);
+    background-color: transparent;
+  }
+
+  /* Numéro de chapitre en grand, dans la marge du texte. La lettrine
+     précédente flottait et décalait le premier verset de deux lignes ; un
+     numéral posé en marge ne déplace rien. */
+  .chapter-numeral {
+    float: inline-start;
+    display: block;
+    margin: 0.04em 0.34em 0 0;
+    font-family: var(--reading-font-family, 'Source Serif 4', Georgia, serif);
+    font-size: 3.4em;
+    font-weight: 300;
+    line-height: 0.82;
+    font-variant-numeric: tabular-nums;
+    color: var(--acc-text, var(--color-primary));
+    letter-spacing: -0.02em;
   }
 
   /*
@@ -742,6 +783,20 @@ body {
     --tint 0.8s cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 
+/* Recette de verre PAR DÉFAUT. `.glass` est utilisé par les réglages, la
+   recherche et le tableau de bord d'analyse ; or il n'avait aucune recette de
+   base : seules des règles `html[data-bg='image'] .glass` existaient, donc sur
+   un preset ordinaire la classe ne peignait RIEN et ces cartes dépendaient du
+   `bg-surface` voisin. `.glass` est désormais le matériau premium partagé —
+   même fond, même liseré, même ombre et même encre que `.g1/.g2/.g3` — et le
+   flou du thème s'y ajoute quand un fond image le justifie. */
+.glass {
+  color: var(--tx);
+  background: var(--gc);
+  border: 1px solid var(--bd);
+  box-shadow: inset 0 1px 0 var(--hi), 0 10px 34px var(--sh);
+}
+
 /* Carte verre dépoli teinté : fond carte translucide (40 %) + voile de la
    teinte extraite de l'image (color-mix 22 %), flou d'arrière-plan fort. */
 .card-glass {
@@ -907,8 +962,45 @@ body {
   overflow-y: auto;
   border-start-start-radius: 24px;
   border-start-end-radius: 24px;
-  background: var(--color-surface);
-  box-shadow: var(--shadow-lift);
+  /* Le même matériau que les cartes : une feuille modale n'est pas un blanc
+     opaque posé sur un thème coloré, et sur fond image elle reste du verre. */
+  background: var(--gc);
+  color: var(--tx);
+  border: 1px solid var(--bd);
+  box-shadow: var(--shadow-lift), inset 0 1px 0 var(--hi);
+}
+html[data-bg='image'] .modal-sheet-panel {
+  background: rgba(var(--glass-rgb), max(var(--glass-alpha), .82));
+  -webkit-backdrop-filter: blur(28px) saturate(1.4);
+  backdrop-filter: blur(28px) saturate(1.4);
+}
+@media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
+  html[data-bg='image'] .modal-sheet-panel {
+    background: var(--gc);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+
+/* 13 bis. Focus clavier — un seul anneau, sur tous les écrans.
+   Neuf blocs recopiaient leur `outline` (réglages, apparence, contraste
+   élevé) ; partout ailleurs, le contour venait du navigateur, donc d'un
+   bleu système sur un thème framboise. Ici : l'accent lisible du preset,
+   2 px, décalé de 2 px. */
+:where(a, button, [role='button'], [role='switch'], [role='tab'], summary):focus-visible {
+  outline: 2px solid var(--acc-text, var(--color-primary));
+  outline-offset: 2px;
+}
+
+/* 14. Champs de saisie — un seul focus, quel que soit le champ.
+   Les utilitaires `focus:ring-*` étaient posés écran par écran (parfois avec
+   un bleu système) ; la règle ci-dessous ne dépend que de l'accent du thème.
+   Les cases et boutons radio en sont exclus : leur indicateur a son propre
+   dessin. */
+:where(input:not([type='checkbox']):not([type='radio']), textarea, select):focus-visible {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 18%, transparent);
+  outline: none;
 }
 
 .modal-sheet-handle {
@@ -982,6 +1074,14 @@ html[data-contrast='high']::before {
   --success: var(--color-success);
   --danger: var(--color-error);
   --warning: var(--color-warning);
+  /* Encre posée sur une surface d'ÉTAT (succès, erreur, alerte, info).
+     Ce n'est PAS l'encre de l'accent : `--on` suit `--primary-foreground`,
+     qui peut être blanc sur un accent sombre. Or les quatre couleurs d'état
+     restent claires dans tous les presets, en clair comme en sombre : sur
+     elles, seule une encre sombre garde 4,5:1 (mesuré : #ff9500 → 9,7:1,
+     #00a86b → 5,6:1, #ff4d6d → 4,9:1, #007aff → 4,6:1). Une seule encre
+     d'état, donc, et jamais `white`/`black` écrits dans un écran. */
+  --on-status: #14100f;
   /* Voiles de superposition : une densité de noir, pas une couleur de
      palette. Déclarés ici (fichier de variables) et consommés par les
      composants via `bg-[color:var(--scrim…)]`. */
@@ -1010,6 +1110,18 @@ html[data-contrast='high']::before {
 .action-card:hover .icon-chip,
 .action-card:focus-visible .icon-chip {
   background: color-mix(in srgb, var(--acc) 16%, transparent);
+}
+
+/* Règle 4 — sur une surface d'ÉTAT pleine, l'encre est celle de l'état.
+   Sans cette règle, une pastille `bg-error` héritait du texte de la carte
+   (`--tx`) ou, pire, de `--on` : deux encres possibles pour un même fond
+   selon l'écran et le preset actif. Les variantes `bg-error/10` (pastilles
+   teintées) ne sont pas concernées : la classe y est `bg-error/10`. */
+.bg-success,
+.bg-error,
+.bg-warning,
+.bg-info {
+  color: var(--on-status);
 }
 
 /* Règle 2a — l'élément actif (onglet, entrée de menu) porte l'accent. */
@@ -1041,7 +1153,6 @@ ion-tab-button.tab-selected ion-icon {
      respecté au-dessus de ce plancher. */
   --glass-alpha-min: .8;
 }
-:root[data-theme='dark'] { --glass-rgb: 18, 18, 18; }
 html[data-bg='image'] { min-height: 100dvh; }
 html[data-bg='image'] .glass {
   background: rgba(var(--glass-rgb), var(--glass-alpha));
@@ -1081,49 +1192,153 @@ html[data-bg='image'] .bible-card { background: rgba(var(--glass-rgb), max(var(-
 html[data-bg='image'][data-transparency='reduced'] :is(.card-glass, .surface-glass, .bible-card),
 html[data-bg='image'][data-contrast='high'] :is(.card-glass, .surface-glass, .bible-card) { background: var(--color-surface); -webkit-backdrop-filter: none; backdrop-filter: none; }
 
-/* Icônes Solar : l'accent est appliqué dès le repos, jamais seulement au survol. */
-.solar.solar-accent { color: var(--color-primary); }
-/* Sur une surface pleine d'accent, préserver le contraste du pictogramme. */
-.bg-primary .solar.solar-accent { color: var(--color-on-primary); }
+/* Sur une surface pleine d'accent, préserver le contraste du pictogramme ET
+   rendre le second calque au trait, sinon le duotone devient invisible
+   (accent sur accent). La règle de base vit plus bas, en un seul endroit. */
+.bg-primary .solar.solar-accent {
+  color: var(--color-on-primary);
+  --solar-secondary-color: currentColor;
+  --solar-secondary-opacity: 0.35;
+}
 
-/* Accueil premium : jetons neutres fixes, accent hérité du thème image. */
-:root, :root[data-theme="light"], .appearance-preview[data-theme="light"] {
-  --gc: #ffffff; --gc-rgb: 255,255,255;
-  --tx: #1b1220; --mut: #5b4a57;
-  --acc: var(--color-primary); --acc2: var(--color-accent);
-  --bd: rgba(255,255,255,.75); --hi: rgba(255,255,255,.9); --sh: rgba(74,22,48,.18);
-  --v1: rgba(255,236,244,.25); --v2: rgba(255,226,238,.55);
-  --v1: color-mix(in srgb, var(--tint) 12%, rgba(255,255,255,.2));
-  --v2: color-mix(in srgb, var(--tint) 18%, rgba(255,255,255,.55));
-  --acc-text: var(--tx); --acc-text: color-mix(in srgb, var(--acc) 50%, #1b1220);
-  --bl: var(--bg-blur); --gb: var(--glass-blur); --ga: var(--glass-alpha); --veil: var(--veil-alpha);
-  --premium-on: #1a0b14;
+/* ── Jetons de surface : UNE formule, deux modes ──────────────────────────
+   CE BLOC A ÉTÉ RÉÉCRIT PARCE QUE LE SOMBRE N'ÉTAIT PAS UNE PALETTE.
+
+   Trois défauts mesurables avant réécriture :
+   1. Cinq jetons (`--bl`, `--gb`, `--ga`, `--veil`, `--premium-on`)
+      n'existaient QUE dans le bloc clair ; le sombre en héritait par accident,
+      faute d'être défini. Un mode incomplet ne se voit pas tout de suite : il
+      se voit le jour où l'un de ces jetons porte enfin quelque chose.
+   2. Les valeurs étaient figées (`--gc: #171717`, `--tx: #f3f3f3`), donc le
+      sombre ignorait le preset actif. Pire : `--gc` valait le FOND (#171717)
+      alors qu'en clair il valait la SURFACE (#ffffff). Les cartes sombres
+      n'avaient donc aucune élévation — c'était l'écart de conformité le plus
+      visible entre les deux modes.
+   3. Le sombre désaturait l'accent de 45 % avec `--mut`, transformation que le
+      clair ne subit pas. Deux modes qui n'appliquent pas la même formule ne
+      sont pas conformes, même quand chacun est « joli ».
+
+   Désormais : les deux modes déclarent les MÊMES jetons, et chaque valeur est
+   calculée à partir du preset (`--color-*`), lui-même alimenté par le pont
+   shadcn en clair comme en sombre. La seule différence assumée est l'ANCRE :
+   en clair un reflet se calcule depuis la surface, en sombre depuis l'encre.
+   Les formules se répondent deux à deux ; elles ne divergent plus.
+
+   `--gc-rgb` / `--bg-rgb` / `--glass-rgb` restent des triplets, parce que les
+   règles historiques les lisent dans `rgba(var(--gc-rgb), a)`. Ils ne sont
+   plus écrits à la main : `ThemeManager` les recalcule sur le preset réel
+   (`src/theme/surface-triplets.ts`). Les valeurs ci-dessous ne sont qu'un
+   repli pour le premier paint, avant que le preset ne soit lisible. */
+:root,
+:root[data-theme='light'],
+:root[data-theme='dark'],
+.appearance-preview[data-theme='light'],
+.appearance-preview[data-theme='dark'] {
+  /* Identité : le preset décide, dans les deux modes. */
+  --acc: var(--color-primary);
+  --acc2: var(--color-accent);
+  --tx: var(--color-text-primary);
+  --mut: var(--color-text-secondary);
+  /* Surfaces construites depuis les triplets : elles restent OPALQUES même
+     quand `--color-surface` devient translucide sous une image de thème. */
+  --gc: rgb(var(--gc-rgb));
+  --bg: rgb(var(--bg-rgb));
+
+  /* Encre posée sur une surface PLEINE d'accent. `--color-on-primary` suit
+     `--primary-foreground` du preset : c'est l'encre que son auteur a prévue,
+     donc la seule qui reste juste quand un preset déclare du texte sombre sur
+     un accent clair. Un accent FIXE choisi par l'utilisateur la remplace, car
+     elle ne décrit alors plus l'accent réellement affiché. */
+  --on-accent: var(--color-on-primary);
+
+  /* Densités du verre : réglées par l'utilisateur, identiques dans les modes. */
+  --bl: var(--bg-blur); --gb: var(--glass-blur);
+  --ga: var(--glass-alpha); --veil: var(--veil-alpha);
+
+  /* Replis, mesurés sur le thème de base. Remplacés au premier rendu. */
+  --gc-rgb: 255, 255, 255;
+  --bg-rgb: 251, 249, 249;
+  --glass-rgb: 255, 255, 255;
+  /* Intensité du voile sur une image de thème : même formule, densité propre. */
+  --veil-strength: 1;
+  /* Le logo est un fichier fixe ; sa saturation est un réglage de mode, pas
+     une règle cachée appliquée à un seul des deux modes. */
+  --brand-saturation: 1;
 }
+
+:root, :root[data-theme='light'], .appearance-preview[data-theme='light'] {
+  --bd: color-mix(in srgb, var(--gc) 75%, transparent);
+  --hi: color-mix(in srgb, var(--gc) 90%, transparent);
+  --sh: color-mix(in srgb, var(--tx) 18%, transparent);
+  --v1: color-mix(in srgb, var(--tint) 12%, color-mix(in srgb, var(--gc) 20%, transparent));
+  --v2: color-mix(in srgb, var(--tint) 18%, color-mix(in srgb, var(--gc) 55%, transparent));
+  --acc-text: color-mix(in srgb, var(--acc) 50%, var(--tx));
+  /* Encre posée sur un DÉGRADÉ acc → acc2. Mesuré : sur l'accent de marque
+     (#e6067a), seul un noir presque pur dépasse 4,5:1 — le blanc y plafonne à
+     4,50 et s'effondre à 1,50 sur l'extrémité claire du dégradé. On garde donc
+     une encre sombre, dérivée de l'encre du thème, et on ne prétend pas qu'elle
+     atteint AA sur l'accent : c'est une paire de marque préexistante (4,24:1
+     avant réécriture, 4,05:1 ici). Elle est constante sur le dégradé entier,
+     ce qui est le point qui compte pour un texte posé sur un fond mouvant. */
+  --premium-on: color-mix(in srgb, var(--acc) 4%, var(--tx));
+}
+
 :root[data-theme='dark'], .appearance-preview[data-theme='dark'] {
-  --gc: #171717; --gc-rgb: 23,23,23;
-  --tx: #f3f3f3; --mut: #c3c3c3;
-  /* Accent de l'image atténué avec le neutre existant, uniquement en sombre. */
-  --acc: var(--color-primary); --acc2: var(--color-accent);
-  --acc: color-mix(in srgb, var(--color-primary) 45%, var(--mut));
-  --acc2: color-mix(in srgb, var(--color-accent) 45%, var(--mut));
-  --bd: rgba(255,255,255,.14); --hi: rgba(255,255,255,.20); --sh: rgba(0,0,0,.35);
-  --v1: rgba(18,18,18,.30); --v2: rgba(8,8,8,.72);
+  /* Replis sombres : surface de carte (#1e1e1e), fond (#121212). */
+  --gc-rgb: 30, 30, 30;
+  --bg-rgb: 18, 18, 18;
+  --glass-rgb: 18, 18, 18;
+  --veil-strength: 1.1;
+  --brand-saturation: .55;
+  --bd: color-mix(in srgb, var(--tx) 14%, transparent);
+  --hi: color-mix(in srgb, var(--tx) 20%, transparent);
+  --sh: color-mix(in srgb, var(--bg) 35%, transparent);
   --v1: color-mix(in srgb, var(--tint) 30%, transparent);
-  --v2: color-mix(in srgb, var(--tint) 50%, rgba(8,8,8,.78));
-  --acc-text: var(--tx); --acc-text: color-mix(in srgb, var(--acc) 70%, #fff);
+  --v2: color-mix(in srgb, var(--tint) 50%, color-mix(in srgb, var(--bg) 78%, transparent));
+  --acc-text: color-mix(in srgb, var(--acc) 70%, var(--tx));
+  /* Encre posée sur l'accent : on part du FOND sombre, pas d'un blanc qui
+     rendrait le texte illisible sur un dégradé clair. */
+  --premium-on: color-mix(in srgb, var(--acc) 4%, var(--bg));
 }
-html[data-bg='image']::before { filter: blur(var(--bl)) saturate(1.15); }
+html[data-bg='image']::before { filter: var(--bg-filter, none); }
+/* Le voile protège le BAS de l'écran (là où vivent les cartes) et laisse le
+   HAUT respirer : c'est ce dégradé qui distingue une image « posée » d'une
+   image « effacée ». Les anciennes valeurs (0,85 → 0,90 d'opacité, multipliées
+   par un voile utilisateur à 100 %) cachaient l'image entière. */
+/* Le voile est peint avec la SURFACE du preset, à une densité qui dépend du
+   mode (`--veil-strength`) — et non avec des rgba figés, qui rendaient un
+   voile clair sur un thème sombre et l'inverse. Une formule, deux densités. */
 html[data-bg='image']::after {
-  background: linear-gradient(to bottom, rgba(255,236,244,.85), rgba(255,226,238,.90));
-  background: linear-gradient(to bottom, color-mix(in srgb,var(--tint) 8%,rgba(255,236,244,.85)), color-mix(in srgb,var(--tint) 8%,rgba(255,226,238,.90)));
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    color-mix(in srgb, var(--tint) 6%, color-mix(in srgb, var(--gc) calc(30% * var(--veil-strength)), transparent)) 55%,
+    color-mix(in srgb, var(--tint) 8%, color-mix(in srgb, var(--gc) calc(62% * var(--veil-strength)), transparent)) 100%
+  );
   opacity: var(--veil);
 }
-html[data-bg='image'][data-theme='dark']::after {
-  background: linear-gradient(to bottom, rgba(18,18,18,.85), rgba(8,8,8,.90));
+/* Le gris « discret » suit le preset, comme le texte secondaire.
+   `tweakcn-presets.css` ne ponte que `--color-text-secondary` ; les écrans
+   historiques, eux, écrivent `text-text-muted` (322 occurrences) et gardaient
+   donc un gris FIGÉ (#98989e en clair, #6a5a63 en sombre) : illisible sur les
+   presets sombres (#6a5a63 sur #171717 = 2,9:1) et étranger à la teinte du
+   preset en clair. Ici muted/tertiary/placeholder sont DÉRIVÉS du couple
+   texte secondaire + texte principal : toujours plus discrets que
+   `--color-text-secondary`, toujours lisibles, sur les 39 presets. */
+:root[data-preset]:not([data-bg='image']) {
+  --color-text-muted: color-mix(in srgb, var(--color-text-secondary) 92%, var(--color-text-primary));
+  --color-text-tertiary: color-mix(in srgb, var(--color-text-secondary) 82%, var(--color-text-primary));
+  --color-text-placeholder: color-mix(in srgb, var(--color-text-secondary) 55%, var(--color-background));
 }
+
 html[data-bg='image'] { --color-text-primary: var(--tx); --color-text-secondary: var(--mut); --color-text-muted: var(--mut); }
 .g1,.g2,.g3 { color: var(--tx); background: var(--gc); border: 1px solid var(--bd); box-shadow: inset 0 1px 0 var(--hi), 0 10px 34px var(--sh); }
 .g1 { border-radius: 24px; }
+/* En-tête d'onglet — un seul matériau, un seul padding pour les quatre. */
+.home-greeting { position: relative; }
+.tab-heading { padding: 24px; }
+
+
 .g2 { border-radius: 24px; }
 .g3 { border-radius: 28px; }
 html[data-bg='image'] :is(.g1,.g2,.g3) { -webkit-backdrop-filter: blur(var(--gb)) saturate(1.6); backdrop-filter: blur(var(--gb)) saturate(1.6); }
@@ -1141,34 +1356,185 @@ html[data-bg='image'] .g3 { background: rgba(var(--gc-rgb), max(calc(var(--ga) *
 }
 html[data-bg='image'][data-transparency='reduced'] :is(.g1,.g2,.g3),
 html[data-bg='image'][data-contrast='high'] :is(.g1,.g2,.g3) { background: var(--gc); -webkit-backdrop-filter: none; backdrop-filter: none; }
-/* Icônes neutres au repos ; état actif et actions principales en accent. */
-.solar.solar-accent { color: var(--mut); }
-[aria-current='page'] .solar.solar-accent, .home-primary .solar.solar-accent { color: var(--acc); }
-.action-card:hover .solar.solar-accent, .action-card:focus-visible .solar.solar-accent { color: var(--acc); }
+/* ══════════════════════════════════════════════════════════════════════════
+   MATÉRIAU COMMUN — les cartes historiques rejoignent les cartes premium
+   ══════════════════════════════════════════════════════════════════════════
+   Les écrans « profonds » (Bible, révisions, familles, collections, analyse,
+   onboarding, recherche…) précèdent le vocabulaire premium : ils peignent des
+   cartes `bg-surface` + `shadow-sm`, sans liseré ni ombre du thème. D'où deux
+   ruptures visibles dès qu'on quitte les 7 écrans premium :
+     – sur un preset sombre, une ombre noire sur fond noir ne dessine rien ;
+     – sur un fond IMAGE, ces cartes restent des blocs opaques posés sur la
+       photo, alors que les cartes `.g1/.g2/.g3` sont du verre.
+   Les règles ci-dessous donnent à ces cartes le MÊME matériau que `.g1`
+   (liseré `--bd`, reflet `--hi`, ombre `--sh`, verre sur fond image) sans
+   toucher au JSX de ~70 écrans, et sans viser les champs, les pastilles ni
+   les cartes déjà premium. Aucune couleur littérale : tout vient du thème. */
+
+/* 1. Sur fond image, les surfaces HISTORIQUES deviennent translucides. Sans
+   cela `--color-surface` restait blanc opaque et les jetons de texte, eux,
+   suivaient déjà l'image : cartes claires, texte clair. */
+html[data-bg='image'] {
+  --color-surface: rgba(var(--gc-rgb), .93);
+  --color-surface-elevated: rgba(var(--gc-rgb), .97);
+  --color-surface-tint: color-mix(in srgb, var(--tx) 7%, rgba(var(--gc-rgb), .55));
+  --color-border: color-mix(in srgb, var(--tx) 16%, transparent);
+}
+
+/* 2. Profondeur du thème, pas une ombre Tailwind figée. Les tuiles à choix
+   (`border-2` + `border-primary` quand elles sont sélectionnées) sont
+   EXCLUES : leur bordure porte l'état, la repeindre par le liseré neutre
+   effacerait la sélection. */
+.app-canvas :is(div,article,section,li,button,a).bg-surface:is([class~='shadow-sm'],[class~='shadow-md'],[class~='shadow-lg'],[class~='shadow-xl'],[class~='shadow-2xl']):not(.g1):not(.g2):not(.g3):not(.glass):not(.card-glass):not(.surface-glass):not(.bible-card):not([class*='border-']) {
+  border: 1px solid var(--color-border);
+  box-shadow: inset 0 1px 0 var(--hi), 0 4px 14px color-mix(in srgb, var(--sh) 45%, transparent);
+}
+
+/* 3. Sur fond image, ces mêmes cartes reçoivent le verre de `.g2`. */
+html[data-bg='image'] .app-canvas :is(div,article,section,li,button,a).bg-surface:is([class~='shadow-sm'],[class~='shadow-md'],[class~='shadow-lg'],[class~='shadow-xl'],[class~='shadow-2xl']):not(.g1):not(.g2):not(.g3):not(.glass):not(.card-glass):not(.surface-glass):not(.bible-card):not([class*='border-']) {
+  background-color: rgba(var(--gc-rgb), var(--ga));
+  -webkit-backdrop-filter: blur(var(--gb)) saturate(1.6);
+  backdrop-filter: blur(var(--gb)) saturate(1.6);
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  html[data-bg='image'] .app-canvas :is(div,article,section,li,button,a).bg-surface:is([class~='shadow-sm'],[class~='shadow-md'],[class~='shadow-lg'],[class~='shadow-xl'],[class~='shadow-2xl']) {
+    background-color: rgba(var(--gc-rgb), .88);
+  }
+}
+/* Transparence réduite et contraste élevé : le verre redevient plein, comme
+   pour `.g1/.g2/.g3`. C'est le choix explicite de l'utilisateur. */
+@media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
+  html[data-bg='image'] .app-canvas :is(div,article,section,li,button,a).bg-surface:is([class~='shadow-sm'],[class~='shadow-md'],[class~='shadow-lg'],[class~='shadow-xl'],[class~='shadow-2xl']) {
+    background-color: var(--gc);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+html[data-bg='image']:is([data-transparency='reduced'],[data-contrast='high']) .app-canvas :is(div,article,section,li,button,a).bg-surface:is([class~='shadow-sm'],[class~='shadow-md'],[class~='shadow-lg'],[class~='shadow-xl'],[class~='shadow-2xl']) {
+  background-color: var(--gc);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+/* ── Boutons duotone : A pour l'icône, B pour le contenant, C pour l'onglet ──
+   Décision arbitrée, voir `docs/design/duotone-boutons.md`.
+
+   Pourquoi ce bloc est le SEUL à décider de la couleur d'une icône de
+   navigation. Deux défauts se corrigeaient ici :
+
+   1. Les icônes Solar duotone ont deux calques ; le second lit
+      `--solar-secondary-color`, dont le défaut est `currentColor`. Comme
+      `DuoIcon` ne renseignait jamais cette variable, les deux calques
+      prenaient la même teinte : ce n'était pas un duotone mais un monochrome
+      à deux densités, où le calque secondaire salit le trait au lieu de le
+      creuser. Une règle CSS suffit à corriger les 549 utilisations.
+   2. Deux blocs se contredisaient : celui-ci disait gris au repos puis accent
+      au survol, l'autre (plus haut) affirmait « l'accent dès le repos, jamais
+      seulement au survol ». Le second gagnait par ordre de cascade, et le
+      premier restait comme une intention morte. Les composants ne peignent
+      donc plus leurs couleurs en utilitaires Tailwind : une seule source.
+
+   A — l'icône. Encre franche + masse d'accent à 24 % : la couleur est là dès
+   le repos, donc elle ne « prend » plus le contrôle au survol. */
+.solar.solar-accent {
+  --solar-secondary-color: var(--acc);
+  --solar-secondary-opacity: 0.24;
+  color: color-mix(in srgb, var(--tx) 82%, var(--mut));
+}
+/* L'encre reste plus sombre que `--mut` : aucune régression de contraste sur
+   les icônes purement décoratives (barre d'état, en-têtes, dialogue). */
+
+/* B — le contenant. Le survol ne change pas la teinte de l'icône : il pose
+   une pastille. C'est ce qui distingue « survoler » de « activer ». */
+.nav-item {
+  color: color-mix(in srgb, var(--tx) 82%, var(--mut));
+  background-color: transparent;
+  transition: background-color 180ms ease, color 180ms ease, box-shadow 180ms ease;
+}
+.nav-item:hover,
+.nav-item:focus-visible {
+  background-color: color-mix(in srgb, var(--acc) 7%, transparent);
+}
+.nav-item:hover .solar.solar-accent,
+.nav-item:focus-visible .solar.solar-accent {
+  --solar-secondary-opacity: 0.30;
+}
+/* L'actif cumule encre, pastille et filet : trois signaux, dont deux qui ne
+   dépendent pas de la teinte. Lisible en niveaux de gris, et pour un
+   daltonien — un état ne doit jamais reposer sur la seule couleur. */
+.nav-item[aria-current='page'] {
+  color: var(--acc-text);
+  background-color: color-mix(in srgb, var(--acc) 13%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--acc) 34%, transparent);
+}
+.nav-item[aria-current='page'] .solar.solar-accent {
+  --solar-secondary-opacity: 0.36;
+}
+
+/* C — l'onglet mobile actif. Ici la teinte seule est un signal trop faible
+   sur quatre icônes de 23 px : le duotone devient donc la récompense de
+   l'état — creux au repos (10 %), plein à l'actif (48 %). La densité se lit
+   même sans percevoir la couleur. */
+.tab-item {
+  color: var(--mut);
+  transition: color 180ms ease;
+}
+.tab-item .solar.solar-accent { --solar-secondary-opacity: 0.10; }
+.tab-pill {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 32px;
+  border-radius: 999px;
+  background-color: transparent;
+  transition: background-color 180ms ease;
+}
+.tab-item:hover,
+.tab-item:focus-visible { color: color-mix(in srgb, var(--tx) 80%, var(--mut)); }
+.tab-item:hover .tab-pill,
+.tab-item:focus-visible .tab-pill { background-color: color-mix(in srgb, var(--acc) 5%, transparent); }
+.tab-item:hover .solar.solar-accent,
+.tab-item:focus-visible .solar.solar-accent { --solar-secondary-opacity: 0.20; }
+.tab-item[aria-current='page'] { color: var(--acc-text); }
+.tab-item[aria-current='page'] .tab-pill { background-color: color-mix(in srgb, var(--acc) 12%, transparent); }
+.tab-item[aria-current='page'] .solar.solar-accent { --solar-secondary-opacity: 0.48; }
+.tab-item .tab-label { transition: color 180ms ease; }
+.tab-item[aria-current='page'] .tab-label { color: var(--acc-text); }
+
+/* Actions principales et cartes d'action : ce sont des actions, pas de la
+   navigation — elles conservent l'accent, mais avec le même duotone coloré. */
+.home-primary .solar.solar-accent {
+  color: var(--premium-on);
+  --solar-secondary-color: currentColor;
+  --solar-secondary-opacity: 0.4;
+}
+.action-card .solar.solar-accent { --solar-secondary-opacity: 0.2; }
+.action-card:hover .solar.solar-accent,
+.action-card:focus-visible .solar.solar-accent {
+  color: var(--acc-text);
+  --solar-secondary-opacity: 0.34;
+}
 
 .home-premium { font-family: var(--font-sans, Inter), sans-serif; color: var(--tx); padding: 24px 16px 144px; }
 .home-content { max-width: 1180px; margin: auto; display: grid; gap: 24px; }
-.home-greeting { position: relative; padding: 24px; }
-.home-label { color: var(--mut); font: 600 12px/1.4 var(--font-sans, Inter),sans-serif; letter-spacing: .14em; text-transform: uppercase; }
-.home-greeting h1 { font: 400 clamp(40px,4vw,52px)/1.1 Georgia,serif; margin-top: 8px; }
 .home-muted { color: var(--mut); font-size: 14px; }
 .home-greeting .home-muted { margin-top: 8px; display: flex; align-items: center; gap: 6px; }
 .home-profile { position: absolute; top: 24px; right: 24px; padding: 8px; border-radius: 50%; background: transparent; }
 .home-feature-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; }
 .home-verse,.home-streak { padding: 28px; }
-.home-verse h2 { color: var(--acc-text); font: 500 21px/1.3 Georgia,serif; margin: 16px 0 8px; }
-.home-verse-text { max-width: 70ch; font: 400 clamp(28px,2.8vw,34px)/1.38 Georgia,serif; }
+.home-verse h2 { color: var(--acc-text); font: 500 21px/1.3 var(--font-serif, Georgia), serif; margin: 16px 0 8px; }
+.home-verse-text { max-width: 70ch; font: 400 clamp(28px,2.8vw,34px)/1.38 var(--font-serif, Georgia), serif; }
 .home-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 24px; }
 .home-primary,.home-secondary { padding: 12px 18px; border-radius: 20px; font-size: 14px; font-weight: 600; }
 .home-primary { background: linear-gradient(110deg,var(--acc),var(--acc2)); color: var(--premium-on); }
 .home-secondary { background: color-mix(in srgb,var(--tx) 8%,transparent); color: var(--tx); }
 .home-streak { display: flex; flex-direction: column; gap: 16px; align-items: flex-start; }
-.home-streak .home-label { display: flex; align-items: center; gap: 8px; }
+.home-streak .section-label { display: flex; align-items: center; gap: 8px; }
 .home-ring { display: grid; place-items: center; width: 104px; height: 104px; border: 6px solid var(--acc); border-radius: 50%; }
-.home-ring strong,.home-stat strong { font: 400 42px/1 Georgia,serif; font-variant-numeric: tabular-nums; color: var(--acc-text); }
+.home-ring strong,.home-stat strong { font: 400 42px/1 var(--font-serif, Georgia), serif; font-variant-numeric: tabular-nums; color: var(--acc-text); }
 .home-stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; }
 .home-stat { padding: 24px; display: flex; flex-direction: column; gap: 12px; }
-.home-section-title { padding: 12px 20px; font: 400 24px/1.3 Georgia,serif; }
+.home-section-title { padding: 12px 20px; font: 400 24px/1.3 var(--font-serif, Georgia), serif; }
 .home-quick-grid { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 16px; }
 .home-action-card { display: flex; flex-direction: column; align-items: flex-start; text-align: left; gap: 16px; padding: 24px; transition: transform 200ms, background 200ms; }
 .home-action-card:hover { transform: translateY(-3px); }
@@ -1189,7 +1555,7 @@ html[data-bg='image'][data-contrast='high'] :is(.g1,.g2,.g3) { background: var(-
 .appearance-trigger { display: flex; align-items: center; gap: 6px; padding: 8px; border-radius: 20px; color: var(--mut); font-size: 12px; }
 .background-panel { position: fixed; z-index: 90; right: 16px; top: 80px; width: min(380px,calc(100vw - 32px)); max-height: calc(100dvh - 96px); overflow: auto; padding: 24px; }
 .background-panel-heading,.background-control-heading,.background-control-ends { display: flex; justify-content: space-between; gap: 12px; }
-.background-panel-heading h2 { font: 400 24px Georgia,serif; }
+.background-panel-heading h2 { font: 400 24px var(--font-serif, Georgia), serif; }
 .background-controls { display: grid; gap: 16px; font: 400 14px/1.4 var(--font-sans, Inter),sans-serif; color: var(--tx); }
 .background-presets { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
 .background-presets button,.background-reset,.background-custom { border-radius: 20px; padding: 8px 12px; background: var(--gc); color: var(--tx); border: 1px solid var(--bd); }
@@ -1204,7 +1570,24 @@ html[data-bg='image'][data-contrast='high'] :is(.g1,.g2,.g3) { background: var(-
 .home-premium.screen-column { max-width: none; }
 
 .brand-tile { display: inline-grid; place-items: center; flex: none; border-radius: 12px; padding: 4px; background: linear-gradient(135deg,var(--acc),var(--acc2)); }
-.g1 .bg-surface-tint { background: color-mix(in srgb,var(--tx) 8%,transparent); }
+:is(.g1,.g2,.g3,.glass) .bg-surface-tint { background: color-mix(in srgb,var(--tx) 8%,transparent); }
+/* Encre d'une carte premium : elle suit la CARTE, pas le preset.
+   Une carte `.g1/.g2/.g3` peint `--gc` et pose `color: var(--tx)` ; mais les
+   écrans historiques écrivent encore `text-text-primary` / `text-text-muted`
+   à l'intérieur. Ces utilitaires pointaient vers les jetons du preset, donc
+   deux encres différentes dans la même carte selon l'écran. On les ramène
+   aux jetons de la carte : un seul texte, un seul gris, partout. */
+:is(.g1,.g2,.g3,.glass) .text-text-primary { color: var(--tx); }
+:is(.g1,.g2,.g3,.glass) :is(.text-text-secondary,.text-text-tertiary,.text-text-muted,.text-text-placeholder) { color: var(--mut); }
+/* L'accent écrit dans une carte est l'accent LISIBLE (`--acc-text`), celui
+   que les écrans premium utilisent déjà pour leurs liens et leurs chiffres. */
+:is(.g1,.g2,.g3,.glass) .text-primary { color: var(--acc-text); }
+/* Titre DANS une carte : serif, comme les titres premium. Les écrans
+   historiques écrivaient leurs titres de section en sans-serif gras à 16 px ;
+   les cartes premium titrent en serif. Une seule famille de titres pour
+   l'application, donc, et la graisse de la carte reste celle de la carte
+   (la taille vient toujours de l'écran, jamais de cette règle). */
+:is(.g1,.g2,.g3,.glass) :is(h2,h3) { font-family: var(--font-serif, Georgia), serif; font-weight: 400; }
 .desktop-rail [aria-current='page'] { background: color-mix(in srgb,var(--acc) 22%,transparent); color: var(--acc-text); }
 .home-ring { position: relative; border: 0; }
 .home-ring svg { position: absolute; inset: 0; width: 100%; height: 100%; transform: rotate(-90deg); }
@@ -1220,9 +1603,6 @@ html[data-bg='image'][data-contrast='high'] :is(.g1,.g2,.g3) { background: var(-
 /* Écran Bible / Explorer : deux surfaces de liste, pas un flou par ligne. */
 .explore-premium.screen-column { max-width: none; padding: 24px 16px 144px; color: var(--tx); font-family: var(--font-sans, Inter), sans-serif; }
 .explore-content { max-width: 1180px; margin: 0 auto; display: grid; gap: 24px; }
-.explore-heading { padding: 24px; }
-.explore-label { color: var(--mut); font: 600 12px/1.4 var(--font-sans, Inter),sans-serif; letter-spacing: .14em; text-transform: uppercase; }
-.explore-heading h1 { margin: 8px 0 20px; font: 400 24px/1.2 Georgia,serif; }
 .explore-search { position: relative; }
 .explore-search-icon { position: absolute; z-index: 1; inset-inline-start: 14px; top: 50%; transform: translateY(-50%); pointer-events: none; }
 .explore-search-input { padding-inline-start: 44px; background: var(--gc); color: var(--tx); border-color: var(--bd); border-radius: 16px; }
@@ -1236,7 +1616,7 @@ html[data-bg='image'][data-contrast='high'] :is(.g1,.g2,.g3) { background: var(-
 .explore-book-subtitle { font-size: 14px; color: var(--mut); }
 .explore-testaments { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); align-items: start; gap: 24px; }
 .explore-section { overflow: hidden; padding: 24px; }
-.explore-section h2 { font: 400 24px/1.3 Georgia,serif; margin-bottom: 12px; }
+.explore-section h2 { font: 400 24px/1.3 var(--font-serif, Georgia), serif; margin-bottom: 12px; }
 .explore-book { padding: 12px 0; border-bottom: 1px solid var(--bd); background: transparent; }
 .explore-book:last-child { border-bottom: 0; }
 .explore-book:hover .explore-book-title,.explore-book:focus-visible .explore-book-title { color: var(--acc-text); }
@@ -1247,15 +1627,12 @@ html[data-bg='image'][data-contrast='high'] :is(.g1,.g2,.g3) { background: var(-
 /* Écran Progression : mêmes surfaces et mêmes données de ProgressService. */
 .progress-premium.screen-column { max-width: none; padding: 24px 16px 144px; color: var(--tx); font-family: var(--font-sans, Inter),sans-serif; }
 .progress-content { max-width: 1180px; margin: 0 auto; display: grid; gap: 24px; }
-.progress-heading { padding: 24px; }
-.progress-label { color: var(--mut); font: 600 12px/1.4 var(--font-sans, Inter),sans-serif; letter-spacing: .14em; text-transform: uppercase; }
-.progress-heading h1 { margin: 8px 0 0; font: 400 24px/1.2 Georgia,serif; }
 .progress-stat-grid { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 16px; }
 .progress-stat { padding: 24px; display: grid; gap: 16px; align-content: start; }
-.progress-stat strong,.progress-trend-values strong,.progress-mastery strong,.progress-metric strong { color: var(--acc-text); font: 400 42px/1 Georgia,serif; font-variant-numeric: tabular-nums; }
+.progress-stat strong,.progress-trend-values strong,.progress-mastery strong,.progress-metric strong { color: var(--acc-text); font: 400 42px/1 var(--font-serif, Georgia), serif; font-variant-numeric: tabular-nums; }
 .progress-detail-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 24px; }
 .progress-card,.progress-message { padding: 24px; }
-.progress-card h2,.progress-message h2 { font: 400 24px/1.3 Georgia,serif; }
+.progress-card h2,.progress-message h2 { font: 400 24px/1.3 var(--font-serif, Georgia), serif; }
 .progress-trend-values { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 16px; margin-top: 24px; }
 .progress-trend-values div { display: grid; gap: 8px; }
 .progress-trend-values span,.progress-mastery p,.progress-metric p,.progress-message p,.progress-streak small { color: var(--mut); font-size: 14px; }
@@ -1273,9 +1650,6 @@ html[data-bg='image'][data-contrast='high'] :is(.g1,.g2,.g3) { background: var(-
 /* Réglages : verre doux sans surfaces floutées imbriquées. */
 .settings-premium.screen-column { max-width: none; padding: 24px 16px 144px; color: var(--tx); font-family: var(--font-sans, Inter),sans-serif; }
 .settings-content { max-width: 1180px; margin: auto; display: grid; gap: 24px; }
-.settings-heading { padding: 24px; }
-.settings-heading h1 { margin: 8px 0 20px; font: 400 24px/1.2 Georgia,serif; }
-.settings-eyebrow { color: var(--tx); font: 600 12px/1.4 var(--font-sans, Inter),sans-serif; letter-spacing: .14em; text-transform: uppercase; }
 .settings-tabs { display: flex; gap: 4px; max-width: 500px; padding: 4px; border-radius: 18px; background: color-mix(in srgb,var(--tx) 8%,transparent); }
 .settings-tabs button { flex: 1; padding: 10px 8px; border-radius: 14px; color: var(--mut); font-size: 14px; font-weight: 600; transition: background 200ms,color 200ms; }
 .settings-tabs button[aria-pressed='true'] { background: var(--gc); color: var(--acc-text); box-shadow: inset 0 1px 0 var(--hi); }
@@ -1338,17 +1712,11 @@ html[data-bg='image'][data-contrast='high'] :is(.g1,.g2,.g3) { background: var(-
 .appearance-page :is(.appearance-range,.background-control input[type=range]) { display: block; width: 100%; height: 6px; margin: 10px 0; appearance: none; -webkit-appearance: none; border-radius: 999px; background: linear-gradient(to right,var(--acc) 0 var(--range-progress),color-mix(in srgb,var(--tx) 12%,transparent) var(--range-progress) 100%); }
 .appearance-page :is(.appearance-range,.background-control input[type=range])::-webkit-slider-thumb { appearance: none; -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%; border: 1px solid var(--bd); background: var(--hi); }
 .appearance-page :is(.appearance-range,.background-control input[type=range])::-moz-range-thumb { width: 18px; height: 18px; border-radius: 50%; border: 1px solid var(--bd); background: var(--hi); }
-.appearance-toggle { position: relative; flex: none; width: 44px; height: 24px; border-radius: 999px; background: color-mix(in srgb,var(--tx) 14%,transparent); }
-.appearance-toggle[aria-pressed='true'] { background: var(--acc); }
-.appearance-toggle span { position: absolute; top: 2px; inset-inline-start: 2px; width: 20px; height: 20px; border-radius: 50%; background: var(--hi); border: 1px solid var(--bd); transition: transform 200ms; }
-.appearance-toggle[aria-pressed='true'] span { transform: translateX(20px); }
-[dir='rtl'] .appearance-toggle[aria-pressed='true'] span { transform: translateX(-20px); }
 .appearance-page .background-preview,.appearance-page .background-presets button,.appearance-page .background-reset,.appearance-page .background-custom { background: color-mix(in srgb,var(--tx) 6%,transparent); color: var(--tx); border: 1px solid var(--bd); }
 .appearance-page .background-presets button[aria-pressed='true'] { color: var(--tx); }
 .appearance-page .background-control-heading,.appearance-page .background-control-ends,.appearance-page .background-preview p { color: var(--mut); font-size: 14px; }
 .appearance-page .background-control output { color: var(--tx); }
 .appearance-page button:focus-visible,.appearance-header button:focus-visible { outline: 2px solid var(--acc); outline-offset: 3px; }
-@media (prefers-reduced-motion: reduce) { .appearance-toggle span { transition: none; } }
 .appearance-section .text-sm { font-size: 14px; }
 
 /* Première étape de l'éditeur : Fond et aperçu réel d'Accueil. */
@@ -1356,7 +1724,7 @@ html[data-bg='image'][data-contrast='high'] :is(.g1,.g2,.g3) { background: var(-
 .appearance-controls { grid-column: 1; grid-row: 1; min-width: 0; }
 .appearance-preview { grid-column: 2; grid-row: 1; position: sticky; top: 0; min-width: 0; color: var(--tx); }
 .appearance-preview-heading { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 10px; color: var(--tx); }
-.appearance-preview-heading strong { font: 400 21px/1.3 Georgia,serif; }
+.appearance-preview-heading strong { font: 400 21px/1.3 var(--font-serif, Georgia), serif; }
 .appearance-preview-actions { display: flex; align-items: center; gap: 4px; }
 .appearance-preview-actions button,.appearance-tabs button,.appearance-categories button,.appearance-reset { border: 1px solid var(--bd); background: color-mix(in srgb,var(--tx) 6%,transparent); color: var(--tx); border-radius: 16px; padding: 8px 12px; font-size: 14px; font-weight: 600; }
 .appearance-preview-actions button[aria-pressed='true'],.appearance-categories button[aria-pressed='true'] { outline: 2px solid var(--acc); outline-offset: -2px; }
@@ -1375,7 +1743,26 @@ html[data-bg='image'][data-contrast='high'] :is(.g1,.g2,.g3) { background: var(-
 .appearance-categories button { white-space: nowrap; flex: none; }
 .appearance-image-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 16px 10px; }
 .appearance-image-option { min-width: 0; text-align: start; color: var(--tx); }
-.appearance-image-option .appearance-thumbnail { position: relative; display: block; aspect-ratio: 4/3; overflow: hidden; border-radius: 16px; }
+/* 3/2 = le ratio exact des visuels produits (1248x832, 832x1248 recadrés en
+   paysage). En 4/3, `object-fit: cover` rognait 15 % de la hauteur : le sujet
+   des portraits composés « haut » disparaissait de la vignette.
+   L'anneau intérieur sépare une vignette claire du fond clair de la page,
+   sans ajouter de bordure qui mange la surface utile. */
+.appearance-image-option .appearance-thumbnail {
+  position: relative;
+  display: block;
+  aspect-ratio: 3 / 2;
+  overflow: hidden;
+  border-radius: 14px;
+  /* L'anneau était noir : invisible sur un fond sombre, donc la vignette
+     perdait son contour exactement dans le mode qui en avait besoin. Il suit
+     désormais l'encre du thème, clair comme sombre. */
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--tx) 8%, transparent), 0 1px 2px color-mix(in srgb, var(--tx) 6%, transparent);
+  transition: transform 160ms ease, box-shadow 160ms ease;
+}
+.appearance-image-option:hover .appearance-thumbnail { transform: translateY(-1px); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--tx) 10%, transparent), 0 4px 10px color-mix(in srgb, var(--tx) 12%, transparent); }
+.appearance-image-option :is(picture, img) { object-position: center 38%; }
+.appearance-image-option[aria-pressed='true'] .appearance-thumbnail { box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--tx) 10%, transparent), 0 6px 16px color-mix(in srgb, var(--acc) 22%, transparent); }
 .appearance-image-option picture,.appearance-image-option img { display: block; width: 100%; height: 100%; object-fit: cover; }
 .appearance-image-option .appearance-thumbnail-check { position: absolute; inset: 8px 8px auto auto; }
 .appearance-image-title { display: block; margin-top: 6px; font-size: 14px; line-height: 1.3; }
@@ -1399,45 +1786,65 @@ html[data-bg='image'][data-contrast='high'] :is(.g1,.g2,.g3) { background: var(-
 .appearance-image-option:disabled { cursor: not-allowed; }
 
 /* Même voile dans l'aperçu qui réutilise les composants Accueil. */
-.appearance-preview[data-theme='light'] .appearance-preview-window::before {
-  background: linear-gradient(to bottom, rgba(255,236,244,.85), rgba(255,226,238,.90));
-  background: linear-gradient(to bottom, color-mix(in srgb,var(--tint) 8%,rgba(255,236,244,.85)), color-mix(in srgb,var(--tint) 8%,rgba(255,226,238,.90)));
-}
-.appearance-preview[data-theme='dark'] .appearance-preview-window::before {
-  background: linear-gradient(to bottom, rgba(18,18,18,.85), rgba(8,8,8,.90));
+.appearance-preview .appearance-preview-window::before {
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--tint) 8%, color-mix(in srgb, var(--gc) 85%, transparent)),
+    color-mix(in srgb, var(--tint) 8%, color-mix(in srgb, var(--gc) 90%, transparent))
+  );
 }
 
-/* Le mode sombre reste discret, sans recolorer l'image d'origine. */
-html[data-theme='dark'] .mobile-header .text-primary,
-html[data-theme='dark'] .mobile-tabs [aria-current='page'] .text-primary { color: var(--acc-text); }
-html[data-theme='dark'] .mobile-tabs [aria-current='page'] > .bg-primary { background-color: var(--acc); }
-html[data-theme='dark'] .brand-tile img { filter: saturate(.55); }
-html[data-theme='dark'] .desktop-rail .rail-label.text-primary { color: var(--acc-text); }
-html[data-theme='dark'] .desktop-rail button.bg-primary { background: var(--acc); color: var(--premium-on); }
-html[data-theme='dark'] .desktop-rail button.bg-primary .solar { color: var(--premium-on); }
-/* Bouton Ionic existant : aspect cohérent avec la coque sombre. */
-html[data-theme='dark'] .app-main ion-fab-button::part(native) { width: 48px; height: 48px; border: 1px solid var(--bd); border-radius: 50%; background: var(--gc); color: var(--mut); box-shadow: 0 10px 34px var(--sh); }
+/* ── Encre d'accent : une règle, deux modes ────────────────────────────────
+   Ces six règles étaient écrites deux fois, une fois neutre et une fois
+   préfixée `html[data-theme='dark']`, parce que `text-primary` (le magenta
+   vif) ne tenait pas sur le fond sombre. Le correctif vivait donc dans le
+   mode qui souffrait, et tout composant ajouté ensuite en héritait le défaut.
+   Elles s'appuient maintenant sur `--acc-text`, calculé PAR MODE à partir de
+   l'accent : le clair obtient un accent assombri, le sombre un accent
+   éclairci, avec la même règle. */
+.mobile-header .text-primary,
+.mobile-tabs [aria-current='page'] .text-primary,
+.desktop-rail .rail-label.text-primary { color: var(--acc-text); }
+
+.mobile-tabs [aria-current='page'] > .bg-primary,
+.desktop-rail button.bg-primary,
+.settings-premium .settings-toggle[aria-pressed='true'] {
+  background-color: var(--acc);
+  color: var(--on-accent);
+}
+.desktop-rail button.bg-primary .solar { color: var(--on-accent); }
+
+/* Le logo est un fichier unique : sa désaturation était une règle sombre
+   posée à côté, invisible depuis le clair. C'est désormais un jeton de mode. */
+.brand-tile img { filter: saturate(var(--brand-saturation)); }
+
+/* Bouton Ionic : même matériau que le reste, dans les deux modes. */
+.app-main ion-fab-button::part(native) {
+  width: 48px; height: 48px;
+  border: 1px solid var(--bd);
+  border-radius: 50%;
+  background: var(--gc);
+  color: var(--mut);
+  box-shadow: 0 10px 34px var(--sh);
+}
 html[data-theme='dark'] .app-main ion-fab-button::part(close-icon) { display: none; }
-html[data-theme='dark'] .settings-premium .settings-toggle[aria-pressed='true'] { background: var(--acc); }
 
-/* Accent fixe optionnel : issu du catalogue existant, limité aux rôles d'accent. */
-:root[data-fixed-accent], :root[data-fixed-accent] .appearance-preview[data-theme='light'] {
-  --acc: var(--fixed-accent); --acc2: var(--fixed-accent);
-  --acc: color-mix(in srgb, var(--fixed-accent) 75%, #fff);
-  --acc2: color-mix(in srgb, var(--fixed-accent) 75%, #fff);
+/* Accent fixe optionnel : issu du catalogue existant, limité aux rôles d'accent.
+   Il suivait lui aussi deux règles différentes — 75 % vers le blanc en clair,
+   45 % vers le gris `--mut` en sombre — si bien qu'un même accent choisi par
+   l'utilisateur n'avait ni la même teinte ni la même vivacité selon le mode.
+   Une seule formule, ancrée sur la SURFACE : le mode se contente de fournir
+   l'ancre, il n'applique plus de transformation qui lui soit propre. */
+:root[data-fixed-accent],
+:root[data-fixed-accent] .appearance-preview {
+  --acc: color-mix(in srgb, var(--fixed-accent) 75%, var(--gc));
+  --acc2: color-mix(in srgb, var(--fixed-accent) 75%, var(--gc));
+  /* Un accent imposé n'est plus celui du preset : l'encre déclarée par le
+     preset ne décrit donc plus la surface, on reprend celle des dégradés
+     (sombre, constante). C'était déjà le comportement des boutons en mode
+     accent fixe — il est simplement nommé au lieu d'être répété quatre fois. */
+  --on-accent: var(--premium-on);
 }
-:root[data-theme='dark'][data-fixed-accent], :root[data-fixed-accent] .appearance-preview[data-theme='dark'] {
-  --acc: var(--fixed-accent); --acc2: var(--fixed-accent);
-  --acc: color-mix(in srgb, var(--fixed-accent) 45%, var(--mut));
-  --acc2: color-mix(in srgb, var(--fixed-accent) 45%, var(--mut));
-}
-html[data-fixed-accent] .mobile-header .text-primary,
-html[data-fixed-accent] .mobile-tabs [aria-current='page'] .text-primary,
-html[data-fixed-accent] .desktop-rail .rail-label.text-primary { color: var(--acc-text); }
-html[data-fixed-accent] .mobile-tabs [aria-current='page'] > .bg-primary,
-html[data-fixed-accent] .settings-premium .settings-toggle[aria-pressed='true'] { background-color: var(--acc); }
-html[data-fixed-accent] .desktop-rail button.bg-primary { background: var(--acc); color: var(--premium-on); }
-html[data-fixed-accent] .desktop-rail button.bg-primary .solar { color: var(--premium-on); }
 .appearance-accent-choices { display: grid; gap: 16px; }
 .appearance-accent-auto { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; border: 1px solid var(--bd); border-radius: 16px; background: color-mix(in srgb,var(--tx) 6%,transparent); color: var(--tx); font-size: 14px; font-weight: 600; }
 .appearance-accent-auto[aria-pressed='true'] { outline: 2px solid var(--acc); outline-offset: -2px; }
@@ -1506,13 +1913,13 @@ html[data-fixed-accent] .desktop-rail button.bg-primary .solar { color: var(--pr
 .profile-portrait-overlay { position: relative; z-index: 2; padding: 16px 16px 14px; background: var(--profile-portrait-scrim); color: var(--profile-portrait-text); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
 .profile-portrait-eyebrow { color: var(--profile-portrait-muted); font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
 .profile-portrait-name-row { margin-top: 4px; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-.profile-portrait-name-row h1 { margin: 0; color: var(--profile-portrait-text); font: 600 clamp(22px,2.6vw,28px)/1.15 Georgia,serif; overflow-wrap: anywhere; }
+.profile-portrait-name-row h1 { margin: 0; color: var(--profile-portrait-text); font-family: var(--font-serif, Georgia), serif; font-weight: 600; font-size: clamp(22px,2.6vw,28px); line-height: 1.15; overflow-wrap: anywhere; }
 .profile-hero-text { min-width: 0; padding-bottom: 6px; }
 .profile-eyebrow { color: var(--mut); font-size: 13px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
-.profile-name-input { width: 100%; min-width: 0; padding: 4px 8px; color: var(--tx); font: 600 20px/1.2 Georgia,serif; background: var(--gc); border: 1px solid var(--bd); border-radius: 10px; }
+.profile-name-input { width: 100%; min-width: 0; padding: 4px 8px; color: var(--tx); font-family: var(--font-serif, Georgia), serif; font-weight: 600; font-size: 20px; line-height: 1.2; background: var(--gc); border: 1px solid var(--bd); border-radius: 10px; }
 .profile-name-edit { display: grid; place-items: center; flex: none; width: 34px; height: 34px; border-radius: 50%; color: var(--profile-portrait-text); background: rgba(255, 255, 255, 0.16); border: 1px solid rgba(255, 255, 255, 0.28); }
 .profile-name-edit:focus-visible { outline: 2px solid var(--profile-portrait-text); outline-offset: 2px; }
-.profile-slogan { margin-top: 10px; color: var(--tx); font: 400 clamp(20px,2.4vw,26px)/1.35 Georgia,serif; max-width: 48ch; }
+.profile-slogan { margin-top: 10px; color: var(--tx); font-family: var(--font-serif, Georgia), serif; font-weight: 400; font-size: clamp(20px,2.4vw,26px); line-height: 1.35; max-width: 48ch; }
 .profile-local-note { margin-top: 10px; color: var(--mut); font-size: 13px; line-height: 1.45; }
 .profile-avatar { border: 3px solid var(--gc); }
 .profile-avatar-edit { position: absolute; z-index: 3; inset-inline-end: 12px; top: 12px; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; color: var(--on, var(--color-on-primary)); background: var(--acc); border: 2px solid var(--gc); box-shadow: 0 6px 18px var(--sh); }
@@ -1523,11 +1930,38 @@ html[data-fixed-accent] .desktop-rail button.bg-primary .solar { color: var(--pr
 .home-daily-card::before { content: ''; position: absolute; inset: 0; z-index: -2; background: var(--daily-image) center / cover no-repeat; }
 .home-daily-card::after { content: ''; position: absolute; inset: 0; z-index: -1; background: color-mix(in srgb,var(--gc) 90%,transparent); }
 /* En-tête partagé des pages profondes et retour visible sur mobile et bureau. */
-.full-screen-header { display: flex; align-items: center; gap: 12px; flex: none; min-height: 64px; padding: 10px 16px; color: var(--tx); background: var(--gc); border-bottom: 1px solid var(--bd); }
+/* En-tête des écrans « profonds » : une pastille de verre FLOTTANTE, comme
+   l'en-tête des onglets, et non plus une barre pleine collée au bord. C'est
+   le même matériau que `.g1` (liseré `--bd`, reflet `--hi`, ombre `--sh`,
+   verre sur fond image), donc le même rendu sur les 39 presets, en clair,
+   en sombre, en dégradé et en image. Le titre passe en serif, comme les
+   titres premium (Accueil, Progrès, Profil) : une seule échelle de titres
+   pour toute l'application. */
+.full-screen-header {
+  display: flex; align-items: center; gap: 12px; flex: none; min-height: 64px;
+  margin: max(12px, env(safe-area-inset-top, 0px)) 14px 0; padding: 8px 14px;
+  color: var(--tx); background: var(--gc);
+  border: 1px solid var(--bd); border-radius: 24px;
+  box-shadow: inset 0 1px 0 var(--hi), 0 10px 34px var(--sh);
+}
+html[data-bg='image'] .full-screen-header {
+  background: rgba(var(--gc-rgb), var(--ga));
+  -webkit-backdrop-filter: blur(var(--gb)) saturate(1.6);
+  backdrop-filter: blur(var(--gb)) saturate(1.6);
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  html[data-bg='image'] .full-screen-header { background: rgba(var(--gc-rgb), .88); }
+}
+@media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
+  html[data-bg='image'] .full-screen-header { background: var(--gc); -webkit-backdrop-filter: none; backdrop-filter: none; }
+}
+html[data-bg='image']:is([data-transparency='reduced'],[data-contrast='high']) .full-screen-header {
+  background: var(--gc); -webkit-backdrop-filter: none; backdrop-filter: none;
+}
 .full-screen-back { display: grid; place-items: center; width: 44px; height: 44px; flex: none; border-radius: 50%; color: var(--tx); background: color-mix(in srgb,var(--tx) 8%,transparent); }
 .full-screen-back:focus-visible { outline: 2px solid var(--acc-text); outline-offset: 3px; }
 .full-screen-title { min-width: 0; flex: 1; }
-.full-screen-title h1 { margin: 0; font: 600 16px/1.3 var(--font-sans,Inter),sans-serif; }
+.full-screen-title h1 { margin: 0; font: 400 clamp(20px,2.2vw,24px)/1.25 var(--font-serif, Georgia),serif; }
 .full-screen-title p { margin: 2px 0 0; color: var(--mut); font-size: 12px; }
 .profile-stat { padding: 20px; text-align: center; }
 .profile-stat-value { color: var(--acc-text); font-size: 28px; font-weight: 700; }
@@ -1535,7 +1969,7 @@ html[data-fixed-accent] .desktop-rail button.bg-primary .solar { color: var(--pr
 .profile-premium :is(.text-text-muted,.text-text-secondary) { color: var(--mut); }
 .review-calendar-dot { width: 5px; height: 5px; margin-top: 3px; border-radius: 50%; background: var(--acc); }
 .review-timeline { margin-top: 16px; padding: 22px; }
-.review-timeline h3 { font: 400 22px/1.3 Georgia,serif; }
+.review-timeline h3 { font: 400 22px/1.3 var(--font-serif, Georgia), serif; }
 .review-timeline > p { margin-top: 8px; color: var(--mut); font-size: 14px; }
 .review-timeline ol { display: grid; gap: 14px; margin-top: 16px; }
 .review-timeline li { padding: 12px 0 12px 16px; border-inline-start: 2px solid var(--acc); }
@@ -1544,7 +1978,7 @@ html[data-fixed-accent] .desktop-rail button.bg-primary .solar { color: var(--pr
 /* Un socle commun pour les étapes d’accueil, sans modifier leur logique. */
 .onboarding-experience { color: var(--tx); font-family: var(--font-sans,Inter),sans-serif; }
 .onboarding-experience .screen-column-narrow { padding-top: 32px; padding-bottom: 40px; }
-.onboarding-experience h1 { color: var(--tx); font-family: Georgia,serif; line-height: 1.12; }
+.onboarding-experience h1 { color: var(--tx); font-family: var(--font-serif, Georgia), serif; line-height: 1.12; }
 .onboarding-experience :is(.text-text-primary,.text-text-secondary) { color: var(--tx); }
 .onboarding-experience .text-text-muted { color: var(--mut); }
 .onboarding-experience :is(.bg-surface,.card-glass) { background: var(--gc); border: 1px solid var(--bd); box-shadow: 0 10px 34px var(--sh); }
@@ -1560,7 +1994,7 @@ html[data-app-bg='gradient'] .icon-chip {
   color: var(--tx);
 }
 .weekly-planner { display: grid; gap: 16px; margin-top: 24px; padding: 22px; color: var(--tx); }
-.weekly-planner h2 { font: 400 24px/1.3 Georgia,serif; }
+.weekly-planner h2 { font: 400 24px/1.3 var(--font-serif, Georgia), serif; }
 .weekly-planner h3 { color: var(--tx); font-size: 15px; font-weight: 600; }
 .weekly-planner-hint { color: var(--mut); font-size: 14px; line-height: 1.5; }
 .weekly-planner-group { display: grid; gap: 12px; padding-top: 16px; border-top: 1px solid var(--bd); }
@@ -1684,6 +2118,9 @@ html[data-app-bg='gradient'] {
   html[data-app-bg='gradient'] .desktop-rail button.bg-primary { background: var(--gradient-action); color: var(--tx); }
   html[data-app-bg='gradient'] .desktop-rail button.bg-primary .solar { color: var(--tx); }
   html[data-app-bg='gradient'] .mobile-tabs [aria-current='page'] > .bg-primary { background: var(--gradient-action); }
+  /* La pastille choisie est un contrôle actif de la barre de verset : elle
+     suit elle aussi le dégradé, comme les boutons actifs d'Apparence. */
+  html[data-app-bg='gradient'] .verse-action-btn.is-primary { background: var(--gradient-action); color: var(--tx); }
 }
 /* Les libellés restent lisibles même si le premier arrêt est très clair ou
    très sombre ; leur teinte vient néanmoins du dégradé sélectionné. */
@@ -1693,8 +2130,890 @@ html[data-app-bg='gradient'] .text-primary { color: var(--acc-text); }
   html[data-app-bg='gradient'] .settings-premium .settings-toggle[aria-pressed='true'],
   html[data-app-bg='gradient'] .appearance-segment-button[aria-pressed='true'],
   html[data-app-bg='gradient'] .appearance-tabs button[aria-pressed='true'],
-  html[data-app-bg='gradient'] .appearance-toggle[aria-pressed='true'],
   html[data-app-bg='gradient'] .appearance-apply,
-  html[data-app-bg='gradient'] .appearance-example-button,
-  html[data-app-bg='gradient'] .verse-flow-number.is-selected { background: var(--gradient-action); color: var(--tx); }
+  html[data-app-bg='gradient'] .appearance-example-button { background: var(--gradient-action); color: var(--tx); }
 }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   FINITION — les invariants d'interaction, écrits une seule fois
+   ══════════════════════════════════════════════════════════════════════════
+   Ce bloc ne dépend d'aucun écran, d'aucun preset, d'aucun composant. Il
+   répare ce que l'œil remarque immédiatement dans une application « presque
+   finie » : pas d'anneau de focus au clavier, état désactivé incohérent,
+   sélection de texte bleue du navigateur, flash gris au tap, animations qui
+   ignorent `prefers-reduced-motion`, durées de transition improvisées.
+
+   Aucune couleur littérale, aucune priorité forcée : tout vient du thème actif.
+   Ces règles sont volontairement NON layerisées : elles gagnent sur les
+   utilitaires Tailwind, sans écraser les composants qui définissent déjà
+   leur propre traitement (spécificité nulle via `:where`). */
+
+:root {
+  /* Durées et courbes nommées : un mouvement se choisit, il ne s'invente pas. */
+  --motion-instant: 90ms;
+  --motion-fast: 140ms;
+  --motion-base: 200ms;
+  --motion-slow: 320ms;
+  --ease-standard: cubic-bezier(0.2, 0.6, 0.3, 1);
+  --ease-emphasized: cubic-bezier(0.22, 0.61, 0.36, 1);
+  /* Un seul anneau de focus, une seule cible tactile minimale. */
+  --focus-ring-width: 2px;
+  --focus-ring-offset: 2px;
+  --tap-min: 40px;
+}
+
+/* 1. Focus clavier — visible, contrasté, identique partout.
+   `:where()` garde une spécificité nulle : les écrans qui dessinent déjà leur
+   propre anneau (Apparence, Réglages) le conservent, les autres héritent de
+   celui-ci. Les champs de saisie sont exclus : ils portent leur propre
+   traitement (bordure d'accent + halo), un contour externe les alourdirait. */
+:where(a, button, [role='button'], [role='tab'], [role='menuitem'],
+  [role='option'], [role='switch'], summary, [tabindex]:not([tabindex='-1'])):focus-visible {
+  outline: var(--focus-ring-width) solid var(--acc-text, var(--color-primary));
+  outline-offset: var(--focus-ring-offset);
+}
+:where(input, textarea, select):focus-visible { outline: none; }
+
+/* 2. État désactivé — un seul gréement, jamais une confusion avec un survol. */
+:where(button, [role='button'], [role='tab']):is([disabled], [aria-disabled='true']) {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* 3. Sélection de texte teintée par l'accent du thème, pas le bleu du système. */
+::selection {
+  background: color-mix(in srgb, var(--acc, var(--color-primary)) 26%, transparent);
+  color: inherit;
+}
+/* Curseur de saisie au même accent. */
+:where(input, textarea, [contenteditable='true']) { caret-color: var(--acc, var(--color-primary)); }
+
+/* 4. Ressenti natif : aucun flash gris au tap, aucun délai de double-tap. */
+html { -webkit-tap-highlight-color: transparent; }
+:where(a, button, [role='button'], summary, label[for]) { touch-action: manipulation; }
+
+/* 5. Mouvement réduit, respecté GLOBALEMENT (pas écran par écran).
+   Les indicateurs de chargement restent animés : sans eux, l'attente devient
+   invisible — c'est le seul mouvement qui porte de l'information. */
+@media (prefers-reduced-motion: reduce) {
+  :where(*, *::before, *::after) {
+    animation: none;
+    transition: none;
+    scroll-behavior: auto;
+  }
+  .animate-spin { animation: spin 1.4s linear infinite; }
+  .skeleton::after { animation: none; opacity: 0; }
+}
+
+/* 6. Cible tactile minimale — pour les commandes icône seule des coquilles.
+   On ne force rien sur les puces de texte (`px-2 py-0.5`) : une cible plus
+   grande qu'une ligne de texte casserait les listes denses. */
+.touch-target {
+  display: inline-grid;
+  place-items: center;
+  min-width: var(--tap-min);
+  min-height: var(--tap-min);
+}
+
+/* 7. Squelette de chargement — un seul matériau, un seul rythme.
+   Le balayage est un dégradé du TEXTE du thème (jamais un gris figé) ; il est
+   supprimé par la règle 5 en mouvement réduit, et le bloc reste lisible. */
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--tx, var(--color-text-primary)) 9%, transparent);
+  border-radius: 12px;
+}
+.skeleton::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--tx, var(--color-text-primary)) 7%, transparent),
+    transparent
+  );
+  animation: skeleton-sweep 1.4s var(--ease-standard) infinite;
+}
+@keyframes skeleton-sweep {
+  to { transform: translateX(100%); }
+}
+
+/* 8. Champs de saisie — un seul traitement de focus, identique partout.
+   Les composants (`Input`, `Select`, `textarea`) partageaient trois
+   conventions : bordure seule, anneau Tailwind, ou rien. Le halo ci-dessous
+   est calculé sur l'accent du thème (`color-mix`), donc il reste lisible sur
+   les 39 presets ; il remplace les `focus:ring-*` locaux, qui pointaient vers
+   un accent brut parfois invisible en sombre. Les cases et boutons radio sont
+   exclus : leur état est déjà porté par la coche. */
+:where(input:not([type='checkbox']):not([type='radio']), textarea, select, [role='combobox']):focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 18%, transparent);
+}
+
+/* 9. Titres et chiffres — deux familles, jamais trois.
+   Une seule règle : les titres prennent la serif du preset et la graisse
+   400 ; les utilitaires `font-bold`/`font-extrabold` ne servent plus qu'à du
+   texte courant. Les composants qui définissent déjà leur taille la gardent
+   (`.page-title`, `.page-title-lg`, `.display-title`) — seule la famille
+   change. */
+:is(h1, h2, h3):not(.section-label):not(.stat-label):not(.micro-label) {
+  font-family: var(--font-serif, Georgia), serif;
+  font-weight: 400;
+}
+
+/* Chiffre clé : serif, tabulaire, accent lisible. `.stat-value` ne fixe PAS
+   la taille — chaque écran garde son échelle (`text-2xl`, `text-3xl`…). */
+.stat-value {
+  font-family: var(--font-serif, Georgia), serif;
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+  line-height: 1.05;
+  color: var(--acc-text, var(--color-primary));
+}
+/* 10. Les composants Ionic (FAB, boutons, onglets natifs) vivent dans un
+   Shadow DOM : l'anneau global ne les atteint pas. Ces trois `::part`
+   couvrent les seules commandes Ionic réellement utilisées par l'app. */
+ion-fab-button::part(native):focus-visible,
+ion-button::part(native):focus-visible,
+ion-tab-button::part(native):focus-visible {
+  outline: var(--focus-ring-width) solid var(--acc-text, var(--color-primary));
+  outline-offset: var(--focus-ring-offset);
+}
+
+/* 11. Affordance d'une carte cliquable — un seul comportement, partout.
+   ~90 cartes sont devenues des boutons `.g2`/`.glass` ; sans règle commune,
+   chacune héritait du survol du navigateur ou d'un `active:scale` local.
+   Ici : un liseré qui prend l'accent, une élévation de 1 px au pointeur, un
+   enfoncement de 1,5 % au doigt. Aucun déplacement au clavier (`:hover` ne
+   s'applique pas), et rien en mouvement réduit (règle 5 : transitions nulles,
+   l'élévation est neutralisée explicitement ci-dessous). */
+@media (hover: hover) and (pointer: fine) {
+  :is(button, a, [role='button']):is(.g1, .g2, .g3, .glass) {
+    transition:
+      transform var(--motion-fast) var(--ease-standard),
+      border-color var(--motion-fast) var(--ease-standard),
+      box-shadow var(--motion-fast) var(--ease-standard);
+  }
+  :is(button, a, [role='button']):is(.g1, .g2, .g3, .glass):hover {
+    border-color: color-mix(in srgb, var(--acc, var(--color-primary)) 40%, var(--bd));
+    transform: translateY(-1px);
+    box-shadow: inset 0 1px 0 var(--hi), 0 14px 38px var(--sh);
+  }
+  :is(button, a, [role='button']):is(.g1, .g2, .g3, .glass):active {
+    transform: translateY(0) scale(0.997);
+  }
+}
+@media (pointer: coarse) {
+  :is(button, a, [role='button']):is(.g1, .g2, .g3, .glass):active {
+    transform: scale(0.985);
+    transition: transform var(--motion-instant) var(--ease-standard);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  :is(button, a, [role='button']):is(.g1, .g2, .g3, .glass):hover,
+  :is(button, a, [role='button']):is(.g1, .g2, .g3, .glass):active {
+    transform: none;
+  }
+}
+
+
+/* 12. Micro-libellé de section — la contrepartie sans-serif des titres.
+   Les cartes de section titraient en `text-xs font-bold uppercase` ; depuis
+   que h1/h2/h3 sont en serif, ce libellé serait devenu une capitale serif.
+   Une micro-capitale est un repère, pas un titre : elle garde la sans-serif,
+   la graisse 600 et l'interlettrage. `.section-label` est aussi la classe qui
+   exempte l'élément de la règle serif (voir règle 9). */
+.section-label,
+.micro-label,
+.stat-label {
+  font-family: var(--font-sans, Inter), sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--mut, var(--color-text-muted));
+}
+
+/* 13. Titre d'écran — une seule échelle pour les titres posés dans le corps
+   d'un écran (les en-têtes `FullScreenPage` ont la leur). Trois tailles
+   littérales (`text-2xl`, `text-3xl`, `text-5xl`) coexistaient pour le même
+   rôle ; elles convergent ici. */
+.page-title {
+  font-family: var(--font-serif, Georgia), serif;
+  font-weight: 400;
+  font-size: clamp(22px, 2.4vw, 26px);
+  line-height: 1.22;
+  letter-spacing: -0.01em;
+  color: var(--tx, var(--color-text-primary));
+  margin: 0;
+}
+.page-title-lg {
+  font-family: var(--font-serif, Georgia), serif;
+  font-weight: 400;
+  font-size: clamp(28px, 3.4vw, 38px);
+  line-height: 1.12;
+  letter-spacing: -0.015em;
+  color: var(--tx, var(--color-text-primary));
+  margin: 0;
+}
+/* Titre de carte — la même famille que les titres d'écran, à l'échelle d'une
+   carte. Il a deux porteurs, et c'est la structure qui décide : `<h2 class=
+   "card-title">` quand la carte est un contenu ; `<span class="card-title">`
+   quand la carte EST une commande (le contenu d'un `<button>` est du texte
+   phrasé, un titre n'y a pas sa place). Ainsi la graisse et la famille ne
+   dépendent plus de l'auteur de l'écran. */
+.card-title {
+  font-family: var(--font-serif, Georgia), serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.35;
+  letter-spacing: -0.005em;
+  color: var(--tx, var(--color-text-primary));
+  margin: 0;
+}
+/* Titre d'état vide : la serif du preset à l'échelle d'une carte. Un état vide
+   n'est pas un titre d'écran (22–26 px) mais il n'est pas non plus un
+   paragraphe : 19–20 px, interligne 1.3, encre principale. */
+/* Titre « display » — la plus grande taille de l'échelle, et la seule. Deux
+   endroits seulement : l'accueil (le prénom de la personne) et la page de
+   profil (son nom). Ailleurs c'est `.page-title` ou `.page-title-lg`. */
+.display-title {
+  font-family: var(--font-serif, Georgia), serif;
+  font-weight: 400;
+  font-size: clamp(38px, 5vw, 52px);
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  color: var(--tx, var(--color-text-primary));
+  margin: 0;
+}
+/* Ligne d'une SOUS-liste vide (une liste dans une carte qui contient déjà
+   autre chose) : une seule ligne discrète. Un état vide de section, lui,
+   passe par `EmptyState`. Sept écrans écrivaient cette ligne en
+   `text-sm text-text-muted`, trois en `text-xs` : la même phrase, trois
+   tailles. */
+.empty-line {
+  color: var(--mut, var(--color-text-muted));
+  font-size: 0.875rem;   /* le pas « sm » de l'échelle, comme le reste du texte secondaire */
+  line-height: 1.55;
+}
+
+.empty-title {
+  color: var(--text, var(--color-text-primary));
+  font-family: var(--font-serif, Georgia), serif;
+  font-size: clamp(18px, 2.2vw, 20px);
+  font-weight: 400;
+  line-height: 1.3;
+  letter-spacing: -0.005em;
+}
+
+.page-subtitle {
+  color: var(--mut, var(--color-text-muted));
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* 14. Lien d'action secondaire (« Voir tout », « Changer ») : une cible
+   tactile réelle, jamais un texte de 12 px sans zone. */
+.link-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 32px;
+  padding-inline: 8px;
+  border-radius: 9999px;
+  color: var(--acc-text, var(--color-primary));
+  font-family: var(--font-sans, Inter), sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  transition: background-color var(--motion-fast) var(--ease-standard);
+}
+@media (hover: hover) and (pointer: fine) {
+  .link-action:hover { background: color-mix(in srgb, var(--acc, var(--color-primary)) 10%, transparent); }
+}
+
+/* Une carte qui EST un bouton répond au pointeur.
+   Les écrans premium écrivaient chacun leur survol (`.action-card`,
+   `.explore-book`, `.settings-data-card`, `.home-action-card`) ; les cartes
+   `.g1/.g2/.g3` des autres écrans ne bougeaient pas d'un pixel, ce qui se
+   sent immédiatement au trackpad. Ici, la règle est unique et ne concerne que
+   les cartes réellement actionnables. Sur écran tactile (pointeur grossier),
+   aucun survol : l'état resterait collé après le tap. */
+:where(button, a):is(.g1, .g2, .g3) {
+  transition:
+    transform var(--motion-fast) var(--ease-standard),
+    box-shadow var(--motion-fast) var(--ease-standard),
+    background-color var(--motion-fast) var(--ease-standard);
+}
+@media (hover: hover) and (pointer: fine) {
+  :where(button, a):is(.g1, .g2, .g3):not([aria-disabled='true']):hover {
+    transform: translateY(-1px);
+    box-shadow: inset 0 1px 0 var(--hi), 0 14px 40px var(--sh);
+  }
+}
+:where(button, a):is(.g1, .g2, .g3):not([aria-disabled='true']):active {
+  transform: translateY(0) scale(0.995);
+}
+@media (prefers-reduced-motion: reduce) {
+  :where(button, a):is(.g1, .g2, .g3):hover,
+  :where(button, a):is(.g1, .g2, .g3):active { transform: none; }
+}
+
+/* Titres DANS une carte premium : la même famille que les titres d'écran.
+   Les cartes historiques écrivaient `<h2 class="text-base font-bold">` : un
+   titre sans-serif gras, frère du titre serif de l'en-tête. Ici le titre de
+   carte reprend la serif du preset (donc Playfair/Lora/Source Serif selon le
+   thème), sans changer sa taille — chaque écran garde son échelle. Les
+   micro-capitales (`.section-label`, `.micro-label`, `.stat-label`) restent
+   en sans-serif : ce sont des libellés, pas des titres. */
+:is(.g1, .g2, .g3) :is(h2, h3):not(.section-label):not(.micro-label):not(.stat-label) {
+  font-family: var(--font-serif, Georgia), serif;
+  font-weight: 400;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   MODE FAMILLE — une section, pas huit pages isolées
+   ══════════════════════════════════════════════════════════════════════════
+   Les briques `FamilyKit` (V2) posent la structure ; ces règles posent le
+   matériau. Tout vient du thème : aucune couleur, aucune durée, aucun rayon
+   littéral. La sous-navigation défile horizontalement au lieu de passer à la
+   ligne (une pastille coupée en deux serait un défaut d'exécution). */
+
+.family-subnav {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 9999px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x proximity;
+}
+.family-subnav::-webkit-scrollbar { display: none; }
+.family-subnav-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex: none;
+  min-height: 36px;
+  padding-inline: 12px;
+  border-radius: 9999px;
+  color: var(--mut);
+  font-family: var(--font-sans, Inter), sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  scroll-snap-align: start;
+  transition:
+    background-color var(--motion-fast) var(--ease-standard),
+    color var(--motion-fast) var(--ease-standard);
+}
+/* L'onglet actif prend une teinte d'accent, jamais un aplat d'accent :
+   aucun risque de contraste, quel que soit le preset (clair, sombre, jaune,
+   rouge). Le texte passe à l'accent lisible. */
+.family-subnav-item[aria-current='page'] {
+  background: color-mix(in srgb, var(--acc) 14%, transparent);
+  color: var(--acc-text);
+}
+.family-subnav-item .solar { color: currentColor; }
+@media (hover: hover) and (pointer: fine) {
+  .family-subnav-item:not([aria-current='page']):hover {
+    background: color-mix(in srgb, var(--tx) 6%, transparent);
+    color: var(--tx);
+  }
+}
+
+/* En-tête de valeur : un libellé, un chiffre, un anneau, une rangée d'avatars. */
+.family-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas: 'main ring' 'avatars avatars' 'foot foot';
+  gap: 14px 16px;
+  padding: 20px;
+}
+.family-hero-main { grid-area: main; display: grid; gap: 6px; align-content: start; }
+.family-hero-value { display: flex; align-items: baseline; gap: 8px; }
+.family-hero-value .stat-value { font-size: clamp(34px, 6vw, 44px); line-height: 1; }
+.family-hero-unit { color: var(--mut); font-size: 13px; font-weight: 600; }
+.family-hero-caption { color: var(--mut); font-size: 13px; line-height: 1.45; }
+.family-hero-ring { grid-area: ring; align-self: start; }
+.family-hero-avatars { grid-area: avatars; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.family-hero-foot {
+  grid-area: foot;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding-top: 12px;
+  border-top: 1px solid var(--bd);
+  color: var(--mut);
+  font-size: 13px;
+  line-height: 1.45;
+}
+@media (max-width: 359px) {
+  .family-hero { grid-template-columns: 1fr; grid-template-areas: 'main' 'ring' 'avatars' 'foot'; }
+}
+
+/* Ligne de membre : une seule hauteur, une seule zone tactile. */
+.family-member-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 52px;
+  padding: 6px 4px;
+  border-radius: 12px;
+  text-align: left;
+  transition: background-color var(--motion-fast) var(--ease-standard);
+}
+@media (hover: hover) and (pointer: fine) {
+  button.family-member-row:hover { background: color-mix(in srgb, var(--tx) 4%, transparent); }
+}
+
+/* Ligne de métrique : libellé discret, valeur tabulaire. */
+.family-metric { display: grid; gap: 2px; }
+.family-metric-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.family-metric-label { color: var(--mut); font-size: 13px; }
+.family-metric-value {
+  color: var(--tx);
+  font-size: 13px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Nom de membre : le nom, puis l'étiquette « vous » — sur la même ligne. */
+.family-member-name {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+.family-member-you {
+  flex: none;
+  padding: 1px 6px;
+  border-radius: 9999px;
+  background: color-mix(in srgb, var(--acc) 14%, transparent);
+  color: var(--acc-text);
+  font-family: var(--font-sans, Inter), sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+/* Ma ligne dans la liste : teintée, jamais encadrée (la bordure dit l'état). */
+.family-member-row-you {
+  background: color-mix(in srgb, var(--acc) 7%, transparent);
+}
+/* Rôle élevé (propriétaire, administrateur) : une pastille, pas un paragraphe. */
+.family-member-role {
+  flex: none;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  background: color-mix(in srgb, var(--tx) 6%, transparent);
+  color: var(--mut);
+  font-family: var(--font-sans, Inter), sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+/* Nature d'un défi : micro-capitale d'accent (lisible sur les 39 presets). */
+.family-kind {
+  font-family: var(--font-sans, Inter), sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--acc-text, var(--color-primary));
+}
+/* Ligne d'activité : avatar + récit + horodatage + réactions. */
+.family-activity-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  width: 100%;
+}
+
+/* Catalogue de dégradés : échantillon lisible, nom séparé et sélection explicite. */
+.appearance-gradient-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 14px; }
+.appearance-gradient-option { min-width: 0; display: grid; gap: 8px; text-align: center; color: var(--mut); }
+.appearance-gradient-swatch { position: relative; display: block; width: 100%; aspect-ratio: 1.65; border-radius: 14px; box-shadow: inset 0 0 0 1px var(--bd); }
+.appearance-gradient-option:focus-visible { outline: 2px solid var(--tx); outline-offset: 4px; border-radius: 14px; }
+.appearance-gradient-check { position: absolute; bottom: -6px; right: -6px; display: grid; place-items: center; width: 25px; height: 25px; border-radius: 50%; color: var(--tx); background: var(--gc); box-shadow: 0 2px 8px var(--sh); }
+.appearance-gradient-name { text-transform: capitalize; font-size: 12px; line-height: 1.3; color: var(--mut); }
+.appearance-gradient-option[aria-pressed='true'] .appearance-gradient-name { color: var(--tx); font-weight: 700; }
+@media (min-width: 600px) { .appearance-gradient-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (min-width: 1000px) { .appearance-gradient-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.family-demo { display: grid; gap: 16px; padding: 16px 0 80px; }
+.family-demo-grid { display: grid; gap: 16px; }
+.family-demo-card { display: grid; gap: 14px; padding: 24px; }
+.family-demo-card h2 { color: var(--tx); font-size: 1.25rem; font-weight: 700; }
+.family-demo-card p, .family-demo-card li { color: var(--mut); line-height: 1.5; }
+.family-demo-card button { justify-self: start; }
+.family-demo-card ul { display: grid; gap: 8px; }
+.family-demo-kicker { font-size: .75rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+@media (min-width: 700px) { .family-demo-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+/* Lecture : un canevas opaque sous le texte long, adapté aux jetons actifs. */
+.reading-screen { padding: clamp(16px, 3vw, 32px); padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px)); }
+.reading-header { background: var(--color-surface); color: var(--color-text-primary); }
+.reading-card {
+  padding: clamp(22px, 4.4vw, 44px);
+  border-radius: 24px;
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border);
+  box-shadow: 0 10px 30px color-mix(in srgb, var(--sh) 70%, transparent);
+}
+.reading-card-heading { padding-bottom: 18px; border-bottom: 1px solid var(--color-border); display: grid; gap: 2px; }
+/* Métadonnées de chapitre : petites capitales espacées, une seule ligne.
+   Avant, « Genèse · Chapitre 1 » vivait dans un paragraphe de 13 px, au même
+   poids visuel que le compteur de versets qui le suivait. */
+.reading-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  color: var(--mut);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+}
+.reading-translation {
+  flex: none;
+  padding: 2px 8px;
+  border: 1px solid var(--bd);
+  border-radius: 999px;
+  letter-spacing: .04em;
+  font-size: 10px;
+}
+.reading-card-heading h2 { margin: 16px 0 4px; font: 400 clamp(30px, 5vw, 42px)/1.15 var(--reading-font-family, Georgia), serif; color: inherit; }
+.reading-card-heading p { color: var(--color-text-secondary); font-size: 13px; }
+.reading-card .verse-flow { color: inherit; text-align: start; overflow-wrap: break-word; }
+/* ── Palette de surlignage ─────────────────────────────────────────────────
+   Cinq teintes, dont la première EST l'accent actif : c'est celle qui
+   s'applique par défaut, donc celle qui suit le preset et le mode. Les quatre
+   autres sont des teintes de repérage, volontairement distinctes de l'accent
+   pour qu'on ne les confonde pas avec lui.
+
+   Elles sont déclarées une seule fois, ici. La pastille et le lavis lisent la
+   même variable `--hl`, donc la couleur qu'on voit dans la barre est
+   exactement celle qui se pose sur le texte. Une seule source. */
+:root {
+  --hl-gold: #c88a00;
+  --hl-leaf: #1f9e63;
+  --hl-sky: #2f7fdb;
+  --hl-violet: #8b5cf6;
+  --hl-alpha: 34%;
+}
+/* En sombre, les teintes de repérage sont éclaircies : mélangées à
+   `transparent`, elles passeraient sous le texte sur un fond noir. */
+:root[data-theme='dark'] {
+  --hl-gold: #e0aa2e;
+  --hl-leaf: #3fbf7f;
+  --hl-sky: #5b9bf0;
+  --hl-violet: #a78bfa;
+  --hl-alpha: 42%;
+}
+
+[data-hl='accent'] { --hl: var(--acc); }
+[data-hl='gold'] { --hl: var(--hl-gold); }
+[data-hl='leaf'] { --hl: var(--hl-leaf); }
+[data-hl='sky'] { --hl: var(--hl-sky); }
+[data-hl='violet'] { --hl: var(--hl-violet); }
+
+.hl-swatch {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid color-mix(in srgb, var(--hl) 55%, var(--bd));
+  background: color-mix(in srgb, var(--hl) var(--hl-alpha), transparent);
+  color: var(--tx);
+  transition: transform 140ms ease, box-shadow 140ms ease;
+}
+.hl-swatch:active { transform: scale(0.92); }
+.hl-swatch.is-applied {
+  background: var(--hl);
+  color: var(--gc);
+  box-shadow: 0 0 0 2px var(--gc), 0 0 0 3px var(--hl);
+}
+
+/* ── Barre d'actions du verset ─────────────────────────────────────────────
+   Deux rangées plutôt qu'une : un en-tête (référence + sortie) puis les
+   actions. Sur une seule ligne, la référence et sept boutons se disputaient
+   la largeur d'un téléphone, et la barre débordait en défilement horizontal.
+   Ici les boutons se partagent la rangée à parts égales (`flex: 1 1 0`), donc
+   la barre ne peut pas dépasser, quelle que soit la largeur. */
+.verse-bar {
+  position: sticky;
+  bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+  z-index: 30;
+  margin: 18px auto 0;
+  width: 100%;
+  max-width: 560px;
+  padding: 6px 8px 8px;
+  border: 1px solid var(--bd);
+  border-radius: 18px;
+  background: var(--gc);
+  color: var(--tx);
+  box-shadow: 0 14px 38px var(--sh);
+}
+.verse-bar-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 2px 4px;
+  min-width: 0;
+}
+.verse-bar-reference {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--mut);
+}
+.verse-bar-reference-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+.verse-bar-count {
+  flex: none;
+  font-weight: 600;
+  color: var(--acc-text);
+  font-variant-numeric: tabular-nums;
+}
+.verse-bar-row { display: flex; align-items: center; gap: 2px; }
+.verse-action-btn {
+  flex: 1 1 0;
+  min-width: 0;
+  display: grid;
+  place-items: center;
+  height: 38px;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  color: var(--tx);
+  transition: background-color 150ms ease, color 150ms ease;
+}
+.verse-action-btn:focus-visible { outline: 2px solid var(--acc); outline-offset: -2px; }
+.verse-action-btn:active { background: color-mix(in srgb, var(--tx) 8%, transparent); }
+.verse-action-btn.is-active {
+  background: color-mix(in srgb, var(--acc) 13%, transparent);
+  color: var(--acc-text);
+}
+/* L'action principale de la barre : mémoriser. Un seul bouton plein, sinon
+   trois boutons colorés se neutralisent. */
+.verse-action-btn.is-primary { background: var(--acc); color: var(--on-accent); }
+.verse-action-btn.is-muted { color: var(--mut); }
+.verse-bar-head .verse-action-btn {
+  flex: 0 0 auto;
+  width: 30px;
+  height: 30px;
+}
+
+.verse-bar-palette {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 6px;
+  padding: 8px 2px 2px;
+  border-top: 1px solid var(--bd);
+}
+.verse-bar-palette-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--mut);
+}
+.verse-bar-swatches { display: flex; gap: 8px; margin-inline-start: auto; }
+.verse-bar-clear {
+  border: 0;
+  background: transparent;
+  color: var(--mut);
+  font-size: 11.5px;
+  font-weight: 700;
+  padding: 4px 2px;
+}
+.verse-bar-clear:hover { color: var(--tx); }
+
+.verse-bar-field {
+  margin-top: 6px;
+  padding: 8px 2px 2px;
+  border-top: 1px solid var(--bd);
+}
+.verse-bar-field-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+.verse-bar-field-title {
+  margin: 0 0 6px;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--mut);
+}
+.verse-bar-field-head .verse-bar-field-title { margin: 0; }
+.verse-bar-saved {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--color-success);
+}
+.verse-bar-input,
+.verse-bar-textarea {
+  width: 100%;
+  border: 1px solid var(--bd);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--tx) 5%, transparent);
+  color: var(--tx);
+  font-size: 13px;
+  padding: 9px 11px;
+  outline: none;
+}
+.verse-bar-textarea { resize: none; }
+.verse-bar-input:focus,
+.verse-bar-textarea:focus { border-color: var(--acc); }
+.verse-bar-field-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+  margin-top: 8px;
+}
+.verse-bar-ghost,
+.verse-bar-primary {
+  border: 0;
+  border-radius: 999px;
+  padding: 7px 14px;
+  font-size: 12px;
+  font-weight: 700;
+}
+.verse-bar-ghost { background: transparent; color: var(--mut); }
+.verse-bar-primary { background: var(--acc); color: var(--on-accent); }
+.verse-bar-primary:disabled { opacity: 0.5; }
+html:is([data-bg='image'],[data-app-bg='gradient']) .reading-header .full-screen-back { color: var(--tx); }
+/* La barre d'actions se peint avec `--gc`, la surface opaque du preset : sur
+   une image ou un dégradé elle reste lisible sans règle dédiée. */
+html:is([data-bg='image'],[data-app-bg='gradient']) .verse-bar { background: var(--gc); color: var(--tx); }
+html:is([data-bg='image'],[data-app-bg='gradient']) .verse-bar :is(.verse-bar-reference,.verse-bar-palette-label,.verse-bar-field-title,.verse-action-btn.is-muted) { color: var(--mut); }
+/* Les raccourcis du lecteur utilisent les jetons du fond effectivement
+   affiché, y compris pour les presets sombres activés en mode clair. */
+.reading-header .full-screen-back { color: var(--color-text-primary); background: color-mix(in srgb,var(--color-text-primary) 8%,transparent); }
+html[data-bg='image'] .reading-card { background: var(--gc); color: var(--tx); backdrop-filter: none; -webkit-backdrop-filter: none; }
+html[data-bg='image'] .reading-card :is(.reading-meta,.reading-card-heading p) { color: var(--mut); }
+html[data-app-bg='gradient'] .reading-card { background-color: var(--gc); background-image: linear-gradient(color-mix(in srgb,var(--gc) var(--gradient-wash),transparent),color-mix(in srgb,var(--gc) var(--gradient-wash),transparent)),var(--app-bg-image); color: var(--tx); backdrop-filter: none; -webkit-backdrop-filter: none; }
+html[data-app-bg='gradient'] .reading-card :is(.reading-meta,.reading-card-heading p) { color: var(--mut); }
+@media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
+  html[data-app-bg='gradient'] .reading-card { background: var(--gc); }
+}
+html[data-app-bg='gradient']:is([data-transparency='reduced'],[data-contrast='high']) .reading-card { background: var(--gc); }
+html:is([data-bg='image'],[data-app-bg='gradient']) .reading-header { background-color: var(--gc); }
+html:is([data-bg='image'],[data-app-bg='gradient']) .reading-header .full-screen-title p { color: var(--mut); }
+html[data-app-bg='gradient'] .reading-header { background-image: linear-gradient(color-mix(in srgb,var(--gc) var(--gradient-wash),transparent),color-mix(in srgb,var(--gc) var(--gradient-wash),transparent)),var(--app-bg-image); }
+@media (prefers-reduced-transparency: reduce), (prefers-contrast: more) { html[data-app-bg='gradient'] .reading-header { background-image: none; } }
+html[data-app-bg='gradient']:is([data-transparency='reduced'],[data-contrast='high']) .reading-header { background-image: none; }
+
+/* Un seul manuscrit pour les chapitres successifs, sans cartes intercalées. */
+.continuous-reader { overflow-anchor: none; }
+.continuous-manuscript { padding-top: clamp(20px,4vw,36px); }
+.reading-chapter + .reading-chapter { margin-top: 34px; }
+/* Le grand numéral suffit à marquer une nouvelle prise de parole : un filet
+   de plus par chapitre finissait par dessiner une grille de traits dans une
+   lecture continue de six chapitres. */
+.reading-chapter-heading[data-continuation='true'] { border-bottom: 0; padding-bottom: 4px; }
+.reading-chapter-heading[data-continuation='true'] p { font-size: 11.5px; }
+.reading-chapter-heading { padding-bottom: 14px; border-bottom: 1px solid var(--color-border); }
+.reading-chapter-heading h2 { margin: 14px 0 4px; font: 400 clamp(30px,5vw,42px)/1.15 var(--reading-font-family,Georgia),serif; color: inherit; }
+.reading-chapter-heading p { color: var(--color-text-secondary); font-size: 13px; }
+html:is([data-bg='image'],[data-app-bg='gradient']) .reading-chapter-heading p { color: var(--mut); }
+.continuous-boundary { text-align: center; }
+.continuous-more { padding: 8px 12px; color: inherit; font-size: 13px; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+.continuous-more:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
+.continuous-boundary:empty { display: none; }
+/* Lecture biblique : le numéro du chapitre joue le rôle de lettrine. */
+.reading-card .verse-flow { display: flow-root; }
+.verse-flow-blocks .manuscript-verse { display: block; margin: 0 0 .8em; }
+/* Disposition « blocs » : une ligne par verset, donc le numéro n'est plus un
+   exposant mais un repère de début de ligne. Il garde la taille du flux
+   (.76em) et perd seulement son décalage vertical — deux tailles différentes
+   pour la même information donnaient l'impression d'une lecture instable
+   quand on passait d'une disposition à l'autre. */
+.verse-flow-blocks .verse-flow-number { vertical-align: baseline; font-size: .76em; margin-inline: 0 .35em; }
+.reading-preferences { display: grid; gap: 16px; margin-bottom: 24px; }
+.reading-preferences fieldset { min-width: 0; }
+.reading-preferences legend { margin-bottom: 8px; color: var(--tx); font-weight: 700; font-size: 14px; }
+.reading-preferences-options { display: flex; flex-wrap: wrap; gap: 8px; }
+.reading-preferences-options button, .chapter-pagination button { padding: 10px 14px; border: 1px solid var(--bd); border-radius: 14px; background: color-mix(in srgb,var(--tx) 7%,var(--gc)); color: var(--tx); font-size: 14px; font-weight: 600; }
+.reading-preferences-options button[aria-pressed='true'] { background: var(--tx); color: var(--gc); }
+.reading-preferences-options button:focus-visible, .chapter-pagination button:focus-visible { outline: 2px solid var(--tx); outline-offset: 3px; }
+.chapter-pagination { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; padding-top: 16px; }
+.chapter-pagination button:disabled { opacity: .5; cursor: not-allowed; }
+/* Welcome and onboarding: one responsive journey, two compositions. */
+.journey-page { min-height: 100%; display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); color: var(--tx); background: var(--gc); }
+.journey-visual { min-height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; overflow: hidden; padding: 80px 32px 44px; background: color-mix(in srgb,var(--color-primary) 12%,var(--gc)); }
+.journey-brand { position: absolute; top: 36px; inset-inline-start: 44px; font-weight: 800; font-size: 13px; letter-spacing: .2em; }
+.journey-brand span { color: var(--color-primary); }
+.journey-visual > p { max-width: 320px; text-align: center; font-size: 14px; font-weight: 600; }
+.journey-content { display: flex; justify-content: center; align-items: center; padding: 52px clamp(28px,7vw,100px); }
+.journey-copy { width: min(100%,460px); }
+.journey-copy h1, .onboard-auth h1 { color: var(--tx); font-family: var(--font-serif, Georgia), serif; font-weight: 500; font-size: clamp(38px,4.4vw,60px); line-height: 1.05; letter-spacing: -.035em; margin: 0 0 22px; }
+.journey-copy p, .onboard-auth p { line-height: 1.65; }
+.journey-overline, .onboard-eyebrow { font-size: 11px; font-weight: 800; letter-spacing: .16em; margin-bottom: 18px; color: var(--tx); }
+.journey-lead { font-size: clamp(17px,1.7vw,20px); font-weight: 600; }
+.journey-actions { margin-top: 32px; display: grid; gap: 12px; }
+.journey-primary, .journey-secondary { min-height: 54px; width: 100%; border-radius: 16px; padding: 14px 20px; display: flex; justify-content: center; align-items: center; gap: 12px; font-weight: 750; text-align: center; }
+.journey-primary { background: var(--color-primary); color: var(--color-on-primary); }
+.journey-primary span { margin-inline-start: auto; }
+.journey-secondary { border: 1px solid var(--bd); color: var(--tx); }
+.journey-primary:disabled { opacity: .6; }
+.journey-back, .onboard-back { display: inline-block; margin-bottom: 34px; color: var(--tx); font-weight: 650; font-size: 14px; }
+.journey-progress { height: 5px; border-radius: 8px; background: var(--bd); margin: 30px 0 24px; overflow: hidden; }
+.journey-progress span { display: block; height: 100%; background: var(--color-primary); }
+.journey-art { width: min(100%,420px); aspect-ratio: 1; position: relative; color: var(--color-primary); }
+.journey-art-halo { position: absolute; inset: 7%; border-radius: 50%; background: color-mix(in srgb,var(--color-primary) 20%,var(--gc)); }
+.journey-art-orbit { position: absolute; inset: 1%; border: 2px solid color-mix(in srgb,var(--color-primary) 32%,transparent); border-radius: 50%; transform: rotate(-25deg) scaleY(.72); }
+.journey-art-orbit-two { transform: rotate(32deg) scaleY(.72); }
+.journey-art-card { position: absolute; width: 47%; height: 54%; top: 22%; left: 27%; border-radius: 30px; }
+.journey-art-card-back { background: color-mix(in srgb,var(--color-primary) 40%,var(--gc)); transform: rotate(-13deg) translate(-12%,3%); }
+.journey-art-card-front { display: grid; place-items: center; background: var(--gc); transform: rotate(8deg); box-shadow: 0 18px 50px var(--sh); }
+.journey-art-spark { position: absolute; font-size: 36px; }.journey-art-spark-one { top: 14%; right: 15%; }.journey-art-spark-two { bottom: 18%; left: 13%; font-size: 25px; }
+.journey-art-line { position: absolute; width: 14%; height: 10px; border-radius: 10px; background: var(--color-primary); opacity: .35; transform: rotate(-30deg); }.journey-art-line-one { left: 5%; top: 27%; }.journey-art-line-two { right: 7%; bottom: 27%; }
+.journey-profile,.journey-success-profile { display:flex; align-items:center; gap:18px; padding:18px; border-radius:22px; background:color-mix(in srgb,var(--tx) 6%,var(--gc)); margin:24px 0; }
+.journey-fields { flex: 1; min-width: 0; }.journey-fields label,.onboard-form label { display:grid; gap:6px; font-size:14px; font-weight:650; margin-bottom:12px; }
+.journey-accents { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; margin:24px 0; }.journey-accents button { padding:10px; border:1px solid var(--bd); border-radius:16px; display:grid; gap:8px; text-align:start; }.journey-accents button[aria-pressed=true] { outline:2px solid var(--tx); outline-offset:2px; }.journey-accents button span { height:36px; border-radius:9px; }.journey-accents small { overflow-wrap:anywhere; }
+.journey-confetti { margin-inline-start:auto; font-size:24px; color:var(--color-primary); }
+.onboard-auth { width:min(100% - 48px,440px); min-height:75vh; margin:auto; display:flex; flex-direction:column; justify-content:center; gap:14px; }.onboard-form { display:grid; gap:10px; margin:12px 0; }.onboard-auth > a:last-child { color:var(--tx); text-decoration:underline; }
+@media(max-width:767px) { .journey-page { grid-template-columns:1fr; grid-template-rows:auto 1fr; }.journey-visual { min-height:240px; padding:54px 20px 8px; }.journey-brand { top:20px; inset-inline-start:24px; }.journey-art { width:min(53vw,220px); }.journey-art-card-front svg { width:65%; height:auto; }.journey-visual > p { display:none; }.journey-content { align-items:start; padding:32px 24px 48px; }.journey-copy h1 { font-size:38px; }.journey-back { margin-bottom:24px; } }
+@media(prefers-reduced-motion:reduce) { .journey-progress span { transition:none; } }
+.journey-success-profile { position:relative; overflow:hidden; min-height:112px; }
+.journey-confetti { position:absolute; inset:0 0 0 auto; width:40%; pointer-events:none; overflow:hidden; }
+.journey-confetti i { position:absolute; font-style:normal; animation:journey-confetti-fall 2.8s ease-in-out infinite alternate; }
+.journey-confetti i:nth-child(1) { left:5%; top:12%; }.journey-confetti i:nth-child(2) { left:30%; top:52%; animation-delay:-.5s; }.journey-confetti i:nth-child(3) { left:58%; top:8%; animation-delay:-1s; }.journey-confetti i:nth-child(4) { left:80%; top:45%; animation-delay:-1.5s; }.journey-confetti i:nth-child(5) { left:45%; top:70%; animation-delay:-2s; }.journey-confetti i:nth-child(6) { left:75%; top:75%; animation-delay:-2.5s; }
+@keyframes journey-confetti-fall { from { transform:translateY(-6px) rotate(-15deg); } to { transform:translateY(8px) rotate(20deg); } }
+@media(prefers-reduced-motion:reduce) { .journey-confetti i { animation:none; } }
+.demo-mode-label { position:fixed; z-index:9999; inset-block-start:4px; inset-inline-end:8px; pointer-events:none; border-radius:9px; padding:4px 8px; background:var(--tx); color:var(--gc); font-size:10px; font-weight:800; letter-spacing:.02em; }
+.journey-theme-options { margin-top: 22px; display: grid; gap: 12px; }
+.journey-theme-options label { display: grid; gap: 8px; font-size: 14px; font-weight: 700; }
+.journey-theme-options select { width: 100%; padding: 12px; border: 1px solid var(--bd); border-radius: 14px; background: var(--gc); color: var(--tx); }
+.journey-mode-options { display: flex; flex-wrap: wrap; gap: 8px; }
+.journey-mode-options button { padding: 9px 13px; border: 1px solid var(--bd); border-radius: 12px; color: var(--tx); }
+.journey-mode-options button[aria-pressed='true'] { outline: 2px solid var(--tx); outline-offset: 1px; }
