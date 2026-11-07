@@ -19,6 +19,7 @@ import { useAppearanceStore } from '@/store/appearance-store';
 import {
   THEME_CATEGORIES,
   themeLandscapeUrl,
+  themeThumbUrl,
   type ThemeCatalogEntry,
 } from '@/theme/theme-catalog';
 import { cn } from '@/lib/utils';
@@ -90,7 +91,9 @@ export default function ThemePickerScreen() {
                 onClick={() => setExpanded(open ? null : cat.id)}
                 className="flex w-full items-center justify-between px-4 py-3"
               >
-                <span className="text-sm font-bold text-text-primary">{cat.name}</span>
+                <span className="text-sm font-bold text-text-primary">
+                  {t(`appearanceEditor.cat_${cat.id}`, cat.name)}
+                </span>
                 <span className="text-xs text-text-muted">
                   {cat.themes.length} · {open ? '▲' : '▼'}
                 </span>
@@ -99,29 +102,43 @@ export default function ThemePickerScreen() {
                 <div className="grid grid-cols-2 gap-2 p-3">
                   {cat.themes.map((entry) => {
                     const active = colorThemeId === entry.id;
+                    const available = entry.id !== 'obj-miroir';
+                    const title = t(`appearanceEditor.theme_${entry.id}`, entry.name);
                     return (
                       <button
                         key={entry.id}
                         type="button"
+                        disabled={!available}
                         onClick={() => select(entry)}
                         className={cn(
                           'relative overflow-hidden rounded-xl border-2 p-2 text-left transition',
                           active ? 'border-primary' : 'border-border',
+                          !available && 'opacity-50',
                         )}
                       >
-                        <img
-                          src={themeLandscapeUrl(entry.id)}
-                          alt={entry.name}
-                          loading="lazy"
-                          className="aspect-[3/2] w-full rounded-lg bg-surface-2 object-cover"
-                        />
+                        {available ? (
+                          <picture>
+                            <source type="image/webp" srcSet={themeThumbUrl(entry.id)} />
+                            <img
+                              src={themeLandscapeUrl(entry.id)}
+                              alt={title}
+                              loading="lazy"
+                              decoding="async"
+                              className="aspect-[3/2] w-full rounded-lg bg-surface-2 object-cover"
+                            />
+                          </picture>
+                        ) : (
+                          <div className="flex aspect-[3/2] w-full items-center justify-center rounded-lg bg-surface-2 text-xs text-text-muted">
+                            {t('appearanceEditor.imageUnavailable', 'Image indisponible')}
+                          </div>
+                        )}
                         <div className="mt-1.5 flex items-center gap-1.5">
                           <span
                             className="h-3 w-3 shrink-0 rounded-full"
                             style={{ background: entry.color }}
                           />
                           <span className="truncate text-xs font-medium text-text-primary">
-                            {entry.name}
+                            {title}
                           </span>
                           {active && (
                             <span className="ml-auto flex h-5 w-5 items-center justify-center rounded-full bg-primary text-on-primary">

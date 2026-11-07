@@ -221,12 +221,17 @@ const expected = new Set(
   entries.flatMap((e) => [e.portrait.path.split('/').pop(), e.landscape.path.split('/').pop()]),
 );
 const strays = [];
-// Les catégories photo sont décrites par `photo-themes.generated.ts` et
-// contrôlées par `tests/design/photo-themes.test.ts` : elles ne sont pas des
-// orphelines du catalogue illustré.
-const PHOTO_CATEGORIES = new Set(['photos-nature', 'photos-vie']);
+// Les catégories photo et sacrées sont décrites par leurs manifestes générés
+// (`photo-themes.generated.ts`, `sacred-themes.generated.ts`) et contrôlées par
+// leurs propres suites (`photo-themes.test.ts`, `sacred-themes.test.ts`).
+const MANAGED_WEBP_CATEGORIES = new Set([
+  'photos-nature',
+  'photos-vie',
+  'foi-victoire',
+  'architecture-sacree',
+]);
 for (const category of readdirSync(THEMES_DIR)) {
-  if (PHOTO_CATEGORIES.has(category)) continue;
+  if (MANAGED_WEBP_CATEGORIES.has(category)) continue;
   const dir = join(THEMES_DIR, category);
   try {
     for (const file of readdirSync(dir)) {

@@ -14,6 +14,7 @@ import { resolve } from 'node:path';
 import { deflateSync } from 'node:zlib';
 // @ts-expect-error — script ESM sans types : seule la fonction testée est importée.
 import { pngMeanColor } from '../../scripts/theme-provenance.mjs';
+import { SACRED_THEME_COUNT } from '@/theme/sacred-themes';
 
 const root = resolve(__dirname, '../..');
 const manifest = JSON.parse(
@@ -112,8 +113,8 @@ describe('L6 — manifeste de provenance', () => {
       .split('\n')
       .filter((f) => f.endsWith('.webp') && !f.includes('-thumb.'));
     // 99 thèmes illustrés × 2 formats (obj-miroir n'a jamais été généré)
-    // + 20 scènes photo × 2 cadrages générés le 31 octobre 2026.
-    expect(tracked.length).toBe(238);
+    // + 20 scènes photo × 2 cadrages + scènes sacrées × 2 cadrages.
+    expect(tracked.length).toBe(238 + SACRED_THEME_COUNT * 2);
     expect(tracked.filter((f) => f.includes('-portrait.webp')).length).toBeGreaterThanOrEqual(99);
     // Le dossier ne doit plus être ignoré : un visuel ajouté doit pouvoir être versionné.
     let ignored = '';

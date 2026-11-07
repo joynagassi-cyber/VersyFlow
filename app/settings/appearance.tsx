@@ -340,18 +340,19 @@ export default function AppearanceScreen() {
               <p className="appearance-hint">{t('appearanceEditor.calmImages', 'Les images calmes donnent de meilleurs résultats')}</p>
               <div className="appearance-categories" role="group" aria-label={t('appearanceEditor.categories', 'Catégories')}>
                 <button type="button" aria-pressed={category === 'all'} onClick={() => setCategory('all')}>{t('appearanceEditor.all', 'Tous')}</button>
-                {THEME_CATEGORIES.map((cat) => <button type="button" key={cat.id} aria-pressed={category === cat.id} onClick={() => setCategory(cat.id)}>{cat.name}</button>)}
+                {THEME_CATEGORIES.map((cat) => <button type="button" key={cat.id} aria-pressed={category === cat.id} onClick={() => setCategory(cat.id)}>{t(`appearanceEditor.cat_${cat.id}`, cat.name)}</button>)}
               </div>
               <div className="appearance-image-grid">
                 {THEME_CATEGORIES.filter((cat) => category === 'all' || category === cat.id).flatMap((cat) => cat.themes.map((entry) => {
                   const active = colorThemeId === entry.id;
                   const available = entry.id !== 'obj-miroir'; // Both original images are absent from the catalog assets.
+                  const title = t(`appearanceEditor.theme_${entry.id}`, entry.name);
                   return <button type="button" key={entry.id} onClick={() => setColorTheme(entry.id)} aria-pressed={active} disabled={!available} className="appearance-image-option">
                     <span className={cn('appearance-thumbnail', active && 'is-active')}>
                       {available ? <picture><source type="image/webp" srcSet={themeThumbUrl(entry.id)} />
                         <img src={themeLandscapeUrl(entry.id)} alt="" loading="lazy" decoding="async" /></picture> : <span className="appearance-image-unavailable">{t('appearanceEditor.imageUnavailable', 'Image indisponible')}</span>}
                       {active && <Check size={20} className="appearance-thumbnail-check" />}
-                    </span><span className="appearance-image-title">{entry.name}</span>
+                    </span><span className="appearance-image-title">{title}</span>
                   </button>;
                 }))}
               </div>
