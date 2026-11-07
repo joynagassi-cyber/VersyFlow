@@ -1,0 +1,128 @@
+/**
+ * GÉNÉRÉ — ne pas éditer à la main.
+ *
+ * Écrit par `node scripts/themes/import-sacred-themes.mjs` à partir des
+ * fichiers réellement présents dans `public/themes/{foi-victoire,architecture-sacree}`.
+ */
+
+import type { PhotoThemeEntry } from './photo-themes-types';
+
+export const SACRED_THEMES: PhotoThemeEntry[] = [
+  {
+    id: 'chr-victoire-croix',
+    name: "Victoire à la Croix",
+    category: 'foi-victoire',
+    color: '#B9770E',
+    motif: "la croix vide victorieuse au lever du soleil sur Golgotha, rayons dorés sur Jérusalem",
+    ext: 'webp',
+    importedAt: '2026-11-07T03:01:51.638Z',
+  },
+  {
+    id: 'chr-tombeau-ouvert',
+    name: "Tombeau vide à l’aube",
+    category: 'foi-victoire',
+    color: '#E67E22',
+    motif: "matin de la Résurrection, pierre roulée et lumière dorée jaillissant du tombeau ouvert",
+    ext: 'webp',
+    importedAt: '2026-11-07T03:01:51.638Z',
+  },
+  {
+    id: 'chr-bon-berger',
+    name: "Le Bon Berger",
+    category: 'foi-victoire',
+    color: '#27AE60',
+    motif: "verts pâturages et eaux paisibles du Psaume 23 au soleil levant",
+    ext: 'webp',
+    importedAt: '2026-11-07T03:01:51.638Z',
+  },
+  {
+    id: 'chr-gethsemane',
+    name: "Jardin de Gethsémané",
+    category: 'foi-victoire',
+    color: '#1B4F72',
+    motif: "oliviers millénaires sous un rayon céleste dans la nuit étoilée face à Jérusalem",
+    ext: 'webp',
+    importedAt: '2026-11-07T03:01:51.638Z',
+  },
+  {
+    id: 'chr-mer-galilee',
+    name: "Paix sur la Galilée",
+    category: 'foi-victoire',
+    color: '#1F618D',
+    motif: "barque paisible sur la mer de Galilée apaisée sous les nuages entrouverts à l’aube",
+    ext: 'webp',
+    importedAt: '2026-11-07T03:01:51.638Z',
+  },
+  {
+    id: 'arc-cathedrale-lumiere',
+    name: "Nef de lumière",
+    category: 'architecture-sacree',
+    color: '#B7950B',
+    motif: "faisceaux de lumière dorée traversant les hautes fenêtres d’une nef de pierre",
+    ext: 'webp',
+    importedAt: '2026-11-07T03:01:51.638Z',
+  },
+  {
+    id: 'arc-vitrail-grace',
+    name: "Rosace & Vitrail",
+    category: 'architecture-sacree',
+    color: '#8E44AD',
+    motif: "grande rosace gothique et vitraux aux éclats saphir, ambre et rubis",
+    ext: 'webp',
+    importedAt: '2026-11-07T03:01:51.638Z',
+  },
+  {
+    id: 'arc-chapelle-colline',
+    name: "Chapelle des collines",
+    category: 'architecture-sacree',
+    color: '#1E8449',
+    motif: "chapelle immaculée et clocher surmonté d’une croix au cœur de collines verdoyantes",
+    ext: 'webp',
+    importedAt: '2026-11-07T03:01:51.638Z',
+  },
+  {
+    id: 'arc-cloitre-olivier',
+    name: "Cloître & Arches",
+    category: 'architecture-sacree',
+    color: '#27AE60',
+    motif: "voûtes gothiques et colonnades de pierre blonde baignées d’ombre et de soleil",
+    ext: 'webp',
+    importedAt: '2026-11-07T03:01:51.638Z',
+  },
+  {
+    id: 'arc-chapelle-cotiere',
+    name: "Chapelle sur la mer",
+    category: 'architecture-sacree',
+    color: '#1565C0',
+    motif: "chapelle blanche couronnée d’une croix dominant une mer d’azur paisible",
+    ext: 'webp',
+    importedAt: '2026-11-07T03:01:51.638Z',
+  },
+  {
+    id: 'arc-maison-paisible',
+    name: "Demeure paisible",
+    category: 'architecture-sacree',
+    color: '#CA6F1E',
+    motif: "demeure de pierre et de bois au pied des montagnes dans une lumière d’automne",
+    ext: 'webp',
+    importedAt: '2026-11-07T03:01:51.638Z',
+  },
+  {
+    id: 'arc-sanctuaire-bois',
+    name: "Sanctuaire & Recueillement",
+    category: 'architecture-sacree',
+    color: '#6E2C00',
+    motif: "bancs de bois et nef silencieuse baignés d’une douce lumière matinale",
+    ext: 'webp',
+    importedAt: '2026-11-07T03:01:51.638Z',
+  },
+  {
+    id: 'arc-arche-jerusalem',
+    name: "Pierres de Jérusalem",
+    category: 'architecture-sacree',
+    color: '#A04000',
+    motif: "arches de pierre blonde et cour pavée ensoleillée d’inspiration biblique",
+    ext: 'webp',
+    importedAt: '2026-11-07T03:01:51.638Z',
+  },
+];

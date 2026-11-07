@@ -14,6 +14,7 @@
  */
 
 import { buildPhotoCategories, photoThemeExt } from './photo-themes';
+import { buildSacredCategories, sacredThemeExt } from './sacred-themes';
 
 export interface ThemeCatalogEntry {
   id: string;
@@ -193,15 +194,16 @@ const BASE_THEME_CATEGORIES: ThemeCategory[] = [
 ];
 
 /**
- * Catalogue effectif = dix catégories illustrées + catégories photo
- * réellement importées (vide au départ, voir `photo-themes.ts`).
+ * Catalogue effectif = collections chrétiennes & d'architecture sacrée en tête,
+ * suivies des catégories photo, puis des dix catégories illustrées classiques.
  */
 export const THEME_CATEGORIES: ThemeCategory[] = [
-  ...BASE_THEME_CATEGORIES,
+  ...buildSacredCategories(),
   ...buildPhotoCategories(),
+  ...BASE_THEME_CATEGORIES,
 ];
 
-/** All themes flattened (100 illustrated entries, plus imported photos). */
+/** All themes flattened (sacred + photos + 100 illustrated entries). */
 export const ALL_THEMES: ThemeCatalogEntry[] = THEME_CATEGORIES.flatMap((c) =>
   c.themes.map((t) => ({ ...t, category: c.id })),
 );
@@ -224,13 +226,13 @@ export function themePortraitUrl(id: string): string {
   // Le dossier est la CATÉGORIE du thème (esprit, evenements…), comme
   // l'écrit scripts/generate-themes.mjs — pas les segments de l'id.
   const category = findThemeById(id)?.category ?? id.split('-')[0];
-  // Les illustrations sont en PNG, les photos importées en WebP.
-  const ext = photoThemeExt(id) ?? 'png';
+  // Les illustrations classiques sont en PNG, les collections sacrées et photo en WebP.
+  const ext = sacredThemeExt(id) ?? photoThemeExt(id) ?? 'png';
   return `/themes/${category}/${id}-portrait.${ext}`;
 }
 export function themeLandscapeUrl(id: string): string {
   const category = findThemeById(id)?.category ?? id.split('-')[0];
-  const ext = photoThemeExt(id) ?? 'png';
+  const ext = sacredThemeExt(id) ?? photoThemeExt(id) ?? 'png';
   return `/themes/${category}/${id}-landscape.${ext}`;
 }
 /** Vignette du sélecteur — toujours en WebP, quel que soit le format source. */

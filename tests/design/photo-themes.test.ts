@@ -22,6 +22,7 @@ import {
 } from '@/theme/theme-catalog';
 import { PHOTO_THEMES } from '@/theme/photo-themes.generated';
 import { PHOTO_THEME_COUNT, buildPhotoCategories } from '@/theme/photo-themes';
+import { SACRED_THEME_COUNT } from '@/theme/sacred-themes';
 import { PHOTO_SCENES, buildPrompt } from '../../scripts/themes/photo-scenes.mjs';
 
 const root = join(__dirname, '..', '..');
@@ -103,15 +104,15 @@ describe('intégration au catalogue de thèmes', () => {
     expect(THEME_CATEGORIES.filter((c) => c.id.startsWith('photos-'))).toHaveLength(
       categories.length,
     );
-    expect(ALL_THEMES).toHaveLength(100 + PHOTO_THEME_COUNT);
+    expect(ALL_THEMES).toHaveLength(100 + PHOTO_THEME_COUNT + SACRED_THEME_COUNT);
   });
 
   it('état actuel : aucune catégorie photo tant qu’aucun fichier n’est livré', () => {
     // Si ce test échoue, c'est que le lot a été importé : mettre à jour
-    // tests/design/appearance-background.test.ts (100 → 100 + PHOTO_THEME_COUNT).
+    // tests/design/appearance-background.test.ts (100 → 100 + PHOTO_THEME_COUNT + SACRED_THEME_COUNT).
     if (PHOTO_THEME_COUNT === 0) {
       expect(THEME_CATEGORIES.some((c) => c.id.startsWith('photos-'))).toBe(false);
-      expect(ALL_THEMES).toHaveLength(100);
+      expect(ALL_THEMES).toHaveLength(100 + SACRED_THEME_COUNT);
     }
   });
 
