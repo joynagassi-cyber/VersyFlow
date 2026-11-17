@@ -21,6 +21,8 @@
     "bible:build": "tsx -r ./scripts/tsconfig-alias-hook.cjs scripts/bible/build-bible.ts",
     "bible:catalog": "npx tsx scripts/bible/generate-dataset-catalog.ts",
     "bible:deploy": "cross-env TS_NODE_PROJECT=tsconfig.app.json tsx scripts/supabase/setup-bible-datasets.ts",
+    "bible:normalize": "node scripts/bible/normalize-bible-datasets.mjs",
+    "bible:normalize:check": "node scripts/bible/normalize-bible-datasets.mjs --check",
     "bible:verify": "cross-env TS_NODE_PROJECT=tsconfig.app.json tsx -r tsconfig-paths/register scripts/bible/verify-multi-translation.ts",
     "cap:add:android": "capacitor add android",
     "cap:add:ios": "capacitor add ios",

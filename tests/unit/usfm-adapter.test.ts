@@ -11,7 +11,7 @@ import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { USFMAdapter } from '@/infrastructure/bible/adapters/usfm-adapter';
+import { USFMAdapter, normalizeElisions } from '@/infrastructure/bible/adapters/usfm-adapter';
 import type { BibleDocument } from '@/domains/bible/document';
 
 const here = fileURLToPath(import.meta.url);
@@ -125,5 +125,46 @@ describe('USFMAdapter (structural, §50 multi-style)', () => {
     // renumbers both down to 11 and 12.
     const gap = USFMAdapter.parse('\\id GEN\n\\c 1\n\\v 10 ctx\n\\v 24-25 range text\n');
     expect(gap.books[0].chapters[0].verses.map((v) => v.number)).toEqual([10, 11, 12]);
+  });
+});
+
+/**
+ * Correctif 2026-10-30 — deux défauts d'assainissement cassaient le rendu des
+ * versets : la lettre « w » disparaissait de tous les mots (marqueur `\w`
+ * confondu avec la lettre) et les élisions françaises gardaient une espace
+ * après l'apostrophe (« l' abîme »), ce qui affichait des lettres orphelines
+ * « l » / « j » dans la phrase.
+ */
+describe('assainissement du texte (correctif 2026-10-30)', () => {
+  const verse = (payload: string): string =>
+    USFMAdapter.parse(`\\id GEN\n\\c 1\n\\v 1 ${payload}\n`).books[0].chapters[0].verses[0].text;
+
+  it('préserve la lettre « w » des mots ordinaires', () => {
+    expect(verse('New world of wonder.')).toBe('New world of wonder.');
+  });
+
+  it('retire les marqueurs \\w et leurs attributs sans amputer le mot', () => {
+    expect(verse('In the \\w beginning|strong="H7225"\\w* God created.')).toBe(
+      'In the beginning God created.',
+    );
+  });
+
+  it('soude les élisions françaises (l’, j’, qu’, d’, jusqu’)', () => {
+    expect(verse("l' abîme, j' ai vu, qu' il vienne, d' avec, jusqu' ici")).toBe(
+      'l’abîme, j’ai vu, qu’il vienne, d’avec, jusqu’ici',
+    );
+  });
+
+  it('ne soude pas une apostrophe de citation d’une autre langue', () => {
+    // Le nettoyage existant ramène les guillemets ‘ à ’ ; on vérifie surtout
+    // que l'espace qui SUIT l'apostrophe de fin de citation est conservée.
+    const out = verse('He said ‘Peace’ and left.');
+    expect(out).toContain('Peace’ and');
+  });
+
+  it('expose normalizeElisions de façon idempotente', () => {
+    const once = normalizeElisions("l’ abîme et j’ ai vu");
+    expect(once).toBe('l’abîme et j’ai vu');
+    expect(normalizeElisions(once)).toBe(once);
   });
 });

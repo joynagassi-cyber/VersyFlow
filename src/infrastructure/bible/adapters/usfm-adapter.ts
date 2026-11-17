@@ -62,9 +62,19 @@ function cleanVerseText(raw: string): string {
   text = stripBlockKeep(text, '\\nd', '\\nd*');
   text = stripBlockKeep(text, '\\d', '\\d*');
 
-  // 3. Word markers: \w..\w* and \+w..\+w* — keep the word, drop the marker.
-  text = text.replace(/\|strong="[^"]*"/g, '');
-  text = text.replace(/\\?\+?w\*?/g, '');
+  // 3. Word markers: \w..\w* and \+w..\+w* — keep the word, drop the marker
+  //    and its attributes (|strong="H7225", |lemma="…").
+  //
+  //    CORRECTIF 2026-10-30 — deux défauts se cumulaient :
+  //      a) cette ligne retirait TOUS les backslash avant le nettoyage des
+  //         marqueurs, si bien que `\w` ne laissait qu'un « w » nu ;
+  //      b) le nettoyage suivant rendait le backslash optionnel et supprimait
+  //         donc ce « w » nu — c'est-à-dire la lettre « w » de TOUS les mots
+  //         du texte (« New world of wonder » → « Ne orld of onder »).
+  //    Désormais : marqueurs d'abord (backslash obligatoire), attributs
+  //    ensuite, backslash résiduels en tout dernier (étape 7 bis).
+  text = text.replace(/\\\+?w\*?/g, '');
+  text = text.replace(/\|[a-z][a-z0-9-]*="[^"]*"/gi, '');
 
   // 4. Italics / emphasis: \it..\it*, \+it..\+it* — keep inner text.
   text = stripBlockKeep(text, '\\+it', '\\+it*');
@@ -76,14 +86,36 @@ function cleanVerseText(raw: string): string {
   // 6. Residual poetry / paragraph markers that slipped into the verse text.
   text = text.replace(/\\(q\d?|p)\b/g, ' ');
 
-  // 7. Residual closing asterisks / stray markers.
+  // 7 bis. Backslash résiduels (marqueur USFM inconnu) : retirés en dernier,
+  //        une fois tous les marqueurs connus traités.
+  text = text.replace(/\\/g, '');
+
+  // 8. Residual closing asterisks / stray markers.
   text = text.replace(/\\\*/g, '');
 
-  // 8. Drop control characters, normalize whitespace + typographic apostrophe.
+  // 9. Drop control characters, normalize whitespace + typographic apostrophe.
   // eslint-disable-next-line no-control-regex -- intentionnel : retrait des caracteres de controle USFM
   text = text.replace(/[\u0000-\u001F\u007F]/g, '');
   text = text.replace(/\s+/g, ' ').trim();
-  return text.replace(/[’‘']/g, '’');
+  return normalizeElisions(text.replace(/[’‘']/g, '’').normalize('NFC'));
+}
+
+/**
+ * Tokens d'élision dont l'apostrophe ne doit jamais être suivie d'une espace.
+ *
+ * Les corpus USFM francophones contiennent couramment `l' abîme`, `j' ai`,
+ * `qu' il`. Rendus tels quels, ils affichent une lettre orpheline (« l »,
+ * « j ») au milieu de la phrase — c'est le défaut constaté dans les versets.
+ *
+ * Seuls ces tokens sont traités (et non « toute apostrophe suivie d'espace »),
+ * pour ne jamais souder l'apostrophe de citation d'une autre langue
+ * (`‘Peace’ and` resterait intact).
+ */
+const ELISION_TOKENS = 'jusqu|lorsqu|puisqu|quoiqu|qu|l|d|j|s|n|c|m|t';
+const ELISION_RE = new RegExp(`(^|[\\s(«“"'])((?:${ELISION_TOKENS})’)[ ]+(?=[\\p{L}])`, 'giu');
+
+export function normalizeElisions(text: string): string {
+  return text.replace(ELISION_RE, '$1$2');
 }
 
 /** Remove paired blocks `open...close`, discarding the inner content. */
