@@ -414,9 +414,14 @@ function App() {
     <StrictMode>
       <DirSync />
       <ThemeManager />
-      <DevRouteRecorder />
       <SyncBridges />
       <BrowserRouter>
+        {/* CORRECTIF 2026-10-30 : DevRouteRecorder appelle useLocation().
+            Monté AVANT <BrowserRouter>, il levait « useLocation() may be used
+            only in the context of a <Router> component » : tout l'arbre React
+            échouait et l'écran restait noir (#121212). Il doit vivre DANS le
+            routeur, comme les autres consommateurs de contexte. */}
+        <DevRouteRecorder />
         <IonApp>
           <ErrorBoundary>
             <Routes>
