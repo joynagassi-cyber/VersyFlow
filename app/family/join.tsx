@@ -100,7 +100,7 @@ export default function FamilyJoinScreen() {
         {error && <p className="text-sm text-error">{error}</p>}
 
         <Button variant="default" className="w-full" onClick={() => fireAndForget(handleJoin(), 'family:join')} disabled={isLoading}>
-          {isLoading ? <DuoIcon icon={Loader2} size={18} className="animate-spin" /> : <DuoIcon icon={LogIn} size={18} />}
+          {isLoading ? <DuoIcon icon={Loader2} size={20} className="animate-spin" /> : <DuoIcon icon={LogIn} size={20} />}
           {isLoading ? t('common.loading', 'Chargement...') : t('family.joinButton', 'Rejoindre la famille')}
         </Button>
       </div>

@@ -37,6 +37,20 @@ describe('audit des 77 règles du playbook', () => {
     expect(blockingFailures.map((r) => `${r.id}: ${r.detail}`)).toEqual([]);
     expect(results).toHaveLength(77);
   });
+
+  it('le système de design reste cohérent (échelles, jetons, micro-copie)', () => {
+    const result = spawnSync('node', ['scripts/audit-playbook.mjs', '--json'], {
+      cwd: resolve(__dirname, '../..'),
+      encoding: 'utf8',
+      timeout: 60_000,
+    });
+    const payload = JSON.parse(result.stdout || '{}') as {
+      system?: { id: string; verdict: string; detail?: string }[];
+    };
+    const system = payload.system ?? [];
+    expect(system.length).toBe(6);
+    expect(system.filter((r) => r.verdict === 'FAIL').map((r) => `${r.id}: ${r.detail}`)).toEqual([]);
+  });
 });
 
 /* ------------------------------------------------------- composants neufs */

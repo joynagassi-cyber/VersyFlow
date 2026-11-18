@@ -135,7 +135,7 @@ export default function ConceptView() {
         {/* Versets */}
         <section className="mb-5">
           <h2 className="mb-2 flex items-center gap-1.5 text-sm font-semibold text-text-tertiary">
-            <DuoIcon icon={BookOpen} size={14} className="text-primary" />
+            <DuoIcon icon={BookOpen} size={16} className="text-primary" />
             {t('semantic.verses', 'Verset{count}', { count: verseKeys.length })}
           </h2>
           {verseKeys.length === 0 ? (
@@ -167,7 +167,7 @@ export default function ConceptView() {
         {/* Community */}
         <section className="mb-5">
           <h2 className="mb-2 flex items-center gap-1.5 text-sm font-semibold text-text-tertiary">
-            <DuoIcon icon={Map} size={14} className="text-primary" />
+            <DuoIcon icon={Map} size={16} className="text-primary" />
             {t('semantic.community', 'Communauté')}
           </h2>
           {communities.length === 0 ? (
@@ -196,7 +196,7 @@ export default function ConceptView() {
         {/* 1-hop relations */}
         <section>
           <h2 className="mb-2 flex items-center gap-1.5 text-sm font-semibold text-text-tertiary">
-            <DuoIcon icon={GitBranch} size={14} className="text-primary" />
+            <DuoIcon icon={GitBranch} size={16} className="text-primary" />
             {t('semantic.related', 'Concepts liés')}
           </h2>
           {relations.length === 0 ? (
@@ -210,7 +210,7 @@ export default function ConceptView() {
                   className="flex items-center justify-between rounded-xl bg-surface p-3 text-left shadow-sm transition-transform active:scale-[0.99]"
                 >
                   <div className="flex items-center gap-2">
-                    <DuoIcon icon={GitBranch} size={14} className="text-text-muted" />
+                    <DuoIcon icon={GitBranch} size={16} className="text-text-muted" />
                     <div>
                       <p className="text-sm font-semibold text-text-primary">
                         {displayLabel(node.concept, lang)}

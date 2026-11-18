@@ -94,7 +94,7 @@ export default function FamilyChallengeResultsScreen() {
         <SectionCard title={t('familyPlus.rewardTitle', 'Récompenses')}>
           <div className="flex items-center gap-3">
             <span className="flex h-12 w-12 items-center justify-center rounded-full bg-surface-tint text-primary">
-              <DuoIcon icon={Trophy} size={22} />
+              <DuoIcon icon={Trophy} size={24} />
             </span>
             <div>
               <p className="text-sm font-semibold text-text-primary">

@@ -39,6 +39,7 @@ import { ModeCards } from '@/components/memorization/ModeCards';
 import { ModeWrite } from '@/components/memorization/ModeWrite';
 import { TranslationMenu } from '@/components/memorization/TranslationMenu';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
+import { ScreenSkeleton } from '@/components/ui/ScreenSkeleton';
 
 type StatusTone = 'new' | 'due' | 'consolidated';
 
@@ -188,7 +189,7 @@ export default function MemorizationWorkspace() {
               className="flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-surface text-text-primary shadow-sm active:scale-95"
               aria-label={t('workspace.compare', 'Comparer')}
             >
-              <DuoIcon icon={ArrowLeftRight} size={18} />
+              <DuoIcon icon={ArrowLeftRight} size={20} />
             </button>
           }
           subtitleExtra={
@@ -200,7 +201,7 @@ export default function MemorizationWorkspace() {
         <div className="flex-1 overflow-y-auto px-4 pb-40">
           {status === 'loading' && (
             <div className="flex flex-col items-center py-16">
-              <div className="screen-column animate-pulse space-y-3 px-6" aria-hidden><div className="h-4 w-2/5 rounded-full bg-surface-tint" /><div className="h-24 rounded-3xl bg-surface-tint" /><div className="h-24 rounded-3xl bg-surface-tint" /></div>
+              <ScreenSkeleton rows={2} />
               <p className="mt-3 text-sm text-text-tertiary">
                 {t('workspace.loading', 'Chargement du verset...')}
               </p>
@@ -262,7 +263,7 @@ function ShellHeader({
           className="flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-surface text-text-primary shadow-sm active:scale-95"
           aria-label="Retour"
         >
-          <DuoIcon icon={ArrowLeft} size={18} />
+          <DuoIcon icon={ArrowLeft} size={20} />
         </button>
         <div className="flex min-w-0 flex-1 flex-col items-center">
           <h1 className="truncate text-lg font-bold text-text-primary">{title}</h1>

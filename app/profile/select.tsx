@@ -84,7 +84,7 @@ export default function ProfileSelectionScreen() {
         </div>
 
         <Button variant="outline" className="w-full" onClick={() => setShowCreate((s) => !s)}>
-          <DuoIcon icon={Plus} size={18} />
+          <DuoIcon icon={Plus} size={20} />
           {t('profile.create', 'Creer un profil')}
         </Button>
 
@@ -111,7 +111,7 @@ export default function ProfileSelectionScreen() {
                 {t('common.cancel', 'Annuler')}
               </Button>
               <Button variant="default" className="flex-1" onClick={() => fireAndForget(handleCreate(), 'profile:select-create')}>
-                {t('common.continue', 'Creer')}
+                {t('profile.createThisProfile', 'Créer ce profil')}
               </Button>
             </div>
           </div>

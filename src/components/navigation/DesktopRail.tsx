@@ -133,7 +133,7 @@ export function DesktopRail() {
           aria-expanded={!collapsed}
           className="ms-auto flex h-8 w-8 flex-none items-center justify-center rounded-lg text-text-muted hover:bg-surface-tint hover:text-text-primary"
         >
-          <DuoIcon icon={SidebarLeft01Icon} size={19} />
+          <DuoIcon icon={SidebarLeft01Icon} size={20} />
         </button>
         )}
       </div>
@@ -149,7 +149,7 @@ export function DesktopRail() {
           )}
           aria-label={t('nav.newSession', 'Nouvelle session')}
         >
-          <DuoIcon icon={PlusSignIcon} size={19} strokeWidth={1.75} />
+          <DuoIcon icon={PlusSignIcon} size={20} />
           <span className="rail-label text-sm font-semibold">{t('nav.newSession', 'Nouvelle session')}</span>
         </button>
       </div>
@@ -176,7 +176,6 @@ export function DesktopRail() {
                   <DuoIcon
                     icon={TAB_ICONS[tab.id]}
                     size={20}
-                    strokeWidth={1.75}
                   />
                 </span>
                 <span className="rail-label truncate">{t(tab.labelKey, tab.label)}</span>
@@ -210,7 +209,7 @@ export function DesktopRail() {
                 )}
               >
                 <span className={iconColumn}>
-                  <DuoIcon icon={Icon} size={20} strokeWidth={1.75} />
+                  <DuoIcon icon={Icon} size={20} />
                 </span>
                 <span className="rail-label truncate">{t(item.labelKey, item.label)}</span>
               </button>

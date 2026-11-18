@@ -31,8 +31,8 @@ export default function WelcomeScreen() {
           onClick={() => navigate('/onboarding/language-select')}
           className="flex min-h-[54px] w-full items-center justify-center gap-2 rounded-full bg-primary text-[15px] font-bold text-primary-foreground shadow-[0_8px_24px_-6px_var(--ring)] transition active:scale-[0.98]"
         >
-          {t('common.continue', 'Continuer')}
-          <DuoIcon icon={ArrowRight01Icon} size={19} />
+          {t('onboarding.beginCta', 'Commencer')}
+          <DuoIcon icon={ArrowRight01Icon} size={20} />
         </button>
       }
     >

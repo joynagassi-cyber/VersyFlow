@@ -115,7 +115,7 @@ function DataTab() {
             <span className="block text-base font-semibold text-text-primary">{c.label}</span>
             <span className="block text-sm text-text-muted">{c.sub}</span>
           </span>
-          <DuoIcon icon={ChevronRight} size={18} className="text-text-muted" />
+          <DuoIcon icon={ChevronRight} size={20} className="text-text-muted" />
         </button>
       ))}
     </div>
@@ -226,7 +226,7 @@ function ParamsTab() {
                   <span className="block text-base text-text-primary">{row.label}</span>
                   <span className="block text-sm text-text-muted">{row.sub}</span>
                 </span>
-                <DuoIcon icon={ChevronRight} size={18} className="text-text-muted" />
+                <DuoIcon icon={ChevronRight} size={20} className="text-text-muted" />
               </button>
             ))}
           </div>
@@ -259,14 +259,14 @@ function ParamsTab() {
               <span className="block text-base font-medium text-error">{t('settings.resetProgress', 'Réinitialiser la progression')}</span>
               <span className="block text-sm text-text-muted">{t('common.delete', 'Supprimer toutes les données')}</span>
             </span>
-            <DuoIcon icon={ChevronRight} size={18} className="text-error" />
+            <DuoIcon icon={ChevronRight} size={20} className="text-error" />
           </button>
         </div>
       </section>
 
       {isAuthenticated && (
         <button onClick={() => fireAndForget(handleSignOut(), 'settings:signOut')} className="flex w-full items-center justify-center gap-2 rounded-full bg-surface p-4 text-base font-semibold text-error shadow-sm">
-          <DuoIcon icon={LogOut} size={18} />
+          <DuoIcon icon={LogOut} size={20} />
           {t('settings.signOut', 'Se déconnecter')}
         </button>
       )}
@@ -286,7 +286,7 @@ function ParamsTab() {
                     <span className={cn('block text-base', selected ? 'font-semibold text-primary' : 'font-medium text-text-primary')}>{lang.name}</span>
                     <span className="text-sm text-text-muted">{lang.displayName}</span>
                   </span>
-                  {selected && <DuoIcon icon={Check} size={18} className="text-primary" />}
+                  {selected && <DuoIcon icon={Check} size={20} className="text-primary" />}
                 </button>
               );
             })}
@@ -364,7 +364,7 @@ function ProfileTab() {
             </span>
           )}
           <span className="absolute bottom-0 end-0 flex h-7 w-7 items-center justify-center rounded-full bg-primary text-on-primary shadow">
-            <DuoIcon icon={Camera} size={14} />
+            <DuoIcon icon={Camera} size={16} />
           </span>
         </button>
         <input ref={fileRef} type="file" accept="image/*" onChange={pickPhoto} className="hidden" />
@@ -393,11 +393,11 @@ function ProfileTab() {
               className="flex items-center gap-2 text-xl font-extrabold text-text-primary"
             >
               {displayName}
-              <DuoIcon icon={CircleUserRound} size={18} className="text-text-muted" />
+              <DuoIcon icon={CircleUserRound} size={20} className="text-text-muted" />
             </button>
           )}
           <p className="mt-1 flex items-center gap-1.5 text-sm text-text-muted">
-            <DuoIcon icon={Mail} size={14} />
+            <DuoIcon icon={Mail} size={16} />
             {isAuthenticated ? user?.email ?? t('profile.local', 'Local') : t('profile.local', 'Mode local')}
           </p>
           <div className="mt-3 flex items-center gap-2">
@@ -419,13 +419,13 @@ function ProfileTab() {
           {actions.map((a, i) => (
             <button key={i} onClick={() => navigate(a.to)} className={cn('flex w-full items-center gap-3 p-4 text-left', i < actions.length - 1 && 'border-b border-divider')}>
               <span className="icon-chip flex h-10 w-10 shrink-0 items-center justify-center rounded-full">
-                <DuoIcon icon={a.icon} size={18} />
+                <DuoIcon icon={a.icon} size={20} />
               </span>
               <span className="flex-1">
                 <span className="block text-base text-text-primary">{a.label}</span>
                 <span className="block text-sm text-text-muted">{a.sub}</span>
               </span>
-              <DuoIcon icon={ChevronRight} size={18} className="text-text-muted" />
+              <DuoIcon icon={ChevronRight} size={20} className="text-text-muted" />
             </button>
           ))}
         </div>
@@ -433,7 +433,7 @@ function ProfileTab() {
 
       {isAuthenticated && (
         <button onClick={() => fireAndForget(handleSignOut(), 'settings:signOut')} className="flex w-full items-center justify-center gap-2 rounded-full bg-surface p-4 text-base font-semibold text-error shadow-sm">
-          <DuoIcon icon={LogOut} size={18} />
+          <DuoIcon icon={LogOut} size={20} />
           {t('settings.signOut', 'Se déconnecter')}
         </button>
       )}

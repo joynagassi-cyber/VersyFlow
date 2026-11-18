@@ -67,7 +67,15 @@ export default function SignupScreen({ onSkip }: Props) {
           <p className="text-sm text-text-muted">
             {t('auth.signupSuccessHint', 'Vous êtes identifié(e) sur cet appareil.')}
           </p>
-          <DuoIcon icon={Loader2} size={24} className="animate-spin text-primary" />
+          {/* Le spinner a été retiré : un écran de réussite ne tourne pas. Une
+              fois la confirmation affichée, l'action suivante est un bouton. */}
+          <button
+            type="button"
+            onClick={() => navigate('/tabs/home', { replace: true })}
+            className="mt-2 min-h-11 rounded-full bg-primary px-6 text-base font-bold text-on-primary"
+          >
+            {t('auth.goToApp', "Entrer dans l'application")}
+          </button>
         </div>
       </FullScreenPage>
     );
@@ -110,7 +118,7 @@ export default function SignupScreen({ onSkip }: Props) {
             disabled={loading}
           >
             {loading ? (
-              <DuoIcon icon={Loader2} size={18} className="animate-spin" />
+              <DuoIcon icon={Loader2} size={20} className="animate-spin" />
             ) : (
               t('auth.continue', 'Continuer')
             )}

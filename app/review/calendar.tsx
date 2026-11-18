@@ -180,12 +180,12 @@ export default function ReviewCalendarScreen() {
   ];
 
   const monthSummary = [
-    { value: stats?.streakCount ?? 0, label: t('progress.streak', 'Jours de série'), icon: <DuoIcon icon={Flame} size={14} /> },
-    { value: stats?.totalVerses ?? 0, label: formatProgressLabel(t('progress.versesMemorized', 'Versets mémorisés'), stats?.totalVerses ?? 0, i18n.resolvedLanguage || i18n.language), icon: <DuoIcon icon={BookOpen} size={14} /> },
+    { value: stats?.streakCount ?? 0, label: t('progress.streak', 'Jours de série'), icon: <DuoIcon icon={Flame} size={16} /> },
+    { value: stats?.totalVerses ?? 0, label: formatProgressLabel(t('progress.versesMemorized', 'Versets mémorisés'), stats?.totalVerses ?? 0, i18n.resolvedLanguage || i18n.language), icon: <DuoIcon icon={BookOpen} size={16} /> },
     {
       value: `${stats ? Math.round((stats.masteredVerses / Math.max(1, stats.totalVerses)) * 100) : 0}%`,
       label: t('progress.retention', 'Taux de rétention'),
-      icon: <DuoIcon icon={TrendingUp} size={14} />,
+      icon: <DuoIcon icon={TrendingUp} size={16} />,
     },
   ];
 

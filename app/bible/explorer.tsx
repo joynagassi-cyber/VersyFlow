@@ -31,6 +31,7 @@ import { useChapterSemanticTags } from '@/hooks/useSemanticTags';
 import { useBibleData } from '@/hooks/useBibleData';
 import ManuscriptView from '@/components/bible/ManuscriptView';
 import VerseActionBar from '@/components/bible/VerseActionBar';
+import { SkeletonLines } from '@/components/ui/ScreenSkeleton';
 
 type ViewMode = 'books' | 'chapters' | 'verses';
 
@@ -151,7 +152,7 @@ export default function BibleExplorerScreen() {
       {/* Search */}
       {viewMode === 'books' && (
         <div className="relative mb-4">
-          <DuoIcon icon={Search} size={18} className="absolute start-3.5 top-1/2 -translate-y-1/2 text-text-muted" />
+          <DuoIcon icon={Search} size={20} className="absolute start-3.5 top-1/2 -translate-y-1/2 text-text-muted" />
           <Input
             type="search"
             aria-label={t('bible.search', 'Rechercher un livre...')}
@@ -223,7 +224,7 @@ export default function BibleExplorerScreen() {
                           {formatChapterCount(t('bible.chapterCount', { count: book.chapterCount }), book.chapterCount, i18n.resolvedLanguage || i18n.language)}
                         </p>
                       </div>
-                      <DuoIcon icon={ChevronRight} size={18} className="text-text-muted" />
+                      <DuoIcon icon={ChevronRight} size={20} className="text-text-muted" />
                     </button>
                   ))}
                 </div>
@@ -259,9 +260,9 @@ export default function BibleExplorerScreen() {
               <div className="flex items-start gap-3">
                 <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-surface-tint text-primary">
                   {status === 'downloading' ? (
-                    <DuoIcon icon={Loader2} size={18} className="animate-spin" />
+                    <DuoIcon icon={Loader2} size={20} className="animate-spin" />
                   ) : (
-                    <DuoIcon icon={Download} size={18} />
+                    <DuoIcon icon={Download} size={20} />
                   )}
                 </span>
                 <div className="min-w-0 flex-1">
@@ -283,7 +284,7 @@ export default function BibleExplorerScreen() {
                   )}
                   {status === 'error' && (
                     <p className="mt-1 flex items-center gap-1 text-xs text-error">
-                      <DuoIcon icon={AlertCircle} size={12} /> {error}
+                      <DuoIcon icon={AlertCircle} size={16} /> {error}
                     </p>
                   )}
                 </div>
@@ -305,10 +306,7 @@ export default function BibleExplorerScreen() {
               with tappable inline verse numbers. */}
           {status === 'loading' ? (
             <div className="space-y-3 rounded-3xl bg-surface p-5 shadow-sm">
-              <div className="h-4 w-3/4 animate-pulse rounded bg-surface-tint" />
-              <div className="h-4 w-2/3 animate-pulse rounded bg-surface-tint" />
-              <div className="h-4 w-full animate-pulse rounded bg-surface-tint" />
-              <div className="h-4 w-1/2 animate-pulse rounded bg-surface-tint" />
+              <SkeletonLines lines={4} />
             </div>
           ) : (
             <ManuscriptView

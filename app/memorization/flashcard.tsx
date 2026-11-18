@@ -111,7 +111,7 @@ export default function FlashcardScreen() {
           className="flex h-9 w-9 items-center justify-center rounded-full bg-surface shadow-sm"
           aria-label={t('common.close', 'Fermer')}
         >
-          <DuoIcon icon={Settings2} size={18} className="text-text-secondary" />
+          <DuoIcon icon={Settings2} size={20} className="text-text-secondary" />
         </button>
       }
     >
@@ -157,9 +157,9 @@ export default function FlashcardScreen() {
                     }
                   >
                     {currentCard.mastered ? (
-                      <DuoIcon icon={CheckCircle2} size={14} />
+                      <DuoIcon icon={CheckCircle2} size={16} />
                     ) : (
-                      <DuoIcon icon={HelpCircle} size={14} />
+                      <DuoIcon icon={HelpCircle} size={16} />
                     )}
                     {currentCard.mastered
                       ? t('session.mastered', 'Maitrise')
@@ -177,14 +177,14 @@ export default function FlashcardScreen() {
                     </p>
                   </div>
                   <p className="flex items-center gap-2 text-xs text-text-muted">
-                    <DuoIcon icon={RefreshCw} size={14} />
+                    <DuoIcon icon={RefreshCw} size={16} />
                     {t('session.tapToFlip', 'Tape pour voir la suite')}
                   </p>
                 </>
               ) : (
                 <>
                   <span className="inline-flex items-center gap-2 self-start rounded-full bg-surface-tint px-3 py-1.5 text-xs font-semibold text-primary">
-                    <DuoIcon icon={BookOpen} size={14} />
+                    <DuoIcon icon={BookOpen} size={16} />
                     {t('session.fullVerse', 'Verset complet')}
                   </span>
                   <div>
@@ -196,7 +196,7 @@ export default function FlashcardScreen() {
                     </p>
                   </div>
                   <p className="flex items-center gap-2 text-xs text-text-muted">
-                    <DuoIcon icon={RefreshCw} size={14} />
+                    <DuoIcon icon={RefreshCw} size={16} />
                     {t('session.tapToBack', 'Tape pour revenir')}
                   </p>
                 </>
@@ -208,11 +208,11 @@ export default function FlashcardScreen() {
         {/* Hints */}
         <div className="flex justify-around px-10 py-3 text-xs text-text-muted">
           <span className="flex items-center gap-2">
-            <DuoIcon icon={Hand} size={18} />
+            <DuoIcon icon={Hand} size={20} />
             {t('session.swipeLeft', 'Glisser gauche: A revoir')}
           </span>
           <span className="flex items-center gap-2">
-            <DuoIcon icon={Hand} size={18} className="-scale-x-100" />
+            <DuoIcon icon={Hand} size={20} className="-scale-x-100" />
             {t('session.swipeRight', 'Glisser droite: Maitrise')}
           </span>
         </div>

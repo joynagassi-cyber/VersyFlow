@@ -93,7 +93,7 @@ export default function FamilyChallengeNewScreen() {
                   )}
                 >
                   <span className="flex h-9 w-9 items-center justify-center rounded-full bg-surface text-primary">
-                    <DuoIcon icon={Trophy} size={18} />
+                    <DuoIcon icon={Trophy} size={20} />
                   </span>
                   <span className="flex-1">
                     <span className="block text-sm font-semibold text-text-primary">

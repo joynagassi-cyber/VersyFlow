@@ -65,7 +65,7 @@ export default function LanguagePickerScreen() {
             >
               <div>
                 <div className="flex items-center gap-2">
-                  <DuoIcon icon={Languages} size={18} className="text-primary" />
+                  <DuoIcon icon={Languages} size={20} className="text-primary" />
                   <span className="text-lg font-semibold text-text-primary">
                     {lang.name}
                   </span>
@@ -82,7 +82,7 @@ export default function LanguagePickerScreen() {
                   </p>
                 )}
               </div>
-              {isSelected && <DuoIcon icon={Check} size={22} className="text-primary" />}
+              {isSelected && <DuoIcon icon={Check} size={24} className="text-primary" />}
             </button>
           );
         })}
@@ -94,7 +94,7 @@ export default function LanguagePickerScreen() {
           {t('common.back')}
         </Button>
         <Button className="flex-1" onClick={() => navigate('/onboarding/translation-select')}>
-          {t('common.continue')}
+          {t('onboarding.chooseLanguageCta', 'Choisir ma langue')}
           <DuoIcon icon={ArrowRight} size={16} />
         </Button>
       </div>

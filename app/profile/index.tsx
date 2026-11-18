@@ -120,7 +120,7 @@ export default function ProfileScreen() {
               <p className="profile-eyebrow">{isAuthenticated ? t('profile.connected', 'Connecté') : t('profile.localMode', 'Mode local')}</p>
               <div className="profile-name-row">
                 {editing ? <input value={name} autoFocus onChange={(e) => setName(e.target.value)} onBlur={saveName} onKeyDown={(e) => { if (e.key === 'Enter') saveName(); }} aria-label={t('profile.setName', 'Définir un nom')} className="profile-name-input" /> : <p className="profile-name">{displayName || t('profile.setName', 'Définir un nom')}</p>}
-                <button type="button" onClick={() => setEditing(true)} className="profile-name-edit" aria-label={t('common.edit', 'Modifier')}><DuoIcon icon={Pencil} size={18} /></button>
+                <button type="button" onClick={() => setEditing(true)} className="profile-name-edit" aria-label={t('common.edit', 'Modifier')}><DuoIcon icon={Pencil} size={20} /></button>
               </div>
               <p className="profile-slogan">{slogan || user?.userId || t('profile.localMode', 'Mode local')}</p>
             </div>
@@ -137,7 +137,7 @@ export default function ProfileScreen() {
                 className="profile-avatar-edit"
                 aria-label={t('profile.changePhoto', 'Changer la photo de profil')}
               >
-                <DuoIcon icon={Camera} size={18} />
+                <DuoIcon icon={Camera} size={20} />
               </button>
               <input
                 ref={fileRef}
@@ -202,18 +202,18 @@ export default function ProfileScreen() {
         {/* ── Actions ── */}
         <div className="flex flex-col gap-3">
           <Button variant="outline" onClick={() => navigate('/settings/backup')}>
-            <DuoIcon icon={Download} size={18} />
+            <DuoIcon icon={Download} size={20} />
             {t('settings.exportData', 'Exporter mes donnees')}
           </Button>
           {profiles.length > 1 && (
             <Button variant="ghost" onClick={() => navigate('/profile/select')}>
-              <DuoIcon icon={UsersRound} size={18} />
+              <DuoIcon icon={UsersRound} size={20} />
               {t('profile.manageProfiles', 'Gerer les profils')}
             </Button>
           )}
           {isAuthenticated && (
             <Button variant="ghost" className={cn('text-error')} onClick={() => fireAndForget(handleSignOut(), 'profile:signOut')}>
-              <DuoIcon icon={LogOut} size={18} />
+              <DuoIcon icon={LogOut} size={20} />
               {t('nav.signOut', 'Se deconnecter')}
             </Button>
           )}

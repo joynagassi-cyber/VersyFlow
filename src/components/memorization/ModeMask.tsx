@@ -132,7 +132,7 @@ export function ModeMask({
                   : 'text-text-secondary',
               )}
             >
-              <DuoIcon icon={Sparkles} size={11} />
+              <DuoIcon icon={Sparkles} size={16} />
               {t('workspace.autoProgressive', 'Auto')}
             </button>
           </div>

@@ -10,6 +10,7 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { HamburgerMenu } from '@/components/navigation/HamburgerMenu';
+import { ICON_SIZES } from '@/components/ui/DuoIcon';
 import { ALL_MENU_ITEMS, useUiStore } from '@/store/ui-store';
 
 const renderMenu = () =>
@@ -85,18 +86,28 @@ describe('menu mobile — lisibilité des icônes', () => {
     return Number.parseFloat(raw);
   };
 
-  it('aucune icône du menu ne descend sous 18 px', () => {
+  it('aucune icône du menu ne descend sous 16 px (ICON_SIZES.sm)', () => {
     const { container } = renderMenu();
     const sizes = Array.from(container.querySelectorAll('svg')).map(iconSize).filter(Number.isFinite);
     expect(sizes.length).toBeGreaterThan(5);
-    expect(Math.min(...sizes)).toBeGreaterThanOrEqual(18);
+    expect(Math.min(...sizes)).toBeGreaterThanOrEqual(ICON_SIZES.sm);
   });
 
-  it('les pictogrammes de section font 22 px', () => {
+  it('les pictogrammes de section font 24 px (ICON_SIZES.lg)', () => {
     const { container } = renderMenu();
     const sectionIcon = container.querySelector('[id^="menu-section-read-button"] svg');
     expect(sectionIcon).not.toBeNull();
-    expect(iconSize(sectionIcon!)).toBe(22);
+    expect(iconSize(sectionIcon!)).toBe(ICON_SIZES.lg);
+  });
+
+  it('toutes les icônes du menu tiennent dans l’échelle à trois tailles', () => {
+    const { container } = renderMenu();
+    const sizes = new Set(
+      Array.from(container.querySelectorAll('svg')).map(iconSize).filter(Number.isFinite),
+    );
+    for (const size of sizes) {
+      expect(Object.values(ICON_SIZES)).toContain(size);
+    }
   });
 });
 

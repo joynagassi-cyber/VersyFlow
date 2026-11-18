@@ -3,7 +3,7 @@ import { goBackSafely } from '@/lib/navigation';
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { DuoIcon } from '@/components/ui/DuoIcon';
+import { DuoIcon, ICON_SIZES } from '@/components/ui/DuoIcon';
 import {
   UserPlusIcon as UserPlus,
   CheckmarkCircle02Icon as CheckCircle2,
@@ -89,7 +89,7 @@ export default function FamilyMembersScreen() {
           onClick={() => navigate('/family/invite')}
           className="rounded-full bg-surface-tint p-2 active:bg-primary/10"
         >
-          <DuoIcon icon={UserPlus} size={18} className="text-primary" />
+          <DuoIcon icon={UserPlus} size={20} className="text-primary" />
         </button>
       }
     >
@@ -104,7 +104,7 @@ export default function FamilyMembersScreen() {
           </p>
         ) : loadError ? (
           <div className="flex flex-col items-center gap-3 rounded-2xl bg-surface p-6 text-center shadow-sm">
-            <DuoIcon icon={AlertCircle} size={28} className="text-error" />
+            <DuoIcon icon={AlertCircle} size={ICON_SIZES.illustration} className="text-error" />
             <p className="text-sm text-error">{loadError}</p>
             <button
               onClick={() => loadMembers(family.id)}

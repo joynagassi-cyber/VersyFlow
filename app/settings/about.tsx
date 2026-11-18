@@ -95,11 +95,11 @@ export default function AboutScreen() {
             aria-expanded={showWhatNew}
           >
             <p className="flex items-center gap-2 text-base font-bold text-text-primary">
-              <DuoIcon icon={Sparkles} size={18} className="text-primary" />
+              <DuoIcon icon={Sparkles} size={20} className="text-primary" />
               {t('settings.whatsNew', 'Nouveautés')}
             </p>
             <DuoIcon icon={ChevronDown}
-              size={18}
+              size={20}
               aria-label={t('common.expandCollapse', 'Déplier / replier')}
               className={'text-text-muted transition-transform ' + (showWhatNew ? 'rotate-180' : '')}
             />
@@ -134,7 +134,7 @@ export default function AboutScreen() {
         {/* About */}
         <div className="glass rounded-2xl bg-surface p-4 shadow-sm">
           <p className="mb-2 flex items-center gap-2 text-base font-bold text-text-primary">
-            <DuoIcon icon={BookOpen} size={18} className="text-primary" />
+            <DuoIcon icon={BookOpen} size={20} className="text-primary" />
             {t('settings.about', "A propos")}
           </p>
           <p className="text-sm leading-relaxed text-text-secondary">
@@ -164,11 +164,11 @@ export default function AboutScreen() {
         {/* Credits */}
         <div className="glass space-y-2 rounded-2xl bg-surface p-4 text-center shadow-sm">
           <p className="flex items-center justify-center gap-2 text-sm text-text-secondary">
-            <DuoIcon icon={Heart} size={14} className="text-primary" />
+            <DuoIcon icon={Heart} size={16} className="text-primary" />
             {t('settings.creditMission', 'Developpe avec amour pour la gloire de Dieu')}
           </p>
           <p className="flex items-center justify-center gap-2 text-sm text-text-muted">
-            <DuoIcon icon={Cpu} size={14} />
+            <DuoIcon icon={Cpu} size={16} />
             {t('settings.creditEngine', 'Moteur FSRS par Dmytro Gutman')}
           </p>
         </div>

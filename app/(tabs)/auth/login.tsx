@@ -89,7 +89,7 @@ export default function LoginScreen({ onSkip }: Props) {
             disabled={loading}
           >
             {loading ? (
-              <DuoIcon icon={Loader2} size={18} className="animate-spin" />
+              <DuoIcon icon={Loader2} size={20} className="animate-spin" />
             ) : (
               t('auth.continue', 'Continuer')
             )}

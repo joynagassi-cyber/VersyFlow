@@ -63,7 +63,7 @@ export default function FamilySessionPrepareScreen() {
         <SectionCard title={t('familyPlus.passageLabel', 'Passage')}>
           <div className="flex items-center gap-2">
             <span className="flex h-9 w-9 items-center justify-center rounded-full bg-surface-tint text-primary">
-              <DuoIcon icon={BookOpen} size={18} />
+              <DuoIcon icon={BookOpen} size={20} />
             </span>
             <input
               value={passage}
@@ -139,7 +139,7 @@ export default function FamilySessionPrepareScreen() {
                         isOnline ? 'bg-primary text-on-primary' : 'bg-surface-tint text-primary',
                       )}
                     >
-                      <DuoIcon icon={isOnline ? Tick : PlusSign} size={12} />
+                      <DuoIcon icon={isOnline ? Tick : PlusSign} size={16} />
                       {isOnline
                         ? t('familyPlus.invited', 'Invité')
                         : t('familyPlus.invite', 'Inviter')}

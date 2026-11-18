@@ -1,7 +1,7 @@
 # Audit UX/UI Playbook 2026 — application à VersyFlow
 
 Généré par `node scripts/audit-playbook.mjs`. **Ne pas éditer à la main.**
-Exécuté le 2026-11-18 04:17 (UTC).
+Exécuté le 2026-11-18 04:26 (UTC).
 
 **Bilan : 45 vérifiés · 9 partiels · 0 en échec · 23 non vérifiables ici** (77 règles).
 
@@ -120,3 +120,16 @@ Lecture : *vérifié* = une mesure reproductible dans le dépôt le confirme ; *
 - `node scripts/audit-playbook.mjs` — recalcule chaque ligne ci-dessus.
 - `npm run verify` — types, lint, tests de conception, audits du plan.
 - `npx vitest run tests/design` — dont `playbook-rules.test.ts` qui verrouille les règles statiques.
+
+## Système de design (cohérence des échelles)
+
+Ces six contrôles ne font pas partie des 77 règles : ils mesurent le **système** qui les rend tenables.
+
+| ID | Verdict | Contrôle | Mesure |
+| --- | --- | --- | --- |
+| S01 | **PASS** | Icônes : trois tailles d’interface (16/20/24) + 32 en illustration | 16 / 20 / 24 / 32 px dans toute l'interface |
+| S02 | **PASS** | Icônes : une seule graisse de trait | aucune surcharge : la graisse vient de `ICON_STROKE` |
+| S03 | **PASS** | Rayons : une échelle, aucune valeur brute | tous les rayons passent par `calc(Npx * var(--radius-scale))` |
+| S04 | **PASS** | Ombres : les jetons du thème, jamais un noir figé | 4 ombres par jeton, 0 noir codé en dur |
+| S05 | **PASS** | Espacements : multiples de 4 uniquement | aucun espacement arbitraire hors grille de 4 px |
+| S06 | **PASS** | Micro-copie : un verbe, jamais « OK / Valider / Suivant » | aucun « Continuer » générique dans le parcours d’entrée ; chaque action nomme son effet |

@@ -56,7 +56,7 @@ export default function VerseSemanticTags({
                 : 'bg-surface-tint text-primary',
             )}
           >
-            {personal ? <DuoIcon icon={UserRound} size={11} /> : <DuoIcon icon={BrainCircuit} size={11} />}
+            {personal ? <DuoIcon icon={UserRound} size={16} /> : <DuoIcon icon={BrainCircuit} size={16} />}
             {conceptLabel(c, lang)}
           </button>
         );

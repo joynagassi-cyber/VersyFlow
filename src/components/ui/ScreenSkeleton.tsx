@@ -52,3 +52,20 @@ export function ScreenSkeleton({ rows = 3, withTitle = true }: ScreenSkeletonPro
 }
 
 export default ScreenSkeleton;
+
+/**
+ * SkeletonLines — squelette de **texte** à l'intérieur d'un bloc existant
+ * (une carte, un panneau). Même rôle que `ScreenSkeleton` : réserver la place
+ * exacte du contenu pour que rien ne saute quand il arrive (règle E04), sans
+ * spinner et sans boucle infinie (la pulsation s'arrête au bout de deux cycles).
+ */
+export function SkeletonLines({ lines = 3, className }: { lines?: number; className?: string }) {
+  const widths = ['w-3/4', 'w-2/3', 'w-full', 'w-1/2', 'w-5/6'];
+  return (
+    <div className={`space-y-3 ${className ?? ''}`} aria-hidden="true">
+      {Array.from({ length: lines }).map((_, index) => (
+        <div key={index} className={`skeleton-bar h-4 ${widths[index % widths.length]}`} />
+      ))}
+    </div>
+  );
+}

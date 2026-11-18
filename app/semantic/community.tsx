@@ -94,7 +94,7 @@ export default function CommunityView() {
         {/* Member concepts */}
         <section className="mb-5">
           <h2 className="mb-2 flex items-center gap-1.5 text-sm font-semibold text-text-tertiary">
-            <DuoIcon icon={BrainCircuit} size={14} className="text-primary" />
+            <DuoIcon icon={BrainCircuit} size={16} className="text-primary" />
             {t('semantic.concept', 'Concept')}s — {concepts.length}
           </h2>
           {concepts.length === 0 ? (
@@ -123,7 +123,7 @@ export default function CommunityView() {
         {/* Sample versets */}
         <section>
           <h2 className="mb-2 flex items-center gap-1.5 text-sm font-semibold text-text-tertiary">
-            <DuoIcon icon={BookMarked} size={14} className="text-primary" />
+            <DuoIcon icon={BookMarked} size={16} className="text-primary" />
             {t('semantic.verses', 'Verset{count}', { count: sampleVerseKeys.length })}
           </h2>
           {sampleVerseKeys.length === 0 ? (

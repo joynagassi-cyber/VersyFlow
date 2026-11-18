@@ -65,7 +65,7 @@ export default function MemorizationConfirm() {
         </div>
         <div className="mt-4 flex items-center justify-between border-t border-divider pt-4">
           <span className="flex items-center gap-1.5 text-sm text-text-muted">
-            <DuoIcon icon={CalendarClock} size={15} />
+            <DuoIcon icon={CalendarClock} size={16} />
             {t('session.nextReview', { days: interval })}
           </span>
           <span className={`text-sm font-semibold ${meta.color}`}>{meta.label}</span>
@@ -87,7 +87,7 @@ export default function MemorizationConfirm() {
           className="mx-auto mt-1 flex items-center gap-1 text-sm font-semibold text-primary"
         >
           {t('review.startReview', 'Voir mes révisions')}
-          <DuoIcon icon={ArrowRight} size={14} />
+          <DuoIcon icon={ArrowRight} size={16} />
         </button>
       </div>
     </FullScreenPage>

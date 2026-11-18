@@ -161,6 +161,12 @@ nav: {
     title: 'Notifications',
   },
   onboarding: {
+    // Action labels: verb + object, never a bare "Continue" (§27).
+    chooseLanguageCta: 'Choose my language',
+    saveReminderCta: 'Save my reminder',
+    startWithSettingsCta: 'Start with these settings',
+    chooseTranslationCta: 'Choose this version',
+    beginCta: 'Get started',
     welcomeTitle: 'Memorise the Word, at your own pace',
     welcomeSubtitle:
       'Anchored verses, spaced review and tracked progress — nothing around the text.',
@@ -609,6 +615,7 @@ nav: {
     unknownLanguageGroup: 'Other versions',
   },
   profile: {
+    createThisProfile: "Create this profile",
     changePhoto: 'Change profile photo',
     connected: 'Connected',
     local: 'Local',
@@ -652,6 +659,7 @@ nav: {
     notFound: 'This page does not exist',
   },
   auth: {
+    goToApp: "Enter the app",
     identify: 'Who are you?',
     identifySubtitle: 'Enter your email and your name to continue',
     name: 'Your name',

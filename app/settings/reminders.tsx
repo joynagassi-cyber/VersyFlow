@@ -100,7 +100,7 @@ export default function SettingsRemindersScreen() {
               reminderEnabled ? 'bg-primary text-on-primary' : 'bg-surface-tint text-primary',
             )}
           >
-            {reminderEnabled ? <DuoIcon icon={BellRing} size={22} /> : <DuoIcon icon={Bell} size={22} />}
+            {reminderEnabled ? <DuoIcon icon={BellRing} size={24} /> : <DuoIcon icon={Bell} size={24} />}
           </div>
           <div className="flex-1">
             <p className="text-base font-semibold text-text-primary">
@@ -116,14 +116,14 @@ export default function SettingsRemindersScreen() {
               reminderEnabled ? 'border-primary bg-primary' : 'border-text-muted',
             )}
           >
-            {reminderEnabled && <DuoIcon icon={Check} size={14} className="text-[color:var(--on)]" />}
+            {reminderEnabled && <DuoIcon icon={Check} size={16} className="text-[color:var(--on)]" />}
           </div>
         </button>
 
         {/* Frequency */}
         <div className={cn(!reminderEnabled && 'opacity-40')}>
           <div className="mb-3 flex items-center gap-2">
-            <DuoIcon icon={Bell} size={18} className="text-primary" />
+            <DuoIcon icon={Bell} size={20} className="text-primary" />
             <span className="text-base font-semibold text-text-primary">
               {t('onboarding.reminderFrequency')}
             </span>
@@ -154,7 +154,7 @@ export default function SettingsRemindersScreen() {
         {/* Reminder time */}
         <div className={cn('flex items-center gap-4', !reminderEnabled && 'opacity-40')}>
           <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-surface-tint">
-            <DuoIcon icon={Clock} size={22} className="text-primary" />
+            <DuoIcon icon={Clock} size={24} className="text-primary" />
           </div>
           <div className="flex-1">
             <p className="text-base font-semibold text-text-primary">
@@ -173,7 +173,7 @@ export default function SettingsRemindersScreen() {
         {/* Notification push locales */}
         <div className="glass rounded-2xl bg-surface p-4 shadow-sm">
           <div className="mb-3 flex items-center gap-2">
-            <DuoIcon icon={BellRing} size={18} className="text-primary" />
+            <DuoIcon icon={BellRing} size={20} className="text-primary" />
             <span className="text-base font-semibold text-text-primary">
               {t('settings.notificationPush', 'Notifications locales')}
             </span>

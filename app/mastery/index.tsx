@@ -187,7 +187,7 @@ export default function MasteryScreen() {
                   className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full"
                   style={{ color: c.color, backgroundColor: 'transparent' }}
                 >
-                  <DuoIcon icon={c.icon} size={22} />
+                  <DuoIcon icon={c.icon} size={24} />
                 </span>
                 <div className={i === 0 ? '' : 'mt-1'}>
                   <p className="text-2xl font-extrabold text-text-primary">{c.value}</p>
@@ -226,7 +226,7 @@ export default function MasteryScreen() {
                       backgroundColor: levelTint(level.color),
                     }}
                   >
-                    <DuoIcon icon={Icon} size={22} />
+                    <DuoIcon icon={Icon} size={24} />
                   </span>
                   <div className="min-w-0 flex-1">
                     <p

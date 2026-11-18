@@ -181,7 +181,7 @@ export default function AchievementScreen() {
       showBack
       right={
         <span className="flex items-center gap-1 rounded-full bg-surface-tint px-3 py-1 text-sm font-semibold text-primary">
-          <DuoIcon icon={Star} size={14} className="text-warning tabular-nums" />
+          <DuoIcon icon={Star} size={16} className="text-warning tabular-nums" />
           {unlockedCount}/{achievements.length}
         </span>
       }
@@ -238,7 +238,7 @@ export default function AchievementScreen() {
                     backgroundColor: achievementTint(a.color),
                   }}
                 >
-                  <DuoIcon icon={Icon} size={26} />
+                  <DuoIcon icon={Icon} size={24} />
                 </span>
                 <span className="min-w-0 flex-1">
                   <span
@@ -265,7 +265,7 @@ export default function AchievementScreen() {
                     className="flex h-6 w-6 items-center justify-center rounded-full text-[color:var(--on)]"
                     style={{ backgroundColor: a.color }}
                   >
-                    <DuoIcon icon={Check} size={14} />
+                    <DuoIcon icon={Check} size={16} />
                   </span>
                 )}
               </button>

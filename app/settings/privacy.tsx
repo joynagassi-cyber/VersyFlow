@@ -111,10 +111,10 @@ export default function PrivacyScreen() {
             className="flex w-full items-center justify-between px-4 py-3.5 opacity-60"
           >
             <span className="flex items-center gap-3 text-base text-text-primary">
-              <DuoIcon icon={Download} size={18} className="text-text-muted" />
+              <DuoIcon icon={Download} size={20} className="text-text-muted" />
               {t('settings.downloadData', 'Telecharger mes donnees')}
             </span>
-            <DuoIcon icon={ChevronRight} size={18} className="text-text-muted" />
+            <DuoIcon icon={ChevronRight} size={20} className="text-text-muted" />
           </button>
           <p id="privacy-export-hint" className="px-4 pb-3 text-sm text-text-muted">
             {t(
@@ -129,7 +129,7 @@ export default function PrivacyScreen() {
             className="flex w-full items-center justify-between px-4 py-3.5"
           >
             <span className="flex items-center gap-3 text-base font-medium text-error">
-              <DuoIcon icon={Trash2} size={18} />
+              <DuoIcon icon={Trash2} size={20} />
               {t('settings.deleteAccount', 'Supprimer mon compte')}
             </span>
             <span className="text-sm font-semibold text-error opacity-60">

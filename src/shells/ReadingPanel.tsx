@@ -140,7 +140,7 @@ export function ReadingPanel() {
               : 'flex h-6 w-6 items-center justify-center rounded-full border border-border text-text-muted'
           }
         >
-          {verseNumbers && <DuoIcon icon={Check} size={14} />}
+          {verseNumbers && <DuoIcon icon={Check} size={16} />}
         </span>
       </button>
 

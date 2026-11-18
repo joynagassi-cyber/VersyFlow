@@ -171,7 +171,7 @@ export default function AppearanceScreen() {
   return (
     <IonPage className="appearance-shell">
       <header className="appearance-header">
-        <button type="button" onClick={() => goBackSafely(navigate)} aria-label={t('common.back', 'Retour')}><DuoIcon icon={ArrowLeft01Icon} size={22} /></button>
+        <button type="button" onClick={() => goBackSafely(navigate)} aria-label={t('common.back', 'Retour')}><DuoIcon icon={ArrowLeft01Icon} size={24} /></button>
         <h1>{t('nav.theme', 'Thème et apparence')}</h1>
       </header>
       <div className="app-canvas appearance-page h-full overflow-y-auto p-4"><div className="appearance-editor">
@@ -236,7 +236,7 @@ export default function AppearanceScreen() {
                       'appearance-mode-icon',
                     )}
                   >
-                    <DuoIcon icon={Icon} size={19} />
+                    <DuoIcon icon={Icon} size={20} />
                   </span>
                   <span className="flex-1 text-sm font-medium">
                     {label}

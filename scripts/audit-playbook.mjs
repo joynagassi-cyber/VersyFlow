@@ -273,6 +273,24 @@ for (const [theme, block] of [
   if (bg && mut) contrastRows.push({ theme, pair: 'texte secondaire sur surface', value: contrast(mut, bg), min: 4.5 });
 }
 
+/* ------------------------------------------------- système de design (§24-27) */
+
+// 16/20/24 = interface ; 32 = glyphe d'illustration d'état vide (documenté).
+const ICON_ALLOWED = new Set([16, 20, 24, 32]);
+
+function iconSizesInChrome() {
+  const sizes = new Map();
+  for (const file of tsFiles) {
+    const src = stripComments(sourceOf(file));
+    for (const m of src.matchAll(/<DuoIcon\b[\s\S]{0,240}?\bsize=\{(\d+)\}/g)) {
+      const px = Number(m[1]);
+      if (px >= 40) continue; // illustrations (états vides, héros), pas des icônes
+      if (!sizes.has(px)) sizes.set(px, `${file}:${src.slice(0, m.index).split('\n').length}`);
+    }
+  }
+  return sizes;
+}
+
 /* ------------------------------------------------------------------- règles */
 
 const UNVERIFIABLE = (reason, how) => ({ verdict: 'UNVERIFIABLE', reason, how });
@@ -666,9 +684,96 @@ const RULES = [
     } },
 ];
 
+/* Les règles S* ne font pas partie des 77 du playbook : elles mesurent la
+   cohérence du SYSTÈME (échelles, jetons, micro-copie) qui les fait tenir. */
+const SYSTEM_RULES = [
+  {
+    id: 'S01', label: 'Icônes : trois tailles d’interface (16/20/24) + 32 en illustration',
+    run: () => {
+      const sizes = iconSizesInChrome();
+      const illegal = [...sizes.entries()].filter(([px]) => !ICON_ALLOWED.has(px));
+      return illegal.length === 0
+        ? PASS(`${[...sizes.keys()].sort((a, b) => a - b).join(' / ')} px dans toute l'interface`)
+        : FAIL(illegal.map(([px, where]) => `${px}px (${where})`).slice(0, 5).join(' · '));
+    },
+  },
+  {
+    id: 'S02', label: 'Icônes : une seule graisse de trait',
+    run: () => {
+      // On ne compte que les surcharges passées au composant d'icône : les
+      // `strokeWidth` d'un <svg> dessiné à la main (anneau de progression,
+      // graphique) ne font pas partie de la famille.
+      const overrides = [...allDom.matchAll(/<DuoIcon\b[\s\S]{0,240}?strokeWidth=/g)].length;
+      return overrides === 0
+        ? PASS('aucune surcharge : la graisse vient de `ICON_STROKE`')
+        : FAIL(`${overrides} surcharge(s) de graisse dans les écrans`);
+    },
+  },
+  {
+    id: 'S03', label: 'Rayons : une échelle, aucune valeur brute',
+    run: () => {
+      const raw = [...cssNoComments.matchAll(/border-radius:\s*(\d+)px/g)].map((m) => Number(m[1]));
+      const offScale = raw.filter((px) => px > 0 && px < 100);
+      return offScale.length === 0
+        ? PASS('tous les rayons passent par `calc(Npx * var(--radius-scale))`')
+        : FAIL(`${offScale.length} rayon(s) hors échelle : ${offScale.slice(0, 5).join(', ')}px`);
+    },
+  },
+  {
+    id: 'S04', label: 'Ombres : les jetons du thème, jamais un noir figé',
+    run: () => {
+      const raw = count(cssNoComments, /box-shadow:[^;]*rgba\(\s*0,\s*0,\s*0/);
+      const tokens = count(cssNoComments, /box-shadow:\s*var\(--shadow-(card|float|lift)\)/g);
+      return raw === 0
+        ? PASS(`${tokens} ombres par jeton, 0 noir codé en dur`)
+        : FAIL(`${raw} ombre(s) en rgba noir`);
+    },
+  },
+  {
+    id: 'S05', label: 'Espacements : multiples de 4 uniquement',
+    run: () => {
+      const arbitrary = [
+        ...new Set(
+          tsFiles.flatMap((f) =>
+            [...stripComments(sourceOf(f)).matchAll(/\b[mp][a-z]?-\[(\d+)px\]/g)].map((m) => Number(m[1])),
+          ),
+        ),
+      ].filter((px) => px % 4 !== 0);
+      return arbitrary.length === 0
+        ? PASS('aucun espacement arbitraire hors grille de 4 px')
+        : FAIL(`espacements hors grille : ${arbitrary.join(', ')} px`);
+    },
+  },
+  {
+    id: 'S06', label: 'Micro-copie : un verbe, jamais « OK / Valider / Suivant »',
+    run: () => {
+      const banned = count(allDom, /'(OK|Ok|Valider|Validez|Soumettre|Submit|Next|Suivant)'/g);
+      const onboarding = tsFiles.filter((f) => f.startsWith('app/onboarding/'));
+      const generic = onboarding.flatMap((f) => {
+        const src = stripComments(sourceOf(f));
+        return /\{t\('common\.continue'\)\}/.test(src) ? [f] : [];
+      });
+      if (banned > 0) return FAIL(`${banned} libellé(s) interdit(s)`);
+      return generic.length === 0
+        ? PASS('aucun « Continuer » générique dans le parcours d’entrée ; chaque action nomme son effet')
+        : PARTIAL(`« Continuer » générique encore utilisé : ${generic.join(', ')}`);
+    },
+  },
+];
+
 /* ------------------------------------------------------------------- sortie */
 
 const results = RULES.map((rule) => {
+  let outcome;
+  try {
+    outcome = rule.run();
+  } catch (error) {
+    outcome = { verdict: 'FAIL', detail: `mesure impossible : ${error.message}` };
+  }
+  return { ...rule, ...outcome, run: undefined };
+});
+
+const systemResults = SYSTEM_RULES.map((rule) => {
   let outcome;
   try {
     outcome = rule.run();
@@ -682,11 +787,18 @@ const counts = results.reduce((acc, r) => {
   acc[r.verdict] = (acc[r.verdict] ?? 0) + 1;
   return acc;
 }, {});
+const systemCounts = systemResults.reduce((acc, r) => {
+  acc[r.verdict] = (acc[r.verdict] ?? 0) + 1;
+  return acc;
+}, {});
 
-const strict = results.filter((r) => r.level === 'BLOCKING' && (r.verdict === 'FAIL'));
+const strict = [
+  ...results.filter((r) => r.level === 'BLOCKING' && r.verdict === 'FAIL'),
+  ...systemResults.filter((r) => r.verdict === 'FAIL'),
+];
 
 if (JSON_ONLY) {
-  console.log(JSON.stringify({ counts, results }, null, 2));
+  console.log(JSON.stringify({ counts, results, system: systemResults, systemCounts }, null, 2));
 } else {
   const lines = [
     '# Audit UX/UI Playbook 2026 — application à VersyFlow',
@@ -718,10 +830,21 @@ if (JSON_ONLY) {
     '- `npm run verify` — types, lint, tests de conception, audits du plan.',
     '- `npx vitest run tests/design` — dont `playbook-rules.test.ts` qui verrouille les règles statiques.',
     '',
+    '## Système de design (cohérence des échelles)',
+    '',
+    'Ces six contrôles ne font pas partie des 77 règles : ils mesurent le **système** qui les rend tenables.',
+    '',
+    '| ID | Verdict | Contrôle | Mesure |',
+    '| --- | --- | --- | --- |',
+    ...systemResults.map((r) => `| ${r.id} | **${r.verdict}** | ${r.label} | ${(r.detail ?? r.reason ?? '').replace(/\|/g, '\\|')} |`),
+    '',
   ];
   writeFileSync(join(root, 'docs/design/PLAYBOOK-AUDIT.md'), lines.join('\n'));
   console.log(
     `Règles: ${counts.PASS ?? 0} PASS · ${counts.PARTIAL ?? 0} PARTIAL · ${counts.FAIL ?? 0} FAIL · ${counts.UNVERIFIABLE ?? 0} UNVERIFIABLE`,
+  );
+  console.log(
+    `Système : ${systemCounts.PASS ?? 0} PASS · ${systemCounts.PARTIAL ?? 0} PARTIAL · ${systemCounts.FAIL ?? 0} FAIL`,
   );
   if (strict.length) console.log('Échecs BLOQUANTS :', strict.map((r) => `${r.id} (${r.detail})`).join(' | '));
   console.log('Rapport → docs/design/PLAYBOOK-AUDIT.md');

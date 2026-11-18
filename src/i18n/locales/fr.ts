@@ -162,6 +162,12 @@ nav: {
     unread: 'non lues',
   },
   onboarding: {
+    // Libellés d'action : un verbe + l'objet, jamais « Continuer » nu (§27).
+    chooseLanguageCta: 'Choisir ma langue',
+    saveReminderCta: 'Enregistrer mon rappel',
+    startWithSettingsCta: 'Démarrer avec ces réglages',
+    chooseTranslationCta: 'Choisir cette version',
+    beginCta: 'Commencer',
     welcome: 'Bienvenue dans VersyFlow',
     welcomeTitle: 'Mémorisez la Parole, à votre rythme',
     welcomeSubtitle:
@@ -612,6 +618,7 @@ nav: {
     unknownLanguageGroup: 'Autres versions',
   },
   profile: {
+    createThisProfile: "Créer ce profil",
     changePhoto: 'Changer la photo de profil',
     connected: 'Connecté',
     local: 'Local',
@@ -655,6 +662,7 @@ nav: {
     notFound: 'Cette page n\'existe pas',
   },
   auth: {
+    goToApp: "Entrer dans l'application",
     identify: 'Qui êtes-vous ?',
     identifySubtitle: 'Entrez votre e-mail et votre nom pour continuer',
     name: 'Votre nom',

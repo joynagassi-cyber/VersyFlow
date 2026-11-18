@@ -237,7 +237,7 @@ export function HamburgerMenu() {
               aria-label={t('nav.settings', 'Réglages')}
               title={t('nav.settings', 'Réglages')}
             >
-              <DuoIcon icon={Settings02Icon} size={22} />
+              <DuoIcon icon={Settings02Icon} size={24} />
             </button>
             <button
               type="button"
@@ -247,7 +247,7 @@ export function HamburgerMenu() {
               aria-label={t('nav.closeMenu', 'Fermer le menu')}
               title={t('nav.closeMenu', 'Fermer le menu')}
             >
-              <DuoIcon icon={X} size={22} />
+              <DuoIcon icon={X} size={24} />
             </button>
           </div>
         </div>
@@ -274,15 +274,14 @@ export function HamburgerMenu() {
                     open && 'bg-surface-tint',
                   )}
                 >
-                  <DuoIcon icon={section.icon} size={22} strokeWidth={2} className="text-primary" />
+                  <DuoIcon icon={section.icon} size={24} className="text-primary" />
                   <span className="truncate">{t(section.labelKey, section.label)}</span>
                   <span className="ms-auto rounded-full bg-surface px-2 py-0.5 text-2xs font-bold text-text-muted">
                     {section.items.length}
                   </span>
                   <DuoIcon
                     icon={ChevronDownIcon}
-                    size={18}
-                    strokeWidth={2}
+                    size={20}
                     className={cn(
                       'text-text-muted transition-transform duration-200 motion-reduce:transition-none',
                       open && 'rotate-180',
@@ -304,7 +303,7 @@ export function HamburgerMenu() {
                         onClick={() => go(entry.path)}
                         className={rowClass}
                       >
-                        <DuoIcon icon={entry.icon} size={20} strokeWidth={1.9} className="shrink-0" />
+                        <DuoIcon icon={entry.icon} size={20} className="shrink-0" />
                         <span className="truncate">{t(entry.labelKey, entry.label)}</span>
                       </button>
                     ))}
@@ -327,7 +326,7 @@ export function HamburgerMenu() {
               }}
               className={cn(rowClass, 'text-error')}
             >
-              <DuoIcon icon={LogOutIcon} size={20} strokeWidth={1.9} className="shrink-0" />
+              <DuoIcon icon={LogOutIcon} size={20} className="shrink-0" />
               <span>{t('nav.signOut', 'Se déconnecter')}</span>
             </button>
           </div>

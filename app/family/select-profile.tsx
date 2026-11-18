@@ -129,11 +129,11 @@ export default function FamilySelectProfileScreen() {
                       </span>
                       {active ? (
                         <span className="flex shrink-0 items-center gap-1 text-xs font-bold text-primary">
-                          <DuoIcon icon={CheckCircle} size={18} />
+                          <DuoIcon icon={CheckCircle} size={20} />
                           {t('familyPlus.activeProfile', 'Actif')}
                         </span>
                       ) : (
-                        <DuoIcon icon={ArrowRight} size={18} className="shrink-0 text-text-muted" />
+                        <DuoIcon icon={ArrowRight} size={20} className="shrink-0 text-text-muted" />
                       )}
                     </button>
                   </li>
@@ -170,7 +170,7 @@ export default function FamilySelectProfileScreen() {
                         </span>
                       </span>
                       <span className="flex shrink-0 items-center gap-1 text-2xs font-semibold uppercase tracking-wide text-text-muted">
-                        <DuoIcon icon={User} size={14} />
+                        <DuoIcon icon={User} size={16} />
                         {t('familyPlus.readOnly', 'Lecture')}
                       </span>
                     </button>

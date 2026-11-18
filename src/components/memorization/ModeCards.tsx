@@ -158,7 +158,7 @@ export function ModeCards({
               className="mem-pill-ghost"
               style={{ marginTop: 8 }}
             >
-              <DuoIcon icon={Check} size={14} />
+              <DuoIcon icon={Check} size={16} />
               {t('workspace.flip', 'Retourner la carte')}
             </button>
           </div>
@@ -209,7 +209,7 @@ export function ModeCards({
           <div className="flex items-center gap-3">
             <span className="mem-success-celebration">
               <span className="ring" />
-              <span className="ic"><DuoIcon icon={Check} size={22} /></span>
+              <span className="ic"><DuoIcon icon={Check} size={24} /></span>
             </span>
             <div className="min-w-0 flex-1">
               <p className="text-sm font-extrabold text-success">

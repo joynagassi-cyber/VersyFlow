@@ -72,7 +72,7 @@ export default function FamilyChallengesScreen() {
           aria-label={t('familyPlus.createChallenge', 'Créer un défi')}
           className="rounded-full bg-surface-tint p-2"
         >
-          <DuoIcon icon={PlusSign} size={18} className="text-primary" />
+          <DuoIcon icon={PlusSign} size={20} className="text-primary" />
         </button>
       }
     >

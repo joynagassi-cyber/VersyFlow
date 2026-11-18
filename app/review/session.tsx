@@ -29,6 +29,7 @@ import { Rating } from '@/services/review-rating-service';
 import type { MemorizationRecord } from '@/domains/memorization/entities';
 import { eventBus, DomainEventTypes } from '@/services/events-service';
 import { fireAndForget } from '@/lib/fire-and-forget';
+import { ScreenSkeleton } from '@/components/ui/ScreenSkeleton';
 
 interface ReviewItem {
   record: MemorizationRecord;
@@ -230,7 +231,7 @@ export default function ReviewSessionScreen() {
     return (
       <FullScreenPage title={t('review.startReview', 'Révision')} backPath="/review/queue">
         <div className="flex flex-col items-center py-24">
-          <div className="screen-column animate-pulse space-y-3 px-6" aria-hidden><div className="h-4 w-2/5 rounded-full bg-surface-tint" /><div className="h-24 rounded-3xl bg-surface-tint" /><div className="h-24 rounded-3xl bg-surface-tint" /></div>
+          <ScreenSkeleton rows={2} />
           <p className="mt-4 text-sm text-text-muted">
             {t('common.loading', 'Chargement de la session...')}
           </p>
@@ -280,7 +281,7 @@ export default function ReviewSessionScreen() {
       {/* Card */}
       <div className="rounded-2xl bg-surface p-6 shadow-lg">
         <span className="mb-4 inline-flex items-center gap-1.5 rounded-full bg-surface-tint px-3 py-1.5 text-xs font-semibold text-primary">
-          <DuoIcon icon={Bookmark} size={14} />
+          <DuoIcon icon={Bookmark} size={16} />
           {current.reference}
         </span>
 
@@ -318,7 +319,7 @@ export default function ReviewSessionScreen() {
               {current.text}
             </p>
             <span className="flex items-center gap-2 border-t border-border pt-4 text-sm text-text-muted">
-              <DuoIcon icon={RefreshCw} size={14} />
+              <DuoIcon icon={RefreshCw} size={16} />
               {t('review.iRecalled', 'Comment te souvenais-tu de ce verset ?')}
             </span>
           </div>
@@ -345,7 +346,7 @@ export default function ReviewSessionScreen() {
       {showRating && feedback && selected && (
         <div className="mt-5 rounded-2xl bg-surface p-5 shadow-md">
           <div className="mb-3 flex items-center gap-2">
-            <DuoIcon icon={Check} size={22} className="text-success" />
+            <DuoIcon icon={Check} size={24} className="text-success" />
             <p className="text-lg font-bold text-text-primary">{feedback.label}</p>
           </div>
           <div className="flex items-center justify-between border-b border-divider pb-3">

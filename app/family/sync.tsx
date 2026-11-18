@@ -64,7 +64,7 @@ export default function FamilySyncScreen() {
                 healthy ? 'bg-success-light text-success' : 'bg-warning-light text-warning'
               }`}
             >
-              <DuoIcon icon={healthy ? CheckCircle : AlertCircle} size={22} />
+              <DuoIcon icon={healthy ? CheckCircle : AlertCircle} size={24} />
             </span>
             <div>
               <p className="text-base font-bold text-text-primary">
@@ -100,7 +100,7 @@ export default function FamilySyncScreen() {
           <ul className="flex flex-col divide-y divide-divider">
             <li className="flex items-center gap-3 py-2">
               <span className="flex h-9 w-9 items-center justify-center rounded-full bg-surface-tint text-primary">
-                <DuoIcon icon={Phone} size={18} />
+                <DuoIcon icon={Phone} size={20} />
               </span>
               <div className="min-w-0 flex-1">
                 <p className="truncate text-sm font-semibold text-text-primary">

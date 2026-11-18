@@ -55,7 +55,7 @@ export default function AuthGate({ onSkip }: Props) {
           onClick={() => navigate('/tabs/home', { replace: true })}
         >
           {t('auth.continue', 'Continuer')}
-          <DuoIcon icon={ArrowRight} size={18} />
+          <DuoIcon icon={ArrowRight} size={20} />
         </Button>
       </div>
     );
@@ -83,7 +83,7 @@ export default function AuthGate({ onSkip }: Props) {
 
       <div className="flex w-full max-w-xs flex-col gap-3">
         <Button variant="default" onClick={handleIdentify}>
-          <DuoIcon icon={LogIn} size={18} />
+          <DuoIcon icon={LogIn} size={20} />
           {t('auth.identify', 'Identifiez-vous')}
         </Button>
         {onSkip && (
@@ -92,7 +92,7 @@ export default function AuthGate({ onSkip }: Props) {
             className="flex items-center justify-center gap-1 py-2 text-sm font-medium text-text-muted underline"
           >
             {t('auth.skip', 'Continuer sans compte')}
-            <DuoIcon icon={ArrowRight} size={14} />
+            <DuoIcon icon={ArrowRight} size={16} />
           </button>
         )}
       </div>

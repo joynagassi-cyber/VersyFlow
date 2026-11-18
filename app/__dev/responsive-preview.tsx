@@ -176,7 +176,7 @@ function ScaledFrame({
   return (
     <section className="flex min-w-0 flex-1 flex-col gap-2 rounded-2xl border border-border bg-surface p-3">
       <header className="flex flex-wrap items-center gap-2">
-        <DuoIcon icon={spec.icon} size={18} className="text-primary" />
+        <DuoIcon icon={spec.icon} size={20} className="text-primary" />
         <h2 className="text-sm font-bold text-text-primary">{spec.label}</h2>
         <span className="text-2xs font-semibold text-text-muted">
           {spec.role === 'mobile' ? 'dans une coque de téléphone' : 'dans un écran de bureau'}
@@ -187,13 +187,13 @@ function ScaledFrame({
 
         {status.isolated === true && (
           <span className="flex items-center gap-1 rounded-full bg-surface-tint px-2 py-0.5 text-2xs font-semibold text-success">
-            <DuoIcon icon={Ok} size={12} />
+            <DuoIcon icon={Ok} size={16} />
             stockage isolé
           </span>
         )}
         {status.isolated === false && (
           <span className="flex items-center gap-1 rounded-full bg-surface-tint px-2 py-0.5 text-2xs font-semibold text-error">
-            <DuoIcon icon={Warn} size={12} />
+            <DuoIcon icon={Warn} size={16} />
             stockage non isolé — app non démarrée
           </span>
         )}
@@ -223,7 +223,7 @@ function ScaledFrame({
             aria-label={`Recharger le cadre ${spec.label}`}
             className="flex h-7 w-7 items-center justify-center rounded-lg text-text-secondary hover:bg-surface-tint hover:text-text-primary"
           >
-            <DuoIcon icon={Reload} size={15} />
+            <DuoIcon icon={Reload} size={16} />
           </button>
           <a
             href={src}
@@ -232,7 +232,7 @@ function ScaledFrame({
             aria-label={`Ouvrir le cadre ${spec.label} dans un onglet`}
             className="flex h-7 w-7 items-center justify-center rounded-lg text-text-secondary hover:bg-surface-tint hover:text-text-primary"
           >
-            <DuoIcon icon={External} size={15} />
+            <DuoIcon icon={External} size={16} />
           </a>
         </span>
       </header>
@@ -373,7 +373,7 @@ export default function ResponsivePreviewPage() {
           aria-label="Revenir à l’application"
           className="flex h-8 w-8 items-center justify-center rounded-lg text-text-secondary hover:bg-surface-tint hover:text-text-primary"
         >
-          <DuoIcon icon={Back} size={18} />
+          <DuoIcon icon={Back} size={20} />
         </button>
         <div className="me-2">
           <h1 className="text-sm font-bold text-text-primary">Laboratoire responsive</h1>
@@ -403,7 +403,7 @@ export default function ResponsivePreviewPage() {
             onClick={reloadAll}
             className="flex h-9 items-center gap-1.5 rounded-xl bg-surface-tint px-3 text-xs font-semibold text-text-secondary hover:text-text-primary"
           >
-            <DuoIcon icon={Reload} size={15} />
+            <DuoIcon icon={Reload} size={16} />
             Recharger les deux
           </button>
           <button
@@ -461,7 +461,7 @@ export default function ResponsivePreviewPage() {
 
       <footer className="flex flex-wrap items-center gap-3 border-t border-border bg-surface px-4 py-2 text-2xs text-text-muted">
         <span className="flex items-center gap-1">
-          <DuoIcon icon={Lock} size={12} />
+          <DuoIcon icon={Lock} size={16} />
           Chaque cadre a son propre stockage en mémoire : rien n’est écrit sur le compte réel.
         </span>
         <span>Navigation, thème et rechargement sont synchronisés — pas les saisies.</span>

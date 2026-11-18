@@ -5,7 +5,7 @@
 
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { DuoIcon } from '@/components/ui/DuoIcon';
+import { DuoIcon, ICON_SIZES } from '@/components/ui/DuoIcon';
 import {
   ArrowRight01Icon as ArrowRight,
   BrainIcon as Brain,
@@ -49,7 +49,7 @@ export default function FSRSIntroductionScreen() {
       {/* Hero */}
       <div className="flex flex-col items-center px-6 pb-6 pt-10">
         <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-surface-tint">
-          <DuoIcon icon={Brain} size={28} className="text-primary" />
+          <DuoIcon icon={Brain} size={ICON_SIZES.illustration} className="text-primary" />
         </div>
         <h1 className="text-center text-lg font-semibold text-text-primary">
           {t('onboarding.fsrsTitle', 'La science de la mémorisation')}
@@ -110,7 +110,7 @@ export default function FSRSIntroductionScreen() {
         {benefits.map(({ icon: Icon, title, desc }) => (
           <div key={title} className="flex items-start gap-4 rounded-2xl bg-surface p-4 shadow-sm">
             <div className="icon-chip flex h-12 w-12 shrink-0 items-center justify-center rounded-full">
-              <DuoIcon icon={Icon} size={22} />
+              <DuoIcon icon={Icon} size={24} />
             </div>
             <div className="flex-1">
               <p className="text-base font-semibold text-text-primary">{title}</p>

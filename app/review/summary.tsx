@@ -22,6 +22,7 @@ import { getFsrsEngine } from '@/services/fsrs-factory';
 import { ProgressService } from '@/services/progress-service';
 import { getMemorizationService } from '@/services/memorization-service-factory';
 import type { ProgressStats } from '@/services/stats-calculator';
+import { ScreenSkeleton } from '@/components/ui/ScreenSkeleton';
 
 export default function ReviewSummaryScreen() {
   const navigate = useNavigate();
@@ -57,7 +58,7 @@ export default function ReviewSummaryScreen() {
     return (
       <FullScreenPage title={t('review.summary', 'Résumé de session')} backPath="/review/queue">
         <div className="flex flex-col items-center py-24">
-          <div className="screen-column animate-pulse space-y-3 px-6" aria-hidden><div className="h-4 w-2/5 rounded-full bg-surface-tint" /><div className="h-24 rounded-3xl bg-surface-tint" /><div className="h-24 rounded-3xl bg-surface-tint" /></div>
+          <ScreenSkeleton rows={2} />
         </div>
       </FullScreenPage>
     );

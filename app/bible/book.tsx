@@ -43,7 +43,7 @@ export default function BookScreen() {
           className="mb-2 flex w-full items-center gap-3 rounded-xl bg-surface p-4 text-left shadow-sm"
         >
           <span className="flex h-10 w-10 items-center justify-center rounded-full icon-chip">
-            <DuoIcon icon={BookOpen} size={18} />
+            <DuoIcon icon={BookOpen} size={20} />
           </span>
           <span className="flex-1 text-sm font-semibold text-primary">
             {t('bible.explorer', 'Revenir à l\'explorateur')}
@@ -63,7 +63,7 @@ export default function BookScreen() {
                 {t('bible.chapter', 'Chapitre')} {chapter}
               </span>
             </span>
-            <DuoIcon icon={ChevronRight} size={18} className="text-text-muted" />
+            <DuoIcon icon={ChevronRight} size={20} className="text-text-muted" />
           </button>
         ))}
       </div>

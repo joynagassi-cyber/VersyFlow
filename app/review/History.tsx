@@ -18,6 +18,7 @@ import { useActiveProfile } from '@/hooks/useActiveProfile';
 import { getMemorizationService } from '@/services/memorization-service-factory';
 import { getReviewLogRepository } from '@/infrastructure/repository/powersync-repositories';
 import type { ReviewLogEntry as DomainReviewLogEntry } from '@/domains/memorization/entities';
+import { ScreenSkeleton } from '@/components/ui/ScreenSkeleton';
 
 interface ReviewLogEntry {
   id: string;
@@ -159,7 +160,7 @@ export default function ReviewHistoryScreen() {
     return (
       <FullScreenPage title={t('nav.history', 'Historique')} showBack>
         <div className="flex min-h-[50vh] flex-col items-center justify-center gap-3">
-          <div className="screen-column animate-pulse space-y-3 px-6" aria-hidden><div className="h-4 w-2/5 rounded-full bg-surface-tint" /><div className="h-24 rounded-3xl bg-surface-tint" /><div className="h-24 rounded-3xl bg-surface-tint" /></div>
+          <ScreenSkeleton rows={2} />
           <p className="text-sm text-text-muted">{t('common.loading', 'Chargement...')}</p>
         </div>
       </FullScreenPage>
@@ -192,7 +193,7 @@ export default function ReviewHistoryScreen() {
         <div className="rounded-3xl bg-surface p-5 shadow-sm">
           <div className="flex gap-3">
             <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-surface-tint">
-              <DuoIcon icon={BookOpen} size={22} className="text-primary" />
+              <DuoIcon icon={BookOpen} size={24} className="text-primary" />
             </span>
             <div className="min-w-0 flex-1">
               <p className="font-bold text-text-primary">{verse.reference}</p>
@@ -230,7 +231,7 @@ export default function ReviewHistoryScreen() {
                     <span
                       className={'flex h-8 w-8 items-center justify-center rounded-full ' + cfg.cls}
                     >
-                      <DuoIcon icon={cfg.Icon} size={14} />
+                      <DuoIcon icon={cfg.Icon} size={16} />
                     </span>
                     {i < logs.length - 1 && (
                       <span className="mt-1 w-0.5 flex-1 bg-[color:var(--color-divider)]" />
@@ -254,7 +255,7 @@ export default function ReviewHistoryScreen() {
                         </p>
                         <p className="font-medium text-text-primary tabular-nums">
                           {log.stabilityBefore.toFixed(1)}
-                          <DuoIcon icon={ArrowRight} size={10} className="mx-1 inline text-text-muted tabular-nums" />
+                          <DuoIcon icon={ArrowRight} size={16} className="mx-1 inline text-text-muted tabular-nums" />
                           {log.stabilityAfter.toFixed(1)}j
                         </p>
                       </div>
@@ -264,7 +265,7 @@ export default function ReviewHistoryScreen() {
                         </p>
                         <p className="font-medium text-text-primary tabular-nums">
                           {log.difficultyBefore.toFixed(1)}
-                          <DuoIcon icon={ArrowRight} size={10} className="mx-1 inline text-text-muted tabular-nums" />
+                          <DuoIcon icon={ArrowRight} size={16} className="mx-1 inline text-text-muted tabular-nums" />
                           {log.difficultyAfter.toFixed(1)}
                         </p>
                       </div>

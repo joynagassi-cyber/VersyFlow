@@ -78,7 +78,7 @@ export default function ComparisonResultScreen({ record, userAnswer }: Props) {
               {lastVerification.substitutedWords.map((sub, i) => (
                 <p key={i} className="text-sm">
                   <span className="text-text-primary">{sub.expected}</span>
-                  <DuoIcon icon={ArrowRight} size={12} className="mx-1 inline text-text-muted" />
+                  <DuoIcon icon={ArrowRight} size={16} className="mx-1 inline text-text-muted" />
                   <span className="text-error">{sub.got}</span>
                 </p>
               ))}
@@ -128,7 +128,7 @@ export default function ComparisonResultScreen({ record, userAnswer }: Props) {
 
         <div className="space-y-3 pt-2">
           <Button variant="default" className="w-full" onClick={() => goBackSafely(navigate)}>
-            <DuoIcon icon={Check} size={18} />
+            <DuoIcon icon={Check} size={20} />
             {t('comparison.finish', 'Terminer')}
           </Button>
           <Button

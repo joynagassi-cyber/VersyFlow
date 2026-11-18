@@ -85,7 +85,7 @@ function DevCard({
   return (
     <section className={cn('rounded-2xl bg-surface p-4 shadow-sm', className)}>
       <p className="mb-3 flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-text-muted">
-        <DuoIcon icon={icon} size={14} className="text-primary" />
+        <DuoIcon icon={icon} size={16} className="text-primary" />
         {title}
       </p>
       {children}
@@ -290,7 +290,7 @@ export default function DevPanelScreen() {
             onClick={handleSkipOnboarding}
             disabled={busy !== null}
           >
-            <DuoIcon icon={ArrowRight} size={15} />
+            <DuoIcon icon={ArrowRight} size={16} />
             Sauter l'onboarding et ouvrir l'app
           </Button>
         </DevCard>
@@ -343,16 +343,16 @@ export default function DevPanelScreen() {
           )}
           <div className="mt-3 flex flex-wrap gap-2">
             <Button size="sm" variant="secondary" onClick={handleFlush} disabled={busy !== null}>
-              <DuoIcon icon={Refresh} size={15} />
+              <DuoIcon icon={Refresh} size={16} />
               Vider la file
             </Button>
             <Button size="sm" variant="outline" onClick={handleSnapshot} disabled={busy !== null}>
-              <DuoIcon icon={Upload} size={15} />
+              <DuoIcon icon={Upload} size={16} />
               Envoyer l'instantané
             </Button>
             <Button size="sm" variant="ghost" asChild>
               <a href={localBackend.dashboardUrl()} target="_blank" rel="noreferrer">
-                <DuoIcon icon={ExternalLink} size={15} />
+                <DuoIcon icon={ExternalLink} size={16} />
                 Tableau de bord
               </a>
             </Button>
@@ -378,15 +378,15 @@ export default function DevPanelScreen() {
           </div>
           <div className="mt-3 flex flex-wrap gap-2">
             <Button size="sm" variant="secondary" onClick={handleSeed} disabled={busy !== null}>
-              <DuoIcon icon={Refresh} size={15} />
+              <DuoIcon icon={Refresh} size={16} />
               Re-seeder
             </Button>
             <Button size="sm" variant="outline" onClick={handleExport} disabled={busy !== null}>
-              <DuoIcon icon={Download} size={15} />
+              <DuoIcon icon={Download} size={16} />
               Exporter en JSON
             </Button>
             <Button size="sm" variant="destructive" onClick={handleReset} disabled={busy !== null}>
-              <DuoIcon icon={Trash} size={15} />
+              <DuoIcon icon={Trash} size={16} />
               Tout réinitialiser
             </Button>
           </div>

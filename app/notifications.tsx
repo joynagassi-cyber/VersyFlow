@@ -210,7 +210,7 @@ export default function NotificationsScreen() {
           onClick={markAllAsRead}
           className="flex items-center gap-1 text-sm font-semibold text-primary"
         >
-          <DuoIcon icon={Check} size={14} />
+          <DuoIcon icon={Check} size={16} />
           {t('notifications.markAllRead', 'Tout lire')}
         </button>
       }
@@ -261,7 +261,7 @@ export default function NotificationsScreen() {
                     className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full"
                     style={{ color, backgroundColor: color.replace(')', '') + '20' }}
                   >
-                    <DuoIcon icon={Icon} size={18} />
+                    <DuoIcon icon={Icon} size={20} />
                   </span>
                   <span className="min-w-0 flex-1">
                     <span className="flex items-center justify-between gap-2">

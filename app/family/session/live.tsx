@@ -88,7 +88,7 @@ export default function FamilySessionLiveScreen() {
                 online ? 'bg-success-light text-success' : 'bg-warning-light text-warning'
               }`}
             >
-              <DuoIcon icon={CloudUpload} size={12} />
+              <DuoIcon icon={CloudUpload} size={16} />
               {online
                 ? t('familyPlus.live', 'En direct')
                 : t('familyPlus.offline', 'Hors ligne')}

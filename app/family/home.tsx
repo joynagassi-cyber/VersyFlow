@@ -179,7 +179,7 @@ export default function FamilyHomeScreen() {
           className="rounded-full bg-surface-tint p-2"
           aria-label={t('family.invite', 'Inviter')}
         >
-          <DuoIcon icon={Plus} size={18} className="text-primary" />
+          <DuoIcon icon={Plus} size={20} className="text-primary" />
         </button>
       }
     >
@@ -378,7 +378,7 @@ export default function FamilyHomeScreen() {
                   onClick={() => navigate(shortcut.to)}
                   className="flex items-center gap-2 rounded-2xl border border-border bg-surface p-3 text-left shadow-sm"
                 >
-                  <DuoIcon icon={shortcut.icon} size={18} className="shrink-0 text-primary" />
+                  <DuoIcon icon={shortcut.icon} size={20} className="shrink-0 text-primary" />
                   <span className="truncate text-xs font-semibold text-text-primary">
                     {shortcut.label}
                   </span>
@@ -428,7 +428,7 @@ export default function FamilyHomeScreen() {
             />
             {createError && (
               <p className="flex items-center gap-1.5 rounded-xl bg-error/10 px-3 py-2 text-sm text-error">
-                <DuoIcon icon={AlertCircle} size={14} className="shrink-0" />
+                <DuoIcon icon={AlertCircle} size={16} className="shrink-0" />
                 {createError}
               </p>
             )}
@@ -480,7 +480,7 @@ export default function FamilyHomeScreen() {
                   </span>
                   {activeFamilyId === family.id && (
                     <span className="flex items-center gap-1 rounded-full bg-surface-tint px-2.5 py-1 text-xs font-semibold text-primary">
-                      <DuoIcon icon={CheckCircle} size={12} />
+                      <DuoIcon icon={CheckCircle} size={16} />
                       {t('family.familyActive', 'Actif')}
                     </span>
                   )}

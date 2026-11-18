@@ -68,7 +68,7 @@ export function TranslationMenu({
         className="flex items-center gap-1 rounded-full bg-surface-tint px-2.5 py-1 text-xs font-bold text-primary transition active:scale-95"
       >
         {display}
-        <DuoIcon icon={ChevronDown} size={11} />
+        <DuoIcon icon={ChevronDown} size={16} />
       </button>
 
       {open && (
@@ -94,9 +94,9 @@ export function TranslationMenu({
                   {bibleTranslationDisplayName(entry.id)}
                 </span>
                 {isBusy ? (
-                  <DuoIcon icon={Loader2} size={13} className="animate-spin text-text-muted" />
+                  <DuoIcon icon={Loader2} size={16} className="animate-spin text-text-muted" />
                 ) : isCurrent ? (
-                  <DuoIcon icon={Check} size={13} />
+                  <DuoIcon icon={Check} size={16} />
                 ) : null}
               </button>
             );

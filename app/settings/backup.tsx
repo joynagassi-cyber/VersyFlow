@@ -139,7 +139,7 @@ export default function BackupScreen() {
             />
           </div>
           <Button variant="default" className="w-full" onClick={() => fireAndForget(handleExport(), 'settings:export')} disabled={busy}>
-            {busy ? <DuoIcon icon={Loader2} size={18} className="animate-spin" /> : <DuoIcon icon={Download} size={18} />}
+            {busy ? <DuoIcon icon={Loader2} size={20} className="animate-spin" /> : <DuoIcon icon={Download} size={20} />}
             {t('settings.backup.export', 'Exporter mes donnees')}
           </Button>
           <Button
@@ -147,7 +147,7 @@ export default function BackupScreen() {
             className="w-full"
             onClick={() => fileRef.current?.click()}
           >
-            <DuoIcon icon={Upload} size={18} />
+            <DuoIcon icon={Upload} size={20} />
             {t('settings.backup.import', 'Importer des donnees')}
           </Button>
           <input
@@ -175,7 +175,7 @@ export default function BackupScreen() {
           </p>
           <div className="flex items-center justify-between">
             <span className="flex items-center gap-2 text-base text-text-primary">
-              <DuoIcon icon={Cloud} size={18} className="text-primary" />
+              <DuoIcon icon={Cloud} size={20} className="text-primary" />
               {t('settings.backup.sync', 'Sync automatique')}
             </span>
             <Toggle
