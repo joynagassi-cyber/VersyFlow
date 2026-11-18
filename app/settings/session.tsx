@@ -39,7 +39,7 @@ export default function SettingsSessionScreen() {
         >
           <DuoIcon icon={ArrowLeft} size={20} className="text-text-secondary" />
         </button>
-        <h1 className="text-2xl font-bold text-text-primary">
+        <h1 className="page-title">
           {t('settings.sessionConfig', 'Configuration de session')}
         </h1>
       </header>
@@ -47,7 +47,7 @@ export default function SettingsSessionScreen() {
       <div className="flex flex-1 flex-col gap-6">
         <div>
           <div className="mb-3 flex items-center gap-2">
-            <DuoIcon icon={Target} size={20} className="text-primary" />
+            <DuoIcon icon={Target} size={18} className="text-primary" />
             <span className="text-base font-semibold text-text-primary">
               {t('onboarding.sessionGoal')}
             </span>
@@ -67,7 +67,7 @@ export default function SettingsSessionScreen() {
                   )}
                 >
                   {g}
-                  {selected && <DuoIcon icon={Check} className="ms-1" size={16} />}
+                  {selected && <DuoIcon icon={Check} className="ml-1" size={16} />}
                 </button>
               );
             })}
@@ -87,7 +87,7 @@ export default function SettingsSessionScreen() {
               focusMode ? 'bg-primary text-on-primary' : 'bg-surface-tint text-primary',
             )}
           >
-            <DuoIcon icon={Focus} size={24} />
+            <DuoIcon icon={Focus} size={22} />
           </div>
           <div className="flex-1">
             <p className="text-base font-semibold text-text-primary">
@@ -103,7 +103,7 @@ export default function SettingsSessionScreen() {
               focusMode ? 'border-primary bg-primary' : 'border-text-muted',
             )}
           >
-            {focusMode && <DuoIcon icon={Check} size={16} className="text-[color:var(--on)]" />}
+            {focusMode && <DuoIcon icon={Check} size={14} className="text-on-primary" />}
           </div>
         </button>
       </div>

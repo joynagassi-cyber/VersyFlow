@@ -52,7 +52,7 @@ function Stepper({
 }) {
   return (
     <div className="rounded-xl border border-border p-3">
-      <p className="text-2xs font-semibold uppercase tracking-wide text-text-muted">{label}</p>
+      <p className="text-[11px] font-semibold uppercase tracking-wide text-text-muted">{label}</p>
       <div className="mt-2 flex items-center justify-between gap-2">
         <button
           type="button"
@@ -140,7 +140,7 @@ export function ReadingPanel() {
               : 'flex h-6 w-6 items-center justify-center rounded-full border border-border text-text-muted'
           }
         >
-          {verseNumbers && <DuoIcon icon={Check} size={16} />}
+          {verseNumbers && <DuoIcon icon={Check} size={14} />}
         </span>
       </button>
 

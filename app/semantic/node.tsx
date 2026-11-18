@@ -16,6 +16,7 @@ import {
   Link02Icon as Link,
 } from '@/components/ui/solar-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
+import { LoadingBlock } from '@/components/ui/Skeleton';
 import { DuoIcon } from '@/components/ui/DuoIcon';
 import { Button } from '@/components/ui/button';
 import { HintNote, SectionCard, StatTile } from '@/components/family/FamilyKit';
@@ -47,7 +48,7 @@ export default function SemanticNodeScreen() {
   if (!data) {
     return (
       <FullScreenPage title={t('tree.nodeTitle', 'Nœud')} backPath="/semantic/tree">
-        <p className="text-sm text-text-muted">{t('common.loading', 'Chargement...')}</p>
+        <LoadingBlock label={t('common.loading', 'Chargement…')} className="py-10" />
       </FullScreenPage>
     );
   }
@@ -77,7 +78,7 @@ export default function SemanticNodeScreen() {
             <ul className="flex flex-col gap-2">
               {parents.map((relation) => (
                 <li key={`${relation.concept.id}-${relation.depth}`} className="flex items-center gap-2">
-                  <DuoIcon icon={Link} size={16} className="text-primary" />
+                  <DuoIcon icon={Link} size={14} className="text-primary" />
                   <span className="text-sm text-text-primary">
                     {conceptLabel(relation.concept, lang)}
                   </span>
@@ -106,7 +107,7 @@ export default function SemanticNodeScreen() {
                     }
                     className="flex w-full items-center gap-2 rounded-lg px-2 py-2 text-left"
                   >
-                    <DuoIcon icon={ArrowRight} size={16} className="text-text-muted" />
+                    <DuoIcon icon={ArrowRight} size={14} className="text-text-muted" />
                     <span className="min-w-0 flex-1 truncate text-sm text-text-primary">
                       {conceptLabel(child.concept, lang)}
                     </span>

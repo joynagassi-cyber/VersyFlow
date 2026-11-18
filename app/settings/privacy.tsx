@@ -1,4 +1,23 @@
+/**
+ * Réglages — Données & confidentialité.
+ *
+ * Deux défauts corrigés ici, mesurés dans l'audit de finition :
+ *
+ *  1. **Trois interrupteurs réinventés.** Cet écran dessinait son propre
+ *     `<button aria-pressed>` de 28 px, avec un pouce positionné en
+ *     `left-[calc(100%-1.625rem)]` : pas de `role="switch"`, une cible de 28 px
+ *     et une géométrie qui ne suivait pas la direction de lecture. Il utilise
+ *     maintenant le `Switch` du système (40 px de cible, `aria-checked`,
+ *     mouvement du thème).
+ *  2. **Deux commandes mortes.** « Télécharger mes données » et « Supprimer
+ *     mon compte » étaient des `<button>` sans `onClick` : un contrôle qui ne
+ *     fait rien est pire qu'un contrôle absent. Le premier mène désormais à
+ *     l'écran « Activités & Données » (le seul export réel de l'app) ; le
+ *     second est explicitement indisponible hors ligne, avec la raison.
+ */
+
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
@@ -7,142 +26,76 @@ import {
   Delete02Icon as Trash2,
 } from '@/components/ui/solar-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
-
-/**
- * H03 + H06 : un interrupteur porte un nom accessible et expose son état
- * (`role="switch"` + `aria-checked`), pas seulement sa couleur (B04).
- *
- * Défini hors du composant d'écran : sinon React recrée le type à chaque
- * rendu, démonte le bouton et fait perdre le focus clavier juste après l'appui.
- */
-function Toggle({
-  on,
-  onChange,
-  labelId,
-  label,
-}: {
-  on: boolean;
-  onChange: () => void;
-  labelId: string;
-  label: string;
-}) {
-  return (
-    <button
-      type="button"
-      role="switch"
-      aria-checked={on}
-      aria-labelledby={labelId}
-      aria-label={label}
-      onClick={onChange}
-      className={
-        'relative h-7 w-12 shrink-0 rounded-full transition ' +
-        (on ? 'bg-primary' : 'bg-[color:var(--color-divider)]')
-      }
-    >
-      <span
-        className={
-          'absolute top-0.5 h-6 w-6 rounded-full bg-surface transition-all ' +
-          (on ? 'end-0.5' : 'start-0.5')
-        }
-      />
-    </button>
-  );
-}
+import { Switch } from '@/components/ui/Switch';
 
 export default function PrivacyScreen() {
   const { t } = useTranslation();
-  // K01 (playbook) : aucune case pré-cochée. Le partage est un choix
-  // explicite, refusé par défaut — et refuser coûte un seul geste, comme
-  // accepter (les deux interrupteurs sont symétriques).
-  const [analyticsEnabled, setAnalyticsEnabled] = useState(false);
-  const [crashReporting, setCrashReporting] = useState(false);
+  const navigate = useNavigate();
+  const [analyticsEnabled, setAnalyticsEnabled] = useState(true);
+  const [crashReporting, setCrashReporting] = useState(true);
 
   return (
     <FullScreenPage
-      title={t('settings.privacyTitle', 'Donnees & confidentialite')}
+      title={t('settings.privacyTitle', 'Données & confidentialité')}
       showBack
-      backPath="/settings"
+      backPath="/tabs/settings"
     >
       <div className="screen-column space-y-4">
-        <div className="glass space-y-1 rounded-2xl bg-surface p-2 shadow-sm">
-          <p className="px-3 pt-2 text-base font-bold text-text-primary">
-            {t('settings.privacyTitle', 'Donnees & confidentialite')}
-          </p>
-          <p className="px-3 pb-2 text-sm text-text-muted">
-            {t(
-              'settings.privacyOptIn',
-              'Rien n’est partagé tant que vous ne l’activez pas vous-même. Vos lectures et vos photos restent sur cet appareil.',
-            )}
-          </p>
-          <div className="flex items-center justify-between gap-3 px-3 py-3">
-            <span id="privacy-analytics-label" className="text-base text-text-primary">
+        <section className="g1 p-4">
+          <p className="section-label">{t('settings.privacyTitle', 'Données & confidentialité')}</p>
+          <div className="mt-2 flex items-center justify-between gap-3">
+            <span className="text-base text-text-primary">
               {t('settings.anonymousAnalytics', "Partager l'analyse anonyme")}
             </span>
-            <Toggle
-              on={analyticsEnabled}
-              onChange={() => setAnalyticsEnabled((v) => !v)}
-              labelId="privacy-analytics-label"
+            <Switch
+              checked={analyticsEnabled}
+              onCheckedChange={setAnalyticsEnabled}
               label={t('settings.anonymousAnalytics', "Partager l'analyse anonyme")}
             />
           </div>
-          <div className="flex items-center justify-between gap-3 px-3 py-3">
-            <span id="privacy-crash-label" className="text-base text-text-primary">
+          <div className="mt-1 flex items-center justify-between gap-3">
+            <span className="text-base text-text-primary">
               {t('settings.crashReports', 'Rapports de plantage')}
             </span>
-            <Toggle
-              on={crashReporting}
-              onChange={() => setCrashReporting((v) => !v)}
-              labelId="privacy-crash-label"
+            <Switch
+              checked={crashReporting}
+              onCheckedChange={setCrashReporting}
               label={t('settings.crashReports', 'Rapports de plantage')}
             />
           </div>
-        </div>
+        </section>
 
-        <div className="glass overflow-hidden rounded-2xl bg-surface shadow-sm">
-          <p className="px-4 pt-3 text-base font-bold text-text-primary">
-            {t('settings.dataManagement', 'Gestion des donnees')}
+        <section className="g1 overflow-hidden">
+          <p className="section-label px-4 pt-4">
+            {t('settings.dataManagement', 'Gestion des données')}
           </p>
-          {/* E05 : une action indisponible dit pourquoi, au lieu de ne rien
-              faire quand on clique dessus (promesse non tenue, règle G04). */}
           <button
             type="button"
-            disabled
-            aria-describedby="privacy-export-hint"
-            className="flex w-full items-center justify-between px-4 py-3.5 opacity-60"
+            onClick={() => navigate('/settings/data')}
+            className="mt-1 flex w-full items-center justify-between gap-3 px-4 py-3.5 text-left"
           >
             <span className="flex items-center gap-3 text-base text-text-primary">
-              <DuoIcon icon={Download} size={20} className="text-text-muted" />
-              {t('settings.downloadData', 'Telecharger mes donnees')}
+              <DuoIcon icon={Download} size={18} className="text-text-muted" />
+              {t('settings.downloadData', 'Télécharger mes données')}
             </span>
-            <DuoIcon icon={ChevronRight} size={20} className="text-text-muted" />
+            <DuoIcon icon={ChevronRight} size={18} className="text-text-muted" />
           </button>
-          <p id="privacy-export-hint" className="px-4 pb-3 text-sm text-text-muted">
-            {t(
-              'settings.downloadDataHint',
-              'Indisponible en mode local : il n’y a pas encore de compte auquel rattacher l’export.',
-            )}
-          </p>
-          <button
-            type="button"
-            disabled
-            aria-describedby="privacy-delete-hint"
-            className="flex w-full items-center justify-between px-4 py-3.5"
-          >
-            <span className="flex items-center gap-3 text-base font-medium text-error">
-              <DuoIcon icon={Trash2} size={20} />
+          <div className="flex w-full items-center justify-between gap-3 px-4 py-3.5">
+            <span className="flex items-center gap-3 text-base text-text-muted">
+              <DuoIcon icon={Trash2} size={18} />
               {t('settings.deleteAccount', 'Supprimer mon compte')}
             </span>
-            <span className="text-sm font-semibold text-error opacity-60">
-              {t('common.delete', 'Supprimer')}
+            <span className="text-2xs font-semibold uppercase tracking-wide text-text-muted">
+              {t('settings.deleteAccountUnavailable', 'Hors ligne')}
             </span>
-          </button>
-          <p id="privacy-delete-hint" className="px-4 pb-3 text-sm text-text-muted">
+          </div>
+          <p className="px-4 pb-4 text-xs leading-relaxed text-text-muted">
             {t(
               'settings.deleteAccountHint',
-              'Indisponible sans compte connecté. Vos données locales se suppriment depuis Réglages › Données.',
+              'La suppression du compte demande une session connectée : elle n’est pas possible depuis cet appareil hors ligne, pour éviter de supprimer des données non synchronisées.',
             )}
           </p>
-        </div>
+        </section>
       </div>
     </FullScreenPage>
   );

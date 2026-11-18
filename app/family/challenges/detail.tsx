@@ -37,7 +37,7 @@ export default function FamilyChallengeDetailScreen() {
 
   if (!challenge) {
     return (
-      <FullScreenPage title={t('familyPlus.challengeDetailTitle', 'Défi')} backPath="/family/challenges">
+      <FullScreenPage title={t('familyPlus.challengeDetailTitle', 'Défi')} backPath="/family/challenges" column="wide">
         <EmptyState
           title={t('familyPlus.challengeNotFound', 'Défi introuvable')}
           description={t(
@@ -66,7 +66,7 @@ export default function FamilyChallengeDetailScreen() {
       subtitle={`${family?.name ?? ''} · ${challenge.passage}`}
       backPath="/family/challenges"
     >
-      <div className="flex flex-col gap-4">
+      <div className="space-y-4">
         <SectionCard>
           <div className="flex items-center justify-between gap-2">
             <p className="text-2xs font-bold uppercase tracking-wide text-primary">
@@ -78,7 +78,7 @@ export default function FamilyChallengeDetailScreen() {
             </p>
             {challenge.status === 'done' && (
               <span className="flex items-center gap-1 rounded-full bg-success-light px-2 py-1 text-2xs font-bold text-success">
-                <DuoIcon icon={CheckCircle} size={16} />
+                <DuoIcon icon={CheckCircle} size={12} />
                 {t('familyPlus.challengeDone', 'Réussi')}
               </span>
             )}

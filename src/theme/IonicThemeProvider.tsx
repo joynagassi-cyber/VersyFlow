@@ -7,7 +7,6 @@
 
 import React, { createContext, useContext, useEffect, useState, useMemo } from 'react';
 import { Colors, ColorsDark, getThemeColors, Typography, Spacing, Radius, Shadows, Nav } from './tokens';
-import { useAppearanceStore } from '@/store/appearance-store';
 
 export type ThemeMode = 'light' | 'dark';
 
@@ -42,19 +41,10 @@ export function useTheme() {
   return useContext(ThemeContext);
 }
 
-/**
- * Le mode ne se décide PLUS ici à partir de `prefers-color-scheme` : c'était un
- * second écrivain de `data-theme`, qui écrasait le choix de l'utilisateur
- * (`appearance-store.themeMode`) et faisait qu'un thème sombre choisi restait
- * invisible quand l'OS était en clair. Source unique : `useTheme` (./useTheme),
- * qui lit le store ; ce fournisseur ne fait que relayer.
- */
 function getDarkMode(): ThemeMode {
-  const stored = useAppearanceStore.getState().themeMode;
-  if (stored === 'dark' || stored === 'light') return stored;
-  if (typeof window !== 'undefined' && window.matchMedia?.('(prefers-color-scheme: dark)').matches) {
-    return 'dark';
-  }
+  const htmlTheme = document.documentElement.getAttribute('data-theme');
+  if (htmlTheme === 'dark' || htmlTheme === 'light') return htmlTheme;
+  if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) return 'dark';
   return 'light';
 }
 
@@ -77,11 +67,7 @@ export function IonicThemeProvider({ children }: { children: React.ReactNode }) 
     const root = document.documentElement;
     const colors = dark ? ColorsDark : Colors;
 
-    // `data-theme` est posé par `useTheme` (store → attribut). On ne le
-    // réécrit que s'il manque, pour ne pas contredire le choix utilisateur.
-    if (!root.getAttribute('data-theme')) {
-      root.setAttribute('data-theme', dark ? 'dark' : 'light');
-    }
+    root.setAttribute('data-theme', dark ? 'dark' : 'light');
 
     root.style.setProperty('--ion-color-primary', colors.primary);
     root.style.setProperty('--ion-background-color', colors.background);

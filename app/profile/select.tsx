@@ -43,10 +43,9 @@ export default function ProfileSelectionScreen() {
     <FullScreenPage title={t('profile.select', 'Profil')} showBack>
       <div className="screen-column space-y-4">
         <div className="text-center">
-          {/* A01 : h1 = « Profil » (FullScreenPage) ; ceci est la question d'écran. */}
-          <h2 className="text-2xl font-bold text-text-primary">
+          <h1 className="page-title">
             {t('profile.who', "Qui apprend aujourd'hui ?")}
-          </h2>
+          </h1>
           <p className="mt-1 text-sm text-text-muted">
             {t('profile.selectHint', 'Choisis ton profil pour continuer')}
           </p>
@@ -60,7 +59,7 @@ export default function ProfileSelectionScreen() {
                 key={profile.id}
                 onClick={() => handleSelect(profile.id)}
                 className={cn(
-                  'flex w-full items-center gap-3 rounded-2xl bg-surface p-4 text-left shadow-sm transition active:scale-[0.99]',
+                  'g2 flex w-full items-center gap-3 p-4 text-left transition active:scale-[0.99]',
                   active && 'ring-2 ring-primary',
                 )}
               >
@@ -84,15 +83,14 @@ export default function ProfileSelectionScreen() {
         </div>
 
         <Button variant="outline" className="w-full" onClick={() => setShowCreate((s) => !s)}>
-          <DuoIcon icon={Plus} size={20} />
+          <DuoIcon icon={Plus} size={18} />
           {t('profile.create', 'Creer un profil')}
         </Button>
 
         {showCreate && (
-          <div className="space-y-3 rounded-2xl bg-surface p-4 shadow-sm">
+          <div className="g2 space-y-3 p-4">
             <Input
               value={newName}
-              aria-label={t('profile.namePlaceholder', 'Ex: Sarah, David...')}
               onChange={(e) => setNewName(e.target.value)}
               placeholder={t('profile.namePlaceholder', 'Ex: Sarah, David...')}
               maxLength={30}
@@ -111,7 +109,7 @@ export default function ProfileSelectionScreen() {
                 {t('common.cancel', 'Annuler')}
               </Button>
               <Button variant="default" className="flex-1" onClick={() => fireAndForget(handleCreate(), 'profile:select-create')}>
-                {t('profile.createThisProfile', 'Créer ce profil')}
+                {t('common.continue', 'Creer')}
               </Button>
             </div>
           </div>

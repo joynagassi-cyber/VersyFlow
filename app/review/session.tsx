@@ -16,8 +16,10 @@ import {
   RotateCcwIcon as RotateCcw,
   StarIcon as Star,
   CheckIcon as Check,
+  CheckmarkCircle01Icon as CheckCircle,
   Cancel01Icon as X,
 } from '@/components/ui/solar-icons';
+import { EmptyState } from '@/components/ui/EmptyState';
 import FullScreenPage from '@/components/layout/FullScreenPage';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -29,7 +31,7 @@ import { Rating } from '@/services/review-rating-service';
 import type { MemorizationRecord } from '@/domains/memorization/entities';
 import { eventBus, DomainEventTypes } from '@/services/events-service';
 import { fireAndForget } from '@/lib/fire-and-forget';
-import { ScreenSkeleton } from '@/components/ui/ScreenSkeleton';
+import { LoadingBlock } from '@/components/ui/Skeleton';
 
 interface ReviewItem {
   record: MemorizationRecord;
@@ -219,10 +221,10 @@ export default function ReviewSessionScreen() {
 
   const ratingOptions = useMemo(
     () => [
-      { rating: Rating.AGAIN, icon: <DuoIcon icon={RotateCcw} size={20} />, cls: 'bg-error text-[color:var(--on)]' },
-      { rating: Rating.HARD, icon: <DuoIcon icon={X} size={20} />, cls: 'bg-warning text-[color:var(--on)]' },
-      { rating: Rating.GOOD, icon: <DuoIcon icon={Check} size={20} />, cls: 'bg-success text-[color:var(--on)]' },
-      { rating: Rating.EASY, icon: <DuoIcon icon={Star} size={20} />, cls: 'bg-info text-[color:var(--on)]' },
+      { rating: Rating.AGAIN, icon: <DuoIcon icon={RotateCcw} size={20} />, cls: 'bg-error text-on-status' },
+      { rating: Rating.HARD, icon: <DuoIcon icon={X} size={20} />, cls: 'bg-warning text-on-status' },
+      { rating: Rating.GOOD, icon: <DuoIcon icon={Check} size={20} />, cls: 'bg-success text-on-status' },
+      { rating: Rating.EASY, icon: <DuoIcon icon={Star} size={20} />, cls: 'bg-info text-on-status' },
     ],
     [],
   );
@@ -230,12 +232,7 @@ export default function ReviewSessionScreen() {
   if (loading) {
     return (
       <FullScreenPage title={t('review.startReview', 'Révision')} backPath="/review/queue">
-        <div className="flex flex-col items-center py-24">
-          <ScreenSkeleton rows={2} />
-          <p className="mt-4 text-sm text-text-muted">
-            {t('common.loading', 'Chargement de la session...')}
-          </p>
-        </div>
+        <LoadingBlock label={t('common.loading', 'Chargement de la session...')} />
       </FullScreenPage>
     );
   }
@@ -243,14 +240,13 @@ export default function ReviewSessionScreen() {
   if (!current) {
     return (
       <FullScreenPage title={t('review.todayReviews', 'Révisions du jour')} backPath="/review/queue">
-        <div className="flex flex-col items-center py-20 text-center">
-          <p className="text-lg font-semibold text-text-primary">
-            {t('home.noReviews', 'Tout est à jour ! ✓')}
-          </p>
-          <Button className="mt-6" onClick={() => navigate('/review/queue')}>
-            {t('review.startReview', 'Retour à la file')}
-          </Button>
-        </div>
+        <EmptyState
+          className="border-0 py-16"
+          icon={<DuoIcon icon={CheckCircle} size={32} className="text-success" />}
+          title={t('home.noReviews', 'Tout est à jour')}
+          actionLabel={t('review.startReview', 'Retour à la file')}
+          onAction={() => navigate('/review/queue')}
+        />
       </FullScreenPage>
     );
   }
@@ -279,9 +275,9 @@ export default function ReviewSessionScreen() {
       </div>
 
       {/* Card */}
-      <div className="rounded-2xl bg-surface p-6 shadow-lg">
+      <div className="g2 p-6">
         <span className="mb-4 inline-flex items-center gap-1.5 rounded-full bg-surface-tint px-3 py-1.5 text-xs font-semibold text-primary">
-          <DuoIcon icon={Bookmark} size={16} />
+          <DuoIcon icon={Bookmark} size={14} />
           {current.reference}
         </span>
 
@@ -319,7 +315,7 @@ export default function ReviewSessionScreen() {
               {current.text}
             </p>
             <span className="flex items-center gap-2 border-t border-border pt-4 text-sm text-text-muted">
-              <DuoIcon icon={RefreshCw} size={16} />
+              <DuoIcon icon={RefreshCw} size={14} />
               {t('review.iRecalled', 'Comment te souvenais-tu de ce verset ?')}
             </span>
           </div>
@@ -344,9 +340,9 @@ export default function ReviewSessionScreen() {
 
       {/* Feedback */}
       {showRating && feedback && selected && (
-        <div className="mt-5 rounded-2xl bg-surface p-5 shadow-md">
+        <div className="g2 mt-5 p-5">
           <div className="mb-3 flex items-center gap-2">
-            <DuoIcon icon={Check} size={24} className="text-success" />
+            <DuoIcon icon={Check} size={22} className="text-success" />
             <p className="text-lg font-bold text-text-primary">{feedback.label}</p>
           </div>
           <div className="flex items-center justify-between border-b border-divider pb-3">

@@ -5,7 +5,7 @@ import { BackgroundPanel } from '@/components/ui/BackgroundPanel';
  *
  * Principes préservés :
  *  - une seule barre d'onglets basse, compacte, atteignable au pouce ;
- *  - bouton de menu (tiroir) ;
+ *  - bouton de menu (tiroir) et FAB « nouvelle session » à portée de pouce ;
  *  - `pb-[env(safe-area-inset-bottom)]` sur la barre basse : pas de commande
  *    sous l'indicateur d'accueil iOS ;
  *  - le clavier : Ionic (`IonPage`) gère le redimensionnement, la zone de
@@ -14,16 +14,14 @@ import { BackgroundPanel } from '@/components/ui/BackgroundPanel';
  *  - aucune barre latérale de bureau n'est montée ici.
  */
 
-import { IonPage } from '@ionic/react';
+import { IonFab, IonFabButton, IonPage } from '@ionic/react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { DuoIcon } from '@/components/ui/DuoIcon';
-import { Menu01Icon } from '@/components/ui/solar-icons';
+import { Menu01Icon, PlusSignIcon } from '@/components/ui/solar-icons';
 import { BottomTabs } from '@/components/navigation/BottomTabs';
 import { QuickDock } from '@/components/navigation/QuickDock';
 import { HamburgerMenu } from '@/components/navigation/HamburgerMenu';
-import { SkipLink } from '@/components/layout/SkipLink';
-import { useRouteFocus } from '@/hooks/useRouteFocus';
 import { Logo } from '@/components/brand/Logo';
 import { useUiStore } from '@/store/ui-store';
 import { DemoModeBadge } from '@/components/dev/DemoModeBadge';
@@ -32,24 +30,22 @@ export function MobileShell() {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const openMenu = useUiStore((s) => s.openMenu);
-  useRouteFocus();
 
   return (
     <>
-      <SkipLink />
       <HamburgerMenu />
       <IonPage>
         <div
           id="main-content"
           className="app-main app-canvas relative flex h-full flex-col overflow-hidden bg-background"
         >
-          <header className="mobile-header g1 flex items-center justify-between px-4 py-2">
+          <div className="mobile-header g1 flex items-center justify-between px-4 py-2">
             <button
               onClick={openMenu}
-              className="rounded-full p-1.5 active:bg-surface-tint"
+              className="touch-target rounded-full active:bg-surface-tint"
               aria-label={t('shell.openMenu', 'Ouvrir le menu')}
             >
-              <DuoIcon icon={Menu01Icon} size={24} color="var(--color-text-primary)" />
+              <DuoIcon icon={Menu01Icon} size={23} color="var(--color-text-primary)" />
             </button>
             <div className="flex items-center gap-2">
               <span className="brand-tile"><Logo size={24} /></span>
@@ -59,17 +55,20 @@ export function MobileShell() {
               <DemoModeBadge />
               <BackgroundPanel />
             </div>
-          </header>
+          </div>
 
-          <main
-            id="main-content"
-            tabIndex={-1}
-            aria-label={t('a11y.mainLandmark', 'Contenu principal')}
-            className="mobile-content min-h-0 flex-1 overflow-hidden"
-          >
+          <div className="mobile-content min-h-0 flex-1 overflow-hidden">
             <Outlet />
-          </main>
+          </div>
 
+          <IonFab horizontal="end" vertical="bottom" style={{ marginBottom: '116px' }}>
+            <IonFabButton
+              onClick={() => navigate('/memorization/session')}
+              aria-label={t('shell.newSession', 'Nouvelle session de mémorisation')}
+            >
+              <DuoIcon icon={PlusSignIcon} size={24} />
+            </IonFabButton>
+          </IonFab>
 
           <QuickDock />
           <BottomTabs />

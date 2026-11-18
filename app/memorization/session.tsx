@@ -27,8 +27,7 @@ import { getMemorizationRepository, getSyncUserIdProvider } from '@/infrastructu
 import type { MemorizationRecord } from '@/domains/memorization/entities';
 import { eventBus, DomainEventTypes } from '@/services/events-service';
 import { fireAndForget } from '@/lib/fire-and-forget';
-import { ScreenSkeleton } from '@/components/ui/ScreenSkeleton';
-import { VersePicker } from '@/components/memorization/VersePicker';
+import { SkeletonScreen } from '@/components/ui/Skeleton';
 
 /** Resolve the authenticated user id (or null when not signed in). */
 const resolveUserId = async (): Promise<string | null> =>
@@ -52,7 +51,6 @@ export default function MemorizationSession() {
   const { t } = useTranslation();
   const { activeProfile } = useActiveProfile();
 
-  const [mode, setMode] = useState<'pick' | 'session'>('session');
   const [engine, setEngine] = useState<MemorizationSessionEngine | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -100,22 +98,10 @@ export default function MemorizationSession() {
     }
 
     if (!bookId || !chapter || !verseStart) {
-      // Aucune coordonnée : ce n'est pas une erreur, c'est une invitation à
-      // choisir un passage (voir <VersePicker/>). Avant ce correctif, les cinq
-      // points d'entrée « Mémoriser » aboutissaient ici sur « verset non
-      // disponible » — la fonctionnalité était morte par son propre bouton.
-      setMode('pick');
+      setError(t('errors.verseNotFound'));
       setLoading(false);
       return;
     }
-
-    // Des coordonnées viennent d'arriver (choix d'un passage depuis
-    // <VersePicker/>, même route + nouvelle query string).
-    setMode('session');
-    setError(null);
-    setComplete(false);
-    setProgress(0);
-    setLoading(true);
 
     async function init() {
       try {
@@ -171,10 +157,7 @@ export default function MemorizationSession() {
     return () => {
       cancelled = true;
     };
-    // Les coordonnées font partie des dépendances : sans elles, choisir un
-    // passage depuis l'écran de sélection (même route, autre query string) ne
-    // relançait jamais l'initialisation — le sélecteur restait affiché.
-  }, [bookIdParam, chapterParam, verseStartParam, verseEndParam, refParam, translationId]);
+}, []);
 
   const refresh = useCallback(() => {
     if (!engine) return;
@@ -238,47 +221,27 @@ export default function MemorizationSession() {
   if (loading) {
     return (
       <FullScreenPage title={t('session.memorizing', 'Mémorisation')} backPath="/tabs/home" showBack={false}>
-        <div className="screen-column-narrow flex flex-col gap-4 py-6">
-          <ScreenSkeleton rows={2} flush />
+        <div className="flex flex-col items-center justify-center py-24">
+          <SkeletonScreen />
           {downloadPercent !== null ? (
-            <div className="flex flex-col items-start gap-2">
-              <p className="text-sm font-semibold text-text-primary">
+            <>
+              <p className="mt-3 text-sm font-semibold text-text-primary">
                 {t('session.downloadingTranslation', 'Téléchargement de la traduction...')}
               </p>
-              <div
-                className="h-1.5 w-48 overflow-hidden rounded-full bg-surface-tint"
-                role="progressbar"
-                aria-valuemin={0}
-                aria-valuemax={100}
-                aria-valuenow={downloadPercent}
-                aria-label={t('session.downloadingTranslation', 'Téléchargement de la traduction...')}
-              >
+              <div className="mt-3 h-1.5 w-48 overflow-hidden rounded-full bg-surface-tint">
                 <div
                   className="h-full rounded-full bg-primary transition-all"
                   style={{ width: `${downloadPercent}%` }}
                 />
               </div>
-              <p className="text-xs tabular-nums text-text-tertiary">{downloadPercent}%</p>
-            </div>
+              <p className="mt-2 text-xs text-text-tertiary">{downloadPercent}%</p>
+            </>
           ) : (
-            <p className="text-sm text-text-tertiary">
+            <p className="mt-3 text-sm text-text-tertiary">
               {t('session.startingPassage', 'Démarrage du passage...')}
             </p>
           )}
         </div>
-      </FullScreenPage>
-    );
-  }
-
-  if (mode === 'pick') {
-    return (
-      <FullScreenPage
-        title={t('memorize.pickTitle', 'Mémoriser un verset')}
-        subtitle={t('memorize.pickSubtitle', 'Choisissez le passage que vous voulez ancrer.')}
-        backPath="/tabs/home"
-        column="narrow"
-      >
-        <VersePicker translationId={translationId} />
       </FullScreenPage>
     );
   }
@@ -377,7 +340,7 @@ export default function MemorizationSession() {
       </div>
 
       {/* Verse text */}
-      <div className="rounded-2xl border border-border bg-surface p-5 shadow-sm">
+      <div className="g2 p-5">
         <p className="bible-text text-base leading-7 text-text-primary">{verseData?.text}</p>
         <p className="mt-3 text-xs text-text-tertiary">
           {t('session.tapToReveal', 'Appuyez pour révéler')}
@@ -415,7 +378,7 @@ export default function MemorizationSession() {
             refresh();
           }}
         >
-          <DuoIcon icon={ArrowLeft} size={16} />
+          <DuoIcon icon={ArrowLeft} size={15} />
           {t('session.goBack', 'Retour')}
         </Button>
         <Button
@@ -423,13 +386,13 @@ export default function MemorizationSession() {
           onClick={() => fireAndForget(proceedSession(), 'session:proceed')}
         >
           {t('session.proceed', 'Continuer')}
-          <DuoIcon icon={ArrowRight} size={16} />
+          <DuoIcon icon={ArrowRight} size={15} />
         </Button>
       </div>
 
       {complete && (
         <div className="mt-5 flex items-center justify-center gap-2 rounded-xl bg-success-light p-4 text-success">
-          <DuoIcon icon={CheckCircle} size={20} />
+          <DuoIcon icon={CheckCircle} size={18} />
           <span className="text-base font-semibold">
             {t('session.passageComplete', 'Passage terminé!')}
           </span>

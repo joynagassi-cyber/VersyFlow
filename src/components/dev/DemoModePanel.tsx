@@ -73,7 +73,7 @@ export function DemoModePanel({ compact = false }: { compact?: boolean }) {
       data-testid="demo-mode-panel"
     >
       <p className="mb-3 flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-text-muted">
-        <DuoIcon icon={Database} size={16} className="text-primary" />
+        <DuoIcon icon={Database} size={14} className="text-primary" />
         {t('demo.panelTitle', 'Mode démo')}
       </p>
 
@@ -141,7 +141,7 @@ export function DemoModePanel({ compact = false }: { compact?: boolean }) {
               className="mt-2 flex items-start gap-2 rounded-xl bg-surface-tint px-3 py-2 text-xs text-text-secondary"
               role="alert"
             >
-              <DuoIcon icon={Alert} size={16} className="mt-0.5 shrink-0 text-primary" />
+              <DuoIcon icon={Alert} size={14} className="mt-0.5 shrink-0 text-primary" />
               <span>
                 {t(
                   'demo.isolationUnavailable',
@@ -152,7 +152,7 @@ export function DemoModePanel({ compact = false }: { compact?: boolean }) {
           )}
 
           <p className="mt-2 flex items-start gap-2 rounded-xl bg-surface-tint px-3 py-2 text-xs text-text-secondary">
-            <DuoIcon icon={Alert} size={16} className="mt-0.5 shrink-0 text-primary" />
+            <DuoIcon icon={Alert} size={14} className="mt-0.5 shrink-0 text-primary" />
             <span>
               {t(
                 'demo.limits',

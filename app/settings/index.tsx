@@ -163,7 +163,7 @@ export default function SettingsScreen() {
         {/* Profile card — premium avatar (photo → vector illustration fallback) */}
         <button
           onClick={() => navigate('/profile')}
-          className="flex w-full items-center gap-4 rounded-3xl bg-surface p-4 text-left shadow-sm"
+          className="g2 flex w-full items-center gap-4 p-4 text-left"
         >
           <ProfileAvatar name={displayName} size={48} />
           <span className="min-w-0 flex-1">
@@ -174,19 +174,19 @@ export default function SettingsScreen() {
               {isAuthenticated ? t('settings.connected', 'Connecte') : t('settings.localMode', 'Mode local')}
             </span>
           </span>
-          <DuoIcon icon={ChevronRight} size={20} className="text-text-muted" />
+          <DuoIcon icon={ChevronRight} size={18} className="text-text-muted" />
         </button>
 
         {/* Active translation pill (abbreviation + full name, subtitle). */}
-        <div className="flex items-center gap-3 rounded-2xl bg-surface p-4 shadow-sm">
+        <div className="g2 flex items-center gap-3 p-4">
           <span className="flex h-10 w-10 items-center justify-center rounded-full bg-surface-tint text-primary">
-            <DuoIcon icon={BookText} size={20} />
+            <DuoIcon icon={BookText} size={18} />
           </span>
           <div className="min-w-0 flex-1">
             <p className="truncate text-sm font-bold text-text-primary">
               {translationInfo.abbreviation}
               {translationInfo.abbreviation !== translationInfo.name && (
-                <span className="ms-2 font-medium text-text-muted">· {translationInfo.name}</span>
+                <span className="ml-2 font-medium text-text-muted">· {translationInfo.name}</span>
               )}
             </p>
             <p className="text-xs text-text-muted">
@@ -201,7 +201,7 @@ export default function SettingsScreen() {
             {/* Compact version-type switch — writes bibleVersionType, which
                 filters the onboarding translation picker. */}
             <div className="mt-2 flex items-center gap-1.5">
-              <span className="text-2xs font-semibold uppercase tracking-wide text-text-muted">
+              <span className="text-3xs font-semibold uppercase tracking-wide text-text-muted">
                 {t('settings.versionTypeBadge', 'Type de version')}
               </span>
               <div className="flex gap-1">
@@ -223,7 +223,7 @@ export default function SettingsScreen() {
             </div>
           </div>
           <DuoIcon icon={ChevronRight}
-            size={20}
+            size={18}
             className="cursor-pointer text-text-muted"
             onClick={() => navigate('/settings/available-translations')}
           />
@@ -232,11 +232,11 @@ export default function SettingsScreen() {
         {/* Divided vertical sections */}
         {groups.map((group, gi) => (
           <div key={gi}>
-            <p className="mb-2 flex items-center gap-2 px-1 text-xs font-bold uppercase tracking-wide text-text-muted">
-              <DuoIcon icon={group.icon} size={16} className="text-primary" />
+            <p className="mb-2 flex items-center gap-2 px-1 section-label">
+              <DuoIcon icon={group.icon} size={13} className="text-primary" />
               {group.title}
             </p>
-            <div className="overflow-hidden rounded-2xl bg-surface shadow-sm">
+            <div className="g2 overflow-hidden">
               {group.items.map((item, i) => (
                 <button
                   key={i}
@@ -249,7 +249,7 @@ export default function SettingsScreen() {
                   }
                 >
                   <span className="flex items-center gap-3">
-                    <DuoIcon icon={item.icon} size={20} className="text-text-muted" />
+                    <DuoIcon icon={item.icon} size={18} className="text-text-muted" />
                     <span className="text-base text-text-primary">{item.label}</span>
                   </span>
                   <DuoIcon icon={ChevronRight} size={16} className="text-text-muted" />
@@ -263,9 +263,9 @@ export default function SettingsScreen() {
         {isAuthenticated && (
           <button
             onClick={() => setShowConfirm(true)}
-            className="flex w-full items-center justify-center gap-2 rounded-2xl bg-surface py-3.5 font-semibold text-error shadow-sm"
+            className="g2 flex w-full items-center justify-center gap-2 py-3.5 font-semibold text-error"
           >
-            <DuoIcon icon={LogOut} size={20} />
+            <DuoIcon icon={LogOut} size={18} />
             {t('settings.signOut', 'Se deconnecter')}
           </button>
         )}

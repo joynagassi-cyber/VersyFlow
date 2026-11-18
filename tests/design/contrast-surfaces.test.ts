@@ -139,24 +139,19 @@ describe('verre sur photo — contrastes composités', () => {
   const floor = Number(
     (globals.match(/--glass-alpha-min:\s*([\d.]+)/) ?? [])[1] ?? 0,
   );
-  // Sur photo, l'app force le noir/blanc pur (cf. html[data-bg='image']).
-  const texLight = hexToRgb('#000000');
-  const texLightMuted = hexToRgb('#455163');
-  const texDark = hexToRgb('#ffffff');
-  const texDarkMuted = hexToRgb('#f2f1f0');
+  const texLight = hexToRgb('#1b1220');
+  const texLightMuted = hexToRgb('#5b4a57');
+  const texDark = hexToRgb('#f3f3f3');
+  const texDarkMuted = hexToRgb('#c3c3c3');
 
   it('le plancher d’opacité du verre est déclaré et appliqué', () => {
     expect(floor).toBeGreaterThanOrEqual(0.8);
     // Les cartes g1/g2/g3 (dont la barre d'onglets et les cartes d'accueil)
     // sont les surfaces réellement utilisées : même plancher.
-    // Les cartes g1/g2/g3 sont les surfaces réellement utilisées (barre
-    // d'onglets, cartes d'accueil). Depuis le 30/10, leur teinte vient de
-    // `--gc` (la carte du preset) et l'alpha du plancher via `color-mix` :
-    // `rgba(var(--gc-rgb))` figeait un gris indépendant du thème.
     for (const cls of ['g1', 'g2', 'g3']) {
-      const rule = globals.match(new RegExp(`html\\[data-bg='image'\\] \\.${cls} \\{ ([^}]+)\\}`))?.[1] ?? '';
-      expect(rule).toContain('color-mix(in srgb, var(--gc)');
-      expect(rule).toContain('var(--glass-alpha-min)');
+      expect(globals).toContain(
+        `html[data-bg='image'] .${cls} { background: rgba(var(--gc-rgb), max(`,
+      );
     }
     expect(globals).toContain(
       'html[data-bg=\'image\'] :is(.card-glass, .surface-glass, .bible-card) {\n  background: rgba(var(--glass-rgb), max(var(--glass-alpha), var(--glass-alpha-min)));',

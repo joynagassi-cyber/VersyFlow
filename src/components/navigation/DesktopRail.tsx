@@ -19,24 +19,56 @@ import { useTranslation } from 'react-i18next';
 import type { Icon as IconSvgElement } from '@solar-icons/react/lib/types';
 import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
-  MENU_ICONS as SHARED_MENU_ICONS,
-  TAB_ICONS,
-  iconFor,
-} from '@/components/navigation/nav-icons';
-import {
-  SidebarLeft01Icon,
+  Home01Icon,
+  BookOpen01Icon,
+  ChartBarLineIcon,
+  Settings01Icon,
   PlusSignIcon,
+  SidebarLeft01Icon,
+  Cards01Icon,
+  Clock01Icon,
+  SparklesIcon,
+  Analytics01Icon,
   Layers01Icon,
+  Medal01Icon,
+  Search01Icon,
+  DashboardSquare01Icon,
+  Notification01Icon,
+  HistoryIcon,
+  GitCompareIcon,
+  UserGroupIcon,
   UserCircleIcon,
 } from '@/components/ui/solar-icons';
-import { ALL_MENU_ITEMS, ALL_TABS, useUiStore } from '@/store/ui-store';
+import { ALL_MENU_ITEMS, ALL_TABS, useUiStore, type TabId } from '@/store/ui-store';
 import { useIsDesktop } from '@/hooks/useIsDesktop';
-import { Logo } from '@/components/brand/Logo';
 import { cn } from '@/lib/utils';
 
 /** Type des icônes Solar : celui de la bibliothèque, pas une approximation. */
 type IconType = IconSvgElement;
 
+const TAB_ICONS: Record<TabId, IconType> = {
+  home: Home01Icon,
+  explore: BookOpen01Icon,
+  progress: ChartBarLineIcon,
+  settings: Settings01Icon,
+};
+
+/** Une icône par destination — aucun doublon de signe. */
+const MENU_ICONS: Record<string, IconType> = {
+  '/bible/explorer': BookOpen01Icon,
+  '/memorization/session': Cards01Icon,
+  '/review/queue': Clock01Icon,
+  '/semantic': SparklesIcon,
+  '/analytics/dashboard': Analytics01Icon,
+  '/collections': Layers01Icon,
+  '/achievements': Medal01Icon,
+  '/search': Search01Icon,
+  '/mastery': DashboardSquare01Icon,
+  '/notifications': Notification01Icon,
+  '/review/history': HistoryIcon,
+  '/comparison/translation': GitCompareIcon,
+  '/family/home': UserGroupIcon,
+};
 
 function isActive(pathname: string, path: string): boolean {
   return pathname === path || pathname.startsWith(`${path}/`);
@@ -70,7 +102,7 @@ export function DesktopRail() {
   const menuItems = ALL_MENU_ITEMS.filter((item) => visibleMenuPaths.includes(item.path) && !(item.path === '/bible/explorer' && visibleTabs.includes('explore')));
 
   const itemBase =
-    'group flex h-9 w-full items-center gap-3 rounded-xl px-2.5 text-start text-sm font-medium transition-colors';
+    'group flex h-9 w-full items-center gap-3 rounded-xl px-2.5 text-start text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary';
   const iconColumn = 'flex h-6 w-6 flex-none items-center justify-center';
 
   return (
@@ -87,7 +119,6 @@ export function DesktopRail() {
           className={cn(itemBase, 'gap-2.5 px-1 hover:bg-surface-tint')}
           aria-label={t('nav.brandHome', 'VersyFlow — Accueil')}
         >
-          <span className="brand-tile"><Logo size={28} /></span>
           <span className="rail-label text-primary text-base font-extrabold">VersyFlow</span>
         </button>
         {isDesktop && (
@@ -100,7 +131,7 @@ export function DesktopRail() {
           aria-expanded={!collapsed}
           className="ms-auto flex h-8 w-8 flex-none items-center justify-center rounded-lg text-text-muted hover:bg-surface-tint hover:text-text-primary"
         >
-          <DuoIcon icon={SidebarLeft01Icon} size={20} />
+          <DuoIcon icon={SidebarLeft01Icon} size={19} />
         </button>
         )}
       </div>
@@ -116,7 +147,7 @@ export function DesktopRail() {
           )}
           aria-label={t('nav.newSession', 'Nouvelle session')}
         >
-          <DuoIcon icon={PlusSignIcon} size={20} />
+          <DuoIcon icon={PlusSignIcon} size={19} strokeWidth={1.75} />
           <span className="rail-label text-sm font-semibold">{t('nav.newSession', 'Nouvelle session')}</span>
         </button>
       </div>
@@ -134,15 +165,18 @@ export function DesktopRail() {
                 className={cn(
                   itemBase,
                   collapsed && 'justify-center px-0',
-                  active
-                    ? 'bg-primary/10 font-semibold text-primary'
-                    : 'text-text-secondary hover:bg-surface-tint hover:text-text-primary',
+                  /* La couleur ne se peint plus ici : `nav-item` la porte
+                     depuis globals.css, en un seul endroit. Deux sources de
+                     vérité, c'est exactement ce qui faisait basculer l'icône
+                     au survol. */
+                  active ? 'nav-item font-semibold' : 'nav-item',
                 )}
               >
                 <span className={iconColumn}>
                   <DuoIcon
                     icon={TAB_ICONS[tab.id]}
                     size={20}
+                    strokeWidth={1.75}
                   />
                 </span>
                 <span className="rail-label truncate">{t(tab.labelKey, tab.label)}</span>
@@ -159,7 +193,7 @@ export function DesktopRail() {
         <div className="flex flex-col gap-0.5">
           {menuItems.map((item) => {
             const active = isActive(location.pathname, item.path);
-            const Icon = iconFor(item.path, Layers01Icon);
+            const Icon = MENU_ICONS[item.path] ?? Layers01Icon;
             return (
               <button
                 key={item.path}
@@ -170,13 +204,15 @@ export function DesktopRail() {
                 className={cn(
                   itemBase,
                   collapsed && 'justify-center px-0',
-                  active
-                    ? 'bg-primary/10 font-semibold text-primary'
-                    : 'text-text-secondary hover:bg-surface-tint hover:text-text-primary',
+                  /* La couleur ne se peint plus ici : `nav-item` la porte
+                     depuis globals.css, en un seul endroit. Deux sources de
+                     vérité, c'est exactement ce qui faisait basculer l'icône
+                     au survol. */
+                  active ? 'nav-item font-semibold' : 'nav-item',
                 )}
               >
                 <span className={iconColumn}>
-                  <DuoIcon icon={Icon} size={20} />
+                  <DuoIcon icon={Icon} size={20} strokeWidth={1.75} />
                 </span>
                 <span className="rail-label truncate">{t(item.labelKey, item.label)}</span>
               </button>
@@ -194,9 +230,7 @@ export function DesktopRail() {
           className={cn(
             itemBase,
             collapsed && 'justify-center px-0',
-            isActive(location.pathname, '/profile')
-              ? 'bg-primary/10 font-semibold text-primary'
-              : 'text-text-secondary hover:bg-surface-tint hover:text-text-primary',
+            isActive(location.pathname, '/profile') ? 'nav-item font-semibold' : 'nav-item',
           )}
         >
           <span className={iconColumn}>

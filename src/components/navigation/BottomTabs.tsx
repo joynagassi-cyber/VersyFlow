@@ -1,76 +1,78 @@
 /**
- * BottomTabs — la barre d'onglets, pilotée par les réglages de l'utilisateur.
+ * BottomTabs — modern pill-style tab bar.
  *
- * La barre ne décide plus de son contenu : elle rend `barItems` (pages et
- * fonctions épinglées, dans l'ordre choisi) avec les réglages associés —
- * libellés visibles ou non, densité compacte. Tout se règle dans
- * « Barre d'onglets » (`app/settings/navigation.tsx`).
- *
- * Chaque entrée reste une cible de 44 px minimum, garde un `aria-label` même
- * quand les libellés sont masqués, et marque l'état actif par `aria-current`
- * + pastille : la position seule ne signale jamais l'onglet courant.
+ * Replaces the Ionic <IonTabBar> with a Tailwind bar: each tab is an
+ * icon + label column; the active tab gets a soft pill highlight around
+ * its icon (material-3 vibe). Only enabled tabs render.
  */
 
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { DuoIcon } from '@/components/ui/DuoIcon';
-import { iconFor } from '@/components/navigation/nav-icons';
-import { resolveEntries } from '@/domains/navigation/bottom-bar';
-import { useUiStore } from '@/store/ui-store';
+import {
+  Home01Icon,
+  BookOpen01Icon,
+  ChartBarLineIcon,
+  Settings01Icon,
+} from '@/components/ui/solar-icons';
+import { ALL_TABS, useUiStore, type TabId } from '@/store/ui-store';
 import { cn } from '@/lib/utils';
+
+const ICONS: Record<TabId, typeof Home01Icon> = {
+  home: Home01Icon,
+  explore: BookOpen01Icon,
+  progress: ChartBarLineIcon,
+  settings: Settings01Icon,
+};
 
 export function BottomTabs() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
-  const barItems = useUiStore((s) => s.barItems);
-  const barLabels = useUiStore((s) => s.barLabels);
-  const barCompact = useUiStore((s) => s.barCompact);
+  const visibleTabs = useUiStore((s) => s.visibleTabs);
 
-  const entries = resolveEntries(barItems);
-  if (entries.length === 0) return null;
+  const tabs = ALL_TABS.filter((tab) => visibleTabs.includes(tab.id));
 
   return (
-    <nav aria-label="Navigation principale" className="mobile-tabs g1" data-compact={barCompact || undefined}>
-      <div className="mx-auto flex max-w-md items-stretch justify-between px-2 py-1.5">
-        {entries.map((entry) => {
-          const Icon = iconFor(entry.path);
-          const label = t(entry.labelKey, entry.label);
+    <nav
+      aria-label={t('shell.mainNav', 'Navigation principale')}
+      className="mobile-tabs g1"
+    >
+      <div className="mx-auto flex max-w-md items-stretch justify-between px-3 py-2">
+        {tabs.map((tab) => {
+          const Icon = ICONS[tab.id];
           const active =
-            location.pathname === entry.path || location.pathname.startsWith(`${entry.path}/`);
+            location.pathname === tab.path ||
+            location.pathname.startsWith(`${tab.path}/`);
           return (
             <button
-              key={entry.id}
+              key={tab.id}
               type="button"
-              onClick={() => navigate(entry.path)}
+              onClick={() => navigate(tab.path)}
               aria-current={active ? 'page' : undefined}
-              aria-label={label}
-              className={cn(
-                'flex min-w-0 flex-1 flex-col items-center justify-center gap-0.5 rounded-2xl',
-                barCompact ? 'py-0.5' : 'py-1.5',
-              )}
+              className="tab-item flex min-w-0 flex-1 flex-col items-center gap-1 rounded-2xl py-1.5"
             >
-              <span
-                className={cn(
-                  'flex items-center justify-center rounded-full transition-colors',
-                  barCompact ? 'h-7 w-10' : 'h-8 w-11',
-                  active ? 'bg-primary/12' : 'bg-transparent',
-                )}
-              >
-                <DuoIcon icon={Icon} size={barCompact ? 20 : 24} color={active ? 'var(--acc-text)' : 'var(--mut)'} />
+              <span className={cn('tab-pill', active && 'is-active')}>
+                {/* Pas de prop `color` : `DuoIcon` l'accepte puis la jette
+                    (elle ne servait à rien). La teinte vient du bouton, qui
+                    la reçoit de `tab-item` — et le second calque du duotone
+                    de `--solar-secondary-color`. */}
+                <DuoIcon icon={Icon} size={23} strokeWidth={1.75} />
               </span>
-              {barLabels ? (
-                <span
-                  className={cn(
-                    'max-w-[72px] truncate text-2xs font-semibold transition-colors',
-                    active ? 'text-primary' : 'text-text-muted',
-                  )}
-                >
-                  {label}
-                </span>
-              ) : (
-                active && <span className="h-1 w-1 rounded-full bg-primary" />
-              )}
+              {/* L'indicateur est TOUJOURS rendu : le faire apparaître
+                  décalait la barre de 4 px à chaque changement d'onglet. */}
+              <span
+                aria-hidden="true"
+                className={cn(
+                  'h-1 w-1 rounded-full transition-colors',
+                  active ? 'bg-primary' : 'bg-transparent',
+                )}
+              />
+              <span
+                className={cn('tab-label max-w-[72px] truncate text-2xs font-semibold', active && 'is-active')}
+              >
+                {t(tab.labelKey, tab.label)}
+              </span>
             </button>
           );
         })}

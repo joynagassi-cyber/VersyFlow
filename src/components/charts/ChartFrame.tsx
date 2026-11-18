@@ -54,7 +54,7 @@ export function ChartFrame({
     >
       <figcaption className="mb-3 flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <p className="text-[15px] font-bold text-text-primary">{title}</p>
+          <p className="text-md font-bold text-text-primary">{title}</p>
           {subtitle && <p className="mt-0.5 text-xs text-text-muted">{subtitle}</p>}
         </div>
         {legend && legend.length > 0 && (

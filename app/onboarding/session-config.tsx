@@ -1,106 +1,143 @@
 /**
- * Onboarding — étape 5, « Rythme ».
+ * Onboarding — Session Configuration Screen (step 4/6)
  *
- * Deux réglages, pas plus : combien de versets par session, et le mode
- * concentration. Un objectif trop ambitieux dès le départ fait abandonner ;
- * l'échelle proposée va donc de 1 à 10 et rappelle ce que chaque choix
- * représente en minutes.
+ * Lets the learner pick a verses-per-session goal and enable focus mode
+ * before reminders & FSRS introduction. Accessible, large targets.
  */
+
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import { DuoIcon } from '@/components/ui/DuoIcon';
-import { CheckIcon, FocusIcon } from '@/components/ui/solar-icons';
+import {
+  ArrowLeft01Icon as ArrowLeft,
+  ArrowRight01Icon as ArrowRight,
+  Target01Icon as Target,
+  FocusIcon as Focus,
+  CheckIcon as Check,
+} from '@/components/ui/solar-icons';
 import { cn } from '@/lib/utils';
-import { useAppearanceStore } from '@/store/appearance-store';
+import { Button } from '@/components/ui/button';
 import { OnboardingShell } from '@/components/onboarding/OnboardingShell';
+import { useAppearanceStore } from '@/store/appearance-store';
 
 const GOALS = [1, 3, 5, 7, 10];
 
 export default function OnboardingSessionConfig() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const sessionGoal = useAppearanceStore((s) => s.sessionGoal);
   const focusMode = useAppearanceStore((s) => s.focusMode);
   const setSessionGoal = useAppearanceStore((s) => s.setSessionGoal);
   const setFocusMode = useAppearanceStore((s) => s.setFocusMode);
 
-  const minutes = Math.max(2, Math.round(sessionGoal * 1.5));
-
   return (
     <OnboardingShell
-      stepId="rhythm"
-      eyebrow={t('onboarding.stepRhythm', 'Rythme')}
-      title={t('onboarding.sessionTitle', 'Votre rythme, pas celui d’un autre')}
-      subtitle={t('onboarding.sessionDesc', 'Choisissez votre objectif de versets par session.')}
-      nextLabel={t('onboarding.sessionCta', 'Garder ce rythme')}
-      footerHint={t('onboarding.sessionMinutesHint', '≈ {{count}} min par session', {
-        count: minutes,
-      })}
-    >
-      <section aria-labelledby="onboarding-goal-title">
-        <h2 id="onboarding-goal-title" className="mb-2 text-sm font-bold text-text-primary">
-          {t('onboarding.sessionGoal', 'Objectif par session')}
-        </h2>
-        <div role="group" aria-labelledby="onboarding-goal-title" className="grid grid-cols-5 gap-2">
-          {GOALS.map((goal) => {
-            const selected = sessionGoal === goal;
-            return (
-              <button
-                key={goal}
-                type="button"
-                onClick={() => setSessionGoal(goal)}
-                aria-pressed={selected}
-                className={cn(
-                  'flex min-h-[56px] items-center justify-center gap-1 rounded-2xl border text-lg font-semibold transition-colors',
-                  selected
-                    ? 'border-primary bg-primary/10 text-primary'
-                    : 'border-border bg-surface text-text-secondary hover:border-primary/40',
-                )}
-              >
-                {goal}
-                {selected && <DuoIcon icon={CheckIcon} size={16} />}
-              </button>
-            );
-          })}
+      step={4}
+      title={t('onboarding.sessionTitle', 'Votre rythme de session')}
+      subtitle={t(
+        'onboarding.sessionDesc',
+        'Choisissez un objectif quotidien réaliste et activez le mode concentration si vous le souhaitez.',
+      )}
+      onBack={() => navigate('/onboarding/journey/profile')}
+      backLabel={t('common.back', 'Retour')}
+      footer={
+        <div className="flex gap-3">
+          <Button
+            type="button"
+            variant="outline"
+            className="flex-1"
+            onClick={() => navigate('/onboarding/journey/profile')}
+          >
+            <DuoIcon icon={ArrowLeft} size={16} />
+            {t('common.back', 'Retour')}
+          </Button>
+          <Button
+            type="button"
+            className="flex-1"
+            onClick={() => navigate('/onboarding/reminder-config')}
+          >
+            {t('common.continue', 'Continuer')}
+            <DuoIcon icon={ArrowRight} size={16} />
+          </Button>
         </div>
-      </section>
+      }
+    >
+      <div className="flex flex-col gap-6">
+        <div>
+          <div className="mb-3 flex items-center gap-2">
+            <DuoIcon icon={Target} size={18} className="text-primary" />
+            <span className="text-base font-semibold text-text-primary">
+              {t('onboarding.sessionGoal', 'Versets par session')}
+            </span>
+          </div>
+          <div
+            className="flex flex-wrap gap-2"
+            role="group"
+            aria-label={t('onboarding.sessionGoal', 'Versets par session')}
+          >
+            {GOALS.map((g) => {
+              const selected = sessionGoal === g;
+              return (
+                <button
+                  type="button"
+                  key={g}
+                  aria-pressed={selected}
+                  onClick={() => setSessionGoal(g)}
+                  className={cn(
+                    'flex h-14 min-w-14 items-center justify-center rounded-2xl border-2 px-4 text-lg font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
+                    selected
+                      ? 'border-primary bg-surface-tint text-primary'
+                      : 'border-transparent bg-surface text-text-secondary shadow-sm',
+                  )}
+                >
+                  {g}
+                  {selected && <DuoIcon icon={Check} className="ml-1" size={16} />}
+                </button>
+              );
+            })}
+          </div>
+        </div>
 
-      <section aria-labelledby="onboarding-focus-title" className="mt-6">
-        <h2 id="onboarding-focus-title" className="mb-2 text-sm font-bold text-text-primary">
-          {t('onboarding.sessionFocusTitle', 'Mode concentration')}
-        </h2>
         <button
           type="button"
-          onClick={() => setFocusMode(!focusMode)}
           aria-pressed={focusMode}
+          onClick={() => setFocusMode(!focusMode)}
           className={cn(
-            'flex w-full items-center gap-3 rounded-2xl border p-4 text-left transition-colors',
-            focusMode ? 'border-primary bg-primary/5' : 'border-border bg-surface hover:border-primary/40',
+            'flex items-center gap-4 rounded-2xl border-2 p-4 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
+            focusMode
+              ? 'border-primary bg-surface-tint'
+              : 'border-transparent bg-surface shadow-sm',
           )}
         >
-          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-primary/10">
-            <DuoIcon icon={FocusIcon} size={20} className="text-primary" />
-          </span>
-          <span className="flex-1">
-            <span className="block text-[15px] font-semibold text-text-primary">
-              {focusMode ? t('common.on', 'Activé') : t('common.off', 'Désactivé')}
-            </span>
-            <span className="mt-1 block text-[13px] leading-relaxed text-text-secondary">
+          <div
+            className={cn(
+              'flex h-12 w-12 shrink-0 items-center justify-center rounded-full',
+              focusMode ? 'bg-primary text-on-primary' : 'bg-surface-tint text-primary',
+            )}
+          >
+            <DuoIcon icon={Focus} size={22} />
+          </div>
+          <div className="flex-1">
+            <p className="text-base font-semibold text-text-primary">
+              {t('onboarding.sessionFocusTitle', 'Mode concentration')}
+            </p>
+            <p className="mt-1 text-sm leading-6 text-text-secondary">
               {t(
                 'onboarding.sessionFocusDesc',
-                'Masque automatiquement les mots les plus oubliés pour vous concentrer sur l’essentiel.',
+                'Masque les éléments secondaires pendant la récitation.',
               )}
-            </span>
-          </span>
-          <span
-            aria-hidden="true"
+            </p>
+          </div>
+          <div
             className={cn(
-              'flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2',
+              'flex h-6 w-6 items-center justify-center rounded-full border-2',
               focusMode ? 'border-primary bg-primary' : 'border-text-muted',
             )}
           >
-            {focusMode && <DuoIcon icon={CheckIcon} size={16} className="text-primary-foreground" />}
-          </span>
+            {focusMode && <DuoIcon icon={Check} size={14} className="text-on-status" />}
+          </div>
         </button>
-      </section>
+      </div>
     </OnboardingShell>
   );
 }

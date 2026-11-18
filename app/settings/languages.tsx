@@ -18,7 +18,7 @@ export default function LanguageSettingsScreen() {
     <FullScreenPage
       title={t('settings.uiLanguage', "Langue de l'interface")}
       showBack
-      backPath="/settings"
+      backPath="/tabs/settings"
     >
       <div className="screen-column space-y-2">
         {SUPPORTED_LANGUAGES.map((lang) => {
@@ -45,7 +45,7 @@ export default function LanguageSettingsScreen() {
                 <span className="flex items-center gap-2">
                   <span className="text-lg font-semibold text-text-primary">{lang.name}</span>
                   {lang.rtl && (
-                    <span className="rounded bg-surface-tint px-1.5 py-0.5 text-2xs font-bold text-primary">
+                    <span className="rounded bg-surface-tint px-1.5 py-0.5 text-3xs font-bold text-primary">
                       RTL
                     </span>
                   )}
@@ -54,7 +54,7 @@ export default function LanguageSettingsScreen() {
               </span>
               {active && (
                 <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-on-primary">
-                  <DuoIcon icon={Check} size={16} />
+                  <DuoIcon icon={Check} size={14} />
                 </span>
               )}
             </button>

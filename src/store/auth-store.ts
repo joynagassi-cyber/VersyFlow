@@ -75,7 +75,7 @@ export const useAuthStore = create<AuthState>()(
           // Idempotent — a no-op when there is nothing to migrate.
           void useSyncStore.getState().runMmkvMigrationOnce();
         } catch (err) {
-          const error = err instanceof AuthError ? err : new AuthError('Failed to sign in');
+          const error = err instanceof AuthError ? err : new AuthError(err instanceof Error ? err.message : 'Failed to sign in');
           set({ error: error.message, isLoading: false });
           throw error;
         }
@@ -88,7 +88,7 @@ export const useAuthStore = create<AuthState>()(
           if (authErr) throw authErr;
           set({ isLoading: false });
         } catch (err) {
-          const error = err instanceof AuthError ? err : new AuthError('Failed to sign up');
+          const error = err instanceof AuthError ? err : new AuthError(err instanceof Error ? err.message : 'Failed to sign up');
           set({ error: error.message, isLoading: false });
           throw error;
         }
@@ -146,10 +146,10 @@ export const useAuthStore = create<AuthState>()(
             // Idempotent — a no-op when there is nothing to migrate.
             void useSyncStore.getState().runMmkvMigrationOnce();
           } else {
-            set({ isLoading: false });
+            set({ user: null, isAuthenticated: false, isLoading: false });
           }
         } catch {
-          set({ isLoading: false });
+          set({ user: null, isAuthenticated: false, isLoading: false });
         }
       },
 

@@ -13,7 +13,7 @@
  */
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import type { Icon } from '@solar-icons/react/lib/types';
 import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
@@ -71,7 +71,7 @@ const COLLECTION_LABELS: Record<MockCollectionName, string> = {
   test_events: 'Événements de test',
 };
 
-function DevCard({
+function Card({
   title,
   icon,
   children,
@@ -84,8 +84,8 @@ function DevCard({
 }) {
   return (
     <section className={cn('rounded-2xl bg-surface p-4 shadow-sm', className)}>
-      <p className="mb-3 flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-text-muted">
-        <DuoIcon icon={icon} size={16} className="text-primary" />
+      <p className="mb-3 flex items-center gap-2 section-label">
+        <DuoIcon icon={icon} size={14} className="text-primary" />
         {title}
       </p>
       {children}
@@ -236,8 +236,27 @@ export default function DevPanelScreen() {
         {/* ---------------- Démo / réel ---------------- */}
         <DemoModePanel compact />
 
+        {/* ---------------- Laboratoire duotone ---------------- */}
+        {/* Le panneau dev est le seul endroit qu'on ouvre « pour régler un
+            détail d'affichage » : c'est donc là que doit se trouver l'entrée
+            vers le laboratoire, plutôt qu'une URL à retenir par cœur. */}
+        {import.meta.env.DEV && (
+          <Link
+            to="/__dev/duotone"
+            className="flex items-center justify-between gap-3 rounded-2xl bg-surface p-4 shadow-sm"
+          >
+            <span>
+              <span className="block text-sm font-bold text-text-primary">Boutons duotone</span>
+              <span className="block text-xs text-text-muted">
+                Cinq règles de couleur côte à côte : repos, survol, actif.
+              </span>
+            </span>
+            <DuoIcon icon={ArrowRight} size={18} />
+          </Link>
+        )}
+
         {/* ---------------- Mode ---------------- */}
-        <DevCard title="Mode de données" icon={Database}>
+        <Card title="Mode de données" icon={Database}>
           <div className="flex items-center justify-between gap-3">
             <div>
               <p className="text-base font-extrabold text-text-primary">
@@ -287,16 +306,16 @@ export default function DevPanelScreen() {
             className="mt-3"
             size="sm"
             variant="outline"
-            onClick={handleSkipOnboarding}
+            onClick={() => void handleSkipOnboarding()}
             disabled={busy !== null}
           >
-            <DuoIcon icon={ArrowRight} size={16} />
+            <DuoIcon icon={ArrowRight} size={15} />
             Sauter l'onboarding et ouvrir l'app
           </Button>
-        </DevCard>
+        </Card>
 
         {/* ---------------- Identity ---------------- */}
-        <DevCard title="Identité de test" icon={Settings}>
+        <Card title="Identité de test" icon={Settings}>
           <div className="space-y-1 text-sm text-text-secondary">
             <p>
               <span className="text-text-muted">Nom :</span> {identity.displayName}
@@ -314,10 +333,10 @@ export default function DevPanelScreen() {
               </p>
             )}
           </div>
-        </DevCard>
+        </Card>
 
         {/* ---------------- Local API ---------------- */}
-        <DevCard title="API de test locale" icon={Upload}>
+        <Card title="API de test locale" icon={Upload}>
           <div className="mb-3 grid grid-cols-3 gap-2">
             <Stat label="File" value={stats.queued} />
             <Stat label="Envoyés" value={stats.sent} />
@@ -342,25 +361,25 @@ export default function DevPanelScreen() {
             </p>
           )}
           <div className="mt-3 flex flex-wrap gap-2">
-            <Button size="sm" variant="secondary" onClick={handleFlush} disabled={busy !== null}>
-              <DuoIcon icon={Refresh} size={16} />
+            <Button size="sm" variant="secondary" onClick={() => void handleFlush()} disabled={busy !== null}>
+              <DuoIcon icon={Refresh} size={15} />
               Vider la file
             </Button>
-            <Button size="sm" variant="outline" onClick={handleSnapshot} disabled={busy !== null}>
-              <DuoIcon icon={Upload} size={16} />
+            <Button size="sm" variant="outline" onClick={() => void handleSnapshot()} disabled={busy !== null}>
+              <DuoIcon icon={Upload} size={15} />
               Envoyer l'instantané
             </Button>
             <Button size="sm" variant="ghost" asChild>
               <a href={localBackend.dashboardUrl()} target="_blank" rel="noreferrer">
-                <DuoIcon icon={ExternalLink} size={16} />
+                <DuoIcon icon={ExternalLink} size={15} />
                 Tableau de bord
               </a>
             </Button>
           </div>
-        </DevCard>
+        </Card>
 
         {/* ---------------- Local data ---------------- */}
-        <DevCard title="Données locales" icon={Database}>
+        <Card title="Données locales" icon={Database}>
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
             {MOCK_COLLECTIONS.filter((name) => name !== 'test_events').map((name) => (
               <div
@@ -377,16 +396,16 @@ export default function DevPanelScreen() {
             ))}
           </div>
           <div className="mt-3 flex flex-wrap gap-2">
-            <Button size="sm" variant="secondary" onClick={handleSeed} disabled={busy !== null}>
-              <DuoIcon icon={Refresh} size={16} />
+            <Button size="sm" variant="secondary" onClick={() => void handleSeed()} disabled={busy !== null}>
+              <DuoIcon icon={Refresh} size={15} />
               Re-seeder
             </Button>
-            <Button size="sm" variant="outline" onClick={handleExport} disabled={busy !== null}>
-              <DuoIcon icon={Download} size={16} />
+            <Button size="sm" variant="outline" onClick={() => void handleExport()} disabled={busy !== null}>
+              <DuoIcon icon={Download} size={15} />
               Exporter en JSON
             </Button>
-            <Button size="sm" variant="destructive" onClick={handleReset} disabled={busy !== null}>
-              <DuoIcon icon={Trash} size={16} />
+            <Button size="sm" variant="destructive" onClick={() => void handleReset()} disabled={busy !== null}>
+              <DuoIcon icon={Trash} size={15} />
               Tout réinitialiser
             </Button>
           </div>
@@ -395,10 +414,10 @@ export default function DevPanelScreen() {
             le seed, dont {SEED_VERSES.filter((v) => v.dueInDays <= 0).length} à
             réviser aujourd'hui.
           </p>
-        </DevCard>
+        </Card>
 
         {/* ---------------- Recent events ---------------- */}
-        <DevCard title="Derniers événements reçus par le serveur" icon={Check}>
+        <Card title="Derniers événements reçus par le serveur" icon={Check}>
           {notice && (
             <p className="mb-3 rounded-lg bg-primary/10 px-3 py-2 text-xs font-semibold text-primary">
               {notice}
@@ -419,14 +438,14 @@ export default function DevPanelScreen() {
                       {new Date(event.at).toLocaleTimeString()}
                     </span>
                   </div>
-                  <pre className="mt-1 max-h-24 overflow-auto whitespace-pre-wrap break-all rounded bg-surface-tint p-2 text-2xs text-text-secondary">
+                  <pre className="mt-1 max-h-24 overflow-auto whitespace-pre-wrap break-all rounded bg-surface-tint p-2 text-3xs text-text-secondary">
                     {JSON.stringify(event.payload ?? {}, null, 2)}
                   </pre>
                 </li>
               ))}
             </ul>
           )}
-        </DevCard>
+        </Card>
       </div>
     </FullScreenPage>
   );

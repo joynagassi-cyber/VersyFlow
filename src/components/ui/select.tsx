@@ -77,7 +77,7 @@ const SelectItem = React.forwardRef<
     {...props}
   >
     <SelectPrimitive.ItemIndicator className="ml-auto">
-      <DuoIcon icon={Check} size={16} className="text-primary" />
+      <DuoIcon icon={Check} size={14} className="text-primary" />
     </SelectPrimitive.ItemIndicator>
     <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
   </SelectPrimitive.Item>

@@ -6,6 +6,12 @@ interface ProgressRingProps {
   size?: number;
   stroke?: number;
   label?: React.ReactNode;
+  /**
+   * Nom annoncé du chiffre affiché (« participation du jour », « niveau »…).
+   * Sans lui, l'anneau reste purement décoratif : un pourcentage peint n'est
+   * pas une information accessible.
+   */
+  ariaLabel?: string;
   trackClass?: string;
   fillClass?: string;
   className?: string;
@@ -17,6 +23,7 @@ export const ProgressRing = React.memo(function ProgressRing({
   size = 72,
   stroke = 8,
   label,
+  ariaLabel,
   trackClass = 'stroke-border',
   fillClass = 'stroke-primary',
   className,
@@ -30,6 +37,10 @@ export const ProgressRing = React.memo(function ProgressRing({
     <div
       className={cn('relative inline-flex items-center justify-center', className)}
       style={{ width: size, height: size }}
+      role={ariaLabel ? 'img' : undefined}
+      aria-label={
+        ariaLabel ? `${ariaLabel} : ${Math.round(clamped)} %` : undefined
+      }
     >
       <svg width={size} height={size} className="-rotate-90">
         <circle
@@ -50,11 +61,16 @@ export const ProgressRing = React.memo(function ProgressRing({
           strokeDashoffset={offset}
           strokeLinecap="round"
           className={fillClass}
-          style={{ transition: 'stroke-dashoffset 0.4s ease' }}
+          style={{
+            transition:
+              'stroke-dashoffset var(--motion-slow, 320ms) var(--ease-standard, ease)',
+          }}
         />
       </svg>
+      {/* Le chiffre reste lisible sur les 39 presets : il hérite de l'encre de
+          son conteneur plutôt que d'un gris figé. */}
       {label != null && (
-        <span className="absolute text-sm font-bold text-text-primary">{label}</span>
+        <span className="absolute text-sm font-semibold tabular-nums">{label}</span>
       )}
     </div>
   );

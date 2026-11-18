@@ -1,4 +1,5 @@
 import { isNativePlatform } from '@/lib/platform';
+import { getStorageIsolationState } from '@/dev/mock/storage-scope';
 import type { Weekday } from '@capacitor/local-notifications';
 
 /** Sunday=1 through Saturday=7, the convention used by Capacitor. */
@@ -35,7 +36,8 @@ export function loadWeeklyPlan(): WeeklyReminderPlan {
  * replaced; other app notifications and the legacy daily reminders survive. */
 export async function applyWeeklyPlan(plan: WeeklyReminderPlan, bodies: Record<WeeklyReminderKind, string>): Promise<'native' | 'web'> {
   const normalized = normalizeWeeklyPlan(plan);
-  if (!isNativePlatform()) {
+  const isolation = getStorageIsolationState();
+  if (!isNativePlatform() || (isolation.installed && isolation.scopeActive)) {
     localStorage.setItem(WEEKLY_PLAN_KEY, JSON.stringify(normalized));
     return 'web';
   }

@@ -65,15 +65,18 @@ export function TranslationMenu({
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        aria-label={t('workspace.chooseTranslation', 'Traduction')}
         className="flex items-center gap-1 rounded-full bg-surface-tint px-2.5 py-1 text-xs font-bold text-primary transition active:scale-95"
       >
         {display}
-        <DuoIcon icon={ChevronDown} size={16} />
+        <DuoIcon icon={ChevronDown} size={11} />
       </button>
 
       {open && (
-        <div className="absolute start-0 top-9 z-40 max-h-[50vh] w-56 overflow-y-auto rounded-2xl border border-border bg-surface p-1.5 shadow-xl">
-          <p className="px-2.5 py-1.5 text-2xs font-bold uppercase tracking-wider text-text-muted">
+        <div className="absolute left-0 top-9 z-40 max-h-[50vh] w-56 overflow-y-auto rounded-2xl border border-border bg-surface p-1.5 shadow-xl">
+          <p className="px-2.5 py-1.5 text-3xs font-bold uppercase tracking-wider text-text-muted">
             {t('workspace.chooseTranslation', 'Traduction')}
           </p>
           {BIBLE_DATASET_CATALOG.map((entry) => {
@@ -94,9 +97,9 @@ export function TranslationMenu({
                   {bibleTranslationDisplayName(entry.id)}
                 </span>
                 {isBusy ? (
-                  <DuoIcon icon={Loader2} size={16} className="animate-spin text-text-muted" />
+                  <DuoIcon icon={Loader2} size={13} className="animate-spin text-text-muted" />
                 ) : isCurrent ? (
-                  <DuoIcon icon={Check} size={16} />
+                  <DuoIcon icon={Check} size={13} />
                 ) : null}
               </button>
             );

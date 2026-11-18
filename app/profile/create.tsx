@@ -59,7 +59,6 @@ export default function CreateProfileScreen() {
           </label>
           <Input
             value={displayName}
-            aria-label={t('profile.displayName', "Nom d'affichage")}
             onChange={(e) => setDisplayName(e.target.value)}
             placeholder={t('profile.namePlaceholder', 'Entrez votre nom')}
             maxLength={30}
@@ -78,7 +77,6 @@ export default function CreateProfileScreen() {
           </label>
           <Input
             value={sloganText}
-            aria-label={t('profile.slogan', 'Votre slogan')}
             onChange={(e) => setSloganText(e.target.value.slice(0, SLOGAN_MAX_LENGTH))}
             placeholder={t('profile.sloganPlaceholder', 'Ex. « Mémoire vive, foi forte »')}
             maxLength={SLOGAN_MAX_LENGTH}

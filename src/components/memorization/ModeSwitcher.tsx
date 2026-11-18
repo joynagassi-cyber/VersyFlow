@@ -76,7 +76,7 @@ export function ModeSwitcher({
                 isRecommended && 'recommended',
               )}
             >
-              <DuoIcon icon={Icon} size={16} />
+              <DuoIcon icon={Icon} size={14} />
               {mode.label}
               {isRecommended && <span className="badge">PROCHAIN</span>}
             </button>

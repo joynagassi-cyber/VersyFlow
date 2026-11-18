@@ -209,7 +209,7 @@ export default function AvailableTranslationsScreen() {
       <div
         key={entry.id}
         className={cn(
-          'rounded-2xl bg-surface p-4 shadow-sm transition',
+          'g2 p-4 transition',
           isActive && 'ring-2 ring-primary',
           downloading && 'ring-1 ring-primary/30',
         )}
@@ -225,20 +225,20 @@ export default function AvailableTranslationsScreen() {
           </span>
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-2">
-              <p className="text-base font-bold text-text-primary">
+              <h3 className="card-title">
                 {info.abbreviation}
                 {info.abbreviation !== info.name && (
-                  <span className="ms-1.5 text-sm font-medium text-text-muted">{info.name}</span>
+                  <span className="ml-1.5 text-sm font-medium text-text-muted">{info.name}</span>
                 )}
-              </p>
+              </h3>
               {isActive && (
-                <span className="rounded-full bg-primary px-2 py-0.5 text-2xs font-bold uppercase tracking-wide text-on-primary">
+                <span className="rounded-full bg-primary px-2 py-0.5 text-3xs font-bold uppercase tracking-wide text-on-primary">
                   {t('common.active', 'Active')}
                 </span>
               )}
               {isLocal && !isActive && (
-                <span className="inline-flex items-center gap-1 rounded-full bg-success-light px-2 py-0.5 text-2xs font-bold uppercase tracking-wide text-success">
-                  <DuoIcon icon={CircleCheck} size={16} />
+                <span className="inline-flex items-center gap-1 rounded-full bg-success-light px-2 py-0.5 text-3xs font-bold uppercase tracking-wide text-success">
+                  <DuoIcon icon={CircleCheck} size={11} />
                   {t('settings.localAvailable', 'En local')}
                 </span>
               )}
@@ -274,7 +274,7 @@ export default function AvailableTranslationsScreen() {
 
             {state.status === 'error' && (
               <p className="mt-1.5 flex items-center gap-1 text-xs text-error">
-                <DuoIcon icon={AlertCircle} size={16} /> {state.message}
+                <DuoIcon icon={AlertCircle} size={12} /> {state.message}
               </p>
             )}
 
@@ -284,7 +284,7 @@ export default function AvailableTranslationsScreen() {
               onClick={() => toggleDetail(entry.id)}
               className="mt-2 flex items-center gap-1 text-xs font-semibold text-primary"
             >
-              <DuoIcon icon={ChevronDown} size={16} className={cn('transition-transform', expanded.has(entry.id) && 'rotate-180')} />
+              <DuoIcon icon={ChevronDown} size={13} className={cn('transition-transform', expanded.has(entry.id) && 'rotate-180')} />
               {t('settings.translationDetail', 'Détail')}
             </button>
             {expanded.has(entry.id) && (
@@ -314,7 +314,7 @@ export default function AvailableTranslationsScreen() {
               onClick={() => handleCancel(entry.id)}
               className="flex h-10 shrink-0 items-center gap-1.5 rounded-full bg-surface-tint px-3.5 text-xs font-bold text-text-secondary transition active:scale-95"
             >
-              <DuoIcon icon={X} size={16} />
+              <DuoIcon icon={X} size={15} />
               {t('common.cancel', 'Annuler')}
             </button>
           ) : isLocal ? (
@@ -352,10 +352,10 @@ export default function AvailableTranslationsScreen() {
     const groupLabel = language || t('settings.unknownLanguageGroup', 'Autres versions');
     return (
       <section key={language || 'unknown'} className="mb-6">
-        <div className="mb-3 flex items-center justify-between rounded-2xl bg-surface px-4 py-3 shadow-sm">
+        <div className="g2 mb-3 flex items-center justify-between px-4 py-3">
           <div className="flex items-center gap-2.5">
             <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/12 text-primary">
-              <DuoIcon icon={Languages} size={20} />
+              <DuoIcon icon={Languages} size={18} />
             </span>
             <div>
               <p className="text-sm font-bold text-text-primary">{groupLabel}</p>
@@ -365,7 +365,7 @@ export default function AvailableTranslationsScreen() {
             </div>
           </div>
           {local.length > 0 && (
-            <span className="rounded-full bg-success-light px-2.5 py-1 text-2xs font-bold uppercase tracking-wide text-success">
+            <span className="rounded-full bg-success-light px-2.5 py-1 text-3xs font-bold uppercase tracking-wide text-success">
               {local.length} {t('settings.localAvailable', 'en local')}
             </span>
           )}
@@ -373,7 +373,7 @@ export default function AvailableTranslationsScreen() {
 
         {local.length > 0 && (
           <div className="mb-2 flex items-center gap-1.5 px-1 text-2xs font-bold uppercase tracking-wide text-text-tertiary">
-            <DuoIcon icon={CircleCheck} size={16} className="text-success" />
+            <DuoIcon icon={CircleCheck} size={13} className="text-success" />
             {t('settings.localVersions', 'Disponible en local')}
           </div>
         )}
@@ -382,7 +382,7 @@ export default function AvailableTranslationsScreen() {
         {remote.length > 0 && (
           <>
             <div className="mt-3 mb-2 flex items-center gap-1.5 px-1 text-2xs font-bold uppercase tracking-wide text-text-tertiary">
-              <DuoIcon icon={Download} size={16} />
+              <DuoIcon icon={Download} size={13} />
               {t('settings.toDownload', 'À télécharger')}
             </div>
             <div className="flex flex-col gap-3">{remote.map(renderRow)}</div>
@@ -403,7 +403,7 @@ export default function AvailableTranslationsScreen() {
           <DuoIcon icon={ChevronRight} size={20} className="rotate-180" />
         </button>
         <div>
-          <h1 className="text-2xl font-extrabold text-text-primary">
+          <h1 className="page-title">
             {t('settings.availableTranslations', 'Versions de la Bible')}
           </h1>
           <p className="text-xs text-text-muted">

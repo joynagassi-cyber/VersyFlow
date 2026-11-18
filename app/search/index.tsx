@@ -8,7 +8,6 @@ import {
   Cancel01Icon as X,
   Clock01Icon as Clock,
   GraduationCapIcon as GraduationCap,
-  Bookmark01Icon as Bookmark,
   AlertCircleIcon as AlertCircle,
 } from '@/components/ui/solar-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
@@ -225,10 +224,8 @@ export default function SearchScreen() {
       <div className="screen-column">
         {/* Input */}
         <div className="flex items-center gap-2 rounded-2xl bg-surface-tint px-4 py-3">
-          <DuoIcon icon={Search} size={20} className="text-text-muted" />
+          <DuoIcon icon={Search} size={18} className="text-text-muted" />
           <input
-            type="search"
-            aria-label={t('search.placeholder', 'Rechercher un verset...')}
             className="flex-1 bg-transparent text-base text-text-primary outline-none"
             placeholder={t('search.placeholder', 'Rechercher un verset...')}
             value={query}
@@ -238,14 +235,14 @@ export default function SearchScreen() {
           />
           {query && (
             <button onClick={() => handleSearch('')} aria-label={t('common.clear', 'Effacer')}>
-              <DuoIcon icon={X} size={20} className="text-text-muted" />
+              <DuoIcon icon={X} size={18} className="text-text-muted" />
             </button>
           )}
         </div>
 
         {/* Index load failure hint */}
         {indexError && (
-          <div className="glass mt-4 flex items-center gap-3 rounded-2xl bg-surface p-4 shadow-sm">
+          <div className="glass mt-4 flex items-center gap-3 rounded-2xl p-4">
             <DuoIcon icon={AlertCircle} size={20} className="shrink-0 text-error" />
             <p className="flex-1 text-sm text-error">{indexError}</p>
             <button
@@ -305,9 +302,9 @@ export default function SearchScreen() {
           <div className="mt-5 space-y-3 pb-6">
             <p className="text-sm text-text-muted">{results.length} {t('search.results', 'resultat(s)')}</p>
             {results.map((result) => (
-              <div key={result.id} className="glass bible-card rounded-2xl bg-surface p-4 shadow-sm">
+              <div key={result.id} className="glass bible-card rounded-2xl p-4">
                 <div className="mb-2 flex items-center justify-between">
-                  <p className="text-base font-bold text-text-primary">{result.reference}</p>
+                  <h3 className="card-title">{result.reference}</h3>
                   <span
                     className={
                       'rounded-full px-2 py-0.5 text-xs font-semibold ' +
@@ -327,12 +324,8 @@ export default function SearchScreen() {
                     onClick={() => openResult(result)}
                     className="flex items-center gap-1.5 rounded-full bg-surface-tint px-3 py-1.5 text-sm font-medium text-primary"
                   >
-                    <DuoIcon icon={GraduationCap} size={16} />
+                    <DuoIcon icon={GraduationCap} size={14} />
                     {t('search.memorize', 'Memoriser')}
-                  </button>
-                  <button className="flex items-center gap-1.5 rounded-full bg-surface-tint px-3 py-1.5 text-sm font-medium text-primary">
-                    <DuoIcon icon={Bookmark} size={16} />
-                    {t('search.save', 'Sauvegarder')}
                   </button>
                 </div>
               </div>

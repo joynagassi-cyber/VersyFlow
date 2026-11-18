@@ -19,6 +19,7 @@
 
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
+import { Skeleton } from '@/components/ui/Skeleton';
 import { ChartFrame } from '@/components/charts/ChartFrame';
 import { HeatmapCalendar } from '@/components/charts/HeatmapCalendar';
 import { AreaChart } from '@/components/charts/AreaChart';
@@ -68,7 +69,7 @@ export function StatsDashboard({ profileId, windowDays = 30 }: StatsDashboardPro
     return (
       <div className="stats-grid" role="status" aria-live="polite">
         {Array.from({ length: 6 }, (_, index) => (
-          <div key={index} className="stat-card g2 h-32 animate-pulse rounded-2xl bg-surface" />
+          <Skeleton key={index} className="stat-card h-32 rounded-2xl" />
         ))}
         <span className="sr-only">{t('stats.loading', 'Calcul des graphiques…')}</span>
       </div>

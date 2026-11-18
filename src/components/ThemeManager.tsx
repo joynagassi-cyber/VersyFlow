@@ -25,6 +25,8 @@ import {
   uiFontFamilyOf,
 } from '@/theme/theme-fonts';
 import { applyThemeToDocument, resolveTheme } from '@/theme/resolve-theme';
+import { applySurfaceTriplets, applyThemeColor } from '@/theme/surface-triplets';
+import { applyAppIcon } from '@/theme/app-icons';
 
 export function ThemeManager() {
   const glassSettings = useAppearanceStore((s) => s.glassSettings);
@@ -36,6 +38,7 @@ export function ThemeManager() {
   const backgroundType = useAppearanceStore((s) => s.backgroundType);
   const gradientId = useAppearanceStore((s) => s.gradientId);
   const uiFontId = useAppearanceStore((s) => s.uiFontId);
+  const appIconId = useAppearanceStore((s) => s.appIconId);
   const colorThemeId = useAppearanceStore((s) => s.colorThemeId);
   const bibleFontFamily = useAppearanceStore((s) => s.bibleFontFamily);
   const bibleFontSize = useAppearanceStore((s) => s.bibleFontSize);
@@ -60,25 +63,34 @@ export function ThemeManager() {
    * rassemble l'état, ce qui rend le rendu reproductible et testable.
    */
   useEffect(() => {
-    applyThemeToDocument(
-      resolveTheme({
-        presetId,
-        glassSettings,
-        accent,
-        fixedAccentId,
-        backgroundType,
-        gradientId,
-        colorThemeId,
-        isDark: theme.isDark,
-        reducedTransparency,
-        highContrast,
-        // `system` = « suite du thème » : aucune famille fournie, sinon
-        // `--font-sans` écraserait la police du preset (Inter, Geist, DM Sans,
-        // Outfit…). Un choix explicite de l'utilisateur, lui, l'emporte.
-        uiFontFamily: uiFontFamilyOf(uiFontId),
-        wide: viewportWide,
-      }),
-    );
+    const plan = resolveTheme({
+      presetId,
+      glassSettings,
+      accent,
+      fixedAccentId,
+      backgroundType,
+      gradientId,
+      colorThemeId,
+      isDark: theme.isDark,
+      reducedTransparency,
+      highContrast,
+      // `system` = « suite du thème » : aucune famille fournie, sinon
+      // `--font-sans` écraserait la police du preset (Inter, Geist, DM Sans,
+      // Outfit…). Un choix explicite de l'utilisateur, lui, l'emporte.
+      uiFontFamily: uiFontFamilyOf(uiFontId),
+      wide: viewportWide,
+    });
+    applyThemeToDocument(plan);
+
+    // Les triplets RGB ne se calculent pas en CSS : `rgba()` attend trois
+    // nombres. On les lit sur le preset VIEN-NU d'être appliqué — donc après
+    // `applyThemeToDocument`, jamais avant, sinon on mesure l'ancien thème.
+    // Chaque preset définit sa surface en clair ET en sombre : le sombre cesse
+    // d'être peint avec un gris qui n'appartient à aucun preset.
+    const triplets = applySurfaceTriplets(document.documentElement);
+    // La barre du navigateur suit le fond réel : elle restait magenta (#D81B97)
+    // au-dessus d'un écran sombre, parce que la balise était écrite en dur.
+    applyThemeColor(triplets.bg);
     // Thème image : l'accent est échantillonné sur l'illustration, donc
     // asynchrone. Le plan ci-dessus n'y touche pas ; on le complète ici.
     if (backgroundType === 'image' && colorThemeId) {
@@ -113,6 +125,10 @@ export function ThemeManager() {
     const font = findUiFont(uiFontId);
     if (font.id !== 'system') void loadBibleFont(font.id);
   }, [uiFontId]);
+
+  useEffect(() => {
+    void applyAppIcon(appIconId);
+  }, [appIconId]);
 
   useEffect(() => {
     applyReadingVars({

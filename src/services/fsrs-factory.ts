@@ -33,19 +33,15 @@ export function getFsrsEngine(): IFsrsEngine {
   }
 }
 
-/** Returns false: WASM engine is not compiled in this environment */
+/** Returns true: the compiled WASM artifact is checked in under src/infrastructure/wasm/ */
 export function isWasmAvailable(): boolean {
-  try {
-    // The real WASM bridge is compiled and checked in at
-    // `src/infrastructure/wasm/` (built from `rust/fsrs-wasm/`); if the file
-    // is present in the bundle, the engine is loadable on demand — actual
-    // instantiation still happens lazily inside `WasmFsrsEngine` itself, so
-    // this is only a coarse "does the artifact exist" probe, not a real
-    // instantiation attempt.
-    return true;
-  } catch {
-    return false;
-  }
+  // The real WASM bridge is compiled and checked in at
+  // `src/infrastructure/wasm/` (built from `rust/fsrs-wasm/`); if the file
+  // is present in the bundle, the engine is loadable on demand — actual
+  // instantiation still happens lazily inside `WasmFsrsEngine` itself, so
+  // this is only a coarse "does the artifact exist" probe, not a real
+  // instantiation attempt.
+  return true;
 }
 
 /** Reset the engine singleton (for testing) */

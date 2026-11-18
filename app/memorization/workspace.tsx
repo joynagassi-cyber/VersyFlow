@@ -39,7 +39,7 @@ import { ModeCards } from '@/components/memorization/ModeCards';
 import { ModeWrite } from '@/components/memorization/ModeWrite';
 import { TranslationMenu } from '@/components/memorization/TranslationMenu';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
-import { ScreenSkeleton } from '@/components/ui/ScreenSkeleton';
+import { SkeletonScreen } from '@/components/ui/Skeleton';
 
 type StatusTone = 'new' | 'due' | 'consolidated';
 
@@ -189,7 +189,7 @@ export default function MemorizationWorkspace() {
               className="flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-surface text-text-primary shadow-sm active:scale-95"
               aria-label={t('workspace.compare', 'Comparer')}
             >
-              <DuoIcon icon={ArrowLeftRight} size={20} />
+              <DuoIcon icon={ArrowLeftRight} size={18} />
             </button>
           }
           subtitleExtra={
@@ -201,15 +201,15 @@ export default function MemorizationWorkspace() {
         <div className="flex-1 overflow-y-auto px-4 pb-40">
           {status === 'loading' && (
             <div className="flex flex-col items-center py-16">
-              <ScreenSkeleton rows={2} />
-              <p className="mt-3 text-sm text-text-tertiary">
+              <SkeletonScreen />
+              <p className="sr-only" role="status">
                 {t('workspace.loading', 'Chargement du verset...')}
               </p>
             </div>
           )}
 
           {status === 'error' && (
-            <div className="rounded-3xl bg-surface p-6 text-center shadow-sm">
+            <div className="g2 p-6 text-center">
               <p className="text-sm text-error">
                 {statusMessage ?? t('errors.verseNotFound', 'Verset non disponible')}
               </p>
@@ -263,10 +263,10 @@ function ShellHeader({
           className="flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-surface text-text-primary shadow-sm active:scale-95"
           aria-label="Retour"
         >
-          <DuoIcon icon={ArrowLeft} size={20} />
+          <DuoIcon icon={ArrowLeft} size={18} />
         </button>
         <div className="flex min-w-0 flex-1 flex-col items-center">
-          <h1 className="truncate text-lg font-bold text-text-primary">{title}</h1>
+          <h1 className="truncate text-lg font-semibold text-text-primary">{title}</h1>
           {subtitle && (
             <div className="mt-0.5 flex items-center gap-1 text-xs text-text-muted">
               {subtitleExtra}

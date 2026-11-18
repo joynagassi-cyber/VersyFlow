@@ -7,17 +7,16 @@
 // ─── Color Palette ───────────────────────────────────────────────────────────
 
 export const Colors = {
-  // Primaire = thème par défaut (Lara Red). Aligne la palette JS (variables
-  // Ionic) sur `vendored-themes.css` : plus de magenta ici et de rouge là.
-  primary: '#fb2c36',
-  primaryLight: '#ff7a80',
-  primaryDark: '#c01f28',
+  // Primary — Sacred Rose
+  primary: '#e6067a',
+  primaryLight: '#ffb2bf',
+  primaryDark: '#90003b',
 
-  // Backgrounds — canvas absolu (blanc pur en clair, noir pur en sombre)
-  background: '#ffffff',
-  backgroundDark: '#000000',
+  // Backgrounds
+  background: '#fcf9f8',
+  backgroundDark: '#121212',
   surface: '#FFFFFF',
-  surfaceDark: '#18181B',
+  surfaceDark: '#1E1E1E',
   surfaceElevated: '#FFFFFF',
   surfaceElevatedDark: '#2A2A2A',
   surfaceTint: '#FFF0F6',
@@ -130,14 +129,14 @@ const typographyFamilies = {
 // ─── Dark Mode Token Map ────────────────────────────────────────────────────
 
 export const ColorsDark = {
-  // Primaire du thème par défaut, variante nuit.
-  primary: '#ff2056',
-  primaryLight: '#ff6a8a',
-  primaryDark: '#b3123a',
+  // Primary — Sacred Rose (same, works on dark)
+  primary: '#f472d6',
+  primaryLight: '#ffb2bf',
+  primaryDark: '#c21585',
 
   // Backgrounds
   background: '#121212',
-  backgroundDark: '#000000',
+  backgroundDark: '#0A0A0A',
   surface: '#1E1E1E',
   surfaceDark: '#151515',
   surfaceElevated: '#2A2A2A',

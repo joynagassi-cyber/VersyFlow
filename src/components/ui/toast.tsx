@@ -16,7 +16,7 @@ const ToastViewport = React.forwardRef<
   <ToastPrimitives.Viewport
     ref={ref}
     className={cn(
-      'fixed bottom-0 end-0 z-[100] flex max-h-screen w-full flex-col-reverse gap-2 sm:w-[400px]',
+      'fixed bottom-0 right-0 z-[100] flex max-h-screen w-full flex-col-reverse gap-2 sm:w-[400px]',
       className,
     )}
     {...props}
@@ -25,7 +25,7 @@ const ToastViewport = React.forwardRef<
 ToastViewport.displayName = 'ToastViewport';
 
 const toastVariants = cva(
-  'pointer-events-auto rounded-lg border border-border bg-surface p-4 shadow-lg',
+  'g2 pointer-events-auto p-4',
   {
     variants: {
       variant: {
@@ -71,11 +71,11 @@ const ToastClose = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <ToastPrimitives.Close
     ref={ref}
-    className={cn('absolute end-2 top-2 rounded-full p-1 text-text-muted hover:text-text-primary', className)}
+    className={cn('absolute right-2 top-2 rounded-full p-1 text-text-muted hover:text-text-primary', className)}
     toast-close=""
     {...props}
   >
-    <DuoIcon icon={X} size={16} />
+    <DuoIcon icon={X} size={14} />
   </ToastPrimitives.Close>
 ));
 ToastClose.displayName = 'ToastClose';

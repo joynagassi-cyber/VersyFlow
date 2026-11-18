@@ -10,7 +10,11 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { AlertCircleIcon as AlertCircle, Tick02Icon as Tick } from '@/components/ui/solar-icons';
+import {
+  AlertCircleIcon as AlertCircle,
+  Tick02Icon as Tick,
+  UsersRoundIcon as Users,
+} from '@/components/ui/solar-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { DuoIcon } from '@/components/ui/DuoIcon';
 import { Button } from '@/components/ui/button';
@@ -34,19 +38,13 @@ export default function FamilyCreateScreen() {
   const [color, setColor] = useState(DEFAULT_FAMILY_COLOR);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  // Erreur de champ, distincte de l'erreur serveur : elle se pose SOUS le
-  // champ (règle F02) et le champ porte `aria-invalid` (règle F03).
-  const [nameError, setNameError] = useState<string | null>(null);
 
   const submit = async () => {
     const trimmed = name.trim();
-    if (trimmed.length < 2) {
-      setNameError(
-        t('familyPlus.nameTooShort', 'Le nom doit contenir au moins 2 caractères (40 maximum).'),
-      );
+    if (!trimmed) {
+      setError(t('familyPlus.nameRequired', 'Donnez un nom à votre famille pour continuer.'));
       return;
     }
-    setNameError(null);
     setBusy(true);
     setError(null);
     try {
@@ -69,39 +67,16 @@ export default function FamilyCreateScreen() {
       subtitle={t('familyPlus.step1of2', 'Étape 1 sur 2')}
       backPath="/family/presentation"
     >
-      <div className="flex flex-col gap-4">
+      <div className="space-y-4">
         <SectionCard title={t('familyPlus.nameLabel', 'Nom de la famille')}>
-          <label htmlFor="family-name" className="sr-only">
-            {t('familyPlus.nameLabel', 'Nom de la famille')}
-          </label>
           <input
-            id="family-name"
             value={name}
-            aria-label={t('familyPlus.nameLabel', 'Nom de la famille')}
-            aria-invalid={nameError ? true : undefined}
-            aria-describedby={nameError ? 'family-name-error' : 'family-name-hint'}
-            onChange={(e) => {
-              setName(e.target.value);
-              if (nameError) setNameError(null);
-            }}
+            onChange={(e) => setName(e.target.value)}
             maxLength={40}
             placeholder={t('familyPlus.namePlaceholder', 'Famille Étoile')}
+            aria-label={t('familyPlus.nameLabel', 'Nom de la famille')}
             className="w-full rounded-xl border border-border bg-background px-4 py-3 text-base text-text-primary placeholder:text-text-placeholder focus:outline-none focus:ring-1 focus:ring-primary"
           />
-          {nameError ? (
-            <p
-              id="family-name-error"
-              role="alert"
-              className="mt-2 flex items-center gap-1.5 text-sm text-error"
-            >
-              <DuoIcon icon={AlertCircle} size={16} className="shrink-0" />
-              {nameError}
-            </p>
-          ) : (
-            <p id="family-name-hint" className="mt-2 text-sm text-text-muted">
-              {t('familyPlus.nameHint', 'Entre 2 et 40 caractères. Vous pourrez le changer plus tard.')}
-            </p>
-          )}
         </SectionCard>
 
         <SectionCard title={t('familyPlus.colorLabel', 'Couleur')}>
@@ -121,7 +96,7 @@ export default function FamilyCreateScreen() {
                   )}
                   style={{ backgroundColor: swatch.value }}
                 >
-                  {active && <DuoIcon icon={Tick} size={20} className="text-on-primary" />}
+                  {active && <DuoIcon icon={Tick} size={18} className="text-on-primary" />}
                 </button>
               );
             })}
@@ -131,16 +106,16 @@ export default function FamilyCreateScreen() {
         <SectionCard title={t('familyPlus.preview', 'Aperçu')}>
           <div className="flex items-center gap-3">
             <span
-              className="flex h-12 w-12 items-center justify-center rounded-full text-xl"
+              className="flex h-12 w-12 items-center justify-center rounded-full text-primary"
               style={{ backgroundColor: familyTint(color, 20) }}
               aria-hidden="true"
             >
-              👨‍👩‍👧‍👦
+              <DuoIcon icon={Users} size={22} />
             </span>
             <div>
-              <p className="text-base font-bold text-text-primary">
+              <h2 className="card-title">
                 {name.trim() || t('familyPlus.namePlaceholder', 'Famille Étoile')}
-              </p>
+              </h2>
               <p className="text-xs text-text-muted">
                 {t('familyPlus.previewHint', 'Voici comment votre famille apparaîtra.')}
               </p>
@@ -156,14 +131,14 @@ export default function FamilyCreateScreen() {
 
         {error && (
           <p className="flex items-center gap-1.5 rounded-xl bg-error/10 px-3 py-2 text-sm text-error">
-            <DuoIcon icon={AlertCircle} size={16} className="shrink-0" />
+            <DuoIcon icon={AlertCircle} size={14} className="shrink-0" />
             {error}
           </p>
         )}
 
         <Button
           className="w-full"
-          disabled={busy || !signedIn}
+          disabled={busy || !signedIn || !name.trim()}
           onClick={() => fireAndForget(submit(), 'family:create')}
         >
           {t('familyPlus.continueAddProfile', 'Continuer · ajouter mon profil')}

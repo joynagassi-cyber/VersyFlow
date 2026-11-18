@@ -39,7 +39,7 @@ export function StatCard({ title, icon, value, unit, hint, visual, onClick, clas
 
       <div className="mt-3 flex items-end justify-between gap-3">
         <div className="min-w-0">
-          <p className="flex items-baseline gap-1 text-[28px] font-extrabold leading-none text-text-primary tabular-nums">
+          <p className="stat-card-value flex items-baseline gap-1 text-text-primary">
             {value}
             {unit && <span className="text-sm font-semibold text-text-muted">{unit}</span>}
           </p>

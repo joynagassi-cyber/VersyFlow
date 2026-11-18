@@ -6,19 +6,19 @@
   "promptStyle": "nature photoréaliste, scène complète, lavis teinté dans la famille du thème",
   "licence": "contenu généré pour VersyFlow — aucune image tierce, aucun visuel sous licence externe",
   "formats": {
-    "portrait": "1024×1536 (mobile, appliqué comme fond)",
-    "landscape": "1536×1024 (bureau, sélection et bandeau)"
+    "portrait": "832×1248 (mobile, appliqué comme fond)",
+    "landscape": "1248×832 (bureau, sélection et bandeau)"
   },
   "themes": 100,
   "portraitsPresent": 99,
   "landscapesPresent": 99,
-  "measuredTones": 99,
+  "measuredTones": 0,
   "missingThemes": [
     "objets/obj-miroir"
   ],
   "strays": [
-    "objets/obj-clé-landscape.png",
-    "objets/obj-clé-portrait.png"
+    "objets/obj-clé-landscape.webp",
+    "objets/obj-clé-portrait.webp"
   ],
   "entries": [
     {
@@ -27,21 +27,26 @@
       "label": "Pentecôte",
       "declaredColor": "#C0392B",
       "portrait": {
-        "path": "/themes/esprit/esprit-pentecote-portrait.png",
         "present": true,
-        "bytes": 751141,
-        "sha256": "16433ff4e6c00542",
+        "path": "/themes/esprit/esprit-pentecote-portrait.webp",
+        "bytes": 52494,
+        "sha256": "7c79105d722abe08",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/esprit/esprit-pentecote-landscape.png",
         "present": true,
-        "bytes": 798220,
-        "sha256": "763f489fd5e84104",
-        "width": 1248
+        "path": "/themes/esprit/esprit-pentecote-landscape.webp",
+        "bytes": 57956,
+        "sha256": "06fcbc13b60f5386",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#c86051"
+      "measured": null
     },
     {
       "id": "esprit-feu",
@@ -49,21 +54,26 @@
       "label": "Feu du Saint-Esprit",
       "declaredColor": "#E74C3C",
       "portrait": {
-        "path": "/themes/esprit/esprit-feu-portrait.png",
         "present": true,
-        "bytes": 767931,
-        "sha256": "97ee61b607c3e59d",
+        "path": "/themes/esprit/esprit-feu-portrait.webp",
+        "bytes": 38862,
+        "sha256": "738091f5a326ff69",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/esprit/esprit-feu-landscape.png",
         "present": true,
-        "bytes": 815787,
-        "sha256": "6c26dedcd8893f13",
-        "width": 1248
+        "path": "/themes/esprit/esprit-feu-landscape.webp",
+        "bytes": 38908,
+        "sha256": "a68e7feb9a652cd1",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#d26556"
+      "measured": null
     },
     {
       "id": "esprit-zel",
@@ -71,21 +81,26 @@
       "label": "Zèle",
       "declaredColor": "#F39C12",
       "portrait": {
-        "path": "/themes/esprit/esprit-zel-portrait.png",
         "present": true,
-        "bytes": 921545,
-        "sha256": "8bbd66d89cd83713",
+        "path": "/themes/esprit/esprit-zel-portrait.webp",
+        "bytes": 104326,
+        "sha256": "3a301d9ec5b93f05",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/esprit/esprit-zel-landscape.png",
         "present": true,
-        "bytes": 872294,
-        "sha256": "98db7119115231b1",
-        "width": 1248
+        "path": "/themes/esprit/esprit-zel-landscape.webp",
+        "bytes": 91758,
+        "sha256": "cc635875894722cd",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#f2a14a"
+      "measured": null
     },
     {
       "id": "esprit-olivier",
@@ -93,21 +108,26 @@
       "label": "Rameau d’olivier",
       "declaredColor": "#27AE60",
       "portrait": {
-        "path": "/themes/esprit/esprit-olivier-portrait.png",
         "present": true,
-        "bytes": 738059,
-        "sha256": "d09ecc79eba79e94",
+        "path": "/themes/esprit/esprit-olivier-portrait.webp",
+        "bytes": 47696,
+        "sha256": "c9024ed7f1f7b82d",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/esprit/esprit-olivier-landscape.png",
         "present": true,
-        "bytes": 749821,
-        "sha256": "7c3491604c991f35",
-        "width": 1248
+        "path": "/themes/esprit/esprit-olivier-landscape.webp",
+        "bytes": 53698,
+        "sha256": "c59eb4e6d5cc336b",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#81bdb4"
+      "measured": null
     },
     {
       "id": "esprit-dove",
@@ -115,21 +135,26 @@
       "label": "Colombe",
       "declaredColor": "#3498DB",
       "portrait": {
-        "path": "/themes/esprit/esprit-dove-portrait.png",
         "present": true,
-        "bytes": 621942,
-        "sha256": "54423a95e40bf44e",
+        "path": "/themes/esprit/esprit-dove-portrait.webp",
+        "bytes": 45172,
+        "sha256": "0b693b84cf6f704d",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/esprit/esprit-dove-landscape.png",
         "present": true,
-        "bytes": 632341,
-        "sha256": "06f3e6460b609c63",
-        "width": 1248
+        "path": "/themes/esprit/esprit-dove-landscape.webp",
+        "bytes": 38672,
+        "sha256": "eb1b90478044c2a6",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#b1cfe9"
+      "measured": null
     },
     {
       "id": "esprit-eau",
@@ -137,21 +162,26 @@
       "label": "Eau vive",
       "declaredColor": "#1ABC9C",
       "portrait": {
-        "path": "/themes/esprit/esprit-eau-portrait.png",
         "present": true,
-        "bytes": 787397,
-        "sha256": "d00ad8f4c6415dee",
+        "path": "/themes/esprit/esprit-eau-portrait.webp",
+        "bytes": 66874,
+        "sha256": "be8ebc8f210a2533",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/esprit/esprit-eau-landscape.png",
         "present": true,
-        "bytes": 749844,
-        "sha256": "4a429e2d622ee4aa",
-        "width": 1248
+        "path": "/themes/esprit/esprit-eau-landscape.webp",
+        "bytes": 62596,
+        "sha256": "131d3f3db808b59e",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#5eb9b9"
+      "measured": null
     },
     {
       "id": "esprit-semin",
@@ -159,21 +189,26 @@
       "label": "Sémin (vent)",
       "declaredColor": "#8E44AD",
       "portrait": {
-        "path": "/themes/esprit/esprit-semin-portrait.png",
         "present": true,
-        "bytes": 974837,
-        "sha256": "46e43592800541d9",
+        "path": "/themes/esprit/esprit-semin-portrait.webp",
+        "bytes": 121394,
+        "sha256": "dcac885d58b16da8",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/esprit/esprit-semin-landscape.png",
         "present": true,
-        "bytes": 762648,
-        "sha256": "e4ac7f199da76707",
-        "width": 1248
+        "path": "/themes/esprit/esprit-semin-landscape.webp",
+        "bytes": 71372,
+        "sha256": "3c74b274c249a3e4",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#986fa6"
+      "measured": null
     },
     {
       "id": "esprit-nouvel",
@@ -181,21 +216,26 @@
       "label": "Vie nouvelle",
       "declaredColor": "#2ECC71",
       "portrait": {
-        "path": "/themes/esprit/esprit-nouvel-portrait.png",
         "present": true,
-        "bytes": 680996,
-        "sha256": "602b42044ec4b3e6",
+        "path": "/themes/esprit/esprit-nouvel-portrait.webp",
+        "bytes": 44662,
+        "sha256": "296da611294f026e",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/esprit/esprit-nouvel-landscape.png",
         "present": true,
-        "bytes": 748044,
-        "sha256": "6b62449950a60ed3",
-        "width": 1248
+        "path": "/themes/esprit/esprit-nouvel-landscape.webp",
+        "bytes": 45294,
+        "sha256": "3c80837c2a2d8367",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#49acad"
+      "measured": null
     },
     {
       "id": "esprit-tete",
@@ -203,21 +243,26 @@
       "label": "Lumière de l’esprit",
       "declaredColor": "#F1C40F",
       "portrait": {
-        "path": "/themes/esprit/esprit-tete-portrait.png",
         "present": true,
-        "bytes": 739185,
-        "sha256": "3ab0e2926f9351f3",
+        "path": "/themes/esprit/esprit-tete-portrait.webp",
+        "bytes": 47098,
+        "sha256": "5b778f2a4c99130f",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/esprit/esprit-tete-landscape.png",
         "present": true,
-        "bytes": 655377,
-        "sha256": "0e7f94d7f23b94cd",
-        "width": 1248
+        "path": "/themes/esprit/esprit-tete-landscape.webp",
+        "bytes": 35976,
+        "sha256": "0d5c6fcfb58e5ab9",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#f9d172"
+      "measured": null
     },
     {
       "id": "esprit-rain",
@@ -225,21 +270,26 @@
       "label": "Pluie d’esprit",
       "declaredColor": "#5DADE2",
       "portrait": {
-        "path": "/themes/esprit/esprit-rain-portrait.png",
         "present": true,
-        "bytes": 870016,
-        "sha256": "6f8ef21132775705",
+        "path": "/themes/esprit/esprit-rain-portrait.webp",
+        "bytes": 61446,
+        "sha256": "437e6729ce3a1cd6",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/esprit/esprit-rain-landscape.png",
         "present": true,
-        "bytes": 762516,
-        "sha256": "868fdebb3bfaf534",
-        "width": 1248
+        "path": "/themes/esprit/esprit-rain-landscape.webp",
+        "bytes": 62288,
+        "sha256": "522129783d2e1f07",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#b8e0f3"
+      "measured": null
     },
     {
       "id": "ev-pasque",
@@ -247,21 +297,26 @@
       "label": "Pâque",
       "declaredColor": "#7D3C98",
       "portrait": {
-        "path": "/themes/evenements/ev-pasque-portrait.png",
         "present": true,
-        "bytes": 736721,
-        "sha256": "763ae9d1f14a3cb5",
+        "path": "/themes/evenements/ev-pasque-portrait.webp",
+        "bytes": 62398,
+        "sha256": "e072624233b6caaf",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/evenements/ev-pasque-landscape.png",
         "present": true,
-        "bytes": 749266,
-        "sha256": "a61f657d53f8da44",
-        "width": 1248
+        "path": "/themes/evenements/ev-pasque-landscape.webp",
+        "bytes": 72166,
+        "sha256": "314e6a95cdfa7282",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#8b78ae"
+      "measured": null
     },
     {
       "id": "ev-noel",
@@ -269,21 +324,26 @@
       "label": "Noël",
       "declaredColor": "#1E8449",
       "portrait": {
-        "path": "/themes/evenements/ev-noel-portrait.png",
         "present": true,
-        "bytes": 817218,
-        "sha256": "4e07a6f54a20aca5",
+        "path": "/themes/evenements/ev-noel-portrait.webp",
+        "bytes": 60054,
+        "sha256": "570bebbd98ff12b1",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/evenements/ev-noel-landscape.png",
         "present": true,
-        "bytes": 790337,
-        "sha256": "4829a018b11c2f2c",
-        "width": 1248
+        "path": "/themes/evenements/ev-noel-landscape.webp",
+        "bytes": 59956,
+        "sha256": "15e70d80213447c8",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#9ec7be"
+      "measured": null
     },
     {
       "id": "ev-epee",
@@ -291,21 +351,26 @@
       "label": "Épiphanie",
       "declaredColor": "#F4D03F",
       "portrait": {
-        "path": "/themes/evenements/ev-epee-portrait.png",
         "present": true,
-        "bytes": 655524,
-        "sha256": "e656b4085c1ed961",
+        "path": "/themes/evenements/ev-epee-portrait.webp",
+        "bytes": 26062,
+        "sha256": "56eac1f289686c5d",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/evenements/ev-epee-landscape.png",
         "present": true,
-        "bytes": 661681,
-        "sha256": "f4b07becdab64ec9",
-        "width": 1248
+        "path": "/themes/evenements/ev-epee-landscape.webp",
+        "bytes": 28802,
+        "sha256": "c4967b99f117cd9e",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#f7d675"
+      "measured": null
     },
     {
       "id": "ev-temple",
@@ -313,21 +378,26 @@
       "label": "Temple",
       "declaredColor": "#B03A2E",
       "portrait": {
-        "path": "/themes/evenements/ev-temple-portrait.png",
         "present": true,
-        "bytes": 717009,
-        "sha256": "10dccbaf79604e89",
+        "path": "/themes/evenements/ev-temple-portrait.webp",
+        "bytes": 56150,
+        "sha256": "2bfcfd4dc0e8cf94",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/evenements/ev-temple-landscape.png",
         "present": true,
-        "bytes": 672615,
-        "sha256": "71c5319cb99f4ee2",
-        "width": 1248
+        "path": "/themes/evenements/ev-temple-landscape.webp",
+        "bytes": 47580,
+        "sha256": "dd4fd39b593b4b55",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#bf5f5f"
+      "measured": null
     },
     {
       "id": "ev-lent",
@@ -335,21 +405,26 @@
       "label": "Carême",
       "declaredColor": "#566573",
       "portrait": {
-        "path": "/themes/evenements/ev-lent-portrait.png",
         "present": true,
-        "bytes": 603701,
-        "sha256": "dac9381710869055",
+        "path": "/themes/evenements/ev-lent-portrait.webp",
+        "bytes": 32108,
+        "sha256": "6280d01ddd476aa0",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/evenements/ev-lent-landscape.png",
         "present": true,
-        "bytes": 684362,
-        "sha256": "e71d22e613551c7c",
-        "width": 1248
+        "path": "/themes/evenements/ev-lent-landscape.webp",
+        "bytes": 50024,
+        "sha256": "14bb48c16da558a7",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#7d7c8a"
+      "measured": null
     },
     {
       "id": "ev-ascension",
@@ -357,21 +432,26 @@
       "label": "Ascension",
       "declaredColor": "#2C3E50",
       "portrait": {
-        "path": "/themes/evenements/ev-ascension-portrait.png",
         "present": true,
-        "bytes": 524569,
-        "sha256": "df4defdaa45a77fa",
+        "path": "/themes/evenements/ev-ascension-portrait.webp",
+        "bytes": 23674,
+        "sha256": "7abb0614037101d6",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/evenements/ev-ascension-landscape.png",
         "present": true,
-        "bytes": 576384,
-        "sha256": "d51dac05111b006d",
-        "width": 1248
+        "path": "/themes/evenements/ev-ascension-landscape.webp",
+        "bytes": 35054,
+        "sha256": "34a7776093ff3f81",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#6a8691"
+      "measured": null
     },
     {
       "id": "ev-toussaint",
@@ -379,21 +459,26 @@
       "label": "Toussaint",
       "declaredColor": "#154360",
       "portrait": {
-        "path": "/themes/evenements/ev-toussaint-portrait.png",
         "present": true,
-        "bytes": 852045,
-        "sha256": "3a4e513e220d8b17",
+        "path": "/themes/evenements/ev-toussaint-portrait.webp",
+        "bytes": 63562,
+        "sha256": "13c35e0783448953",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/evenements/ev-toussaint-landscape.png",
         "present": true,
-        "bytes": 759164,
-        "sha256": "f68131ff8b31106f",
-        "width": 1248
+        "path": "/themes/evenements/ev-toussaint-landscape.webp",
+        "bytes": 53336,
+        "sha256": "c3c4be3cb52228ae",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#426283"
+      "measured": null
     },
     {
       "id": "ev-resurrection",
@@ -401,21 +486,26 @@
       "label": "Résurrection",
       "declaredColor": "#A93226",
       "portrait": {
-        "path": "/themes/evenements/ev-resurrection-portrait.png",
         "present": true,
-        "bytes": 691243,
-        "sha256": "afe0a5064021d724",
+        "path": "/themes/evenements/ev-resurrection-portrait.webp",
+        "bytes": 49324,
+        "sha256": "39b55e0a2588e96f",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/evenements/ev-resurrection-landscape.png",
         "present": true,
-        "bytes": 711155,
-        "sha256": "71b6ab556641eec6",
-        "width": 1248
+        "path": "/themes/evenements/ev-resurrection-landscape.webp",
+        "bytes": 59484,
+        "sha256": "9323130eb01631e2",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#9c4542"
+      "measured": null
     },
     {
       "id": "ev-bapteme",
@@ -423,21 +513,26 @@
       "label": "Baptême",
       "declaredColor": "#148F77",
       "portrait": {
-        "path": "/themes/evenements/ev-bapteme-portrait.png",
         "present": true,
-        "bytes": 677103,
-        "sha256": "e1d916af9decad8c",
+        "path": "/themes/evenements/ev-bapteme-portrait.webp",
+        "bytes": 46112,
+        "sha256": "2b0f7a09bd4b10de",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/evenements/ev-bapteme-landscape.png",
         "present": true,
-        "bytes": 759462,
-        "sha256": "a7d956837007492f",
-        "width": 1248
+        "path": "/themes/evenements/ev-bapteme-landscape.webp",
+        "bytes": 65044,
+        "sha256": "dc57c0eead47c2fa",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#7dbdbf"
+      "measured": null
     },
     {
       "id": "ev-harvest",
@@ -445,21 +540,26 @@
       "label": "Moisson",
       "declaredColor": "#B7950B",
       "portrait": {
-        "path": "/themes/evenements/ev-harvest-portrait.png",
         "present": true,
-        "bytes": 796909,
-        "sha256": "c03ebc5d79e426c8",
+        "path": "/themes/evenements/ev-harvest-portrait.webp",
+        "bytes": 64350,
+        "sha256": "65589be93a6ad2af",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/evenements/ev-harvest-landscape.png",
         "present": true,
-        "bytes": 949036,
-        "sha256": "045e28fe0ff45a68",
-        "width": 1248
+        "path": "/themes/evenements/ev-harvest-landscape.webp",
+        "bytes": 103340,
+        "sha256": "54bcbf766a09049e",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#c09a3e"
+      "measured": null
     },
     {
       "id": "villes-paris",
@@ -467,21 +567,26 @@
       "label": "Paris",
       "declaredColor": "#34495E",
       "portrait": {
-        "path": "/themes/villes/villes-paris-portrait.png",
         "present": true,
-        "bytes": 733918,
-        "sha256": "a58d5c5a2ec15403",
+        "path": "/themes/villes/villes-paris-portrait.webp",
+        "bytes": 63838,
+        "sha256": "cbc109da14953534",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/villes/villes-paris-landscape.png",
         "present": true,
-        "bytes": 742934,
-        "sha256": "fb572dc95cd0563c",
-        "width": 1248
+        "path": "/themes/villes/villes-paris-landscape.webp",
+        "bytes": 56318,
+        "sha256": "1a5433d51af55d85",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#5a7384"
+      "measured": null
     },
     {
       "id": "villes-berlin",
@@ -489,21 +594,26 @@
       "label": "Berlin",
       "declaredColor": "#7F8C8D",
       "portrait": {
-        "path": "/themes/villes/villes-berlin-portrait.png",
         "present": true,
-        "bytes": 668968,
-        "sha256": "15bcbb841d11398b",
+        "path": "/themes/villes/villes-berlin-portrait.webp",
+        "bytes": 48968,
+        "sha256": "745a07ef6818bc4a",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/villes/villes-berlin-landscape.png",
         "present": true,
-        "bytes": 723064,
-        "sha256": "285297dc7830b507",
-        "width": 1248
+        "path": "/themes/villes/villes-berlin-landscape.webp",
+        "bytes": 49502,
+        "sha256": "468351b66247abf6",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#88948b"
+      "measured": null
     },
     {
       "id": "villes-caire",
@@ -511,21 +621,26 @@
       "label": "Le Caire",
       "declaredColor": "#B7950B",
       "portrait": {
-        "path": "/themes/villes/villes-caire-portrait.png",
         "present": true,
-        "bytes": 610188,
-        "sha256": "0fabf51314b141c4",
+        "path": "/themes/villes/villes-caire-portrait.webp",
+        "bytes": 31118,
+        "sha256": "76a802c7588f8ae4",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/villes/villes-caire-landscape.png",
         "present": true,
-        "bytes": 610168,
-        "sha256": "b486e503874b3a9c",
-        "width": 1248
+        "path": "/themes/villes/villes-caire-landscape.webp",
+        "bytes": 33842,
+        "sha256": "bd99b1ea24766382",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#dfb369"
+      "measured": null
     },
     {
       "id": "villes-pekin",
@@ -533,21 +648,26 @@
       "label": "Pékin",
       "declaredColor": "#922B21",
       "portrait": {
-        "path": "/themes/villes/villes-pekin-portrait.png",
         "present": true,
-        "bytes": 713171,
-        "sha256": "215da2286e6f360a",
+        "path": "/themes/villes/villes-pekin-portrait.webp",
+        "bytes": 54128,
+        "sha256": "90c4018fa4f62b4e",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/villes/villes-pekin-landscape.png",
         "present": true,
-        "bytes": 693649,
-        "sha256": "1f42efd6955b5b26",
-        "width": 1248
+        "path": "/themes/villes/villes-pekin-landscape.webp",
+        "bytes": 40620,
+        "sha256": "350f4534fed93e4e",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#a76148"
+      "measured": null
     },
     {
       "id": "villes-madrid",
@@ -555,21 +675,26 @@
       "label": "Madrid",
       "declaredColor": "#CA6F1E",
       "portrait": {
-        "path": "/themes/villes/villes-madrid-portrait.png",
         "present": true,
-        "bytes": 730877,
-        "sha256": "59c90e300fdb0ce7",
+        "path": "/themes/villes/villes-madrid-portrait.webp",
+        "bytes": 35976,
+        "sha256": "99b4845f0e8fed4f",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/villes/villes-madrid-landscape.png",
         "present": true,
-        "bytes": 662357,
-        "sha256": "8cbe8c0122cbda62",
-        "width": 1248
+        "path": "/themes/villes/villes-madrid-landscape.webp",
+        "bytes": 34986,
+        "sha256": "b4f45199e7cb0a21",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#c27133"
+      "measured": null
     },
     {
       "id": "villes-lisbonne",
@@ -577,21 +702,26 @@
       "label": "Lisbonne",
       "declaredColor": "#1F618D",
       "portrait": {
-        "path": "/themes/villes/villes-lisbonne-portrait.png",
         "present": true,
-        "bytes": 709427,
-        "sha256": "6c007d9efa067c94",
+        "path": "/themes/villes/villes-lisbonne-portrait.webp",
+        "bytes": 58404,
+        "sha256": "191f01d08db9f629",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/villes/villes-lisbonne-landscape.png",
         "present": true,
-        "bytes": 718840,
-        "sha256": "e7309066a4dedbbc",
-        "width": 1248
+        "path": "/themes/villes/villes-lisbonne-landscape.webp",
+        "bytes": 58864,
+        "sha256": "17b47412facee320",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#4b839b"
+      "measured": null
     },
     {
       "id": "villes-jakarta",
@@ -599,21 +729,26 @@
       "label": "Jakarta",
       "declaredColor": "#148F77",
       "portrait": {
-        "path": "/themes/villes/villes-jakarta-portrait.png",
         "present": true,
-        "bytes": 808430,
-        "sha256": "4d51ef3cc732f1f0",
+        "path": "/themes/villes/villes-jakarta-portrait.webp",
+        "bytes": 87774,
+        "sha256": "23df164aaa44fb77",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/villes/villes-jakarta-landscape.png",
         "present": true,
-        "bytes": 758466,
-        "sha256": "3a2d8fd51930fbd7",
-        "width": 1248
+        "path": "/themes/villes/villes-jakarta-landscape.webp",
+        "bytes": 74852,
+        "sha256": "e3c42dd846a09a2d",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#7dbfbe"
+      "measured": null
     },
     {
       "id": "villes-delhi",
@@ -621,21 +756,26 @@
       "label": "Delhi",
       "declaredColor": "#B03A2E",
       "portrait": {
-        "path": "/themes/villes/villes-delhi-portrait.png",
         "present": true,
-        "bytes": 697743,
-        "sha256": "ff5d85bad75bcd72",
+        "path": "/themes/villes/villes-delhi-portrait.webp",
+        "bytes": 56318,
+        "sha256": "8f01dfbf4c91cff3",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/villes/villes-delhi-landscape.png",
         "present": true,
-        "bytes": 696163,
-        "sha256": "1c334f4006a157bf",
-        "width": 1248
+        "path": "/themes/villes/villes-delhi-landscape.webp",
+        "bytes": 67262,
+        "sha256": "e3855ec99992404d",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#a6876e"
+      "measured": null
     },
     {
       "id": "villes-istanbul",
@@ -643,21 +783,26 @@
       "label": "Istanbul",
       "declaredColor": "#5B2C6F",
       "portrait": {
-        "path": "/themes/villes/villes-istanbul-portrait.png",
         "present": true,
-        "bytes": 681743,
-        "sha256": "bf8671f4ce11ddf3",
+        "path": "/themes/villes/villes-istanbul-portrait.webp",
+        "bytes": 43896,
+        "sha256": "7654ef0b0221b006",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/villes/villes-istanbul-landscape.png",
         "present": true,
-        "bytes": 690934,
-        "sha256": "3ee7178ba08273d3",
-        "width": 1248
+        "path": "/themes/villes/villes-istanbul-landscape.webp",
+        "bytes": 46554,
+        "sha256": "414ea798f95db6c6",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#846fa3"
+      "measured": null
     },
     {
       "id": "villes-stpetersbourg",
@@ -665,21 +810,26 @@
       "label": "St Pétersbourg",
       "declaredColor": "#1A5276",
       "portrait": {
-        "path": "/themes/villes/villes-stpetersbourg-portrait.png",
         "present": true,
-        "bytes": 664589,
-        "sha256": "fbd1ebb34533337e",
+        "path": "/themes/villes/villes-stpetersbourg-portrait.webp",
+        "bytes": 56026,
+        "sha256": "2d2ee497d4008323",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/villes/villes-stpetersbourg-landscape.png",
         "present": true,
-        "bytes": 674802,
-        "sha256": "47d156f48d29a2d5",
-        "width": 1248
+        "path": "/themes/villes/villes-stpetersbourg-landscape.webp",
+        "bytes": 55086,
+        "sha256": "2513a09c04d729c6",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#5a729b"
+      "measured": null
     },
     {
       "id": "nat-trees",
@@ -687,21 +837,26 @@
       "label": "Forêt",
       "declaredColor": "#1E8449",
       "portrait": {
-        "path": "/themes/natures/nat-trees-portrait.png",
         "present": true,
-        "bytes": 976729,
-        "sha256": "9a2bebff9516c1f0",
+        "path": "/themes/natures/nat-trees-portrait.webp",
+        "bytes": 100836,
+        "sha256": "81e7090aa745de52",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/natures/nat-trees-landscape.png",
         "present": true,
-        "bytes": 861108,
-        "sha256": "2a52a6a276c9ed52",
-        "width": 1248
+        "path": "/themes/natures/nat-trees-landscape.webp",
+        "bytes": 67788,
+        "sha256": "23d2b4156b1a7063",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#92b8aa"
+      "measured": null
     },
     {
       "id": "nat-mont",
@@ -709,21 +864,26 @@
       "label": "Montagnes",
       "declaredColor": "#4A235A",
       "portrait": {
-        "path": "/themes/natures/nat-mont-portrait.png",
         "present": true,
-        "bytes": 693632,
-        "sha256": "9a9b9ff47e8415cd",
+        "path": "/themes/natures/nat-mont-portrait.webp",
+        "bytes": 42734,
+        "sha256": "25eba9aa12b3e6af",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/natures/nat-mont-landscape.png",
         "present": true,
-        "bytes": 663209,
-        "sha256": "dd1cb734a2e90992",
-        "width": 1248
+        "path": "/themes/natures/nat-mont-landscape.webp",
+        "bytes": 36594,
+        "sha256": "84b0b49be1ad8c08",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#7468a1"
+      "measured": null
     },
     {
       "id": "nat-cactus",
@@ -731,21 +891,26 @@
       "label": "Désert",
       "declaredColor": "#CA6F1E",
       "portrait": {
-        "path": "/themes/natures/nat-cactus-portrait.png",
         "present": true,
-        "bytes": 632013,
-        "sha256": "6806f1718828edc6",
+        "path": "/themes/natures/nat-cactus-portrait.webp",
+        "bytes": 33986,
+        "sha256": "70001cf873d4af9f",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/natures/nat-cactus-landscape.png",
         "present": true,
-        "bytes": 619507,
-        "sha256": "a248e975a2a63c1f",
-        "width": 1248
+        "path": "/themes/natures/nat-cactus-landscape.webp",
+        "bytes": 32590,
+        "sha256": "97f7068faed0fdcf",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#e2a974"
+      "measured": null
     },
     {
       "id": "nat-fleurs",
@@ -753,21 +918,26 @@
       "label": "Fleurs",
       "declaredColor": "#C2185B",
       "portrait": {
-        "path": "/themes/natures/nat-fleurs-portrait.png",
         "present": true,
-        "bytes": 757743,
-        "sha256": "18b0cd5737cde9fb",
+        "path": "/themes/natures/nat-fleurs-portrait.webp",
+        "bytes": 51458,
+        "sha256": "341502f36d91f291",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/natures/nat-fleurs-landscape.png",
         "present": true,
-        "bytes": 709064,
-        "sha256": "8ea5bf2481dd657d",
-        "width": 1248
+        "path": "/themes/natures/nat-fleurs-landscape.webp",
+        "bytes": 61812,
+        "sha256": "42736f05341af06a",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#ca5076"
+      "measured": null
     },
     {
       "id": "nat-feuille",
@@ -775,21 +945,26 @@
       "label": "Feuillage",
       "declaredColor": "#27AE60",
       "portrait": {
-        "path": "/themes/natures/nat-feuille-portrait.png",
         "present": true,
-        "bytes": 792398,
-        "sha256": "b3e2cf715821251c",
+        "path": "/themes/natures/nat-feuille-portrait.webp",
+        "bytes": 72420,
+        "sha256": "d421b3f16d7450a0",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/natures/nat-feuille-landscape.png",
         "present": true,
-        "bytes": 837695,
-        "sha256": "f60cacc135f96d2e",
-        "width": 1248
+        "path": "/themes/natures/nat-feuille-landscape.webp",
+        "bytes": 84204,
+        "sha256": "8b9790adf6334011",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#87c5be"
+      "measured": null
     },
     {
       "id": "nat-paon",
@@ -797,21 +972,26 @@
       "label": "Oiseau",
       "declaredColor": "#1565C0",
       "portrait": {
-        "path": "/themes/natures/nat-paon-portrait.png",
         "present": true,
-        "bytes": 827146,
-        "sha256": "a073363e15548351",
+        "path": "/themes/natures/nat-paon-portrait.webp",
+        "bytes": 98832,
+        "sha256": "539e53ae99cc63c6",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/natures/nat-paon-landscape.png",
         "present": true,
-        "bytes": 801358,
-        "sha256": "8970e612465877cb",
-        "width": 1248
+        "path": "/themes/natures/nat-paon-landscape.webp",
+        "bytes": 95978,
+        "sha256": "f3bd2ae20827d222",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#5b92c0"
+      "measured": null
     },
     {
       "id": "nat-lune",
@@ -819,21 +999,26 @@
       "label": "Lune",
       "declaredColor": "#1B4F72",
       "portrait": {
-        "path": "/themes/natures/nat-lune-portrait.png",
         "present": true,
-        "bytes": 830572,
-        "sha256": "61d76795604b6315",
+        "path": "/themes/natures/nat-lune-portrait.webp",
+        "bytes": 47976,
+        "sha256": "7b18c4baf36bfa31",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/natures/nat-lune-landscape.png",
         "present": true,
-        "bytes": 774519,
-        "sha256": "c2c22bac21951e55",
-        "width": 1248
+        "path": "/themes/natures/nat-lune-landscape.webp",
+        "bytes": 41400,
+        "sha256": "1782c21d7e335ba9",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#6b92ae"
+      "measured": null
     },
     {
       "id": "nat-sun",
@@ -841,21 +1026,26 @@
       "label": "Soleil",
       "declaredColor": "#F39C12",
       "portrait": {
-        "path": "/themes/natures/nat-sun-portrait.png",
         "present": true,
-        "bytes": 684102,
-        "sha256": "e45bef625cbd61dc",
+        "path": "/themes/natures/nat-sun-portrait.webp",
+        "bytes": 36456,
+        "sha256": "cd067615e15828e3",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/natures/nat-sun-landscape.png",
         "present": true,
-        "bytes": 659812,
-        "sha256": "952a881269e2d05b",
-        "width": 1248
+        "path": "/themes/natures/nat-sun-landscape.webp",
+        "bytes": 40672,
+        "sha256": "c2d26c0d7f159b53",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#f7ab4c"
+      "measured": null
     },
     {
       "id": "nat-ocean",
@@ -863,21 +1053,26 @@
       "label": "Océan",
       "declaredColor": "#0E6655",
       "portrait": {
-        "path": "/themes/natures/nat-ocean-portrait.png",
         "present": true,
-        "bytes": 671070,
-        "sha256": "b2adc02b132786d5",
+        "path": "/themes/natures/nat-ocean-portrait.webp",
+        "bytes": 37154,
+        "sha256": "8dacb9b3fafa6e85",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/natures/nat-ocean-landscape.png",
         "present": true,
-        "bytes": 601786,
-        "sha256": "1d187d49798826c9",
-        "width": 1248
+        "path": "/themes/natures/nat-ocean-landscape.webp",
+        "bytes": 33998,
+        "sha256": "29eb01e8f7b4e48d",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#62968b"
+      "measured": null
     },
     {
       "id": "nat-pluie",
@@ -885,21 +1080,26 @@
       "label": "Pluie",
       "declaredColor": "#21618C",
       "portrait": {
-        "path": "/themes/natures/nat-pluie-portrait.png",
         "present": true,
-        "bytes": 778128,
-        "sha256": "fbda1712b0f30ff3",
+        "path": "/themes/natures/nat-pluie-portrait.webp",
+        "bytes": 56314,
+        "sha256": "2b2a041657541618",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/natures/nat-pluie-landscape.png",
         "present": true,
-        "bytes": 670634,
-        "sha256": "a9c55faf869143ec",
-        "width": 1248
+        "path": "/themes/natures/nat-pluie-landscape.webp",
+        "bytes": 58984,
+        "sha256": "e56bdd34c5e0e155",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#a6c2dc"
+      "measured": null
     },
     {
       "id": "sag-livre",
@@ -907,21 +1107,26 @@
       "label": "Livre",
       "declaredColor": "#6E2C00",
       "portrait": {
-        "path": "/themes/sagesse/sag-livre-portrait.png",
         "present": true,
-        "bytes": 721960,
-        "sha256": "ab4fce8b3971277c",
+        "path": "/themes/sagesse/sag-livre-portrait.webp",
+        "bytes": 51138,
+        "sha256": "3f12b29d23379bf9",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/sagesse/sag-livre-landscape.png",
         "present": true,
-        "bytes": 671093,
-        "sha256": "7ed5396b9c60683d",
-        "width": 1248
+        "path": "/themes/sagesse/sag-livre-landscape.webp",
+        "bytes": 44138,
+        "sha256": "0bd34482c8c11739",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#c5715d"
+      "measured": null
     },
     {
       "id": "sag-plume",
@@ -929,21 +1134,26 @@
       "label": "Plume",
       "declaredColor": "#283747",
       "portrait": {
-        "path": "/themes/sagesse/sag-plume-portrait.png",
         "present": true,
-        "bytes": 668900,
-        "sha256": "8c4f10913163acd6",
+        "path": "/themes/sagesse/sag-plume-portrait.webp",
+        "bytes": 35914,
+        "sha256": "2553c4fd4c24ce49",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/sagesse/sag-plume-landscape.png",
         "present": true,
-        "bytes": 644764,
-        "sha256": "a9c6f7165d908513",
-        "width": 1248
+        "path": "/themes/sagesse/sag-plume-landscape.webp",
+        "bytes": 37350,
+        "sha256": "fc9f467c6b90e41a",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#5c627a"
+      "measured": null
     },
     {
       "id": "sag-lam",
@@ -951,21 +1161,26 @@
       "label": "Lamplume",
       "declaredColor": "#B9770E",
       "portrait": {
-        "path": "/themes/sagesse/sag-lam-portrait.png",
         "present": true,
-        "bytes": 730416,
-        "sha256": "490437746661eb6b",
+        "path": "/themes/sagesse/sag-lam-portrait.webp",
+        "bytes": 47900,
+        "sha256": "8ab00e4694411329",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/sagesse/sag-lam-landscape.png",
         "present": true,
-        "bytes": 750881,
-        "sha256": "c7e64af2f0d22bdb",
-        "width": 1248
+        "path": "/themes/sagesse/sag-lam-landscape.webp",
+        "bytes": 65120,
+        "sha256": "cf136ed1b2d8f706",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#ad6f2b"
+      "measured": null
     },
     {
       "id": "sag-perle",
@@ -973,21 +1188,26 @@
       "label": "Perle",
       "declaredColor": "#A569BD",
       "portrait": {
-        "path": "/themes/sagesse/sag-perle-portrait.png",
         "present": true,
-        "bytes": 789473,
-        "sha256": "4ac642355832efb3",
+        "path": "/themes/sagesse/sag-perle-portrait.webp",
+        "bytes": 78410,
+        "sha256": "cef3aa232928b421",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/sagesse/sag-perle-landscape.png",
         "present": true,
-        "bytes": 917475,
-        "sha256": "95f3bdfd3e16c078",
-        "width": 1248
+        "path": "/themes/sagesse/sag-perle-landscape.webp",
+        "bytes": 104190,
+        "sha256": "8aab2d85982d80f6",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#ae98cc"
+      "measured": null
     },
     {
       "id": "sag-miroir",
@@ -995,21 +1215,26 @@
       "label": "Miroir",
       "declaredColor": "#566573",
       "portrait": {
-        "path": "/themes/sagesse/sag-miroir-portrait.png",
         "present": true,
-        "bytes": 604556,
-        "sha256": "5b6c7f7e1964d606",
+        "path": "/themes/sagesse/sag-miroir-portrait.webp",
+        "bytes": 26400,
+        "sha256": "7afa217e15f443a5",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/sagesse/sag-miroir-landscape.png",
         "present": true,
-        "bytes": 580963,
-        "sha256": "11f023b35192eac2",
-        "width": 1248
+        "path": "/themes/sagesse/sag-miroir-landscape.webp",
+        "bytes": 26572,
+        "sha256": "c713db67c1c67c27",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#7f7f8f"
+      "measured": null
     },
     {
       "id": "sag-tri",
@@ -1017,21 +1242,26 @@
       "label": "Triangle",
       "declaredColor": "#1F618D",
       "portrait": {
-        "path": "/themes/sagesse/sag-tri-portrait.png",
         "present": true,
-        "bytes": 727026,
-        "sha256": "df172d548d3f981d",
+        "path": "/themes/sagesse/sag-tri-portrait.webp",
+        "bytes": 57956,
+        "sha256": "44822c6f695d6182",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/sagesse/sag-tri-landscape.png",
         "present": true,
-        "bytes": 671070,
-        "sha256": "4bb4a7faa0cc5e76",
-        "width": 1248
+        "path": "/themes/sagesse/sag-tri-landscape.webp",
+        "bytes": 51234,
+        "sha256": "7b32da232e2b4fec",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#7395b8"
+      "measured": null
     },
     {
       "id": "sag-horloger",
@@ -1039,21 +1269,26 @@
       "label": "Boussole",
       "declaredColor": "#117864",
       "portrait": {
-        "path": "/themes/sagesse/sag-horloger-portrait.png",
         "present": true,
-        "bytes": 801309,
-        "sha256": "7d17e054e1468ef8",
+        "path": "/themes/sagesse/sag-horloger-portrait.webp",
+        "bytes": 62172,
+        "sha256": "6dc33723a1282045",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/sagesse/sag-horloger-landscape.png",
         "present": true,
-        "bytes": 755454,
-        "sha256": "f7b729e0c26bebe3",
-        "width": 1248
+        "path": "/themes/sagesse/sag-horloger-landscape.webp",
+        "bytes": 50860,
+        "sha256": "01bc4e4a31746e34",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#4f9395"
+      "measured": null
     },
     {
       "id": "sag-geometrie",
@@ -1061,21 +1296,26 @@
       "label": "Geométrie",
       "declaredColor": "#4A235A",
       "portrait": {
-        "path": "/themes/sagesse/sag-geometrie-portrait.png",
         "present": true,
-        "bytes": 854546,
-        "sha256": "320dca16e8d92398",
+        "path": "/themes/sagesse/sag-geometrie-portrait.webp",
+        "bytes": 73226,
+        "sha256": "06847ed928e1a71b",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/sagesse/sag-geometrie-landscape.png",
         "present": true,
-        "bytes": 816182,
-        "sha256": "fdfe80c5ac6920e7",
-        "width": 1248
+        "path": "/themes/sagesse/sag-geometrie-landscape.webp",
+        "bytes": 76076,
+        "sha256": "782f145ec6ff7ab7",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#8c6caa"
+      "measured": null
     },
     {
       "id": "sag-colonne",
@@ -1083,21 +1323,26 @@
       "label": "Colonne",
       "declaredColor": "#7B241C",
       "portrait": {
-        "path": "/themes/sagesse/sag-colonne-portrait.png",
         "present": true,
-        "bytes": 634465,
-        "sha256": "4d948ebf68d45c5c",
+        "path": "/themes/sagesse/sag-colonne-portrait.webp",
+        "bytes": 31498,
+        "sha256": "b12d7e6e7397e015",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/sagesse/sag-colonne-landscape.png",
         "present": true,
-        "bytes": 636152,
-        "sha256": "6f6dcec44cf0825b",
-        "width": 1248
+        "path": "/themes/sagesse/sag-colonne-landscape.webp",
+        "bytes": 39862,
+        "sha256": "582786d5fed00bb5",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#d7aaa7"
+      "measured": null
     },
     {
       "id": "sag-sceau",
@@ -1105,21 +1350,26 @@
       "label": "Sceau",
       "declaredColor": "#B03A2E",
       "portrait": {
-        "path": "/themes/sagesse/sag-sceau-portrait.png",
         "present": true,
-        "bytes": 685712,
-        "sha256": "c00f0b454e612188",
+        "path": "/themes/sagesse/sag-sceau-portrait.webp",
+        "bytes": 40954,
+        "sha256": "7a6217424e5e3a03",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/sagesse/sag-sceau-landscape.png",
         "present": true,
-        "bytes": 691163,
-        "sha256": "fae75e36e7187752",
-        "width": 1248
+        "path": "/themes/sagesse/sag-sceau-landscape.webp",
+        "bytes": 43170,
+        "sha256": "08d5d920fa791c6a",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#b25e5d"
+      "measured": null
     },
     {
       "id": "frat-pains",
@@ -1127,21 +1377,26 @@
       "label": "Pain partagé",
       "declaredColor": "#B9770E",
       "portrait": {
-        "path": "/themes/fraternite/frat-pains-portrait.png",
         "present": true,
-        "bytes": 674786,
-        "sha256": "70b1fea08ed5f0c8",
+        "path": "/themes/fraternite/frat-pains-portrait.webp",
+        "bytes": 60060,
+        "sha256": "994bf31f62eb65bf",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/fraternite/frat-pains-landscape.png",
         "present": true,
-        "bytes": 644197,
-        "sha256": "da432a1db8ddd0cd",
-        "width": 1248
+        "path": "/themes/fraternite/frat-pains-landscape.webp",
+        "bytes": 54024,
+        "sha256": "1cd986b126935378",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#d09556"
+      "measured": null
     },
     {
       "id": "frat-table",
@@ -1149,21 +1404,26 @@
       "label": "Table commune",
       "declaredColor": "#6E2C00",
       "portrait": {
-        "path": "/themes/fraternite/frat-table-portrait.png",
         "present": true,
-        "bytes": 937148,
-        "sha256": "a8d579aa6eb68907",
+        "path": "/themes/fraternite/frat-table-portrait.webp",
+        "bytes": 63932,
+        "sha256": "0b6e11da0b261570",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/fraternite/frat-table-landscape.png",
         "present": true,
-        "bytes": 717914,
-        "sha256": "1e5c592f9021615b",
-        "width": 1248
+        "path": "/themes/fraternite/frat-table-landscape.webp",
+        "bytes": 55810,
+        "sha256": "1e7d4783b9858977",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#c0664a"
+      "measured": null
     },
     {
       "id": "frat-mains",
@@ -1171,21 +1431,26 @@
       "label": "Mains jointes",
       "declaredColor": "#A04000",
       "portrait": {
-        "path": "/themes/fraternite/frat-mains-portrait.png",
         "present": true,
-        "bytes": 802886,
-        "sha256": "7e04e35b51eff7fc",
+        "path": "/themes/fraternite/frat-mains-portrait.webp",
+        "bytes": 49450,
+        "sha256": "e1f871f55cb5672b",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/fraternite/frat-mains-landscape.png",
         "present": true,
-        "bytes": 823069,
-        "sha256": "5ba1f97bac63c333",
-        "width": 1248
+        "path": "/themes/fraternite/frat-mains-landscape.webp",
+        "bytes": 43376,
+        "sha256": "e202bc294fe05288",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#d88a6e"
+      "measured": null
     },
     {
       "id": "frat-cord",
@@ -1193,21 +1458,26 @@
       "label": "Cordes liées",
       "declaredColor": "#1F618D",
       "portrait": {
-        "path": "/themes/fraternite/frat-cord-portrait.png",
         "present": true,
-        "bytes": 732161,
-        "sha256": "150b873433ae0980",
+        "path": "/themes/fraternite/frat-cord-portrait.webp",
+        "bytes": 56928,
+        "sha256": "81836f7a136b3e4f",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/fraternite/frat-cord-landscape.png",
         "present": true,
-        "bytes": 825240,
-        "sha256": "f7fd830537edf4fd",
-        "width": 1248
+        "path": "/themes/fraternite/frat-cord-landscape.webp",
+        "bytes": 54574,
+        "sha256": "6eb8863886ceb186",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#447698"
+      "measured": null
     },
     {
       "id": "frat-grenade",
@@ -1215,21 +1485,26 @@
       "label": "Cèdre",
       "declaredColor": "#1E8449",
       "portrait": {
-        "path": "/themes/fraternite/frat-grenade-portrait.png",
         "present": true,
-        "bytes": 870688,
-        "sha256": "ede979cb1f619949",
+        "path": "/themes/fraternite/frat-grenade-portrait.webp",
+        "bytes": 70642,
+        "sha256": "78db2459c29f8ea1",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/fraternite/frat-grenade-landscape.png",
         "present": true,
-        "bytes": 790525,
-        "sha256": "a652755c2d5bfc57",
-        "width": 1248
+        "path": "/themes/fraternite/frat-grenade-landscape.webp",
+        "bytes": 58950,
+        "sha256": "a3353410e03ed633",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#63a18b"
+      "measured": null
     },
     {
       "id": "frat-lantern",
@@ -1237,21 +1512,26 @@
       "label": "Lanterne",
       "declaredColor": "#B9770E",
       "portrait": {
-        "path": "/themes/fraternite/frat-lantern-portrait.png",
         "present": true,
-        "bytes": 719943,
-        "sha256": "4c4ca3dedb5da5ec",
+        "path": "/themes/fraternite/frat-lantern-portrait.webp",
+        "bytes": 43036,
+        "sha256": "9cfdb9425c2d77f4",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/fraternite/frat-lantern-landscape.png",
         "present": true,
-        "bytes": 736178,
-        "sha256": "c280901840197628",
-        "width": 1248
+        "path": "/themes/fraternite/frat-lantern-landscape.webp",
+        "bytes": 45250,
+        "sha256": "693e7ef1cdfaa6f7",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#c18742"
+      "measured": null
     },
     {
       "id": "frat-rainbow",
@@ -1259,21 +1539,26 @@
       "label": "Arc-en-ciel",
       "declaredColor": "#C2185B",
       "portrait": {
-        "path": "/themes/fraternite/frat-rainbow-portrait.png",
         "present": true,
-        "bytes": 967349,
-        "sha256": "e583eeea5de1d29d",
+        "path": "/themes/fraternite/frat-rainbow-portrait.webp",
+        "bytes": 83960,
+        "sha256": "2a029640249b87ef",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/fraternite/frat-rainbow-landscape.png",
         "present": true,
-        "bytes": 786164,
-        "sha256": "6570b507b7129611",
-        "width": 1248
+        "path": "/themes/fraternite/frat-rainbow-landscape.webp",
+        "bytes": 59222,
+        "sha256": "115bc6be24434e62",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#c4728d"
+      "measured": null
     },
     {
       "id": "frat-tour",
@@ -1281,21 +1566,26 @@
       "label": "Tour",
       "declaredColor": "#283747",
       "portrait": {
-        "path": "/themes/fraternite/frat-tour-portrait.png",
         "present": true,
-        "bytes": 605585,
-        "sha256": "581ea8b0022107fb",
+        "path": "/themes/fraternite/frat-tour-portrait.webp",
+        "bytes": 28780,
+        "sha256": "a6718a68298ffa90",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/fraternite/frat-tour-landscape.png",
         "present": true,
-        "bytes": 607215,
-        "sha256": "98ec10e32c0a813a",
-        "width": 1248
+        "path": "/themes/fraternite/frat-tour-landscape.webp",
+        "bytes": 30682,
+        "sha256": "065e4a526f2786b3",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#6e6a8e"
+      "measured": null
     },
     {
       "id": "frat-oiseaux",
@@ -1303,21 +1593,26 @@
       "label": "Oiseaux",
       "declaredColor": "#1565C0",
       "portrait": {
-        "path": "/themes/fraternite/frat-oiseaux-portrait.png",
         "present": true,
-        "bytes": 728002,
-        "sha256": "6fb962488a440d47",
+        "path": "/themes/fraternite/frat-oiseaux-portrait.webp",
+        "bytes": 61092,
+        "sha256": "f9ec3320d51e3d35",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/fraternite/frat-oiseaux-landscape.png",
         "present": true,
-        "bytes": 1071554,
-        "sha256": "145f960223924561",
-        "width": 1248
+        "path": "/themes/fraternite/frat-oiseaux-landscape.webp",
+        "bytes": 104322,
+        "sha256": "1b7d502b2f6eb0dc",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#3c74a5"
+      "measured": null
     },
     {
       "id": "frat-couron",
@@ -1325,21 +1620,26 @@
       "label": "Couronne",
       "declaredColor": "#B03A2E",
       "portrait": {
-        "path": "/themes/fraternite/frat-couron-portrait.png",
         "present": true,
-        "bytes": 754504,
-        "sha256": "0d0010df6f586357",
+        "path": "/themes/fraternite/frat-couron-portrait.webp",
+        "bytes": 44338,
+        "sha256": "6b7e12b065de9cec",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/fraternite/frat-couron-landscape.png",
         "present": true,
-        "bytes": 706458,
-        "sha256": "67888d1da38cfb67",
-        "width": 1248
+        "path": "/themes/fraternite/frat-couron-landscape.webp",
+        "bytes": 40782,
+        "sha256": "433e389896e86465",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#c26e70"
+      "measured": null
     },
     {
       "id": "lum-etoile",
@@ -1347,21 +1647,26 @@
       "label": "Étoile",
       "declaredColor": "#F1C40F",
       "portrait": {
-        "path": "/themes/lumieres/lum-etoile-portrait.png",
         "present": true,
-        "bytes": 702178,
-        "sha256": "c727bd008a7feca1",
+        "path": "/themes/lumieres/lum-etoile-portrait.webp",
+        "bytes": 27580,
+        "sha256": "909a341e1e55b4b3",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/lumieres/lum-etoile-landscape.png",
         "present": true,
-        "bytes": 680373,
-        "sha256": "3257829b5a412951",
-        "width": 1248
+        "path": "/themes/lumieres/lum-etoile-landscape.webp",
+        "bytes": 28834,
+        "sha256": "367004e86f2ef215",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#fcd37d"
+      "measured": null
     },
     {
       "id": "lum-lanter",
@@ -1369,21 +1674,26 @@
       "label": "Lanterne",
       "declaredColor": "#E67E22",
       "portrait": {
-        "path": "/themes/lumieres/lum-lanter-portrait.png",
         "present": true,
-        "bytes": 712783,
-        "sha256": "be1d3a495f0214e2",
+        "path": "/themes/lumieres/lum-lanter-portrait.webp",
+        "bytes": 50772,
+        "sha256": "cd198fe2def72133",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/lumieres/lum-lanter-landscape.png",
         "present": true,
-        "bytes": 713530,
-        "sha256": "0729ecfc4be516e8",
-        "width": 1248
+        "path": "/themes/lumieres/lum-lanter-landscape.webp",
+        "bytes": 68280,
+        "sha256": "445bf391608726e1",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#7d4d1f"
+      "measured": null
     },
     {
       "id": "lum-chand",
@@ -1391,21 +1701,26 @@
       "label": "Chandelle",
       "declaredColor": "#F9E79F",
       "portrait": {
-        "path": "/themes/lumieres/lum-chand-portrait.png",
         "present": true,
-        "bytes": 584951,
-        "sha256": "c8d2556bcb050de8",
+        "path": "/themes/lumieres/lum-chand-portrait.webp",
+        "bytes": 26870,
+        "sha256": "c9337f45b4c4bf49",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/lumieres/lum-chand-landscape.png",
         "present": true,
-        "bytes": 655041,
-        "sha256": "cec90eccbf9cdf33",
-        "width": 1248
+        "path": "/themes/lumieres/lum-chand-landscape.webp",
+        "bytes": 41860,
+        "sha256": "312901f5ff30b380",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#f6dd90"
+      "measured": null
     },
     {
       "id": "lum-bougie",
@@ -1413,21 +1728,26 @@
       "label": "Bougie",
       "declaredColor": "#F4D03F",
       "portrait": {
-        "path": "/themes/lumieres/lum-bougie-portrait.png",
         "present": true,
-        "bytes": 770089,
-        "sha256": "b25abf2fbd94e34f",
+        "path": "/themes/lumieres/lum-bougie-portrait.webp",
+        "bytes": 51790,
+        "sha256": "38e13b9a5f8954ae",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/lumieres/lum-bougie-landscape.png",
         "present": true,
-        "bytes": 735086,
-        "sha256": "b2737204cebb1c2c",
-        "width": 1248
+        "path": "/themes/lumieres/lum-bougie-landscape.webp",
+        "bytes": 58524,
+        "sha256": "e8e96aaa040c128e",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#f6d371"
+      "measured": null
     },
     {
       "id": "lum-lune",
@@ -1435,21 +1755,26 @@
       "label": "Lune",
       "declaredColor": "#1B4F72",
       "portrait": {
-        "path": "/themes/lumieres/lum-lune-portrait.png",
         "present": true,
-        "bytes": 729571,
-        "sha256": "c550f8489b60cdf0",
+        "path": "/themes/lumieres/lum-lune-portrait.webp",
+        "bytes": 53212,
+        "sha256": "ce95b540f79efe8a",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/lumieres/lum-lune-landscape.png",
         "present": true,
-        "bytes": 776567,
-        "sha256": "12b59743f4c2214c",
-        "width": 1248
+        "path": "/themes/lumieres/lum-lune-landscape.webp",
+        "bytes": 55560,
+        "sha256": "b0f10bd72299f5d5",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#6d8ba5"
+      "measured": null
     },
     {
       "id": "lum-sunrise",
@@ -1457,21 +1782,26 @@
       "label": "Lever de soleil",
       "declaredColor": "#CA6F1E",
       "portrait": {
-        "path": "/themes/lumieres/lum-sunrise-portrait.png",
         "present": true,
-        "bytes": 655027,
-        "sha256": "58348795e32363da",
+        "path": "/themes/lumieres/lum-sunrise-portrait.webp",
+        "bytes": 38356,
+        "sha256": "d9d65811cb2d52b6",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/lumieres/lum-sunrise-landscape.png",
         "present": true,
-        "bytes": 663346,
-        "sha256": "9633890c3a9e92c6",
-        "width": 1248
+        "path": "/themes/lumieres/lum-sunrise-landscape.webp",
+        "bytes": 45820,
+        "sha256": "44c4e2f325f65ea1",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#c88445"
+      "measured": null
     },
     {
       "id": "lum-lamp",
@@ -1479,21 +1809,26 @@
       "label": "Lampe",
       "declaredColor": "#B9770E",
       "portrait": {
-        "path": "/themes/lumieres/lum-lamp-portrait.png",
         "present": true,
-        "bytes": 679598,
-        "sha256": "45db3a9df6f9812b",
+        "path": "/themes/lumieres/lum-lamp-portrait.webp",
+        "bytes": 44018,
+        "sha256": "e5e4b7ec20181223",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/lumieres/lum-lamp-landscape.png",
         "present": true,
-        "bytes": 697710,
-        "sha256": "ff902087ef1bb538",
-        "width": 1248
+        "path": "/themes/lumieres/lum-lamp-landscape.webp",
+        "bytes": 33460,
+        "sha256": "e46d2b7badc8c65b",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#d39853"
+      "measured": null
     },
     {
       "id": "lum-feu",
@@ -1501,21 +1836,26 @@
       "label": "Feu de camp",
       "declaredColor": "#E74C3C",
       "portrait": {
-        "path": "/themes/lumieres/lum-feu-portrait.png",
         "present": true,
-        "bytes": 728897,
-        "sha256": "c464a9adf0459b72",
+        "path": "/themes/lumieres/lum-feu-portrait.webp",
+        "bytes": 59182,
+        "sha256": "04ce7c247b005417",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/lumieres/lum-feu-landscape.png",
         "present": true,
-        "bytes": 690662,
-        "sha256": "fd82957dd9c580fe",
-        "width": 1248
+        "path": "/themes/lumieres/lum-feu-landscape.webp",
+        "bytes": 47372,
+        "sha256": "8749dad2862bdfa0",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#e67c70"
+      "measured": null
     },
     {
       "id": "lum-phares",
@@ -1523,21 +1863,26 @@
       "label": "Phare",
       "declaredColor": "#1565C0",
       "portrait": {
-        "path": "/themes/lumieres/lum-phares-portrait.png",
         "present": true,
-        "bytes": 692101,
-        "sha256": "ce6ca4c0c28955c0",
+        "path": "/themes/lumieres/lum-phares-portrait.webp",
+        "bytes": 55642,
+        "sha256": "2a5ac0f678054519",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/lumieres/lum-phares-landscape.png",
         "present": true,
-        "bytes": 599641,
-        "sha256": "ea36fa772ca773fd",
-        "width": 1248
+        "path": "/themes/lumieres/lum-phares-landscape.webp",
+        "bytes": 37216,
+        "sha256": "17616d3a5cd73ed5",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#6195c2"
+      "measured": null
     },
     {
       "id": "lum-diamant",
@@ -1545,21 +1890,26 @@
       "label": "Diamant",
       "declaredColor": "#A569BD",
       "portrait": {
-        "path": "/themes/lumieres/lum-diamant-portrait.png",
         "present": true,
-        "bytes": 670781,
-        "sha256": "3afdaa2cb29bd504",
+        "path": "/themes/lumieres/lum-diamant-portrait.webp",
+        "bytes": 39886,
+        "sha256": "ddf0a09ffb9d306c",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/lumieres/lum-diamant-landscape.png",
         "present": true,
-        "bytes": 628342,
-        "sha256": "991dfcab79c1a3bc",
-        "width": 1248
+        "path": "/themes/lumieres/lum-diamant-landscape.webp",
+        "bytes": 34344,
+        "sha256": "32548f3342c86191",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#946db0"
+      "measured": null
     },
     {
       "id": "sai-printemps",
@@ -1567,21 +1917,26 @@
       "label": "Printemps",
       "declaredColor": "#27AE60",
       "portrait": {
-        "path": "/themes/saisons/sai-printemps-portrait.png",
         "present": true,
-        "bytes": 965910,
-        "sha256": "154aeb6f5d91b88f",
+        "path": "/themes/saisons/sai-printemps-portrait.webp",
+        "bytes": 91828,
+        "sha256": "128c142f945abfeb",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/saisons/sai-printemps-landscape.png",
         "present": true,
-        "bytes": 844994,
-        "sha256": "02326c607572fd17",
-        "width": 1248
+        "path": "/themes/saisons/sai-printemps-landscape.webp",
+        "bytes": 74450,
+        "sha256": "8facb1384e4c1fea",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#97cac5"
+      "measured": null
     },
     {
       "id": "sai-ete",
@@ -1589,21 +1944,26 @@
       "label": "Été",
       "declaredColor": "#F39C12",
       "portrait": {
-        "path": "/themes/saisons/sai-ete-portrait.png",
         "present": true,
-        "bytes": 669884,
-        "sha256": "1837c263de7b3e2c",
+        "path": "/themes/saisons/sai-ete-portrait.webp",
+        "bytes": 35140,
+        "sha256": "521c2dd50a0f22de",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/saisons/sai-ete-landscape.png",
         "present": true,
-        "bytes": 664878,
-        "sha256": "ed08af615d617136",
-        "width": 1248
+        "path": "/themes/saisons/sai-ete-landscape.webp",
+        "bytes": 41148,
+        "sha256": "4481dbf3cc32ba72",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#fcbe66"
+      "measured": null
     },
     {
       "id": "sai-autome",
@@ -1611,21 +1971,26 @@
       "label": "Automne",
       "declaredColor": "#CA6F1E",
       "portrait": {
-        "path": "/themes/saisons/sai-autome-portrait.png",
         "present": true,
-        "bytes": 687369,
-        "sha256": "a22ca68dbef5fa2f",
+        "path": "/themes/saisons/sai-autome-portrait.webp",
+        "bytes": 58338,
+        "sha256": "4e0f1dc6239123cd",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/saisons/sai-autome-landscape.png",
         "present": true,
-        "bytes": 640393,
-        "sha256": "99556b0d0c5a6054",
-        "width": 1248
+        "path": "/themes/saisons/sai-autome-landscape.webp",
+        "bytes": 48234,
+        "sha256": "67e49b035bf73a48",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#d59566"
+      "measured": null
     },
     {
       "id": "sai-hiver",
@@ -1633,21 +1998,26 @@
       "label": "Hiver",
       "declaredColor": "#21618C",
       "portrait": {
-        "path": "/themes/saisons/sai-hiver-portrait.png",
         "present": true,
-        "bytes": 712633,
-        "sha256": "003098019ce0ec8d",
+        "path": "/themes/saisons/sai-hiver-portrait.webp",
+        "bytes": 64102,
+        "sha256": "4d62eaa0c26d5f24",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/saisons/sai-hiver-landscape.png",
         "present": true,
-        "bytes": 729678,
-        "sha256": "d3513774e7d93047",
-        "width": 1248
+        "path": "/themes/saisons/sai-hiver-landscape.webp",
+        "bytes": 59892,
+        "sha256": "b17ad5a7bf8049e2",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#7b9ebe"
+      "measured": null
     },
     {
       "id": "sai-neige",
@@ -1655,21 +2025,26 @@
       "label": "Neige",
       "declaredColor": "#1B4F72",
       "portrait": {
-        "path": "/themes/saisons/sai-neige-portrait.png",
         "present": true,
-        "bytes": 895545,
-        "sha256": "63cbc44d30b2bd9d",
+        "path": "/themes/saisons/sai-neige-portrait.webp",
+        "bytes": 76812,
+        "sha256": "5613af6a1e1ffea4",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/saisons/sai-neige-landscape.png",
         "present": true,
-        "bytes": 1049515,
-        "sha256": "919e08694e8fd4b0",
-        "width": 1248
+        "path": "/themes/saisons/sai-neige-landscape.webp",
+        "bytes": 101782,
+        "sha256": "c0fca15a7d9b3c22",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#8fa8bd"
+      "measured": null
     },
     {
       "id": "sai-rain",
@@ -1677,21 +2052,26 @@
       "label": "Pluie",
       "declaredColor": "#566573",
       "portrait": {
-        "path": "/themes/saisons/sai-rain-portrait.png",
         "present": true,
-        "bytes": 694359,
-        "sha256": "766ae78b9341790f",
+        "path": "/themes/saisons/sai-rain-portrait.webp",
+        "bytes": 55188,
+        "sha256": "e0da0f2cbfab895d",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/saisons/sai-rain-landscape.png",
         "present": true,
-        "bytes": 625012,
-        "sha256": "951e95ddd4586e26",
-        "width": 1248
+        "path": "/themes/saisons/sai-rain-landscape.webp",
+        "bytes": 42348,
+        "sha256": "1d35503acdb3e3aa",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#9797a5"
+      "measured": null
     },
     {
       "id": "sai-fleur",
@@ -1699,21 +2079,26 @@
       "label": "Fleur",
       "declaredColor": "#C2185B",
       "portrait": {
-        "path": "/themes/saisons/sai-fleur-portrait.png",
         "present": true,
-        "bytes": 796312,
-        "sha256": "0bbf32e85609f0a9",
+        "path": "/themes/saisons/sai-fleur-portrait.webp",
+        "bytes": 60796,
+        "sha256": "b584a61a4e733201",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/saisons/sai-fleur-landscape.png",
         "present": true,
-        "bytes": 851177,
-        "sha256": "6ca1a07ad543712d",
-        "width": 1248
+        "path": "/themes/saisons/sai-fleur-landscape.webp",
+        "bytes": 73604,
+        "sha256": "dd2c617d6f7b53b6",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#bc6f8d"
+      "measured": null
     },
     {
       "id": "sai-feuille",
@@ -1721,21 +2106,26 @@
       "label": "Feuille",
       "declaredColor": "#1E8449",
       "portrait": {
-        "path": "/themes/saisons/sai-feuille-portrait.png",
         "present": true,
-        "bytes": 808107,
-        "sha256": "bbc55cd8f4c4259f",
+        "path": "/themes/saisons/sai-feuille-portrait.webp",
+        "bytes": 82826,
+        "sha256": "1609b44a920e1787",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/saisons/sai-feuille-landscape.png",
         "present": true,
-        "bytes": 875339,
-        "sha256": "617ff46f046bfbef",
-        "width": 1248
+        "path": "/themes/saisons/sai-feuille-landscape.webp",
+        "bytes": 84550,
+        "sha256": "609c73de6d39ce75",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#78ad8f"
+      "measured": null
     },
     {
       "id": "sai-nuit",
@@ -1743,21 +2133,26 @@
       "label": "Nuit",
       "declaredColor": "#154360",
       "portrait": {
-        "path": "/themes/saisons/sai-nuit-portrait.png",
         "present": true,
-        "bytes": 841905,
-        "sha256": "39edfe64a7d876ed",
+        "path": "/themes/saisons/sai-nuit-portrait.webp",
+        "bytes": 60938,
+        "sha256": "77b648ff61846d45",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/saisons/sai-nuit-landscape.png",
         "present": true,
-        "bytes": 860619,
-        "sha256": "0cdd58c41b52a2ac",
-        "width": 1248
+        "path": "/themes/saisons/sai-nuit-landscape.webp",
+        "bytes": 59064,
+        "sha256": "60b1e4d2bab2222d",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#4d7191"
+      "measured": null
     },
     {
       "id": "sai-dawn",
@@ -1765,21 +2160,26 @@
       "label": "Aube",
       "declaredColor": "#F4D03F",
       "portrait": {
-        "path": "/themes/saisons/sai-dawn-portrait.png",
         "present": true,
-        "bytes": 467432,
-        "sha256": "9ef9d3853c9ab2c2",
+        "path": "/themes/saisons/sai-dawn-portrait.webp",
+        "bytes": 17316,
+        "sha256": "825e14893844a364",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/saisons/sai-dawn-landscape.png",
         "present": true,
-        "bytes": 475628,
-        "sha256": "05f926f2089a2929",
-        "width": 1248
+        "path": "/themes/saisons/sai-dawn-landscape.webp",
+        "bytes": 14690,
+        "sha256": "8ada8528c5171c90",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#fcf0d7"
+      "measured": null
     },
     {
       "id": "ani-belle",
@@ -1787,21 +2187,26 @@
       "label": "Gazelle",
       "declaredColor": "#B9770E",
       "portrait": {
-        "path": "/themes/animaux/ani-belle-portrait.png",
         "present": true,
-        "bytes": 632251,
-        "sha256": "e7156822ff7f260d",
+        "path": "/themes/animaux/ani-belle-portrait.webp",
+        "bytes": 38094,
+        "sha256": "38d16eafd3b38bda",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/animaux/ani-belle-landscape.png",
         "present": true,
-        "bytes": 645234,
-        "sha256": "d16bb2dc7f9a44a9",
-        "width": 1248
+        "path": "/themes/animaux/ani-belle-landscape.webp",
+        "bytes": 41126,
+        "sha256": "366ae2bf9ac81509",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#d8995b"
+      "measured": null
     },
     {
       "id": "ani-agneau",
@@ -1809,21 +2214,26 @@
       "label": "Agneau",
       "declaredColor": "#6E2C00",
       "portrait": {
-        "path": "/themes/animaux/ani-agneau-portrait.png",
         "present": true,
-        "bytes": 628304,
-        "sha256": "d382fe150af7ef07",
+        "path": "/themes/animaux/ani-agneau-portrait.webp",
+        "bytes": 35836,
+        "sha256": "5fa0914213f53a69",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/animaux/ani-agneau-landscape.png",
         "present": true,
-        "bytes": 652275,
-        "sha256": "710bd6373b5ccaab",
-        "width": 1248
+        "path": "/themes/animaux/ani-agneau-landscape.webp",
+        "bytes": 42952,
+        "sha256": "45923d5f04c9e73c",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#ab6348"
+      "measured": null
     },
     {
       "id": "ani-pigeon",
@@ -1831,21 +2241,26 @@
       "label": "Pigeon",
       "declaredColor": "#283747",
       "portrait": {
-        "path": "/themes/animaux/ani-pigeon-portrait.png",
         "present": true,
-        "bytes": 732602,
-        "sha256": "3f7ddad242ac284c",
+        "path": "/themes/animaux/ani-pigeon-portrait.webp",
+        "bytes": 57608,
+        "sha256": "abf75ab90381dbe9",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/animaux/ani-pigeon-landscape.png",
         "present": true,
-        "bytes": 739201,
-        "sha256": "bf117d1c1121b0cc",
-        "width": 1248
+        "path": "/themes/animaux/ani-pigeon-landscape.webp",
+        "bytes": 60086,
+        "sha256": "f8d67ca7c32863e7",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#37394d"
+      "measured": null
     },
     {
       "id": "ani-abeille",
@@ -1853,21 +2268,26 @@
       "label": "Abeille",
       "declaredColor": "#F39C12",
       "portrait": {
-        "path": "/themes/animaux/ani-abeille-portrait.png",
         "present": true,
-        "bytes": 1118223,
-        "sha256": "b0c20cbc15f5aa95",
+        "path": "/themes/animaux/ani-abeille-portrait.webp",
+        "bytes": 184874,
+        "sha256": "3674ba169d2509af",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/animaux/ani-abeille-landscape.png",
         "present": true,
-        "bytes": 1034205,
-        "sha256": "d7d5db9e0c6c476d",
-        "width": 1248
+        "path": "/themes/animaux/ani-abeille-landscape.webp",
+        "bytes": 167090,
+        "sha256": "6ddb4f81c550effd",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#f9b96e"
+      "measured": null
     },
     {
       "id": "ani-colombe",
@@ -1875,21 +2295,26 @@
       "label": "Colombe",
       "declaredColor": "#1565C0",
       "portrait": {
-        "path": "/themes/animaux/ani-colombe-portrait.png",
         "present": true,
-        "bytes": 685345,
-        "sha256": "0989a065cdea3173",
+        "path": "/themes/animaux/ani-colombe-portrait.webp",
+        "bytes": 63246,
+        "sha256": "36346a1faae6542e",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/animaux/ani-colombe-landscape.png",
         "present": true,
-        "bytes": 648358,
-        "sha256": "9da5cc8a27be84bb",
-        "width": 1248
+        "path": "/themes/animaux/ani-colombe-landscape.webp",
+        "bytes": 51950,
+        "sha256": "a98ccec545fcf19f",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#8eb1d5"
+      "measured": null
     },
     {
       "id": "ani-taupe",
@@ -1897,21 +2322,26 @@
       "label": "Taupe",
       "declaredColor": "#6E2C00",
       "portrait": {
-        "path": "/themes/animaux/ani-taupe-portrait.png",
         "present": true,
-        "bytes": 823223,
-        "sha256": "fb8f428525000aae",
+        "path": "/themes/animaux/ani-taupe-portrait.webp",
+        "bytes": 76076,
+        "sha256": "a01d5ecfb94a27e1",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/animaux/ani-taupe-landscape.png",
         "present": true,
-        "bytes": 788944,
-        "sha256": "554a97bd6e0d874a",
-        "width": 1248
+        "path": "/themes/animaux/ani-taupe-landscape.webp",
+        "bytes": 76902,
+        "sha256": "3392b2cd884e11b1",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#8d3623"
+      "measured": null
     },
     {
       "id": "ani-cam",
@@ -1919,21 +2349,26 @@
       "label": "Chameau",
       "declaredColor": "#CA6F1E",
       "portrait": {
-        "path": "/themes/animaux/ani-cam-portrait.png",
         "present": true,
-        "bytes": 627592,
-        "sha256": "5247cb3e145e76d4",
+        "path": "/themes/animaux/ani-cam-portrait.webp",
+        "bytes": 39692,
+        "sha256": "911bbbecdf67c9e5",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/animaux/ani-cam-landscape.png",
         "present": true,
-        "bytes": 662974,
-        "sha256": "411be2d881d711fe",
-        "width": 1248
+        "path": "/themes/animaux/ani-cam-landscape.webp",
+        "bytes": 55658,
+        "sha256": "c4870735f41a5d02",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#dda178"
+      "measured": null
     },
     {
       "id": "ani-pharaon",
@@ -1941,21 +2376,26 @@
       "label": "Pharaon",
       "declaredColor": "#B03A2E",
       "portrait": {
-        "path": "/themes/animaux/ani-pharaon-portrait.png",
         "present": true,
-        "bytes": 777486,
-        "sha256": "32c53ffcd8b5f08b",
+        "path": "/themes/animaux/ani-pharaon-portrait.webp",
+        "bytes": 63442,
+        "sha256": "1034b30f6985670c",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/animaux/ani-pharaon-landscape.png",
         "present": true,
-        "bytes": 735188,
-        "sha256": "084c253e98b71fb8",
-        "width": 1248
+        "path": "/themes/animaux/ani-pharaon-landscape.webp",
+        "bytes": 67464,
+        "sha256": "f5de10e96f292d02",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#bd5c53"
+      "measured": null
     },
     {
       "id": "ani-scorp",
@@ -1963,21 +2403,26 @@
       "label": "Scorpion",
       "declaredColor": "#4A235A",
       "portrait": {
-        "path": "/themes/animaux/ani-scorp-portrait.png",
         "present": true,
-        "bytes": 692087,
-        "sha256": "3ca11d2d39413392",
+        "path": "/themes/animaux/ani-scorp-portrait.webp",
+        "bytes": 42868,
+        "sha256": "d7945809d0dceb69",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/animaux/ani-scorp-landscape.png",
         "present": true,
-        "bytes": 648971,
-        "sha256": "48797977219e54f6",
-        "width": 1248
+        "path": "/themes/animaux/ani-scorp-landscape.webp",
+        "bytes": 36990,
+        "sha256": "7930a482198fef53",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#584984"
+      "measured": null
     },
     {
       "id": "ani-aigle",
@@ -1985,21 +2430,26 @@
       "label": "Aigle",
       "declaredColor": "#283747",
       "portrait": {
-        "path": "/themes/animaux/ani-aigle-portrait.png",
         "present": true,
-        "bytes": 629028,
-        "sha256": "35c00252e4af56eb",
+        "path": "/themes/animaux/ani-aigle-portrait.webp",
+        "bytes": 39780,
+        "sha256": "ba4049575687ef7d",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/animaux/ani-aigle-landscape.png",
         "present": true,
-        "bytes": 618889,
-        "sha256": "ee6009df5f095218",
-        "width": 1248
+        "path": "/themes/animaux/ani-aigle-landscape.webp",
+        "bytes": 37776,
+        "sha256": "42060887bc8c4b61",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#5e6780"
+      "measured": null
     },
     {
       "id": "obj-cle",
@@ -2007,21 +2457,26 @@
       "label": "Clé",
       "declaredColor": "#B9770E",
       "portrait": {
-        "path": "/themes/objets/obj-cle-portrait.png",
         "present": true,
-        "bytes": 729532,
-        "sha256": "f0cd6f11090d2b90",
+        "path": "/themes/objets/obj-cle-portrait.webp",
+        "bytes": 44682,
+        "sha256": "111fd8cb58d5dde0",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/objets/obj-cle-landscape.png",
         "present": true,
-        "bytes": 852967,
-        "sha256": "f5043d7b84e856f3",
-        "width": 1248
+        "path": "/themes/objets/obj-cle-landscape.webp",
+        "bytes": 68296,
+        "sha256": "3915509176f1b563",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#b97054"
+      "measured": null
     },
     {
       "id": "obj-sceau",
@@ -2029,21 +2484,26 @@
       "label": "Sceau",
       "declaredColor": "#B03A2E",
       "portrait": {
-        "path": "/themes/objets/obj-sceau-portrait.png",
         "present": true,
-        "bytes": 655616,
-        "sha256": "3619135dcc5136cd",
+        "path": "/themes/objets/obj-sceau-portrait.webp",
+        "bytes": 44774,
+        "sha256": "0a26b05d80076d3a",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/objets/obj-sceau-landscape.png",
         "present": true,
-        "bytes": 699516,
-        "sha256": "48b9d7400ad67a7e",
-        "width": 1248
+        "path": "/themes/objets/obj-sceau-landscape.webp",
+        "bytes": 56158,
+        "sha256": "626aa35a1ce62669",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#c7736f"
+      "measured": null
     },
     {
       "id": "obj-vase",
@@ -2051,21 +2511,26 @@
       "label": "Vase",
       "declaredColor": "#1F618D",
       "portrait": {
-        "path": "/themes/objets/obj-vase-portrait.png",
         "present": true,
-        "bytes": 709427,
-        "sha256": "8536429ca37d7b67",
+        "path": "/themes/objets/obj-vase-portrait.webp",
+        "bytes": 49322,
+        "sha256": "136a468e381badce",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/objets/obj-vase-landscape.png",
         "present": true,
-        "bytes": 691892,
-        "sha256": "1c1604c8a4888921",
-        "width": 1248
+        "path": "/themes/objets/obj-vase-landscape.webp",
+        "bytes": 51216,
+        "sha256": "e00595abcca29faa",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#5471ac"
+      "measured": null
     },
     {
       "id": "obj-jar",
@@ -2073,21 +2538,26 @@
       "label": "Jarre",
       "declaredColor": "#CA6F1E",
       "portrait": {
-        "path": "/themes/objets/obj-jar-portrait.png",
         "present": true,
-        "bytes": 577732,
-        "sha256": "5d18fb73f3e5400a",
+        "path": "/themes/objets/obj-jar-portrait.webp",
+        "bytes": 37196,
+        "sha256": "51e184778f748b0f",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/objets/obj-jar-landscape.png",
         "present": true,
-        "bytes": 766509,
-        "sha256": "7323749107aa9e5a",
-        "width": 1248
+        "path": "/themes/objets/obj-jar-landscape.webp",
+        "bytes": 58010,
+        "sha256": "2bc5ea88d678dad2",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#d99d76"
+      "measured": null
     },
     {
       "id": "obj-ankh",
@@ -2095,21 +2565,26 @@
       "label": "Ankh",
       "declaredColor": "#B03A2E",
       "portrait": {
-        "path": "/themes/objets/obj-ankh-portrait.png",
         "present": true,
-        "bytes": 764321,
-        "sha256": "cde48149c84fdee0",
+        "path": "/themes/objets/obj-ankh-portrait.webp",
+        "bytes": 45914,
+        "sha256": "766a0221d1e6e000",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/objets/obj-ankh-landscape.png",
         "present": true,
-        "bytes": 856402,
-        "sha256": "e3c35e99e32f8ebf",
-        "width": 1248
+        "path": "/themes/objets/obj-ankh-landscape.webp",
+        "bytes": 49292,
+        "sha256": "528c5854ad69abad",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#a15246"
+      "measured": null
     },
     {
       "id": "obj-swan",
@@ -2117,21 +2592,26 @@
       "label": "Cygne",
       "declaredColor": "#283747",
       "portrait": {
-        "path": "/themes/objets/obj-swan-portrait.png",
         "present": true,
-        "bytes": 756934,
-        "sha256": "39b887f174d93595",
+        "path": "/themes/objets/obj-swan-portrait.webp",
+        "bytes": 67678,
+        "sha256": "ba24fb7a3698141a",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/objets/obj-swan-landscape.png",
         "present": true,
-        "bytes": 744413,
-        "sha256": "7a21a77a9a2d7f3d",
-        "width": 1248
+        "path": "/themes/objets/obj-swan-landscape.webp",
+        "bytes": 62450,
+        "sha256": "0d980b23d42439b8",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#5c5b85"
+      "measured": null
     },
     {
       "id": "obj-anchor",
@@ -2139,21 +2619,26 @@
       "label": "Ancre",
       "declaredColor": "#1565C0",
       "portrait": {
-        "path": "/themes/objets/obj-anchor-portrait.png",
         "present": true,
-        "bytes": 771350,
-        "sha256": "4d6a26b5cd391e82",
+        "path": "/themes/objets/obj-anchor-portrait.webp",
+        "bytes": 50692,
+        "sha256": "a0d59063589d8793",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/objets/obj-anchor-landscape.png",
         "present": true,
-        "bytes": 617521,
-        "sha256": "3d9785848af5e298",
-        "width": 1248
+        "path": "/themes/objets/obj-anchor-landscape.webp",
+        "bytes": 40946,
+        "sha256": "9eb3a302722ed19c",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#4784b0"
+      "measured": null
     },
     {
       "id": "obj-veil",
@@ -2161,21 +2646,26 @@
       "label": "Voile",
       "declaredColor": "#A569BD",
       "portrait": {
-        "path": "/themes/objets/obj-veil-portrait.png",
         "present": true,
-        "bytes": 785663,
-        "sha256": "7db15224826a2be7",
+        "path": "/themes/objets/obj-veil-portrait.webp",
+        "bytes": 42562,
+        "sha256": "e385e4262cff22cf",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/objets/obj-veil-landscape.png",
         "present": true,
-        "bytes": 620654,
-        "sha256": "96d6b8a764c5a225",
-        "width": 1248
+        "path": "/themes/objets/obj-veil-landscape.webp",
+        "bytes": 35978,
+        "sha256": "4e0922e8dcbd5fd3",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#9c83ba"
+      "measured": null
     },
     {
       "id": "obj-donnee",
@@ -2183,21 +2673,26 @@
       "label": "Don",
       "declaredColor": "#C2185B",
       "portrait": {
-        "path": "/themes/objets/obj-donnee-portrait.png",
         "present": true,
-        "bytes": 865305,
-        "sha256": "b31acbeb29b394f7",
+        "path": "/themes/objets/obj-donnee-portrait.webp",
+        "bytes": 43084,
+        "sha256": "0b98bbc4ee95b0b5",
+        "ext": "webp",
         "width": 832,
-        "height": 1248
+        "height": 1248,
+        "meanColor": null
       },
       "landscape": {
-        "path": "/themes/objets/obj-donnee-landscape.png",
         "present": true,
-        "bytes": 779282,
-        "sha256": "b038b1e3ef13b55f",
-        "width": 1248
+        "path": "/themes/objets/obj-donnee-landscape.webp",
+        "bytes": 69488,
+        "sha256": "054f0c2a6c408486",
+        "ext": "webp",
+        "width": 1248,
+        "height": 832,
+        "meanColor": null
       },
-      "measured": "#b72f4e"
+      "measured": null
     },
     {
       "id": "obj-miroir",
@@ -2205,11 +2700,11 @@
       "label": "Miroir",
       "declaredColor": "#566573",
       "portrait": {
-        "path": "/themes/objets/obj-miroir-portrait.png",
+        "path": "/themes/objets/obj-miroir-portrait.webp",
         "present": false
       },
       "landscape": {
-        "path": "/themes/objets/obj-miroir-landscape.png",
+        "path": "/themes/objets/obj-miroir-landscape.webp",
         "present": false
       },
       "measured": null

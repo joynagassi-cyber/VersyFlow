@@ -39,11 +39,14 @@ export interface ModeCardsProps {
   onNextMode?: () => void;
 }
 
-const RATING_OPTIONS: Parameters<typeof RatingBar>[0]['options'] = [
-  { value: FsrsRating.AGAIN, label: 'À revoir', className: 'bg-error-light text-error' },
-  { value: FsrsRating.HARD, label: 'Difficile', className: 'bg-warning-light text-warning' },
-  { value: FsrsRating.GOOD, label: 'Bon', className: 'bg-primary text-on-primary' },
-  { value: FsrsRating.EASY, label: 'Facile', className: 'bg-success-light text-success' },
+/** Les libellés sont traduits au rendu : le module ne fige aucune langue. */
+type RatingOption = { value: FsrsRating; labelKey: string; label: string; className: string };
+
+const RATING_KEYS: RatingOption[] = [
+  { value: FsrsRating.AGAIN, labelKey: 'session.ratingAgain', label: 'À revoir', className: 'bg-error-light text-error' },
+  { value: FsrsRating.HARD, labelKey: 'session.ratingHard', label: 'Difficile', className: 'bg-warning-light text-warning' },
+  { value: FsrsRating.GOOD, labelKey: 'session.ratingGood', label: 'Bon', className: 'bg-primary text-on-primary' },
+  { value: FsrsRating.EASY, labelKey: 'session.ratingEasy', label: 'Facile', className: 'bg-success-light text-success' },
 ];
 
 /** Heuristic "score" from the FSRS rating (drives the next-mode badge).
@@ -66,6 +69,7 @@ export function ModeCards({
   onNextMode,
 }: ModeCardsProps) {
   const { t } = useTranslation();
+  const options = RATING_KEYS.map((option) => ({ ...option, label: t(option.labelKey, option.label) }));
   const [flipped, setFlipped] = useState(false);
   const [fullscreen, setFullscreen] = useState(false);
   const [cardIndex, setCardIndex] = useState(0);
@@ -158,7 +162,7 @@ export function ModeCards({
               className="mem-pill-ghost"
               style={{ marginTop: 8 }}
             >
-              <DuoIcon icon={Check} size={16} />
+              <DuoIcon icon={Check} size={14} />
               {t('workspace.flip', 'Retourner la carte')}
             </button>
           </div>
@@ -187,7 +191,7 @@ export function ModeCards({
       {/* 4 FSRS buttons ("Je m'en souvenais ?") */}
       <div>
         <p className="mem-label">{t('workspace.didYouRemember', 'JE M\'EN SOUVENAIS ?')}</p>
-        <RatingBar options={RATING_OPTIONS} onSelect={(v) => void handleRate(v)} />
+        <RatingBar options={options} onSelect={(v) => void handleRate(v)} />
       </div>
 
       {/* "Passer au mode suivant" when the user rated with Bon / Facile */}
@@ -209,7 +213,7 @@ export function ModeCards({
           <div className="flex items-center gap-3">
             <span className="mem-success-celebration">
               <span className="ring" />
-              <span className="ic"><DuoIcon icon={Check} size={24} /></span>
+              <span className="ic"><DuoIcon icon={Check} size={22} /></span>
             </span>
             <div className="min-w-0 flex-1">
               <p className="text-sm font-extrabold text-success">

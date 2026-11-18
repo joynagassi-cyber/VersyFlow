@@ -62,7 +62,7 @@ export function bootstrapDevBackend(): MockBootInfo | null {
     // eslint-disable-next-line no-console
     console.info(
       '%c VersyFlow — mode MOCK ',
-      'background:#fb2c36;color:#000;font-weight:700;border-radius:4px',
+      'background:#D81B97;color:#fff;font-weight:700;border-radius:4px',
       `\n${describeDataMode()}`,
       `\nIdentité : ${identity.displayName} <${identity.email}> · ${identity.id}`,
       `\nDonnées : ${seed.records} versets, ${seed.reviewLogs} révisions` +

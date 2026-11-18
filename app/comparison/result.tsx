@@ -53,11 +53,11 @@ export default function ComparisonResultScreen({ record, userAnswer }: Props) {
     <FullScreenPage title={t('comparison.result', 'Resultat')} showBack>
       <div className="screen-column space-y-4">
         {/* Score */}
-        <div className="flex flex-col items-center rounded-3xl bg-surface p-6 shadow-sm">
+        <div className="g2 flex flex-col items-center p-6">
           <p className="text-sm text-text-muted">
             {t('comparison.accuracyScore', 'Score de precision')}
           </p>
-          <p className="my-2 text-5xl font-extrabold" style={{ color: scoreColor }}>
+          <p className="stat-value my-2 text-5xl" style={{ color: scoreColor }}>
             {Math.round(lastVerification.score * 100)}%
           </p>
           <div className="h-3 w-full overflow-hidden rounded-full bg-surface-tint">
@@ -70,15 +70,15 @@ export default function ComparisonResultScreen({ record, userAnswer }: Props) {
 
         {/* Substitutions */}
         {lastVerification.substitutedWords.length > 0 && (
-          <div className="rounded-2xl bg-surface p-4 shadow-sm">
-            <p className="mb-2 text-base font-bold text-text-primary">
+          <div className="g2 p-4">
+            <h2 className="card-title mb-2">
               {t('comparison.substitutions', 'Substitutions')}
-            </p>
+            </h2>
             <div className="space-y-2">
               {lastVerification.substitutedWords.map((sub, i) => (
                 <p key={i} className="text-sm">
                   <span className="text-text-primary">{sub.expected}</span>
-                  <DuoIcon icon={ArrowRight} size={16} className="mx-1 inline text-text-muted" />
+                  <DuoIcon icon={ArrowRight} size={12} className="mx-1 inline text-text-muted" />
                   <span className="text-error">{sub.got}</span>
                 </p>
               ))}
@@ -88,10 +88,10 @@ export default function ComparisonResultScreen({ record, userAnswer }: Props) {
 
         {/* Missing */}
         {lastVerification.missingWords.length > 0 && (
-          <div className="rounded-2xl bg-surface p-4 shadow-sm">
-            <p className="mb-2 text-base font-bold text-text-primary">
+          <div className="g2 p-4">
+            <h2 className="card-title mb-2">
               {t('comparison.missingWords', 'Mots manquants')}
-            </p>
+            </h2>
             <div className="flex flex-wrap gap-2">
               {lastVerification.missingWords.map((word, i) => (
                 <span
@@ -107,10 +107,10 @@ export default function ComparisonResultScreen({ record, userAnswer }: Props) {
 
         {/* Fragile portions */}
         {lastVerification.fragilePortions.length > 0 && (
-          <div className="rounded-2xl bg-surface p-4 shadow-sm">
-            <p className="mb-2 text-base font-bold text-text-primary">
+          <div className="g2 p-4">
+            <h2 className="card-title mb-2">
               {t('comparison.fragilePortions', 'Portions fragiles')}
-            </p>
+            </h2>
             <div className="space-y-2">
               {lastVerification.fragilePortions.map((portion, i) => (
                 <div key={i} className="flex items-center justify-between text-sm">
@@ -128,7 +128,7 @@ export default function ComparisonResultScreen({ record, userAnswer }: Props) {
 
         <div className="space-y-3 pt-2">
           <Button variant="default" className="w-full" onClick={() => goBackSafely(navigate)}>
-            <DuoIcon icon={Check} size={20} />
+            <DuoIcon icon={Check} size={18} />
             {t('comparison.finish', 'Terminer')}
           </Button>
           <Button

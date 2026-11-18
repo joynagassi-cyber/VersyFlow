@@ -198,7 +198,7 @@ export default function TranslationComparisonScreen() {
           onClick={() => setAddOpen(true)}
           className="flex items-center gap-1.5 rounded-full bg-primary px-3.5 py-1.5 text-xs font-bold text-on-primary shadow-sm active:scale-95"
         >
-          <DuoIcon icon={Plus} size={16} />
+          <DuoIcon icon={Plus} size={14} />
           {t('comparison.addVersion', 'Ajouter une version')}
         </button>
       }
@@ -214,11 +214,11 @@ export default function TranslationComparisonScreen() {
           </div>
           {availableLanguages.length > 1 && (
             <div className="flex items-center gap-2">
-              <DuoIcon icon={Globe} size={16} className="shrink-0 text-primary" />
+              <DuoIcon icon={Globe} size={13} className="shrink-0 text-primary" />
               <select
                 value={targetLang ?? ''}
                 onChange={(e) => changeLanguage(e.target.value)}
-                className="h-7 min-w-0 flex-1 rounded-lg border border-[color:var(--color-border)] bg-surface-tint px-2 text-xs font-semibold text-text-primary outline-none"
+                className="h-10 min-w-0 flex-1 rounded-lg border border-[color:var(--color-border)] bg-surface-tint px-2 text-xs font-semibold text-text-primary outline-none focus-visible:ring-2 focus-visible:ring-primary"
                 aria-label={t('comparison.language', 'Langue de comparaison')}
               >
                 <option value="">
@@ -240,7 +240,7 @@ export default function TranslationComparisonScreen() {
             <div
               key={r.id}
               className={cn(
-                'bible-card rounded-2xl bg-surface p-4 shadow-sm transition',
+                'bible-card rounded-2xl p-4 transition',
                 r.id === bibleTranslation && 'ring-1 ring-primary/40',
               )}
             >
@@ -248,37 +248,34 @@ export default function TranslationComparisonScreen() {
                 <div className="flex min-w-0 items-center gap-2">
                   <span className="truncate text-sm font-bold text-text-primary">{r.name}</span>
                   {r.language && (
-                    <span className="rounded-full bg-surface-tint px-2 py-0.5 text-2xs font-bold uppercase tracking-wide text-text-muted">
+                    <span className="rounded-full bg-surface-tint px-2 py-0.5 text-3xs font-bold uppercase tracking-wide text-text-muted">
                       {r.language}
                     </span>
                   )}
                   {r.id === bibleTranslation && (
-                    <span className="flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-2xs font-bold text-primary">
-                      <DuoIcon icon={Check} size={16} /> {t('comparison.active', 'Active')}
+                    <span className="flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-3xs font-bold text-primary">
+                      <DuoIcon icon={Check} size={10} /> {t('comparison.active', 'Active')}
                     </span>
                   )}
                 </div>
                 <button
                   type="button"
                   onClick={() => remove(r.id)}
-                  className="rounded-full p-1 text-text-muted active:bg-surface-tint"
+                  className="touch-target shrink-0 rounded-full text-text-muted active:bg-surface-tint"
                   aria-label={t('common.remove', 'Retirer')}
                 >
-                  <DuoIcon icon={X} size={16} />
+                  <DuoIcon icon={X} size={15} />
                 </button>
               </div>
               {r.loading ? (
                 <div className="flex items-center gap-2 text-sm text-text-muted">
-                  <DuoIcon icon={Loader2} size={16} className="animate-spin text-primary" />
+                  <DuoIcon icon={Loader2} size={14} className="animate-spin text-primary" />
                   {t('comparison.loadingTranslation', 'Chargement de la traduction...')}
                 </div>
               ) : r.error ? (
                 <p className="text-xs italic text-text-muted">{r.error}</p>
               ) : r.text ? (
-                <p
-                  className="bible-text text-[15px] text-text-primary"
-                  style={{ fontFamily: 'var(--reading-font-family, "Source Serif 4", Georgia, serif)' }}
-                >
+                <p className="bible-text text-text-primary">
                   {r.text}
                 </p>
               ) : (
@@ -303,7 +300,8 @@ export default function TranslationComparisonScreen() {
                 <button
                   type="button"
                   onClick={() => setAddOpen(false)}
-                  className="rounded-full p-1 text-text-muted active:bg-surface-tint"
+                  aria-label={t('common.close', 'Fermer')}
+                  className="touch-target rounded-full text-text-muted active:bg-surface-tint"
                 >
                   <DuoIcon icon={X} size={16} />
                 </button>
@@ -326,7 +324,7 @@ export default function TranslationComparisonScreen() {
                           {m.name}
                         </span>
                         {m.language && (
-                          <span className="rounded-full bg-surface-tint px-2 py-0.5 text-2xs font-bold uppercase text-text-muted">
+                          <span className="rounded-full bg-surface-tint px-2 py-0.5 text-3xs font-bold uppercase text-text-muted">
                             {m.language}
                           </span>
                         )}

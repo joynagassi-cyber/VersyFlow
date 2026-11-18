@@ -8,6 +8,7 @@ import {
   CpuIcon as Cpu,
   SparklesIcon as Sparkles,
   ChevronDownIcon as ChevronDown,
+  CheckmarkCircle01Icon as CheckCircle,
 } from '@/components/ui/solar-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { Button } from '@/components/ui/button';
@@ -77,33 +78,37 @@ export default function AboutScreen() {
     <FullScreenPage
       title={t('settings.about', "A propos")}
       showBack
-      backPath="/settings"
+      backPath="/tabs/settings"
     >
       <div className="screen-column space-y-4">
         {/* Header */}
-        <div className="glass flex flex-col items-center gap-2 rounded-3xl bg-surface p-6 shadow-sm">
+        <div className="glass flex flex-col items-center gap-2 rounded-3xl p-6">
           <Logo size={72} />
-          <p className="text-2xl font-extrabold text-text-primary">VersyFlow</p>
-          <p className="text-sm text-text-muted">Version {VERSION}</p>
+          <p className="page-title">VersyFlow</p>
+          <p className="section-label">Version {VERSION}</p>
         </div>
 
         {/* What's new */}
-        <div className="glass rounded-2xl bg-surface p-4 shadow-sm">
-          <button
-            className="flex w-full items-center justify-between"
-            onClick={() => setShowWhatNew((v) => !v)}
-            aria-expanded={showWhatNew}
-          >
-            <p className="flex items-center gap-2 text-base font-bold text-text-primary">
-              <DuoIcon icon={Sparkles} size={20} className="text-primary" />
+        <div className="glass rounded-2xl p-4">
+          <div className="flex items-center justify-between gap-2">
+            <h2 className="card-title flex items-center gap-2">
+              <DuoIcon icon={Sparkles} size={18} className="text-primary" />
               {t('settings.whatsNew', 'Nouveautés')}
-            </p>
-            <DuoIcon icon={ChevronDown}
-              size={20}
+            </h2>
+            <button
+              type="button"
+              className="touch-target -mr-2 shrink-0 rounded-full text-text-muted active:bg-surface-tint"
+              onClick={() => setShowWhatNew((v) => !v)}
+              aria-expanded={showWhatNew}
               aria-label={t('common.expandCollapse', 'Déplier / replier')}
-              className={'text-text-muted transition-transform ' + (showWhatNew ? 'rotate-180' : '')}
-            />
-          </button>
+            >
+              <DuoIcon
+                icon={ChevronDown}
+                size={18}
+                className={'transition-transform ' + (showWhatNew ? 'rotate-180' : '')}
+              />
+            </button>
+          </div>
           {showWhatNew &&
             WHATS_NEW.map((entry, i) => (
               <div key={i} className="mt-3">
@@ -125,18 +130,23 @@ export default function AboutScreen() {
             onClick={() => void testNotification()}
             disabled={scheduled}
           >
-            {scheduled
-              ? t('settings.notificationScheduled', 'Rappel planifié ✓')
-              : t('settings.testNotification', 'Tester une notification locale')}
+            {scheduled ? (
+              <>
+                <DuoIcon icon={CheckCircle} size={18} />
+                {t('settings.notificationScheduled', 'Rappel planifié')}
+              </>
+            ) : (
+              t('settings.testNotification', 'Tester une notification locale')
+            )}
           </Button>
         </div>
 
         {/* About */}
-        <div className="glass rounded-2xl bg-surface p-4 shadow-sm">
-          <p className="mb-2 flex items-center gap-2 text-base font-bold text-text-primary">
-            <DuoIcon icon={BookOpen} size={20} className="text-primary" />
+        <div className="glass rounded-2xl p-4">
+          <h2 className="card-title mb-2 flex items-center gap-2">
+            <DuoIcon icon={BookOpen} size={18} className="text-primary" />
             {t('settings.about', "A propos")}
-          </p>
+          </h2>
           <p className="text-sm leading-relaxed text-text-secondary">
             {t('settings.aboutDescription',
               "VersyFlow vous aide a memoriser les versets bibliques grace a la science de la repetition espacee (FSRS).")}
@@ -144,7 +154,7 @@ export default function AboutScreen() {
         </div>
 
         {/* Links */}
-        <div className="glass overflow-hidden rounded-2xl bg-surface shadow-sm">
+        <div className="glass overflow-hidden rounded-2xl">
           {[
             { label: t('settings.documentation', 'Documentation'), url: 'https://github.com/your-org/versyflow' },
             { label: t('settings.supportLink', 'Support'), url: 'mailto:support@versyflow.com' },
@@ -162,13 +172,13 @@ export default function AboutScreen() {
         </div>
 
         {/* Credits */}
-        <div className="glass space-y-2 rounded-2xl bg-surface p-4 text-center shadow-sm">
+        <div className="glass space-y-2 rounded-2xl p-4 text-center">
           <p className="flex items-center justify-center gap-2 text-sm text-text-secondary">
-            <DuoIcon icon={Heart} size={16} className="text-primary" />
+            <DuoIcon icon={Heart} size={14} className="text-primary" />
             {t('settings.creditMission', 'Developpe avec amour pour la gloire de Dieu')}
           </p>
           <p className="flex items-center justify-center gap-2 text-sm text-text-muted">
-            <DuoIcon icon={Cpu} size={16} />
+            <DuoIcon icon={Cpu} size={14} />
             {t('settings.creditEngine', 'Moteur FSRS par Dmytro Gutman')}
           </p>
         </div>

@@ -122,11 +122,17 @@ export function resolveTheme(input: ThemeInput): ThemePlan {
   const removedAttributes: string[] = ['data-app-bg', 'data-theme-image', 'data-theme-image-mode', 'data-bg', 'data-fixed-accent'];
   const vars: Record<string, string> = input.glassSettings ? {
     '--bg-blur': `${input.glassSettings.bgBlur}px`,
+    // `blur(0px)` crée tout de même une couche de composition : à 0 on pose
+    // `none`, et la légère saturation ne s'applique qu'avec l'image visible.
+    '--bg-filter':
+      input.glassSettings.bgBlur > 0
+        ? `blur(${input.glassSettings.bgBlur}px) saturate(1.06)`
+        : 'saturate(1.06)',
     '--glass-blur': `${input.glassSettings.glassBlur}px`,
     '--glass-alpha': String(input.glassSettings.glassAlpha / 100),
     '--veil-alpha': String(input.glassSettings.veilAlpha / 100),
   } : {};
-  const removedVars: string[] = [...ACCENT_VARS, '--app-bg-image', '--theme-image', '--fixed-accent', '--font-sans', '--gradient-wash-light', '--gradient-wash-dark', '--glass-gradient'];
+  const removedVars: string[] = [...ACCENT_VARS, '--app-bg-image', '--theme-image', '--fixed-accent', '--font-sans', '--gradient-wash-light', '--gradient-wash-dark', '--glass-gradient', '--bg-filter'];
   const fixedAccent = findFixedAccent(input.fixedAccentId);
   if (fixedAccent) {
     attributes['data-fixed-accent'] = fixedAccent.id;

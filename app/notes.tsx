@@ -21,6 +21,7 @@ import {
   ArrowRight01Icon as ArrowRight,
 } from '@/components/ui/solar-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
+import { LoadingBlock } from '@/components/ui/Skeleton';
 import { DuoIcon } from '@/components/ui/DuoIcon';
 import { Button } from '@/components/ui/button';
 import { HintNote, SectionCard, Segmented } from '@/components/family/FamilyKit';
@@ -85,7 +86,7 @@ export default function NotesScreen() {
         />
 
         {loading ? (
-          <p className="text-sm text-text-muted">{t('common.loading', 'Chargement...')}</p>
+          <LoadingBlock label={t('common.loading', 'Chargement…')} className="py-10" />
         ) : notes.length === 0 ? (
           <EmptyState
             title={t('notes.empty', 'Aucune note pour l’instant')}
@@ -103,11 +104,11 @@ export default function NotesScreen() {
                 {entries.map((note) => (
                   <li key={note.verseKey} className="rounded-xl bg-surface-tint p-3">
                     <div className="flex items-center gap-2">
-                      <DuoIcon icon={Note} size={16} className="text-primary" />
+                      <DuoIcon icon={Note} size={14} className="text-primary" />
                       <span className="text-sm font-semibold text-text-primary">
                         {formatVerseKey(note.verseKey)}
                       </span>
-                      <span className="ml-auto rounded-full bg-surface px-2 py-0.5 text-2xs font-semibold text-text-muted">
+                      <span className="ml-auto rounded-full bg-surface px-2 py-0.5 text-3xs font-semibold text-text-muted">
                         {t('notes.private', 'Privé')}
                       </span>
                     </div>
@@ -120,9 +121,9 @@ export default function NotesScreen() {
                         onClick={() => navigate(`/bible/chapter/${note.bookId}/${note.chapter}`)}
                         className="flex items-center gap-1 text-xs font-semibold text-primary"
                       >
-                        <DuoIcon icon={BookOpen} size={16} />
+                        <DuoIcon icon={BookOpen} size={12} />
                         {t('notes.openVerse', 'Ouvrir le chapitre')}
-                        <DuoIcon icon={ArrowRight} size={16} />
+                        <DuoIcon icon={ArrowRight} size={12} />
                       </button>
                       <button
                         type="button"
@@ -130,7 +131,7 @@ export default function NotesScreen() {
                         className="flex items-center gap-1 text-xs font-semibold text-error"
                         aria-label={t('notes.delete', 'Supprimer la note')}
                       >
-                        <DuoIcon icon={Trash} size={16} />
+                        <DuoIcon icon={Trash} size={12} />
                         {t('common.delete', 'Supprimer')}
                       </button>
                     </div>

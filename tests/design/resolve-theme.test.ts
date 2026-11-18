@@ -77,7 +77,7 @@ describe('resolveTheme — décision pure', () => {
     });
     expect(plan.vars['--color-primary']).toBe('#e6067a');
     expect(plan.vars['--ion-color-primary']).toBe('#e6067a');
-    expect(plan.vars['--theme-image']).toBe('url(/themes/esprit/esprit-pentecote-portrait.png)');
+    expect(plan.vars['--theme-image']).toBe('url(/themes/esprit/esprit-pentecote-portrait.webp)');
     expect(plan.attributes['data-theme-image']).toBe('on');
     expect(plan.attributes['data-theme-image-mode']).toBe('light');
   });
@@ -90,9 +90,9 @@ describe('resolveTheme — décision pure', () => {
       accentValues: accent,
       wide: true,
     });
-    expect(plan.vars['--theme-image']).toContain('-landscape.png');
-    expect(imagePath('esprit-pentecote', false)).toContain('-portrait.png');
-    expect(imagePath('esprit-pentecote', true)).toContain('-landscape.png');
+    expect(plan.vars['--theme-image']).toContain('-landscape.webp');
+    expect(imagePath('esprit-pentecote', false)).toContain('-portrait.webp');
+    expect(imagePath('esprit-pentecote', true)).toContain('-landscape.webp');
   });
 
   it('pose l’image de fond sans attendre l’extraction de l’accent', () => {
@@ -101,7 +101,7 @@ describe('resolveTheme — décision pure', () => {
     // quand l'échantillonnage des pixels (asynchrone) n'a pas encore eu lieu.
     // C'est ce qui manquait : `--theme-image` n'était écrit que si
     // `accentValues` existait déjà, donc le fond restait blanc.
-    expect(plan.vars['--theme-image']).toContain('-portrait.png');
+    expect(plan.vars['--theme-image']).toContain('-portrait.webp');
     expect(plan.attributes['data-theme-image']).toBe('on');
     expect(plan.removedVars).not.toContain('--theme-image');
     // …et aucun accent n'est inventé tant que l'extraction n'a pas eu lieu.

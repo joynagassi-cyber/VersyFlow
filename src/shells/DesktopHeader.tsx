@@ -106,15 +106,15 @@ export function DesktopHeader() {
           type="button"
           onClick={() => navigate('/search')}
           aria-label={t('shell.search', 'Recherche')}
-          className="flex h-9 items-center gap-2 rounded-xl bg-surface-tint px-2.5 text-sm text-text-muted transition-colors hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+          className="flex h-10 items-center gap-2 rounded-xl bg-surface-tint px-2.5 text-sm text-text-muted transition-colors hover:text-text-primary"
         >
-          <DuoIcon icon={Search} size={20} />
+          <DuoIcon icon={Search} size={18} />
           {isDesktop && (
             <>
               <span className="hidden xl:inline">
                 {t('shell.searchPlaceholder', 'Rechercher un verset, un concept…')}
               </span>
-              <kbd className="hidden rounded border border-border px-1.5 py-0.5 text-2xs font-semibold xl:inline">
+              <kbd className="hidden rounded border border-border px-1.5 py-0.5 text-[10px] font-semibold xl:inline">
                 ⌘K
               </kbd>
             </>
@@ -130,16 +130,16 @@ export function DesktopHeader() {
           type="button"
           onClick={() => navigate('/notifications')}
           aria-label={t('shell.notifications', 'Notifications')}
-          className="flex h-9 w-9 items-center justify-center rounded-xl text-text-secondary transition-colors hover:bg-surface-tint hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+          className="flex h-10 w-10 items-center justify-center rounded-xl text-text-secondary transition-colors hover:bg-surface-tint hover:text-text-primary"
         >
-          <DuoIcon icon={Bell} size={20} />
+          <DuoIcon icon={Bell} size={19} />
         </button>
 
         <button
           type="button"
           onClick={() => navigate('/profile')}
           aria-label={t('shell.profile', 'Profil')}
-          className="flex h-9 w-9 items-center justify-center rounded-xl text-text-secondary transition-colors hover:bg-surface-tint hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+          className="flex h-10 w-10 items-center justify-center rounded-xl text-text-secondary transition-colors hover:bg-surface-tint hover:text-text-primary"
         >
           <DuoIcon icon={UserCircle} size={20} />
         </button>

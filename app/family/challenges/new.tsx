@@ -73,7 +73,7 @@ export default function FamilyChallengeNewScreen() {
       subtitle={family?.name}
       backPath="/family/challenges"
     >
-      <div className="flex flex-col gap-4">
+      <div className="space-y-4">
         <SectionCard title={t('familyPlus.challengeKind', 'Type de défi')}>
           <div className="flex flex-col gap-2">
             {KINDS.map((k) => {
@@ -93,7 +93,7 @@ export default function FamilyChallengeNewScreen() {
                   )}
                 >
                   <span className="flex h-9 w-9 items-center justify-center rounded-full bg-surface text-primary">
-                    <DuoIcon icon={Trophy} size={20} />
+                    <DuoIcon icon={Trophy} size={18} />
                   </span>
                   <span className="flex-1">
                     <span className="block text-sm font-semibold text-text-primary">

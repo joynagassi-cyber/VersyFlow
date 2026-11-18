@@ -12,6 +12,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Compass01Icon as Compass, ChevronRightIcon as ChevronRight } from '@/components/ui/solar-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
+import { LoadingBlock } from '@/components/ui/Skeleton';
 import { DuoIcon } from '@/components/ui/DuoIcon';
 import { Button } from '@/components/ui/button';
 import { HintNote, SectionCard, Segmented } from '@/components/family/FamilyKit';
@@ -72,7 +73,7 @@ export default function SemanticSuggestionsScreen() {
         />
 
         {loading ? (
-          <p className="text-sm text-text-muted">{t('common.loading', 'Chargement...')}</p>
+          <LoadingBlock label={t('common.loading', 'Chargement…')} className="py-10" />
         ) : suggestions.length === 0 ? (
           <EmptyState
             title={t('tree.noSuggestions', 'Aucune suggestion disponible')}
@@ -96,7 +97,7 @@ export default function SemanticSuggestionsScreen() {
                     className="flex w-full items-center gap-3 p-4 text-left"
                   >
                     <span className="flex h-10 w-10 items-center justify-center rounded-full bg-surface-tint text-primary">
-                      <DuoIcon icon={Compass} size={20} />
+                      <DuoIcon icon={Compass} size={18} />
                     </span>
                     <span className="min-w-0 flex-1">
                       <span className="block truncate text-base font-semibold text-text-primary">
@@ -108,7 +109,7 @@ export default function SemanticSuggestionsScreen() {
                           : t('tree.inBase', 'Présent dans la base')}
                       </span>
                     </span>
-                    <DuoIcon icon={ChevronRight} size={20} className="text-text-muted" />
+                    <DuoIcon icon={ChevronRight} size={18} className="text-text-muted" />
                   </button>
                 </SectionCard>
               </li>

@@ -89,7 +89,7 @@ export default function FamilyInviteScreen() {
 
   if (!family || !signedIn) {
     return (
-      <FullScreenPage title={t('family.invite', 'Inviter')} showBack>
+      <FullScreenPage title={t('family.invite', 'Inviter')} showBack column="wide">
         <div className="screen-column">
           <EmptyState
             title={t('family.noFamily', 'Aucune famille active')}
@@ -117,26 +117,27 @@ export default function FamilyInviteScreen() {
         </div>
 
         {/* Code card */}
-        <div className="flex flex-col items-center gap-3 rounded-3xl bg-surface p-6 shadow-sm">
+        <div className="g2 flex flex-col items-center gap-3 p-6">
           <span className="text-sm font-semibold text-text-secondary">
             {t('family.inviteCode', 'Code d\'invitation')}
           </span>
           {inviteCode ? (
             <div className="flex items-center gap-3">
-              <span className="text-3xl font-extrabold tracking-widest text-primary">
+              <span className="stat-value text-3xl tracking-[0.18em] text-primary">
                 {inviteCode}
               </span>
               <button
+                type="button"
                 onClick={() => fireAndForget(handleCopy(), 'family:copy')}
-                className="rounded-full bg-surface-tint p-2 active:bg-primary/10"
+                className="touch-target rounded-full bg-surface-tint text-primary active:bg-primary/10"
                 aria-label={copied ? t('common.saved', 'Copié') : t('common.copy', 'Copier')}
               >
-                {copied ? <DuoIcon icon={Check} size={20} className="text-success" /> : <DuoIcon icon={Copy} size={20} className="text-primary" />}
+                {copied ? <DuoIcon icon={Check} size={18} className="text-success" /> : <DuoIcon icon={Copy} size={18} className="text-primary" />}
               </button>
             </div>
           ) : (
             <Button variant="default" onClick={() => fireAndForget(handleGenerateCode(), 'family:generate-code')} disabled={isLoading}>
-              {isLoading ? <DuoIcon icon={Loader2} size={20} className="animate-spin" /> : t('family.generateCode', 'Generer un code')}
+              {isLoading ? <DuoIcon icon={Loader2} size={18} className="animate-spin" /> : t('family.generateCode', 'Generer un code')}
             </Button>
           )}
           <span className="text-xs text-text-muted">
@@ -151,15 +152,15 @@ export default function FamilyInviteScreen() {
           disabled={isLoading || !inviteCode || sharing}
         >
           {sharing ? (
-            <DuoIcon icon={Loader2} size={20} className="animate-spin" />
+            <DuoIcon icon={Loader2} size={18} className="animate-spin" />
           ) : (
-            <DuoIcon icon={Share2} size={20} />
+            <DuoIcon icon={Share2} size={18} />
           )}
           {t('family.shareCode', 'Partager le code')}
         </Button>
 
         <div className="flex items-start gap-3 rounded-2xl bg-surface-tint p-4">
-          <DuoIcon icon={Info} size={20} className="mt-0.5 text-info" />
+          <DuoIcon icon={Info} size={18} className="mt-0.5 text-info" />
           <p className="flex-1 text-sm text-text-secondary">
             {t('family.inviteHint', 'Chaque membre utilise ce code pour rejoindre votre famille.')}
           </p>

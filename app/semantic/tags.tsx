@@ -15,6 +15,7 @@ import {
   HierarchyIcon as Tree,
 } from '@/components/ui/solar-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
+import { LoadingBlock } from '@/components/ui/Skeleton';
 import { DuoIcon } from '@/components/ui/DuoIcon';
 import { Button } from '@/components/ui/button';
 import { HintNote, SectionCard } from '@/components/family/FamilyKit';
@@ -39,13 +40,13 @@ export default function SemanticTagsScreen() {
           aria-label={t('tree.newTag', 'Nouveau tag')}
           className="rounded-full bg-surface-tint p-2"
         >
-          <DuoIcon icon={PlusSign} size={20} className="text-primary" />
+          <DuoIcon icon={PlusSign} size={18} className="text-primary" />
         </button>
       }
     >
       <div className="flex flex-col gap-4">
         {loading ? (
-          <p className="text-sm text-text-muted">{t('common.loading', 'Chargement...')}</p>
+          <LoadingBlock label={t('common.loading', 'Chargement…')} className="py-10" />
         ) : entries.length === 0 ? (
           <EmptyState
             title={t('tree.noTags', 'Aucun tag personnel pour l’instant')}
@@ -69,7 +70,7 @@ export default function SemanticTagsScreen() {
                     className="flex w-full items-center gap-3 p-4 text-left"
                   >
                     <span className="flex h-10 w-10 items-center justify-center rounded-full bg-surface-tint text-primary">
-                      <DuoIcon icon={Tag} size={20} />
+                      <DuoIcon icon={Tag} size={18} />
                     </span>
                     <span className="min-w-0 flex-1">
                       <span className="block truncate text-base font-semibold text-text-primary">
@@ -82,7 +83,7 @@ export default function SemanticTagsScreen() {
                           : ''}
                       </span>
                     </span>
-                    <DuoIcon icon={ChevronRight} size={20} className="text-text-muted" />
+                    <DuoIcon icon={ChevronRight} size={18} className="text-text-muted" />
                   </button>
                 </SectionCard>
               </li>

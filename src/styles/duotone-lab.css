@@ -1,0 +1,300 @@
+/* Laboratoire de comparaison des boutons duotone — `/__dev/duotone`.
+   Chargé uniquement par la page de dev (import paresseux), donc absent du
+   bundle de production.
+
+   Toutes les couleurs viennent des jetons du thème (`--acc`, `--acc2`,
+   `--acc-text`, `--tx`, `--mut`) : aucune valeur figée, aucun preset cassé.
+   La seconde couche des icônes Solar est pilotée par `--solar-secondary-color`
+   et `--solar-secondary-opacity`, deux variables lues par la bibliothèque
+   elle-même — le duotone se règle donc sans toucher les 549 appels. */
+
+.dl-page {
+  padding: 28px 20px 140px;
+  max-width: 1120px;
+  margin: 0 auto;
+  color: var(--tx);
+}
+
+/* Le conteneur de thème réutilise `.appearance-preview[data-theme]`, qui porte
+   déjà les jetons complets. On annule seulement sa mise en page (grille et
+   collage) héritée de l'écran Apparence. */
+.dl-theme.appearance-preview {
+  grid-column: auto;
+  grid-row: auto;
+  position: static;
+  top: auto;
+  min-width: 0;
+}
+
+.dl-head h1 {
+  font: 400 clamp(22px, 3vw, 28px) / 1.25 var(--font-serif, Georgia), serif;
+  margin: 0 0 8px;
+}
+.dl-head p { margin: 0; color: var(--mut); font-size: 14px; line-height: 1.55; max-width: 76ch; }
+.dl-head code { font-size: 12.5px; padding: 1px 5px; border-radius: 5px; background: color-mix(in srgb, var(--tx) 8%, transparent); }
+
+.dl-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 18px 0 20px;
+  padding: 10px 0;
+  background: var(--color-background, var(--gc));
+  border-bottom: 1px solid var(--bd);
+}
+.dl-toolbar button {
+  border: 1px solid var(--bd);
+  background: color-mix(in srgb, var(--tx) 5%, transparent);
+  color: var(--tx);
+  border-radius: 999px;
+  padding: 7px 13px;
+  font-size: 13px;
+  font-weight: 600;
+}
+.dl-toolbar button[aria-pressed='true'] {
+  background: var(--acc);
+  border-color: var(--acc);
+  color: var(--color-on-primary, #fff);
+}
+.dl-toolbar .dl-spacer { flex: 1; }
+.dl-hint { font-size: 12px; color: var(--mut); }
+
+.dl-variant {
+  border: 1px solid var(--bd);
+  border-radius: 20px;
+  padding: 16px 16px 14px;
+  margin-bottom: 14px;
+  background: color-mix(in srgb, var(--gc) 62%, transparent);
+}
+.dl-variant[data-reco='true'] {
+  border-color: color-mix(in srgb, var(--acc) 45%, var(--bd));
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--acc) 12%, transparent);
+}
+
+.dl-variant-head { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin-bottom: 4px; }
+.dl-tag {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--acc-text);
+}
+.dl-title { font-size: 15px; font-weight: 650; color: var(--tx); }
+.dl-note { margin: 0 0 12px; color: var(--mut); font-size: 13px; line-height: 1.5; max-width: 80ch; }
+
+.dl-states {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+@media (max-width: 640px) {
+  .dl-states { grid-template-columns: 1fr; }
+}
+
+.dl-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  /* Les états sont figés pour la comparaison : le survol réel est montré
+     plus bas, dans la section « en situation ». */
+  pointer-events: none;
+}
+.dl-cell-label {
+  font-size: 10.5px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--mut);
+  font-weight: 700;
+}
+
+/* — Bouton de barre latérale ------------------------------------------- */
+.dl-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  border-radius: 14px;
+  border: 1px solid transparent;
+  background: transparent;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--mut);
+  transition:
+    background-color 180ms ease,
+    color 180ms ease,
+    box-shadow 180ms ease;
+}
+.dl-btn span.dl-label { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* — Bouton d'onglet mobile --------------------------------------------- */
+.dl-tab { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 6px 0; background: transparent; border: 0; }
+.dl-tab .dl-pill { display: grid; place-items: center; width: 48px; height: 30px; border-radius: 999px; transition: background-color 180ms ease; }
+.dl-tab .dl-tab-label { font-size: 11px; font-weight: 600; color: var(--mut); transition: color 180ms ease; }
+.dl-tab .dl-dot { width: 4px; height: 4px; border-radius: 50%; background: transparent; transition: background-color 180ms ease; }
+
+/* Les icônes du labo héritent la couleur de leur bouton : c'est le bouton
+   (et donc l'état) qui décide, pas une règle globale. Spécificité 0,3,0 pour
+   battre `.solar.solar-accent` de globals.css sans dépendre de l'ordre. */
+.dl-lab .solar.solar-accent { color: inherit; }
+
+/* =====================================================================
+   0 — AUJOURD'HUI : gris au repos, l'accent prend le contrôle au survol.
+   Reproduit exactement globals.css (l. 1314-1316).
+   ===================================================================== */
+.dl-v0 .dl-btn { color: var(--mut); }
+.dl-v0 .dl-btn.is-hover,
+.dl-v0 .dl-btn:hover { color: var(--acc); background: color-mix(in srgb, var(--tx) 6%, transparent); }
+.dl-v0 .dl-btn.is-active { color: var(--acc); background: color-mix(in srgb, var(--acc) 10%, transparent); }
+.dl-v0 .solar { --solar-secondary-color: currentColor; --solar-secondary-opacity: 0.5; }
+.dl-v0 .dl-tab.is-active .dl-pill { background: color-mix(in srgb, var(--acc) 12%, transparent); }
+.dl-v0 .dl-tab.is-active .dl-tab-label { color: var(--acc); }
+.dl-v0 .dl-tab.is-active .dl-dot { background: var(--acc); }
+.dl-v0 .dl-tab { color: var(--mut); }
+.dl-v0 .dl-tab.is-hover,
+.dl-v0 .dl-tab:hover { color: var(--acc); }
+
+/* =====================================================================
+   A — VRAI DUOTONE : l'encre porte la structure, l'accent porte la masse.
+   La seconde couche est colorée dès le repos ; le survol ne change plus la
+   teinte, seulement la densité du voile.
+   ===================================================================== */
+.dl-vA .dl-btn { color: color-mix(in srgb, var(--tx) 82%, var(--mut)); }
+.dl-vA .solar { --solar-secondary-color: var(--acc); --solar-secondary-opacity: 0.24; }
+.dl-vA .dl-btn.is-hover,
+.dl-vA .dl-btn:hover { background: color-mix(in srgb, var(--acc) 7%, transparent); }
+.dl-vA .dl-btn.is-hover .solar,
+.dl-vA .dl-btn:hover .solar { --solar-secondary-opacity: 0.3; }
+.dl-vA .dl-btn.is-active {
+  color: var(--acc-text);
+  background: color-mix(in srgb, var(--acc) 11%, transparent);
+}
+.dl-vA .dl-btn.is-active .solar { --solar-secondary-opacity: 0.36; }
+.dl-vA .dl-tab { color: color-mix(in srgb, var(--tx) 78%, var(--mut)); }
+.dl-vA .dl-tab .solar { --solar-secondary-color: var(--acc); --solar-secondary-opacity: 0.24; }
+.dl-vA .dl-tab.is-hover .dl-pill,
+.dl-vA .dl-tab:hover .dl-pill { background: color-mix(in srgb, var(--acc) 7%, transparent); }
+.dl-vA .dl-tab.is-active { color: var(--acc-text); }
+.dl-vA .dl-tab.is-active .dl-pill { background: color-mix(in srgb, var(--acc) 12%, transparent); }
+.dl-vA .dl-tab.is-active .solar { --solar-secondary-opacity: 0.38; }
+.dl-vA .dl-tab.is-active .dl-tab-label { color: var(--acc-text); }
+.dl-vA .dl-tab.is-active .dl-dot { background: var(--acc); }
+
+/* =====================================================================
+   B — PASTILLE : l'icône reste une encre franche, la couleur vit dans le
+   contenant. Aucune teinte ne bouge, ni au survol ni à l'activation.
+   ===================================================================== */
+.dl-vB .dl-btn { color: var(--tx); }
+.dl-vB .solar { --solar-secondary-color: currentColor; --solar-secondary-opacity: 0.26; }
+.dl-vB .dl-btn.is-hover,
+.dl-vB .dl-btn:hover { background: color-mix(in srgb, var(--acc) 7%, transparent); }
+.dl-vB .dl-btn.is-active {
+  color: var(--acc-text);
+  background: color-mix(in srgb, var(--acc) 13%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--acc) 34%, transparent);
+}
+.dl-vB .dl-tab { color: var(--tx); }
+.dl-vB .dl-tab .solar { --solar-secondary-color: currentColor; --solar-secondary-opacity: 0.26; }
+.dl-vB .dl-tab.is-hover .dl-pill,
+.dl-vB .dl-tab:hover .dl-pill { background: color-mix(in srgb, var(--acc) 7%, transparent); }
+.dl-vB .dl-tab.is-active { color: var(--acc-text); }
+.dl-vB .dl-tab.is-active .dl-pill {
+  background: color-mix(in srgb, var(--acc) 13%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--acc) 34%, transparent);
+}
+.dl-vB .dl-tab.is-active .dl-tab-label { color: var(--acc-text); }
+.dl-vB .dl-tab.is-active .dl-dot { background: var(--acc); }
+
+/* =====================================================================
+   C — REMPLISSAGE : le duotone est la RÉCOMPENSE de l'état. Creux au repos,
+   plein à l'activation. L'état ne repose donc pas sur la seule couleur.
+   ===================================================================== */
+.dl-vC .dl-btn { color: var(--mut); }
+.dl-vC .solar { --solar-secondary-color: var(--acc); --solar-secondary-opacity: 0.1; }
+.dl-vC .dl-btn.is-hover,
+.dl-vC .dl-btn:hover { color: color-mix(in srgb, var(--tx) 80%, var(--mut)); background: color-mix(in srgb, var(--acc) 5%, transparent); }
+.dl-vC .dl-btn.is-hover .solar,
+.dl-vC .dl-btn:hover .solar { --solar-secondary-opacity: 0.2; }
+.dl-vC .dl-btn.is-active {
+  color: var(--acc-text);
+  background: color-mix(in srgb, var(--acc) 10%, transparent);
+}
+.dl-vC .dl-btn.is-active .solar { --solar-secondary-opacity: 0.48; }
+.dl-vC .dl-tab { color: var(--mut); }
+.dl-vC .dl-tab .solar { --solar-secondary-color: var(--acc); --solar-secondary-opacity: 0.1; }
+.dl-vC .dl-tab.is-hover .dl-pill,
+.dl-vC .dl-tab:hover .dl-pill { background: color-mix(in srgb, var(--acc) 5%, transparent); }
+.dl-vC .dl-tab.is-hover,
+.dl-vC .dl-tab:hover { color: color-mix(in srgb, var(--tx) 80%, var(--mut)); }
+.dl-vC .dl-tab.is-active { color: var(--acc-text); }
+.dl-vC .dl-tab.is-active .dl-pill { background: color-mix(in srgb, var(--acc) 12%, transparent); }
+.dl-vC .dl-tab.is-active .solar { --solar-secondary-opacity: 0.5; }
+.dl-vC .dl-tab.is-active .dl-tab-label { color: var(--acc-text); }
+.dl-vC .dl-tab.is-active .dl-dot { background: var(--acc); }
+
+/* =====================================================================
+   D — DEUX ACCENTS DÈS LE REPOS : la couleur n'attend pas le survol.
+   Deux teintes du thème (`--acc` et `--acc2`) cohabitent dans l'icône.
+   ===================================================================== */
+.dl-vD .dl-btn { color: var(--acc-text); }
+.dl-vD .solar { --solar-secondary-color: var(--acc2); --solar-secondary-opacity: 0.42; }
+.dl-vD .dl-btn.is-hover,
+.dl-vD .dl-btn:hover { background: color-mix(in srgb, var(--acc) 8%, transparent); }
+.dl-vD .dl-btn.is-hover .solar,
+.dl-vD .dl-btn:hover .solar { --solar-secondary-opacity: 0.5; }
+.dl-vD .dl-btn.is-active {
+  background: color-mix(in srgb, var(--acc) 14%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--acc) 30%, transparent);
+}
+.dl-vD .dl-btn.is-active .solar { --solar-secondary-color: var(--acc); --solar-secondary-opacity: 0.55; }
+.dl-vD .dl-tab { color: var(--acc-text); }
+.dl-vD .dl-tab .solar { --solar-secondary-color: var(--acc2); --solar-secondary-opacity: 0.42; }
+.dl-vD .dl-tab.is-hover .dl-pill,
+.dl-vD .dl-tab:hover .dl-pill { background: color-mix(in srgb, var(--acc) 8%, transparent); }
+.dl-vD .dl-tab.is-active .dl-pill { background: color-mix(in srgb, var(--acc) 14%, transparent); }
+.dl-vD .dl-tab.is-active .solar { --solar-secondary-color: var(--acc); --solar-secondary-opacity: 0.55; }
+.dl-vD .dl-tab.is-active .dl-tab-label { color: var(--acc-text); }
+.dl-vD .dl-tab.is-active .dl-dot { background: var(--acc); }
+
+/* — En situation : rail + barre d'onglets, taille réelle ---------------- */
+.dl-situation {
+  margin-top: 22px;
+  border: 1px solid var(--bd);
+  border-radius: 20px;
+  padding: 18px;
+  background: color-mix(in srgb, var(--gc) 62%, transparent);
+}
+.dl-situation h2 { font: 400 18px/1.3 var(--font-serif, Georgia), serif; margin: 0 0 4px; }
+.dl-situation p { margin: 0 0 14px; color: var(--mut); font-size: 13px; }
+.dl-rail {
+  width: 232px;
+  max-width: 100%;
+  padding: 10px;
+  border-radius: 18px;
+  border: 1px solid var(--bd);
+  background: color-mix(in srgb, var(--gc) 80%, transparent);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.dl-tabbar {
+  margin-top: 16px;
+  display: flex;
+  justify-content: space-between;
+  gap: 4px;
+  padding: 8px 12px;
+  border-radius: 26px;
+  border: 1px solid var(--bd);
+  background: color-mix(in srgb, var(--gc) 80%, transparent);
+  max-width: 420px;
+}
+.dl-live { pointer-events: auto; }
+.dl-live .dl-btn { cursor: pointer; }
+.dl-live .dl-tab { cursor: pointer; flex: 1; }
+
+.dl-foot { margin-top: 20px; font-size: 12.5px; color: var(--mut); line-height: 1.6; }
+.dl-foot strong { color: var(--tx); }
