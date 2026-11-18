@@ -53,10 +53,13 @@ beforeAll(async () => {
   await i18next.changeLanguage('fr');
 });
 
-afterEach(() => {
+afterEach(async () => {
   cleanup();
   useAppearanceStore.getState().resetToDefaults();
   useSettingsStore.setState({ onboardingCompleted: false, bibleTranslation: 'lsg', uiLanguage: 'fr' });
+  // Le choix de langue de l'étape 2 s'applique pour de vrai (i18next est
+  // global) : sans ce retour au français, les tests suivants lisent l'espagnol.
+  await i18next.changeLanguage('fr');
 });
 
 function LocationProbe() {
@@ -166,6 +169,75 @@ describe('étape Apparence', () => {
   });
 });
 
+describe('parcours complet, d’un bout à l’autre', () => {
+  it('traverse les sept étapes sans se bloquer et termine sur /tabs/home', () => {
+    render(
+      <MemoryRouter initialEntries={['/onboarding/welcome']}>
+        <Routes>
+          {(
+            [
+              ['/onboarding/welcome', <WelcomeScreen />],
+              ['/onboarding/language-select', <LanguageScreen />],
+              ['/onboarding/personalization', <PersonalizationScreen />],
+              ['/onboarding/translation-select', <TranslationScreen />],
+              ['/onboarding/session-config', <RhythmScreen />],
+              ['/onboarding/reminder-config', <RemindersScreen />],
+              ['/onboarding/fsrs-introduction', <ReadyScreen />],
+            ] as [string, React.ReactElement][]
+          ).map(([path, element]) => (
+            <Route
+              key={path}
+              path={path}
+              element={
+                <>
+                  <LocationProbe />
+                  {element}
+                </>
+              }
+            />
+          ))}
+          <Route path="*" element={<LocationProbe />} />
+        </Routes>
+      </MemoryRouter>,
+    );
+
+    const clickPrimary = () => {
+      const primary = document.querySelector('footer button.bg-primary');
+      expect(primary).not.toBeNull();
+      fireEvent.click(primary as HTMLElement);
+    };
+
+    // 1. Bienvenue
+    clickPrimary();
+    expect(screen.getByTestId('location')).toHaveTextContent('/onboarding/language-select');
+
+    // 2. Langue — le clic qui bloquait l'utilisateur
+    clickPrimary();
+    expect(screen.getByTestId('location')).toHaveTextContent('/onboarding/personalization');
+
+    // 3. Apparence
+    clickPrimary();
+    expect(screen.getByTestId('location')).toHaveTextContent('/onboarding/translation-select');
+
+    // 4. Traduction
+    clickPrimary();
+    expect(screen.getByTestId('location')).toHaveTextContent('/onboarding/session-config');
+
+    // 5. Rythme
+    clickPrimary();
+    expect(screen.getByTestId('location')).toHaveTextContent('/onboarding/reminder-config');
+
+    // 6. Rappels
+    clickPrimary();
+    expect(screen.getByTestId('location')).toHaveTextContent('/onboarding/fsrs-introduction');
+
+    // 7. Prêt → accueil
+    clickPrimary();
+    expect(screen.getByTestId('location')).toHaveTextContent('/tabs/home');
+    expect(useSettingsStore.getState().onboardingCompleted).toBe(true);
+  });
+});
+
 describe('chaque étape se rend', () => {
   const steps: [string, React.ReactElement][] = [
     ['/onboarding/welcome', <WelcomeScreen />],
@@ -208,17 +280,45 @@ describe('la couleur choisie s’applique pour de vrai', () => {
   });
 });
 
-describe('enchaînement et arrivée', () => {
-  it('la bienvenue mène à la langue', () => {
-    renderAt(<WelcomeScreen />, '/onboarding/welcome');
-    fireEvent.click(screen.getByRole('button', { name: /choisir ma langue/i }));
-    expect(screen.getByTestId('location')).toHaveTextContent('/onboarding/language-select');
-  });
+describe('enchaînement : chaque action principale fait avancer', () => {
+  // Régression : « Choisir ma langue » enregistrait la langue puis restait sur
+  // l'écran — l'utilisateur se retrouvait bloqué à l'étape 2. La coquille
+  // navigue désormais elle-même après l'action de l'étape.
+  const stepActions: {
+    path: string;
+    element: () => React.ReactElement;
+    label: RegExp;
+    expected: string;
+  }[] = [
+    { path: '/onboarding/welcome', element: () => <WelcomeScreen />, label: /choisir ma langue/i, expected: '/onboarding/language-select' },
+    { path: '/onboarding/language-select', element: () => <LanguageScreen />, label: /choisir ma langue/i, expected: '/onboarding/personalization' },
+    { path: '/onboarding/personalization', element: () => <PersonalizationScreen />, label: /garder cette apparence/i, expected: '/onboarding/translation-select' },
+    { path: '/onboarding/translation-select', element: () => <TranslationScreen />, label: /choisir cette version/i, expected: '/onboarding/session-config' },
+    { path: '/onboarding/session-config', element: () => <RhythmScreen />, label: /garder ce rythme/i, expected: '/onboarding/reminder-config' },
+    { path: '/onboarding/reminder-config', element: () => <RemindersScreen />, label: /enregistrer mon rappel/i, expected: '/onboarding/fsrs-introduction' },
+  ];
 
-  it('l’apparence mène à la traduction', () => {
-    renderAt(<PersonalizationScreen />, '/onboarding/personalization');
-    fireEvent.click(screen.getByRole('button', { name: /garder cette apparence/i }));
-    expect(screen.getByTestId('location')).toHaveTextContent('/onboarding/translation-select');
+  for (const step of stepActions) {
+    it(`${step.path} : l'action principale mène à ${step.expected}`, () => {
+      renderAt(step.element(), step.path);
+      fireEvent.click(screen.getByRole('button', { name: step.label }));
+      expect(screen.getByTestId('location')).toHaveTextContent(step.expected);
+    });
+  }
+
+  it('l’étape Langue enregistre le choix avant d’avancer', () => {
+    renderAt(<LanguageScreen />, '/onboarding/language-select');
+    fireEvent.click(screen.getByRole('button', { name: /español/i }));
+    expect(useSettingsStore.getState().uiLanguage).toBe('es');
+
+    // L'interface vient de basculer en espagnol : on vise l'action principale
+    // par sa place (le bouton d'accent du pied), pas par son libellé traduit.
+    const primary = document.querySelector('footer button.bg-primary');
+    expect(primary).not.toBeNull();
+    fireEvent.click(primary!);
+
+    expect(useSettingsStore.getState().uiLanguage).toBe('es');
+    expect(screen.getByTestId('location')).toHaveTextContent('/onboarding/personalization');
   });
 
   it('le récap final affiche le thème choisi, pas celui par défaut', () => {

@@ -77,12 +77,17 @@ export function OnboardingShell({
   const nextPath = onboardingNextPath(stepId);
   const previousPath = onboardingPreviousPath(stepId);
 
+  /**
+   * `onNext` ne remplace pas la navigation, il la précède : il enregistre le
+   * choix de l'étape, puis la coquille avance d'elle-même. Avant, un `onNext`
+   * fourni annulait silencieusement la navigation — « Choisir ma langue »
+   * changeait la langue et laissait l'utilisateur sur place, bloqué. Une étape
+   * qui doit empêcher d'avancer le dit par `nextDisabled`, jamais par l'oubli
+   * d'un `navigate`.
+   */
   const goNext = () => {
     if (nextDisabled) return;
-    if (onNext) {
-      onNext();
-      return;
-    }
+    onNext?.();
     if (nextPath) navigate(nextPath);
   };
 
