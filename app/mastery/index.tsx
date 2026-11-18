@@ -18,6 +18,7 @@ import { useActiveProfile } from '@/hooks/useActiveProfile';
 import { getMemorizationService } from '@/services/memorization-service-factory';
 import { StreakService } from '@/services/streak-service';
 import { colorTintAlpha } from '@/lib/platform';
+import { StatsDashboard } from '@/components/charts/StatsDashboard';
 
 type LvlIcon = 'leaf' | 'book' | 'brain' | 'school' | 'trophy';
 const ICON_MAP: Record<LvlIcon, typeof Leaf> = {
@@ -275,6 +276,7 @@ export default function MasteryScreen() {
             ))}
           </div>
         </div>
+        <StatsDashboard profileId={profileId} />
       </div>
     </FullScreenPage>
   );

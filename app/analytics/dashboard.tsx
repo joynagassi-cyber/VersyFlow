@@ -14,6 +14,8 @@ import { LoadingBlock } from '@/components/ui/Skeleton';
 import { useTranslation } from 'react-i18next';
 import { useAnalyticsCapability } from '@/capabilities/analytics/store';
 import { fireAndForget } from '@/lib/fire-and-forget';
+import { StatsDashboard } from '@/components/charts/StatsDashboard';
+import { useActiveProfile } from '@/hooks/useActiveProfile';
 
 interface DataPoint {
   date: string;
@@ -25,6 +27,8 @@ export default function AnalyticsDashboardScreen() {
   const { t } = useTranslation();
   const { stats, calculateStats, getRetentionCurve, getLearningTime } =
     useAnalyticsCapability();
+  const { activeProfile } = useActiveProfile();
+  const profileId = activeProfile?.id ?? 'default';
   const [loading, setLoading] = useState(true);
   const [curve, setCurve] = useState<DataPoint[]>([]);
 
@@ -225,6 +229,7 @@ export default function AnalyticsDashboardScreen() {
             {t('analytics.totalTime', 'Temps total d\'apprentissage')}
           </p>
         </div>
+        <StatsDashboard profileId={profileId} />
       </div>
     </FullScreenPage>
   );

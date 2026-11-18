@@ -15,6 +15,7 @@ import {
   TrendingDownIcon as TrendingDown,
 } from '@/components/ui/solar-icons';
 import { useActiveProfile } from '@/hooks/useActiveProfile';
+import { StatsDashboard } from '@/components/charts/StatsDashboard';
 import { isMockMode } from '@/dev/mode';
 import { getFsrsEngine } from '@/services/fsrs-factory';
 import { ProgressService } from '@/services/progress-service';
@@ -159,6 +160,7 @@ export default function ProgressScreen() {
                 <strong>{stats.avgSessionDurationMin > 0 ? `${stats.avgSessionDurationMin.toFixed(1)} min` : '—'}</strong>
               </section>
             </div>
+            <StatsDashboard profileId={profileId} />
           </>
         )}
       </div>

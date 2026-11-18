@@ -16,6 +16,7 @@ import { EmptyState } from '@/components/ui/EmptyState';
 import { Button } from '@/components/ui/button';
 import { Rating } from '@/services/review-rating-service';
 import { useActiveProfile } from '@/hooks/useActiveProfile';
+import { StatsDashboard } from '@/components/charts/StatsDashboard';
 import { getMemorizationService } from '@/services/memorization-service-factory';
 import {
   getReviewLogRepository,
@@ -482,6 +483,8 @@ export default function ReviewHistoryScreen() {
             </section>
           ))}
         </div>
+
+        <StatsDashboard profileId={profileId} />
 
         <div className="flex flex-col gap-2 pt-2 sm:flex-row">
           <Button
