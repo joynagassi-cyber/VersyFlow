@@ -29,7 +29,6 @@ import { useFamilyStore } from '@/store/family-store';
 import { StreakService } from '@/services/streak-service';
 import { getMemorizationService } from '@/services/memorization-service-factory';
 import type { MemorizationRecord } from '@/domains/memorization/entities';
-import { useAppearanceStore } from '@/store/appearance-store';
 import { themeLandscapeUrl } from '@/theme/theme-catalog';
 import { getDailyVerse } from '@/domains/bible/daily-verse';
 
