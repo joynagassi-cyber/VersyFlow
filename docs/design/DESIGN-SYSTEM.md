@@ -72,8 +72,26 @@ lieu de rester noires (contrôle S04).
 
 - un jeu de jetons **clair** et un jeu **sombre** (`[data-theme='dark']`), jamais
   un filtre sur le premier (B05) ;
+- **trois couches, un seul propriétaire par couche** (30/10) :
+  1. le *preset* (`:root[data-preset]` dans `vendored-themes.css`) possède les
+     surfaces (`--color-surface`), le texte et la primaire ;
+  2. `globals.css` **dérive** ses alias (`--gc`, `--tx`, `--mut`, `--acc`) de ces
+     jetons — plus aucune valeur de neutre en dur (`#171717`, `#1b1220`) : c'était
+     la raison pour laquelle changer de palette ne changeait rien à l'écran ;
+  3. le **fond est absolu** : `#000000` en sombre (OLED), `#ffffff` en clair, quel
+     que soit le preset, via `html:root[data-preset]` (spécificité supérieure aux
+     blocs générés) ;
+- l'accent **est** la primaire du preset, sans mélange ni désaturation : un
+  `color-mix(primary 45 %, neutre)` transformait « Lara Red » (#ff2056) en rose
+  saumon (#de7a92) — mesuré sur capture, corrigé le 30/10. Un seul cas dérogé :
+  `--acc-text` en clair, assombri à 72 % pour tenir AA sur le texte d'accent ;
+- avant le montage du preset (premier rendu, splash), les replis de `:root` et
+  d'`index.html` portent **déjà** les valeurs du thème par défaut : plus de
+  magenta transitoire au démarrage ;
 - l'accent vient du thème choisi par l'utilisateur et ne sert qu'à l'action et à
   l'état actif — pas au décor ;
+- sur fond image (`data-bg='image'`), le texte repasse au noir/blanc purs : le
+  verre laisse passer la photo, la teinte du preset n'y tient pas AA ;
 - l'information n'est jamais portée par la couleur seule : `aria-current`,
   `aria-checked`, icône ou texte (B04) ;
 - contraste mesuré : texte ≥ 4,5:1, grand texte et traits d'interface ≥ 3:1

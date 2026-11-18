@@ -23,7 +23,10 @@
     <link rel="apple-touch-icon" href="/icons/versyflow_icon.png" />
     <!-- Règle J16 / C02 du playbook : le zoom n'est jamais bloqué (5× max). -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=5, user-scalable=yes" />
-    <meta name="theme-color" content="#D81B97" />
+    <!-- Couleur du thème par défaut (Lara Red). Avant : magenta #D81B97, qui
+         restait visible sur la barre système alors que l'app peint en rouge. -->
+    <meta name="theme-color" content="#FB2C36" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#FF2056" media="(prefers-color-scheme: dark)" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <meta name="apple-mobile-web-app-title" content="VersyFlow" />
@@ -46,6 +49,18 @@
       #root {
         height: 100%;
       }
+      /* Splash statique : blanc pur / noir pur comme le canvas de l'app.
+         Sans cette règle, un écran clair reste blanc même en mode sombre. */
+      @media (prefers-color-scheme: dark) {
+        #boot-splash {
+          background: #000000 !important;
+          color: #ff2056 !important;
+        }
+        html,
+        body {
+          background: #000000;
+        }
+      }
     </style>
   </head>
   <body>
@@ -54,7 +69,7 @@
            Si le JS échoue, le message d'erreur s'affiche au lieu d'un écran blanc. -->
       <div
         id="boot-splash"
-        style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#fbf9f9;color:#d81b60;font-family:Georgia,serif;font-size:22px;font-weight:700"
+        style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#ffffff;color:#fb2c36;font-family:Georgia,serif;font-size:22px;font-weight:700"
       >
         VersyFlow…
       </div>

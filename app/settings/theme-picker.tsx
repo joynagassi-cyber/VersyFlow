@@ -67,7 +67,7 @@ export default function ThemePickerScreen() {
               <span className="flex items-center gap-2">
                 <span className="h-6 w-6 rounded-full bg-background shadow-sm" />
                 <span className="text-sm font-medium text-text-primary">
-                  {t('settings.themeBlack', 'Noir pur #121212')}
+                  {t('settings.themeBlack', 'Noir pur #000000')}
                 </span>
               </span>
             </button>

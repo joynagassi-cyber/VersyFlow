@@ -602,7 +602,7 @@ function BootSplash() {
         alignItems: 'center',
         justifyContent: 'center',
         background: 'var(--color-background, #fbf9f9)',
-        color: 'var(--color-primary, #e6067a)',
+        color: 'var(--color-primary, #fb2c36)',
         fontFamily: 'Georgia, serif',
         fontSize: 22,
         fontWeight: 700,

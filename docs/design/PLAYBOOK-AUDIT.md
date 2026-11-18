@@ -1,7 +1,7 @@
 # Audit UX/UI Playbook 2026 — application à VersyFlow
 
 Généré par `node scripts/audit-playbook.mjs`. **Ne pas éditer à la main.**
-Exécuté le 2026-11-18 11:41 (UTC).
+Exécuté le 2026-11-18 12:53 (UTC).
 
 **Bilan : 45 vérifiés · 9 partiels · 0 en échec · 23 non vérifiables ici** (77 règles).
 
@@ -15,8 +15,8 @@ Lecture : *vérifié* = une mesure reproductible dans le dépôt le confirme ; *
 | A04 | A | MAJOR | **PASS** | Cinq entrées au plus dans une barre principale | 4 onglets déclarés |
 | A05 | A | MAJOR | **PASS** | Retour = écran précédent, pas l'accueil | 26 retours utilisent l'historique |
 | A06 | A | BLOCKING | **UNVERIFIABLE** | Un seul objectif et une action primaire par écran | jugement de conception : compte les actions primaires visibles sur l’écran rendu |
-| B01 | B | BLOCKING | **PASS** | Texte courant ≥ 4,5:1 sur son fond réel | clair 18.20:1 · clair 8.20:1 |
-| B02 | B | BLOCKING | **PASS** | Grand texte (≥ 24 px ou 19 px gras) ≥ 3:1 | tous les couples titre ≥ 8.20:1 |
+| B01 | B | BLOCKING | **PASS** | Texte courant ≥ 4,5:1 sur son fond réel |  |
+| B02 | B | BLOCKING | **PASS** | Grand texte (≥ 24 px ou 19 px gras) ≥ 3:1 | tous les couples titre ≥ Infinity:1 |
 | B03 | B | BLOCKING | **PASS** | Icônes porteuses de sens, bordures et focus ≥ 3:1 | 21 contours de focus, icônes colorées par jeton |
 | B04 | B | BLOCKING | **PASS** | L'information n'est jamais portée par la couleur seule | 53 états exposés en ARIA, 130 libellés textuels |
 | B05 | B | MAJOR | **PASS** | Le mode sombre est un second jeu de jetons, pas un filtre | bloc `[data-theme="dark"]` dédié, aucun filtre inverseur |

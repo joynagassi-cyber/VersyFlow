@@ -53,7 +53,7 @@ export function applyAccentPreset(
   void key;
   if (!colorThemeId) return;
   const theme = findThemeById(colorThemeId);
-  const fallback = theme ? colorThemeValues(theme.color) : colorThemeValues('#e6067a');
+  const fallback = theme ? colorThemeValues(theme.color) : colorThemeValues('#fb2c36');
   const src = themeImagePath(colorThemeId);
   // On pose tout de suite les couleurs du catalogue (aucun flash), puis on
   // affine avec la palette réellement extraite de l'illustration.

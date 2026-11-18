@@ -151,9 +151,11 @@ describe('K01 — consentement jamais pré-coché', () => {
 describe('B01 — le texte du profil garde son contraste', () => {
   it('les jetons premium exposent un texte et une surface distincts', () => {
     const css = readFileSync(resolve(__dirname, '../../src/styles/globals.css'), 'utf8');
-    // Garde-fou : les jetons existent bien des deux côtés.
-    expect(css).toMatch(/--tx:\s*#1b1220/);
-    expect(css).toMatch(/--tx:\s*#f3f3f3/);
+    // Garde-fou : le texte et la surface restent deux jetons distincts, dans
+    // les deux modes. Les valeurs viennent du preset (`--color-text-primary`),
+    // plus d'un encre rose figé qui ignorait le thème choisi.
+    expect(css).toMatch(/--tx:\s*var\(--color-text-primary\)/);
+    expect(css).toMatch(/--gc:\s*var\(--color-surface\)/);
   });
 });
 

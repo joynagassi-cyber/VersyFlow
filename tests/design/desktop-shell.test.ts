@@ -168,16 +168,17 @@ describe('contrastes du rail', () => {
   it('encre posée sur l’accent, thème clair : au niveau AA', () => {
     const primary = token('--color-primary', 'light');
     const onPrimary = token('--color-on-primary', 'light');
-    expect(primary).toBe('#e6067a');
-    expect(onPrimary).toBe('#ffffff');
-    // 4,495:1 — pair de marque préexistant, à 0,005 du seuil strict.
+    // Thème par défaut (Lara Red) : la primaire est le rouge du preset, et
+    // l'encre posée dessus est noire — blanc sur #fb2c36 ne faisait que 3,8:1.
+    expect(primary).toBe('#fb2c36');
+    expect(onPrimary).toBe('#000000');
     expect(contrast(primary, onPrimary)).toBeGreaterThanOrEqual(4.49);
   });
 
   it('encre posée sur l’accent, thème sombre : franchement AA', () => {
     const primary = token('--color-primary', 'dark');
     const onPrimary = token('--color-on-primary', 'dark');
-    expect(onPrimary).toBe('#1b1c1c');
+    expect(onPrimary).toBe('#000000');
     expect(contrast(primary, onPrimary)).toBeGreaterThanOrEqual(4.5);
   });
 
