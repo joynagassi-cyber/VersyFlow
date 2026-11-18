@@ -1,7 +1,7 @@
 # Audit UX/UI Playbook 2026 — application à VersyFlow
 
 Généré par `node scripts/audit-playbook.mjs`. **Ne pas éditer à la main.**
-Exécuté le 2026-11-18 15:05 (UTC).
+Exécuté le 2026-11-18 15:19 (UTC).
 
 **Bilan : 44 vérifiés · 10 partiels · 0 en échec · 23 non vérifiables ici** (77 règles).
 
@@ -17,7 +17,7 @@ Lecture : *vérifié* = une mesure reproductible dans le dépôt le confirme ; *
 | A06 | A | BLOCKING | **UNVERIFIABLE** | Un seul objectif et une action primaire par écran | jugement de conception : compte les actions primaires visibles sur l’écran rendu |
 | B01 | B | BLOCKING | **PASS** | Texte courant ≥ 4,5:1 sur son fond réel |  |
 | B02 | B | BLOCKING | **PASS** | Grand texte (≥ 24 px ou 19 px gras) ≥ 3:1 | tous les couples titre ≥ Infinity:1 |
-| B03 | B | BLOCKING | **PASS** | Icônes porteuses de sens, bordures et focus ≥ 3:1 | 22 contours de focus, icônes colorées par jeton |
+| B03 | B | BLOCKING | **PASS** | Icônes porteuses de sens, bordures et focus ≥ 3:1 | 23 contours de focus, icônes colorées par jeton |
 | B04 | B | BLOCKING | **PASS** | L'information n'est jamais portée par la couleur seule | 54 états exposés en ARIA, 138 libellés textuels |
 | B05 | B | MAJOR | **PASS** | Le mode sombre est un second jeu de jetons, pas un filtre | bloc `[data-theme="dark"]` dédié, aucun filtre inverseur |
 | B06 | B | MAJOR | **PASS** | Rien ne disparaît en contraste élevé ni en niveaux de gris | 13 règles de contraste élevé |
@@ -46,11 +46,11 @@ Lecture : *vérifié* = une mesure reproductible dans le dépôt le confirme ; *
 | F06 | F | MAJOR | **PASS** | Action primaire unique et échappatoire possible | 7 annulations, 39 retours |
 | G01 | G | BLOCKING | **PASS** | La langue de la page est déclarée | `lang` statique sur `<html>` + synchronisation i18n à l’exécution |
 | G02 | G | BLOCKING | **PASS** | Aucune largeur de texte figée : la chaîne la plus longue tient | aucune largeur fixe > 320 px ; retours à la ligne assurés |
-| G03 | G | MAJOR | **PASS** | Un seul format de nombre par écran, celui de la langue | 12 formats locaux via `Intl` |
+| G03 | G | MAJOR | **PASS** | Un seul format de nombre par écran, celui de la langue | 13 formats locaux via `Intl` |
 | G04 | G | MAJOR | **PASS** | Pas de texte de remplissage, pas de promesse invérifiable | aucun lorem ipsum, aucun « bientôt disponible » |
 | G05 | G | MAJOR | **PARTIAL** | En RTL la mise en page se retourne sans casser les icônes directionnelles | RTL piloté au niveau document (40 propriétés logiques, 0 directions physiques restantes) |
 | G06 | G | MINOR | **PASS** | Dates et heures relatives ou localisées | 37 format(s) relatif(s)/localisé(s) |
-| H01 | H | BLOCKING | **PASS** | Tout est utilisable au clavier, focus visible, sans piège | lien d’évitement, 24 règles `:focus-visible`, fermeture Échap |
+| H01 | H | BLOCKING | **PASS** | Tout est utilisable au clavier, focus visible, sans piège | lien d’évitement, 25 règles `:focus-visible`, fermeture Échap |
 | H02 | H | BLOCKING | **PASS** | Chaque image a un texte alternatif ou est décorative | toutes les balises `<img>` portent `alt` ou `aria-hidden` |
 | H03 | H | BLOCKING | **PASS** | Chaque commande a un nom accessible, icônes comprises | aucun bouton sans nom accessible détecté |
 | H04 | H | BLOCKING | **PASS** | Le focus est déplacé après navigation, sans le voler | gestionnaire de focus monté dans 2 coquilles |

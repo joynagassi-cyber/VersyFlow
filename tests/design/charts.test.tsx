@@ -32,6 +32,12 @@ import { RadarChart } from '@/components/charts/RadarChart';
 import { GaugeChart } from '@/components/charts/GaugeChart';
 import { StackedBarChart } from '@/components/charts/StackedBarChart';
 import { HorizontalBars } from '@/components/charts/HorizontalBars';
+import { WeekStrip } from '@/components/charts/WeekStrip';
+import { TickRing } from '@/components/charts/TickRing';
+import { DotMatrix } from '@/components/charts/DotMatrix';
+import { GroupedBars } from '@/components/charts/GroupedBars';
+import { StatCard } from '@/components/charts/StatCard';
+import { Calendar01Icon as CalendarIcon } from '@/components/ui/solar-icons';
 
 const DAY = 86_400_000;
 const TODAY = new Date(2026, 9, 30, 12, 0, 0).getTime();
@@ -234,6 +240,59 @@ describe('primitives de graphique', () => {
   });
 });
 
+describe('vignettes de synthèse', () => {
+  it('la bande hebdomadaire dessine sept barres et nomme la valeur', () => {
+    const { container } = render(
+      <WeekStrip values={[0, 3, 1, 0, 5, 2, 4]} labels={['L', 'M', 'M', 'J', 'V', 'S', 'D']} todayIndex={6} />,
+    );
+    expect(container.querySelectorAll('span[title]')).toHaveLength(7);
+    expect(container.textContent).toContain('D');
+  });
+
+  it('l’anneau gradué allume la part attendue', () => {
+    const { container } = render(<TickRing value={12} ratio={0.5} ticks={36} />);
+    const lines = container.querySelectorAll('line');
+    expect(lines).toHaveLength(36);
+    const lit = [...lines].filter((line) => line.getAttribute('opacity') === '1');
+    expect(lit).toHaveLength(18);
+    expect(screen.getByText('12')).toBeInTheDocument();
+  });
+
+  it('la matrice de points expose une pastille par jour', () => {
+    const { container } = render(<DotMatrix values={Array.from({ length: 14 }, (_, i) => i)} columns={7} />);
+    expect(container.querySelectorAll('span[title]')).toHaveLength(14);
+  });
+
+  it('les barres groupées comparent deux séries', () => {
+    const { container } = render(
+      <GroupedBars
+        labels={['L', 'M', 'M']}
+        seriesA={{ label: 'Cette sem.', values: [2, 4, 1], color: 'red' }}
+        seriesB={{ label: 'Précédente', values: [1, 3, 3], color: 'blue' }}
+      />,
+    );
+    expect(container.querySelectorAll('span[title]')).toHaveLength(6);
+    expect(screen.getByText('Précédente')).toBeInTheDocument();
+  });
+
+  it('la carte de synthèse porte valeur, unité et explication', () => {
+    render(
+      <StatCard
+        title="Série"
+        icon={CalendarIcon}
+        value={12}
+        unit="j"
+        hint="Jours consécutifs"
+        visual={<span>vignette</span>}
+      />,
+    );
+    expect(screen.getByText('12')).toBeInTheDocument();
+    expect(screen.getByText('j')).toBeInTheDocument();
+    expect(screen.getByText('Jours consécutifs')).toBeInTheDocument();
+    expect(screen.getByText('vignette')).toBeInTheDocument();
+  });
+});
+
 describe('tableau de bord — au moins six graphiques différents', () => {
   const source = readFileSync('src/components/charts/StatsDashboard.tsx', 'utf8');
   const primitives = [
@@ -247,9 +306,16 @@ describe('tableau de bord — au moins six graphiques différents', () => {
     'HorizontalBars',
   ];
 
-  it('compose huit primitives distinctes', () => {
+  it('compose huit primitives de graphique', () => {
     for (const primitive of primitives) expect(source).toContain(`<${primitive}`);
     expect(new Set(primitives).size).toBeGreaterThanOrEqual(6);
+  });
+
+  it('ajoute cinq vignettes de synthèse et six cartes de tête', () => {
+    for (const primitive of ['StatCard', 'WeekStrip', 'TickRing', 'DotMatrix', 'GroupedBars']) {
+      expect(source).toContain(`<${primitive}`);
+    }
+    expect((source.match(/<StatCard/g) ?? []).length).toBeGreaterThanOrEqual(6);
   });
 
   it('est branché sur les données réelles, pas sur des constantes', () => {

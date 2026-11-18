@@ -126,7 +126,9 @@ export function buildData(
     logs,
     perDay,
     cumulative: cumulativeReviews(perDay),
-    heatmap: heatmapMatrix(perDay, 18),
+    // La carte de chaleur regarde plus loin que la fenêtre des courbes :
+    // 26 semaines demandent 182 jours d'historique, pas 30.
+    heatmap: heatmapMatrix(reviewsPerDay(logs, 182), 26),
     weekday: weekdayProfile(logs),
     mix: ratingMix(logs),
     status,

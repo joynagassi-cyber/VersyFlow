@@ -1715,27 +1715,43 @@ html[data-fixed-accent] .desktop-rail button.bg-primary .solar { color: var(--pr
 .home-daily-card::before { content: ''; position: absolute; inset: 0; z-index: -2; background: var(--daily-image) center / cover no-repeat; }
 .home-daily-card::after { content: ''; position: absolute; inset: 0; z-index: -1; background: color-mix(in srgb,var(--gc) 90%,transparent); }
 /* ── Graphiques de statistiques ─────────────────────────────────────────
-   Grille : une colonne sur téléphone, deux dès 768 px, trois dès 1280 px.
-   Les graphiques « larges » (chaleur, courbe) occupent deux colonnes. */
-/* Bloc « graphiques » dans l'onglet Progression. */
-.progress-charts { display: grid; gap: 10px; }
-.progress-charts-title { margin: 4px 2px 0; color: var(--mut); font: 700 12px/1.4 var(--font-sans, Inter),sans-serif; letter-spacing: .1em; text-transform: uppercase; }
-.stats-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
-.stats-chart { min-width: 0; }
-.stats-chart--wide { grid-column: 1 / -1; }
-@media (min-width: 768px) {
-  .stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .stats-chart--wide { grid-column: span 2; }
-}
-@media (min-width: 1280px) {
-  .stats-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .stats-chart--wide { grid-column: span 2; }
-}
-/* Une case de chaleur : 11 px, jamais moins (cible lisible et non floue). */
+   Deux étages : des cartes de synthèse puis des graphiques d'analyse.
+   Grille : 2 colonnes sur téléphone, 6 dès 768 px, 12 dès 1280 px — les
+   cartes occupent 1/3 de la largeur au bureau, les grands graphiques la
+   moitié ou la totalité. L'objectif est explicite : sur desktop, les
+   graphiques doivent remplir l'espace, pas flotter au milieu du vide. */
+.stats-dashboard { display: flex; flex-direction: column; gap: 20px; }
+.stats-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.stat-card, .stats-chart { min-width: 0; }
+.stat-card { grid-column: span 2; }
+.stat-card--action { transition: transform 160ms, box-shadow 160ms; }
+.stat-card--action:hover { transform: translateY(-1px); }
+.stat-card--action:focus-visible { outline: 2px solid var(--acc-text); outline-offset: 2px; }
 .heatmap-cell { width: 12px; height: 12px; border-radius: calc(4px * var(--radius-scale, 1)); background: color-mix(in srgb, var(--tx) 7%, transparent); }
 .heatmap-cell[data-level='-2'] { background: transparent; }
+
+@media (min-width: 768px) {
+  .stats-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 16px; }
+  .stat-card { grid-column: span 3; }
+  .stats-chart { grid-column: span 3; }
+  .heatmap-cell { width: 14px; height: 14px; }
+}
+
+@media (min-width: 1280px) {
+  .stats-grid { grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 16px; }
+  .stat-card { grid-column: span 4; }
+  .stats-chart { grid-column: span 6; }
+  /* La carte de chaleur occupe toute la largeur : 26 semaines lisibles. */
+  .heatmap-cell { width: 18px; height: 18px; }
+}
+
+/* Les blocs pleine largeur passent après les media queries pour gagner
+   sans `!important` (même spécificité, plus tard dans la feuille). */
+.stat-card--wide-visual, .stats-chart--wide { grid-column: 1 / -1; }
+
 @media (prefers-reduced-motion: reduce) {
-  .heatmap-cell, .stats-chart { transition: none; }
+  .stat-card--action { transition: none; }
+  .stat-card--action:hover { transform: none; }
 }
 
 /* En-tête partagé des pages profondes et retour visible sur mobile et bureau. */

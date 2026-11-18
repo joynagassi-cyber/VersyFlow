@@ -8,6 +8,7 @@
  */
 import { describe, expect, it, vi, beforeEach } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 
 const RECORDS = [
   { id: 'joh-3-16', bookId: 'joh', status: 'mastered' },
@@ -58,7 +59,7 @@ describe('tableau de bord des statistiques', () => {
   });
 
   it('affiche au moins six graphiques distincts avec de vraies données', async () => {
-    const { container } = render(<StatsDashboard profileId="p1" />);
+    const { container } = render(<MemoryRouter><StatsDashboard profileId="p1" /></MemoryRouter>);
 
     await waitFor(() => expect(container.querySelectorAll('.stats-chart').length).toBeGreaterThanOrEqual(6));
 
@@ -69,6 +70,9 @@ describe('tableau de bord des statistiques', () => {
       expect(figure.getAttribute('aria-label')?.length ?? 0).toBeGreaterThan(0);
     }
 
+    // Six cartes de synthèse en tête (valeur + vignette), puis l'analyse.
+    expect(container.querySelectorAll('.stat-card').length).toBeGreaterThanOrEqual(6);
+
     // Formes réellement présentes : cases de chaleur, courbe, anneau, radar, jauge, segments.
     expect(container.querySelectorAll('.heatmap-cell').length).toBeGreaterThan(50);
     expect(container.querySelectorAll('svg').length).toBeGreaterThanOrEqual(5);
@@ -78,7 +82,7 @@ describe('tableau de bord des statistiques', () => {
 
   it('survit à un journal de révision indisponible (hors ligne)', async () => {
     logsAvailable = false;
-    const { container } = render(<StatsDashboard profileId="p1" />);
+    const { container } = render(<MemoryRouter><StatsDashboard profileId="p1" /></MemoryRouter>);
     await waitFor(() => expect(container.querySelectorAll('.stats-chart').length).toBeGreaterThanOrEqual(6));
     // Les graphiques de versets restent dessinés ; les séries vides s'expliquent.
     expect(container.textContent?.length ?? 0).toBeGreaterThan(0);
