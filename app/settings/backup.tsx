@@ -49,7 +49,7 @@ function Toggle({
       <span
         className={
           'absolute top-0.5 h-6 w-6 rounded-full bg-surface transition-all ' +
-          (on ? 'left-[calc(100%-1.625rem)]' : 'left-0.5')
+          (on ? 'end-0.5' : 'start-0.5')
         }
       />
     </button>

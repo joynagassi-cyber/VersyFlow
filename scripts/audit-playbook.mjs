@@ -305,8 +305,12 @@ const readingWidth = cssNoComments.match(/--reading-width:\s*([^;]+);/)?.[1]?.tr
 
 const reducedMotionBlocks = count(cssNoComments, /prefers-reduced-motion/g);
 const focusVisibleRules = count(cssNoComments, /:focus-visible/g);
-const logicalProps = count(allDom, /(marginInline|paddingInline|insetInline|margin-inline|padding-inline|inset-inline|borderInline)/g);
-const hardDirectional = count(allDom, /\b(pl-|pr-|ml-|mr-|left-|right-)\d/g);
+// Propriétés logiques CSS **et** utilitaires Tailwind équivalents (`ps-`,
+// `me-`, `start-`, `end-`) : c'est ce qui fait basculer la mise en page en RTL.
+const logicalProps =
+  count(allDom, /(marginInline|paddingInline|insetInline|margin-inline|padding-inline|inset-inline|borderInline)/g) +
+  count(allDom, /\b(ps|pe|ms|me|start|end)-\[?[0-9.]+/g);
+const hardDirectional = count(allDom, /\b(pl|pr|ml|mr|left|right)-\[?[0-9.]+/g);
 
 const RULES = [
   /* A · Structure et navigation ------------------------------------------- */
@@ -536,7 +540,11 @@ const RULES = [
     } },
   { id: 'G02', section: 'G', level: 'BLOCKING', label: 'Aucune largeur de texte figée : la chaîne la plus longue tient', proof: 'static', run: () => rigid.length === 0 ? PASS('aucune largeur fixe > 320 px ; retours à la ligne assurés') : PARTIAL(`${rigid.length} largeur(s) fixe(s) > 320 px : ${rigid.slice(0, 4).join(', ')}`) },
   { id: 'G03', section: 'G', level: 'MAJOR', label: 'Un seul format de nombre par écran, celui de la langue', proof: 'static', run: () => {
-      const intl = count(allDom, /Intl\.(NumberFormat|DateTimeFormat)/g);
+      const intl =
+        count(allDom, /Intl\.(NumberFormat|DateTimeFormat|PluralRules|RelativeTimeFormat)/g) +
+        count(allDom, /toLocale(Date|Time)?String\(\s*(i18n|locale)/g);
+      const frozen = count(allDom, /toLocale(Date|Time)?String\(\s*'[a-z]{2}-[A-Z]{2}'/g);
+      if (frozen > 0) return FAIL(`${frozen} format(s) de date figé(s) dans une langue`);
       return intl >= 3 ? PASS(`${intl} formats locaux via ` + '`Intl`') : PARTIAL(`${intl} usage(s) d’` + '`Intl`');
     } },
   { id: 'G04', section: 'G', level: 'MAJOR', label: 'Pas de texte de remplissage, pas de promesse invérifiable', proof: 'static', run: () => {

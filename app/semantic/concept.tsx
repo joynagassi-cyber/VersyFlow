@@ -124,7 +124,7 @@ export default function ConceptView() {
                   key={code}
                   className="rounded-full bg-surface-elevated px-3 py-1 text-xs font-medium text-text-secondary"
                 >
-                  <span className="mr-1 text-text-muted">{code}</span>
+                  <span className="me-1 text-text-muted">{code}</span>
                   {label}
                 </span>
               ))}

@@ -204,7 +204,7 @@ function ParamsTab() {
                   </span>
                 </span>
                 <button onClick={() => setVisibleTab(tabItem.id, !on)} className={cn('settings-toggle relative h-6 w-11 shrink-0 rounded-full transition-colors', on ? 'bg-primary' : 'bg-border')} aria-pressed={on} aria-label={t(tabItem.labelKey, tabItem.label)} disabled={tabItem.id === 'settings'}>
-                  <span className={cn('absolute top-0.5 h-5 w-5 rounded-full bg-surface shadow transition-all', on ? 'left-[22px]' : 'left-0.5')} />
+                  <span className={cn('absolute top-0.5 h-5 w-5 rounded-full bg-surface shadow transition-all', on ? 'start-[22px]' : 'start-0.5')} />
                 </button>
               </div>
             );
@@ -363,7 +363,7 @@ function ProfileTab() {
               {displayName.charAt(0).toUpperCase()}
             </span>
           )}
-          <span className="absolute bottom-0 right-0 flex h-7 w-7 items-center justify-center rounded-full bg-primary text-on-primary shadow">
+          <span className="absolute bottom-0 end-0 flex h-7 w-7 items-center justify-center rounded-full bg-primary text-on-primary shadow">
             <DuoIcon icon={Camera} size={14} />
           </span>
         </button>

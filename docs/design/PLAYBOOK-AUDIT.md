@@ -1,9 +1,9 @@
 # Audit UX/UI Playbook 2026 — application à VersyFlow
 
 Généré par `node scripts/audit-playbook.mjs`. **Ne pas éditer à la main.**
-Exécuté le 2026-11-18 04:16 (UTC).
+Exécuté le 2026-11-18 04:17 (UTC).
 
-**Bilan : 44 vérifiés · 10 partiels · 0 en échec · 23 non vérifiables ici** (77 règles).
+**Bilan : 45 vérifiés · 9 partiels · 0 en échec · 23 non vérifiables ici** (77 règles).
 
 Lecture : *vérifié* = une mesure reproductible dans le dépôt le confirme ; *partiel* = une partie est mesurée, le reste demande un appareil ou un navigateur ; *non vérifiable ici* = la preuve exige un rendu réel, et la façon de le vérifier est indiquée.
 
@@ -46,9 +46,9 @@ Lecture : *vérifié* = une mesure reproductible dans le dépôt le confirme ; *
 | F06 | F | MAJOR | **PASS** | Action primaire unique et échappatoire possible | 7 annulations, 45 retours |
 | G01 | G | BLOCKING | **PASS** | La langue de la page est déclarée | `lang` statique sur `<html>` + synchronisation i18n à l’exécution |
 | G02 | G | BLOCKING | **PASS** | Aucune largeur de texte figée : la chaîne la plus longue tient | aucune largeur fixe > 320 px ; retours à la ligne assurés |
-| G03 | G | MAJOR | **PARTIAL** | Un seul format de nombre par écran, celui de la langue | 1 usage(s) d’`Intl` |
+| G03 | G | MAJOR | **PASS** | Un seul format de nombre par écran, celui de la langue | 12 formats locaux via `Intl` |
 | G04 | G | MAJOR | **PASS** | Pas de texte de remplissage, pas de promesse invérifiable | aucun lorem ipsum, aucun « bientôt disponible » |
-| G05 | G | MAJOR | **PARTIAL** | En RTL la mise en page se retourne sans casser les icônes directionnelles | RTL piloté au niveau document (0 propriétés logiques, 28 directions physiques restantes) |
+| G05 | G | MAJOR | **PARTIAL** | En RTL la mise en page se retourne sans casser les icônes directionnelles | RTL piloté au niveau document (36 propriétés logiques, 0 directions physiques restantes) |
 | G06 | G | MINOR | **PASS** | Dates et heures relatives ou localisées | 37 format(s) relatif(s)/localisé(s) |
 | H01 | H | BLOCKING | **PASS** | Tout est utilisable au clavier, focus visible, sans piège | lien d’évitement, 23 règles `:focus-visible`, fermeture Échap |
 | H02 | H | BLOCKING | **PASS** | Chaque image a un texte alternatif ou est décorative | toutes les balises `<img>` portent `alt` ou `aria-hidden` |

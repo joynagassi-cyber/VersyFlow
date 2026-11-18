@@ -72,7 +72,7 @@ export function TranslationMenu({
       </button>
 
       {open && (
-        <div className="absolute left-0 top-9 z-40 max-h-[50vh] w-56 overflow-y-auto rounded-2xl border border-border bg-surface p-1.5 shadow-xl">
+        <div className="absolute start-0 top-9 z-40 max-h-[50vh] w-56 overflow-y-auto rounded-2xl border border-border bg-surface p-1.5 shadow-xl">
           <p className="px-2.5 py-1.5 text-2xs font-bold uppercase tracking-wider text-text-muted">
             {t('workspace.chooseTranslation', 'Traduction')}
           </p>

@@ -100,13 +100,13 @@ export default function ReviewQueueScreen() {
                   navigate(`/review/session?recordId=${encodeURIComponent(record.id)}`)
                 }
                 className={cn(
-                  'relative overflow-hidden rounded-2xl bg-surface p-4 pl-6 text-left shadow-sm',
+                  'relative overflow-hidden rounded-2xl bg-surface p-4 ps-6 text-left shadow-sm',
                   over && 'ring-1 ring-error',
                 )}
               >
                 <span
                   className={cn(
-                    'absolute bottom-0 left-0 top-0 w-1',
+                    'absolute bottom-0 start-0 top-0 w-1',
                     over ? 'bg-error' : 'bg-primary',
                   )}
                 />

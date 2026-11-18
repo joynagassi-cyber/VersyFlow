@@ -186,7 +186,7 @@ export default function SettingsScreen() {
             <p className="truncate text-sm font-bold text-text-primary">
               {translationInfo.abbreviation}
               {translationInfo.abbreviation !== translationInfo.name && (
-                <span className="ml-2 font-medium text-text-muted">· {translationInfo.name}</span>
+                <span className="ms-2 font-medium text-text-muted">· {translationInfo.name}</span>
               )}
             </p>
             <p className="text-xs text-text-muted">

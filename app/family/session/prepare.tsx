@@ -113,7 +113,7 @@ export default function FamilySessionPrepareScreen() {
                       <p className="truncate text-sm font-semibold text-text-primary">
                         {member.name}
                         {isMe && (
-                          <span className="ml-1 text-2xs font-normal text-text-muted">
+                          <span className="ms-1 text-2xs font-normal text-text-muted">
                             ({t('familyPlus.you', 'vous')})
                           </span>
                         )}

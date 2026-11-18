@@ -218,7 +218,7 @@ export default function FamilyHomeScreen() {
                   <p className="mt-1 text-4xl font-bold tabular-nums">
                     {streak === null ? '—' : streak}
                     {streak !== null && (
-                      <span className="ml-2 text-sm font-semibold opacity-80">
+                      <span className="ms-2 text-sm font-semibold opacity-80">
                         {t('familyPlus.unitDays', 'jours')}
                       </span>
                     )}

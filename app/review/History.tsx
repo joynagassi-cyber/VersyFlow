@@ -68,7 +68,7 @@ function ratingConfig(rating: Rating | string) {
 
 export default function ReviewHistoryScreen() {
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [logs, setLogs] = useState<ReviewLogEntry[]>([]);
   const [verse, setVerse] = useState<VerseRecord | null>(null);
   const [loading, setLoading] = useState(true);
@@ -147,7 +147,8 @@ export default function ReviewHistoryScreen() {
         defaultValue: 'Il y a ' + diffDays + ' jours',
       });
     }
-    return new Date(timestamp).toLocaleDateString('fr-FR', {
+    // G03 : la date suit la langue de l'interface, pas un format figé.
+    return new Date(timestamp).toLocaleDateString(i18n.resolvedLanguage || i18n.language, {
       day: 'numeric',
       month: 'short',
       year: 'numeric',

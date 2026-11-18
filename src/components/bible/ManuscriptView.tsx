@@ -92,7 +92,7 @@ export function ManuscriptView({
                   'manuscript-verse',
                   isSelected && 'is-selected',
                   isHighlighted && 'is-highlighted',
-                  i > 0 && 'ml-2',
+                  i > 0 && 'ms-2',
                 )}
                 onClick={() => onSelectVerse(verse.number)}
               >

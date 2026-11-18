@@ -151,19 +151,19 @@ export default function BibleExplorerScreen() {
       {/* Search */}
       {viewMode === 'books' && (
         <div className="relative mb-4">
-          <DuoIcon icon={Search} size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-muted" />
+          <DuoIcon icon={Search} size={18} className="absolute start-3.5 top-1/2 -translate-y-1/2 text-text-muted" />
           <Input
             type="search"
             aria-label={t('bible.search', 'Rechercher un livre...')}
             placeholder={t('bible.search', 'Rechercher un livre...')}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            className="pl-10 pr-9"
+            className="ps-10 pe-9"
           />
           {query && (
             <button
               onClick={() => setQuery('')}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted"
+              className="absolute end-3 top-1/2 -translate-y-1/2 text-text-muted"
             >
               <DuoIcon icon={X} size={16} />
             </button>

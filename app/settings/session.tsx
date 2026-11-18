@@ -67,7 +67,7 @@ export default function SettingsSessionScreen() {
                   )}
                 >
                   {g}
-                  {selected && <DuoIcon icon={Check} className="ml-1" size={16} />}
+                  {selected && <DuoIcon icon={Check} className="ms-1" size={16} />}
                 </button>
               );
             })}
