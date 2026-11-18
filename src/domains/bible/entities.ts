@@ -123,8 +123,8 @@ export const BOOK_ALIASES: Record<string, string[]> = {
   est: ['esther', 'est'],
   // Old Testament — Wisdom / poetry
   job: ['job', 'jb'],
-  psa: ['psaumes', 'psalms', 'psalm', 'ps', 'psz'],
-  prov: ['proverbes', 'proverbs', 'pr', 'pv'],
+  psa: ['psaumes', 'psaume', 'psalms', 'psalm', 'ps', 'psz'],
+  prov: ['proverbes', 'proverbe', 'proverbs', 'pr', 'pv', 'pro'],
   eccl: ['ecclésiaste', 'ecclésiastes', 'ecclesiastes', 'précheur', 'eccl'],
   cant: ['cantique des cantiques', 'cantique', 'song of solomon', 'song of songs', 'cantiques', 'cant'],
   // Old Testament — Prophets

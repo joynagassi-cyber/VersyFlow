@@ -151,6 +151,9 @@ __pycache__/
 data/bible/*
 !data/bible/lsg.json
 !data/bible/dataset-catalog.json
+# Échantillon réel LSG 1910 (66 livres, ~290 versets, 47 Ko) utilisé par les
+# tests : minuscule, versionné pour que `npm test` soit reproductible hors ligne.
+!data/bible/lsg.sample.json
 # public/themes/ : VERSIONNÉ (200 visuels, 140 Mo) — décision du 29/10 : les
 # thèmes image font partie de la livraison, ils ne sont plus ignorés.
 

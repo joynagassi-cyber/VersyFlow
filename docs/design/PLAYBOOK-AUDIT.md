@@ -1,7 +1,7 @@
 # Audit UX/UI Playbook 2026 — application à VersyFlow
 
 Généré par `node scripts/audit-playbook.mjs`. **Ne pas éditer à la main.**
-Exécuté le 2026-11-18 04:26 (UTC).
+Exécuté le 2026-11-18 05:22 (UTC).
 
 **Bilan : 45 vérifiés · 9 partiels · 0 en échec · 23 non vérifiables ici** (77 règles).
 
@@ -18,7 +18,7 @@ Lecture : *vérifié* = une mesure reproductible dans le dépôt le confirme ; *
 | B01 | B | BLOCKING | **PASS** | Texte courant ≥ 4,5:1 sur son fond réel | clair 18.20:1 · clair 8.20:1 |
 | B02 | B | BLOCKING | **PASS** | Grand texte (≥ 24 px ou 19 px gras) ≥ 3:1 | tous les couples titre ≥ 8.20:1 |
 | B03 | B | BLOCKING | **PASS** | Icônes porteuses de sens, bordures et focus ≥ 3:1 | 21 contours de focus, icônes colorées par jeton |
-| B04 | B | BLOCKING | **PASS** | L'information n'est jamais portée par la couleur seule | 42 états exposés en ARIA, 128 libellés textuels |
+| B04 | B | BLOCKING | **PASS** | L'information n'est jamais portée par la couleur seule | 42 états exposés en ARIA, 130 libellés textuels |
 | B05 | B | MAJOR | **PASS** | Le mode sombre est un second jeu de jetons, pas un filtre | bloc `[data-theme="dark"]` dédié, aucun filtre inverseur |
 | B06 | B | MAJOR | **PASS** | Rien ne disparaît en contraste élevé ni en niveaux de gris | 13 règles de contraste élevé |
 | C01 | C | BLOCKING | **PASS** | Rien d'utile sous 12 px à l'échelle par défaut | plancher mesuré : 12px (échelle), aucune taille arbitraire sous 12px |
@@ -37,12 +37,12 @@ Lecture : *vérifié* = une mesure reproductible dans le dépôt le confirme ; *
 | E02 | E | BLOCKING | **PASS** | L'état vide propose une action | `EmptyState` accepte une action |
 | E03 | E | MAJOR | **PASS** | L'erreur dit quoi faire, pas seulement ce qui a échoué | 13 messages d'erreur orientés action |
 | E04 | E | MAJOR | **PASS** | Le chargement réserve la place du contenu, sans saut | squelette monté comme repli de `Suspense` (hauteurs réservées) |
-| E05 | E | MAJOR | **PASS** | Un état désactivé explique pourquoi et comment l’activer | 3 élément(s) désactivé(s) relié(s) à une explication (94 attributs disabled) |
+| E05 | E | MAJOR | **PASS** | Un état désactivé explique pourquoi et comment l’activer | 4 élément(s) désactivé(s) relié(s) à une explication (94 attributs disabled) |
 | F01 | F | BLOCKING | **PASS** | Chaque champ a un libellé visible relié au programme | tous les champs portent un nom accessible (`aria-label`, `aria-labelledby` ou `<label>` englobant) |
 | F02 | F | BLOCKING | **UNVERIFIABLE** | Le message d'erreur est sous son champ et nomme la règle | position du message non mesurable sans rendu |
-| F03 | F | BLOCKING | **PASS** | Le champ fautif porte `aria-invalid` et l’erreur est annoncée | 1 `aria-invalid`, 3 zone(s) live |
+| F03 | F | BLOCKING | **PASS** | Le champ fautif porte `aria-invalid` et l’erreur est annoncée | 2 `aria-invalid`, 4 zone(s) live |
 | F04 | F | MAJOR | **UNVERIFIABLE** | Le formulaire ne demande que ce qu’il utilise | jugement de conception |
-| F05 | F | MAJOR | **PASS** | Clavier adapté (`type`, `inputMode`) et autocomplétion | 8 types adaptés, 1 inputMode, 4 autocomplete |
+| F05 | F | MAJOR | **PASS** | Clavier adapté (`type`, `inputMode`) et autocomplétion | 8 types adaptés, 2 inputMode, 5 autocomplete |
 | F06 | F | MAJOR | **PASS** | Action primaire unique et échappatoire possible | 7 annulations, 45 retours |
 | G01 | G | BLOCKING | **PASS** | La langue de la page est déclarée | `lang` statique sur `<html>` + synchronisation i18n à l’exécution |
 | G02 | G | BLOCKING | **PASS** | Aucune largeur de texte figée : la chaîne la plus longue tient | aucune largeur fixe > 320 px ; retours à la ligne assurés |
@@ -55,7 +55,7 @@ Lecture : *vérifié* = une mesure reproductible dans le dépôt le confirme ; *
 | H03 | H | BLOCKING | **PASS** | Chaque commande a un nom accessible, icônes comprises | aucun bouton sans nom accessible détecté |
 | H04 | H | BLOCKING | **PASS** | Le focus est déplacé après navigation, sans le voler | gestionnaire de focus monté dans 2 coquilles |
 | H05 | H | MAJOR | **UNVERIFIABLE** | Zoom système et navigateur testés à 200 % | rendu à 200 % non mesurable sans navigateur |
-| H06 | H | MAJOR | **PASS** | Les composants exposent rôles et états exacts | 23 rôles explicites posés |
+| H06 | H | MAJOR | **PASS** | Les composants exposent rôles et états exacts | 24 rôles explicites posés |
 | I01 | I | MAJOR | **PASS** | Aucune image ou police bloquante au premier écran | polices auto-hébergées en `font-display: swap` |
 | I02 | I | MAJOR | **PARTIAL** | Pas de décalage de mise en page à l’arrivée du contenu (CLS ≤ 0,1) | squelette à hauteurs fixes ; CLS non mesuré sans navigateur |
 | I03 | I | BLOCKING | **PASS** | Le réglage « réduire le mouvement » est respecté | 8 blocs `prefers-reduced-motion`, dont un pour les animations nommées |

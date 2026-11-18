@@ -4,6 +4,7 @@
   "description": "VersyFlow â€” Application de mÃ©morisation de versets bibliques",
   "license": "MIT",
   "scripts": {
+    "predev": "node scripts/copy-bible-bundled.mjs",
     "dev": "vite",
     "dev:mock": "node scripts/dev-mock.mjs",
     "mock:server": "node server/mock-api.mjs",
@@ -21,6 +22,8 @@
     "bible:build": "tsx -r ./scripts/tsconfig-alias-hook.cjs scripts/bible/build-bible.ts",
     "bible:catalog": "npx tsx scripts/bible/generate-dataset-catalog.ts",
     "bible:deploy": "cross-env TS_NODE_PROJECT=tsconfig.app.json tsx scripts/supabase/setup-bible-datasets.ts",
+    "bible:sample": "node scripts/bible/make-sample.mjs",
+    "bible:sample:check": "node scripts/bible/make-sample.mjs --check",
     "bible:normalize": "node scripts/bible/normalize-bible-datasets.mjs",
     "bible:normalize:check": "node scripts/bible/normalize-bible-datasets.mjs --check",
     "bible:verify": "cross-env TS_NODE_PROJECT=tsconfig.app.json tsx -r tsconfig-paths/register scripts/bible/verify-multi-translation.ts",

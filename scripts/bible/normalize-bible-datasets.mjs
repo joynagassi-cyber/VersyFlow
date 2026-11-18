@@ -17,7 +17,14 @@
  *      n, c, m, t, jusqu, lorsqu, puisqu, quoiqu — jamais une apostrophe de
  *      citation) ;
  *   3. suppression des espaces avant ponctuation ;
- *   4. espaces multiples réduits, bords nettoyés.
+ *   4. espaces multiples réduits, bords nettoyés ;
+ *   5. retrait des marqueurs de prononciation USFM `\j … \j*` qui ont perdu
+ *      leur barre oblique dans un ancien passage de conversion : le texte
+ *      affichait « j Il est écrit:j* » (2 037 versets de `lsg.json`). La règle
+ *      ne s'active que sur un document qui porte encore le marqueur fermant
+ *      `j*` — sans lui, un « j » isolé est un vrai mot (russe, néerlandais…).
+ *      Même cause pour les marqueurs inline restés en clair (`\b`, `\pi1`,
+ *      `\qs … \qs*`, `\it`), qui s'affichaient tels quels : 297 versets.
  *
  * Met aussi à jour `data/bible/dataset-catalog.json` (checksum + taille) pour
  * que le cache navigateur (clé = checksum) recharge la version corrigée.
@@ -43,9 +50,21 @@ const COPY_PUBLIC = args.includes('--copy-public');
 const ELISION_TOKENS = 'jusqu|lorsqu|puisqu|quoiqu|qu|l|d|j|s|n|c|m|t';
 const ELISION_RE = new RegExp(`(^|[\\s(«“"'])((?:${ELISION_TOKENS})’)[ ]+(?=[\\p{L}])`, 'giu');
 
+/** Marqueurs hérités : `j*` (fermeture) et `j` d'ouverture en début de segment. */
+const LEGACY_OPEN_RE = /(^|[\s(«“"'])j(?=[\s.,;:!?])/gu;
+const LEGACY_CLOSE_RE = /j\*j?/g;
+
 export function normalizeVerse(text) {
   let out = text.normalize('NFC');
   out = out.replace(ELISION_RE, '$1$2');
+  if (out.includes('j*')) {
+    out = out.replace(LEGACY_CLOSE_RE, '');
+    out = out.replace(LEGACY_OPEN_RE, '$1');
+  }
+  // Marqueurs USFM inline restés en clair, barre oblique comprise.
+  if (out.includes('\\')) {
+    out = out.replace(/\\[a-z]+[0-9]*\*?/gi, ' ');
+  }
   out = out.replace(/\s+([,;:.!?»])/g, '$1');
   out = out.replace(/[ \t]+/g, ' ').trim();
   return out;
@@ -76,7 +95,12 @@ function normalizeDocument(doc) {
 }
 
 const files = existsSync(DIR)
-  ? readdirSync(DIR).filter((f) => f.endsWith('.json') && f !== 'dataset-catalog.json')
+  ? readdirSync(DIR).filter(
+      (f) => f.endsWith('.json') && f !== 'dataset-catalog.json' &&
+        // Les échantillons sont DÉRIVÉS d'un jeu parent : les reformater ici
+        // ferait diverger la sortie de `make-sample.mjs` (indentation + taille).
+        !f.endsWith('.sample.json'),
+    )
   : [];
 
 if (!files.length) {

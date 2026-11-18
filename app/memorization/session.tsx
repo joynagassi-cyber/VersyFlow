@@ -28,6 +28,7 @@ import type { MemorizationRecord } from '@/domains/memorization/entities';
 import { eventBus, DomainEventTypes } from '@/services/events-service';
 import { fireAndForget } from '@/lib/fire-and-forget';
 import { ScreenSkeleton } from '@/components/ui/ScreenSkeleton';
+import { VersePicker } from '@/components/memorization/VersePicker';
 
 /** Resolve the authenticated user id (or null when not signed in). */
 const resolveUserId = async (): Promise<string | null> =>
@@ -51,6 +52,7 @@ export default function MemorizationSession() {
   const { t } = useTranslation();
   const { activeProfile } = useActiveProfile();
 
+  const [mode, setMode] = useState<'pick' | 'session'>('session');
   const [engine, setEngine] = useState<MemorizationSessionEngine | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -98,10 +100,22 @@ export default function MemorizationSession() {
     }
 
     if (!bookId || !chapter || !verseStart) {
-      setError(t('errors.verseNotFound'));
+      // Aucune coordonnée : ce n'est pas une erreur, c'est une invitation à
+      // choisir un passage (voir <VersePicker/>). Avant ce correctif, les cinq
+      // points d'entrée « Mémoriser » aboutissaient ici sur « verset non
+      // disponible » — la fonctionnalité était morte par son propre bouton.
+      setMode('pick');
       setLoading(false);
       return;
     }
+
+    // Des coordonnées viennent d'arriver (choix d'un passage depuis
+    // <VersePicker/>, même route + nouvelle query string).
+    setMode('session');
+    setError(null);
+    setComplete(false);
+    setProgress(0);
+    setLoading(true);
 
     async function init() {
       try {
@@ -157,7 +171,10 @@ export default function MemorizationSession() {
     return () => {
       cancelled = true;
     };
-}, []);
+    // Les coordonnées font partie des dépendances : sans elles, choisir un
+    // passage depuis l'écran de sélection (même route, autre query string) ne
+    // relançait jamais l'initialisation — le sélecteur restait affiché.
+  }, [bookIdParam, chapterParam, verseStartParam, verseEndParam, refParam, translationId]);
 
   const refresh = useCallback(() => {
     if (!engine) return;
@@ -242,6 +259,19 @@ export default function MemorizationSession() {
             </p>
           )}
         </div>
+      </FullScreenPage>
+    );
+  }
+
+  if (mode === 'pick') {
+    return (
+      <FullScreenPage
+        title={t('memorize.pickTitle', 'Mémoriser un verset')}
+        subtitle={t('memorize.pickSubtitle', 'Choisissez le passage que vous voulez ancrer.')}
+        backPath="/tabs/home"
+        column="narrow"
+      >
+        <VersePicker translationId={translationId} />
       </FullScreenPage>
     );
   }
