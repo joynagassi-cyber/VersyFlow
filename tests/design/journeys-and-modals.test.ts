@@ -35,7 +35,9 @@ describe('L2 — colonne de lecture des parcours', () => {
   });
 
   it('la largeur vient de --reading-width, pas d’une valeur locale', () => {
-    expect(globals).toMatch(/--reading-width:\s*720px/);
+    // Règle C04 du playbook UX/UI : la mesure se plafonne en CARACTÈRES
+    // (45–80 par ligne), avec 720 px comme plafond sur grand écran.
+    expect(globals).toMatch(/--reading-width:\s*min\(720px,\s*\d+ch\)/);
     expect(globals).toMatch(/\.screen-column-narrow\s*\{[\s\S]{0,120}max-width:\s*100%/);
     const desktopRule = globals.match(
       /@media \(min-width: 1024px\) \{\s*\.screen-column\s*\{[\s\S]*?\.screen-column-narrow\s*\{[^}]*max-width:\s*var\(--reading-width\)/,

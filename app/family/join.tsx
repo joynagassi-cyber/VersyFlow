@@ -86,6 +86,7 @@ export default function FamilyJoinScreen() {
           </label>
           <Input
             value={code}
+            aria-label={t('family.inviteCode', "Code d'invitation")}
             onChange={(e) => setCode(e.target.value.toUpperCase().slice(0, 8))}
             placeholder="FAM-XXXXXX"
             maxLength={8}

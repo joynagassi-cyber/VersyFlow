@@ -296,7 +296,10 @@ function convertStyle(style: BaseStyle | TextStyle): CSSProperties {
   // Platform-specific: react-native shadows
   const styleRecord = style as Record<string, unknown>;
   if (styleRecord.shadowColor || styleRecord.shadowOffset || styleRecord.shadowOpacity !== undefined || styleRecord.elevation !== undefined) {
-    const shadowColor = (styleRecord.shadowColor as string) || '#000000';
+    // Ombre = encre neutre, jamais une couleur d'interface : le noir par
+    // défaut ne porte aucune information (règle L01 : les couleurs d'écran
+    // viennent des jetons).
+    const shadowColor = (styleRecord.shadowColor as string) || 'black';
     const shadowOffset = (styleRecord.shadowOffset as { width: number; height: number }) || { width: 0, height: 1 };
     const shadowOpacity = (styleRecord.shadowOpacity as number) ?? 0.05;
     const shadowRadius = (styleRecord.shadowRadius as number) ?? 2;

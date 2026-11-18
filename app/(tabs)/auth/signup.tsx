@@ -91,14 +91,15 @@ export default function SignupScreen({ onSkip }: Props) {
           )}
           <Input
             type="email"
-            placeholder={t('auth.email', 'Adresse e-mail')}
+            label={t('auth.email', 'Adresse e-mail')}
+            placeholder={t('auth.emailPlaceholder', 'vous@exemple.com')}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             autoComplete="email"
           />
           <Input
             type="text"
-            placeholder={t('auth.name', 'Votre nom')}
+            label={t('auth.name', 'Votre nom')}
             value={name}
             onChange={(e) => setName(e.target.value)}
             autoComplete="name"

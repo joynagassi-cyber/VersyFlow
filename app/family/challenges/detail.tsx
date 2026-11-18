@@ -69,7 +69,7 @@ export default function FamilyChallengeDetailScreen() {
       <div className="flex flex-col gap-4">
         <SectionCard>
           <div className="flex items-center justify-between gap-2">
-            <p className="text-[11px] font-bold uppercase tracking-wide text-primary">
+            <p className="text-2xs font-bold uppercase tracking-wide text-primary">
               {challenge.kind === 'passage'
                 ? t('familyPlus.kindPassage', 'Passage commun')
                 : challenge.kind === 'collectif'
@@ -77,7 +77,7 @@ export default function FamilyChallengeDetailScreen() {
                   : t('familyPlus.kindSerie', 'Série collective')}
             </p>
             {challenge.status === 'done' && (
-              <span className="flex items-center gap-1 rounded-full bg-success-light px-2 py-1 text-[11px] font-bold text-success">
+              <span className="flex items-center gap-1 rounded-full bg-success-light px-2 py-1 text-2xs font-bold text-success">
                 <DuoIcon icon={CheckCircle} size={12} />
                 {t('familyPlus.challengeDone', 'Réussi')}
               </span>

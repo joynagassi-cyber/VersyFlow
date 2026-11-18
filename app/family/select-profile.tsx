@@ -169,7 +169,7 @@ export default function FamilySelectProfileScreen() {
                             : t('familyPlus.notYetReviewed', 'Pas encore révisé')}
                         </span>
                       </span>
-                      <span className="flex shrink-0 items-center gap-1 text-[11px] font-semibold uppercase tracking-wide text-text-muted">
+                      <span className="flex shrink-0 items-center gap-1 text-2xs font-semibold uppercase tracking-wide text-text-muted">
                         <DuoIcon icon={User} size={14} />
                         {t('familyPlus.readOnly', 'Lecture')}
                       </span>

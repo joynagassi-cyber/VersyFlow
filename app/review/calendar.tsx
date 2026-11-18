@@ -249,14 +249,14 @@ export default function ReviewCalendarScreen() {
               </span>
               {created > 0 && <span className="review-calendar-dot" aria-hidden="true" />}
               {reviewed > 0 && (
-                <span className="text-[9px] font-semibold leading-none text-text-muted" aria-hidden="true">
+                <span className="text-2xs font-semibold leading-none text-text-muted" aria-hidden="true">
                   {reviewed}
                 </span>
               )}
               {due > 0 && (
                 <span
                   className={cn(
-                    'mt-0.5 rounded-full px-1.5 text-[10px] font-bold text-[color:var(--on)]',
+                    'mt-0.5 rounded-full px-1.5 text-2xs font-bold text-[color:var(--on)]',
                     'bg-primary',
                   )}
                 >

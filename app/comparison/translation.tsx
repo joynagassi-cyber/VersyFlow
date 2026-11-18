@@ -248,12 +248,12 @@ export default function TranslationComparisonScreen() {
                 <div className="flex min-w-0 items-center gap-2">
                   <span className="truncate text-sm font-bold text-text-primary">{r.name}</span>
                   {r.language && (
-                    <span className="rounded-full bg-surface-tint px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-text-muted">
+                    <span className="rounded-full bg-surface-tint px-2 py-0.5 text-2xs font-bold uppercase tracking-wide text-text-muted">
                       {r.language}
                     </span>
                   )}
                   {r.id === bibleTranslation && (
-                    <span className="flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-bold text-primary">
+                    <span className="flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-2xs font-bold text-primary">
                       <DuoIcon icon={Check} size={10} /> {t('comparison.active', 'Active')}
                     </span>
                   )}
@@ -326,7 +326,7 @@ export default function TranslationComparisonScreen() {
                           {m.name}
                         </span>
                         {m.language && (
-                          <span className="rounded-full bg-surface-tint px-2 py-0.5 text-[10px] font-bold uppercase text-text-muted">
+                          <span className="rounded-full bg-surface-tint px-2 py-0.5 text-2xs font-bold uppercase text-text-muted">
                             {m.language}
                           </span>
                         )}

@@ -116,7 +116,7 @@ export default function FamilyChallengesScreen() {
                 >
                   <div className="flex items-start justify-between gap-2">
                     <div className="min-w-0">
-                      <p className="text-[11px] font-bold uppercase tracking-wide text-primary">
+                      <p className="text-2xs font-bold uppercase tracking-wide text-primary">
                         {challenge.kind === 'passage'
                           ? t('familyPlus.kindPassage', 'Passage commun')
                           : challenge.kind === 'collectif'
@@ -129,7 +129,7 @@ export default function FamilyChallengesScreen() {
                       <p className="mt-0.5 text-xs text-text-muted">{challenge.passage}</p>
                     </div>
                     {challenge.status === 'active' && (
-                      <span className="rounded-full bg-surface-tint px-2 py-1 text-[11px] font-bold tabular-nums text-primary">
+                      <span className="rounded-full bg-surface-tint px-2 py-1 text-2xs font-bold tabular-nums text-primary">
                         {t('familyPlus.daysLeft', 'J-{{days}}', { days: daysLeft(challenge) })}
                       </span>
                     )}

@@ -38,7 +38,11 @@ export const en = {
     select: 'Use',
     edit: 'Edit',
   },
-  nav: {
+    a11y: {
+    skipToContent: 'Skip to main content',
+    mainLandmark: 'Main content',
+  },
+nav: {
     menu: 'Navigation',
     brandHome: 'VersyFlow — Home',
     newSession: 'New session',

@@ -201,17 +201,17 @@ export default function ReviewHistoryScreen() {
           <div className="mt-4 grid grid-cols-3 divide-x divide-[color:var(--color-divider)] text-center">
             <div>
               <p className="text-xl font-extrabold text-primary tabular-nums">{verse.totalReviews}</p>
-              <p className="text-[11px] text-text-muted">{t('history.reviews', 'Revisions')}</p>
+              <p className="text-2xs text-text-muted">{t('history.reviews', 'Revisions')}</p>
             </div>
             <div>
               <p className="text-xl font-extrabold text-primary tabular-nums">
                 {verse.averageStability.toFixed(1)}j
               </p>
-              <p className="text-[11px] text-text-muted">{t('history.stability', 'Stabilite')}</p>
+              <p className="text-2xs text-text-muted">{t('history.stability', 'Stabilite')}</p>
             </div>
             <div>
               <p className="text-xl font-extrabold text-primary">{progress}%</p>
-              <p className="text-[11px] text-text-muted">{t('history.success', 'Reussite')}</p>
+              <p className="text-2xs text-text-muted">{t('history.success', 'Reussite')}</p>
             </div>
           </div>
         </div>
@@ -248,7 +248,7 @@ export default function ReviewHistoryScreen() {
                     </div>
                     <div className="flex gap-4 text-xs">
                       <div>
-                        <p className="text-[10px] uppercase tracking-wide text-text-muted">
+                        <p className="text-2xs uppercase tracking-wide text-text-muted">
                           {t('history.stability', 'Stabilite')}
                         </p>
                         <p className="font-medium text-text-primary tabular-nums">
@@ -258,7 +258,7 @@ export default function ReviewHistoryScreen() {
                         </p>
                       </div>
                       <div>
-                        <p className="text-[10px] uppercase tracking-wide text-text-muted">
+                        <p className="text-2xs uppercase tracking-wide text-text-muted">
                           {t('history.difficulty', 'Difficulte')}
                         </p>
                         <p className="font-medium text-text-primary tabular-nums">

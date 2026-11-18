@@ -374,6 +374,7 @@ function ProfileTab() {
             <div className="flex items-center gap-2">
               <input
                 value={name}
+                aria-label={t('profile.name', 'Nom affiché')}
                 onChange={(e) => setName(e.target.value)}
                 placeholder={t('profile.namePlaceholder', 'Ex : Sarah, David...')}
                 className="flex-1 rounded-full bg-surface-tint px-4 py-2 text-base text-text-primary outline-none ring-2 ring-[color:var(--color-primary)]"

@@ -111,7 +111,7 @@ export default function FamilyActivityScreen() {
                                 type="button"
                                 onClick={() => react(entry.id, reaction.key)}
                                 className={cn(
-                                  'rounded-full px-2.5 py-1 text-[11px] font-semibold transition',
+                                  'rounded-full px-2.5 py-1 text-2xs font-semibold transition',
                                   count > 0
                                     ? 'bg-surface-tint text-primary'
                                     : 'bg-surface-tint/60 text-text-muted',

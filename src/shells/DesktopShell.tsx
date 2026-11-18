@@ -18,15 +18,20 @@
 
 import { IonPage } from '@ionic/react';
 import { Outlet, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { DesktopRail } from '@/components/navigation/DesktopRail';
 import { DesktopHeader } from '@/shells/DesktopHeader';
 import { ReadingPanel } from '@/shells/ReadingPanel';
 import { useIsDesktop } from '@/hooks/useIsDesktop';
 import { isReadingRoute } from '@/shells/panel-routes';
+import { SkipLink } from '@/components/layout/SkipLink';
+import { useRouteFocus } from '@/hooks/useRouteFocus';
 
 export function DesktopShell() {
   const location = useLocation();
   const isDesktop = useIsDesktop();
+  const { t } = useTranslation();
+  useRouteFocus();
 
   // Le panneau n'apparaît qu'au bureau ET sur une route de lecture : sous
   // 1024 px il volerait la largeur du texte (voir `panel-routes.ts`).
@@ -34,16 +39,19 @@ export function DesktopShell() {
 
   return (
     <>
+      <SkipLink />
       <DesktopRail />
       <IonPage>
-        <div
-          id="main-content"
-          className="app-main app-canvas flex h-full flex-col overflow-hidden bg-background"
-        >
+        <div className="app-main app-canvas flex h-full flex-col overflow-hidden bg-background">
           <DesktopHeader />
 
           <div className="flex min-h-0 flex-1">
-            <main className="min-h-0 min-w-0 flex-1 overflow-hidden">
+            <main
+              id="main-content"
+              tabIndex={-1}
+              aria-label={t('a11y.mainLandmark', 'Contenu principal')}
+              className="min-h-0 min-w-0 flex-1 overflow-hidden"
+            >
               <Outlet />
             </main>
             {hasPanel && <ReadingPanel />}

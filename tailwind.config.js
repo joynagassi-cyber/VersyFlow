@@ -97,18 +97,25 @@ const config = {
       },
       // Échelle typographique explicite (interface). Les tailles de contenu
       // biblique restent pilotées par les réglages de lecture (theme-fonts.ts).
+      // Échelle typographique unique (règles C01 + C05 du playbook UX/UI) :
+      // 8 tailles seulement, rôles documentés. Rien d'utile sous 12 px,
+      // corps de texte entre 15 et 17 px, titres en 20/24/28/32.
+      //   micro 12 · small 13 · body 15 · body-lg 17
+      //   h3 20 · h2-bas 24 · h2 28 · h1 32
+      // Les classes gardent leur nom historique pour ne pas réécrire 1000
+      // fichiers : `2xs`/`xs` = micro, `base`/`md` = body, `lg`/`xl` = body-lg.
       fontSize: {
-        '2xs': ['11px', { lineHeight: '14px' }],
+        '2xs': ['12px', { lineHeight: '16px' }],
         xs: ['12px', { lineHeight: '16px' }],
         sm: ['13px', { lineHeight: '18px' }],
-        base: ['14px', { lineHeight: '21px' }],
-        md: ['15px', { lineHeight: '22px' }],
-        lg: ['16px', { lineHeight: '24px' }],
+        base: ['15px', { lineHeight: '24px' }],
+        md: ['15px', { lineHeight: '24px' }],
+        lg: ['17px', { lineHeight: '26px' }],
         xl: ['17px', { lineHeight: '26px' }],
-        '2xl': ['18px', { lineHeight: '27px' }],
-        '3xl': ['22px', { lineHeight: '28px' }],
-        '4xl': ['26px', { lineHeight: '32px' }],
-        '5xl': ['30px', { lineHeight: '36px' }],
+        '2xl': ['20px', { lineHeight: '28px' }],
+        '3xl': ['24px', { lineHeight: '30px' }],
+        '4xl': ['28px', { lineHeight: '33px' }],
+        '5xl': ['32px', { lineHeight: '36px' }],
       },
       // Largeurs de contenu : la mesure de lecture, pas la largeur de l'écran.
       maxWidth: {

@@ -22,6 +22,8 @@ import { Menu01Icon, PlusSignIcon } from '@/components/ui/solar-icons';
 import { BottomTabs } from '@/components/navigation/BottomTabs';
 import { QuickDock } from '@/components/navigation/QuickDock';
 import { HamburgerMenu } from '@/components/navigation/HamburgerMenu';
+import { SkipLink } from '@/components/layout/SkipLink';
+import { useRouteFocus } from '@/hooks/useRouteFocus';
 import { Logo } from '@/components/brand/Logo';
 import { useUiStore } from '@/store/ui-store';
 import { DemoModeBadge } from '@/components/dev/DemoModeBadge';
@@ -30,16 +32,18 @@ export function MobileShell() {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const openMenu = useUiStore((s) => s.openMenu);
+  useRouteFocus();
 
   return (
     <>
+      <SkipLink />
       <HamburgerMenu />
       <IonPage>
         <div
           id="main-content"
           className="app-main app-canvas relative flex h-full flex-col overflow-hidden bg-background"
         >
-          <div className="mobile-header g1 flex items-center justify-between px-4 py-2">
+          <header className="mobile-header g1 flex items-center justify-between px-4 py-2">
             <button
               onClick={openMenu}
               className="rounded-full p-1.5 active:bg-surface-tint"
@@ -55,11 +59,16 @@ export function MobileShell() {
               <DemoModeBadge />
               <BackgroundPanel />
             </div>
-          </div>
+          </header>
 
-          <div className="mobile-content min-h-0 flex-1 overflow-hidden">
+          <main
+            id="main-content"
+            tabIndex={-1}
+            aria-label={t('a11y.mainLandmark', 'Contenu principal')}
+            className="mobile-content min-h-0 flex-1 overflow-hidden"
+          >
             <Outlet />
-          </div>
+          </main>
 
           <IonFab horizontal="end" vertical="bottom" style={{ marginBottom: '116px' }}>
             <IonFabButton

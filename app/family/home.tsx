@@ -212,7 +212,7 @@ export default function FamilyHomeScreen() {
             <div className="relative overflow-hidden rounded-[28px] bg-primary p-5 text-on-primary shadow-lg">
               <div className="flex items-start justify-between gap-4">
                 <div className="min-w-0">
-                  <p className="text-[11px] font-bold uppercase tracking-wider opacity-80">
+                  <p className="text-2xs font-bold uppercase tracking-wider opacity-80">
                     {t('familyPlus.familyStreak', 'Série de la famille')}
                   </p>
                   <p className="mt-1 text-4xl font-bold tabular-nums">
@@ -289,7 +289,7 @@ export default function FamilyHomeScreen() {
                     <p className="truncate text-sm font-bold text-text-primary">
                       {runningChallenge.title}
                     </p>
-                    <span className="shrink-0 rounded-full bg-surface-tint px-2 py-0.5 text-[11px] font-bold text-primary tabular-nums">
+                    <span className="shrink-0 rounded-full bg-surface-tint px-2 py-0.5 text-2xs font-bold text-primary tabular-nums">
                       {t('familyPlus.daysLeft', 'J-{{days}}', {
                         days: Math.max(
                           0,

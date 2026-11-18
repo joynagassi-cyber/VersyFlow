@@ -17,6 +17,7 @@ import {
 } from 'react-router-dom';
 import { I18nextProvider } from 'react-i18next';
 import { Suspense, lazy, useEffect } from 'react';
+import { ScreenSkeleton } from '@/components/ui/ScreenSkeleton';
 import '@/styles/globals.css';
 import '@/styles/tweakcn-presets.css';
 import '@/styles/vendored-themes.css';
@@ -598,7 +599,7 @@ function BootSplash() {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        background: '#fbf9f9',
+        background: 'var(--color-background, #fbf9f9)',
         color: 'var(--color-primary, #e6067a)',
         fontFamily: 'Georgia, serif',
         fontSize: 22,
@@ -717,7 +718,10 @@ function renderApp() {
   rendered = true;
   root.render(
     <I18nextProvider i18n={i18next}>
-      <Suspense fallback={null}>
+      {/* E04 / I02 : un squelette qui réserve la hauteur du contenu remplace
+          le `fallback={null}` — plus d'écran vide pendant le chargement d'un
+          morceau d'application (et aucun spinner sur une navigation normale). */}
+      <Suspense fallback={<ScreenSkeleton />}>
         <App />
       </Suspense>
     </I18nextProvider>,

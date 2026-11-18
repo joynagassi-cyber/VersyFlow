@@ -227,6 +227,8 @@ export default function SearchScreen() {
         <div className="flex items-center gap-2 rounded-2xl bg-surface-tint px-4 py-3">
           <DuoIcon icon={Search} size={18} className="text-text-muted" />
           <input
+            type="search"
+            aria-label={t('search.placeholder', 'Rechercher un verset...')}
             className="flex-1 bg-transparent text-base text-text-primary outline-none"
             placeholder={t('search.placeholder', 'Rechercher un verset...')}
             value={query}

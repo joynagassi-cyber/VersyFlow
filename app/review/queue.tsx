@@ -114,7 +114,7 @@ export default function ReviewQueueScreen() {
                   <p className="text-base font-bold text-text-primary">{ref}</p>
                   <span
                     className={cn(
-                      'rounded-full px-2.5 py-1 text-[11px] font-semibold text-[color:var(--on)]',
+                      'rounded-full px-2.5 py-1 text-2xs font-semibold text-[color:var(--on)]',
                       over ? 'bg-error' : 'bg-primary',
                     )}
                   >

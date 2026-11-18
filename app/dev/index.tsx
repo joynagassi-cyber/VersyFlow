@@ -71,7 +71,7 @@ const COLLECTION_LABELS: Record<MockCollectionName, string> = {
   test_events: 'Événements de test',
 };
 
-function Card({
+function DevCard({
   title,
   icon,
   children,
@@ -96,7 +96,7 @@ function Card({
 function Stat({ label, value }: { label: string; value: string | number }) {
   return (
     <div className="rounded-xl bg-surface-tint px-3 py-2">
-      <p className="text-[11px] uppercase tracking-wide text-text-muted">{label}</p>
+      <p className="text-2xs uppercase tracking-wide text-text-muted">{label}</p>
       <p className="text-lg font-extrabold text-text-primary">{value}</p>
     </div>
   );
@@ -237,7 +237,7 @@ export default function DevPanelScreen() {
         <DemoModePanel compact />
 
         {/* ---------------- Mode ---------------- */}
-        <Card title="Mode de données" icon={Database}>
+        <DevCard title="Mode de données" icon={Database}>
           <div className="flex items-center justify-between gap-3">
             <div>
               <p className="text-base font-extrabold text-text-primary">
@@ -278,7 +278,7 @@ export default function DevPanelScreen() {
               Utiliser le backend réel
             </Button>
           </div>
-          <p className="mt-3 text-[11px] text-text-muted">
+          <p className="mt-3 text-2xs text-text-muted">
             Le changement recharge l'application. Vous pouvez aussi forcer le mode via
             l'URL : <code className="rounded bg-surface-tint px-1">?data=mock</code> ou{' '}
             <code className="rounded bg-surface-tint px-1">?data=live</code>.
@@ -293,10 +293,10 @@ export default function DevPanelScreen() {
             <DuoIcon icon={ArrowRight} size={15} />
             Sauter l'onboarding et ouvrir l'app
           </Button>
-        </Card>
+        </DevCard>
 
         {/* ---------------- Identity ---------------- */}
-        <Card title="Identité de test" icon={Settings}>
+        <DevCard title="Identité de test" icon={Settings}>
           <div className="space-y-1 text-sm text-text-secondary">
             <p>
               <span className="text-text-muted">Nom :</span> {identity.displayName}
@@ -314,10 +314,10 @@ export default function DevPanelScreen() {
               </p>
             )}
           </div>
-        </Card>
+        </DevCard>
 
         {/* ---------------- Local API ---------------- */}
-        <Card title="API de test locale" icon={Upload}>
+        <DevCard title="API de test locale" icon={Upload}>
           <div className="mb-3 grid grid-cols-3 gap-2">
             <Stat label="File" value={stats.queued} />
             <Stat label="Envoyés" value={stats.sent} />
@@ -357,17 +357,17 @@ export default function DevPanelScreen() {
               </a>
             </Button>
           </div>
-        </Card>
+        </DevCard>
 
         {/* ---------------- Local data ---------------- */}
-        <Card title="Données locales" icon={Database}>
+        <DevCard title="Données locales" icon={Database}>
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
             {MOCK_COLLECTIONS.filter((name) => name !== 'test_events').map((name) => (
               <div
                 key={name}
                 className="rounded-xl bg-surface-tint px-3 py-2"
               >
-                <p className="text-[11px] uppercase tracking-wide text-text-muted">
+                <p className="text-2xs uppercase tracking-wide text-text-muted">
                   {COLLECTION_LABELS[name]}
                 </p>
                 <p className="text-base font-extrabold text-text-primary">
@@ -390,15 +390,15 @@ export default function DevPanelScreen() {
               Tout réinitialiser
             </Button>
           </div>
-          <p className="mt-3 text-[11px] text-text-muted">
+          <p className="mt-3 text-2xs text-text-muted">
             {SEED_VERSES.length} versets de démonstration (LSG) sont disponibles dans
             le seed, dont {SEED_VERSES.filter((v) => v.dueInDays <= 0).length} à
             réviser aujourd'hui.
           </p>
-        </Card>
+        </DevCard>
 
         {/* ---------------- Recent events ---------------- */}
-        <Card title="Derniers événements reçus par le serveur" icon={Check}>
+        <DevCard title="Derniers événements reçus par le serveur" icon={Check}>
           {notice && (
             <p className="mb-3 rounded-lg bg-primary/10 px-3 py-2 text-xs font-semibold text-primary">
               {notice}
@@ -419,14 +419,14 @@ export default function DevPanelScreen() {
                       {new Date(event.at).toLocaleTimeString()}
                     </span>
                   </div>
-                  <pre className="mt-1 max-h-24 overflow-auto whitespace-pre-wrap break-all rounded bg-surface-tint p-2 text-[10px] text-text-secondary">
+                  <pre className="mt-1 max-h-24 overflow-auto whitespace-pre-wrap break-all rounded bg-surface-tint p-2 text-2xs text-text-secondary">
                     {JSON.stringify(event.payload ?? {}, null, 2)}
                   </pre>
                 </li>
               ))}
             </ul>
           )}
-        </Card>
+        </DevCard>
       </div>
     </FullScreenPage>
   );

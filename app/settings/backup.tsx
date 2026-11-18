@@ -16,6 +16,46 @@ import { getMemorizationService } from '@/services/memorization-service-factory'
 import type { MemorizationRecord } from '@/domains/memorization/entities';
 import { fireAndForget } from '@/lib/fire-and-forget';
 
+/**
+ * Interrupteur au niveau module : défini dans le composant, React recréait son
+ * type à chaque rendu et le bouton était démonté juste après l'appui — le focus
+ * clavier sautait (règle H01).
+ */
+function Toggle({
+  on,
+  onChange,
+  disabled,
+  label,
+}: {
+  on: boolean;
+  onChange: () => void;
+  disabled?: boolean;
+  label: string;
+}) {
+  return (
+    <button
+      type="button"
+      role="switch"
+      aria-checked={on}
+      aria-label={label}
+      onClick={onChange}
+      disabled={disabled}
+      className={
+        'relative h-7 w-12 shrink-0 rounded-full transition ' +
+        (on ? 'bg-primary' : 'bg-[color:var(--color-divider)]') +
+        (disabled ? ' opacity-40' : '')
+      }
+    >
+      <span
+        className={
+          'absolute top-0.5 h-6 w-6 rounded-full bg-surface transition-all ' +
+          (on ? 'left-[calc(100%-1.625rem)]' : 'left-0.5')
+        }
+      />
+    </button>
+  );
+}
+
 export default function BackupScreen() {
   const { t } = useTranslation();
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
@@ -77,26 +117,6 @@ export default function BackupScreen() {
     }
   };
 
-  const Toggle = ({ on, onChange, disabled }: { on: boolean; onChange: () => void; disabled?: boolean }) => (
-    <button
-      onClick={onChange}
-      disabled={disabled}
-      className={
-        'relative h-7 w-12 shrink-0 rounded-full transition ' +
-        (on ? 'bg-primary' : 'bg-[color:var(--color-divider)]') +
-        (disabled ? ' opacity-40' : '')
-      }
-      aria-pressed={on}
-    >
-      <span
-        className={
-          'absolute top-0.5 h-6 w-6 rounded-full bg-surface transition-all ' +
-          (on ? 'left-[calc(100%-1.625rem)]' : 'left-0.5')
-        }
-      />
-    </button>
-  );
-
   return (
     <FullScreenPage
       title={t('settings.backup', 'Sauvegarde')}
@@ -112,7 +132,11 @@ export default function BackupScreen() {
             <span className="text-base text-text-primary">
               {t('settings.backup.auto', 'Sauvegarde automatique')}
             </span>
-            <Toggle on={autoBackup} onChange={() => setAutoBackup((v) => !v)} />
+            <Toggle
+              on={autoBackup}
+              onChange={() => setAutoBackup((v) => !v)}
+              label={t('settings.backup.auto', 'Sauvegarde automatique')}
+            />
           </div>
           <Button variant="default" className="w-full" onClick={() => fireAndForget(handleExport(), 'settings:export')} disabled={busy}>
             {busy ? <DuoIcon icon={Loader2} size={18} className="animate-spin" /> : <DuoIcon icon={Download} size={18} />}
@@ -154,7 +178,12 @@ export default function BackupScreen() {
               <DuoIcon icon={Cloud} size={18} className="text-primary" />
               {t('settings.backup.sync', 'Sync automatique')}
             </span>
-            <Toggle on={syncEnabled} onChange={() => setSyncEnabled((v) => !v)} disabled={!isAuthenticated} />
+            <Toggle
+              on={syncEnabled}
+              onChange={() => setSyncEnabled((v) => !v)}
+              disabled={!isAuthenticated}
+              label={t('settings.backup.sync', 'Sync automatique')}
+            />
           </div>
           {!isAuthenticated && (
             <p className="text-sm text-text-muted">

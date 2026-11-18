@@ -46,9 +46,10 @@ export default function MemorizationConfirm() {
     >
       <div className="flex flex-col items-center py-8">
         <span className="text-6xl">✨</span>
-        <h1 className="mt-4 text-2xl font-bold text-text-primary">
+        {/* A01 : un seul h1 par écran — celui de FullScreenPage (« Mémorisation »). */}
+        <h2 className="mt-4 text-2xl font-bold text-text-primary">
           {t('session.verseComplete', "Verset mémorisé! ✨")}
-        </h1>
+        </h2>
         {reference && (
           <p className="mt-2 text-base font-semibold text-primary">{reference}</p>
         )}

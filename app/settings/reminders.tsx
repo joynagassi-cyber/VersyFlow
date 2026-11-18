@@ -162,6 +162,7 @@ export default function SettingsRemindersScreen() {
             </p>
             <input
               type="time"
+              aria-label={t('onboarding.reminderTime', 'Heure de rappel')}
               value={reminderTime}
               disabled={!reminderEnabled}
               onChange={(e) => { if (e.target.value) { setReminderTime(e.target.value); setPushStatus('idle'); } }}

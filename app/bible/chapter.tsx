@@ -121,7 +121,7 @@ export default function ChapterScreen() {
                         style={{ width: `${Math.max(2, downloadPercent)}%` }}
                       />
                     </div>
-                    <p className="mt-1 text-right text-[11px] font-semibold tabular-nums text-primary">
+                    <p className="mt-1 text-right text-2xs font-semibold tabular-nums text-primary">
                       {Math.round(downloadPercent)} %
                     </p>
                   </div>

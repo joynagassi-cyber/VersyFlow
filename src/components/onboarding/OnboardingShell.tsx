@@ -34,7 +34,7 @@ export function OnboardingShell({
   return (
     <div className="screen-column-narrow flex min-h-full flex-col px-6 pb-8 pt-4">
       <div className="flex items-center justify-between">
-        <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-[11px] font-bold text-primary">
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-2xs font-bold text-primary">
           <DuoIcon icon={SparklesIcon} size={13} />
           VersyFlow
         </span>

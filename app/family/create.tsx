@@ -34,13 +34,19 @@ export default function FamilyCreateScreen() {
   const [color, setColor] = useState(DEFAULT_FAMILY_COLOR);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // Erreur de champ, distincte de l'erreur serveur : elle se pose SOUS le
+  // champ (règle F02) et le champ porte `aria-invalid` (règle F03).
+  const [nameError, setNameError] = useState<string | null>(null);
 
   const submit = async () => {
     const trimmed = name.trim();
-    if (!trimmed) {
-      setError(t('familyPlus.nameRequired', 'Donnez un nom à votre famille pour continuer.'));
+    if (trimmed.length < 2) {
+      setNameError(
+        t('familyPlus.nameTooShort', 'Le nom doit contenir au moins 2 caractères (40 maximum).'),
+      );
       return;
     }
+    setNameError(null);
     setBusy(true);
     setError(null);
     try {
@@ -65,14 +71,37 @@ export default function FamilyCreateScreen() {
     >
       <div className="flex flex-col gap-4">
         <SectionCard title={t('familyPlus.nameLabel', 'Nom de la famille')}>
+          <label htmlFor="family-name" className="sr-only">
+            {t('familyPlus.nameLabel', 'Nom de la famille')}
+          </label>
           <input
+            id="family-name"
             value={name}
-            onChange={(e) => setName(e.target.value)}
+            aria-label={t('familyPlus.nameLabel', 'Nom de la famille')}
+            aria-invalid={nameError ? true : undefined}
+            aria-describedby={nameError ? 'family-name-error' : 'family-name-hint'}
+            onChange={(e) => {
+              setName(e.target.value);
+              if (nameError) setNameError(null);
+            }}
             maxLength={40}
             placeholder={t('familyPlus.namePlaceholder', 'Famille Étoile')}
-            aria-label={t('familyPlus.nameLabel', 'Nom de la famille')}
             className="w-full rounded-xl border border-border bg-background px-4 py-3 text-base text-text-primary placeholder:text-text-placeholder focus:outline-none focus:ring-1 focus:ring-primary"
           />
+          {nameError ? (
+            <p
+              id="family-name-error"
+              role="alert"
+              className="mt-2 flex items-center gap-1.5 text-sm text-error"
+            >
+              <DuoIcon icon={AlertCircle} size={14} className="shrink-0" />
+              {nameError}
+            </p>
+          ) : (
+            <p id="family-name-hint" className="mt-2 text-sm text-text-muted">
+              {t('familyPlus.nameHint', 'Entre 2 et 40 caractères. Vous pourrez le changer plus tard.')}
+            </p>
+          )}
         </SectionCard>
 
         <SectionCard title={t('familyPlus.colorLabel', 'Couleur')}>
@@ -134,7 +163,7 @@ export default function FamilyCreateScreen() {
 
         <Button
           className="w-full"
-          disabled={busy || !signedIn || !name.trim()}
+          disabled={busy || !signedIn}
           onClick={() => fireAndForget(submit(), 'family:create')}
         >
           {t('familyPlus.continueAddProfile', 'Continuer · ajouter mon profil')}

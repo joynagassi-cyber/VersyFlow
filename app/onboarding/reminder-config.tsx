@@ -137,6 +137,7 @@ export default function OnboardingReminderConfig() {
             </p>
             <input
               type="time"
+              aria-label={t('onboarding.reminderTime', 'Heure de rappel')}
               value={reminderTime}
               disabled={!reminderEnabled}
               onChange={(e) => setReminderTime(e.target.value)}

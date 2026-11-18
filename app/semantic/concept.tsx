@@ -104,9 +104,10 @@ export default function ConceptView() {
             <DuoIcon icon={BrainCircuit} size={20} />
           </span>
           <div>
-            <h1 className="text-xl font-bold text-text-primary">
+            {/* A01 : le h1 est celui de FullScreenPage ; la carte porte un h2. */}
+            <h2 className="text-xl font-bold text-text-primary">
               {displayLabel(concept, lang)}
-            </h1>
+            </h2>
             <p className="text-xs text-text-muted">{concept.canonical_name}</p>
           </div>
         </div>

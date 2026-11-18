@@ -331,6 +331,7 @@ export default function CollectionsScreen() {
           <div className="flex items-center gap-2 rounded-2xl border-2 border-dashed border-primary/40 p-4">
             <input
               autoFocus
+              aria-label={t('collections.namePlaceholder', 'Nom de la collection')}
               value={newName}
               onChange={(e) => setNewName(e.target.value)}
               placeholder={t('collections.namePlaceholder', 'Nom de la collection')}
@@ -344,6 +345,7 @@ export default function CollectionsScreen() {
             </button>
             <button
               onClick={submitCreate}
+              aria-label={t('collections.create', 'Créer la collection')}
               className="flex h-11 w-11 items-center justify-center rounded-full bg-primary text-on-primary"
             >
               <DuoIcon icon={Plus} size={20} />

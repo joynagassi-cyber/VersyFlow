@@ -328,7 +328,7 @@ ion-content::part(background) {
     color: var(--color-primary); margin-bottom: 14px;
   }
   .mem-label {
-    display: block; font-size: 10px; font-weight: 800;
+    display: block; font-size: 12px; font-weight: 800;
     letter-spacing: 0.14em; text-transform: uppercase;
     color: var(--color-text-muted); margin-bottom: 8px;
   }
@@ -376,11 +376,12 @@ ion-content::part(background) {
   }
   .mem-block.current {
     background: var(--muted, var(--color-surface-tint)); color: transparent;
-    cursor: pointer; user-select: none; animation: mem-pulse 2.4s ease-in-out infinite;
+    /* I04 : trois pulsations d'invite, puis arrêt — plus de boucle infinie. */
+    cursor: pointer; user-select: none; animation: mem-pulse 2.4s ease-in-out 3;
   }
   .mem-block.current .mem-hint {
     display: inline-flex; align-items: center; gap: 6px;
-    color: var(--color-text-muted); font-size: 10px; font-weight: 800;
+    color: var(--color-text-muted); font-size: 12px; font-weight: 800;
     text-transform: uppercase; letter-spacing: 0.08em; margin-top: 6px;
   }
   .mem-block.locked {
@@ -408,11 +409,11 @@ ion-content::part(background) {
   }
   .mem-success-celebration {
     position: relative; display: inline-flex; align-items: center; justify-content: center;
-    animation: mem-success-pop 480ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    animation: mem-success-pop 380ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
   }
   .mem-success-celebration .ring {
     position: absolute; inset: 0; border-radius: 50%;
-    background: var(--color-success); animation: mem-success-ring 900ms ease-out both;
+    background: var(--color-success); animation: mem-success-ring 380ms ease-out both;
   }
   .mem-success-celebration .ic {
     position: relative; z-index: 1; width: 52px; height: 52px; border-radius: 50%;
@@ -422,7 +423,9 @@ ion-content::part(background) {
   .mem-confetti { position: absolute; inset: 0; overflow: hidden; pointer-events: none; border-radius: inherit; }
   .mem-confetti span {
     position: absolute; top: 8%; width: 6px; height: 10px; border-radius: 2px;
-    animation: mem-confetti-fall 1200ms ease-in both;
+    /* I04 : 800 ms justifiés — la chute des confettis signale la fin d'une
+       série de réussite ; animation jouée une fois, jamais en boucle. */
+    animation: mem-confetti-fall 800ms ease-in both;
   }
 
   /* Flashcard — flip 3D (fonctionnel) */
@@ -435,7 +438,9 @@ ion-content::part(background) {
   }
   .mem-flashcard-inner {
     position: relative; min-height: inherit;
-    transform-style: preserve-3d; transition: transform 600ms ease;
+    /* Retournement de carte : 450 ms justifiés, le mouvement porte le sens
+       (on change de face) ; supprimé sous `prefers-reduced-motion`. */
+    transform-style: preserve-3d; transition: transform 450ms ease;
   }
   .mem-flashcard-inner.is-flipped { transform: rotateY(180deg); }
   .mem-flashcard-face {
@@ -455,12 +460,12 @@ ion-content::part(background) {
   .mem-flashcard-corner {
     position: absolute; top: 14px; left: 16px; padding: 5px 11px; border-radius: 8px;
     background: var(--muted, var(--color-surface-tint));
-    font-size: 11px; font-weight: 700; color: var(--color-primary);
+    font-size: 12px; font-weight: 700; color: var(--color-primary);
   }
   .mem-flashcard-counter {
     position: absolute; top: 14px; right: 52px; padding: 4px 9px; border-radius: 8px;
     background: var(--muted, var(--color-surface-tint));
-    font-size: 10px; font-weight: 800; color: var(--color-text-muted);
+    font-size: 12px; font-weight: 800; color: var(--color-text-muted);
   }
   .mem-flashcard-zoom {
     position: absolute; bottom: 14px; right: 14px; width: 36px; height: 36px;
@@ -477,7 +482,7 @@ ion-content::part(background) {
     background: var(--muted, var(--color-surface-tint));
   }
   .mem-diff-col .col-label {
-    display: block; font-size: 10px; font-weight: 800; letter-spacing: 0.08em;
+    display: block; font-size: 12px; font-weight: 800; letter-spacing: 0.08em;
     text-transform: uppercase; color: var(--color-text-muted); margin-bottom: 6px;
   }
   .mem-diff-col.original .verse {
@@ -547,7 +552,7 @@ ion-content::part(background) {
     outline: 2px solid var(--color-warning); outline-offset: 1px;
   }
   .mem-switcher-pill button .badge {
-    background: var(--color-warning); color: #fff; font-size: 8px; font-weight: 800;
+    background: var(--color-warning); color: var(--color-primary-foreground, #fff); font-size: 12px; font-weight: 800;
     padding: 1px 5px; border-radius: 4px; letter-spacing: 0.04em;
   }
 
@@ -781,7 +786,10 @@ body {
   --rail-collapsed: 72px;
   --rail: 0px;
   --shell-header: 56px;
-  --reading-width: 720px;
+  /* Mesure de lecture (règle C04) : 45 à 80 caractères par ligne, jamais la
+     largeur de l'écran. 70 `ch` plafonne la ligne autour de 78–80 caractères
+     avec le corps de texte actuel ; 720 px reste le plafond sur grand écran. */
+  --reading-width: min(720px, 70ch);
   --reading-wide: 1100px;
 }
 
@@ -831,6 +839,126 @@ body {
   border: 0;
 }
 
+/* ==================================================================
+ * Playbook UX/UI — règles transversales appliquées ici, une seule fois.
+ * ================================================================== */
+
+/* E04 · Squelette de chargement : réserve la place du contenu, pas de saut.
+   Espacements multiples de 4 (règle « 8-point »), couleurs par jetons. */
+.screen-skeleton {
+  padding: 24px 16px 96px;
+}
+.skeleton-bar,
+.skeleton-card {
+  border-radius: var(--radius-medium, 12px);
+  background: color-mix(in srgb, var(--color-text-primary) 8%, transparent);
+}
+.skeleton-bar {
+  height: 12px;
+}
+.skeleton-card {
+  height: 104px;
+  padding: 16px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+}
+.skeleton-card .skeleton-bar {
+  background: color-mix(in srgb, var(--color-text-primary) 10%, transparent);
+}
+/* Pulsation douce, deux cycles, jamais en boucle infinie (règle I04). */
+.skeleton-bar {
+  animation: skeleton-fade 1.4s ease-in-out 2;
+}
+@keyframes skeleton-fade {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.55; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .skeleton-bar { animation: none; }
+}
+
+/* H01 · Lien d'évitement : invisible au repos, visible dès le premier Tab. */
+.skip-link {
+  position: fixed;
+  inset-block-start: 8px;
+  inset-inline-start: 8px;
+  z-index: 1000;
+  padding: 12px 16px;
+  border-radius: var(--radius-medium, 12px);
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  border: 2px solid var(--color-primary);
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.2;
+  transform: translateY(-200%);
+  transition: transform 140ms ease;
+}
+.skip-link:focus-visible {
+  transform: translateY(0);
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* H04 · La zone principale reçoit le focus après navigation : voir le focus,
+   sans dessiner un cadre qui ferait croire à un bouton. */
+#main-content:focus {
+  outline: none;
+}
+#main-content:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: -2px;
+}
+
+/* D01–D03 · Cible tactile minimale.
+   Web : 24 × 24 px minimum (AA), 44 × 44 conseillé pour un doigt.
+   Android : 48 × 48 dp — `pointer: coarse` couvre les deux.
+   Les commandes déjà plus grandes ne bougent pas : `min-height/min-width`,
+   jamais une hauteur imposée. */
+:where(button, [role='button'], [role='tab'], [role='menuitem'], summary) {
+  min-height: 24px;
+  min-width: 24px;
+}
+@media (pointer: coarse) {
+  :where(button, [role='button'], [role='tab'], [role='menuitem'], summary) {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  /* Android vise 48 dp ; la classe vient de Capacitor, pas d'un test de
+     user-agent côté web. */
+  html[data-platform='android'] :where(button, [role='button'], [role='tab']) {
+    min-height: 48px;
+    min-width: 48px;
+  }
+}
+
+/* I03 + I04 · Mouvement réduit : plus aucune animation, y compris les
+   animations infinies (pouls de mémorisation, confettis de réussite).
+   Ciblé par nom de classe, sans `!important` empilé. */
+@media (prefers-reduced-motion: reduce) {
+  .app-main,
+  .desktop-rail,
+  .mem-pulse,
+  .mem-success-pop,
+  .mem-success-ring,
+  .mem-confetti,
+  .home-action-card,
+  .explore-semantic,
+  .settings-data-card,
+  .settings-tabs button,
+  .appearance-toggle span {
+    animation: none;
+    transition: none;
+  }
+  .home-action-card:hover,
+  .explore-semantic:hover,
+  .settings-data-card:hover {
+    transform: none;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+}
 @media (prefers-reduced-motion: reduce) {
   .app-main,
   .desktop-rail {
@@ -1205,7 +1333,7 @@ html[data-bg='image'][data-contrast='high'] :is(.g1,.g2,.g3) { background: var(-
 .home-ring-track { stroke: var(--bd); }
 .home-ring-progress { stroke: var(--acc); stroke-linecap: round; }
 .home-week { display: flex; gap: 6px; flex-wrap: wrap; }
-.home-week span { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; color: var(--mut); background: color-mix(in srgb,var(--tx) 8%,transparent); font-size: 11px; }
+.home-week span { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; color: var(--mut); background: color-mix(in srgb,var(--tx) 8%,transparent); font-size: 12px; }
 .home-week [data-active='true'] { color: var(--acc-text); background: color-mix(in srgb,var(--acc) 18%,transparent); }
 
 .g1,.g2,.g3 { transition: background 200ms; }
@@ -1474,7 +1602,7 @@ html[data-fixed-accent] .desktop-rail button.bg-primary .solar { color: var(--pr
 .profile-hero-text { min-width: 0; }
 .profile-eyebrow { color: var(--mut); font-size: 13px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
 .profile-name-row { display: flex; align-items: center; gap: 16px; }
-.profile-name-row h1,.profile-name-input { color: var(--tx); font: 400 clamp(42px,7vw,84px)/1.05 Georgia,serif; overflow-wrap: anywhere; }
+.profile-name-row .profile-name,.profile-name-input { color: var(--tx); font: 400 clamp(42px,7vw,84px)/1.05 Georgia,serif; overflow-wrap: anywhere; }
 .profile-name-input { max-width: 100%; background: var(--gc); border: 1px solid var(--bd); border-radius: 12px; }
 .profile-name-edit { display: grid; place-items: center; flex: none; width: 40px; height: 40px; border-radius: 50%; color: var(--tx); background: color-mix(in srgb,var(--tx) 10%,transparent); }
 .profile-slogan { margin-top: 12px; color: var(--mut); font-size: 15px; }

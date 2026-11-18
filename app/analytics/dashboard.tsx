@@ -121,7 +121,7 @@ export default function AnalyticsDashboardScreen() {
                       backgroundColor: barColor(p.retention),
                     }}
                   />
-                  <span className="text-[10px] text-text-muted">
+                  <span className="text-2xs text-text-muted">
                     {new Date(p.date).getDate()}
                   </span>
                 </div>

@@ -67,7 +67,7 @@ export function BottomTabs() {
               {active && <span className="h-1 w-1 rounded-full bg-primary" />}
               <span
                 className={cn(
-                  'max-w-[72px] truncate text-[11px] font-semibold transition-colors',
+                  'max-w-[72px] truncate text-2xs font-semibold transition-colors',
                   active ? 'text-primary' : 'text-text-muted',
                 )}
               >

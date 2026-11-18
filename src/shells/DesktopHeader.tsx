@@ -114,7 +114,7 @@ export function DesktopHeader() {
               <span className="hidden xl:inline">
                 {t('shell.searchPlaceholder', 'Rechercher un verset, un concept…')}
               </span>
-              <kbd className="hidden rounded border border-border px-1.5 py-0.5 text-[10px] font-semibold xl:inline">
+              <kbd className="hidden rounded border border-border px-1.5 py-0.5 text-2xs font-semibold xl:inline">
                 ⌘K
               </kbd>
             </>

@@ -57,7 +57,7 @@ export default function WelcomeScreen() {
         <p className="border-t border-[var(--color-border)] pt-4 font-serif text-[17px] italic leading-relaxed text-text-primary">
           « Ta parole est une lampe à mes pieds, et une lumière sur mon sentier. »
         </p>
-        <p className="mt-2 text-[11px] font-bold uppercase tracking-[0.08em] text-primary">
+        <p className="mt-2 text-2xs font-bold uppercase tracking-[0.08em] text-primary">
           Psaumes 119:105 · LSG
         </p>
       </div>

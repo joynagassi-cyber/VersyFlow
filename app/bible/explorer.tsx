@@ -153,6 +153,8 @@ export default function BibleExplorerScreen() {
         <div className="relative mb-4">
           <DuoIcon icon={Search} size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-muted" />
           <Input
+            type="search"
+            aria-label={t('bible.search', 'Rechercher un livre...')}
             placeholder={t('bible.search', 'Rechercher un livre...')}
             value={query}
             onChange={(e) => setQuery(e.target.value)}

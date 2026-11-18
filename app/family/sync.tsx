@@ -114,7 +114,7 @@ export default function FamilySyncScreen() {
                 </p>
               </div>
               <span
-                className={`rounded-full px-2 py-1 text-[11px] font-bold ${
+                className={`rounded-full px-2 py-1 text-2xs font-bold ${
                   healthy ? 'bg-success-light text-success' : 'bg-warning-light text-warning'
                 }`}
               >

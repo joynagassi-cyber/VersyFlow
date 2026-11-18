@@ -43,9 +43,10 @@ export default function ProfileSelectionScreen() {
     <FullScreenPage title={t('profile.select', 'Profil')} showBack>
       <div className="screen-column space-y-4">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-text-primary">
+          {/* A01 : h1 = « Profil » (FullScreenPage) ; ceci est la question d'écran. */}
+          <h2 className="text-2xl font-bold text-text-primary">
             {t('profile.who', "Qui apprend aujourd'hui ?")}
-          </h1>
+          </h2>
           <p className="mt-1 text-sm text-text-muted">
             {t('profile.selectHint', 'Choisis ton profil pour continuer')}
           </p>
@@ -91,6 +92,7 @@ export default function ProfileSelectionScreen() {
           <div className="space-y-3 rounded-2xl bg-surface p-4 shadow-sm">
             <Input
               value={newName}
+              aria-label={t('profile.namePlaceholder', 'Ex: Sarah, David...')}
               onChange={(e) => setNewName(e.target.value)}
               placeholder={t('profile.namePlaceholder', 'Ex: Sarah, David...')}
               maxLength={30}

@@ -276,7 +276,7 @@ export function HamburgerMenu() {
                 >
                   <DuoIcon icon={section.icon} size={22} strokeWidth={2} className="text-primary" />
                   <span className="truncate">{t(section.labelKey, section.label)}</span>
-                  <span className="ms-auto rounded-full bg-surface px-2 py-0.5 text-[11px] font-bold text-text-muted">
+                  <span className="ms-auto rounded-full bg-surface px-2 py-0.5 text-2xs font-bold text-text-muted">
                     {section.items.length}
                   </span>
                   <DuoIcon

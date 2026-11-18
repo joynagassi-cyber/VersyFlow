@@ -59,10 +59,10 @@ export function StatTile({
   return (
     <div className={cn('rounded-xl bg-surface-tint p-3 text-center', className)}>
       <p className="text-xl font-bold tabular-nums text-text-primary">{value}</p>
-      <p className="mt-0.5 text-[11px] font-semibold uppercase tracking-wide text-text-muted">
+      <p className="mt-0.5 text-2xs font-semibold uppercase tracking-wide text-text-muted">
         {label}
       </p>
-      {hint && <p className="mt-1 text-[11px] text-text-muted">{hint}</p>}
+      {hint && <p className="mt-1 text-2xs text-text-muted">{hint}</p>}
     </div>
   );
 }

@@ -76,7 +76,8 @@ export default function CommunityView() {
             <DuoIcon icon={Map} size={20} />
           </span>
           <div>
-            <h1 className="text-xl font-bold text-text-primary">{community.name}</h1>
+            {/* A01 : le h1 est celui de FullScreenPage ; la carte porte un h2. */}
+            <h2 className="text-xl font-bold text-text-primary">{community.name}</h2>
             <p className="text-xs text-text-muted">
               {community.source}
               {typeof community.coherence === 'number' ? ` · ${Math.round(community.coherence * 100)}%` : ''}
