@@ -95,7 +95,7 @@ export function QuickDock() {
                 className="rounded-full p-1.5 text-text-muted active:bg-surface-tint"
                 aria-label={t('common.close', 'Fermer')}
               >
-                <DuoIcon icon={X} size={20} />
+                <DuoIcon icon={X} size={22} />
               </button>
             </div>
 
@@ -110,7 +110,7 @@ export function QuickDock() {
                     className="flex flex-col items-center rounded-2xl bg-surface-tint/60 p-3 text-center transition active:scale-[0.97]"
                   >
                     <span className="icon-chip mb-2 flex h-11 w-11 items-center justify-center rounded-full">
-                      <DuoIcon icon={Icon} size={20} />
+                      <DuoIcon icon={Icon} size={22} strokeWidth={1.9} />
                     </span>
                     <span className="text-[11px] font-semibold text-text-primary">
                       {t(a.key, DOCK_LABELS[a.key.split('.').pop() ?? ''])}

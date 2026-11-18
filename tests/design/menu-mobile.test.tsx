@@ -77,6 +77,29 @@ describe('menu mobile — structure', () => {
   });
 });
 
+describe('menu mobile — lisibilité des icônes', () => {
+  // Les icônes Solar portent leur taille dans `style.width` (prop `size`),
+  // pas dans un attribut `width`.
+  const iconSize = (svg: Element): number => {
+    const raw = (svg as SVGElement).style.width || svg.getAttribute('width') || '';
+    return Number.parseFloat(raw);
+  };
+
+  it('aucune icône du menu ne descend sous 18 px', () => {
+    const { container } = renderMenu();
+    const sizes = Array.from(container.querySelectorAll('svg')).map(iconSize).filter(Number.isFinite);
+    expect(sizes.length).toBeGreaterThan(5);
+    expect(Math.min(...sizes)).toBeGreaterThanOrEqual(18);
+  });
+
+  it('les pictogrammes de section font 22 px', () => {
+    const { container } = renderMenu();
+    const sectionIcon = container.querySelector('[id^="menu-section-read-button"] svg');
+    expect(sectionIcon).not.toBeNull();
+    expect(iconSize(sectionIcon!)).toBe(22);
+  });
+});
+
 describe('menu mobile — en-tête fixe', () => {
   it('le profil, le nom et les réglages sont hors de la zone défilante', () => {
     renderMenu();

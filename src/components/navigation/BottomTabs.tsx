@@ -59,8 +59,8 @@ export function BottomTabs() {
               >
                 <DuoIcon
                   icon={Icon}
-                  size={23}
-                  strokeWidth={1.75}
+                  size={25}
+                  strokeWidth={2}
                   color={active ? 'var(--acc-text)' : 'var(--mut)'}
                 />
               </span>
