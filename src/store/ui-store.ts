@@ -12,6 +12,14 @@
 
 import { create } from 'zustand';
 import { MmkvStorage } from '@/infrastructure/storage';
+import {
+  DEFAULT_BAR,
+  disableEntry,
+  enableEntry,
+  moveEntry,
+  moveEntryTo,
+  normalizeBar,
+} from '@/domains/navigation/bottom-bar';
 
 export type TabId = 'home' | 'explore' | 'progress' | 'settings';
 
@@ -65,6 +73,16 @@ export const ALL_TABS: TabDef[] = [
 const DEFAULT_TABS: TabId[] = ['home', 'explore', 'progress', 'settings'];
 
 interface UiState {
+  /**
+   * Contenu ordonné de la barre d'onglets : pages ET fonctions épinglables.
+   * Source unique — `visibleTabs` en est dérivé à chaque mutation, pour que le
+   * rail de bureau (qui ne montre que des pages) ne puisse pas diverger.
+   */
+  barItems: string[];
+  /** Libellés sous les icônes de la barre (défaut : oui). */
+  barLabels: boolean;
+  /** Barre compacte : icônes et marges réduites. */
+  barCompact: boolean;
   visibleTabs: TabId[];
   /** Paths of the hamburger "Navigation" items that are visible. */
   visibleMenuPaths: string[];
@@ -74,6 +92,14 @@ interface UiState {
   setRailMode: (mode: RailMode) => void;
   toggleRail: () => void;
   setVisibleTab: (id: TabId, visible: boolean) => void;
+  setBarItems: (ids: string[]) => void;
+  enableBarItem: (id: string) => void;
+  disableBarItem: (id: string) => void;
+  moveBarItem: (id: string, delta: number) => void;
+  moveBarItemTo: (id: string, index: number) => void;
+  setBarLabels: (on: boolean) => void;
+  setBarCompact: (on: boolean) => void;
+  resetBar: () => void;
   setAllTabs: (ids: TabId[]) => void;
   setMenuPathVisible: (path: string, visible: boolean) => void;
   toggleMenuPath: (path: string) => void;
@@ -95,7 +121,26 @@ function normalizeMenuPaths(paths: string[]): string[] {
   return DEFAULT_MENU_PATHS.filter((p) => clean.includes(p));
 }
 
+/** Les pages de la barre, pour le rail de bureau et les anciens appelants. */
+function tabsOf(barItems: string[]): TabId[] {
+  return barItems.filter((id): id is TabId => DEFAULT_TABS.includes(id as TabId));
+}
+
+/**
+ * Écrit la barre ET sa conséquence : `visibleTabs` est recalculé à partir des
+ * entrées de type page. Un seul point d'écriture, donc pas de désynchronisation
+ * possible entre la barre et le rail.
+ */
+function commitBar(next: string[]): void {
+  const barItems = normalizeBar(next);
+  useUiStore.setState({ barItems, visibleTabs: normalize(tabsOf(barItems)) });
+  void uiStorePersist.save();
+}
+
 export const useUiStore = create<UiState>(() => ({
+  barItems: [...DEFAULT_BAR],
+  barLabels: true,
+  barCompact: false,
   visibleTabs: DEFAULT_TABS,
   visibleMenuPaths: DEFAULT_MENU_PATHS,
   menuOpen: false,
@@ -119,17 +164,49 @@ export const useUiStore = create<UiState>(() => ({
   },
 
   setVisibleTab(id, visible) {
-    const cur = useUiStore.getState().visibleTabs;
-    const next = visible
-      ? (cur.includes(id) ? cur : [...cur, id])
-      : cur.filter((t) => t !== id);
-    useUiStore.setState({ visibleTabs: normalize(next) });
-    void uiStorePersist.save();
+    const cur = useUiStore.getState().barItems;
+    const next = visible ? enableEntry(cur, id) : disableEntry(cur, id);
+    commitBar(next);
   },
 
   setAllTabs(ids) {
-    useUiStore.setState({ visibleTabs: normalize(ids) });
+    // Remplace les pages : les fonctions épinglées restent, les verrouillées
+    // sont réinsérées par `normalizeBar`.
+    commitBar(ids);
+  },
+
+  setBarItems(ids) {
+    commitBar(ids);
+  },
+
+  enableBarItem(id) {
+    commitBar(enableEntry(useUiStore.getState().barItems, id));
+  },
+
+  disableBarItem(id) {
+    commitBar(disableEntry(useUiStore.getState().barItems, id));
+  },
+
+  moveBarItem(id, delta) {
+    commitBar(moveEntry(useUiStore.getState().barItems, id, delta));
+  },
+
+  moveBarItemTo(id, index) {
+    commitBar(moveEntryTo(useUiStore.getState().barItems, id, index));
+  },
+
+  setBarLabels(on) {
+    useUiStore.setState({ barLabels: on });
     void uiStorePersist.save();
+  },
+
+  setBarCompact(on) {
+    useUiStore.setState({ barCompact: on });
+    void uiStorePersist.save();
+  },
+
+  resetBar() {
+    commitBar([...DEFAULT_BAR]);
   },
 
   setMenuPathVisible(path, visible) {
@@ -149,6 +226,9 @@ export const useUiStore = create<UiState>(() => ({
 
   reset() {
     useUiStore.setState({
+      barItems: [...DEFAULT_BAR],
+      barLabels: true,
+      barCompact: false,
       visibleTabs: DEFAULT_TABS,
       visibleMenuPaths: DEFAULT_MENU_PATHS,
       railMode: 'expanded',
@@ -164,15 +244,26 @@ export const uiStorePersist = {
       if (!raw) return;
       const parsed = JSON.parse(raw) as {
         visibleTabs?: TabId[];
+        barItems?: string[];
+        barLabels?: boolean;
+        barCompact?: boolean;
         menuVisible?: string[];
         railMode?: RailMode;
       };
       if (parsed.railMode === 'expanded' || parsed.railMode === 'collapsed') {
         useUiStore.setState({ railMode: parsed.railMode });
       }
-      if (Array.isArray(parsed.visibleTabs) && parsed.visibleTabs.length) {
-        useUiStore.setState({ visibleTabs: normalize(parsed.visibleTabs) });
+      if (Array.isArray(parsed.barItems) && parsed.barItems.length) {
+        const barItems = normalizeBar(parsed.barItems);
+        useUiStore.setState({ barItems, visibleTabs: normalize(tabsOf(barItems)) });
+      } else if (Array.isArray(parsed.visibleTabs) && parsed.visibleTabs.length) {
+        // Migration : anciennes versions = quatre pages, sans fonctions.
+        const legacy = normalize(parsed.visibleTabs);
+        useUiStore.setState({ visibleTabs: legacy });
+        commitBar([...legacy]);
       }
+      if (typeof parsed.barLabels === 'boolean') useUiStore.setState({ barLabels: parsed.barLabels });
+      if (typeof parsed.barCompact === 'boolean') useUiStore.setState({ barCompact: parsed.barCompact });
       if (Array.isArray(parsed.menuVisible) && parsed.menuVisible.length) {
         useUiStore.setState({ visibleMenuPaths: normalizeMenuPaths(parsed.menuVisible) });
       }
@@ -181,10 +272,10 @@ export const uiStorePersist = {
     }
   },
   save: async () => {
-    const { visibleTabs, visibleMenuPaths, railMode } = useUiStore.getState();
+    const { visibleTabs, barItems, barLabels, barCompact, visibleMenuPaths, railMode } = useUiStore.getState();
     await storage.set(
       KEY,
-      JSON.stringify({ visibleTabs, menuVisible: visibleMenuPaths, railMode }),
+      JSON.stringify({ visibleTabs, barItems, barLabels, barCompact, menuVisible: visibleMenuPaths, railMode }),
     );
   },
 };

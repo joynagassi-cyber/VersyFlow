@@ -1,7 +1,7 @@
 # Audit UX/UI Playbook 2026 — application à VersyFlow
 
 Généré par `node scripts/audit-playbook.mjs`. **Ne pas éditer à la main.**
-Exécuté le 2026-11-18 13:27 (UTC).
+Exécuté le 2026-11-18 13:43 (UTC).
 
 **Bilan : 44 vérifiés · 10 partiels · 0 en échec · 23 non vérifiables ici** (77 règles).
 
@@ -18,7 +18,7 @@ Lecture : *vérifié* = une mesure reproductible dans le dépôt le confirme ; *
 | B01 | B | BLOCKING | **PASS** | Texte courant ≥ 4,5:1 sur son fond réel |  |
 | B02 | B | BLOCKING | **PASS** | Grand texte (≥ 24 px ou 19 px gras) ≥ 3:1 | tous les couples titre ≥ Infinity:1 |
 | B03 | B | BLOCKING | **PASS** | Icônes porteuses de sens, bordures et focus ≥ 3:1 | 22 contours de focus, icônes colorées par jeton |
-| B04 | B | BLOCKING | **PASS** | L'information n'est jamais portée par la couleur seule | 54 états exposés en ARIA, 132 libellés textuels |
+| B04 | B | BLOCKING | **PASS** | L'information n'est jamais portée par la couleur seule | 54 états exposés en ARIA, 136 libellés textuels |
 | B05 | B | MAJOR | **PASS** | Le mode sombre est un second jeu de jetons, pas un filtre | bloc `[data-theme="dark"]` dédié, aucun filtre inverseur |
 | B06 | B | MAJOR | **PASS** | Rien ne disparaît en contraste élevé ni en niveaux de gris | 13 règles de contraste élevé |
 | C01 | C | BLOCKING | **PASS** | Rien d'utile sous 12 px à l'échelle par défaut | plancher mesuré : 12px (échelle), aucune taille arbitraire sous 12px |
@@ -37,7 +37,7 @@ Lecture : *vérifié* = une mesure reproductible dans le dépôt le confirme ; *
 | E02 | E | BLOCKING | **PASS** | L'état vide propose une action | `EmptyState` accepte une action |
 | E03 | E | MAJOR | **PASS** | L'erreur dit quoi faire, pas seulement ce qui a échoué | 13 messages d'erreur orientés action |
 | E04 | E | MAJOR | **PASS** | Le chargement réserve la place du contenu, sans saut | squelette monté comme repli de `Suspense` (hauteurs réservées) |
-| E05 | E | MAJOR | **PASS** | Un état désactivé explique pourquoi et comment l’activer | 4 élément(s) désactivé(s) relié(s) à une explication (96 attributs disabled) |
+| E05 | E | MAJOR | **PASS** | Un état désactivé explique pourquoi et comment l’activer | 4 élément(s) désactivé(s) relié(s) à une explication (101 attributs disabled) |
 | F01 | F | BLOCKING | **PASS** | Chaque champ a un libellé visible relié au programme | tous les champs portent un nom accessible (`aria-label`, `aria-labelledby` ou `<label>` englobant) |
 | F02 | F | BLOCKING | **UNVERIFIABLE** | Le message d'erreur est sous son champ et nomme la règle | position du message non mesurable sans rendu |
 | F03 | F | BLOCKING | **PASS** | Le champ fautif porte `aria-invalid` et l’erreur est annoncée | 2 `aria-invalid`, 5 zone(s) live |

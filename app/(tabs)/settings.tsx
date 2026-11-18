@@ -56,7 +56,8 @@ import {
 } from '@/components/ui/solar-icons';
 import { cn } from '@/lib/utils';
 import { useAuthStore } from '@/store/auth-store';
-import { ALL_TABS, useUiStore } from '@/store/ui-store';
+import { useUiStore } from '@/store/ui-store';
+import { BOTTOM_BAR_MAX } from '@/domains/navigation/bottom-bar';
 import { useSettingsStore, type BibleVersionType } from '@/store/settings-store';
 import { useActiveProfile } from '@/hooks/useActiveProfile';
 import { getMemorizationService } from '@/services/memorization-service-factory';
@@ -222,8 +223,7 @@ function ParamsTab({ onOpenProfile }: { onOpenProfile: () => void }) {
   const bibleTranslation = useSettingsStore((s) => s.bibleTranslation);
   const bibleVersionType = useSettingsStore((s) => s.bibleVersionType);
   const setBibleVersionType = useSettingsStore((s) => s.setBibleVersionType);
-  const visibleTabs = useUiStore((s) => s.visibleTabs);
-  const setVisibleTab = useUiStore((s) => s.setVisibleTab);
+  const barItems = useUiStore((s) => s.barItems);
   const [languageModalOpen, setLanguageModalOpen] = useState(false);
 
   const translation = getTranslationDisplayInfo(bibleTranslation);
@@ -391,40 +391,18 @@ function ParamsTab({ onOpenProfile }: { onOpenProfile: () => void }) {
           {t('settings.navigationSection', 'Navigation & Pages')}
         </SectionLabel>
         <RowGroup>
-          {ALL_TABS.map((tabItem) => {
-            const on = visibleTabs.includes(tabItem.id);
-            const locked = tabItem.id === 'settings';
-            return (
-              <div key={tabItem.id} className="settings-row flex w-full items-center gap-3 px-4 py-3.5">
-                <span className="min-w-0 flex-1">
-                  <span className="block truncate text-[15px] text-text-primary">
-                    {t(tabItem.labelKey, tabItem.label)}
-                  </span>
-                  <span className="block truncate text-xs text-text-muted">
-                    {on ? t('settings.tabEnabled', 'Affiché dans la barre') : t('settings.tabHidden', 'Masqué')}
-                  </span>
-                </span>
-                <button
-                  type="button"
-                  onClick={() => setVisibleTab(tabItem.id, !on)}
-                  className={cn(
-                    'relative h-6 w-11 shrink-0 rounded-full transition-colors',
-                    on ? 'bg-primary' : 'bg-border',
-                  )}
-                  aria-pressed={on}
-                  aria-label={t(tabItem.labelKey, tabItem.label)}
-                  disabled={locked}
-                >
-                  <span
-                    className={cn(
-                      'absolute top-0.5 h-5 w-5 rounded-full bg-surface shadow transition-all',
-                      on ? 'start-[22px]' : 'start-0.5',
-                    )}
-                  />
-                </button>
-              </div>
-            );
-          })}
+          {/* La barre se configure dans son écran dédié : entrées épinglables,
+              ordre, libellés, densité. Un simple interrupteur ne suffisait pas. */}
+          <Row
+            icon={SlidersHorizontal}
+            label={t('settings.navigationBottomBarTitle', 'Barre d’onglets')}
+            sub={t('settings.navBarRowSub', {
+              count: barItems.length,
+              max: BOTTOM_BAR_MAX,
+              defaultValue: '{{count}} / {{max}} onglets · ordre, libellés et densité',
+            })}
+            onClick={() => navigate('/settings/navigation')}
+          />
         </RowGroup>
       </section>
 
