@@ -9,21 +9,9 @@
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { DuoIcon } from '@/components/ui/DuoIcon';
-import {
-  Home01Icon,
-  BookOpen01Icon,
-  ChartBarLineIcon,
-  Settings01Icon,
-} from '@/components/ui/solar-icons';
-import { ALL_TABS, useUiStore, type TabId } from '@/store/ui-store';
+import { TAB_ICONS } from '@/components/navigation/nav-icons';
+import { ALL_TABS, useUiStore } from '@/store/ui-store';
 import { cn } from '@/lib/utils';
-
-const ICONS: Record<TabId, typeof Home01Icon> = {
-  home: Home01Icon,
-  explore: BookOpen01Icon,
-  progress: ChartBarLineIcon,
-  settings: Settings01Icon,
-};
 
 export function BottomTabs() {
   const { t } = useTranslation();
@@ -40,7 +28,7 @@ export function BottomTabs() {
     >
       <div className="mx-auto flex max-w-md items-stretch justify-between px-3 py-2">
         {tabs.map((tab) => {
-          const Icon = ICONS[tab.id];
+          const Icon = TAB_ICONS[tab.id];
           const active =
             location.pathname === tab.path ||
             location.pathname.startsWith(`${tab.path}/`);

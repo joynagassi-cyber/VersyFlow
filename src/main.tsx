@@ -179,6 +179,7 @@ import { initializeSettingsStore, useSettingsStore } from '@/store/settings-stor
 import { initializeAppearanceStore, useAppearanceStore } from '@/store/appearance-store';
 import { initializeUiStore } from '@/store/ui-store';
 import { ThemeManager } from '@/components/ThemeManager';
+import { DailyVerseNotifier } from '@/components/DailyVerseNotifier';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import { ToastProvider } from '@/components/ui/toast';
 import { useAuthStore } from '@/store/auth-store';
@@ -416,6 +417,7 @@ function App() {
     <StrictMode>
       <DirSync />
       <ThemeManager />
+      <DailyVerseNotifier />
       <SyncBridges />
       <BrowserRouter>
         {/* CORRECTIF 2026-10-30 : DevRouteRecorder appelle useLocation().

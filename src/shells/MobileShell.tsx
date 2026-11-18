@@ -5,7 +5,7 @@ import { BackgroundPanel } from '@/components/ui/BackgroundPanel';
  *
  * Principes préservés :
  *  - une seule barre d'onglets basse, compacte, atteignable au pouce ;
- *  - bouton de menu (tiroir) et FAB « nouvelle session » à portée de pouce ;
+ *  - bouton de menu (tiroir) ;
  *  - `pb-[env(safe-area-inset-bottom)]` sur la barre basse : pas de commande
  *    sous l'indicateur d'accueil iOS ;
  *  - le clavier : Ionic (`IonPage`) gère le redimensionnement, la zone de
@@ -14,11 +14,11 @@ import { BackgroundPanel } from '@/components/ui/BackgroundPanel';
  *  - aucune barre latérale de bureau n'est montée ici.
  */
 
-import { IonFab, IonFabButton, IonPage } from '@ionic/react';
+import { IonPage } from '@ionic/react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { DuoIcon } from '@/components/ui/DuoIcon';
-import { Menu01Icon, PlusSignIcon } from '@/components/ui/solar-icons';
+import { Menu01Icon } from '@/components/ui/solar-icons';
 import { BottomTabs } from '@/components/navigation/BottomTabs';
 import { QuickDock } from '@/components/navigation/QuickDock';
 import { HamburgerMenu } from '@/components/navigation/HamburgerMenu';
@@ -70,14 +70,6 @@ export function MobileShell() {
             <Outlet />
           </main>
 
-          <IonFab horizontal="end" vertical="bottom" style={{ marginBottom: '116px' }}>
-            <IonFabButton
-              onClick={() => navigate('/memorization/session')}
-              aria-label={t('shell.newSession', 'Nouvelle session de mémorisation')}
-            >
-              <DuoIcon icon={PlusSignIcon} size={24} />
-            </IonFabButton>
-          </IonFab>
 
           <QuickDock />
           <BottomTabs />

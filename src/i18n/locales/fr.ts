@@ -137,6 +137,12 @@ nav: {
     autoFlipIn: 'Retour auto dans {{seconds}}s',
   },
   notifications: {
+    dailyVerseTitle: 'Verset du jour',
+    dailyVerseBody: 'Recevez chaque matin le verset du jour, même hors ligne.',
+    dailyVerseEnable: 'Recevoir le verset du jour',
+    dailyVerseEnabled: 'Verset du jour activé (8 h)',
+    dailyVerseNativeOnly: 'Les notifications système demandent l’application installée ; le verset reste disponible ici.',
+    dailyVerseOpen: 'Lire la suite',
     markAllRead: 'Tout lire',
     allTab: 'Toutes',
     unreadTab: 'Non lues',

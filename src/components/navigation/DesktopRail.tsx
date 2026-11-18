@@ -19,27 +19,17 @@ import { useTranslation } from 'react-i18next';
 import type { Icon as IconSvgElement } from '@solar-icons/react/lib/types';
 import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
-  Home01Icon,
-  BookOpen01Icon,
-  ChartBarLineIcon,
-  Settings01Icon,
-  PlusSignIcon,
+  MENU_ICONS as SHARED_MENU_ICONS,
+  TAB_ICONS,
+  iconFor,
+} from '@/components/navigation/nav-icons';
+import {
   SidebarLeft01Icon,
-  Cards01Icon,
-  Clock01Icon,
-  SparklesIcon,
-  Analytics01Icon,
+  PlusSignIcon,
   Layers01Icon,
-  Medal01Icon,
-  Search01Icon,
-  DashboardSquare01Icon,
-  Notification01Icon,
-  HistoryIcon,
-  GitCompareIcon,
-  UserGroupIcon,
   UserCircleIcon,
 } from '@/components/ui/solar-icons';
-import { ALL_MENU_ITEMS, ALL_TABS, useUiStore, type TabId } from '@/store/ui-store';
+import { ALL_MENU_ITEMS, ALL_TABS, useUiStore } from '@/store/ui-store';
 import { useIsDesktop } from '@/hooks/useIsDesktop';
 import { Logo } from '@/components/brand/Logo';
 import { cn } from '@/lib/utils';
@@ -47,29 +37,6 @@ import { cn } from '@/lib/utils';
 /** Type des icônes Solar : celui de la bibliothèque, pas une approximation. */
 type IconType = IconSvgElement;
 
-const TAB_ICONS: Record<TabId, IconType> = {
-  home: Home01Icon,
-  explore: BookOpen01Icon,
-  progress: ChartBarLineIcon,
-  settings: Settings01Icon,
-};
-
-/** Une icône par destination — aucun doublon de signe. */
-const MENU_ICONS: Record<string, IconType> = {
-  '/bible/explorer': BookOpen01Icon,
-  '/memorization/session': Cards01Icon,
-  '/review/queue': Clock01Icon,
-  '/semantic': SparklesIcon,
-  '/analytics/dashboard': Analytics01Icon,
-  '/collections': Layers01Icon,
-  '/achievements': Medal01Icon,
-  '/search': Search01Icon,
-  '/mastery': DashboardSquare01Icon,
-  '/notifications': Notification01Icon,
-  '/review/history': HistoryIcon,
-  '/comparison/translation': GitCompareIcon,
-  '/family/home': UserGroupIcon,
-};
 
 function isActive(pathname: string, path: string): boolean {
   return pathname === path || pathname.startsWith(`${path}/`);
@@ -192,7 +159,7 @@ export function DesktopRail() {
         <div className="flex flex-col gap-0.5">
           {menuItems.map((item) => {
             const active = isActive(location.pathname, item.path);
-            const Icon = MENU_ICONS[item.path] ?? Layers01Icon;
+            const Icon = iconFor(item.path, Layers01Icon);
             return (
               <button
                 key={item.path}

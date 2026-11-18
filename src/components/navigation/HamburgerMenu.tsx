@@ -11,13 +11,13 @@ import {
   LogOutIcon,
   Medal01Icon,
   Search01Icon,
-  Settings02Icon,
   StarIcon,
   TrophyIcon,
   UserGroupIcon,
   UserIcon,
 } from '@/components/ui/solar-icons';
 import { Logo } from '@/components/brand/Logo';
+import { SETTINGS_ICON, iconFor } from '@/components/navigation/nav-icons';
 import { useAuthStore } from '@/store/auth-store';
 import { useUiStore } from '@/store/ui-store';
 import { cn } from '@/lib/utils';
@@ -54,13 +54,18 @@ interface MenuSection {
   items: MenuItem[];
 }
 
+/**
+ * L'icône ne se décide plus ici : `iconFor` lit la table partagée
+ * (`nav-icons.ts`), la même que le rail de bureau et la barre d'onglets.
+ * L'argument `icon` ne sert plus que de repli pour une route inconnue.
+ */
 const item = (
   path: string,
   labelKey: string,
   label: string,
   icon: Icon,
   gated = true,
-): MenuItem => ({ path, labelKey, label, icon, gated });
+): MenuItem => ({ path, labelKey, label, icon: iconFor(path, icon), gated });
 
 const MENU_SECTIONS: MenuSection[] = [
   {
@@ -94,7 +99,7 @@ const MENU_SECTIONS: MenuSection[] = [
       item('/review/queue', 'nav.review', 'Révisions', ChartLineData01Icon),
       item('/review/history', 'nav.history', 'Historique des révisions', ChartLineData01Icon),
       item('/analytics/dashboard', 'nav.analytics', 'Analytique', ChartLineData01Icon),
-      item('/notifications', 'nav.notifications', 'Notifications', Settings02Icon),
+      item('/notifications', 'nav.notifications', 'Notifications', SETTINGS_ICON),
     ],
   },
   {
@@ -118,12 +123,12 @@ const MENU_SECTIONS: MenuSection[] = [
     id: 'appearance',
     labelKey: 'nav.sectionAppearance',
     label: 'Apparence',
-    icon: Settings02Icon,
+    icon: SETTINGS_ICON,
     // Ces entrées ne dépendent pas des interrupteurs de navigation : les
     // réglages doivent rester atteignables même quand tout le reste est masqué.
     items: [
       item('/profile', 'nav.profile', 'Profil', UserIcon, false),
-      item('/settings/appearance', 'nav.theme', 'Thème et apparence', Settings02Icon, false),
+      item('/settings/appearance', 'nav.theme', 'Thème et apparence', SETTINGS_ICON, false),
       item('/settings/theme-picker', 'nav.themeImage', "Thèmes d'image", StarIcon, false),
     ],
   },
@@ -237,7 +242,7 @@ export function HamburgerMenu() {
               aria-label={t('nav.settings', 'Réglages')}
               title={t('nav.settings', 'Réglages')}
             >
-              <DuoIcon icon={Settings02Icon} size={24} />
+              <DuoIcon icon={SETTINGS_ICON} size={24} />
             </button>
             <button
               type="button"

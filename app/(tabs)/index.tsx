@@ -31,15 +31,7 @@ import { getMemorizationService } from '@/services/memorization-service-factory'
 import type { MemorizationRecord } from '@/domains/memorization/entities';
 import { useAppearanceStore } from '@/store/appearance-store';
 import { themeLandscapeUrl } from '@/theme/theme-catalog';
-
-// Fallback "verse of the day" rotation (real records preferred when present)
-const DAILY_VERSES_FALLBACK = [
-  { ref: 'Jean 3:16', text: "Car Dieu a tant aimé le monde qu'il a donné son Fils unique, afin que quiconque croit en lui ne périsse point, mais qu'il ait la vie éternelle." },
-  { ref: 'Psaumes 23:1', text: "L'Éternel est mon berger: je ne manquerai de rien." },
-  { ref: 'Philippiens 4:13', text: "Je puis tout par celui qui me fortifie." },
-  { ref: 'Romains 8:28', text: "Nous savons au contraire que toutes choses concourent au bien de ceux qui aiment Dieu." },
-  { ref: 'Ésaïe 40:31', text: "Mais ceux qui espèrent en l'Éternel renaîtront de nouvelles forces." },
-];
+import { getDailyVerse } from '@/domains/bible/daily-verse';
 
 export default function HomeScreen() {
   const navigate = useNavigate();
@@ -47,8 +39,11 @@ export default function HomeScreen() {
   const { activeProfile } = useActiveProfile();
   const families = useFamilyStore((s) => s.families);
   const activeFamilyId = useFamilyStore((s) => s.activeFamilyId);
-  const imageTheme = useAppearanceStore((s) => s.colorThemeId);
-  const dailyVisual = themeLandscapeUrl(imageTheme && imageTheme !== 'obj-miroir' ? imageTheme : 'nat-trees');
+  // Le visuel suit le VERSET, pas un paysage générique : `visual` est un thème
+  // choisi pour son sens (Psaume 23 → l'agneau, Ésaïe 40 → l'aigle). Le thème
+  // d'image de l'utilisateur reste appliqué au reste de l'app par ThemeManager.
+  const dailyVerse = getDailyVerse();
+  const dailyVisual = themeLandscapeUrl(dailyVerse.visual);
 
   const [streak, setStreak] = useState<number | null>(null);
   const [reviewsDue, setReviewsDue] = useState<number | null>(null);
@@ -93,10 +88,6 @@ export default function HomeScreen() {
     };
   }, [profileId]);
 
-  const todayVerse = DAILY_VERSES_FALLBACK[
-    Math.floor(Date.now() / 86400000) % DAILY_VERSES_FALLBACK.length
-  ];
-
   const locale = normalizeLocaleCode(i18n.resolvedLanguage || i18n.language);
   const dateLabel = new Date().toLocaleDateString(locale, {
     weekday: 'long',
@@ -127,8 +118,8 @@ export default function HomeScreen() {
         <div className="home-feature-grid">
           <article className="g3 home-verse home-daily-card" style={{ '--daily-image': `url("${dailyVisual}")` } as CSSProperties}>
             <p className="home-label">{t('home.dailyVerse', 'Verset du jour')}</p>
-            <h2>{todayVerse.ref}</h2>
-            <p className="home-verse-text">{todayVerse.text}</p>
+            <h2>{dailyVerse.reference}</h2>
+            <p className="home-verse-text">{dailyVerse.text}</p>
             <div className="home-actions">
               <button className="home-primary" onClick={() => navigate('/memorization/session')}>{t('bible.memorize', 'Mémoriser')}</button>
               <button className="home-secondary" onClick={() => navigate('/bible/explorer')}>{t('home.explore', 'Explorer la Bible')}</button>

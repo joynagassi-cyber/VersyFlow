@@ -19,6 +19,8 @@ import { StreakService } from '@/services/streak-service';
 import { ReviewQueueService } from '@/services/review-queue-service';
 import { MilestoneService } from '@/services/milestone-service';
 import { eventBus, DomainEventTypes, type DomainEvent } from '@/services/events-service';
+import { getDailyVerse } from '@/domains/bible/daily-verse';
+import { syncDailyVerseNotifications } from '@/services/daily-verse-notifier';
 
 interface Notification {
   id: string;
@@ -76,6 +78,13 @@ export default function NotificationsScreen() {
   const { t } = useTranslation();
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [filter, setFilter] = useState<'all' | 'unread'>('all');
+  const dailyVerse = getDailyVerse();
+  const [dailyVerseState, setDailyVerseState] = useState<'idle' | 'scheduled' | 'unavailable'>('idle');
+
+  const enableDailyVerseNotifications = async () => {
+    const result = await syncDailyVerseNotifications({ requestPermission: true });
+    setDailyVerseState(result.reason === 'scheduled' ? 'scheduled' : 'unavailable');
+  };
   const { activeProfile } = useActiveProfile();
   const profileId = activeProfile?.id ?? 'default';
 
@@ -216,6 +225,38 @@ export default function NotificationsScreen() {
       }
     >
       <div className="screen-column space-y-4">
+        {/* Verset du jour : la même source que la carte d'accueil
+            (`getDailyVerse`, déterministe et hors ligne). Ce bloc sert aussi
+            de point d'activation des notifications système. */}
+        <section className="rounded-2xl bg-surface p-4 shadow-sm" aria-labelledby="daily-verse-heading">
+          <p id="daily-verse-heading" className="text-2xs font-bold uppercase tracking-wide text-text-muted">
+            {t('notifications.dailyVerseTitle', 'Verset du jour')}
+          </p>
+          <h2 className="mt-1 text-base font-extrabold text-primary">{dailyVerse.reference}</h2>
+          <p className="mt-1 text-sm leading-relaxed text-text-primary">{dailyVerse.text}</p>
+          <p className="mt-2 text-xs text-text-muted">
+            {t('notifications.dailyVerseBody', 'Recevez chaque matin le verset du jour, même hors ligne.')}
+          </p>
+          <button
+            type="button"
+            onClick={() => void enableDailyVerseNotifications()}
+            className="mt-3 inline-flex min-h-11 items-center gap-2 rounded-full bg-primary px-4 text-sm font-semibold text-on-primary"
+          >
+            <DuoIcon icon={Bell} size={16} />
+            {dailyVerseState === 'scheduled'
+              ? t('notifications.dailyVerseEnabled', 'Verset du jour activé (8 h)')
+              : t('notifications.dailyVerseEnable', 'Recevoir le verset du jour')}
+          </button>
+          {dailyVerseState === 'unavailable' && (
+            <p className="mt-2 text-xs text-text-muted">
+              {t(
+                'notifications.dailyVerseNativeOnly',
+                'Les notifications système demandent l’application installée ; le verset reste disponible ici.',
+              )}
+            </p>
+          )}
+        </section>
+
         {unreadCount > 0 && (
           <span className="inline-block rounded-full bg-primary px-3 py-1 text-xs font-bold text-on-primary">
             {unreadCount} {t('notifications.unread', 'non lues')}

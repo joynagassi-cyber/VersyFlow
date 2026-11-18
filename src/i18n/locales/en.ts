@@ -136,6 +136,12 @@ nav: {
     autoFlipIn: 'Auto-flip in {{seconds}}s',
   },
   notifications: {
+    dailyVerseTitle: 'Verse of the day',
+    dailyVerseBody: 'Get the verse of the day every morning, even offline.',
+    dailyVerseEnable: 'Get the verse of the day',
+    dailyVerseEnabled: 'Verse of the day on (8 am)',
+    dailyVerseNativeOnly: 'System notifications require the installed app; the verse stays available here.',
+    dailyVerseOpen: 'Continue reading',
     markAllRead: 'Mark all read',
     allTab: 'All',
     unreadTab: 'Unread',
