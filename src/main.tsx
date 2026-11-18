@@ -62,6 +62,7 @@ const NotFound = lazy(() => import('../app/+not-found'));
 const OnboardingLayout = lazy(() => import('../app/onboarding/_layout'));
 const OnboardingWelcome = lazy(() => import('../app/onboarding/welcome'));
 const OnboardingLanguage = lazy(() => import('../app/onboarding/language-select'));
+const OnboardingPersonalization = lazy(() => import('../app/onboarding/personalization'));
 const OnboardingTranslation = lazy(() => import('../app/onboarding/translation-select'));
 const OnboardingFsrs = lazy(() => import('../app/onboarding/fsrs-introduction'));
 const OnboardingSessionConfig = lazy(() => import('../app/onboarding/session-config'));
@@ -433,6 +434,7 @@ function App() {
               <Route index element={<Navigate to="/onboarding/welcome" replace />} />
               <Route path="welcome" element={<OnboardingWelcome />} />
               <Route path="language-select" element={<OnboardingLanguage />} />
+              <Route path="personalization" element={<OnboardingPersonalization />} />
               <Route path="translation-select" element={<OnboardingTranslation />} />
               <Route path="session-config" element={<OnboardingSessionConfig />} />
               <Route path="reminder-config" element={<OnboardingReminderConfig />} />

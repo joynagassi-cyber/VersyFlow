@@ -1,132 +1,167 @@
 /**
- * FSRS Introduction — Onboarding final step
- * Visual intro of the FSRS algorithm + 3 benefits + final CTA.
+ * Onboarding — étape 7, « Prêt » : la dernière ligne droite.
+ *
+ * Deux choses, dans cet ordre :
+ *  1. ce que fait le moteur FSRS, en trois phrases (pas un cours) ;
+ *  2. la **relecture des choix** — langue, apparence, traduction, rythme,
+ *     rappels — avec la couleur réellement retenue.
+ *
+ * Ce récapitulatif est la réponse au défaut signalé : le thème choisi au début
+ * du parcours doit se voir ici, et se retrouver intact une fois entré.
  */
-
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { DuoIcon, ICON_SIZES } from '@/components/ui/DuoIcon';
-import {
-  ArrowRight01Icon as ArrowRight,
-  BrainIcon as Brain,
-  CheckmarkCircle01Icon as CheckCircle,
-  Timer01Icon as Timer,
-  FlaskConicalIcon as FlaskConical,
-} from '@/components/ui/solar-icons';
-import { Button } from '@/components/ui/button';
+import { DuoIcon } from '@/components/ui/DuoIcon';
+import { BrainIcon, CheckIcon, Clock01Icon } from '@/components/ui/solar-icons';
+import { OnboardingShell } from '@/components/onboarding/OnboardingShell';
 import { useSettingsStore } from '@/store/settings-store';
+import { useAppearanceStore } from '@/store/appearance-store';
+import { SUPPORTED_LANGUAGES } from '@/services/i18n-service';
+import { getTranslationDisplayInfo } from '@/services/bible-translation-names';
+import { DEFAULT_PRESET, findPreset } from '@/theme/preset-catalog';
 
 export default function FSRSIntroductionScreen() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const completeOnboarding = useSettingsStore((s) => s.completeOnboarding);
+  const uiLanguage = useSettingsStore((s) => s.uiLanguage);
+  const bibleTranslation = useSettingsStore((s) => s.bibleTranslation);
 
-  const handleStartMemorization = () => {
-    void completeOnboarding();
+  const presetId = useAppearanceStore((s) => s.presetId);
+  const themeMode = useAppearanceStore((s) => s.themeMode);
+  const sessionGoal = useAppearanceStore((s) => s.sessionGoal);
+  const focusMode = useAppearanceStore((s) => s.focusMode);
+  const reminderEnabled = useAppearanceStore((s) => s.reminderEnabled);
+  const reminderFrequency = useAppearanceStore((s) => s.reminderFrequency);
+  const reminderTime = useAppearanceStore((s) => s.reminderTime);
+
+  const theme = findPreset(presetId ?? DEFAULT_PRESET);
+  const language = SUPPORTED_LANGUAGES.find((l) => l.code === uiLanguage);
+  const translation = getTranslationDisplayInfo(bibleTranslation);
+  const modeLabel =
+    themeMode === 'dark'
+      ? t('onboarding.modeDark', 'Sombre')
+      : themeMode === 'light'
+        ? t('onboarding.modeLight', 'Clair')
+        : t('onboarding.modeSystem', 'Système');
+
+  const start = () => {
+    completeOnboarding();
     navigate('/tabs/home', { replace: true });
   };
 
-  const benefits = [
+  const principles = [
     {
-      icon: Timer,
-      title: t('onboarding.benefit1Title', 'Rythme optimal'),
-      desc: t('onboarding.benefit1Desc', 'Révisez chaque verset juste avant de l\'oublier, maximisant la rétention avec un effort minimal.'),
+      title: t('onboarding.fsrsPrinciple1', 'Jamais deux fois de trop'),
+      desc: t(
+        'onboarding.fsrsPrinciple1Desc',
+        'Un verset déjà solide revient rarement ; un verset fragile revient demain.',
+      ),
     },
     {
-      icon: CheckCircle,
-      title: t('onboarding.benefit2Title', 'Moins de révisions'),
-      desc: t('onboarding.benefit2Desc', 'Ne perdez pas de temps sur ce que vous savez déjà. Concentrez-vous sur ce qui nécessite votre attention.'),
+      title: t('onboarding.fsrsPrinciple2', 'Le bon intervalle, calculé'),
+      desc: t(
+        'onboarding.fsrsPrinciple2Desc',
+        'Le moteur FSRS estime votre courbe d’oubli à chaque réponse et place la révision juste avant.',
+      ),
     },
     {
-      icon: FlaskConical,
-      title: t('onboarding.benefit3Title', 'Scientifiquement prouvé'),
-      desc: t('onboarding.benefit3Desc', 'Basé sur la recherche cognitive avancée (Free Spaced Repetition Scheduler).'),
+      title: t('onboarding.fsrsPrinciple3', 'Vous gardez la main'),
+      desc: t(
+        'onboarding.fsrsPrinciple3Desc',
+        'Vous notez la difficulté ressentie ; l’algorithme ajuste, vous décidez du rythme.',
+      ),
     },
   ];
 
   return (
-    <div className="screen-column-narrow relative flex min-h-full flex-col">
-      {/* Hero */}
-      <div className="flex flex-col items-center px-6 pb-6 pt-10">
-        <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-surface-tint">
-          <DuoIcon icon={Brain} size={ICON_SIZES.illustration} className="text-primary" />
-        </div>
-        <h1 className="text-center text-lg font-semibold text-text-primary">
+    <OnboardingShell
+      stepId="ready"
+      eyebrow={t('onboarding.readyEyebrow', 'Tout est prêt')}
+      title={t('onboarding.readyTitle', 'Votre première session vous attend')}
+      subtitle={t(
+        'onboarding.readySubtitle',
+        'Voici ce que vous avez choisi. Rien n’est définitif : tout se règle ensuite depuis Réglages.',
+      )}
+      nextLabel={t('onboarding.startWithSettingsCta', 'Démarrer avec ces réglages')}
+      onNext={start}
+      footerHint={t('onboarding.readyHint', 'Le verset du jour vous sera proposé dès l’accueil.')}
+    >
+      <section aria-labelledby="onboarding-recap-title" className="rounded-3xl border border-border bg-surface p-5">
+        <h2
+          id="onboarding-recap-title"
+          className="text-2xs font-bold uppercase tracking-[0.14em] text-text-muted"
+        >
+          {t('onboarding.recapTitle', 'Votre configuration')}
+        </h2>
+        <dl className="mt-3 divide-y divide-border">
+          <div className="flex items-center justify-between gap-4 py-2.5">
+            <dt className="text-sm text-text-secondary">{t('onboarding.recapLanguage', 'Langue')}</dt>
+            <dd className="text-sm font-semibold text-text-primary">
+              {language?.name ?? uiLanguage.toUpperCase()}
+            </dd>
+          </div>
+          <div className="flex items-center justify-between gap-4 py-2.5">
+            <dt className="text-sm text-text-secondary">{t('onboarding.recapTheme', 'Apparence')}</dt>
+            <dd className="flex items-center gap-2 text-sm font-semibold text-text-primary">
+              <span
+                aria-hidden="true"
+                className="h-4 w-4 rounded-full ring-2 ring-inset ring-black/10"
+                style={{ backgroundColor: theme?.swatch }}
+              />
+              {theme?.label ?? DEFAULT_PRESET} · {modeLabel}
+            </dd>
+          </div>
+          <div className="flex items-center justify-between gap-4 py-2.5">
+            <dt className="text-sm text-text-secondary">{t('onboarding.recapTranslation', 'Traduction')}</dt>
+            <dd className="text-sm font-semibold text-text-primary">
+              {translation.abbreviation}
+              {translation.name ? (
+                <span className="ms-1.5 font-normal text-text-muted">· {translation.name}</span>
+              ) : null}
+            </dd>
+          </div>
+          <div className="flex items-center justify-between gap-4 py-2.5">
+            <dt className="text-sm text-text-secondary">{t('onboarding.recapRhythm', 'Rythme')}</dt>
+            <dd className="text-sm font-semibold text-text-primary">
+              {t('onboarding.recapVerses', '{{count}} verset{{plural}} par session', {
+                count: sessionGoal,
+                plural: sessionGoal > 1 ? 's' : '',
+              })}
+              {focusMode ? ` · ${t('onboarding.sessionFocusTitle', 'Mode concentration')}` : ''}
+            </dd>
+          </div>
+          <div className="flex items-center justify-between gap-4 py-2.5">
+            <dt className="text-sm text-text-secondary">{t('onboarding.recapReminders', 'Rappels')}</dt>
+            <dd className="flex items-center gap-1.5 text-sm font-semibold text-text-primary">
+              <DuoIcon icon={Clock01Icon} size={16} className="text-primary" />
+              {reminderEnabled
+                ? t('onboarding.review', '{{count}}×/jour à {{time}}', {
+                    count: reminderFrequency,
+                    time: reminderTime,
+                  })
+                : t('common.off', 'Désactivés')}
+            </dd>
+          </div>
+        </dl>
+      </section>
+
+      <section aria-labelledby="onboarding-fsrs-title" className="mt-6">
+        <h2 id="onboarding-fsrs-title" className="flex items-center gap-2 text-sm font-bold text-text-primary">
+          <DuoIcon icon={BrainIcon} size={20} className="text-primary" />
           {t('onboarding.fsrsTitle', 'La science de la mémorisation')}
-        </h1>
-        <p className="mt-3 max-w-sm text-center text-sm leading-6 text-text-secondary">
-          {t('onboarding.fsrsDesc', 'Découvrez FSRS : un algorithme intelligent qui s\'adapte à votre cerveau pour une mémorisation durable des Écritures.')}
-        </p>
-      </div>
-
-      {/* Retention curve (simple SVG) */}
-      <div className="mx-6 overflow-hidden rounded-3xl bg-surface p-6 shadow-sm">
-        <div className="relative h-48">
-          <svg viewBox="0 0 300 180" className="h-full w-full" aria-hidden>
-            {/* grid lines */}
-            {[0, 60, 120, 180].map((y) => (
-              <line key={y} x1="0" y1={y} x2="300" y2={y} stroke="var(--color-divider)" strokeWidth="1" />
-            ))}
-            {/* natural forgetting curve */}
-            <path
-              d="M 0 20 C 80 40, 140 110, 300 165"
-              fill="none"
-              stroke="var(--color-text-muted)"
-              strokeWidth="2"
-              strokeDasharray="6 4"
-            />
-            {/* optimal retention curve with FSRS */}
-            <path
-              d="M 0 40 L 60 38 L 120 36 L 180 34 L 240 32 L 300 30"
-              fill="none"
-              stroke="var(--color-primary)"
-              strokeWidth="3"
-            />
-            {[60, 120, 180, 240].map((x) => (
-              <circle key={x} cx={x} cy="38" r="4" fill="var(--color-primary)" />
-            ))}
-          </svg>
-          {/* X-axis labels */}
-          <div className="absolute inset-x-8 bottom-0 flex justify-between text-2xs text-text-secondary">
-            <span>Jour 1</span>
-            <span>Jour 7</span>
-            <span>Mois 1</span>
-          </div>
-        </div>
-        <div className="mt-4 flex gap-6">
-          <div className="flex items-center gap-2">
-            <span className="h-0.5 w-3 rounded-full bg-primary" />
-            <span className="text-xs text-text-primary">Rétention Optimale</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="h-0.5 w-3 border-t-2 border-dashed border-text-muted" />
-            <span className="text-xs text-text-secondary">Oubli Naturel</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Benefits */}
-      <div className="mt-8 flex flex-col gap-4 px-6">
-        {benefits.map(({ icon: Icon, title, desc }) => (
-          <div key={title} className="flex items-start gap-4 rounded-2xl bg-surface p-4 shadow-sm">
-            <div className="icon-chip flex h-12 w-12 shrink-0 items-center justify-center rounded-full">
-              <DuoIcon icon={Icon} size={24} />
-            </div>
-            <div className="flex-1">
-              <p className="text-base font-semibold text-text-primary">{title}</p>
-              <p className="mt-1 text-sm leading-6 text-text-secondary">{desc}</p>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Fixed bottom CTA */}
-      <div className="mt-8 border-t border-border/50 bg-surface/80 p-6 backdrop-blur">
-        <Button className="w-full" onClick={handleStartMemorization}>
-          {t('onboarding.getStarted', 'Commencer à mémoriser')}
-          <DuoIcon icon={ArrowRight} size={16} />
-        </Button>
-      </div>
-    </div>
+        </h2>
+        <ul className="mt-3 space-y-2" role="list">
+          {principles.map(({ title, desc }) => (
+            <li key={title} className="flex items-start gap-2.5">
+              <DuoIcon icon={CheckIcon} size={20} className="mt-0.5 shrink-0 text-primary" />
+              <p className="text-[13px] leading-relaxed text-text-secondary">
+                <span className="font-semibold text-text-primary">{title}.</span> {desc}
+              </p>
+            </li>
+          ))}
+        </ul>
+      </section>
+    </OnboardingShell>
   );
 }

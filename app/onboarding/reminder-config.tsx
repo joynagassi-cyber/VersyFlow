@@ -1,31 +1,21 @@
 /**
- * Onboarding — Reminder Configuration Screen
+ * Onboarding — étape 6, « Rappels ».
  *
- * Configures how many reminders per day ("nombre de fois par jour"), the
- * reminder time, and whether reminders are on. Final onboarding step before
- * reaching the FSRS intro / start.
+ * L'interrupteur n'est pas un ornement : il conditionne la fréquence et
+ * l'heure, qui restent visibles mais inactives quand il est coupé (jamais
+ * masquées — on ne cache pas un réglage, on le désactive).
  */
-
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
 import { DuoIcon } from '@/components/ui/DuoIcon';
-import {
-  ArrowLeft01Icon as ArrowLeft,
-  ArrowRight01Icon as ArrowRight,
-  BellIcon as Bell,
-  BellRingIcon as BellRing,
-  Clock01Icon as Clock,
-  CheckIcon as Check,
-} from '@/components/ui/solar-icons';
+import { BellIcon, BellRingIcon, CheckIcon, Clock01Icon } from '@/components/ui/solar-icons';
 import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
 import { useAppearanceStore } from '@/store/appearance-store';
+import { OnboardingShell } from '@/components/onboarding/OnboardingShell';
 
 const FREQUENCIES = [1, 2, 3, 5];
 
 export default function OnboardingReminderConfig() {
   const { t } = useTranslation();
-  const navigate = useNavigate();
   const reminderFrequency = useAppearanceStore((s) => s.reminderFrequency);
   const reminderEnabled = useAppearanceStore((s) => s.reminderEnabled);
   const reminderTime = useAppearanceStore((s) => s.reminderTime);
@@ -33,134 +23,108 @@ export default function OnboardingReminderConfig() {
   const toggleReminders = useAppearanceStore((s) => s.toggleReminders);
   const setReminderTime = useAppearanceStore((s) => s.setReminderTime);
 
-  const finish = () => navigate('/onboarding/fsrs-introduction');
-
   return (
-    <div className="screen-column-narrow flex min-h-full flex-col p-6">
-      <header className="mb-6 flex items-center gap-3">
-        <button
-          onClick={() => navigate('/onboarding/session-config')}
-          className="flex h-10 w-10 items-center justify-center rounded-full bg-surface shadow-sm"
-          aria-label={t('common.back')}
-        >
-          <DuoIcon icon={ArrowLeft} size={20} className="text-text-secondary" />
-        </button>
-        <h1 className="text-2xl font-bold text-text-primary">
-          {t('onboarding.reminderTitle')}
-        </h1>
-      </header>
-
-      <p className="mb-6 text-sm leading-6 text-text-secondary">
-        {t('onboarding.reminderDesc')}
-      </p>
-
-      <div className="flex flex-1 flex-col gap-6">
-        {/* On / off toggle */}
-        <button
-          onClick={toggleReminders}
+    <OnboardingShell
+      stepId="reminders"
+      eyebrow={t('onboarding.stepReminders', 'Rappels')}
+      title={t('onboarding.reminderTitle', 'Un rappel au bon moment')}
+      subtitle={t('onboarding.reminderDesc', 'Choisissez quand et combien de fois nous vous rappelons.')}
+      nextLabel={t('onboarding.saveReminderCta', 'Enregistrer mon rappel')}
+    >
+      <button
+        type="button"
+        onClick={toggleReminders}
+        aria-pressed={reminderEnabled}
+        className={cn(
+          'flex w-full items-center gap-3 rounded-2xl border p-4 text-left transition-colors',
+          reminderEnabled
+            ? 'border-primary bg-primary/5'
+            : 'border-border bg-surface hover:border-primary/40',
+        )}
+      >
+        <span
           className={cn(
-            'flex items-center gap-4 rounded-2xl border-2 p-4 text-left transition-colors',
-            reminderEnabled
-              ? 'border-primary bg-surface-tint'
-              : 'border-transparent bg-surface shadow-sm',
+            'flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl',
+            reminderEnabled ? 'bg-primary text-primary-foreground' : 'bg-surface-tint text-primary',
           )}
         >
-          <div
-            className={cn(
-              'flex h-12 w-12 shrink-0 items-center justify-center rounded-full',
-              reminderEnabled
-                ? 'bg-primary text-on-primary'
-                : 'bg-surface-tint text-primary',
-            )}
-          >
-            {reminderEnabled ? <DuoIcon icon={BellRing} size={24} /> : <DuoIcon icon={Bell} size={24} />}
-          </div>
-          <div className="flex-1">
-            <p className="text-base font-semibold text-text-primary">
-              {t('onboarding.reminderEnabled')}
-            </p>
-            <p className="mt-1 text-sm text-text-secondary">
-              {reminderEnabled ? t('common.on') : t('common.off')}
-            </p>
-          </div>
-          <div
-            className={cn(
-              'flex h-6 w-6 items-center justify-center rounded-full border-2',
-              reminderEnabled
-                ? 'border-primary bg-primary'
-                : 'border-text-muted',
-            )}
-          >
-            {reminderEnabled && <DuoIcon icon={Check} size={16} className="text-[color:var(--on)]" />}
-          </div>
-        </button>
-
-        {/* Frequency — how many reminders per day */}
-        <div className={cn(!reminderEnabled && 'opacity-40')}>
-          <div className="mb-3 flex items-center gap-2">
-            <DuoIcon icon={Bell} size={20} className="text-primary" />
-            <span className="text-base font-semibold text-text-primary">
-              {t('onboarding.reminderFrequency')}
-            </span>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {FREQUENCIES.map((f) => {
-              const selected = reminderFrequency === f;
-              return (
-                <button
-                  key={f}
-                  disabled={!reminderEnabled}
-                  onClick={() => setReminderFrequency(f)}
-                  className={cn(
-                    'flex h-14 min-w-14 items-center justify-center rounded-2xl border-2 px-4 text-lg font-semibold transition-colors disabled:opacity-40',
-                    selected
-                      ? 'border-primary bg-surface-tint text-primary'
-                      : 'border-transparent bg-surface text-text-secondary shadow-sm',
-                  )}
-                >
-                  {f}
-                  {selected && <DuoIcon icon={Check} className="ms-1" size={16} />}
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Reminder time */}
-        <div className={cn('flex items-center gap-4', !reminderEnabled && 'opacity-40')}>
-          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-surface-tint">
-            <DuoIcon icon={Clock} size={24} className="text-primary" />
-          </div>
-          <div className="flex-1">
-            <p className="text-base font-semibold text-text-primary">
-              {t('onboarding.reminderTime')}
-            </p>
-            <input
-              type="time"
-              aria-label={t('onboarding.reminderTime', 'Heure de rappel')}
-              value={reminderTime}
-              disabled={!reminderEnabled}
-              onChange={(e) => setReminderTime(e.target.value)}
-              className="mt-1 h-11 rounded-lg border border-border bg-surface px-3 text-base text-text-primary disabled:opacity-40"
-            />
-          </div>
-        </div>
-      </div>
-
-      <div className="mt-6 flex gap-4">
-        <Button
-          variant="outline"
-          className="flex-1"
-          onClick={() => navigate('/onboarding/session-config')}
+          <DuoIcon icon={reminderEnabled ? BellRingIcon : BellIcon} size={20} />
+        </span>
+        <span className="flex-1">
+          <span className="block text-[15px] font-semibold text-text-primary">
+            {t('onboarding.reminderEnabled', 'Rappels activés')}
+          </span>
+          <span className="mt-0.5 block text-[13px] text-text-secondary">
+            {reminderEnabled ? t('common.on', 'Activé') : t('common.off', 'Désactivé')}
+          </span>
+        </span>
+        <span
+          aria-hidden="true"
+          className={cn(
+            'flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2',
+            reminderEnabled ? 'border-primary bg-primary' : 'border-text-muted',
+          )}
         >
-          <DuoIcon icon={ArrowLeft} size={16} />
-          {t('common.back')}
-        </Button>
-        <Button className="flex-1" onClick={finish}>
-          {t('onboarding.saveReminderCta', 'Enregistrer mon rappel')}
-          <DuoIcon icon={ArrowRight} size={16} />
-        </Button>
-      </div>
-    </div>
+          {reminderEnabled && <DuoIcon icon={CheckIcon} size={16} className="text-primary-foreground" />}
+        </span>
+      </button>
+
+      <section
+        aria-labelledby="onboarding-frequency-title"
+        className={cn('mt-6', !reminderEnabled && 'opacity-50')}
+      >
+        <h2 id="onboarding-frequency-title" className="mb-2 text-sm font-bold text-text-primary">
+          {t('onboarding.reminderFrequency', 'Fréquence des rappels')}
+        </h2>
+        <div role="group" aria-labelledby="onboarding-frequency-title" className="grid grid-cols-4 gap-2">
+          {FREQUENCIES.map((frequency) => {
+            const selected = reminderFrequency === frequency;
+            return (
+              <button
+                key={frequency}
+                type="button"
+                disabled={!reminderEnabled}
+                onClick={() => setReminderFrequency(frequency)}
+                aria-pressed={selected}
+                className={cn(
+                  'min-h-[52px] rounded-2xl border text-sm font-semibold transition-colors disabled:cursor-not-allowed',
+                  selected
+                    ? 'border-primary bg-primary/10 text-primary'
+                    : 'border-border bg-surface text-text-secondary hover:border-primary/40',
+                )}
+              >
+                {t('onboarding.timesPerDay', '{{count}}×/jour', { count: frequency })}
+              </button>
+            );
+          })}
+        </div>
+      </section>
+
+      <section
+        aria-labelledby="onboarding-time-title"
+        className={cn('mt-6', !reminderEnabled && 'opacity-50')}
+      >
+        <h2 id="onboarding-time-title" className="mb-2 text-sm font-bold text-text-primary">
+          {t('onboarding.reminderTime', 'Heure du rappel')}
+        </h2>
+        <div className="flex items-center gap-3 rounded-2xl border border-border bg-surface p-4">
+          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-surface-tint">
+            <DuoIcon icon={Clock01Icon} size={20} className="text-primary" />
+          </span>
+          <label htmlFor="onboarding-reminder-time" className="flex-1 text-[15px] font-semibold text-text-primary">
+            {t('onboarding.reminderTimeLabel', 'Premier rappel de la journée')}
+          </label>
+          <input
+            id="onboarding-reminder-time"
+            aria-labelledby="onboarding-time-title"
+            type="time"
+            value={reminderTime}
+            disabled={!reminderEnabled}
+            onChange={(event) => setReminderTime(event.target.value)}
+            className="min-h-11 rounded-xl border border-border bg-surface px-3 text-base tabular-nums text-text-primary focus:border-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-primary disabled:opacity-50"
+          />
+        </div>
+      </section>
+    </OnboardingShell>
   );
 }

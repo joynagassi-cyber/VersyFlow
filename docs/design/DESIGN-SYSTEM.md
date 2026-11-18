@@ -152,6 +152,26 @@ les écrans denses et en contraste réduit. Aucune surcharge dans les écrans
 Aucune largeur fixe supérieure à 320 px sans variante conditionnelle
 (`sm:`/`md:`), sinon la cible 320 px casse.
 
+## 11 bis. Parcours d'entrée — deux mises en page, un seul parcours
+
+`src/components/onboarding/steps.ts` est la seule liste des étapes : la coquille
+en déduit le numéro, le total, « Retour » et l'étape suivante. Ajouter une étape
+se fait là, une fois.
+
+| | Web (≥ 1100 px) | Mobile (< 1100 px) |
+| --- | --- | --- |
+| structure | deux colonnes, 1180 px max | une colonne, plein écran |
+| navigation | sommaire vertical nommé, étapes passées cliquables | barre segmentée + « Étape n sur 7 » |
+| action | bouton à droite de la colonne de contenu | bouton pleine largeur collé en bas |
+| appui | verset en pied de panneau | verset dans le flux de l'étape |
+
+Sept étapes : **Bienvenue · Langue · Apparence · Traduction · Rythme · Rappels ·
+Prêt**. L'étape « Apparence » écrit directement dans `appearance-store` —
+`setPreset` pour la palette (c'est `data-preset` que lit le CSS), `setThemeMode`
+pour clair/sombre/système, `setBibleFontSize` pour le confort de lecture.
+L'aperçu de l'étape est donc le vrai rendu, et le récapitulatif final affiche la
+couleur retenue : ce que l'on choisit au début se retrouve à la fin.
+
 ## 12. Comment on vérifie
 
 ```bash
