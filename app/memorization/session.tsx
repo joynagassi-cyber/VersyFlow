@@ -238,23 +238,30 @@ export default function MemorizationSession() {
   if (loading) {
     return (
       <FullScreenPage title={t('session.memorizing', 'Mémorisation')} backPath="/tabs/home" showBack={false}>
-        <div className="flex flex-col items-center justify-center py-24">
-          <ScreenSkeleton rows={2} />
+        <div className="screen-column-narrow flex flex-col gap-4 py-6">
+          <ScreenSkeleton rows={2} flush />
           {downloadPercent !== null ? (
-            <>
-              <p className="mt-3 text-sm font-semibold text-text-primary">
+            <div className="flex flex-col items-start gap-2">
+              <p className="text-sm font-semibold text-text-primary">
                 {t('session.downloadingTranslation', 'Téléchargement de la traduction...')}
               </p>
-              <div className="mt-3 h-1.5 w-48 overflow-hidden rounded-full bg-surface-tint">
+              <div
+                className="h-1.5 w-48 overflow-hidden rounded-full bg-surface-tint"
+                role="progressbar"
+                aria-valuemin={0}
+                aria-valuemax={100}
+                aria-valuenow={downloadPercent}
+                aria-label={t('session.downloadingTranslation', 'Téléchargement de la traduction...')}
+              >
                 <div
                   className="h-full rounded-full bg-primary transition-all"
                   style={{ width: `${downloadPercent}%` }}
                 />
               </div>
-              <p className="mt-2 text-xs text-text-tertiary">{downloadPercent}%</p>
-            </>
+              <p className="text-xs tabular-nums text-text-tertiary">{downloadPercent}%</p>
+            </div>
           ) : (
-            <p className="mt-3 text-sm text-text-tertiary">
+            <p className="text-sm text-text-tertiary">
               {t('session.startingPassage', 'Démarrage du passage...')}
             </p>
           )}

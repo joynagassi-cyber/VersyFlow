@@ -99,7 +99,7 @@ les écrans denses et en contraste réduit. Aucune surcharge dans les écrans
 | État | Composant | Ce qu'il fait |
 | --- | --- | --- |
 | vide | `EmptyState` | propose toujours une action |
-| chargement | `ScreenSkeleton`, `SkeletonLines` | réserve la place exacte du contenu |
+| chargement | `ScreenSkeleton`, `SkeletonLines` | réserve la place exacte du contenu, n'apparaît qu'au-delà de 220 ms |
 | erreur | `ErrorBoundary`, messages de champ | dit quoi faire, sous le champ, `role="alert"` |
 | succès | écran de confirmation | propose l'étape suivante (jamais un spinner) |
 | limite | listes vides filtrées | explique le filtre et comment l'enlever |
@@ -115,12 +115,20 @@ les écrans denses et en contraste réduit. Aucune surcharge dans les écrans
 
 ## 9. Mouvement
 
-- aucun `animation: … infinite` : le pouls de mémorisation fait trois tours, la
-  pulsation des squelettes deux cycles ;
+- aucun `animation: … infinite` : le pouls de mémorisation fait trois tours, le
+  balayage des squelettes deux passages ;
+- **pas de clignotement de chargement** : un squelette ne s'affiche qu'après
+  220 ms (`useDelayedFlag`) et entre en fondu de 240 ms. En dessous de ce seuil,
+  le contenu est déjà là : ne rien montrer est plus honnête qu'un flash gris ;
 - au-delà de 400 ms, la durée doit être écrite en commentaire avec sa raison
   (retournement de carte 450 ms, confettis de réussite 800 ms) ;
 - `prefers-reduced-motion: reduce` coupe animations, transitions et
-  `animate-spin`/`animate-pulse`.
+  `animate-spin`/`animate-pulse` ; le squelette apparaît alors sans fondu (le
+  délai, lui, reste : ce n'est pas du mouvement mais de la visibilité) ;
+- teintes du squelette : `--skeleton-base` / `--skeleton-sheen`, dérivées des
+  jetons de surface et de texte par thème. Jamais un aplat de `text-primary` :
+  en clair il rend un gris sans relief, en sombre un bloc plus clair que la
+  carte qu'il occupe.
 
 ## 10. Accessibilité — planchers
 

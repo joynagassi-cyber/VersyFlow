@@ -848,32 +848,75 @@ body {
 .screen-skeleton {
   padding: 24px 16px 96px;
 }
+.screen-skeleton--flush {
+  padding: 0;
+}
+
+/* E04 · Squelette de chargement.
+   Deux teintes seulement, dérivées des jetons par thème : un gris neutre très
+   clair pour la masse, un reflet pour le balayage. L'ancienne recette
+   (`--color-text-primary` à 8-10 %) donnait, en clair, un bloc gris opaque
+   sans relief et, en sombre, un aplat plus clair que la carte qui l'entoure :
+   « trop dur » à l'œil, et pas à l'échelle de la surface. */
+:root {
+  --skeleton-base: color-mix(in srgb, var(--color-text-primary) 5%, var(--color-surface-tint));
+  --skeleton-sheen: color-mix(in srgb, var(--color-surface) 80%, transparent);
+}
+[data-theme='dark'] {
+  --skeleton-base: color-mix(in srgb, var(--color-text-primary) 6%, var(--color-surface));
+  --skeleton-sheen: color-mix(in srgb, var(--color-text-primary) 5%, transparent);
+}
+
+.skeleton-lines,
+.skeleton-body {
+  /* Fondu d'apparition : le squelette ne « claque » jamais à l'écran. */
+  opacity: 0;
+  transition: opacity 240ms ease-out;
+}
+.screen-skeleton[data-visible='true'] .skeleton-body,
+.skeleton-lines[data-visible='true'] .skeleton-body {
+  opacity: 1;
+}
+
 .skeleton-bar,
 .skeleton-card {
-  border-radius: var(--radius-medium, 12px);
-  background: color-mix(in srgb, var(--color-text-primary) 8%, transparent);
+  border-radius: calc(var(--radius-medium, 12px) * var(--radius-scale, 1));
+  background-color: var(--skeleton-base);
 }
 .skeleton-bar {
   height: 12px;
+  background-image: linear-gradient(
+    100deg,
+    transparent 32%,
+    var(--skeleton-sheen) 50%,
+    transparent 68%
+  );
+  background-size: 240% 100%;
+  background-repeat: no-repeat;
 }
 .skeleton-card {
   height: 104px;
   padding: 16px;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
+  background-color: var(--color-surface);
+  border: 1px solid color-mix(in srgb, var(--color-border) 55%, transparent);
+  border-radius: calc(var(--radius-large, 16px) * var(--radius-scale, 1));
 }
 .skeleton-card .skeleton-bar {
-  background: color-mix(in srgb, var(--color-text-primary) 10%, transparent);
+  background-color: color-mix(in srgb, var(--skeleton-base) 90%, var(--color-surface));
 }
-/* Pulsation douce, deux cycles, jamais en boucle infinie (règle I04). */
-.skeleton-bar {
-  animation: skeleton-fade 1.4s ease-in-out 2;
+/* Balayage discret, deux passages, jamais en boucle infinie (règle I04).
+   Rien ne bouge tant que le squelette n'est pas visible. */
+.screen-skeleton[data-visible='true'] .skeleton-bar,
+.skeleton-lines[data-visible='true'] .skeleton-bar {
+  animation: skeleton-sheen 1.8s ease-in-out 2;
 }
-@keyframes skeleton-fade {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.55; }
+@keyframes skeleton-sheen {
+  0% { background-position: 160% 0; }
+  100% { background-position: -60% 0; }
 }
 @media (prefers-reduced-motion: reduce) {
+  .skeleton-lines,
+  .skeleton-body { transition: none; }
   .skeleton-bar { animation: none; }
 }
 
