@@ -14,6 +14,7 @@ import {
   Clock01Icon as Clock,
 } from '@/components/ui/solar-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
+import { StatsDashboard } from '@/components/charts/StatsDashboard';
 import { useActiveProfile } from '@/hooks/useActiveProfile';
 import { getMemorizationService } from '@/services/memorization-service-factory';
 import { StreakService } from '@/services/streak-service';
@@ -139,6 +140,8 @@ export default function MasteryScreen() {
   return (
     <FullScreenPage title={t('nav.mastery', 'Maitrise')} showBack>
       <div className="screen-column space-y-6">
+        {/* Les mêmes graphiques que Progression, Analytique et Historique. */}
+        <StatsDashboard profileId={profileId} />
         {/* Level hero */}
         <div className="bg-primary rounded-3xl p-6 text-center text-on-primary">
           <span className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-surface/20">

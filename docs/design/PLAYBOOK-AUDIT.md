@@ -1,7 +1,7 @@
 # Audit UX/UI Playbook 2026 — application à VersyFlow
 
 Généré par `node scripts/audit-playbook.mjs`. **Ne pas éditer à la main.**
-Exécuté le 2026-11-18 13:43 (UTC).
+Exécuté le 2026-11-18 15:05 (UTC).
 
 **Bilan : 44 vérifiés · 10 partiels · 0 en échec · 23 non vérifiables ici** (77 règles).
 
@@ -18,7 +18,7 @@ Lecture : *vérifié* = une mesure reproductible dans le dépôt le confirme ; *
 | B01 | B | BLOCKING | **PASS** | Texte courant ≥ 4,5:1 sur son fond réel |  |
 | B02 | B | BLOCKING | **PASS** | Grand texte (≥ 24 px ou 19 px gras) ≥ 3:1 | tous les couples titre ≥ Infinity:1 |
 | B03 | B | BLOCKING | **PASS** | Icônes porteuses de sens, bordures et focus ≥ 3:1 | 22 contours de focus, icônes colorées par jeton |
-| B04 | B | BLOCKING | **PASS** | L'information n'est jamais portée par la couleur seule | 54 états exposés en ARIA, 136 libellés textuels |
+| B04 | B | BLOCKING | **PASS** | L'information n'est jamais portée par la couleur seule | 54 états exposés en ARIA, 138 libellés textuels |
 | B05 | B | MAJOR | **PASS** | Le mode sombre est un second jeu de jetons, pas un filtre | bloc `[data-theme="dark"]` dédié, aucun filtre inverseur |
 | B06 | B | MAJOR | **PASS** | Rien ne disparaît en contraste élevé ni en niveaux de gris | 13 règles de contraste élevé |
 | C01 | C | BLOCKING | **PASS** | Rien d'utile sous 12 px à l'échelle par défaut | plancher mesuré : 12px (échelle), aucune taille arbitraire sous 12px |
@@ -40,7 +40,7 @@ Lecture : *vérifié* = une mesure reproductible dans le dépôt le confirme ; *
 | E05 | E | MAJOR | **PASS** | Un état désactivé explique pourquoi et comment l’activer | 4 élément(s) désactivé(s) relié(s) à une explication (101 attributs disabled) |
 | F01 | F | BLOCKING | **PASS** | Chaque champ a un libellé visible relié au programme | tous les champs portent un nom accessible (`aria-label`, `aria-labelledby` ou `<label>` englobant) |
 | F02 | F | BLOCKING | **UNVERIFIABLE** | Le message d'erreur est sous son champ et nomme la règle | position du message non mesurable sans rendu |
-| F03 | F | BLOCKING | **PASS** | Le champ fautif porte `aria-invalid` et l’erreur est annoncée | 2 `aria-invalid`, 5 zone(s) live |
+| F03 | F | BLOCKING | **PASS** | Le champ fautif porte `aria-invalid` et l’erreur est annoncée | 2 `aria-invalid`, 6 zone(s) live |
 | F04 | F | MAJOR | **UNVERIFIABLE** | Le formulaire ne demande que ce qu’il utilise | jugement de conception |
 | F05 | F | MAJOR | **PASS** | Clavier adapté (`type`, `inputMode`) et autocomplétion | 9 types adaptés, 2 inputMode, 6 autocomplete |
 | F06 | F | MAJOR | **PASS** | Action primaire unique et échappatoire possible | 7 annulations, 39 retours |
@@ -55,10 +55,10 @@ Lecture : *vérifié* = une mesure reproductible dans le dépôt le confirme ; *
 | H03 | H | BLOCKING | **PASS** | Chaque commande a un nom accessible, icônes comprises | aucun bouton sans nom accessible détecté |
 | H04 | H | BLOCKING | **PASS** | Le focus est déplacé après navigation, sans le voler | gestionnaire de focus monté dans 2 coquilles |
 | H05 | H | MAJOR | **UNVERIFIABLE** | Zoom système et navigateur testés à 200 % | rendu à 200 % non mesurable sans navigateur |
-| H06 | H | MAJOR | **PASS** | Les composants exposent rôles et états exacts | 30 rôles explicites posés |
+| H06 | H | MAJOR | **PASS** | Les composants exposent rôles et états exacts | 31 rôles explicites posés |
 | I01 | I | MAJOR | **PASS** | Aucune image ou police bloquante au premier écran | polices auto-hébergées en `font-display: swap` |
 | I02 | I | MAJOR | **PARTIAL** | Pas de décalage de mise en page à l’arrivée du contenu (CLS ≤ 0,1) | squelette à hauteurs fixes ; CLS non mesuré sans navigateur |
-| I03 | I | BLOCKING | **PASS** | Le réglage « réduire le mouvement » est respecté | 10 blocs `prefers-reduced-motion`, dont un pour les animations nommées |
+| I03 | I | BLOCKING | **PASS** | Le réglage « réduire le mouvement » est respecté | 11 blocs `prefers-reduced-motion`, dont un pour les animations nommées |
 | I04 | I | MAJOR | **PARTIAL** | Aucune animation > 400 ms sans raison, aucune boucle infinie | 5 animation(s) au-delà de 400 ms, justifiées et jouées une seule fois : cursor: pointer; user-select: none; animation: mem-pulse 2.4 · animation: mem-confetti-fall 800ms ease-in both; · transform-style: preserve-3d; transition: transform 450ms ea |
 | I05 | I | MINOR | **UNVERIFIABLE** | Premier rendu utile < 2,5 s sur réseau médian | mesure réseau réelle non reproductible ici |
 | J01 | J | BLOCKING | **PARTIAL** | Android : edge-to-edge et encoches gérées | `viewport-fit=cover` et encoches déclarés ; rendu Android non testé |
@@ -127,7 +127,7 @@ Ces six contrôles ne font pas partie des 77 règles : ils mesurent le **systèm
 
 | ID | Verdict | Contrôle | Mesure |
 | --- | --- | --- | --- |
-| S01 | **PASS** | Icônes : trois tailles d’interface (16/20/24) + 32 en illustration | 16 / 20 / 24 / 32 px dans toute l'interface |
+| S01 | **PASS** | Icônes : trois tailles d’interface (16/20/24) + 32 en illustration | 16 / 20 / 24 px dans toute l'interface |
 | S02 | **PASS** | Icônes : une seule graisse de trait | aucune surcharge : la graisse vient de `ICON_STROKE` |
 | S03 | **PASS** | Rayons : une échelle, aucune valeur brute | tous les rayons passent par `calc(Npx * var(--radius-scale))` |
 | S04 | **PASS** | Ombres : les jetons du thème, jamais un noir figé | 4 ombres par jeton, 0 noir codé en dur |

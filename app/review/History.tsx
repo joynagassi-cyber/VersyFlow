@@ -19,6 +19,7 @@ import { getMemorizationService } from '@/services/memorization-service-factory'
 import { getReviewLogRepository } from '@/infrastructure/repository/powersync-repositories';
 import type { ReviewLogEntry as DomainReviewLogEntry } from '@/domains/memorization/entities';
 import { ScreenSkeleton } from '@/components/ui/ScreenSkeleton';
+import { StatsDashboard } from '@/components/charts/StatsDashboard';
 
 interface ReviewLogEntry {
   id: string;
@@ -190,6 +191,10 @@ export default function ReviewHistoryScreen() {
   return (
     <FullScreenPage title={t('nav.history', 'Historique')} showBack backPath="/review/queue">
       <div className="screen-column space-y-6">
+        {/* Les mêmes graphiques que Progression et Analytique : une seule
+            vérité visuelle, quel que soit le point d'entrée. */}
+        <StatsDashboard profileId={profileId} />
+
         <div className="rounded-3xl bg-surface p-5 shadow-sm">
           <div className="flex gap-3">
             <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-surface-tint">

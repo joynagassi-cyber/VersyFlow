@@ -1714,6 +1714,30 @@ html[data-fixed-accent] .desktop-rail button.bg-primary .solar { color: var(--pr
 .home-daily-card { position: relative; isolation: isolate; overflow: hidden; }
 .home-daily-card::before { content: ''; position: absolute; inset: 0; z-index: -2; background: var(--daily-image) center / cover no-repeat; }
 .home-daily-card::after { content: ''; position: absolute; inset: 0; z-index: -1; background: color-mix(in srgb,var(--gc) 90%,transparent); }
+/* ── Graphiques de statistiques ─────────────────────────────────────────
+   Grille : une colonne sur téléphone, deux dès 768 px, trois dès 1280 px.
+   Les graphiques « larges » (chaleur, courbe) occupent deux colonnes. */
+/* Bloc « graphiques » dans l'onglet Progression. */
+.progress-charts { display: grid; gap: 10px; }
+.progress-charts-title { margin: 4px 2px 0; color: var(--mut); font: 700 12px/1.4 var(--font-sans, Inter),sans-serif; letter-spacing: .1em; text-transform: uppercase; }
+.stats-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
+.stats-chart { min-width: 0; }
+.stats-chart--wide { grid-column: 1 / -1; }
+@media (min-width: 768px) {
+  .stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .stats-chart--wide { grid-column: span 2; }
+}
+@media (min-width: 1280px) {
+  .stats-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .stats-chart--wide { grid-column: span 2; }
+}
+/* Une case de chaleur : 11 px, jamais moins (cible lisible et non floue). */
+.heatmap-cell { width: 12px; height: 12px; border-radius: calc(4px * var(--radius-scale, 1)); background: color-mix(in srgb, var(--tx) 7%, transparent); }
+.heatmap-cell[data-level='-2'] { background: transparent; }
+@media (prefers-reduced-motion: reduce) {
+  .heatmap-cell, .stats-chart { transition: none; }
+}
+
 /* En-tête partagé des pages profondes et retour visible sur mobile et bureau. */
 .full-screen-header { display: flex; align-items: center; gap: 12px; flex: none; min-height: 64px; padding: 10px 16px; color: var(--tx); background: var(--gc); border-bottom: 1px solid var(--bd); }
 .full-screen-back { display: grid; place-items: center; width: 44px; height: 44px; flex: none; border-radius: 50%; color: var(--tx); background: color-mix(in srgb,var(--tx) 8%,transparent); }

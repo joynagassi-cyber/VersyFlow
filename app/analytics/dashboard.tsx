@@ -13,24 +13,21 @@ import { useTranslation } from 'react-i18next';
 import { useAnalyticsCapability } from '@/capabilities/analytics/store';
 import { fireAndForget } from '@/lib/fire-and-forget';
 import { ScreenSkeleton } from '@/components/ui/ScreenSkeleton';
-
-interface DataPoint {
-  date: string;
-  retention: number;
-}
+import { StatsDashboard } from '@/components/charts/StatsDashboard';
+import { useActiveProfile } from '@/hooks/useActiveProfile';
 
 export default function AnalyticsDashboardScreen() {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const { stats, calculateStats, getRetentionCurve, getLearningTime } =
+  const { stats, calculateStats, getLearningTime } =
     useAnalyticsCapability();
+  const { activeProfile } = useActiveProfile();
+  const profileId = activeProfile?.id ?? 'default';
   const [loading, setLoading] = useState(true);
-  const [curve, setCurve] = useState<DataPoint[]>([]);
 
   const loadData = async () => {
     try {
       await calculateStats();
-      setCurve(getRetentionCurve().slice(-30));
     } catch (e) {
       console.error('analytics load failed:', e);
     } finally {
@@ -51,9 +48,6 @@ export default function AnalyticsDashboardScreen() {
       </FullScreenPage>
     );
   }
-
-  const barColor = (r: number) =>
-    r > 0.8 ? 'var(--color-success)' : r > 0.5 ? 'var(--color-primary)' : 'var(--color-error)';
 
   return (
     <FullScreenPage
@@ -100,42 +94,14 @@ export default function AnalyticsDashboardScreen() {
           </div>
         </div>
 
-        {/* Retention chart */}
-        <div className="glass rounded-3xl bg-surface p-5 shadow-sm">
-          <div className="mb-4 flex items-center justify-between">
-            <p className="text-base font-bold text-text-primary">
-              {t('analytics.retention30', 'Retention sur 30 jours')}
-            </p>
-          </div>
-          {curve.length > 0 ? (
-            <div className="flex h-40 items-end gap-1">
-              {curve.slice(-14).map((p, i) => (
-                <div key={i} className="flex flex-1 flex-col items-center gap-1">
-                  <div
-                    className="w-full rounded-t"
-                    style={{
-                      height: Math.max(6, p.retention * 100) + 'px',
-                      backgroundColor: barColor(p.retention),
-                    }}
-                  />
-                  <span className="text-2xs text-text-muted">
-                    {new Date(p.date).getDate()}
-                  </span>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="flex flex-col items-center gap-2 py-8 text-center">
-              <DuoIcon icon={LineChart} size={32} className="text-text-muted" />
-              <p className="text-sm font-semibold text-text-primary">
-                {t('analytics.noData', 'Aucune donnee de retention')}
-              </p>
-              <p className="text-xs text-text-muted">
-                {t('analytics.noDataHint', 'Commencez a memoriser pour voir vos courbes')}
-              </p>
-            </div>
-          )}
-        </div>
+        {/* Tableau de bord : huit graphiques (chaleur, courbe, barres, anneau,
+            radar, jauge, empilées, horizontales) sur les mêmes données réelles. */}
+        <section>
+          <p className="mb-3 text-base font-bold text-text-primary">
+            {t('analytics.charts', 'Graphiques')}
+          </p>
+          <StatsDashboard profileId={profileId} />
+        </section>
 
         {/* Weekly trend */}
         {stats?.weeklyTrend && (

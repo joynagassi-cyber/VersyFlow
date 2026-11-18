@@ -19,6 +19,7 @@ import { ProgressService } from '@/services/progress-service';
 import type { ProgressStats } from '@/services/stats-calculator';
 import { getMemorizationService } from '@/services/memorization-service-factory';
 import { formatProgressLabel } from '@/lib/progress-label';
+import { StatsDashboard } from '@/components/charts/StatsDashboard';
 
 // Exemples de présentation : jamais écrits dans les dépôts ou services FSRS.
 const DEMO_STATS: ProgressStats = { totalVerses: 42, masteredVerses: 18, inProgressVerses: 24, dueForReview: 5, streakCount: 7, longestStreak: 12, weeklyTrend: { thisWeek: 6, lastWeek: 4, changePercentage: 50 }, avgSessionDurationMin: 4.5 };
@@ -112,6 +113,10 @@ export default function ProgressScreen() {
                 {mastery !== null && <div className="progress-track" role="progressbar" aria-label={t('progress.masteryTitle', 'Maîtrise')} aria-valuemin={0} aria-valuemax={100} aria-valuenow={mastery}><span style={{ width: `${mastery}%` }} /></div>}
               </section>
             </div>
+            <section className="progress-charts">
+              <h2 className="progress-charts-title">{t('stats.title', 'Vos graphiques')}</h2>
+              <StatsDashboard profileId={profileId} />
+            </section>
             <div className="progress-detail-grid">
               <button type="button" onClick={() => navigate('/review/calendar')} className="g2 progress-card progress-streak">
                 <span className="icon-chip progress-icon"><DuoIcon icon={Flame} size={24} /></span>
