@@ -1481,19 +1481,32 @@ html[data-bg='image'][data-contrast='high'] :is(.g1,.g2,.g3) { background: var(-
 /* Réglages : verre doux sans surfaces floutées imbriquées. */
 .settings-premium.screen-column { max-width: none; padding: 24px 16px 144px; color: var(--tx); font-family: var(--font-sans, Inter),sans-serif; }
 .settings-content { max-width: 1180px; margin: auto; display: grid; gap: 24px; }
-.settings-heading { padding: 24px; }
-.settings-heading h1 { margin: 8px 0 20px; font: 400 24px/1.2 Georgia,serif; }
+.settings-heading { padding: 20px 20px 12px; }
+/* Titre sans-serif gras, comme la page Réglages validée (l'onglet doit être
+   la même application, pas une variante typographique). */
+.settings-heading h1 { margin: 0 0 16px; font: 700 22px/1.2 var(--font-sans, Inter),sans-serif; letter-spacing: -.01em; }
 .settings-eyebrow { color: var(--tx); font: 600 12px/1.4 var(--font-sans, Inter),sans-serif; letter-spacing: .14em; text-transform: uppercase; }
-.settings-tabs { display: flex; gap: 4px; max-width: 500px; padding: 4px; border-radius: calc(16px * var(--radius-scale, 1)); background: color-mix(in srgb,var(--tx) 8%,transparent); }
-.settings-tabs button { flex: 1; padding: 10px 8px; border-radius: calc(12px * var(--radius-scale, 1)); color: var(--mut); font-size: 14px; font-weight: 600; transition: background 200ms,color 200ms; }
+.settings-tabs { display: flex; gap: 4px; max-width: 500px; padding: 4px; border-radius: calc(16px * var(--radius-scale, 1)); background: color-mix(in srgb,var(--tx) 8%,transparent); position: sticky; top: 0; z-index: 3; }
+.settings-tabs button { flex: 1; min-height: 40px; padding: 9px 8px; border-radius: calc(12px * var(--radius-scale, 1)); color: var(--mut); font-size: 14px; font-weight: 600; transition: background 200ms,color 200ms; }
+.settings-tabs button[aria-selected='true'],
 .settings-tabs button[aria-pressed='true'] { background: var(--gc); color: var(--acc-text); box-shadow: inset 0 1px 0 var(--hi); }
+/* Blocs de la page Réglages : mêmes cartes, mêmes en-têtes que la page validée. */
+.settings-section-label { display: flex; align-items: center; gap: 8px; margin: 20px 4px 8px; color: var(--mut); font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+.settings-section-label:first-child { margin-top: 4px; }
+.settings-row-group > * + * { border-top: 1px solid var(--bd); }
+.settings-row { min-height: 56px; transition: background 160ms; }
+.settings-row:hover { background: color-mix(in srgb,var(--tx) 3%,transparent); }
+.settings-row:focus-visible { outline: 2px solid var(--acc-text); outline-offset: -2px; }
+.settings-row-chip { color: var(--mut); }
+.settings-card { border: 1px solid var(--bd); }
+@media (prefers-reduced-motion: reduce) { .settings-row { transition: none; } }
 .settings-data-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 16px; }
 .settings-data-card { display: flex; width: 100%; align-items: center; gap: 16px; padding: 20px; text-align: start; transition: background 200ms,transform 200ms; }
 .settings-data-card > span:nth-child(2) { min-width: 0; }
 .settings-data-card:hover,.settings-data-card:focus-visible { transform: translateY(-2px); }
 .settings-data-card:hover .icon-chip,.settings-data-card:focus-visible .icon-chip { background: color-mix(in srgb,var(--acc) 18%,transparent); }
-.settings-groups { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); align-items: start; gap: 24px; }
-.settings-groups > section:first-child { grid-row: span 2; }
+.settings-groups { display: grid; grid-template-columns: minmax(0,1fr); align-items: start; gap: 4px; }
+@media (min-width: 1024px) { .settings-groups { grid-template-columns: repeat(2,minmax(0,1fr)); column-gap: 24px; } }
 .settings-groups h2 { margin: 18px 16px 4px; color: var(--mut); font: 600 12px/1.4 var(--font-sans, Inter),sans-serif; letter-spacing: .14em; text-transform: uppercase; }
 .settings-group-card > * + * { border-color: var(--bd); }
 .settings-premium :is(.text-text-primary,.text-text-secondary) { color: var(--tx); }

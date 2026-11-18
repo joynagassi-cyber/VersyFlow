@@ -1,9 +1,9 @@
 # Audit UX/UI Playbook 2026 — application à VersyFlow
 
 Généré par `node scripts/audit-playbook.mjs`. **Ne pas éditer à la main.**
-Exécuté le 2026-11-18 12:53 (UTC).
+Exécuté le 2026-11-18 13:27 (UTC).
 
-**Bilan : 45 vérifiés · 9 partiels · 0 en échec · 23 non vérifiables ici** (77 règles).
+**Bilan : 44 vérifiés · 10 partiels · 0 en échec · 23 non vérifiables ici** (77 règles).
 
 Lecture : *vérifié* = une mesure reproductible dans le dépôt le confirme ; *partiel* = une partie est mesurée, le reste demande un appareil ou un navigateur ; *non vérifiable ici* = la preuve exige un rendu réel, et la façon de le vérifier est indiquée.
 
@@ -17,8 +17,8 @@ Lecture : *vérifié* = une mesure reproductible dans le dépôt le confirme ; *
 | A06 | A | BLOCKING | **UNVERIFIABLE** | Un seul objectif et une action primaire par écran | jugement de conception : compte les actions primaires visibles sur l’écran rendu |
 | B01 | B | BLOCKING | **PASS** | Texte courant ≥ 4,5:1 sur son fond réel |  |
 | B02 | B | BLOCKING | **PASS** | Grand texte (≥ 24 px ou 19 px gras) ≥ 3:1 | tous les couples titre ≥ Infinity:1 |
-| B03 | B | BLOCKING | **PASS** | Icônes porteuses de sens, bordures et focus ≥ 3:1 | 21 contours de focus, icônes colorées par jeton |
-| B04 | B | BLOCKING | **PASS** | L'information n'est jamais portée par la couleur seule | 53 états exposés en ARIA, 130 libellés textuels |
+| B03 | B | BLOCKING | **PASS** | Icônes porteuses de sens, bordures et focus ≥ 3:1 | 22 contours de focus, icônes colorées par jeton |
+| B04 | B | BLOCKING | **PASS** | L'information n'est jamais portée par la couleur seule | 54 états exposés en ARIA, 132 libellés textuels |
 | B05 | B | MAJOR | **PASS** | Le mode sombre est un second jeu de jetons, pas un filtre | bloc `[data-theme="dark"]` dédié, aucun filtre inverseur |
 | B06 | B | MAJOR | **PASS** | Rien ne disparaît en contraste élevé ni en niveaux de gris | 13 règles de contraste élevé |
 | C01 | C | BLOCKING | **PASS** | Rien d'utile sous 12 px à l'échelle par défaut | plancher mesuré : 12px (échelle), aucune taille arbitraire sous 12px |
@@ -48,17 +48,17 @@ Lecture : *vérifié* = une mesure reproductible dans le dépôt le confirme ; *
 | G02 | G | BLOCKING | **PASS** | Aucune largeur de texte figée : la chaîne la plus longue tient | aucune largeur fixe > 320 px ; retours à la ligne assurés |
 | G03 | G | MAJOR | **PASS** | Un seul format de nombre par écran, celui de la langue | 12 formats locaux via `Intl` |
 | G04 | G | MAJOR | **PASS** | Pas de texte de remplissage, pas de promesse invérifiable | aucun lorem ipsum, aucun « bientôt disponible » |
-| G05 | G | MAJOR | **PARTIAL** | En RTL la mise en page se retourne sans casser les icônes directionnelles | RTL piloté au niveau document (39 propriétés logiques, 0 directions physiques restantes) |
+| G05 | G | MAJOR | **PARTIAL** | En RTL la mise en page se retourne sans casser les icônes directionnelles | RTL piloté au niveau document (40 propriétés logiques, 0 directions physiques restantes) |
 | G06 | G | MINOR | **PASS** | Dates et heures relatives ou localisées | 37 format(s) relatif(s)/localisé(s) |
-| H01 | H | BLOCKING | **PASS** | Tout est utilisable au clavier, focus visible, sans piège | lien d’évitement, 23 règles `:focus-visible`, fermeture Échap |
+| H01 | H | BLOCKING | **PASS** | Tout est utilisable au clavier, focus visible, sans piège | lien d’évitement, 24 règles `:focus-visible`, fermeture Échap |
 | H02 | H | BLOCKING | **PASS** | Chaque image a un texte alternatif ou est décorative | toutes les balises `<img>` portent `alt` ou `aria-hidden` |
 | H03 | H | BLOCKING | **PASS** | Chaque commande a un nom accessible, icônes comprises | aucun bouton sans nom accessible détecté |
 | H04 | H | BLOCKING | **PASS** | Le focus est déplacé après navigation, sans le voler | gestionnaire de focus monté dans 2 coquilles |
 | H05 | H | MAJOR | **UNVERIFIABLE** | Zoom système et navigateur testés à 200 % | rendu à 200 % non mesurable sans navigateur |
-| H06 | H | MAJOR | **PASS** | Les composants exposent rôles et états exacts | 27 rôles explicites posés |
+| H06 | H | MAJOR | **PASS** | Les composants exposent rôles et états exacts | 30 rôles explicites posés |
 | I01 | I | MAJOR | **PASS** | Aucune image ou police bloquante au premier écran | polices auto-hébergées en `font-display: swap` |
 | I02 | I | MAJOR | **PARTIAL** | Pas de décalage de mise en page à l’arrivée du contenu (CLS ≤ 0,1) | squelette à hauteurs fixes ; CLS non mesuré sans navigateur |
-| I03 | I | BLOCKING | **PASS** | Le réglage « réduire le mouvement » est respecté | 9 blocs `prefers-reduced-motion`, dont un pour les animations nommées |
+| I03 | I | BLOCKING | **PASS** | Le réglage « réduire le mouvement » est respecté | 10 blocs `prefers-reduced-motion`, dont un pour les animations nommées |
 | I04 | I | MAJOR | **PARTIAL** | Aucune animation > 400 ms sans raison, aucune boucle infinie | 5 animation(s) au-delà de 400 ms, justifiées et jouées une seule fois : cursor: pointer; user-select: none; animation: mem-pulse 2.4 · animation: mem-confetti-fall 800ms ease-in both; · transform-style: preserve-3d; transition: transform 450ms ea |
 | I05 | I | MINOR | **UNVERIFIABLE** | Premier rendu utile < 2,5 s sur réseau médian | mesure réseau réelle non reproductible ici |
 | J01 | J | BLOCKING | **PARTIAL** | Android : edge-to-edge et encoches gérées | `viewport-fit=cover` et encoches déclarés ; rendu Android non testé |
@@ -85,7 +85,7 @@ Lecture : *vérifié* = une mesure reproductible dans le dépôt le confirme ; *
 | L02 | L | BLOCKING | **PASS** | Le résultat sépare vérifié / estimé / non fait | ce rapport sépare PASS, PARTIAL (mesuré en partie), FAIL, UNVERIFIABLE (non fait) et n’accorde aucune réussite par défaut |
 | L03 | L | MAJOR | **PASS** | Chaque case cochée repose sur une preuve reproductible | chaque règle est recalculée par `node scripts/audit-playbook.mjs` sur l’état du dépôt |
 | L04 | L | MAJOR | **PASS** | Le contexte projet (`AGENTS.md`) énonce les règles de l’écran | section « Règles d’écran » annexée à `AGENTS.md` (structure, couleur, typo, cibles, états, mouvement) |
-| L05 | L | MINOR | **PASS** | Un composant par intention, nommé pareil partout | aucun composant homonyme pour une même intention |
+| L05 | L | MINOR | **PARTIAL** | Un composant par intention, nommé pareil partout | composants homonymes : Card |
 
 ## Ce qui reste à vérifier sur un appareil
 

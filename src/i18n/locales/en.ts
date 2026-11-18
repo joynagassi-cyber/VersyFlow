@@ -528,6 +528,17 @@ nav: {
     vsLastWeek: 'vs last week',
   },
   settings: {
+    sectionsAria: 'Settings sections',
+    historySection: 'History & activity',
+    profileSection: 'My profile',
+    badgeTitle: 'Badge & level',
+    levelTitle: 'Memorization level',
+    levelNext: '{{count}} verses to go before “{{level}}”',
+    levelMax: 'Top level reached',
+    levelLoading: 'Calculating…',
+    versesMemorized: 'Memorized',
+    versesMastered: 'Mastered',
+    streakDays: 'Day streak',
     background: 'Background',
     bgNone: 'None',
     bgNoneHint: 'The theme background, with no image or gradient.',
@@ -1031,6 +1042,15 @@ nav: {
     danger: 'Danger zone',
     localBackup: 'Local backup',
   },
+  levels: {
+    graine: 'Seed',
+    pousse: 'Sprout',
+    racine: 'Root',
+    branche: 'Branch',
+    arbre: 'Tree',
+    cedre: 'Cedar',
+  },
+
   settingsTab: {
     data: 'Data',
     params: 'Settings',

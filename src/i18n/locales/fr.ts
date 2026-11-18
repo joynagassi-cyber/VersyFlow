@@ -529,6 +529,17 @@ nav: {
     vsLastWeek: 'vs semaine précédente',
   },
   settings: {
+    sectionsAria: 'Sections des réglages',
+    historySection: 'Historique & activité',
+    profileSection: 'Mon profil',
+    badgeTitle: 'Badge & niveau',
+    levelTitle: 'Niveau de mémorisation',
+    levelNext: 'Plus que {{count}} versets avant « {{level}} »',
+    levelMax: 'Palier maximal atteint',
+    levelLoading: 'Calcul en cours…',
+    versesMemorized: 'Mémorisés',
+    versesMastered: 'Maîtrisés',
+    streakDays: 'Jours de suite',
     background: 'Fond',
     bgNone: 'Aucun',
     bgNoneHint: 'Le fond du thème, sans image ni dégradé.',
@@ -1034,9 +1045,18 @@ nav: {
     danger: 'Zone de danger',
     localBackup: 'Sauvegarde locale',
   },
+  levels: {
+    graine: 'Graine',
+    pousse: 'Pousse',
+    racine: 'Racine',
+    branche: 'Branche',
+    arbre: 'Arbre',
+    cedre: 'Cèdre',
+  },
+
   settingsTab: {
     data: 'Données',
-    params: 'Paramètres',
+    params: 'Réglages',
     profile: 'Profil',
   },
 
