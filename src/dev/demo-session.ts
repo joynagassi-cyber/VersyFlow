@@ -19,7 +19,7 @@
  * utilisées par le panneau `/dev`, l'écran `/settings/data` et le bandeau.
  */
 
-import { getDataMode, isMockMode, setDataMode, type DataMode } from './mode';
+import { getDataMode, isMockMode, reloadWithDataMode, type DataMode } from './mode';
 import {
   clearDemoStorage,
   demoStorageFootprint,
@@ -132,14 +132,12 @@ export function reloadDemoSession(): void {
  * place (isolation), ce qui permet d'y revenir avec `?data=mock`.
  */
 export function exitDemoSession(): void {
-  setDataMode('live');
-  if (typeof window !== 'undefined') window.location.reload();
+  reloadWithDataMode('live');
 }
 
 /** Re-entre dans la démo si l'utilisateur en était sorti. */
 export function reenterDemoSession(): void {
-  setDataMode('mock');
-  if (typeof window !== 'undefined') window.location.reload();
+  reloadWithDataMode('mock');
 }
 
 /** Oublie le choix explicite (retour à la résolution automatique). */

@@ -182,14 +182,24 @@ export function clearDataModeOverride(): void {
 
 /** Switch mode and reload the app (composition roots are singletons). */
 export function reloadWithDataMode(mode: DataMode): void {
-  setDataMode(mode);
-  if (typeof window !== 'undefined') window.location.reload();
+  // Keep the current mode and storage scope active until navigation finishes.
+  // A stale URL override otherwise wins over the user's explicit choice.
+  writeLocalStorage(DATA_MODE_STORAGE_KEY, mode);
+  if (typeof window !== 'undefined') {
+    const url = new URL(window.location.href);
+    // If storage is unavailable, keep an explicit URL override rather than
+    // accidentally reopening live after requesting demo.
+    if (readLocalStorage(DATA_MODE_STORAGE_KEY) === mode) url.searchParams.delete('data');
+    else url.searchParams.set('data', mode);
+    window.history.replaceState(window.history.state, '', url.toString());
+    window.location.reload();
+  }
 }
 
 /** Human readable summary, shown in the Dev panel / console banner. */
 export function describeDataMode(): string {
   const mode = getDataMode();
-  if (mode === 'mock') return 'MOCK — données locales + API de test (aucun backend)';
+  if (mode === 'mock') return 'MOCK — données fictives locales (isolation en cours de vérification)';
   return 'LIVE — Supabase + PowerSync';
 }
 

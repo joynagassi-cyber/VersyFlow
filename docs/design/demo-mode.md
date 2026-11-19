@@ -1,86 +1,58 @@
-# Mode démo — architecture, garanties et limites
+# Mode démo — état et limites de l'audit
 
-> Chantier du 30 octobre 2026. Ce document décrit **ce qui est réellement
-> garanti** par le code, ce qui est mesuré par les tests, et ce qui reste
-> simulé volontairement.
+État du lot du 30 octobre 2026 : **isolation globale non validée**. Ne pas
+utiliser de données personnelles pour tester. Les contrôles automatiques
+ci-dessous ne remplacent pas une vérification de tous les parcours, des accès
+directs, des WebViews et des appareils physiques.
 
-## 1. Ce que la démo isole
+## Comportement existant et protections ajoutées
 
-| Couche | Mécanisme | Fichier |
-|---|---|---|
-| Repositories (versets, révisions, familles, profils, streaks, télémétrie) | adaptateurs mock derrière les mêmes ports | `src/dev/mock/repositories.ts`, `src/infrastructure/repository/powersync-repositories.ts` |
-| Base de démo | `localStorage` isolé, graines déterministes | `src/dev/mock/db.ts`, `src/dev/mock/seed.ts` |
-| **Tout le reste du stockage applicatif** | redirection de `localStorage` sous `versyflow:mock-scope:v1:` | `src/dev/mock/storage-scope.ts` |
-| Famille « riche » (défis, séances, fil d'activité) | store Zustand persisté → lui aussi redirigé + graine démo | `src/dev/mock/family-room-seed.ts` |
-| Réseau | aucun appel Supabase/PowerSync en mode mock (`MockModeGuardError`) ; le collecteur de test local est optionnel et désactivé par défaut | `src/dev/mode.ts`, `src/dev/local-backend.ts` |
-| Notifications | non programmées (le service reste inerte en web) | `src/services/notification-service.ts` |
+- `src/dev/mode.ts` choisit le mode mock par défaut, sauf choix explicite
+  persisté, URL `?data=live` ou configuration prioritaire. La sortie vers les
+  données réelles est volontaire et active les services réels configurés.
+- Les repositories principaux utilisent des adaptateurs mock et les méthodes
+  `getItem`, `setItem`, `removeItem` et `clear` du `localStorage` sont redirigées
+  sous `versyflow:mock-scope:v1:`. L'installation précède les imports de
+  l'application ; si l'installation échoue, le démarrage en démo est arrêté.
+- Les données fictives de cet espace survivent au rechargement et sont effacées
+  par la réinitialisation de la démo ou le nettoyage du navigateur. Les clés
+  de contrôle de mode restent hors de cet espace. Les anciens mocks non
+  préfixés ne sont ni migrés ni supprimés automatiquement.
+- Pour éviter de modifier les rappels réels, les services de rappels quotidiens
+  et hebdomadaires ne demandent pas de permission et ne consultent, annulent ou
+  programment aucune notification native en mode mock. Le planning hebdomadaire
+  fictif est enregistré dans le stockage de la démo. Les notifications déjà
+  programmées avant l'entrée en démo ne sont pas annulées et peuvent se déclencher.
+- Le collecteur de test (`src/dev/local-backend.ts`) est désactivé sans
+  dérogation, même avec `VITE_MOCK_API=on` ou une ancienne file d'événements.
+- Lors d'un changement explicite via l'interface, l'ancien `?data=` est retiré
+  de l'URL et le mode courant reste actif jusqu'au rechargement. Si le stockage
+  du choix échoue, le nouveau mode est placé dans l'URL.
 
-La redirection de stockage est le point clé : elle couvre **aussi** les accès
-directs des écrans (`localStorage.getItem('versyflow:profile:name')`,
-`versyflow:collections`, historique de recherche, stores Zustand persistés,
-apparence, rappels). Rien n'est « masqué » dans l'interface : les écritures
-sont physiquement ailleurs.
+## Ce qui reste à vérifier ou à construire
 
-## 2. Clés de contrôle (jamais redirigées)
+La redirection repose sur des méthodes de `Storage` : l'énumération brute
+(`length`, `key`, `Object.keys`) et les accès par propriété ne sont pas isolés.
+`sessionStorage` n'est pas redirigé. Les APIs IndexedDB, SQLite, les événements
+inter-onglets et d'éventuels accès directs aux SDK ou plugins doivent encore
+être audités et testés en conditions réelles. Les garde-fous PowerSync et auth
+ne prouvent pas à eux seuls l'absence de tout accès réel sur toutes les routes.
 
-- `versyflow:data-mode` — le choix de mode (`mock` / `live`) ;
-- `versyflow:demo:started-at`, `versyflow:demo:version` — métadonnées de session.
+Les scénarios complets famille, statistiques, mémorisation, FSRS, calendrier,
+notes, tags, sessions, accès directs et changements de mode n'ont pas tous été
+validés dans un vrai navigateur. La cohérence des données entre tous les écrans
+reste à établir. Les tests unitaires ne prouvent pas le comportement des plugins
+Capacitor ; aucune vérification sur appareil physique n'a été réalisée ici.
+Le Web ne programme pas de notifications en arrière-plan.
 
-Sans elles, la démo ne pourrait pas être quittée ni reprise.
+## Tests de ce lot
 
-## 3. Durée de vie des données de démo
-
-Les données de démo vivent dans le navigateur, sous le préfixe
-`versyflow:mock-scope:v1:`, **jusqu'à** :
-
-- « Réinitialiser la démo » (`/dev`, `/settings/data`) → efface le seul espace
-  de démo puis re-sème ;
-- un nettoyage du stockage du navigateur.
-
-Elles survivent aux rechargements, à la navigation directe (`/family/home`,
-`/review/calendar`, …) et à une sortie de démo : sortir, vérifier ses vraies
-données, puis revenir (`?data=mock` ou « Voir la démo ») retrouve le même état.
-
-## 4. Entrer et sortir
-
-| Action | Moyen | Effet |
-|---|---|---|
-| Entrer | `?data=mock`, ou « Voir la démo » dans `/settings/data` | recharge en mode démo |
-| Sortir | `?data=live`, bouton « Quitter la démo » | recharge sur les vraies données |
-| Revenir au comportement auto | `VITE_DEMO_DEFAULT=off` | mock seulement si aucun projet Supabase |
-
-La démo est le mode **par défaut** pendant ce chantier (`DEMO_IS_DEFAULT` dans
-`src/dev/mode.ts`). L'ordre de résolution reste : URL > choix explicite
-persisté > `VITE_DATA_MODE` > démo par défaut > auto-détection.
-
-## 5. Ce qui est simulé (et affiché comme tel)
-
-- notifications : aucune planification réelle dans le navigateur ; les deux
-  types (révision, mémorisation) restent enregistrés localement ;
-- synchronisation : désactivée, rien n'est envoyé ;
-- partage familial : aucune invitation réelle n'est émise ;
-- exports : les fichiers produits contiennent les données de démo.
-
-Le bandeau « Démo » (pastille dans les deux coques) mène à `/dev`, qui rappelle
-ces limites et permet de réinitialiser.
-
-## 6. Limites techniques assumées
-
-- `localStorage.length` / `key(i)` exposent encore l'énumération brute : aucun
-  écran ne s'en sert pour lire un contenu utilisateur, et `getItem` est
-  redirigé (aucune valeur réelle n'est lisible).
-- `sessionStorage` n'est pas redirigé : il ne contient que l'identifiant de
-  session du collecteur de test (`versyflow:mock:session-id`).
-- IndexedDB / SQLite / PowerSync ne sont pas ouverts en mode mock.
-- Les données d'une session mock **antérieure** à l'isolation (clés non
-  préfixées) ne sont plus vues par la démo. Elles restent sur le disque du
-  navigateur : aucune suppression automatique n'est faite.
-
-## 7. Tests
-
-- `tests/design/demo-isolation.test.ts` — redirection, non-lecture des valeurs
-  réelles, `clear()` sans effet sur le réel, rechargement, sortie, reset ;
-- `tests/design/demo-family.test.ts` — famille semée, membres nommés, défis et
-  séances, aucune fuite hors de l'espace de démo ;
-- `tests/design/demo-ui.test.tsx` — pastille, panneau, texte des limites,
-  réinitialisation sans perte.
+- `tests/design/demo-isolation.test.ts` : clés et repositories ciblés dans
+  jsdom, réinitialisation et simulation de rechargement / sortie ; ce n'est pas
+  un test navigateur des parcours complets.
+- `tests/design/demo-fail-closed.test.ts` : échec simulé de l'installation.
+- `tests/design/weekly-reminders.test.ts` : plugin natif simulé, y compris
+  absence d'appel au plugin en démo ; pas un appareil physique.
+- `tests/design/demo-safety-collector.test.ts` : collecteur inactif.
+- `tests/design/demo-family.test.ts` et `demo-ui.test.tsx` : adaptateurs,
+  graine et rendu isolés ; pas une validation de toutes les interactions.
