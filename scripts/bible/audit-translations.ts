@@ -4,7 +4,7 @@
  * Usage:
  *   npx cross-env TS_NODE_PROJECT=tsconfig.app.json tsx -r tsconfig-paths/register scripts/bible/audit-translations.ts [id...]
  *
- * For each translation it verifies the remote Supabase Storage dataset
+ * For each translation it verifies the bundled dataset
  * (HEAD → content-length), then downloads and parses it (full audit, the
  * default) to report the actual book/chapter/verse counts and flag empty
  * verse text. Only `--quick` skips the full download+parse.

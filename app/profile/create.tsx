@@ -36,7 +36,7 @@ export default function CreateProfileScreen() {
     setSubmitting(true);
     try {
       // Slogan is persisted on the profile entity itself (LearnerProfile.slogan)
-      // and synced via PowerSync; no separate store is needed.
+      // through the profile repository; no separate store is needed.
       const profile = await createProfile(parsed.data, undefined, sloganText.trim() || undefined);
       selectProfile(profile.id);
       navigate('/tabs');

@@ -2,23 +2,23 @@
  * translation-preference-service — composition root for the persisted
  * translation preference (P1B-2).
  *
- * Wires the {@link ITranslationPreferenceRepository} port to the PowerSync
+ * Wires the {@link ITranslationPreferenceRepository} port to the
  * adapter, bound to the shared {@link getSyncUserIdProvider} so reads/writes
  * are scoped to the authenticated user. The UI consumes this factory (never
- * the repository or PowerSync directly) through `useTranslationPreference`.
+ * the repository or storage directly) through `useTranslationPreference`.
  *
  * The adapter is a lazy singleton, matching the single-sync invariant
- * (one PowerSync DB, one set of repositories).
+ * (one store, one set of repositories).
  */
 
-import type { ITranslationPreferenceRepository } from '@/infrastructure/repository/translation-preference-repository-powersync';
-import { getTranslationPreferenceRepository as resolveRepository } from '@/infrastructure/repository/powersync-repositories';
+import type { ITranslationPreferenceRepository } from '@/infrastructure/repository/ports';
+import { getTranslationPreferenceRepository as resolveRepository } from '@/infrastructure/repository/mode-repositories';
 import { DEFAULT_BIBLE_TRANSLATIONS } from '@/domains/bible/registry';
 
 /**
  * The active adapter for the user's translation preference. Resolution (and
  * singleton caching) lives in the repository composition root, which picks
- * the PowerSync adapter in live mode and the in-browser adapter in mock mode.
+ * the same in-browser adapter in both demo and real mode.
  */
 export function getTranslationPreferenceRepository(): ITranslationPreferenceRepository {
   return resolveRepository();

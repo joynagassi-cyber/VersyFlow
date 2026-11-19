@@ -28,19 +28,17 @@ name: CI/CD — Web + Android + iOS
 #     producing the signed .ipa with no workflow change.
 #
 # Required secrets — see .github/secrets-checklist.md
-#   VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY, VITE_POWERSYNC_URL   (build env)
 #   KEYSTORE, KEYSTORE_PASSWORD, KEY_ALIAS, KEY_PASSWORD           (APK signing)
 #   APPLE_CERTIFICATE_P12, APPLE_CERTIFICATE_PASSWORD,
 #   APPLE_PROVISION_PROFILE_BASE64, APPLE_TEAM_ID                  (.ipa signing)
 #
 # Android path per job:
-#   npm ci (postinstall runs scripts/patch-powersync-worker.cjs, idempotent)
+#   npm ci
 #   -> download-artifact web-build-www -> ./www
 #   -> npx cap sync android (copies www into android/assets/www)
 #   -> cd android && ./gradlew ...
 #
-# Vite env vars are workflow-level env from secrets. PRs run with empty values
-# (safe placeholder config); release builds on tags get real values.
+# The app has no backend: no build-time API keys or endpoints are needed.
 #
 
 on:
@@ -67,9 +65,7 @@ concurrency:
 env:
   # Injected at Vite build time (import.meta.env). Empty values are safe:
   # the app degrades to placeholder config; PRs run without secrets.
-  VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
-  VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
-  VITE_POWERSYNC_URL: ${{ secrets.VITE_POWERSYNC_URL }}
+  VITE_DATA_MODE: mock
 
 # A "release" context: pushing a v* tag, or dispatch with build_release=true.
 # The release tag carries the version (v1.2.3 -> 1.2.3).
@@ -123,7 +119,7 @@ jobs:
           node-version: 22
           cache: npm
 
-      - name: Install dependencies (runs postinstall PowerSync worker patch)
+      - name: Install dependencies
         run: npm ci
 
       - name: TypeScript typecheck
@@ -162,7 +158,7 @@ jobs:
           node-version: 22
           cache: npm
 
-      - name: Install dependencies (runs postinstall PowerSync worker patch)
+      - name: Install dependencies
         run: npm ci
 
       - name: Vite production build (outputs to www/)
@@ -202,7 +198,7 @@ jobs:
       - name: Install Android SDK (Build-Tools 35, Platform 35)
         uses: android-actions/setup-android@v3
 
-      - name: Install dependencies (runs postinstall PowerSync worker patch)
+      - name: Install dependencies
         run: npm ci
 
       - name: Restore web build (www/)
@@ -263,7 +259,7 @@ jobs:
       - name: Install Android SDK (Build-Tools 35, Platform 35)
         uses: android-actions/setup-android@v3
 
-      - name: Install dependencies (runs postinstall PowerSync worker patch)
+      - name: Install dependencies
         run: npm ci
 
       - name: Restore web build (www/)
@@ -373,7 +369,7 @@ jobs:
           node-version: 22
           cache: npm
 
-      - name: Install dependencies (runs postinstall PowerSync worker patch)
+      - name: Install dependencies
         if: steps.check.outputs.IPA_ENABLED != 'false'
         run: npm ci
 

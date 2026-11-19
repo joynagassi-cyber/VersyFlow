@@ -175,9 +175,9 @@
   },
   {
     "id": "lsg",
-    "checksum": "sha256:5d0bda66cdacfd4127cb0cf2fb1e5867981a48915419b0887d46614342e3f403",
-    "sizeBytes": 6986748,
-    "builtAt": "2026-09-20T16:54:11.177Z"
+    "checksum": "sha256:45cb6b9b19a480bcc4a9f7a5e19acf4254c3ddbda7d38ee1106c4c2f6b0a5a0a",
+    "sizeBytes": 6942150,
+    "builtAt": "2026-11-19T16:37:43.705Z"
   },
   {
     "id": "luther1912",

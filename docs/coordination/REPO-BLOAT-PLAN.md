@@ -1,3 +1,8 @@
+> **Note (2026-11-19) — documentation historique.** VersyFlow est
+> désormais 100 % frontend : the former backend et the local store ont été retirés du
+> dépôt. Les mentions de ces services dans ce document décrivent
+> l’état antérieur, pas l’architecture actuelle (voir `docs/AUDIT.md`).
+
 # Plan anti-gonflement du dépôt (mis au chaud — NON exécuté)
 
 > Date : 2026-09-20. Statut : **en attente de feu vert owner + tous les
@@ -29,7 +34,6 @@ git lfs push origin main
 
 ## Option B — Dé-tracking local (le plus simple, recommandé d'abord)
 
-Raison : `data/bible` est **distribué à l'app via Supabase Storage**
 (bucket `bible-datasets`, commit `8757f2e` : téléchargement à la demande).
 L'app et la CI n'ont pas besoin des JSON dans le repo ; seuls les scripts de
 build/deploy (`scripts/bible/*`, `npm run bible:deploy`) les veulent en local.
@@ -37,7 +41,6 @@ build/deploy (`scripts/bible/*`, `npm run bible:deploy`) les veulent en local.
 ```bash
 git rm -r --cached data/bible
 echo "data/bible/" >> .gitignore
-git commit -m "chore: dé-track data/bible (source de vérité = Supabase Storage)"
 ```
 
 - ✅ Zéro force-push, zéro re-clone, dépôt immédiatement plus lisible

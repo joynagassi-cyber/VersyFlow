@@ -2,7 +2,7 @@
  * LearnerProfile Repository — Local (In-Memory) Adapter
  *
  * In-memory implementation of ILearnerProfileRepository using Map + UUID v4.
- * Used for offline development and testing before PowerSync binding is ready.
+ * In-memory adapter used by development and tests.
  */
 
 import type { LearnerProfile } from '@/domains/learner-profile';

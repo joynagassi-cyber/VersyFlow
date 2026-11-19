@@ -1,150 +1,130 @@
 /**
- * useBibleData — loads the active translation's book corpus for a screen.
+ * useBibleData — l'index d'une traduction, et ses chapitres à la demande.
  *
- * Resolution:
- *   - Dev (Vite): the REAL Supabase Storage bucket is the source of truth.
- *     A cache miss triggers an automatic download from the bucket (with
- *     real streaming progress), so the Bible renders out of the box without
- *     any mock data.
- *   - Production / offline: bundled dataset → download cache → "unavailable".
+ * Le lecteur n'a pas besoin de 31 170 versets pour afficher la liste des
+ * livres ou les 23 premiers versets d'un psaume. Ce hook expose donc trois
+ * niveaux, alignés sur ceux du service :
  *
- * `download()` is also exposed for manual retry; `downloadPercent` +
- * `downloadBytes` track the in-flight transfer, and `cancelDownload()`
- * aborts it (AbortController → 'unavailable' status, byte counters reset).
+ *   - `index`      structure des 66 livres (nom, chapitres, versets par
+ *                  chapitre) : ~37 Ko, chargée d'office.
+ *   - `getChapter` un chapitre, lu au moment où il devient visible et gardé
+ *                  en mémoire pour la session.
+ *   - `books` / `loadAll` le corpus complet, uniquement pour les écrans qui
+ *                  parcourent tous les versets (recherche, statistiques).
+ *
+ * La traduction active vient des réglages ; un id peut être forcé.
  */
 
-import { useCallback, useEffect, useRef, useState } from 'react';
-import type { BibleBookData } from '@/domains/bible/repository-local';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useSettingsStore } from '@/store/settings-store';
 import {
-  downloadAndLoadTranslationBooks,
   findRemoteDatasetEntry,
+  loadBibleChapter,
+  loadBibleIndex,
   loadTranslationBooks,
 } from '@/services/bible-text-service';
+import type { BibleBookData, BibleChapterData } from '@/domains/bible/repository-local';
+import type { BookMeta, SplitBibleIndex } from '@/domains/bible/split-index';
 
-export type BibleDataStatus =
-  | 'loading'
-  | 'ready'
-  | 'unavailable'
-  | 'downloading'
-  | 'error';
+export type BibleDataStatus = 'loading' | 'ready' | 'unavailable' | 'error';
 
 export interface UseBibleData {
   /** The translation id actually used (explicit arg or the active setting). */
   translationId: string;
-  books: BibleBookData[] | null;
+  /** Structure of the translation (null while loading / when unavailable). */
+  index: SplitBibleIndex | null;
+  /** Structure of the 66 books, canonically ordered (null while loading). */
+  books: BookMeta[] | null;
+  /** The same structure keyed by book id, for O(1) lookups. */
+  byId: ReadonlyMap<string, BookMeta> | null;
   status: BibleDataStatus;
   error: string | null;
-  /** 0–100 (real, streamed) while a download is in flight; null otherwise. */
-  downloadPercent: number | null;
-  /** Bytes received so far while downloading; null otherwise. */
-  downloadBytes: number | null;
-  /** Catalog entry when the translation is available as a remote dataset. */
+  /** Catalogue entry for this translation (null when not delivered). */
   remoteEntry: ReturnType<typeof findRemoteDatasetEntry>;
-  /** Fetch the dataset from the Supabase bucket (no-op when cached). */
-  download: (onProgress?: (percent: number, receivedBytes: number) => void) => Promise<void>;
-  /** Abort the in-flight download (no-op when not downloading). */
-  cancelDownload: () => void;
+  /** One chapter, read on demand (cached for the session). */
+  getChapter: (bookId: string, chapterNumber: number) => Promise<BibleChapterData | null>;
+  /** The whole corpus — only for screens that walk every verse. */
+  loadAll: () => Promise<BibleBookData[] | null>;
+  /** Retry the structure load after a failure. */
+  reload: () => void;
 }
 
 export function useBibleData(explicitTranslationId?: string): UseBibleData {
   const activeTranslation = useSettingsStore((s) => s.bibleTranslation);
   const translationId = explicitTranslationId || activeTranslation || 'lsg';
 
-  const [books, setBooks] = useState<BibleBookData[] | null>(null);
+  const [index, setIndex] = useState<SplitBibleIndex | null>(null);
   const [status, setStatus] = useState<BibleDataStatus>('loading');
   const [error, setError] = useState<string | null>(null);
-  const [downloadPercent, setDownloadPercent] = useState<number | null>(null);
-  const [downloadBytes, setDownloadBytes] = useState<number | null>(null);
-  const autoStartedFor = useRef<string | null>(null);
-  const abortRef = useRef<AbortController | null>(null);
-
-  const cancelDownload = useCallback(() => {
-    abortRef.current?.abort();
-  }, []);
-
-  const download = useCallback(
-    async (onProgress?: (percent: number, receivedBytes: number) => void) => {
-      abortRef.current?.abort();
-      const controller = new AbortController();
-      abortRef.current = controller;
-      setStatus('downloading');
-      setError(null);
-      setDownloadPercent(0);
-      setDownloadBytes(0);
-      try {
-        const data = await downloadAndLoadTranslationBooks(
-          translationId,
-          (p, received) => {
-            setDownloadPercent(p);
-            setDownloadBytes(received);
-            onProgress?.(p, received);
-          },
-          { signal: controller.signal },
-        );
-        setBooks(data);
-        setStatus('ready');
-      } catch (e) {
-        if (controller.signal.aborted) {
-          // User cancelled — back to "not available locally", not an error.
-          setStatus('unavailable');
-          setError(null);
-        } else {
-          setError(e instanceof Error ? e.message : String(e));
-          setStatus('error');
-        }
-      } finally {
-        setDownloadPercent(null);
-        setDownloadBytes(null);
-        if (abortRef.current === controller) abortRef.current = null;
-      }
-    },
-    [translationId],
-  );
+  const [attempt, setAttempt] = useState(0);
+  const chaptersRef = useRef(new Map<string, BibleChapterData>());
 
   useEffect(() => {
     let cancelled = false;
     setStatus('loading');
-    setBooks(null);
+    setIndex(null);
     setError(null);
+    chaptersRef.current.clear();
 
-    void loadTranslationBooks(translationId).then(async (data) => {
-      if (cancelled) return;
-      if (data) {
-        setBooks(data);
+    void loadBibleIndex(translationId)
+      .then((loaded) => {
+        if (cancelled) return;
+        if (!loaded) {
+          setStatus(findRemoteDatasetEntry(translationId) ? 'unavailable' : 'error');
+          if (!findRemoteDatasetEntry(translationId)) {
+            setError(`Traduction « ${translationId} » inconnue.`);
+          }
+          return;
+        }
+        setIndex(loaded);
         setStatus('ready');
-        return;
-      }
-      // Not resolvable from the cache. If a remote dataset is registered,
-      // pull it from the real Supabase bucket automatically (once per
-      // translation per mount) so the content appears without user action.
-      if (findRemoteDatasetEntry(translationId) && autoStartedFor.current !== translationId) {
-        autoStartedFor.current = translationId;
-        await download();
-      } else {
-        setStatus('unavailable');
-      }
-    });
+      })
+      .catch((e: unknown) => {
+        if (cancelled) return;
+        setError(e instanceof Error ? e.message : String(e));
+        setStatus('error');
+      });
 
     return () => {
       cancelled = true;
-      abortRef.current?.abort();
-      abortRef.current = null;
     };
-  }, [translationId, download]);
+  }, [translationId, attempt]);
 
-  const remoteEntry = findRemoteDatasetEntry(translationId);
+  const byId = useMemo(() => {
+    if (!index) return null;
+    return new Map(index.books.map((book) => [book.id, book]));
+  }, [index]);
+
+  const getChapter = useCallback(
+    async (bookId: string, chapterNumber: number) => {
+      const key = `${bookId}:${chapterNumber}`;
+      const cached = chaptersRef.current.get(key);
+      if (cached) return cached;
+      const chapter = await loadBibleChapter(translationId, bookId, chapterNumber);
+      if (chapter) chaptersRef.current.set(key, chapter);
+      return chapter;
+    },
+    [translationId],
+  );
+
+  const loadAll = useCallback(
+    () => loadTranslationBooks(translationId),
+    [translationId],
+  );
+
+  const reload = useCallback(() => setAttempt((n) => n + 1), []);
 
   return {
     translationId,
-    books,
+    index,
+    books: index?.books ?? null,
+    byId,
     status,
     error,
-    downloadPercent,
-    downloadBytes,
-    remoteEntry,
-    download,
-    cancelDownload,
+    remoteEntry: findRemoteDatasetEntry(translationId),
+    getChapter,
+    loadAll,
+    reload,
   };
 }
 

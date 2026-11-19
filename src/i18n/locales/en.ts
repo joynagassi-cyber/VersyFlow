@@ -272,6 +272,8 @@ export const en = {
     memorizeDesc: 'New verse',
   },
   bible: {
+    chapterNotInTranslation: 'This chapter is not present in this translation.',
+    translationNotShipped: 'This translation is not bundled with the app.',
     clearSearch: 'Clear the search',
     verseLayout: 'Verse layout',
     verseFlow: 'Continuous text',

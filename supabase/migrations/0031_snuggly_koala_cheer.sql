@@ -1,1 +1,0 @@
-create policy "semantic_verse_relations_manual_insert" on public.verse_relations for insert to authenticated with check (source = 'manual');

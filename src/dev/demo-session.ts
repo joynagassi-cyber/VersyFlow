@@ -4,7 +4,7 @@
  * Ce que la démo est :
  *   - un **espace de stockage séparé** (clés préfixées `versyflow:mock-scope:v1:`),
  *   - des **repositories mock** (versets, révisions, familles, profils),
- *   - **aucun** appel Supabase / PowerSync / notification réelle.
+ *   - **aucun** appel réseau ni notification réelle.
  *
  * Ce qu'elle n'est pas : une simple bascule d'affichage. Le mode démo ne lit et
  * n'écrit jamais les clés réelles de l'utilisateur (voir `mock/storage-scope.ts`).

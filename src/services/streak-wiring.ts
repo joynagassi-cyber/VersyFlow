@@ -1,7 +1,7 @@
 /**
  * Streak wiring — composition root for the StreakCoordinator.
  *
- * Builds the `ProgressService` once (PowerSync memorization service + FSRS
+ * Builds the `ProgressService` once (local memorization service + FSRS
  * engine + insertOnly streak repository + shared user id provider) and starts
  * the event-driven {@link startStreakCoordinator} so that every
  * `VERSE_MEMORIZED` / `TARGET_MEMORIZED` domain event increments the streak
@@ -17,7 +17,7 @@ import { getFsrsEngine } from './fsrs-factory';
 import {
   getStreakRepository,
   getSyncUserIdProvider,
-} from '@/infrastructure/repository/powersync-repositories';
+} from '@/infrastructure/repository/mode-repositories';
 import { ProgressService } from './progress-service';
 import { startStreakCoordinator } from './streak-coordinator';
 

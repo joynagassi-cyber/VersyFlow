@@ -1,36 +1,17 @@
 /**
- * TelemetryService flush + TelemetryEventsRepositoryPowerSync upload
+ * TelemetryService.flush() — port-based flush contract.
  *
- * Port-based architecture test:
- *  - TelemetryService.flush() pulls the unsent queue into the upload port,
- *    prunes sent items on success, keeps the queue on failure (offline).
- *  - TelemetryEventsRepositoryPowerSync.upload() INSERTs redacted events
- *    into telemetry_events scoped to the resolved user id; drops the batch
- *    when there is no active session. Idempotent via client-generated UUID.
+ * `flush()` pulls the unsent queue into the upload port, prunes sent items on
+ * success and keeps the queue on failure (offline). The app's port is the
+ * local adapter; `NoOpTelemetryUploadAdapter` covers "nowhere to send".
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-
-// ---- Real imports -----------------------------------------------------------
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 import { TelemetryService } from '@/services/telemetry-service';
 import type { IStorage } from '@/infrastructure/storage/storage-types';
-import { TelemetryEventsRepositoryPowerSync } from '@/infrastructure/telemetry/telemetry-events-repository-powersync';
-import type { ISyncUserIdProvider } from '@/infrastructure/sync/sync-user-id-provider';
+import type { ITelemetryUploadPort } from '@/infrastructure/telemetry/upload-adapter';
 import type { TelemetryEvent, StreakIncrementedTelemetry } from '@/domains/telemetry/entities';
-
-// ---- Mocks ------------------------------------------------------------------
-
-/** Shared mock DB surface for TelemetryEventsRepositoryPowerSync. */
-function makeMockDb() {
-  const txExecute = vi.fn().mockResolvedValue(undefined);
-  const writeTransaction = vi.fn(async (cb: (tx: any) => Promise<void>) => {
-    await cb({ execute: txExecute });
-  });
-  return { getAll: vi.fn(), writeTransaction, execute: txExecute };
-}
-
-type MockDb = ReturnType<typeof makeMockDb>;
 
 const sampleEvent: StreakIncrementedTelemetry = {
   eventType: 'streak.incremented',
@@ -38,111 +19,6 @@ const sampleEvent: StreakIncrementedTelemetry = {
   sessionId: 'sess_test',
   payload: { streakDelta: 1, previousStreak: 5, newStreak: 6 },
 };
-
-// ---- Tests ------------------------------------------------------------------
-
-describe('TelemetryEventsRepositoryPowerSync.upload()', () => {
-  let mockDb: MockDb;
-  let userIdProvider: ISyncUserIdProvider & { resolveUserId: ReturnType<typeof vi.fn> };
-  let repo: TelemetryEventsRepositoryPowerSync;
-
-  beforeEach(() => {
-    mockDb = makeMockDb();
-    userIdProvider = { resolveUserId: vi.fn() };
-    repo = new TelemetryEventsRepositoryPowerSync(userIdProvider, () => mockDb as never);
-    vi.clearAllMocks();
-  });
-
-  it('drops the batch when there is no authenticated session (userId === null)', async () => {
-    vi.mocked(userIdProvider.resolveUserId).mockResolvedValue(null);
-
-    await repo.upload([sampleEvent]);
-
-    expect(mockDb.writeTransaction).not.toHaveBeenCalled();
-    expect(mockDb.execute).not.toHaveBeenCalled();
-  });
-
-  it('INSERTs each event with deterministic SQL and positional params scoped to userId', async () => {
-    const resolvedId = 'user-resolved-abc';
-    vi.mocked(userIdProvider.resolveUserId).mockResolvedValue(resolvedId);
-    // Stub randomUUID so we can assert the exact SQL+params.
-    vi.doMock('@/infrastructure/sync/uuid', () => ({
-      randomUUID: () => 'stub-uuid-000',
-    }));
-
-    await repo.upload([sampleEvent]);
-
-    expect(mockDb.writeTransaction).toHaveBeenCalledTimes(1);
-    expect(mockDb.execute).toHaveBeenCalledTimes(1);
-
-    const [sql, params] = mockDb.execute.mock.calls[0];
-    expect(sql).toContain('INSERT INTO telemetry_events');
-    expect(sql).toContain('user_id');
-    expect(sql).toContain('event_type');
-    expect(sql).toContain('payload');
-    expect(sql).toContain('session_id');
-    expect(sql).toContain('created_at');
-    expect(sql).not.toContain('ON CONFLICT');
-    expect(params).toHaveLength(6);
-    expect(params[1]).toBe(resolvedId);
-    expect(params[2]).toBe('streak.incremented');
-    expect(JSON.parse(params[3] as string)).toEqual(sampleEvent.payload);
-    expect(params[4]).toBe('sess_test');
-    expect(params[5]).toBe(new Date(sampleEvent.timestamp).toISOString());
-  });
-
-  it('handles multiple events in a single writeTransaction', async () => {
-    vi.mocked(userIdProvider.resolveUserId).mockResolvedValue('u1');
-
-    const evt1 = sampleEvent;
-    const evt2: TelemetryEvent = {
-      eventType: 'milestone.reached',
-      timestamp: 1_700_000_000_000,
-      sessionId: 'sess_test',
-      payload: { milestoneType: 'verseCount', totalVerses: 100, totalMastered: 50 },
-    };
-
-    vi.doMock('@/infrastructure/sync/uuid', () => ({
-      randomUUID: () => 'stub-uuid-m',
-    }));
-
-    await repo.upload([evt1, evt2]);
-
-    expect(mockDb.execute).toHaveBeenCalledTimes(2);
-    const [, params2] = mockDb.execute.mock.calls[1];
-    expect(params2[2]).toBe('milestone.reached');
-  });
-
-  it('no-op on empty events array', async () => {
-    await repo.upload([]);
-
-    expect(vi.mocked(userIdProvider.resolveUserId)).not.toHaveBeenCalled();
-    expect(mockDb.writeTransaction).not.toHaveBeenCalled();
-  });
-
-  it('treats a throwing resolveUserId as "no session" (no crash, no write)', async () => {
-    // Resolver failure (e.g. auth store not ready) must be treated exactly
-    // like a null user id: skip the local write, never crash the flush.
-    vi.mocked(userIdProvider.resolveUserId).mockImplementation(
-      () => Promise.reject(new Error('auth store unavailable')),
-    );
-
-    let thrown: unknown = null;
-    try {
-      await repo.upload([sampleEvent]);
-    } catch (e) {
-      thrown = e;
-    }
-
-    expect(thrown).toBeNull();
-    expect(mockDb.writeTransaction).not.toHaveBeenCalled();
-    expect(mockDb.execute).not.toHaveBeenCalled();
-  });
-
-  afterEach(() => {
-    vi.doUnmock('@/infrastructure/sync/uuid');
-  });
-});
 
 describe('TelemetryService.flush() with upload port', () => {
   let mockStorage: IStorage;

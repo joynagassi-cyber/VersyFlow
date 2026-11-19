@@ -19,7 +19,7 @@ import type { Family, FamilyMembership } from '@/domains/family';
 import type { FamilyInvitation } from '@/domains/family-invitation';
 import type { StreakRecord } from '@/domains/streaks/repository';
 import { DEFAULT_FSRS_STATE } from '@/domains/fsrs';
-import { recordUuid } from '@/infrastructure/sync/memorization-mapper';
+import { recordUuid } from '@/infrastructure/repository/ports';
 import { mockDb } from './db';
 import { getMockIdentity, stableId } from './identity';
 import { resetMockSemanticStore } from './semantic';

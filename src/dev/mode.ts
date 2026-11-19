@@ -1,27 +1,25 @@
 /**
- * Data mode — "mock" vs "live".
+ * Data mode — "démo" vs "réel", both 100 % local.
  *
- * VersyFlow ships with two interchangeable backends behind the same domain
- * ports:
+ * VersyFlow is frontend-only: there is no backend to talk to. The two modes
+ * differ only in WHICH browser store is used:
  *
- *   - `live` : Supabase + PowerSync (cloud sync, real SQLite replicas)
- *   - `mock` : 100 % frontend. Everything is served from an in-browser
- *              store (localStorage) seeded with realistic test data, and
- *              every write/event is mirrored to the small local API
- *              (`server/mock-api.mjs`) so manual test sessions can be
- *              inspected and exported.
+ *   - `mock` : the demo scope — a separate localStorage namespace
+ *              (`versyflow:mock-scope:v1:*`) seeded with fictitious data, so
+ *              a tester can explore every screen without touching their real
+ *              data. This is the default (see `DEMO_IS_DEFAULT`).
+ *   - `live` : the real local scope — the same screens on the user's own
+ *              data, still entirely on the device.
  *
  * Resolution order (first match wins):
- *   1. `?data=mock|live` in the URL — persisted for the session.
+ *   1. `?data=mock|live` in the URL — persisted.
  *   2. `localStorage['versyflow:data-mode']` — set by the in-app Dev panel.
  *   3. `VITE_DATA_MODE` (see `.env.mock` + `npm run dev:mock`).
- *   4. Auto: `mock` when no Supabase project is configured, `live` otherwise.
+ *   4. `mock` unless `VITE_DEMO_DEFAULT=off`.
  *
- * The UI never needs to know about this: the composition roots
- * (`@/infrastructure/repository/powersync-repositories`, `@/auth`,
- * `@/store/sync-store`) pick the right adapter at call time, and the
- * PowerSync/Supabase modules are only *imported dynamically* on the live
- * path — so a mock build never even loads the cloud SDK.
+ * A future backend will add a third mode; the composition root
+ * (`@/infrastructure/repository/mode-repositories`) is the only file that has
+ * to learn about it.
  */
 
 export type DataMode = 'mock' | 'live';
@@ -40,8 +38,8 @@ export const DATA_MODE_STORAGE_KEY = 'versyflow:data-mode';
  *   - `?data=live` dans l'URL,
  *   - ou le bouton « Revenir aux données réelles » de `/settings/data` et `/dev`.
  *
- * Pour revenir au comportement « auto » (mock seulement si aucun projet
- * Supabase n'est configuré), définir `VITE_DEMO_DEFAULT=off`.
+ * `VITE_DEMO_DEFAULT=off` ouvre directement les données réelles de
+ * l'appareil.
  */
 export const DEMO_IS_DEFAULT = true;
 
@@ -94,7 +92,7 @@ function normalizeMode(value: string | null | undefined): DataMode | null {
   if (!value) return null;
   const v = value.trim().toLowerCase();
   if (v === 'mock' || v === 'local' || v === 'frontend') return 'mock';
-  if (v === 'live' || v === 'cloud' || v === 'supabase') return 'live';
+  if (v === 'live' || v === 'cloud' || v === 'real') return 'live';
   return null;
 }
 
@@ -111,13 +109,9 @@ function readUrlOverride(): DataMode | null {
   }
 }
 
-/** True when a Supabase project is configured (see `.env.example`). */
-export function isSupabaseConfigured(): boolean {
-  const env = readEnv();
-  return Boolean(
-    (env.VITE_SUPABASE_URL || env.SUPABASE_URL) &&
-      (env.VITE_SUPABASE_ANON_KEY || env.SUPABASE_ANON_KEY),
-  );
+/** True when an external data source is configured (none today: local only). */
+export function isExternalSourceConfigured(): boolean {
+  return false;
 }
 
 let cachedMode: DataMode | null = null;
@@ -147,14 +141,9 @@ export function getDataMode(): DataMode {
     return cachedMode;
   }
 
-  // Chantier démo : par défaut on ouvre en démo, même si un projet Supabase
-  // est configuré. `VITE_DEMO_DEFAULT=off` restaure l'auto-détection.
-  if (isDemoDefaultEnabled()) {
-    cachedMode = 'mock';
-    return cachedMode;
-  }
-
-  cachedMode = isSupabaseConfigured() ? 'live' : 'mock';
+  // Chantier démo : par défaut on ouvre en démo. `VITE_DEMO_DEFAULT=off`
+  // ouvre directement les données réelles de l'appareil.
+  cachedMode = 'mock';
   return cachedMode;
 }
 
@@ -163,7 +152,7 @@ export function isMockMode(): boolean {
   return getDataMode() === 'mock';
 }
 
-/** `true` when the app runs on Supabase + PowerSync. */
+/** `true` when the app runs on the user's real local data (not the demo scope). */
 export function isLiveMode(): boolean {
   return getDataMode() === 'live';
 }
@@ -199,21 +188,17 @@ export function reloadWithDataMode(mode: DataMode): void {
 /** Human readable summary, shown in the Dev panel / console banner. */
 export function describeDataMode(): string {
   const mode = getDataMode();
-  if (mode === 'mock') return 'MOCK — données fictives locales (isolation en cours de vérification)';
-  return 'LIVE — Supabase + PowerSync';
+  if (mode === 'mock') return 'DÉMO — données fictives locales, isolées de vos données réelles';
+  return 'RÉEL — vos données locales sur cet appareil';
 }
 
 /**
- * Throw a clear, actionable error when cloud-only code is reached while the
- * app runs in mock mode. Used as a guard inside the PowerSync singleton so a
- * stray import cannot start a real sync stack in a frontend-only session.
+ * Kept for the demo guards: a feature that only makes sense with a backend
+ * throws this instead of pretending to work.
  */
 export class MockModeGuardError extends Error {
   constructor(what: string) {
-    super(
-      `[data-mode] ${what} est indisponible en mode MOCK. ` +
-        'Passez en mode LIVE (?data=live ou VITE_DATA_MODE=live) pour utiliser Supabase/PowerSync.',
-    );
+    super(`[data-mode] ${what} n'est pas disponible sans backend.`);
     this.name = 'MockModeGuardError';
   }
 }

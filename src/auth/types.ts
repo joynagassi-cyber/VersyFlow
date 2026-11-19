@@ -1,14 +1,15 @@
 /**
  * Auth layer — shared types and the `IAuthService` port.
  *
- * The app has two interchangeable implementations:
+ * The only implementation today is `MockAuthService`: a frictionless local
+ * identity (email + display name, persisted on the device). It never touches
+ * the network and ignores passwords by design, so manual testers can sign in
+ * with anything.
  *
- *   - `SupabaseAuthService` — real accounts through Supabase Auth (live mode)
- *   - `MockAuthService`     — frictionless local identity (mock mode)
- *
- * Consumers (`useAuthStore`, the PowerSync user-id provider, settings screens)
- * depend on `IAuthService` and receive whichever is active from
- * `getAuthService()` — so the frontend never hard-codes the cloud provider.
+ * Consumers (`useAuthStore`, the user-id provider, settings screens) depend on
+ * `IAuthService` and receive the active implementation from
+ * `getAuthService()` — a future account backend plugs in there and nowhere
+ * else.
  */
 
 export interface UserProfile {
@@ -29,10 +30,7 @@ export interface AuthSession {
   token: string;
 }
 
-/**
- * Minimal user shape consumed by the app. Both Supabase's `User` and the
- * mock user satisfy it structurally.
- */
+/** Minimal user shape consumed by the app. */
 export interface AuthUserLike {
   id: string;
   email?: string | null;
@@ -58,8 +56,8 @@ export class AuthError extends Error {
 }
 
 /**
- * The auth port. Every method is safe to call when no backend is configured
- * (they resolve to a clean `AuthError` instead of throwing).
+ * The auth port. Every method resolves cleanly when there is no identity yet
+ * (a typed `AuthError`, never a throw).
  */
 export interface IAuthService {
   /** `false` when the implementation has no credentials (live mode only). */

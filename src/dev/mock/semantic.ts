@@ -2,7 +2,7 @@
  * Mock Semantic Memory — isolated semantic concepts, communities, relations,
  * and user tags for Demo/Mock mode.
  *
- * Avoids touching PowerSync/SQLite (`MockModeGuardError`) while keeping
+ * Stays in the browser store (`MockModeGuardError` guards the SQL path) while keeping
  * `/semantic`, `/semantic/tags`, `/semantic/tree`, `/semantic/verse`, chapter
  * semantic chips, and `VerseActionBar` ("Taguer") 100% functional and
  * coherent with `SEED_VERSES`.

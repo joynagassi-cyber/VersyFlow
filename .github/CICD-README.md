@@ -23,7 +23,7 @@ deleted legacy workflows (`build.yml`, `build-apk.yml`, `build-apk-simple.yml`,
         └──────────────────┼──────────────────┘
                            ▼
                     ┌─────────────┐
-                    │ build-web   │   npm ci (postinstall PowerSync worker
+                    │ build-web   │   npm ci (
                     │ Vite → www/ │   patch) → npm run build → upload-artifact
                     └──────┬──────┘   web-build-www (7d)
                            │
@@ -69,14 +69,10 @@ Full creation recipes: `.github/secrets-checklist.md`.
 
 | Secret | Consumed by | Status / note |
 |--------|-------------|---------------|
-| `VITE_SUPABASE_URL` | build-web (Vite env) | exists — verify it matches `.env.local` |
-| `VITE_SUPABASE_ANON_KEY` | build-web (Vite env) | exists — must be the anon/publishable key, never the service role key |
-| `VITE_POWERSYNC_URL` | build-web (Vite env) | **create** from `.env.local` value |
 | `KEYSTORE` | build-android-release | base64 of `keystore/release.keystore` (never committed) |
 | `KEYSTORE_PASSWORD` | build-android-release | `-storepass` value |
 | `KEY_ALIAS` | build-android-release | `-alias` value (convention: `versyflow-release-key`) |
 | `KEY_PASSWORD` | build-android-release | `-keypass` value |
-| `SUPABASE_URL` / `SUPABASE_SECRET_KEY` | **not** consumed by CI | manual Supabase CLI only; keep the service role key out of CI entirely |
 
 PRs run with empty `VITE_*` values by design (safe placeholder config); only
 main-branch builds get the real values.
@@ -141,7 +137,6 @@ Note: `build-android` is excluded when dispatch has `build_release=true`
 | Android build: SDK / build-tools errors | Missing build tools on the runner | The job installs Build-Tools 35 + Platform 35 via `android-actions/setup-android@v3`; ensure `android/` tree is committed (it is part of the repo) |
 | Coverage artifact empty | `tests` check must run `npm run test:coverage` (it does) | If you changed it back to `npm test`, restore `test:coverage` — `vitest run` alone writes no `coverage/` dir |
 | `npm ci` fails: "lockfile out of date" | `package-lock.json` not committed / out of sync | `npm install` locally, commit the updated lockfile |
-| PowerSync worker 404 in built app | postinstall patch not applied | `npm ci` (not `npm install`) runs `scripts/patch-powersync-worker.cjs`; the patch is idempotent — a stale patch never breaks the build |
 | Concurrent runs pile up | Concurrency group | `concurrency: ci-${{ github.workflow }}-${{ github.ref }}` with `cancel-in-progress: true` — newer push cancels the older one |
 
 ## 6. Verify the pipeline works
@@ -149,7 +144,7 @@ Note: `build-android` is excluded when dispatch has `build_release=true`
 Local (before pushing):
 
 ```bash
-npm ci                     # also runs the postinstall PowerSync worker patch
+npm ci
 npm run typecheck          # tsc -p tsconfig.app.json --noEmit
 npm run lint               # eslint . --ext .ts,.tsx
 npm run test:coverage      # vitest run --coverage → coverage/

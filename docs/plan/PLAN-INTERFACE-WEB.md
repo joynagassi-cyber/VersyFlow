@@ -1,3 +1,8 @@
+> **Note (2026-11-19) — documentation historique.** VersyFlow est
+> désormais 100 % frontend : the former backend et the local store ont été retirés du
+> dépôt. Les mentions de ces services dans ce document décrivent
+> l’état antérieur, pas l’architecture actuelle (voir `docs/AUDIT.md`).
+
 # Plan d'exécution — « Interface web + thèmes » (VersyFlow)
 
 Source de la demande : `VersyFlow-Prompt-Interface-Web-Themes.md` (1 028 lignes, 12 sections + annexes).
@@ -328,7 +333,6 @@ Deux limites restent déclarées, jamais comptées comme réussies :
 | `tests/unit/bible-full-canon.test.ts`, `bible-multi-translation.test.ts` | seuls `lsg.json` présents (données non versionnées par décision produit) |
 | `tests/semantic/import.test.ts` | jeux de données absents |
 | `tests/api/fsrs-engine-api.test.ts`, `tests/unit/services/fsrs-factory.test.ts` | WASM non compilé dans l'environnement |
-| `tests/unit/powersync-connector.test.ts`, `tests/integration/auth-integration.test.ts` | aucun `.env` (mode local) |
 
 ## 8. Corrections apportées pendant l'exécution
 

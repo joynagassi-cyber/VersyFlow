@@ -1,10 +1,12 @@
 /**
- * Bible Explorer Screen — browse books → chapters → verses
- * Tailwind + i18n + Lucide + FullScreenPage.
+ * Bible Explorer — livres → chapitres → versets
  *
- * Verse text comes from the active translation (settings store). When the
- * dataset is not resolvable locally, a download-on-demand banner pulls it
- * from the Supabase Storage bucket `bible-datasets`.
+ * Trois vues, trois routes (/bible/explorer, /:bookId, /:bookId/:chapter) :
+ * chaque vue est adressable, donc partageable et testable.
+ *
+ * Les données viennent de l'index de la traduction (structure seule) : la
+ * liste des livres et la grille des chapitres ne parsent aucun verset. Le
+ * texte n'est lu qu'en entrant dans la vue « versets », chapitre par chapitre.
  */
 
 import { useState, useMemo } from 'react';
@@ -18,8 +20,6 @@ import {
   BookOpen01Icon as BookOpen,
   CrossIcon as Cross,
   Cancel01Icon as X,
-  Download01Icon as Download,
-  Loading03Icon as Loader2,
   AlertCircleIcon as AlertCircle,
 } from '@/components/ui/solar-icons';
 import FullScreenPage from '@/components/layout/FullScreenPage';
@@ -27,17 +27,12 @@ import { formatChapterCount } from '@/lib/chapter-count';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 import { useBibleBooks, type BookMeta } from '@/hooks/useBibleBooks';
-import { bibleTranslationDisplayName } from '@/services/bible-translation-names';
 import { useBibleData } from '@/hooks/useBibleData';
+import { bibleTranslationDisplayName } from '@/services/bible-translation-names';
 import ContinuousBibleReader from '@/components/bible/ContinuousBibleReader';
 import { useAppearanceStore } from '@/store/appearance-store';
 
 type ViewMode = 'books' | 'chapters' | 'verses';
-
-function formatBytes(bytes: number): string {
-  if (bytes < 1024 * 1024) return `${Math.ceil(bytes / 1024)} Ko`;
-  return `${(bytes / (1024 * 1024)).toFixed(1)} Mo`;
-}
 
 /**
  * URL-driven views (each view IS a route, so tooling can detect them):
@@ -54,6 +49,7 @@ export default function BibleExplorerScreen() {
   const [query, setQuery] = useState('');
 
   const { byId, translationId } = useBibleBooks();
+  const { index, status, error, getChapter, reload } = useBibleData();
 
   const rawBookId = params.bookId ?? null;
   const selectedBookId = rawBookId != null && byId.has(rawBookId) ? rawBookId : null;
@@ -67,15 +63,11 @@ export default function BibleExplorerScreen() {
   const selectedBook: BookMeta | null =
     selectedBookId != null ? byId.get(selectedBookId) ?? null : null;
 
-  const { books, status, error, remoteEntry, downloadPercent, download } = useBibleData();
-
   const filteredBooks = useMemo(() => {
     const q = query.trim().toLowerCase();
     const all = [...byId.values()];
     if (!q) return all;
-    return all.filter((b) =>
-      [b.displayName, b.id].some((n) => n?.toLowerCase().includes(q)),
-    );
+    return all.filter((b) => [b.displayName, b.id].some((n) => n?.toLowerCase().includes(q)));
   }, [query, byId]);
 
   const oldTestamentFiltered = filteredBooks.filter((b) => b.testament === 'old');
@@ -89,33 +81,30 @@ export default function BibleExplorerScreen() {
     if (selectedBookId) navigate(`/bible/explorer/${selectedBookId}/${chapter}`);
   };
 
-  // Manual retry (auto-download already runs inside the hook on a cache miss).
-  const handleDownload = () => {
-    void download();
-  };
-
   const translationLabel = bibleTranslationDisplayName(translationId);
-
-  const showDownloadBanner =
-    remoteEntry != null && status !== 'loading' && status !== 'ready';
+  const showUnavailable = status === 'unavailable' || status === 'error';
 
   const title =
     viewMode === 'books'
       ? t('bible.explorer', 'Explorer la Bible')
       : viewMode === 'chapters' && selectedBook
         ? selectedBook.displayName
-        : viewMode === 'verses' && selectedBook && selectedChapter
-          ? t('bible.explorer', 'Bible')
-          : t('bible.explorer', 'Bible');
+        : t('bible.explorer', 'Bible');
 
   return (
     <FullScreenPage
       title={title}
       subtitle={
         viewMode === 'chapters' && selectedBook
-          ? formatChapterCount(t('bible.chapterCount', { count: selectedBook.chapterCount }), selectedBook.chapterCount, i18n.resolvedLanguage || i18n.language)
+          ? formatChapterCount(
+              t('bible.chapterCount', { count: selectedBook.chapterCount }),
+              selectedBook.chapterCount,
+              i18n.resolvedLanguage || i18n.language,
+            )
           : viewMode === 'verses' && selectedChapter
-            ? (continuous ? t('bible.continuousReading', 'Lecture continue') : t('bible.chapterMode', 'Chapitre par chapitre'))
+            ? continuous
+              ? t('bible.continuousReading', 'Lecture continue')
+              : t('bible.chapterMode', 'Chapitre par chapitre')
             : undefined
       }
       showBack
@@ -172,19 +161,16 @@ export default function BibleExplorerScreen() {
             section.list.length === 0 ? null : (
               <section key={section.key} className="mb-6">
                 <div className="mb-3 flex items-center gap-3 px-1">
-                  <span
-                    className={cn(
-                      'flex h-8 w-8 items-center justify-center rounded-full',
-                      section.iconBg,
-                    )}
-                  >
+                  <span className={cn('flex h-8 w-8 items-center justify-center rounded-full', section.iconBg)}>
                     {section.icon}
                   </span>
-                  <h2 className="card-title flex-1">
-                    {section.label}
-                  </h2>
+                  <h2 className="card-title flex-1">{section.label}</h2>
                   <span className="text-sm text-text-muted">
-                    {formatChapterCount(t('bible.bookCount', { count: section.list.length }), section.list.length, i18n.resolvedLanguage || i18n.language)}
+                    {formatChapterCount(
+                      t('bible.bookCount', { count: section.list.length }),
+                      section.list.length,
+                      i18n.resolvedLanguage || i18n.language,
+                    )}
                   </span>
                 </div>
                 <div className="flex flex-col gap-2">
@@ -195,11 +181,13 @@ export default function BibleExplorerScreen() {
                       className="flex items-center justify-between rounded-xl bg-surface p-4 text-left shadow-sm"
                     >
                       <div>
-                        <p className="text-base font-semibold text-text-primary">
-                          {book.displayName}
-                        </p>
+                        <p className="text-base font-semibold text-text-primary">{book.displayName}</p>
                         <p className="text-sm text-text-muted">
-                          {formatChapterCount(t('bible.chapterCount', { count: book.chapterCount }), book.chapterCount, i18n.resolvedLanguage || i18n.language)}
+                          {formatChapterCount(
+                            t('bible.chapterCount', { count: book.chapterCount }),
+                            book.chapterCount,
+                            i18n.resolvedLanguage || i18n.language,
+                          )}
                         </p>
                       </div>
                       <DuoIcon icon={ChevronRight} size={18} className="text-text-muted" />
@@ -215,78 +203,65 @@ export default function BibleExplorerScreen() {
       {/* Chapters */}
       {viewMode === 'chapters' && selectedBook && (
         <div className="grid grid-cols-5 gap-2">
-          {Array.from({ length: selectedBook.chapterCount }, (_, i) => i + 1).map(
-            (chapter) => (
-              <button
-                key={chapter}
-                onClick={() => openChapter(chapter)}
-                className="flex flex-col items-center rounded-xl bg-surface py-3 shadow-sm"
-              >
-                <span className="text-base font-semibold text-text-primary">{chapter}</span>
-              </button>
-            ),
-          )}
+          {Array.from({ length: selectedBook.chapterCount }, (_, i) => i + 1).map((chapter) => (
+            <button
+              key={chapter}
+              onClick={() => openChapter(chapter)}
+              className="flex flex-col items-center rounded-xl bg-surface py-3 shadow-sm"
+            >
+              <span className="text-base font-semibold text-text-primary">{chapter}</span>
+            </button>
+          ))}
         </div>
       )}
 
       {/* Verses — manuscript flow */}
       {viewMode === 'verses' && selectedBook && selectedChapter && (
         <div className="flex flex-col gap-3">
-          {/* Download-on-demand banner */}
-          {showDownloadBanner && (
-            <div className="rounded-2xl bg-surface p-4 shadow-sm">
-              <div className="flex items-start gap-3">
-                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-surface-tint text-primary">
-                  {status === 'downloading' ? (
-                    <DuoIcon icon={Loader2} size={18} className="animate-spin" />
-                  ) : (
-                    <DuoIcon icon={Download} size={18} />
-                  )}
-                </span>
-                <div className="min-w-0 flex-1">
-                  <p className="text-sm font-semibold text-text-primary">
-                    {status === 'error'
-                      ? t('bible.downloadFailed', 'Échec du téléchargement')
-                      : t('bible.downloadNeeded', 'Traduction non disponible hors ligne')}
-                  </p>
-                  <p className="text-xs text-text-muted">
-                    {translationLabel} · {formatBytes(remoteEntry.sizeBytes)}
-                  </p>
-                  {status === 'downloading' && downloadPercent != null && (
-                    <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-surface-tint">
-                      <div
-                        className="h-full rounded-full bg-primary transition-all"
-                        style={{ width: `${downloadPercent}%` }}
-                      />
-                    </div>
-                  )}
-                  {status === 'error' && (
-                    <p className="mt-1 flex items-center gap-1 text-xs text-error">
-                      <DuoIcon icon={AlertCircle} size={12} /> {error}
-                    </p>
-                  )}
-                </div>
-                {status !== 'downloading' && (
-                  <button
-                    onClick={handleDownload}
-                    className="shrink-0 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-on-primary shadow-sm"
-                  >
-                    {status === 'error'
-                      ? t('common.retry', 'Réessayer')
-                      : t('common.download', 'Télécharger')}
-                  </button>
-                )}
+          {showUnavailable && (
+            <div className="flex items-start gap-3 rounded-2xl bg-surface p-4 shadow-sm">
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-surface-tint text-primary">
+                <DuoIcon icon={AlertCircle} size={18} />
+              </span>
+              <div className="min-w-0 flex-1">
+                <p className="text-sm font-semibold text-text-primary">
+                  {t('bible.downloadFailed', 'Texte indisponible')}
+                </p>
+                <p className="text-xs text-text-muted">
+                  {translationLabel} ·{' '}
+                  {error ??
+                    t(
+                      'bible.translationNotShipped',
+                      'Cette traduction n’est pas livrée avec l’application.',
+                    )}
+                </p>
               </div>
+              <button
+                onClick={reload}
+                className="shrink-0 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-on-primary shadow-sm"
+              >
+                {t('common.retry', 'Réessayer')}
+              </button>
             </div>
           )}
 
           {/* Manuscript flow: the chapter as one continuous serif text,
               with tappable inline verse numbers. */}
           {status === 'loading' ? (
-            <BibleReaderSkeleton label={t('common.loading', 'Chargement du chapitre…')} layout={verseLayout} />
-          ) : (
-            books && <ContinuousBibleReader key={`${translationId}:${selectedBook.id}:${selectedChapter}`} books={books} initialBookId={selectedBook.id} initialChapter={selectedChapter} translationId={translationId} />
-          )}
+            <BibleReaderSkeleton
+              label={t('common.loading', 'Chargement du chapitre…')}
+              layout={verseLayout}
+            />
+          ) : index ? (
+            <ContinuousBibleReader
+              key={`${translationId}:${selectedBook.id}:${selectedChapter}`}
+              index={index}
+              initialBookId={selectedBook.id}
+              initialChapter={selectedChapter}
+              translationId={translationId}
+              getChapter={getChapter}
+            />
+          ) : null}
         </div>
       )}
     </FullScreenPage>

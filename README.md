@@ -126,11 +126,11 @@ npx expo run:android  # Android
 
 ## 🧪 Mode frontend seul (mock) — tester sans backend
 
-L'application peut tourner **100 % en frontend** : aucun appel à Supabase,
-aucune base PowerSync, aucun réseau. Les données viennent d'un magasin
-local (localStorage) pré-rempli de versets/révisions/famille, et tout ce que
-vous faites pendant un test manuel est envoyé à une petite API locale qui
-l'affiche dans un tableau de bord.
+L'application tourne **100 % en frontend** : aucun backend, aucun réseau.
+Les données viennent d'un magasin local (localStorage) pré-rempli de
+versets/révisions/famille, derrière les interfaces de
+`src/infrastructure/repository/`. Le panneau `/dev` permet de vérifier l'état
+de la démo (graine, isolation, contrats).
 
 ```bash
 # API de test (:4000) + Vite en mode mock (:3000)

@@ -121,7 +121,7 @@ describe('Lot 3A — Onboarding complet et retour arrière sûr', () => {
   it('préserve le retour arrière hiérarchique sur toutes les pages Bible', () => {
     expect(read('app/bible/explorer.tsx')).toContain('FullScreenPage');
     expect(read('app/bible/book.tsx')).toContain('backPath="/tabs/explore"');
-    expect(read('app/bible/chapter.tsx')).toContain('backPath={`/bible/book/${book.id}`}');
+    expect(read('app/bible/chapter.tsx')).toContain('backPath={`/bible/book/${bookId}`}');
   });
 });
 

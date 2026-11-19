@@ -10,9 +10,6 @@ declare `environment: production`).
 
 | # | Secret | Status | Used by | Purpose | How to create |
 |---|--------|--------|---------|---------|---------------|
-| 1 | `VITE_SUPABASE_URL` | ✅ exists | build-web | Supabase URL baked into the Vite bundle (`import.meta.env.VITE_SUPABASE_URL`) | Already present as a repo secret — verify it matches `.env.local`. |
-| 2 | `VITE_SUPABASE_ANON_KEY` | ✅ exists | build-web | Supabase publishable/anon key baked into the bundle. Must be the **anon** key — never the service role key (service role must NEVER ship to the client). | Already present — confirm it is the anon/publishable key. |
-| 3 | `VITE_POWERSYNC_URL` | ✅ exists | build-web | PowerSync sync endpoint baked into the bundle; required for runtime sync. | Present — verify it matches `.env.local`. |
 | 4 | `KEYSTORE` | ✅ exists | build-android-release | Base64 of `keystore/release.keystore`, decoded at build time for release APK signing. | See "Keystore setup" below. **Never commit the keystore file.** |
 | 5 | `KEYSTORE_PASSWORD` | ✅ exists | build-android-release | Password of the release keystore (the `-storepass` value from `keytool`). | Set to `VersyFlow2024!` (current keystore). It only reaches `android/gradle.properties` inside the CI runner — never in the repo. |
 | 6 | `KEY_ALIAS` | ✅ exists | build-android-release | Key alias inside the keystore (`versyflow-release-key`). | Set in GitHub. |
@@ -39,8 +36,6 @@ None.
 
 | # | Secret | Status | Purpose |
 |---|--------|--------|---------|
-| 12 | `SUPABASE_URL` | ✅ exists | Supabase project URL — kept for manual Supabase CLI migration runs (`supabase db push`), not referenced by `ci-cd.yml`. Leave as-is or move to an environment-scoped secret. |
-| 13 | `SUPABASE_SECRET_KEY` | ✅ exists | Supabase service-role key for manual DB pushes only. **High privilege: keep out of any CI job** — restrict access (environment scope), never inject into build jobs. |
 
 ---
 
@@ -194,9 +189,6 @@ Settings → Secrets and variables → Actions → New repository secret (or in 
 
 ```bash
 # Vite build-time env (rows 1–3)
-VITE_SUPABASE_URL=<supabase project URL>
-VITE_SUPABASE_ANON_KEY=<anon / publishable key>
-VITE_POWERSYNC_URL=<powersync endpoint>
 
 # Android release signing (rows 4–7)
 KEYSTORE=<base64 of keystore/release.keystore>

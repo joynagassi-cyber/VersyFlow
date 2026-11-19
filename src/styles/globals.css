@@ -2997,6 +2997,15 @@ html:is([data-bg='image'],[data-app-bg='gradient']) .reading-chapter-heading p {
 .continuous-more { padding: 8px 12px; color: inherit; font-size: 13px; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
 .continuous-more:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
 .continuous-boundary:empty { display: none; }
+/* Chapitre en cours de lecture : deux lignes grises qui reprennent la mesure
+   du manuscrit. Pas de spinner ni de carte : la page garde sa typographie et
+   le texte arrive à sa place, sans faire sauter ce qui est déjà lu. */
+.manuscript-placeholder { display: flex; flex-direction: column; gap: 10px; padding: 18px 0; }
+.manuscript-placeholder-line { height: 0.72em; border-radius: 4px; background: color-mix(in srgb, var(--color-text-primary) 9%, transparent); }
+.manuscript-placeholder-line.short { width: 62%; }
+/* Chapitre annoncé par l'index mais absent du fichier : le lecteur le dit,
+   sans squelette qui tournerait indéfiniment. */
+.manuscript-empty { padding: 18px 0; color: var(--color-text-muted); font-size: 14px; font-style: italic; }
 /* Lecture biblique : le numéro du chapitre joue le rôle de lettrine. */
 .reading-card .verse-flow { display: flow-root; }
 .verse-flow-blocks .manuscript-verse { display: block; margin: 0 0 .8em; }

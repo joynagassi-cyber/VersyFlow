@@ -3,19 +3,19 @@
  *
  * Self-contained copy of the schema used by
  * `src/infrastructure/semantic/schema.ts` (`buildSemanticSchemaDdl`),
- * split into individual statements for the PowerSync web driver
+ * split into individual statements for the sqlite driver
  * (which runs one statement at a time via `db.database.execute`).
  *
  * Conventions (matching the DDL in the decision phase):
- *  - bare table names (DB-relative; the PowerSync web driver names the
- *    local db `powersync.db` on Capacitor)
+ *  - bare table names (DB-relative; the driver names the
+ *    the local browser store)
  *  - UUIDs are TEXT, timestamps are TEXT ISO-8601 UTC, booleans are
  *    INTEGER 0/1, confidence is REAL
  *  - `semantic_memory_meta` carries `schema_version` for deterministic
  *    migrations
  *
  * NOTE: `id` is declared explicitly here because these tables are
- * LOCAL_ONLY in the PowerSync driver — the SDK only auto-adds `id` to
+ * local-only in the driver — the SDK only auto-adds `id` to
  * SYNCED tables. The DDL is idempotent (`CREATE TABLE IF NOT EXISTS`).
  */
 

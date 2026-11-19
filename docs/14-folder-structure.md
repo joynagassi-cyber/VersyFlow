@@ -1,3 +1,8 @@
+> **Note (2026-11-19) — documentation historique.** VersyFlow est
+> désormais 100 % frontend : the former backend et the local store ont été retirés du
+> dépôt. Les mentions de ces services dans ce document décrivent
+> l’état antérieur, pas l’architecture actuelle (voir `docs/AUDIT.md`).
+
 # VersyFlow — Structure du Projet (Folder Structure)
 
 ## Document généré par Agent I — Delivery / DevEx
@@ -101,7 +106,6 @@ versyflow/
 │   │   ├── recall-comparison-service.ts      # getComparisonEngine()
 │   │   ├── progress-service.ts       # StreakService orchestrator
 │   │   ├── streak-service.ts, streak-coordinator.ts, streak-wiring.ts
-│   │   ├── powersync-memorization-service.ts
 │   │   ├── semantic-query-service.ts
 │   │   ├── (bible-service, fsrs-factory, milestone, notification, sync-completion, qr-generator, …)
 │   │
@@ -121,15 +125,12 @@ versyflow/
 │   │
 │   ├── infrastructure/               # Infrastructure layer (I/O)
 │   │   ├── storage/                  # mmkv, capacitor, async-storage, local-storage, storage-types
-│   │   ├── sync/                     # PowerSync (powersync-database, powersync-schema, supabase-power-sync-connector, memorization-mapper, family-mapper, …)
-│   │   ├── repository/               # PowerSync repositories
 │   │   ├── bible/                    # Bible text sources (dataset loader)
 │   │   ├── semantic/                 # Semantic memory adapter
 │   │   ├── migration/
 │   │   ├── logging/
 │   │   └── telemetry/                # ITelemetryUploadPort + NoOp adapter
 │   │
-│   ├── auth/                         # SupabaseAuth (email + name, aucune validation)
 │   │
 │   ├── lib/                          # platform.ts (shared helpers), utils.ts
 │   │
@@ -148,15 +149,12 @@ versyflow/
 │       ├── *.json                    # 35 datasets multi-traductions (ar-nav, asv, lsg, …)
 │       └── raw/                      # USFM sources bruts (build inputs, gitignored)
 │
-├── powersync/                        # PowerSync Cloud service definition
 │   ├── cli.yaml, service.yaml, sync-config.yaml
 │   └── relay.sql, schema.json
 │
-├── supabase/                         # Backend (Postgres + RLS + storage)
 │   ├── config.toml, MIGRATION_GUIDE.md
 │   └── migrations/                   # 0000–00xx_*.sql (SSoT des tables Aurora)
 │
-├── scripts/                          # Outils de build (bible, i18n, powersync-wire, semantic:build)
 │
 ├── tests/                            # Vitest (pas Jest, plus de Detox)
 │   ├── unit/, integration/, e2e/, sync/, semantic/, auth/, api/, fixtures/
@@ -186,7 +184,6 @@ versyflow/
 > ⚠️ **Mise à jour 2026-10-07** : la section 1 (arborescence) décrit le
 > layout **réel** du projet (Vite/React 18 empaqueté dans Capacitor WebView,
 > React Router v6, `data/bible/` 35 datasets, `rust/fsrs-wasm/`,
-> `powersync/`, `supabase/migrations/`). L'ancienne version décrivait un
 > layout Expo Router obsolète — ne pas s'y référer.
 
 ### Règle de DIRECTIONNELLE des dépendances

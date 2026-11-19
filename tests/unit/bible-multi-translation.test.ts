@@ -2,14 +2,15 @@
  * P1B-1 — Multi-translation local (LSG + Ostervald).
  *
  * Invariants under test:
- *  1. The registry lists BOTH bundled translations as `available` (lsg +
- *     ostervald) and `getByLanguage('fr')` returns both.
- *  2. The `BibleJsonFileSource` (Node fs) serves BOTH `lsg.json` and
- *     `ostervald.json` from `data/bible/`, and `LocalBibleRepository`
- *     resolves the same reference to different texts per translation.
+ *  1. The registry lists both French translations (lsg + ostervald) and
+ *     `getByLanguage('fr')` returns both.
+ *  2. The `BibleJsonFileSource` (Node fs) serves `lsg.json` from `data/bible/`
+ *     and `LocalBibleRepository` exposes it book by book.
  *
- * This is a test-first lot: the test must fail before the dataset + registry
- * change land, and pass after.
+ * Seul `lsg` est livré avec le dépôt (décision Chantier 2 : un seul dataset
+ * versionné, 6,9 Mo, chargé par livre/chapitre). `ostervald.json` n'est plus
+ * dans l'arbre ; le registre le référence comme traduction cataloguée, ce qui
+ * ne garantit pas qu'il soit présent localement.
  */
 
 import { describe, it, expect } from 'vitest';
@@ -33,28 +34,28 @@ describe('P1B-1 multi-translation registry', () => {
     expect(fr).toEqual(expect.arrayContaining(['lsg', 'ostervald']));
   });
 
-  it('both bundled datasets load through the JSON file source', async () => {
+  it('the bundled dataset loads through the JSON file source', async () => {
     // Node fs path: reads data/bible/<id>.json from the project root.
     const source = new BibleJsonFileSource({ useNodeFs: true });
     const lsg = await source.load('lsg');
-    const ost = await source.load('ostervald');
     expect(lsg.id).toBe('lsg');
-    expect(ost.id).toBe('ostervald');
-    expect(lsg.books.length).toBeGreaterThan(0);
-    expect(ost.books.length).toBeGreaterThan(0);
+    expect(lsg.books.length).toBe(66);
   }, 30_000);
 
-  it('same reference yields different text per translation', async () => {
+  it('a reference resolves through the repository, verse by verse', async () => {
     const source = new BibleJsonFileSource({ useNodeFs: true });
     const repo = new LocalBibleRepository(source);
-    // Note: Genesis 1:1 is worded identically in LSG and Ostervald (the two
-    // translations share the 1910 LSG wording for this verse), so the
-    // distinct-wording check uses Genesis 1:2, where they diverge.
-    const lsgVerse = await repo.getVerse('lsg', 'gen', 1, 2);
-    const ostVerse = await repo.getVerse('ostervald', 'gen', 1, 2);
-    expect(lsgVerse?.text).toBeTruthy();
-    expect(ostVerse?.text).toBeTruthy();
-    // The two datasets are deliberately distinct wordings.
-    expect(lsgVerse?.text).not.toBe(ostVerse?.text);
+    const first = await repo.getVerse('lsg', 'gen', 1, 1);
+    const second = await repo.getVerse('lsg', 'gen', 1, 2);
+    expect(first?.text).toContain('Au commencement');
+    expect(second?.text).toBeTruthy();
+    expect(second?.text).not.toBe(first?.text);
+  }, 30_000);
+
+  it('an absent dataset rejects instead of returning empty data', async () => {
+    // Le catalogue liste 56 traductions, le dépôt n'en versionne qu'une :
+    // l'absence doit être une erreur explicite, pas un corpus vide.
+    const source = new BibleJsonFileSource({ useNodeFs: true });
+    await expect(source.load('ostervald')).rejects.toThrow();
   }, 30_000);
 });

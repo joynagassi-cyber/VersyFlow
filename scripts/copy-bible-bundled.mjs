@@ -14,7 +14,7 @@
  *
  * The other 56 catalogued datasets are NOT bundled (decision: only `lsg`
  * ships by default); they continue to resolve via the download cache /
- * Supabase Storage `bible-datasets` bucket on first use.
+ * same-origin `public/data/bible` folder on first use.
  *
  * Run automatically before `vite build` (see package.json `build`).
  * Manual: `node scripts/copy-bible-bundled.mjs`.

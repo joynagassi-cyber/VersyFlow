@@ -52,7 +52,7 @@ module.exports = {
    * P0 UNBLOCK (2026-09-20) — rules demoted from `error` to `warn`
    * to let the CI lint gate pass while legacy typed-lint debt (~1000
    * `any`-propagation findings across ~150 files, largely pre-dating the
-   * Supabase/PowerSync migration) is purged incrementally. Warnings do
+   * legacy-API migration) is purged incrementally. Warnings do
    * not fail `npm run lint` (no --max-warnings).
    *
    * Follow-up (tracked in docs/coordination/AGENT-WORKMAP.md): restore

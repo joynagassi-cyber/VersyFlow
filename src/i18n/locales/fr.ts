@@ -273,6 +273,8 @@ export const fr = {
     noMemorizedYet: 'Aucun verset mémorisé pour le moment',
   },
   bible: {
+    chapterNotInTranslation: 'Ce chapitre n’est pas présent dans cette traduction.',
+    translationNotShipped: 'Cette traduction n’est pas livrée avec l’application.',
     clearSearch: 'Effacer la recherche',
     verseLayout: 'Présentation des versets',
     verseFlow: 'Texte ensemble',

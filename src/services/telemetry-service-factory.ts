@@ -2,11 +2,10 @@
  * Telemetry service composition — single place that wires the
  * `TelemetryService` with its `ITelemetryUploadPort`.
  *
- * Returns a `TelemetryService` whose `flush()` delegates to the PowerSync
- * upload port (`TelemetryEventsRepositoryPowerSync` → `telemetry_events`,
- * the single sync write path). Falls back to `NoOpTelemetryUploadAdapter`
- * when the PowerSync port cannot be resolved (e.g. no session yet) so the
- * service remains usable offline-first.
+ * Returns a `TelemetryService` whose `flush()` delegates to the local upload
+ * port (`MockTelemetryUploadPort` → `telemetry_events`, the single write
+ * path). Falls back to `NoOpTelemetryUploadAdapter` when the port cannot be
+ * resolved (e.g. no session yet) so the service remains usable offline.
  */
 
 import { TelemetryService } from '@/services/telemetry-service';
@@ -14,7 +13,7 @@ import type { IStorage } from '@/infrastructure/storage/storage-types';
 import { MmkvStorage } from '@/infrastructure/storage/mmkv-storage';
 import {
   getTelemetryUploadPort,
-} from '@/infrastructure/repository/powersync-repositories';
+} from '@/infrastructure/repository/mode-repositories';
 import { NoOpTelemetryUploadAdapter } from '@/infrastructure/telemetry/upload-adapter';
 
 let _instance: TelemetryService | null = null;
@@ -31,7 +30,7 @@ export function getTelemetryService(storage: IStorage = getStorage()): Telemetry
     try {
       port = getTelemetryUploadPort();
     } catch {
-      // No session / PowerSync not ready — fall back to no-op (local-only).
+      // No session / store not ready — fall back to no-op (local-only).
       port = new NoOpTelemetryUploadAdapter();
     }
     _instance = new TelemetryService(storage, port);

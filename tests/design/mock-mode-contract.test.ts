@@ -4,8 +4,8 @@
  * Deux garanties, vérifiées et non supposées :
  *
  *  1. **Étanchéité réseau** : en mode mock, aucune requête ne peut partir vers
- *     une autre origine que l'app elle-même. Un `fetch` oublié vers Supabase,
- *     un client PowerSync instancié trop tôt, une police CDN : tout est refusé
+ *     une autre origine que l'app elle-même. Un `fetch` oublié vers un hôte
+ *     distant, une police CDN : tout est refusé
  *     et signalé, au lieu de dépendre silencieusement d'un service distant.
  *
  *  2. **Ouverture des pages** : les routes principales du routeur réel
@@ -70,7 +70,7 @@ describe('garde-fou réseau du mode mock', () => {
 
     installNetworkGuard();
 
-    await expect(globalThis.fetch('https://dspqvyesfngxuwqhceog.supabase.co/rest/v1/')).rejects.toThrow(
+    await expect(globalThis.fetch('https://api.example.com/rest/v1/')).rejects.toThrow(
       /bloquée en mode mock/,
     );
     await expect(globalThis.fetch('https://cdn.example.com/font.woff2')).rejects.toThrow(
@@ -82,13 +82,13 @@ describe('garde-fou réseau du mode mock', () => {
     const blocked = blockedRequests();
     expect(blocked.map((b) => b.url)).toEqual(
       expect.arrayContaining([
-        'https://dspqvyesfngxuwqhceog.supabase.co/rest/v1/',
+        'https://api.example.com/rest/v1/',
         'https://cdn.example.com/font.woff2',
       ]),
     );
     // …et la tentative est signalée, avec l'URL fautive.
     expect(errors.join('\n')).toContain('[mock-net-guard]');
-    expect(errors.join('\n')).toContain('https://dspqvyesfngxuwqhceog.supabase.co/rest/v1/');
+    expect(errors.join('\n')).toContain('https://api.example.com/rest/v1/');
   });
 
   it('refuse un WebSocket externe, laisse passer le WebSocket local', async () => {

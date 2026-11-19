@@ -2,7 +2,7 @@
  * Mock identity — who the frontend thinks it is in mock mode.
  *
  * The app's "frictionless identification" flow (email + display name, no
- * password, no network) already exists in `SupabaseAuthService.identifyLocal`
+ * password, no network) is implemented by `MockAuthService.identifyLocal`
  * and persists under `versyflow:local-identity`. Mock mode reuses that exact
  * key so the login / signup screens and the auth gate keep working
  * unchanged, then derives a *stable* account id from the email:
@@ -53,7 +53,7 @@ export interface StoredLocalIdentity {
   identifiedAt: number;
 }
 
-/** Read the same key `SupabaseAuthService.identifyLocal` writes. */
+/** Read the same key `MockAuthService.identifyLocal` writes. */
 export function readLocalIdentity(): StoredLocalIdentity | null {
   try {
     if (typeof localStorage === 'undefined') return null;

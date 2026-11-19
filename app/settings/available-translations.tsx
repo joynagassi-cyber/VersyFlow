@@ -25,9 +25,9 @@ import { useSettingsStore } from '@/store/settings-store';
 import {
   BIBLE_DATASET_CATALOG,
   type BibleDatasetCatalogEntry,
-  loadTranslationBooks,
   downloadAndLoadTranslationBooks,
   getTranslationStats,
+  isBibleAvailable,
   type TranslationStats,
 } from '@/services/bible-text-service';
 import {
@@ -93,15 +93,16 @@ export default function AvailableTranslationsScreen() {
     if (bibleTranslation) loadStatsFor(bibleTranslation);
   }, [bibleTranslation]);
 
-  // Probe which datasets are already resolvable locally (bundled or cached)
-  // without forcing a download.
+  // Sonde de disponibilité : on lit l'index de la traduction (structure seule),
+  // pas son corpus — 56 traductions × 31 000 versets n'ont pas à être parsées
+  // pour afficher une pastille « en local ».
   useEffect(() => {
     let cancelled = false;
     void Promise.all(
-      entries.map(async (entry) => {
-        const books = await loadTranslationBooks(entry.id);
-        return { id: entry.id, available: books != null };
-      }),
+      entries.map(async (entry) => ({
+        id: entry.id,
+        available: await isBibleAvailable(entry.id),
+      })),
     ).then((results) => {
       if (cancelled) return;
       setStates(

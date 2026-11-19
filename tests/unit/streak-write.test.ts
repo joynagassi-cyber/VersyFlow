@@ -19,7 +19,7 @@ import { eventBus, DomainEventTypes } from '@/domains/events';
 // ---------------------------------------------------------------------------
 
 /**
- * Build a fake PowerSync DB surface that captures every SQL statement plus
+ * Build a fake DB surface that captures every SQL statement plus
  * its bound params so we can assert the exact insert path.
  */
 function makeMockDb() {

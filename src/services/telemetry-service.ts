@@ -6,7 +6,7 @@
  * Queue-based persistence, fire-and-forget, non-blocking for critical paths.
  *
  * P2-1: `flush()` now optionally delegates to an `ITelemetryUploadPort`
- * (single sync write path → PowerSync `telemetry_events`). When no port is
+ * (single write path → `telemetry_events`). When no port is
  * provided the legacy local-only behaviour is preserved (trim + persist).
  */
 
@@ -67,7 +67,7 @@ export class TelemetryService implements ITelemetry {
    * Flush queued events to remote storage.
    *
    * With an upload port (P2-1): the unsent queue is handed to the port —
-   * the PowerSync adapter INSERTs each event into `telemetry_events`
+   * the adapter writes each event into `telemetry_events`
    * (single sync write path, offline-safe). Successful items are marked
    * `sent` and pruned so they are not re-sent.
    *

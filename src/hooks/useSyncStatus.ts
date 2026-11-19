@@ -1,17 +1,14 @@
 /**
  * useSyncStatus — Single source of truth for the app's sync state.
  *
- * Aggregates the PowerSync DB lifecycle (`registerListener({ initialized })`)
- * with the persisted sync stores (`useFamilySyncStore` / `useProfileSyncStore`)
- * and exposes a derived, token-only status. Screens consume THIS hook — they
- * never branch on `if (offline)` / `if (familyMode)` themselves.
- *
- * Offline-safe: the store values persist across a reload; the DB listener is
- * only attached when PowerSync has a live instance.
+ * VersyFlow is local-only: "sync" is the snapshot pushed to the local test
+ * collector, so the phase is derived from the persisted sync stores
+ * (`useFamilySyncStore` / `useProfileSyncStore`) rather than from a network
+ * connection. Screens consume THIS hook — they never branch on transport
+ * details themselves.
  */
 
-import { useEffect, useMemo, useState } from 'react';
-import { peekPowerSyncDatabase } from '@/infrastructure/sync/powersync-database';
+import { useMemo } from 'react';
 import { useFamilySyncStore } from '@/store/family-sync-store';
 import { useProfileSyncStore } from '@/store/profile-sync-store';
 
@@ -19,54 +16,40 @@ export type SyncPhase = 'idle' | 'connecting' | 'ready' | 'error';
 
 export interface SyncStatus {
   phase: SyncPhase;
-  /** Last successful sync timestamp (unix ms) across family + profile stores */
+  /** Last successful local snapshot timestamp (unix ms) across both stores */
   lastSyncAt: number | null;
   /** Aggregate error message, or null */
   error: string | null;
   /** How long ago the last sync happened (ms), null when never */
   elapsedMs: number | null;
-  /** True when a PowerSync instance is initialised and ready */
+  /** True when the local store is initialised and ready */
   isReady: boolean;
 }
 
 export function useSyncStatus(): SyncStatus {
   const familyLastSyncAt = useFamilySyncStore((s) => s.lastSyncAt);
   const familySyncError = useFamilySyncStore((s) => s.syncError);
+  const familyInProgress = useFamilySyncStore((s) => s.syncInProgress);
   const profileLastSyncAt = useProfileSyncStore((s) => s.lastSyncAt);
   const profileSyncError = useProfileSyncStore((s) => s.syncError);
-  const [dbReady, setDbReady] = useState(false);
+  const profileInProgress = useProfileSyncStore((s) => s.syncInProgress);
 
-  useEffect(() => {
-    const db = peekPowerSyncDatabase();
-    if (!db) return;
-    setDbReady(true);
-    // Re-check on initialization so a late replica-ready event flips state.
-    const unsub = db.registerListener({
-      initialized: () => setDbReady(true),
-    });
-    return () => unsub();
-  }, []);
-
-  const lastSyncAt = useMemo(() => {
-    if (familyLastSyncAt && profileLastSyncAt) return Math.max(familyLastSyncAt, profileLastSyncAt);
-    return familyLastSyncAt ?? profileLastSyncAt ?? null;
-  }, [familyLastSyncAt, profileLastSyncAt]);
-
-  const error = familySyncError ?? profileSyncError ?? null;
-
-  const phase: SyncPhase = error
-    ? 'error'
-    : dbReady && lastSyncAt
-      ? 'ready'
-      : dbReady
+  return useMemo(() => {
+    const error = familySyncError ?? profileSyncError ?? null;
+    const lastSyncAt = Math.max(familyLastSyncAt ?? 0, profileLastSyncAt ?? 0) || null;
+    const phase: SyncPhase = error
+      ? 'error'
+      : familyInProgress || profileInProgress
         ? 'connecting'
-        : 'idle';
-
-  const now = Date.now();
-  const elapsedMs = lastSyncAt ? now - lastSyncAt : null;
-
-  return useMemo(
-    () => ({ phase, lastSyncAt, error, elapsedMs, isReady: dbReady }),
-    [phase, lastSyncAt, error, elapsedMs, dbReady],
-  );
+        : lastSyncAt
+          ? 'ready'
+          : 'idle';
+    return {
+      phase,
+      lastSyncAt,
+      error,
+      elapsedMs: lastSyncAt ? Date.now() - lastSyncAt : null,
+      isReady: phase === 'ready',
+    };
+  }, [familyLastSyncAt, profileLastSyncAt, familySyncError, profileSyncError, familyInProgress, profileInProgress]);
 }

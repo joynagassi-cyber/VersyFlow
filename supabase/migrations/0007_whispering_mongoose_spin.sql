@@ -1,1 +1,0 @@
-create index if not exists idx_cr_from on public.concept_relations(from_concept_id);

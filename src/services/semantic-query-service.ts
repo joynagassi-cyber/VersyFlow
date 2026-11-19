@@ -12,11 +12,10 @@
  *     communities, top cross-refs), composed straight off the repository
  *     ports the adapters implement.
  *
- * The semantic tables live in the existing PowerSync SQLite instance as
- * LOCAL_ONLY tables (registered through a separate local schema, exactly
- * like the `bible_*` registry excluded from `buildPowerSyncSchema()`),
+ * The semantic cards live in the browser store, in local-only collections
+ * (registered through a separate schema, exactly like the `bible_*` assets),
  * so the app needs no external vector index and keeps one offline store.
- * A future Supabase sync path only adds another repository adapter.
+ * A future backend only adds another repository adapter.
  */
 
 import type {
@@ -32,8 +31,6 @@ import type {
   IVerseRelationRepository,
   IConceptTagRepository,
 } from '@/domains/semantic-memory';
-import { createSemanticMemoryRepositories } from '@/infrastructure/repositories/semantic-memory-sqlite';
-import { isMockMode } from '@/dev/mode';
 import {
   createMockSemanticMemoryRepositories,
   mockChapterVerseConcepts,
@@ -128,13 +125,11 @@ export class SemanticService {
   private readonly verseRelationRepo: IVerseRelationRepository;
   private readonly tagRepo: IConceptTagRepository;
 
-  private readonly mockMode: boolean;
 
   constructor() {
-    this.mockMode = isMockMode();
-    const repos = this.mockMode
-      ? createMockSemanticMemoryRepositories()
-      : createSemanticMemoryRepositories();
+    // Local-only app: the semantic store is the browser adapter, seeded with
+    // the default concept cards.
+    const repos = createMockSemanticMemoryRepositories();
     this.conceptRepo = repos.conceptRepository;
     this.communityRepo = repos.communityRepository;
     this.verseRelationRepo = repos.verseRelationRepository;
@@ -235,18 +230,7 @@ export class SemanticService {
    */
   private async conceptsForConcept(conceptId: string): Promise<string[]> {
     // (1) Authoritative: direct verse_concepts bridges for this concept.
-    const keys = new Set<string>(
-      this.mockMode
-        ? mockVerseKeysForConcept(conceptId, false)
-        : (
-            await (
-              await this.resolveDbForUserTags()
-            ).getAll<{ verse_id: string }>(
-              `SELECT DISTINCT verse_id FROM verse_concepts WHERE concept_id = ?`,
-              [conceptId],
-            )
-          ).map((r) => r.verse_id),
-    );
+    const keys = new Set<string>(mockVerseKeysForConcept(conceptId, false));
 
     // (2) Indirect: verse relations naming this concept (sparse pipeline).
     const relations = await this.verseRelationRepo.getCrossRefs(200);
@@ -268,48 +252,7 @@ export class SemanticService {
     bookId: string,
     chapter: number,
   ): Promise<ChapterVerseConcepts> {
-    if (this.mockMode) {
-      return mockChapterVerseConcepts(bookId, chapter);
-    }
-    const db = await this.resolveDbForUserTags();
-    const like = `${bookId}:${chapter}:`;
-    const rows = await db.getAll<{ verse_id: string; concept_id: string; source: string }>(
-      `SELECT verse_id, concept_id, source FROM verse_concepts WHERE verse_id LIKE ?`,
-      [`${like}%`],
-    );
-
-    const conceptIdsByVerse: Record<string, string[]> = {};
-    const sourcesByVerse: Record<string, string[]> = {};
-    const allConceptIds = new Set<string>();
-    for (const row of rows) {
-      (conceptIdsByVerse[row.verse_id] ??= []).push(row.concept_id);
-      const sources = (sourcesByVerse[row.verse_id] ??= []);
-      if (!sources.includes(row.source)) sources.push(row.source);
-      allConceptIds.add(row.concept_id);
-    }
-
-    // Resolve concept rows in one query (IN-list, capped for safety).
-    const ids = Array.from(allConceptIds).slice(0, 500);
-    const resolvable = new Set<string>();
-    if (ids.length > 0) {
-      const placeholders = ids.map(() => '?').join(', ');
-      const conceptRows = await db.getAll<{ id: string }>(
-        `SELECT id FROM concepts WHERE id IN (${placeholders})`,
-        ids,
-      );
-      for (const cr of conceptRows) resolvable.add(cr.id);
-    }
-    // Drop unresolvable ids (concept row deleted / out of sync).
-    for (const [key, list] of Object.entries(conceptIdsByVerse)) {
-      const filtered = list.filter((id) => resolvable.has(id));
-      if (filtered.length === 0) {
-        delete conceptIdsByVerse[key];
-        delete sourcesByVerse[key];
-      } else {
-        conceptIdsByVerse[key] = filtered;
-      }
-    }
-    return { conceptIdsByVerse, sourcesByVerse };
+    return mockChapterVerseConcepts(bookId, chapter);
   }
 
   /**
@@ -407,115 +350,20 @@ export class SemanticService {
    * localized label for the current language.
    */
   async myConcepts(limit = 40, lang?: string): Promise<MyConceptEntry[]> {
-    if (this.mockMode) {
-      const base = lang?.split('-')?.[0];
-      return mockUserConcepts(limit).map((concept) => ({
-        concept,
-        verseKeys: mockVerseKeysForConcept(concept.id, true),
-        label:
-          concept.labels_by_language[lang ?? ''] ??
-          (base ? concept.labels_by_language[base] : undefined) ??
-          concept.canonical_name,
-      }));
-    }
-    const db = await this.resolveDbForUserTags();
-    const rows = await db.getAll<
-      { id: string; canonical_name: string; labels_by_language: string | null }
-    >(
-      `SELECT id, canonical_name, labels_by_language
-       FROM concepts
-       WHERE source = 'manual' AND created_by = 'user'
-       ORDER BY updated_at DESC
-       LIMIT ?`,
-      [limit],
-    );
-
-    // Verse keys each concept is attached to (in one round-trip-ish loop;
-    // the user tree is small by construction).
-    const out: MyConceptEntry[] = [];
-    for (const row of rows) {
-      const concept = this.decodeUserConcept(row);
-      if (!concept) continue;
-      const base = lang?.split('-')?.[0];
-      const label =
+    const base = lang?.split('-')?.[0];
+    return mockUserConcepts(limit).map((concept) => ({
+      concept,
+      verseKeys: mockVerseKeysForConcept(concept.id, true),
+      label:
         concept.labels_by_language[lang ?? ''] ??
         (base ? concept.labels_by_language[base] : undefined) ??
-        concept.canonical_name;
-      out.push({
-        concept,
-        verseKeys: await this.userVerseKeysForConcept(concept.id),
-        label,
-      });
-    }
-    return out;
+        concept.canonical_name,
+    }));
   }
 
   // ------------------------------------------------------------------
   // User-tag internals
   // ------------------------------------------------------------------
-
-  private async userVerseKeysForConcept(conceptId: string): Promise<string[]> {
-    const db = await this.resolveDbForUserTags();
-    const rows = await db.getAll<{ verse_id: string }>(
-      `SELECT verse_id FROM verse_concepts
-       WHERE concept_id = ? AND source = 'user'
-       ORDER BY created_at DESC LIMIT 40`,
-      [conceptId],
-    );
-    return rows.map((r) => r.verse_id);
-  }
-
-  private decodeUserConcept(row: {
-    id: string;
-    canonical_name: string;
-    labels_by_language: string | null;
-  }): Concept | null {
-    let labels: Record<string, string> = {};
-    const raw = row.labels_by_language;
-    if (raw) {
-      try {
-        const parsed: unknown = JSON.parse(raw);
-        labels =
-          parsed && typeof parsed === 'object' && !Array.isArray(parsed)
-            ? ((parsed as Record<string, unknown>) as Record<string, string>)
-            : {};
-      } catch {
-        labels = {};
-      }
-    }
-    // A minimal valid domain shape — the user tree only needs the fields
-    // the index page displays; the full row is available through
-    // `getConcept` when the detail view runs.
-    return {
-      id: row.id,
-      canonical_name: row.canonical_name,
-      slug: row.canonical_name.toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 64) || 'concept',
-      labels_by_language: labels,
-      source_provenance: [{ source: 'user' }],
-      confidence: 1,
-      status: 'active',
-      kind: 'TOPIC',
-      source: 'manual',
-      created_by: 'user',
-    } satisfies Concept;
-  }
-
-  /**
-   * The raw PowerSync database, with the semantic DDL ensured. Reuses the
-   * adapter's module-level resolution when available; falls back to the
-   * shared singleton otherwise.
-   */
-  private async resolveDbForUserTags() {
-    // Lazy import keeps the read-only adapters first-class; the DDL
-    // `ensure` already ran when any semantic query hit the database.
-    const { peekPowerSyncDatabase, getPowerSyncDatabase } = await import(
-      '@/infrastructure/sync/powersync-database'
-    );
-    const db = peekPowerSyncDatabase() ?? getPowerSyncDatabase();
-    await db.waitForReady();
-    return db;
-  }
-
 
   private async featuredConcepts(
     communities: Community[],

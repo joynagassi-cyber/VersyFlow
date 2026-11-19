@@ -31,7 +31,7 @@ export interface ModeCardsProps {
   text: string;
   referenceLabel: string;
   record?: MemorizationRecord | null;
-  /** Persist an FSRS rating (drives the engine + PowerSync). */
+  /** Persist an FSRS rating (drives the engine + the stored record). */
   onRate: (rating: FsrsRating) => Promise<void>;
   /** Called after the user rates (for the "next mode" recommendation). */
   onRecommendNext?: (score: number) => void;

@@ -1,3 +1,8 @@
+> **Note (2026-11-19) — documentation historique.** VersyFlow est
+> désormais 100 % frontend : the former backend et the local store ont été retirés du
+> dépôt. Les mentions de ces services dans ce document décrivent
+> l’état antérieur, pas l’architecture actuelle (voir `docs/AUDIT.md`).
+
 # Mode démo — état et limites de l'audit
 
 État du lot du 30 octobre 2026 : **isolation globale non validée**. Ne pas
@@ -35,7 +40,6 @@ La redirection repose sur des méthodes de `Storage` : l'énumération brute
 (`length`, `key`, `Object.keys`) et les accès par propriété ne sont pas isolés.
 `sessionStorage` n'est pas redirigé. Les APIs IndexedDB, SQLite, les événements
 inter-onglets et d'éventuels accès directs aux SDK ou plugins doivent encore
-être audités et testés en conditions réelles. Les garde-fous PowerSync et auth
 ne prouvent pas à eux seuls l'absence de tout accès réel sur toutes les routes.
 
 Les scénarios complets famille, statistiques, mémorisation, FSRS, calendrier,

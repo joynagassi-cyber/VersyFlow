@@ -1,1 +1,0 @@
-alter publication powersync add table public.concepts, public.concept_relations, public.communities, public.verse_concepts, public.verse_relations;

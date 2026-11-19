@@ -22,7 +22,7 @@ import { getMemorizationService } from '@/services/memorization-service-factory'
 import {
   getReviewLogRepository,
   getSyncUserIdProvider,
-} from '@/infrastructure/repository/powersync-repositories';
+} from '@/infrastructure/repository/mode-repositories';
 import type {
   MemorizationRecord,
   ReviewLogEntry as DomainReviewLogEntry,

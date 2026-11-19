@@ -1,1 +1,0 @@
-create index if not exists idx_vc_verse on public.verse_concepts(verse_id);
