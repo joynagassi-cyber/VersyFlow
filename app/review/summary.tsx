@@ -22,7 +22,7 @@ import { getFsrsEngine } from '@/services/fsrs-factory';
 import { ProgressService } from '@/services/progress-service';
 import { getMemorizationService } from '@/services/memorization-service-factory';
 import type { ProgressStats } from '@/services/stats-calculator';
-import { LoadingBlock } from '@/components/ui/Skeleton';
+import { ReviewSummarySkeleton } from '@/components/ui/ScreenSkeletons';
 
 export default function ReviewSummaryScreen() {
   const navigate = useNavigate();
@@ -57,7 +57,7 @@ export default function ReviewSummaryScreen() {
   if (loading) {
     return (
       <FullScreenPage title={t('review.summary', 'Résumé de session')} backPath="/review/queue">
-        <LoadingBlock label={t('common.loading', 'Chargement du résumé...')} />
+        <ReviewSummarySkeleton label={t('common.loading', 'Chargement du résumé...')} />
       </FullScreenPage>
     );
   }

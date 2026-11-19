@@ -12,7 +12,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Compass01Icon as Compass, ChevronRightIcon as ChevronRight } from '@/components/ui/solar-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
-import { LoadingBlock } from '@/components/ui/Skeleton';
+import { SemanticSuggestionsSkeleton } from '@/components/ui/ScreenSkeletons';
 import { DuoIcon } from '@/components/ui/DuoIcon';
 import { Button } from '@/components/ui/button';
 import { HintNote, SectionCard, Segmented } from '@/components/family/FamilyKit';
@@ -73,7 +73,7 @@ export default function SemanticSuggestionsScreen() {
         />
 
         {loading ? (
-          <LoadingBlock label={t('common.loading', 'Chargement…')} className="py-10" />
+          <SemanticSuggestionsSkeleton label={t('common.loading', 'Chargement…')} />
         ) : suggestions.length === 0 ? (
           <EmptyState
             title={t('tree.noSuggestions', 'Aucune suggestion disponible')}

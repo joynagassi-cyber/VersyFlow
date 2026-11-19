@@ -14,7 +14,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { LoadingBlock } from '@/components/ui/Skeleton';
+import { SemanticConceptSkeleton } from '@/components/ui/ScreenSkeletons';
 import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   BrainCircuitIcon as BrainCircuit,
@@ -77,7 +77,7 @@ export default function ConceptView() {
     return (
       <FullScreenPage title={t('semantic.concept', 'Concept')}>
         <div className="p-4">
-          <LoadingBlock label={t('common.loading', 'Chargement…')} className="py-10" />
+          <SemanticConceptSkeleton label={t('common.loading', 'Chargement…')} />
         </div>
       </FullScreenPage>
     );

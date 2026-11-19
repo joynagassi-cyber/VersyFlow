@@ -5,7 +5,7 @@
  */
 
 import { useState, useEffect } from 'react';
-import { Skeleton } from '@/components/ui/Skeleton';
+import { ProgressSkeleton } from '@/components/ui/ScreenSkeletons';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { DuoIcon } from '@/components/ui/DuoIcon';
@@ -23,31 +23,6 @@ import type { ProgressStats } from '@/services/stats-calculator';
 import { getMemorizationService } from '@/services/memorization-service-factory';
 import { formatProgressLabel } from '@/lib/progress-label';
 
-function ProgressSkeleton({ label }: { label: string }) {
-  return (
-    <div role="status" aria-live="polite" aria-busy="true">
-      <span className="sr-only">{label}</span>
-      <div className="progress-stat-grid">
-        {[0, 1, 2, 3].map((i) => (
-          <article className="g2 progress-stat" key={i} aria-hidden="true">
-            <Skeleton className="h-3 w-16 rounded-full" />
-            <Skeleton className="h-10 w-24" />
-          </article>
-        ))}
-      </div>
-      <div className="progress-detail-grid mt-4" aria-hidden="true">
-        <section className="g2 progress-card">
-          <Skeleton className="h-5 w-40 rounded-full" />
-          <Skeleton className="mt-4 h-32 w-full rounded-2xl" />
-        </section>
-        <section className="g2 progress-card">
-          <Skeleton className="h-5 w-32 rounded-full" />
-          <Skeleton className="mt-4 h-32 w-full rounded-2xl" />
-        </section>
-      </div>
-    </div>
-  );
-}
 
 // Exemples de présentation : jamais écrits dans les dépôts ou services FSRS.
 const DEMO_STATS: ProgressStats = { totalVerses: 42, masteredVerses: 18, inProgressVerses: 24, dueForReview: 5, streakCount: 7, longestStreak: 12, weeklyTrend: { thisWeek: 6, lastWeek: 4, changePercentage: 50 }, avgSessionDurationMin: 4.5 };

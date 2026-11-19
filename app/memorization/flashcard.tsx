@@ -32,7 +32,7 @@ import {
 } from '@/components/ui/solar-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { EmptyState } from '@/components/ui/EmptyState';
-import { LoadingBlock } from '@/components/ui/Skeleton';
+import { FlashcardSkeleton } from '@/components/ui/ScreenSkeletons';
 import { getMemorizationService } from '@/services/memorization-service-factory';
 
 interface Flashcard {
@@ -137,7 +137,7 @@ export default function FlashcardScreen() {
   if (cards === null) {
     return (
       <FullScreenPage title={t('session.flashcards', 'Flashcards')} showBack backPath="/tabs/home">
-        <LoadingBlock label={t('common.loading', 'Chargement…')} className="py-16" />
+        <FlashcardSkeleton label={t('common.loading', 'Chargement…')} />
       </FullScreenPage>
     );
   }

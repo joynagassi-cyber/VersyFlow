@@ -23,7 +23,7 @@ import { getMemorizationService } from '@/services/memorization-service-factory'
 import { getFsrsEngine } from '@/services/fsrs-factory';
 import { ReviewQueueService } from '@/services/review-queue-service';
 import type { MemorizationRecord } from '@/domains/memorization/entities';
-import { LoadingBlock } from '@/components/ui/Skeleton';
+import { ReviewQueueSkeleton } from '@/components/ui/ScreenSkeletons';
 import { EmptyState } from '@/components/ui/EmptyState';
 
 interface ReviewItem {
@@ -135,7 +135,7 @@ export default function ReviewQueueScreen() {
   if (loading) {
     return (
       <FullScreenPage title={t('review.todayReviews', 'Révisions du jour')} backPath="/tabs/home" column="narrow">
-        <LoadingBlock label={t('common.loading', 'Chargement des révisions...')} />
+        <ReviewQueueSkeleton label={t('common.loading', 'Chargement des révisions...')} />
       </FullScreenPage>
     );
   }

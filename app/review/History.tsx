@@ -15,6 +15,7 @@ import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { Button } from '@/components/ui/button';
 import { Rating } from '@/services/review-rating-service';
+import { HistorySkeleton } from '@/components/ui/ScreenSkeletons';
 import { useActiveProfile } from '@/hooks/useActiveProfile';
 import { StatsDashboard } from '@/components/charts/StatsDashboard';
 import { getMemorizationService } from '@/services/memorization-service-factory';
@@ -250,13 +251,7 @@ export default function ReviewHistoryScreen() {
   if (loading) {
     return (
       <FullScreenPage title={t('nav.history', 'Historique')} showBack backPath="/review/queue">
-        <div className="space-y-3" role="status">
-          <div className="h-24 rounded-3xl bg-surface-tint" />
-          <div className="h-24 rounded-3xl bg-surface-tint" />
-          <p className="text-center text-sm text-text-muted">
-            {t('common.loading', 'Chargement...')}
-          </p>
-        </div>
+        <HistorySkeleton label={t('common.loading', 'Chargement...')} />
       </FullScreenPage>
     );
   }

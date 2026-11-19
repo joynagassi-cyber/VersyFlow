@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/solar-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { EmptyState } from '@/components/ui/EmptyState';
-import { LoadingBlock } from '@/components/ui/Skeleton';
+import { AnalyticsSkeleton } from '@/components/ui/ScreenSkeletons';
 import { useTranslation } from 'react-i18next';
 import { useAnalyticsCapability } from '@/capabilities/analytics/store';
 import { fireAndForget } from '@/lib/fire-and-forget';
@@ -50,10 +50,7 @@ export default function AnalyticsDashboardScreen() {
   if (loading) {
     return (
       <FullScreenPage title={t('analytics.title', 'Progression')} showBack>
-        <LoadingBlock
-          className="min-h-[50vh] justify-center py-0"
-          label={t('analytics.loading', 'Chargement des statistiques…')}
-        />
+        <AnalyticsSkeleton label={t('analytics.loading', 'Chargement des statistiques…')} />
       </FullScreenPage>
     );
   }
