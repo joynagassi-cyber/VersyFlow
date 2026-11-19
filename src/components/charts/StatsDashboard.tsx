@@ -66,12 +66,41 @@ export function StatsDashboard({ profileId, windowDays = 30 }: StatsDashboardPro
   const data = useStatsCharts(profileId, windowDays);
 
   if (data.loading) {
+    // Deux étages, comme le tableau chargé : six cartes de synthèse (icône,
+    // intitulé, chiffre, vignette) puis neuf cadres d'analyse, dont deux
+    // pleine largeur. Un bloc uniforme annoncerait un autre écran.
     return (
-      <div className="stats-grid" role="status" aria-live="polite">
-        {Array.from({ length: 6 }, (_, index) => (
-          <Skeleton key={index} className="stat-card h-32 rounded-2xl" />
-        ))}
+      <div className="stats-grid" role="status" aria-live="polite" aria-busy="true">
         <span className="sr-only">{t('stats.loading', 'Calcul des graphiques…')}</span>
+        {Array.from({ length: 6 }, (_, index) => (
+          <div key={`card-${index}`} className="stat-card g2 p-4" aria-hidden="true">
+            <div className="flex items-center gap-2">
+              <Skeleton className="h-4 w-4 rounded-md" />
+              <Skeleton className="h-3 w-2/5 rounded-full" />
+            </div>
+            <div className="mt-3 flex items-end justify-between gap-3">
+              <div className="flex min-w-0 flex-1 flex-col gap-2">
+                <Skeleton className="h-8 w-1/2 rounded-lg" />
+                <Skeleton className="h-2.5 w-4/5 rounded-full" />
+              </div>
+              <Skeleton className="h-14 w-14 shrink-0 rounded-full" />
+            </div>
+          </div>
+        ))}
+        {Array.from({ length: 9 }, (_, index) => {
+          const wide = index === 0 || index === 8;
+          return (
+            <div
+              key={`chart-${index}`}
+              className={wide ? 'stats-chart stats-chart--wide g2 p-4' : 'stats-chart g2 p-4'}
+              aria-hidden="true"
+            >
+              <Skeleton className="h-4 w-1/3 rounded-full" />
+              <Skeleton className="mt-2 h-2.5 w-1/4 rounded-full" />
+              <Skeleton className={wide ? 'mt-4 h-40 w-full rounded-xl' : 'mt-4 h-32 w-full rounded-xl'} />
+            </div>
+          );
+        })}
       </div>
     );
   }

@@ -247,6 +247,25 @@ describe('squelettes — géométrie', () => {
     expect(container.innerHTML).not.toContain('animate-spin');
   });
 
+  it('l’amorçage montre la coquille, pas un mot centré', () => {
+    const html = readFileSync(join(root, 'index.html'), 'utf8');
+    const main = readFileSync(join(root, 'src/main.tsx'), 'utf8');
+    // La forme est là avant même le premier octet de JS applicatif.
+    expect(html).toContain('id="boot-splash"');
+    expect(html).toMatch(/id="boot-splash"[^>]*role="status"[^>]*aria-busy="true"/);
+    expect(html.match(/class="bs-card"/g)?.length).toBe(3);
+    expect(html.match(/class="bs-pill"/g)?.length).toBe(5);
+    // Même matériau : un balayage, coupé si le mouvement est réduit.
+    expect(html).toContain('@keyframes bs-sweep');
+    expect(html).toMatch(/prefers-reduced-motion: reduce[\s\S]{0,400}animation: none/);
+    // Plus aucune couleur de marque en dur (l'ancien splash écrivait #d81b60).
+    expect(html).not.toContain('#d81b60');
+    expect(html).not.toMatch(/font-size:\s*22px/);
+    // Le repli Suspense ne laisse plus un écran vide.
+    expect(main).toContain('<Suspense fallback={<BootSplash />}>');
+    expect(main).not.toContain('<Suspense fallback={null}>');
+  });
+
   it('aucun squelette ne code une taille de police en dur', () => {
     const source = readFileSync(join(root, 'src/components/ui/ScreenSkeletons.tsx'), 'utf8');
     expect(source).not.toMatch(/text-\[\d/);

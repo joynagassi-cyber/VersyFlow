@@ -51,17 +51,169 @@
       #root {
         height: 100%;
       }
+
+      /* ── Splash d'amorçage ───────────────────────────────────────────────
+         Il n'affichait qu'un mot centré : un écran d'attente sans forme, qui
+         laissait deviner pendant tout l'amorçage (i18n, stores, sync) ce qui
+         allait apparaître. Il dessine maintenant la coquille réelle —
+         en-tête, cartes, barre d'onglets — avec le même balayage que
+         `.skeleton`, en CSS pur puisque `globals.css` n'est pas encore là.
+         Aucune couleur de marque en dur : gris neutre teinté, clair ou
+         sombre selon `data-theme`, posé avant le premier paint. */
+      #boot-splash {
+        min-height: 100vh;
+        background: #fbf9f9;
+        color: #6b7280;
+      }
+      html[data-theme='dark'] #boot-splash {
+        background: #000000;
+        color: #9ca3af;
+      }
+      #boot-splash .bs-sr {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip-path: inset(50%);
+        white-space: nowrap;
+      }
+      #boot-splash .bs-shell {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        min-height: 100vh;
+        padding: max(16px, env(safe-area-inset-top)) 16px 0;
+      }
+      #boot-splash .bs-head {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        min-height: 44px;
+        flex: none;
+      }
+      #boot-splash .bs-bar,
+      #boot-splash .bs-dot,
+      #boot-splash .bs-card,
+      #boot-splash .bs-pill {
+        position: relative;
+        overflow: hidden;
+        background: color-mix(in srgb, currentColor 12%, transparent);
+      }
+      #boot-splash .bs-bar,
+      #boot-splash .bs-dot {
+        border-radius: 999px;
+        height: 12px;
+      }
+      #boot-splash .bs-dot {
+        width: 32px;
+        height: 32px;
+        flex: none;
+      }
+      #boot-splash .bs-bar::after,
+      #boot-splash .bs-card::after,
+      #boot-splash .bs-pill::after,
+      #boot-splash .bs-dot::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        transform: translateX(-100%);
+        background: linear-gradient(
+          90deg,
+          transparent,
+          color-mix(in srgb, currentColor 10%, transparent),
+          transparent
+        );
+        animation: bs-sweep 1.4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+      }
+      @keyframes bs-sweep {
+        to {
+          transform: translateX(100%);
+        }
+      }
+      #boot-splash .bs-w16 { width: 25%; }
+      #boot-splash .bs-w40 { width: 40%; }
+      #boot-splash .bs-w60 { width: 60%; }
+      #boot-splash .bs-w75 { width: 75%; }
+      #boot-splash .bs-w90 { width: 90%; }
+      #boot-splash .bs-push { margin-left: auto; }
+      #boot-splash .bs-body {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        flex: 1;
+      }
+      #boot-splash .bs-card {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding: 16px;
+        border-radius: 16px;
+      }
+      #boot-splash .bs-tabs {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        flex: none;
+        padding: 10px 8px calc(10px + env(safe-area-inset-bottom));
+      }
+      #boot-splash .bs-pill {
+        width: 44px;
+        height: 28px;
+        border-radius: 999px;
+      }
+      @media (min-width: 768px) {
+        #boot-splash .bs-shell { max-width: 720px; margin: 0 auto; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        #boot-splash .bs-bar::after,
+        #boot-splash .bs-card::after,
+        #boot-splash .bs-pill::after,
+        #boot-splash .bs-dot::after {
+          animation: none;
+          opacity: 0;
+        }
+      }
     </style>
   </head>
   <body>
     <div id="root">
-      <!-- Splash statique : visible immédiatement, remplacé dès que React rend.
-           Si le JS échoue, le message d'erreur s'affiche au lieu d'un écran blanc. -->
-      <div
-        id="boot-splash"
-        style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#fbf9f9;color:#d81b60;font-family:Georgia,serif;font-size:22px;font-weight:700"
-      >
-        VersyFlow…
+      <!-- Splash d'amorçage : la coquille de l'application, à sa géométrie,
+           visible avant même le premier octet de JavaScript applicatif.
+           Remplacé dès que React rend ; en cas d'échec, `showBootFailure`
+           remplace son contenu par le message et le bouton de reprise. -->
+      <div id="boot-splash" role="status" aria-live="polite" aria-busy="true">
+        <span class="bs-sr">Chargement de VersyFlow…</span>
+        <div class="bs-shell" aria-hidden="true">
+          <div class="bs-head">
+            <span class="bs-dot"></span>
+            <span class="bs-bar bs-w40"></span>
+            <span class="bs-bar bs-w16 bs-push"></span>
+          </div>
+          <div class="bs-body">
+            <div class="bs-card">
+              <span class="bs-bar bs-w60"></span>
+              <span class="bs-bar bs-w90"></span>
+              <span class="bs-bar bs-w75"></span>
+            </div>
+            <div class="bs-card">
+              <span class="bs-bar bs-w40"></span>
+              <span class="bs-bar bs-w90"></span>
+              <span class="bs-bar bs-w60"></span>
+            </div>
+            <div class="bs-card">
+              <span class="bs-bar bs-w75"></span>
+              <span class="bs-bar bs-w90"></span>
+            </div>
+          </div>
+          <div class="bs-tabs">
+            <span class="bs-pill"></span>
+            <span class="bs-pill"></span>
+            <span class="bs-pill"></span>
+            <span class="bs-pill"></span>
+            <span class="bs-pill"></span>
+          </div>
+        </div>
       </div>
     </div>
     <script>

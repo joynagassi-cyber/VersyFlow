@@ -396,7 +396,7 @@ export function ReviewQueueSkeleton({ label }: { label: string }) {
       {/* La commande réelle est collée en bas de l'écran : le squelette aussi,
           sinon le bouton « saute » du flux vers le bas à l'arrivée. */}
       <div className="fixed inset-x-0 bottom-0 border-t border-border bg-surface/95 p-4 backdrop-blur">
-        <Skeleton className="mx-auto h-12 w-full max-w-md rounded-full" />
+        <Skeleton className="h-12 w-full rounded-full" />
       </div>
       <div className="h-24" />
     </SkeletonPage>
