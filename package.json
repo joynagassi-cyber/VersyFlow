@@ -37,7 +37,7 @@
     "themes:sacred": "node scripts/themes/import-sacred-themes.mjs",
     "themes:sacred:check": "node scripts/themes/import-sacred-themes.mjs --check",
     "plan:audit": "node scripts/audit-plan.mjs",
-    "verify": "tsc -p tsconfig.app.json --noEmit && eslint app src/components src/hooks src/store src/theme tests/design --ext .ts,.tsx && vitest run tests/design && node scripts/audit-plan.mjs && node scripts/theme-provenance.mjs && node scripts/journey-inventory.mjs && node scripts/screen-coverage.mjs",
+    "verify": "tsc -p tsconfig.app.json --noEmit && eslint app src/components src/hooks src/store src/theme tests/design --ext .ts,.tsx && node scripts/bible/split-lsg.mjs --check && vitest run tests/design && node scripts/audit-plan.mjs && node scripts/theme-provenance.mjs && node scripts/journey-inventory.mjs && node scripts/screen-coverage.mjs",
     "themes:provenance": "node scripts/theme-provenance.mjs",
     "plan:journeys": "node scripts/journey-inventory.mjs",
     "verify:visuel": "node scripts/visual-check.mjs",

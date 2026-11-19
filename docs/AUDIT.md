@@ -63,10 +63,21 @@ Décisions D2 et D3 (motifs complets dans `docs/DECISIONS.md`).
 | Chapitre | `public/data/bible/lsg/<book>/<n>.json` (1 189 fichiers) | ~4 Ko | quand il devient visible |
 | Corpus | `data/bible/lsg.json` | 6,9 Mo | recherche, statistiques, export |
 
-Ouvrir un chapitre coûte **deux requêtes** (index + chapitre) ;
-`node scripts/bible/split-lsg.mjs --check` vérifie que la projection versionnée
-est à jour (1 190 fichiers, 5 096 819 o). Licence : LSG 1910, domaine public
-(`docs/SOURCES.md`).
+Ouvrir un chapitre coûte **deux requêtes** (index + chapitre).
+`node scripts/bible/split-lsg.mjs --check` vérifie deux choses, pas une :
+le **corpus** est sain (aucun verset vide ou blanchi, aucun livre ni chapitre
+en double, chapitres et versets contigus à partir de 1, `chapterCount` exact,
+aucun caractère de contrôle) et la **projection** versionnée est à jour
+(1 190 fichiers, 5 096 819 o). La cible `--check` est appelée par `npm run
+verify` et par `npm run build` : corriger le texte d'un seul côté, ou projeter
+un corpus troué, échoue avant la compilation.
+
+`tests/unit/bible-corpus-integrity.test.ts` complète le contrôle sur ce que le
+script ne projette pas : l'`index.json` annonce exactement les chapitres et les
+versets de la source, chaque chapitre annoncé existe, et le corpus reconstruit
+par la couche de lecture contient la même liste de références que
+`data/bible/lsg.json`, dans le même ordre (66 livres, 1 189 chapitres,
+31 170 versets). Licence : LSG 1910, domaine public (`docs/SOURCES.md`).
 
 ## 5. Contrats exécutables
 
@@ -82,17 +93,19 @@ Chaque contrat est un test, pas une consigne.
 | Clés i18n existantes | `tests/unit/i18n/{parity,keys-exist}.test.ts` | un libellé qui retombe en français ailleurs |
 | Parité des 45 locales | `tests/unit/i18n/parity.test.ts` | une clé primaire manquante dans une langue |
 | Couverture des prototypes | `scripts/screen-coverage.mjs` | un écran de la maquette sans route |
+| Corpus biblique sain et projeté | `scripts/bible/split-lsg.mjs --check` | un verset vide, un doublon, une projection périmée |
+| Index ↔ chapitres cohérents | `tests/unit/bible-corpus-integrity.test.ts` | un `index.json` qui annonce autre chose que les fichiers |
 
 ## 6. Vérifier l'état en trois commandes
 
 ```bash
 npm ci --ignore-scripts      # node_modules n'est pas versionné
 npm run typecheck            # tsc -p tsconfig.app.json --noEmit
-npm run verify               # tsc + eslint + tests design + audit + thèmes + parcours
+npm run verify               # tsc + eslint + corpus Bible + tests design + audit + thèmes + parcours
 ```
 
 Dernières mesures connues (2026-11-19) : `typecheck` **0 erreur** ; `vitest`
-**178 fichiers / 1 695 tests, 0 échec** ; `npm run lint` **0 erreur** (1 926
+**179 fichiers / 1 708 tests, 0 échec** ; `npm run lint` **0 erreur** (1 926
 avertissements préexistants, dont la dette typée des scripts) ; `npm run build`
 **succès** (264 fichiers JS, 2,8 Mo ; `www/` 61 Mo avec les thèmes et la Bible).
 

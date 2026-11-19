@@ -153,3 +153,43 @@ réel, et supprimer un module pour faire baisser un compteur serait une perte.
 **Conséquence.** `src/services/i18n-service.ts` documente désormais qu'il est
 l'accès programmatique (stores, services) et que les écrans utilisent
 `useTranslation()`.
+
+## Chantier 3 — fiabilité des données
+
+### D10. Le script de projection valide le corpus avant de le projeter
+
+**Contexte.** `split-lsg.mjs` répondait à une seule question : « la copie
+est-elle à jour ? ». Un `lsg.json` contenant un verset vide, un livre en double
+ou un `chapterCount` faux produisait une projection parfaitement conforme — et
+l'application affichait un verset blanc comme si le chargement avait échoué.
+
+**Décision.** La validation est dans le script, exécutée dans les deux modes
+(`--check` comme écriture) : livres et chapitres sans doublon, chapitres et
+versets contigus à partir de 1, aucun verset vide ou blanchi, aucun caractère
+de contrôle ni U+FFFD, `chapterCount` égal au nombre de chapitres. Chaque écart
+échoue avec sa référence (`joh/3:16`) et le fichier à corriger.
+
+**Conséquence.** `npm run verify` appelle `split-lsg.mjs --check` (en plus de
+`npm run build`, qui le faisait déjà). Le corpus livré passe sans exception :
+66 livres, 1 189 chapitres, 31 170 versets, 0 problème. Les tests de la règle
+sont dans `tests/unit/bible-corpus-integrity.test.ts`, avec un corpus minimal et
+un défaut injecté par cas — pour que le garde-fou ne soit pas seulement une
+affirmation.
+
+### D11. Un test vérifie ce que la projection ne regarde pas
+
+**Contexte.** `--check` compare la projection à la source ; il ne dit rien de
+l'`index.json` (la structure chargée à l'ouverture) ni de ce que la couche de
+lecture sert réellement.
+
+**Décision.** `tests/unit/bible-corpus-integrity.test.ts` lit les fichiers
+livrés et vérifie trois égalités : l'index annonce, livre par livre et chapitre
+par chapitre, les mêmes compteurs que la source ; chaque chapitre annoncé
+existe dans la projection (premier et dernier de chaque livre) ; le corpus
+reconstruit par `SplitBibleTextSource` contient la même liste de références que
+`data/bible/lsg.json`, dans le même ordre.
+
+**Conséquence.** Un index régénéré à partir d'une autre version du corpus, ou un
+chapitre perdu à la projection, fait échouer la suite de tests sans lancer
+l'application.
+
