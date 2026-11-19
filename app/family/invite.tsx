@@ -17,6 +17,7 @@ import { useFamilySyncStore } from '@/store/family-sync-store';
 import { useFamilyService } from '@/hooks/useFamilyService';
 import { useAuthStore } from '@/store/auth-store';
 import { fireAndForget } from '@/lib/fire-and-forget';
+import { resolveFamilyIcon } from '@/lib/family-icon';
 
 export default function FamilyInviteScreen() {
   const navigate = useNavigate();
@@ -107,12 +108,18 @@ export default function FamilyInviteScreen() {
       title={t('family.invite', 'Inviter')}
       showBack
       backPath="/family/members"
-      right={<span className="px-4 text-lg" aria-hidden>{family.icon}</span>}
+      right={
+        <span className="px-4 text-primary" aria-hidden>
+          <DuoIcon icon={resolveFamilyIcon(family.icon)} size={20} />
+        </span>
+      }
     >
       <div className="screen-column space-y-5">
         {/* Family header */}
         <div className="bg-primary flex items-center gap-3 rounded-3xl p-5 text-on-primary">
-          <span className="text-3xl">{family.icon}</span>
+          <span className="flex h-11 w-11 items-center justify-center rounded-full bg-on-primary/20">
+            <DuoIcon icon={resolveFamilyIcon(family.icon)} size={22} />
+          </span>
           <span className="text-xl font-bold">{family.name}</span>
         </div>
 

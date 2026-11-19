@@ -52,6 +52,7 @@ import { useFamilyRoomStore } from '@/store/family-room-store';
 import { useActiveProfile } from '@/hooks/useActiveProfile';
 import { useAuthStore } from '@/store/auth-store';
 import { pointsForChallenge } from '@/services/family-scoring';
+import { resolveFamilyIcon } from '@/lib/family-icon';
 
 const DAY = 86_400_000;
 
@@ -464,10 +465,10 @@ function RealFamilyHomeScreen() {
                 )}
               >
                 <span
-                  className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-xl"
+                  className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-primary"
                   style={{ backgroundColor: `${family.color}20` }}
                 >
-                  {family.icon}
+                  <DuoIcon icon={resolveFamilyIcon(family.icon)} size={20} />
                 </span>
                 <span className="flex-1">
                   <p className="text-base font-semibold text-text-primary">{family.name}</p>

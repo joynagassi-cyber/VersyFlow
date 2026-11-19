@@ -67,7 +67,7 @@ export default function JourneyScreen() {
   const back = isIntro ? '/onboarding/translation-select' : index === 0 ? '/onboarding/journey/intro' : index > 0 ? `/onboarding/journey/${features[index - 1]}` : isProfile ? '/onboarding/journey/colors' : isColors ? '/onboarding/journey/share' : '/onboarding/reminder-config';
   const next = isIntro ? '/onboarding/journey/bible' : index >= 0 && index < features.length - 1 ? `/onboarding/journey/${features[index + 1]}` : '/onboarding/journey/colors';
   const progress = isIntro ? 1 : index >= 0 ? index + 2 : isProfile ? 9 : isColors ? 8 : 10;
-  return <main className="journey-page"><div className="journey-visual"><div className="journey-brand">VERSYFLOW <span>✦</span></div><JourneyArtwork index={index < 0 ? 6 : index} /><p>{t('onboardingJourney.visualCaption', 'La Parole vous accompagne, chaque jour.')}</p></div>
+  return <main className="journey-page"><div className="journey-visual"><div className="journey-brand">VERSYFLOW</div><JourneyArtwork index={index < 0 ? 6 : index} /><p>{t('onboardingJourney.visualCaption', 'La Parole vous accompagne, chaque jour.')}</p></div>
     <section className="journey-content"><div className="journey-copy">
       <button type="button" className="journey-back" onClick={() => navigate(back)}>← {t('common.back', 'Retour')}</button>
       <p className="journey-overline">{isDone ? t('onboardingJourney.ready', 'TOUT EST PRÊT') : t('onboardingJourney.step', 'VOTRE PARCOURS')} {!isDone && `${progress} / 10`}</p>
@@ -83,7 +83,7 @@ export default function JourneyScreen() {
         </div>
       </div>}
       {isColors && <div className="journey-accents">{FIXED_ACCENTS.map((accent) => <button key={accent.id} type="button" aria-pressed={fixedAccentId === accent.id} aria-label={accent.label} onClick={() => { setBackgroundType('none'); setFixedAccentId(accent.id); }}><span style={{ backgroundColor: accent.color }} /><small>{accent.label}</small></button>)}</div>}
-      {isDone && <div className="journey-success-profile"><ProfileAvatar name={activeProfile?.displayName || name || 'u'} size={76} /><div><strong>{activeProfile?.displayName || name}</strong><p>{activeProfile?.slogan}</p></div><div className="journey-confetti" aria-hidden="true"><i>✦</i><i>✧</i><i>✦</i><i>✧</i><i>✦</i><i>✧</i></div></div>}
+      {isDone && <div className="journey-success-profile"><ProfileAvatar name={activeProfile?.displayName || name || 'u'} size={76} /><div><strong>{activeProfile?.displayName || name}</strong><p>{activeProfile?.slogan}</p></div><div className="journey-confetti" aria-hidden="true"><i /><i /><i /><i /><i /><i /></div></div>}
       {!isDone && <div className="journey-progress" aria-label={`${progress} / 10`}><span style={{ width: `${progress * 10}%` }} /></div>}
       {isDone && error && <p role="alert" className="text-error">{error}</p>}
       <button className="journey-primary" type="button" disabled={busy} onClick={() => { if (isDone) { void finish(); } else if (isProfile) void saveProfile(); else navigate(isColors ? '/onboarding/journey/profile' : next); }}>{isDone ? t('onboardingJourney.enter', 'Entrer dans mon espace') : t('common.continue', 'Continuer')} <span>→</span></button>

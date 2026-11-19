@@ -3063,7 +3063,8 @@ html:is([data-bg='image'],[data-app-bg='gradient']) .reading-chapter-heading p {
 @media(prefers-reduced-motion:reduce) { .journey-progress span { transition:none; } }
 .journey-success-profile { position:relative; overflow:hidden; min-height:112px; }
 .journey-confetti { position:absolute; inset:0 0 0 auto; width:40%; pointer-events:none; overflow:hidden; }
-.journey-confetti i { position:absolute; font-style:normal; animation:journey-confetti-fall 2.8s ease-in-out infinite alternate; }
+.journey-confetti i { position:absolute; width:6px; height:6px; border-radius:2px; background:currentColor; opacity:.85; transform:rotate(12deg); animation:journey-confetti-fall 2.8s ease-in-out infinite alternate; }
+.journey-confetti i:nth-child(even) { border-radius:50%; width:5px; height:5px; }
 .journey-confetti i:nth-child(1) { left:5%; top:12%; }.journey-confetti i:nth-child(2) { left:30%; top:52%; animation-delay:-.5s; }.journey-confetti i:nth-child(3) { left:58%; top:8%; animation-delay:-1s; }.journey-confetti i:nth-child(4) { left:80%; top:45%; animation-delay:-1.5s; }.journey-confetti i:nth-child(5) { left:45%; top:70%; animation-delay:-2s; }.journey-confetti i:nth-child(6) { left:75%; top:75%; animation-delay:-2.5s; }
 @keyframes journey-confetti-fall { from { transform:translateY(-6px) rotate(-15deg); } to { transform:translateY(8px) rotate(20deg); } }
 @media(prefers-reduced-motion:reduce) { .journey-confetti i { animation:none; } }

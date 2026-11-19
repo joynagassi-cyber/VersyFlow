@@ -3,7 +3,7 @@
  * unified Memorization Workspace.
  *
  * Each mode is an icon + label:
- *   👁 Révéler   ·   🙈 Masquer   ·   🗂 Cartes   ·   ✍️ Écrire
+ *   Révéler (œil)  ·  Masquer (œil barré)  ·  Cartes (calques)  ·  Écrire (crayon)
  *
  * The active mode is the dark "pill"; the others are outline. A
  * `<`/`>` toggle (or chevron) collapses the bar to a single-button

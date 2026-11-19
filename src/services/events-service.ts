@@ -4,7 +4,7 @@
  * `eventBus` (an instance) and `DomainEventTypes` (a const object) are
  * *values* living in the domain layer. The UI layer is forbidden from
  * importing them directly (docs/29 §1 matrix: `app/`+`src/components/` →
- * `src/domains/` ❌; §6 Exception 4 only exempts *type-only* domain
+ * `src/domains/` interdit ; §6 Exception 4 only exempts *type-only* domain
  * imports, which `eventBus`/`DomainEventTypes` are not). This service is
  * the single routing point: UI screens emit/listen through it, and any
  * future move of the bus (e.g. behind a port, or to a different

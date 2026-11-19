@@ -1173,6 +1173,16 @@ export const en = {
   },
 
   familyPlus: {
+    iconLabel: 'Icon',
+    iconUsers: 'Family',
+    iconHome: 'Home',
+    iconStar: 'Star',
+    iconHeart: 'Heart',
+    iconLeaf: 'Leaf',
+    iconSun: 'Sun',
+    iconMoon: 'Moon',
+    iconFire: 'Flame',
+    iconBook: 'Book',
     noChallengeForMemberTitle: 'No active challenge',
     activityFeed: 'Family feed',
     entriesCount: '{{count}} entrie(s)',

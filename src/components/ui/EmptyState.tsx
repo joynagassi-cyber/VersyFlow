@@ -32,7 +32,7 @@ interface EmptyStateProps {
  * État vide — un seul vocabulaire pour les 40 écrans qui en ont un.
  *
  * Trois défauts étaient recopiés à l'identique dans les écrans :
- *   1. l'icône était parfois un emoji (« 👨‍👩‍👧‍👦 »), parfois un SVG, parfois un
+ *   1. l'icône était parfois un caractère emoji, parfois un SVG, parfois un
  *      point d'interrogation : trois iconographies pour le même rôle ;
  *   2. le titre et la description n'avaient ni la même taille ni le même
  *      espacement, et la description dépassait la mesure de lecture ;

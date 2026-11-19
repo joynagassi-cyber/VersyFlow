@@ -8,7 +8,7 @@ export function JourneyArtwork({ index = 0 }: { index?: number }) {
   return <div className={`journey-art journey-art-${index}`} aria-hidden="true">
     <div className="journey-art-halo" /><div className="journey-art-orbit journey-art-orbit-one" /><div className="journey-art-orbit journey-art-orbit-two" />
     <div className="journey-art-card journey-art-card-back" /><div className="journey-art-card journey-art-card-front"><DuoIcon icon={Icon} size={106} /></div>
-    <span className="journey-art-spark journey-art-spark-one">✦</span><span className="journey-art-spark journey-art-spark-two">✦</span>
+    <span className="journey-art-spark journey-art-spark-one" aria-hidden="true" /><span className="journey-art-spark journey-art-spark-two" aria-hidden="true" />
     <span className="journey-art-line journey-art-line-one" /><span className="journey-art-line journey-art-line-two" />
   </div>;
 }
