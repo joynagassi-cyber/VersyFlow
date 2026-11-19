@@ -16,6 +16,6 @@ describe('Bible : explorer', () => {
     expect(screen).toContain('g2 explore-section');
     expect(screen).toContain('type="search"');
     expect(screen).toContain('aria-label={t(\'bible.search\'');
-    expect(screen).toContain('navigate(`/bible/book/${book.id}`)');
+    expect(screen).toContain('navigate(`/bible/explorer/${book.id}`)');
   });
 });

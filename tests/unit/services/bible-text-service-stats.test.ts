@@ -24,7 +24,7 @@ const INDEX_FILE = resolve(process.cwd(), 'public/data/bible/lsg/index.json');
 /** En test, `fetch` sert le disque : mêmes chemins, aucun réseau. */
 beforeAll(() => {
   vi.stubGlobal('fetch', async (input: RequestInfo | URL) => {
-    const url = typeof input === 'string' ? input : input.toString();
+    const url = String(input);
     try {
       return new Response(readFileSync(resolve(process.cwd(), `public${url}`), 'utf8'), { status: 200 });
     } catch {

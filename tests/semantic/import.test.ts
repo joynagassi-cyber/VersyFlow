@@ -20,10 +20,11 @@ describe('stage A — import', () => {
     const errors: string[] = [];
     const { datasets, universe } = loadVerseUniverse(`${REPO_ROOT}/data/bible`, errors);
     expect(errors).toEqual([]);
-    // 35 pre-existing + 2 newly-built free-access datasets (ASV, BSB).
-    // Keep the expectation a lower bound: `>= 37` — a future build-bible
-    // run can only add datasets, never remove these 37.
-    expect(datasets.length).toBeGreaterThanOrEqual(37);
+    // Une seule traduction est livrée : la LSG 1910 (décision D2, `docs/DECISIONS.md`).
+    // Les 56 autres du catalogue n'ont pas de fichier — le compte est donc exact,
+    // et non un plancher hérité d'un dépôt qui versionnait 37 jeux.
+    expect(datasets.length).toBeGreaterThanOrEqual(1);
+    expect(datasets.map((d: { id?: string }) => d.id ?? d.translationId ?? '').join(',')).toContain('lsg');
     expect(universe.verses.length).toBeGreaterThan(30000);
     expect(universe.bookIds).toHaveLength(66);
     // Canonical verse keys: book:chapter:verse

@@ -14,6 +14,7 @@ import {
   AlertCircleIcon as AlertCircle,
 } from '@/components/ui/solar-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
+import { parseReference } from '@/domains/bible';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { colorTintAlpha } from '@/lib/platform';
 import { getMemorizationService } from '@/services/memorization-service-factory';
@@ -231,7 +232,7 @@ export default function CollectionsScreen() {
                     key={rec.id}
                     onClick={() =>
                       navigate(
-                        `/bible/chapter?book=${encodeURIComponent(rec.bookId)}&chapter=${rec.chapterNumber}&verse=${rec.verseNumber}`,
+                        `/bible/explorer/${encodeURIComponent(rec.bookId)}/${rec.chapterNumber}`,
                       )
                     }
                     className="g2 flex w-full items-center gap-3 p-3 text-left active:bg-surface-tint"
@@ -313,7 +314,16 @@ export default function CollectionsScreen() {
                     collection.verses.map((v) => (
                       <button
                         key={v}
-                        onClick={() => navigate('/bible/chapter?' + new URLSearchParams({ book: v.split(' ')[0], chapter: v }).toString())}
+                        onClick={() => {
+                          // « Jean 3:16 » → `/bible/explorer/joh/3` : la référence
+                          // est résolue par le parseur du domaine, pas découpée à la main.
+                          const parsed = parseReference(v);
+                          navigate(
+                            parsed
+                              ? `/bible/explorer/${parsed.bookId}/${parsed.chapter}`
+                              : '/bible/explorer',
+                          );
+                        }}
                         className="block text-left text-sm text-text-primary"
                       >
                         • {v}

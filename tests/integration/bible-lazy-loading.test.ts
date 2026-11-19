@@ -26,7 +26,7 @@ const requested: string[] = [];
 
 beforeAll(() => {
   vi.stubGlobal('fetch', async (input: RequestInfo | URL) => {
-    const url = typeof input === 'string' ? input : input.toString();
+    const url = String(input);
     requested.push(url);
     try {
       return new Response(readFileSync(resolve(process.cwd(), `public${url}`), 'utf8'), { status: 200 });
@@ -75,7 +75,7 @@ describe('intégrité du texte livré', () => {
     expect(texts.filter((t) => t.includes('\\'))).toEqual([]);
 
     // Espaces doubles / bords : le rendu justifié les transformerait en trous.
-    expect(texts.filter((t) => /  /.test(t) || t !== t.trim())).toEqual([]);
+    expect(texts.filter((t) => / {2}/.test(t) || t !== t.trim())).toEqual([]);
   }, 60_000);
 
   it('les passages connus sont exacts', async () => {

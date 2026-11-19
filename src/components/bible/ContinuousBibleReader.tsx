@@ -12,7 +12,7 @@
 
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useAppearanceStore } from '@/store/appearance-store';
 import type { BibleChapterData } from '@/domains/bible/repository-local';
 import type { SplitBibleIndex } from '@/domains/bible/split-index';
@@ -57,7 +57,6 @@ export default function ContinuousBibleReader({
   const { t, i18n } = useTranslation();
   const continuous = useAppearanceStore((s) => s.bibleContinuous);
   const navigate = useNavigate();
-  const location = useLocation();
   const chapters = useMemo(() => flattenChapters(index), [index]);
   const initial = chapters.findIndex(
     ({ bookId, chapter }) => bookId === initialBookId && chapter === initialChapter,
@@ -127,8 +126,9 @@ export default function ContinuousBibleReader({
     };
     // `loaded` est volontairement hors dépendances : le test d'existence se
     // fait au moment de la boucle, et l'ajouter relancerait l'effet à chaque
-    // chapitre arrivé (rafale de requêtes).
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // chapitre arrivé (rafale de requêtes). Le plugin `react-hooks` n'est pas
+    // activé dans ce dépôt : on documente la raison au lieu d'une directive
+    // qui ne correspond à aucune règle chargée.
   }, [continuous, range.start, range.end, initial, chapters, getChapter, translationId]);
 
   /** Appui = ajoute. Second appui sur le même verset = retire. */
@@ -165,8 +165,9 @@ export default function ContinuousBibleReader({
   const navigateChapter = (index2: number) => {
     const target = chapters[index2];
     if (!target) return;
-    const path = location.pathname.startsWith('/bible/explorer/') ? 'explorer' : 'chapter';
-    navigate(`/bible/${path}/${target.bookId}/${target.chapter}`);
+    // Une seule hiérarchie d'URL Bible : le chapitre est toujours adressable
+    // par l'explorateur (voir `BibleLegacyRedirect` pour les anciens chemins).
+    navigate(`/bible/explorer/${target.bookId}/${target.chapter}`);
     root.current?.closest<HTMLElement>('.app-canvas')?.scrollTo({ top: 0 });
   };
 

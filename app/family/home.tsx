@@ -208,7 +208,7 @@ function RealFamilyHomeScreen() {
                 <Button
                   variant="secondary"
                   size="sm"
-                  onClick={() => navigate('/family/select-profile')}
+                  onClick={() => navigate('/profile/select')}
                 >
                   {t('familyPlus.change', 'Changer')}
                 </Button>

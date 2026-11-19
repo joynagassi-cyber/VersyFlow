@@ -49,6 +49,15 @@ export default function MemorizationSession() {
   const navigate = useNavigate();
   const [params] = useSearchParams();
   const { t } = useTranslation();
+  // `?strategy=` vient de l'atelier de mémoire (`/memory/start`) : on l'accepte
+  // ici pour que le choix d'exercice arrive jusqu'à la session, sans URL morte.
+  const strategyParam = params.get('strategy');
+  const restartHref = (() => {
+    const next = new URLSearchParams(params);
+    if (strategyParam) next.set('strategy', strategyParam);
+    const qs = next.toString();
+    return `/memorization/session${qs ? `?${qs}` : ''}`;
+  })();
   const { activeProfile } = useActiveProfile();
 
   const [engine, setEngine] = useState<MemorizationSessionEngine | null>(null);
@@ -310,7 +319,7 @@ export default function MemorizationSession() {
       } catch (e) {
         console.error('[MemorizationSession] flush failed:', e);
       }
-      navigate('/memorization/confirm', { state: { reference } });
+      navigate('/memorization/confirm', { state: { reference, strategy: strategyParam } });
     }
   };
 
@@ -384,6 +393,7 @@ export default function MemorizationSession() {
         <Button
           className="flex-1"
           onClick={() => fireAndForget(proceedSession(), 'session:proceed')}
+          aria-label={t('memory.restartReveal', 'Revoir depuis le début')}
         >
           {t('session.proceed', 'Continuer')}
           <DuoIcon icon={ArrowRight} size={15} />

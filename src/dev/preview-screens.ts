@@ -47,7 +47,7 @@ export const PREVIEW_SCREENS: PreviewScreen[] = [
   },
   {
     id: 'bible-chapter',
-    path: '/bible/chapter/joh/3',
+    path: '/bible/explorer/joh/3',
     label: 'Bible — chapitre (Jean 3)',
     group: 'Bible',
     state: 'etat-vide-reel',

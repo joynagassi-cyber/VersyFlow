@@ -12,13 +12,8 @@ import { DuoIcon } from '@/components/ui/DuoIcon';
 import { ThemeAppearanceIcon } from '@/components/ui/ThemeAppearanceIcon';
 import {
   ChevronRightIcon as ChevronRight,
-  LanguagesIcon as Languages,
-  BookTextIcon as BookText,
   CloudUploadIcon as CloudUpload,
   Download01Icon as Download,
-  ShieldCheckIcon as ShieldCheck,
-  InformationCircleIcon as Info,
-  HelpCircleIcon as HelpCircle,
   Delete02Icon as Trash2,
   LogOutIcon as LogOut,
   CheckIcon as Check,
@@ -51,7 +46,6 @@ const TAB_DEFS: { id: SettingsTab; key: string; label: string }[] = [
   { id: 'profile', key: 'settingsTab.profile', label: 'Profil' },
 ];
 
-import { bibleTranslationDisplayName } from '@/services/bible-translation-names';
 import { fireAndForget } from '@/lib/fire-and-forget';
 import { Switch } from '@/components/ui/Switch';
 
@@ -149,7 +143,6 @@ function ParamsTab() {
   const { t, i18n } = useTranslation();
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   const signOut = useAuthStore((s) => s.signOut);
-  const bibleTranslation = useSettingsStore((s) => s.bibleTranslation);
   const [languageModalOpen, setLanguageModalOpen] = useState(false);
   const visibleTabs = useUiStore((s) => s.visibleTabs);
   const setVisibleTab = useUiStore((s) => s.setVisibleTab);
@@ -168,15 +161,17 @@ function ParamsTab() {
     navigate('/auth');
   };
 
+  /**
+   * Il n'y a **qu'un** hub de réglages : `/settings` (`app/settings/index.tsx`).
+   * Cet onglet gardait une seconde arborescence — mêmes écrans, autres libellés,
+   * autres icônes — donc deux endroits où ajouter une ligne et deux ordres de
+   * lecture. Il ne garde plus que ce qui n'existe nulle part ailleurs :
+   *   - la langue en feuille modale (le hub, lui, ouvre `/settings/languages`) ;
+   *   - les deux réglages de session/rappels, avec leur sous-titre ;
+   *   - la zone de danger, qui n'existe que dans l'onglet.
+   * Le reste renvoie au hub, en une ligne, plutôt qu'en le recopiant.
+   */
   const groups = [
-    {
-      title: t('settings.apparence', 'Apparence'),
-      rows: [
-        { icon: <DuoIcon icon={Languages} size={20} />, label: t('settings.uiLanguage', "Langue de l'interface"), sub: getLanguageName(currentLanguage), onClick: () => setLanguageModalOpen(true) },
-        { icon: <DuoIcon icon={BookText} size={20} />, label: t('settings.bibleTranslation', 'Traduction biblique'), sub: `${bibleTranslationDisplayName(bibleTranslation)} · ${t('settings.downloadTranslations', 'Télécharger d’autres versions')}`, onClick: () => navigate('/settings/available-translations') },
-        { icon: <ThemeAppearanceIcon />, label: t('nav.theme', 'Thème et apparence'), sub: t('settingsHub.themeHint', 'Clair, sombre et accent'), onClick: () => navigate('/settings/appearance') },
-      ],
-    },
     {
       title: t('settings.sessionReminders', 'Session & Rappels'),
       rows: [
@@ -185,24 +180,17 @@ function ParamsTab() {
       ],
     },
     {
-      title: t('settings.confidentialite', 'Confidentialité'),
+      title: t('settings.allSettings', 'Tous les réglages'),
       rows: [
-        { icon: <DuoIcon icon={ShieldCheck} size={20} />, label: t('settings.privacyTitle', 'Données & confidentialité'), sub: t('settingsHub.privacyHint', 'Télémétrie et données'), onClick: () => navigate('/settings/privacy') },
-      ],
-    },
-    {
-      title: t('settings.about', 'À propos'),
-      rows: [
-        { icon: <DuoIcon icon={Info} size={20} />, label: t('settings.about', 'À propos'), sub: `${t('common.appName', 'VersyFlow')} v0.1.0`, onClick: () => navigate('/settings/about') },
-        { icon: <DuoIcon icon={HelpCircle} size={20} />, label: t('settings.helpSupport', 'Aide & Support'), sub: t('settings.documentation', 'Guides et contact'), onClick: () => navigate('/settings/about') },
+        {
+          icon: <ThemeAppearanceIcon />,
+          label: t('settings.openHub', 'Ouvrir les réglages complets'),
+          sub: t('settings.openHubHint', 'Apparence, traduction, données, confidentialité'),
+          onClick: () => navigate('/settings'),
+        },
       ],
     },
   ];
-
-  function getLanguageName(code: string) {
-    const lang = SUPPORTED_LANGUAGES.find((l) => l.code === code);
-    return lang ? lang.name : code;
-  }
 
   return (
     <div className="settings-groups">

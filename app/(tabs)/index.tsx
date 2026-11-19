@@ -200,7 +200,7 @@ export default function HomeScreen() {
       icon: ScrollText,
       label: t('home.passage', 'Passage'),
       desc: t('home.passageDesc', 'Multi-versets'),
-      action: () => navigate('/bible/chapter'),
+      action: () => navigate('/bible/explorer'),
     },
     {
       icon: CalendarClock,
@@ -431,8 +431,8 @@ export default function HomeScreen() {
                 onClick={() =>
                   navigate(
                     verse.bookId && verse.chapterNumber
-                      ? `/bible/chapter/${verse.bookId}/${verse.chapterNumber}`
-                      : '/bible/chapter',
+                      ? `/bible/explorer/${verse.bookId}/${verse.chapterNumber}`
+                      : '/bible/explorer',
                   )
                 }
               >

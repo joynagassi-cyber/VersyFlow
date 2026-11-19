@@ -12,12 +12,21 @@ import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { useLocalSearchParams } from '@/hooks/useIonicNavigation';
 import { useMemoryCapability } from '@/capabilities/memory/store';
 
+/** Retour vers le chapitre quand on sait d'où l'on vient, sinon l'atelier. */
+function versePreviewBackPath(bookId: string, chapter: number): string {
+  return bookId && chapter > 0
+    ? `/bible/explorer/${bookId}/${chapter}`
+    : '/memory/start';
+}
+
 export default function FlashcardScreen() {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const params = useLocalSearchParams();
   const { sessionState, startSession } = useMemoryCapability();
   const text = (params.text as string) ?? '';
+  const bookId = (params.bookId as string) ?? '';
+  const chapter = Number(params.chapter ?? 0);
   const words = text.split(/\s+/).filter(Boolean);
   const [revealed, setRevealed] = useState(0);
 
@@ -37,7 +46,11 @@ export default function FlashcardScreen() {
   }, []);
 
   return (
-    <FullScreenPage title={t('memory.flashcard', 'Flashcard')} showBack backPath="/tabs/home">
+    <FullScreenPage
+      title={t('memory.flashcard', 'Flashcard')}
+      showBack
+      backPath={versePreviewBackPath(bookId, chapter)}
+    >
       <div className="screen-column space-y-5">
         <div className="g2 p-6">
           <p className="text-sm font-semibold text-primary">{text}</p>

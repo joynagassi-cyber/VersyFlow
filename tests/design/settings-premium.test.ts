@@ -16,7 +16,12 @@ describe('Réglages premium', () => {
     expect(panel).toContain('document.body');
   });
   it('conserve les destinations et utilise les surfaces du contrat', () => {
-    for (const route of ['/analytics/dashboard', '/tabs/progress', '/review/queue', '/settings/backup', '/review/history', '/collections', '/settings/appearance', '/profile/select']) expect(source).toContain(route);
+    for (const route of ['/analytics/dashboard', '/tabs/progress', '/review/queue', '/settings/backup', '/review/history', '/collections', '/settings/session', '/settings/reminders', '/profile/select']) expect(source).toContain(route);
+    // Un seul hub : l'onglet ne recopie plus apparence / confidentialité / à-propos,
+    // il y renvoie en une ligne.
+    expect(source).toContain("navigate('/settings')");
+    expect(source).not.toContain("navigate('/settings/privacy')");
+    expect(source).not.toContain("navigate('/settings/about')");
     expect(source).toContain('g1 tab-heading settings-heading');
     expect(source).toContain('g2 settings-data-card');
     expect(source).toContain('g2 settings-group-card');

@@ -37,7 +37,7 @@ function nodeSource(): SplitBibleTextSource {
  */
 beforeAll(() => {
   vi.stubGlobal('fetch', async (input: RequestInfo | URL) => {
-    const url = typeof input === 'string' ? input : input.toString();
+    const url = String(input);
     try {
       const body = readFileSync(resolve(process.cwd(), `public${url}`), 'utf8');
       return new Response(body, { status: 200 });

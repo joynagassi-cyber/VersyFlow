@@ -58,7 +58,7 @@ export default function FamilySettingsScreen() {
           title={t('familyPlus.noFamilySelected', 'Aucune famille active')}
           description={t('familyPlus.noFamilySelectedBody', 'Créez une famille ou rejoignez-en une pour régler ses rappels, ses points et sa confidentialité.')}
           actionLabel={t('familyPlus.chooseFamily', 'Choisir une famille')}
-          onAction={() => navigate('/family/select-profile')}
+          onAction={() => navigate('/profile/select')}
         />
       </FullScreenPage>
     );

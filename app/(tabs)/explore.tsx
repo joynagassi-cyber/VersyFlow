@@ -44,7 +44,7 @@ export default function ExploreScreen() {
         <h2>{title}</h2>
         <div className="explore-book-list">
           {list.map((book) => (
-            <button key={book.id} type="button" onClick={() => navigate(`/bible/book/${book.id}`)} className="explore-book">
+            <button key={book.id} type="button" onClick={() => navigate(`/bible/explorer/${book.id}`)} className="explore-book">
               <span className="icon-chip explore-icon"><DuoIcon icon={BookOpen} size={20} /></span>
               <span className="explore-book-details">
                 <span className="explore-book-title">{book.displayName}</span>

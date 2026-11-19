@@ -18,6 +18,8 @@ import {
   Outlet,
   useNavigate,
   useLocation,
+  useParams,
+  useSearchParams,
 } from 'react-router-dom';
 import { I18nextProvider } from 'react-i18next';
 import { Suspense, lazy, useEffect } from 'react';
@@ -75,8 +77,6 @@ const OnboardingReminderConfig = lazy(() => import('../app/onboarding/reminder-c
 
 // Bible
 const BibleExplorer = lazy(() => import('../app/bible/explorer'));
-const BibleBook = lazy(() => import('../app/bible/book'));
-const BibleChapter = lazy(() => import('../app/bible/chapter'));
 
 // Memorization
 const MemorizationSession = lazy(() => import('../app/memorization/session'));
@@ -99,7 +99,6 @@ const FamilyJoin = lazy(() => import('../app/family/join'));
 const FamilyPresentation = lazy(() => import('../app/family/presentation'));
 const FamilyCreate = lazy(() => import('../app/family/create'));
 const FamilyProfile = lazy(() => import('../app/family/profile'));
-const FamilySelectProfile = lazy(() => import('../app/family/select-profile'));
 const FamilyMember = lazy(() => import('../app/family/member'));
 const FamilyLeaderboard = lazy(() => import('../app/family/leaderboard'));
 const FamilyPoints = lazy(() => import('../app/family/points'));
@@ -141,7 +140,7 @@ const ProfileSelect = lazy(() => import('../app/profile/select'));
 const CollectionsPage = lazy(() => import('../app/collections/index'));
 const ComparisonTranslation = lazy(() => import('../app/comparison/translation'));
 const ComparisonResult = lazy(() => import('../app/comparison/result'));
-const MemoryStart = lazy(() => import('../app/memory/start'));
+const MemorizationStart = lazy(() => import('../app/memorization/start'));
 const MemoryFlashcard = lazy(() => import('../app/memory/flashcard'));
 const MemoryRecallWriting = lazy(() => import('../app/memory/recall-writing'));
 // Semantic tree views (LOCAL_ONLY semantic store, tree UI — P0.2)
@@ -414,22 +413,27 @@ function ComparisonResultRoute() {
   return <ComparisonResult record={state.record} userAnswer={state.userAnswer} />;
 }
 
-/** Memory start — needs verse data via router state */
-function MemoryStartRoute() {
-  const location = useLocation();
-  const state = location.state as {
-    verseData?: {
-      reference: string;
-      text: string;
-      bookId: string;
-      chapter: number;
-      verse: number;
-    };
-  } | null;
-  if (!state?.verseData) {
-    return <Navigate to="/memorization/session" replace />;
-  }
-  return <MemoryStart verseData={state.verseData} />;
+/**
+ * Redirections des routes héritées de la Bible.
+ *
+ * `app/bible/book.tsx` et `app/bible/chapter.tsx` étaient deux implémentations
+ * du même parcours que l'explorateur (mêmes données, mêmes composants, moins
+ * d'états). Elles sont supprimées : ces deux chemins — et les query params que
+ * `collections` utilisait encore — pointent désormais vers l'explorateur, la
+ * seule hiérarchie d'URL Bible. Une URL partagée reste donc valide.
+ */
+function BibleLegacyRedirect() {
+  const params = useParams();
+  const [search] = useSearchParams();
+  const bookId = params.bookId ?? search.get('book');
+  const chapter = params.chapterNumber ?? search.get('chapter');
+  const target =
+    bookId && chapter !== null && chapter !== undefined
+      ? `/bible/explorer/${encodeURIComponent(bookId)}/${encodeURIComponent(chapter)}`
+      : bookId
+        ? `/bible/explorer/${encodeURIComponent(bookId)}`
+        : '/bible/explorer';
+  return <Navigate to={target} replace />;
 }
 
 function App() {
@@ -475,14 +479,17 @@ function App() {
               {/* Auth */}
               <Route path="/auth" element={<AuthGateRoute />} />
 
-              {/* Bible — the explorer is URL-driven: each view is a route */}
+              {/* Bible — l'explorateur est piloté par l'URL : chaque vue EST une route.
+                  Une seule hiérarchie ; les anciens chemins redirigent (voir
+                  `BibleLegacyRedirect`). */}
+              <Route path="/bible" element={<Navigate to="/bible/explorer" replace />} />
               <Route path="/bible/explorer" element={<BibleExplorer />} />
               <Route path="/bible/explorer/:bookId" element={<BibleExplorer />} />
               <Route path="/bible/explorer/:bookId/:chapter" element={<BibleExplorer />} />
-              <Route path="/bible/book/:bookId" element={<BibleBook />} />
-              <Route path="/bible/book" element={<Navigate to="/bible/explorer" replace />} />
-              <Route path="/bible/chapter" element={<Navigate to="/bible/explorer" replace />} />
-              <Route path="/bible/chapter/:bookId/:chapterNumber" element={<BibleChapter />} />
+              <Route path="/bible/book" element={<BibleLegacyRedirect />} />
+              <Route path="/bible/book/:bookId" element={<BibleLegacyRedirect />} />
+              <Route path="/bible/chapter" element={<BibleLegacyRedirect />} />
+              <Route path="/bible/chapter/:bookId/:chapterNumber" element={<BibleLegacyRedirect />} />
 
               {/* Memorization */}
               <Route path="/memorization/session" element={<MemorizationSession />} />
@@ -505,7 +512,10 @@ function App() {
               <Route path="/family/presentation" element={<FamilyPresentation />} />
               <Route path="/family/create" element={<FamilyCreate />} />
               <Route path="/family/profile" element={<FamilyProfile />} />
-              <Route path="/family/select-profile" element={<FamilySelectProfile />} />
+              {/* Un seul sélecteur de profil : `/profile/select` (profils locaux
+                  + membres de la famille en lecture seule). L'URL familiale
+                  redirige pour ne pas casser les liens existants. */}
+              <Route path="/family/select-profile" element={<Navigate to="/profile/select" replace />} />
               <Route path="/family/member/:accountId" element={<FamilyMember />} />
               <Route path="/family/leaderboard" element={<FamilyLeaderboard />} />
               <Route path="/family/points" element={<FamilyPoints />} />
@@ -547,7 +557,13 @@ function App() {
               <Route path="/collections" element={<CollectionsPage />} />
               <Route path="/comparison/translation" element={<ComparisonTranslation />} />
               <Route path="/comparison/result" element={<ComparisonResultRoute />} />
-              <Route path="/memory/start" element={<MemoryStartRoute />} />
+              {/* Mémorisation — deux familles, deux rôles, aucun doublon :
+                    `memorization/*` conduit la session et l'atelier de méthode,
+                    `memory/*` les exercices ciblés (flashcard, écriture). Les
+                    anciennes URL gardent un sens : `/memory/start` devient
+                    l'atelier de méthode, sans exiger d'état de routeur. */}
+              <Route path="/memorization/start" element={<MemorizationStart />} />
+              <Route path="/memory/start" element={<Navigate to="/memorization/start" replace />} />
               <Route path="/memory/flashcard" element={<MemoryFlashcard />} />
               <Route path="/memory/recall-writing" element={<MemoryRecallWriting />} />
 
@@ -671,8 +687,6 @@ function preloadAllPages() {
     void import('../app/+not-found');
     void import('../app/achievements/index');
     void import('../app/analytics/dashboard');
-    void import('../app/bible/book');
-    void import('../app/bible/chapter');
     void import('../app/bible/explorer');
     void import('../app/collections/index');
     void import('../app/comparison/result');
@@ -692,7 +706,6 @@ function preloadAllPages() {
     void import('../app/family/points');
     void import('../app/family/presentation');
     void import('../app/family/profile');
-    void import('../app/family/select-profile');
     void import('../app/family/session/live');
     void import('../app/family/session/prepare');
     void import('../app/family/session/summary');
@@ -705,7 +718,7 @@ function preloadAllPages() {
     void import('../app/memorization/workspace');
     void import('../app/memory/flashcard');
     void import('../app/memory/recall-writing');
-    void import('../app/memory/start');
+    void import('../app/memorization/start');
     void import('../app/notifications');
     void import('../app/onboarding/_layout');
     void import('../app/onboarding/fsrs-introduction');

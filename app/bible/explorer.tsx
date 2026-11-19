@@ -4,6 +4,12 @@
  * Trois vues, trois routes (/bible/explorer, /:bookId, /:bookId/:chapter) :
  * chaque vue est adressable, donc partageable et testable.
  *
+ * C'EST LE SEUL ÉCRAN BIBLE. `app/bible/book.tsx` (grille de chapitres) et
+ * `app/bible/chapter.tsx` (lecture d'un chapitre) en étaient des copies
+ * appauvries : deux implémentations du même parcours, deux endroits à corriger.
+ * Les anciennes URL (`/bible/book/:id`, `/bible/chapter/:id/:n`) restent
+ * valides : elles redirigent ici (voir `BibleLegacyRedirect` dans `main.tsx`).
+ *
  * Les données viennent de l'index de la traduction (structure seule) : la
  * liste des livres et la grille des chapitres ne parsent aucun verset. Le
  * texte n'est lu qu'en entrant dans la vue « versets », chapitre par chapitre.
@@ -94,6 +100,9 @@ export default function BibleExplorerScreen() {
   return (
     <FullScreenPage
       title={title}
+      column="narrow"
+      className={viewMode === 'verses' ? 'reading-screen' : undefined}
+      headerClassName={viewMode === 'verses' ? 'reading-header' : undefined}
       subtitle={
         viewMode === 'chapters' && selectedBook
           ? formatChapterCount(

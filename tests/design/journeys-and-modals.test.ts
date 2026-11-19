@@ -23,7 +23,9 @@ describe('L2 — colonne de lecture des parcours', () => {
   const journeys = [
     'app/memorization/session.tsx',
     'app/review/queue.tsx',
-    'app/bible/chapter.tsx',
+    // L'explorateur porte la lecture du chapitre (vue « versets ») : les deux
+    // anciens écrans `bible/book` et `bible/chapter` sont des redirections.
+    'app/bible/explorer.tsx',
     'app/semantic/verse.tsx',
   ];
 

@@ -116,12 +116,22 @@ export default function SettingsScreen() {
     {
       title: t('settings.navigationSection', 'Navigation & Pages'),
       icon: LayoutGrid,
+      // La page de réglages de navigation n'est pas recopiée ici : elle contient
+      // déjà les deux listes complètes (onglets + menu), et y renvoyer évite deux
+      // formulaires pour un même réglage.
       items: [
         {
           label: t('settings.navigationSettings', 'Pages visibles & menu'),
           icon: SlidersHorizontal,
           to: '/settings/navigation',
         },
+      ],
+    },
+    {
+      title: t('settings.aboutSection', 'À propos'),
+      icon: Sparkles,
+      items: [
+        { label: t('settings.about', 'À propos de VersyFlow'), icon: Sparkles, to: '/settings/about' },
       ],
     },
     {

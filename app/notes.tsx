@@ -118,7 +118,7 @@ export default function NotesScreen() {
                     <div className="mt-2 flex items-center justify-between">
                       <button
                         type="button"
-                        onClick={() => navigate(`/bible/chapter/${note.bookId}/${note.chapter}`)}
+                        onClick={() => navigate(`/bible/explorer/${note.bookId}/${note.chapter}`)}
                         className="flex items-center gap-1 text-xs font-semibold text-primary"
                       >
                         <DuoIcon icon={BookOpen} size={12} />
