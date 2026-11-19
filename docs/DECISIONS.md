@@ -295,3 +295,24 @@ son `strokeDasharray`.
 des trois motifs (`?? 0` dans un libellé, `catch` partiel, `?? 0` non borné dans
 l'anneau) et vérifie les deux autres écrans.
 
+### D17. Le contrôle des visuels mesure le format livré, pas un format attendu
+
+**Contexte.** `scripts/check-theme-assets.mjs` exigeait
+`{id}-portrait.png` / `{id}-landscape.png` et lisait un en-tête PNG. Or la
+chaîne de production livre du **WebP** : le script déclarait **200 fichiers
+manquants** sur un dossier complet, et n'était appelé par aucune commande ni par
+la CI — un garde-fou qui échoue toujours ne garde rien. Il annonçait aussi
+1024×1536 alors que les fichiers mesurent 832×1248.
+
+**Décision.** Le format et les dimensions se lisent **dans le fichier** (PNG ou
+WebP, `VP8`/`VP8L`/`VP8X`), l'extension est cherchée sur le disque (`.webp`
+d'abord, `.png` pour une ancienne chaîne), et le seul thème sans visuel
+(`objets/obj-miroir`) est déclaré à part — plusieurs écrans l'écartent
+explicitement. Le script devient `npm run themes:assets` et rejoint la matrice
+`data` de `quality-gate` dans la CI, avec le corpus Bible et les scènes photo et
+sacrées.
+
+**Conséquence.** `node scripts/check-theme-assets.mjs` sort en 0 : 99/100
+portraits, 99/100 compositions, un thème assumé sans visuel. Les commentaires
+d'en-tête du catalogue (`theme-catalog.ts`) donnent les dimensions réelles.
+

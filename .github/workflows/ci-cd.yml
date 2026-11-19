@@ -4,7 +4,7 @@ name: CI/CD — Web + Android + iOS
 # Single unified pipeline for VersyFlow (international app: Android + iOS).
 #
 # DAG:
-#   quality-gate (matrix: typecheck / lint / tests, in parallel)
+#   quality-gate (matrix: typecheck / lint / tests / data, in parallel)
 #     -> build-web (Vite tsc + vite build -> www/ artifact)
 #        -> build-android        (debug APK, no secrets)   [PR / main / develop / dispatch]
 #        -> build-android-release (signed APK, KEYSTORE)   [tag v* / dispatch build_release]
@@ -110,7 +110,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        check: [typecheck, lint, tests]
+        check: [typecheck, lint, tests, data]
     steps:
       - uses: actions/checkout@v4
 
@@ -133,6 +133,20 @@ jobs:
       - name: Vitest (with coverage)
         if: matrix.check == 'tests'
         run: npm run test:coverage
+
+      # Données et artefacts : ce que le build ne vérifie pas.
+      #  - le corpus LSG est sain (versets vides, doublons, chapitreCount) et la
+      #    projection par chapitre est à jour (`--check`, aussi dans le build) ;
+      #  - les 100 thèmes ont leurs visuels au format livré (WebP 832×1248) —
+      #    un script qui exigeait `.png` en déclarait 200 manquants ;
+      #  - les scènes photo et sacrées du catalogue correspondent aux fichiers.
+      - name: Données et artefacts (corpus, projection, visuels)
+        if: matrix.check == 'data'
+        run: |
+          node scripts/bible/split-lsg.mjs --check
+          node scripts/check-theme-assets.mjs
+          node scripts/themes/import-photo-themes.mjs --check
+          node scripts/themes/import-sacred-themes.mjs --check
 
       - name: Upload coverage report
         if: matrix.check == 'tests'

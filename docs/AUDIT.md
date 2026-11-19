@@ -95,6 +95,7 @@ Chaque contrat est un test, pas une consigne.
 | Couverture des prototypes | `scripts/screen-coverage.mjs` | un écran de la maquette sans route |
 | Corpus biblique sain et projeté | `scripts/bible/split-lsg.mjs --check` | un verset vide, un doublon, une projection périmée |
 | Index ↔ chapitres cohérents | `tests/unit/bible-corpus-integrity.test.ts` | un `index.json` qui annonce autre chose que les fichiers |
+| Visuels de thèmes complets | `scripts/check-theme-assets.mjs` (CI `data`) | un thème sans visuel, une fausse composition bureau |
 | Méthodes de mémorisation réelles | `tests/unit/capabilities/memory-strategies.test.ts` | une stratégie listée sans action (bras `switch` mort) |
 | Liens ↔ routes effectives | `tests/unit/navigation-routes.test.ts` | un `<Link to>` vers un écran renommé (rebond vers le 404) |
 | Aucune synchronisation promise | `tests/design/family-sync-honesty.test.ts` | un libellé qui annonce un envoi vers un serveur absent |

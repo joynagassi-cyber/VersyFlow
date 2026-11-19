@@ -62,10 +62,19 @@ traitement et le contrôle qualité ci-dessous.
 
 ## 4. Contrôle qualité — ce qui est mesuré, pas jugé
 
-`scripts/themes/theme-metrics.mjs` mesure chaque image **à 120 px de large** :
-c'est la taille d'une vignette de sélecteur, donc la taille à laquelle
-l'utilisateur juge réellement. Conventions (identiques au script Python
-`theme-metrics.py`) :
+**Intégrité des fichiers** : `npm run themes:assets`
+(`scripts/check-theme-assets.mjs`) vérifie que chaque thème du catalogue a ses
+deux visuels, avec les dimensions réellement livrées — 832×1248 (portrait) et
+1248×832 (paysage), lues dans l'en-tête du fichier, en WebP comme en PNG. Il
+signale aussi une « fausse » composition bureau (copie octet pour octet du
+portrait). Le seul thème sans visuel, `objets/obj-miroir`, est déclaré à part :
+plusieurs écrans l'écartent explicitement, ce n'est pas un oubli silencieux.
+La CI l'exécute dans la matrice `data` de `quality-gate`.
+
+**Mesures de tonalité** : `scripts/themes/theme-metrics.mjs` mesure chaque image
+**à 120 px de large** : c'est la taille d'une vignette de sélecteur, donc la
+taille à laquelle l'utilisateur juge réellement. Conventions (identiques au
+script Python `theme-metrics.py`) :
 
 | Mesure | Définition | Sert à |
 | --- | --- | --- |
