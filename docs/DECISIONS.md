@@ -258,3 +258,21 @@ finissent par être rebranchées par erreur. `liveHint` parle désormais d'un
 (reconnexion, « en attente », « shared live »), et vérifie que les trois clés
 retirées ne sont plus référencées par un écran.
 
+### D15. Un chiffre non mesuré n'est pas un zéro
+
+**Contexte.** `app/analytics/dashboard.tsx` affichait `stats?.totalVerses || 0`
+(et deux autres compteurs). Or `calculateStats()` avale ses erreurs : après un
+échec, `stats` reste `null` et l'écran annonçait « 0 verset mémorisé · 0
+maîtrisé · série 0 ». Un lecteur y voit une progression nulle, alors que rien
+n'a été lu — l'inverse exact de la règle appliquée aux écrans famille, où un
+tiret veut dire « pas encore mesuré ».
+
+**Décision.** L'écran retient si une mesure a abouti (`measured`) et affiche
+`—` tant que ce n'est pas le cas, pour les cartes, le tableau par statut et le
+temps d'apprentissage. Le rafraîchissement remet l'écran en chargement mais
+conserve le dernier état mesuré s'il échoue... non : il remet `measured` à
+`false`, pour ne pas présenter d'anciens chiffres comme actuels.
+
+**Conséquence.** `tests/design/analytics-honesty.test.ts` interdit le retour de
+`stats?.x || 0` dans l'écran et vérifie que chaque chiffre passe par le drapeau.
+
