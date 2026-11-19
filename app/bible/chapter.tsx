@@ -33,6 +33,7 @@ export default function ChapterScreen() {
   const urlParams = useParams();
   const { t } = useTranslation();
   const continuous = useAppearanceStore((s) => s.bibleContinuous);
+  const verseLayout = useAppearanceStore((s) => s.bibleVerseLayout);
   const { byId } = useBibleBooks();
 
   // URL params (canon route /bible/chapter/:bookId/:chapterNumber) win,
@@ -144,7 +145,7 @@ export default function ChapterScreen() {
         {/* Manuscript flow: the chapter as one continuous serif text,
             with tappable inline verse numbers. */}
         {status === 'loading' ? (
-          <BibleReaderSkeleton label={t('common.loading', 'Chargement du chapitre…')} />
+          <BibleReaderSkeleton label={t('common.loading', 'Chargement du chapitre…')} layout={verseLayout} />
         ) : (
           books && <ContinuousBibleReader key={`${translationId}:${book.id}:${chapter}`} books={books} initialBookId={bookId} initialChapter={chapter} translationId={translationId} />
         )}

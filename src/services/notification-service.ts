@@ -1,4 +1,5 @@
 import { isNativePlatform } from '@/lib/platform';
+import { isMockMode } from '@/dev/mode';
 
 export interface ScheduledReminder {
   id: number;
@@ -12,12 +13,14 @@ export interface ReminderConfig {
   time: string;
 }
 
+// Planifications fictives du mode démo : persistées pour que l'écran de
+// réglages reflète l'état choisi, jamais transmises à l'appareil.
 const DEMO_DAILY_REMINDERS_KEY = 'versyflow:mock:daily-reminders';
 
+/** Mode démo isolé : les notifications ne sont ni collectées ni programmées.
+ *  La portée est `isMockMode()` — `isDemoScopeActive()` en est un alias. */
 function isIsolatedDemoRuntime(): boolean {
-  if (isMockMode()) return true;
-  const state = getStorageIsolationState();
-  return state.installed && state.scopeActive;
+  return isMockMode();
 }
 
 let permissionGranted: boolean | null = null;
@@ -26,6 +29,13 @@ let permissionRequestInFlight: Promise<void> | null = null;
 
 export class NotificationService {
   async checkPermission(): Promise<boolean> {
+    if (isIsolatedDemoRuntime()) {
+      // Mode démo : on ne prétend pas que l'appareil a accordé la permission.
+      permissionGranted = false;
+      permissionChecked = true;
+      return false;
+    }
+    if (!isNativePlatform()) {
       permissionGranted = true;
       permissionChecked = true;
       return true;
@@ -44,6 +54,10 @@ export class NotificationService {
   }
 
   async ensurePermissions(reminderEnabled: boolean): Promise<boolean> {
+    if (!reminderEnabled || isIsolatedDemoRuntime()) {
+      // Rien à demander : démo (aucune notification ne partira) ou rappels coupés.
+      return true;
+    }
     if (!permissionRequestInFlight) {
       permissionRequestInFlight = (async () => {
         try {
@@ -82,7 +96,17 @@ export class NotificationService {
     }));
 
     if (isIsolatedDemoRuntime()) {
+      // Mode démo isolé : rien ne sort de l'appareil, on persiste la
+      // planification dans le stockage mock plutôt que de notifier.
       try {
+        if (typeof localStorage !== 'undefined') {
+          localStorage.setItem(DEMO_DAILY_REMINDERS_KEY, JSON.stringify(scheduled));
+        }
+      } catch {
+        // Stockage mock indisponible : la planification reste en mémoire.
+      }
+      return scheduled;
+    }
     if (isNativePlatform()) {
       if (!await this.checkPermission()) throw new Error('permission-denied');
       const { LocalNotifications } = await import('@capacitor/local-notifications');

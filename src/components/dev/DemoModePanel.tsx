@@ -156,7 +156,7 @@ export function DemoModePanel({ compact = false }: { compact?: boolean }) {
             <span>
               {t(
                 'demo.limits',
-                'Les notifications de démo et le collecteur de test sont désactivés. L’isolation des autres parcours n’est pas encore entièrement vérifiée.',
+                'Les notifications ne sont pas programmées en démo et le collecteur de test est désactivé ; la synchronisation est inactive. L’isolation des autres parcours n’est pas encore entièrement vérifiée.',
               )}
             </span>
           </p>

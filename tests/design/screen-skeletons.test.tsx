@@ -22,6 +22,7 @@ import {
   AnalyticsSkeleton,
   BibleReaderSkeleton,
   FamilyLeaderboardSkeleton,
+  FamilyMemberSkeleton,
   FamilyMembersSkeleton,
   FlashcardSkeleton,
   HistorySkeleton,
@@ -64,6 +65,7 @@ const COVERAGE: [string, string][] = [
   ['app/bible/explorer.tsx', 'BibleReaderSkeleton'],
   ['app/comparison/translation.tsx', 'TranslationTextSkeleton'],
   ['app/family/leaderboard.tsx', 'FamilyLeaderboardSkeleton'],
+  ['app/family/member.tsx', 'FamilyMemberSkeleton'],
   ['app/family/members.tsx', 'FamilyMembersSkeleton'],
   ['app/family/select-profile.tsx', 'FamilySelectProfileSkeleton'],
   ['app/memorization/flashcard.tsx', 'FlashcardSkeleton'],
@@ -165,12 +167,23 @@ describe('squelettes — géométrie', () => {
     expect(container.querySelectorAll('.divide-y > div').length).toBe(6);
   });
 
-  it('le lecteur biblique dessine des versets, numérotés', () => {
+  it('le lecteur biblique dessine le flot continu par défaut (option flow)', () => {
     const { container } = render(<BibleReaderSkeleton label="…" />);
+    // Lettrine de chapitre + 12 lignes de flot, pas de gouttières de verset.
+    expect(container.querySelector('.h-14.w-10')).not.toBeNull();
+    expect(container.querySelectorAll('.rounded-md.h-4, .h-4.rounded-md').length).toBeGreaterThanOrEqual(12);
+    expect(container.querySelectorAll('.w-4.shrink-0.rounded-sm').length).toBe(0);
+    // La vraie surface de lecture, pas une carte générique.
+    expect(container.querySelector('.bible-card.reading-card')).not.toBeNull();
+  });
+
+  it('le lecteur biblique dessine des versets numérotés en option blocks', () => {
+    const { container } = render(<BibleReaderSkeleton label="…" layout="blocks" />);
     // Cinq gouttières de numéro, une par verset factice.
-    const gutters = container.querySelectorAll('.w-4');
+    const gutters = container.querySelectorAll('.w-4.shrink-0.rounded-sm');
     expect(gutters.length).toBe(5);
     expect(blocks(container).length).toBeGreaterThan(15);
+    expect(container.querySelector('.h-14.w-10')).toBeNull();
   });
 
   it('la file de révision garde ses pastilles et ses deux sections', () => {
@@ -189,20 +202,34 @@ describe('squelettes — géométrie', () => {
     expect(container.querySelectorAll('.grid.grid-cols-2 > div').length).toBe(4);
   });
 
-  it('l’historique garde sa carte de synthèse et sa chronologie', () => {
+  it('l’historique garde sa synthèse (trois mesures) et sa chronologie', () => {
     const { container } = render(<HistorySkeleton label="…" />);
-    expect(container.querySelectorAll('.grid.grid-cols-2 > *').length).toBe(4);
-    expect(container.querySelectorAll('.g2').length).toBe(5);
+    expect(container.querySelectorAll('.grid.grid-cols-3 > *').length).toBe(3);
+    // Trois fiches de la chronologie, chacune avec sa pastille de note.
+    expect(container.querySelectorAll('.rounded-2xl.bg-surface').length).toBe(3);
+    expect(container.querySelectorAll('.border-s-2 > div').length).toBe(3);
+    // Filtre par verset : « Tous les versets » + trois puces.
+    expect(container.querySelectorAll('.flex.flex-wrap.gap-2 > .rounded-full').length).toBe(4);
   });
 
   it('les membres gardent une ligne par personne', () => {
     const { container } = render(<FamilyMembersSkeleton label="…" />);
-    expect(container.querySelectorAll('.h-11.w-11').length).toBe(5);
+    // MemberRow par défaut : avatar 40 px, ligne plus haute que 44 px.
+    expect(container.querySelectorAll('.h-10.w-10').length).toBe(5);
+    const rows = Array.from(container.querySelectorAll('li')).filter((node) =>
+      node.className.includes('min-h-[52px]'),
+    );
+    expect(rows.length).toBe(5);
   });
 
   it('le classement garde ses lignes et leurs barres', () => {
     const { container } = render(<FamilyLeaderboardSkeleton label="…" />);
-    expect(container.querySelectorAll('.h-1\\.5').length).toBe(6);
+    // RankBadge h-7 w-7 + avatar 36 px + ProgressBar track h-2.
+    expect(container.querySelectorAll('.h-7.w-7').length).toBe(6);
+    expect(container.querySelectorAll('.h-9.w-9').length).toBe(6);
+    expect(container.querySelectorAll('.h-2.overflow-hidden').length).toBe(6);
+    // Le segmenté est TOUJOURS monté : le squelette ne le redessine pas.
+    expect(container.querySelectorAll('.h-10.w-56').length).toBe(0);
   });
 
   it('la mémorisation garde la carte de verset et ses deux commandes', () => {
@@ -221,7 +248,21 @@ describe('squelettes — géométrie', () => {
 
   it('la flashcard garde la boîte de la carte', () => {
     const { container } = render(<FlashcardSkeleton label="…" />);
-    expect(container.querySelector('.h-96')).not.toBeNull();
+    const boxes = Array.from(container.querySelectorAll('div')).filter((node) =>
+      node.className.includes('380px'),
+    );
+    // Deux lames derrière + la carte active : trois boîtes identiques.
+    expect(boxes.length).toBe(3);
+    expect(container.querySelectorAll('.g1').length).toBe(2);
+    expect(container.querySelectorAll('.rounded-2xl').length).toBe(2);
+  });
+
+  it('la fiche membre garde l’en-tête 56 px et ses deux grilles de tuiles', () => {
+    const { container } = render(<FamilyMemberSkeleton label="…" />);
+    expect(container.querySelector('.h-14.w-14')).not.toBeNull();
+    expect(container.querySelectorAll('.grid.grid-cols-3').length).toBe(2);
+    expect(container.querySelectorAll('.rounded-xl.bg-surface-tint').length).toBe(6);
+    expect(container.querySelectorAll('.divide-y > div').length).toBe(3);
   });
 
   it('les notes gardent deux groupes', () => {
@@ -235,16 +276,29 @@ describe('squelettes — géométrie', () => {
     expect(container.querySelectorAll('.rounded-3xl').length).toBeGreaterThanOrEqual(3);
   });
 
-  it('la progression garde ses quatre mesures et sa grille de graphiques', () => {
+  it('la progression garde ses quatre mesures et ses deux grilles de détail', () => {
     const { container } = render(<ProgressSkeleton label="…" />);
     expect(container.querySelectorAll('.progress-stat').length).toBe(4);
-    expect(container.querySelectorAll('.stat-card').length).toBe(6);
+    expect(container.querySelectorAll('.progress-detail-grid').length).toBe(2);
+    // Les six cartes de graphiques appartiennent à StatsDashboard : le
+    // squelette de l'onglet ne les pré-dessine PAS (double emploi).
+    expect(container.querySelectorAll('.stat-card').length).toBe(0);
   });
 
   it('une traduction en cours affiche deux lignes de texte, pas un spinner', () => {
     const { container } = render(<TranslationTextSkeleton label="Chargement…" />);
     expect(blocks(container).length).toBe(2);
     expect(container.innerHTML).not.toContain('animate-spin');
+  });
+
+  it('le tableau de bord couvre ses six vignettes et ses trois cadres larges', () => {
+    const dash = readFileSync(join(root, 'src/components/charts/StatsDashboard.tsx'), 'utf8');
+    for (const ghost of ['WeekStripGhost', 'RingGhost', 'DotMatrixGhost', 'GroupedBarsGhost', 'StackedBarGhost']) {
+      expect(dash).toContain(ghost);
+    }
+    // Les trois `wide` du tableau chargé (heatmap, courbe, série).
+    expect(dash).toContain('index === 0 || index === 1 || index === 8');
+    expect(dash).toContain('stat-card--wide-visual');
   });
 
   it('l’amorçage montre la coquille, pas un mot centré', () => {

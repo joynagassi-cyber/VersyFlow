@@ -701,6 +701,7 @@ export const en = {
       'Enables push reminders on this device (no server) using the times above.',
     notificationSchedule: 'Schedule reminders',
     notificationCancel: 'Cancel scheduled reminders',
+    remindersDemoNote: 'Demo mode: reminders are saved on this device only, no notification is actually scheduled.',
     verseBar: {
       memorize: 'Memorize',
       copy: 'Copy',
@@ -1026,7 +1027,7 @@ export const en = {
     startedAt: 'Demo started on {{date}}.',
     startedUnknown: 'Start date unknown.',
     lifetime: 'Demo data stays in this browser until “Reset demo” or until you clear storage.',
-    limits: 'Demo notifications and the test collector are disabled. Isolation of other journeys has not yet been fully verified.',
+    limits: 'Notifications are not scheduled in demo mode and the test collector is disabled; sync is inactive. Isolation of other journeys has not yet been fully verified.',
     reset: 'Reset demo',
     resetting: 'Resetting…',
     entering: 'Opening…',
