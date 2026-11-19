@@ -13,8 +13,10 @@
  */
 
 import { useEffect, useState } from 'react';
+import i18next from 'i18next';
 import { getSemanticService } from '@/services/semantic-query-service';
 import type { Concept, Community } from '@/domains/semantic-memory';
+import { BIBLE_BOOKS } from '@/domains/bible/entities';
 import { loadTranslationBooks } from '@/services/bible-text-service';
 import { useSettingsStore } from '@/store/settings-store';
 
@@ -42,10 +44,68 @@ export interface ChapterSemanticTags {
  * Format a canonical verse key (`bookId:chapter:verse`) for display.
  * Accepts alphanumeric book ids (e.g. `1co`), falls back to the raw key.
  */
-export function formatVerseKey(key: string): string {
+const STATIC_BOOK_NAMES = new Map(BIBLE_BOOKS.map((b) => [b.id, b.name]));
+
+const USFM_BOOK_ALIASES: Record<string, string> = {
+  deu: 'deb',
+  jdg: 'jug',
+  '1sa': '1sam',
+  '2sa': '2sam',
+  '1ki': '1roi',
+  '2ki': '2roi',
+  '1ch': '1chron',
+  '2ch': '2chron',
+  ezr: 'esai',
+  pro: 'prov',
+  ecc: 'eccl',
+  sng: 'cant',
+  lam: 'lament',
+  ezk: 'ezek',
+  hos: 'os',
+  jol: 'joel',
+  amo: 'amos',
+  oba: 'abdj',
+  mic: 'mich',
+  zep: 'sep',
+  hag: 'ag',
+  zec: 'zach',
+  mrk: 'mar',
+  jhn: 'joh',
+  '1co': '1cor',
+  '2co': '2cor',
+  php: 'phil',
+  '1th': '1thes',
+  '2th': '2thes',
+  '1ti': '1tim',
+  '2ti': '2tim',
+  phm: 'philem',
+  jas: 'jac',
+  '1pe': '1pet',
+  '2pe': '2pet',
+  '1jn': '1joh',
+  '2jn': '2joh',
+  '3jn': '3joh',
+};
+
+/**
+ * Format a canonical verse key (`bookId:chapter:verse`) with the full
+ * localized Bible book name (e.g. `joh:3:16` -> `Jean 3:16` / `John 3:16`).
+ * Safe to pass directly to `Array.prototype.map` (ignores numeric index args).
+ */
+export function formatVerseKey(key: string, lang?: string | number): string {
   const m = /^([a-z0-9]+):(\d+):(\d+)$/i.exec(key);
   if (!m) return key;
-  return `${m[1]} ${m[2]}:${m[3]}`;
+  const rawBookId = m[1].toLowerCase();
+  const bookId = USFM_BOOK_ALIASES[rawBookId] ?? rawBookId;
+  const rawLang =
+    typeof lang === 'string' && lang.length > 0
+      ? lang
+      : i18next.resolvedLanguage || i18next.language || 'fr';
+  const base = rawLang.split('-')[0].toLowerCase();
+  const names = STATIC_BOOK_NAMES.get(bookId);
+  const fullBookName =
+    names?.[rawLang] ?? names?.[base] ?? names?.fr ?? names?.en ?? m[1];
+  return `${fullBookName} ${m[2]}:${m[3]}`;
 }
 
 /**

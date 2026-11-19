@@ -62,11 +62,15 @@ export function QuickDock() {
     <>
       {/* Home indicator — centred at the very bottom, below the tab bar */}
       <div className="pointer-events-none absolute inset-x-0 bottom-0 z-40 flex justify-center pb-[max(8px,env(safe-area-inset-bottom))]">
+        {/* Poignée de l'indicateur d'accueil : 5 px de haut, mais une cible
+            réelle de 32 px — on ne demande pas de viser 5 px au pouce. */}
         <button
           onClick={() => setOpen(true)}
           aria-label={t('dock.open', 'Ouvrir les raccourcis')}
-          className="pointer-events-auto h-[5px] w-32 rounded-full bg-surface shadow-md transition-transform active:scale-95"
-        />
+          className="pointer-events-auto flex h-8 w-32 items-center justify-center"
+        >
+          <span className="h-[5px] w-32 rounded-full bg-surface shadow-md transition-transform" />
+        </button>
       </div>
 
       {/* Bottom sheet */}
@@ -87,12 +91,11 @@ export function QuickDock() {
               <span className="modal-sheet-handle mx-auto mb-3 h-1.5 w-12 rounded-full bg-border" />
             </div>
             <div className="flex items-center justify-between px-5 pb-3">
-              <p className="text-lg font-extrabold text-text-primary">
-                {t('dock.title', 'Accès rapide')}
-              </p>
+              <p className="page-title">{t('dock.title', 'Accès rapide')}</p>
               <button
+                type="button"
                 onClick={() => setOpen(false)}
-                className="rounded-full p-1.5 text-text-muted active:bg-surface-tint"
+                className="touch-target shrink-0 rounded-full text-text-muted active:bg-surface-tint"
                 aria-label={t('common.close', 'Fermer')}
               >
                 <DuoIcon icon={X} size={20} />
@@ -107,12 +110,12 @@ export function QuickDock() {
                   <button
                     key={a.key}
                     onClick={() => go(a.path)}
-                    className="flex flex-col items-center rounded-2xl bg-surface-tint/60 p-3 text-center transition active:scale-[0.97]"
+                    className="flex min-h-20 flex-col items-center rounded-2xl bg-surface-tint/60 p-3 text-center transition-colors hover:bg-surface-tint active:scale-[0.97]"
                   >
                     <span className="icon-chip mb-2 flex h-11 w-11 items-center justify-center rounded-full">
                       <DuoIcon icon={Icon} size={20} />
                     </span>
-                    <span className="text-[11px] font-semibold text-text-primary">
+                    <span className="text-2xs font-semibold text-text-primary">
                       {t(a.key, DOCK_LABELS[a.key.split('.').pop() ?? ''])}
                     </span>
                   </button>

@@ -8,6 +8,8 @@
     "vitest.config.ts",
     "env.d.ts",
     "capacitor.config.ts",
+    "cypress.config.ts",
+    "cypress/**/*.ts",
     "scripts/**/*.ts"
   ]
 }

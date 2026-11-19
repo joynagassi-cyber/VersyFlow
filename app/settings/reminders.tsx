@@ -69,12 +69,12 @@ export default function SettingsRemindersScreen() {
         >
           <DuoIcon icon={ArrowLeft} size={20} className="text-text-secondary" />
         </button>
-        <h1 className="page-title">{t('settings.reminderConfig', 'Rappels de révision')}</h1>
+
       </header>
 
       {isMockMode() ? (
         <p role="note" className="mb-5 rounded-2xl border border-border bg-surface-tint px-4 py-3 text-xs text-text-secondary">
-          {t('demo.limits', 'Les notifications de démo et le collecteur de test sont désactivés. L’isolation des autres parcours n’est pas encore entièrement vérifiée.')}
+
         </p>
       ) : null}
 
@@ -94,7 +94,7 @@ export default function SettingsRemindersScreen() {
             <p className="text-base font-semibold text-text-primary">{t('onboarding.reminderEnabled')}</p>
             <p className="mt-1 text-sm text-text-secondary">{reminderEnabled ? t('common.on') : t('common.off')}</p>
           </div>
-          <div className={cn('flex h-6 w-6 items-center justify-center rounded-full border-2', reminderEnabled ? 'border-primary bg-primary' : 'border-text-muted')}>
+
             {reminderEnabled && <DuoIcon icon={Check} size={14} className="text-on-primary" />}
           </div>
         </button>
@@ -137,7 +137,6 @@ export default function SettingsRemindersScreen() {
             />
           </div>
         </div>
-
         <div className="glass rounded-2xl p-4">
           <div className="mb-3 flex items-center gap-2">
             <DuoIcon icon={BellRing} size={18} className="text-primary" />
@@ -163,8 +162,6 @@ export default function SettingsRemindersScreen() {
           </div>
         </div>
       </div>
-
-      {pushStatus === 'demo' && <p role="status" className="weekly-planner-hint">{t('weeklyReminders.demo', 'Démo : planning fictif enregistré, aucune notification programmée ou annulée.')}</p>}
       {pushStatus === 'scheduled' && <p role="status" className="weekly-planner-hint">{t('weeklyReminders.native', 'Planning enregistré et transmis à l’appareil.')}</p>}
       {pushStatus === 'web' && <p role="status" className="weekly-planner-hint">{t('weeklyReminders.web', 'Planning enregistré. Sur le navigateur, les notifications en arrière-plan ne sont pas programmées.')}</p>}
       {pushStatus === 'error' && <p role="status" className="weekly-planner-hint">{t('weeklyReminders.error', 'Impossible de programmer les rappels. Vérifiez les autorisations et réessayez.')}</p>}

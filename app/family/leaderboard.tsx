@@ -11,18 +11,18 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { RefreshIcon, CloudUploadIcon } from '@/components/ui/solar-icons';
-import { FullScreenPage } from '@/components/layout/FullScreenPage';
+import { RefreshIcon, CloudUploadIcon, RankingIcon as Ranking } from '@/components/ui/solar-icons';
 import { DuoIcon } from '@/components/ui/DuoIcon';
 import { Button } from '@/components/ui/button';
 import {
+  FamilyHubPage,
   HintNote,
-  MemberAvatar,
-  ProgressBar,
+  MemberRow,
   SectionCard,
   Segmented,
 } from '@/components/family/FamilyKit';
 import { EmptyState } from '@/components/ui/EmptyState';
+import { LoadingBlock } from '@/components/ui/Skeleton';
 import { useFamilyRoom } from '@/hooks/useFamilyRoom';
 import { useFamilyRoomStore } from '@/store/family-room-store';
 import { pointsForChallenge } from '@/services/family-scoring';
@@ -64,102 +64,97 @@ export default function FamilyLeaderboardScreen() {
   const maxPoints = Math.max(1, ...rows.map((r) => r.points));
 
   return (
-    <FullScreenPage
+    <FamilyHubPage
       title={t('familyPlus.leaderboardTitle', 'Classement')}
       subtitle={family?.name}
-      backPath="/family/home"
     >
-      <div className="flex flex-col gap-4">
-        <Segmented<Period>
-          label={t('familyPlus.periodLabel', 'Période')}
-          value={period}
-          onChange={setPeriod}
-          options={[
-            { value: 'week', label: t('familyPlus.periodWeek', 'Semaine') },
-            { value: 'month', label: t('familyPlus.periodMonth', 'Mois') },
-            { value: 'all', label: t('familyPlus.periodAll', 'Depuis le début') },
-          ]}
-        />
+      <Segmented<Period>
+        label={t('familyPlus.periodLabel', 'Période')}
+        value={period}
+        onChange={setPeriod}
+        options={[
+          { value: 'week', label: t('familyPlus.periodWeek', 'Semaine') },
+          { value: 'month', label: t('familyPlus.periodMonth', 'Mois') },
+          { value: 'all', label: t('familyPlus.periodAll', 'Depuis le début') },
+        ]}
+      />
 
-        {loading ? (
-          <p className="px-1 text-sm text-text-muted">{t('common.loading', 'Chargement...')}</p>
-        ) : rows.length === 0 ? (
-          <EmptyState
-            title={t('familyPlus.noMembers', 'Aucun membre pour l’instant')}
-            description={t(
-              'familyPlus.noMembersDesc',
-              'Invitez un membre : le classement se remplit dès la première révision partagée.',
-            )}
-            actionLabel={t('family.invite', 'Inviter')}
-            onAction={() => navigate('/family/invite')}
-          />
-        ) : (
-          <SectionCard>
-            <ul className="flex flex-col gap-3">
-              {rows.map((row, index) => (
-                <li key={row.accountId}>
-                  <button
-                    type="button"
-                    onClick={() => navigate(`/family/member/${encodeURIComponent(row.accountId)}`)}
-                    className="flex w-full items-center gap-3 rounded-xl p-1 text-left"
-                  >
-                    <span className="w-5 text-center text-sm font-bold tabular-nums text-text-muted">
-                      {index + 1}
-                    </span>
-                    <MemberAvatar name={row.name} size={36} />
-                    <span className="min-w-0 flex-1">
-                      <span className="flex items-baseline justify-between gap-2">
-                        <span className="truncate text-sm font-semibold text-text-primary">
-                          {row.name}
-                        </span>
-                        <span className="shrink-0 text-sm font-bold tabular-nums text-primary">
-                          {row.points} {t('familyPlus.pts', 'pts')}
-                        </span>
-                      </span>
-                      <ProgressBar
-                        value={row.points}
-                        max={maxPoints}
-                        label={row.name}
-                        className="mt-1.5"
-                      />
-                    </span>
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </SectionCard>
-        )}
-
-        {top && (
-          <HintNote>
-            {tie
-              ? t('familyPlus.tieNote', 'Égalité départagée par la régularité : {{name}} est en tête.', {
-                  name: top.name,
-                })
-              : t('familyPlus.leaderNote', '{{name}} est en tête sur cette période.', {
-                  name: top.name,
-                })}
-          </HintNote>
-        )}
-
-        <HintNote>
-          {t(
-            'familyPlus.leaderSource',
-            'Classement local : il additionne les points de défi de cette famille sur l’appareil. Les révisions de chacun ne sont pas encore comparées entre appareils.',
+      {loading ? (
+        <LoadingBlock label={t('common.loading', 'Chargement…')} className="py-12" />
+      ) : rows.length === 0 ? (
+        <EmptyState
+          icon={Ranking}
+          title={t('familyPlus.noMembers', 'Aucun membre pour l’instant')}
+          description={t(
+            'familyPlus.noMembersDesc',
+            'Invitez un membre : le classement se remplit dès la première révision partagée.',
           )}
-        </HintNote>
+          actionLabel={t('family.invite', 'Inviter')}
+          onAction={() => navigate('/family/invite')}
+        />
+      ) : (
+        <SectionCard
+          title={t('familyPlus.rankingLabel', 'Rang et points')}
+          action={
+            <span className="text-2xs text-text-muted">
+              {t('familyPlus.membersCount', '{{count}} membres', { count: rows.length })}
+            </span>
+          }
+        >
+          <ul className="flex flex-col">
+            {rows.map((row, index) => (
+              <li key={row.accountId}>
+                <MemberRow
+                  name={row.name}
+                  rank={index + 1}
+                  avatarSize={36}
+                  bar={{ value: row.points, max: maxPoints }}
+                  meta={t('familyPlus.challengesDone', '{{count}} défi(s) terminé(s)', {
+                    count: row.done,
+                  })}
+                  onClick={() => navigate(`/family/member/${encodeURIComponent(row.accountId)}`)}
+                  trailing={
+                    <span className="flex shrink-0 items-baseline gap-1 tabular-nums">
+                      <span className="stat-value text-base">{row.points}</span>
+                      <span className="text-2xs text-text-muted">{t('familyPlus.pts', 'pts')}</span>
+                    </span>
+                  }
+                />
+              </li>
+            ))}
+          </ul>
+        </SectionCard>
+      )}
 
-        <div className="flex flex-wrap gap-2">
-          <Button variant="outline" className="flex-1" onClick={() => navigate('/family/challenges')}>
-            <DuoIcon icon={RefreshIcon} size={16} />
-            {t('familyPlus.challengesTitle', 'Défis d’équipe')}
-          </Button>
-          <Button variant="outline" className="flex-1" onClick={() => navigate('/family/sync')}>
-            <DuoIcon icon={CloudUploadIcon} size={16} />
-            {t('familyPlus.syncTitle', 'Synchronisation')}
-          </Button>
-        </div>
+      {top && (
+        <HintNote>
+          {tie
+            ? t('familyPlus.tieNote', 'Égalité départagée par la régularité : {{name}} est en tête.', {
+                name: top.name,
+              })
+            : t('familyPlus.leaderNote', '{{name}} est en tête sur cette période.', {
+                name: top.name,
+              })}
+        </HintNote>
+      )}
+
+      <HintNote>
+        {t(
+          'familyPlus.leaderSource',
+          'Classement local : il additionne les points de défi de cette famille sur l’appareil. Les révisions de chacun ne sont pas encore comparées entre appareils.',
+        )}
+      </HintNote>
+
+      <div className="flex flex-wrap gap-2">
+        <Button variant="outline" className="flex-1" onClick={() => navigate('/family/challenges')}>
+          <DuoIcon icon={RefreshIcon} size={16} />
+          {t('familyPlus.challengesTitle', 'Défis d’équipe')}
+        </Button>
+        <Button variant="outline" className="flex-1" onClick={() => navigate('/family/sync')}>
+          <DuoIcon icon={CloudUploadIcon} size={16} />
+          {t('familyPlus.syncTitle', 'Synchronisation')}
+        </Button>
       </div>
-    </FullScreenPage>
+    </FamilyHubPage>
   );
 }

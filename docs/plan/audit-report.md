@@ -15,8 +15,6 @@ Exécuté le 2026-11-07 12:55 (UTC).
 | C06 | §2.5 | **PASS** | Alpha dérivable sur les variables ; recette de verre 40 % + 40 px + voile | helper: true · 24 jetons dérivables · .surface-glass: true |
 | C07 | §9.2 | **PASS** | Modes « transparence réduite » et « contraste élevé » pilotables et appliqués | css: true · store: true · interrupteurs: true · attributs posés: true |
 | C08 | §3.3 | **PASS** | Aucune couleur littérale dans le code d’interface (hors exception documentée) | 140 fichiers d’interface scannés · 0 ligne(s) fautive(s) |
-| C09 | §6.1 | **PASS** | Deux seuils, un rôle chacun (700 px rail, 1100 px bureau), une seule navigation montée | seuils: true · montage exclusif: true · zéro px en dur: true |
-| C10 | §6.2 | **PASS** | Rail : une variable de largeur, repli accessible, état actif non colorimétrique | variable unique: true · largeur: true · repli sr-only: true |
 | C11 | §6.4 | **PARTIAL** | Mesure de lecture définie et appliquée à tous les écrans de contenu | 80/88 écrans couverts (classe directe ou coquille) · coquilles: ok · jetons présents |
 | C12 | §5.1 | **PASS** | Une seule bibliothèque d’icônes (Solar) | 151/151 fichiers sans Lucide · 0 à migrer |
 | C13 | §4.4 | **PASS** | Accent d’image : trois rôles, texte choisi par contraste, pas de promesse pendante | 3 rôles: true · garde-fou de chargement: true · texte au ratio: true |

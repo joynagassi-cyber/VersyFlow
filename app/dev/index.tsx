@@ -13,7 +13,7 @@
  */
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import type { Icon } from '@solar-icons/react/lib/types';
 import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
@@ -84,7 +84,7 @@ function Card({
 }) {
   return (
     <section className={cn('rounded-2xl bg-surface p-4 shadow-sm', className)}>
-      <p className="mb-3 flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-text-muted">
+      <p className="mb-3 flex items-center gap-2 section-label">
         <DuoIcon icon={icon} size={14} className="text-primary" />
         {title}
       </p>
@@ -96,7 +96,7 @@ function Card({
 function Stat({ label, value }: { label: string; value: string | number }) {
   return (
     <div className="rounded-xl bg-surface-tint px-3 py-2">
-      <p className="text-[11px] uppercase tracking-wide text-text-muted">{label}</p>
+      <p className="text-2xs uppercase tracking-wide text-text-muted">{label}</p>
       <p className="text-lg font-extrabold text-text-primary">{value}</p>
     </div>
   );
@@ -236,6 +236,25 @@ export default function DevPanelScreen() {
         {/* ---------------- Démo / réel ---------------- */}
         <DemoModePanel compact />
 
+        {/* ---------------- Laboratoire duotone ---------------- */}
+        {/* Le panneau dev est le seul endroit qu'on ouvre « pour régler un
+            détail d'affichage » : c'est donc là que doit se trouver l'entrée
+            vers le laboratoire, plutôt qu'une URL à retenir par cœur. */}
+        {import.meta.env.DEV && (
+          <Link
+            to="/__dev/duotone"
+            className="flex items-center justify-between gap-3 rounded-2xl bg-surface p-4 shadow-sm"
+          >
+            <span>
+              <span className="block text-sm font-bold text-text-primary">Boutons duotone</span>
+              <span className="block text-xs text-text-muted">
+                Cinq règles de couleur côte à côte : repos, survol, actif.
+              </span>
+            </span>
+            <DuoIcon icon={ArrowRight} size={18} />
+          </Link>
+        )}
+
         {/* ---------------- Mode ---------------- */}
         <Card title="Mode de données" icon={Database}>
           <div className="flex items-center justify-between gap-3">
@@ -278,7 +297,7 @@ export default function DevPanelScreen() {
               Utiliser le backend réel
             </Button>
           </div>
-          <p className="mt-3 text-[11px] text-text-muted">
+          <p className="mt-3 text-2xs text-text-muted">
             Le changement recharge l'application. Vous pouvez aussi forcer le mode via
             l'URL : <code className="rounded bg-surface-tint px-1">?data=mock</code> ou{' '}
             <code className="rounded bg-surface-tint px-1">?data=live</code>.
@@ -287,7 +306,7 @@ export default function DevPanelScreen() {
             className="mt-3"
             size="sm"
             variant="outline"
-            onClick={handleSkipOnboarding}
+            onClick={() => void handleSkipOnboarding()}
             disabled={busy !== null}
           >
             <DuoIcon icon={ArrowRight} size={15} />
@@ -342,11 +361,11 @@ export default function DevPanelScreen() {
             </p>
           )}
           <div className="mt-3 flex flex-wrap gap-2">
-            <Button size="sm" variant="secondary" onClick={handleFlush} disabled={busy !== null}>
+            <Button size="sm" variant="secondary" onClick={() => void handleFlush()} disabled={busy !== null}>
               <DuoIcon icon={Refresh} size={15} />
               Vider la file
             </Button>
-            <Button size="sm" variant="outline" onClick={handleSnapshot} disabled={busy !== null}>
+            <Button size="sm" variant="outline" onClick={() => void handleSnapshot()} disabled={busy !== null}>
               <DuoIcon icon={Upload} size={15} />
               Envoyer l'instantané
             </Button>
@@ -367,7 +386,7 @@ export default function DevPanelScreen() {
                 key={name}
                 className="rounded-xl bg-surface-tint px-3 py-2"
               >
-                <p className="text-[11px] uppercase tracking-wide text-text-muted">
+                <p className="text-2xs uppercase tracking-wide text-text-muted">
                   {COLLECTION_LABELS[name]}
                 </p>
                 <p className="text-base font-extrabold text-text-primary">
@@ -377,20 +396,20 @@ export default function DevPanelScreen() {
             ))}
           </div>
           <div className="mt-3 flex flex-wrap gap-2">
-            <Button size="sm" variant="secondary" onClick={handleSeed} disabled={busy !== null}>
+            <Button size="sm" variant="secondary" onClick={() => void handleSeed()} disabled={busy !== null}>
               <DuoIcon icon={Refresh} size={15} />
               Re-seeder
             </Button>
-            <Button size="sm" variant="outline" onClick={handleExport} disabled={busy !== null}>
+            <Button size="sm" variant="outline" onClick={() => void handleExport()} disabled={busy !== null}>
               <DuoIcon icon={Download} size={15} />
               Exporter en JSON
             </Button>
-            <Button size="sm" variant="destructive" onClick={handleReset} disabled={busy !== null}>
+            <Button size="sm" variant="destructive" onClick={() => void handleReset()} disabled={busy !== null}>
               <DuoIcon icon={Trash} size={15} />
               Tout réinitialiser
             </Button>
           </div>
-          <p className="mt-3 text-[11px] text-text-muted">
+          <p className="mt-3 text-2xs text-text-muted">
             {SEED_VERSES.length} versets de démonstration (LSG) sont disponibles dans
             le seed, dont {SEED_VERSES.filter((v) => v.dueInDays <= 0).length} à
             réviser aujourd'hui.
@@ -419,7 +438,7 @@ export default function DevPanelScreen() {
                       {new Date(event.at).toLocaleTimeString()}
                     </span>
                   </div>
-                  <pre className="mt-1 max-h-24 overflow-auto whitespace-pre-wrap break-all rounded bg-surface-tint p-2 text-[10px] text-text-secondary">
+                  <pre className="mt-1 max-h-24 overflow-auto whitespace-pre-wrap break-all rounded bg-surface-tint p-2 text-3xs text-text-secondary">
                     {JSON.stringify(event.payload ?? {}, null, 2)}
                   </pre>
                 </li>

@@ -5,6 +5,7 @@
  */
 
 import { useState, useEffect } from 'react';
+import { Skeleton } from '@/components/ui/Skeleton';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { DuoIcon } from '@/components/ui/DuoIcon';
@@ -14,11 +15,39 @@ import {
   TrendingDownIcon as TrendingDown,
 } from '@/components/ui/solar-icons';
 import { useActiveProfile } from '@/hooks/useActiveProfile';
+import { StatsDashboard } from '@/components/charts/StatsDashboard';
+import { isMockMode } from '@/dev/mode';
 import { getFsrsEngine } from '@/services/fsrs-factory';
 import { ProgressService } from '@/services/progress-service';
 import type { ProgressStats } from '@/services/stats-calculator';
 import { getMemorizationService } from '@/services/memorization-service-factory';
 import { formatProgressLabel } from '@/lib/progress-label';
+
+function ProgressSkeleton({ label }: { label: string }) {
+  return (
+    <div role="status" aria-live="polite" aria-busy="true">
+      <span className="sr-only">{label}</span>
+      <div className="progress-stat-grid">
+        {[0, 1, 2, 3].map((i) => (
+          <article className="g2 progress-stat" key={i} aria-hidden="true">
+            <Skeleton className="h-3 w-16 rounded-full" />
+            <Skeleton className="h-10 w-24" />
+          </article>
+        ))}
+      </div>
+      <div className="progress-detail-grid mt-4" aria-hidden="true">
+        <section className="g2 progress-card">
+          <Skeleton className="h-5 w-40 rounded-full" />
+          <Skeleton className="mt-4 h-32 w-full rounded-2xl" />
+        </section>
+        <section className="g2 progress-card">
+          <Skeleton className="h-5 w-32 rounded-full" />
+          <Skeleton className="mt-4 h-32 w-full rounded-2xl" />
+        </section>
+      </div>
+    </div>
+  );
+}
 
 // Exemples de présentation : jamais écrits dans les dépôts ou services FSRS.
 const DEMO_STATS: ProgressStats = { totalVerses: 42, masteredVerses: 18, inProgressVerses: 24, dueForReview: 5, streakCount: 7, longestStreak: 12, weeklyTrend: { thisWeek: 6, lastWeek: 4, changePercentage: 50 }, avgSessionDurationMin: 4.5 };
@@ -75,14 +104,22 @@ export default function ProgressScreen() {
   return (
     <div className="screen-column progress-premium h-full overflow-y-auto">
       <div className="progress-content">
-        <header className="g1 progress-heading">
-          <p className="progress-label">{t('nav.progress', 'Progression')}</p>
-          <h1>{t('progress.yourProgress', 'Votre progression')}</h1>
-          <button type="button" className="progress-demo-toggle" aria-pressed={demo} onClick={() => setDemo((value) => !value)}>{demo ? t('demo.exit', 'Quitter la démo') : t('demo.enter', 'Voir la démo')}</button>
+        <header className="g1 tab-heading progress-heading">
+          <p className="section-label">{t('nav.progress', 'Progression')}</p>
+          <h1 className="page-title mt-2">{t('progress.yourProgress', 'Votre progression')}</h1>
+          <button type="button" className="progress-demo-toggle" aria-pressed={demo} onClick={() => setDemo((value) => !value)}>
+            {demo
+              ? isMockMode()
+                ? t('demo.exitLongPreview', 'Revenir à la session démo')
+                : t('demo.exit', 'Quitter la démo')
+              : isMockMode()
+                ? t('demo.enterLongPreview', 'Simuler 6 mois')
+                : t('demo.enter', 'Voir la démo')}
+          </button>
           {demo && <p className="progress-demo-notice" role="status">{t('demo.notice', 'Données fictives pour cet écran uniquement. Vos données réelles ne sont pas modifiées.')}</p>}
         </header>
         {loading && !demo ? (
-          <section className="g2 progress-message" role="status">{t('progress.loading', 'Chargement des statistiques…')}</section>
+          <ProgressSkeleton label={t('progress.loading', 'Chargement des statistiques…')} />
         ) : !stats ? (
           <section className="g3 progress-message" role="status">
             <h2>{t('progress.unavailable', 'Statistiques indisponibles')}</h2>
@@ -123,6 +160,7 @@ export default function ProgressScreen() {
                 <strong>{stats.avgSessionDurationMin > 0 ? `${stats.avgSessionDurationMin.toFixed(1)} min` : '—'}</strong>
               </section>
             </div>
+            <StatsDashboard profileId={profileId} />
           </>
         )}
       </div>

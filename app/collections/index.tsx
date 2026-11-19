@@ -36,12 +36,6 @@ interface Collection {
 // src/styles/globals.css) so collections adapt to light/dark themes.
 // Legacy localStorage data may still hold raw hex values — both render fine
 // since the consumers use color-mix() and plain `color` styles.
-const SAMPLE_COLLECTIONS: Collection[] = [
-  { id: '1', name: 'Mes favoris', description: 'Versets sauvegardes', verseCount: 12, lastUpdated: "Aujourd'hui", color: 'var(--color-primary)', icon: 'heart', verses: ['Jean 3:16', 'Psaume 23:1', 'Romains 8:28'] },
-  { id: '2', name: 'Psaumes', description: 'Collection de psaumes', verseCount: 8, lastUpdated: 'Hier', color: 'var(--color-info)', icon: 'musicalNotes', verses: ['Psaume 23', 'Psaume 91', 'Psaume 119'] },
-  { id: '3', name: 'Evangiles', description: 'Paroles de Jesus', verseCount: 15, lastUpdated: 'Il y a 3 jours', color: 'var(--color-success)', icon: 'book', verses: ['Matthieu 5:3', 'Jean 14:6'] },
-  { id: '4', name: 'Memorises', description: 'Verset en cours de memorisation', verseCount: 5, lastUpdated: "Aujourd'hui", color: 'var(--color-warning)', icon: 'bulb', verses: ['Jean 3:16', 'Philippiens 4:13'] },
-];
 
 const STORAGE_KEY = 'versyflow:collections';
 const NEW_COLLECTION_COLORS = [
@@ -76,7 +70,7 @@ export default function CollectionsScreen() {
     } catch {
       /* fall back to seed */
     }
-    return SAMPLE_COLLECTIONS;
+    return [];
   });
   const [loadError, setLoadError] = useState<string | null>(() => {
     // localStorage read itself cannot throw a typed error we need to
@@ -169,7 +163,7 @@ export default function CollectionsScreen() {
       right={
         <button
           onClick={() => setCreating(true)}
-          className="flex h-9 w-9 items-center justify-center rounded-full bg-surface-tint"
+          className="flex h-10 w-10 items-center justify-center rounded-full bg-surface-tint"
         >
           <DuoIcon icon={Plus} size={18} className="text-primary" />
         </button>
@@ -177,12 +171,17 @@ export default function CollectionsScreen() {
     >
       <div className="screen-column space-y-4">
         {loadError && (
-          <div className="flex flex-col items-center gap-3 rounded-2xl bg-surface p-4 text-center shadow-sm">
+          <div className="g2 flex flex-col items-center gap-3 p-4 text-center">
             <DuoIcon icon={AlertCircle} size={24} className="text-error" />
             <p className="text-sm text-error">{loadError}</p>
             <button
               onClick={() => {
-                setCollections(SAMPLE_COLLECTIONS);
+                try {
+                  localStorage.removeItem(STORAGE_KEY);
+                } catch {
+                  /* stockage indisponible : on reste en mémoire */
+                }
+                setCollections([]);
                 setLoadError(null);
               }}
               className="rounded-full bg-primary px-5 py-2 text-sm font-semibold text-on-primary active:opacity-90"
@@ -235,7 +234,7 @@ export default function CollectionsScreen() {
                         `/bible/chapter?book=${encodeURIComponent(rec.bookId)}&chapter=${rec.chapterNumber}&verse=${rec.verseNumber}`,
                       )
                     }
-                    className="flex w-full items-center gap-3 rounded-xl bg-surface p-3 text-left shadow-sm active:bg-surface-tint"
+                    className="g2 flex w-full items-center gap-3 p-3 text-left active:bg-surface-tint"
                   >
                     <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-error/10">
                       <DuoIcon icon={Heart} size={16} className="text-error" />
@@ -258,7 +257,7 @@ export default function CollectionsScreen() {
         ) : filtered.length === 0 ? (
           <EmptyState
             title={t('collections.empty', 'Aucune collection')}
-            description={t('collections.emptyHint', 'Créez votre premiere collection.')}
+            description={t('collections.emptyHint', 'Créez votre première collection.')}
             actionLabel={t('collections.create', 'Creer une collection')}
             onAction={() => setCreating(true)}
             showLogo={false}
@@ -275,7 +274,7 @@ export default function CollectionsScreen() {
                 onClick={() =>
                   setExpandedId(expanded ? null : collection.id)
                 }
-                className="flex w-full items-center gap-4 rounded-2xl bg-surface p-4 text-left shadow-sm"
+                className="g2 flex w-full items-center gap-4 p-4 text-left"
               >
                 <span
                   className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full"
@@ -284,7 +283,7 @@ export default function CollectionsScreen() {
                   <DuoIcon icon={Icon} size={26} />
                 </span>
                 <span className="min-w-0 flex-1">
-                  <span className="block text-base font-bold text-text-primary">
+                  <span className="card-title block">
                     {collection.name}
                   </span>
                   <span className="text-sm text-text-muted">{collection.description}</span>
@@ -344,6 +343,7 @@ export default function CollectionsScreen() {
             </button>
             <button
               onClick={submitCreate}
+              aria-label={t('collections.create', 'Créer la collection')}
               className="flex h-11 w-11 items-center justify-center rounded-full bg-primary text-on-primary"
             >
               <DuoIcon icon={Plus} size={20} />

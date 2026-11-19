@@ -26,11 +26,12 @@ import { DuoIcon } from '@/components/ui/DuoIcon';
 import { Button } from '@/components/ui/button';
 import {
   HintNote,
-  MemberAvatar,
-  ProgressBar,
+  MemberRow,
+  MetricRow,
   SectionCard,
   StatTile,
 } from '@/components/family/FamilyKit';
+import { EmptyState } from '@/components/ui/EmptyState';
 import { useFamilyRoom } from '@/hooks/useFamilyRoom';
 import { useFamilyRoomStore } from '@/store/family-room-store';
 import { pointsForChallenge } from '@/services/family-scoring';
@@ -60,7 +61,7 @@ export default function FamilyMemberScreen() {
 
   if (!family) {
     return (
-      <FullScreenPage title={t('familyPlus.memberTitle', 'Membre')} backPath="/family/home">
+      <FullScreenPage title={t('familyPlus.memberTitle', 'Membre')} backPath="/family/home" column="wide">
         <HintNote>
           {t('familyPlus.noFamilySelected', 'Aucune famille active : choisissez ou créez une famille.')}
         </HintNote>
@@ -83,26 +84,25 @@ export default function FamilyMemberScreen() {
 
   return (
     <FullScreenPage
-      title={member?.name ?? t('common.loading', 'Chargement...')}
+      title={member?.name ?? '—'}
       subtitle={family.name}
       backPath="/family/members"
     >
-      <div className="flex flex-col gap-4">
+      <div className="space-y-4">
         <SectionCard>
-          <div className="flex items-center gap-4">
-            <MemberAvatar name={member?.name ?? '?'} size={56} />
-            <div className="min-w-0">
-              <p className="truncate text-lg font-bold text-text-primary">{member?.name}</p>
-              <p className="mt-0.5 text-sm text-text-muted">
-                {member?.role === 'owner'
-                  ? t('familyPlus.roleOwner', 'Propriétaire')
-                  : member?.role === 'admin'
-                    ? t('familyPlus.roleAdmin', 'Administrateur')
-                    : t('familyPlus.roleMember', 'Membre')}
-                {member?.accountId === members[0]?.accountId && me ? '' : ''}
-              </p>
-            </div>
-          </div>
+          <MemberRow
+            name={member?.name ?? '?'}
+            avatarSize={56}
+            meta={
+              member?.role === 'owner'
+                ? t('familyPlus.roleOwner', 'Propriétaire')
+                : member?.role === 'admin'
+                  ? t('familyPlus.roleAdmin', 'Administrateur')
+                  : t('familyPlus.roleMember', 'Membre')
+            }
+            highlight={member?.accountId === me}
+            youLabel={t('familyPlus.you', 'Vous')}
+          />
         </SectionCard>
 
         <div className="grid grid-cols-3 gap-2">
@@ -116,24 +116,24 @@ export default function FamilyMemberScreen() {
 
         <SectionCard title={t('familyPlus.challengesInCommon', 'Défis en commun')}>
           {memberChallenges.length === 0 ? (
-            <p className="text-sm text-text-muted">
-              {t('familyPlus.noChallengeForMember', 'Ce membre ne participe à aucun défi en cours.')}
-            </p>
+            <EmptyState
+              tone="inline"
+              icon={Trophy}
+              title={t('familyPlus.noChallengeForMemberTitle', 'Aucun défi en cours')}
+              description={t(
+                'familyPlus.noChallengeForMember',
+                'Ce membre ne participe à aucun défi en cours.',
+              )}
+            />
           ) : (
-            <ul className="flex flex-col gap-3">
+            <ul className="flex flex-col divide-y divide-divider">
               {memberChallenges.map(({ challenge, value, points }) => (
-                <li key={challenge.id}>
-                  <div className="flex items-baseline justify-between gap-2">
-                    <p className="text-sm font-semibold text-text-primary">{challenge.title}</p>
-                    <span className="text-xs tabular-nums text-text-muted">
-                      {value} / {challenge.target} · {points} {t('familyPlus.points', 'points')}
-                    </span>
-                  </div>
-                  <ProgressBar
-                    value={value}
-                    max={challenge.target}
+                <li key={challenge.id} className="py-1">
+                  <MetricRow
                     label={challenge.title}
-                    className="mt-1.5"
+                    value={`${value} / ${challenge.target} · ${points} ${t('familyPlus.points', 'points')}`}
+                    progress={(value / Math.max(1, challenge.target)) * 100}
+                    progressLabel={challenge.title}
                   />
                 </li>
               ))}

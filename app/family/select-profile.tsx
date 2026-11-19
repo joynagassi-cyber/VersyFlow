@@ -28,6 +28,7 @@ import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { DuoIcon } from '@/components/ui/DuoIcon';
 import { Button } from '@/components/ui/button';
 import { EmptyState } from '@/components/ui/EmptyState';
+import { LoadingBlock } from '@/components/ui/Skeleton';
 import { HintNote, MemberAvatar, SectionCard } from '@/components/family/FamilyKit';
 import { useActiveProfile } from '@/hooks/useActiveProfile';
 import { useFamilyRoom } from '@/hooks/useFamilyRoom';
@@ -89,7 +90,7 @@ export default function FamilySelectProfileScreen() {
       }
       backPath="/family/home"
     >
-      <div className="flex flex-col gap-4">
+      <div className="space-y-4">
         {profiles.length === 0 ? (
           <EmptyState
             title={t('familyPlus.noLocalProfile', 'Aucun profil sur cet appareil')}
@@ -119,7 +120,7 @@ export default function FamilySelectProfileScreen() {
                     >
                       <MemberAvatar name={profile.displayName} size={44} muted={!active} />
                       <span className="min-w-0 flex-1">
-                        <span className="block truncate text-sm font-bold text-text-primary">
+                        <span className="block truncate card-title">
                           {profile.displayName}
                         </span>
                         <span className="block truncate text-xs text-text-muted">
@@ -169,7 +170,7 @@ export default function FamilySelectProfileScreen() {
                             : t('familyPlus.notYetReviewed', 'Pas encore révisé')}
                         </span>
                       </span>
-                      <span className="flex shrink-0 items-center gap-1 text-[11px] font-semibold uppercase tracking-wide text-text-muted">
+                      <span className="flex shrink-0 items-center gap-1 text-2xs font-semibold uppercase tracking-wide text-text-muted">
                         <DuoIcon icon={User} size={14} />
                         {t('familyPlus.readOnly', 'Lecture')}
                       </span>
@@ -181,9 +182,7 @@ export default function FamilySelectProfileScreen() {
           </SectionCard>
         )}
 
-        {loading && (
-          <p className="px-1 text-sm text-text-muted">{t('common.loading', 'Chargement...')}</p>
-        )}
+        {loading && <LoadingBlock label={t('common.loading', 'Chargement…')} className="py-10" />}
 
         <HintNote>
           {t(

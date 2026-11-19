@@ -33,6 +33,13 @@ import type {
   IConceptTagRepository,
 } from '@/domains/semantic-memory';
 import { createSemanticMemoryRepositories } from '@/infrastructure/repositories/semantic-memory-sqlite';
+import { isMockMode } from '@/dev/mode';
+import {
+  createMockSemanticMemoryRepositories,
+  mockChapterVerseConcepts,
+  mockUserConcepts,
+  mockVerseKeysForConcept,
+} from '@/dev/mock/semantic';
 
 /** One concept with its context, as the tree views render it. */
 export interface ConceptWithVerses {
@@ -121,8 +128,13 @@ export class SemanticService {
   private readonly verseRelationRepo: IVerseRelationRepository;
   private readonly tagRepo: IConceptTagRepository;
 
+  private readonly mockMode: boolean;
+
   constructor() {
-    const repos = createSemanticMemoryRepositories();
+    this.mockMode = isMockMode();
+    const repos = this.mockMode
+      ? createMockSemanticMemoryRepositories()
+      : createSemanticMemoryRepositories();
     this.conceptRepo = repos.conceptRepository;
     this.communityRepo = repos.communityRepository;
     this.verseRelationRepo = repos.verseRelationRepository;
@@ -223,12 +235,18 @@ export class SemanticService {
    */
   private async conceptsForConcept(conceptId: string): Promise<string[]> {
     // (1) Authoritative: direct verse_concepts bridges for this concept.
-    const db = await this.resolveDbForUserTags();
-    const direct = await db.getAll<{ verse_id: string }>(
-      `SELECT DISTINCT verse_id FROM verse_concepts WHERE concept_id = ?`,
-      [conceptId],
+    const keys = new Set<string>(
+      this.mockMode
+        ? mockVerseKeysForConcept(conceptId, false)
+        : (
+            await (
+              await this.resolveDbForUserTags()
+            ).getAll<{ verse_id: string }>(
+              `SELECT DISTINCT verse_id FROM verse_concepts WHERE concept_id = ?`,
+              [conceptId],
+            )
+          ).map((r) => r.verse_id),
     );
-    const keys = new Set<string>(direct.map((r) => r.verse_id));
 
     // (2) Indirect: verse relations naming this concept (sparse pipeline).
     const relations = await this.verseRelationRepo.getCrossRefs(200);
@@ -250,6 +268,9 @@ export class SemanticService {
     bookId: string,
     chapter: number,
   ): Promise<ChapterVerseConcepts> {
+    if (this.mockMode) {
+      return mockChapterVerseConcepts(bookId, chapter);
+    }
     const db = await this.resolveDbForUserTags();
     const like = `${bookId}:${chapter}:`;
     const rows = await db.getAll<{ verse_id: string; concept_id: string; source: string }>(
@@ -386,6 +407,17 @@ export class SemanticService {
    * localized label for the current language.
    */
   async myConcepts(limit = 40, lang?: string): Promise<MyConceptEntry[]> {
+    if (this.mockMode) {
+      const base = lang?.split('-')?.[0];
+      return mockUserConcepts(limit).map((concept) => ({
+        concept,
+        verseKeys: mockVerseKeysForConcept(concept.id, true),
+        label:
+          concept.labels_by_language[lang ?? ''] ??
+          (base ? concept.labels_by_language[base] : undefined) ??
+          concept.canonical_name,
+      }));
+    }
     const db = await this.resolveDbForUserTags();
     const rows = await db.getAll<
       { id: string; canonical_name: string; labels_by_language: string | null }

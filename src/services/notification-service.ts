@@ -1,6 +1,4 @@
 import { isNativePlatform } from '@/lib/platform';
-import { isMockMode } from '@/dev/mode';
-import { getStorageIsolationState } from '@/dev/mock/storage-scope';
 
 export interface ScheduledReminder {
   id: number;
@@ -28,9 +26,6 @@ let permissionRequestInFlight: Promise<void> | null = null;
 
 export class NotificationService {
   async checkPermission(): Promise<boolean> {
-    if (isMockMode()) return false;
-    if (permissionChecked && permissionGranted !== null) return permissionGranted;
-    if (!isNativePlatform() || isIsolatedDemoRuntime()) {
       permissionGranted = true;
       permissionChecked = true;
       return true;
@@ -49,11 +44,6 @@ export class NotificationService {
   }
 
   async ensurePermissions(reminderEnabled: boolean): Promise<boolean> {
-    if (isMockMode()) return reminderEnabled;
-    if (!reminderEnabled) return false;
-    if (permissionChecked && permissionGranted !== null) return permissionGranted;
-    if (!isNativePlatform() || isIsolatedDemoRuntime()) return true;
-
     if (!permissionRequestInFlight) {
       permissionRequestInFlight = (async () => {
         try {
@@ -77,7 +67,6 @@ export class NotificationService {
     const { enabled, time } = reminders;
     if (!enabled) {
       if (isIsolatedDemoRuntime()) {
-        try { localStorage.removeItem(DEMO_DAILY_REMINDERS_KEY); } catch { /* ignore */ }
         return [];
       }
       if (isNativePlatform()) await this.cancelAll();
@@ -94,11 +83,6 @@ export class NotificationService {
 
     if (isIsolatedDemoRuntime()) {
       try {
-        localStorage.setItem(DEMO_DAILY_REMINDERS_KEY, JSON.stringify({ body, scheduled, updatedAt: Date.now() }));
-      } catch { /* ignore */ }
-      return scheduled;
-    }
-
     if (isNativePlatform()) {
       if (!await this.checkPermission()) throw new Error('permission-denied');
       const { LocalNotifications } = await import('@capacitor/local-notifications');
@@ -117,7 +101,6 @@ export class NotificationService {
 
   async cancelAll(): Promise<void> {
     if (isIsolatedDemoRuntime()) {
-      try { localStorage.removeItem(DEMO_DAILY_REMINDERS_KEY); } catch { /* ignore */ }
       permissionChecked = false;
       permissionGranted = null;
       return;

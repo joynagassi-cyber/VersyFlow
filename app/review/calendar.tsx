@@ -18,6 +18,7 @@ import {
 import FullScreenPage from '@/components/layout/FullScreenPage';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { relativeDayLabel } from '@/lib/relative-day';
 import { useActiveProfile } from '@/hooks/useActiveProfile';
 import { getFsrsEngine } from '@/services/fsrs-factory';
 import { ProgressService } from '@/services/progress-service';
@@ -29,6 +30,7 @@ import type {
 } from '@/domains/memorization/entities';
 import { getReviewLogRepository, getSyncUserIdProvider } from '@/infrastructure/repository/powersync-repositories';
 import { formatProgressLabel } from '@/lib/progress-label';
+import { normalizeLocaleCode } from '@/domains/i18n/config';
 
 const WEEKDAYS = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
 
@@ -42,9 +44,11 @@ const RATING_LABELS: Record<ReviewLogEntry['rating'], { fr: string; en: string }
 interface DayEvent {
   id: string;
   at: number;
-  kind: 'review' | 'created';
+  kind: 'review' | 'legacy-review' | 'created';
   reference: string;
+  recordId?: string;
   rating?: ReviewLogEntry['rating'];
+  legacyCount?: number;
 }
 
 export default function ReviewCalendarScreen() {
@@ -123,6 +127,7 @@ export default function ReviewCalendarScreen() {
    */
   const eventsByDay = useMemo(() => {
     const map = new Map<string, DayEvent[]>();
+    const loggedRecordIds = new Set<string>();
     const push = (ts: number, event: DayEvent) => {
       const key = dayKey(ts);
       const list = map.get(key) ?? [];
@@ -130,21 +135,37 @@ export default function ReviewCalendarScreen() {
       map.set(key, list);
     };
     for (const log of logs) {
+      loggedRecordIds.add(log.memorizationRecordId);
       const record = recordsById.get(log.memorizationRecordId);
       push(log.answeredAt, {
         id: `log-${log.id}`,
         at: log.answeredAt,
         kind: 'review',
+        recordId: log.memorizationRecordId,
         reference: record?.bibleVerseReference ?? t('reviewCalendar.unknownVerse', 'Verset'),
         rating: log.rating,
       });
     }
     for (const record of records) {
+      // Compatibilité descendante : un verset déjà révisé avant l'introduction
+      // de `review_logs` conserve sa dernière date connue sans inventer les
+      // séances précédentes.
+      if (record.reviewCount > 0 && record.lastReviewedAt && !loggedRecordIds.has(record.id)) {
+        push(record.lastReviewedAt, {
+          id: `legacy-${record.id}`,
+          at: record.lastReviewedAt,
+          kind: 'legacy-review',
+          recordId: record.id,
+          reference: record.bibleVerseReference,
+          legacyCount: record.reviewCount,
+        });
+      }
       if (!record.createdAt) continue;
       push(record.createdAt, {
         id: `created-${record.id}`,
         at: record.createdAt,
         kind: 'created',
+        recordId: record.id,
         reference: record.bibleVerseReference,
       });
     }
@@ -152,12 +173,37 @@ export default function ReviewCalendarScreen() {
     return map;
   }, [logs, records, recordsById, t]);
 
+  const locale = normalizeLocaleCode(i18n.resolvedLanguage || i18n.language);
   const selectedEvents = eventsByDay.get(selectedDay.toDateString()) ?? [];
-  const recentReviews = useMemo(
-    () => [...logs].sort((a, b) => b.answeredAt - a.answeredAt).slice(0, 8),
-    [logs],
-  );
-  const monthLabel = month.toLocaleDateString(i18n.language, {
+  const recentReviews = useMemo(() => {
+    const loggedRecordIds = new Set(logs.map((l) => l.memorizationRecordId));
+    const legacyFallback: Array<{
+      id: string;
+      memorizationRecordId: string;
+      answeredAt: number;
+      rating?: ReviewLogEntry['rating'];
+      legacyCount?: number;
+    }> = records
+      .filter((r) => r.reviewCount > 0 && r.lastReviewedAt && !loggedRecordIds.has(r.id))
+      .map((r) => ({
+        id: `legacy-${r.id}`,
+        memorizationRecordId: r.id,
+        answeredAt: r.lastReviewedAt!,
+        legacyCount: r.reviewCount,
+      }));
+    return [
+      ...logs.map((l) => ({
+        id: l.id,
+        memorizationRecordId: l.memorizationRecordId,
+        answeredAt: l.answeredAt,
+        rating: l.rating,
+      })),
+      ...legacyFallback,
+    ]
+      .sort((a, b) => b.answeredAt - a.answeredAt)
+      .slice(0, 8);
+  }, [logs, records]);
+  const monthLabel = month.toLocaleDateString(locale, {
     month: 'long',
     year: 'numeric',
   });
@@ -176,7 +222,7 @@ export default function ReviewCalendarScreen() {
   const legendItems = [
     { key: 'review', label: t('review.dueSoon', "À réviser"), cls: 'bg-primary' },
     { key: 'memorized', label: t('reviewCalendar.created', 'Mémorisation ajoutée'), cls: 'bg-primary' },
-    { key: 'today', label: i18n.language === 'fr' ? "Aujourd'hui" : 'Today', cls: 'bg-surface-tint ring-2 ring-primary' },
+    { key: 'today', label: relativeDayLabel(Date.now(), i18n.resolvedLanguage || i18n.language), cls: 'bg-surface-tint ring-2 ring-primary' },
   ];
 
   const monthSummary = [
@@ -229,15 +275,16 @@ export default function ReviewCalendarScreen() {
           const due = dueByDay.get(date.toDateString()) ?? 0;
           const created = records.filter((record) => new Date(record.createdAt).toDateString() === date.toDateString()).length;
           const reviewed = (eventsByDay.get(date.toDateString()) ?? []).filter(
-            (event) => event.kind === 'review',
+            (event) => event.kind === 'review' || event.kind === 'legacy-review',
           ).length;
           const selected = date.toDateString() === selectedDay.toDateString();
           return (
             <button
+              type="button"
               key={date.toDateString()}
               onClick={() => setSelectedDay(date)}
               aria-pressed={selected}
-              aria-label={`${date.toLocaleDateString(i18n.resolvedLanguage || i18n.language, { dateStyle: 'full' })} · ${t('reviewCalendar.createdCount', { count: created, defaultValue: '{{count}} ajout(s)' })} · ${t('reviewCalendar.reviewedCount', { count: reviewed, defaultValue: '{{count}} révision(s)' })} · ${t('reviewCalendar.dueCount', { count: due, defaultValue: '{{count}} à réviser' })}`}
+              aria-label={`${date.toLocaleDateString(locale, { dateStyle: 'full' })} · ${t('reviewCalendar.createdCount', { count: created, defaultValue: '{{count}} ajout(s)' })} · ${t('reviewCalendar.reviewedCount', { count: reviewed, defaultValue: '{{count}} révision(s)' })} · ${t('reviewCalendar.dueCount', { count: due, defaultValue: '{{count}} à réviser' })}`}
               className={cn(
                 'relative flex aspect-square flex-col items-center justify-center rounded-lg text-sm',
                 due > 0 && 'bg-primary/10 font-semibold text-primary',
@@ -249,14 +296,14 @@ export default function ReviewCalendarScreen() {
               </span>
               {created > 0 && <span className="review-calendar-dot" aria-hidden="true" />}
               {reviewed > 0 && (
-                <span className="text-[9px] font-semibold leading-none text-text-muted" aria-hidden="true">
+                <span className="text-3xs font-semibold leading-none text-text-muted" aria-hidden="true">
                   {reviewed}
                 </span>
               )}
               {due > 0 && (
                 <span
                   className={cn(
-                    'mt-0.5 rounded-full px-1.5 text-[10px] font-bold text-[color:var(--on)]',
+                    'mt-0.5 rounded-full px-1.5 text-3xs font-bold text-on-primary',
                     'bg-primary',
                   )}
                 >
@@ -279,8 +326,8 @@ export default function ReviewCalendarScreen() {
       </div>
 
       {/* Month summary */}
-      <div className="mt-4 rounded-2xl bg-surface p-5 shadow-sm">
-        <h3 className="mb-4 text-base font-bold text-text-primary">
+      <div className="g2 mt-4 p-5">
+        <h3 className="card-title mb-4">
           {t('progress.yourProgress', 'Résumé du mois')}
         </h3>
         <div className="flex justify-around">
@@ -289,7 +336,7 @@ export default function ReviewCalendarScreen() {
               <span className="flex h-8 w-8 items-center justify-center rounded-full bg-surface-tint text-primary">
                 {item.icon}
               </span>
-              <p className="mt-2 text-2xl font-extrabold text-primary">{item.value}</p>
+              <p className="stat-value mt-2 text-2xl">{item.value}</p>
               <p className="text-xs text-text-tertiary">{item.label}</p>
             </div>
           ))}
@@ -301,23 +348,21 @@ export default function ReviewCalendarScreen() {
         aria-label={t('reviewCalendar.timeline', 'Activité du jour')}
       >
         <h3>{t('reviewCalendar.timeline', 'Activité du jour')}</h3>
-        <p>{selectedDay.toLocaleDateString(i18n.resolvedLanguage || i18n.language, { dateStyle: 'full' })}</p>
+        <p>{selectedDay.toLocaleDateString(locale, { dateStyle: 'full' })}</p>
         {selectedEvents.length === 0 ? (
           <p>{t('reviewCalendar.empty', 'Aucune activité enregistrée ce jour.')}</p>
         ) : (
           <ol>
             {selectedEvents.map((event) => {
-              const record = event.kind === 'review'
-                ? recordsById.get(event.id.replace(/^log-/, ''))
-                : undefined;
+              const record = event.recordId ? recordsById.get(event.recordId) : undefined;
               return (
                 <li key={event.id}>
                   <strong>{event.reference}</strong>
                   <span>
-                    {new Date(event.at).toLocaleTimeString(
-                      i18n.resolvedLanguage || i18n.language,
-                      { hour: '2-digit', minute: '2-digit' },
-                    )}
+                    {new Date(event.at).toLocaleTimeString(locale, {
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    })}
                     {' · '}
                     {event.kind === 'review'
                       ? t(
@@ -326,14 +371,18 @@ export default function ReviewCalendarScreen() {
                           {
                             rating: event.rating
                               ? RATING_LABELS[event.rating][
-                                  (i18n.resolvedLanguage || i18n.language).startsWith('fr')
-                                    ? 'fr'
-                                    : 'en'
+                                  locale.startsWith('fr') ? 'fr' : 'en'
                                 ]
                               : '—',
                           },
                         )
-                      : t('reviewCalendar.added', 'Ajouté à la mémorisation')}
+                      : event.kind === 'legacy-review'
+                        ? t(
+                            'reviewCalendar.legacyReview',
+                            'Dernière révision connue ({{count}} au total)',
+                            { count: event.legacyCount ?? 1 },
+                          )
+                        : t('reviewCalendar.added', 'Ajouté à la mémorisation')}
                   </span>
                   {record?.bibleVerseText && <p>{record.bibleVerseText}</p>}
                 </li>
@@ -355,14 +404,13 @@ export default function ReviewCalendarScreen() {
                 <li key={log.id}>
                   <strong>{record?.bibleVerseReference ?? t('reviewCalendar.unknownVerse', 'Verset')}</strong>
                   <span>
-                    {new Date(log.answeredAt).toLocaleDateString(
-                      i18n.resolvedLanguage || i18n.language,
-                      { dateStyle: 'medium' },
-                    )}
+                    {new Date(log.answeredAt).toLocaleDateString(locale, {
+                      dateStyle: 'medium',
+                    })}
                     {' · '}
-                    {RATING_LABELS[log.rating][
-                      (i18n.resolvedLanguage || i18n.language).startsWith('fr') ? 'fr' : 'en'
-                    ]}
+                    {log.rating
+                      ? RATING_LABELS[log.rating][locale.startsWith('fr') ? 'fr' : 'en']
+                      : t('reviewCalendar.legacyShort', 'Dernière révision connue')}
                   </span>
                 </li>
               );

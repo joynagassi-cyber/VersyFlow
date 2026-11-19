@@ -11,6 +11,7 @@
 
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { LoadingBlock } from '@/components/ui/Skeleton';
 import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   MapIcon as Map,
@@ -20,6 +21,7 @@ import {
 } from '@/components/ui/solar-icons';
 import FullScreenPage from '@/components/layout/FullScreenPage';
 import { useCommunityView } from '@/hooks/useSemanticViews';
+import { formatVerseKey } from '@/hooks/useSemanticTags';
 
 function displayLabel(
   concept: { canonical_name: string; labels_by_language: Record<string, string> },
@@ -28,12 +30,6 @@ function displayLabel(
   const labels = concept.labels_by_language ?? {};
   const base = lang?.split('-')?.[0];
   return labels[lang] ?? labels[base] ?? concept.canonical_name;
-}
-
-function formatVerseKey(key: string): string {
-  const m = /^([a-z]+):(\d+):(\d+)$/i.exec(key);
-  if (!m) return key;
-  return `${m[1]} ${m[2]}:${m[3]}`;
 }
 
 export default function CommunityView() {
@@ -49,7 +45,7 @@ export default function CommunityView() {
     return (
       <FullScreenPage title={t('semantic.community', 'Communauté')}>
         <div className="p-4">
-          <p className="text-sm text-text-muted">{t('common.loading', 'Chargement...')}</p>
+          <LoadingBlock label={t('common.loading', 'Chargement…')} className="py-10" />
         </div>
       </FullScreenPage>
     );
@@ -76,7 +72,7 @@ export default function CommunityView() {
             <DuoIcon icon={Map} size={20} />
           </span>
           <div>
-            <h1 className="text-xl font-bold text-text-primary">{community.name}</h1>
+            <h1 className="page-title">{community.name}</h1>
             <p className="text-xs text-text-muted">
               {community.source}
               {typeof community.coherence === 'number' ? ` · ${Math.round(community.coherence * 100)}%` : ''}
@@ -97,14 +93,14 @@ export default function CommunityView() {
             {t('semantic.concept', 'Concept')}s — {concepts.length}
           </h2>
           {concepts.length === 0 ? (
-            <p className="text-sm text-text-muted">{t('semantic.noConcepts', 'Aucun concept rattaché')}</p>
+            <p className="empty-line">{t('semantic.noConcepts', 'Aucun concept rattaché')}</p>
           ) : (
             <div className="flex flex-col gap-2">
               {concepts.map(({ concept }) => (
                 <button
                   key={concept.id}
                   onClick={() => navigate(`/semantic/concept?conceptId=${encodeURIComponent(concept.id)}`)}
-                  className="flex items-center justify-between rounded-xl bg-surface p-3 text-left shadow-sm transition-transform active:scale-[0.99]"
+                  className="g2 flex items-center justify-between p-3 text-left transition-transform active:scale-[0.99]"
                 >
                   <div>
                     <p className="text-sm font-semibold text-text-primary">
@@ -126,14 +122,14 @@ export default function CommunityView() {
             {t('semantic.verses', 'Verset{count}', { count: sampleVerseKeys.length })}
           </h2>
           {sampleVerseKeys.length === 0 ? (
-            <p className="text-sm text-text-muted">{t('semantic.noVerses', 'Aucun verset lié')}</p>
+            <p className="empty-line">{t('semantic.noVerses', 'Aucun verset lié')}</p>
           ) : (
             <div className="flex flex-col gap-2">
               {sampleVerseKeys.map((key) => (
                 <button
                   key={key}
                   onClick={() => navigate(`/semantic/verse?verseRef=${encodeURIComponent(key)}`)}
-                  className="flex items-center justify-between rounded-xl bg-surface p-3 text-left shadow-sm transition-transform active:scale-[0.99]"
+                  className="g2 flex items-center justify-between p-3 text-left transition-transform active:scale-[0.99]"
                 >
                   <p className="text-sm font-semibold text-text-primary">{formatVerseKey(key)}</p>
                   <DuoIcon icon={ChevronRight} size={16} className="text-primary" />

@@ -1,5 +1,4 @@
 import { isNativePlatform } from '@/lib/platform';
-import { isMockMode } from '@/dev/mode';
 import { getStorageIsolationState } from '@/dev/mock/storage-scope';
 import type { Weekday } from '@capacitor/local-notifications';
 
@@ -41,11 +40,6 @@ export async function applyWeeklyPlan(
   bodies: Record<WeeklyReminderKind, string>,
 ): Promise<'native' | 'web' | 'demo'> {
   const normalized = normalizeWeeklyPlan(plan);
-  if (isMockMode()) {
-    localStorage.setItem(WEEKLY_PLAN_KEY, JSON.stringify(normalized));
-    return 'demo';
-  }
-
   const isolation = getStorageIsolationState();
   if (!isNativePlatform() || (isolation.installed && isolation.scopeActive)) {
     localStorage.setItem(WEEKLY_PLAN_KEY, JSON.stringify(normalized));

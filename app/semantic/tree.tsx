@@ -18,6 +18,7 @@ import {
   Compass01Icon as Compass,
 } from '@/components/ui/solar-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
+import { LoadingBlock } from '@/components/ui/Skeleton';
 import { DuoIcon } from '@/components/ui/DuoIcon';
 import { Button } from '@/components/ui/button';
 import { HintNote, SectionCard, StatTile } from '@/components/family/FamilyKit';
@@ -49,7 +50,7 @@ export default function SemanticTreeScreen() {
   if (loading) {
     return (
       <FullScreenPage title={t('tree.treeTitle', 'Arbre')} backPath="/semantic/tags">
-        <p className="text-sm text-text-muted">{t('common.loading', 'Chargement...')}</p>
+        <LoadingBlock label={t('common.loading', 'Chargement…')} className="py-10" />
       </FullScreenPage>
     );
   }
@@ -103,7 +104,7 @@ export default function SemanticTreeScreen() {
               <li className="flex items-center gap-2 rounded-xl bg-surface-tint px-3 py-2">
                 <DuoIcon icon={Tree} size={16} className="text-primary" />
                 <span className="text-sm font-bold text-text-primary">{label}</span>
-                <span className="ml-auto text-[11px] text-text-muted">
+                <span className="ml-auto text-2xs text-text-muted">
                   {t('tree.rootTag', 'tag racine')}
                 </span>
               </li>
@@ -124,12 +125,12 @@ export default function SemanticTreeScreen() {
                         <span className="block truncate text-sm font-semibold text-text-primary">
                           {childLabel}
                         </span>
-                        <span className="block text-[11px] text-text-muted">
+                        <span className="block text-2xs text-text-muted">
                           {node.via?.relationType ?? 'RELATED'} · {confidence}%
                         </span>
                       </span>
                       {confidence < 70 && (
-                        <span className="rounded-full bg-surface-tint px-2 py-0.5 text-[10px] font-semibold text-text-muted">
+                        <span className="rounded-full bg-surface-tint px-2 py-0.5 text-3xs font-semibold text-text-muted">
                           {t('tree.explore', 'à explorer')}
                         </span>
                       )}

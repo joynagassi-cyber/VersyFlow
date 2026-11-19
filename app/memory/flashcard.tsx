@@ -39,7 +39,7 @@ export default function FlashcardScreen() {
   return (
     <FullScreenPage title={t('memory.flashcard', 'Flashcard')} showBack backPath="/tabs/home">
       <div className="screen-column space-y-5">
-        <div className="rounded-3xl bg-surface p-6 shadow-sm">
+        <div className="g2 p-6">
           <p className="text-sm font-semibold text-primary">{text}</p>
           <div className="mt-4 flex flex-wrap gap-2">
             {words.map((w, i) => (
@@ -75,6 +75,7 @@ export default function FlashcardScreen() {
           </button>
           <button
             onClick={() => setRevealed(0)}
+            aria-label={t('memory.restartReveal', 'Revoir depuis le début')}
             className="flex items-center justify-center gap-2 rounded-2xl border border-border px-4 text-text-secondary"
           >
             <DuoIcon icon={RotateCcw} size={18} />

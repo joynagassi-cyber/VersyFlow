@@ -22,6 +22,8 @@ import { DEFAULT_FSRS_STATE } from '@/domains/fsrs';
 import { recordUuid } from '@/infrastructure/sync/memorization-mapper';
 import { mockDb } from './db';
 import { getMockIdentity, stableId } from './identity';
+import { resetMockSemanticStore } from './semantic';
+import { getStorageIsolationState } from './storage-scope';
 
 const DAY = 86_400_000;
 const now = () => Date.now();
@@ -436,6 +438,7 @@ export function seedMockDatabase(options: SeedOptions = {}): SeedResult {
 
   if (hasData && !options.force) {
     mockDb.setActiveUserId(userId);
+    seedScopedLocalPreferences(false);
     return {
       userId,
       profileId,
@@ -474,6 +477,7 @@ export function seedMockDatabase(options: SeedOptions = {}): SeedResult {
     { id: stableId('pref_', `${userId}:translation`), userId, translationId: 'lsg' },
   ]);
   mockDb.setActiveUserId(userId);
+  seedScopedLocalPreferences(Boolean(options.force));
 
   return {
     userId,
@@ -482,6 +486,36 @@ export function seedMockDatabase(options: SeedOptions = {}): SeedResult {
     reviewLogs: reviewLogs.length,
     seeded: true,
   };
+}
+
+/**
+ * Seeds isolated localStorage keys (personal verse notes and semantic concepts)
+ * ONLY when storage
+ * isolation is active, so real user keys can never be touched.
+ */
+function seedScopedLocalPreferences(force: boolean): void {
+  const isolation = getStorageIsolationState();
+  if (!isolation.installed || !isolation.scopeActive) return;
+
+  try {
+    if (force || localStorage.getItem('versyflow:note:psa:23:1') === null) {
+      localStorage.setItem(
+        'versyflow:note:psa:23:1',
+        'Réciter lentement chaque matin avant la prière en famille.',
+      );
+    }
+    if (force || localStorage.getItem('versyflow:note:joh:3:16') === null) {
+      localStorage.setItem(
+        'versyflow:note:joh:3:16',
+        'Verset fondateur mémorisé avec Grâce et Sophie.',
+      );
+    }
+    if (force) {
+      resetMockSemanticStore();
+    }
+  } catch {
+    /* ignore storage errors */
+  }
 }
 
 /** Wipe the mock store and re-seed from scratch. */

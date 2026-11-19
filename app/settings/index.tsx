@@ -163,7 +163,7 @@ export default function SettingsScreen() {
         {/* Profile card — premium avatar (photo → vector illustration fallback) */}
         <button
           onClick={() => navigate('/profile')}
-          className="flex w-full items-center gap-4 rounded-3xl bg-surface p-4 text-left shadow-sm"
+          className="g2 flex w-full items-center gap-4 p-4 text-left"
         >
           <ProfileAvatar name={displayName} size={48} />
           <span className="min-w-0 flex-1">
@@ -178,7 +178,7 @@ export default function SettingsScreen() {
         </button>
 
         {/* Active translation pill (abbreviation + full name, subtitle). */}
-        <div className="flex items-center gap-3 rounded-2xl bg-surface p-4 shadow-sm">
+        <div className="g2 flex items-center gap-3 p-4">
           <span className="flex h-10 w-10 items-center justify-center rounded-full bg-surface-tint text-primary">
             <DuoIcon icon={BookText} size={18} />
           </span>
@@ -201,7 +201,7 @@ export default function SettingsScreen() {
             {/* Compact version-type switch — writes bibleVersionType, which
                 filters the onboarding translation picker. */}
             <div className="mt-2 flex items-center gap-1.5">
-              <span className="text-[10px] font-semibold uppercase tracking-wide text-text-muted">
+              <span className="text-3xs font-semibold uppercase tracking-wide text-text-muted">
                 {t('settings.versionTypeBadge', 'Type de version')}
               </span>
               <div className="flex gap-1">
@@ -210,7 +210,7 @@ export default function SettingsScreen() {
                     key={v.id}
                     onClick={() => setBibleVersionType(v.id)}
                     className={cn(
-                      'rounded-full px-2 py-0.5 text-[11px] font-semibold transition',
+                      'rounded-full px-2 py-0.5 text-2xs font-semibold transition',
                       bibleVersionType === v.id
                         ? 'bg-primary text-on-primary'
                         : 'bg-surface-tint text-text-secondary',
@@ -232,11 +232,11 @@ export default function SettingsScreen() {
         {/* Divided vertical sections */}
         {groups.map((group, gi) => (
           <div key={gi}>
-            <p className="mb-2 flex items-center gap-2 px-1 text-xs font-bold uppercase tracking-wide text-text-muted">
+            <p className="mb-2 flex items-center gap-2 px-1 section-label">
               <DuoIcon icon={group.icon} size={13} className="text-primary" />
               {group.title}
             </p>
-            <div className="overflow-hidden rounded-2xl bg-surface shadow-sm">
+            <div className="g2 overflow-hidden">
               {group.items.map((item, i) => (
                 <button
                   key={i}
@@ -263,7 +263,7 @@ export default function SettingsScreen() {
         {isAuthenticated && (
           <button
             onClick={() => setShowConfirm(true)}
-            className="flex w-full items-center justify-center gap-2 rounded-2xl bg-surface py-3.5 font-semibold text-error shadow-sm"
+            className="g2 flex w-full items-center justify-center gap-2 py-3.5 font-semibold text-error"
           >
             <DuoIcon icon={LogOut} size={18} />
             {t('settings.signOut', 'Se deconnecter')}

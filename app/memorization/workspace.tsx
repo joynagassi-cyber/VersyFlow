@@ -39,6 +39,7 @@ import { ModeCards } from '@/components/memorization/ModeCards';
 import { ModeWrite } from '@/components/memorization/ModeWrite';
 import { TranslationMenu } from '@/components/memorization/TranslationMenu';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
+import { SkeletonScreen } from '@/components/ui/Skeleton';
 
 type StatusTone = 'new' | 'due' | 'consolidated';
 
@@ -200,15 +201,15 @@ export default function MemorizationWorkspace() {
         <div className="flex-1 overflow-y-auto px-4 pb-40">
           {status === 'loading' && (
             <div className="flex flex-col items-center py-16">
-              <div className="screen-column animate-pulse space-y-3 px-6" aria-hidden><div className="h-4 w-2/5 rounded-full bg-surface-tint" /><div className="h-24 rounded-3xl bg-surface-tint" /><div className="h-24 rounded-3xl bg-surface-tint" /></div>
-              <p className="mt-3 text-sm text-text-tertiary">
+              <SkeletonScreen />
+              <p className="sr-only" role="status">
                 {t('workspace.loading', 'Chargement du verset...')}
               </p>
             </div>
           )}
 
           {status === 'error' && (
-            <div className="rounded-3xl bg-surface p-6 text-center shadow-sm">
+            <div className="g2 p-6 text-center">
               <p className="text-sm text-error">
                 {statusMessage ?? t('errors.verseNotFound', 'Verset non disponible')}
               </p>
@@ -265,7 +266,7 @@ function ShellHeader({
           <DuoIcon icon={ArrowLeft} size={18} />
         </button>
         <div className="flex min-w-0 flex-1 flex-col items-center">
-          <h1 className="truncate text-lg font-bold text-text-primary">{title}</h1>
+          <h1 className="truncate text-lg font-semibold text-text-primary">{title}</h1>
           {subtitle && (
             <div className="mt-0.5 flex items-center gap-1 text-xs text-text-muted">
               {subtitleExtra}

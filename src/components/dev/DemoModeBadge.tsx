@@ -28,7 +28,7 @@ export function DemoModeBadge({ className }: { className?: string }) {
         'Mode démo : données fictives, isolées de vos données réelles. Ouvrir le panneau de démonstration.',
       )}
       className={
-        'inline-flex h-8 items-center gap-1 rounded-full border border-border bg-surface-tint px-2 text-[10px] font-extrabold uppercase tracking-wide text-primary transition-colors hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ' +
+        'inline-flex h-8 items-center gap-1 rounded-full border border-border bg-surface-tint px-2 text-3xs font-extrabold uppercase tracking-wide text-primary transition-colors hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ' +
         (className ?? '')
       }
       data-testid="demo-mode-badge"

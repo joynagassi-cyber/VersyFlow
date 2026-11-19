@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { existsSync, readFileSync } from 'node:fs';
 import { ALL_THEMES, themeLandscapeUrl, themeThumbUrl } from '@/theme/theme-catalog';
 import { PHOTO_THEME_COUNT } from '@/theme/photo-themes';
+import { SACRED_THEME_COUNT } from '@/theme/sacred-themes';
 import { GRADIENTS } from '@/theme/tweakcn-presets';
 
 describe('onglet Fond', () => {
@@ -17,7 +18,7 @@ describe('onglet Fond', () => {
     expect(screen).toContain("setBackgroundType('none')");
   });
   it('propose des miniatures WebP des images présentes avec repli PNG', () => {
-    expect(ALL_THEMES).toHaveLength(100 + PHOTO_THEME_COUNT);
+    expect(ALL_THEMES).toHaveLength(100 + PHOTO_THEME_COUNT + SACRED_THEME_COUNT);
     for (const theme of ALL_THEMES.filter((item) => item.id !== 'obj-miroir')) {
       const webp = `public${themeThumbUrl(theme.id)}`;
       expect(existsSync(webp), webp).toBe(true);

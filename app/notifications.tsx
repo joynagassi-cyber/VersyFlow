@@ -253,7 +253,7 @@ export default function NotificationsScreen() {
                   key={n.id}
                   onClick={() => markAsRead(n.id)}
                   className={
-                    'flex w-full items-start gap-3 rounded-2xl bg-surface p-4 text-left shadow-sm ' +
+                    'g2 flex w-full items-start gap-3 p-4 text-left ' +
                     (n.read ? '' : 'ring-1 ring-[color:var(--color-divider)]')
                   }
                 >

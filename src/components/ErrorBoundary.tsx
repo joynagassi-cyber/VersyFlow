@@ -5,6 +5,7 @@ import {
   Home01Icon as Home,
 } from '@/components/ui/solar-icons';
 import { useNavigate } from 'react-router-dom';
+import i18next from 'i18next';
 
 interface Props {
   children: React.ReactNode;
@@ -42,9 +43,9 @@ function BoundaryFallback({ onReset }: { onReset: () => void }) {
         <DuoIcon icon={RefreshCw} size={28} />
       </span>
       <div>
-        <p className="text-lg font-bold text-text-primary">Une erreur est survenue</p>
+        <h2 className="empty-title">{i18next.t('errorBoundary.title', 'Une erreur est survenue')}</h2>
         <p className="mt-1 text-sm text-text-muted">
-          Cette page n'a pas pu s'afficher. Réessayez.
+          {i18next.t('errorBoundary.message', 'Cette page n’a pas pu s’afficher. Réessayez.')}
         </p>
       </div>
       <div className="flex gap-3">
@@ -55,7 +56,7 @@ function BoundaryFallback({ onReset }: { onReset: () => void }) {
           }}
           className="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-on-primary shadow active:opacity-90"
         >
-          Réessayer
+          {i18next.t('errorBoundary.retry', 'Réessayer')}
         </button>
         <button
           onClick={() => {
@@ -66,7 +67,7 @@ function BoundaryFallback({ onReset }: { onReset: () => void }) {
         >
           <span className="inline-flex items-center gap-1">
             <DuoIcon icon={Home} size={14} />
-            Accueil
+            {i18next.t('errorBoundary.home', 'Accueil')}
           </span>
         </button>
       </div>
