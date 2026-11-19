@@ -269,9 +269,8 @@ tiret veut dire « pas encore mesuré ».
 
 **Décision.** L'écran retient si une mesure a abouti (`measured`) et affiche
 `—` tant que ce n'est pas le cas, pour les cartes, le tableau par statut et le
-temps d'apprentissage. Le rafraîchissement remet l'écran en chargement mais
-conserve le dernier état mesuré s'il échoue... non : il remet `measured` à
-`false`, pour ne pas présenter d'anciens chiffres comme actuels.
+temps d'apprentissage. Le rafraîchissement remet `measured` à `false` : des
+chiffres d'hier présentés comme ceux du jour seraient une autre façon de mentir.
 
 **Conséquence.** `tests/design/analytics-honesty.test.ts` interdit le retour de
 `stats?.x || 0` dans l'écran et vérifie que chaque chiffre passe par le drapeau.
