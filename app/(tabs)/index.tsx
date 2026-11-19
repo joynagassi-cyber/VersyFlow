@@ -152,8 +152,14 @@ export default function HomeScreen() {
       } catch (error) {
         console.error('[Home] Data load failed:', error);
         if (!cancelled) {
+          // Tous les compteurs repassent à « inconnu » : ne réinitialiser que
+          // deux d'entre eux laisserait « 0 verset mémorisé » à l'écran pour une
+          // lecture qui a échoué (règle D5, cf. D15).
           setReviewsDue(null);
           setStreak(null);
+          setTotal(null);
+          setMastered(null);
+          setRecentVerses([]);
         }
       }
     };
@@ -234,31 +240,18 @@ export default function HomeScreen() {
     },
   ];
 
+  /**
+   * Libellé d'un compteur : le gabarit porte le nombre (`{count}` + `{plural}`),
+   * et une valeur inconnue (`null`) ne devient jamais « 0 ». Auparavant
+   * `total ?? 0` fabriquait « 0 verset mémorisé » alors que la colonne voisine
+   * affichait « – » : le même chiffre se contredisait dans la même tuile.
+   */
+  const statLabel = (template: string, count: number | null): string =>
+    count === null ? t('home.dataUnavailable', 'Données indisponibles') : formatProgressLabel(template, count, locale);
   const statItems: Array<[string, number | null]> = [
-    [
-      formatProgressLabel(
-        t('progress.versesMemorized', 'Versets mémorisés'),
-        total ?? 0,
-        locale,
-      ),
-      total,
-    ],
-    [
-      formatProgressLabel(
-        t('progress.versesMastered', 'Versets maîtrisés'),
-        mastered ?? 0,
-        locale,
-      ),
-      mastered,
-    ],
-    [
-      formatProgressLabel(
-        t('home.reviewsDue', 'Révisions à faire'),
-        reviewsDue ?? 0,
-        locale,
-      ),
-      reviewsDue,
-    ],
+    [statLabel(t('progress.versesMemorized', 'Verset{plural} mémorisé{plural}'), total), total],
+    [statLabel(t('progress.versesMastered', 'Versets maîtrisés'), mastered), mastered],
+    [statLabel(t('home.reviewsDue', 'Révisions à faire'), reviewsDue), reviewsDue],
   ];
 
   return (
@@ -337,7 +330,7 @@ export default function HomeScreen() {
                   r="44"
                   fill="none"
                   strokeWidth="6"
-                  strokeDasharray={`${(Math.min(streak ?? 0, 7) / 7) * 276.46} 276.46`}
+                  strokeDasharray={`${(Math.min(Math.max(streak ?? 0, 0), 7) / 7) * 276.46} 276.46`}
                 />
               </svg>
               <strong>{streak ?? '–'}</strong>

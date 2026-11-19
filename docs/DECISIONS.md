@@ -275,3 +275,23 @@ chiffres d'hier présentés comme ceux du jour seraient une autre façon de ment
 **Conséquence.** `tests/design/analytics-honesty.test.ts` interdit le retour de
 `stats?.x || 0` dans l'écran et vérifie que chaque chiffre passe par le drapeau.
 
+### D16. Accueil, calendrier et profil suivent la règle du tiret
+
+**Contexte.** La même faute que D15 existait sur trois autres écrans : l'accueil
+affichait `formatProgressLabel(…, total ?? 0, …)` à côté de la valeur
+`total ?? '–'` — « 0 verset mémorisé » et « – » dans la même tuile —, et son
+`catch` ne remettait à `null` que deux compteurs sur cinq, si bien qu'un échec
+de lecture laissait les anciens chiffres à l'écran. Le calendrier de révision
+donnait `stats?.x ?? 0` sur trois tuiles ; le profil formattait un gabarit
+numérique avec `0` sous une valeur « — ».
+
+**Décision.** Un compteur non lu vaut `null` jusqu'en haut et s'affiche « — » ;
+un gabarit qui porte le nombre (`{count}`, `{plural}`) n'est pas formaté sans
+nombre. Sur échec de lecture, **tous** les compteurs repassent à `null`, jamais
+un sous-ensemble. L'anneau de série borne la valeur à `[0, 7]` avant de calculer
+son `strokeDasharray`.
+
+**Conséquence.** `tests/design/home-counts-honesty.test.ts` interdit le retour
+des trois motifs (`?? 0` dans un libellé, `catch` partiel, `?? 0` non borné dans
+l'anneau) et vérifie les deux autres écrans.
+

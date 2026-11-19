@@ -300,21 +300,31 @@ export default function ProfileScreen() {
         {/* ── Stats band ── */}
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
           <StatTile value={stats?.streakCount ?? null} label={t('progress.streak', 'Série')} />
+          {/* Un gabarit qui porte le nombre ne s'affiche pas sans nombre : la
+              tuile garde son libellé neutre et sa valeur reste « — » (D15). */}
           <StatTile
             value={stats?.masteredVerses ?? null}
-            label={formatProgressLabel(
-              t('progress.mastered', 'Maîtrisés'),
-              stats?.masteredVerses ?? 0,
-              i18n.resolvedLanguage || i18n.language,
-            )}
+            label={
+              stats
+                ? formatProgressLabel(
+                    t('progress.mastered', 'Maîtrisés'),
+                    stats.masteredVerses,
+                    i18n.resolvedLanguage || i18n.language,
+                  )
+                : t('progress.mastered', 'Maîtrisés')
+            }
           />
           <StatTile
             value={stats?.totalVerses ?? null}
-            label={formatProgressLabel(
-              t('progress.versesMemorized', 'Versets mémorisés'),
-              stats?.totalVerses ?? 0,
-              i18n.resolvedLanguage || i18n.language,
-            )}
+            label={
+              stats
+                ? formatProgressLabel(
+                    t('progress.versesMemorized', 'Versets mémorisés'),
+                    stats.totalVerses,
+                    i18n.resolvedLanguage || i18n.language,
+                  )
+                : t('progress.versesMemorized', 'Versets mémorisés')
+            }
           />
           <StatTile value={stats?.dueForReview ?? null} label={t('progress.toReview', 'À réviser')} />
         </div>

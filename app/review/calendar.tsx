@@ -225,11 +225,27 @@ export default function ReviewCalendarScreen() {
     { key: 'today', label: relativeDayLabel(Date.now(), i18n.resolvedLanguage || i18n.language), cls: 'bg-surface-tint ring-2 ring-primary' },
   ];
 
+  // Un compteur non lu affiche « — », jamais « 0 » : « 0 jours de série » et
+  // « série inconnue » ne veulent pas dire la même chose (D15).
   const monthSummary = [
-    { value: stats?.streakCount ?? 0, label: t('progress.streak', 'Jours de série'), icon: <DuoIcon icon={Flame} size={14} /> },
-    { value: stats?.totalVerses ?? 0, label: formatProgressLabel(t('progress.versesMemorized', 'Versets mémorisés'), stats?.totalVerses ?? 0, i18n.resolvedLanguage || i18n.language), icon: <DuoIcon icon={BookOpen} size={14} /> },
     {
-      value: `${stats ? Math.round((stats.masteredVerses / Math.max(1, stats.totalVerses)) * 100) : 0}%`,
+      value: stats ? stats.streakCount : '—',
+      label: t('progress.streak', 'Jours de série'),
+      icon: <DuoIcon icon={Flame} size={14} />,
+    },
+    {
+      value: stats ? stats.totalVerses : '—',
+      label: formatProgressLabel(
+        t('progress.versesMemorized', 'Versets mémorisés'),
+        stats?.totalVerses ?? 0,
+        i18n.resolvedLanguage || i18n.language,
+      ),
+      icon: <DuoIcon icon={BookOpen} size={14} />,
+    },
+    {
+      value: stats
+        ? `${Math.round((stats.masteredVerses / Math.max(1, stats.totalVerses)) * 100)}%`
+        : '—',
       label: t('progress.retention', 'Taux de rétention'),
       icon: <DuoIcon icon={TrendingUp} size={14} />,
     },
