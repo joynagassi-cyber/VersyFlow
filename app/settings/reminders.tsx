@@ -42,16 +42,9 @@ export default function SettingsRemindersScreen() {
 
   const schedulePush = async () => {
     try {
-      // Just-in-time permission request (user-initiated), then schedule.
-      // The service is store/i18n-free: read the reminder config from the
-      // store and translate the body here, then pass both as arguments.
       if (!await notificationService.ensurePermissions(reminderEnabled)) throw new Error('permission-denied');
       await notificationService.scheduleDailyReminders(
-        {
-          enabled: reminderEnabled,
-          frequency: reminderFrequency,
-          time: reminderTime,
-        },
+        { enabled: reminderEnabled, frequency: reminderFrequency, time: reminderTime },
         t('reminders.notificationBody', 'Temps de révision !'),
       );
       setPushStatus(isMockMode() ? 'demo' : isNativePlatform() ? 'scheduled' : 'web');
@@ -61,73 +54,55 @@ export default function SettingsRemindersScreen() {
   };
 
   const cancelPush = async () => {
-    // cancelAll() also invalidates the service's cached permission state,
-    // so the next "Planifier" tap re-queries the OS instead of trusting a
-    // stale result from a previous on/off cycle.
     await notificationService.cancelAll();
     setPushStatus('idle');
   };
 
   return (
-    <div className="screen-column-narrow reminders-page flex h-full flex-col overflow-y-auto p-6">
+    <div className="screen-column-narrow reminders-page flex h-full flex-col overflow-y-auto p-6 pb-24">
       <header className="mb-6 flex items-center gap-3">
         <button
-          onClick={() => goBackSafely(navigate)}
-          className="flex h-10 w-10 items-center justify-center rounded-full bg-surface shadow-sm"
+          type="button"
+          onClick={() => goBackSafely(navigate, '/tabs/settings')}
+          className="flex h-10 w-10 items-center justify-center rounded-full bg-surface shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
           aria-label={t('common.back')}
         >
           <DuoIcon icon={ArrowLeft} size={20} className="text-text-secondary" />
         </button>
-        <h1 className="text-2xl font-bold text-text-primary">
-          {t('settings.reminderConfig', 'Rappels de révision')}
-        </h1>
+        <h1 className="page-title">{t('settings.reminderConfig', 'Rappels de révision')}</h1>
       </header>
 
+      {isMockMode() ? (
+        <p role="note" className="mb-5 rounded-2xl border border-border bg-surface-tint px-4 py-3 text-xs text-text-secondary">
+          {t('demo.limits', 'Les notifications de démo et le collecteur de test sont désactivés. L’isolation des autres parcours n’est pas encore entièrement vérifiée.')}
+        </p>
+      ) : null}
+
       <div className="flex flex-1 flex-col gap-6">
-        {/* On / off toggle */}
         <button
           onClick={() => { if (reminderEnabled) void cancelPush(); toggleReminders(); }}
           aria-pressed={reminderEnabled}
           className={cn(
             'flex items-center gap-4 rounded-2xl border-2 p-4 text-left transition-colors',
-            reminderEnabled
-              ? 'border-primary bg-surface-tint'
-              : 'border-transparent bg-surface shadow-sm',
+            reminderEnabled ? 'border-primary bg-surface-tint' : 'border-transparent bg-surface shadow-sm',
           )}
         >
-          <div
-            className={cn(
-              'flex h-12 w-12 shrink-0 items-center justify-center rounded-full',
-              reminderEnabled ? 'bg-primary text-on-primary' : 'bg-surface-tint text-primary',
-            )}
-          >
+          <div className={cn('flex h-12 w-12 shrink-0 items-center justify-center rounded-full', reminderEnabled ? 'bg-primary text-on-primary' : 'bg-surface-tint text-primary')}>
             {reminderEnabled ? <DuoIcon icon={BellRing} size={22} /> : <DuoIcon icon={Bell} size={22} />}
           </div>
           <div className="flex-1">
-            <p className="text-base font-semibold text-text-primary">
-              {t('onboarding.reminderEnabled')}
-            </p>
-            <p className="mt-1 text-sm text-text-secondary">
-              {reminderEnabled ? t('common.on') : t('common.off')}
-            </p>
+            <p className="text-base font-semibold text-text-primary">{t('onboarding.reminderEnabled')}</p>
+            <p className="mt-1 text-sm text-text-secondary">{reminderEnabled ? t('common.on') : t('common.off')}</p>
           </div>
-          <div
-            className={cn(
-              'flex h-6 w-6 items-center justify-center rounded-full border-2',
-              reminderEnabled ? 'border-primary bg-primary' : 'border-text-muted',
-            )}
-          >
-            {reminderEnabled && <DuoIcon icon={Check} size={14} className="text-[color:var(--on)]" />}
+          <div className={cn('flex h-6 w-6 items-center justify-center rounded-full border-2', reminderEnabled ? 'border-primary bg-primary' : 'border-text-muted')}>
+            {reminderEnabled && <DuoIcon icon={Check} size={14} className="text-on-primary" />}
           </div>
         </button>
 
-        {/* Frequency */}
         <div className={cn(!reminderEnabled && 'opacity-40')}>
           <div className="mb-3 flex items-center gap-2">
             <DuoIcon icon={Bell} size={18} className="text-primary" />
-            <span className="text-base font-semibold text-text-primary">
-              {t('onboarding.reminderFrequency')}
-            </span>
+            <span className="text-base font-semibold text-text-primary">{t('onboarding.reminderFrequency')}</span>
           </div>
           <div className="flex flex-wrap gap-2">
             {FREQUENCIES.map((f) => {
@@ -137,12 +112,7 @@ export default function SettingsRemindersScreen() {
                   key={f}
                   disabled={!reminderEnabled}
                   onClick={() => { setReminderFrequency(f); setPushStatus('idle'); }}
-                  className={cn(
-                    'flex h-14 min-w-14 items-center justify-center rounded-2xl border-2 px-4 text-lg font-semibold transition-colors disabled:opacity-40',
-                    selected
-                      ? 'border-primary bg-surface-tint text-primary'
-                      : 'border-transparent bg-surface text-text-secondary shadow-sm',
-                  )}
+                  className={cn('flex h-14 min-w-14 items-center justify-center rounded-2xl border-2 px-4 text-lg font-semibold transition-colors disabled:opacity-40', selected ? 'border-primary bg-surface-tint text-primary' : 'border-transparent bg-surface text-text-secondary shadow-sm')}
                 >
                   {f}
                   {selected && <DuoIcon icon={Check} className="ml-1" size={16} />}
@@ -152,15 +122,12 @@ export default function SettingsRemindersScreen() {
           </div>
         </div>
 
-        {/* Reminder time */}
         <div className={cn('flex items-center gap-4', !reminderEnabled && 'opacity-40')}>
           <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-surface-tint">
             <DuoIcon icon={Clock} size={22} className="text-primary" />
           </div>
           <div className="flex-1">
-            <p className="text-base font-semibold text-text-primary">
-              {t('onboarding.reminderTime')}
-            </p>
+            <p className="text-base font-semibold text-text-primary">{t('onboarding.reminderTime')}</p>
             <input
               type="time"
               value={reminderTime}
@@ -170,13 +137,11 @@ export default function SettingsRemindersScreen() {
             />
           </div>
         </div>
-        {/* Notification push locales */}
-        <div className="glass rounded-2xl bg-surface p-4 shadow-sm">
+
+        <div className="glass rounded-2xl p-4">
           <div className="mb-3 flex items-center gap-2">
             <DuoIcon icon={BellRing} size={18} className="text-primary" />
-            <span className="text-base font-semibold text-text-primary">
-              {t('settings.notificationPush', 'Notifications locales')}
-            </span>
+            <span className="text-base font-semibold text-text-primary">{t('settings.notificationPush', 'Notifications locales')}</span>
           </div>
           <p className="mb-3 text-xs text-text-muted">
             {t('settings.notificationPushHint', 'Active des rappels de push sur cet appareil (sans serveur) en fonction des horaires ci-dessus.')}
@@ -186,16 +151,12 @@ export default function SettingsRemindersScreen() {
               variant="default"
               className="w-full"
               onClick={() => void schedulePush()}
-              disabled={!reminderEnabled || pushStatus === 'scheduled'}
+              disabled={!reminderEnabled || pushStatus === 'scheduled' || pushStatus === 'demo'}
             >
               <DuoIcon icon={Check} size={16} />
               {t('settings.notificationSchedule', 'Planifier les rappels')}
             </Button>
-            <Button
-              variant="outline"
-              className="w-full"
-              onClick={() => void cancelPush()}
-            >
+            <Button variant="outline" className="w-full" onClick={() => void cancelPush()}>
               <DuoIcon icon={RefreshCw} size={16} />
               {t('settings.notificationCancel', 'Annuler les rappels planifiés')}
             </Button>
@@ -204,11 +165,12 @@ export default function SettingsRemindersScreen() {
       </div>
 
       {pushStatus === 'demo' && <p role="status" className="weekly-planner-hint">{t('weeklyReminders.demo', 'Démo : planning fictif enregistré, aucune notification programmée ou annulée.')}</p>}
+      {pushStatus === 'scheduled' && <p role="status" className="weekly-planner-hint">{t('weeklyReminders.native', 'Planning enregistré et transmis à l’appareil.')}</p>}
       {pushStatus === 'web' && <p role="status" className="weekly-planner-hint">{t('weeklyReminders.web', 'Planning enregistré. Sur le navigateur, les notifications en arrière-plan ne sont pas programmées.')}</p>}
       {pushStatus === 'error' && <p role="status" className="weekly-planner-hint">{t('weeklyReminders.error', 'Impossible de programmer les rappels. Vérifiez les autorisations et réessayez.')}</p>}
       <WeeklyReminderPlanner />
       <div className="mt-6 flex gap-4">
-        <Button variant="outline" className="flex-1" onClick={() => goBackSafely(navigate)}>
+        <Button variant="outline" className="flex-1" onClick={() => goBackSafely(navigate, '/tabs/settings')}>
           <DuoIcon icon={ArrowLeft} size={16} />
           {t('common.back')}
         </Button>
