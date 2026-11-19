@@ -97,6 +97,7 @@ Chaque contrat est un test, pas une consigne.
 | Index ↔ chapitres cohérents | `tests/unit/bible-corpus-integrity.test.ts` | un `index.json` qui annonce autre chose que les fichiers |
 | Méthodes de mémorisation réelles | `tests/unit/capabilities/memory-strategies.test.ts` | une stratégie listée sans action (bras `switch` mort) |
 | Liens ↔ routes effectives | `tests/unit/navigation-routes.test.ts` | un `<Link to>` vers un écran renommé (rebond vers le 404) |
+| Aucune synchronisation promise | `tests/design/family-sync-honesty.test.ts` | un libellé qui annonce un envoi vers un serveur absent |
 
 ## 6. Vérifier l'état en trois commandes
 
@@ -107,7 +108,7 @@ npm run verify               # tsc + eslint + corpus Bible + tests design + audi
 ```
 
 Dernières mesures connues (2026-11-19) : `typecheck` **0 erreur** ; `vitest`
-**181 fichiers / 1 722 tests, 0 échec** ; `npm run lint` **0 erreur** (1 925
+**182 fichiers / 1 726 tests, 0 échec** ; `npm run lint` **0 erreur** (1 925
 avertissements préexistants, dont la dette typée des scripts) ; `npm run build`
 **succès** (264 fichiers JS, 2,8 Mo ; `www/` 61 Mo avec les thèmes et la Bible).
 

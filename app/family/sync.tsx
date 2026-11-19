@@ -140,8 +140,8 @@ export default function FamilySyncScreen() {
           <div className="mt-3">
             <HintNote>
               {t(
-                'familyPlus.pendingHint2',
-                'Défis, séances et fil d’activité sont enregistrés sur cet appareil. Ils partiront dès que la connexion revient — rien n’est perdu en attendant.',
+                'familyPlus.localOnlyHint',
+                'Défis, séances et fil d’activité sont enregistrés sur cet appareil. En mode local, il n’y a pas de serveur distant où les envoyer : ils restent ici, et une sauvegarde se fait depuis Réglages › Données.',
               )}
             </HintNote>
           </div>

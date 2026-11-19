@@ -236,3 +236,25 @@ ils demandent d'exécuter l'écran.
 suite (vérifié en cassant volontairement `/tabs/progress`), et les cibles
 historiques de D7 restent couvertes.
 
+### D14. Les écrans de la famille ne promettent plus d'envoi
+
+**Contexte.** Trois libellés venaient du temps du service cloud : la séance en
+famille annonçait « tes stats seront partagées à la reconnexion », son état non
+partagé affichait « {{count}} résultats en attente », et l'écran de
+synchronisation disait « ils partiront dès que la connexion revient ». Depuis
+D1, aucun serveur distant ne reçoit quoi que ce soit : la donnée est déjà
+écrite, il n'y a rien en transit.
+
+**Décision.** Les libellés décrivent l'état mesuré : « réponses sur cet
+appareil », « mode local · les réponses restent sur cet appareil », « pas de
+serveur distant où les envoyer ». Les clés qui portaient la promesse
+(`pendingHint`, `pendingHint2`, `offlineHint`, `pendingResults`) sont supprimées
+de `fr`/`en` plutôt que laissées inutilisées : deux vérités dans un catalogue
+finissent par être rebranchées par erreur. `liveHint` parle désormais d'un
+« instantané partagé » (le collecteur local), pas d'un partage en direct.
+
+**Conséquence.** `tests/design/family-sync-honesty.test.ts` lit le bloc
+`familyPlus` des catalogues et échoue sur le vocabulaire d'envoi différé
+(reconnexion, « en attente », « shared live »), et vérifie que les trois clés
+retirées ne sont plus référencées par un écran.
+

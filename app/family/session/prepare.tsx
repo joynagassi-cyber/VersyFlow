@@ -154,7 +154,7 @@ export default function FamilySessionPrepareScreen() {
         <HintNote>
           {t(
             'familyPlus.sessionHint',
-            'Chacun mémorise sur son appareil, en ligne ou non. Les résultats sont partagés en direct, ou dès la reconnexion.',
+            'Chacun mémorise sur son appareil. Les réponses restent ici : il n’y a pas de serveur distant où les envoyer.',
           )}
         </HintNote>
 
