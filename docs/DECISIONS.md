@@ -216,3 +216,23 @@ sans action.
 sinon échec. Ajouter une méthode à l'atelier sans bras d'exécution, ou débrancher
 un bras, casse la suite.
 
+### D13. Les liens sont comparés aux routes effectives, pas aux `path` plats
+
+**Contexte.** L'imbrication du routeur donne des routes dont le `path` ne dit
+pas l'URL : les six écrans de `/onboarding/*` valent `/onboarding/<child>`,
+`/tabs/progress` est un enfant de `/tabs`. Un contrôle naïf des `path="…"`
+les croirait absentes. Symétriquement, rien ne vérifiait qu'un `<Link to>`
+pointe vers une route existante : renommer une route sans toucher les liens
+envoie l'utilisateur sur le 404, et aucun test ne montait `src/main.tsx`.
+
+**Décision.** `tests/unit/navigation-routes.test.ts` reconstruit les chemins
+effectifs par pile de balises `<Route>` (le balayage est manuel : un
+`element={<Navigate … />}` contient un `>` dans ses attributs) puis compare les
+cibles **statiques** des liens (`to`, `navigate`, `redirect`) à ces chemins. Les
+liens construits (`to={\`/bible/explorer/${bookId}\`}`) ne sont pas comparés :
+ils demandent d'exécuter l'écran.
+
+**Conséquence.** Une faute de frappe dans une cible de lien fait échouer la
+suite (vérifié en cassant volontairement `/tabs/progress`), et les cibles
+historiques de D7 restent couvertes.
+

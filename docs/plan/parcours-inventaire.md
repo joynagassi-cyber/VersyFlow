@@ -10,8 +10,8 @@ Parcours inventoriés : **16** — actifs **16**, partiels **0**, absents **0**.
 | Démarrage et onboarding | 1 | `tests/api/navigation-api.test.ts`<br>`tests/design/onboarding-journey.test.tsx`<br>`tests/design/onboarding-progress.test.ts`<br>+1 | — | **actif** |
 | Authentification | 3 | `tests/api/navigation-api.test.ts`<br>`tests/design/onboarding-journey.test.tsx`<br>`tests/e2e/auth-flow.test.ts` | — | **actif** |
 | Accueil et navigation | 1 | `tests/api/navigation-api.test.ts`<br>`tests/design/batch-navigation.test.ts`<br>`tests/design/lot-journeys-and-polish.test.ts`<br>+5 | — | **actif** |
-| Explorer la Bible | 5 | `tests/api/navigation-api.test.ts`<br>`tests/design/batch-navigation.test.ts`<br>`tests/design/bible-book-names.test.ts`<br>+27 | présentes | **actif** |
-| Lire un chapitre | 2 | `tests/api/navigation-api.test.ts`<br>`tests/design/app-shells.test.ts`<br>`tests/design/bible-book-names.test.ts`<br>+24 | présentes | **actif** |
+| Explorer la Bible | 5 | `tests/api/navigation-api.test.ts`<br>`tests/design/batch-navigation.test.ts`<br>`tests/design/bible-book-names.test.ts`<br>+28 | présentes | **actif** |
+| Lire un chapitre | 2 | `tests/api/navigation-api.test.ts`<br>`tests/design/app-shells.test.ts`<br>`tests/design/bible-book-names.test.ts`<br>+25 | présentes | **actif** |
 | Mémoriser un verset | 5 | `tests/api/navigation-api.test.ts`<br>`tests/design/app-shells.test.ts`<br>`tests/e2e/memorization-flow.test.ts`<br>+8 | présentes | **actif** |
 | Réviser (FSRS) | 5 | `tests/api/navigation-api.test.ts`<br>`tests/design/mock-mode-contract.test.ts`<br>`tests/design/preview-lab.test.tsx`<br>+7 | présentes | **actif** |
 | Comparer les traductions | 2 | `tests/api/navigation-api.test.ts`<br>`tests/api/theme-api.test.ts`<br>`tests/design/batch-navigation.test.ts`<br>+14 | présentes | **actif** |
