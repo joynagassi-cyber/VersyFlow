@@ -53,6 +53,105 @@ const COLORS = {
   info: 'var(--color-info)',
 };
 
+/* ── Vignettes de squelette ─────────────────────────────────────────────
+ * Une silhouette par forme réelle de carte de synthèse — pas une pastille
+ * unique. L'ordre reprend celui des six `StatCard` du tableau chargé :
+ * bande des 7 jours, anneau de série, anneau de maîtrise, matrice de
+ * pastilles, barres groupées (pleine largeur), barre FSRS (pleine largeur). */
+function WeekStripGhost() {
+  // WeekStrip : 56 px de tracé + l'étiquette jour, 7 colonnes espacées.
+  const heights = ['h-3', 'h-7', 'h-5', 'h-9', 'h-6', 'h-11', 'h-4'];
+  return (
+    <div className="flex h-[70px] items-end gap-2">
+      {heights.map((height, index) => (
+        <div key={index} className="flex flex-1 flex-col items-center gap-1">
+          <div className="relative h-14 w-2 rounded-full bg-surface-tint">
+            <Skeleton className={`absolute bottom-0 w-2 rounded-full ${height}`} />
+          </div>
+          <Skeleton className="h-2 w-2.5 rounded-sm" />
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function RingGhost() {
+  // TickRing est rendu à 104 × 104 dans les deux cartes.
+  return <Skeleton className="h-[104px] w-[104px] rounded-full" />;
+}
+
+function DotMatrixGhost() {
+  // 30 jours sur cinq rangées de sept, comme `DotMatrix(columns={7})`.
+  return (
+    <div className="flex flex-col gap-1.5">
+      {Array.from({ length: 5 }, (_, row) => (
+        <div key={row} className="flex gap-1.5">
+          {Array.from({ length: row === 4 ? 2 : 7 }, (_, column) => (
+            <Skeleton key={column} className="h-2.5 w-2.5 rounded-full" />
+          ))}
+          {row === 4 && Array.from({ length: 5 }, (_, column) => (
+            <span key={`pad-${column}`} className="h-2.5 w-2.5" aria-hidden="true" />
+          ))}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function GroupedBarsGhost() {
+  const heights = ['h-4', 'h-6', 'h-3', 'h-7', 'h-5', 'h-8', 'h-6'];
+  return (
+    <div className="w-[132px]">
+      <div className="flex h-14 items-end gap-2">
+        {heights.map((height, index) => (
+          <div key={index} className="flex h-full flex-1 items-end justify-center gap-[3px]">
+            <Skeleton className={`w-1.5 rounded-t-sm ${height}`} />
+            <Skeleton className={`w-1.5 rounded-t-sm ${index % 2 === 0 ? 'h-5' : 'h-3'}`} />
+          </div>
+        ))}
+      </div>
+      <div className="mt-1 flex justify-between gap-1">
+        {Array.from({ length: 7 }, (_, index) => (
+          <Skeleton key={index} className="h-2 w-2.5 rounded-sm" />
+        ))}
+      </div>
+      <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1">
+        {[0, 1].map((index) => (
+          <div key={index} className="flex items-center gap-1.5">
+            <Skeleton className="h-2 w-2 rounded-full" />
+            <Skeleton className="h-2 w-12 rounded-full" />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function StackedBarGhost() {
+  return (
+    <div className="flex w-[160px] flex-col gap-2">
+      <Skeleton className="h-2.5 w-full rounded-full" />
+      <div className="flex flex-wrap gap-x-2 gap-y-1">
+        {['w-8', 'w-10', 'w-8', 'w-9'].map((width, index) => (
+          <div key={index} className="flex items-center gap-1">
+            <Skeleton className="h-2 w-2 rounded-full" />
+            <Skeleton className={`h-2 ${width} rounded-full`} />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+const STAT_CARD_GHOSTS: { visual: React.ReactNode; wide: boolean; chevron: boolean }[] = [
+  { visual: <WeekStripGhost />, wide: false, chevron: true },
+  { visual: <RingGhost />, wide: false, chevron: false },
+  { visual: <RingGhost />, wide: false, chevron: true },
+  { visual: <DotMatrixGhost />, wide: false, chevron: false },
+  { visual: <GroupedBarsGhost />, wide: true, chevron: false },
+  { visual: <StackedBarGhost />, wide: true, chevron: false },
+];
+
 export interface StatsDashboardProps {
   profileId: string;
   windowDays?: number;
@@ -66,37 +165,47 @@ export function StatsDashboard({ profileId, windowDays = 30 }: StatsDashboardPro
   const data = useStatsCharts(profileId, windowDays);
 
   if (data.loading) {
-    // Deux étages, comme le tableau chargé : six cartes de synthèse (icône,
-    // intitulé, chiffre, vignette) puis neuf cadres d'analyse, dont deux
-    // pleine largeur. Un bloc uniforme annoncerait un autre écran.
+    // Deux étages, comme le tableau chargé : six cartes de synthèse, chacune
+    // avec la silhouette de SA vignette (semaine, anneaux, matrice, barres),
+    // puis neuf cadres d'analyse dont trois pleine largeur (carte de
+    // chaleur, courbe, série) — comme les trois `wide` du tableau chargé.
     return (
       <div className="stats-grid" role="status" aria-live="polite" aria-busy="true">
         <span className="sr-only">{t('stats.loading', 'Calcul des graphiques…')}</span>
-        {Array.from({ length: 6 }, (_, index) => (
-          <div key={`card-${index}`} className="stat-card g2 p-4" aria-hidden="true">
+        {STAT_CARD_GHOSTS.map((card, index) => (
+          <div
+            key={`card-${index}`}
+            className={
+              card.wide
+                ? 'stat-card stat-card--wide-visual g2 rounded-2xl p-4'
+                : 'stat-card g2 rounded-2xl p-4'
+            }
+            aria-hidden="true"
+          >
             <div className="flex items-center gap-2">
-              <Skeleton className="h-4 w-4 rounded-md" />
-              <Skeleton className="h-3 w-2/5 rounded-full" />
+              <Skeleton className="h-8 w-8 shrink-0 rounded-xl" />
+              <Skeleton className="h-3.5 w-2/5 rounded-full" />
+              {card.chevron && <Skeleton className="ml-auto h-4 w-4 shrink-0 rounded-md" />}
             </div>
             <div className="mt-3 flex items-end justify-between gap-3">
-              <div className="flex min-w-0 flex-1 flex-col gap-2">
+              <div className="flex min-w-0 flex-1 flex-col gap-1.5">
                 <Skeleton className="h-8 w-1/2 rounded-lg" />
                 <Skeleton className="h-2.5 w-4/5 rounded-full" />
               </div>
-              <Skeleton className="h-14 w-14 shrink-0 rounded-full" />
+              <div className="shrink-0">{card.visual}</div>
             </div>
           </div>
         ))}
         {Array.from({ length: 9 }, (_, index) => {
-          const wide = index === 0 || index === 8;
+          const wide = index === 0 || index === 1 || index === 8;
           return (
             <div
               key={`chart-${index}`}
-              className={wide ? 'stats-chart stats-chart--wide g2 p-4' : 'stats-chart g2 p-4'}
+              className={wide ? 'stats-chart stats-chart--wide g2 rounded-2xl p-4' : 'stats-chart g2 rounded-2xl p-4'}
               aria-hidden="true"
             >
-              <Skeleton className="h-4 w-1/3 rounded-full" />
-              <Skeleton className="mt-2 h-2.5 w-1/4 rounded-full" />
+              <Skeleton className="h-5 w-1/3 rounded-full" />
+              <Skeleton className="mt-1.5 h-2.5 w-1/4 rounded-full" />
               <Skeleton className={wide ? 'mt-4 h-40 w-full rounded-xl' : 'mt-4 h-32 w-full rounded-xl'} />
             </div>
           );

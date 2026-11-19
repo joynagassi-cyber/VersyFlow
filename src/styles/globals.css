@@ -2217,25 +2217,31 @@ html { -webkit-tap-highlight-color: transparent; }
 
 /* 7. Squelette de chargement — un seul matériau, un seul rythme.
    Le balayage est un dégradé du TEXTE du thème (jamais un gris figé) ; il est
-   supprimé par la règle 5 en mouvement réduit, et le bloc reste lisible. */
-.skeleton {
-  position: relative;
-  overflow: hidden;
-  background: color-mix(in srgb, var(--tx, var(--color-text-primary)) 9%, transparent);
-  border-radius: 12px;
-}
-.skeleton::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  transform: translateX(-100%);
-  background: linear-gradient(
-    90deg,
-    transparent,
-    color-mix(in srgb, var(--tx, var(--color-text-primary)) 7%, transparent),
-    transparent
-  );
-  animation: skeleton-sweep 1.4s var(--ease-standard) infinite;
+   supprimé par la règle 5 en mouvement réduit, et le bloc reste lisible.
+   Posé dans `components` (pas en dehors des couches) : les utilitaires
+   Tailwind peuvent alors ajuster le rayon bloc par bloc — un avatar de
+   squelette est un CERCLE, une barre de progression un filet, une pilule
+   une pilule — sans que le 12 px par défaut ne gagne systématiquement. */
+@layer components {
+  .skeleton {
+    position: relative;
+    overflow: hidden;
+    background: color-mix(in srgb, var(--tx, var(--color-text-primary)) 9%, transparent);
+    border-radius: 12px;
+  }
+  .skeleton::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(
+      90deg,
+      transparent,
+      color-mix(in srgb, var(--tx, var(--color-text-primary)) 7%, transparent),
+      transparent
+    );
+    animation: skeleton-sweep 1.4s var(--ease-standard) infinite;
+  }
 }
 @keyframes skeleton-sweep {
   to { transform: translateX(100%); }

@@ -69,12 +69,12 @@ export default function SettingsRemindersScreen() {
         >
           <DuoIcon icon={ArrowLeft} size={20} className="text-text-secondary" />
         </button>
-
+        <h1 className="page-title">{t('settings.reminders', 'Rappels')}</h1>
       </header>
 
       {isMockMode() ? (
         <p role="note" className="mb-5 rounded-2xl border border-border bg-surface-tint px-4 py-3 text-xs text-text-secondary">
-
+          {t('settings.remindersDemoNote', 'Mode démo : les rappels sont enregistrés sur cet appareil uniquement, aucune notification n’est réellement programmée.')}
         </p>
       ) : null}
 
@@ -95,6 +95,12 @@ export default function SettingsRemindersScreen() {
             <p className="mt-1 text-sm text-text-secondary">{reminderEnabled ? t('common.on') : t('common.off')}</p>
           </div>
 
+          <div
+            className={cn(
+              'flex h-6 w-6 items-center justify-center rounded-full border-2',
+              reminderEnabled ? 'border-primary bg-primary' : 'border-text-muted',
+            )}
+          >
             {reminderEnabled && <DuoIcon icon={Check} size={14} className="text-on-primary" />}
           </div>
         </button>

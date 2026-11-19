@@ -1,4 +1,5 @@
 import { isNativePlatform } from '@/lib/platform';
+import { isMockMode } from '@/dev/mode';
 import { getStorageIsolationState } from '@/dev/mock/storage-scope';
 import type { Weekday } from '@capacitor/local-notifications';
 
@@ -34,16 +35,33 @@ export function loadWeeklyPlan(): WeeklyReminderPlan {
   catch { return normalizeWeeklyPlan(null); }
 }
 
+/** État d'isolation du stockage, ou `null` quand le module d'environnement
+ *  n'est pas utilisable (harnais de test à module de mode partiellement mocké). */
+function isolationState(): { installed: boolean; scopeActive: boolean } | null {
+  try {
+    return getStorageIsolationState();
+  } catch {
+    return null;
+  }
+}
+
 /** Persist fictional plans in demo mode; never invoke the native plugin. */
 export async function applyWeeklyPlan(
   plan: WeeklyReminderPlan,
   bodies: Record<WeeklyReminderKind, string>,
 ): Promise<'native' | 'web' | 'demo'> {
   const normalized = normalizeWeeklyPlan(plan);
-  const isolation = getStorageIsolationState();
-  if (!isNativePlatform() || (isolation.installed && isolation.scopeActive)) {
+  const isolation = isolationState();
+  // Démo isolée sur appareil (ou Web) : on enregistre localement comme sur le
+  // Web, sans jamais atteindre le plugin de notifications.
+  if (!isNativePlatform() || (isolation?.installed && isolation.scopeActive)) {
     localStorage.setItem(WEEKLY_PLAN_KEY, JSON.stringify(normalized));
     return 'web';
+  }
+  if (isMockMode()) {
+    // Démo sans isolation installée : planning purement fictif.
+    localStorage.setItem(WEEKLY_PLAN_KEY, JSON.stringify(normalized));
+    return 'demo';
   }
 
   const { LocalNotifications } = await import('@capacitor/local-notifications');

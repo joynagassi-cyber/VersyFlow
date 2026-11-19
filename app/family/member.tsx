@@ -22,6 +22,7 @@ import {
   ArrowRight01Icon as ArrowRight,
 } from '@/components/ui/solar-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
+import { FamilyMemberSkeleton } from '@/components/ui/ScreenSkeletons';
 import { DuoIcon } from '@/components/ui/DuoIcon';
 import { Button } from '@/components/ui/button';
 import {
@@ -78,6 +79,16 @@ export default function FamilyMemberScreen() {
             'Ce membre ne fait plus partie de la famille active (ou son profil n’est plus lisible).',
           )}
         </HintNote>
+      </FullScreenPage>
+    );
+  }
+
+  // Pas de membre en main PENDANT le chargement : pas d'écran « — » avec des
+  // compteurs à zéro qui font passer le vide pour de la mesure.
+  if (loading && !member) {
+    return (
+      <FullScreenPage title={t('familyPlus.memberTitle', 'Membre')} backPath="/family/members">
+        <FamilyMemberSkeleton label={t('common.loading', 'Chargement…')} />
       </FullScreenPage>
     );
   }

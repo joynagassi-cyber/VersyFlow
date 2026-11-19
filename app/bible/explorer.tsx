@@ -50,6 +50,7 @@ export default function BibleExplorerScreen() {
   const params = useParams();
   const { t, i18n } = useTranslation();
   const continuous = useAppearanceStore((s) => s.bibleContinuous);
+  const verseLayout = useAppearanceStore((s) => s.bibleVerseLayout);
   const [query, setQuery] = useState('');
 
   const { byId, translationId } = useBibleBooks();
@@ -282,7 +283,7 @@ export default function BibleExplorerScreen() {
           {/* Manuscript flow: the chapter as one continuous serif text,
               with tappable inline verse numbers. */}
           {status === 'loading' ? (
-            <BibleReaderSkeleton label={t('common.loading', 'Chargement du chapitre…')} />
+            <BibleReaderSkeleton label={t('common.loading', 'Chargement du chapitre…')} layout={verseLayout} />
           ) : (
             books && <ContinuousBibleReader key={`${translationId}:${selectedBook.id}:${selectedChapter}`} books={books} initialBookId={selectedBook.id} initialChapter={selectedChapter} translationId={translationId} />
           )}
