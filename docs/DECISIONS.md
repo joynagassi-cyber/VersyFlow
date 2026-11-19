@@ -193,3 +193,26 @@ reconstruit par `SplitBibleTextSource` contient la même liste de références q
 chapitre perdu à la projection, fait échouer la suite de tests sans lancer
 l'application.
 
+### D12. Une seule table décide des méthodes réellement jouables
+
+**Contexte.** `use-memory.ts` (capacité mémoire) enchaînait quatre
+`case 'heat-words'` successifs : `flashcard`, `recall-writing` et le masquage
+aléatoire étaient **inatteignables**. Un `switch` sur un littéral ne signale pas
+un bras mort, et aucun test ne montait le hook — trois stratégies déclarées
+dans l'énumération n'avaient donc jamais d'action. Par ailleurs le registre de
+l'atelier (`app/memorization/start.tsx`) et ce `switch` tenaient chacun leur
+propre liste de méthodes, libres de diverger.
+
+**Décision.** `PLAYABLE_STRATEGIES` (dans la capacité mémoire) est la seule
+table : elle porte les six stratégies exécutables — masquage progressif,
+révélation incrémentale, rappel actif, carte, rappel écrit, masquage intelligent.
+L'atelier en dérive ce qu'il affiche et ce qu'il accepte en `?strategy=` ;
+`useMemoryCapabilityHook` en dérive les actions. Toute valeur hors table retombe
+explicitement sur le masquage progressif (le défaut MVP), jamais sur un écran
+sans action.
+
+**Conséquence.** `tests/unit/capabilities/memory-strategies.test.ts` compare la
+**signature des actions** de quatre stratégies : quatre signatures distinctes,
+sinon échec. Ajouter une méthode à l'atelier sans bras d'exécution, ou débrancher
+un bras, casse la suite.
+

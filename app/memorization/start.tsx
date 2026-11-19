@@ -21,6 +21,10 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
+  PLAYABLE_STRATEGIES,
+  type PlayableStrategy,
+} from '@/capabilities/memory/use-memory';
+import {
   EyeIcon as Eye,
   SparklesIcon as Sparkles,
   BrainIcon as Brain,
@@ -40,7 +44,7 @@ import type { ExerciseStrategy } from '@/domains/memorization/entities';
  * Les six méthodes, alignées sur `ExerciseStrategy` (le contrat du domaine) et
  * sur les modes de l'atelier de mémorisation.
  */
-const STRATEGIES: { id: ExerciseStrategy; key: string; detail: string }[] = [
+const STRATEGIES: { id: PlayableStrategy; key: string; detail: string }[] = [
   {
     id: 'progressive-masking',
     key: 'memory.methodProgressive',
@@ -65,9 +69,14 @@ const STRATEGIES: { id: ExerciseStrategy; key: string; detail: string }[] = [
  * `ExerciseStrategy` énumère 16 valeurs, dont dix appartiennent à V1 ou au futur
  * (`cloze-deletion`, `typing-mode`, `interleaving`…). Proposer une méthode que
  * rien n'exécute serait une promesse vide : l'atelier ne liste que les six
- * stratégies que la session sait réellement jouer, et le dit à l'écran.
+ * stratégies que la session sait réellement jouer.
+ *
+ * La liste n'est plus tenue ici : elle vient de `PLAYABLE_STRATEGIES`, la table
+ * qui décide aussi quelles actions existent (capacité mémoire). Une méthode
+ * affichée sans bras d'exécution, ou l'inverse, ne peut donc plus arriver
+ * silencieusement.
  */
-const PLAYABLE = new Set<ExerciseStrategy>(STRATEGIES.map((entry) => entry.id));
+const PLAYABLE = new Set<ExerciseStrategy>(PLAYABLE_STRATEGIES);
 
 const ICONS: Partial<Record<ExerciseStrategy, typeof Eye>> = {
   'progressive-masking': Eye,
