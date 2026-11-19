@@ -51,11 +51,7 @@ const STRATEGIES: { id: ExerciseStrategy; key: string; detail: string }[] = [
     key: 'memory.methodIncremental',
     detail: 'memory.methodIncrementalDesc',
   },
-  {
-    id: 'active-recall',
-    key: 'memory.methodRecall',
-    detail: 'memory.methodRecallDesc',
-  },
+  { id: 'active-recall', key: 'memory.methodRecall', detail: 'memory.methodRecallDesc' },
   { id: 'flashcard', key: 'memory.methodCards', detail: 'memory.methodCardsDesc' },
   {
     id: 'recall-writing',
@@ -64,6 +60,14 @@ const STRATEGIES: { id: ExerciseStrategy; key: string; detail: string }[] = [
   },
   { id: 'smart-masking', key: 'memory.methodSmart', detail: 'memory.methodSmartDesc' },
 ];
+
+/**
+ * `ExerciseStrategy` énumère 16 valeurs, dont dix appartiennent à V1 ou au futur
+ * (`cloze-deletion`, `typing-mode`, `interleaving`…). Proposer une méthode que
+ * rien n'exécute serait une promesse vide : l'atelier ne liste que les six
+ * stratégies que la session sait réellement jouer, et le dit à l'écran.
+ */
+const PLAYABLE = new Set<ExerciseStrategy>(STRATEGIES.map((entry) => entry.id));
 
 const ICONS: Partial<Record<ExerciseStrategy, typeof Eye>> = {
   'progressive-masking': Eye,
@@ -85,8 +89,9 @@ export default function MemorizationStartScreen() {
   const verseEnd = Number(params.get('verseEnd') ?? 0) || verseStart;
   const hasCoordinates = Boolean(bookId) && chapter > 0 && verseStart > 0;
 
+  const requested = params.get('strategy') as ExerciseStrategy | null;
   const [selected, setSelected] = useState<ExerciseStrategy>(
-    (params.get('strategy') as ExerciseStrategy | null) ?? 'progressive-masking',
+    requested && PLAYABLE.has(requested) ? requested : 'progressive-masking',
   );
   const [verseText, setVerseText] = useState<string>('');
   const [loading, setLoading] = useState(hasCoordinates);
