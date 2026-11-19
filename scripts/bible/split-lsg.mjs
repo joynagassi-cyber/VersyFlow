@@ -107,9 +107,14 @@ function main() {
     mkdirSync(dirname(file), { recursive: true });
     writeFileSync(file, content);
   }
-  const chapters = expected.size - dataset.books.length - 1;
+  // Le compte vient de la projection elle-même, pas d'une soustraction sur le
+  // nombre de livres : un livre sans chapitre, ou un index, ferait mentir le
+  // chiffre affiché (1190 fichiers ≠ 66 livres + 1 189 chapitres + 1 index).
+  const chapters = [...expected.keys()].filter(
+    (name) => name !== 'index.json' && name.endsWith('.json'),
+  ).length;
   console.log(
-    `[split-lsg] ${dataset.books.length} livres, ${chapters} chapitres, 1 index → public/data/bible/lsg/`,
+    `[split-lsg] ${dataset.books.length} livres, ${chapters} chapitres, 1 index → ${expected.size} fichiers dans public/data/bible/lsg/`,
   );
 }
 

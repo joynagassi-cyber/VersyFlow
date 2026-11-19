@@ -36,7 +36,8 @@ node scripts/visual-check.mjs --base http://localhost:3000
 ```
 
 Il écrit `artifacts/visuel/<largeur>/<écran>.png` et
-`artifacts/visuel/rapport.md`, et sort en **code 3** si Playwright est absent —
+`artifacts/visuel/rapport.md` (ou `docs/screenshots/` avec `--out`), et sort en
+**code 3** si Playwright est absent —
 c'est-à-dire « rien mesuré », jamais « tout va bien ». Code **1** = au moins un
 écran déborde ou lève une erreur console.
 

@@ -102,3 +102,54 @@ notes d'agents et de graphes générés) n'ont aucun rôle dans la livraison.
 
 **Décision.** Suppression. `graphify-out/` contenait des références au backend
 retiré : le garde-fou l'aurait signalé à chaque build.
+
+---
+
+## Chantier 1 — une seule route par écran
+
+### D7. Une ancienne URL redirige, elle ne disparaît pas
+
+**Contexte.** Quatre doublons d'écrans étaient enregistrés dans `src/main.tsx` :
+la Bible sur trois URL (`/bible/explorer`, `/bible/book`, `/bible/chapter`
+avec ses query params), la mémorisation sur deux flux (`/memory/start` et
+`/memorization/*`), les réglages sur deux hubs (`/settings` et
+`/tabs/settings`), les profils sur deux sélecteurs (`/profile/select` et
+`/family/select-profile`).
+
+**Décision.** L'écran le plus complet devient la destination unique ; l'ancien
+chemin reste déclaré et effectue une **redirection** qui conserve la cible
+(ex. `/bible/chapter/joh/3` → `/bible/explorer/joh/3`, `/bible/book` →
+`/bible/explorer`). Les écrans supprimés (`app/bible/book.tsx`,
+`app/bible/chapter.tsx`, `app/family/select-profile.tsx`, `app/memory/start.tsx`)
+n'ont pas de remplaçant partiel : leur contenu vivait déjà dans la destination.
+
+**Conséquence.** Aucun lien existant (notes, collections, historique, URL
+partagée) ne casse. `/memory/start` devient l'atelier de méthode sous
+`/memorization/start`, avec ses coordonnées dans l'URL au lieu d'un `state` de
+routeur — il fonctionne donc aussi en navigation profonde.
+
+### D8. Ce qui reste séparé
+
+`memorization/*` et `memory/*` restent deux familles : la première conduit la
+session et l'atelier de méthode, la seconde porte les deux exercices ciblés
+(`flashcard`, `recall-writing`). Ce ne sont pas deux implémentations du même
+écran — c'était le cas avant D7, où `memorization/flashcard.tsx` recopiait
+`memory/flashcard.tsx` avec des données en dur.
+
+## Chantier 0 bis — suppressions mesurées
+
+### D9. Cinq fichiers sans importeur sont retirés
+
+**Contexte.** Un scan des imports (`src/` + `app/`, hors tests) listait cinq
+modules qu'aucun code n'importait : `useI18n`, `useFamilyInvitation`,
+`IonicThemeProvider`, `ionic-variables`, `useColorScheme` (ce dernier était un
+doublon du stub de `Primitives.tsx`).
+
+**Décision.** Suppression. Les fichiers **testés** et sans importeur d'exécution
+(`demo-auth`, `bible-service`, `useSessionSafety`, `string-utils`, `hash-utils`,
+`storage-keys`) sont **conservés** : leurs tests unitaires décrivent un contrat
+réel, et supprimer un module pour faire baisser un compteur serait une perte.
+
+**Conséquence.** `src/services/i18n-service.ts` documente désormais qu'il est
+l'accès programmatique (stores, services) et que les écrans utilisent
+`useTranslation()`.

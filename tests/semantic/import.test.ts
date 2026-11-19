@@ -24,7 +24,7 @@ describe('stage A — import', () => {
     // Les 56 autres du catalogue n'ont pas de fichier — le compte est donc exact,
     // et non un plancher hérité d'un dépôt qui versionnait 37 jeux.
     expect(datasets.length).toBeGreaterThanOrEqual(1);
-    expect(datasets.map((d: { id?: string }) => d.id ?? d.translationId ?? '').join(',')).toContain('lsg');
+    expect(datasets.map((d) => String(d.id ?? '')).join(',')).toContain('lsg');
     expect(universe.verses.length).toBeGreaterThan(30000);
     expect(universe.bookIds).toHaveLength(66);
     // Canonical verse keys: book:chapter:verse

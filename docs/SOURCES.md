@@ -53,8 +53,10 @@ d'icône n'est dessinée à la main et aucun emoji n'est utilisé comme icône.
 
 Les visuels d'arrière-plan vivent dans `public/themes/` (`.webp`) et sont
 **produits pour ce projet** à partir de compositions décrites dans
-`scripts/themes/`. Ils ne proviennent d'aucune banque d'images tierce ; voir
-`docs/IMAGES_QA.md` pour les métriques de traitement et la reproduction.
+`scripts/themes/`. Ils ne proviennent d'aucune banque d'images tierce ; aucune
+attribution n'est donc à afficher. `docs/IMAGES_QA.md` documente le traitement
+(recadrage 3:2 / 2:3, `-strip`, WebP q85, vignettes 320 px) et les métriques de
+contrôle mesurées sur les 133 vignettes.
 
 ## 5. Données de démonstration
 
