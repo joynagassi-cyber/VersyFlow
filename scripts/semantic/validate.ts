@@ -5,8 +5,8 @@
  * returns a structured `HResult`. Callers revert the offending batch and
  * flag rows 'unresolved' when `passed === false` (see run.ts).
  *
- * The semantic DB lives inside the existing PowerSync SQLite instance as
- * LOCAL_ONLY tables (deliberately NOT part of `buildPowerSyncSchema()`).
+ * The semantic store lives in the local browser database as local-only
+ * collections.
  * This module is pure: it takes the minimal `QueryDriver` interface so it
  * runs identically against better-sqlite3 (tests / e2e), a raw SQLite
  * file, or the in-app driver. No concrete driver is imported

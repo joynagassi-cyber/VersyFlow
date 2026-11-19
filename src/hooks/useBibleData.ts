@@ -2,10 +2,9 @@
  * useBibleData — loads the active translation's book corpus for a screen.
  *
  * Resolution:
- *   - Dev (Vite): the REAL Supabase Storage bucket is the source of truth.
- *     A cache miss triggers an automatic download from the bucket (with
- *     real streaming progress), so the Bible renders out of the box without
- *     any mock data.
+ *   - Dev (Vite): the bundled corpus is the source of truth, and a cache miss
+ *     triggers an automatic fetch of the same-origin dataset file (with real
+ *     streaming progress), so the Bible renders out of the box.
  *   - Production / offline: bundled dataset → download cache → "unavailable".
  *
  * `download()` is also exposed for manual retry; `downloadPercent` +
@@ -41,7 +40,7 @@ export interface UseBibleData {
   downloadBytes: number | null;
   /** Catalog entry when the translation is available as a remote dataset. */
   remoteEntry: ReturnType<typeof findRemoteDatasetEntry>;
-  /** Fetch the dataset from the Supabase bucket (no-op when cached). */
+  /** Fetch the dataset file (no-op when cached). */
   download: (onProgress?: (percent: number, receivedBytes: number) => void) => Promise<void>;
   /** Abort the in-flight download (no-op when not downloading). */
   cancelDownload: () => void;
@@ -116,7 +115,7 @@ export function useBibleData(explicitTranslationId?: string): UseBibleData {
         return;
       }
       // Not resolvable from the cache. If a remote dataset is registered,
-      // pull it from the real Supabase bucket automatically (once per
+      // pull the dataset file automatically (once per
       // translation per mount) so the content appears without user action.
       if (findRemoteDatasetEntry(translationId) && autoStartedFor.current !== translationId) {
         autoStartedFor.current = translationId;

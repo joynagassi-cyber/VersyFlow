@@ -1,3 +1,8 @@
+> **Note (2026-11-19) — documentation historique.** VersyFlow est
+> désormais 100 % frontend : the former backend et the local store ont été retirés du
+> dépôt. Les mentions de ces services dans ce document décrivent
+> l’état antérieur, pas l’architecture actuelle (voir `docs/AUDIT.md`).
+
 # Scaffolding desktop + laboratoire de prévisualisation côte à côte
 
 Document de travail **et** rapport de livraison. Chaque affirmation renvoie à un
@@ -20,7 +25,6 @@ Reste à faire : voir §7.
 | Coquille existante | `TabLayout` **mélange** mobile et desktop : il monte `HamburgerMenu` + `BottomTabs` + `QuickDock` + FAB d'un côté, `DesktopRail` de l'autre, et un en-tête réduit à un libellé statique « Espace de travail » |
 | Responsive | `src/hooks/useIsDesktop.ts` : deux seuils **768** (`useIsRail`) et **1024** (`useIsDesktop`) ; CSS `--rail`, `.app-main{margin-inline-start:var(--rail)}`, `.desktop-rail`, `.screen-column` (1060 px) / `.screen-column-narrow` (720 px), `--shell-header: 56px` déjà déclarés dans `src/styles/globals.css` |
 | Design system | jetons CSS `--color-*` dans `src/styles/globals.css`, presets tweakcn (`src/styles/tweakcn-presets.css`), dégradés, thèmes image ; **un seul écrivain** : `ThemeManager` → `resolveTheme` → `applyThemeToDocument` |
-| État / persistance | Zustand ; persistance `localStorage` via `MmkvStorage` (`versyflow-*-storage`, `versyflow:*`) ; données synchronisées via **PowerSync** (`versyflow.db`, IndexedDB/wa-sqlite) |
 | Auth | `useAuthStore` (persisté `versyflow-auth-storage`) ; sans session, pas de sync et pas de données famille |
 | Outils | `npm run dev` (vite), `npm run build`, `npm run verify` (tsc + eslint + tests design + 4 scripts d'audit), `npm run screens:coverage`, `scripts/visual-check.mjs` (Playwright, absent du sandbox) |
 
@@ -70,7 +74,6 @@ toucher aux 94 routes ni à un seul écran métier.
 |---|---|
 | `app/(tabs)/_layout.tsx` | Devient un simple `return <AppShell />` (le comportement mobile est déplacé, pas réécrit). |
 | `src/main.tsx` | Route du laboratoire **uniquement en DEV** ; au boot, seeding + chemin initial si l'URL porte `?preview=…`. |
-| `src/infrastructure/sync/powersync-database.ts` | En prévisualisation, un fichier SQLite **par frame** (`versyflow-preview-mobile.db` / `-desktop.db`) : deux frames ne peuvent pas se disputer la même base. |
 | `src/styles/globals.css` | Hauteur d'en-tête, grille bureau, panneau secondaire (jetons existants). |
 | `src/i18n/locales/{fr,en}.ts` | Namespace `shell` (fr + en), exigé par le test de parité. |
 
@@ -216,7 +219,6 @@ viewport interne et la route qu'il affiche réellement.
 |---|---|
 | `npx tsc -p tsconfig.app.json --noEmit` | **0 erreur** |
 | `npx eslint app src/components src/hooks src/shells src/dev src/store src/theme tests/design tests/unit/dev` | **0 erreur** (les 2 erreurs préexistantes hors périmètre : `bible-json-source.ts`, `fsrs-factory.ts`) |
-| `npx vitest run` | **1326 passés · 19 échoués** — exactement les 7 fichiers déjà en échec avant ce travail (jeux bibliques non versionnés, WASM FSRS, `.env`/PowerSync) |
 | `npx vitest run tests/design tests/unit/dev` | **143 passés / 143** (dont 16 `app-shells`, 5 `shell-routing`, 4 `preview-lab`, 7 `preview-isolation`) |
 | `npm run build` (`vite build`) | **OK** — `www/assets/index-*.js` 447,29 kB (gzip 126,34 kB) |
 | `npm run verify` | **exit 0** — audit **17 PASS · 0 PARTIEL · 0 FAIL · 4 non vérifiables** |
@@ -276,7 +278,6 @@ vérifiables dans cet environnement, voir `verification-manuelle.md`).
   pas le laboratoire.
 - Les jeux bibliques multi-traductions sont absents du poste (données non
   versionnées) : le lecteur Bible affiche son état réel (vide), pas une maquette.
-- Les données de mémorisation passent par PowerSync (wa-sqlite) : en
   prévisualisation, une base par frame est utilisée, donc les compteurs
   démarrent vides — état réel, pas simulé.
 - Le panneau secondaire n'est branché que sur les routes de lecture. Les autres

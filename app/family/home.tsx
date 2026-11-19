@@ -93,7 +93,7 @@ function RealFamilyHomeScreen() {
     setCreateError(null);
     try {
       const family = await createFamily(name);
-      // The PowerSync bridge re-lists families from the DB; addFamily() is
+      // The sync bridge re-lists families from the store; addFamily() is
       // idempotent so this also covers offline (local write is pending sync).
       addFamily(family);
       setActiveFamily(family.id);

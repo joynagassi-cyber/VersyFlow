@@ -23,7 +23,7 @@ import { createLocalBibleRepository, createWorkspaceEngine, Rating, type Memoriz
 import { resolveBookIdFromText as resolveBookId } from '@/services/memorization-session-service';
 import { useActiveProfile } from '@/hooks/useActiveProfile';
 import { useSettingsStore } from '@/store/settings-store';
-import { getMemorizationRepository, getSyncUserIdProvider } from '@/infrastructure/repository/powersync-repositories';
+import { getMemorizationRepository, getSyncUserIdProvider } from '@/infrastructure/repository/mode-repositories';
 import type { MemorizationRecord } from '@/domains/memorization/entities';
 import { eventBus, DomainEventTypes } from '@/services/events-service';
 import { fireAndForget } from '@/lib/fire-and-forget';
@@ -166,9 +166,9 @@ export default function MemorizationSession() {
   }, [engine]);
 
   /**
-   * Persist a single record to the PowerSync repository (SYNCED path).
+   * Persist a single record to the memorization repository.
    *
-   * The PowerSync SQLite database is the single source of truth for synced
+   * The local repository is the single source of truth for persisted
    * memorization records. When there is no authenticated user session
    * (offline or signed-out), the record is intentionally NOT written:
    * the engine's in-memory array is the user's working state for that

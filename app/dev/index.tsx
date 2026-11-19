@@ -260,11 +260,11 @@ export default function DevPanelScreen() {
           <div className="flex items-center justify-between gap-3">
             <div>
               <p className="text-base font-extrabold text-text-primary">
-                {mode === 'mock' ? 'MOCK (frontend seul)' : 'LIVE (Supabase + PowerSync)'}
+                {mode === 'mock' ? 'DÉMO (données fictives)' : 'RÉEL (vos données locales)'}
               </p>
               <p className="mt-1 text-xs text-text-muted">
                 {mode === 'mock'
-                  ? 'Aucune requête réseau vers Supabase. Données locales + API de test.'
+                  ? 'Aucune requête réseau. Données locales + API de test.'
                   : 'Synchronisation cloud active.'}
               </p>
             </div>

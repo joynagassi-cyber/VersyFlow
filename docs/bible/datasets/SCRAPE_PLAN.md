@@ -6,7 +6,7 @@
 ## Scope
 
 Add new **libre accès** Bible translations to the `bible-datasets`
-distribution pipeline (Supabase Storage public bucket → on-demand
+distribution pipeline (the former backend Storage public bucket → on-demand
 download on the client, `app/settings/available-translations.tsx`).
 The corpus must cover the PROTESTANT_66 canon (66 books); the build
 gate §53 (`scripts/bible/build-bible.ts`) rejects incomplete archives.
@@ -112,4 +112,4 @@ gate §53 (`scripts/bible/build-bible.ts`) rejects incomplete archives.
    reachable; some eBible country pages were returning HTTP 500
    during this run (en / zh / ja / ko / hi / sw / ha).
 3. **`npm run bible:deploy`** after `de-tkw` / `pt-brbsl` are built
-   (push to Supabase Storage `bible-datasets`).
+   (push to the former backend Storage `bible-datasets`).

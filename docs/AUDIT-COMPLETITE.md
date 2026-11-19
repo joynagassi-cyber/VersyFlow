@@ -1,3 +1,8 @@
+> **Note (2026-11-19) — documentation historique.** VersyFlow est
+> désormais 100 % frontend : the former backend et the local store ont été retirés du
+> dépôt. Les mentions de ces services dans ce document décrivent
+> l’état antérieur, pas l’architecture actuelle (voir `docs/AUDIT.md`).
+
 # VersyFlow — Audit de complétude (features / pages / écrans)
 
 **Date**: 2026-09-22 — **Branche**: `main` (à `ff9ab22` + lots P0 de cette session)
@@ -29,7 +34,6 @@ Trois générations de code coexistent :
   (aucune route), `app/progress/Dashboard.tsx` (aucun import). `app/_layout.tsx` (stub) a été
   supprimé dans `db922bf`.
 
-Backend : **Supabase + PowerSync** (`.env.example:12` marque InsForge « OBSOLETE ») ; le bloc
 `INSFORGE:START` de `AGENTS.md` est donc obsolète (D-4). i18n : 45 locales, RTL appliqué via
 `DirSync` dans `main.tsx`.
 
@@ -43,15 +47,12 @@ Backend : **Supabase + PowerSync** (`.env.example:12` marque InsForge « OBSOLET
 |---|---|---|---|
 | Accueil | `(tabs)/index.tsx` | ✅ | Données réelles (streak, due, records) :93-114 ; i18n `home.*` complet |
 | Explore/Bible | `(tabs)/explore.tsx`, `bible/explorer.tsx`, `bible/book.tsx`, `bible/chapter.tsx` | ✅ | `chapter.tsx` lit les params `book`/`chapter` ; `book.tsx:57` deep-link correct |
-| Mémorisation | `memorization/session.tsx` | ✅ | `MemorizationSessionEngine` + repo PowerSync + eventBus (:9-15) |
 | Mémorisation (confirm) | `memorization/confirm.tsx` | ✅ | Lit `location.state`, actions cohérentes |
 | Flashcard v2 | `memorization/flashcard.tsx` (472 L) | ⚠️ | Swipe pointer-events OK, **mais** aucune nav entrante trouvée ; mock interne (scan : i18n=0) |
 | Révision | `review/queue.tsx`, `review/session.tsx`, `review/summary.tsx`, `review/calendar.tsx` | ✅ | `ReviewQueueService` + `getFsrsEngine` (queue :24-27) |
 | Historique révision | `review/History.tsx` | 🔴🧪 | Aucun lien entrant ; `SAMPLE_HISTORY` :45 ; pas d'i18n |
 | Sémantique | `semantic/index.tsx` + concept/verse/community | ✅ | `useSemanticViews` → `SemanticQueryService` → SQLite ; entrée unique : `explore.tsx:90` |
-| Famille | `family/home.tsx` + members/invite/join | ✅ | `useFamilyService` + store PowerSync (home :10-15) |
 | Onboarding | 6 écrans + layout | ✅ | Tous i18n + stores (scan) ; guard `RequireOnboarded` dans `main.tsx` |
-| Auth | `auth/login.tsx`, `signup.tsx` | ⚠️ | Store Supabase branché ; **`auth/verify.tsx` ne rappelle aucun service** (vérif du code non backend, 0 service refs) |
 | Auth gate | `(tabs)/auth/index.tsx` | ⚠️ | Bug React : `useState(() => setMounted(true))` :24 → setState during render (devrait être `useEffect`) |
 | Stats | `(tabs)/progress.tsx` | ✅ | `ProgressService` + états loading/empty (:40-80) |
 | Settings (tab) | `(tabs)/settings.tsx` | ✅ | Liaisons vers sous-pages + modale langues + signout |
@@ -99,7 +100,6 @@ Backend : **Supabase + PowerSync** (`.env.example:12` marque InsForge « OBSOLET
    menu « Plus » dans le tab settings (mastery, ai-coach, collections, achievements, historique,
    comparaison) — modèle du plus-menu de `IonicRouterProvider` (à recâbler, le fichier est mort).
 2. **P1-2 Mocks → données réelles** : `notifications` (eventBus + streak/milestones),
-   `review/History` (`ReviewLogRepository` PowerSync), `mastery` (`ProgressService`),
    `achievements` (`MilestoneService`), `search` (répertoire biblique + `bible-text-service`).
 3. **P1-3 Analytics** : implémenter `capabilities/analytics/store.ts:27` (brancher `ProgressService`,
    retirer le `setTimeout` factice).
@@ -118,7 +118,6 @@ Backend : **Supabase + PowerSync** (`.env.example:12` marque InsForge « OBSOLET
   `memorization/*` live + `memory/*` pour les stratégies si P1-1 est validé).
 - **D-3** Renommer `src/domains/telemetry/it telemetry.ts` (espace dans le nom ; importé via
   le barrel `./telemetry/`).
-- **D-4** `AGENTS.md` : bloc INSFORGE obsolète (à remplacer par Supabase+PowerSync).
 - **D-5** Unifier la route `/bible/chapter` (query params) avec le pattern
   `/bible/book/:bookId` (URL params) — décision pattern.
 - **D-6** Splash retiré du démarrage : réintroduction ou acte officiel (suppression de `/splash`).
@@ -135,17 +134,14 @@ Backend : **Supabase + PowerSync** (`.env.example:12` marque InsForge « OBSOLET
 | P0-achievements | détail inline | `ff9ab22` |
 | P1-1 | points d'entrée : namespace `nav.*` fr/en + menu hamburger (mastery, notifications, history, comparaison) | `fb9bc05` |
 | P1-3 | store analytics branché `ProgressService` (setTimeout factice supprimé) | `ec193a7` |
-| P1-5 | verify e-mail réel (`signInWithOtp`/`verifyOtp` Supabase), bug useState→useEffect AuthGate | `8431885` |
 | P1-6 | deep-link accueil vers le vrai chapitre du verset | `73f0b65` |
 | P1-2a | notifications réelles (due/streak/milestones + eventBus live, read-state persisté) | `e4b5e43` |
-| P1-2b | historique de révision : logs PowerSync du verset le plus révisé + état vide | `406199b` |
 | P1-2c | mastery : stats réelles (records/streak/seuils de stabilité) | `1be7c6b` |
 | P1-2d | achievements : états dérivés (records/streak/longest/reviews/collections) | `948b0b8` |
 | P1-2e | search : index biblique réel (traduction active) + recherche réf/texte + historique persisté | `09961ee` |
 | P1-4 | i18n sous-pages settings legacy (about/privacy/languages) + namespaces fr/en | `b6903e5` |
 | D-3 | renommage `it telemetry.ts` → `it-telemetry.ts` (8 importeurs) | `2e9237c` |
 | D-1 | purge de 5 fichiers morts (RootNavigator, IonicRouterProvider, app/index, boot, AuthGate) | `cc596f4` |
-| D-4 | AGENTS.md : bloc InsForge obsolète → Supabase+PowerSync | `6309c36` |
 | D-5 | `/bible/chapter/:bookId/:chapterNumber` (URL params, fallback query conservé) | `2d70a26` |
 
 ### Reporté / à trancher

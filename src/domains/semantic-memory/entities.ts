@@ -6,7 +6,7 @@
  *
  * This module is PURE: no I/O, no infrastructure imports, no React.
  * Every entity carries a Zod schema (spec-mandated) used to parse rows
- * coming out of the PowerSync/SQLite adapter before they cross the
+ * coming out of the storage adapter before they cross the
  * domain boundary.
  *
  * Conventions (project-wide, matching src/infrastructure/semantic/types.ts):

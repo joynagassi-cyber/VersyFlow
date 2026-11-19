@@ -11,7 +11,7 @@ import {
   getFamilyRepository,
   getFamilyInvitationRepository,
   getLearnerProfileRepository,
-} from '@/infrastructure/repository/powersync-repositories';
+} from '@/infrastructure/repository/mode-repositories';
 
 let _service: FamilyService | null = null;
 

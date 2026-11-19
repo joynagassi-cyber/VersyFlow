@@ -2,11 +2,11 @@
  * MockDB — the in-browser database used in mock mode.
  *
  * A tiny, synchronous, localStorage-backed document store. It replaces the
- * PowerSync SQLite replica for frontend-only sessions:
+ * The in-browser store that stands in for a database:
  *
  *   - one JSON blob per app (small data set, easy to snapshot / export /
  *     reset from the Dev panel),
- *   - collections named after the PowerSync tables so the mock adapters can
+ *   - collections named after the domain tables so the adapters can
  *     mirror the real repository semantics,
  *   - a change bus (`subscribe`) so hooks can re-render when a write lands,
  *   - cross-tab synchronisation through the `storage` event.

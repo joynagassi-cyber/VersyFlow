@@ -19,21 +19,13 @@ import * as path from 'node:path';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import type { TranslationStats } from '@/services/bible-text-service';
 
-// The service's download cache falls back to localStorage ONLY when no
-// PowerSync database exists. In this test file none is created (peek returns
-// null), so the fallback is used. Mocking `getPowerSyncDatabase` keeps the
-// module import from ever touching a real PowerSyncDatabase instance.
-vi.mock('@/infrastructure/sync/powersync-database', () => ({
-  peekPowerSyncDatabase: vi.fn().mockReturnValue(null),
-  getPowerSyncDatabase: vi.fn(),
-}));
-
-// `getTranslationStats` falls back to a real `fetch()` of the Supabase
-// bucket whenever the seeded dataset cache misses (checksum mismatch / no
-// entry) in dev mode. These are unit tests, not integration tests: keep the
-// process hermetic by stubbing `fetch` to reject immediately so no real
-// network I/O happens and the 5000 ms Vitest default timeout can't be hit
-// waiting on a slow/stale connection.
+// The dataset cache is `localStorage`-backed, so seeding a cache entry below
+// is enough for the resolver to find it.
+//
+// `getTranslationStats` would fetch the dataset file whenever the seeded cache
+// misses (checksum mismatch / no entry). These are unit tests, not integration
+// tests: keep the process hermetic by stubbing `fetch` to reject immediately so
+// no real I/O happens and the 5000 ms Vitest default timeout can't be hit.
 vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('network disabled in unit test')));
 
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports

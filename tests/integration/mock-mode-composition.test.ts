@@ -6,9 +6,7 @@
  * calling `getFamilyRepository()`, and the data just comes from the browser
  * store. This test proves that contract end-to-end:
  *
- *   memorization-service-factory → repositories → mock adapters → MockDb
- *
- * and that the PowerSync singleton refuses to start in mock mode.
+ *   memorization-service-factory → repositories → local adapters → MockDb
  */
 
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -56,7 +54,7 @@ describe('mock mode composition', () => {
     const { seedMockDatabase } = await import('@/dev/mock/seed');
     seedMockDatabase({ force: true });
 
-    const repos = await import('@/infrastructure/repository/powersync-repositories');
+    const repos = await import('@/infrastructure/repository/mode-repositories');
     const userId = await repos.getSyncUserIdProvider().resolveUserId();
     expect(userId).toBeTruthy();
 
@@ -65,14 +63,6 @@ describe('mock mode composition', () => {
 
     const families = await repos.getFamilyRepository().findByOwnerId(userId!);
     expect(families.length).toBeGreaterThan(0);
-  });
-
-  it('refuses to open a PowerSync database in mock mode', async () => {
-    const { getPowerSyncDatabase, peekPowerSyncDatabase } = await import(
-      '@/infrastructure/sync/powersync-database'
-    );
-    expect(peekPowerSyncDatabase()).toBeNull();
-    expect(() => getPowerSyncDatabase()).toThrow(/mode MOCK/);
   });
 
   it('uses the mock auth service (no network, stable id)', async () => {

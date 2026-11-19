@@ -3,7 +3,7 @@
  *
  * Encapsulates key formatting, read-modify-write retry logic, and JSON serialization
  * shared between MemorizationService (profile-scoped) and the standalone
- * MMKV → PowerSync migration entry point.
+ * bulk import / export entry point.
  *
  * The MemorizationService passes a keyPrefix (profile-scoped) or empty prefix (cloud).
  */

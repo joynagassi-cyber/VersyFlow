@@ -205,7 +205,7 @@ export class BibleTranslationRegistry implements IBibleTranslationRegistry {
  *     Paragraph edition is a scholarly typography of the same text, not a
  *     new copyrighted work. See eBible.org source: no licence restrictions
  *     apply for non-commercial use. Verified via `npm run bible:deploy`
- *     (dataset is in Supabase Storage bucket `bible-datasets`, HTTP 200).
+ *     (dataset is served from the bundled `public/data/bible` folder).
  *   - No known restrictive licence for non-commercial distribution.
  *   - Name intentionally reflects the Cambridge Paragraph edition, not the
  *     1611 original, to distinguish this specific source from other KJV

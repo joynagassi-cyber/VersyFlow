@@ -29,15 +29,12 @@ build-web  (tsc -b + vite build → www/, artifact "web-build-www")
 | `push` sur `main` | + **build-android-release (signé)** |
 | `workflow_dispatch` (manuel) | Entrées optionnelles : `build_release` (booléen), `version` (libellé ajouté aux noms d'artefacts APK) |
 
-Chaque job Android : `npm ci` (le `postinstall` exécute
-`scripts/patch-powersync-worker.cjs`, idempotent) → téléchargement de
-`web-build-www` dans `./www` → `npx cap sync android` → `./gradlew` (JDK 17
-Temurin + Android SDK via `android-actions/setup-android@v3`).
+Chaque job Android : `npm ci` → téléchargement de `web-build-www` dans
+`./www` → `npx cap sync android` → `./gradlew` (JDK 17 Temurin + Android SDK
+via `android-actions/setup-android@v3`).
 
-Les variables Vite (`VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`,
-`VITE_POWERSYNC_URL`) sont injectées au niveau du workflow depuis des secrets.
-Sur PR, elles sont vides (config placeholder sûre) ; sur `main`, les vraies
-valeurs.
+Le seul réglage d'environnement du build est `VITE_DATA_MODE: mock` : il n'y
+a aucun secret applicatif, l'application n'ayant pas de backend.
 
 ---
 
@@ -48,9 +45,6 @@ Modèle de référence sans valeurs : **`.github/ci-secrets.example.env`**.
 
 | Secret | Job | Note |
 |---|---|---|
-| `VITE_SUPABASE_URL` | build-web | existe déjà — vérifier qu'elle correspond à `.env.local` |
-| `VITE_SUPABASE_ANON_KEY` | build-web | existe déjà — clé **anon/publishable** uniquement, jamais la service role |
-| `VITE_POWERSYNC_URL` | build-web | **manquante** — copier la valeur de `.env.local` |
 | `KEYSTORE` | build-android-release | base64 de `keystore/release.keystore` |
 | `KEYSTORE_PASSWORD` | build-android-release | mot de passe du store (`keytool -storepass`) |
 | `KEY_ALIAS` | build-android-release | alias de la clé (convention : `versyflow-release-key`) |
@@ -144,20 +138,12 @@ sdkmanager "build-tools;35.0.0" "platforms;android-35" "platform-tools"
 ### `.env.local` (déjà présent — ne pas committer)
 
 ```bash
-# Exposé au client (prefixe VITE_*)
-VITE_SUPABASE_URL=https://<votre-projet>.supabase.co
-VITE_SUPABASE_ANON_KEY=<clé anon/publishable Supabase>
-VITE_POWERSYNC_URL=https://<votre-projet>.powersync.supabase.run
-
-# Uniquement local (git-ignoré, JAMAIS vers le client)
-SUPABASE_SECRET_KEY=<service role — scripts / migrations locales>
-SUPABASE_JWKS_URL=https://<votre-projet>.supabase.co/auth/v1/.well-known/jwks.json
-PS_POWERSYNC_ROLE_PASSWORD=<secret PowerSync Cloud — role de repli>
-PS_ADMIN_TOKEN=<PAT CLI PowerSync : link / pull / deploy>
+# Aucune variable n'est requise : l'application est 100 % frontend.
+VITE_DATA_MODE=mock          # mode de données (défaut : mock)
 ```
 
-> **Note (2026-09)** : InsForge est **OBSOLETE** (retiré de `.env.example`).
-> Le backend primaire est Supabase (voir `AGENTS.md` → section Supabase).
+> **Note (2026-11)** : l'application n'a plus aucun backend ; les données sont
+> locales. Voir `AGENTS.md` → section « Backend — aucun ».
 
 ### Builds locaux
 
@@ -210,9 +196,7 @@ déverrouillage de cet environnement.
    même identité Play. Sauvegarde chiffrée hors ligne obligatoire.
 2. **Aucun secret dans le YAML** — `ci-cd.yml` ne référence que
    `${{ secrets.XXX }}` ; aucune valeur réelle n'est dans le repo.
-3. **Service role jamais dans la CI** — `SUPABASE_SECRET_KEY` est réservée aux
-   migrations manuelles (`supabase db push`) ; ne jamais l'injecter dans les
-   jobs de build.
+3. **Aucun secret applicatif** — le build n'a besoin d'aucune clé d'API.
 4. **Vérification de signature en CI** — le job release échoue si l'APK est
    signée par le debug keystore (détection de repli silencieux).
 
@@ -225,4 +209,4 @@ déverrouillage de cet environnement.
 | `signingConfigs.release` dans `android/app/build.gradle` | ✅ Via `findProperty('RELEASE_*')` |
 | `www/` et `keystore/` git-ignorés | ✅ (artefacts build / secrets) |
 | Documentation des secrets | ✅ `.github/secrets-checklist.md` + `ci-secrets.example.env` |
-| Secrets CI | ✅ `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY` / `VITE_POWERSYNC_URL` en place (logs CI du 2026-09-20) ; ⚠️ 4 secrets keystore (`KEYSTORE`, `KEYSTORE_PASSWORD`, `KEY_ALIAS`, `KEY_PASSWORD`) : vérifier GitHub → Settings → Secrets avant un premier `build_release` |
+| Secrets CI | Aucun secret applicatif ; ⚠️ 4 secrets keystore (`KEYSTORE`, `KEYSTORE_PASSWORD`, `KEY_ALIAS`, `KEY_PASSWORD`) : vérifier GitHub → Settings → Secrets avant un premier `build_release` |

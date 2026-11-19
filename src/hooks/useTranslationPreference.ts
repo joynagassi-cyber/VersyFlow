@@ -4,11 +4,11 @@
  *
  * This is the single place where the app reads/writes the user's preferred
  * translation. It bridges the session-level `useSettingsStore` value with the
- * PowerSync-backed {@link ITranslationPreferenceRepository} (the `SYNCED`
+ * local {@link ITranslationPreferenceRepository} (the `SYNCED`
  * write path via `users.default_translation`).
  *
  * Architecture (port/adapter, offline-first):
- *   - The UI NEVER touches PowerSync or SQL. It calls `setPreference(id)` and
+ *   - The UI NEVER touches storage directly. It calls `setPreference(id)` and
  *     reads `translationId` here.
  *   - `setPreference` writes the session value to the settings store
  *     (immediately, so the app reflects it while offline / signed out) and
@@ -16,7 +16,7 @@
  *     authenticated user the persistence is skipped (the settings store is
  *     the local source of truth; nothing is lost).
  *   - On mount, when a session exists and the settings store holds the default,
- *     the stored PowerSync preference wins so the reload rehydrates the last
+ *     the stored preference wins so the reload rehydrates the last
  *     choice (the P1B-2 persistence invariant).
  */
 
@@ -41,7 +41,7 @@ export function useTranslationPreference() {
   const setBibleTranslation = useSettingsStore((s) => s.setBibleTranslation);
 
   // On mount, if the session value is still the default but the user has a
-  // persisted (synced) preference, rehydrate from PowerSync.
+  // persisted preference, rehydrate from the store.
   useEffect(() => {
     if (isDemoMode) return;
     const settings = useSettingsStore.getState();

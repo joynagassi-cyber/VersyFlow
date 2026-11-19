@@ -16,7 +16,7 @@ import { ProgressService } from '@/services/progress-service';
 import {
   getReviewLogRepository,
   getSyncUserIdProvider,
-} from '@/infrastructure/repository/powersync-repositories';
+} from '@/infrastructure/repository/mode-repositories';
 import { useProfileStore } from '@/store/profile-store';
 import { useProfileSyncStore } from '@/store/profile-sync-store';
 

@@ -2,7 +2,7 @@
  * Repository Layer — Barrel Exports
  *
  * Local in-memory adapters for all repository ports.
- * These are used during development and testing before the PowerSync SQL binding is ready.
+ * In-memory adapters used by development and tests.
  * See: docs/29-architecture-rulebook.md
  */
 

@@ -28,7 +28,7 @@ import type {
   MemorizationRecord,
   ReviewLogEntry,
 } from '@/domains/memorization/entities';
-import { getReviewLogRepository, getSyncUserIdProvider } from '@/infrastructure/repository/powersync-repositories';
+import { getReviewLogRepository, getSyncUserIdProvider } from '@/infrastructure/repository/mode-repositories';
 import { formatProgressLabel } from '@/lib/progress-label';
 import { normalizeLocaleCode } from '@/domains/i18n/config';
 

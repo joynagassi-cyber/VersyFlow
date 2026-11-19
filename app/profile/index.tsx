@@ -22,7 +22,7 @@ import { useSettingsStore } from '@/store/settings-store';
 import { useActiveProfile } from '@/hooks/useActiveProfile';
 import { useProfileSyncStore } from '@/store/profile-sync-store';
 import { useProfileStore } from '@/store/profile-store';
-import { getLearnerProfileRepository } from '@/infrastructure/repository/powersync-repositories';
+import { getLearnerProfileRepository } from '@/infrastructure/repository/mode-repositories';
 import { getMemorizationService } from '@/services/memorization-service-factory';
 import { getFsrsEngine } from '@/services/fsrs-factory';
 import { ProgressService } from '@/services/progress-service';

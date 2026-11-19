@@ -1,23 +1,14 @@
 # AGENTS.md
 
 <!-- BACKEND:START -->
-## Backend — Supabase + PowerSync
+## Backend — aucun
 
-This project (VersyFlow — bilingual biblical verse memorization, Ionic React + Capacitor)
-runs on **Supabase** (auth, Postgres, Storage) with **PowerSync** for offline-first
-local-first sync. InsForge was used historically and is **OBSOLETE** (see `.env.example`).
+Ce dépôt est **100 % frontend** : l'application ne fait aucun appel à un backend.
+Les données (profils, famille, mémorisation, sémantique, marketplace) vivent en
+local derrière les interfaces de `src/infrastructure/repository/ports.ts`, et le
+mode de données se choisit via `VITE_DATA_MODE` (`mock` par défaut).
 
-- **Credentials:** app code reads keys from `.env.local` / env (`VITE_SUPABASE_URL`,
-  `VITE_SUPABASE_ANON_KEY`, optional `POWERSYNC_URL` / `POWERSYNC_SECRET`).
-  Never hardcode or commit keys.
-
-Key patterns:
-
-- Auth is Supabase-only: `src/auth/SupabaseAuthService.ts` (signIn / signUp / signOut /
-  verifyOtp) wrapped by `src/store/auth-store.ts` (zustand).
-- Synced writes go through the PowerSync repositories in
-  `src/infrastructure/repository/powersync-repositories.ts`; local-only data (e.g.
-  semantic memory) uses SQLite adapters.
-- Learner records are owned by the authenticated user: bind writes with
-  `getSyncUserIdProvider().resolveUserId()`; invalidate it on sign-out.
+- Mode et repositories : `src/dev/mode.ts`, `src/infrastructure/repository/mode-repositories.ts`.
+- Bible : JSON local dans `public/data/bible/` (chargé paresseusement via `src/services/bible-text-service.ts`).
+- Aucun secret n'est requis pour lancer, tester ou builder l'application.
 <!-- BACKEND:END -->

@@ -90,7 +90,7 @@ describe('scaffolding — pas de duplication métier', () => {
       /from '@\/domains\//,
       /from '@\/infrastructure\//,
       /memorization-service/,
-      /powersync/,
+      /cloud-sync/,          // aucun service de synchronisation distant
       /from '@\/store\/(?!appearance-store|ui-store)/,
     ];
     for (const [index, name] of shellFiles.entries()) {

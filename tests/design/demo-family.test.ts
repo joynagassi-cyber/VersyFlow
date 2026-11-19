@@ -46,7 +46,7 @@ describe('famille en mode démo', () => {
     const room = seedMockFamilyRoom();
 
     const { getFamilyRepository, getLearnerProfileRepository } = await import(
-      '@/infrastructure/repository/powersync-repositories'
+      '@/infrastructure/repository/mode-repositories'
     );
     const { FamilyService } = await import('@/services/family-service');
     const { MockFamilyInvitationRepository } = await import('@/dev/mock/repositories');

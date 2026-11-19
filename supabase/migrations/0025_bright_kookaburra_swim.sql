@@ -1,1 +1,0 @@
-create policy "semantic_communities_public_read" on public.communities for select to anon, authenticated using (true);

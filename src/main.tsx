@@ -210,7 +210,7 @@ import { isMockMode } from '@/dev/mode';
 import { bootstrapDevBackend } from '@/dev/bootstrap';
 import { recordTestEvent } from '@/dev/local-backend';
 
-// Initialize i18n + boot-time one-shot wiring (PowerSync lifecycle,
+// Initialize i18n + boot-time one-shot wiring (sync status,
 // telemetry listener + periodic flush, streak event-driven writer).
 //
 // The three `initialize*Store()` calls below hydrate the settings,
@@ -307,7 +307,7 @@ async function scheduleBootReminders() {
   );
 }
 
-/** SPA equivalent of the Supabase "session refresh" middleware: re-checks and
+/** Periodic session refresh: re-checks and
  *  refreshes the auth session periodically so long-lived webview/native
  *  sessions don't expire unnoticed. No-op when signed out. */
 function wireSessionRefresh() {
@@ -379,7 +379,7 @@ function DevRouteRecorder() {
   return null;
 }
 
-/** Mounts the PowerSync → store bridges for family & profile data.
+/** Mounts the storage → store bridges for family & profile data.
  *  Activated whenever the user is authenticated; the bridges are
  *  offline-safe and re-sync on the `initialized` event. */
 function SyncBridges() {

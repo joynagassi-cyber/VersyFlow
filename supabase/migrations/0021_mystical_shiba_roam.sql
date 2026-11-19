@@ -1,1 +1,0 @@
-alter table public.verse_concepts enable row level security;

@@ -4,7 +4,7 @@
  *
  * Verse text comes from the active translation (settings store). When the
  * dataset is not resolvable locally, a download-on-demand banner pulls it
- * from the Supabase Storage bucket `bible-datasets`.
+ * from the bundled `public/data/bible` folder.
  */
 
 import { useState, useMemo } from 'react';

@@ -7,7 +7,7 @@
 import { useCallback } from 'react';
 import { useAuthStore } from '@/store/auth-store';
 import { LearnerProfileService } from '@/services/learner-profile-service';
-import { getLearnerProfileRepository } from '@/infrastructure/repository/powersync-repositories';
+import { getLearnerProfileRepository } from '@/infrastructure/repository/mode-repositories';
 import type { LearnerProfile } from '@/domains/learner-profile';
 
 let _service: LearnerProfileService | null = null;
