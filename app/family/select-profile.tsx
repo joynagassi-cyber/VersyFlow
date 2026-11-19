@@ -28,7 +28,7 @@ import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { DuoIcon } from '@/components/ui/DuoIcon';
 import { Button } from '@/components/ui/button';
 import { EmptyState } from '@/components/ui/EmptyState';
-import { LoadingBlock } from '@/components/ui/Skeleton';
+import { FamilySelectProfileSkeleton } from '@/components/ui/ScreenSkeletons';
 import { HintNote, MemberAvatar, SectionCard } from '@/components/family/FamilyKit';
 import { useActiveProfile } from '@/hooks/useActiveProfile';
 import { useFamilyRoom } from '@/hooks/useFamilyRoom';
@@ -182,7 +182,7 @@ export default function FamilySelectProfileScreen() {
           </SectionCard>
         )}
 
-        {loading && <LoadingBlock label={t('common.loading', 'Chargement…')} className="py-10" />}
+        {loading && <FamilySelectProfileSkeleton label={t('common.loading', 'Chargement…')} />}
 
         <HintNote>
           {t(

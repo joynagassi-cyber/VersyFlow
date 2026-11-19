@@ -22,7 +22,7 @@ import {
   Segmented,
 } from '@/components/family/FamilyKit';
 import { EmptyState } from '@/components/ui/EmptyState';
-import { LoadingBlock } from '@/components/ui/Skeleton';
+import { FamilyLeaderboardSkeleton } from '@/components/ui/ScreenSkeletons';
 import { useFamilyRoom } from '@/hooks/useFamilyRoom';
 import { useFamilyRoomStore } from '@/store/family-room-store';
 import { pointsForChallenge } from '@/services/family-scoring';
@@ -80,7 +80,7 @@ export default function FamilyLeaderboardScreen() {
       />
 
       {loading ? (
-        <LoadingBlock label={t('common.loading', 'Chargement…')} className="py-12" />
+        <FamilyLeaderboardSkeleton label={t('common.loading', 'Chargement…')} />
       ) : rows.length === 0 ? (
         <EmptyState
           icon={Ranking}

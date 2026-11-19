@@ -39,7 +39,7 @@ import { ModeCards } from '@/components/memorization/ModeCards';
 import { ModeWrite } from '@/components/memorization/ModeWrite';
 import { TranslationMenu } from '@/components/memorization/TranslationMenu';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
-import { SkeletonScreen } from '@/components/ui/Skeleton';
+import { WorkspaceSkeleton } from '@/components/ui/ScreenSkeletons';
 
 type StatusTone = 'new' | 'due' | 'consolidated';
 
@@ -200,11 +200,8 @@ export default function MemorizationWorkspace() {
         {/* Body */}
         <div className="flex-1 overflow-y-auto px-4 pb-40">
           {status === 'loading' && (
-            <div className="flex flex-col items-center py-16">
-              <SkeletonScreen />
-              <p className="sr-only" role="status">
-                {t('workspace.loading', 'Chargement du verset...')}
-              </p>
+            <div className="py-4">
+              <WorkspaceSkeleton label={t('workspace.loading', 'Chargement du verset...')} />
             </div>
           )}
 

@@ -148,7 +148,14 @@ describe('finition — chargement', () => {
     const code = (text: string) => text.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/[^\n]*/g, '');
     const pulsing = sources.filter((f) => code(f.text).includes('animate-pulse')).map((f) => f.path);
     expect(pulsing).toEqual([]);
-    const users = sources.filter((f) => f.text.includes("@/components/ui/Skeleton"));
+    // Le matériau reste unique (`.skeleton`), mais la FORME descend maintenant
+    // d'un fichier dédié — un squelette par écran, calqué sur sa géométrie.
+    // Les deux modules mènent au même balayage : on compte les deux.
+    const users = sources.filter(
+      (f) =>
+        f.text.includes('@/components/ui/Skeleton') ||
+        f.text.includes('@/components/ui/ScreenSkeletons'),
+    );
     expect(users.length).toBeGreaterThanOrEqual(6);
   });
 

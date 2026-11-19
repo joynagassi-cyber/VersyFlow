@@ -8,7 +8,7 @@
  */
 
 import { useState, useMemo } from 'react';
-import { SkeletonLines } from '@/components/ui/Skeleton';
+import { BibleReaderSkeleton } from '@/components/ui/ScreenSkeletons';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { DuoIcon } from '@/components/ui/DuoIcon';
@@ -282,9 +282,7 @@ export default function BibleExplorerScreen() {
           {/* Manuscript flow: the chapter as one continuous serif text,
               with tappable inline verse numbers. */}
           {status === 'loading' ? (
-            <div className="space-y-3 rounded-3xl bg-surface p-5 shadow-sm">
-            <SkeletonLines lines={4} />
-          </div>
+            <BibleReaderSkeleton label={t('common.loading', 'Chargement du chapitre…')} />
           ) : (
             books && <ContinuousBibleReader key={`${translationId}:${selectedBook.id}:${selectedChapter}`} books={books} initialBookId={selectedBook.id} initialChapter={selectedChapter} translationId={translationId} />
           )}

@@ -12,7 +12,7 @@ import {
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { FamilyHubPage, MemberRow, SectionCard } from '@/components/family/FamilyKit';
 import { EmptyState } from '@/components/ui/EmptyState';
-import { LoadingBlock } from '@/components/ui/Skeleton';
+import { FamilyMembersSkeleton } from '@/components/ui/ScreenSkeletons';
 import { useFamilySyncStore } from '@/store/family-sync-store';
 import { useActiveProfile } from '@/hooks/useActiveProfile';
 import { useFamilyService } from '@/hooks/useFamilyService';
@@ -106,7 +106,7 @@ export default function FamilyMembersScreen() {
       }
     >
       {isLoading ? (
-          <LoadingBlock label={t('common.loading', 'Chargement…')} className="py-12" />
+          <FamilyMembersSkeleton label={t('common.loading', 'Chargement…')} />
         ) : loadError ? (
           <EmptyState
             tone="inline"

@@ -22,6 +22,8 @@ import {
 import { I18nextProvider } from 'react-i18next';
 import { Suspense, lazy, useEffect } from 'react';
 import '@/styles/globals.css';
+import { Skeleton } from '@/components/ui/Skeleton';
+import { cn } from '@/lib/utils';
 import '@/styles/tweakcn-presets.css';
 import '@/styles/vendored-themes.css';
 import '@/styles/gradients.css';
@@ -615,21 +617,38 @@ const root = createRoot(rootElement);
  * the store and the translations are ready before the first paint.
  */
 function BootSplash() {
+  /**
+   * Le même dessin que le splash de `index.html` : à cet instant, `globals.css`
+   * est chargé, donc le squelette reprend le matériau commun (`.skeleton`).
+   * Il sert aussi de repli `Suspense` : sans lui, un chunk paresseux affichait
+   * un écran vide entre le splash statique et l'écran réel.
+   */
+  const bar = (width: string) => <Skeleton className={cn('h-3 rounded-full', width)} />;
   return (
-    <div
-      style={{
-        minHeight: '100vh',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        background: 'var(--background, #fbf9f9)',
-        color: 'var(--color-primary, #e6067a)',
-        fontFamily: 'var(--font-serif, Georgia), serif',
-        fontSize: 22,
-        fontWeight: 700,
-      }}
-    >
-      VersyFlow…
+    <div className="flex min-h-screen flex-col gap-4 px-4 pt-4" role="status" aria-live="polite" aria-busy="true">
+      <span className="sr-only">Chargement de VersyFlow…</span>
+      <div aria-hidden="true" className="flex flex-1 flex-col gap-4">
+        <div className="flex min-h-11 items-center gap-3">
+          <Skeleton className="h-8 w-8 shrink-0 rounded-full" />
+          {bar('w-2/5')}
+          <Skeleton className="ml-auto h-3 w-1/4 rounded-full" />
+        </div>
+        {[3, 3, 2].map((lines, index) => (
+          <div key={index} className="g2 flex flex-col gap-3 rounded-2xl p-4">
+            {Array.from({ length: lines }, (_, line) => (
+              <Skeleton
+                key={line}
+                className={cn('h-3 rounded-full', line === 0 ? 'w-3/5' : 'w-full')}
+              />
+            ))}
+          </div>
+        ))}
+      </div>
+      <div aria-hidden="true" className="flex shrink-0 items-center justify-between gap-2 pb-3">
+        {Array.from({ length: 5 }, (_, index) => (
+          <Skeleton key={index} className="h-7 w-11 rounded-full" />
+        ))}
+      </div>
     </div>
   );
 }
@@ -741,7 +760,7 @@ function renderApp() {
   rendered = true;
   root.render(
     <I18nextProvider i18n={i18next}>
-      <Suspense fallback={null}>
+      <Suspense fallback={<BootSplash />}>
         <App />
       </Suspense>
     </I18nextProvider>,

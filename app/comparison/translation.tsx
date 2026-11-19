@@ -14,10 +14,10 @@ import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import i18next from 'i18next';
 import { DuoIcon } from '@/components/ui/DuoIcon';
+import { TranslationTextSkeleton } from '@/components/ui/ScreenSkeletons';
 import {
   PlusSignIcon as Plus,
   Cancel01Icon as X,
-  Loading03Icon as Loader2,
   LanguagesIcon as Languages,
   CheckIcon as Check,
   GlobeIcon as Globe,
@@ -268,10 +268,7 @@ export default function TranslationComparisonScreen() {
                 </button>
               </div>
               {r.loading ? (
-                <div className="flex items-center gap-2 text-sm text-text-muted">
-                  <DuoIcon icon={Loader2} size={14} className="animate-spin text-primary" />
-                  {t('comparison.loadingTranslation', 'Chargement de la traduction...')}
-                </div>
+                <TranslationTextSkeleton label={t('comparison.loadingTranslation', 'Chargement de la traduction...')} />
               ) : r.error ? (
                 <p className="text-xs italic text-text-muted">{r.error}</p>
               ) : r.text ? (

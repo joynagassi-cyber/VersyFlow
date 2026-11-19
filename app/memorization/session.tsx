@@ -27,7 +27,7 @@ import { getMemorizationRepository, getSyncUserIdProvider } from '@/infrastructu
 import type { MemorizationRecord } from '@/domains/memorization/entities';
 import { eventBus, DomainEventTypes } from '@/services/events-service';
 import { fireAndForget } from '@/lib/fire-and-forget';
-import { SkeletonScreen } from '@/components/ui/Skeleton';
+import { MemorizationSessionSkeleton } from '@/components/ui/ScreenSkeletons';
 
 /** Resolve the authenticated user id (or null when not signed in). */
 const resolveUserId = async (): Promise<string | null> =>
@@ -221,8 +221,8 @@ export default function MemorizationSession() {
   if (loading) {
     return (
       <FullScreenPage title={t('session.memorizing', 'Mémorisation')} backPath="/tabs/home" showBack={false}>
-        <div className="flex flex-col items-center justify-center py-24">
-          <SkeletonScreen />
+        <div className="flex w-full flex-col items-center justify-center py-10">
+          <MemorizationSessionSkeleton label={t('session.startingPassage', 'Démarrage du passage...')} />
           {downloadPercent !== null ? (
             <>
               <p className="mt-3 text-sm font-semibold text-text-primary">

@@ -19,12 +19,16 @@ const read = (path: string) => readFileSync(join(root, path), 'utf8');
 
 describe('chargements — la forme du contenu, pas une phrase', () => {
   it('les tableaux de bord premium chargent en squelette', () => {
+    // La géométrie vit désormais dans le fichier de formes (`ScreenSkeletons`),
+    // l'écran ne fait que la monter : le test vérifie les deux, sinon on
+    // pourrait casser la grille sans qu'aucune assertion ne bouge.
     const progress = read('app/(tabs)/progress.tsx');
-    expect(progress).toContain('<Skeleton');
-    expect(progress, 'le squelette garde la grille des tuiles').toContain('progress-stat-grid');
-    expect(progress, 'et celle des deux cartes').toContain('progress-detail-grid');
-    expect(progress, 'le chargement est annoncé').toMatch(/role="status"[\s\S]{0,120}?aria-busy="true"/);
-    expect(progress, 'le libellé reste lisible par un lecteur d’écran').toContain('sr-only');
+    const shapes = read('src/components/ui/ScreenSkeletons.tsx');
+    expect(progress).toContain('<ProgressSkeleton');
+    expect(shapes, 'le squelette garde la grille des tuiles').toContain('progress-stat-grid');
+    expect(shapes, 'et celle des deux cartes').toContain('progress-detail-grid');
+    expect(shapes, 'le chargement est annoncé').toMatch(/role="status"[\s\S]{0,160}?aria-busy="true"/);
+    expect(shapes, 'le libellé reste lisible par un lecteur d’écran').toContain('sr-only');
   });
 
   it('aucun écran ne remplace son contenu par le seul mot « Chargement »', () => {

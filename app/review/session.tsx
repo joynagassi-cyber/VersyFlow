@@ -31,7 +31,7 @@ import { Rating } from '@/services/review-rating-service';
 import type { MemorizationRecord } from '@/domains/memorization/entities';
 import { eventBus, DomainEventTypes } from '@/services/events-service';
 import { fireAndForget } from '@/lib/fire-and-forget';
-import { LoadingBlock } from '@/components/ui/Skeleton';
+import { ReviewSessionSkeleton } from '@/components/ui/ScreenSkeletons';
 
 interface ReviewItem {
   record: MemorizationRecord;
@@ -232,7 +232,7 @@ export default function ReviewSessionScreen() {
   if (loading) {
     return (
       <FullScreenPage title={t('review.startReview', 'Révision')} backPath="/review/queue">
-        <LoadingBlock label={t('common.loading', 'Chargement de la session...')} />
+        <ReviewSessionSkeleton label={t('common.loading', 'Chargement de la session...')} />
       </FullScreenPage>
     );
   }
