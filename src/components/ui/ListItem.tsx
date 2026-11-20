@@ -19,7 +19,7 @@ interface ListItemProps {
 
 const baseClasses = (className?: string) =>
   cn(
-    'flex w-full items-center gap-3 px-4 py-3 text-left',
+    'flex w-full items-center gap-3 px-4 py-3 text-start',
     className,
   );
 

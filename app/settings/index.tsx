@@ -173,7 +173,7 @@ export default function SettingsScreen() {
         {/* Profile card — premium avatar (photo → vector illustration fallback) */}
         <button
           onClick={() => navigate('/profile')}
-          className="g2 flex w-full items-center gap-4 p-4 text-left"
+          className="g2 flex w-full items-center gap-4 p-4 text-start"
         >
           <ProfileAvatar name={displayName} size={48} />
           <span className="min-w-0 flex-1">
@@ -252,7 +252,7 @@ export default function SettingsScreen() {
                   key={i}
                   onClick={() => navigate(item.to)}
                   className={
-                    'flex w-full items-center justify-between px-4 py-3.5 text-left ' +
+                    'flex w-full items-center justify-between px-4 py-3.5 text-start ' +
                     (i < group.items.length - 1
                       ? 'border-b border-[color:var(--color-divider)]'
                       : '')

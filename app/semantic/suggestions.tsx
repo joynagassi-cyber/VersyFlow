@@ -94,7 +94,7 @@ export default function SemanticSuggestionsScreen() {
                     onClick={() =>
                       navigate(`/semantic/node?conceptId=${encodeURIComponent(row.id)}`)
                     }
-                    className="flex w-full items-center gap-3 p-4 text-left"
+                    className="flex w-full items-center gap-3 p-4 text-start"
                   >
                     <span className="flex h-10 w-10 items-center justify-center rounded-full bg-surface-tint text-primary">
                       <DuoIcon icon={Compass} size={20} />

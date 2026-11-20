@@ -208,7 +208,7 @@ export default function FlashcardScreen() {
             <button
               type="button"
               onClick={() => setIsFlipped((flipped) => !flipped)}
-              className="flex h-full w-full flex-col justify-between p-6 text-left"
+              className="flex h-full w-full flex-col justify-between p-6 text-start"
             >
               <span
                 className={

@@ -662,7 +662,7 @@ function BootSplash() {
         <div className="flex min-h-11 items-center gap-3">
           <Skeleton className="h-8 w-8 shrink-0 rounded-full" />
           {bar('w-2/5')}
-          <Skeleton className="ml-auto h-3 w-1/4 rounded-full" />
+          <Skeleton className="ms-auto h-3 w-1/4 rounded-full" />
         </div>
         {[3, 3, 2].map((lines, index) => (
           <div key={index} className="g2 flex flex-col gap-3 rounded-2xl p-4">

@@ -104,7 +104,7 @@ export default function ProfileSelectionScreen() {
                       onClick={() => handleSelect(profile.id)}
                       aria-current={active ? 'true' : undefined}
                       className={cn(
-                        'flex w-full items-center gap-3 rounded-2xl border p-3 text-left transition-colors',
+                        'flex w-full items-center gap-3 rounded-2xl border p-3 text-start transition-colors',
                         active
                           ? 'border-primary bg-surface-tint'
                           : 'border-border hover:bg-surface-tint',
@@ -141,7 +141,7 @@ export default function ProfileSelectionScreen() {
                   <button
                     type="button"
                     onClick={() => navigate(`/family/member/${encodeURIComponent(member.accountId)}`)}
-                    className="flex w-full items-center gap-3 rounded-2xl border border-border p-3 text-left transition-colors hover:bg-surface-tint"
+                    className="flex w-full items-center gap-3 rounded-2xl border border-border p-3 text-start transition-colors hover:bg-surface-tint"
                   >
                     <MemberAvatar name={member.name} size={44} muted />
                     <span className="min-w-0 flex-1">

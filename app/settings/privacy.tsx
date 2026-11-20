@@ -82,7 +82,7 @@ export default function PrivacyScreen() {
           <button
             type="button"
             onClick={() => navigate('/settings/data')}
-            className="mt-1 flex w-full items-center justify-between gap-3 px-4 py-3.5 text-left"
+            className="mt-1 flex w-full items-center justify-between gap-3 px-4 py-3.5 text-start"
           >
             <span className="flex items-center gap-3 text-base text-text-primary">
               <DuoIcon icon={Download} size={20} className="text-text-muted" />

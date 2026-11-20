@@ -132,7 +132,7 @@ export default function SemanticReviewScreen() {
                   <span className="font-mono text-xs text-text-primary">
                     {formatVerseKey(verse.key)}
                   </span>
-                  <span className="ml-auto text-xs tabular-nums text-text-muted">
+                  <span className="ms-auto text-xs tabular-nums text-text-muted">
                     {verse.mastery == null
                       ? t('tree.notMemorized', 'non mémorisé')
                       : `${verse.mastery}`}

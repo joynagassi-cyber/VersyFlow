@@ -230,7 +230,7 @@ export default function AppearanceScreen() {
                   onClick={() => setThemeMode(value)}
                   aria-pressed={active}
                   className={cn(
-                    'appearance-mode flex items-center gap-3 rounded-xl p-3 text-left transition',
+                    'appearance-mode flex items-center gap-3 rounded-xl p-3 text-start transition',
                     active && 'is-active',
                   )}
                 >

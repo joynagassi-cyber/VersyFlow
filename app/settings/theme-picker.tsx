@@ -47,7 +47,7 @@ export default function ThemePickerScreen() {
               type="button"
               onClick={() => setColorTheme(null)}
               className={cn(
-                'flex-1 rounded-xl border p-3 text-left transition',
+                'flex-1 rounded-xl border p-3 text-start transition',
                 colorThemeId == null
                   ? 'border-primary bg-primary/5'
                   : 'border-border bg-surface-tint/40',
@@ -63,7 +63,7 @@ export default function ThemePickerScreen() {
             <button
               type="button"
               onClick={() => setColorTheme(null)}
-              className="flex-1 rounded-xl border border-border bg-surface-tint/40 p-3 text-left"
+              className="flex-1 rounded-xl border border-border bg-surface-tint/40 p-3 text-start"
             >
               <span className="flex items-center gap-2">
                 <span className="h-6 w-6 rounded-full bg-background shadow-sm" />
@@ -111,7 +111,7 @@ export default function ThemePickerScreen() {
                         disabled={!available}
                         onClick={() => select(entry)}
                         className={cn(
-                          'relative overflow-hidden rounded-xl border-2 p-2 text-left transition',
+                          'relative overflow-hidden rounded-xl border-2 p-2 text-start transition',
                           active ? 'border-primary' : 'border-border',
                           !available && 'opacity-50',
                         )}
@@ -141,7 +141,7 @@ export default function ThemePickerScreen() {
                             {title}
                           </span>
                           {active && (
-                            <span className="ml-auto flex h-5 w-5 items-center justify-center rounded-full bg-primary text-on-primary">
+                            <span className="ms-auto flex h-5 w-5 items-center justify-center rounded-full bg-primary text-on-primary">
                               <DuoIcon icon={Check} size={16} />
                             </span>
                           )}

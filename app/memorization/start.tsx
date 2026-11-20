@@ -204,7 +204,7 @@ export default function MemorizationStartScreen() {
                 onClick={() => setSelected(s.id)}
                 aria-pressed={active}
                 className={
-                  'flex w-full items-center gap-4 rounded-2xl border-2 p-4 text-left transition ' +
+                  'flex w-full items-center gap-4 rounded-2xl border-2 p-4 text-start transition ' +
                   (active
                     ? 'border-primary bg-surface shadow-sm'
                     : 'border-transparent bg-surface shadow-sm')

@@ -15,7 +15,13 @@ const buttonVariants = cva(
         secondary: 'bg-surface-tint text-primary hover:opacity-80',
         outline: 'border border-border bg-transparent text-primary hover:bg-surface-tint',
         ghost: 'bg-transparent text-primary hover:bg-surface-tint',
-        destructive: 'bg-error text-on-status hover:opacity-90',
+        // Ce qui DÉTRUIT l'emporte toujours sur ce qui continue : trois boutons
+        // pleins côte à côte, dont un rouge, se départagent mal au pouce. Une
+        // action destructrice est donc dessinée en contour rouge par défaut ;
+        // `destructive-solid` reste disponible pour les confirmations où elle
+        // est réellement l'action attendue.
+        destructive: 'border border-error bg-transparent text-error hover:bg-error/10',
+        'destructive-solid': 'bg-error text-on-status hover:opacity-90',
         link: 'bg-transparent text-primary underline underline-offset-4',
       },
       size: {

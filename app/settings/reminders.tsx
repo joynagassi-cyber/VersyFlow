@@ -83,7 +83,7 @@ export default function SettingsRemindersScreen() {
           onClick={() => { if (reminderEnabled) void cancelPush(); toggleReminders(); }}
           aria-pressed={reminderEnabled}
           className={cn(
-            'flex items-center gap-4 rounded-2xl border-2 p-4 text-left transition-colors',
+            'flex items-center gap-4 rounded-2xl border-2 p-4 text-start transition-colors',
             reminderEnabled ? 'border-primary bg-surface-tint' : 'border-transparent bg-surface shadow-sm',
           )}
         >

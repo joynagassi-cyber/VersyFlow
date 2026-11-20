@@ -205,7 +205,7 @@ export function InfoRow({
     return <div className="flex items-center gap-3 py-2">{content}</div>;
   }
   return (
-    <button type="button" onClick={onClick} className="flex w-full items-center gap-3 py-2 text-left">
+    <button type="button" onClick={onClick} className="flex w-full items-center gap-3 py-2 text-start">
       {content}
     </button>
   );

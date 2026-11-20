@@ -77,7 +77,7 @@ export default function SettingsSessionScreen() {
         <button
           onClick={() => setFocusMode(!focusMode)}
           className={cn(
-            'flex items-center gap-4 rounded-2xl border-2 p-4 text-left transition-colors',
+            'flex items-center gap-4 rounded-2xl border-2 p-4 text-start transition-colors',
             focusMode ? 'border-primary bg-surface-tint' : 'border-transparent bg-surface shadow-sm',
           )}
         >

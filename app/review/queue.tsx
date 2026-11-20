@@ -98,7 +98,7 @@ export default function ReviewQueueScreen() {
                   navigate(`/review/session?recordId=${encodeURIComponent(record.id)}`)
                 }
                 className={cn(
-                  'g2 relative overflow-hidden p-4 ps-6 text-left',
+                  'g2 relative overflow-hidden p-4 ps-6 text-start',
                   over && 'ring-1 ring-error',
                 )}
               >

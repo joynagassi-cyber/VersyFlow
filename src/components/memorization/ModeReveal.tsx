@@ -212,7 +212,7 @@ export function ModeReveal({
                 onClick={isCurrent ? advance : undefined}
                 disabled={!isCurrent && !isRevealed}
                 className={cn(
-                  'mem-block text-left',
+                  'mem-block text-start',
                   isRevealed && 'done',
                   isCurrent && 'current',
                   isLocked && 'locked',

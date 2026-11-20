@@ -150,7 +150,7 @@ export default function FamilyMembersScreen() {
       <button
         type="button"
         onClick={() => navigate('/family/invite')}
-        className="g2 flex w-full items-center gap-3 p-4 text-left"
+        className="g2 flex w-full items-center gap-3 p-4 text-start"
       >
         <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-primary text-on-primary">
           <DuoIcon icon={UserPlus} size={20} />

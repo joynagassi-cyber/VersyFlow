@@ -119,7 +119,7 @@ export default function VerseView() {
                 <button
                   key={concept.id}
                   onClick={() => navigate(`/semantic/concept?conceptId=${encodeURIComponent(concept.id)}`)}
-                  className="g2 flex items-center justify-between p-3 text-left transition-transform active:scale-[0.99]"
+                  className="g2 flex items-center justify-between p-3 text-start transition-transform active:scale-[0.99]"
                 >
                   <div>
                     <p className="text-sm font-semibold text-text-primary">
@@ -150,7 +150,7 @@ export default function VerseView() {
                 <button
                   key={`${r.verseKey}-${r.relation.type}`}
                   onClick={() => navigate(`/semantic/verse?verseRef=${encodeURIComponent(r.verseKey)}`)}
-                  className="g2 flex items-center justify-between p-3 text-left transition-transform active:scale-[0.99]"
+                  className="g2 flex items-center justify-between p-3 text-start transition-transform active:scale-[0.99]"
                 >
                   <div>
                     <p className="text-sm font-semibold text-text-primary">
@@ -174,7 +174,7 @@ export default function VerseView() {
           {community ? (
             <button
               onClick={() => navigate(`/semantic/community?communityId=${encodeURIComponent(community.id)}`)}
-              className="g2 flex items-center justify-between p-3 text-left transition-transform active:scale-[0.99] w-full"
+              className="g2 flex items-center justify-between p-3 text-start transition-transform active:scale-[0.99] w-full"
             >
               <div>
                 <p className="text-sm font-semibold text-text-primary">{community.name}</p>

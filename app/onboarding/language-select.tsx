@@ -75,7 +75,7 @@ export default function LanguagePickerScreen() {
               aria-pressed={isSelected}
               onClick={() => selectLanguage(lang.code)}
               className={cn(
-                'flex items-center justify-between rounded-2xl border-2 bg-surface p-4 text-left shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
+                'flex items-center justify-between rounded-2xl border-2 bg-surface p-4 text-start shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
                 isSelected ? 'border-primary bg-surface-tint' : 'border-transparent',
               )}
             >

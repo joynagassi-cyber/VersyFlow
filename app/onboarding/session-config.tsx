@@ -103,7 +103,7 @@ export default function OnboardingSessionConfig() {
           aria-pressed={focusMode}
           onClick={() => setFocusMode(!focusMode)}
           className={cn(
-            'flex items-center gap-4 rounded-2xl border-2 p-4 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
+            'flex items-center gap-4 rounded-2xl border-2 p-4 text-start transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
             focusMode
               ? 'border-primary bg-surface-tint'
               : 'border-transparent bg-surface shadow-sm',

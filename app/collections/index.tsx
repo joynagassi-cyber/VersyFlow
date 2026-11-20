@@ -235,7 +235,7 @@ export default function CollectionsScreen() {
                         `/bible/explorer/${encodeURIComponent(rec.bookId)}/${rec.chapterNumber}`,
                       )
                     }
-                    className="g2 flex w-full items-center gap-3 p-3 text-left active:bg-surface-tint"
+                    className="g2 flex w-full items-center gap-3 p-3 text-start active:bg-surface-tint"
                   >
                     <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-error/10">
                       <DuoIcon icon={Heart} size={16} className="text-error" />
@@ -275,7 +275,7 @@ export default function CollectionsScreen() {
                 onClick={() =>
                   setExpandedId(expanded ? null : collection.id)
                 }
-                className="g2 flex w-full items-center gap-4 p-4 text-left"
+                className="g2 flex w-full items-center gap-4 p-4 text-start"
               >
                 <span
                   className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full"
@@ -324,7 +324,7 @@ export default function CollectionsScreen() {
                               : '/bible/explorer',
                           );
                         }}
-                        className="block text-left text-sm text-text-primary"
+                        className="block text-start text-sm text-text-primary"
                       >
                         • {v}
                       </button>
@@ -363,7 +363,7 @@ export default function CollectionsScreen() {
         ) : (
           <button
             onClick={() => setCreating(true)}
-            className="flex w-full items-center gap-4 rounded-2xl border-2 border-dashed border-primary/40 p-4 text-left active:opacity-90"
+            className="flex w-full items-center gap-4 rounded-2xl border-2 border-dashed border-primary/40 p-4 text-start active:opacity-90"
           >
             <span className="flex h-14 w-14 items-center justify-center rounded-full bg-surface-tint">
               <DuoIcon icon={Plus} size={24} className="text-primary" />

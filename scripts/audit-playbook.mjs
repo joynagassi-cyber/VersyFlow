@@ -335,14 +335,20 @@ const focusVisibleRules = count(cssNoComments, /:focus-visible/g);
 // `me-`, `start-`, `end-`) : c'est ce qui fait basculer la mise en page en RTL.
 const logicalProps =
   count(allDom, /(marginInline|paddingInline|insetInline|margin-inline|padding-inline|inset-inline|borderInline)/g) +
-  count(allDom, /\b(ps|pe|ms|me|start|end)-\[?[0-9.]+/g);
+  count(allDom, /\b(ps|pe|ms|me|start|end)-\[?[0-9.]+/g) +
+  // Alignement et auto-marge logiques (`text-start`, `ms-auto`) : la classe
+  // ne porte pas de nombre, mais elle retourne avec le sens d'écriture.
+  count(allDom, /(?<![\w-])(text-start|text-end|ms-auto|me-auto)\b/g);
 // Un CENTRAGE est symétrique : `left-1/2` + `-translate-x-1/2` centre de la
 // même façon dans les deux sens d'écriture, alors que `start-1/2` casserait le
 // RTL. On ne compte donc pas les positions de centrage.
-const hardDirectional = count(
-  allDom.replace(/\b(left|right)-\[?1\/2/g, ''),
-  /\b(pl|pr|ml|mr|left|right)-\[?[0-9.]+/g,
-);
+// L'alignement et l'auto-marge sont directionnels aussi : `text-left` fige
+// l'alignement à gauche, `ml-auto` pousse la fin de ligne en LTR seulement.
+const hardDirectional =
+  count(
+    allDom.replace(/\b(left|right)-\[?1\/2/g, ''),
+    /\b(pl|pr|ml|mr|left|right)-\[?[0-9.]+/g,
+  ) + count(allDom, /(?<![\w-])(text-left|text-right|ml-auto|mr-auto)\b/g);
 
 const RULES = [
   /* A · Structure et navigation ------------------------------------------- */

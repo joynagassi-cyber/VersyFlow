@@ -187,7 +187,7 @@ export default function BibleExplorerScreen() {
                     <button
                       key={book.id}
                       onClick={() => openBook(book.id)}
-                      className="flex items-center justify-between rounded-xl bg-surface p-4 text-left shadow-sm"
+                      className="flex items-center justify-between rounded-xl bg-surface p-4 text-start shadow-sm"
                     >
                       <div>
                         <p className="text-base font-semibold text-text-primary">{book.displayName}</p>

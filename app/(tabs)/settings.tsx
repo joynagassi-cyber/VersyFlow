@@ -229,7 +229,7 @@ function ParamsTab() {
           <div className="g2 settings-group-card overflow-hidden">
             <h2>{group.title}</h2>
             {group.rows.map((row, i) => (
-              <button key={i} onClick={row.onClick} className={cn('flex w-full items-center gap-3 p-4 text-left', i < group.rows.length - 1 && 'border-b border-divider')}>
+              <button key={i} onClick={row.onClick} className={cn('flex w-full items-center gap-3 p-4 text-start', i < group.rows.length - 1 && 'border-b border-divider')}>
                 <span className="icon-chip flex h-10 w-10 shrink-0 items-center justify-center rounded-full">
                   {row.icon}
                 </span>
@@ -261,7 +261,7 @@ function ParamsTab() {
                 navigate('/onboarding/welcome', { replace: true });
               }
             }}
-            className="flex w-full items-center gap-3 p-4 text-left"
+            className="flex w-full items-center gap-3 p-4 text-start"
           >
             <span className="flex h-10 w-10 items-center justify-center rounded-full bg-error-light">
               <DuoIcon icon={Trash2} size={20} className="text-error" />
@@ -289,7 +289,7 @@ function ParamsTab() {
             {SUPPORTED_LANGUAGES.map((lang) => {
               const selected = currentLanguage === lang.code;
               return (
-                <button key={lang.code} onClick={() => changeLanguage(lang.code)} className={cn('flex items-center justify-between rounded-xl p-3 text-left transition-colors', selected ? 'bg-surface-tint' : 'hover:bg-surface-tint/50')}>
+                <button key={lang.code} onClick={() => changeLanguage(lang.code)} className={cn('flex items-center justify-between rounded-xl p-3 text-start transition-colors', selected ? 'bg-surface-tint' : 'hover:bg-surface-tint/50')}>
                   <span>
                     <span className={cn('block text-base', selected ? 'font-semibold text-primary' : 'font-medium text-text-primary')}>{lang.name}</span>
                     <span className="text-sm text-text-muted">{lang.displayName}</span>
@@ -424,7 +424,7 @@ function ProfileTab() {
       <section>
         <div className="g2 settings-group-card overflow-hidden">
           {actions.map((a, i) => (
-            <button key={i} onClick={() => navigate(a.to)} className={cn('flex w-full items-center gap-3 p-4 text-left', i < actions.length - 1 && 'border-b border-divider')}>
+            <button key={i} onClick={() => navigate(a.to)} className={cn('flex w-full items-center gap-3 p-4 text-start', i < actions.length - 1 && 'border-b border-divider')}>
               <span className="icon-chip flex h-10 w-10 shrink-0 items-center justify-center rounded-full">
                 <DuoIcon icon={a.icon} size={20} />
               </span>

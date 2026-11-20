@@ -70,7 +70,7 @@ export default function SemanticIndex() {
                       onClick={() =>
                         navigate(`/semantic/concept?conceptId=${encodeURIComponent(item.concept.id)}`)
                       }
-                      className="g2 flex items-center justify-between p-4 text-left transition-transform active:scale-[0.99]"
+                      className="g2 flex items-center justify-between p-4 text-start transition-transform active:scale-[0.99]"
                     >
                       <div className="min-w-0">
                         <p className="truncate text-base font-semibold text-text-primary">
@@ -108,7 +108,7 @@ export default function SemanticIndex() {
                       onClick={() =>
                         navigate(`/semantic/concept?conceptId=${encodeURIComponent(item.concept.id)}`)
                       }
-                      className="g2 flex items-center justify-between p-4 text-left transition-transform active:scale-[0.99]"
+                      className="g2 flex items-center justify-between p-4 text-start transition-transform active:scale-[0.99]"
                     >
                       <div>
                         <p className="text-base font-semibold text-text-primary">
@@ -139,7 +139,7 @@ export default function SemanticIndex() {
                       onClick={() =>
                         navigate(`/semantic/community?communityId=${encodeURIComponent(c.id)}`)
                       }
-                      className="g2 flex items-center justify-between p-4 text-left transition-transform active:scale-[0.99]"
+                      className="g2 flex items-center justify-between p-4 text-start transition-transform active:scale-[0.99]"
                     >
                       <div>
                         <p className="text-base font-semibold text-text-primary">{c.name}</p>

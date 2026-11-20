@@ -88,7 +88,7 @@ export default function FamilyChallengeNewScreen() {
                   }}
                   aria-pressed={active}
                   className={cn(
-                    'flex items-center gap-3 rounded-xl border p-3 text-left transition',
+                    'flex items-center gap-3 rounded-xl border p-3 text-start transition',
                     active ? 'border-primary bg-surface-tint' : 'border-border',
                   )}
                 >

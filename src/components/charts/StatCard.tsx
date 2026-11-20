@@ -50,7 +50,7 @@ export function StatCard({ title, icon, value, unit, hint, visual, onClick, clas
     </>
   );
 
-  const classes = cn('stat-card g2 rounded-2xl bg-surface p-4 text-left shadow-sm', className);
+  const classes = cn('stat-card g2 rounded-2xl bg-surface p-4 text-start shadow-sm', className);
 
   return onClick ? (
     <button type="button" onClick={onClick} className={cn(classes, 'stat-card--action')}>

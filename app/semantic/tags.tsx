@@ -67,7 +67,7 @@ export default function SemanticTagsScreen() {
                     onClick={() =>
                       navigate(`/semantic/tree?conceptId=${encodeURIComponent(entry.concept.id)}`)
                     }
-                    className="flex w-full items-center gap-3 p-4 text-left"
+                    className="flex w-full items-center gap-3 p-4 text-start"
                   >
                     <span className="flex h-10 w-10 items-center justify-center rounded-full bg-surface-tint text-primary">
                       <DuoIcon icon={Tag} size={20} />

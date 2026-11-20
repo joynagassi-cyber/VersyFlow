@@ -185,7 +185,7 @@ export function StatsDashboard({ profileId, windowDays = 30 }: StatsDashboardPro
             <div className="flex items-center gap-2">
               <Skeleton className="h-8 w-8 shrink-0 rounded-xl" />
               <Skeleton className="h-3.5 w-2/5 rounded-full" />
-              {card.chevron && <Skeleton className="ml-auto h-4 w-4 shrink-0 rounded-md" />}
+              {card.chevron && <Skeleton className="ms-auto h-4 w-4 shrink-0 rounded-md" />}
             </div>
             <div className="mt-3 flex items-end justify-between gap-3">
               <div className="flex min-w-0 flex-1 flex-col gap-1.5">

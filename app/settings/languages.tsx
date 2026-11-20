@@ -37,7 +37,7 @@ export default function LanguageSettingsScreen() {
                 });
               }}
               className={
-                'flex w-full items-center justify-between rounded-2xl p-4 text-left ' +
+                'flex w-full items-center justify-between rounded-2xl p-4 text-start ' +
                 (active ? 'bg-surface ring-2 ring-[color:var(--color-primary)] shadow-sm' : 'bg-surface shadow-sm')
               }
             >

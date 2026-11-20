@@ -314,7 +314,7 @@ export default function TranslationComparisonScreen() {
                       key={m.id}
                       type="button"
                       onClick={() => add(m.id, m.name, m.language)}
-                      className="flex items-center justify-between rounded-xl px-3 py-2.5 text-left transition active:bg-surface-tint"
+                      className="flex items-center justify-between rounded-xl px-3 py-2.5 text-start transition active:bg-surface-tint"
                     >
                       <span className="flex min-w-0 items-center gap-2">
                         <span className="truncate text-sm font-medium text-text-primary">

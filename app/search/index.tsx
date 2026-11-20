@@ -289,7 +289,7 @@ export default function SearchScreen() {
               <button
                 key={i}
                 onClick={() => handleQuickSearch(item)}
-                className="flex w-full items-center gap-3 border-b border-[color:var(--color-divider)] py-3 text-left"
+                className="flex w-full items-center gap-3 border-b border-[color:var(--color-divider)] py-3 text-start"
               >
                 <DuoIcon icon={Clock} size={16} className="text-text-muted" />
                 <span className="flex-1 text-base text-text-primary">{item}</span>

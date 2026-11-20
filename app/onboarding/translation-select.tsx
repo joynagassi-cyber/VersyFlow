@@ -102,7 +102,7 @@ export default function TranslationPickerScreen() {
         aria-pressed={isSelected}
         onClick={() => select(id)}
         className={cn(
-          'rounded-2xl border-2 p-4 text-left shadow-sm transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
+          'rounded-2xl border-2 p-4 text-start shadow-sm transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
           isSelected ? 'border-primary bg-surface-tint' : 'border-transparent bg-surface',
         )}
       >

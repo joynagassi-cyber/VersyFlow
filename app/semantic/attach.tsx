@@ -58,7 +58,7 @@ export default function SemanticAttachScreen() {
                 <li key={entry.concept.id} className="flex items-center gap-2">
                   <DuoIcon icon={Tag} size={16} className="text-primary" />
                   <span className="text-sm font-semibold text-text-primary">{entry.label}</span>
-                  <span className="ml-auto text-xs text-text-muted">
+                  <span className="ms-auto text-xs text-text-muted">
                     {t('tree.versesCount', '{{count}} versets', { count: entry.verseKeys.length })}
                   </span>
                 </li>

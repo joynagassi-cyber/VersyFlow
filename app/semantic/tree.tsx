@@ -104,7 +104,7 @@ export default function SemanticTreeScreen() {
               <li className="flex items-center gap-2 rounded-xl bg-surface-tint px-3 py-2">
                 <DuoIcon icon={Tree} size={16} className="text-primary" />
                 <span className="text-sm font-bold text-text-primary">{label}</span>
-                <span className="ml-auto text-2xs text-text-muted">
+                <span className="ms-auto text-2xs text-text-muted">
                   {t('tree.rootTag', 'tag racine')}
                 </span>
               </li>
@@ -118,7 +118,7 @@ export default function SemanticTreeScreen() {
                       onClick={() =>
                         navigate(`/semantic/node?conceptId=${encodeURIComponent(node.concept.id)}`)
                       }
-                      className="flex w-full items-center gap-2 rounded-xl border border-border px-3 py-2 text-left"
+                      className="flex w-full items-center gap-2 rounded-xl border border-border px-3 py-2 text-start"
                     >
                       <DuoIcon icon={ArrowRight} size={16} className="directional text-text-muted" />
                       <span className="min-w-0 flex-1">

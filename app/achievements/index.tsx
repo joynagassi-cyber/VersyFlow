@@ -229,7 +229,7 @@ export default function AchievementScreen() {
               <button
                 key={a.id}
                 onClick={() => setSelectedId(selectedId === a.id ? null : a.id)}
-                className="g2 flex w-full items-center gap-4 p-4 text-left"
+                className="g2 flex w-full items-center gap-4 p-4 text-start"
               >
                 <span
                   className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full"
@@ -255,7 +255,7 @@ export default function AchievementScreen() {
                         style={{ width: a.progress + '%', backgroundColor: a.color }}
                       />
                     </span>
-                    <span className="w-10 text-right text-xs text-text-muted">
+                    <span className="w-10 text-end text-xs text-text-muted">
                       {a.progress >= 100 ? '100%' : a.progress + '%'}
                     </span>
                   </span>

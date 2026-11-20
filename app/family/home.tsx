@@ -275,7 +275,7 @@ function RealFamilyHomeScreen() {
               <button
                 type="button"
                 onClick={() => navigate(`/family/challenges/${runningChallenge.id}`)}
-                className="w-full text-left"
+                className="w-full text-start"
               >
                 <div className="flex items-baseline justify-between gap-2">
                   <p className="truncate card-title">
@@ -309,7 +309,7 @@ function RealFamilyHomeScreen() {
               <button
                 type="button"
                 onClick={() => navigate('/family/challenges/new')}
-                className="flex w-full items-center justify-between gap-2 rounded-xl bg-surface-tint p-3 text-left"
+                className="flex w-full items-center justify-between gap-2 rounded-xl bg-surface-tint p-3 text-start"
               >
                 <span className="text-sm font-semibold text-text-primary">
                   {t('familyPlus.launchNewChallenge', 'Lancer un nouveau défi')}
@@ -460,7 +460,7 @@ function RealFamilyHomeScreen() {
                 key={family.id}
                 onClick={() => selectFamily(family.id)}
                 className={cn(
-                  'flex items-center gap-3 rounded-xl bg-surface p-3 text-left',
+                  'flex items-center gap-3 rounded-xl bg-surface p-3 text-start',
                   activeFamilyId === family.id && 'ring-1 ring-primary',
                 )}
               >

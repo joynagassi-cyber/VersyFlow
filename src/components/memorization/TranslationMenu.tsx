@@ -89,7 +89,7 @@ export function TranslationMenu({
                 disabled={isBusy}
                 onClick={() => void handlePick(entry.id)}
                 className={cn(
-                  'flex w-full items-center justify-between rounded-xl px-2.5 py-2 text-left text-sm transition',
+                  'flex w-full items-center justify-between rounded-xl px-2.5 py-2 text-start text-sm transition',
                   isCurrent ? 'bg-primary/10 text-primary' : 'text-text-primary active:bg-surface-tint',
                 )}
               >

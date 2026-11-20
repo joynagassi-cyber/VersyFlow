@@ -43,6 +43,10 @@ describe('G05 — sens d’écriture', () => {
         for (const match of cleaned.matchAll(/\b(pl|pr|ml|mr|left|right)-\[?[0-9.]+/g)) {
           offenders.push(`${path}:${index + 1} → ${match[0]}`);
         }
+        // L'alignement et l'auto-marge figent aussi un côté.
+        for (const match of cleaned.matchAll(/(?<![\w-])(text-left|text-right|ml-auto|mr-auto)\b/g)) {
+          offenders.push(`${path}:${index + 1} → ${match[0]}`);
+        }
       });
     }
     expect(offenders).toEqual([]);
