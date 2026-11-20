@@ -355,7 +355,9 @@ const record = (id, section, label, verdict, detail, proof) =>
 
 /* §6.4 — largeurs de lecture ------------------------------------------------ */
 {
-  const tokens = /--reading-width: 720px/.test(globals) && /--reading-wide: 1060px/.test(globals);
+  // La mesure est plafonnée en pixels ET en caractères (68ch) : le test
+  // reconnaît les deux formes.
+  const tokens = /--reading-width: (720px|min\(720px,\s*68ch\))/.test(globals) && /--reading-wide: 1060px/.test(globals);
   const shells = ['src/components/layout/FullScreenPage.tsx', 'src/components/onboarding/OnboardingShell.tsx'];
   const shellHasColumn = shells.every((f) => exists(f) && /screen-column/.test(read(f)));
   // Un écran est couvert s'il porte la classe, ou s'il passe par une coquille qui la porte.

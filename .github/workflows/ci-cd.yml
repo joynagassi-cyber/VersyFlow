@@ -134,6 +134,14 @@ jobs:
         if: matrix.check == 'tests'
         run: npm run test:coverage
 
+      # L'audit du playbook UX/UI : 77 règles recalculées sur le dépôt. Il sort
+      # en code 1 dès qu'une règle BLOQUANTE mesurable échoue, donc il garde
+      # quelque chose tant qu'il est dans la CI — un script que personne
+      # n'appelle ne vérifie rien.
+      - name: Audit UX/UI Playbook
+        if: matrix.check == 'tests'
+        run: npm run playbook:audit
+
       # Données et artefacts : ce que le build ne vérifie pas.
       #  - le corpus LSG est sain (versets vides, doublons, chapitreCount) et la
       #    projection par chapitre est à jour (`--check`, aussi dans le build) ;
