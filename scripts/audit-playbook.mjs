@@ -333,7 +333,13 @@ const focusVisibleRules = count(cssNoComments, /:focus-visible/g);
 const logicalProps =
   count(allDom, /(marginInline|paddingInline|insetInline|margin-inline|padding-inline|inset-inline|borderInline)/g) +
   count(allDom, /\b(ps|pe|ms|me|start|end)-\[?[0-9.]+/g);
-const hardDirectional = count(allDom, /\b(pl|pr|ml|mr|left|right)-\[?[0-9.]+/g);
+// Un CENTRAGE est symétrique : `left-1/2` + `-translate-x-1/2` centre de la
+// même façon dans les deux sens d'écriture, alors que `start-1/2` casserait le
+// RTL. On ne compte donc pas les positions de centrage.
+const hardDirectional = count(
+  allDom.replace(/\b(left|right)-\[?1\/2/g, ''),
+  /\b(pl|pr|ml|mr|left|right)-\[?[0-9.]+/g,
+);
 
 const RULES = [
   /* A · Structure et navigation ------------------------------------------- */

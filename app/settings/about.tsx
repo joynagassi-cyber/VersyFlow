@@ -97,7 +97,7 @@ export default function AboutScreen() {
             </h2>
             <button
               type="button"
-              className="touch-target -mr-2 shrink-0 rounded-full text-text-muted active:bg-surface-tint"
+              className="touch-target -me-2 shrink-0 rounded-full text-text-muted active:bg-surface-tint"
               onClick={() => setShowWhatNew((v) => !v)}
               aria-expanded={showWhatNew}
               aria-label={t('common.expandCollapse', 'Déplier / replier')}

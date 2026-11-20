@@ -37,7 +37,9 @@ describe('L2 — colonne de lecture des parcours', () => {
   });
 
   it('la largeur vient de --reading-width, pas d’une valeur locale', () => {
-    expect(globals).toMatch(/--reading-width:\s*720px/);
+    // La mesure est plafonnée en PIXELS et en CARACTÈRES : 720 px est la
+    // borne haute choisie, 68ch la garde-fou typographique (règle C04).
+    expect(globals).toMatch(/--reading-width:\s*min\(720px,\s*68ch\)/);
     expect(globals).toMatch(/\.screen-column-narrow\s*\{[\s\S]{0,120}max-width:\s*100%/);
     const desktopRule = globals.match(
       /@media \(min-width: 1024px\) \{\s*\.screen-column\s*\{[\s\S]*?\.screen-column-narrow\s*\{[^}]*max-width:\s*var\(--reading-width\)/,

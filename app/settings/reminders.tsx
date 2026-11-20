@@ -121,7 +121,7 @@ export default function SettingsRemindersScreen() {
                   className={cn('flex h-14 min-w-14 items-center justify-center rounded-2xl border-2 px-4 text-lg font-semibold transition-colors disabled:opacity-40', selected ? 'border-primary bg-surface-tint text-primary' : 'border-transparent bg-surface text-text-secondary shadow-sm')}
                 >
                   {f}
-                  {selected && <DuoIcon icon={Check} className="ml-1" size={16} />}
+                  {selected && <DuoIcon icon={Check} className="ms-1" size={16} />}
                 </button>
               );
             })}

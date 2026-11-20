@@ -112,7 +112,7 @@ export default function SemanticTreeScreen() {
                 const childLabel = conceptLabel(node.concept, lang);
                 const confidence = Math.round((node.via?.confidence ?? 0) * 100);
                 return (
-                  <li key={node.concept.id} className="ml-4">
+                  <li key={node.concept.id} className="ms-4">
                     <button
                       type="button"
                       onClick={() =>

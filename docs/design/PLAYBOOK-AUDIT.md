@@ -1,9 +1,9 @@
 # Audit UX/UI Playbook 2026 — application à VersyFlow
 
 Généré par `node scripts/audit-playbook.mjs`. **Ne pas éditer à la main.**
-Exécuté le 2026-11-20 08:47 (UTC).
+Exécuté le 2026-11-20 08:53 (UTC).
 
-**Bilan : 44 vérifiés · 10 partiels · 0 en échec · 23 non vérifiables ici** (77 règles).
+**Bilan : 45 vérifiés · 9 partiels · 0 en échec · 23 non vérifiables ici** (77 règles).
 
 Lecture : *vérifié* = une mesure reproductible dans le dépôt le confirme ; *partiel* = une partie est mesurée, le reste demande un appareil ou un navigateur ; *non vérifiable ici* = la preuve exige un rendu réel, et la façon de le vérifier est indiquée.
 
@@ -24,7 +24,7 @@ Lecture : *vérifié* = une mesure reproductible dans le dépôt le confirme ; *
 | C01 | C | BLOCKING | **PASS** | Rien d'utile sous 12 px à l'échelle par défaut | plancher mesuré : 12px (échelle), aucune taille arbitraire sous 12px |
 | C02 | C | MAJOR | **PARTIAL** | Le texte tient à 200 % sans perte ni défilement horizontal | zoom autorisé (maximum-scale=5) ; rendu à 200 % non mesuré sans navigateur |
 | C03 | C | MAJOR | **UNVERIFIABLE** | Le texte suit la taille système jusqu’à 200 % | nécessite un appareil iOS/Android avec Dynamic Type activé |
-| C04 | C | MAJOR | **PARTIAL** | Longueur de ligne entre 45 et 80 caractères | mesure = 720px (px) : la longueur en caractères dépend de la police choisie |
+| C04 | C | MAJOR | **PASS** | Longueur de ligne entre 45 et 80 caractères | mesure plafonnée en caractères : min(720px, 68ch) |
 | C05 | C | MINOR | **PASS** | Un couple de polices, une échelle de tailles documentée | 5 tailles distinctes (12/18/22/26/30 px), 4 familles embarquées |
 | D01 | D | BLOCKING | **PASS** | Cible interactive ≥ 24 × 24 px | plancher de 24 px posé sur `.touch-target` (`max(24px, --tap-min)`) |
 | D02 | D | BLOCKING | **PARTIAL** | iOS : zone de touche 44 × 44 pt | `--tap-min: 44px` sous `pointer: coarse` (couvre iOS) ; contrôle sur appareil non fait |
@@ -48,7 +48,7 @@ Lecture : *vérifié* = une mesure reproductible dans le dépôt le confirme ; *
 | G02 | G | BLOCKING | **PASS** | Aucune largeur de texte figée : la chaîne la plus longue tient | aucune largeur fixe > 320 px ; retours à la ligne assurés |
 | G03 | G | MAJOR | **PASS** | Un seul format de nombre par écran, celui de la langue | 14 formats locaux via `Intl` |
 | G04 | G | MAJOR | **PASS** | Pas de texte de remplissage, pas de promesse invérifiable | aucun lorem ipsum, aucun « bientôt disponible » |
-| G05 | G | MAJOR | **PARTIAL** | En RTL la mise en page se retourne sans casser les icônes directionnelles | RTL piloté au niveau document (8 propriétés logiques, 30 directions physiques restantes) |
+| G05 | G | MAJOR | **PARTIAL** | En RTL la mise en page se retourne sans casser les icônes directionnelles | RTL piloté au niveau document (37 propriétés logiques, 0 directions physiques restantes) |
 | G06 | G | MINOR | **PASS** | Dates et heures relatives ou localisées | 29 format(s) relatif(s)/localisé(s) |
 | H01 | H | BLOCKING | **PASS** | Tout est utilisable au clavier, focus visible, sans piège | lien d’évitement, 43 règles `:focus-visible`, fermeture Échap |
 | H02 | H | BLOCKING | **PASS** | Chaque image a un texte alternatif ou est décorative | toutes les balises `<img>` portent `alt` ou `aria-hidden` |

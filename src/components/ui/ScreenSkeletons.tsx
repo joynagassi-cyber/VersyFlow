@@ -246,7 +246,7 @@ function TreeRelations() {
         {['w-2/5', 'w-1/3', 'w-1/2', 'w-2/5'].map((width, index) => (
           <li
             key={index}
-            className="ml-4 flex items-center gap-2 rounded-xl border border-border px-3 py-2"
+            className="ms-4 flex items-center gap-2 rounded-xl border border-border px-3 py-2"
           >
             <Skeleton className="h-3.5 w-3.5 shrink-0 rounded-sm" />
             <div className="min-w-0 flex-1">
@@ -616,8 +616,8 @@ export function FamilyMemberSkeleton({ label }: { label: string }) {
 /** Rangée de la file du jour : accent latéral, référence, pastille de statut. */
 function QueueRow() {
   return (
-    <div className="g2 relative overflow-hidden p-4 pl-6">
-      <Skeleton className="absolute bottom-0 left-0 top-0 w-1 rounded-none" />
+    <div className="g2 relative overflow-hidden p-4 ps-6">
+      <Skeleton className="absolute bottom-0 start-0 top-0 w-1 rounded-none" />
       <div className="flex items-center justify-between gap-2">
         <Line className="h-4 w-2/5" />
         <Skeleton className="h-6 w-16 shrink-0 rounded-full" />

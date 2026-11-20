@@ -435,7 +435,7 @@ export default function AppearanceScreen() {
                               {icon.tier === 'premium' && (
                                 <span
                                   aria-hidden="true"
-                                  className="absolute bottom-0 right-0 flex h-5 w-6 items-center justify-center rounded-tl-lg bg-warning text-on-primary shadow-sm"
+                                  className="absolute bottom-0 end-0 flex h-5 w-6 items-center justify-center rounded-tl-lg bg-warning text-on-primary shadow-sm"
                                 >
                                   <DuoIcon icon={StarIcon} size={16} color="currentColor" />
                                 </span>
@@ -444,7 +444,7 @@ export default function AppearanceScreen() {
                             {active && (
                               <span
                                 aria-hidden="true"
-                                className="absolute -right-1.5 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-on-primary shadow-card ring-2 ring-surface"
+                                className="absolute -end-1.5 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-on-primary shadow-card ring-2 ring-surface"
                               >
                                 <Check size={12} />
                               </span>

@@ -229,7 +229,7 @@ export default function AvailableTranslationsScreen() {
               <h3 className="card-title">
                 {info.abbreviation}
                 {info.abbreviation !== info.name && (
-                  <span className="ml-1.5 text-sm font-medium text-text-muted">{info.name}</span>
+                  <span className="ms-1.5 text-sm font-medium text-text-muted">{info.name}</span>
                 )}
               </h3>
               {isActive && (

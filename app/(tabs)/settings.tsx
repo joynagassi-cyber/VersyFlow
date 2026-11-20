@@ -371,7 +371,7 @@ function ProfileTab() {
               {displayName.charAt(0).toUpperCase()}
             </span>
           )}
-          <span className="absolute bottom-0 right-0 flex h-7 w-7 items-center justify-center rounded-full bg-primary text-on-primary shadow">
+          <span className="absolute bottom-0 end-0 flex h-7 w-7 items-center justify-center rounded-full bg-primary text-on-primary shadow">
             <DuoIcon icon={Camera} size={16} />
           </span>
         </button>

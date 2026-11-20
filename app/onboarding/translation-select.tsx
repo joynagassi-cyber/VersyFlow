@@ -115,7 +115,7 @@ export default function TranslationPickerScreen() {
               <p className="truncate text-base font-extrabold text-text-primary">
                 {info.abbreviation}
                 {info.abbreviation !== info.name && (
-                  <span className="ml-1.5 text-sm font-medium text-text-muted">· {info.name}</span>
+                  <span className="ms-1.5 text-sm font-medium text-text-muted">· {info.name}</span>
                 )}
               </p>
               <p className="text-xs text-text-muted">

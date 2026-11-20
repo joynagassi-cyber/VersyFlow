@@ -231,7 +231,7 @@ export function ModeReveal({
                         <DuoIcon icon={ArrowRight} size={16} />
                         {t('workspace.tapToReveal', 'Touchez pour révéler')}
                         {autoRevealLeft !== null && autoRevealLeft > 0 && (
-                          <span className="ml-2 tabular-nums text-text-tertiary">
+                          <span className="ms-2 tabular-nums text-text-tertiary">
                             ({autoRevealLeft}s)
                           </span>
                         )}

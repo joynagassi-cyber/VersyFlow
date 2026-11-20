@@ -899,7 +899,11 @@ body {
   --rail-collapsed: 72px;
   --rail: 0px;
   --shell-header: 56px;
-  --reading-width: 720px;
+  /* Mesure de lecture : 68 CARACTÈRES, plafonnée à 720 px. Un plafond en
+     pixels dépend de la police et de la taille du texte choisi — 720 px font
+     51 caractères en corps 20, 93 en corps 12. `ch` suit la police réellement
+     rendue, donc la longueur de ligne reste dans la plage lisible (45–80). */
+  --reading-width: min(720px, 68ch);
   --reading-wide: 1060px;
 }
 
