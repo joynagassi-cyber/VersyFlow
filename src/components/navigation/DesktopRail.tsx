@@ -152,7 +152,10 @@ export function DesktopRail() {
         </button>
       </div>
 
-      <nav className="min-h-0 flex-1 overflow-y-auto px-2 pb-3">
+      <nav
+        aria-label={t('shell.railNav', 'Navigation des onglets')}
+        className="min-h-0 flex-1 overflow-y-auto px-2 pb-3"
+      >
         <div className="flex flex-col gap-0.5">
           {tabs.map((tab) => {
             const active = isActive(location.pathname, tab.path) || (tab.id === 'explore' && location.pathname.startsWith('/bible/'));

@@ -1603,6 +1603,9 @@ export const fr = {
   },
 
   shell: {
+    skipToContent: 'Aller au contenu',
+    mainRegion: 'Contenu de l’écran',
+    railNav: 'Navigation des onglets',
     mainNav: 'Navigation principale',
     openMenu: 'Ouvrir le menu',
     newSession: 'Nouvelle session de mémorisation',

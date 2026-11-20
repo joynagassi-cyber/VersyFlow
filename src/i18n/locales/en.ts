@@ -1599,6 +1599,9 @@ export const en = {
   },
 
   shell: {
+    skipToContent: 'Skip to content',
+    mainRegion: 'Screen content',
+    railNav: 'Tab navigation',
     mainNav: 'Main navigation',
     openMenu: 'Open menu',
     newSession: 'New memorisation session',

@@ -105,9 +105,11 @@ export default function ConceptView() {
             <DuoIcon icon={BrainCircuit} size={20} />
           </span>
           <div>
-            <h1 className="page-title">
+            {/* Le titre de page porte déjà le libellé : ici c'est un
+                sous-titre de section, pas un second titre de niveau 1. */}
+            <h2 className="page-title">
               {displayLabel(concept, lang)}
-            </h1>
+            </h2>
             <p className="text-xs text-text-muted">{concept.canonical_name}</p>
           </div>
         </div>

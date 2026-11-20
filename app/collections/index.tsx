@@ -340,6 +340,7 @@ export default function CollectionsScreen() {
           <div className="flex items-center gap-2 rounded-2xl border-2 border-dashed border-primary/40 p-4">
             <input
               autoFocus
+              aria-label={t('collections.namePlaceholder', 'Nom de la collection')}
               value={newName}
               onChange={(e) => setNewName(e.target.value)}
               placeholder={t('collections.namePlaceholder', 'Nom de la collection')}

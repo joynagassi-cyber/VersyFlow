@@ -18,14 +18,17 @@
 
 import { IonPage } from '@ionic/react';
 import { Outlet, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { DesktopRail } from '@/components/navigation/DesktopRail';
 import { DesktopHeader } from '@/shells/DesktopHeader';
 import { ReadingPanel } from '@/shells/ReadingPanel';
+import { SkipLink } from '@/components/layout/SkipLink';
 import { useIsDesktop } from '@/hooks/useIsDesktop';
 import { isReadingRoute } from '@/shells/panel-routes';
 
 export function DesktopShell() {
   const location = useLocation();
+  const { t } = useTranslation();
   const isDesktop = useIsDesktop();
 
   // Le panneau n'apparaît qu'au bureau ET sur une route de lecture : sous
@@ -34,6 +37,7 @@ export function DesktopShell() {
 
   return (
     <>
+      <SkipLink />
       <DesktopRail />
       <IonPage>
         <div
@@ -43,7 +47,7 @@ export function DesktopShell() {
           <DesktopHeader />
 
           <div className="flex min-h-0 flex-1">
-            <main className="min-h-0 min-w-0 flex-1 overflow-hidden">
+            <main className="min-h-0 min-w-0 flex-1 overflow-hidden" aria-label={t('shell.mainRegion', 'Contenu de l’écran')}>
               <Outlet />
             </main>
             {hasPanel && <ReadingPanel />}

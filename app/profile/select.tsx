@@ -74,9 +74,9 @@ export default function ProfileSelectionScreen() {
     >
       <div className="screen-column space-y-4">
         <div className="text-center">
-          <h1 className="page-title">
+          <h2 className="page-title">
             {t('profile.who', "Qui apprend aujourd'hui ?")}
-          </h1>
+          </h2>
           <p className="mt-1 text-sm text-text-muted">
             {t('profile.selectHint', 'Choisis ton profil pour continuer')}
           </p>

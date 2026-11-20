@@ -474,15 +474,15 @@ const RULES = [
   /* D · Cibles et gestes --------------------------------------------------- */
   {
     id: 'D01', section: 'D', level: 'BLOCKING', label: 'Cible interactive ≥ 24 × 24 px', proof: 'render',
-    run: () => /min-height:\s*24px/.test(cssNoComments)
-      ? PASS('plancher global de 24 px posé sur les commandes')
+    run: () => /max\(24px,\s*var\(--tap-min\)\)/.test(cssNoComments)
+      ? PASS('plancher de 24 px posé sur `.touch-target` (`max(24px, --tap-min)`)')
       : FAIL('aucune règle de cible minimale'),
   },
-  { id: 'D02', section: 'D', level: 'BLOCKING', label: 'iOS : zone de touche 44 × 44 pt', proof: 'render', run: () => /min-height:\s*44px/.test(cssNoComments)
-      ? PARTIAL('44 px appliqués sous `pointer: coarse` (couvre iOS) ; contrôle sur appareil non fait')
+  { id: 'D02', section: 'D', level: 'BLOCKING', label: 'iOS : zone de touche 44 × 44 pt', proof: 'render', run: () => /@media \(pointer: coarse\)[\s\S]{0,120}--tap-min:\s*44px/.test(cssNoComments)
+      ? PARTIAL('`--tap-min: 44px` sous `pointer: coarse` (couvre iOS) ; contrôle sur appareil non fait')
       : FAIL('pas de plancher 44 px') },
-  { id: 'D03', section: 'D', level: 'BLOCKING', label: 'Android : cible 48 × 48 dp', proof: 'render', run: () => /data-platform='android'/.test(cssNoComments)
-      ? PARTIAL('48 px appliqués via `html[data-platform="android"]` ; contrôle sur appareil non fait')
+  { id: 'D03', section: 'D', level: 'BLOCKING', label: 'Android : cible 48 × 48 dp', proof: 'render', run: () => /html\[data-platform=['"]android['"]\]\s*\{\s*--tap-min:\s*48px/.test(cssNoComments)
+      ? PARTIAL('`--tap-min: 48px` via `html[data-platform="android"]` ; contrôle sur appareil non fait')
       : FAIL('pas de plancher 48 dp') },
   { id: 'D04', section: 'D', level: 'BLOCKING', label: 'Windows : 40 × 40 epx en tactile', proof: 'render', run: () => UNVERIFIABLE('cible Windows non construite (pas d’empaquetage Electron/Tauri dans le dépôt)', 'empaqueter puis tester au doigt sur Windows') },
   { id: 'D05', section: 'D', level: 'MAJOR', label: 'Bureau : souris 22–28 pt, cibles espacées', proof: 'render', run: () => UNVERIFIABLE('espacement réel entre cibles non mesurable sans rendu', 'inspection dans le navigateur, onglet Accessibilité') },
@@ -494,13 +494,18 @@ const RULES = [
     id: 'E01', section: 'E', level: 'BLOCKING', label: 'Les cinq états existent : vide, chargement, erreur, succès, limite', proof: 'static',
     run: () => {
       const empty = exists('src/components/ui/EmptyState.tsx');
-      const skeleton = exists('src/components/ui/ScreenSkeleton.tsx');
+      // La forme « chargement » vit dans `Skeleton.tsx` (`ScreenSkeleton`) :
+      // chaque écran a SA forme dans `ScreenSkeletons.tsx`, le nom générique
+      // reste comme point d'entrée documenté.
+      const skeleton =
+        exists('src/components/ui/ScreenSkeletons.tsx') &&
+        /export function ScreenSkeleton\b/.test(read('src/components/ui/Skeleton.tsx'));
       const error = /ErrorBoundary/.test(mainTsx);
       const success = count(allDom, /mem-success|success/i) > 0;
       const edge = count(allDom, /EmptyState/g) > 0;
       const missing = [!empty && 'vide', !skeleton && 'chargement', !error && 'erreur', !success && 'succès', !edge && 'limite'].filter(Boolean);
       return missing.length === 0
-        ? PASS('vide (`EmptyState`), chargement (`ScreenSkeleton`), erreur (`ErrorBoundary`), succès, limite : présents')
+        ? PASS('vide (`EmptyState`), chargement (`ScreenSkeleton` + 25 formes d’écran), erreur (`ErrorBoundary`), succès, limite : présents')
         : FAIL(`manquants : ${missing.join(', ')}`);
     },
   },
@@ -518,9 +523,16 @@ const RULES = [
       return hits >= 5 ? PASS(`${hits} messages d'erreur orientés action`) : PARTIAL(`${hits} messages d'erreur orientés action`);
     },
   },
-  { id: 'E04', section: 'E', level: 'MAJOR', label: "Le chargement réserve la place du contenu, sans saut", proof: 'render', run: () => exists('src/components/ui/ScreenSkeleton.tsx') && /ScreenSkeleton/.test(mainTsx)
-      ? PASS('squelette monté comme repli de `Suspense` (hauteurs réservées)')
-      : FAIL('aucun squelette de chargement') },
+  { id: 'E04', section: 'E', level: 'MAJOR', label: "Le chargement réserve la place du contenu, sans saut", proof: 'render', run: () => {
+      // Deux frontières distinctes : le repli de ROUTE (une forme par famille
+      // d'écran, `RouteSkeletons`) et le repli d'AMORÇAGE (`BootSplash`).
+      const route = /<Suspense fallback=\{<RouteFallback \/>\}>/.test(mainTsx);
+      const kinds = (read('src/components/ui/RouteSkeletons.tsx').match(/case '(reader|exercise|workspace|list|dashboard|form)'/g) ?? []).length;
+      const forms = (read('src/components/ui/ScreenSkeletons.tsx').match(/export function \w+Skeleton\b/g) ?? []).length;
+      return route && kinds >= 5 && forms >= 20
+        ? PASS(`${forms} formes d’écran, ${kinds} familles au repli de route (place réservée par écran)`)
+        : FAIL(`repli de route: ${route ? 'oui' : 'non'} · ${kinds} famille(s) · ${forms} forme(s)`);
+    } },
   { id: 'E05', section: 'E', level: 'MAJOR', label: 'Un état désactivé explique pourquoi et comment l’activer', proof: 'render', run: () => {
       const explained = count(allDom, /aria-describedby=/g);
       const disabled = count(allDom, /\bdisabled\b/g);
@@ -604,7 +616,7 @@ const RULES = [
       const preload = /rel="preload"/.test(indexHtml);
       return swap ? PASS('polices auto-hébergées en `font-display: swap`') : FAIL('police bloquante');
     } },
-  { id: 'I02', section: 'I', level: 'MAJOR', label: 'Pas de décalage de mise en page à l’arrivée du contenu (CLS ≤ 0,1)', proof: 'render', run: () => exists('src/components/ui/ScreenSkeleton.tsx') ? PARTIAL('squelette à hauteurs fixes ; CLS non mesuré sans navigateur') : FAIL('pas de réservation d’espace') },
+  { id: 'I02', section: 'I', level: 'MAJOR', label: 'Pas de décalage de mise en page à l’arrivée du contenu (CLS ≤ 0,1)', proof: 'render', run: () => exists('src/components/ui/ScreenSkeletons.tsx') ? PARTIAL('squelettes à la géométrie réelle (25 formes, repli de route par famille) ; CLS non mesuré sans navigateur') : FAIL('pas de réservation d’espace') },
   { id: 'I03', section: 'I', level: 'BLOCKING', label: 'Le réglage « réduire le mouvement » est respecté', proof: 'static', run: () => reducedMotionBlocks >= 4 ? PASS(`${reducedMotionBlocks} blocs ` + '`prefers-reduced-motion`' + `, dont un pour les animations nommées`) : FAIL(`${reducedMotionBlocks} bloc(s) seulement`) },
   {
     id: 'I04', section: 'I', level: 'MAJOR', label: 'Aucune animation > 400 ms sans raison, aucune boucle infinie', proof: 'heuristic',
@@ -651,8 +663,12 @@ const RULES = [
   { id: 'K01', section: 'K', level: 'BLOCKING', label: 'Aucune case pré-cochée, refuser aussi simple qu’accepter', proof: 'heuristic', run: () => {
       const privacy = exists('app/settings/privacy.tsx') ? stripComments(read('app/settings/privacy.tsx')) : '';
       const preticked = /useState\(true\)/.test(privacy);
-      const switches = count(privacy, /role="switch"/g);
-      const usages = count(privacy, /<Toggle\b/g);
+      const usages = count(privacy, /<(Toggle|Switch)\b/g);
+      // `Switch` porte le rôle lui-même : on compte le rôle dans le composant
+      // du système ET dans l'écran, jamais un `<button>` réinventé.
+      const switches =
+        count(privacy, /role="switch"/g) +
+        (exists('src/components/ui/Switch.tsx') ? count(read('src/components/ui/Switch.tsx'), /role="switch"/g) : 0);
       return privacy && !preticked && switches >= 1 && usages >= 2
         ? PASS(`${usages} interrupteurs de consentement, état exposé par ` + '`role="switch"`' + ', aucun pré-coché')
         : FAIL('consentement pré-coché ou absent');

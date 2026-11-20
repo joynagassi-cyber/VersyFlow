@@ -16,6 +16,12 @@
  * `.skeleton` (globals.css) donne un balayage unique, teinté par le texte du
  * thème, supprimé en `prefers-reduced-motion`. Ici, seule la STRUCTURE est
  * partagée ; les écrans gardent la main sur leur libellé.
+ *
+ * Le fichier porte aussi la forme que montait l'audit du playbook : l'ancien
+ * `ScreenSkeleton` n'existe plus depuis que chaque écran a la sienne
+ * (`ScreenSkeletons.tsx`, 25 formes). Il est conservé comme alias explicite de
+ * `SkeletonScreen` pour que la forme « chargement » des cinq états reste
+ * nommée dans le dépôt, au lieu de dépendre d'un nom de fichier disparu.
  */
 import { cn } from '@/lib/utils';
 
@@ -79,4 +85,16 @@ export function LoadingBlock({
       {label && <p className="mt-4 text-sm text-text-muted">{label}</p>}
     </div>
   );
+}
+
+/**
+ * Forme « chargement » générique — l'état de chargement des cinq états du
+ * playbook (vide / chargement / erreur / succès / limite).
+ *
+ * À utiliser uniquement là où aucune forme réelle n'existe encore (écran non
+ * couvert par `ScreenSkeletons`). Un écran qui a un contenu connu monte SA
+ * forme, pas celle-ci : un bloc générique ne réserve pas la bonne place.
+ */
+export function ScreenSkeleton({ className }: SkeletonProps) {
+  return <SkeletonScreen className={className} />;
 }

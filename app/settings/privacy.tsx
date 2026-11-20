@@ -9,7 +9,10 @@
  *     et une géométrie qui ne suivait pas la direction de lecture. Il utilise
  *     maintenant le `Switch` du système (40 px de cible, `aria-checked`,
  *     mouvement du thème).
- *  2. **Deux commandes mortes.** « Télécharger mes données » et « Supprimer
+ *  2. **Deux consentements pré-cochés.** Les deux interrupteurs s'ouvraient
+ *     activés (K01) : ils démarrent maintenant éteints, et l'état est celui
+ *     que l'utilisateur a réellement choisi.
+ *  3. **Deux commandes mortes.** « Télécharger mes données » et « Supprimer
  *     mon compte » étaient des `<button>` sans `onClick` : un contrôle qui ne
  *     fait rien est pire qu'un contrôle absent. Le premier mène désormais à
  *     l'écran « Activités & Données » (le seul export réel de l'app) ; le
@@ -31,8 +34,15 @@ import { Switch } from '@/components/ui/Switch';
 export default function PrivacyScreen() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const [analyticsEnabled, setAnalyticsEnabled] = useState(true);
-  const [crashReporting, setCrashReporting] = useState(true);
+  /**
+   * Les deux consentements démarrent à `false`. Aucune donnée n'est envoyée
+   * aujourd'hui (application locale), mais un interrupteur pré-coché est un
+   * consentement fabriqué : le playbook (K01) exige que refuser soit aussi
+   * simple qu'accepter, et un réglage qui se présente déjà activé ne le
+   * permet pas — l'utilisateur doit d'abord comprendre qu'il peut le couper.
+   */
+  const [analyticsEnabled, setAnalyticsEnabled] = useState(false);
+  const [crashReporting, setCrashReporting] = useState(false);
 
   return (
     <FullScreenPage

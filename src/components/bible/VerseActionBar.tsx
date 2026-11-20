@@ -473,6 +473,7 @@ export default function VerseActionBar({
             <input
               autoFocus
               type="text"
+              aria-label={t('settings.verseBar.tagTo', 'Taguer ce verset avec le concept')}
               value={tagName}
               onChange={(e) => {
                 setTagName(e.target.value);

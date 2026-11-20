@@ -67,7 +67,10 @@ export function HamburgerMenu() {
           </button>
         </div>
 
-        <nav className="flex-1 overflow-y-auto p-3">
+        <nav
+          aria-label={t('nav.menu', 'Navigation')}
+          className="flex-1 overflow-y-auto p-3"
+        >
           <p className="px-2 pt-1 section-label">
             {t('nav.menu', 'Navigation')}
           </p>

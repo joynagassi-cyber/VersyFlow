@@ -25,7 +25,10 @@
 
     <link rel="icon" type="image/png" href="/icons/app-icons/01-rose-origine.png" />
     <link rel="apple-touch-icon" href="/icons/app-icons/01-rose-origine.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
+    <!-- Le zoom n'est PAS désactivé : une personne qui lit un verset à 200 %
+         doit pouvoir agrandir le texte (playbook C02/H05). `viewport-fit=cover`
+         reste pour les encoches. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <!-- Repli avant l'application du thème ; `ThemeManager` le remplace par le fond
          réel du preset (#D81B97 n'était ni le fond ni la marque). -->
     <meta name="theme-color" content="#f9f6f7" />

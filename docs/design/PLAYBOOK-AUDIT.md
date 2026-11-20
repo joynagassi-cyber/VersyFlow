@@ -1,44 +1,44 @@
 # Audit UX/UI Playbook 2026 — application à VersyFlow
 
 Généré par `node scripts/audit-playbook.mjs`. **Ne pas éditer à la main.**
-Exécuté le 2026-11-20 02:30 (UTC).
+Exécuté le 2026-11-20 02:41 (UTC).
 
-**Bilan : 30 vérifiés · 6 partiels · 19 en échec · 22 non vérifiables ici** (77 règles).
+**Bilan : 39 vérifiés · 10 partiels · 5 en échec · 23 non vérifiables ici** (77 règles).
 
 Lecture : *vérifié* = une mesure reproductible dans le dépôt le confirme ; *partiel* = une partie est mesurée, le reste demande un appareil ou un navigateur ; *non vérifiable ici* = la preuve exige un rendu réel, et la façon de le vérifier est indiquée.
 
 | ID | § | Niveau | Verdict | Règle | Mesure |
 | --- | --- | --- | --- | --- | --- |
-| A01 | A | BLOCKING | **FAIL** | Un seul titre de niveau 1 par écran, sans niveau sauté | 5 écran(s) avec deux h1 : app/family/presentation.tsx (FamilyPresentationScreen), app/memorization/confirm.tsx (MemorizationConfirm), app/profile/select.tsx (ProfileSelectionScreen), app/semantic/community.tsx (CommunityView), app/semantic/concept.tsx (ConceptView) |
-| A02 | A | BLOCKING | **FAIL** | Chaque région de navigation est un repère nommé | main nommé: non · nav nommés 4/6 · main 4 |
+| A01 | A | BLOCKING | **PASS** | Un seul titre de niveau 1 par écran, sans niveau sauté | 90 écrans analysés, 0 h1 en double |
+| A02 | A | BLOCKING | **PASS** | Chaque région de navigation est un repère nommé | main nommé, 6/6 nav nommés, 5 repères main |
 | A03 | A | MAJOR | **PASS** | L'état actif se voit autrement qu'en gras | 8 `aria-current`, 16 style(s) actif dédié(s) |
 | A04 | A | MAJOR | **PASS** | Cinq entrées au plus dans une barre principale | 4 onglets déclarés |
 | A05 | A | MAJOR | **PASS** | Retour = écran précédent, pas l'accueil | 24 retours utilisent l'historique |
 | A06 | A | BLOCKING | **UNVERIFIABLE** | Un seul objectif et une action primaire par écran | jugement de conception : compte les actions primaires visibles sur l’écran rendu |
 | B01 | B | BLOCKING | **PASS** | Texte courant ≥ 4,5:1 sur son fond réel |  |
 | B02 | B | BLOCKING | **PASS** | Grand texte (≥ 24 px ou 19 px gras) ≥ 3:1 | tous les couples titre ≥ Infinity:1 |
-| B03 | B | BLOCKING | **PASS** | Icônes porteuses de sens, bordures et focus ≥ 3:1 | 30 contours de focus, icônes colorées par jeton |
-| B04 | B | BLOCKING | **PASS** | L'information n'est jamais portée par la couleur seule | 65 états exposés en ARIA, 136 libellés textuels |
+| B03 | B | BLOCKING | **PASS** | Icônes porteuses de sens, bordures et focus ≥ 3:1 | 31 contours de focus, icônes colorées par jeton |
+| B04 | B | BLOCKING | **PASS** | L'information n'est jamais portée par la couleur seule | 65 états exposés en ARIA, 145 libellés textuels |
 | B05 | B | MAJOR | **PASS** | Le mode sombre est un second jeu de jetons, pas un filtre | bloc `[data-theme="dark"]` dédié, aucun filtre inverseur |
 | B06 | B | MAJOR | **PASS** | Rien ne disparaît en contraste élevé ni en niveaux de gris | 17 règles de contraste élevé |
 | C01 | C | BLOCKING | **FAIL** | Rien d'utile sous 12 px à l'échelle par défaut | échelle Tailwind à 11px · classes 10/11px · 17 font-size < 12px dans globals.css |
-| C02 | C | MAJOR | **FAIL** | Le texte tient à 200 % sans perte ni défilement horizontal | le zoom est bloqué par la balise viewport |
+| C02 | C | MAJOR | **PARTIAL** | Le texte tient à 200 % sans perte ni défilement horizontal | zoom autorisé (maximum-scale=5) ; rendu à 200 % non mesuré sans navigateur |
 | C03 | C | MAJOR | **UNVERIFIABLE** | Le texte suit la taille système jusqu’à 200 % | nécessite un appareil iOS/Android avec Dynamic Type activé |
 | C04 | C | MAJOR | **PARTIAL** | Longueur de ligne entre 45 et 80 caractères | mesure = 720px (px) : la longueur en caractères dépend de la police choisie |
 | C05 | C | MINOR | **PASS** | Un couple de polices, une échelle de tailles documentée | 5 tailles distinctes (11/18/22/26/30 px), 4 familles embarquées |
-| D01 | D | BLOCKING | **FAIL** | Cible interactive ≥ 24 × 24 px | aucune règle de cible minimale |
-| D02 | D | BLOCKING | **FAIL** | iOS : zone de touche 44 × 44 pt | pas de plancher 44 px |
-| D03 | D | BLOCKING | **FAIL** | Android : cible 48 × 48 dp | pas de plancher 48 dp |
+| D01 | D | BLOCKING | **PASS** | Cible interactive ≥ 24 × 24 px | plancher de 24 px posé sur `.touch-target` (`max(24px, --tap-min)`) |
+| D02 | D | BLOCKING | **PARTIAL** | iOS : zone de touche 44 × 44 pt | `--tap-min: 44px` sous `pointer: coarse` (couvre iOS) ; contrôle sur appareil non fait |
+| D03 | D | BLOCKING | **PARTIAL** | Android : cible 48 × 48 dp | `--tap-min: 48px` via `html[data-platform="android"]` ; contrôle sur appareil non fait |
 | D04 | D | BLOCKING | **UNVERIFIABLE** | Windows : 40 × 40 epx en tactile | cible Windows non construite (pas d’empaquetage Electron/Tauri dans le dépôt) |
 | D05 | D | MAJOR | **UNVERIFIABLE** | Bureau : souris 22–28 pt, cibles espacées | espacement réel entre cibles non mesurable sans rendu |
 | D06 | D | MAJOR | **UNVERIFIABLE** | Aucune action destructrice collée à une action fréquente | jugement de conception sur les écrans rendus |
 | D07 | D | MAJOR | **UNVERIFIABLE** | Gestes système préservés | nécessite iOS/Android |
-| E01 | E | BLOCKING | **FAIL** | Les cinq états existent : vide, chargement, erreur, succès, limite | manquants : chargement |
+| E01 | E | BLOCKING | **PASS** | Les cinq états existent : vide, chargement, erreur, succès, limite | vide (`EmptyState`), chargement (`ScreenSkeleton` + 25 formes d’écran), erreur (`ErrorBoundary`), succès, limite : présents |
 | E02 | E | BLOCKING | **PASS** | L'état vide propose une action | `EmptyState` accepte une action |
 | E03 | E | MAJOR | **PASS** | L'erreur dit quoi faire, pas seulement ce qui a échoué | 15 messages d'erreur orientés action |
-| E04 | E | MAJOR | **FAIL** | Le chargement réserve la place du contenu, sans saut | aucun squelette de chargement |
+| E04 | E | MAJOR | **PASS** | Le chargement réserve la place du contenu, sans saut | 25 formes d’écran, 5 familles au repli de route (place réservée par écran) |
 | E05 | E | MAJOR | **PASS** | Un état désactivé explique pourquoi et comment l’activer | 4 élément(s) désactivé(s) relié(s) à une explication (104 attributs disabled) |
-| F01 | F | BLOCKING | **FAIL** | Chaque champ a un libellé visible relié au programme | 5 champ(s) sans nom : app/collections/index.tsx:336, app/onboarding/reminder-config.tsx:188, app/search/index.tsx:211, app/settings/reminders.tsx:131, src/components/bible/VerseActionBar.tsx:436 |
+| F01 | F | BLOCKING | **PASS** | Chaque champ a un libellé visible relié au programme | tous les champs portent un nom accessible (`aria-label`, `aria-labelledby` ou `<label>` englobant) |
 | F02 | F | BLOCKING | **UNVERIFIABLE** | Le message d'erreur est sous son champ et nomme la règle | position du message non mesurable sans rendu |
 | F03 | F | BLOCKING | **PASS** | Le champ fautif porte `aria-invalid` et l’erreur est annoncée | 2 `aria-invalid`, 13 zone(s) live |
 | F04 | F | MAJOR | **UNVERIFIABLE** | Le formulaire ne demande que ce qu’il utilise | jugement de conception |
@@ -50,14 +50,14 @@ Lecture : *vérifié* = une mesure reproductible dans le dépôt le confirme ; *
 | G04 | G | MAJOR | **PASS** | Pas de texte de remplissage, pas de promesse invérifiable | aucun lorem ipsum, aucun « bientôt disponible » |
 | G05 | G | MAJOR | **PARTIAL** | En RTL la mise en page se retourne sans casser les icônes directionnelles | RTL piloté au niveau document (8 propriétés logiques, 30 directions physiques restantes) |
 | G06 | G | MINOR | **PASS** | Dates et heures relatives ou localisées | 29 format(s) relatif(s)/localisé(s) |
-| H01 | H | BLOCKING | **FAIL** | Tout est utilisable au clavier, focus visible, sans piège | évitement false, focus 42, Échap true |
+| H01 | H | BLOCKING | **PASS** | Tout est utilisable au clavier, focus visible, sans piège | lien d’évitement, 43 règles `:focus-visible`, fermeture Échap |
 | H02 | H | BLOCKING | **PASS** | Chaque image a un texte alternatif ou est décorative | toutes les balises `<img>` portent `alt` ou `aria-hidden` |
 | H03 | H | BLOCKING | **PASS** | Chaque commande a un nom accessible, icônes comprises | aucun bouton sans nom accessible détecté |
-| H04 | H | BLOCKING | **FAIL** | Le focus est déplacé après navigation, sans le voler | focus de route : absent, monté 0 fois |
-| H05 | H | MAJOR | **FAIL** | Zoom système et navigateur testés à 200 % | zoom bloqué |
+| H04 | H | BLOCKING | **FAIL** | Le focus est déplacé après navigation, sans le voler | focus de route : présent, monté 1 fois |
+| H05 | H | MAJOR | **UNVERIFIABLE** | Zoom système et navigateur testés à 200 % | rendu à 200 % non mesurable sans navigateur |
 | H06 | H | MAJOR | **PASS** | Les composants exposent rôles et états exacts | 32 rôles explicites posés |
 | I01 | I | MAJOR | **PASS** | Aucune image ou police bloquante au premier écran | polices auto-hébergées en `font-display: swap` |
-| I02 | I | MAJOR | **FAIL** | Pas de décalage de mise en page à l’arrivée du contenu (CLS ≤ 0,1) | pas de réservation d’espace |
+| I02 | I | MAJOR | **PARTIAL** | Pas de décalage de mise en page à l’arrivée du contenu (CLS ≤ 0,1) | squelettes à la géométrie réelle (25 formes, repli de route par famille) ; CLS non mesuré sans navigateur |
 | I03 | I | BLOCKING | **PASS** | Le réglage « réduire le mouvement » est respecté | 11 blocs `prefers-reduced-motion`, dont un pour les animations nommées |
 | I04 | I | MAJOR | **FAIL** | Aucune animation > 400 ms sans raison, aucune boucle infinie | boucle infinie — cursor: pointer; user-select: none; animation: mem-pulse 2.4s ease-in-out infinite; · boucle infinie — .animate-spin { animation: spin 1.4s linear infinite; } · boucle infinie — animation: skeleton-sweep 1.4s var(--ease-standard) infinite; · boucle infinie — .journey-confetti i { position:absolute; width:6px; height:6px; border-radius:2px; backgro |
 | I05 | I | MINOR | **UNVERIFIABLE** | Premier rendu utile < 2,5 s sur réseau médian | mesure réseau réelle non reproductible ici |
@@ -76,8 +76,8 @@ Lecture : *vérifié* = une mesure reproductible dans le dépôt le confirme ; *
 | J13 | J | MAJOR | **UNVERIFIABLE** | Linux/KDE : barre de menus, barre d’outils, raccourcis Ctrl | cible Linux non construite |
 | J14 | J | MAJOR | **UNVERIFIABLE** | Linux : thème sombre et contraste élevé suivis | cible Linux non construite |
 | J15 | J | BLOCKING | **PARTIAL** | Web : utilisable de 320 à 1920 px sans défilement horizontal | aucune largeur > 320 px ; contrôle de rendu à 320/390/768/1280 non fait |
-| J16 | J | MAJOR | **FAIL** | Web : zones sûres et zoom de page non bloqué | insets true, zoom false |
-| K01 | K | BLOCKING | **FAIL** | Aucune case pré-cochée, refuser aussi simple qu’accepter | consentement pré-coché ou absent |
+| J16 | J | MAJOR | **PASS** | Web : zones sûres et zoom de page non bloqué | `viewport-fit=cover`, insets `env(...)`, zoom autorisé (5×) |
+| K01 | K | BLOCKING | **PASS** | Aucune case pré-cochée, refuser aussi simple qu’accepter | 2 interrupteurs de consentement, état exposé par `role="switch"`, aucun pré-coché |
 | K02 | K | BLOCKING | **PASS** | Aucune promesse inventée, aucun chiffre sans source ni date | mode démo signalé à l’écran, sources bibliques documentées et datées |
 | K03 | K | MAJOR | **UNVERIFIABLE** | Le total, frais inclus, est visible avant engagement | aucun parcours payant dans l’application aujourd’hui |
 | K04 | K | MAJOR | **PASS** | On peut quitter un parcours sans perdre son travail | 37 mécanismes de persistance/brouillon |
@@ -99,6 +99,7 @@ Lecture : *vérifié* = une mesure reproductible dans le dépôt le confirme ; *
 | D07 | Gestes système préservés | nécessite iOS/Android | tester le retour par bord sur les deux plateformes |
 | F02 | Le message d'erreur est sous son champ et nomme la règle | position du message non mesurable sans rendu | inspecter le DOM sur un formulaire en erreur |
 | F04 | Le formulaire ne demande que ce qu’il utilise | jugement de conception | relecture des formulaires d’inscription et de profil |
+| H05 | Zoom système et navigateur testés à 200 % | rendu à 200 % non mesurable sans navigateur | navigateur, zoom 200 %, vérifier l’absence de défilement horizontal |
 | I05 | Premier rendu utile < 2,5 s sur réseau médian | mesure réseau réelle non reproductible ici | Lighthouse en réseau « Slow 4G » |
 | J02 | Android : retour système (y compris prédictif) | nécessite un appareil Android | test sur appareil, geste de retour depuis chaque écran profond |
 | J03 | Android : retour visuel Material | nécessite un appareil Android | vérifier l’onde de pression sur les commandes |

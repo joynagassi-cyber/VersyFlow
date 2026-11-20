@@ -135,6 +135,7 @@ export default function SettingsRemindersScreen() {
           <div className="flex-1">
             <p className="text-base font-semibold text-text-primary">{t('onboarding.reminderTime')}</p>
             <input
+              aria-label={t('onboarding.reminderTime')}
               type="time"
               value={reminderTime}
               disabled={!reminderEnabled}

@@ -2263,12 +2263,59 @@ html { -webkit-tap-highlight-color: transparent; }
 
 /* 6. Cible tactile minimale — pour les commandes icône seule des coquilles.
    On ne force rien sur les puces de texte (`px-2 py-0.5`) : une cible plus
-   grande qu'une ligne de texte casserait les listes denses. */
+   grande qu'une ligne de texte casserait les listes denses.
+
+   Le plancher du playbook (D01 : 24 × 24 CSS px, D02 : 44 pt sur iOS,
+   D03 : 48 dp sur Android) s'applique aux commandes icône seule, pas au
+   texte. `--tap-min` valait 40 px sur toutes les plateformes ; il monte au
+   plancher de la plateforme quand on la connaît, et garde 40 px ailleurs
+   (souris : 22–28 pt suffisent, une cible de 48 px y serait un pavé). */
 .touch-target {
   display: inline-grid;
   place-items: center;
   min-width: var(--tap-min);
   min-height: var(--tap-min);
+  /* Jamais moins que le plancher universel de 24 px, même pour un picto. */
+  min-width: max(24px, var(--tap-min));
+  min-height: max(24px, var(--tap-min));
+}
+@media (pointer: coarse) {
+  /* iOS recommande 44 × 44 pt : le doigt couvre déjà la cible de 24 px. */
+  :root { --tap-min: 44px; }
+}
+html[data-platform='android'] { --tap-min: 48px; }
+
+/* 6 bis. Lien d'évitement — invisible jusqu'au focus clavier.
+   Il vit hors du flux (position fixe) pour ne décaler aucune mise en page,
+   et il redevient pleinement visible dès qu'il reçoit le focus : un lien
+   d'évitement qu'on ne voit pas ne rend service à personne. */
+.skip-link {
+  position: fixed;
+  top: 8px;
+  left: 8px;
+  z-index: 100;
+  padding: 10px 16px;
+  border-radius: 999px;
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+  transform: translateY(-200%);
+  transition: transform 120ms var(--ease-standard, ease);
+}
+.skip-link:focus,
+.skip-link:focus-visible {
+  transform: translateY(0);
+  outline: 3px solid var(--color-text-primary);
+  outline-offset: 2px;
+}
+
+/* Le contenu reçoit le focus par programme (`useRouteFocus`) : aucun anneau
+   n'est dessiné sur le conteneur, seul le titre annoncé importe. */
+#main-content:focus,
+#main-content h1:focus {
+  outline: none;
 }
 
 /* 7. Squelette de chargement — un seul matériau, un seul rythme.

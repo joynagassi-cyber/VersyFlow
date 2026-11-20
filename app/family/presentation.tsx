@@ -33,9 +33,9 @@ export default function FamilyPresentationScreen() {
     <FullScreenPage title={t('familyPlus.presentationTitle', 'La famille')} column="narrow">
       <div className="space-y-4">
         <SectionCard>
-          <h1 className="page-title-lg">
+          <h2 className="page-title-lg">
             {t('familyPlus.presentationHero', 'Mémorisez ensemble')}
-          </h1>
+          </h2>
           <p className="mt-2 text-sm leading-6 text-text-muted">
             {t('familyPlus.presentationSub', 'Chacun garde son rythme, la famille garde le cap.')}
           </p>
