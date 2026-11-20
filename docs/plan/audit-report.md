@@ -1,7 +1,7 @@
 # Rapport d’audit — plan « Interface web + thèmes »
 
 Généré par `node scripts/audit-plan.mjs`. **Ne pas éditer à la main.**
-Exécuté le 2026-11-20 09:02 (UTC).
+Exécuté le 2026-11-20 09:13 (UTC).
 
 **Bilan : 17 PASS · 1 PARTIEL · 0 FAIL · 4 non vérifiable(s).**
 
