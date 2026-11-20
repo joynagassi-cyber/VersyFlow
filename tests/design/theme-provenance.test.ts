@@ -8,9 +8,9 @@
  * chacun, aucun champ manquant.
  */
 import { describe, it, expect } from 'vitest';
-import { readFileSync } from 'node:fs';
+import { readdirSync, readFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
-import { resolve } from 'node:path';
+import { join, resolve } from 'node:path';
 import { deflateSync } from 'node:zlib';
 // @ts-expect-error — script ESM sans types : seule la fonction testée est importée.
 import { pngMeanColor } from '../../scripts/theme-provenance.mjs';
@@ -143,8 +143,6 @@ describe('L6 — manifeste de provenance', () => {
     // Une URL `/themes/objets/obj-clé-portrait.webp` est valide en HTTP mais
     // fragile (encodage, normalisation NFC/NFD, copie Windows/macOS) : les
     // identifiants de thème sont ASCII, les fichiers doivent l'être aussi.
-    const { readdirSync } = require('node:fs') as typeof import('node:fs');
-    const { join } = require('node:path') as typeof import('node:path');
     const accented: string[] = [];
     for (const category of readdirSync(join(root, 'public/themes'))) {
       const dir = join(root, 'public/themes', category);
