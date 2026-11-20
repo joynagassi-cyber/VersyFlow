@@ -316,3 +316,25 @@ sacrées.
 portraits, 99/100 compositions, un thème assumé sans visuel. Les commentaires
 d'en-tête du catalogue (`theme-catalog.ts`) donnent les dimensions réelles.
 
+### D18. Les visuels orphelins au nom accentué sont retirés
+
+**Contexte.** `theme-provenance` signalait trois fichiers `obj-clé-*` dans
+`public/themes/objets/` : un « é » dans le nom, alors que l'identifiant du
+catalogue est `obj-cle` (ASCII) et que `themeLandscapeUrl()` construit l'URL
+depuis cet identifiant. Ces fichiers n'étaient donc **servis par aucune URL**
+(vérifié : aucune référence dans `src/`, `app/`, `scripts/` ni les locales). Le
+portrait montrait par ailleurs une clé sur un parquet, quand `obj-cle` montre un
+château de sable : ce n'était pas une variante du même visuel. Deux règles se
+contredisaient — D9 (« ne pas supprimer un module sans importeur s'il est
+testé ») et le manifeste qui les déclarait orphelins ; un fichier n'est pas un
+module, et aucun test ne les décrivait autrement que comme un écart.
+
+**Décision.** Suppression des trois fichiers (paysage, portrait, vignette). Le
+manifeste `strays` doit rester vide, et un test refuse désormais **tout nom non
+ASCII** sous `public/themes/` — une URL accentuée est valide mais fragile
+(encodage, normalisation NFC/NFD, copie Windows/macOS).
+
+**Conséquence.** `public/themes/` compte 396 fichiers WebP (132 paysages,
+132 portraits, 132 vignettes) ; `theme-provenance`, `check-theme-assets` et la
+suite de tests passent sans avertissement d'orphelin.
+

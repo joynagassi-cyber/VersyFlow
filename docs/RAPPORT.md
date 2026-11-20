@@ -26,7 +26,7 @@ restent exacts.
 | --- | --- | --- |
 | Service cloud (auth, base, stockage, synchronisation) en production | supprimé : l'application est 100 % frontend, l'état vit sur l'appareil | `docs/DECISIONS.md` D1, `tests/design/no-cloud-backend.test.ts` |
 | 34 traductions intégrées | une seule livrée (LSG 1910, domaine public) ; les autres sont cataloguées et marquées indisponibles | `docs/DECISIONS.md` D2, `docs/SOURCES.md` |
-| 1 148 tests automatisés | **1 735** tests, 184 fichiers, 0 échec | dernière exécution `npx vitest run` |
+| 1 148 tests automatisés | **1 736** tests, 184 fichiers, 0 échec | dernière exécution `npx vitest run` |
 
 Ce qui n'a pas changé : la mémorisation par FSRS, les 45 langues d'interface,
 la lecture biblique hors ligne, et les textes cités (LSG 1910, domaine public).

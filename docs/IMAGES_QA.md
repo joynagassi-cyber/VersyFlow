@@ -12,9 +12,9 @@ Mesuré le 2026-11-19 sur `public/themes/` :
 | Mesure | Valeur |
 | --- | --- |
 | Catégories (un dossier chacune) | **14** |
-| Fichiers `.webp` | **399** (20,6 Mo) |
-| dont vignettes `*-thumb.webp` | **133** (1,0 Mo, 8 Ko de moyenne, 27 Ko au plus) |
-| Nombres d'images | 133 paysages, 133 portraits, 133 vignettes |
+| Fichiers `.webp` | **396** (22 Mo sur disque, blocs de 4 Ko) |
+| dont vignettes `*-thumb.webp` | **132** (1,0 Mo, 8 Ko de moyenne, 27 Ko au plus) |
+| Nombres d'images | 132 paysages, 132 portraits, 132 vignettes (99 thèmes illustrés + 20 scènes photo + 13 scènes sacrées) |
 
 | Format | Dimensions | Usage |
 | --- | --- | --- |
@@ -70,6 +70,12 @@ signale aussi une « fausse » composition bureau (copie octet pour octet du
 portrait). Le seul thème sans visuel, `objets/obj-miroir`, est déclaré à part :
 plusieurs écrans l'écartent explicitement, ce n'est pas un oubli silencieux.
 La CI l'exécute dans la matrice `data` de `quality-gate`.
+
+**Noms de fichiers** : les identifiants de thème sont ASCII, donc les fichiers
+aussi. Trois visuels `obj-clé-*` (accent dans le nom, identifiant absent du
+catalogue, servis par aucune URL) ont été retirés le 2026-11-19 ; un test
+(`tests/design/theme-provenance.test.ts`) refuse désormais tout nom non ASCII
+dans `public/themes/`.
 
 **Mesures de tonalité** : `scripts/themes/theme-metrics.mjs` mesure chaque image
 **à 120 px de large** : c'est la taille d'une vignette de sélecteur, donc la

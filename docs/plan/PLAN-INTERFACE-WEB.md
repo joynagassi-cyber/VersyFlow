@@ -304,10 +304,13 @@ Deux limites restent déclarées, jamais comptées comme réussies :
   peut rien mesurer : absent ≠ réussi.
 - **Visuels de thèmes** — `public/themes` est désormais **versionné** (décision du
   29/10 : les thèmes image font partie de la livraison). État mesuré par
-  `npm run themes:provenance` : **198 PNG suivis** = 99 portraits + 99 paysages
-  (+ 2 fichiers orphelins `obj-clé-landscape/portrait.png`). Un thème du catalogue,
-  **`objets/obj-miroir`**, n'a jamais eu de visuel : il retombe sur la couleur de
-  catalogue. Les orphelins sont **déclarés, pas supprimés**.
+  `npm run themes:provenance` et `npm run themes:assets` : **99 portraits WebP +
+  99 paysages + 132 vignettes**, plus les scènes photo et sacrées. Trois fichiers
+  orphelins au nom accentué (`obj-clé-*`, identifiant jamais présent au
+  catalogue, servis par aucune URL) ont été **retirés** le 2026-11-19 ; un test
+  interdit désormais les accents dans un nom de fichier de thème. Un thème du
+  catalogue, **`objets/obj-miroir`**, n'a jamais eu de visuel : il retombe sur la
+  couleur de catalogue, et il est **déclaré** comme tel (pas un oubli).
 
 ## 6. Décisions déjà arbitrées (ne pas rejouer)
 

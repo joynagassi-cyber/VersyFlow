@@ -110,7 +110,7 @@ npm run verify               # tsc + eslint + corpus Bible + tests design + audi
 ```
 
 Dernières mesures connues (2026-11-19) : `typecheck` **0 erreur** ; `vitest`
-**184 fichiers / 1 735 tests, 0 échec** ; `npm run lint` **0 erreur** (1 925
+**184 fichiers / 1 736 tests, 0 échec** ; `npm run lint` **0 erreur** (1 925
 avertissements préexistants, dont la dette typée des scripts) ; `npm run build`
 **succès** (264 fichiers JS, 2,8 Mo ; `www/` 61 Mo avec les thèmes et la Bible).
 
