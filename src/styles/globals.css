@@ -2261,9 +2261,10 @@ html { -webkit-tap-highlight-color: transparent; }
     transition: none;
     scroll-behavior: auto;
   }
-  /* Deux indicateurs portent une information et restent animés : le balayage
-     du squelette (l'attente) et le disque des boutons occupés (l'action en
-     cours). Tout le reste est coupé. */
+  /* Un seul indicateur reste animé : le disque des boutons occupés, qui dit
+     « l'action est en cours » et n'a pas d'équivalent statique. Le balayage du
+     squelette est coupé — la forme grise suffit à dire « ça arrive » — et
+     tout le reste aussi. */
   .animate-spin { animation: spin 1.4s linear infinite; }
   .skeleton::after { animation: none; opacity: 0; }
 }

@@ -1,9 +1,9 @@
 # Audit UX/UI Playbook 2026 — application à VersyFlow
 
 Généré par `node scripts/audit-playbook.mjs`. **Ne pas éditer à la main.**
-Exécuté le 2026-11-20 08:59 (UTC).
+Exécuté le 2026-11-20 09:01 (UTC).
 
-**Bilan : 46 vérifiés · 8 partiels · 0 en échec · 23 non vérifiables ici** (77 règles).
+**Bilan : 47 vérifiés · 7 partiels · 0 en échec · 23 non vérifiables ici** (77 règles).
 
 Lecture : *vérifié* = une mesure reproductible dans le dépôt le confirme ; *partiel* = une partie est mesurée, le reste demande un appareil ou un navigateur ; *non vérifiable ici* = la preuve exige un rendu réel, et la façon de le vérifier est indiquée.
 
@@ -59,7 +59,7 @@ Lecture : *vérifié* = une mesure reproductible dans le dépôt le confirme ; *
 | I01 | I | MAJOR | **PASS** | Aucune image ou police bloquante au premier écran | polices auto-hébergées en `font-display: swap` |
 | I02 | I | MAJOR | **PARTIAL** | Pas de décalage de mise en page à l’arrivée du contenu (CLS ≤ 0,1) | squelettes à la géométrie réelle (25 formes, repli de route par famille) ; CLS non mesuré sans navigateur |
 | I03 | I | BLOCKING | **PASS** | Le réglage « réduire le mouvement » est respecté | 10 blocs `prefers-reduced-motion`, dont un pour les animations nommées |
-| I04 | I | MAJOR | **PARTIAL** | Aucune animation > 400 ms sans raison, aucune boucle infinie | 7 animation(s) au-delà de 400 ms, justifiées et jouées une seule fois : animation: mem-success-pop 480ms cubic-bezier(0.34, 1.56, 0. · background: var(--color-success); animation: mem-success-rin · animation: mem-confetti-fall 1200ms ease-in both; |
+| I04 | I | MAJOR | **PASS** | Aucune animation > 400 ms sans raison, aucune boucle infinie | 4 animation(s) au-delà de 400 ms, toutes déclarées dans `JUSTIFIED_LONG_ANIMATIONS` et jouées une seule fois |
 | I05 | I | MINOR | **UNVERIFIABLE** | Premier rendu utile < 2,5 s sur réseau médian | mesure réseau réelle non reproductible ici |
 | J01 | J | BLOCKING | **PARTIAL** | Android : edge-to-edge et encoches gérées | `viewport-fit=cover` et encoches déclarés ; rendu Android non testé |
 | J02 | J | BLOCKING | **UNVERIFIABLE** | Android : retour système (y compris prédictif) | nécessite un appareil Android |

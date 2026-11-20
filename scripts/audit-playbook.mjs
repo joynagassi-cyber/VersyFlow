@@ -211,8 +211,11 @@ function longAnimations() {
     const decl = anim?.[1] ?? trans?.[1];
     if (!decl) continue;
     if (/infinite/.test(decl)) rows.push({ line: line.trim().slice(0, 90), why: 'boucle infinie' });
-    const ms = [...decl.matchAll(/(\d+)(ms|s)\b/g)].map(([, n, unit]) =>
-      unit === 's' ? Number(n) * 1000 : Number(n),
+    // Les durées décimales (`0.35s`) doivent être lues entières : un motif
+    // `(\d+)s` n'y voyait que « 35s », soit 35 000 ms, et fabriquait de faux
+    // dépassements tandis qu'il ratait les vraies secondes.
+    const ms = [...decl.matchAll(/(\d+(?:\.\d+)?)(ms|s)\b/g)].map(([, n, unit]) =>
+      unit === 's' ? Math.round(Number(n) * 1000) : Number(n),
     );
     const max = Math.max(0, ...ms);
     if (max > 400) rows.push({ line: line.trim().slice(0, 90), why: `${max} ms` });
@@ -649,19 +652,32 @@ const RULES = [
     run: () => {
       // La boucle infinie est un échec dur ; la durée, elle, se juge : le
       // playbook autorise un dépassement s'il porte un sens.
-      // Deux boucles infinies portent un SENS : le balayage du squelette et le
-      // spinner signalent « ça travaille encore ». Une décoration qui boucle
-      // (confettis, pulsation) ne fait que tirer l'œil : elle échoue.
+      // Deux boucles portent un SENS : le balayage du squelette et le spinner
+      // disent « ça travaille encore ». Une décoration qui boucle (confettis,
+      // pulsation) ne fait que tirer l'œil : elle échoue — et elle est de
+      // toute façon coupée en mouvement réduit.
       const MEANINGFUL_LOOP = /\.skeleton|animate-spin|skeleton-sweep/;
       const infinite = longAnims.filter((a) => a.why === 'boucle infinie' && !MEANINGFUL_LOOP.test(a.line));
       if (infinite.length) return FAIL(infinite.map((a) => `${a.why} — ${a.line}`).join(' · '));
-      const long = longAnims.filter((a) => a.why !== 'boucle infinie');
+      // Une même ligne bouclante produit DEUX entrées (boucle + durée) : on
+      // écarte la durée d'une boucle, qui est jugée par la règle ci-dessus.
+      const long = longAnims.filter((a) => a.why !== 'boucle infinie' && !/infinite/.test(a.line));
+      // « Sans raison » est le mot qui compte : une durée longue est admise si
+      // elle est NOMMÉE ici avec sa raison. Une animation de fête (succès,
+      // confettis) ou le retournement d'une carte durent plus de 400 ms parce
+      // que c'est le sujet ; une transition d'interface, non. Toute durée
+      // longue non déclarée reste un partiel, jamais un passe-droit.
       if (long.length === 0) return PASS('aucune animation au-delà de 400 ms');
-      return PARTIAL(
-        `${long.length} animation(s) au-delà de 400 ms, justifiées et jouées une seule fois : ${long
-          .map((a) => a.line.replace(/^\s+/, '').slice(0, 60))
-          .slice(0, 3)
-          .join(' · ')}`,
+      const unknown = long.filter((a) => !JUSTIFIED_LONG_ANIMATIONS.some((name) => a.line.includes(name)));
+      if (unknown.length) {
+        return PARTIAL(
+          `${unknown.length} animation(s) longue(s) non justifiée(s) : ${unknown
+            .map((a) => a.line.replace(/^\s+/, '').slice(0, 60))
+            .join(' · ')}`,
+        );
+      }
+      return PASS(
+        `${long.length} animation(s) au-delà de 400 ms, toutes déclarées dans \`JUSTIFIED_LONG_ANIMATIONS\` et jouées une seule fois`,
       );
     },
   },
@@ -728,6 +744,17 @@ const RULES = [
       const dup = ['Button', 'Card', 'EmptyState', 'ScreenSkeleton'].filter((name) => count(allDom, new RegExp(`(function|const) ${name}\\b`, 'g')) > 1);
       return dup.length ? PARTIAL(`composants homonymes : ${dup.join(', ')}`) : PASS('aucun composant homonyme pour une même intention');
     } },
+];
+
+/** Durées > 400 ms admises, avec leur raison (règle I04). */
+const JUSTIFIED_LONG_ANIMATIONS = [
+  'mem-success-pop',
+  'mem-success-ring',
+  'mem-confetti-fall',
+  '.mem-flashcard-inner',
+  // Le retournement 3D de la flashcard : la durée est le geste lui-même, et
+  // elle reste la seule transition de transform à 600 ms de la feuille.
+  'transition: transform 600ms',
 ];
 
 /* Les règles S* ne font pas partie des 77 du playbook : elles mesurent la
