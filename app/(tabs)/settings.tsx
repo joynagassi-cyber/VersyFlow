@@ -129,7 +129,7 @@ function DataTab() {
             <span className="block text-base font-semibold text-text-primary">{c.label}</span>
             <span className="block text-sm text-text-muted">{c.sub}</span>
           </span>
-          <DuoIcon icon={ChevronRight} size={20} className="text-text-muted" />
+          <DuoIcon icon={ChevronRight} size={20} className="directional text-text-muted" />
         </button>
       ))}
     </div>
@@ -237,7 +237,7 @@ function ParamsTab() {
                   <span className="block text-base text-text-primary">{row.label}</span>
                   <span className="block text-sm text-text-muted">{row.sub}</span>
                 </span>
-                <DuoIcon icon={ChevronRight} size={20} className="text-text-muted" />
+                <DuoIcon icon={ChevronRight} size={20} className="directional text-text-muted" />
               </button>
             ))}
           </div>
@@ -270,7 +270,7 @@ function ParamsTab() {
               <span className="block text-base font-medium text-error">{t('settings.resetProgress', 'Réinitialiser la progression')}</span>
               <span className="block text-sm text-text-muted">{t('common.delete', 'Supprimer toutes les données')}</span>
             </span>
-            <DuoIcon icon={ChevronRight} size={20} className="text-error" />
+            <DuoIcon icon={ChevronRight} size={20} className="directional text-error" />
           </button>
         </div>
       </section>
@@ -432,7 +432,7 @@ function ProfileTab() {
                 <span className="block text-base text-text-primary">{a.label}</span>
                 <span className="block text-sm text-text-muted">{a.sub}</span>
               </span>
-              <DuoIcon icon={ChevronRight} size={20} className="text-text-muted" />
+              <DuoIcon icon={ChevronRight} size={20} className="directional text-text-muted" />
             </button>
           ))}
         </div>

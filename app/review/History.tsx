@@ -456,7 +456,7 @@ export default function ReviewHistoryScreen() {
                             <DuoIcon icon={TrendingUp} size={16} className="text-primary" />
                             {t('history.stability', 'Stabilité FSRS')} :{' '}
                             <strong>{entry.stabilityBefore.toFixed(1)}j</strong>
-                            <DuoIcon icon={ArrowRight} size={16} />
+                            <DuoIcon icon={ArrowRight} size={16}  className="directional" />
                             <strong>{entry.stabilityAfter.toFixed(1)}j</strong>
                             {delta !== 0 && (
                               <span className={delta > 0 ? 'text-success' : 'text-error'}>

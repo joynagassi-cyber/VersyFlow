@@ -222,7 +222,7 @@ export default function MemorizationStartScreen() {
                   <span className="card-title block">{t(s.key, s.id)}</span>
                   <span className="text-sm text-text-muted">{t(s.detail, s.id)}</span>
                 </span>
-                {active ? <DuoIcon icon={ChevronRight} size={20} className="text-primary" /> : null}
+                {active ? <DuoIcon icon={ChevronRight} size={20} className="directional text-primary" /> : null}
               </button>
             );
           })}

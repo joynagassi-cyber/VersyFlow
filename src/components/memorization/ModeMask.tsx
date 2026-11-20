@@ -416,7 +416,7 @@ export function ModeMask({
 
           {score >= 0.9 && (
             <button type="button" onClick={onNextMode} className="mem-cta-success">
-              <DuoIcon icon={ArrowRight} size={16} />
+              <DuoIcon icon={ArrowRight} size={16}  className="directional" />
               {t('workspace.passNextMode', 'Passer au mode suivant')}
             </button>
           )}

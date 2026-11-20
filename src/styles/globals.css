@@ -2296,10 +2296,21 @@ html[data-platform='android'] { --tap-min: 48px; }
    Il vit hors du flux (position fixe) pour ne décaler aucune mise en page,
    et il redevient pleinement visible dès qu'il reçoit le focus : un lien
    d'évitement qu'on ne voit pas ne rend service à personne. */
+/* Icônes DIRECTIONNELLES (chevrons, flèches de navigation) : elles pointent
+   vers le sens de LECTURE. En arabe ou en hébreu, la progression va de droite
+   à gauche — un chevron « suivant » doit donc pointer à gauche. Le miroir est
+   porté par la classe, pas par une variante de chaque icône, pour que les 73
+   appels restent des appels ordinaires. `[dir='rtl']` est posé sur <html> par
+   DirSync ; on couvre aussi un sous-arbre RTL isolé. */
+[dir='rtl'] .directional,
+.directional:dir(rtl) {
+  transform: scaleX(-1);
+}
+
 .skip-link {
   position: fixed;
   top: 8px;
-  left: 8px;
+  inset-inline-start: 8px;
   z-index: 100;
   padding: 10px 16px;
   border-radius: 999px;

@@ -108,7 +108,7 @@ export default function CommunityView() {
                     </p>
                     <p className="text-xs text-text-muted">{concept.canonical_name}</p>
                   </div>
-                  <DuoIcon icon={ChevronRight} size={16} className="text-primary" />
+                  <DuoIcon icon={ChevronRight} size={16} className="directional text-primary" />
                 </button>
               ))}
             </div>
@@ -132,7 +132,7 @@ export default function CommunityView() {
                   className="g2 flex items-center justify-between p-3 text-left transition-transform active:scale-[0.99]"
                 >
                   <p className="text-sm font-semibold text-text-primary">{formatVerseKey(key)}</p>
-                  <DuoIcon icon={ChevronRight} size={16} className="text-primary" />
+                  <DuoIcon icon={ChevronRight} size={16} className="directional text-primary" />
                 </button>
               ))}
             </div>

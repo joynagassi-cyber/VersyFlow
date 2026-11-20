@@ -233,7 +233,7 @@ export default function DevPanelScreen() {
       right={
         <Button variant="ghost" size="sm" onClick={() => navigate('/tabs/home')}>
           App
-          <DuoIcon icon={ArrowRight} size={16} />
+          <DuoIcon icon={ArrowRight} size={16}  className="directional" />
         </Button>
       }
     >
@@ -256,7 +256,7 @@ export default function DevPanelScreen() {
                 Cinq règles de couleur côte à côte : repos, survol, actif.
               </span>
             </span>
-            <DuoIcon icon={ArrowRight} size={20} />
+            <DuoIcon icon={ArrowRight} size={20}  className="directional" />
           </Link>
         )}
 
@@ -314,7 +314,7 @@ export default function DevPanelScreen() {
             onClick={() => void handleSkipOnboarding()}
             disabled={busy !== null}
           >
-            <DuoIcon icon={ArrowRight} size={16} />
+            <DuoIcon icon={ArrowRight} size={16}  className="directional" />
             Sauter l'onboarding et ouvrir l'app
           </Button>
         </DevPanel>

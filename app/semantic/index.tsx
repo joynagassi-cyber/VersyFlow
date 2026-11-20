@@ -85,7 +85,7 @@ export default function SemanticIndex() {
                           </p>
                         ) : null}
                       </div>
-                      <DuoIcon icon={ChevronRight} size={20} className="shrink-0 text-primary" />
+                      <DuoIcon icon={ChevronRight} size={20} className="directional shrink-0 text-primary" />
                     </button>
                   ))}
                 </div>
@@ -116,7 +116,7 @@ export default function SemanticIndex() {
                         </p>
                         <p className="text-xs text-text-muted">{item.concept.canonical_name}</p>
                       </div>
-                      <DuoIcon icon={ChevronRight} size={20} className="text-primary" />
+                      <DuoIcon icon={ChevronRight} size={20} className="directional text-primary" />
                     </button>
                   ))}
                 </div>
@@ -147,7 +147,7 @@ export default function SemanticIndex() {
                           <p className="line-clamp-1 text-xs text-text-muted">{c.description}</p>
                         ) : null}
                       </div>
-                      <DuoIcon icon={ChevronRight} size={20} className="text-primary" />
+                      <DuoIcon icon={ChevronRight} size={20} className="directional text-primary" />
                     </button>
                   ))}
                 </div>

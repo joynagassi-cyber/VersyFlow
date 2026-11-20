@@ -173,13 +173,13 @@ export function DemoModePanel({ compact = false }: { compact?: boolean }) {
                 : t('demo.reset', 'Réinitialiser la démo')}
             </Button>
             <Button variant="secondary" size="sm" onClick={exit} disabled={busy !== null}>
-              <DuoIcon icon={ArrowRight} size={16} />
+              <DuoIcon icon={ArrowRight} size={16}  className="directional" />
               {t('demo.exit', 'Quitter la démo')}
             </Button>
           </>
         ) : (
           <Button variant="secondary" size="sm" onClick={enter} disabled={busy !== null}>
-            <DuoIcon icon={ArrowRight} size={16} />
+            <DuoIcon icon={ArrowRight} size={16}  className="directional" />
             {busy === 'enter' ? t('demo.entering', 'Ouverture…') : t('demo.enter', 'Voir la démo')}
           </Button>
         )}

@@ -131,7 +131,7 @@ export function DesktopRail() {
           aria-expanded={!collapsed}
           className="ms-auto flex h-8 w-8 flex-none items-center justify-center rounded-lg text-text-muted hover:bg-surface-tint hover:text-text-primary"
         >
-          <DuoIcon icon={SidebarLeft01Icon} size={20} />
+          <DuoIcon icon={SidebarLeft01Icon} size={20}  className="directional" />
         </button>
         )}
       </div>

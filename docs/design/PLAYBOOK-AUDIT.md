@@ -1,9 +1,9 @@
 # Audit UX/UI Playbook 2026 — application à VersyFlow
 
 Généré par `node scripts/audit-playbook.mjs`. **Ne pas éditer à la main.**
-Exécuté le 2026-11-20 08:53 (UTC).
+Exécuté le 2026-11-20 08:59 (UTC).
 
-**Bilan : 45 vérifiés · 9 partiels · 0 en échec · 23 non vérifiables ici** (77 règles).
+**Bilan : 46 vérifiés · 8 partiels · 0 en échec · 23 non vérifiables ici** (77 règles).
 
 Lecture : *vérifié* = une mesure reproductible dans le dépôt le confirme ; *partiel* = une partie est mesurée, le reste demande un appareil ou un navigateur ; *non vérifiable ici* = la preuve exige un rendu réel, et la façon de le vérifier est indiquée.
 
@@ -48,7 +48,7 @@ Lecture : *vérifié* = une mesure reproductible dans le dépôt le confirme ; *
 | G02 | G | BLOCKING | **PASS** | Aucune largeur de texte figée : la chaîne la plus longue tient | aucune largeur fixe > 320 px ; retours à la ligne assurés |
 | G03 | G | MAJOR | **PASS** | Un seul format de nombre par écran, celui de la langue | 14 formats locaux via `Intl` |
 | G04 | G | MAJOR | **PASS** | Pas de texte de remplissage, pas de promesse invérifiable | aucun lorem ipsum, aucun « bientôt disponible » |
-| G05 | G | MAJOR | **PARTIAL** | En RTL la mise en page se retourne sans casser les icônes directionnelles | RTL piloté au niveau document (37 propriétés logiques, 0 directions physiques restantes) |
+| G05 | G | MAJOR | **PASS** | En RTL la mise en page se retourne sans casser les icônes directionnelles | tout est logique (37 classes `ps/pe/ms/me/start/end`), 73 icônes directionnelles miroirées en RTL |
 | G06 | G | MINOR | **PASS** | Dates et heures relatives ou localisées | 29 format(s) relatif(s)/localisé(s) |
 | H01 | H | BLOCKING | **PASS** | Tout est utilisable au clavier, focus visible, sans piège | lien d’évitement, 43 règles `:focus-visible`, fermeture Échap |
 | H02 | H | BLOCKING | **PASS** | Chaque image a un texte alternatif ou est décorative | toutes les balises `<img>` portent `alt` ou `aria-hidden` |

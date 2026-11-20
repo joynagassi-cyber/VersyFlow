@@ -156,7 +156,7 @@ export default function TranslationPickerScreen() {
             className="flex-1"
             onClick={() => navigate('/onboarding/language-select')}
           >
-            <DuoIcon icon={ArrowLeft} size={16} />
+            <DuoIcon icon={ArrowLeft} size={16}  className="directional" />
             {t('common.back', 'Retour')}
           </Button>
           <Button
@@ -165,7 +165,7 @@ export default function TranslationPickerScreen() {
             onClick={() => navigate('/onboarding/journey/intro')}
           >
             {t('common.continue', 'Continuer')}
-            <DuoIcon icon={ArrowRight} size={16} />
+            <DuoIcon icon={ArrowRight} size={16}  className="directional" />
           </Button>
         </div>
       }

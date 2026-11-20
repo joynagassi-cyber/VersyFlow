@@ -129,7 +129,7 @@ export default function VerseView() {
                       {role === 'PRIMARY' ? t('semantic.primary', 'Principal') : role}
                     </p>
                   </div>
-                  <DuoIcon icon={ChevronRight} size={16} className="text-primary" />
+                  <DuoIcon icon={ChevronRight} size={16} className="directional text-primary" />
                 </button>
               ))}
             </div>
@@ -158,7 +158,7 @@ export default function VerseView() {
                     </p>
                     <p className="text-xs text-text-muted">{r.relation.type}</p>
                   </div>
-                  <DuoIcon icon={ChevronRight} size={16} className="text-primary" />
+                  <DuoIcon icon={ChevronRight} size={16} className="directional text-primary" />
                 </button>
               ))}
             </div>
@@ -182,7 +182,7 @@ export default function VerseView() {
                   <p className="text-xs text-text-muted">{community.description}</p>
                 ) : null}
               </div>
-              <DuoIcon icon={ChevronRight} size={16} className="text-primary" />
+              <DuoIcon icon={ChevronRight} size={16} className="directional text-primary" />
             </button>
           ) : (
             <p className="empty-line">{t('semantic.noCommunity', 'Aucune communauté')}</p>

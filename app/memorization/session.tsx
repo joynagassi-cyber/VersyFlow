@@ -387,7 +387,7 @@ export default function MemorizationSession() {
             refresh();
           }}
         >
-          <DuoIcon icon={ArrowLeft} size={16} />
+          <DuoIcon icon={ArrowLeft} size={16}  className="directional" />
           {t('session.goBack', 'Retour')}
         </Button>
         <Button
@@ -396,7 +396,7 @@ export default function MemorizationSession() {
           aria-label={t('memory.restartReveal', 'Revoir depuis le début')}
         >
           {t('session.proceed', 'Continuer')}
-          <DuoIcon icon={ArrowRight} size={16} />
+          <DuoIcon icon={ArrowRight} size={16}  className="directional" />
         </Button>
       </div>
 

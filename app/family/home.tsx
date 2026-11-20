@@ -314,7 +314,7 @@ function RealFamilyHomeScreen() {
                 <span className="text-sm font-semibold text-text-primary">
                   {t('familyPlus.launchNewChallenge', 'Lancer un nouveau défi')}
                 </span>
-                <DuoIcon icon={ArrowRight} size={16} className="text-primary" />
+                <DuoIcon icon={ArrowRight} size={16} className="directional text-primary" />
               </button>
             )}
           </SectionCard>

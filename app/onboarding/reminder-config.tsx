@@ -87,12 +87,12 @@ export default function OnboardingReminderConfig() {
             className="flex-1"
             onClick={() => navigate('/onboarding/session-config')}
           >
-            <DuoIcon icon={ArrowLeft} size={16} />
+            <DuoIcon icon={ArrowLeft} size={16}  className="directional" />
             {t('common.back', 'Retour')}
           </Button>
           <Button type="button" className="flex-1" disabled={saving} onClick={() => void finish()}>
             {saving ? t('common.saving', 'Enregistrement…') : t('common.continue', 'Continuer')}
-            <DuoIcon icon={ArrowRight} size={16} />
+            <DuoIcon icon={ArrowRight} size={16}  className="directional" />
           </Button>
           </div>
         </div>

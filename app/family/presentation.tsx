@@ -60,7 +60,7 @@ export default function FamilyPresentationScreen() {
         <div className="mt-2 flex flex-col gap-3">
           <Button className="w-full" onClick={() => navigate('/family/create')}>
             {t('familyPlus.createFamilyCta', 'Créer ma famille')}
-            <DuoIcon icon={ArrowRight} size={16} />
+            <DuoIcon icon={ArrowRight} size={16}  className="directional" />
           </Button>
           <Button variant="ghost" className="w-full" onClick={() => navigate('/tabs/home')}>
             {t('familyPlus.later', 'Plus tard')}

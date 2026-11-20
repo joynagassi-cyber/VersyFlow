@@ -163,7 +163,7 @@ export default function FamilyMembersScreen() {
             {t('family.inviteHint', 'Partagez le code ou le lien')}
           </span>
         </span>
-        <DuoIcon icon={ChevronRight} size={20} className="shrink-0 text-text-muted" />
+        <DuoIcon icon={ChevronRight} size={20} className="directional shrink-0 text-text-muted" />
       </button>
     </FamilyHubPage>
   );

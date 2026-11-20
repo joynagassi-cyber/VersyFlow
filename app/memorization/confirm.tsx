@@ -88,7 +88,7 @@ export default function MemorizationConfirm() {
           className="mx-auto mt-1 flex items-center gap-1 text-sm font-semibold text-primary"
         >
           {t('review.startReview', 'Voir mes révisions')}
-          <DuoIcon icon={ArrowRight} size={16} />
+          <DuoIcon icon={ArrowRight} size={16}  className="directional" />
         </button>
       </div>
     </FullScreenPage>

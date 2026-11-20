@@ -401,7 +401,7 @@ export default function AvailableTranslationsScreen() {
           className="rounded-full p-2 text-text-muted active:bg-surface-tint"
           aria-label={t('common.back', 'Retour')}
         >
-          <DuoIcon icon={ChevronRight} size={20} className="rotate-180" />
+          <DuoIcon icon={ChevronRight} size={20} className="directional rotate-180" />
         </button>
         <div>
           <h1 className="page-title">

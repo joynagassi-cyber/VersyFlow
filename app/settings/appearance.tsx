@@ -175,7 +175,7 @@ export default function AppearanceScreen() {
   return (
     <IonPage className="appearance-shell">
       <header className="appearance-header">
-        <button type="button" onClick={() => goBackSafely(navigate)} aria-label={t('common.back', 'Retour')}><DuoIcon icon={ArrowLeft01Icon} size={24} /></button>
+        <button type="button" onClick={() => goBackSafely(navigate)} aria-label={t('common.back', 'Retour')}><DuoIcon icon={ArrowLeft01Icon} size={24}  className="directional" /></button>
         <h1 className="toolbar-title">{t('nav.theme', 'Thème et apparence')}</h1>
       </header>
       <div className="app-canvas appearance-page h-full overflow-y-auto p-4 pb-24"><div className="appearance-editor screen-column">

@@ -34,7 +34,7 @@ export function StatCard({ title, icon, value, unit, hint, visual, onClick, clas
           <DuoIcon icon={icon} size={20} />
         </span>
         <span className="min-w-0 flex-1 truncate text-sm font-semibold text-text-primary">{title}</span>
-        {onClick && <DuoIcon icon={ChevronRight} size={16} className="shrink-0 text-text-muted" />}
+        {onClick && <DuoIcon icon={ChevronRight} size={16} className="directional shrink-0 text-text-muted" />}
       </div>
 
       <div className="mt-3 flex items-end justify-between gap-3">

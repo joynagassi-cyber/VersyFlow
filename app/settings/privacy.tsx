@@ -88,7 +88,7 @@ export default function PrivacyScreen() {
               <DuoIcon icon={Download} size={20} className="text-text-muted" />
               {t('settings.downloadData', 'Télécharger mes données')}
             </span>
-            <DuoIcon icon={ChevronRight} size={20} className="text-text-muted" />
+            <DuoIcon icon={ChevronRight} size={20} className="directional text-text-muted" />
           </button>
           <div className="flex w-full items-center justify-between gap-3 px-4 py-3.5">
             <span className="flex items-center gap-3 text-base text-text-muted">

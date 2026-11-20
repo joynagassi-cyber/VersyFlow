@@ -594,7 +594,17 @@ const RULES = [
     } },
   { id: 'G05', section: 'G', level: 'MAJOR', label: 'En RTL la mise en page se retourne sans casser les icônes directionnelles', proof: 'render', run: () => {
       const dirSync = /DirSync/.test(mainTsx) && count(allDom, /documentElement\.dir|dir=/g) >= 2;
-      return dirSync ? PARTIAL(`RTL piloté au niveau document (${logicalProps} propriétés logiques, ${hardDirectional} directions physiques restantes)`) : FAIL('aucune bascule RTL détectée');
+      // Les icônes directionnelles doivent ÊTRE miroirées, pas seulement
+      // « ne pas casser » : on exige la règle CSS et le marquage des appels.
+      const mirrored = count(cssNoComments, /\[dir=['"]rtl['"]\]\.directional|:dir\(rtl\)/g);
+      const marked = count(allDom, /className="directional\b/g);
+      if (!dirSync) return FAIL('aucune bascule RTL détectée');
+      if (mirrored === 0 || marked === 0) {
+        return PARTIAL(`RTL piloté au niveau document (${logicalProps} propriétés logiques, ${hardDirectional} directions physiques restantes)`);
+      }
+      return hardDirectional === 0
+        ? PASS(`tout est logique (${logicalProps} classes \`ps/pe/ms/me/start/end\`), ${marked} icônes directionnelles miroirées en RTL`)
+        : PARTIAL(`${hardDirectional} direction(s) physique(s) restante(s), ${marked} icônes miroirées`);
     } },
   { id: 'G06', section: 'G', level: 'MINOR', label: 'Dates et heures relatives ou localisées', proof: 'static', run: () => {
       const rel = count(allDom, /RelativeTimeFormat|formatRelative|il y a|ago\b/gi);

@@ -67,7 +67,7 @@ export default function SettingsRemindersScreen() {
           className="flex h-10 w-10 items-center justify-center rounded-full bg-surface shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
           aria-label={t('common.back')}
         >
-          <DuoIcon icon={ArrowLeft} size={20} className="text-text-secondary" />
+          <DuoIcon icon={ArrowLeft} size={20} className="directional text-text-secondary" />
         </button>
         <h1 className="page-title">{t('settings.reminders', 'Rappels')}</h1>
       </header>
@@ -175,7 +175,7 @@ export default function SettingsRemindersScreen() {
       <WeeklyReminderPlanner />
       <div className="mt-6 flex gap-4">
         <Button variant="outline" className="flex-1" onClick={() => goBackSafely(navigate, '/tabs/settings')}>
-          <DuoIcon icon={ArrowLeft} size={16} />
+          <DuoIcon icon={ArrowLeft} size={16}  className="directional" />
           {t('common.back')}
         </Button>
       </div>

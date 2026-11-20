@@ -78,7 +78,7 @@ export default function ComparisonResultScreen({ record, userAnswer }: Props) {
               {lastVerification.substitutedWords.map((sub, i) => (
                 <p key={i} className="text-sm">
                   <span className="text-text-primary">{sub.expected}</span>
-                  <DuoIcon icon={ArrowRight} size={16} className="mx-1 inline text-text-muted" />
+                  <DuoIcon icon={ArrowRight} size={16} className="directional mx-1 inline text-text-muted" />
                   <span className="text-error">{sub.got}</span>
                 </p>
               ))}

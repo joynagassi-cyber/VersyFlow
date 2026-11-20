@@ -37,7 +37,7 @@ export default function SettingsSessionScreen() {
           className="flex h-10 w-10 items-center justify-center rounded-full bg-surface shadow-sm"
           aria-label={t('common.back')}
         >
-          <DuoIcon icon={ArrowLeft} size={20} className="text-text-secondary" />
+          <DuoIcon icon={ArrowLeft} size={20} className="directional text-text-secondary" />
         </button>
         <h1 className="page-title">
           {t('settings.sessionConfig', 'Configuration de session')}
@@ -110,7 +110,7 @@ export default function SettingsSessionScreen() {
 
       <div className="mt-6 flex gap-4">
         <Button variant="outline" className="flex-1" onClick={() => goBackSafely(navigate)}>
-          <DuoIcon icon={ArrowLeft} size={16} />
+          <DuoIcon icon={ArrowLeft} size={16}  className="directional" />
           {t('common.back')}
         </Button>
       </div>

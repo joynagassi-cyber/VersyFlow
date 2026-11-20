@@ -103,7 +103,7 @@ export default function FlashcardScreen() {
           onClick={() => goBackSafely(navigate)}
           className="flex w-full items-center justify-center gap-2 py-3 text-sm text-text-muted"
         >
-          <DuoIcon icon={ArrowLeft} size={16} />
+          <DuoIcon icon={ArrowLeft} size={16}  className="directional" />
           {t('common.back', 'Retour')}
         </button>
       </div>

@@ -50,7 +50,7 @@ export const ListItem = React.memo(function ListItem({
       {value && <span className="text-sm text-text-muted">{value}</span>}
       {trailing}
       {showChevron && (
-        <DuoIcon icon={ChevronRight} size={20} className="shrink-0 text-text-muted rtl:rotate-180" />
+        <DuoIcon icon={ChevronRight} size={20} className="directional shrink-0 text-text-muted rtl:rotate-180" />
       )}
     </>
   );

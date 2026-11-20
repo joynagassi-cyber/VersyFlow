@@ -123,7 +123,7 @@ export default function NotesScreen() {
                       >
                         <DuoIcon icon={BookOpen} size={16} />
                         {t('notes.openVerse', 'Ouvrir le chapitre')}
-                        <DuoIcon icon={ArrowRight} size={16} />
+                        <DuoIcon icon={ArrowRight} size={16}  className="directional" />
                       </button>
                       <button
                         type="button"

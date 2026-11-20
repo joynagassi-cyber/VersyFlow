@@ -228,7 +228,7 @@ export function ModeReveal({
                     <span className="select-none">{maskDots(block.length)}</span>
                     {isCurrent && (
                       <span className="mem-hint">
-                        <DuoIcon icon={ArrowRight} size={16} />
+                        <DuoIcon icon={ArrowRight} size={16}  className="directional" />
                         {t('workspace.tapToReveal', 'Touchez pour révéler')}
                         {autoRevealLeft !== null && autoRevealLeft > 0 && (
                           <span className="ms-2 tabular-nums text-text-tertiary">
@@ -252,7 +252,7 @@ export function ModeReveal({
             disabled={revealed === 0}
             className="mem-pill-ghost"
           >
-            <DuoIcon icon={ArrowRight} className="rotate-180" size={16} />
+            <DuoIcon icon={ArrowRight} className="directional rotate-180" size={16} />
             {t('workspace.prev', 'Précédent')}
           </button>
           {!allRevealed && (
@@ -302,7 +302,7 @@ export function ModeReveal({
             onClick={onNextMode}
             className="mem-cta-success mt-4"
           >
-            <DuoIcon icon={ArrowRight} size={16} />
+            <DuoIcon icon={ArrowRight} size={16}  className="directional" />
             {t('workspace.passNextMode', 'Passer au mode suivant')}
           </button>
         </div>

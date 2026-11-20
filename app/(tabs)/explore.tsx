@@ -50,7 +50,7 @@ export default function ExploreScreen() {
                 <span className="explore-book-title">{book.displayName}</span>
                 <span className="explore-book-subtitle">{formatChapterCount(t('bible.chapterCount', { count: book.chapterCount }), book.chapterCount, i18n.resolvedLanguage || i18n.language)}</span>
               </span>
-              <DuoIcon icon={ChevronRight} size={20} />
+              <DuoIcon icon={ChevronRight} size={20}  className="directional" />
             </button>
           ))}
         </div>
@@ -71,7 +71,7 @@ export default function ExploreScreen() {
         <button type="button" onClick={() => navigate('/semantic')} className="g2 explore-semantic">
           <span className="icon-chip explore-icon"><DuoIcon icon={Network} size={24} /></span>
           <span className="explore-book-details"><span className="explore-book-title">{t('semantic.title', 'Mémoire sémantique')}</span><span className="explore-book-subtitle">{t('semantic.subtitle', 'Concepts, versets et communautés')}</span></span>
-          <DuoIcon icon={ChevronRight} size={20} />
+          <DuoIcon icon={ChevronRight} size={20}  className="directional" />
         </button>
         {oldTestamentFiltered.length === 0 && newTestamentFiltered.length === 0 ? (
           <EmptyState

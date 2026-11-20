@@ -123,7 +123,7 @@ export default function ProfileSelectionScreen() {
                           {t('profile.active', 'Actif')}
                         </span>
                       ) : (
-                        <DuoIcon icon={ArrowRight} size={20} className="shrink-0 text-text-muted" />
+                        <DuoIcon icon={ArrowRight} size={20} className="directional shrink-0 text-text-muted" />
                       )}
                     </button>
                   </li>

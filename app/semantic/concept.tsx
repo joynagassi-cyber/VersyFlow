@@ -158,7 +158,7 @@ export default function ConceptView() {
                         <p className="line-clamp-2 text-xs text-text-muted">{text}</p>
                       ) : null}
                     </div>
-                    <DuoIcon icon={ChevronRight} size={16} className="text-primary" />
+                    <DuoIcon icon={ChevronRight} size={16} className="directional text-primary" />
                   </button>
                 );
               })}
@@ -188,7 +188,7 @@ export default function ConceptView() {
                       <p className="text-xs text-text-muted">{c.description}</p>
                     ) : null}
                   </div>
-                  <DuoIcon icon={ChevronRight} size={16} className="text-primary" />
+                  <DuoIcon icon={ChevronRight} size={16} className="directional text-primary" />
                 </button>
               ))}
             </div>
@@ -222,7 +222,7 @@ export default function ConceptView() {
                       </p>
                     </div>
                   </div>
-                  <DuoIcon icon={ChevronRight} size={16} className="text-primary" />
+                  <DuoIcon icon={ChevronRight} size={16} className="directional text-primary" />
                 </button>
               ))}
             </div>

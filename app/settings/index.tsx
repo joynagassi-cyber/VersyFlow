@@ -184,7 +184,7 @@ export default function SettingsScreen() {
               {isAuthenticated ? t('settings.connected', 'Connecte') : t('settings.localMode', 'Mode local')}
             </span>
           </span>
-          <DuoIcon icon={ChevronRight} size={20} className="text-text-muted" />
+          <DuoIcon icon={ChevronRight} size={20} className="directional text-text-muted" />
         </button>
 
         {/* Active translation pill (abbreviation + full name, subtitle). */}
@@ -234,7 +234,7 @@ export default function SettingsScreen() {
           </div>
           <DuoIcon icon={ChevronRight}
             size={20}
-            className="cursor-pointer text-text-muted"
+            className="directional cursor-pointer text-text-muted"
             onClick={() => navigate('/settings/available-translations')}
           />
         </div>
@@ -262,7 +262,7 @@ export default function SettingsScreen() {
                     <DuoIcon icon={item.icon} size={20} className="text-text-muted" />
                     <span className="text-base text-text-primary">{item.label}</span>
                   </span>
-                  <DuoIcon icon={ChevronRight} size={16} className="text-text-muted" />
+                  <DuoIcon icon={ChevronRight} size={16} className="directional text-text-muted" />
                 </button>
               ))}
             </div>

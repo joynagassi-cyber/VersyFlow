@@ -83,7 +83,7 @@ export default function SemanticTagsScreen() {
                           : ''}
                       </span>
                     </span>
-                    <DuoIcon icon={ChevronRight} size={20} className="text-text-muted" />
+                    <DuoIcon icon={ChevronRight} size={20} className="directional text-text-muted" />
                   </button>
                 </SectionCard>
               </li>

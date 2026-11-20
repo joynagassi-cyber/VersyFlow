@@ -260,7 +260,7 @@ export default function ReviewCalendarScreen() {
           className="flex h-10 w-10 items-center justify-center rounded-full bg-surface shadow-sm"
           aria-label="Mois précédent"
         >
-          <DuoIcon icon={ChevronLeft} size={20} className="text-primary" />
+          <DuoIcon icon={ChevronLeft} size={20} className="directional text-primary" />
         </button>
         <h2 className="text-lg font-bold text-text-primary">
           {changeMonth(monthLabel)}
@@ -270,7 +270,7 @@ export default function ReviewCalendarScreen() {
           className="flex h-10 w-10 items-center justify-center rounded-full bg-surface shadow-sm"
           aria-label="Mois suivant"
         >
-          <DuoIcon icon={ChevronRight} size={20} className="text-primary" />
+          <DuoIcon icon={ChevronRight} size={20} className="directional text-primary" />
         </button>
       </div>
 

@@ -69,12 +69,12 @@ export default function FSRSIntroductionScreen() {
             className="flex-1"
             onClick={() => navigate('/onboarding/reminder-config')}
           >
-            <DuoIcon icon={ArrowLeft} size={16} />
+            <DuoIcon icon={ArrowLeft} size={16}  className="directional" />
             {t('common.back', 'Retour')}
           </Button>
           <Button type="button" className="flex-[1.5]" onClick={handleStartMemorization}>
             {t('onboarding.getStarted', 'Commencer à mémoriser')}
-            <DuoIcon icon={ArrowRight} size={16} />
+            <DuoIcon icon={ArrowRight} size={16}  className="directional" />
           </Button>
         </div>
       }

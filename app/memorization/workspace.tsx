@@ -264,7 +264,7 @@ function ShellHeader({
           className="flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-surface text-text-primary shadow-sm active:scale-95"
           aria-label="Retour"
         >
-          <DuoIcon icon={ArrowLeft} size={20} />
+          <DuoIcon icon={ArrowLeft} size={20}  className="directional" />
         </button>
         <div className="flex min-w-0 flex-1 flex-col items-center">
           <h1 className="truncate text-lg font-semibold text-text-primary">{title}</h1>

@@ -93,7 +93,7 @@ export function ModeSwitcher({
           className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-surface-tint text-text-secondary active:scale-90"
           aria-label={showAll ? 'Replier' : 'Déplier'}
         >
-          {showAll ? <DuoIcon icon={ChevronDown} size={16} /> : <DuoIcon icon={ChevronRight} size={16} />}
+          {showAll ? <DuoIcon icon={ChevronDown} size={16} /> : <DuoIcon icon={ChevronRight} size={16}  className="directional" />}
         </button>
       </div>
     </div>

@@ -52,7 +52,7 @@ export function FullScreenPage({
       {title && (
         <header className={cn('full-screen-header', headerClassName)}>
           {showBack && <button type="button" onClick={handleBack} aria-label={t('common.back', 'Retour')} className="full-screen-back">
-            <DuoIcon icon={ArrowLeft01Icon} size={24} />
+            <DuoIcon icon={ArrowLeft01Icon} size={24}  className="directional" />
           </button>}
           <div className="full-screen-title"><h1>{title}</h1>{subtitle && <p>{subtitle}</p>}</div>
           {right && <div className="full-screen-right">{right}</div>}
