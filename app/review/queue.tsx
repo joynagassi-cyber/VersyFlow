@@ -163,17 +163,17 @@ export default function ReviewQueueScreen() {
       {/* Summary strip */}
       <div className="mb-4 flex flex-wrap items-center justify-center gap-2">
         <span className="inline-flex items-center gap-1.5 rounded-full bg-primary px-3 py-1.5 text-sm font-semibold text-on-primary">
-          <DuoIcon icon={List} size={14} />
+          <DuoIcon icon={List} size={16} />
           {t('review.totalDue', { count: totalDue })}
         </span>
         {overdue.length > 0 && (
           <span className="inline-flex items-center gap-1.5 rounded-full bg-error px-3 py-1.5 text-sm font-semibold text-on-status">
-            <DuoIcon icon={AlertCircle} size={14} />
+            <DuoIcon icon={AlertCircle} size={16} />
             {overdue.length} {t('review.overdue', 'en retard')}
           </span>
         )}
         <span className="inline-flex items-center gap-1.5 rounded-full bg-surface-tint px-3 py-1.5 text-sm font-semibold text-text-secondary">
-          <DuoIcon icon={Clock} size={14} />
+          <DuoIcon icon={Clock} size={16} />
           {t('review.estimatedTime', { minutes: estimatedTime })}
         </span>
       </div>
@@ -181,18 +181,18 @@ export default function ReviewQueueScreen() {
       {renderSection(
         t('review.overdue', 'En retard'),
         overdue,
-        <DuoIcon icon={AlertCircle} size={18} className="text-error" />,
+        <DuoIcon icon={AlertCircle} size={20} className="text-error" />,
       )}
       {renderSection(
         t('review.dueSoon', "À l'heure"),
         due,
-        <DuoIcon icon={CheckCircle} size={18} className="text-primary" />,
+        <DuoIcon icon={CheckCircle} size={20} className="text-primary" />,
       )}
 
       {/* Start CTA */}
       <div className="fixed inset-x-0 bottom-0 border-t border-border bg-surface/95 p-4 backdrop-blur">
         <Button className="w-full" onClick={() => navigate(`/review/session?recordId=${encodeURIComponent(items[0].record.id)}`)}>
-          <DuoIcon icon={Play} size={18} />
+          <DuoIcon icon={Play} size={20} />
           {t('review.startReview', 'Commencer la révision')}
           <span className="text-on-primary/80">({totalDue})</span>
         </Button>

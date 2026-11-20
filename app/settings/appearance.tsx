@@ -175,7 +175,7 @@ export default function AppearanceScreen() {
   return (
     <IonPage className="appearance-shell">
       <header className="appearance-header">
-        <button type="button" onClick={() => goBackSafely(navigate)} aria-label={t('common.back', 'Retour')}><DuoIcon icon={ArrowLeft01Icon} size={22} /></button>
+        <button type="button" onClick={() => goBackSafely(navigate)} aria-label={t('common.back', 'Retour')}><DuoIcon icon={ArrowLeft01Icon} size={24} /></button>
         <h1 className="toolbar-title">{t('nav.theme', 'Thème et apparence')}</h1>
       </header>
       <div className="app-canvas appearance-page h-full overflow-y-auto p-4 pb-24"><div className="appearance-editor screen-column">
@@ -240,7 +240,7 @@ export default function AppearanceScreen() {
                       'appearance-mode-icon',
                     )}
                   >
-                    <DuoIcon icon={Icon} size={19} />
+                    <DuoIcon icon={Icon} size={20} />
                   </span>
                   <span className="flex-1 text-sm font-medium">
                     {label}
@@ -394,8 +394,8 @@ export default function AppearanceScreen() {
                     selectedIcon.tier === 'premium' ? 'text-warning' : 'text-primary',
                   )}
                 >
-                  {selectedIcon.tier === 'premium' && <DuoIcon icon={StarIcon} size={12} color="currentColor" />}
-                  {selectedIcon.tier === 'seasonal' && <DuoIcon icon={PartyPopperIcon} size={12} color="currentColor" />}
+                  {selectedIcon.tier === 'premium' && <DuoIcon icon={StarIcon} size={16} color="currentColor" />}
+                  {selectedIcon.tier === 'seasonal' && <DuoIcon icon={PartyPopperIcon} size={16} color="currentColor" />}
                   {selectedIcon.tier === 'free' && t('settings.appIconFree', 'Par défaut')}
                   {selectedIcon.tier === 'seasonal' && t('settings.appIconSeasonal', 'Édition saisonnière offerte')}
                   {selectedIcon.tier === 'premium' && t('settings.appIconPremium', 'Collection')}
@@ -437,7 +437,7 @@ export default function AppearanceScreen() {
                                   aria-hidden="true"
                                   className="absolute bottom-0 right-0 flex h-5 w-6 items-center justify-center rounded-tl-lg bg-warning text-on-primary shadow-sm"
                                 >
-                                  <DuoIcon icon={StarIcon} size={12} color="currentColor" />
+                                  <DuoIcon icon={StarIcon} size={16} color="currentColor" />
                                 </span>
                               )}
                             </div>

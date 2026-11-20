@@ -224,7 +224,7 @@ export function ModeMask({
                   : 'text-text-secondary',
               )}
             >
-              <DuoIcon icon={Sparkles} size={11} />
+              <DuoIcon icon={Sparkles} size={16} />
               {t('workspace.autoProgressive', 'Progressif')}
             </button>
             <button
@@ -265,7 +265,7 @@ export function ModeMask({
               aria-describedby="mem-mask-level-hint"
               className="mem-level-btn"
             >
-              <DuoIcon icon={Minus} size={14} />
+              <DuoIcon icon={Minus} size={16} />
             </button>
             <button
               type="button"
@@ -275,7 +275,7 @@ export function ModeMask({
               aria-describedby="mem-mask-level-hint"
               className="mem-level-btn"
             >
-              <DuoIcon icon={Plus} size={14} />
+              <DuoIcon icon={Plus} size={16} />
             </button>
           </div>
         </div>

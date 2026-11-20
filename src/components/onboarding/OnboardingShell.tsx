@@ -53,7 +53,7 @@ export function OnboardingShell({
             </button>
           )}
           <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-2xs font-bold text-primary">
-            <DuoIcon icon={SparklesIcon} size={13} />
+            <DuoIcon icon={SparklesIcon} size={16} />
             VersyFlow · {step}/{totalSteps}
           </span>
         </div>

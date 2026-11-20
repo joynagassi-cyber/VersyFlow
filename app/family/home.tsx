@@ -189,7 +189,7 @@ function RealFamilyHomeScreen() {
         className="touch-target rounded-full bg-surface-tint text-primary active:bg-primary/10"
         aria-label={t('family.invite', 'Inviter')}
       >
-        <DuoIcon icon={Plus} size={18} />
+        <DuoIcon icon={Plus} size={20} />
       </button>
       }
     >
@@ -379,7 +379,7 @@ function RealFamilyHomeScreen() {
                 onClick={() => navigate(shortcut.to)}
                 className="g2 flex min-h-20 flex-col items-center justify-center gap-1.5 p-3 text-center"
               >
-                <DuoIcon icon={shortcut.icon} size={18} className="shrink-0 text-primary" />
+                <DuoIcon icon={shortcut.icon} size={20} className="shrink-0 text-primary" />
                 <span className="text-2xs font-semibold leading-tight text-text-primary">
                   {shortcut.label}
                 </span>
@@ -426,7 +426,7 @@ function RealFamilyHomeScreen() {
           />
           {createError && (
             <p className="flex items-center gap-1.5 rounded-xl bg-error/10 px-3 py-2 text-sm text-error">
-              <DuoIcon icon={AlertCircle} size={14} className="shrink-0" />
+              <DuoIcon icon={AlertCircle} size={16} className="shrink-0" />
               {createError}
             </p>
           )}
@@ -478,7 +478,7 @@ function RealFamilyHomeScreen() {
                 </span>
                 {activeFamilyId === family.id && (
                   <span className="flex items-center gap-1 rounded-full bg-surface-tint px-2.5 py-1 text-xs font-semibold text-primary">
-                    <DuoIcon icon={CheckCircle} size={12} />
+                    <DuoIcon icon={CheckCircle} size={16} />
                     {t('family.familyActive', 'Actif')}
                   </span>
                 )}

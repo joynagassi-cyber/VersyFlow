@@ -180,7 +180,7 @@ export default function FamilyMemberScreen() {
           <Button variant="outline" className="flex-1" onClick={() => navigate('/family/members')}>
             <DuoIcon icon={Users} size={16} />
             {t('familyPlus.members', 'Membres')}
-            <DuoIcon icon={ArrowRight} size={14} />
+            <DuoIcon icon={ArrowRight} size={16} />
           </Button>
         </div>
       </div>

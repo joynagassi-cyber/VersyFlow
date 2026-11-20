@@ -143,7 +143,7 @@ export default function MasteryScreen() {
         {/* Level hero */}
         <div className="bg-primary rounded-3xl p-6 text-center text-on-primary">
           <span className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-surface/20">
-            <DuoIcon icon={CurrentIcon} size={40} />
+            <DuoIcon icon={CurrentIcon} size={32} />
           </span>
           <p className="stat-value text-2xl">{currentLevel.name}</p>
           <p className="mt-1 text-sm opacity-90">{currentLevel.description}</p>
@@ -188,7 +188,7 @@ export default function MasteryScreen() {
                   className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full"
                   style={{ color: c.color, backgroundColor: 'transparent' }}
                 >
-                  <DuoIcon icon={c.icon} size={22} />
+                  <DuoIcon icon={c.icon} size={24} />
                 </span>
                 <div className={i === 0 ? '' : 'mt-1'}>
                   <p className="stat-value text-2xl">{c.value}</p>
@@ -227,7 +227,7 @@ export default function MasteryScreen() {
                       backgroundColor: levelTint(level.color),
                     }}
                   >
-                    <DuoIcon icon={Icon} size={22} />
+                    <DuoIcon icon={Icon} size={24} />
                   </span>
                   <div className="min-w-0 flex-1">
                     <p

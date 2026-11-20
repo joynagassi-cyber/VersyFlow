@@ -108,7 +108,7 @@ export default function VerseView() {
         {/* Concepts */}
         <section className="mb-5">
           <h2 className="mb-2 flex items-center gap-1.5 text-sm font-semibold text-text-tertiary">
-            <DuoIcon icon={BrainCircuit} size={14} className="text-primary" />
+            <DuoIcon icon={BrainCircuit} size={16} className="text-primary" />
             {t('semantic.concept', 'Concept')}s — {t('semantic.related', 'Concepts liés')}
           </h2>
           {concepts.length === 0 ? (
@@ -139,7 +139,7 @@ export default function VerseView() {
         {/* Cross-refs / related verses */}
         <section className="mb-5">
           <h2 className="mb-2 flex items-center gap-1.5 text-sm font-semibold text-text-tertiary">
-            <DuoIcon icon={BookMarked} size={14} className="text-primary" />
+            <DuoIcon icon={BookMarked} size={16} className="text-primary" />
             {t('semantic.crossRefs', 'Références croisées')}
           </h2>
           {relatedVerses.length === 0 ? (
@@ -168,7 +168,7 @@ export default function VerseView() {
         {/* Community */}
         <section>
           <h2 className="mb-2 flex items-center gap-1.5 text-sm font-semibold text-text-tertiary">
-            <DuoIcon icon={Map} size={14} className="text-primary" />
+            <DuoIcon icon={Map} size={16} className="text-primary" />
             {t('semantic.community', 'Communauté')}
           </h2>
           {community ? (

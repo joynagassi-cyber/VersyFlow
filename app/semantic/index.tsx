@@ -55,7 +55,7 @@ export default function SemanticIndex() {
             {/* User's personal semantic tree */}
             <section className="mb-6">
               <h2 className="mb-3 flex items-center gap-2 px-1 text-lg font-semibold text-text-primary">
-                <DuoIcon icon={User} size={18} className="text-primary" />
+                <DuoIcon icon={User} size={20} className="text-primary" />
                 {t('semantic.myConcepts', 'Mes concepts')}
               </h2>
               {myConcepts.length === 0 ? (
@@ -85,7 +85,7 @@ export default function SemanticIndex() {
                           </p>
                         ) : null}
                       </div>
-                      <DuoIcon icon={ChevronRight} size={18} className="shrink-0 text-primary" />
+                      <DuoIcon icon={ChevronRight} size={20} className="shrink-0 text-primary" />
                     </button>
                   ))}
                 </div>
@@ -95,7 +95,7 @@ export default function SemanticIndex() {
             {/* Active concepts */}
             <section className="mb-6">
               <h2 className="mb-3 flex items-center gap-2 px-1 text-lg font-semibold text-text-primary">
-                <DuoIcon icon={BrainCircuit} size={18} className="text-primary" />
+                <DuoIcon icon={BrainCircuit} size={20} className="text-primary" />
                 {t('semantic.concept', 'Concept')}s
               </h2>
               {featuredConcepts.length === 0 ? (
@@ -116,7 +116,7 @@ export default function SemanticIndex() {
                         </p>
                         <p className="text-xs text-text-muted">{item.concept.canonical_name}</p>
                       </div>
-                      <DuoIcon icon={ChevronRight} size={18} className="text-primary" />
+                      <DuoIcon icon={ChevronRight} size={20} className="text-primary" />
                     </button>
                   ))}
                 </div>
@@ -126,7 +126,7 @@ export default function SemanticIndex() {
             {/* Communities */}
             <section>
               <h2 className="mb-3 flex items-center gap-2 px-1 text-lg font-semibold text-text-primary">
-                <DuoIcon icon={Map} size={18} className="text-primary" />
+                <DuoIcon icon={Map} size={20} className="text-primary" />
                 {t('semantic.community', 'Communauté')}
               </h2>
               {communities.length === 0 ? (
@@ -147,7 +147,7 @@ export default function SemanticIndex() {
                           <p className="line-clamp-1 text-xs text-text-muted">{c.description}</p>
                         ) : null}
                       </div>
-                      <DuoIcon icon={ChevronRight} size={18} className="text-primary" />
+                      <DuoIcon icon={ChevronRight} size={20} className="text-primary" />
                     </button>
                   ))}
                 </div>

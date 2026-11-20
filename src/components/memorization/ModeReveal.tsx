@@ -221,14 +221,14 @@ export function ModeReveal({
                 {isRevealed ? (
                   <>
                     <span>{block}</span>
-                    <span className="mem-check"><DuoIcon icon={Check} size={10} /></span>
+                    <span className="mem-check"><DuoIcon icon={Check} size={16} /></span>
                   </>
                 ) : (
                   <>
                     <span className="select-none">{maskDots(block.length)}</span>
                     {isCurrent && (
                       <span className="mem-hint">
-                        <DuoIcon icon={ArrowRight} size={11} />
+                        <DuoIcon icon={ArrowRight} size={16} />
                         {t('workspace.tapToReveal', 'Touchez pour révéler')}
                         {autoRevealLeft !== null && autoRevealLeft > 0 && (
                           <span className="ml-2 tabular-nums text-text-tertiary">
@@ -252,12 +252,12 @@ export function ModeReveal({
             disabled={revealed === 0}
             className="mem-pill-ghost"
           >
-            <DuoIcon icon={ArrowRight} className="rotate-180" size={14} />
+            <DuoIcon icon={ArrowRight} className="rotate-180" size={16} />
             {t('workspace.prev', 'Précédent')}
           </button>
           {!allRevealed && (
             <button type="button" onClick={advance} className="mem-pill" style={{ width: 'auto', padding: '12px 20px' }}>
-              <DuoIcon icon={Play} size={14} />
+              <DuoIcon icon={Play} size={16} />
               {t('workspace.revealNext', 'Révéler le bloc')}
             </button>
           )}
@@ -283,7 +283,7 @@ export function ModeReveal({
           <div className="flex items-center gap-3">
             <span className="mem-success-celebration">
               <span className="ring" />
-              <span className="ic"><DuoIcon icon={Check} size={22} /></span>
+              <span className="ic"><DuoIcon icon={Check} size={24} /></span>
             </span>
             <div className="min-w-0 flex-1">
               <p className="text-sm font-extrabold text-success">

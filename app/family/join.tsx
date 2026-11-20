@@ -64,7 +64,7 @@ export default function FamilyJoinScreen() {
           className="flex w-full flex-col items-center gap-3 rounded-3xl border-2 border-dashed border-primary/40 bg-surface p-8 active:bg-surface-tint"
           onClick={() => setError(t('family.scannerDesc', 'Le scanner QR sera disponible prochainement.'))}
         >
-          <DuoIcon icon={ScanLine} size={44} className="text-primary" />
+          <DuoIcon icon={ScanLine} size={32} className="text-primary" />
           <span className="text-sm font-semibold text-text-secondary">
             {t('family.scanQR', 'Scanner le QR code')}
           </span>
@@ -99,7 +99,7 @@ export default function FamilyJoinScreen() {
         {error && <p className="text-sm text-error">{error}</p>}
 
         <Button variant="default" className="w-full" onClick={() => fireAndForget(handleJoin(), 'family:join')} disabled={isLoading}>
-          {isLoading ? <DuoIcon icon={Loader2} size={18} className="animate-spin" /> : <DuoIcon icon={LogIn} size={18} />}
+          {isLoading ? <DuoIcon icon={Loader2} size={20} className="animate-spin" /> : <DuoIcon icon={LogIn} size={20} />}
           {isLoading ? t('common.loading', 'Chargement...') : t('family.joinButton', 'Rejoindre la famille')}
         </Button>
       </div>

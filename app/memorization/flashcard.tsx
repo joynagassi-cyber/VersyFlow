@@ -218,7 +218,7 @@ export default function FlashcardScreen() {
                     : 'bg-surface-tint text-primary')
                 }
               >
-                <DuoIcon icon={currentCard.mastered ? CheckCircle2 : HelpCircle} size={14} />
+                <DuoIcon icon={currentCard.mastered ? CheckCircle2 : HelpCircle} size={16} />
                 {currentCard.mastered
                   ? t('session.mastered', 'Maîtrisé')
                   : t('session.toMemorize', 'À mémoriser')}
@@ -243,7 +243,7 @@ export default function FlashcardScreen() {
               </div>
 
               <p className="flex items-center gap-2 text-xs text-text-muted">
-                <DuoIcon icon={RefreshCw} size={14} />
+                <DuoIcon icon={RefreshCw} size={16} />
                 {isFlipped
                   ? t('session.tapToBack', 'Touchez pour revenir')
                   : t('session.tapToFlip', 'Touchez pour voir la suite')}
@@ -254,11 +254,11 @@ export default function FlashcardScreen() {
 
         <div className="flex justify-around gap-3 px-4 py-3 text-xs text-text-muted">
           <span className="flex items-center gap-2">
-            <DuoIcon icon={Hand} size={18} />
+            <DuoIcon icon={Hand} size={20} />
             {t('session.swipeLeft', 'Glisser à gauche : à revoir')}
           </span>
           <span className="flex items-center gap-2">
-            <DuoIcon icon={Hand} size={18} className="-scale-x-100" />
+            <DuoIcon icon={Hand} size={20} className="-scale-x-100" />
             {t('session.swipeRight', 'Glisser à droite : maîtrisé')}
           </span>
         </div>

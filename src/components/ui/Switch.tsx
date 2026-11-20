@@ -58,7 +58,7 @@ export const Switch = React.memo(function Switch({
       <span
         aria-hidden="true"
         className={cn(
-          'flex h-6 w-11 items-center rounded-full border p-[2px]',
+          'flex h-6 w-11 items-center rounded-full border p-0.5',
           'transition-colors duration-[var(--motion-fast)] ease-[var(--ease-standard)]',
           checked ? 'border-primary bg-primary' : 'border-border bg-surface-tint',
         )}

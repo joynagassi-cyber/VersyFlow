@@ -104,7 +104,7 @@ export default function NotesScreen() {
                 {entries.map((note) => (
                   <li key={note.verseKey} className="rounded-xl bg-surface-tint p-3">
                     <div className="flex items-center gap-2">
-                      <DuoIcon icon={Note} size={14} className="text-primary" />
+                      <DuoIcon icon={Note} size={16} className="text-primary" />
                       <span className="text-sm font-semibold text-text-primary">
                         {formatVerseKey(note.verseKey)}
                       </span>
@@ -121,9 +121,9 @@ export default function NotesScreen() {
                         onClick={() => navigate(`/bible/explorer/${note.bookId}/${note.chapter}`)}
                         className="flex items-center gap-1 text-xs font-semibold text-primary"
                       >
-                        <DuoIcon icon={BookOpen} size={12} />
+                        <DuoIcon icon={BookOpen} size={16} />
                         {t('notes.openVerse', 'Ouvrir le chapitre')}
-                        <DuoIcon icon={ArrowRight} size={12} />
+                        <DuoIcon icon={ArrowRight} size={16} />
                       </button>
                       <button
                         type="button"
@@ -131,7 +131,7 @@ export default function NotesScreen() {
                         className="flex items-center gap-1 text-xs font-semibold text-error"
                         aria-label={t('notes.delete', 'Supprimer la note')}
                       >
-                        <DuoIcon icon={Trash} size={12} />
+                        <DuoIcon icon={Trash} size={16} />
                         {t('common.delete', 'Supprimer')}
                       </button>
                     </div>

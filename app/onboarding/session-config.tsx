@@ -65,7 +65,7 @@ export default function OnboardingSessionConfig() {
       <div className="flex flex-col gap-6">
         <div>
           <div className="mb-3 flex items-center gap-2">
-            <DuoIcon icon={Target} size={18} className="text-primary" />
+            <DuoIcon icon={Target} size={20} className="text-primary" />
             <span className="text-base font-semibold text-text-primary">
               {t('onboarding.sessionGoal', 'Versets par session')}
             </span>
@@ -115,7 +115,7 @@ export default function OnboardingSessionConfig() {
               focusMode ? 'bg-primary text-on-primary' : 'bg-surface-tint text-primary',
             )}
           >
-            <DuoIcon icon={Focus} size={22} />
+            <DuoIcon icon={Focus} size={24} />
           </div>
           <div className="flex-1">
             <p className="text-base font-semibold text-text-primary">
@@ -134,7 +134,7 @@ export default function OnboardingSessionConfig() {
               focusMode ? 'border-primary bg-primary' : 'border-text-muted',
             )}
           >
-            {focusMode && <DuoIcon icon={Check} size={14} className="text-on-status" />}
+            {focusMode && <DuoIcon icon={Check} size={16} className="text-on-status" />}
           </div>
         </button>
       </div>

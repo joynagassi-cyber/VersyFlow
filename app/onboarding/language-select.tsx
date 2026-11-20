@@ -81,7 +81,7 @@ export default function LanguagePickerScreen() {
             >
               <div>
                 <div className="flex items-center gap-2">
-                  <DuoIcon icon={Languages} size={18} className="text-primary" />
+                  <DuoIcon icon={Languages} size={20} className="text-primary" />
                   <span className="text-lg font-semibold text-text-primary">{lang.name}</span>
                   {lang.rtl && (
                     <span className="rounded bg-surface-tint px-2 py-0.5 text-2xs font-semibold text-primary">
@@ -94,7 +94,7 @@ export default function LanguagePickerScreen() {
                   <p className="mt-1 text-xs text-primary">{t('onboarding.rtlWarning')}</p>
                 )}
               </div>
-              {isSelected && <DuoIcon icon={Check} size={22} className="text-primary" />}
+              {isSelected && <DuoIcon icon={Check} size={24} className="text-primary" />}
             </button>
           );
         })}

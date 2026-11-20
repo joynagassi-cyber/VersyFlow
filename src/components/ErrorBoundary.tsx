@@ -40,7 +40,7 @@ function BoundaryFallback({ onReset }: { onReset: () => void }) {
   return (
     <div className="flex min-h-full flex-col items-center justify-center gap-4 bg-background p-8 text-center">
       <span className="flex h-16 w-16 items-center justify-center rounded-2xl bg-error-light text-error">
-        <DuoIcon icon={RefreshCw} size={28} />
+        <DuoIcon icon={RefreshCw} size={24} />
       </span>
       <div>
         <h2 className="empty-title">{i18next.t('errorBoundary.title', 'Une erreur est survenue')}</h2>
@@ -66,7 +66,7 @@ function BoundaryFallback({ onReset }: { onReset: () => void }) {
           className="rounded-full bg-surface px-5 py-2.5 text-sm font-semibold text-primary shadow-sm"
         >
           <span className="inline-flex items-center gap-1">
-            <DuoIcon icon={Home} size={14} />
+            <DuoIcon icon={Home} size={16} />
             {i18next.t('errorBoundary.home', 'Accueil')}
           </span>
         </button>

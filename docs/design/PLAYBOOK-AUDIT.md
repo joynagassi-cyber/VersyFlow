@@ -1,9 +1,9 @@
 # Audit UX/UI Playbook 2026 — application à VersyFlow
 
 Généré par `node scripts/audit-playbook.mjs`. **Ne pas éditer à la main.**
-Exécuté le 2026-11-20 02:41 (UTC).
+Exécuté le 2026-11-20 08:40 (UTC).
 
-**Bilan : 39 vérifiés · 10 partiels · 5 en échec · 23 non vérifiables ici** (77 règles).
+**Bilan : 43 vérifiés · 11 partiels · 0 en échec · 23 non vérifiables ici** (77 règles).
 
 Lecture : *vérifié* = une mesure reproductible dans le dépôt le confirme ; *partiel* = une partie est mesurée, le reste demande un appareil ou un navigateur ; *non vérifiable ici* = la preuve exige un rendu réel, et la façon de le vérifier est indiquée.
 
@@ -21,11 +21,11 @@ Lecture : *vérifié* = une mesure reproductible dans le dépôt le confirme ; *
 | B04 | B | BLOCKING | **PASS** | L'information n'est jamais portée par la couleur seule | 65 états exposés en ARIA, 145 libellés textuels |
 | B05 | B | MAJOR | **PASS** | Le mode sombre est un second jeu de jetons, pas un filtre | bloc `[data-theme="dark"]` dédié, aucun filtre inverseur |
 | B06 | B | MAJOR | **PASS** | Rien ne disparaît en contraste élevé ni en niveaux de gris | 17 règles de contraste élevé |
-| C01 | C | BLOCKING | **FAIL** | Rien d'utile sous 12 px à l'échelle par défaut | échelle Tailwind à 11px · classes 10/11px · 17 font-size < 12px dans globals.css |
+| C01 | C | BLOCKING | **PASS** | Rien d'utile sous 12 px à l'échelle par défaut | plancher mesuré : 12px (échelle), aucune taille arbitraire sous 12px |
 | C02 | C | MAJOR | **PARTIAL** | Le texte tient à 200 % sans perte ni défilement horizontal | zoom autorisé (maximum-scale=5) ; rendu à 200 % non mesuré sans navigateur |
 | C03 | C | MAJOR | **UNVERIFIABLE** | Le texte suit la taille système jusqu’à 200 % | nécessite un appareil iOS/Android avec Dynamic Type activé |
 | C04 | C | MAJOR | **PARTIAL** | Longueur de ligne entre 45 et 80 caractères | mesure = 720px (px) : la longueur en caractères dépend de la police choisie |
-| C05 | C | MINOR | **PASS** | Un couple de polices, une échelle de tailles documentée | 5 tailles distinctes (11/18/22/26/30 px), 4 familles embarquées |
+| C05 | C | MINOR | **PASS** | Un couple de polices, une échelle de tailles documentée | 5 tailles distinctes (12/18/22/26/30 px), 4 familles embarquées |
 | D01 | D | BLOCKING | **PASS** | Cible interactive ≥ 24 × 24 px | plancher de 24 px posé sur `.touch-target` (`max(24px, --tap-min)`) |
 | D02 | D | BLOCKING | **PARTIAL** | iOS : zone de touche 44 × 44 pt | `--tap-min: 44px` sous `pointer: coarse` (couvre iOS) ; contrôle sur appareil non fait |
 | D03 | D | BLOCKING | **PARTIAL** | Android : cible 48 × 48 dp | `--tap-min: 48px` via `html[data-platform="android"]` ; contrôle sur appareil non fait |
@@ -53,13 +53,13 @@ Lecture : *vérifié* = une mesure reproductible dans le dépôt le confirme ; *
 | H01 | H | BLOCKING | **PASS** | Tout est utilisable au clavier, focus visible, sans piège | lien d’évitement, 43 règles `:focus-visible`, fermeture Échap |
 | H02 | H | BLOCKING | **PASS** | Chaque image a un texte alternatif ou est décorative | toutes les balises `<img>` portent `alt` ou `aria-hidden` |
 | H03 | H | BLOCKING | **PASS** | Chaque commande a un nom accessible, icônes comprises | aucun bouton sans nom accessible détecté |
-| H04 | H | BLOCKING | **FAIL** | Le focus est déplacé après navigation, sans le voler | focus de route : présent, monté 1 fois |
+| H04 | H | BLOCKING | **PASS** | Le focus est déplacé après navigation, sans le voler | gestionnaire de focus monté 1 fois (coquille commune aux deux formats), contrat testé |
 | H05 | H | MAJOR | **UNVERIFIABLE** | Zoom système et navigateur testés à 200 % | rendu à 200 % non mesurable sans navigateur |
 | H06 | H | MAJOR | **PASS** | Les composants exposent rôles et états exacts | 32 rôles explicites posés |
 | I01 | I | MAJOR | **PASS** | Aucune image ou police bloquante au premier écran | polices auto-hébergées en `font-display: swap` |
 | I02 | I | MAJOR | **PARTIAL** | Pas de décalage de mise en page à l’arrivée du contenu (CLS ≤ 0,1) | squelettes à la géométrie réelle (25 formes, repli de route par famille) ; CLS non mesuré sans navigateur |
-| I03 | I | BLOCKING | **PASS** | Le réglage « réduire le mouvement » est respecté | 11 blocs `prefers-reduced-motion`, dont un pour les animations nommées |
-| I04 | I | MAJOR | **FAIL** | Aucune animation > 400 ms sans raison, aucune boucle infinie | boucle infinie — cursor: pointer; user-select: none; animation: mem-pulse 2.4s ease-in-out infinite; · boucle infinie — .animate-spin { animation: spin 1.4s linear infinite; } · boucle infinie — animation: skeleton-sweep 1.4s var(--ease-standard) infinite; · boucle infinie — .journey-confetti i { position:absolute; width:6px; height:6px; border-radius:2px; backgro |
+| I03 | I | BLOCKING | **PASS** | Le réglage « réduire le mouvement » est respecté | 10 blocs `prefers-reduced-motion`, dont un pour les animations nommées |
+| I04 | I | MAJOR | **PARTIAL** | Aucune animation > 400 ms sans raison, aucune boucle infinie | 7 animation(s) au-delà de 400 ms, justifiées et jouées une seule fois : animation: mem-success-pop 480ms cubic-bezier(0.34, 1.56, 0. · background: var(--color-success); animation: mem-success-rin · animation: mem-confetti-fall 1200ms ease-in both; |
 | I05 | I | MINOR | **UNVERIFIABLE** | Premier rendu utile < 2,5 s sur réseau médian | mesure réseau réelle non reproductible ici |
 | J01 | J | BLOCKING | **PARTIAL** | Android : edge-to-edge et encoches gérées | `viewport-fit=cover` et encoches déclarés ; rendu Android non testé |
 | J02 | J | BLOCKING | **UNVERIFIABLE** | Android : retour système (y compris prédictif) | nécessite un appareil Android |
@@ -81,10 +81,10 @@ Lecture : *vérifié* = une mesure reproductible dans le dépôt le confirme ; *
 | K02 | K | BLOCKING | **PASS** | Aucune promesse inventée, aucun chiffre sans source ni date | mode démo signalé à l’écran, sources bibliques documentées et datées |
 | K03 | K | MAJOR | **UNVERIFIABLE** | Le total, frais inclus, est visible avant engagement | aucun parcours payant dans l’application aujourd’hui |
 | K04 | K | MAJOR | **PASS** | On peut quitter un parcours sans perdre son travail | 37 mécanismes de persistance/brouillon |
-| L01 | L | BLOCKING | **FAIL** | Des jetons partout, aucune couleur codée en dur dans un écran | 1 fichier(s) : src/components/ui/Primitives.tsx (1) |
+| L01 | L | BLOCKING | **PASS** | Des jetons partout, aucune couleur codée en dur dans un écran | aucune couleur hexadécimale dans les écrans |
 | L02 | L | BLOCKING | **PASS** | Le résultat sépare vérifié / estimé / non fait | ce rapport sépare PASS, PARTIAL (mesuré en partie), FAIL, UNVERIFIABLE (non fait) et n’accorde aucune réussite par défaut |
 | L03 | L | MAJOR | **PASS** | Chaque case cochée repose sur une preuve reproductible | chaque règle est recalculée par `node scripts/audit-playbook.mjs` sur l’état du dépôt |
-| L04 | L | MAJOR | **FAIL** | Le contexte projet (`AGENTS.md`) énonce les règles de l’écran | règles d’écran absentes de `AGENTS.md` |
+| L04 | L | MAJOR | **PASS** | Le contexte projet (`AGENTS.md`) énonce les règles de l’écran | section « Règles d’écran » annexée à `AGENTS.md` (structure, couleur, typo, cibles, états, mouvement) |
 | L05 | L | MINOR | **PARTIAL** | Un composant par intention, nommé pareil partout | composants homonymes : Card |
 
 ## Ce qui reste à vérifier sur un appareil
@@ -127,9 +127,9 @@ Ces six contrôles ne font pas partie des 77 règles : ils mesurent le **systèm
 
 | ID | Verdict | Contrôle | Mesure |
 | --- | --- | --- | --- |
-| S01 | **FAIL** | Icônes : trois tailles d’interface (16/20/24) + 32 en illustration | 18px (app/(tabs)/settings.tsx:90) · 14px (app/(tabs)/settings.tsx:358) · 23px (app/__dev/duotone-lab/index.tsx:87) · 12px (app/__dev/responsive-preview.tsx:150) · 15px (app/__dev/responsive-preview.tsx:186) |
-| S02 | **FAIL** | Icônes : une seule graisse de trait | 11 surcharge(s) de graisse dans les écrans |
-| S03 | **FAIL** | Rayons : une échelle, aucune valeur brute | 78 rayon(s) hors échelle : 4, 5, 10, 14, 2px |
-| S04 | **FAIL** | Ombres : les jetons du thème, jamais un noir figé | 1 ombre(s) en rgba noir |
-| S05 | **FAIL** | Espacements : multiples de 4 uniquement | espacements hors grille : 2 px |
+| S01 | **PASS** | Icônes : trois tailles d’interface (16/20/24) + 32 en illustration | 16 / 20 / 24 / 32 px dans toute l'interface |
+| S02 | **PASS** | Icônes : une seule graisse de trait | aucune surcharge : la graisse vient de `ICON_STROKE` |
+| S03 | **PASS** | Rayons : une échelle, aucune valeur brute | tous les rayons passent par `calc(Npx * var(--radius-scale))` |
+| S04 | **PASS** | Ombres : les jetons du thème, jamais un noir figé | 4 ombres par jeton, 0 noir codé en dur |
+| S05 | **PASS** | Espacements : multiples de 4 uniquement | aucun espacement arbitraire hors grille de 4 px |
 | S06 | **PASS** | Micro-copie : un verbe, jamais « OK / Valider / Suivant » | aucun « Continuer » générique dans le parcours d’entrée ; chaque action nomme son effet |

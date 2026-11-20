@@ -224,7 +224,7 @@ export default function SearchScreen() {
       <div className="screen-column">
         {/* Input */}
         <div className="flex items-center gap-2 rounded-2xl bg-surface-tint px-4 py-3">
-          <DuoIcon icon={Search} size={18} className="text-text-muted" />
+          <DuoIcon icon={Search} size={20} className="text-text-muted" />
           <input
             aria-label={t('search.placeholder', 'Rechercher un verset...')}
             className="flex-1 bg-transparent text-base text-text-primary outline-none"
@@ -236,7 +236,7 @@ export default function SearchScreen() {
           />
           {query && (
             <button onClick={() => handleSearch('')} aria-label={t('common.clear', 'Effacer')}>
-              <DuoIcon icon={X} size={18} className="text-text-muted" />
+              <DuoIcon icon={X} size={20} className="text-text-muted" />
             </button>
           )}
         </div>
@@ -325,7 +325,7 @@ export default function SearchScreen() {
                     onClick={() => openResult(result)}
                     className="flex items-center gap-1.5 rounded-full bg-surface-tint px-3 py-1.5 text-sm font-medium text-primary"
                   >
-                    <DuoIcon icon={GraduationCap} size={14} />
+                    <DuoIcon icon={GraduationCap} size={16} />
                     {t('search.memorize', 'Memoriser')}
                   </button>
                 </div>

@@ -89,7 +89,7 @@ export default function AnalyticsDashboardScreen() {
         <div className="grid grid-cols-2 gap-3">
           <div className="glass col-span-2 flex items-center gap-4 rounded-3xl p-4">
             <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary text-on-primary">
-              <DuoIcon icon={BookOpen} size={22} />
+              <DuoIcon icon={BookOpen} size={24} />
             </span>
             <div>
               <p className="stat-value text-3xl">

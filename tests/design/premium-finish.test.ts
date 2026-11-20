@@ -101,7 +101,11 @@ describe('finition — échelle typographique', () => {
   });
 
   it('expose les deux pas ajoutés pour y arriver', () => {
-    expect(tailwind).toMatch(/'3xs': \['10px', \{ lineHeight: '13px' \}\]/);
+    // Le playbook interdit l'utile sous 12 px : le micro-libellé est un alias
+    // de 12 px, pas un pas plus petit.
+    expect(tailwind).toMatch(/'3xs': \['12px', \{ lineHeight: '16px' \}\]/);
+    expect(tailwind).toMatch(/'2xs': \['12px', \{ lineHeight: '16px' \}\]/);
+    expect(tailwind).not.toMatch(/'\d?xs[a-z]*': \['([0-9]|1[01])px'/);
     expect(tailwind).toMatch(/display: \['38px', \{ lineHeight: '42px' \}\]/);
   });
 

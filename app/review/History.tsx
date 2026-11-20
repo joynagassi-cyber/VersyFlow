@@ -260,7 +260,7 @@ export default function ReviewHistoryScreen() {
     return (
       <FullScreenPage title={t('nav.history', 'Historique')} showBack backPath="/review/queue">
         <EmptyState
-          icon={<DuoIcon icon={BookOpen} size={28} />}
+          icon={<DuoIcon icon={BookOpen} size={24} />}
           title={t('history.emptyTitle', 'Aucune révision enregistrée')}
           description={t(
             'history.emptyDesc',
@@ -290,7 +290,7 @@ export default function ReviewHistoryScreen() {
                   {selectedRecord.bibleVerseReference}
                 </h2>
                 <span className="inline-flex items-center gap-1 rounded-full bg-surface-tint px-3 py-1 text-xs font-bold text-primary">
-                  <DuoIcon icon={Medal} size={14} />
+                  <DuoIcon icon={Medal} size={16} />
                   {selectedRecord.status === 'mastered'
                     ? t('history.mastered', 'Maîtrisé')
                     : t('history.inProgress', 'En cours')}
@@ -431,7 +431,7 @@ export default function ReviewHistoryScreen() {
                             cfg.cls,
                           )}
                         >
-                          <DuoIcon icon={Icon} size={13} />
+                          <DuoIcon icon={Icon} size={16} />
                           {t(cfg.labelKey, cfg.label)}
                         </span>
                       </div>
@@ -453,10 +453,10 @@ export default function ReviewHistoryScreen() {
                       ) : (
                         <div className="mt-3 flex flex-wrap items-center gap-4 border-t border-border/50 pt-2.5 text-xs text-text-secondary">
                           <span className="inline-flex items-center gap-1 tabular-nums">
-                            <DuoIcon icon={TrendingUp} size={14} className="text-primary" />
+                            <DuoIcon icon={TrendingUp} size={16} className="text-primary" />
                             {t('history.stability', 'Stabilité FSRS')} :{' '}
                             <strong>{entry.stabilityBefore.toFixed(1)}j</strong>
-                            <DuoIcon icon={ArrowRight} size={12} />
+                            <DuoIcon icon={ArrowRight} size={16} />
                             <strong>{entry.stabilityAfter.toFixed(1)}j</strong>
                             {delta !== 0 && (
                               <span className={delta > 0 ? 'text-success' : 'text-error'}>

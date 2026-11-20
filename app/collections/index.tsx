@@ -166,7 +166,7 @@ export default function CollectionsScreen() {
           onClick={() => setCreating(true)}
           className="flex h-10 w-10 items-center justify-center rounded-full bg-surface-tint"
         >
-          <DuoIcon icon={Plus} size={18} className="text-primary" />
+          <DuoIcon icon={Plus} size={20} className="text-primary" />
         </button>
       }
     >
@@ -281,7 +281,7 @@ export default function CollectionsScreen() {
                   className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full"
                   style={{ color: collection.color, backgroundColor: collectionTint(collection.color) }}
                 >
-                  <DuoIcon icon={Icon} size={26} />
+                  <DuoIcon icon={Icon} size={24} />
                 </span>
                 <span className="min-w-0 flex-1">
                   <span className="card-title block">
@@ -290,17 +290,17 @@ export default function CollectionsScreen() {
                   <span className="text-sm text-text-muted">{collection.description}</span>
                   <span className="mt-1 flex gap-3 text-xs text-text-muted">
                     <span className="flex items-center gap-1">
-                      <DuoIcon icon={BookOpen} size={12} />
+                      <DuoIcon icon={BookOpen} size={16} />
                       {collection.verseCount} {t('collections.verses', 'versets')}
                     </span>
                     <span className="flex items-center gap-1">
-                      <DuoIcon icon={Clock} size={12} />
+                      <DuoIcon icon={Clock} size={16} />
                       {collection.lastUpdated}
                     </span>
                   </span>
                 </span>
                 <DuoIcon icon={ChevronDown}
-                  size={18}
+                  size={20}
                   className={'text-text-muted transition ' + (expanded ? 'rotate-180' : '')}
                 />
               </button>
@@ -366,7 +366,7 @@ export default function CollectionsScreen() {
             className="flex w-full items-center gap-4 rounded-2xl border-2 border-dashed border-primary/40 p-4 text-left active:opacity-90"
           >
             <span className="flex h-14 w-14 items-center justify-center rounded-full bg-surface-tint">
-              <DuoIcon icon={Plus} size={26} className="text-primary" />
+              <DuoIcon icon={Plus} size={24} className="text-primary" />
             </span>
             <span>
               <span className="block text-base font-bold text-primary">

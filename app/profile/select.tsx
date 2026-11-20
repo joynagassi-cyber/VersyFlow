@@ -119,11 +119,11 @@ export default function ProfileSelectionScreen() {
                       </span>
                       {active ? (
                         <span className="flex shrink-0 items-center gap-1 text-xs font-bold text-primary">
-                          <DuoIcon icon={Check} size={18} />
+                          <DuoIcon icon={Check} size={20} />
                           {t('profile.active', 'Actif')}
                         </span>
                       ) : (
-                        <DuoIcon icon={ArrowRight} size={18} className="shrink-0 text-text-muted" />
+                        <DuoIcon icon={ArrowRight} size={20} className="shrink-0 text-text-muted" />
                       )}
                     </button>
                   </li>
@@ -157,7 +157,7 @@ export default function ProfileSelectionScreen() {
                       </span>
                     </span>
                     <span className="flex shrink-0 items-center gap-1 text-2xs font-semibold uppercase tracking-wide text-text-muted">
-                      <DuoIcon icon={User} size={14} />
+                      <DuoIcon icon={User} size={16} />
                       {t('familyPlus.readOnly', 'Lecture')}
                     </span>
                   </button>
@@ -179,7 +179,7 @@ export default function ProfileSelectionScreen() {
         </HintNote>
 
         <Button variant="outline" className="w-full" onClick={() => setShowCreate((s) => !s)}>
-          <DuoIcon icon={Plus} size={18} />
+          <DuoIcon icon={Plus} size={20} />
           {t('profile.create', 'Creer un profil')}
         </Button>
 

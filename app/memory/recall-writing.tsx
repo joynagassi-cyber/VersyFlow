@@ -95,12 +95,12 @@ export default function RecallWritingScreen() {
             onClick={handleCompare}
             disabled={!text.trim() || !expectedVerse}
           >
-            <DuoIcon icon={Scale} size={18} />
+            <DuoIcon icon={Scale} size={20} />
             {t('recallWriting.compare', 'Comparer')}
           </Button>
           {result && (
             <Button variant="secondary" className="flex-1" onClick={handleReset}>
-              <DuoIcon icon={RotateCcw} size={18} />
+              <DuoIcon icon={RotateCcw} size={20} />
               {t('recallWriting.reset', 'Recommencer')}
             </Button>
           )}

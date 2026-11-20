@@ -127,7 +127,7 @@ export default function SemanticTagNewScreen() {
                     active ? 'border-primary bg-surface-tint text-primary' : 'border-border text-text-muted',
                   )}
                 >
-                  {active && <DuoIcon icon={Tick} size={12} />}
+                  {active && <DuoIcon icon={Tick} size={16} />}
                   {name}
                 </button>
               );
@@ -138,7 +138,7 @@ export default function SemanticTagNewScreen() {
                 onClick={() => toggle(term.trim())}
                 className="flex items-center gap-1 rounded-full bg-primary px-3 py-1.5 text-xs font-semibold text-on-primary"
               >
-                <DuoIcon icon={Tag} size={12} />
+                <DuoIcon icon={Tag} size={16} />
                 {t('tree.createPersonalTag', 'Créer « {{name}} »', { name: term.trim() })}
               </button>
             )}
@@ -161,7 +161,7 @@ export default function SemanticTagNewScreen() {
 
         {error && (
           <p className="flex items-center gap-1.5 rounded-xl bg-error/10 px-3 py-2 text-sm text-error">
-            <DuoIcon icon={AlertCircle} size={14} className="shrink-0" />
+            <DuoIcon icon={AlertCircle} size={16} className="shrink-0" />
             {error}
           </p>
         )}

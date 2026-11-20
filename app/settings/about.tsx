@@ -92,7 +92,7 @@ export default function AboutScreen() {
         <div className="glass rounded-2xl p-4">
           <div className="flex items-center justify-between gap-2">
             <h2 className="card-title flex items-center gap-2">
-              <DuoIcon icon={Sparkles} size={18} className="text-primary" />
+              <DuoIcon icon={Sparkles} size={20} className="text-primary" />
               {t('settings.whatsNew', 'Nouveautés')}
             </h2>
             <button
@@ -104,7 +104,7 @@ export default function AboutScreen() {
             >
               <DuoIcon
                 icon={ChevronDown}
-                size={18}
+                size={20}
                 className={'transition-transform ' + (showWhatNew ? 'rotate-180' : '')}
               />
             </button>
@@ -132,7 +132,7 @@ export default function AboutScreen() {
           >
             {scheduled ? (
               <>
-                <DuoIcon icon={CheckCircle} size={18} />
+                <DuoIcon icon={CheckCircle} size={20} />
                 {t('settings.notificationScheduled', 'Rappel planifié')}
               </>
             ) : (
@@ -144,7 +144,7 @@ export default function AboutScreen() {
         {/* About */}
         <div className="glass rounded-2xl p-4">
           <h2 className="card-title mb-2 flex items-center gap-2">
-            <DuoIcon icon={BookOpen} size={18} className="text-primary" />
+            <DuoIcon icon={BookOpen} size={20} className="text-primary" />
             {t('settings.about', "A propos")}
           </h2>
           <p className="text-sm leading-relaxed text-text-secondary">
@@ -174,11 +174,11 @@ export default function AboutScreen() {
         {/* Credits */}
         <div className="glass space-y-2 rounded-2xl p-4 text-center">
           <p className="flex items-center justify-center gap-2 text-sm text-text-secondary">
-            <DuoIcon icon={Heart} size={14} className="text-primary" />
+            <DuoIcon icon={Heart} size={16} className="text-primary" />
             {t('settings.creditMission', 'Developpe avec amour pour la gloire de Dieu')}
           </p>
           <p className="flex items-center justify-center gap-2 text-sm text-text-muted">
-            <DuoIcon icon={Cpu} size={14} />
+            <DuoIcon icon={Cpu} size={16} />
             {t('settings.creditEngine', 'Moteur FSRS par Dmytro Gutman')}
           </p>
         </div>

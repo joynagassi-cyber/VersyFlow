@@ -108,13 +108,13 @@ export function DesktopHeader() {
           aria-label={t('shell.search', 'Recherche')}
           className="flex h-10 items-center gap-2 rounded-xl bg-surface-tint px-2.5 text-sm text-text-muted transition-colors hover:text-text-primary"
         >
-          <DuoIcon icon={Search} size={18} />
+          <DuoIcon icon={Search} size={20} />
           {isDesktop && (
             <>
               <span className="hidden xl:inline">
                 {t('shell.searchPlaceholder', 'Rechercher un verset, un concept…')}
               </span>
-              <kbd className="hidden rounded border border-border px-1.5 py-0.5 text-[10px] font-semibold xl:inline">
+              <kbd className="hidden rounded border border-border px-1.5 py-0.5 text-2xs font-semibold xl:inline">
                 ⌘K
               </kbd>
             </>
@@ -132,7 +132,7 @@ export function DesktopHeader() {
           aria-label={t('shell.notifications', 'Notifications')}
           className="flex h-10 w-10 items-center justify-center rounded-xl text-text-secondary transition-colors hover:bg-surface-tint hover:text-text-primary"
         >
-          <DuoIcon icon={Bell} size={19} />
+          <DuoIcon icon={Bell} size={20} />
         </button>
 
         <button

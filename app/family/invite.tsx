@@ -118,7 +118,7 @@ export default function FamilyInviteScreen() {
         {/* Family header */}
         <div className="bg-primary flex items-center gap-3 rounded-3xl p-5 text-on-primary">
           <span className="flex h-11 w-11 items-center justify-center rounded-full bg-on-primary/20">
-            <DuoIcon icon={resolveFamilyIcon(family.icon)} size={22} />
+            <DuoIcon icon={resolveFamilyIcon(family.icon)} size={24} />
           </span>
           <span className="text-xl font-bold">{family.name}</span>
         </div>
@@ -139,12 +139,12 @@ export default function FamilyInviteScreen() {
                 className="touch-target rounded-full bg-surface-tint text-primary active:bg-primary/10"
                 aria-label={copied ? t('common.saved', 'Copié') : t('common.copy', 'Copier')}
               >
-                {copied ? <DuoIcon icon={Check} size={18} className="text-success" /> : <DuoIcon icon={Copy} size={18} className="text-primary" />}
+                {copied ? <DuoIcon icon={Check} size={20} className="text-success" /> : <DuoIcon icon={Copy} size={20} className="text-primary" />}
               </button>
             </div>
           ) : (
             <Button variant="default" onClick={() => fireAndForget(handleGenerateCode(), 'family:generate-code')} disabled={isLoading}>
-              {isLoading ? <DuoIcon icon={Loader2} size={18} className="animate-spin" /> : t('family.generateCode', 'Generer un code')}
+              {isLoading ? <DuoIcon icon={Loader2} size={20} className="animate-spin" /> : t('family.generateCode', 'Generer un code')}
             </Button>
           )}
           <span className="text-xs text-text-muted">
@@ -159,15 +159,15 @@ export default function FamilyInviteScreen() {
           disabled={isLoading || !inviteCode || sharing}
         >
           {sharing ? (
-            <DuoIcon icon={Loader2} size={18} className="animate-spin" />
+            <DuoIcon icon={Loader2} size={20} className="animate-spin" />
           ) : (
-            <DuoIcon icon={Share2} size={18} />
+            <DuoIcon icon={Share2} size={20} />
           )}
           {t('family.shareCode', 'Partager le code')}
         </Button>
 
         <div className="flex items-start gap-3 rounded-2xl bg-surface-tint p-4">
-          <DuoIcon icon={Info} size={18} className="mt-0.5 text-info" />
+          <DuoIcon icon={Info} size={20} className="mt-0.5 text-info" />
           <p className="flex-1 text-sm text-text-secondary">
             {t('family.inviteHint', 'Chaque membre utilise ce code pour rejoindre votre famille.')}
           </p>

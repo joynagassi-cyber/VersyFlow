@@ -82,7 +82,7 @@ export default function ReviewSummaryScreen() {
           tabulaire, encre d'accent lisible sur les 39 presets). */}
       <div className="g1 mb-5 flex flex-col items-center p-6 text-center">
         <span className="section-label flex items-center gap-1.5">
-          <DuoIcon icon={Flame} size={14} />
+          <DuoIcon icon={Flame} size={16} />
           {t('progress.streak', 'Série quotidienne')}
         </span>
         <span className="stat-value mt-2 text-5xl">{stats?.streakCount ?? 0}</span>

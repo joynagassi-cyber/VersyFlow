@@ -109,7 +109,7 @@ export default function TranslationPickerScreen() {
         <div className="flex items-center justify-between gap-2">
           <div className="flex min-w-0 items-center gap-3">
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-surface-tint">
-              <DuoIcon icon={BookText} size={18} className="text-primary" />
+              <DuoIcon icon={BookText} size={20} className="text-primary" />
             </div>
             <div className="min-w-0">
               <p className="truncate text-base font-extrabold text-text-primary">
@@ -126,7 +126,7 @@ export default function TranslationPickerScreen() {
             </div>
           </div>
           <div className="flex shrink-0 flex-col items-end gap-1">
-            {isSelected && <DuoIcon icon={Check} size={18} className="text-primary" />}
+            {isSelected && <DuoIcon icon={Check} size={20} className="text-primary" />}
             {!available && (
               <span className="rounded-full bg-warning/10 px-2 py-0.5 text-3xs font-bold uppercase text-warning">
                 {t('onboarding.remoteVersion', 'Téléchargement requis')}
@@ -173,7 +173,7 @@ export default function TranslationPickerScreen() {
       {isDemoMode && <p className="mb-4 text-sm text-text-secondary">{t('onboardingJourney.demoBible', 'En démo locale, seule la traduction Louis Segond est disponible sur cet appareil.')}</p>}
       <div className="mb-4">
         <p className="mb-2 flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-text-muted">
-          <DuoIcon icon={Layers} size={13} className="text-primary" />
+          <DuoIcon icon={Layers} size={16} className="text-primary" />
           {t('onboarding.versionType', 'Type de version')}
         </p>
         <div className="flex gap-2" role="group" aria-label={t('onboarding.versionType', 'Type de version')}>
@@ -201,7 +201,7 @@ export default function TranslationPickerScreen() {
           <div key={group.language}>
             <div className="mb-2 flex items-center justify-between px-1">
               <p className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-text-secondary">
-                <DuoIcon icon={Languages} size={13} className="text-primary" />
+                <DuoIcon icon={Languages} size={16} className="text-primary" />
                 {group.language}
               </p>
               <span className="rounded-full bg-surface-tint px-2 py-0.5 text-2xs font-bold text-text-secondary">

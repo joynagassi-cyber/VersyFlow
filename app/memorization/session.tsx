@@ -387,7 +387,7 @@ export default function MemorizationSession() {
             refresh();
           }}
         >
-          <DuoIcon icon={ArrowLeft} size={15} />
+          <DuoIcon icon={ArrowLeft} size={16} />
           {t('session.goBack', 'Retour')}
         </Button>
         <Button
@@ -396,13 +396,13 @@ export default function MemorizationSession() {
           aria-label={t('memory.restartReveal', 'Revoir depuis le début')}
         >
           {t('session.proceed', 'Continuer')}
-          <DuoIcon icon={ArrowRight} size={15} />
+          <DuoIcon icon={ArrowRight} size={16} />
         </Button>
       </div>
 
       {complete && (
         <div className="mt-5 flex items-center justify-center gap-2 rounded-xl bg-success-light p-4 text-success">
-          <DuoIcon icon={CheckCircle} size={18} />
+          <DuoIcon icon={CheckCircle} size={20} />
           <span className="text-base font-semibold">
             {t('session.passageComplete', 'Passage terminé!')}
           </span>

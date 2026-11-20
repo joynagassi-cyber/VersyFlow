@@ -179,7 +179,7 @@ export default function MemorizationStartScreen() {
         {!loading && !verseText && (
           <div className="g2 flex flex-col gap-3 p-5">
             <p className="flex items-center gap-2 text-sm font-semibold text-text-primary">
-              <DuoIcon icon={BookOpen} size={17} className="text-primary" />
+              <DuoIcon icon={BookOpen} size={20} className="text-primary" />
               {t('memory.noVerseChosen', 'Aucun verset choisi')}
             </p>
             <p className="text-sm text-text-muted">
@@ -216,13 +216,13 @@ export default function MemorizationStartScreen() {
                     (active ? 'bg-primary text-on-primary' : 'bg-surface-tint text-primary')
                   }
                 >
-                  <DuoIcon icon={Icon} size={22} />
+                  <DuoIcon icon={Icon} size={24} />
                 </span>
                 <span className="min-w-0 flex-1">
                   <span className="card-title block">{t(s.key, s.id)}</span>
                   <span className="text-sm text-text-muted">{t(s.detail, s.id)}</span>
                 </span>
-                {active ? <DuoIcon icon={ChevronRight} size={18} className="text-primary" /> : null}
+                {active ? <DuoIcon icon={ChevronRight} size={20} className="text-primary" /> : null}
               </button>
             );
           })}

@@ -184,13 +184,13 @@ export default function SettingsScreen() {
               {isAuthenticated ? t('settings.connected', 'Connecte') : t('settings.localMode', 'Mode local')}
             </span>
           </span>
-          <DuoIcon icon={ChevronRight} size={18} className="text-text-muted" />
+          <DuoIcon icon={ChevronRight} size={20} className="text-text-muted" />
         </button>
 
         {/* Active translation pill (abbreviation + full name, subtitle). */}
         <div className="g2 flex items-center gap-3 p-4">
           <span className="flex h-10 w-10 items-center justify-center rounded-full bg-surface-tint text-primary">
-            <DuoIcon icon={BookText} size={18} />
+            <DuoIcon icon={BookText} size={20} />
           </span>
           <div className="min-w-0 flex-1">
             <p className="truncate text-sm font-bold text-text-primary">
@@ -233,7 +233,7 @@ export default function SettingsScreen() {
             </div>
           </div>
           <DuoIcon icon={ChevronRight}
-            size={18}
+            size={20}
             className="cursor-pointer text-text-muted"
             onClick={() => navigate('/settings/available-translations')}
           />
@@ -243,7 +243,7 @@ export default function SettingsScreen() {
         {groups.map((group, gi) => (
           <div key={gi}>
             <p className="mb-2 flex items-center gap-2 px-1 section-label">
-              <DuoIcon icon={group.icon} size={13} className="text-primary" />
+              <DuoIcon icon={group.icon} size={16} className="text-primary" />
               {group.title}
             </p>
             <div className="g2 overflow-hidden">
@@ -259,7 +259,7 @@ export default function SettingsScreen() {
                   }
                 >
                   <span className="flex items-center gap-3">
-                    <DuoIcon icon={item.icon} size={18} className="text-text-muted" />
+                    <DuoIcon icon={item.icon} size={20} className="text-text-muted" />
                     <span className="text-base text-text-primary">{item.label}</span>
                   </span>
                   <DuoIcon icon={ChevronRight} size={16} className="text-text-muted" />
@@ -275,7 +275,7 @@ export default function SettingsScreen() {
             onClick={() => setShowConfirm(true)}
             className="g2 flex w-full items-center justify-center gap-2 py-3.5 font-semibold text-error"
           >
-            <DuoIcon icon={LogOut} size={18} />
+            <DuoIcon icon={LogOut} size={20} />
             {t('settings.signOut', 'Se deconnecter')}
           </button>
         )}

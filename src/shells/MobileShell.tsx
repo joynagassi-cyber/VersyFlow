@@ -47,7 +47,7 @@ export function MobileShell() {
               className="touch-target rounded-full active:bg-surface-tint"
               aria-label={t('shell.openMenu', 'Ouvrir le menu')}
             >
-              <DuoIcon icon={Menu01Icon} size={23} color="var(--color-text-primary)" />
+              <DuoIcon icon={Menu01Icon} size={24} color="var(--color-text-primary)" />
             </button>
             <div className="flex items-center gap-2">
               <span className="brand-tile"><Logo size={24} /></span>

@@ -46,7 +46,7 @@ export default function MemorizationConfirm() {
     >
       <div className="flex flex-col items-center py-8">
         <span className="icon-chip flex h-16 w-16 items-center justify-center rounded-full" aria-hidden="true">
-          <DuoIcon icon={PartyPopper} size={30} className="text-primary" />
+          <DuoIcon icon={PartyPopper} size={24} className="text-primary" />
         </span>
         <h2 className="page-title mt-4">
           {t('session.verseComplete', 'Verset mémorisé')}
@@ -66,7 +66,7 @@ export default function MemorizationConfirm() {
         </div>
         <div className="mt-4 flex items-center justify-between border-t border-divider pt-4">
           <span className="flex items-center gap-1.5 text-sm text-text-muted">
-            <DuoIcon icon={CalendarClock} size={15} />
+            <DuoIcon icon={CalendarClock} size={16} />
             {t('session.nextReview', { days: interval })}
           </span>
           <span className={`text-sm font-semibold ${meta.color}`}>{meta.label}</span>
@@ -88,7 +88,7 @@ export default function MemorizationConfirm() {
           className="mx-auto mt-1 flex items-center gap-1 text-sm font-semibold text-primary"
         >
           {t('review.startReview', 'Voir mes révisions')}
-          <DuoIcon icon={ArrowRight} size={14} />
+          <DuoIcon icon={ArrowRight} size={16} />
         </button>
       </div>
     </FullScreenPage>

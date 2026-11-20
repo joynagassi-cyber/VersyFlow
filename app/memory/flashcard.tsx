@@ -87,7 +87,7 @@ export default function FlashcardScreen() {
             onClick={() => setRevealed((r) => Math.min(words.length, r + 1))}
             className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-primary py-3 font-bold text-on-primary active:scale-[0.99]"
           >
-            <DuoIcon icon={Eye} size={18} />
+            <DuoIcon icon={Eye} size={20} />
             {t('memory.reveal', 'Reveler')}
           </button>
           <button
@@ -95,7 +95,7 @@ export default function FlashcardScreen() {
             aria-label={t('memory.restartReveal', 'Revoir depuis le début')}
             className="flex items-center justify-center gap-2 rounded-2xl border border-border px-4 text-text-secondary"
           >
-            <DuoIcon icon={RotateCcw} size={18} />
+            <DuoIcon icon={RotateCcw} size={20} />
           </button>
         </div>
 

@@ -38,7 +38,7 @@ export default function SettingsDataScreen() {
         {/* Highlights summary card */}
         <div className="glass rounded-2xl p-4">
           <p className="mb-2 flex items-center gap-2 section-label">
-            <DuoIcon icon={ListChecks} size={13} className="text-primary" />
+            <DuoIcon icon={ListChecks} size={16} className="text-primary" />
             {t('settings.dataHighlights', 'Mes highlights')}
           </p>
           <p className="text-sm text-text-secondary">

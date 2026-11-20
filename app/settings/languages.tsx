@@ -54,7 +54,7 @@ export default function LanguageSettingsScreen() {
               </span>
               {active && (
                 <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-on-primary">
-                  <DuoIcon icon={Check} size={14} />
+                  <DuoIcon icon={Check} size={16} />
                 </span>
               )}
             </button>

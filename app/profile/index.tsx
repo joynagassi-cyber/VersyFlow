@@ -223,7 +223,7 @@ export default function ProfileScreen() {
                 className="profile-avatar-edit"
                 aria-label={t('profile.changePhoto', 'Changer la photo de profil')}
               >
-                <DuoIcon icon={Camera} size={18} />
+                <DuoIcon icon={Camera} size={20} />
               </button>
               <input
                 ref={fileRef}
@@ -372,12 +372,12 @@ export default function ProfileScreen() {
         {/* ── Actions ── */}
         <div className="flex flex-col gap-3">
           <Button variant="outline" onClick={() => navigate('/settings/backup')}>
-            <DuoIcon icon={Download} size={18} />
+            <DuoIcon icon={Download} size={20} />
             {t('settings.exportData', 'Exporter mes données')}
           </Button>
           {profiles.length > 1 && (
             <Button variant="ghost" onClick={() => navigate('/profile/select')}>
-              <DuoIcon icon={UsersRound} size={18} />
+              <DuoIcon icon={UsersRound} size={20} />
               {t('profile.manageProfiles', 'Gérer les profils')}
             </Button>
           )}
@@ -387,7 +387,7 @@ export default function ProfileScreen() {
               className={cn('text-error')}
               onClick={() => fireAndForget(handleSignOut(), 'profile:signOut')}
             >
-              <DuoIcon icon={LogOut} size={18} />
+              <DuoIcon icon={LogOut} size={20} />
               {t('nav.signOut', 'Se déconnecter')}
             </Button>
           )}

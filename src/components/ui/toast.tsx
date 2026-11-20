@@ -75,7 +75,7 @@ const ToastClose = React.forwardRef<
     toast-close=""
     {...props}
   >
-    <DuoIcon icon={X} size={14} />
+    <DuoIcon icon={X} size={16} />
   </ToastPrimitives.Close>
 ));
 ToastClose.displayName = 'ToastClose';

@@ -29,7 +29,7 @@ export default function DevLabShortcut() {
     >
       <DuoIcon icon={SmartPhone01Icon} size={16} color="currentColor" />
       Coques mobile + bureau
-      <DuoIcon icon={BeakerIcon} size={14} color="currentColor" />
+      <DuoIcon icon={BeakerIcon} size={16} color="currentColor" />
     </Link>
   );
 }

@@ -142,7 +142,7 @@ export default function ThemePickerScreen() {
                           </span>
                           {active && (
                             <span className="ml-auto flex h-5 w-5 items-center justify-center rounded-full bg-primary text-on-primary">
-                              <DuoIcon icon={Check} size={11} />
+                              <DuoIcon icon={Check} size={16} />
                             </span>
                           )}
                         </div>

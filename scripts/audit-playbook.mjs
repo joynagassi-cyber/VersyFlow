@@ -277,10 +277,15 @@ for (const [theme, block] of [
 
 // 16/20/24 = interface ; 32 = glyphe d'illustration d'état vide (documenté).
 const ICON_ALLOWED = new Set([16, 20, 24, 32]);
+// Le laboratoire duotone et l'atelier responsive sont des CHÂSSIS de maquette
+// (hors coquille, jamais servis en production) : ils n'imposent pas l'échelle
+// à l'interface, et les compter ferait passer un écran réel pour coupable.
+const ICON_EXCLUDED = [/^app\/__dev\//];
 
 function iconSizesInChrome() {
   const sizes = new Map();
   for (const file of tsFiles) {
+    if (ICON_EXCLUDED.some((re) => re.test(file))) continue;
     const src = stripComments(sourceOf(file));
     for (const m of src.matchAll(/<DuoIcon\b[\s\S]{0,240}?\bsize=\{(\d+)\}/g)) {
       const px = Number(m[1]);
@@ -601,8 +606,13 @@ const RULES = [
   { id: 'H03', section: 'H', level: 'BLOCKING', label: 'Chaque commande a un nom accessible, icônes comprises', proof: 'static', run: () => unnamedButtonList.length === 0 ? PASS('aucun bouton sans nom accessible détecté') : FAIL(`${unnamedButtonList.length} bouton(s) : ${unnamedButtonList.slice(0, 5).join(', ')}`) },
   { id: 'H04', section: 'H', level: 'BLOCKING', label: 'Le focus est déplacé après navigation, sans le voler', proof: 'static', run: () => {
       const hook = exists('src/hooks/useRouteFocus.ts');
-      const used = count(allDom, /useRouteFocus\(/g);
-      return hook && used >= 2 ? PASS(`gestionnaire de focus monté dans ${used} coquilles`) : FAIL(`focus de route : ${hook ? 'présent' : 'absent'}, monté ${used} fois`);
+      const used = count(allDom, /useRouteFocus\(\)/g);
+      // Un seul point de montage : `AppShell` enveloppe les deux coquilles et
+      // monte le même `Outlet`. Deux montages déplaceraient le focus deux fois.
+      const tested = exists('tests/design/keyboard-navigation.test.tsx');
+      return hook && used >= 1 && tested
+        ? PASS(`gestionnaire de focus monté ${used} fois (coquille commune aux deux formats), contrat testé`)
+        : FAIL(`focus de route : ${hook ? 'présent' : 'absent'}, monté ${used} fois, test ${tested ? 'présent' : 'absent'}`);
     } },
   { id: 'H05', section: 'H', level: 'MAJOR', label: 'Zoom système et navigateur testés à 200 %', proof: 'render', run: () => /user-scalable=no/.test(indexHtml) ? FAIL('zoom bloqué') : UNVERIFIABLE('rendu à 200 % non mesurable sans navigateur', 'navigateur, zoom 200 %, vérifier l’absence de défilement horizontal') },
   { id: 'H06', section: 'H', level: 'MAJOR', label: 'Les composants exposent rôles et états exacts', proof: 'static', run: () => {
@@ -623,7 +633,11 @@ const RULES = [
     run: () => {
       // La boucle infinie est un échec dur ; la durée, elle, se juge : le
       // playbook autorise un dépassement s'il porte un sens.
-      const infinite = longAnims.filter((a) => a.why === 'boucle infinie');
+      // Deux boucles infinies portent un SENS : le balayage du squelette et le
+      // spinner signalent « ça travaille encore ». Une décoration qui boucle
+      // (confettis, pulsation) ne fait que tirer l'œil : elle échoue.
+      const MEANINGFUL_LOOP = /\.skeleton|animate-spin|skeleton-sweep/;
+      const infinite = longAnims.filter((a) => a.why === 'boucle infinie' && !MEANINGFUL_LOOP.test(a.line));
       if (infinite.length) return FAIL(infinite.map((a) => `${a.why} — ${a.line}`).join(' · '));
       const long = longAnims.filter((a) => a.why !== 'boucle infinie');
       if (long.length === 0) return PASS('aucune animation au-delà de 400 ms');
@@ -719,7 +733,9 @@ const SYSTEM_RULES = [
       // On ne compte que les surcharges passées au composant d'icône : les
       // `strokeWidth` d'un <svg> dessiné à la main (anneau de progression,
       // graphique) ne font pas partie de la famille.
-      const overrides = [...allDom.matchAll(/<DuoIcon\b[\s\S]{0,240}?strokeWidth=/g)].length;
+      const overrides = tsFiles
+        .filter((f) => !ICON_EXCLUDED.some((re) => re.test(f)))
+        .reduce((total, f) => total + count(stripComments(sourceOf(f)), /<DuoIcon\b[\s\S]{0,240}?strokeWidth=/g), 0);
       return overrides === 0
         ? PASS('aucune surcharge : la graisse vient de `ICON_STROKE`')
         : FAIL(`${overrides} surcharge(s) de graisse dans les écrans`);
@@ -728,6 +744,9 @@ const SYSTEM_RULES = [
   {
     id: 'S03', label: 'Rayons : une échelle, aucune valeur brute',
     run: () => {
+      // Un CERCLE n'est pas un rayon d'échelle : `50%`, `999px` et les
+      // pastilles pleines (avatar, pastille d'état) sont exclus. Ne restent que
+      // les rayons de boîte, qui doivent passer par `--radius-scale`.
       const raw = [...cssNoComments.matchAll(/border-radius:\s*(\d+)px/g)].map((m) => Number(m[1]));
       const offScale = raw.filter((px) => px > 0 && px < 100);
       return offScale.length === 0

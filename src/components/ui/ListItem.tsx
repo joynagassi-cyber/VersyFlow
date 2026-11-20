@@ -43,14 +43,14 @@ export const ListItem = React.memo(function ListItem({
             iconBgClass,
           )}
         >
-          <DuoIcon icon={Icon} size={18} />
+          <DuoIcon icon={Icon} size={20} />
         </span>
       )}
       <span className="flex-1 text-sm font-medium text-text-primary">{label}</span>
       {value && <span className="text-sm text-text-muted">{value}</span>}
       {trailing}
       {showChevron && (
-        <DuoIcon icon={ChevronRight} size={18} className="shrink-0 text-text-muted rtl:rotate-180" />
+        <DuoIcon icon={ChevronRight} size={20} className="shrink-0 text-text-muted rtl:rotate-180" />
       )}
     </>
   );

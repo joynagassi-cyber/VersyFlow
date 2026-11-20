@@ -101,12 +101,13 @@ const config = {
       // Échelle typographique explicite (interface). Les tailles de contenu
       // biblique restent pilotées par les réglages de lecture (theme-fonts.ts).
       fontSize: {
-        // Deux pas ajoutés pour supprimer les tailles littérales : le micro-
-        // libellé (10 px, pastilles et légendes de graphique) et le titre
-        // d'accueil de l'onboarding (38 px). Toute taille de l'interface est
-        // désormais nommée — voir tests/design/premium-finish.test.ts.
-        '3xs': ['10px', { lineHeight: '13px' }],
-        '2xs': ['11px', { lineHeight: '14px' }],
+        // Plancher du playbook (C01) : rien d'utile sous 12 px. Les deux pas
+        // 10 px et 11 px ont été retirés ; ils restent DÉFINIS comme ALIAS de
+        // 12 px pour que les 85 appels existants (`text-2xs`, `text-3xs`)
+        // continuent de compiler sans passer sous le plancher. Un nouveau pas
+        // ne doit pas être ajouté ici : c'est une échelle, pas un sac.
+        '3xs': ['12px', { lineHeight: '16px' }],
+        '2xs': ['12px', { lineHeight: '16px' }],
         xs: ['12px', { lineHeight: '16px' }],
         sm: ['13px', { lineHeight: '18px' }],
         base: ['14px', { lineHeight: '21px' }],

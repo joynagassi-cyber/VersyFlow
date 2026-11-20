@@ -270,7 +270,7 @@ export function FamilySubnav({ className }: { className?: string }) {
             aria-current={active ? 'page' : undefined}
             className="family-subnav-item"
           >
-            <DuoIcon icon={section.icon} size={15} />
+            <DuoIcon icon={section.icon} size={16} />
             <span>{t(section.key, section.fallback)}</span>
           </button>
         );

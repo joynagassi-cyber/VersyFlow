@@ -70,9 +70,9 @@ export function EmptyState({
         ) : React.isValidElement(icon) ? (
           icon
         ) : icon ? (
-          <DuoIcon icon={icon as IconSvgElement} size={28} />
+          <DuoIcon icon={icon as IconSvgElement} size={24} />
         ) : (
-          (children ?? <DuoIcon icon={StarIcon} size={26} className="text-text-muted" />)
+          (children ?? <DuoIcon icon={StarIcon} size={24} className="text-text-muted" />)
         )}
       </div>
       {/* Un état vide remplace le contenu d'une section : son titre est le

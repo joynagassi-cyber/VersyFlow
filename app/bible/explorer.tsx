@@ -128,7 +128,7 @@ export default function BibleExplorerScreen() {
       {/* Search */}
       {viewMode === 'books' && (
         <div className="relative mb-4">
-          <DuoIcon icon={Search} size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-muted" />
+          <DuoIcon icon={Search} size={20} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-muted" />
           <Input
             placeholder={t('bible.search', 'Rechercher un livre...')}
             value={query}
@@ -199,7 +199,7 @@ export default function BibleExplorerScreen() {
                           )}
                         </p>
                       </div>
-                      <DuoIcon icon={ChevronRight} size={18} className="text-text-muted" />
+                      <DuoIcon icon={ChevronRight} size={20} className="text-text-muted" />
                     </button>
                   ))}
                 </div>
@@ -230,7 +230,7 @@ export default function BibleExplorerScreen() {
           {showUnavailable && (
             <div className="flex items-start gap-3 rounded-2xl bg-surface p-4 shadow-sm">
               <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-surface-tint text-primary">
-                <DuoIcon icon={AlertCircle} size={18} />
+                <DuoIcon icon={AlertCircle} size={20} />
               </span>
               <div className="min-w-0 flex-1">
                 <p className="text-sm font-semibold text-text-primary">
