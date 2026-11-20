@@ -6,6 +6,9 @@ import '@/dev/mock/install-isolation';
 import { installNetworkGuard } from '@/dev/network-guard';
 
 installNetworkGuard();
+// Pose `html[data-platform]` AVANT le premier rendu : c'est ce qui allume la
+// cible tactile de 48 dp sur Android (playbook D03) et rien sur un ordinateur.
+import { installTouchPlatform } from '@/lib/touch-platform';
 import { readOnboardingProgress } from '@/onboarding/progress';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
@@ -623,6 +626,8 @@ function App() {
     </StrictMode>
   );
 }
+
+installTouchPlatform();
 
 const rootElement = document.getElementById('root');
 if (!rootElement) throw new Error('Root element not found');

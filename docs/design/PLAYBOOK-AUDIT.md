@@ -1,7 +1,7 @@
 # Audit UX/UI Playbook 2026 — application à VersyFlow
 
 Généré par `node scripts/audit-playbook.mjs`. **Ne pas éditer à la main.**
-Exécuté le 2026-11-20 09:01 (UTC).
+Exécuté le 2026-11-20 09:08 (UTC).
 
 **Bilan : 47 vérifiés · 7 partiels · 0 en échec · 23 non vérifiables ici** (77 règles).
 
@@ -28,7 +28,7 @@ Lecture : *vérifié* = une mesure reproductible dans le dépôt le confirme ; *
 | C05 | C | MINOR | **PASS** | Un couple de polices, une échelle de tailles documentée | 5 tailles distinctes (12/18/22/26/30 px), 4 familles embarquées |
 | D01 | D | BLOCKING | **PASS** | Cible interactive ≥ 24 × 24 px | plancher de 24 px posé sur `.touch-target` (`max(24px, --tap-min)`) |
 | D02 | D | BLOCKING | **PARTIAL** | iOS : zone de touche 44 × 44 pt | `--tap-min: 44px` sous `pointer: coarse` (couvre iOS) ; contrôle sur appareil non fait |
-| D03 | D | BLOCKING | **PARTIAL** | Android : cible 48 × 48 dp | `--tap-min: 48px` via `html[data-platform="android"]` ; contrôle sur appareil non fait |
+| D03 | D | BLOCKING | **PARTIAL** | Android : cible 48 × 48 dp | `--tap-min: 48px` et `data-platform` posé au démarrage (`installTouchPlatform`, testé) ; contrôle sur appareil non fait |
 | D04 | D | BLOCKING | **UNVERIFIABLE** | Windows : 40 × 40 epx en tactile | cible Windows non construite (pas d’empaquetage Electron/Tauri dans le dépôt) |
 | D05 | D | MAJOR | **UNVERIFIABLE** | Bureau : souris 22–28 pt, cibles espacées | espacement réel entre cibles non mesurable sans rendu |
 | D06 | D | MAJOR | **UNVERIFIABLE** | Aucune action destructrice collée à une action fréquente | jugement de conception sur les écrans rendus |

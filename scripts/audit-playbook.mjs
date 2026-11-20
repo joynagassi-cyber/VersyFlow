@@ -496,7 +496,9 @@ const RULES = [
       ? PARTIAL('`--tap-min: 44px` sous `pointer: coarse` (couvre iOS) ; contrôle sur appareil non fait')
       : FAIL('pas de plancher 44 px') },
   { id: 'D03', section: 'D', level: 'BLOCKING', label: 'Android : cible 48 × 48 dp', proof: 'render', run: () => /html\[data-platform=['"]android['"]\]\s*\{\s*--tap-min:\s*48px/.test(cssNoComments)
-      ? PARTIAL('`--tap-min: 48px` via `html[data-platform="android"]` ; contrôle sur appareil non fait')
+      ? (exists('src/lib/touch-platform.ts') && /installTouchPlatform\(\)/.test(mainTsx)
+          ? PARTIAL('`--tap-min: 48px` et `data-platform` posé au démarrage (`installTouchPlatform`, testé) ; contrôle sur appareil non fait')
+          : PARTIAL('`--tap-min: 48px` déclaré mais `data-platform` posé nulle part : la règle ne s’allume jamais'))
       : FAIL('pas de plancher 48 dp') },
   { id: 'D04', section: 'D', level: 'BLOCKING', label: 'Windows : 40 × 40 epx en tactile', proof: 'render', run: () => UNVERIFIABLE('cible Windows non construite (pas d’empaquetage Electron/Tauri dans le dépôt)', 'empaqueter puis tester au doigt sur Windows') },
   { id: 'D05', section: 'D', level: 'MAJOR', label: 'Bureau : souris 22–28 pt, cibles espacées', proof: 'render', run: () => UNVERIFIABLE('espacement réel entre cibles non mesurable sans rendu', 'inspection dans le navigateur, onglet Accessibilité') },
