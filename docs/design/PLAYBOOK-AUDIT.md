@@ -1,9 +1,9 @@
 # Audit UX/UI Playbook 2026 — application à VersyFlow
 
 Généré par `node scripts/audit-playbook.mjs`. **Ne pas éditer à la main.**
-Exécuté le 2026-11-20 08:40 (UTC).
+Exécuté le 2026-11-20 08:47 (UTC).
 
-**Bilan : 43 vérifiés · 11 partiels · 0 en échec · 23 non vérifiables ici** (77 règles).
+**Bilan : 44 vérifiés · 10 partiels · 0 en échec · 23 non vérifiables ici** (77 règles).
 
 Lecture : *vérifié* = une mesure reproductible dans le dépôt le confirme ; *partiel* = une partie est mesurée, le reste demande un appareil ou un navigateur ; *non vérifiable ici* = la preuve exige un rendu réel, et la façon de le vérifier est indiquée.
 
@@ -85,7 +85,7 @@ Lecture : *vérifié* = une mesure reproductible dans le dépôt le confirme ; *
 | L02 | L | BLOCKING | **PASS** | Le résultat sépare vérifié / estimé / non fait | ce rapport sépare PASS, PARTIAL (mesuré en partie), FAIL, UNVERIFIABLE (non fait) et n’accorde aucune réussite par défaut |
 | L03 | L | MAJOR | **PASS** | Chaque case cochée repose sur une preuve reproductible | chaque règle est recalculée par `node scripts/audit-playbook.mjs` sur l’état du dépôt |
 | L04 | L | MAJOR | **PASS** | Le contexte projet (`AGENTS.md`) énonce les règles de l’écran | section « Règles d’écran » annexée à `AGENTS.md` (structure, couleur, typo, cibles, états, mouvement) |
-| L05 | L | MINOR | **PARTIAL** | Un composant par intention, nommé pareil partout | composants homonymes : Card |
+| L05 | L | MINOR | **PASS** | Un composant par intention, nommé pareil partout | aucun composant homonyme pour une même intention |
 
 ## Ce qui reste à vérifier sur un appareil
 
