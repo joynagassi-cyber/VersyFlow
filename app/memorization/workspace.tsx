@@ -40,15 +40,19 @@ import { ModeWrite } from '@/components/memorization/ModeWrite';
 import { TranslationMenu } from '@/components/memorization/TranslationMenu';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { WorkspaceSkeleton } from '@/components/ui/ScreenSkeletons';
+import {
+  workspaceStatusTone,
+  type WorkspaceStatusTone,
+} from '@/domains/memorization/workspace-status';
 
-type StatusTone = 'new' | 'due' | 'consolidated';
+type StatusTone = WorkspaceStatusTone;
 
-function statusTone(record: ReturnType<typeof useMemorizationWorkspace>['record'], nextReviewAt: Date | null): StatusTone {
-  if (!record) return 'new';
-  const due = nextReviewAt ? nextReviewAt.getTime() <= Date.now() : false;
-  if (record.status === 'mastered' && !due) return 'consolidated';
-  if (due) return 'due';
-  return 'due'; // in-progress and due → "À revoir"
+/** La règle vit dans le domaine : l'écran ne fait que l'appeler. */
+function statusTone(
+  record: ReturnType<typeof useMemorizationWorkspace>['record'],
+  nextReviewAt: Date | null,
+): StatusTone {
+  return workspaceStatusTone({ record, nextReviewAt });
 }
 
 function statusLabel(tone: StatusTone, t: ReturnType<typeof useTranslation>['t']): string {

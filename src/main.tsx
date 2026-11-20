@@ -25,6 +25,7 @@ import { I18nextProvider } from 'react-i18next';
 import { Suspense, lazy, useEffect } from 'react';
 import '@/styles/globals.css';
 import { Skeleton } from '@/components/ui/Skeleton';
+import { RouteFallback } from '@/components/ui/RouteSkeletons';
 import { cn } from '@/lib/utils';
 import '@/styles/tweakcn-presets.css';
 import '@/styles/vendored-themes.css';
@@ -446,6 +447,14 @@ function App() {
         <DevRouteRecorder />
         <IonApp>
           <ErrorBoundary>
+            {/*
+              Deux frontières, deux questions. Celle-ci répond « quelle forme a
+              l'écran demandé ? » : le repli suit la route (lecteur, session,
+              liste, tableau de bord, formulaire) au lieu de redessiner
+              l'accueil pour les 91 chunks paresseux. Celle de `renderApp`
+              répond « l'application est-elle prête ? » et garde `BootSplash`.
+            */}
+            <Suspense fallback={<RouteFallback />}>
             <Routes>
             <Route path="/" element={<RootRedirect />} />
 
@@ -602,6 +611,7 @@ function App() {
             <Route path="/splash" element={<SplashRoute />} />
             <Route path="*" element={<NotFound />} />
             </Routes>
+            </Suspense>
 
             {/* Raccourci de développement vers les coques d'appareils : présent
                 sur tous les écrans de l'app, absent du build de production. */}

@@ -53,7 +53,11 @@ export default function FlashcardScreen() {
     >
       <div className="screen-column space-y-5">
         <div className="g2 p-6">
-          <p className="text-sm font-semibold text-primary">{text}</p>
+          {/* Le verset n'est pas écrit en clair ici : les puces ci-dessous sont
+              le seul chemin vers le texte, une révélation à la fois. */}
+          <p className="text-sm text-text-muted">
+            {t('memory.revealFromMemory', 'Retrouvez le verset mot après mot, sans le lire.')}
+          </p>
           <div className="mt-4 flex flex-wrap gap-2">
             {words.map((w, i) => (
               <span

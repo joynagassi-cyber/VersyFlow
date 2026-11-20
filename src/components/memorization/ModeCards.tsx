@@ -1,10 +1,19 @@
 /**
- * ModeCards — 3D flashcard turn practice (F).
+ * ModeCards — retourner la carte, du titre vers le texte (F).
  *
- * The verse is shown on the front face (centered serif, big). Tapping the
- * card flips it 180° (rotateY with perspective) to the back face (hint +
- * full expected text). The 4 FSRS buttons below the card rate the flip
- * ("Je m'en souvenais ?").
+ * Ce que l'écran faisait : le recto affichait le verset (même tronqué), et le
+ * geste ne servait donc à rien — on lisait la réponse avant de la chercher.
+ *
+ * Ce qu'il fait : le **recto ne porte que la référence** (« Jean 3:16 ») et la
+ * consigne ; le clic retourne la carte et découvre le texte. La référence
+ * reste affichée des deux côtés, en coin.
+ *
+ * Deux détails qui comptent autant que le recto :
+ *  - **la sélection de texte est interdite sur la carte** (`.mem-flashcard` en
+ *    `user-select: none`) : un glissement pendant le retournement ne doit pas
+ *    surligner le verset puisqu'un second geste le masque ;
+ *  - le retournement reste possible **au clavier** (bouton réel, pas un
+ *    gestionnaire de clic sur un `div`).
  *
  * When a record already has multiple verseTexts (a passage), the card
  * iterates them; otherwise the single verse.
@@ -21,6 +30,7 @@ import {
   CheckIcon as Check,
   Maximize01Icon as Maximize2,
   Minimize01Icon as Minimize2,
+  RotateCcwIcon as RotateCcw,
 } from '@/components/ui/solar-icons';
 import { cn } from '@/lib/utils';
 import { Rating as FsrsRating } from '@/services/review-rating-service';
@@ -77,6 +87,7 @@ export function ModeCards({
   /** F-005-C — countdown seconds to the auto-flip (null once flipped). */
   const [autoFlipLeft, setAutoFlipLeft] = useState<number | null>(null);
   const autoFlipTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const backButton = useRef<HTMLButtonElement | null>(null);
 
   /**
    * F-005-C: auto-flip the card after 30 s of inactivity (spec
@@ -141,13 +152,16 @@ export function ModeCards({
         )}
       >
         <div className={cn('mem-flashcard-inner', flipped && 'is-flipped')}>
-          {/* Front face — the verse, big serif, centered */}
+          {/* Recto — la RÉFÉRENCE seule. Le texte n'apparaît qu'au retournement. */}
           <div className="mem-flashcard-face front">
             <span className="mem-flashcard-corner">{referenceLabel}</span>
             {verses.length > 1 && (
               <span className="mem-flashcard-counter">{cardIndex + 1}/{verses.length}</span>
             )}
-            <p className="verse">{currentVerse}</p>
+            <p className="mem-flashcard-reference">{referenceLabel}</p>
+            <p className="hint">
+              {t('workspace.cardsRecallVerse', 'Retrouvez le verset de mémoire')}
+            </p>
             <p className="hint">
               {t('workspace.cardsHint', 'Touchez pour retourner · glissez pour passer')}
             </p>
@@ -158,7 +172,13 @@ export function ModeCards({
             )}
             <button
               type="button"
-              onClick={() => setFlipped(true)}
+              onClick={() => {
+                setFlipped(true);
+                // Le retournement rend le focus au bouton du verso : sans
+                // cela, la touche Entrée sur le bouton recto (devenu
+                // invisible) rejouerait le même geste.
+                requestAnimationFrame(() => backButton.current?.focus());
+              }}
               className="mem-pill-ghost"
               style={{ marginTop: 8 }}
             >
@@ -167,13 +187,21 @@ export function ModeCards({
             </button>
           </div>
 
-          {/* Back face — "verso" hint + expected full text */}
+          {/* Verso — le texte attendu, et le geste de retour. */}
           <div className="mem-flashcard-face back">
             <span className="mem-flashcard-corner">{referenceLabel}</span>
             <p className="verse">{currentVerse}</p>
-            <p className="hint">
-              {t('workspace.cardsBack', 'Verso · repérez les mots clés')}
-            </p>
+            <p className="hint">{t('workspace.cardsBack', 'Verso · repérez les mots clés')}</p>
+            <button
+              ref={backButton}
+              type="button"
+              onClick={() => setFlipped(false)}
+              className="mem-pill-ghost"
+              style={{ marginTop: 8 }}
+            >
+              <DuoIcon icon={RotateCcw} size={14} />
+              {t('workspace.flipBack', 'Revenir à la référence')}
+            </button>
           </div>
         </div>
 

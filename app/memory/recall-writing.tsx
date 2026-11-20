@@ -79,17 +79,8 @@ export default function RecallWritingScreen() {
       backPath="/tabs/home"
     >
       <div className="screen-column space-y-4">
-        {expectedVerse && (
-          <div className="g2 p-4">
-            <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-text-muted">
-              {t('semantic.expected', 'Texte attendu')}
-            </p>
-            <p className="font-serif italic text-base leading-relaxed text-text-primary">
-              {expectedVerse}
-            </p>
-          </div>
-        )}
-
+        {/* Aucun texte attendu en haut de l'écran : il serait la réponse à la
+            question posée. Il n'apparaît qu'après « Comparer ». */}
         <textarea
           value={text}
           onChange={(e) => setText(e.target.value)}
@@ -117,6 +108,14 @@ export default function RecallWritingScreen() {
 
         {result && (
           <div className="g2 p-4">
+            <div className="mb-3">
+              <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-text-muted">
+                {t('semantic.expected', 'Texte attendu')}
+              </p>
+              <p className="font-serif text-base leading-relaxed text-text-primary">
+                {expectedVerse}
+              </p>
+            </div>
             <div className="mb-4 flex items-center justify-between">
               <span className="text-xs font-semibold uppercase tracking-wide text-text-muted">
                 {t('recallWriting.matchScore', 'Similarite')}

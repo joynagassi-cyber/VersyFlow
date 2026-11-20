@@ -479,6 +479,17 @@ ion-content::part(background) {
     border: 1px solid var(--border, var(--color-border));
     min-height: 300px; perspective: 1400px; overflow: hidden;
     box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.04);
+    /* Le retournement est un geste : un glissement ne doit pas surligner le
+       verset au passage (le second geste du même écran le masque). */
+    user-select: none; -webkit-user-select: none;
+  }
+  /* Recto : la référence est l'information, pas une étiquette. Serif du
+     preset, plus grande que le texte de corps, jamais en capitales. */
+  .mem-flashcard-reference {
+    font-family: var(--reading-font-family, Georgia), serif;
+    font-size: clamp(24px, 6vw, 34px); line-height: 1.15;
+    font-weight: 500; text-align: center; color: var(--color-text-primary);
+    max-width: 92%;
   }
   .mem-flashcard-inner {
     position: relative; min-height: inherit;
@@ -545,6 +556,23 @@ ion-content::part(background) {
   }
   .mem-diff-col.written .word-extra { color: var(--color-text-muted); text-decoration: line-through; padding: 1px 3px; }
 
+  /* Case « référence de mémoire » — sous le champ d'écriture. */
+  .mem-reference-box {
+    margin-top: 12px; padding-top: 12px;
+    border-top: 1px dashed var(--color-border);
+  }
+  .mem-reference-input {
+    display: block; width: 100%; margin-top: 6px; padding: 10px 14px;
+    font-size: 14px; font-weight: 700; letter-spacing: 0.01em;
+    color: var(--color-text-primary);
+    background: var(--muted, var(--color-surface-tint));
+    border: 1px solid transparent; border-radius: 12px; outline: none;
+  }
+  .mem-reference-input::placeholder { color: var(--color-text-muted); font-weight: 500; letter-spacing: 0; }
+  .mem-reference-input:focus { border-color: var(--color-primary); }
+  .mem-reference-input.is-correct { border-color: var(--color-success); color: var(--color-success); background: color-mix(in srgb, var(--color-success) 10%, transparent); }
+  .mem-reference-input.is-wrong { border-color: var(--color-error); color: var(--color-error); background: color-mix(in srgb, var(--color-error) 8%, transparent); }
+
   /* Masquage — mots cliquables */
   .mem-mask-flow {
     font-family: var(--reading-font-family, Georgia, serif);
@@ -555,9 +583,14 @@ ion-content::part(background) {
     display: flex; flex-wrap: wrap; gap: 4px 2px;
   }
   .mem-mask-word {
-    display: inline; padding: 2px 4px; border-radius: 6px; cursor: pointer;
+    display: inline; padding: 2px 4px; border-radius: 6px;
     user-select: none; transition: background 120ms ease, color 120ms ease;
   }
+  /* Un mot n'est cliquable que là où le toucher masque réellement quelque
+     chose : en mode progressif, le geste ne fait rien, il ne doit donc pas
+     s'annoncer comme une commande. */
+  .mem-mask-word.is-tappable { cursor: pointer; }
+  .mem-mask-word.is-tappable:hover { background: color-mix(in srgb, var(--color-primary) 8%, transparent); }
   .mem-mask-word.is-masked {
     background: color-mix(in srgb, var(--color-primary) 10%, transparent);
     color: var(--color-primary);
@@ -566,6 +599,29 @@ ion-content::part(background) {
   }
   .mem-mask-word.is-correct { background: color-mix(in srgb, var(--color-success) 14%, transparent); color: var(--color-success); }
   .mem-mask-word.is-missing { background: color-mix(in srgb, var(--color-warning) 22%, transparent); color: var(--color-warning); font-weight: 700; }
+  /* La case du mot masqué : un champ, pas un soulignement. Le texte du verset
+     n'est jamais visible dessous — c'est tout l'exercice. La largeur suit
+     `ch` du mot attendu : le squelette du texte reste stable au remplissage. */
+  .mem-mask-input {
+    display: inline-block; min-width: 3ch; padding: 2px 6px; margin: 0 2px;
+    font: inherit; text-align: center; color: var(--color-primary);
+    background: color-mix(in srgb, var(--color-primary) 8%, transparent);
+    border: none; border-bottom: 2px solid var(--color-primary);
+    border-radius: 6px 6px 2px 2px; outline: none;
+    transition: background 120ms ease, border-color 120ms ease;
+  }
+  .mem-mask-input::placeholder { color: var(--color-text-muted); }
+  .mem-mask-input:focus { border-bottom-color: var(--color-primary); background: color-mix(in srgb, var(--color-primary) 14%, transparent); }
+  .mem-mask-input.is-correct { color: var(--color-success); border-bottom-color: var(--color-success); background: color-mix(in srgb, var(--color-success) 12%, transparent); }
+  .mem-mask-input.is-wrong { color: var(--color-error); border-bottom-color: var(--color-error); background: color-mix(in srgb, var(--color-error) 10%, transparent); }
+  /* Deux boutons de niveau : cible de 32 px, jamais un picto de 14 px seul. */
+  .mem-level-btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 32px; height: 32px; border-radius: 999px; border: 1px solid var(--border, var(--color-border));
+    background: var(--card, var(--color-surface)); color: var(--color-text-primary);
+    cursor: pointer; transition: opacity 120ms ease;
+  }
+  .mem-level-btn:disabled { opacity: 0.35; cursor: not-allowed; }
 
   /* Sélecteur de mode — barre pill flottante */
   .mem-switcher {
