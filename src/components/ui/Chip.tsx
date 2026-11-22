@@ -25,7 +25,7 @@ export const Chip = React.memo(function Chip({
     'inline-flex min-h-8 items-center gap-1.5 rounded-full px-3 text-xs font-semibold',
     'transition-colors duration-[var(--motion-fast)]',
     active ? 'bg-primary text-on-primary' : 'bg-surface-tint text-primary',
-    onClick && !disabled && '[@media(hover:hover)and(pointer:fine)]:hover:bg-primary/15',
+    onClick && !disabled && '[@media(hover:hover)_and_(pointer:fine)]:hover:bg-primary/15',
     disabled && 'opacity-45',
     className,
   );

@@ -25,6 +25,10 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+// La règle vit dans le domaine, avec ses tests : un seul endroit décide de ce
+// qui est un marqueur de mise en page et de ce qui est du texte. Node 22 lit
+// le TypeScript tel quel (`--experimental-strip-types`, sans dépendance).
+import { cleanVerseText } from '../../src/domains/bible/verse-text.ts';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const TARGET = resolve(root, 'data/bible/lsg.json');
@@ -44,7 +48,10 @@ export function repairVerseText(raw) {
   text = text.replace(/\u201c\s*([^\u201d]{1,60}?)\s*\u201d/g, '\u00ab\u00a0$1\u00a0\u00bb');
   text = text.replace(/[\u201c\u201d]/g, '«');
   // Espaces multiples / bords.
-  return text.replace(/[ \t]{2,}/g, ' ').replace(/\s+([,.;:!?])/g, '$1').trim();
+  text = text.replace(/[ \t]{2,}/g, ' ').replace(/\s+([,.;:!?])/g, '$1').trim();
+  // Marqueurs de mise en page USFM (`j`, `j*`) laissés collés au texte :
+  // ils s'affichaient dans le lecteur, par exemple « etj*j aura fermé ».
+  return cleanVerseText(text);
 }
 
 function main() {

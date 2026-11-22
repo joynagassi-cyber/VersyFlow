@@ -9,6 +9,7 @@ import {
   InformationCircleIcon as Info,
   Loading03Icon as Loader2,
   CheckIcon as Check,
+  AlertCircleIcon as AlertCircle,
 } from '@/components/ui/solar-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { EmptyState } from '@/components/ui/EmptyState';
@@ -29,6 +30,10 @@ export default function FamilyInviteScreen() {
 
   const [inviteCode, setInviteCode] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  // Sans ce drapeau, un échec de génération ne produisait RIEN : le bouton
+  // reprenait son libellé et l'utilisateur, sans code, pouvait recommencer
+  // indéfiniment sans comprendre que l'appel avait échoué.
+  const [generateFailed, setGenerateFailed] = useState(false);
   const [copied, setCopied] = useState(false);
   const [sharing, setSharing] = useState(false);
   const family = families.find((f) => f.id === activeFamilyId) || null;
@@ -42,11 +47,13 @@ export default function FamilyInviteScreen() {
   const handleGenerateCode = async () => {
     if (!family) return;
     setIsLoading(true);
+    setGenerateFailed(false);
     try {
       const invitation = await createInvitation(family.id);
       setInviteCode(invitation.token);
     } catch (e) {
       console.error('[family/invite] generate failed', e);
+      setGenerateFailed(true);
     } finally {
       setIsLoading(false);
     }
@@ -146,6 +153,12 @@ export default function FamilyInviteScreen() {
             <Button variant="default" onClick={() => fireAndForget(handleGenerateCode(), 'family:generate-code')} disabled={isLoading}>
               {isLoading ? <DuoIcon icon={Loader2} size={20} className="animate-spin" /> : t('family.generateCode', 'Generer un code')}
             </Button>
+          )}
+          {generateFailed && (
+            <p role="alert" className="flex items-center gap-1.5 text-xs text-error">
+              <DuoIcon icon={AlertCircle} size={16} className="text-error" />
+              {t('family.generateFailed', 'Le code n’a pas pu être créé. Réessayez dans un instant.')}
+            </p>
           )}
           <span className="text-xs text-text-muted">
             {t('family.expiryHint', 'Ce code expire dans 7 jours.')}

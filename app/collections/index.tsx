@@ -16,6 +16,7 @@ import {
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { parseReference } from '@/domains/bible';
 import { EmptyState } from '@/components/ui/EmptyState';
+import { Skeleton } from '@/components/ui/Skeleton';
 import { colorTintAlpha } from '@/lib/platform';
 import { getMemorizationService } from '@/services/memorization-service-factory';
 import { useBibleBooks } from '@/hooks/useBibleBooks';
@@ -94,16 +95,29 @@ export default function CollectionsScreen() {
   // refresh on mount AND on every FAVORITE_TOGGLED event, so the
   // "Favoris" tab reflects the live toggle from VerseActionBar.
   const [favorites, setFavorites] = useState<MemorizationRecord[]>([]);
+  // « Aucun favori » est une AFFIRMATION. Elle était affichée avant même que
+  // la lecture ait commencé, puis restait affichée si elle échouait : deux
+  // situations différentes, un seul message. Ces deux drapeaux les séparent.
+  const [favoritesLoading, setFavoritesLoading] = useState(true);
+  const [favoritesFailed, setFavoritesFailed] = useState(false);
+  // La reprise doit relancer la lecture, pas seulement réafficher le message.
+  const [favoritesAttempt, setFavoritesAttempt] = useState(0);
   useEffect(() => {
+    setFavoritesLoading(true);
     let cancelled = false;
     const loadFavorites = async () => {
+      setFavoritesFailed(false);
       try {
         const svc = getMemorizationService();
         const all = await svc.getAllMemorized();
         const favs = all.filter((r) => r.favorite);
         if (!cancelled) setFavorites(favs);
       } catch {
-        /* offline or not signed in — favorites stay empty */
+        // Hors ligne ou non connecté : le message doit dire « pas pu lire »,
+        // pas « vous n'avez aucun favori ».
+        if (!cancelled) setFavoritesFailed(true);
+      } finally {
+        if (!cancelled) setFavoritesLoading(false);
       }
     };
     void loadFavorites();
@@ -113,7 +127,7 @@ export default function CollectionsScreen() {
       cancelled = true;
       eventBus.off(DomainEventTypes.FAVORITE_TOGGLED, onToggled);
     };
-  }, []);
+  }, [favoritesAttempt]);
 
   const filtered =
     selected === 'all'
@@ -216,7 +230,33 @@ export default function CollectionsScreen() {
              because the source is the synced memorization database, not
              the localStorage `vs_flow` shape. */
           <div className="space-y-2">
-            {favorites.length === 0 ? (
+            {favoritesLoading ? (
+              <ul className="space-y-2" aria-busy="true" aria-live="polite">
+                <span className="sr-only">{t('collections.loadingFavorites', 'Chargement des favoris…')}</span>
+                {[0, 1, 2].map((i) => (
+                  <li key={i} className="g2 flex items-center gap-3 p-4">
+                    <Skeleton className="h-9 w-9 shrink-0 rounded-full" />
+                    <Skeleton className="h-4 w-40 rounded-full" />
+                  </li>
+                ))}
+              </ul>
+            ) : favoritesFailed ? (
+              <div className="rounded-2xl bg-surface p-4" role="alert">
+                <p className="text-sm text-text-secondary">
+                  {t(
+                    'collections.favoritesUnavailable',
+                    'Vos favoris n’ont pas pu être lus. Vos données sont intactes.',
+                  )}
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setFavoritesAttempt((n) => n + 1)}
+                  className="mt-2 text-sm font-semibold text-primary underline"
+                >
+                  {t('common.retry', 'Réessayer')}
+                </button>
+              </div>
+            ) : favorites.length === 0 ? (
               <EmptyState
                 title={t('collections.emptyFavorites', 'Aucun favori')}
                 description={t('collections.emptyFavoritesHint', 'Vos favoris apparaissent ici quand vous cochez le bouton dans la barre de versets.')}

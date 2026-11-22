@@ -19,6 +19,7 @@ import type { SplitBibleIndex } from '@/domains/bible/split-index';
 import { bibleBookName } from '@/lib/bible-book-name';
 import { useChapterSemanticTags } from '@/hooks/useSemanticTags';
 import ManuscriptView from './ManuscriptView';
+import { VerseTextSkeleton } from '@/components/ui/Skeleton';
 import VerseActionBar from './VerseActionBar';
 import { toggleVerseInSelection, type VerseSelection } from '@/lib/verse-selection';
 
@@ -220,16 +221,16 @@ export default function ContinuousBibleReader({
             );
           }
           if (data === undefined) {
+            // Deux barres muettes ne réservaient pas la place d'un chapitre :
+            // le texte arrivait, la page sautait. `VerseTextSkeleton` reprend
+            // la mesure, l'interligne et le nombre de paragraphes du vrai
+            // texte, et porte son libellé une seule fois.
             return (
-              <div
+              <VerseTextSkeleton
                 key={`${ref.bookId}:${ref.chapter}`}
-                className="manuscript-placeholder"
-                aria-busy="true"
-                aria-label={t('common.loading', 'Chargement…')}
-              >
-                <span className="manuscript-placeholder-line" />
-                <span className="manuscript-placeholder-line short" />
-              </div>
+                label={t('bible.chapterLoading', 'Chargement du chapitre…')}
+                paragraphs={3}
+              />
             );
           }
           const meta = index.books.find((book) => book.id === ref.bookId);

@@ -14,10 +14,14 @@ export default function NotFoundScreen() {
       <div className="flex min-h-full flex-col items-center justify-center gap-6 p-6 text-center animate-fade-in-up">
         <Logo size={96} />
         <div>
-          <p className="stat-value text-5xl tracking-tight">404</p>
-          <p className="empty-title mt-2">
+          {/* `404` est un chiffre décoratif ; le titre de l'écran est la
+              phrase. Sans ce `h1`, la page n'avait AUCUN titre : un lecteur
+              d'écran qui saute de titre en titre arrivait sur une page muette
+              (playbook A01). */}
+          <p className="stat-value text-5xl tracking-tight" aria-hidden="true">404</p>
+          <h1 className="empty-title mt-2">
             {t('notFound.title', "Cette page n'existe pas")}
-          </p>
+          </h1>
           <p className="mt-1 text-sm text-text-muted">
             {t('notFound.subtitle', 'Le lien est peut-etre casse ou la page a ete deplacee.')}
           </p>

@@ -142,24 +142,37 @@ export default function ProfileScreen() {
   const heroCoverUrl = coverSpec?.motifDataUrl ?? fallbackCoverUrl;
 
   const [stats, setStats] = useState<ProgressStats | null>(null);
+  // « — » ne dit pas POURQUOI il n'y a pas de chiffre. Les tuiles restent
+  // muettes pendant le chargement (c'est voulu : ni zéro, ni faux chiffre),
+  // mais un échec doit se voir, sinon on croit à une absence de données.
+  const [statsLoading, setStatsLoading] = useState(true);
+  const [statsFailed, setStatsFailed] = useState(false);
+  const [statsAttempt, setStatsAttempt] = useState(0);
   const profileId = activeProfile?.id ?? 'default';
 
   useEffect(() => {
     let cancelled = false;
     void (async () => {
+      setStatsFailed(false);
+      setStatsLoading(true);
       try {
         const service = getMemorizationService(profileId);
         const progress = new ProgressService(service, getFsrsEngine(), undefined, profileId);
         const data = await progress.getStats();
         if (!cancelled) setStats(data);
       } catch {
-        if (!cancelled) setStats(null);
+        if (!cancelled) {
+          setStats(null);
+          setStatsFailed(true);
+        }
+      } finally {
+        if (!cancelled) setStatsLoading(false);
       }
     })();
     return () => {
       cancelled = true;
     };
-  }, [profileId]);
+  }, [profileId, statsAttempt]);
 
   const displayName = name || activeProfile?.displayName || user?.display_name || '';
   const hasPhoto = photo.startsWith('data:image/');
@@ -298,7 +311,27 @@ export default function ProfileScreen() {
         </section>
 
         {/* ── Stats band ── */}
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        {statsFailed && (
+          <p className="profile-stats-error" role="alert">
+            {t(
+              'profile.statsUnavailable',
+              'Vos statistiques n’ont pas pu être lues. Vos données sont intactes.',
+            )}{' '}
+            <button
+              type="button"
+              className="profile-stats-retry"
+              onClick={() => setStatsAttempt((n) => n + 1)}
+            >
+              {t('common.retry', 'Réessayer')}
+            </button>
+          </p>
+        )}
+        <div
+          className="grid grid-cols-2 gap-3 sm:grid-cols-4"
+          // La bande se remplit après le montage : `aria-busy` dit au lecteur
+          // d'écran que les « — » vont devenir des chiffres.
+          aria-busy={statsLoading}
+        >
           <StatTile value={stats?.streakCount ?? null} label={t('progress.streak', 'Série')} />
           {/* Un gabarit qui porte le nombre ne s'affiche pas sans nombre : la
               tuile garde son libellé neutre et sa valeur reste « — » (D15). */}

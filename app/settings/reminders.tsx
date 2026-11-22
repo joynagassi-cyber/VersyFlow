@@ -105,7 +105,22 @@ export default function SettingsRemindersScreen() {
           </div>
         </button>
 
-        <div className={cn(!reminderEnabled && 'opacity-40')}>
+        {/* Les trois commandes désactivées le sont pour UNE raison : le
+            rappel est éteint. Un `disabled:opacity-40` le montrait sans le
+            dire ; une phrase le dit, et elle est reliée aux champs pour que le
+            lecteur d'écran l'annonce aussi (playbook E05). */}
+        {!reminderEnabled && (
+          <p className="mt-2 text-sm text-text-muted" id="reminder-off-hint">
+            {t(
+              'settings.remindersOffHint',
+              'Activez le rappel ci-dessus pour régler la fréquence et l’heure.',
+            )}
+          </p>
+        )}
+        <div
+          className={cn(!reminderEnabled && 'opacity-40')}
+          aria-describedby={!reminderEnabled ? 'reminder-off-hint' : undefined}
+        >
           <div className="mb-3 flex items-center gap-2">
             <DuoIcon icon={Bell} size={20} className="text-primary" />
             <span className="text-base font-semibold text-text-primary">{t('onboarding.reminderFrequency')}</span>

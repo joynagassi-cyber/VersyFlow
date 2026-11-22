@@ -19,6 +19,7 @@ import {
   BookOpen01Icon as BookOpen,
   Delete02Icon as Trash,
   ArrowRight01Icon as ArrowRight,
+  AlertCircleIcon as AlertCircle,
 } from '@/components/ui/solar-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { NotesSkeleton } from '@/components/ui/ScreenSkeletons';
@@ -39,19 +40,31 @@ export default function NotesScreen() {
   const { byId } = useBibleBooks();
   const [notes, setNotes] = useState<VerseNoteEntry[]>([]);
   const [loading, setLoading] = useState(true);
+  // Une lecture qui échoue ne doit pas ressembler à un carnet vide : avant ce
+  // drapeau, une panne de stockage affichait « aucune note », et l'utilisateur
+  // pouvait croire ses notes perdues.
+  const [failed, setFailed] = useState(false);
+  const [attempt, setAttempt] = useState(0);
   const [tab, setTab] = useState<Tab>('book');
 
   const load = () => {
     setLoading(true);
+    setFailed(false);
     listVerseNotes()
-      .then(setNotes)
-      .catch(() => setNotes([]))
+      .then((rows) => {
+        setNotes(rows);
+      })
+      .catch(() => {
+        setNotes([]);
+        setFailed(true);
+      })
       .finally(() => setLoading(false));
   };
 
   useEffect(() => {
     load();
-  }, []);
+    // `attempt` relance la lecture quand l'utilisateur demande une reprise.
+  }, [attempt]);
 
   const grouped = useMemo(() => {
     const map = new Map<string, VerseNoteEntry[]>();
@@ -87,6 +100,26 @@ export default function NotesScreen() {
 
         {loading ? (
           <NotesSkeleton label={t('common.loading', 'Chargement…')} />
+        ) : failed ? (
+          <div role="alert" className="g2 flex flex-col items-start gap-3 p-5">
+            <p className="flex items-center gap-2 text-sm font-semibold text-text-primary">
+              <DuoIcon icon={AlertCircle} size={20} className="text-error" />
+              {t('notes.unavailable', 'Notes illisibles pour le moment')}
+            </p>
+            <p className="text-sm text-text-muted">
+              {t(
+                'notes.unavailableDesc',
+                'Le carnet n’a pas pu être lu sur cet appareil. Vos notes ne sont pas supprimées.',
+              )}
+            </p>
+            <button
+              type="button"
+              onClick={() => setAttempt((n) => n + 1)}
+              className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-on-primary"
+            >
+              {t('common.retry', 'Réessayer')}
+            </button>
+          </div>
         ) : notes.length === 0 ? (
           <EmptyState
             title={t('notes.empty', 'Aucune note pour l’instant')}

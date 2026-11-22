@@ -80,6 +80,7 @@ export const fr = {
     noResultsHint: 'Essayez une autre référence ou un mot-clé.',
     memorize: 'Mémoriser',
     save: 'Sauvegarder',
+    indexing: 'Préparation de la recherche…',
   },
   sync: {
     idle: 'Synchronisation',
@@ -183,6 +184,8 @@ export const fr = {
     streakLive: 'Série prolongée',
     title: 'Notifications',
     unread: 'non lues',
+    loading: 'Chargement des notifications…',
+    unavailable: 'Notifications illisibles pour le moment',
   },
   onboardingJourney: {
     chooseTheme: 'Choisir ce thème',
@@ -355,6 +358,7 @@ export const fr = {
     notePlaceholder: 'Écrivez une note sur ce verset...',
     noteTitle: 'Note personnelle',
     verses: 'versets',
+    chapterLoading: 'Chargement du chapitre…',
   },
   session: {
     memorizing: 'Mémorisation',
@@ -396,6 +400,8 @@ export const fr = {
     tapToBack: 'Tapez pour revenir',
     tapToFlip: 'Tapez pour voir la suite',
     toMemorize: 'À mémoriser',
+    cardsUnavailable: 'Cartes indisponibles pour le moment',
+    cardsUnavailableHint: 'Les versets n’ont pas pu être lus sur cet appareil. Rien n’a été effacé.',
   },
   family: {
     invite: 'Inviter',
@@ -445,6 +451,7 @@ export const fr = {
     shareCode: 'Partager le code',
     shareDesc: 'Rejoignez ma famille VersyFlow',
     signedInRequired: 'Connectez-vous pour rejoindre une famille',
+    generateFailed: 'Le code n’a pas pu être créé. Réessayez dans un instant.',
   },
   comparison: {
     analyzing: 'En cours d\'analyse...',
@@ -490,6 +497,8 @@ export const fr = {
     noCrossRefs: 'Aucune référence croisée',
     expected: 'Texte attendu',
     relatedTo: 'Lié à',
+    translationUnavailable: 'Le texte de cette traduction n’est pas livré sur cet appareil ; les repères sémantiques restent affichés.',
+    textsUnavailable: 'Le texte des versets n’est pas livré sur cet appareil ; seules les références sont affichées.',
   },
   recallWriting: {
     title: 'Écriture de mémoire',
@@ -523,6 +532,8 @@ export const fr = {
     again: 'Encore',
     good: 'Bien',
     goQueue: 'Voir la file',
+    summaryUnavailable: 'Résumé indisponible pour le moment',
+    summaryUnavailableHint: 'Les statistiques n’ont pas pu être lues. Votre séance reste enregistrée.',
   },
   progress: {
     unavailable: 'Statistiques indisponibles',
@@ -771,6 +782,8 @@ export const fr = {
     versionTypeBadge: 'Type de version',
     navMenuToggleHint: 'Choisissez quelles pages du menu hamburger restent visibles.',
     unknownLanguageGroup: 'Autres versions',
+    remindersOffHint: 'Les rappels restent désactivés : aucune notification ne sera envoyée sur cet appareil.',
+    probingTranslations: 'Vérification des traductions disponibles…',
   },
   profile: {
     changePhoto: 'Changer la photo de profil',
@@ -801,6 +814,7 @@ export const fr = {
     harmonizedCover: 'Couverture harmonisée locale',
     defaultSlogan: 'Un verset médité chaque jour prend racine durablement.',
     localPrivacyNote: 'Photo et motif de couverture traités et conservés uniquement sur cet appareil.',
+    statsUnavailable: 'Statistiques indisponibles',
   },
   reminders: {
     notificationBody: 'Temps de révision ! Ouvrez VersyFlow pour continuer.',
@@ -873,6 +887,11 @@ export const fr = {
     tip1: 'Révisez régulièrement pour maintenir votre streak',
     tip2: 'Mémorisez 1-2 versets par jour',
     tip3: 'Utilisez différentes stratégies de mémorisation',
+    loading: 'Chargement de la maîtrise…',
+    noneYet: 'Aucun verset travaillé pour l’instant',
+    noneYetHint: 'Commencez une mémorisation : la maîtrise apparaît dès la première séance.',
+    unavailable: 'Maîtrise illisible pour le moment',
+    unavailableHint: 'Les niveaux n’ont pas pu être lus. Rien n’a été effacé.',
   },
   collections: {
     all: 'Toutes',
@@ -888,6 +907,8 @@ export const fr = {
     namePlaceholder: 'Nom de la collection',
     emptyFavorites: 'Aucun favori',
     emptyFavoritesHint: 'Vos favoris apparaissent ici quand vous touchez le cœur dans la barre de versets.',
+    loadingFavorites: 'Chargement des favoris…',
+    favoritesUnavailable: 'Vos favoris n’ont pas pu être lus. Vos données sont intactes.',
   },
   achievements: {
     overall: 'Progression globale',
@@ -899,6 +920,11 @@ export const fr = {
     tip1: 'Mémorisez des versets régulièrement',
     tip2: 'Maintenez votre streak quotidien',
     tip3: 'Créez des collections thématiques',
+    loading: 'Chargement des succès…',
+    noneYet: 'Aucun succès pour l’instant',
+    noneYetHint: 'Mémorisez un premier verset : les succès se débloquent au fil des révisions.',
+    unavailable: 'Succès illisibles pour le moment',
+    unavailableHint: 'La progression n’a pas pu être lue sur cet appareil. Vos acquis ne sont pas perdus.',
   },
   analytics: {
     title: 'Progression',
@@ -1047,6 +1073,8 @@ export const fr = {
     filterByVerse: 'Filtrer par verset',
     allVerses: 'Tous les versets',
     legacyNotice: 'Dernière révision connue ({{count}} au total) — les séances antérieures ne sont pas reconstituées.',
+    unavailable: 'Historique illisible pour le moment',
+    unavailableDesc: 'Les révisions n’ont pas pu être lues sur cet appareil. Rien n’a été effacé.',
   },
   dock: {
     family: 'Famille',
@@ -1206,6 +1234,7 @@ export const fr = {
     'theme_arc-maison-paisible': 'Demeure paisible',
     'theme_arc-sanctuaire-bois': 'Sanctuaire & Recueillement',
     'theme_arc-arche-jerusalem': 'Pierres de Jérusalem',
+    fontsLoading: 'Chargement des polices…',
   },
   settingsHub: {
     analytics: 'Statistiques détaillées',
@@ -1586,6 +1615,7 @@ export const fr = {
     versesOf: 'Versets de ce tag',
     whyThisLink: 'Pourquoi ce lien',
     yourTag: 'Ton tag',
+    masteryUnavailable: 'Les niveaux de maîtrise n’ont pas pu être lus pour ce passage.',
   },
   notes: {
     addFromBible: 'Ajouter une note depuis la Bible',
@@ -1600,6 +1630,8 @@ export const fr = {
     tabLabel: 'Regroupement',
     tabVerse: 'Étiquette',
     title: 'Notes',
+    unavailable: 'Notes illisibles pour le moment',
+    unavailableDesc: 'Le carnet n’a pas pu être lu sur cet appareil. Vos notes ne sont pas supprimées.',
   },
 
   shell: {

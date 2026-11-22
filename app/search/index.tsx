@@ -66,6 +66,7 @@ export default function SearchScreen() {
   const [showHistory, setShowHistory] = useState(true);
   const [index, setIndex] = useState<SearchRow[]>([]);
   const [indexError, setIndexError] = useState<string | null>(null);
+  const [indexing, setIndexing] = useState(true);
   const [searchHistory, setSearchHistory] = useState<string[]>(() => {
     try {
       const raw = localStorage.getItem(HISTORY_KEY);
@@ -106,6 +107,7 @@ export default function SearchScreen() {
   useEffect(() => {
     let cancelled = false;
     setIndexError(null);
+    setIndexing(true);
     const translationId = useSettingsStore.getState().bibleTranslation || 'lsg';
     void loadTranslationBooks(translationId).then((booksData) => {
       if (cancelled) return;
@@ -114,9 +116,13 @@ export default function SearchScreen() {
         return;
       }
       buildIndex(booksData);
+      // Tant que l'index n'est pas bâti, une recherche ne peut rien trouver :
+      // afficher « Aucun résultat » à cet instant serait faux.
+      setIndexing(false);
     }).catch(() => {
       if (!cancelled) {
         setIndexError(t('errors.unknownError', 'Impossible de charger la recherche'));
+        setIndexing(false);
       }
     });
     return () => {
@@ -331,6 +337,13 @@ export default function SearchScreen() {
                 </div>
               </div>
             ))}
+          </div>
+        ) : query.length >= 2 && indexing ? (
+          // L'index se construit : « aucun résultat » serait un mensonge
+          // pendant cette fenêtre.
+          <div className="mt-10 flex items-center justify-center gap-2 text-sm text-text-muted" role="status">
+            <DuoIcon icon={Search} size={16} />
+            {t('search.indexing', 'Preparation de la recherche…')}
           </div>
         ) : query.length >= 2 ? (
           <div className="mt-10">

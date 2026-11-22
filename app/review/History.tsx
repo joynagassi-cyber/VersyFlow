@@ -109,6 +109,10 @@ export default function ReviewHistoryScreen() {
   const [reviewedRecords, setReviewedRecords] = useState<MemorizationRecord[]>([]);
   const [selectedVerseId, setSelectedVerseId] = useState<string>('all');
   const [loading, setLoading] = useState(true);
+  // `getAllMemorized()` qui échoue vidait la liste : l'écran annonçait alors
+  // « aucune révision enregistrée » à quelqu'un qui en avait des centaines.
+  const [failed, setFailed] = useState(false);
+  const [attempt, setAttempt] = useState(0);
   const { activeProfile } = useActiveProfile();
   const profileId = activeProfile?.id ?? 'default';
 
@@ -190,6 +194,7 @@ export default function ReviewHistoryScreen() {
         if (!cancelled) {
           setReviewedRecords([]);
           setItems([]);
+          setFailed(true);
           setLoading(false);
         }
       }
@@ -198,7 +203,7 @@ export default function ReviewHistoryScreen() {
     return () => {
       cancelled = true;
     };
-  }, [profileId, t]);
+  }, [profileId, t, attempt]);
 
   const filteredItems = useMemo(
     () =>
@@ -256,7 +261,29 @@ export default function ReviewHistoryScreen() {
     );
   }
 
-  if (items.length === 0 && reviewedRecords.length === 0) {
+  if (!loading && failed) {
+    return (
+      <FullScreenPage title={t('nav.history', 'Historique')} showBack backPath="/review/queue">
+        <div role="alert" className="g2 flex flex-col items-start gap-3 p-5">
+          <p className="flex items-center gap-2 text-sm font-semibold text-text-primary">
+            <DuoIcon icon={BookOpen} size={20} className="text-error" />
+            {t('history.unavailable', 'Historique illisible pour le moment')}
+          </p>
+          <p className="text-sm text-text-muted">
+            {t(
+              'history.unavailableDesc',
+              'Les révisions n’ont pas pu être lues sur cet appareil. Rien n’a été effacé.',
+            )}
+          </p>
+          <Button variant="default" onClick={() => setAttempt((n) => n + 1)}>
+            {t('common.retry', 'Réessayer')}
+          </Button>
+        </div>
+      </FullScreenPage>
+    );
+  }
+
+  if (!loading && items.length === 0 && reviewedRecords.length === 0) {
     return (
       <FullScreenPage title={t('nav.history', 'Historique')} showBack backPath="/review/queue">
         <EmptyState

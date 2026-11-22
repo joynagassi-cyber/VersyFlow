@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/solar-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { EmptyState } from '@/components/ui/EmptyState';
+import { Skeleton } from '@/components/ui/Skeleton';
 import { useActiveProfile } from '@/hooks/useActiveProfile';
 import { getMemorizationService } from '@/services/memorization-service-factory';
 import { getFsrsEngine } from '@/services/fsrs-factory';
@@ -75,6 +76,10 @@ function notifColor(type: Notification['type']) {
 export default function NotificationsScreen() {
   const { t } = useTranslation();
   const [notifications, setNotifications] = useState<Notification[]>([]);
+  // « Aucune notification » s'affichait AVANT la première lecture, et restait
+  // si elle échouait. Deux situations, un seul message : on les sépare.
+  const [loading, setLoading] = useState(true);
+  const [failed, setFailed] = useState(false);
   const [filter, setFilter] = useState<'all' | 'unread'>('all');
   const { activeProfile } = useActiveProfile();
   const profileId = activeProfile?.id ?? 'default';
@@ -109,6 +114,7 @@ export default function NotificationsScreen() {
   useEffect(() => {
     let cancelled = false;
     const load = async () => {
+      setFailed(false);
       try {
         const service = getMemorizationService(profileId);
         const items: Notification[] = [];
@@ -162,6 +168,9 @@ export default function NotificationsScreen() {
         setNotifications(items);
       } catch (e) {
         console.error('[Notifications] data load failed:', e);
+        if (!cancelled) setFailed(true);
+      } finally {
+        if (!cancelled) setLoading(false);
       }
     };
     void load();
@@ -243,7 +252,27 @@ export default function NotificationsScreen() {
           </button>
         </div>
 
-        {filtered.length > 0 ? (
+        {loading ? (
+          <ul className="space-y-2" aria-busy="true">
+            <span className="sr-only">{t('notifications.loading', 'Chargement des notifications…')}</span>
+            {[0, 1, 2].map((i) => (
+              <li key={i} className="g2 flex items-start gap-3 p-4">
+                <Skeleton className="h-9 w-9 shrink-0 rounded-full" />
+                <div className="flex-1 space-y-2">
+                  <Skeleton className="h-4 w-2/3 rounded-full" />
+                  <Skeleton className="h-3 w-1/2 rounded-full" />
+                </div>
+              </li>
+            ))}
+          </ul>
+        ) : failed ? (
+          <p className="rounded-2xl bg-surface p-4 text-sm text-text-secondary" role="alert">
+            {t(
+              'notifications.unavailable',
+              'Vos notifications n’ont pas pu etre lues. Vos donnees sont intactes : reessayez plus tard.',
+            )}
+          </p>
+        ) : filtered.length > 0 ? (
           <div className="space-y-2">
             {filtered.map((n) => {
               const Icon = notifIcon(n.type);

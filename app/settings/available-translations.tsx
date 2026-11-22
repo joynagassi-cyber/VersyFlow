@@ -9,6 +9,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { DuoIcon } from '@/components/ui/DuoIcon';
+import { Skeleton } from '@/components/ui/Skeleton';
 import {
   BookOpen01Icon as BookOpen,
   CheckIcon as Check,
@@ -96,8 +97,13 @@ export default function AvailableTranslationsScreen() {
   // Sonde de disponibilité : on lit l'index de la traduction (structure seule),
   // pas son corpus — 56 traductions × 31 000 versets n'ont pas à être parsées
   // pour afficher une pastille « en local ».
+  // La sonde ne renseignait rien : pendant son exécution, TOUTES les versions
+  // étaient classées « à télécharger », y compris celles déjà sur l'appareil.
+  // Un classement faux pendant une seconde reste un classement faux.
+  const [probing, setProbing] = useState(true);
   useEffect(() => {
     let cancelled = false;
+    setProbing(true);
     void Promise.all(
       entries.map(async (entry) => ({
         id: entry.id,
@@ -110,6 +116,9 @@ export default function AvailableTranslationsScreen() {
           results.map((r) => [r.id, { state: { status: 'idle' } as DownloadState, available: r.available }]),
         ),
       );
+      setProbing(false);
+    }).catch(() => {
+      if (!cancelled) setProbing(false);
     });
     return () => {
       cancelled = true;
@@ -418,7 +427,21 @@ export default function AvailableTranslationsScreen() {
         {t('settings.availableTranslationsHint', 'Téléchargez une version pour l’utiliser hors ligne. Elle restera disponible sur cet appareil.')}
       </p>
 
-      {languageGroups.map((group) => renderLanguageSection(group.language, group.ids))}
+      {probing ? (
+        <div role="status" aria-busy="true" className="space-y-3">
+          <span className="sr-only">
+            {t('settings.probingTranslations', 'Verification des versions deja sur cet appareil…')}
+          </span>
+          {[0, 1, 2].map((i) => (
+            <div key={i} className="g2 flex items-center gap-3 px-4 py-3">
+              <Skeleton className="h-9 w-9 shrink-0 rounded-xl" />
+              <Skeleton className="h-4 w-4/5 rounded-full" />
+            </div>
+          ))}
+        </div>
+      ) : (
+        languageGroups.map((group) => renderLanguageSection(group.language, group.ids))
+      )}
 
       {isAuthenticated && (
         <p className="mt-6 px-1 text-center text-xs text-text-tertiary">

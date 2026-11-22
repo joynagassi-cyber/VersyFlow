@@ -40,6 +40,9 @@ export default function ConceptView() {
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
   const [verseTexts, setVerseTexts] = useState<Record<string, string>>({});
+  // Les clés de versets s'affichent même sans texte ; l'absence de texte doit
+  // donc être DITE, sinon la liste paraît simplement pauvre.
+  const [textsUnavailable, setTextsUnavailable] = useState(false);
   const translationId = useSettingsStore((s) => s.bibleTranslation);
 
   const { data, loading, notFound } = useConceptView(conceptId);
@@ -60,7 +63,7 @@ export default function ConceptView() {
         if (!cancelled) setVerseTexts(map);
       })
       .catch(() => {
-        /* translation unavailable — verse text stays empty, keys still render */
+        if (!cancelled) setTextsUnavailable(true);
       });
     return () => {
       cancelled = true;
@@ -140,6 +143,14 @@ export default function ConceptView() {
             <DuoIcon icon={BookOpen} size={16} className="text-primary" />
             {t('semantic.verses', 'Verset{count}', { count: verseKeys.length })}
           </h2>
+          {textsUnavailable && (
+            <p role="status" className="mb-2 text-xs text-text-muted">
+              {t(
+                'semantic.textsUnavailable',
+                'Le texte des versets n’est pas livré sur cet appareil ; seules les références sont affichées.',
+              )}
+            </p>
+          )}
           {verseKeys.length === 0 ? (
             <p className="empty-line">{t('semantic.noVerses', 'Aucun verset lié')}</p>
           ) : (

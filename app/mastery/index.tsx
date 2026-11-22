@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
@@ -19,6 +20,8 @@ import { getMemorizationService } from '@/services/memorization-service-factory'
 import { StreakService } from '@/services/streak-service';
 import { colorTintAlpha } from '@/lib/platform';
 import { StatsDashboard } from '@/components/charts/StatsDashboard';
+import { ProgressSkeleton } from '@/components/ui/ScreenSkeletons';
+import { EmptyState } from '@/components/ui/EmptyState';
 
 type LvlIcon = 'leaf' | 'book' | 'brain' | 'school' | 'trophy';
 const ICON_MAP: Record<LvlIcon, typeof Leaf> = {
@@ -62,6 +65,7 @@ const levelTint = (color: string) => colorTintAlpha(color, 12);
 
 export default function MasteryScreen() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [stats, setStats] = useState<LiveStats>({
     totalMemorized: 0,
     inProgress: 0,
@@ -72,12 +76,20 @@ export default function MasteryScreen() {
     totalReviews: 0,
   });
   const [levelCounts, setLevelCounts] = useState<Record<string, number>>({});
+  // Sans ces trois drapeaux, l'écran affichait « Novice » et cinq zéros entre
+  // le montage et la réponse du service, puis gardait les zéros si la lecture
+  // échouait. « Novice » n'est pas un chargement : c'est un verdict.
+  const [loading, setLoading] = useState(true);
+  const [failed, setFailed] = useState(false);
+  const [attempt, setAttempt] = useState(0);
   const { activeProfile } = useActiveProfile();
   const profileId = activeProfile?.id ?? 'default';
 
   useEffect(() => {
     let cancelled = false;
     const load = async () => {
+      setLoading(true);
+      setFailed(false);
       try {
         const service = getMemorizationService(profileId);
         const [records, streak] = await Promise.all([
@@ -110,13 +122,16 @@ export default function MasteryScreen() {
         setLevelCounts(counts);
       } catch (e) {
         console.error('[Mastery] data load failed:', e);
+        if (!cancelled) setFailed(true);
+      } finally {
+        if (!cancelled) setLoading(false);
       }
     };
     void load();
     return () => {
       cancelled = true;
     };
-  }, [profileId]);
+  }, [profileId, attempt]);
 
   let currentIndex = 0;
   MASTERY_LEVELS.forEach((level, i) => {
@@ -138,8 +153,25 @@ export default function MasteryScreen() {
   ];
 
   return (
-    <FullScreenPage title={t('nav.mastery', 'Maitrise')} showBack>
+    <FullScreenPage title={t('nav.mastery', 'Maitrise')} showBack column="wide">
       <div className="screen-column space-y-6">
+        {loading ? (
+          <ProgressSkeleton label={t('mastery.loading', 'Chargement de votre maitrise…')} />
+        ) : failed ? (
+          <section className="g3 progress-message" role="alert">
+            <h2>{t('mastery.unavailable', 'Maitrise indisponible')}</h2>
+            <p>
+              {t(
+                'mastery.unavailableHint',
+                'Votre progression n’a pas pu etre lue. Vos donnees sont intactes : reessayez.',
+              )}
+            </p>
+            <button type="button" className="home-secondary" onClick={() => setAttempt((n) => n + 1)}>
+              {t('common.retry', 'Reessayer')}
+            </button>
+          </section>
+        ) : (
+        <>
         {/* Level hero */}
         <div className="bg-primary rounded-3xl p-6 text-center text-on-primary">
           <span className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-surface/20">
@@ -276,7 +308,23 @@ export default function MasteryScreen() {
             ))}
           </div>
         </div>
+        {/* Rien de mémorisé : les cinq niveaux s'affichent tous à zéro, ce qui
+            se lit comme un classement plutôt que comme un point de départ. */}
+        {stats.totalMemorized === 0 && (
+          <EmptyState
+            icon={Leaf}
+            title={t('mastery.noneYet', 'Votre parcours commence ici')}
+            description={t(
+              'mastery.noneYetHint',
+              'Memorisez un premier verset : le niveau « Novice » s’ouvre des la premiere revision.',
+            )}
+            actionLabel={t('bible.explorer', 'Explorer la Bible')}
+            onAction={() => navigate('/bible/explorer')}
+          />
+        )}
         <StatsDashboard profileId={profileId} />
+        </>
+        )}
       </div>
     </FullScreenPage>
   );

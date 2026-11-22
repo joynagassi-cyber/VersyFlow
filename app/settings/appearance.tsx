@@ -137,11 +137,18 @@ export default function AppearanceScreen() {
   const setBibleLineLength = useAppearanceStore((s) => s.setBibleLineLength);
   const resetTextSettings = useAppearanceStore((s) => s.resetTextSettings);
   const [fontLoadFailed, setFontLoadFailed] = useState(false);
+  // Les polices arrivent après le premier rendu : sans état « en cours », les
+  // aperçus s'affichaient d'abord en police de secours puis sautaient à la
+  // bonne — un saut de mise en page dans l'écran même qui le règle.
+  const [fontLoading, setFontLoading] = useState(false);
   useEffect(() => {
     if (tab !== 'text') return;
     let active = true;
+    setFontLoading(true);
     void Promise.allSettled([...APPEARANCE_READING_FONTS, ...APPEARANCE_UI_FONTS].map((font) => loadBibleFont(font.id))).then((results) => {
-      if (active) setFontLoadFailed(results.some((result) => result.status === 'rejected'));
+      if (!active) return;
+      setFontLoadFailed(results.some((result) => result.status === 'rejected'));
+      setFontLoading(false);
     });
     return () => { active = false; };
   }, [tab]);
@@ -502,6 +509,11 @@ export default function AppearanceScreen() {
             </fieldset>
           </div>
           <p className="appearance-hint">{t('appearanceEditor.readingFontHint', 'Choisissez la police des passages bibliques.')}</p>
+          {fontLoading && (
+            <p role="status" className="appearance-font-legacy">
+              {t('appearanceEditor.fontsLoading', 'Chargement des polices…')}
+            </p>
+          )}
           {fontLoadFailed && <p role="status" className="appearance-font-legacy">{t('appearanceEditor.fontLoadError', 'Certaines polices ne sont pas disponibles ; une police de secours est affichée.')}</p>}
           {!APPEARANCE_READING_FONTS.some((font) => font.id === bibleFontFamily) && <p className="appearance-font-legacy">{t('appearanceEditor.currentFont', 'Police actuelle : {{font}}', { font: findBibleFont(bibleFontFamily).label })}</p>}
           <div className="appearance-font-grid" role="group" aria-label={t('settings.reading', 'Lecture')}>

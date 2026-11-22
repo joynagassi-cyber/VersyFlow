@@ -1,7 +1,7 @@
 # Audit UX/UI Playbook 2026 — application à VersyFlow
 
 Généré par `node scripts/audit-playbook.mjs`. **Ne pas éditer à la main.**
-Exécuté le 2026-11-20 09:13 (UTC).
+Exécuté le 2026-11-22 21:48 (UTC).
 
 **Bilan : 47 vérifiés · 7 partiels · 0 en échec · 23 non vérifiables ici** (77 règles).
 
@@ -35,12 +35,12 @@ Lecture : *vérifié* = une mesure reproductible dans le dépôt le confirme ; *
 | D07 | D | MAJOR | **UNVERIFIABLE** | Gestes système préservés | nécessite iOS/Android |
 | E01 | E | BLOCKING | **PASS** | Les cinq états existent : vide, chargement, erreur, succès, limite | vide (`EmptyState`), chargement (`ScreenSkeleton` + 25 formes d’écran), erreur (`ErrorBoundary`), succès, limite : présents |
 | E02 | E | BLOCKING | **PASS** | L'état vide propose une action | `EmptyState` accepte une action |
-| E03 | E | MAJOR | **PASS** | L'erreur dit quoi faire, pas seulement ce qui a échoué | 15 messages d'erreur orientés action |
+| E03 | E | MAJOR | **PASS** | L'erreur dit quoi faire, pas seulement ce qui a échoué | 28 messages d'erreur orientés action |
 | E04 | E | MAJOR | **PASS** | Le chargement réserve la place du contenu, sans saut | 25 formes d’écran, 5 familles au repli de route (place réservée par écran) |
-| E05 | E | MAJOR | **PASS** | Un état désactivé explique pourquoi et comment l’activer | 4 élément(s) désactivé(s) relié(s) à une explication (104 attributs disabled) |
+| E05 | E | MAJOR | **PASS** | Un état désactivé explique pourquoi et comment l’activer | 5 élément(s) désactivé(s) relié(s) à une explication (104 attributs disabled) |
 | F01 | F | BLOCKING | **PASS** | Chaque champ a un libellé visible relié au programme | tous les champs portent un nom accessible (`aria-label`, `aria-labelledby` ou `<label>` englobant) |
 | F02 | F | BLOCKING | **UNVERIFIABLE** | Le message d'erreur est sous son champ et nomme la règle | position du message non mesurable sans rendu |
-| F03 | F | BLOCKING | **PASS** | Le champ fautif porte `aria-invalid` et l’erreur est annoncée | 2 `aria-invalid`, 13 zone(s) live |
+| F03 | F | BLOCKING | **PASS** | Le champ fautif porte `aria-invalid` et l’erreur est annoncée | 2 `aria-invalid`, 26 zone(s) live |
 | F04 | F | MAJOR | **UNVERIFIABLE** | Le formulaire ne demande que ce qu’il utilise | jugement de conception |
 | F05 | F | MAJOR | **PASS** | Clavier adapté (`type`, `inputMode`) et autocomplétion | 6 types adaptés, 1 inputMode, 6 autocomplete |
 | F06 | F | MAJOR | **PASS** | Action primaire unique et échappatoire possible | 6 annulations, 50 retours |
@@ -55,7 +55,7 @@ Lecture : *vérifié* = une mesure reproductible dans le dépôt le confirme ; *
 | H03 | H | BLOCKING | **PASS** | Chaque commande a un nom accessible, icônes comprises | aucun bouton sans nom accessible détecté |
 | H04 | H | BLOCKING | **PASS** | Le focus est déplacé après navigation, sans le voler | gestionnaire de focus monté 1 fois (coquille commune aux deux formats), contrat testé |
 | H05 | H | MAJOR | **UNVERIFIABLE** | Zoom système et navigateur testés à 200 % | rendu à 200 % non mesurable sans navigateur |
-| H06 | H | MAJOR | **PASS** | Les composants exposent rôles et états exacts | 32 rôles explicites posés |
+| H06 | H | MAJOR | **PASS** | Les composants exposent rôles et états exacts | 50 rôles explicites posés |
 | I01 | I | MAJOR | **PASS** | Aucune image ou police bloquante au premier écran | polices auto-hébergées en `font-display: swap` |
 | I02 | I | MAJOR | **PARTIAL** | Pas de décalage de mise en page à l’arrivée du contenu (CLS ≤ 0,1) | squelettes à la géométrie réelle (25 formes, repli de route par famille) ; CLS non mesuré sans navigateur |
 | I03 | I | BLOCKING | **PASS** | Le réglage « réduire le mouvement » est respecté | 10 blocs `prefers-reduced-motion`, dont un pour les animations nommées |

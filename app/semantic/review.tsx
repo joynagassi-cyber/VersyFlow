@@ -41,6 +41,9 @@ export default function SemanticReviewScreen() {
 
   const [mastery, setMastery] = useState<Record<string, number>>({});
   const [measured, setMeasured] = useState(false);
+  // « — » couvrait deux cas très différents : pas de profil (rien à mesurer)
+  // et lecture échouée (on aurait dû mesurer). Le second mérite une phrase.
+  const [measureFailed, setMeasureFailed] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -63,7 +66,10 @@ export default function SemanticReviewScreen() {
         setMastery(map);
         setMeasured(true);
       } catch {
-        if (!cancelled) setMeasured(false);
+        if (!cancelled) {
+          setMeasured(false);
+          setMeasureFailed(true);
+        }
       }
     })();
     return () => {
@@ -112,6 +118,14 @@ export default function SemanticReviewScreen() {
       backPath={`/semantic/tree?conceptId=${encodeURIComponent(conceptId)}`}
     >
       <div className="flex flex-col gap-4">
+        {measureFailed && (
+          <p className="rounded-xl bg-surface p-3 text-sm text-text-secondary" role="alert">
+            {t(
+              'tree.masteryUnavailable',
+              'La maitrise de ces versets n’a pas pu etre lue : les compteurs restent vides plutot que faux.',
+            )}
+          </p>
+        )}
         <SectionCard>
           <div className="grid grid-cols-3 gap-2">
             <StatTile value={verses.length} label={t('tree.verses', 'Versets')} />

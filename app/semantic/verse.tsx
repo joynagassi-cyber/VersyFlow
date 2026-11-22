@@ -44,6 +44,10 @@ export default function VerseView() {
   const verseRef = params.get('verseRef') ?? undefined;
   const translationId = useSettingsStore((s) => s.bibleTranslation);
   const [verseText, setVerseText] = useState<string | null>(null);
+  // Une traduction absente n'est pas une panne : on le dit une fois, sous le
+  // verset, au lieu d'afficher « Verset non disponible » qui laissait croire
+  // que la référence était invalide.
+  const [textUnavailable, setTextUnavailable] = useState(false);
 
   const { cues, loading } = useVerseView(verseRef);
 
@@ -64,7 +68,7 @@ export default function VerseView() {
         if (!cancelled) setVerseText(v?.text ?? null);
       })
       .catch(() => {
-        /* translation unavailable — falls back to "verse not available" */
+        if (!cancelled) setTextUnavailable(true);
       });
     return () => {
       cancelled = true;
@@ -102,6 +106,14 @@ export default function VerseView() {
             <p className="text-base leading-relaxed text-text-primary">{verseText}</p>
           ) : (
             <p className="text-sm text-text-muted">{t('errors.verseNotFound', 'Verset non disponible')}</p>
+          )}
+          {textUnavailable && (
+            <p role="status" className="mt-2 text-xs text-text-muted">
+              {t(
+                'semantic.translationUnavailable',
+                'Le texte de cette traduction n’est pas livré sur cet appareil ; les repères sémantiques restent affichés.',
+              )}
+            </p>
           )}
         </div>
 

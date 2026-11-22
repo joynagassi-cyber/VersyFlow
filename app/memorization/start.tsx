@@ -177,7 +177,7 @@ export default function MemorizationStartScreen() {
         )}
 
         {!loading && !verseText && (
-          <div className="g2 flex flex-col gap-3 p-5">
+          <div className="g2 flex flex-col gap-3 p-5" role="status">
             <p className="flex items-center gap-2 text-sm font-semibold text-text-primary">
               <DuoIcon icon={BookOpen} size={20} className="text-primary" />
               {t('memory.noVerseChosen', 'Aucun verset choisi')}

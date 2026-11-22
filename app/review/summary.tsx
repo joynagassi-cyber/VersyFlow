@@ -14,6 +14,7 @@ import {
   CheckmarkCircle01Icon as CheckCircle,
   Clock01Icon as Clock,
   BookOpen01Icon as BookOpen,
+  AlertCircleIcon as AlertCircle,
 } from '@/components/ui/solar-icons';
 import FullScreenPage from '@/components/layout/FullScreenPage';
 import { Button } from '@/components/ui/button';
@@ -32,6 +33,10 @@ export default function ReviewSummaryScreen() {
 
   const [stats, setStats] = useState<ProgressStats | null>(null);
   const [loading, setLoading] = useState(true);
+  // Un échec de lecture produisait un résumé de zéros : « 0 verset mémorisé,
+  // 0 % de rétention » se lit comme un constat, pas comme une panne.
+  const [failed, setFailed] = useState(false);
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
@@ -43,21 +48,48 @@ export default function ReviewSummaryScreen() {
         if (!cancelled) setStats(data);
       } catch (error) {
         console.error('[ReviewSummary] stats load failed:', error);
-        if (!cancelled) setStats(null);
+        if (!cancelled) {
+          setStats(null);
+          setFailed(true);
+        }
       } finally {
         if (!cancelled) setLoading(false);
       }
     };
+    setFailed(false);
+    setLoading(true);
     void load();
     return () => {
       cancelled = true;
     };
-  }, [profileId]);
+  }, [profileId, attempt]);
 
   if (loading) {
     return (
       <FullScreenPage title={t('review.summary', 'Résumé de session')} backPath="/review/queue">
         <ReviewSummarySkeleton label={t('common.loading', 'Chargement du résumé...')} />
+      </FullScreenPage>
+    );
+  }
+
+  if (failed) {
+    return (
+      <FullScreenPage title={t('review.summary', 'Résumé de session')} backPath="/review/queue">
+        <div role="alert" className="g2 flex flex-col items-start gap-3 p-5">
+          <p className="flex items-center gap-2 text-sm font-semibold text-text-primary">
+            <DuoIcon icon={AlertCircle} size={20} className="text-error" />
+            {t('review.summaryUnavailable', 'Résumé indisponible pour le moment')}
+          </p>
+          <p className="text-sm text-text-muted">
+            {t(
+              'review.summaryUnavailableHint',
+              'Les statistiques n’ont pas pu être lues. Votre séance reste enregistrée.',
+            )}
+          </p>
+          <Button variant="default" onClick={() => setAttempt((n) => n + 1)}>
+            {t('common.retry', 'Réessayer')}
+          </Button>
+        </div>
       </FullScreenPage>
     );
   }

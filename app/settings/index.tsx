@@ -24,6 +24,12 @@ import {
 import { cn } from '@/lib/utils';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogDescription,
+} from '@/components/ui/dialog';
 import { ProfileAvatar } from '@/components/profile/ProfileAvatar';
 import { useAuthStore } from '@/store/auth-store';
 import { isMockMode } from '@/dev/mode';
@@ -282,32 +288,30 @@ export default function SettingsScreen() {
       </div>
 
       {/* Confirm modal */}
-      {showConfirm && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-[color:var(--scrim-strong)] p-6"
-          onClick={() => setShowConfirm(false)}
-        >
-          <div
-            className="w-full max-w-[320px] rounded-3xl bg-surface p-6 text-center shadow-2xl"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <p className="text-xl font-bold text-text-primary">
-              {t('settings.signOutTitle', 'Deconnexion')}
-            </p>
-            <p className="mt-2 text-sm text-text-secondary">
-              {t('settings.signOutConfirm', 'Etes-vous sur de vouloir vous deconnecter ?')}
-            </p>
-            <div className="mt-5 flex gap-3">
+      {/* Cette confirmation était une `<div fixed inset-0>` peinte à la main :
+          elle fermait au clic sur le fond, mais ni Échap ne la fermait, ni le
+          focus n'y entrait — un utilisateur au clavier restait bloqué derrière
+          un voile qu'il ne pouvait pas atteindre. `Dialog` (Radix) apporte les
+          deux, plus le piège de focus et le retour du focus au bouton d'origine.
+          Un `role="alertdialog"` est la bonne sémantique : l'action détruit. */}
+      <Dialog open={showConfirm} onOpenChange={setShowConfirm}>
+        <DialogContent role="alertdialog" className="max-w-[320px] text-center">
+          <DialogTitle className="text-xl font-bold text-text-primary">
+            {t('settings.signOutTitle', 'Deconnexion')}
+          </DialogTitle>
+          <DialogDescription className="mt-2 text-sm text-text-secondary">
+            {t('settings.signOutConfirm', 'Etes-vous sur de vouloir vous deconnecter ?')}
+          </DialogDescription>
+          <div className="mt-5 flex gap-3">
               <Button variant="ghost" className="flex-1" onClick={() => setShowConfirm(false)}>
                 {t('common.cancel', 'Annuler')}
               </Button>
               <Button variant="destructive" className="flex-1" onClick={handleSignOut}>
                 {t('settings.signOut', 'Deconnexion')}
               </Button>
-            </div>
           </div>
-        </div>
-      )}
+        </DialogContent>
+      </Dialog>
     </FullScreenPage>
   );
 }

@@ -79,6 +79,7 @@ export const en = {
     noResultsHint: 'Try another reference or keyword.',
     memorize: 'Memorize',
     save: 'Save',
+    indexing: 'Preparing search…',
   },
   sync: {
     idle: 'Sync',
@@ -182,6 +183,8 @@ export const en = {
     streakLive: 'Streak extended',
     unread: 'unread',
     title: 'Notifications',
+    loading: 'Loading notifications…',
+    unavailable: 'Notifications unavailable right now',
   },
   onboardingJourney: {
     chooseTheme: 'Choose this theme',
@@ -353,6 +356,7 @@ export const en = {
     notePlaceholder: 'Write a note on this verse...',
     noteTitle: 'Personal note',
     verses: 'verses',
+    chapterLoading: 'Loading chapter…',
   },
   session: {
     memorizing: 'Memorization',
@@ -394,6 +398,8 @@ export const en = {
     tapToBack: 'Tap to go back',
     tapToFlip: 'Tap to see the next part',
     toMemorize: 'To memorize',
+    cardsUnavailable: 'Cards unavailable right now',
+    cardsUnavailableHint: 'Verses could not be read on this device. Nothing was erased.',
   },
   family: {
     localAnswers: 'Answers on this device',
@@ -443,6 +449,7 @@ export const en = {
     shareCode: 'Share the code',
     shareDesc: 'Join my VersyFlow family',
     signedInRequired: 'Sign in to join a family',
+    generateFailed: 'The code could not be created. Try again in a moment.',
   },
   comparison: {
     analyzing: 'Analyzing...',
@@ -488,6 +495,8 @@ export const en = {
     noCrossRefs: 'No cross-references',
     expected: 'Expected text',
     relatedTo: 'Related to',
+    translationUnavailable: 'This translation is not shipped on this device; semantic cues are still shown.',
+    textsUnavailable: 'Verse text is not shipped on this device; only references are shown.',
   },
   recallWriting: {
     title: 'Recall Writing',
@@ -521,6 +530,8 @@ export const en = {
     again: 'Again',
     good: 'Good',
     goQueue: 'View the queue',
+    summaryUnavailable: 'Summary unavailable right now',
+    summaryUnavailableHint: 'Statistics could not be read. Your session is still recorded.',
   },
   progress: {
     unavailable: 'Statistics unavailable',
@@ -767,6 +778,8 @@ export const en = {
     versionTypeBadge: 'Version type',
     navMenuToggleHint: 'Choose which hamburger menu pages stay visible.',
     unknownLanguageGroup: 'Other versions',
+    remindersOffHint: 'Reminders stay off: no notification will be sent on this device.',
+    probingTranslations: 'Checking available translations…',
   },
   profile: {
     changePhoto: 'Change profile photo',
@@ -797,6 +810,7 @@ export const en = {
     harmonizedCover: 'Local harmonized cover',
     defaultSlogan: 'A verse meditated daily takes lasting root.',
     localPrivacyNote: 'Photo and cover pattern are processed and stored strictly on this device.',
+    statsUnavailable: 'Statistics unavailable',
   },
   reminders: {
     notificationBody: 'Time to review! Open VersyFlow to continue.',
@@ -869,6 +883,11 @@ export const en = {
     tip1: 'Review regularly to keep your streak',
     tip2: 'Memorize 1-2 verses per day',
     tip3: 'Use different memorization strategies',
+    loading: 'Loading mastery…',
+    noneYet: 'No verse worked on yet',
+    noneYetHint: 'Start a memorization session: mastery appears after the first one.',
+    unavailable: 'Mastery unavailable right now',
+    unavailableHint: 'Levels could not be read. Nothing was erased.',
   },
   collections: {
     all: 'All',
@@ -884,6 +903,8 @@ export const en = {
     namePlaceholder: 'Collection name',
     emptyFavorites: 'No favorites yet',
     emptyFavoritesHint: 'Your favorites appear here when you tap the heart in the verse bar.',
+    loadingFavorites: 'Loading favorites…',
+    favoritesUnavailable: 'Your favorites could not be read. Your data is intact.',
   },
   achievements: {
     overall: 'Overall progress',
@@ -895,6 +916,11 @@ export const en = {
     tip1: 'Memorize verses regularly',
     tip2: 'Keep your daily streak',
     tip3: 'Create themed collections',
+    loading: 'Loading achievements…',
+    noneYet: 'No achievements yet',
+    noneYetHint: 'Memorize a first verse: achievements unlock as you review.',
+    unavailable: 'Achievements unavailable right now',
+    unavailableHint: 'Your progress could not be read on this device. Nothing is lost.',
   },
   analytics: {
     title: 'Progress',
@@ -1043,6 +1069,8 @@ export const en = {
     filterByVerse: 'Filter by verse',
     allVerses: 'All verses',
     legacyNotice: 'Last known review ({{count}} total) — earlier sessions are not reconstructed.',
+    unavailable: 'History unavailable right now',
+    unavailableDesc: 'Reviews could not be read on this device. Nothing was erased.',
   },
   dock: {
     family: 'Family',
@@ -1202,6 +1230,7 @@ export const en = {
     'theme_arc-maison-paisible': 'Peaceful Dwelling',
     'theme_arc-sanctuaire-bois': 'Quiet Sanctuary',
     'theme_arc-arche-jerusalem': 'Stones of Jerusalem',
+    fontsLoading: 'Loading fonts…',
   },
   settingsHub: {
     analytics: 'Detailed statistics',
@@ -1582,6 +1611,7 @@ export const en = {
     versesOf: 'Verses of this tag',
     whyThisLink: 'Why this link',
     yourTag: 'Your tag',
+    masteryUnavailable: 'Mastery levels could not be read for this passage.',
   },
   notes: {
     title: 'Notes',
@@ -1596,6 +1626,8 @@ export const en = {
     delete: 'Delete the note',
     noDates: 'The creation date is not stored in the current format: it will appear once notes have their own entity. No date is shown meanwhile.',
     addFromBible: 'Add a note from the Bible',
+    unavailable: 'Notes unavailable right now',
+    unavailableDesc: 'The notebook could not be read on this device. Your notes are not deleted.',
   },
 
   shell: {
