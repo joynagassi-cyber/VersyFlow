@@ -1495,11 +1495,20 @@ html[data-bg='image']:is([data-transparency='reduced'],[data-contrast='high']) .
       premier restait comme une intention morte. Les composants ne peignent
       donc plus leurs couleurs en utilitaires Tailwind : une seule source.
 
-   A — l'icône. Encre franche + masse d'accent à 24 % : la couleur est là dès
-   le repos, donc elle ne « prend » plus le contrôle au survol. */
-.solar.solar-accent {
-  --solar-secondary-color: var(--acc);
-  --solar-secondary-opacity: 0.24;
+   A — l'icône. Une seule couleur, franche, sans second calque.
+
+   Les icônes étaient en line-duotone : un trait de 1,75 px dont un second
+   calque teinté ne couvrait que 0,42 px à 16 px. Mesuré, pas ressenti — la
+   couleur était donc invisible aux petites tailles, ce qui a motivé le
+   passage à des icônes monochromes. `DuoIcon` pose désormais `icon-ink` ;
+   `solar-accent` est conservé en alias pour les règles de navigation déjà
+   écrites plus bas, qui pilotent l'état actif. */
+.solar.solar-accent,
+.solar.icon-ink {
+  /* Neutralisé : plus de second calque à teinter. La valeur reste posée pour
+     que les sélecteurs existants (`--solar-secondary-opacity` dans les barres)
+     ne peignent rien d'inattendu, même si les icônes n'ont qu'un calque. */
+  --solar-secondary-opacity: 0;
   color: color-mix(in srgb, var(--tx) 82%, var(--mut));
 }
 /* L'encre reste plus sombre que `--mut` : aucune régression de contraste sur
@@ -1528,19 +1537,24 @@ html[data-bg='image']:is([data-transparency='reduced'],[data-contrast='high']) .
   background-color: color-mix(in srgb, var(--acc) 13%, transparent);
   box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--acc) 34%, transparent);
 }
-.nav-item[aria-current='page'] .solar.solar-accent {
-  --solar-secondary-opacity: 0.36;
+/* L'actif du rail est une teinte CLAIRE (`--acc` à 13 %) : l'icône y reste
+   en encre d'accent, comme la règle générale. Poser `--on-accent` (l'encre
+   prévue pour un aplat d'accent) sur un fond clair la rendrait illisible. */
+.nav-item[aria-current='page'] .solar.icon-ink {
+  color: var(--acc-text);
 }
 
-/* C — l'onglet mobile actif. Ici la teinte seule est un signal trop faible
-   sur quatre icônes de 23 px : le duotone devient donc la récompense de
-   l'état — creux au repos (10 %), plein à l'actif (48 %). La densité se lit
-   même sans percevoir la couleur. */
+/* C — l'onglet mobile actif.
+   La pastille est le signal de l'état actif, et LUI SEUL : au repos les icônes
+   n'ont aucune pastille, au survol elles n'en ont pas non plus — sinon
+   « survoler » et « être ici » se ressembleraient, et la pastille perdrait sa
+   valeur d'information. Elle reste posée tant que l'élément est actif (l'état
+   est porté par `aria-current`, donc il survit au re-rendu et au focus
+   perdu). */
 .tab-item {
   color: var(--mut);
   transition: color 180ms ease;
 }
-.tab-item .solar.solar-accent { --solar-secondary-opacity: 0.10; }
 .tab-pill {
   display: grid;
   place-items: center;
@@ -1548,17 +1562,23 @@ html[data-bg='image']:is([data-transparency='reduced'],[data-contrast='high']) .
   height: 32px;
   border-radius: 999px;
   background-color: transparent;
-  transition: background-color 180ms ease;
+  transition:
+    background-color 180ms ease,
+    box-shadow 180ms ease,
+    color 180ms ease;
 }
 .tab-item:hover,
 .tab-item:focus-visible { color: color-mix(in srgb, var(--tx) 80%, var(--mut)); }
-.tab-item:hover .tab-pill,
-.tab-item:focus-visible .tab-pill { background-color: color-mix(in srgb, var(--acc) 5%, transparent); }
-.tab-item:hover .solar.solar-accent,
-.tab-item:focus-visible .solar.solar-accent { --solar-secondary-opacity: 0.20; }
 .tab-item[aria-current='page'] { color: var(--acc-text); }
-.tab-item[aria-current='page'] .tab-pill { background-color: color-mix(in srgb, var(--acc) 12%, transparent); }
-.tab-item[aria-current='page'] .solar.solar-accent { --solar-secondary-opacity: 0.48; }
+/* Pastille PLEINE d'accent, icône posée dessus en `--on-accent` : c'est le
+   couple de contraste que le thème a déjà calculé, donc aucun preset ne rend
+   l'icône illisible (le piège classique : accent clair + encre blanche). */
+.tab-item[aria-current='page'] .tab-pill {
+  background-color: var(--acc);
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--acc) 32%, transparent);
+  color: var(--on-accent);
+}
+.tab-item[aria-current='page'] .solar.icon-ink { color: var(--on-accent); }
 .tab-item .tab-label { transition: color 180ms ease; }
 .tab-item[aria-current='page'] .tab-label { color: var(--acc-text); }
 

@@ -30,23 +30,21 @@ function rule(selector: string): string {
   return match![1];
 }
 
-describe('A — le duotone de l’icône', () => {
-  it('colore la seconde couche dès le repos', () => {
-    const base = rule('.solar.solar-accent');
-    expect(base).toContain('--solar-secondary-color: var(--acc)');
-    expect(base).toMatch(/--solar-secondary-opacity:\s*0?\.24/);
-  });
-
+describe('A — l’icône, désormais monochrome', () => {
+  // Le duotone est abandonné : à 16 px, un second calque à 24 % ne couvrait
+  // que 0,42 px de couleur visible. Le contrat de cet état est décrit dans
+  // `icon-system.test.ts` ; ici on garde les garde-fous de COULEUR.
   it('tire son encre du thème, jamais d’une teinte figée', () => {
-    const base = rule('.solar.solar-accent');
+    const base = rule('.solar.icon-ink');
     expect(base).toMatch(/color:\s*color-mix\(in srgb,\s*var\(--tx\)/);
     expect(base).not.toMatch(/#[0-9a-f]{3,8}/i);
   });
 
-  it('ne perd pas le duotone sur une surface d’accent', () => {
-    // Accent sur accent = icône invisible. Le second calque repasse au trait.
-    const onAccent = rule('.bg-primary .solar.solar-accent');
-    expect(onAccent).toContain('--solar-secondary-color: currentColor');
+  it('neutralise le second calque au lieu de le teinter', () => {
+    // Les icônes n'ont plus qu'un calque ; la variable reste posée à 0 pour
+    // qu'aucune règle de navigation ne peigne un voile fantôme.
+    const base = rule('.solar.icon-ink');
+    expect(base).toMatch(/--solar-secondary-opacity:\s*0/);
   });
 });
 
@@ -71,22 +69,19 @@ describe('B — le contenant ne change pas la teinte, il la porte', () => {
   });
 });
 
-describe('C — l’onglet mobile : la densité porte l’état', () => {
-  it('est creux au repos et plein à l’actif', () => {
-    const rest = rule('.tab-item .solar.solar-accent');
-    const active = rule(".tab-item[aria-current='page'] .solar.solar-accent");
-    const opacity = (body: string) => Number(body.match(/--solar-secondary-opacity:\s*(0?\.\d+)/)?.[1]);
-    expect(opacity(rest)).toBeLessThanOrEqual(0.1);
-    expect(opacity(active)).toBeGreaterThanOrEqual(0.45);
+describe('C — l’onglet mobile : la pastille porte l’état', () => {
+  it('n’a aucune pastille au repos et une pastille pleine à l’actif', () => {
+    expect(rule('.tab-pill')).toMatch(/background-color:\s*transparent/);
+    expect(rule(".tab-item[aria-current='page'] .tab-pill")).toMatch(
+      /background-color:\s*var\(--acc\)/,
+    );
   });
 
   it('la pastille a des dimensions définies, pas héritées d’utilitaires', () => {
-    // Le composant ne porte plus `h-8 w-12` : la taille vit ici, sinon la
-    // pastille s'effondre à 0 × 0 sur une icône de 23 px.
-    const pill = rule('.tab-pill');
-    expect(pill).toMatch(/width:\s*48px/);
-    expect(pill).toMatch(/height:\s*32px/);
-    expect(pill).toContain('background-color: transparent');
+    const base = rule('.tab-pill');
+    expect(base).toMatch(/width:\s*48px/);
+    expect(base).toMatch(/height:\s*32px/);
+    expect(base).toMatch(/border-radius:\s*999px/);
   });
 });
 

@@ -186,6 +186,15 @@ const DuotoneLab = import.meta.env.DEV
   : null;
 
 /**
+ * Laboratoire des icônes pleines + pastille d'état — **développement
+ * uniquement**. Il sert à VALIDER avant de propager aux 457 appels : on y voit
+ * les trois états sur les vraies barres, et la pastille sous six accents.
+ */
+const IconPillLab = import.meta.env.DEV
+  ? lazy(() => import('../app/__dev/icon-pill'))
+  : null;
+
+/**
  * Raccourci vers le laboratoire, également **développement uniquement** : sans
  * lui, il fallait connaître l'URL par cœur pour voir les coques d'appareils.
  */
@@ -609,6 +618,10 @@ function App() {
 
             {import.meta.env.DEV && DuotoneLab && (
               <Route path="/__dev/duotone" element={<DuotoneLab />} />
+            )}
+
+            {import.meta.env.DEV && IconPillLab && (
+              <Route path="/__dev/icon-pill" element={<IconPillLab />} />
             )}
 
             <Route path="/splash" element={<SplashRoute />} />
