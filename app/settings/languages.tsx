@@ -37,7 +37,7 @@ export default function LanguageSettingsScreen() {
                 });
               }}
               className={
-                'flex w-full items-center justify-between rounded-2xl p-4 text-left ' +
+                'flex w-full items-center justify-between rounded-2xl p-4 text-start ' +
                 (active ? 'bg-surface ring-2 ring-[color:var(--color-primary)] shadow-sm' : 'bg-surface shadow-sm')
               }
             >
@@ -54,7 +54,7 @@ export default function LanguageSettingsScreen() {
               </span>
               {active && (
                 <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-on-primary">
-                  <DuoIcon icon={Check} size={14} />
+                  <DuoIcon icon={Check} size={16} />
                 </span>
               )}
             </button>

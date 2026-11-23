@@ -58,7 +58,7 @@ export default function SemanticAttachScreen() {
                 <li key={entry.concept.id} className="flex items-center gap-2">
                   <DuoIcon icon={Tag} size={16} className="text-primary" />
                   <span className="text-sm font-semibold text-text-primary">{entry.label}</span>
-                  <span className="ml-auto text-xs text-text-muted">
+                  <span className="ms-auto text-xs text-text-muted">
                     {t('tree.versesCount', '{{count}} versets', { count: entry.verseKeys.length })}
                   </span>
                 </li>
@@ -79,7 +79,7 @@ export default function SemanticAttachScreen() {
             <ul className="flex flex-col divide-y divide-divider">
               {base.slice(0, 8).map((concept) => (
                 <li key={concept.id} className="flex items-center gap-2 py-2">
-                  <DuoIcon icon={Link} size={14} className="text-text-muted" />
+                  <DuoIcon icon={Link} size={16} className="text-text-muted" />
                   <span className="min-w-0 flex-1 truncate text-sm text-text-primary">
                     {concept.label}
                   </span>
@@ -120,7 +120,7 @@ export default function SemanticAttachScreen() {
           </label>
 
           <div className="mt-3 flex items-start gap-2 rounded-xl bg-surface-tint px-3 py-2">
-            <DuoIcon icon={Info} size={14} className="mt-0.5 shrink-0 text-text-muted" />
+            <DuoIcon icon={Info} size={16} className="mt-0.5 shrink-0 text-text-muted" />
             <p className="text-xs leading-5 text-text-muted">
               {t(
                 'tree.attachUnavailable',

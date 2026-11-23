@@ -37,6 +37,11 @@
         if (/\btoolbar-title\b/.test(cls)) continue;
         // Coquille hero nommée : son `<h1>` est stylé par la feuille.
         if (path in SHELL_OWNED && !cls) continue;
+        // Titre d'un état VIDE (404, liste vide) : `EmptyState` et la page 404
+        // partagent `.empty-title`, une taille d'état et non une échelle de
+        // titre d'écran. Le nommer laisse le titre sortir de l'anonymat que
+        // ce test combat, sans lui imposer l'échelle des pages.
+        if (/\bempty-title\b/.test(cls)) continue;
 
         offenders.push(`${path}: <h1 ${attrs.trim().slice(0, 60)}>`);
       }
@@ -300,6 +305,9 @@ describe('thème — une seule échelle de titres', () => {
         // Les en-têtes maison compacts (barre d'outils) ne sont pas des titres
         // d'écran : 16–18 px, jamais dans le corps défilant.
         if (/\b(appearance|toolbar|compact)-\w*/.test(cls)) continue;
+        // `.empty-title` : le titre d'un état vide (404, liste vide), partagé
+        // avec `EmptyState`. Même exemption que dans le premier contrôle.
+        if (/\bempty-title\b/.test(cls)) continue;
         offenders.push(`${path}: ${cls}`);
       }
     }

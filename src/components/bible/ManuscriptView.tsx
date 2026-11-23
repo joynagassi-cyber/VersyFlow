@@ -135,7 +135,7 @@ export function ManuscriptView({
                   'manuscript-verse',
                   isSelected && 'is-selected',
                   markColor != null && 'is-highlighted',
-                  i > 0 && verseLayout === 'flow' && 'ml-2',
+                  i > 0 && verseLayout === 'flow' && 'ms-2',
                 )}
                 // La couleur du lavis est lue par le CSS via cet attribut :
                 // aucune teinte n'est écrite en JavaScript.

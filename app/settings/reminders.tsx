@@ -67,7 +67,7 @@ export default function SettingsRemindersScreen() {
           className="flex h-10 w-10 items-center justify-center rounded-full bg-surface shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
           aria-label={t('common.back')}
         >
-          <DuoIcon icon={ArrowLeft} size={20} className="text-text-secondary" />
+          <DuoIcon icon={ArrowLeft} size={20} className="directional text-text-secondary" />
         </button>
         <h1 className="page-title">{t('settings.reminders', 'Rappels')}</h1>
       </header>
@@ -83,12 +83,12 @@ export default function SettingsRemindersScreen() {
           onClick={() => { if (reminderEnabled) void cancelPush(); toggleReminders(); }}
           aria-pressed={reminderEnabled}
           className={cn(
-            'flex items-center gap-4 rounded-2xl border-2 p-4 text-left transition-colors',
+            'flex items-center gap-4 rounded-2xl border-2 p-4 text-start transition-colors',
             reminderEnabled ? 'border-primary bg-surface-tint' : 'border-transparent bg-surface shadow-sm',
           )}
         >
           <div className={cn('flex h-12 w-12 shrink-0 items-center justify-center rounded-full', reminderEnabled ? 'bg-primary text-on-primary' : 'bg-surface-tint text-primary')}>
-            {reminderEnabled ? <DuoIcon icon={BellRing} size={22} /> : <DuoIcon icon={Bell} size={22} />}
+            {reminderEnabled ? <DuoIcon icon={BellRing} size={24} /> : <DuoIcon icon={Bell} size={24} />}
           </div>
           <div className="flex-1">
             <p className="text-base font-semibold text-text-primary">{t('onboarding.reminderEnabled')}</p>
@@ -101,13 +101,28 @@ export default function SettingsRemindersScreen() {
               reminderEnabled ? 'border-primary bg-primary' : 'border-text-muted',
             )}
           >
-            {reminderEnabled && <DuoIcon icon={Check} size={14} className="text-on-primary" />}
+            {reminderEnabled && <DuoIcon icon={Check} size={16} className="text-on-primary" />}
           </div>
         </button>
 
-        <div className={cn(!reminderEnabled && 'opacity-40')}>
+        {/* Les trois commandes désactivées le sont pour UNE raison : le
+            rappel est éteint. Un `disabled:opacity-40` le montrait sans le
+            dire ; une phrase le dit, et elle est reliée aux champs pour que le
+            lecteur d'écran l'annonce aussi (playbook E05). */}
+        {!reminderEnabled && (
+          <p className="mt-2 text-sm text-text-muted" id="reminder-off-hint">
+            {t(
+              'settings.remindersOffHint',
+              'Activez le rappel ci-dessus pour régler la fréquence et l’heure.',
+            )}
+          </p>
+        )}
+        <div
+          className={cn(!reminderEnabled && 'opacity-40')}
+          aria-describedby={!reminderEnabled ? 'reminder-off-hint' : undefined}
+        >
           <div className="mb-3 flex items-center gap-2">
-            <DuoIcon icon={Bell} size={18} className="text-primary" />
+            <DuoIcon icon={Bell} size={20} className="text-primary" />
             <span className="text-base font-semibold text-text-primary">{t('onboarding.reminderFrequency')}</span>
           </div>
           <div className="flex flex-wrap gap-2">
@@ -121,7 +136,7 @@ export default function SettingsRemindersScreen() {
                   className={cn('flex h-14 min-w-14 items-center justify-center rounded-2xl border-2 px-4 text-lg font-semibold transition-colors disabled:opacity-40', selected ? 'border-primary bg-surface-tint text-primary' : 'border-transparent bg-surface text-text-secondary shadow-sm')}
                 >
                   {f}
-                  {selected && <DuoIcon icon={Check} className="ml-1" size={16} />}
+                  {selected && <DuoIcon icon={Check} className="ms-1" size={16} />}
                 </button>
               );
             })}
@@ -130,11 +145,12 @@ export default function SettingsRemindersScreen() {
 
         <div className={cn('flex items-center gap-4', !reminderEnabled && 'opacity-40')}>
           <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-surface-tint">
-            <DuoIcon icon={Clock} size={22} className="text-primary" />
+            <DuoIcon icon={Clock} size={24} className="text-primary" />
           </div>
           <div className="flex-1">
             <p className="text-base font-semibold text-text-primary">{t('onboarding.reminderTime')}</p>
             <input
+              aria-label={t('onboarding.reminderTime')}
               type="time"
               value={reminderTime}
               disabled={!reminderEnabled}
@@ -145,7 +161,7 @@ export default function SettingsRemindersScreen() {
         </div>
         <div className="glass rounded-2xl p-4">
           <div className="mb-3 flex items-center gap-2">
-            <DuoIcon icon={BellRing} size={18} className="text-primary" />
+            <DuoIcon icon={BellRing} size={20} className="text-primary" />
             <span className="text-base font-semibold text-text-primary">{t('settings.notificationPush', 'Notifications locales')}</span>
           </div>
           <p className="mb-3 text-xs text-text-muted">
@@ -174,7 +190,7 @@ export default function SettingsRemindersScreen() {
       <WeeklyReminderPlanner />
       <div className="mt-6 flex gap-4">
         <Button variant="outline" className="flex-1" onClick={() => goBackSafely(navigate, '/tabs/settings')}>
-          <DuoIcon icon={ArrowLeft} size={16} />
+          <DuoIcon icon={ArrowLeft} size={16}  className="directional" />
           {t('common.back')}
         </Button>
       </div>

@@ -101,7 +101,11 @@ describe('finition — échelle typographique', () => {
   });
 
   it('expose les deux pas ajoutés pour y arriver', () => {
-    expect(tailwind).toMatch(/'3xs': \['10px', \{ lineHeight: '13px' \}\]/);
+    // Le playbook interdit l'utile sous 12 px : le micro-libellé est un alias
+    // de 12 px, pas un pas plus petit.
+    expect(tailwind).toMatch(/'3xs': \['12px', \{ lineHeight: '16px' \}\]/);
+    expect(tailwind).toMatch(/'2xs': \['12px', \{ lineHeight: '16px' \}\]/);
+    expect(tailwind).not.toMatch(/'\d?xs[a-z]*': \['([0-9]|1[01])px'/);
     expect(tailwind).toMatch(/display: \['38px', \{ lineHeight: '42px' \}\]/);
   });
 
@@ -120,7 +124,11 @@ describe('finition — échelle typographique', () => {
     expect(globals).toMatch(
       /\.stat-value\s*\{[^}]*font-variant-numeric:\s*tabular-nums[^}]*color:\s*var\(--acc-text/,
     );
-    expect(globals).toMatch(/\.stat-label\s*\{[^}]*letter-spacing:\s*0\.12em[^}]*text-transform:\s*uppercase/);
+    // Le libellé garde une recette propre (petites capitales, sans forcer la
+    // casse) : `text-transform: uppercase` réécrivait le texte affiché —
+    // « MONDAY, NOVEMBER 23 » sur un profil francophone.
+    expect(globals).toMatch(/\.stat-label\s*\{[^}]*font-variant-caps:\s*all-small-caps/);
+    expect(globals).toMatch(/\.stat-label\s*\{[^}]*text-transform:\s*none/);
     const dashboard = read('app/analytics/dashboard.tsx');
     expect(dashboard).toContain('stat-value');
     expect(dashboard).toContain('stat-label');

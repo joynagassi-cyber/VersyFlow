@@ -137,11 +137,18 @@ export default function AppearanceScreen() {
   const setBibleLineLength = useAppearanceStore((s) => s.setBibleLineLength);
   const resetTextSettings = useAppearanceStore((s) => s.resetTextSettings);
   const [fontLoadFailed, setFontLoadFailed] = useState(false);
+  // Les polices arrivent après le premier rendu : sans état « en cours », les
+  // aperçus s'affichaient d'abord en police de secours puis sautaient à la
+  // bonne — un saut de mise en page dans l'écran même qui le règle.
+  const [fontLoading, setFontLoading] = useState(false);
   useEffect(() => {
     if (tab !== 'text') return;
     let active = true;
+    setFontLoading(true);
     void Promise.allSettled([...APPEARANCE_READING_FONTS, ...APPEARANCE_UI_FONTS].map((font) => loadBibleFont(font.id))).then((results) => {
-      if (active) setFontLoadFailed(results.some((result) => result.status === 'rejected'));
+      if (!active) return;
+      setFontLoadFailed(results.some((result) => result.status === 'rejected'));
+      setFontLoading(false);
     });
     return () => { active = false; };
   }, [tab]);
@@ -175,7 +182,7 @@ export default function AppearanceScreen() {
   return (
     <IonPage className="appearance-shell">
       <header className="appearance-header">
-        <button type="button" onClick={() => goBackSafely(navigate)} aria-label={t('common.back', 'Retour')}><DuoIcon icon={ArrowLeft01Icon} size={22} /></button>
+        <button type="button" onClick={() => goBackSafely(navigate)} aria-label={t('common.back', 'Retour')}><DuoIcon icon={ArrowLeft01Icon} size={24}  className="directional" /></button>
         <h1 className="toolbar-title">{t('nav.theme', 'Thème et apparence')}</h1>
       </header>
       <div className="app-canvas appearance-page h-full overflow-y-auto p-4 pb-24"><div className="appearance-editor screen-column">
@@ -230,7 +237,7 @@ export default function AppearanceScreen() {
                   onClick={() => setThemeMode(value)}
                   aria-pressed={active}
                   className={cn(
-                    'appearance-mode flex items-center gap-3 rounded-xl p-3 text-left transition',
+                    'appearance-mode flex items-center gap-3 rounded-xl p-3 text-start transition',
                     active && 'is-active',
                   )}
                 >
@@ -240,7 +247,7 @@ export default function AppearanceScreen() {
                       'appearance-mode-icon',
                     )}
                   >
-                    <DuoIcon icon={Icon} size={19} />
+                    <DuoIcon icon={Icon} size={20} />
                   </span>
                   <span className="flex-1 text-sm font-medium">
                     {label}
@@ -394,8 +401,8 @@ export default function AppearanceScreen() {
                     selectedIcon.tier === 'premium' ? 'text-warning' : 'text-primary',
                   )}
                 >
-                  {selectedIcon.tier === 'premium' && <DuoIcon icon={StarIcon} size={12} color="currentColor" />}
-                  {selectedIcon.tier === 'seasonal' && <DuoIcon icon={PartyPopperIcon} size={12} color="currentColor" />}
+                  {selectedIcon.tier === 'premium' && <DuoIcon icon={StarIcon} size={16} color="currentColor" />}
+                  {selectedIcon.tier === 'seasonal' && <DuoIcon icon={PartyPopperIcon} size={16} color="currentColor" />}
                   {selectedIcon.tier === 'free' && t('settings.appIconFree', 'Par défaut')}
                   {selectedIcon.tier === 'seasonal' && t('settings.appIconSeasonal', 'Édition saisonnière offerte')}
                   {selectedIcon.tier === 'premium' && t('settings.appIconPremium', 'Collection')}
@@ -435,16 +442,16 @@ export default function AppearanceScreen() {
                               {icon.tier === 'premium' && (
                                 <span
                                   aria-hidden="true"
-                                  className="absolute bottom-0 right-0 flex h-5 w-6 items-center justify-center rounded-tl-lg bg-warning text-on-primary shadow-sm"
+                                  className="absolute bottom-0 end-0 flex h-5 w-6 items-center justify-center rounded-tl-lg bg-warning text-on-primary shadow-sm"
                                 >
-                                  <DuoIcon icon={StarIcon} size={12} color="currentColor" />
+                                  <DuoIcon icon={StarIcon} size={16} color="currentColor" />
                                 </span>
                               )}
                             </div>
                             {active && (
                               <span
                                 aria-hidden="true"
-                                className="absolute -right-1.5 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-on-primary shadow-card ring-2 ring-surface"
+                                className="absolute -end-1.5 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-on-primary shadow-card ring-2 ring-surface"
                               >
                                 <Check size={12} />
                               </span>
@@ -502,6 +509,11 @@ export default function AppearanceScreen() {
             </fieldset>
           </div>
           <p className="appearance-hint">{t('appearanceEditor.readingFontHint', 'Choisissez la police des passages bibliques.')}</p>
+          {fontLoading && (
+            <p role="status" className="appearance-font-legacy">
+              {t('appearanceEditor.fontsLoading', 'Chargement des polices…')}
+            </p>
+          )}
           {fontLoadFailed && <p role="status" className="appearance-font-legacy">{t('appearanceEditor.fontLoadError', 'Certaines polices ne sont pas disponibles ; une police de secours est affichée.')}</p>}
           {!APPEARANCE_READING_FONTS.some((font) => font.id === bibleFontFamily) && <p className="appearance-font-legacy">{t('appearanceEditor.currentFont', 'Police actuelle : {{font}}', { font: findBibleFont(bibleFontFamily).label })}</p>}
           <div className="appearance-font-grid" role="group" aria-label={t('settings.reading', 'Lecture')}>

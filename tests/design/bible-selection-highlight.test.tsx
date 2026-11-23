@@ -45,7 +45,8 @@ import {
 import { formatSelectionReference } from '@/lib/verse-selection';
 import { MemoryRouter } from 'react-router-dom';
 import ContinuousBibleReader from '@/components/bible/ContinuousBibleReader';
-import type { BibleBookData } from '@/domains/bible/repository-local';
+import type { BibleChapterData } from '@/domains/bible/repository-local';
+import type { SplitBibleIndex } from '@/domains/bible/split-index';
 
 describe('magasin de surlignage', () => {
   beforeEach(() => {
@@ -105,25 +106,36 @@ describe('référence d’une sélection multiple', () => {
   });
 });
 
-const books: BibleBookData[] = [
-  {
-    id: 'gen',
-    name: { fr: 'Genèse' },
-    testament: 'old',
-    chapterCount: 1,
-    chapters: [
-      {
-        number: 3,
-        verses: [
-          { number: 1, text: 'Premier verset' },
-          { number: 2, text: 'Deuxième verset' },
-          { number: 3, text: 'Troisième verset' },
-          { number: 4, text: 'Quatrième verset' },
-        ],
-      },
-    ],
-  },
-];
+const index: SplitBibleIndex = {
+  id: 'lsg',
+  language: 'fr',
+  name: 'Louis Segond (1910)',
+  year: 1910,
+  books: [
+    {
+      id: 'gen',
+      name: { fr: 'Genèse' },
+      testament: 'old',
+      chapterCount: 1,
+      chapterVerseCounts: [{ number: 3, verses: 4 }],
+    },
+  ],
+};
+
+const chapter: BibleChapterData = {
+  number: 3,
+  verses: [
+    { number: 1, text: 'Premier verset' },
+    { number: 2, text: 'Deuxième verset' },
+    { number: 3, text: 'Troisième verset' },
+    { number: 4, text: 'Quatrième verset' },
+  ],
+};
+
+/** Le lecteur demande ses chapitres : ici, tout est déjà « lu ». */
+async function getChapter(): Promise<BibleChapterData | null> {
+  return chapter;
+}
 
 async function renderReader() {
   const host = document.createElement('div');
@@ -132,7 +144,7 @@ async function renderReader() {
   await act(async () => {
     root.render(
       <MemoryRouter>
-        <ContinuousBibleReader books={books} initialBookId="gen" initialChapter={3} translationId="lsg" />
+        <ContinuousBibleReader index={index} initialBookId="gen" initialChapter={3} translationId="lsg" getChapter={getChapter} />
       </MemoryRouter>,
     );
   });

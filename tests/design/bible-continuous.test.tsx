@@ -3,25 +3,40 @@ import { createRoot } from 'react-dom/client';
 import { MemoryRouter } from 'react-router-dom';
 import { useAppearanceStore } from '@/store/appearance-store';
 import { describe, expect, it, vi } from 'vitest';
-import ContinuousBibleReader, { flattenBibleChapters } from '@/components/bible/ContinuousBibleReader';
-import type { BibleBookData } from '@/domains/bible/repository-local';
+import ContinuousBibleReader, { flattenChapters } from '@/components/bible/ContinuousBibleReader';
+import type { BibleChapterData } from '@/domains/bible/repository-local';
+import type { SplitBibleIndex } from '@/domains/bible/split-index';
 
 vi.mock('@/hooks/useSemanticTags', () => ({ useChapterSemanticTags: () => ({ tags: null, loading: false }) }));
 vi.mock('@/components/bible/VerseActionBar', () => ({ default: ({ bookId, chapter, verses }: { bookId: string; chapter: number; verses: number[] }) => <output>{`${bookId}:${chapter}:${verses.join(',')}`}</output> }));
 vi.mock('react-i18next', () => ({ useTranslation: () => ({ i18n: { language: 'fr', resolvedLanguage: 'fr' }, t: (_key: string, fallback: string | { count: number }) => typeof fallback === 'string' ? fallback : `${fallback.count} versets` }) }));
-const books: BibleBookData[] = [
-  { id: 'gen', name: { fr: 'GEN' }, testament: 'old', chapterCount: 2, chapters: [{ number: 1, verses: [{ number: 1, text: 'Texte un' }] }, { number: 2, verses: [{ number: 1, text: 'Texte deux' }] }] },
-  { id: 'exo', name: { fr: 'EXO' }, testament: 'old', chapterCount: 1, chapters: [{ number: 1, verses: [{ number: 1, text: 'Texte trois' }] }] },
-];
+const index: SplitBibleIndex = {
+  id: 'lsg', language: 'fr', name: 'Louis Segond (1910)', year: 1910,
+  books: [
+    { id: 'gen', name: { fr: 'GEN' }, testament: 'old', chapterCount: 2, chapterVerseCounts: [{ number: 1, verses: 1 }, { number: 2, verses: 1 }] },
+    { id: 'exo', name: { fr: 'EXO' }, testament: 'old', chapterCount: 1, chapterVerseCounts: [{ number: 1, verses: 1 }] },
+  ],
+};
+
+const texts: Record<string, BibleChapterData> = {
+  'gen:1': { number: 1, verses: [{ number: 1, text: 'Texte un' }] },
+  'gen:2': { number: 2, verses: [{ number: 1, text: 'Texte deux' }] },
+  'exo:1': { number: 1, verses: [{ number: 1, text: 'Texte trois' }] },
+};
+
+/** Accès paresseux : résout immédiatement, comme le cache du hook. */
+async function getChapter(bookId: string, chapter: number): Promise<BibleChapterData | null> {
+  return texts[`${bookId}:${chapter}`] ?? null;
+}
 
 describe('manuscrit biblique continu', () => {
   it('conserve la suite des chapitres au changement de livre', () => {
-    expect(flattenBibleChapters(books).map(({ book, chapter }) => `${book.id}:${chapter.number}`)).toEqual(['gen:1', 'gen:2', 'exo:1']);
+    expect(flattenChapters(index).map(({ bookId, chapter }) => `${bookId}:${chapter}`)).toEqual(['gen:1', 'gen:2', 'exo:1']);
   });
   it('affiche deux chapitres d’affilée et sélectionne le verset avec sa vraie référence', async () => {
     const host = document.createElement('div'); document.body.append(host);
     const root = createRoot(host);
-    await act(async () => { root.render(<MemoryRouter><ContinuousBibleReader books={books} initialBookId="gen" initialChapter={2} translationId="lsg" /></MemoryRouter>); });
+    await act(async () => { root.render(<MemoryRouter><ContinuousBibleReader index={index} initialBookId="gen" initialChapter={2} translationId="lsg" getChapter={getChapter} /></MemoryRouter>); });
     expect(host.querySelectorAll('.reading-chapter')).toHaveLength(2);
     // La lettrine flottante a cédé la place à un numéral de chapitre posé en
     // marge : elle décalait le premier verset de deux lignes à chaque chapitre.

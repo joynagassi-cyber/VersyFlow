@@ -25,6 +25,7 @@ import { HamburgerMenu } from '@/components/navigation/HamburgerMenu';
 import { Logo } from '@/components/brand/Logo';
 import { useUiStore } from '@/store/ui-store';
 import { DemoModeBadge } from '@/components/dev/DemoModeBadge';
+import { SkipLink } from '@/components/layout/SkipLink';
 
 export function MobileShell() {
   const navigate = useNavigate();
@@ -33,6 +34,7 @@ export function MobileShell() {
 
   return (
     <>
+      <SkipLink />
       <HamburgerMenu />
       <IonPage>
         <div
@@ -45,7 +47,7 @@ export function MobileShell() {
               className="touch-target rounded-full active:bg-surface-tint"
               aria-label={t('shell.openMenu', 'Ouvrir le menu')}
             >
-              <DuoIcon icon={Menu01Icon} size={23} color="var(--color-text-primary)" />
+              <DuoIcon icon={Menu01Icon} size={24} color="var(--color-text-primary)" />
             </button>
             <div className="flex items-center gap-2">
               <span className="brand-tile"><Logo size={24} /></span>
@@ -57,9 +59,12 @@ export function MobileShell() {
             </div>
           </div>
 
-          <div className="mobile-content min-h-0 flex-1 overflow-hidden">
+          <main
+            className="mobile-content min-h-0 flex-1 overflow-hidden"
+            aria-label={t('shell.mainRegion', 'Contenu de l’écran')}
+          >
             <Outlet />
-          </div>
+          </main>
 
           <IonFab horizontal="end" vertical="bottom" style={{ marginBottom: '116px' }}>
             <IonFabButton

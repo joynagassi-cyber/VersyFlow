@@ -32,7 +32,7 @@ describe('Family Service Scoping', () => {
   });
 
   async function setupFamily(ownerId: string, memberIds: string[]) {
-    const family = await familyRepo.create({ ownerId, name: 'Test Family', color: '#E91E8C', icon: '👨‍👩‍👧‍👦' });
+    const family = await familyRepo.create({ ownerId, name: 'Test Family', color: '#E91E8C', icon: 'users' });
     const now = Date.now();
     for (const accountId of memberIds) {
       await familyRepo.addMember(family.id, {
@@ -55,7 +55,7 @@ describe('Family Service Scoping', () => {
   }
 
   it('should return empty list when user is not a member of the family', async () => {
-    const family = await familyRepo.create({ ownerId: 'owner-1', name: 'Family', color: '#E91E8C', icon: '👨‍👩‍👧‍👦' });
+    const family = await familyRepo.create({ ownerId: 'owner-1', name: 'Family', color: '#E91E8C', icon: 'users' });
     const members = await service.getMembersScoped(family.id, 'unknown-user');
     expect(members).toEqual([]);
   });
@@ -96,7 +96,7 @@ describe('Family Service Scoping', () => {
     const admin = 'admin-1';
     const memberC = 'member-c';
 
-    const family = await familyRepo.create({ ownerId: owner, name: 'Admin Family', color: '#E91E8C', icon: '👨‍👩‍👧‍👦' });
+    const family = await familyRepo.create({ ownerId: owner, name: 'Admin Family', color: '#E91E8C', icon: 'users' });
     const now = Date.now();
     await familyRepo.addMember(family.id, { accountId: owner, role: 'owner', status: 'active' });
     await familyRepo.addMember(family.id, { accountId: admin, role: 'admin', status: 'active' });
@@ -131,7 +131,7 @@ describe('Family Service Scoping', () => {
   it('should exclude suspended members from scoped results', async () => {
     const owner = 'owner-1';
     const suspended = 'suspended-1';
-    const family = await familyRepo.create({ ownerId: owner, name: 'Suspended Family', color: '#E91E8C', icon: '👨‍👩‍👧‍👦' });
+    const family = await familyRepo.create({ ownerId: owner, name: 'Suspended Family', color: '#E91E8C', icon: 'users' });
 
     const now = Date.now();
     await familyRepo.addMember(family.id, { accountId: owner, role: 'owner', status: 'active' });
@@ -146,7 +146,7 @@ describe('Family Service Scoping', () => {
 
   it('leaveFamily should prevent owner from leaving', async () => {
     const owner = 'owner-1';
-    const family = await familyRepo.create({ ownerId: owner, name: 'Owner Family', color: '#E91E8C', icon: '👨‍👩‍👧‍👦' });
+    const family = await familyRepo.create({ ownerId: owner, name: 'Owner Family', color: '#E91E8C', icon: 'users' });
 
     const now = Date.now();
     await familyRepo.addMember(family.id, { accountId: owner, role: 'owner', status: 'active' });

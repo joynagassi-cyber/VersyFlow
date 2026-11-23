@@ -32,12 +32,24 @@ export default function AnalyticsDashboardScreen() {
   const [loading, setLoading] = useState(true);
   const [curve, setCurve] = useState<DataPoint[]>([]);
 
+  /**
+   * `calculateStats` avale ses erreurs : après un échec, `stats` reste `null`
+   * et l'écran affichait « 0 verset mémorisé · 0 maîtrisé · série 0 ». Un zéro
+   * qui n'a jamais été mesuré est un mensonge (même règle que le tiret des
+   * écrans famille) : on garde donc une valeur `null` distincte de zéro et
+   * l'écran affiche un tiret explicite.
+   */
+  const [measured, setMeasured] = useState(false);
+
   const loadData = async () => {
+    setLoading(true);
     try {
       await calculateStats();
       setCurve(getRetentionCurve().slice(-30));
+      setMeasured(useAnalyticsCapability.getState().stats !== null);
     } catch (e) {
       console.error('analytics load failed:', e);
+      setMeasured(false);
     } finally {
       setLoading(false);
     }
@@ -77,11 +89,11 @@ export default function AnalyticsDashboardScreen() {
         <div className="grid grid-cols-2 gap-3">
           <div className="glass col-span-2 flex items-center gap-4 rounded-3xl p-4">
             <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary text-on-primary">
-              <DuoIcon icon={BookOpen} size={22} />
+              <DuoIcon icon={BookOpen} size={24} />
             </span>
             <div>
               <p className="stat-value text-3xl">
-                {stats?.totalVerses || 0}
+                {measured ? (stats?.totalVerses ?? 0) : '—'}
               </p>
               <p className="stat-label mt-1">
                 {t('analytics.versesMemorized', 'Versets memorises')}
@@ -90,7 +102,7 @@ export default function AnalyticsDashboardScreen() {
           </div>
           <div className="glass rounded-2xl p-4 text-center">
             <p className="stat-value text-2xl">
-              {stats?.masteredVerses || 0}
+              {measured ? (stats?.masteredVerses ?? 0) : '—'}
             </p>
             <p className="stat-label mt-1">
               {t('analytics.mastered', 'Maitrises')}
@@ -98,7 +110,7 @@ export default function AnalyticsDashboardScreen() {
           </div>
           <div className="glass rounded-2xl p-4 text-center">
             <p className="stat-value text-2xl">
-              {stats?.streakCount || 0}
+              {measured ? (stats?.streakCount ?? 0) : '—'}
             </p>
             <p className="stat-label mt-1">{t('analytics.streak', 'Streak')}</p>
           </div>
@@ -211,7 +223,7 @@ export default function AnalyticsDashboardScreen() {
                   <span className={'h-2.5 w-2.5 shrink-0 rounded-full ' + row.dot} />
                   <span className="text-base font-medium text-text-primary">{row.label}</span>
                 </span>
-                <span className="stat-value text-lg">{row.value}</span>
+                <span className="stat-value text-lg">{measured ? row.value : '—'}</span>
               </button>
             ))}
           </div>
@@ -220,7 +232,7 @@ export default function AnalyticsDashboardScreen() {
         {/* Learning time */}
         <div className="glass rounded-3xl p-5 text-center">
           <p className="stat-value text-3xl">
-            {getLearningTime()} min
+            {measured ? `${getLearningTime()} min` : '—'}
           </p>
           <p className="stat-label mt-1">
             {t('analytics.totalTime', 'Temps total d\'apprentissage')}

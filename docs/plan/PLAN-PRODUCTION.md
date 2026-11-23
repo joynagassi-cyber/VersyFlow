@@ -1,3 +1,8 @@
+> **Note (2026-11-19) — documentation historique.** VersyFlow est
+> désormais 100 % frontend : the former backend et the local store ont été retirés du
+> dépôt. Les mentions de ces services dans ce document décrivent
+> l’état antérieur, pas l’architecture actuelle (voir `docs/AUDIT.md`).
+
 # Plan de mise en production — VersyFlow
 
 **Rédigé le** : 2026-10-30 · **Base** : `main` @ `7a087ae` · **Horizon** : janvier 2027
@@ -41,8 +46,6 @@ avant Noël**, **Windows/macOS en janvier**, **go-live store en janvier 2027**.
 | Orientation | `screenOrientation="portrait"` figée | même fichier |
 | iOS | dossier absent ; job CI prêt mais **exige un Mac** et `APPLE_*` | `.github/secrets-checklist.md` |
 | Desktop | **rien** : ni Electron, ni Tauri, ni build Windows/macOS | `package.json` |
-| Backend réel | mode `live` = Supabase + PowerSync, modules importés dynamiquement ; **aucun `.env.local` dans le dépôt** | `src/dev/mode.ts`, `.env.example` |
-| Migrations | `supabase/migrations` 0000→0008 + `migrations/` (3 fichiers) | dossiers |
 | i18n | **45 locales** dans `src/i18n/locales/` | `ls src/i18n/locales |
 | Notifications | `@capacitor/local-notifications` (rappels locaux seulement, pas de push) | `package.json` |
 | Observabilité | **aucun** Sentry / Crashlytics / analytics | `package.json` |
@@ -54,7 +57,6 @@ avant Noël**, **Windows/macOS en janvier**, **go-live store en janvier 2027**.
 
 | # | Décision | Recommandation | Pourquoi |
 | --- | --- | --- | --- |
-| D1 | **Techno desktop** : Electron ou Tauri | **Electron** (electron-builder) | L'app dépend de `@powersync/web` + worker dédié (`public/worker/powersync-worker.js`) et de WASM/SQLite : Chromium embarqué = même moteur que Android et le web. Tauri s'appuie sur WebView2 (Windows, OK) et **WKWebView** (macOS, moteur Safari) : risque réel sur PowerSync/OPFS, non testé ici. |
 | D2 | **Matériel et comptes Apple** | Mac (même loué) + Apple Developer 99 $/an | Sans Mac physique ni certificat, pas d'`.ipa`, pas de TestFlight, pas de notarisation macOS. Le runner `macos-latest` de la CI ne suffit pas : le projet Xcode doit être généré et committé une fois depuis un Mac. |
 | D3 | **Signature Windows** | Certificat OV/EV (~250-400 €/an) **ou** assumer l'avertissement SmartScreen | Sans certificat, Windows affiche « éditeur inconnu » à chaque install. |
 | D4 | **Mode démo à la sortie store** | Démo **ON pour la bêta fermée**, bascule à **OFF** avant la review Play/App Store (une variable `VITE_DEMO_DEFAULT=off`) | Une app qui démarre sur des données fictives sera refusée ou mal notée ; le bandeau actuel protège en bêta, pas en public. |
@@ -75,7 +77,6 @@ cadrage  CI verte     réel +           Android    iOS              Desktop    g
 
 | Jalon | Fenêtre | Livrable de fin (vérifiable) |
 | --- | --- | --- |
-| **M0** Cadrage & prérequis | 30/10 → 06/11 | Comptes (Play Console, Apple, certificat Windows), clés Supabase/PowerSync en secrets GitHub, D1–D5 tranchées |
 | **M1** Chaîne verte | 03/11 → 10/11 | `npm test` 100 % vert, CI verte sur `main`, build Android **debug** produit par la CI |
 | **M2** Réel branché | 10/11 → 24/11 | Compte réel, sync multi-appareils, migrations + RLS déployées, parcours mémorisation/révision joués sur données réelles |
 | **M3** Android bêta | 24/11 → 08/12 | AAB signé sur la piste *internal testing*, fiche store prête, testeurs internes actifs |
@@ -97,7 +98,6 @@ parfois 7 j).
 
 | ID | Tâche | Preuve de fin | Charge |
 | --- | --- | --- | --- |
-| A1 | Trier les 19 échecs : corriger ce qui est un vrai bug, `skipIf` documenté pour ce qui dépend de l'environnement (WASM, jeux bibliques absents, Supabase non configuré) | `npx vitest run` → 0 échec, chaque `skip` justifié en commentaire | 1,5 j |
 | A2 | Rendre la CI verte sur `main` (quality gate + build Android debug) | Run GitHub vert, APK debug en artefact | 0,5 j |
 | A3 | Ajouter `npm run verify` + `themes:photos:check` au quality gate | Workflow mis à jour, run vert | 0,5 j |
 | A4 | Passer `targetSdk` à 35 (ou 36 si la Play Console l'exige en janvier) et vérifier `minSdk` | Build release OK, avertissement Play disparu | 1 j |
@@ -107,13 +107,9 @@ parfois 7 j).
 
 | ID | Tâche | Preuve de fin | Charge |
 | --- | --- | --- | --- |
-| B1 | Renseigner les secrets (`VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`, `VITE_POWERSYNC_URL`) et un `.env.local` local | `?data=live` charge le vrai backend | 0,5 j |
-| B2 | Appliquer les migrations sur le projet Supabase de production + vérifier les RLS table par table | Script de vérification : chaque table protégée, test « utilisateur A ne lit pas B » | 2 j |
-| B3 | Déployer PowerSync (sync rules, streams) et valider la réplication | Deux appareils, une écriture, propagation < 5 s | 1,5 j |
 | B4 | Auth réelle : inscription, connexion, déconnexion, réinitialisation, session expirée | Parcours auth joué sur données réelles + `auth-integration` vert | 1,5 j |
 | B5 | Famille / partage multi-comptes sur le réel (aujourd'hui prouvé en mock) | Invitation, rôle, lecture croisée entre 2 comptes réels | 2 j |
 | B6 | Mode démo : bandeau, sortie, réinitialisation — revérifiés avec le backend réel branché | Tests `demo-isolation` + essai manuel : aucune fuite vers les vraies données | 1 j |
-| B7 | Sauvegarde / restauration du projet Supabase (plan de reprise) | Restauration testée sur un projet jetable | 0,5 j |
 
 ### Lot C — Android bêta puis store (M3, ~5 j)
 
@@ -132,7 +128,6 @@ parfois 7 j).
 | --- | --- | --- | --- |
 | D1 | Compte Apple Developer + App ID + certificats (prérequis M0, délai variable) | Accès App Store Connect | 0,5 j (admin) |
 | D2 | `npx cap add ios` depuis un Mac, commit du projet Xcode, premiers builds | `ios/` dans le dépôt, build simulateur OK | 1,5 j |
-| D3 | Adapter les plugins : SQLite/PowerSync en WKWebView, SplashScreen, StatusBar, clavier | Parcours mémorisation complet sur iPhone réel | 2 j |
 | D4 | Signature CI (`APPLE_*`), `.ipa` sur TestFlight | Build TestFlight installable | 1 j |
 | D5 | Fiche App Store : captures 6,7"/6,1", confidentialité, *age rating* | Fiche prête à soumettre | 1 j |
 
@@ -141,7 +136,6 @@ parfois 7 j).
 | ID | Tâche | Preuve de fin | Charge |
 | --- | --- | --- | --- |
 | E1 | Coque Electron (main + preload sécurisés, protocole `app://` pour `www/`) | App démarre sur Windows et macOS | 1,5 j |
-| E2 | Vérifier PowerSync/SQLite/worker dans Electron, sinon bascule vers `@powersync/op-sqlite` côté natif | Sync fonctionnelle dans les deux OS | 2 j |
 | E3 | Menu natif, raccourcis, ouverture de liens externes, mode hors-ligne | Revue manuelle | 1 j |
 | E4 | Packaging : NSIS + MSI (Windows), DMG universal (macOS), icônes | Installeurs produits par la CI | 1,5 j |
 | E5 | Signature Windows + notarisation macOS (D3) | « Éditeur vérifié », Gatekeeper silencieux | 1 j |
@@ -178,7 +172,6 @@ semaine** de ma part, ou une répartition avec toi sur les tâches d'administrat
 | --- | --- | --- |
 | Pas de Mac disponible | iOS et macOS bloqués, M4/M5 tombent | Trancher en M0 : Mac d'occasion, Mac mini, ou Mac en location cloud (MacStadium) — prévoir 2-3 j de délai |
 | Review Play/App Store refusée | Retard 1-2 semaines | Soumettre Android en interne dès M3, iOS en TestFlight dès M4 : les refus se découvrent tôt |
-| PowerSync dans Electron/WKWebView | Desktop retardé | D1 tranchée pour Electron (Chromium) ; test E2 dès le 2ᵉ jour de M5, avant tout le packaging |
 | Démo par défaut oubliée en prod | Rejet store, confusion utilisateur | F1 est une tâche bloquante avec test automatisé sur le build de prod |
 | 40 images indisponibles | Thèmes photo absents (non bloquant produit) | Lot G1 ; à défaut, livrer sans et l'annoncer |
 | 45 locales non relues | Textes bancals sur les stores | Limiter la vente aux langues relues, repli FR assumé |
@@ -204,7 +197,6 @@ publiée · données locales chiffrées ou documentées · démo accessible mais
 ## 8. Répartition
 
 **Moi (agent)** : lots A, B (sauf accès projet), C1-C3/C6, D2-D5, E1-E4/E6, F1-F6, G3.
-**Toi** : comptes et secrets (Play Console, Apple, certificat Windows, clés Supabase),
 D3 (signature Windows), captures d'écran finales, décisions D1–D5, et la disponibilité
 d'un Mac.
 

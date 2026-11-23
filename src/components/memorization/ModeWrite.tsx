@@ -13,6 +13,13 @@
  * out in two columns (.mem-diff-grid) with word-level colored chips
  * (.word-missing / .word-wrong / .word-extra), and the 4 FSRS buttons
  * sit at the very bottom of the card.
+ *
+ * Ajout du 2026-11-19 — **la référence se retrouve aussi de mémoire**. Le
+ * verset écrit ne prouve pas que l'on saurait le citer le dimanche : une
+ * petite case en bas de la carte demande « Jean 3:16 » sans le montrer. Elle
+ * est comparée après « Vérifier » (livre, chapitre, verset), ne bloque jamais
+ * la vérification du texte, et son verdict est rendu séparément — un texte
+ * juste avec une référence fausse n'est pas un sans-faute.
  */
 
 import { useMemo, useState } from 'react';
@@ -21,6 +28,7 @@ import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   CheckIcon as Check,
   PenLineIcon as PenLine,
+  RefreshIcon as Refresh,
 } from '@/components/ui/solar-icons';
 import { cn } from '@/lib/utils';
 import { getComparisonEngine } from '@/services/recall-comparison-service';
@@ -55,12 +63,27 @@ export function ModeWrite({
   const options = RATING_KEYS.map((option) => ({ ...option, label: t(option.labelKey, option.label) }));
   const [written, setWritten] = useState('');
   const [verified, setVerified] = useState<WrittenRecallResult | null>(null);
+  const [givenReference, setGivenReference] = useState('');
+  const [referenceCheck, setReferenceCheck] = useState<boolean | null>(null);
 
   const handleVerify = () => {
     if (!written.trim()) return;
-    const result = getComparisonEngine().compareWrittenRecall(written, text);
+    const engine = getComparisonEngine();
+    const result = engine.compareWrittenRecall(written, text);
     setVerified(result);
+    // La référence tolère la casse, l'espace autour des deux-points et le
+    // point final ; elle compare les trois nombres et le nom du livre.
+    setReferenceCheck(
+      givenReference.trim().length > 0 &&
+        engine.normalize(givenReference) === engine.normalize(referenceLabel),
+    );
     onRecommendNext?.(result.matchScore);
+  };
+
+  const handleRetry = () => {
+    setVerified(null);
+    setReferenceCheck(null);
+    setGivenReference('');
   };
 
   const handleRate = async (value: number | string) => {
@@ -71,11 +94,8 @@ export function ModeWrite({
 
   return (
     <div className="space-y-3">
-      {/* Title case — separate from the verse (per user requirement) */}
-      <div className="g2 p-4">
-        <p className="mem-label">{t('workspace.titleCase', 'TITRE DU VERSET')}</p>
-        <p className="text-base font-bold text-text-primary">{referenceLabel}</p>
-      </div>
+      {/* Aucune référence affichée ici : elle se retrouve de mémoire dans la
+          case du bas, sinon la question contient sa réponse. */}
 
       {/* The write area */}
       <div className="mem-card">
@@ -104,15 +124,57 @@ export function ModeWrite({
             !verified && 'bg-surface-tint focus:ring-2 focus:ring-primary',
           )}
         />
-        <button
-          type="button"
-          onClick={handleVerify}
-          disabled={!written.trim() || verified != null}
-          className="mem-pill mt-3"
-        >
-          <DuoIcon icon={Check} size={16} />
-          {t('workspace.verify', 'Vérifier')}
-        </button>
+        {/* La référence se retrouve de mémoire : case discrète, en bas.
+            Le `<label>` qui englobe la case porte à la fois le libellé
+            visible et le nom accessible : une seule source à maintenir. */}
+        <label className="mem-reference-box" htmlFor="mem-write-reference">
+          <span className="mem-label">
+            {t('workspace.referenceFromMemory', 'LA RÉFÉRENCE, DE MÉMOIRE')}
+          </span>
+          <input
+            id="mem-write-reference"
+            type="text"
+            value={givenReference}
+            onChange={(event) => setGivenReference(event.target.value)}
+            readOnly={verified != null}
+            placeholder={t('workspace.referencePlaceholder', 'Livre chapitre:verset')}
+            autoComplete="off"
+            autoCapitalize="words"
+            spellCheck={false}
+            enterKeyHint="done"
+            aria-invalid={referenceCheck === false || undefined}
+            aria-describedby={referenceCheck === false ? 'mem-write-reference-hint' : undefined}
+            className={cn(
+              'mem-reference-input',
+              referenceCheck === true && 'is-correct',
+              referenceCheck === false && 'is-wrong',
+            )}
+          />
+        </label>
+        {referenceCheck === false && (
+          <p id="mem-write-reference-hint" className="mt-1 text-xs font-semibold text-warning">
+            {t('workspace.referenceExpected', 'Référence attendue : {{reference}}', {
+              reference: referenceLabel,
+            })}
+          </p>
+        )}
+
+        {verified == null ? (
+          <button
+            type="button"
+            onClick={handleVerify}
+            disabled={!written.trim()}
+            className="mem-pill mt-3"
+          >
+            <DuoIcon icon={Check} size={16} />
+            {t('workspace.verify', 'Vérifier')}
+          </button>
+        ) : (
+          <button type="button" onClick={handleRetry} className="mem-pill-ghost mt-3">
+            <DuoIcon icon={Refresh} size={16} />
+            {t('workspace.retry', 'Nouvel essai')}
+          </button>
+        )}
       </div>
 
       {/* Diff result — original on the left, written on the right */}
@@ -135,6 +197,19 @@ export function ModeWrite({
           )}
           <div className="mb-3 flex items-center justify-between">
             <span className="mem-label">{t('workspace.result', 'RÉSULTAT')} · {t('workspace.diffWord', 'diff mot à mot')}</span>
+            {/* Verdict séparé : le texte et la référence ne se compensent pas. */}
+            <span
+              className={cn(
+                'rounded-full px-2.5 py-1 text-2xs font-bold',
+                referenceCheck
+                  ? 'bg-success/15 text-success'
+                  : 'bg-warning/15 text-warning',
+              )}
+            >
+              {referenceCheck
+                ? t('workspace.referenceRight', 'Référence juste')
+                : t('workspace.referenceWrong', 'Référence erronée')}
+            </span>
             <span
               className={cn(
                 'stat-value text-2xl',

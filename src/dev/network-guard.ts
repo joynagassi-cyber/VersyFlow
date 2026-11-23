@@ -4,8 +4,8 @@
  * Pourquoi ce fichier existe
  * -------------------------
  * Le mode mock promet un frontend autonome. Mais une promesse non vérifiée
- * est une intention : un `fetch` oublié vers un bucket Supabase, un client
- * PowerSync instancié trop tôt, une police chargée depuis un CDN — et l'écran
+ * est une intention : un `fetch` oublié vers un bucket distant, une police
+ * chargée depuis un CDN — et l'écran
  * dépend d'un service distant sans que rien ne le signale, sauf une page
  * blanche chez quelqu'un qui n'a pas de réseau.
  *
@@ -40,7 +40,7 @@ function isSameOrigin(url: string): boolean {
 
     // `new URL('ws://x').origin` vaut `ws://x`, alors que `location.origin`
     // vaut `http://x` : comparer les origines brutes bloquerait le WebSocket
-    // de la MÊME origine (PowerSync local, HMR). On compare donc hôte + port,
+    // de la MÊME origine (API locale, HMR). On compare donc hôte + port,
     // en traitant ws/wss comme http/https et en ignorant http (80) / https (443).
     const scheme = (protocol: string) =>
       protocol === 'ws:' ? 'http:' : protocol === 'wss:' ? 'https:' : protocol;
@@ -125,7 +125,7 @@ export function installNetworkGuard(): void {
     return originalFetch(input as RequestInfo, init);
   };
 
-  // 2. XMLHttpRequest (Supabase-js, PowerSync et les SDK passent par là)
+  // 2. XMLHttpRequest (les SDK passent par là)
   // Le drapeau est porté par l'instance : on type l'extension plutôt que de
   // salir `XMLHttpRequest` globalement.
   type GuardedXhr = XMLHttpRequest & { __mockBlocked?: boolean };
@@ -146,7 +146,7 @@ export function installNetworkGuard(): void {
     };
   }
 
-  // 3. WebSocket (PowerSync temps réel) et EventSource
+  // 3. WebSocket et EventSource
   const NativeWS = globalThis.WebSocket;
   if (NativeWS) {
     const Guarded = function (url: string | URL, protocols?: string | string[]) {

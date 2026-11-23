@@ -149,7 +149,7 @@ export function seedPreviewStorage(): void {
             ownerId: PREVIEW_ACCOUNT_ID,
             name: 'Famille Étoile',
             color: FAMILY_SWATCHES[0].value,
-            icon: '⭐',
+            icon: 'star',
             createdAt: FIXED_CREATED_AT,
           },
         ],

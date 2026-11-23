@@ -7,7 +7,7 @@ export default function WelcomeScreen() {
   const { t } = useTranslation();
   const authenticated = useAuthStore((s) => s.isAuthenticated);
   return <main className="journey-page journey-welcome">
-    <div className="journey-visual"><div className="journey-brand">VERSYFLOW <span>✦</span></div><JourneyArtwork index={0} /><p>{t('onboardingJourney.welcomeKicker', 'Un chemin de foi, un verset à la fois.')}</p></div>
+    <div className="journey-visual"><div className="journey-brand">VERSYFLOW</div><JourneyArtwork index={0} /><p>{t('onboardingJourney.welcomeKicker', 'Un chemin de foi, un verset à la fois.')}</p></div>
     <section className="journey-content"><div className="journey-copy">
       <p className="journey-overline">{t('onboardingJourney.welcomeLabel', 'BIENVENUE CHEZ VOUS')}</p>
       <h1>{t('onboardingJourney.welcomeTitle', 'La Parole, près de votre cœur.')}</h1>

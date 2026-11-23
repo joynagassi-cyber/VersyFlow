@@ -1,7 +1,7 @@
 /**
  * ISyncService — Interface générique pour le service de synchronisation cloud
- * Découple le service de synchronisation (`PowerSyncSyncService`) de ses
- * consommateurs — PowerSync est le seul chemin de write.
+ * Découple le service de synchronisation de ses consommateurs — le store
+ * local est le seul chemin de write.
  */
 
 export interface SyncStatus {

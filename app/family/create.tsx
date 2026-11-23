@@ -13,7 +13,6 @@ import { useTranslation } from 'react-i18next';
 import {
   AlertCircleIcon as AlertCircle,
   Tick02Icon as Tick,
-  UsersRoundIcon as Users,
 } from '@/components/ui/solar-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { DuoIcon } from '@/components/ui/DuoIcon';
@@ -25,6 +24,7 @@ import { useFamilySyncStore } from '@/store/family-sync-store';
 import { useAuthStore } from '@/store/auth-store';
 import { fireAndForget } from '@/lib/fire-and-forget';
 import { cn } from '@/lib/utils';
+import { FAMILY_ICONS, DEFAULT_FAMILY_ICON, resolveFamilyIcon } from '@/lib/family-icon';
 
 export default function FamilyCreateScreen() {
   const navigate = useNavigate();
@@ -36,6 +36,7 @@ export default function FamilyCreateScreen() {
 
   const [name, setName] = useState('');
   const [color, setColor] = useState(DEFAULT_FAMILY_COLOR);
+  const [icon, setIcon] = useState(DEFAULT_FAMILY_ICON);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -48,7 +49,7 @@ export default function FamilyCreateScreen() {
     setBusy(true);
     setError(null);
     try {
-      const family = await createFamily(trimmed, color);
+      const family = await createFamily(trimmed, color, icon);
       addFamily(family);
       setActiveFamily(family.id);
       navigate('/family/profile', { replace: true });
@@ -96,7 +97,33 @@ export default function FamilyCreateScreen() {
                   )}
                   style={{ backgroundColor: swatch.value }}
                 >
-                  {active && <DuoIcon icon={Tick} size={18} className="text-on-primary" />}
+                  {active && <DuoIcon icon={Tick} size={20} className="text-on-primary" />}
+                </button>
+              );
+            })}
+          </div>
+        </SectionCard>
+
+        <SectionCard title={t('familyPlus.iconLabel', 'Icône')}>
+          <div className="flex flex-wrap gap-2" role="group" aria-label={t('familyPlus.iconLabel', 'Icône')}>
+            {FAMILY_ICONS.map((entry) => {
+              const active = entry.name === icon;
+              return (
+                <button
+                  key={entry.name}
+                  type="button"
+                  onClick={() => setIcon(entry.name)}
+                  aria-pressed={active}
+                  aria-label={t(entry.labelKey, entry.label)}
+                  title={t(entry.labelKey, entry.label)}
+                  className={cn(
+                    'flex h-11 w-11 items-center justify-center rounded-2xl border-2 transition',
+                    active
+                      ? 'border-primary bg-surface-tint text-primary'
+                      : 'border-transparent bg-surface text-text-muted',
+                  )}
+                >
+                  <DuoIcon icon={entry.icon} size={20} />
                 </button>
               );
             })}
@@ -110,7 +137,7 @@ export default function FamilyCreateScreen() {
               style={{ backgroundColor: familyTint(color, 20) }}
               aria-hidden="true"
             >
-              <DuoIcon icon={Users} size={22} />
+              <DuoIcon icon={resolveFamilyIcon(icon)} size={24} />
             </span>
             <div>
               <h2 className="card-title">
@@ -131,7 +158,7 @@ export default function FamilyCreateScreen() {
 
         {error && (
           <p className="flex items-center gap-1.5 rounded-xl bg-error/10 px-3 py-2 text-sm text-error">
-            <DuoIcon icon={AlertCircle} size={14} className="shrink-0" />
+            <DuoIcon icon={AlertCircle} size={16} className="shrink-0" />
             {error}
           </p>
         )}

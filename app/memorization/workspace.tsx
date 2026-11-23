@@ -40,15 +40,19 @@ import { ModeWrite } from '@/components/memorization/ModeWrite';
 import { TranslationMenu } from '@/components/memorization/TranslationMenu';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { WorkspaceSkeleton } from '@/components/ui/ScreenSkeletons';
+import {
+  workspaceStatusTone,
+  type WorkspaceStatusTone,
+} from '@/domains/memorization/workspace-status';
 
-type StatusTone = 'new' | 'due' | 'consolidated';
+type StatusTone = WorkspaceStatusTone;
 
-function statusTone(record: ReturnType<typeof useMemorizationWorkspace>['record'], nextReviewAt: Date | null): StatusTone {
-  if (!record) return 'new';
-  const due = nextReviewAt ? nextReviewAt.getTime() <= Date.now() : false;
-  if (record.status === 'mastered' && !due) return 'consolidated';
-  if (due) return 'due';
-  return 'due'; // in-progress and due → "À revoir"
+/** La règle vit dans le domaine : l'écran ne fait que l'appeler. */
+function statusTone(
+  record: ReturnType<typeof useMemorizationWorkspace>['record'],
+  nextReviewAt: Date | null,
+): StatusTone {
+  return workspaceStatusTone({ record, nextReviewAt });
 }
 
 function statusLabel(tone: StatusTone, t: ReturnType<typeof useTranslation>['t']): string {
@@ -189,7 +193,7 @@ export default function MemorizationWorkspace() {
               className="flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-surface text-text-primary shadow-sm active:scale-95"
               aria-label={t('workspace.compare', 'Comparer')}
             >
-              <DuoIcon icon={ArrowLeftRight} size={18} />
+              <DuoIcon icon={ArrowLeftRight} size={20} />
             </button>
           }
           subtitleExtra={
@@ -260,7 +264,7 @@ function ShellHeader({
           className="flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-surface text-text-primary shadow-sm active:scale-95"
           aria-label="Retour"
         >
-          <DuoIcon icon={ArrowLeft} size={18} />
+          <DuoIcon icon={ArrowLeft} size={20}  className="directional" />
         </button>
         <div className="flex min-w-0 flex-1 flex-col items-center">
           <h1 className="truncate text-lg font-semibold text-text-primary">{title}</h1>

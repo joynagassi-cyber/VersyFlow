@@ -19,7 +19,20 @@ function formatElapsed(ms: number): string {
   return `${h}h`;
 }
 
-export default function SyncStatusIndicator() {
+interface SyncStatusIndicatorProps {
+  /**
+   * Un point seul, sans phrase.
+   *
+   * Dans un en-tête permanent, « Synchronisé maintenant » en rose est du
+   * bruit : l'information ne sert qu'en cas de problème. En compact, l'état
+   * reste lisible d'un coup d'œil (couleur + forme), et le texte part en
+   * `aria-label` pour les lecteurs d'écran — jamais supprimé, seulement
+   * déplacé.
+   */
+  compact?: boolean;
+}
+
+export default function SyncStatusIndicator({ compact = false }: SyncStatusIndicatorProps = {}) {
   const { colors, sp } = useAppTheme();
   const { t } = useTranslation();
   const { phase, lastSyncAt, error } = useSyncStatus();
@@ -35,6 +48,25 @@ export default function SyncStatusIndicator() {
   } else if (phase === 'error') {
     label = t('sync.error', 'Erreur de synchro');
     color = colors.error;
+  }
+
+  if (compact) {
+    return (
+      <span
+        data-phase={phase}
+        data-testid="sync-status"
+        role="status"
+        aria-label={label}
+        title={label}
+        className="inline-flex h-10 w-10 items-center justify-center"
+      >
+        <span
+          aria-hidden
+          className="inline-block h-2 w-2 rounded-full"
+          style={{ backgroundColor: color }}
+        />
+      </span>
+    );
   }
 
   return (

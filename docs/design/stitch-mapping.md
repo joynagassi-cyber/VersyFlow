@@ -41,7 +41,7 @@ HTML Stitch (Tailwind CDN, `material-symbols`) n'est **pas** copié : chaque
 | `m2_famille_pr_sentation` | `/family/presentation` · `app/family/presentation.tsx` | couvert |
 | `m3_famille_cr_ation` | `/family/create` · `app/family/create.tsx` | couvert |
 | `m4_famille_profil_de_membre` | `/family/profile` · `app/family/profile.tsx` | couvert |
-| `m5_famille_s_lecteur_de_profil` | `/family/select-profile` · `app/family/select-profile.tsx` | couvert |
+| `m5_famille_s_lecteur_de_profil` | `/profile/select` · `app/profile/select.tsx` | couvert |
 | `m6_famille_membres` | `/family/members` · `app/family/members.tsx` | couvert |
 | `m7_famille_d_tail_d_un_membre` | `/family/member/:accountId` · `app/family/member.tsx` | couvert |
 | `m8_famille_classement` | `/family/leaderboard` · `app/family/leaderboard.tsx` | couvert |
@@ -49,12 +49,12 @@ HTML Stitch (Tailwind CDN, `material-symbols`) n'est **pas** copié : chaque
 | `r10_r_sum_de_session` | `/review/summary` · `app/review/summary.tsx` | couvert |
 | `r11_file_de_r_vision` | `/review/queue` · `app/review/queue.tsx` | couvert |
 | `r12_session_de_r_vision` | `/review/session` · `app/review/session.tsx` | couvert |
-| `r13_d_tail_du_verset` | `/bible/chapter/:bookId/:chapterNumber` · `app/bible/chapter.tsx` | couvert |
+| `r13_d_tail_du_verset` | `/bible/explorer/:bookId/:chapter` · `app/bible/explorer.tsx` | couvert · détail d’un verset : même vue, panneau de sélection |
 | `r14_progr_s_activit` | `/tabs/progress` · `app/(tabs)/progress.tsx` | couvert |
 | `r15_r_glages` | `/tabs/settings` · `app/(tabs)/settings.tsx` | couvert |
 | `r16_bible_liste_des_livres` | `/bible/explorer` · `app/bible/explorer.tsx` | couvert |
-| `r17_bible_chapitres` | `/bible/book/:bookId` · `app/bible/book.tsx` | couvert |
-| `r18_lecteur_chapitre` | `/bible/chapter/:bookId/:chapterNumber` · `app/bible/chapter.tsx` | couvert |
+| `r17_bible_chapitres` | `/bible/explorer/:bookId` · `app/bible/explorer.tsx` | couvert · vue « chapitres » ; /bible/book/:bookId redirige ici |
+| `r18_lecteur_chapitre` | `/bible/explorer/:bookId/:chapter` · `app/bible/explorer.tsx` | couvert · vue « versets » ; /bible/chapter/:bookId/:n redirige ici |
 | `r1_r_v_lation_progressive` | `/memorization/session` · `app/memorization/session.tsx` | couvert |
 | `r20_enregistr_notes` | `/notes` · `app/notes.tsx` | couvert |
 | `r21_rappels_et_notifications` | `/settings/reminders` · `app/settings/reminders.tsx` | couvert |
@@ -64,8 +64,8 @@ HTML Stitch (Tailwind CDN, `material-symbols`) n'est **pas** copié : chaque
 | `r4_flashcard_verso` | `/memorization/flashcard` · `app/memorization/flashcard.tsx` | couvert |
 | `r5_criture_saisie` | `/memory/recall-writing` · `app/memory/recall-writing.tsx` | couvert |
 | `r6_criture_diff_note_fsrs` | `/memory/recall-writing` · `app/memory/recall-writing.tsx` | couvert |
-| `r7_lecteur_s_lection_feuille_d_actions` | `/bible/chapter/:bookId/:chapterNumber` · `app/bible/chapter.tsx` | couvert |
-| `r8_lecteur_feuille_tendue_m_moriser` | `/bible/chapter/:bookId/:chapterNumber` · `app/bible/chapter.tsx` | couvert |
+| `r7_lecteur_s_lection_feuille_d_actions` | `/bible/explorer/:bookId/:chapter` · `app/bible/explorer.tsx` | couvert · vue « versets » de l’explorateur ; /bible/chapter redirige ici |
+| `r8_lecteur_feuille_tendue_m_moriser` | `/bible/explorer/:bookId/:chapter` · `app/bible/explorer.tsx` | couvert · même vue : la barre de sélection mène à la mémorisation |
 | `r9_accueil` | `/tabs/home` · `app/(tabs)/index.tsx` | couvert |
 | `sacred_focus_scripture` | jetons · `src/styles/globals.css` | couvert · le prototype ne contient que le langage visuel (jetons) |
 | `t1_arbre_mes_tags` | `/semantic/tags` · `app/semantic/tags.tsx` | couvert |

@@ -6,11 +6,12 @@
 import type { Family, FamilyMembership, FamilyRole, MembershipStatus } from './entities';
 import type { IFamilyRepository } from './repository';
 import { eventBus, DomainEventTypes } from '@/domains';
+import { DEFAULT_FAMILY_ICON } from '@/lib/family-icon';
 
 export class FamilyService {
   constructor(private repository: IFamilyRepository) {}
 
-  async create(ownerId: string, name: string, color = '#E91E8C', icon = '👨‍👩‍👧‍👦'): Promise<Family> {
+  async create(ownerId: string, name: string, color = '#E91E8C', icon = DEFAULT_FAMILY_ICON): Promise<Family> {
     // `createdAt` is assigned by the repository, not the service.
     const family = await this.repository.create({ ownerId, name, color, icon });
 

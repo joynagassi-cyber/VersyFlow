@@ -14,7 +14,9 @@ import {
   AlertCircleIcon as AlertCircle,
 } from '@/components/ui/solar-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
+import { parseReference } from '@/domains/bible';
 import { EmptyState } from '@/components/ui/EmptyState';
+import { Skeleton } from '@/components/ui/Skeleton';
 import { colorTintAlpha } from '@/lib/platform';
 import { getMemorizationService } from '@/services/memorization-service-factory';
 import { useBibleBooks } from '@/hooks/useBibleBooks';
@@ -93,16 +95,29 @@ export default function CollectionsScreen() {
   // refresh on mount AND on every FAVORITE_TOGGLED event, so the
   // "Favoris" tab reflects the live toggle from VerseActionBar.
   const [favorites, setFavorites] = useState<MemorizationRecord[]>([]);
+  // « Aucun favori » est une AFFIRMATION. Elle était affichée avant même que
+  // la lecture ait commencé, puis restait affichée si elle échouait : deux
+  // situations différentes, un seul message. Ces deux drapeaux les séparent.
+  const [favoritesLoading, setFavoritesLoading] = useState(true);
+  const [favoritesFailed, setFavoritesFailed] = useState(false);
+  // La reprise doit relancer la lecture, pas seulement réafficher le message.
+  const [favoritesAttempt, setFavoritesAttempt] = useState(0);
   useEffect(() => {
+    setFavoritesLoading(true);
     let cancelled = false;
     const loadFavorites = async () => {
+      setFavoritesFailed(false);
       try {
         const svc = getMemorizationService();
         const all = await svc.getAllMemorized();
         const favs = all.filter((r) => r.favorite);
         if (!cancelled) setFavorites(favs);
       } catch {
-        /* offline or not signed in — favorites stay empty */
+        // Hors ligne ou non connecté : le message doit dire « pas pu lire »,
+        // pas « vous n'avez aucun favori ».
+        if (!cancelled) setFavoritesFailed(true);
+      } finally {
+        if (!cancelled) setFavoritesLoading(false);
       }
     };
     void loadFavorites();
@@ -112,7 +127,7 @@ export default function CollectionsScreen() {
       cancelled = true;
       eventBus.off(DomainEventTypes.FAVORITE_TOGGLED, onToggled);
     };
-  }, []);
+  }, [favoritesAttempt]);
 
   const filtered =
     selected === 'all'
@@ -165,7 +180,7 @@ export default function CollectionsScreen() {
           onClick={() => setCreating(true)}
           className="flex h-10 w-10 items-center justify-center rounded-full bg-surface-tint"
         >
-          <DuoIcon icon={Plus} size={18} className="text-primary" />
+          <DuoIcon icon={Plus} size={20} className="text-primary" />
         </button>
       }
     >
@@ -215,7 +230,33 @@ export default function CollectionsScreen() {
              because the source is the synced memorization database, not
              the localStorage `vs_flow` shape. */
           <div className="space-y-2">
-            {favorites.length === 0 ? (
+            {favoritesLoading ? (
+              <ul className="space-y-2" aria-busy="true" aria-live="polite">
+                <span className="sr-only">{t('collections.loadingFavorites', 'Chargement des favoris…')}</span>
+                {[0, 1, 2].map((i) => (
+                  <li key={i} className="g2 flex items-center gap-3 p-4">
+                    <Skeleton className="h-9 w-9 shrink-0 rounded-full" />
+                    <Skeleton className="h-4 w-40 rounded-full" />
+                  </li>
+                ))}
+              </ul>
+            ) : favoritesFailed ? (
+              <div className="rounded-2xl bg-surface p-4" role="alert">
+                <p className="text-sm text-text-secondary">
+                  {t(
+                    'collections.favoritesUnavailable',
+                    'Vos favoris n’ont pas pu être lus. Vos données sont intactes.',
+                  )}
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setFavoritesAttempt((n) => n + 1)}
+                  className="mt-2 text-sm font-semibold text-primary underline"
+                >
+                  {t('common.retry', 'Réessayer')}
+                </button>
+              </div>
+            ) : favorites.length === 0 ? (
               <EmptyState
                 title={t('collections.emptyFavorites', 'Aucun favori')}
                 description={t('collections.emptyFavoritesHint', 'Vos favoris apparaissent ici quand vous cochez le bouton dans la barre de versets.')}
@@ -231,10 +272,10 @@ export default function CollectionsScreen() {
                     key={rec.id}
                     onClick={() =>
                       navigate(
-                        `/bible/chapter?book=${encodeURIComponent(rec.bookId)}&chapter=${rec.chapterNumber}&verse=${rec.verseNumber}`,
+                        `/bible/explorer/${encodeURIComponent(rec.bookId)}/${rec.chapterNumber}`,
                       )
                     }
-                    className="g2 flex w-full items-center gap-3 p-3 text-left active:bg-surface-tint"
+                    className="g2 flex w-full items-center gap-3 p-3 text-start active:bg-surface-tint"
                   >
                     <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-error/10">
                       <DuoIcon icon={Heart} size={16} className="text-error" />
@@ -274,13 +315,13 @@ export default function CollectionsScreen() {
                 onClick={() =>
                   setExpandedId(expanded ? null : collection.id)
                 }
-                className="g2 flex w-full items-center gap-4 p-4 text-left"
+                className="g2 flex w-full items-center gap-4 p-4 text-start"
               >
                 <span
                   className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full"
                   style={{ color: collection.color, backgroundColor: collectionTint(collection.color) }}
                 >
-                  <DuoIcon icon={Icon} size={26} />
+                  <DuoIcon icon={Icon} size={24} />
                 </span>
                 <span className="min-w-0 flex-1">
                   <span className="card-title block">
@@ -289,17 +330,17 @@ export default function CollectionsScreen() {
                   <span className="text-sm text-text-muted">{collection.description}</span>
                   <span className="mt-1 flex gap-3 text-xs text-text-muted">
                     <span className="flex items-center gap-1">
-                      <DuoIcon icon={BookOpen} size={12} />
+                      <DuoIcon icon={BookOpen} size={16} />
                       {collection.verseCount} {t('collections.verses', 'versets')}
                     </span>
                     <span className="flex items-center gap-1">
-                      <DuoIcon icon={Clock} size={12} />
+                      <DuoIcon icon={Clock} size={16} />
                       {collection.lastUpdated}
                     </span>
                   </span>
                 </span>
                 <DuoIcon icon={ChevronDown}
-                  size={18}
+                  size={20}
                   className={'text-text-muted transition ' + (expanded ? 'rotate-180' : '')}
                 />
               </button>
@@ -313,8 +354,17 @@ export default function CollectionsScreen() {
                     collection.verses.map((v) => (
                       <button
                         key={v}
-                        onClick={() => navigate('/bible/chapter?' + new URLSearchParams({ book: v.split(' ')[0], chapter: v }).toString())}
-                        className="block text-left text-sm text-text-primary"
+                        onClick={() => {
+                          // « Jean 3:16 » → `/bible/explorer/joh/3` : la référence
+                          // est résolue par le parseur du domaine, pas découpée à la main.
+                          const parsed = parseReference(v);
+                          navigate(
+                            parsed
+                              ? `/bible/explorer/${parsed.bookId}/${parsed.chapter}`
+                              : '/bible/explorer',
+                          );
+                        }}
+                        className="block text-start text-sm text-text-primary"
                       >
                         • {v}
                       </button>
@@ -330,6 +380,7 @@ export default function CollectionsScreen() {
           <div className="flex items-center gap-2 rounded-2xl border-2 border-dashed border-primary/40 p-4">
             <input
               autoFocus
+              aria-label={t('collections.namePlaceholder', 'Nom de la collection')}
               value={newName}
               onChange={(e) => setNewName(e.target.value)}
               placeholder={t('collections.namePlaceholder', 'Nom de la collection')}
@@ -352,10 +403,10 @@ export default function CollectionsScreen() {
         ) : (
           <button
             onClick={() => setCreating(true)}
-            className="flex w-full items-center gap-4 rounded-2xl border-2 border-dashed border-primary/40 p-4 text-left active:opacity-90"
+            className="flex w-full items-center gap-4 rounded-2xl border-2 border-dashed border-primary/40 p-4 text-start active:opacity-90"
           >
             <span className="flex h-14 w-14 items-center justify-center rounded-full bg-surface-tint">
-              <DuoIcon icon={Plus} size={26} className="text-primary" />
+              <DuoIcon icon={Plus} size={24} className="text-primary" />
             </span>
             <span>
               <span className="block text-base font-bold text-primary">

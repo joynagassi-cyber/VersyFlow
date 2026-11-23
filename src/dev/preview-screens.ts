@@ -47,7 +47,7 @@ export const PREVIEW_SCREENS: PreviewScreen[] = [
   },
   {
     id: 'bible-chapter',
-    path: '/bible/chapter/joh/3',
+    path: '/bible/explorer/joh/3',
     label: 'Bible — chapitre (Jean 3)',
     group: 'Bible',
     state: 'etat-vide-reel',
@@ -73,7 +73,7 @@ export const PREVIEW_SCREENS: PreviewScreen[] = [
     label: 'Révisions — file',
     group: 'Progrès',
     state: 'donnees-reelles',
-    note: 'La file vient de la base PowerSync : vide dans la démo, donc « rien à réviser » — l’état réel.',
+    note: 'La file vient du stockage local : vide dans la démo, donc « rien à réviser » — l’état réel.',
   },
   {
     id: 'review-session',

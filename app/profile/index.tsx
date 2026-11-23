@@ -22,12 +22,13 @@ import { useSettingsStore } from '@/store/settings-store';
 import { useActiveProfile } from '@/hooks/useActiveProfile';
 import { useProfileSyncStore } from '@/store/profile-sync-store';
 import { useProfileStore } from '@/store/profile-store';
-import { getLearnerProfileRepository } from '@/infrastructure/repository/powersync-repositories';
+import { getLearnerProfileRepository } from '@/infrastructure/repository/mode-repositories';
 import { getMemorizationService } from '@/services/memorization-service-factory';
 import { getFsrsEngine } from '@/services/fsrs-factory';
 import { ProgressService } from '@/services/progress-service';
 import type { ProgressStats } from '@/services/stats-calculator';
 import { cn } from '@/lib/utils';
+import { DEFAULT_BIBLE_TRANSLATIONS } from '@/domains/bible/registry';
 import { getTranslationDisplayInfo } from '@/services/bible-translation-names';
 import { fireAndForget } from '@/lib/fire-and-forget';
 import {
@@ -142,31 +143,55 @@ export default function ProfileScreen() {
   const heroCoverUrl = coverSpec?.motifDataUrl ?? fallbackCoverUrl;
 
   const [stats, setStats] = useState<ProgressStats | null>(null);
+  // « — » ne dit pas POURQUOI il n'y a pas de chiffre. Les tuiles restent
+  // muettes pendant le chargement (c'est voulu : ni zéro, ni faux chiffre),
+  // mais un échec doit se voir, sinon on croit à une absence de données.
+  const [statsLoading, setStatsLoading] = useState(true);
+  const [statsFailed, setStatsFailed] = useState(false);
+  const [statsAttempt, setStatsAttempt] = useState(0);
   const profileId = activeProfile?.id ?? 'default';
 
   useEffect(() => {
     let cancelled = false;
     void (async () => {
+      setStatsFailed(false);
+      setStatsLoading(true);
       try {
         const service = getMemorizationService(profileId);
         const progress = new ProgressService(service, getFsrsEngine(), undefined, profileId);
         const data = await progress.getStats();
         if (!cancelled) setStats(data);
       } catch {
-        if (!cancelled) setStats(null);
+        if (!cancelled) {
+          setStats(null);
+          setStatsFailed(true);
+        }
+      } finally {
+        if (!cancelled) setStatsLoading(false);
       }
     })();
     return () => {
       cancelled = true;
     };
-  }, [profileId]);
+  }, [profileId, statsAttempt]);
 
   const displayName = name || activeProfile?.displayName || user?.display_name || '';
   const hasPhoto = photo.startsWith('data:image/');
   const translationInfo = getTranslationDisplayInfo(bibleTranslation);
 
-  const toggleTranslation = () =>
-    setBibleTranslation(bibleTranslation === 'lsg' ? 'ostervald' : 'lsg');
+  // La bascule rapide ne propose que des traductions LIVRÉES. Elle offrait
+  // `ostervald`, dont le dataset n'est pas versionné : un tap suffisait à
+  // mettre l'application dans un état où chaque lecture de chapitre échoue,
+  // et l'écran de réglages n'offrait aucun moyen de revenir.
+  const toggleTranslation = () => {
+    const shipped = DEFAULT_BIBLE_TRANSLATIONS.filter((t) => t.available).map((t) => t.id);
+    if (shipped.length < 2) {
+      navigate('/settings/available-translations');
+      return;
+    }
+    const next = shipped.find((id) => id !== bibleTranslation) ?? shipped[0];
+    setBibleTranslation(next);
+  };
 
   const handleSignOut = async () => {
     if (window.confirm(t('profile.confirmSignOut', 'Se déconnecter ?'))) {
@@ -223,7 +248,7 @@ export default function ProfileScreen() {
                 className="profile-avatar-edit"
                 aria-label={t('profile.changePhoto', 'Changer la photo de profil')}
               >
-                <DuoIcon icon={Camera} size={18} />
+                <DuoIcon icon={Camera} size={20} />
               </button>
               <input
                 ref={fileRef}
@@ -298,23 +323,53 @@ export default function ProfileScreen() {
         </section>
 
         {/* ── Stats band ── */}
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        {statsFailed && (
+          <p className="profile-stats-error" role="alert">
+            {t(
+              'profile.statsUnavailable',
+              'Vos statistiques n’ont pas pu être lues. Vos données sont intactes.',
+            )}{' '}
+            <button
+              type="button"
+              className="profile-stats-retry"
+              onClick={() => setStatsAttempt((n) => n + 1)}
+            >
+              {t('common.retry', 'Réessayer')}
+            </button>
+          </p>
+        )}
+        <div
+          className="grid grid-cols-2 gap-3 sm:grid-cols-4"
+          // La bande se remplit après le montage : `aria-busy` dit au lecteur
+          // d'écran que les « — » vont devenir des chiffres.
+          aria-busy={statsLoading}
+        >
           <StatTile value={stats?.streakCount ?? null} label={t('progress.streak', 'Série')} />
+          {/* Un gabarit qui porte le nombre ne s'affiche pas sans nombre : la
+              tuile garde son libellé neutre et sa valeur reste « — » (D15). */}
           <StatTile
             value={stats?.masteredVerses ?? null}
-            label={formatProgressLabel(
-              t('progress.mastered', 'Maîtrisés'),
-              stats?.masteredVerses ?? 0,
-              i18n.resolvedLanguage || i18n.language,
-            )}
+            label={
+              stats
+                ? formatProgressLabel(
+                    t('progress.mastered', 'Maîtrisés'),
+                    stats.masteredVerses,
+                    i18n.resolvedLanguage || i18n.language,
+                  )
+                : t('progress.mastered', 'Maîtrisés')
+            }
           />
           <StatTile
             value={stats?.totalVerses ?? null}
-            label={formatProgressLabel(
-              t('progress.versesMemorized', 'Versets mémorisés'),
-              stats?.totalVerses ?? 0,
-              i18n.resolvedLanguage || i18n.language,
-            )}
+            label={
+              stats
+                ? formatProgressLabel(
+                    t('progress.versesMemorized', 'Versets mémorisés'),
+                    stats.totalVerses,
+                    i18n.resolvedLanguage || i18n.language,
+                  )
+                : t('progress.versesMemorized', 'Versets mémorisés')
+            }
           />
           <StatTile value={stats?.dueForReview ?? null} label={t('progress.toReview', 'À réviser')} />
         </div>
@@ -362,12 +417,12 @@ export default function ProfileScreen() {
         {/* ── Actions ── */}
         <div className="flex flex-col gap-3">
           <Button variant="outline" onClick={() => navigate('/settings/backup')}>
-            <DuoIcon icon={Download} size={18} />
+            <DuoIcon icon={Download} size={20} />
             {t('settings.exportData', 'Exporter mes données')}
           </Button>
           {profiles.length > 1 && (
             <Button variant="ghost" onClick={() => navigate('/profile/select')}>
-              <DuoIcon icon={UsersRound} size={18} />
+              <DuoIcon icon={UsersRound} size={20} />
               {t('profile.manageProfiles', 'Gérer les profils')}
             </Button>
           )}
@@ -377,7 +432,7 @@ export default function ProfileScreen() {
               className={cn('text-error')}
               onClick={() => fireAndForget(handleSignOut(), 'profile:signOut')}
             >
-              <DuoIcon icon={LogOut} size={18} />
+              <DuoIcon icon={LogOut} size={20} />
               {t('nav.signOut', 'Se déconnecter')}
             </Button>
           )}

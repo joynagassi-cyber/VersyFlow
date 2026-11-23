@@ -101,7 +101,7 @@ export default function FamilyMembersScreen() {
           aria-label={t('family.inviteMember', 'Inviter un membre')}
           className="touch-target rounded-full bg-surface-tint text-primary active:bg-primary/10"
         >
-          <DuoIcon icon={UserPlus} size={18} />
+          <DuoIcon icon={UserPlus} size={20} />
         </button>
       }
     >
@@ -150,7 +150,7 @@ export default function FamilyMembersScreen() {
       <button
         type="button"
         onClick={() => navigate('/family/invite')}
-        className="g2 flex w-full items-center gap-3 p-4 text-left"
+        className="g2 flex w-full items-center gap-3 p-4 text-start"
       >
         <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-primary text-on-primary">
           <DuoIcon icon={UserPlus} size={20} />
@@ -163,7 +163,7 @@ export default function FamilyMembersScreen() {
             {t('family.inviteHint', 'Partagez le code ou le lien')}
           </span>
         </span>
-        <DuoIcon icon={ChevronRight} size={18} className="shrink-0 text-text-muted" />
+        <DuoIcon icon={ChevronRight} size={20} className="directional shrink-0 text-text-muted" />
       </button>
     </FamilyHubPage>
   );

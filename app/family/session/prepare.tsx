@@ -63,7 +63,7 @@ export default function FamilySessionPrepareScreen() {
         <SectionCard title={t('familyPlus.passageLabel', 'Passage')}>
           <div className="flex items-center gap-2">
             <span className="flex h-9 w-9 items-center justify-center rounded-full bg-surface-tint text-primary">
-              <DuoIcon icon={BookOpen} size={18} />
+              <DuoIcon icon={BookOpen} size={20} />
             </span>
             <input
               value={passage}
@@ -113,7 +113,7 @@ export default function FamilySessionPrepareScreen() {
                       <p className="truncate text-sm font-semibold text-text-primary">
                         {member.name}
                         {isMe && (
-                          <span className="ml-1 text-2xs font-normal text-text-muted">
+                          <span className="ms-1 text-2xs font-normal text-text-muted">
                             ({t('familyPlus.you', 'vous')})
                           </span>
                         )}
@@ -139,7 +139,7 @@ export default function FamilySessionPrepareScreen() {
                         isOnline ? 'bg-primary text-on-primary' : 'bg-surface-tint text-primary',
                       )}
                     >
-                      <DuoIcon icon={isOnline ? Tick : PlusSign} size={12} />
+                      <DuoIcon icon={isOnline ? Tick : PlusSign} size={16} />
                       {isOnline
                         ? t('familyPlus.invited', 'Invité')
                         : t('familyPlus.invite', 'Inviter')}
@@ -154,7 +154,7 @@ export default function FamilySessionPrepareScreen() {
         <HintNote>
           {t(
             'familyPlus.sessionHint',
-            'Chacun mémorise sur son appareil, en ligne ou non. Les résultats sont partagés en direct, ou dès la reconnexion.',
+            'Chacun mémorise sur son appareil. Les réponses restent ici : il n’y a pas de serveur distant où les envoyer.',
           )}
         </HintNote>
 

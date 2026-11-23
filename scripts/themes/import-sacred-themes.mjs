@@ -127,7 +127,11 @@ ${body}
 `;
 }
 
-if (!bin) {
+// `--check` ne produit rien : il compare le fichier généré aux `.webp` déjà
+// livrés, avec `existsSync` seul. Exiger ImageMagick ici rendait la porte CI
+// `data` infranchissable sur un runner qui n'en a pas — la vérification
+// échouait en code 2 avant même d'avoir regardé un fichier.
+if (!bin && !checkOnly) {
   console.error('ImageMagick introuvable (ni `magick` ni `convert`). Aucune image produite.');
   process.exit(2);
 }

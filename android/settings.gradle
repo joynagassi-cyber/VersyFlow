@@ -14,6 +14,10 @@ plugins {
 rootProject.name = 'VersyFlow'
 
 include ':capacitor-android'
-project(':capacitor-android').projectDir = new File('../../../node_modules/@capacitor/android/capacitor')
+// `android/settings.gradle` est relatif au dossier `android/` : le dépôt est
+// un cran au-dessus. Un `../../../` sortait du dépôt vers `/node_modules`,
+// donc Gradle échouait à la configuration avant toute compilation. Défaut
+// préexistant, invisible tant que le job Android n'était jamais atteint.
+project(':capacitor-android').projectDir = new File('../node_modules/@capacitor/android/capacitor')
 
 apply from: 'capacitor.settings.gradle'

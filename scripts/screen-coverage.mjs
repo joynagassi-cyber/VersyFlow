@@ -55,8 +55,10 @@ const MAP = {
   m3_famille_cr_ation: { route: '/family/create', file: 'app/family/create.tsx' },
   m4_famille_profil_de_membre: { route: '/family/profile', file: 'app/family/profile.tsx' },
   m5_famille_s_lecteur_de_profil: {
-    route: '/family/select-profile',
-    file: 'app/family/select-profile.tsx',
+    // Le sélecteur familial et le sélecteur de l'onglet Profil ne font qu'un :
+    // `/family/select-profile` redirige vers `/profile/select`.
+    route: '/profile/select',
+    file: 'app/profile/select.tsx',
   },
   m6_famille_membres: { route: '/family/members', file: 'app/family/members.tsx' },
   m7_famille_d_tail_d_un_membre: {
@@ -112,28 +114,36 @@ const MAP = {
   r5_criture_saisie: { route: '/memory/recall-writing', file: 'app/memory/recall-writing.tsx' },
   r6_criture_diff_note_fsrs: { route: '/memory/recall-writing', file: 'app/memory/recall-writing.tsx' },
   r7_lecteur_s_lection_feuille_d_actions: {
-    route: '/bible/chapter/:bookId/:chapterNumber',
-    file: 'app/bible/chapter.tsx',
+    route: '/bible/explorer/:bookId/:chapter',
+    file: 'app/bible/explorer.tsx',
+    note: 'vue « versets » de l’explorateur ; /bible/chapter redirige ici',
   },
   r8_lecteur_feuille_tendue_m_moriser: {
-    route: '/bible/chapter/:bookId/:chapterNumber',
-    file: 'app/bible/chapter.tsx',
+    route: '/bible/explorer/:bookId/:chapter',
+    file: 'app/bible/explorer.tsx',
+    note: 'même vue : la barre de sélection mène à la mémorisation',
   },
   r9_accueil: { route: '/tabs/home', file: 'app/(tabs)/index.tsx' },
   r10_r_sum_de_session: { route: '/review/summary', file: 'app/review/summary.tsx' },
   r11_file_de_r_vision: { route: '/review/queue', file: 'app/review/queue.tsx' },
   r12_session_de_r_vision: { route: '/review/session', file: 'app/review/session.tsx' },
   r13_d_tail_du_verset: {
-    route: '/bible/chapter/:bookId/:chapterNumber',
-    file: 'app/bible/chapter.tsx',
+    route: '/bible/explorer/:bookId/:chapter',
+    file: 'app/bible/explorer.tsx',
+    note: 'détail d’un verset : même vue, panneau de sélection',
   },
   r14_progr_s_activit: { route: '/tabs/progress', file: 'app/(tabs)/progress.tsx' },
   r15_r_glages: { route: '/tabs/settings', file: 'app/(tabs)/settings.tsx' },
   r16_bible_liste_des_livres: { route: '/bible/explorer', file: 'app/bible/explorer.tsx' },
-  r17_bible_chapitres: { route: '/bible/book/:bookId', file: 'app/bible/book.tsx' },
+  r17_bible_chapitres: {
+    route: '/bible/explorer/:bookId',
+    file: 'app/bible/explorer.tsx',
+    note: 'vue « chapitres » ; /bible/book/:bookId redirige ici',
+  },
   r18_lecteur_chapitre: {
-    route: '/bible/chapter/:bookId/:chapterNumber',
-    file: 'app/bible/chapter.tsx',
+    route: '/bible/explorer/:bookId/:chapter',
+    file: 'app/bible/explorer.tsx',
+    note: 'vue « versets » ; /bible/chapter/:bookId/:n redirige ici',
   },
   r20_enregistr_notes: { route: '/notes', file: 'app/notes.tsx' },
   r21_rappels_et_notifications: { route: '/settings/reminders', file: 'app/settings/reminders.tsx' },

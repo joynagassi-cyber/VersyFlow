@@ -296,15 +296,19 @@ function convertStyle(style: BaseStyle | TextStyle): CSSProperties {
   // Platform-specific: react-native shadows
   const styleRecord = style as Record<string, unknown>;
   if (styleRecord.shadowColor || styleRecord.shadowOffset || styleRecord.shadowOpacity !== undefined || styleRecord.elevation !== undefined) {
-    const shadowColor = (styleRecord.shadowColor as string) || '#000000';
+    // Aucune couleur littérale : une ombre portée RN sans couleur explicite
+    // prend celle du texte du thème (le noir figé disparaissait sur un preset
+    // sombre, et contrevenait à L01).
+    const shadowColor =
+      (styleRecord.shadowColor as string) || 'var(--color-text-primary, currentColor)';
     const shadowOffset = (styleRecord.shadowOffset as { width: number; height: number }) || { width: 0, height: 1 };
     const shadowOpacity = (styleRecord.shadowOpacity as number) ?? 0.05;
     const shadowRadius = (styleRecord.shadowRadius as number) ?? 2;
     const elevation = (styleRecord.elevation as number) ?? 0;
     result.boxShadow = `${shadowOffset.width}px ${shadowOffset.height}px ${shadowRadius}px ${withAlpha(shadowColor, shadowOpacity)}`;
-    // Map elevation to box-shadow as a fallback
+    // Map elevation to box-shadow as a fallback (même jeton, opacité plus dense).
     if (elevation > 0) {
-      result.boxShadow = `0 ${elevation}px ${elevation * 2}px rgba(0,0,0,0.1)`;
+      result.boxShadow = `0 ${elevation}px ${elevation * 2}px color-mix(in srgb, var(--color-text-primary, currentColor) ${Math.round(0.1 * 100)}%, transparent)`;
     }
   }
 

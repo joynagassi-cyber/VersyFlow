@@ -7,8 +7,12 @@
  * to 66 by the canonical filter at the repository layer. The JSON files
  * themselves stay untouched.
  *
- * Loads the full datasets through the Node fs source and asserts the canon
- * invariants end-to-end.
+ * Seul `lsg.json` est versionné (décision Chantier 2 : un dataset livré avec
+ * l'app, 6,9 Mo). Les jeux de données apocryphes qui servaient de matière au
+ * filtre canonique ne sont plus dans le dépôt : leurs invariants sont
+ * désormais vérifiés sur des **fixtures** qui reproduisent leur forme (slots
+ * apocryphes en plus des 66 livres), ce qui teste la même règle sans dépendre
+ * de fichiers absents.
  */
 
 import { describe, it, expect } from 'vitest';
@@ -29,6 +33,34 @@ const DATA_DIR = resolve(process.cwd(), 'data/bible');
 
 function loadRaw(id: string): unknown {
   return JSON.parse(readFileSync(resolve(DATA_DIR, `${id}.json`), 'utf8'));
+}
+
+/**
+ * Slots apocryphes / introductifs observés dans les datasets eBible : ils
+ * n'appartiennent pas au canon protestant et doivent être retirés à la
+ * lecture, sans être supprimés du fichier source.
+ */
+const EXTRA_SLOTS = ['int', 'esg', 's3y', 'sus', 'bel', '1ma', 'oth', 'dag'];
+
+/**
+ * Reproduit la forme d'un dataset apocryphe : les 66 livres canoniques (texte
+ * réel de la LSG) plus des slots supplémentaires porteurs de contenu, dans
+ * l'ordre du fichier source.
+ */
+function makeExtraSlotsDataset(extraCount: number): Record<string, unknown> {
+  const lsg = loadRaw('lsg') as { books: Array<Record<string, unknown>> } & Record<string, unknown>;
+  const books = [...lsg.books];
+  // Les slots sont insérés avant les livres du Nouveau Testament, comme dans
+  // les fichiers eBible (apocryphes entre Malachie et Matthieu).
+  const ntStart = books.findIndex((b) => b.testament === 'new');
+  const extras = EXTRA_SLOTS.slice(0, extraCount).map((id) => ({
+    ...books[0],
+    id,
+    name: { fr: id, en: id },
+    chapters: [{ number: 1, verses: [{ number: 1, text: 'Contenu deutérocanonique.' }] }],
+  }));
+  books.splice(ntStart, 0, ...extras);
+  return { ...lsg, id: 'fr-extras', books };
 }
 
 const source = new BibleJsonFileSource({ useNodeFs: true });
@@ -54,72 +86,52 @@ describe('Full canon completeness (66 books)', () => {
     expect(count).toBe(31170);
   }, 60_000);
 
-  it('kujv.json (73 raw books) filters down to 66', async () => {
-    const raw = await source.load('kujv');
-    // `parseTranslationData` already trims; assert the raw file had 73 slots.
-    const rawFile = loadRaw('kujv') as { books: Array<{ id: string }> };
-    expect(rawFile.books.length).toBe(73);
-    const filtered = filterCanonicalBooks(
-      parseTranslationData(rawFile).books,
-    );
+  it('a dataset with extra slots (73 raw books) filters down to 66', async () => {
+    // 66 canoniques + 7 slots apocryphes = 73, comme le KJV de Cambridge.
+    const rawFile = makeExtraSlotsDataset(7);
+    const books = rawFile.books as Array<{ id: string }>;
+    expect(books.length).toBe(73);
+    const parsed = parseTranslationData(rawFile);
+    expect(parsed.books.length).toBe(66);
+    const filtered = filterCanonicalBooks(parsed.books);
     expect(filtered.length).toBe(66);
-    // The in-repo load agrees.
-    expect(raw.books.length).toBe(66);
     // Every canonical book survives the filter.
     for (const id of CANONICAL_BOOK_IDS) {
       expect(filtered.some((b) => b.id === id)).toBe(true);
     }
-  }, 60_000);
-
-  it('kujv through the repository sees 66 books (default canonicalOnly)', async () => {
-    const books = await repo.getBooks('kujv');
-    expect(books.length).toBe(66);
-  }, 60_000);
-
-  it('webu.json (69 raw books) filters down to 66', async () => {
-    const rawFile = loadRaw('webu') as { books: Array<{ id: string }> };
-    expect(rawFile.books.length).toBe(69);
-    const raw = await source.load('webu');
-    expect(raw.books.length).toBe(66);
-    const filtered = filterCanonicalBooks(parseTranslationData(rawFile).books);
-    expect(filtered.length).toBe(66);
-  }, 60_000);
-
-  it('the other apocrypha datasets keep 66+ raw but filter to 66', async () => {
-    for (const id of ['la-vulgate', 'francrampon', 'es-godword']) {
-      const rawFile = loadRaw(id) as { books: Array<{ id: string }> };
-      // Raw JSON is untouched: it still carries the extra slots.
-      expect(rawFile.books.length).toBeGreaterThanOrEqual(66);
-      const raw = await source.load(id);
-      expect(raw.books.length).toBe(66);
-      expect(filterCanonicalBooks(parseTranslationData(rawFile).books).length).toBe(66);
+    // No apocryphal slot leaks through.
+    for (const id of EXTRA_SLOTS) {
+      expect(filtered.some((b) => b.id === id)).toBe(false);
     }
-  }, 60_000);
+  });
+
+  it('a fixture with extra slots through the repository sees 66 books', async () => {
+    const inMem = new InMemoryBibleTextSource({ 'fr-extras': makeExtraSlotsDataset(8) });
+    const inMemRepo = new LocalBibleRepository(inMem);
+    expect((await inMemRepo.getBooks('fr-extras')).length).toBe(66);
+  });
 
   it('canonicalOnly:false keeps the raw dataset; default trims to the canon', async () => {
     // A source that hands the repository the RAW dataset (as a hand-rolled
     // IBibleTextSource would), so the repository's own filter is what trims.
+    const raw = makeExtraSlotsDataset(7);
     const rawSource: IBibleTextSource = {
-      load: async (id: string) =>
-        parseTranslationData(loadRaw(id), { canonicalOnly: false }),
+      load: async () => parseTranslationData(raw, { canonicalOnly: false }),
     };
     const rawRepo = new LocalBibleRepository(rawSource, false);
     expect((await rawRepo.getBooks('kujv')).length).toBe(73); // raw kept as-is
-    const canonBooks = await repo.getBooks('kujv');
-    expect(canonBooks.length).toBe(66); // default filter trims to the canon
-  }, 60_000);
+    const canonRepo = new LocalBibleRepository(rawSource);
+    expect((await canonRepo.getBooks('kujv')).length).toBe(66); // default filter trims
+  });
 
   it('parseTranslationData applies the canonical filter by default', () => {
-    const data = parseTranslationData(loadRaw('kujv'));
+    const data = parseTranslationData(makeExtraSlotsDataset(7));
     expect(data.books.length).toBe(66);
   });
 
-  it('InMemoryBibleTextSource + LocalBibleRepository agree on the canon', async () => {
-    const inMem = new InMemoryBibleTextSource({ webu: loadRaw('webu') });
-    const inMemRepo = new LocalBibleRepository(inMem);
-    const books = await inMemRepo.getBooks('webu');
-    expect(books.length).toBe(66);
-    // Cross-check: webu is a catalogued dataset.
-    expect(BIBLE_DATASET_CATALOG.some((e) => e.id === 'webu')).toBe(true);
-  }, 60_000);
+  it('le dataset livré est le seul versionné, et il est catalogué', async () => {
+    const lsg = await repo.getBooks('lsg');
+    expect(lsg.length).toBe(66);
+    expect(BIBLE_DATASET_CATALOG.some((e) => e.id === 'lsg')).toBe(true);
+  });
 });

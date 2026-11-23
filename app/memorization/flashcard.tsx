@@ -56,6 +56,11 @@ export default function FlashcardScreen() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
   const [cards, setCards] = useState<Flashcard[] | null>(null);
+  // Un échec de lecture rendait `cards = []`, c'est-à-dire le même écran que
+  // « vous n'avez rien mémorisé ». L'un se répare en remerorant, l'autre en
+  // réessayant : ils ne peuvent pas porter le même message.
+  const [failed, setFailed] = useState(false);
+  const [attempt, setAttempt] = useState(0);
   const [transform, setTransform] = useState('none');
   const [opacity, setOpacity] = useState(1);
   const swipeX = useRef<number | null>(null);
@@ -78,13 +83,16 @@ export default function FlashcardScreen() {
             })),
         );
       } catch {
-        if (!cancelled) setCards([]);
+        if (!cancelled) {
+          setCards(null);
+          setFailed(true);
+        }
       }
     })();
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [attempt]);
 
   const total = cards?.length ?? 0;
   const currentCard = cards && total > 0 ? cards[currentIndex % total] : null;
@@ -137,7 +145,29 @@ export default function FlashcardScreen() {
   if (cards === null) {
     return (
       <FullScreenPage title={t('session.flashcards', 'Flashcards')} showBack backPath="/tabs/home">
-        <FlashcardSkeleton label={t('common.loading', 'Chargement…')} />
+        {failed ? (
+          <section className="g3 progress-message" role="alert">
+            <h2>{t('session.cardsUnavailable', 'Cartes indisponibles')}</h2>
+            <p>
+              {t(
+                'session.cardsUnavailableHint',
+                'Vos versets n’ont pas pu etre lus. Vos donnees sont intactes : reessayez.',
+              )}
+            </p>
+            <button
+              type="button"
+              className="home-secondary"
+              onClick={() => {
+                setFailed(false);
+                setAttempt((n) => n + 1);
+              }}
+            >
+              {t('common.retry', 'Reessayer')}
+            </button>
+          </section>
+        ) : (
+          <FlashcardSkeleton label={t('common.loading', 'Chargement…')} />
+        )}
       </FullScreenPage>
     );
   }
@@ -208,7 +238,7 @@ export default function FlashcardScreen() {
             <button
               type="button"
               onClick={() => setIsFlipped((flipped) => !flipped)}
-              className="flex h-full w-full flex-col justify-between p-6 text-left"
+              className="flex h-full w-full flex-col justify-between p-6 text-start"
             >
               <span
                 className={
@@ -218,7 +248,7 @@ export default function FlashcardScreen() {
                     : 'bg-surface-tint text-primary')
                 }
               >
-                <DuoIcon icon={currentCard.mastered ? CheckCircle2 : HelpCircle} size={14} />
+                <DuoIcon icon={currentCard.mastered ? CheckCircle2 : HelpCircle} size={16} />
                 {currentCard.mastered
                   ? t('session.mastered', 'Maîtrisé')
                   : t('session.toMemorize', 'À mémoriser')}
@@ -243,7 +273,7 @@ export default function FlashcardScreen() {
               </div>
 
               <p className="flex items-center gap-2 text-xs text-text-muted">
-                <DuoIcon icon={RefreshCw} size={14} />
+                <DuoIcon icon={RefreshCw} size={16} />
                 {isFlipped
                   ? t('session.tapToBack', 'Touchez pour revenir')
                   : t('session.tapToFlip', 'Touchez pour voir la suite')}
@@ -254,11 +284,11 @@ export default function FlashcardScreen() {
 
         <div className="flex justify-around gap-3 px-4 py-3 text-xs text-text-muted">
           <span className="flex items-center gap-2">
-            <DuoIcon icon={Hand} size={18} />
+            <DuoIcon icon={Hand} size={20} />
             {t('session.swipeLeft', 'Glisser à gauche : à revoir')}
           </span>
           <span className="flex items-center gap-2">
-            <DuoIcon icon={Hand} size={18} className="-scale-x-100" />
+            <DuoIcon icon={Hand} size={20} className="-scale-x-100" />
             {t('session.swipeRight', 'Glisser à droite : maîtrisé')}
           </span>
         </div>

@@ -71,11 +71,11 @@ export function TranslationMenu({
         className="flex items-center gap-1 rounded-full bg-surface-tint px-2.5 py-1 text-xs font-bold text-primary transition active:scale-95"
       >
         {display}
-        <DuoIcon icon={ChevronDown} size={11} />
+        <DuoIcon icon={ChevronDown} size={16} />
       </button>
 
       {open && (
-        <div className="absolute left-0 top-9 z-40 max-h-[50vh] w-56 overflow-y-auto rounded-2xl border border-border bg-surface p-1.5 shadow-xl">
+        <div className="absolute start-0 top-9 z-40 max-h-[50vh] w-56 overflow-y-auto rounded-2xl border border-border bg-surface p-1.5 shadow-xl">
           <p className="px-2.5 py-1.5 text-3xs font-bold uppercase tracking-wider text-text-muted">
             {t('workspace.chooseTranslation', 'Traduction')}
           </p>
@@ -89,7 +89,7 @@ export function TranslationMenu({
                 disabled={isBusy}
                 onClick={() => void handlePick(entry.id)}
                 className={cn(
-                  'flex w-full items-center justify-between rounded-xl px-2.5 py-2 text-left text-sm transition',
+                  'flex w-full items-center justify-between rounded-xl px-2.5 py-2 text-start text-sm transition',
                   isCurrent ? 'bg-primary/10 text-primary' : 'text-text-primary active:bg-surface-tint',
                 )}
               >
@@ -97,9 +97,9 @@ export function TranslationMenu({
                   {bibleTranslationDisplayName(entry.id)}
                 </span>
                 {isBusy ? (
-                  <DuoIcon icon={Loader2} size={13} className="animate-spin text-text-muted" />
+                  <DuoIcon icon={Loader2} size={16} className="animate-spin text-text-muted" />
                 ) : isCurrent ? (
-                  <DuoIcon icon={Check} size={13} />
+                  <DuoIcon icon={Check} size={16} />
                 ) : null}
               </button>
             );

@@ -44,8 +44,16 @@ function usedKeys(): { key: string; file: string }[] {
         if (!['node_modules', 'dist', '__dev'].includes(entry)) walk(rel);
       } else if (/\.(tsx?|jsx?)$/.test(entry)) {
         const src = fs.readFileSync(path.join(ROOT, rel), 'utf8');
+        // Les deux formes statiques : `t('ns.key')` et la forme à deux arguments
+        // `t(item.labelKey ?? 'ns.key')`… n'existent pas ; on retient donc aussi
+        // les clés passées par constante (`labelKey: 'nav.home'`) dès qu'elles
+        // sont littérales et pointées — sinon supprimer un écran ferait croire
+        // que ses clés sont devenues inutiles.
         for (const m of src.matchAll(/(?:\bt|tFor)\s*\(\s*['"]([a-zA-Z][\w.]*)['"]/g)) {
           if (m[1].includes('.')) found.push({ key: m[1], file: rel });
+        }
+        for (const m of src.matchAll(/(?:labelKey|i18nKey|key|titleKey)\s*:\s*['"]([a-z][\w]*\.[\w.]+)['"]/g)) {
+          found.push({ key: m[1], file: rel });
         }
       }
     }

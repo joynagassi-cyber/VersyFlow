@@ -5,9 +5,8 @@
  *
  * The VersyFlow login flow is "frictionless identify": email + name, no
  * password. The app persists identity locally via `identifyLocal`
- * (SupabaseAuthService, src/auth/SupabaseAuthService.ts) and the
- * PowerSync sync bridges (family + profile) only activate for a real
- * authenticated Supabase session.
+ * (src/auth/local-auth-service.ts) — there is no backend session to
+ * authenticate against.
  *
  * Persistence model (web / Capacitor WebView):
  *   - MmkvStorage (localStorage-backed) is the storage adapter for the

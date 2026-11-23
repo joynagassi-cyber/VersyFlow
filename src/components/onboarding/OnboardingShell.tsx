@@ -49,11 +49,11 @@ export function OnboardingShell({
               aria-label={backLabel}
               className="flex h-10 w-10 items-center justify-center rounded-full bg-surface text-text-secondary shadow-sm transition hover:bg-surface-tint focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
             >
-              <DuoIcon icon={ArrowLeft01Icon} size={20} />
+              <DuoIcon icon={ArrowLeft01Icon} size={20}  className="directional" />
             </button>
           )}
           <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-2xs font-bold text-primary">
-            <DuoIcon icon={SparklesIcon} size={13} />
+            <DuoIcon icon={SparklesIcon} size={16} />
             VersyFlow · {step}/{totalSteps}
           </span>
         </div>

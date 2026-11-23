@@ -2,11 +2,14 @@
  * Famille — Séance en direct (kits `m16_famille_s_ance_en_direct_en_ligne` et
  * `m16b_famille_s_ance_hors_ligne`).
  *
- * Les deux maquettes sont le **même écran dans deux états** : connecté, les
- * résultats partent en direct ; hors ligne, ils attendent la reconnexion. Le
- * patron sync (`useSyncStatus`) décide lequel des deux en-têtes s'affiche —
- * l'écran ne teste jamais `navigator.onLine` lui-même, et rien n'est perdu :
- * les cartes sues restent enregistrées localement.
+ * Les deux maquettes sont le **même écran dans deux états** : des résultats
+ * partagés, ou des résultats qui restent sur cet appareil. Ce qui les sépare
+ * est le fait mesuré `useSyncStatus().phase === 'ready'` (un instantané a déjà
+ * été poussé vers le collecteur local) — l'écran ne teste jamais
+ * `navigator.onLine` et de toute façon, en mode local, **il n'y a pas de
+ * serveur distant à rejoindre** : rien n'est « en attente de reconnexion ».
+ * Le libellé de l'état non partagé le dit, au lieu de promettre un envoi qui
+ * n'aurait pas lieu après la suppression du service cloud (D1).
  */
 
 import { useMemo, useState } from 'react';
@@ -88,7 +91,7 @@ export default function FamilySessionLiveScreen() {
                 online ? 'bg-success-light text-success' : 'bg-warning-light text-warning'
               }`}
             >
-              <DuoIcon icon={CloudUpload} size={12} />
+              <DuoIcon icon={CloudUpload} size={16} />
               {online
                 ? t('familyPlus.live', 'En direct')
                 : t('familyPlus.offline', 'Hors ligne')}
@@ -99,15 +102,17 @@ export default function FamilySessionLiveScreen() {
                     connected,
                     total: session.participants.length,
                   })
-                : t('familyPlus.pendingResults', '{{count}} résultats en attente', { count: pending })}
+                : t('familyPlus.sessionLiveLocalCount', '{{count}} réponses sur cet appareil', {
+                    count: pending,
+                  })}
             </span>
           </div>
           <p className="mt-2 text-xs leading-5 text-text-muted">
             {online
               ? t('familyPlus.liveHint', 'Connecté · tes stats sont partagées en direct.')
               : t(
-                  'familyPlus.offlineHint',
-                  'Hors ligne · tu continues, tes stats seront partagées à la reconnexion.',
+                  'familyPlus.sessionLiveLocalHint',
+                  'Mode local · les réponses restent sur cet appareil, comme les séances de la famille.',
                 )}
           </p>
         </SectionCard>
@@ -117,7 +122,7 @@ export default function FamilySessionLiveScreen() {
           <p className="mt-2 text-lg font-semibold text-text-primary">
             {online
               ? t('familyPlus.tapToFlip', 'Touche pour retourner la carte')
-              : t('familyPlus.pendingHint', 'Ils partiront dès que la connexion revient.')}
+              : t('familyPlus.sessionLivePendingHint', 'Elles sont enregistrées sur cet appareil.')}
           </p>
           <div className="mt-3 flex items-center justify-between text-xs text-text-muted">
             <span className="tabular-nums">

@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
@@ -18,6 +19,9 @@ import {
 } from '@/components/ui/solar-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { ProgressRing } from '@/components/ui/ProgressRing';
+import { ProgressSkeleton } from '@/components/ui/ScreenSkeletons';
+import { EmptyState } from '@/components/ui/EmptyState';
+import { AlertCircleIcon as AlertCircle } from '@/components/ui/solar-icons';
 import { useActiveProfile } from '@/hooks/useActiveProfile';
 import { getMemorizationService } from '@/services/memorization-service-factory';
 import { getFsrsEngine } from '@/services/fsrs-factory';
@@ -89,6 +93,7 @@ const CATEGORIES: { id: 'all' | Cat; label: string }[] = [
 
 export default function AchievementScreen() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState<'all' | Cat>('all');
   const [showAll, setShowAll] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -101,10 +106,18 @@ export default function AchievementScreen() {
     longest: number;
     collections: number;
   } | null>(null);
+  // `data === null` ne disait rien : entre le montage et la réponse du service,
+  // l'écran affichait déjà 0/14 succès, comme si le compte était vide. Deux
+  // drapeaux séparent les trois situations — en cours, échoué, chargé.
+  const [loading, setLoading] = useState(true);
+  const [failed, setFailed] = useState(false);
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
     const load = async () => {
+      setLoading(true);
+      setFailed(false);
       try {
         const service = getMemorizationService(profileId);
         const [records, progress] = await Promise.all([
@@ -129,13 +142,18 @@ export default function AchievementScreen() {
         });
       } catch (e) {
         console.error('[Achievements] data load failed:', e);
+        // Une erreur silencieuse affichait « 0/14 » : l'utilisateur croyait
+        // n'avoir rien débloqué alors que la lecture avait échoué.
+        if (!cancelled) setFailed(true);
+      } finally {
+        if (!cancelled) setLoading(false);
       }
     };
     void load();
     return () => {
       cancelled = true;
     };
-  }, [profileId]);
+  }, [profileId, attempt]);
 
   const derived = useMemo(() => {
     if (!data) return {};
@@ -181,12 +199,43 @@ export default function AchievementScreen() {
       showBack
       right={
         <span className="flex items-center gap-1 rounded-full bg-surface-tint px-3 py-1 text-sm font-semibold text-primary">
-          <DuoIcon icon={Star} size={14} className="text-warning tabular-nums" />
+          <DuoIcon icon={Star} size={16} className="text-warning tabular-nums" />
           {unlockedCount}/{achievements.length}
         </span>
       }
     >
       <div className="screen-column space-y-5">
+        {loading ? (
+          <ProgressSkeleton label={t('achievements.loading', 'Chargement des succes…')} />
+        ) : failed ? (
+          <section className="g3 progress-message" role="alert">
+            <DuoIcon icon={AlertCircle} size={24} className="text-warning" />
+            <h2>{t('achievements.unavailable', 'Succes indisponibles')}</h2>
+            <p>
+              {t(
+                'achievements.unavailableHint',
+                'Votre progression n’a pas pu etre lue. Vos donnees sont intactes : reessayez.',
+              )}
+            </p>
+            <button type="button" className="home-secondary" onClick={() => setAttempt((n) => n + 1)}>
+              {t('common.retry', 'Reessayer')}
+            </button>
+          </section>
+        ) : data && data.total === 0 && data.totalReviews === 0 ? (
+          // Aucun verset, aucune révision : l'écran de succès n'a rien à
+          // célébrer. On dit quoi faire au lieu d'afficher quatorze cadenas.
+          <EmptyState
+            icon={Trophy}
+            title={t('achievements.noneYet', 'Aucun succes pour l’instant')}
+            description={t(
+              'achievements.noneYetHint',
+              'Memorisez un premier verset : le succes « Premier verset » se debloque aussitot.',
+            )}
+            actionLabel={t('bible.explorer', 'Explorer la Bible')}
+            onAction={() => navigate('/bible/explorer')}
+          />
+        ) : (
+        <>
         {/* Overall */}
         <div className="g2 flex items-center gap-4 p-5">
           <ProgressRing value={Math.round(overall)} size={72} />
@@ -229,7 +278,7 @@ export default function AchievementScreen() {
               <button
                 key={a.id}
                 onClick={() => setSelectedId(selectedId === a.id ? null : a.id)}
-                className="g2 flex w-full items-center gap-4 p-4 text-left"
+                className="g2 flex w-full items-center gap-4 p-4 text-start"
               >
                 <span
                   className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full"
@@ -238,7 +287,7 @@ export default function AchievementScreen() {
                     backgroundColor: achievementTint(a.color),
                   }}
                 >
-                  <DuoIcon icon={Icon} size={26} />
+                  <DuoIcon icon={Icon} size={24} />
                 </span>
                 <span className="min-w-0 flex-1">
                   <span
@@ -255,7 +304,7 @@ export default function AchievementScreen() {
                         style={{ width: a.progress + '%', backgroundColor: a.color }}
                       />
                     </span>
-                    <span className="w-10 text-right text-xs text-text-muted">
+                    <span className="w-10 text-end text-xs text-text-muted">
                       {a.progress >= 100 ? '100%' : a.progress + '%'}
                     </span>
                   </span>
@@ -265,7 +314,7 @@ export default function AchievementScreen() {
                     className="flex h-6 w-6 items-center justify-center rounded-full text-on-status"
                     style={{ backgroundColor: a.color }}
                   >
-                    <DuoIcon icon={Check} size={14} />
+                    <DuoIcon icon={Check} size={16} />
                   </span>
                 )}
               </button>
@@ -320,6 +369,8 @@ export default function AchievementScreen() {
             ))}
           </div>
         </div>
+        </>
+        )}
       </div>
     </FullScreenPage>
   );

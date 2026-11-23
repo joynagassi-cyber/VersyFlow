@@ -6,13 +6,13 @@
 - **Ionic React** (`@ionic/react`, `@ionic/react-router`) for mobile-first UI primitives, tab navigation, and native-feel components (headers, cards, lists)
 - **React Router v6** (`react-router-dom`) for web routing — routes are defined in `src/main.tsx`
 - **Zustand** (`zustand`) for global client-side state management — one store per capability domain
-- **Supabase** (`@supabase/supabase-js`) for authentication and cloud sync via PowerSync (`@powersync/web`, `@powersync/capacitor`)
+- **Local-only data layer** — every capability is served by an in-app repository (`src/infrastructure/repository/`); no backend, no network calls
 - **Capacitor** (`@capacitor/core`, `@capacitor/android`, `@capacitor/ios`, plus plugins) for native mobile bridges
 - **i18next + react-i18next** for internationalization — locales live in `src/i18n/locales/` (fr, en, ar, de, zh)
 - **ts-fsrs** for spaced-repetition scheduling (FSRS algorithm via WebAssembly with a JS fallback)
 - **Zod** for runtime input validation and schema definitions
 - **Tailwind CSS** for styling — primary utility-first approach across all new components
-- **Lucide React** for iconography
+- **Solar Icons** (`@solar-icons/react`) is the single icon library, wrapped by `<DuoIcon />`
 - **Shadcn/ui** components are pre-installed — prefer these over custom-built equivalents whenever they exist
 
 ## Layer Architecture
@@ -86,10 +86,10 @@ Infrastructure (src/infrastructure/)
 - Define schemas in the same file as the form or service that uses them
 - Never validate with manual `if` chains — use Zod `.parse()` or `.safeParse()`
 
-### Database & Sync
-- **PowerSync** is the single source of truth for local-first data
-- **Supabase** handles auth and real-time sync — use the Supabase client from `src/auth/`
-- Do not bypass PowerSync for writes; all mutations go through the sync layer
+### Data Layer
+- The app is frontend-only: no backend client, no cloud calls
+- Persistence goes through the ports in `src/infrastructure/repository/ports.ts`
+- Screens never touch storage directly — they call a repository/hook
 
 ### Spaced Repetition
 - **ts-fsrs** is the FSRS engine — wrap it behind `src/domains/fsrs/engine.ts` interface

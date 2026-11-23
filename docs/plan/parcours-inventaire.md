@@ -2,26 +2,26 @@
 
 Généré par `node scripts/journey-inventory.mjs`. Ne pas éditer à la main.
 
-Routes déclarées dans `src/main.tsx` : **98**.
+Routes déclarées dans `src/main.tsx` : **100**.
 Parcours inventoriés : **16** — actifs **16**, partiels **0**, absents **0**.
 
 | Parcours | Routes | Tests | Données | État |
 | --- | --- | --- | --- | --- |
-| Démarrage et onboarding | 1 | `tests/api/navigation-api.test.ts`<br>`tests/design/onboarding-journey.test.tsx`<br>`tests/design/onboarding-progress.test.ts`<br>+1 | — | **actif** |
-| Authentification | 3 | `tests/api/navigation-api.test.ts`<br>`tests/auth/insforge-auth.test.ts`<br>`tests/design/onboarding-journey.test.tsx`<br>+2 | — | **actif** |
-| Accueil et navigation | 1 | `tests/api/navigation-api.test.ts`<br>`tests/design/batch-navigation.test.ts`<br>`tests/design/lot-journeys-and-polish.test.ts`<br>+5 | — | **actif** |
-| Explorer la Bible | 5 | `tests/api/navigation-api.test.ts`<br>`tests/design/batch-navigation.test.ts`<br>`tests/design/bible-book-names.test.ts`<br>+25 | présentes | **actif** |
-| Lire un chapitre | 2 | `tests/api/navigation-api.test.ts`<br>`tests/design/app-shells.test.ts`<br>`tests/design/bible-book-names.test.ts`<br>+23 | présentes | **actif** |
-| Mémoriser un verset | 4 | `tests/api/navigation-api.test.ts`<br>`tests/design/app-shells.test.ts`<br>`tests/e2e/memorization-flow.test.ts`<br>+10 | présentes | **actif** |
-| Réviser (FSRS) | 5 | `tests/api/navigation-api.test.ts`<br>`tests/design/mock-mode-contract.test.ts`<br>`tests/design/preview-lab.test.tsx`<br>+7 | présentes | **actif** |
-| Comparer les traductions | 2 | `tests/api/navigation-api.test.ts`<br>`tests/api/theme-api.test.ts`<br>`tests/design/batch-navigation.test.ts`<br>+14 | présentes | **actif** |
-| Mémoire sémantique | 12 | `tests/semantic/align.test.ts`<br>`tests/semantic/communities.test.ts`<br>`tests/semantic/import.test.ts`<br>+6 | présentes | **actif** |
+| Démarrage et onboarding | 1 | `tests/api/navigation-api.test.ts`<br>`tests/design/onboarding-journey.test.tsx`<br>`tests/design/onboarding-progress.test.ts`<br>+3 | — | **actif** |
+| Authentification | 3 | `tests/api/navigation-api.test.ts`<br>`tests/design/onboarding-journey.test.tsx`<br>`tests/e2e/auth-flow.test.ts` | — | **actif** |
+| Accueil et navigation | 1 | `tests/api/navigation-api.test.ts`<br>`tests/design/batch-navigation.test.ts`<br>`tests/design/keyboard-navigation.test.tsx`<br>+8 | — | **actif** |
+| Explorer la Bible | 5 | `tests/api/navigation-api.test.ts`<br>`tests/design/batch-navigation.test.ts`<br>`tests/design/bible-book-names.test.ts`<br>+30 | présentes | **actif** |
+| Lire un chapitre | 2 | `tests/api/navigation-api.test.ts`<br>`tests/design/app-shells.test.ts`<br>`tests/design/bible-book-names.test.ts`<br>+26 | présentes | **actif** |
+| Mémoriser un verset | 5 | `tests/api/navigation-api.test.ts`<br>`tests/design/app-shells.test.ts`<br>`tests/design/memorization-modes.test.ts`<br>+10 | présentes | **actif** |
+| Réviser (FSRS) | 5 | `tests/api/navigation-api.test.ts`<br>`tests/design/mock-mode-contract.test.ts`<br>`tests/design/preview-lab.test.tsx`<br>+8 | présentes | **actif** |
+| Comparer les traductions | 2 | `tests/api/navigation-api.test.ts`<br>`tests/api/theme-api.test.ts`<br>`tests/design/batch-navigation.test.ts`<br>+16 | présentes | **actif** |
+| Mémoire sémantique | 12 | `tests/design/route-skeletons.test.tsx`<br>`tests/semantic/align.test.ts`<br>`tests/semantic/communities.test.ts`<br>+7 | présentes | **actif** |
 | Collections et succès | 2 | `tests/api/navigation-api.test.ts`<br>`tests/design/settings-premium.test.ts`<br>`tests/e2e/collections-achievements-flow.test.ts` | — | **actif** |
-| Maîtrise et analytique | 2 | `tests/api/navigation-api.test.ts`<br>`tests/api/progress-service-api.test.ts`<br>`tests/design/demo-progress.test.ts`<br>+7 | — | **actif** |
+| Maîtrise et analytique | 2 | `tests/api/navigation-api.test.ts`<br>`tests/api/progress-service-api.test.ts`<br>`tests/design/analytics-honesty.test.ts`<br>+9 | — | **actif** |
 | Recherche | 1 | `tests/api/navigation-api.test.ts`<br>`tests/e2e/search-flow.test.ts` | présentes | **actif** |
-| Famille et partage | 21 | `tests/design/app-shells.test.ts`<br>`tests/design/demo-family.test.ts`<br>`tests/design/family-demo.test.tsx`<br>+8 | — | **actif** |
-| Profil | 3 | `tests/api/navigation-api.test.ts`<br>`tests/design/settings-premium.test.ts`<br>`tests/e2e/profile-flow.test.ts`<br>+4 | — | **actif** |
-| Réglages | 12 | `tests/api/navigation-api.test.ts`<br>`tests/design/app-shells.test.ts`<br>`tests/design/lot-journeys-and-polish.test.ts`<br>+3 | — | **actif** |
+| Famille et partage | 21 | `tests/design/app-shells.test.ts`<br>`tests/design/demo-family.test.ts`<br>`tests/design/demo-isolation.test.ts`<br>+12 | — | **actif** |
+| Profil | 3 | `tests/api/navigation-api.test.ts`<br>`tests/design/route-skeletons.test.tsx`<br>`tests/design/settings-premium.test.ts`<br>+5 | — | **actif** |
+| Réglages | 12 | `tests/api/navigation-api.test.ts`<br>`tests/design/app-shells.test.ts`<br>`tests/design/lot-journeys-and-polish.test.ts`<br>+4 | — | **actif** |
 | Notifications | 1 | `tests/api/navigation-api.test.ts`<br>`tests/e2e/notifications-flow.test.ts` | — | **actif** |
 
 ## Ce que chaque état veut dire

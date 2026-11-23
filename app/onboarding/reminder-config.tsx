@@ -87,12 +87,12 @@ export default function OnboardingReminderConfig() {
             className="flex-1"
             onClick={() => navigate('/onboarding/session-config')}
           >
-            <DuoIcon icon={ArrowLeft} size={16} />
+            <DuoIcon icon={ArrowLeft} size={16}  className="directional" />
             {t('common.back', 'Retour')}
           </Button>
           <Button type="button" className="flex-1" disabled={saving} onClick={() => void finish()}>
             {saving ? t('common.saving', 'Enregistrement…') : t('common.continue', 'Continuer')}
-            <DuoIcon icon={ArrowRight} size={16} />
+            <DuoIcon icon={ArrowRight} size={16}  className="directional" />
           </Button>
           </div>
         </div>
@@ -104,7 +104,7 @@ export default function OnboardingReminderConfig() {
           aria-pressed={reminderEnabled}
           onClick={toggleReminders}
           className={cn(
-            'flex items-center gap-4 rounded-2xl border-2 p-4 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
+            'flex items-center gap-4 rounded-2xl border-2 p-4 text-start transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
             reminderEnabled
               ? 'border-primary bg-surface-tint'
               : 'border-transparent bg-surface shadow-sm',
@@ -119,9 +119,9 @@ export default function OnboardingReminderConfig() {
             )}
           >
             {reminderEnabled ? (
-              <DuoIcon icon={BellRing} size={22} />
+              <DuoIcon icon={BellRing} size={24} />
             ) : (
-              <DuoIcon icon={Bell} size={22} />
+              <DuoIcon icon={Bell} size={24} />
             )}
           </div>
           <div className="flex-1">
@@ -139,14 +139,14 @@ export default function OnboardingReminderConfig() {
             )}
           >
             {reminderEnabled && (
-              <DuoIcon icon={Check} size={14} className="text-on-status" />
+              <DuoIcon icon={Check} size={16} className="text-on-status" />
             )}
           </div>
         </button>
 
         <div className={cn(!reminderEnabled && 'opacity-40')}>
           <div className="mb-3 flex items-center gap-2">
-            <DuoIcon icon={Bell} size={18} className="text-primary" />
+            <DuoIcon icon={Bell} size={20} className="text-primary" />
             <span className="text-base font-semibold text-text-primary">
               {t('onboarding.reminderFrequency', 'Fréquence par jour')}
             </span>
@@ -173,7 +173,7 @@ export default function OnboardingReminderConfig() {
                   )}
                 >
                   {f}
-                  {selected && <DuoIcon icon={Check} className="ml-1" size={16} />}
+                  {selected && <DuoIcon icon={Check} className="ms-1" size={16} />}
                 </button>
               );
             })}
@@ -182,7 +182,7 @@ export default function OnboardingReminderConfig() {
 
         <div className={cn('flex items-center gap-4', !reminderEnabled && 'opacity-40')}>
           <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-surface-tint">
-            <DuoIcon icon={Clock} size={22} className="text-primary" />
+            <DuoIcon icon={Clock} size={24} className="text-primary" />
           </div>
           <div className="flex-1">
             <label
@@ -193,6 +193,7 @@ export default function OnboardingReminderConfig() {
             </label>
             <input
               id="onboarding-reminder-time"
+              aria-label={t('onboarding.reminderTime', 'Heure du premier rappel')}
               type="time"
               value={reminderTime}
               disabled={!reminderEnabled}

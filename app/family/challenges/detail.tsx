@@ -78,7 +78,7 @@ export default function FamilyChallengeDetailScreen() {
             </p>
             {challenge.status === 'done' && (
               <span className="flex items-center gap-1 rounded-full bg-success-light px-2 py-1 text-2xs font-bold text-success">
-                <DuoIcon icon={CheckCircle} size={12} />
+                <DuoIcon icon={CheckCircle} size={16} />
                 {t('familyPlus.challengeDone', 'Réussi')}
               </span>
             )}

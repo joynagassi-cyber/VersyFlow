@@ -8,9 +8,9 @@
  * chacun, aucun champ manquant.
  */
 import { describe, it, expect } from 'vitest';
-import { readFileSync } from 'node:fs';
+import { readdirSync, readFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
-import { resolve } from 'node:path';
+import { join, resolve } from 'node:path';
 import { deflateSync } from 'node:zlib';
 // @ts-expect-error — script ESM sans types : seule la fonction testée est importée.
 import { pngMeanColor } from '../../scripts/theme-provenance.mjs';
@@ -129,15 +129,28 @@ describe('L6 — manifeste de provenance', () => {
     expect(ignored.trim()).toBe('');
   });
 
-  it('déclare ce qui manque et ce qui est orphelin, sans rien supprimer', () => {
+  it('déclare ce qui manque et ce qui est orphelin', () => {
     // Un seul thème du catalogue n'a jamais eu de visuel : « Miroir ».
     expect(manifest.missingThemes).toEqual(['objets/obj-miroir']);
-    // Deux fichiers au nom accentué (« obj-clé ») ne correspondent à aucun
-    // thème : ils sont signalés, pas effacés.
-    expect(manifest.strays).toEqual([
-      'objets/obj-clé-landscape.webp',
-      'objets/obj-clé-portrait.webp',
-    ]);
+    // Les trois fichiers au nom accentué (`obj-clé-*`, identifiant jamais
+    // présent dans le catalogue) ont été retirés : ils n'étaient servis par
+    // aucune URL. Le manifeste doit rester vide, sinon une nouvelle orpheline
+    // passerait pour un état normal.
+    expect(manifest.strays).toEqual([]);
+  });
+
+  it('aucun fichier de thème ne porte d’accent dans son nom', () => {
+    // Une URL `/themes/objets/obj-clé-portrait.webp` est valide en HTTP mais
+    // fragile (encodage, normalisation NFC/NFD, copie Windows/macOS) : les
+    // identifiants de thème sont ASCII, les fichiers doivent l'être aussi.
+    const accented: string[] = [];
+    for (const category of readdirSync(join(root, 'public/themes'))) {
+      const dir = join(root, 'public/themes', category);
+      for (const file of readdirSync(dir)) {
+        if (/[^\x20-\x7E]/.test(file)) accented.push(`${category}/${file}`);
+      }
+    }
+    expect(accented).toEqual([]);
   });
 
   it('ne prétend pas avoir mesuré ce qui est absent du poste', () => {

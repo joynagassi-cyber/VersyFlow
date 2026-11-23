@@ -79,7 +79,17 @@ describe('BibleTranslationRegistry', () => {
   it('marks availability from the manifest', () => {
     const registry = new BibleTranslationRegistry(DEFAULT_BIBLE_TRANSLATIONS);
     expect(registry.isAvailable('lsg')).toBe(true);
-    expect(registry.isAvailable('kujv')).toBe(true);
+    // KJV (Cambridge Paragraph) a une licence vérifiée mais aucun dataset
+    // livré : `available` décrit le contenu du build, pas la licence.
+    expect(registry.isAvailable('kujv')).toBe(false);
+    expect(registry.isAvailable('ostervald')).toBe(false);
+    expect(registry.isAvailable('darby')).toBe(false);
+  });
+
+  it('n’a qu’une traduction disponible, et c’est celle du défaut', () => {
+    const registry = new BibleTranslationRegistry(DEFAULT_BIBLE_TRANSLATIONS);
+    const available = registry.listTranslations().filter((t) => t.available).map((t) => t.id);
+    expect(available).toEqual([registry.defaultTranslation()]);
   });
 
   it('exposes the default translation', () => {

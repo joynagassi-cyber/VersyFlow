@@ -1,1 +1,0 @@
-alter table public.verse_relations enable row level security;

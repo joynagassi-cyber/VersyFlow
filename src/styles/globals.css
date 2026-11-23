@@ -270,7 +270,7 @@ ion-content::part(background) {
   .manuscript-verse:focus-visible {
     outline: 2px solid var(--acc-text, var(--color-primary));
     outline-offset: 3px;
-    border-radius: 4px;
+    border-radius: calc(4px * var(--radius-scale, 1));
   }
 
   /* SÉLECTION — un soulignement fin pointillé, et rien d'autre. C'est le seul
@@ -320,7 +320,7 @@ ion-content::part(background) {
     vertical-align: super;
     margin: 0 0.34em 0 0.1em;
     padding: 0 2px;
-    border-radius: 5px;
+    border-radius: calc(4px * var(--radius-scale, 1));
     transition: background-color 140ms ease;
   }
 
@@ -365,17 +365,17 @@ ion-content::part(background) {
     border: 1px solid var(--border, var(--color-border));
     padding: 20px;
     overflow: hidden;
-    box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.04);
+    box-shadow: var(--shadow-card);
   }
   .mem-case {
     display: inline-flex; align-items: center; gap: 6px;
-    padding: 6px 12px; border-radius: 10px;
+    padding: 6px 12px; border-radius: calc(12px * var(--radius-scale, 1));
     background: var(--muted, var(--color-surface-tint));
     font-size: 12px; font-weight: 700; letter-spacing: 0.02em;
     color: var(--color-primary); margin-bottom: 14px;
   }
   .mem-label {
-    display: block; font-size: 10px; font-weight: 800;
+    display: block; font-size: 12px; font-weight: 800;
     letter-spacing: 0.14em; text-transform: uppercase;
     color: var(--color-text-muted); margin-bottom: 8px;
   }
@@ -405,7 +405,7 @@ ion-content::part(background) {
 
   /* Révélation par blocs */
   .mem-block {
-    position: relative; padding: 14px 16px; border-radius: 14px;
+    position: relative; padding: 14px 16px; border-radius: calc(16px * var(--radius-scale, 1));
     font-family: var(--reading-font-family, Georgia, serif);
     font-size: calc(var(--reading-font-size, 19px) * 0.95);
     line-height: var(--reading-line-height, 1.75); text-align: justify;
@@ -423,20 +423,21 @@ ion-content::part(background) {
   }
   .mem-block.current {
     background: var(--muted, var(--color-surface-tint)); color: transparent;
-    cursor: pointer; user-select: none; animation: mem-pulse 2.4s ease-in-out infinite;
+    cursor: pointer; user-select: none;
+    /* Le contour du bloc courant est posé une fois, puis reste : une boucle
+       infinie attirait l'œil en permanence sur une zone qu'on ne peut pas
+       encore lire (playbook I04). */
+    box-shadow: inset 0 0 0 2px var(--color-primary);
+    transition: box-shadow 200ms var(--ease-standard);
   }
   .mem-block.current .mem-hint {
     display: inline-flex; align-items: center; gap: 6px;
-    color: var(--color-text-muted); font-size: 10px; font-weight: 800;
+    color: var(--color-text-muted); font-size: 12px; font-weight: 800;
     text-transform: uppercase; letter-spacing: 0.08em; margin-top: 6px;
   }
   .mem-block.locked {
     background: transparent; color: transparent;
     border: 1px dashed var(--color-border); opacity: 0.55;
-  }
-  @keyframes mem-pulse {
-    0%, 100% { box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-primary) 30%, transparent); }
-    50% { box-shadow: inset 0 0 0 1px var(--color-primary), 0 0 0 5px color-mix(in srgb, var(--color-primary) 10%, transparent); }
   }
 
   /* Célébration de réussite (fonctionnel) */
@@ -468,7 +469,7 @@ ion-content::part(background) {
   }
   .mem-confetti { position: absolute; inset: 0; overflow: hidden; pointer-events: none; border-radius: inherit; }
   .mem-confetti span {
-    position: absolute; top: 8%; width: 6px; height: 10px; border-radius: 2px;
+    position: absolute; top: 8%; width: 6px; height: 10px; border-radius: calc(4px * var(--radius-scale, 1));
     animation: mem-confetti-fall 1200ms ease-in both;
   }
 
@@ -478,7 +479,18 @@ ion-content::part(background) {
     background: var(--card, var(--color-surface));
     border: 1px solid var(--border, var(--color-border));
     min-height: 300px; perspective: 1400px; overflow: hidden;
-    box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.04);
+    box-shadow: var(--shadow-card);
+    /* Le retournement est un geste : un glissement ne doit pas surligner le
+       verset au passage (le second geste du même écran le masque). */
+    user-select: none; -webkit-user-select: none;
+  }
+  /* Recto : la référence est l'information, pas une étiquette. Serif du
+     preset, plus grande que le texte de corps, jamais en capitales. */
+  .mem-flashcard-reference {
+    font-family: var(--reading-font-family, Georgia), serif;
+    font-size: clamp(24px, 6vw, 34px); line-height: 1.15;
+    font-weight: 500; text-align: center; color: var(--color-text-primary);
+    max-width: 92%;
   }
   .mem-flashcard-inner {
     position: relative; min-height: inherit;
@@ -500,14 +512,14 @@ ion-content::part(background) {
   }
   .mem-flashcard-face .hint { font-size: 12px; color: var(--color-text-muted); font-weight: 500; }
   .mem-flashcard-corner {
-    position: absolute; top: 14px; left: 16px; padding: 5px 11px; border-radius: 8px;
+    position: absolute; top: 14px; left: 16px; padding: 5px 11px; border-radius: calc(8px * var(--radius-scale, 1));
     background: var(--muted, var(--color-surface-tint));
-    font-size: 11px; font-weight: 700; color: var(--color-primary);
+    font-size: 12px; font-weight: 700; color: var(--color-primary);
   }
   .mem-flashcard-counter {
-    position: absolute; top: 14px; right: 52px; padding: 4px 9px; border-radius: 8px;
+    position: absolute; top: 14px; right: 52px; padding: 4px 9px; border-radius: calc(8px * var(--radius-scale, 1));
     background: var(--muted, var(--color-surface-tint));
-    font-size: 10px; font-weight: 800; color: var(--color-text-muted);
+    font-size: 12px; font-weight: 800; color: var(--color-text-muted);
   }
   .mem-flashcard-zoom {
     position: absolute; bottom: 14px; right: 14px; width: 36px; height: 36px;
@@ -520,11 +532,11 @@ ion-content::part(background) {
   .mem-diff-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   @media (max-width: 380px) { .mem-diff-grid { grid-template-columns: 1fr; } }
   .mem-diff-col {
-    padding: 12px 14px; border-radius: 12px;
+    padding: 12px 14px; border-radius: calc(12px * var(--radius-scale, 1));
     background: var(--muted, var(--color-surface-tint));
   }
   .mem-diff-col .col-label {
-    display: block; font-size: 10px; font-weight: 800; letter-spacing: 0.08em;
+    display: block; font-size: 12px; font-weight: 800; letter-spacing: 0.08em;
     text-transform: uppercase; color: var(--color-text-muted); margin-bottom: 6px;
   }
   .mem-diff-col.original .verse {
@@ -535,29 +547,51 @@ ion-content::part(background) {
   .mem-diff-col.written .verse { font-size: 13px; line-height: 22px; color: var(--color-text-primary); }
   .mem-diff-col.written .word-missing {
     background: color-mix(in srgb, var(--color-warning) 18%, transparent);
-    color: var(--color-warning); font-weight: 700; padding: 1px 3px; border-radius: 4px;
+    color: var(--color-warning); font-weight: 700; padding: 1px 3px; border-radius: calc(4px * var(--radius-scale, 1));
   }
   .mem-diff-col.written .word-wrong {
     background: color-mix(in srgb, var(--color-error) 14%, transparent);
     color: var(--color-error); font-weight: 700;
     text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 3px;
-    padding: 1px 3px; border-radius: 4px;
+    padding: 1px 3px; border-radius: calc(4px * var(--radius-scale, 1));
   }
   .mem-diff-col.written .word-extra { color: var(--color-text-muted); text-decoration: line-through; padding: 1px 3px; }
+
+  /* Case « référence de mémoire » — sous le champ d'écriture. */
+  .mem-reference-box {
+    margin-top: 12px; padding-top: 12px;
+    border-top: 1px dashed var(--color-border);
+  }
+  .mem-reference-input {
+    display: block; width: 100%; margin-top: 6px; padding: 10px 14px;
+    font-size: 14px; font-weight: 700; letter-spacing: 0.01em;
+    color: var(--color-text-primary);
+    background: var(--muted, var(--color-surface-tint));
+    border: 1px solid transparent; border-radius: calc(12px * var(--radius-scale, 1)); outline: none;
+  }
+  .mem-reference-input::placeholder { color: var(--color-text-muted); font-weight: 500; letter-spacing: 0; }
+  .mem-reference-input:focus { border-color: var(--color-primary); }
+  .mem-reference-input.is-correct { border-color: var(--color-success); color: var(--color-success); background: color-mix(in srgb, var(--color-success) 10%, transparent); }
+  .mem-reference-input.is-wrong { border-color: var(--color-error); color: var(--color-error); background: color-mix(in srgb, var(--color-error) 8%, transparent); }
 
   /* Masquage — mots cliquables */
   .mem-mask-flow {
     font-family: var(--reading-font-family, Georgia, serif);
     font-size: calc(var(--reading-font-size, 19px) * 0.95);
     line-height: var(--reading-line-height, 1.75); text-align: justify;
-    padding: 16px; border-radius: 14px;
+    padding: 16px; border-radius: calc(16px * var(--radius-scale, 1));
     background: var(--muted, var(--color-surface-tint));
     display: flex; flex-wrap: wrap; gap: 4px 2px;
   }
   .mem-mask-word {
-    display: inline; padding: 2px 4px; border-radius: 6px; cursor: pointer;
+    display: inline; padding: 2px 4px; border-radius: calc(8px * var(--radius-scale, 1));
     user-select: none; transition: background 120ms ease, color 120ms ease;
   }
+  /* Un mot n'est cliquable que là où le toucher masque réellement quelque
+     chose : en mode progressif, le geste ne fait rien, il ne doit donc pas
+     s'annoncer comme une commande. */
+  .mem-mask-word.is-tappable { cursor: pointer; }
+  .mem-mask-word.is-tappable:hover { background: color-mix(in srgb, var(--color-primary) 8%, transparent); }
   .mem-mask-word.is-masked {
     background: color-mix(in srgb, var(--color-primary) 10%, transparent);
     color: var(--color-primary);
@@ -566,6 +600,29 @@ ion-content::part(background) {
   }
   .mem-mask-word.is-correct { background: color-mix(in srgb, var(--color-success) 14%, transparent); color: var(--color-success); }
   .mem-mask-word.is-missing { background: color-mix(in srgb, var(--color-warning) 22%, transparent); color: var(--color-warning); font-weight: 700; }
+  /* La case du mot masqué : un champ, pas un soulignement. Le texte du verset
+     n'est jamais visible dessous — c'est tout l'exercice. La largeur suit
+     `ch` du mot attendu : le squelette du texte reste stable au remplissage. */
+  .mem-mask-input {
+    display: inline-block; min-width: 3ch; padding: 2px 6px; margin: 0 2px;
+    font: inherit; text-align: center; color: var(--color-primary);
+    background: color-mix(in srgb, var(--color-primary) 8%, transparent);
+    border: none; border-bottom: 2px solid var(--color-primary);
+    border-radius: calc(8px * var(--radius-scale, 1)) calc(8px * var(--radius-scale, 1)) calc(4px * var(--radius-scale, 1)) calc(4px * var(--radius-scale, 1)); outline: none;
+    transition: background 120ms ease, border-color 120ms ease;
+  }
+  .mem-mask-input::placeholder { color: var(--color-text-muted); }
+  .mem-mask-input:focus { border-bottom-color: var(--color-primary); background: color-mix(in srgb, var(--color-primary) 14%, transparent); }
+  .mem-mask-input.is-correct { color: var(--color-success); border-bottom-color: var(--color-success); background: color-mix(in srgb, var(--color-success) 12%, transparent); }
+  .mem-mask-input.is-wrong { color: var(--color-error); border-bottom-color: var(--color-error); background: color-mix(in srgb, var(--color-error) 10%, transparent); }
+  /* Deux boutons de niveau : cible de 32 px, jamais un picto de 14 px seul. */
+  .mem-level-btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 32px; height: 32px; border-radius: 999px; border: 1px solid var(--border, var(--color-border));
+    background: var(--card, var(--color-surface)); color: var(--color-text-primary);
+    cursor: pointer; transition: opacity 120ms ease;
+  }
+  .mem-level-btn:disabled { opacity: 0.35; cursor: not-allowed; }
 
   /* Sélecteur de mode — barre pill flottante */
   .mem-switcher {
@@ -579,7 +636,7 @@ ion-content::part(background) {
     background: var(--card, var(--color-surface));
     border: 1px solid var(--border, var(--color-border));
     border-radius: 999px; padding: 5px;
-    box-shadow: 0 8px 24px -8px rgba(0, 0, 0, 0.18);
+    box-shadow: var(--shadow-float);
   }
   .mem-switcher-pill button {
     display: inline-flex; align-items: center; gap: 6px;
@@ -594,8 +651,8 @@ ion-content::part(background) {
     outline: 2px solid var(--color-warning); outline-offset: 1px;
   }
   .mem-switcher-pill button .badge {
-    background: var(--color-warning); color: #fff; font-size: 8px; font-weight: 800;
-    padding: 1px 5px; border-radius: 4px; letter-spacing: 0.04em;
+    background: var(--color-warning); color: #fff; font-size: 12px; font-weight: 800;
+    padding: 1px 5px; border-radius: calc(4px * var(--radius-scale, 1)); letter-spacing: 0.04em;
   }
 
 
@@ -645,7 +702,7 @@ ion-page,
 }
 *::-webkit-scrollbar-thumb {
   background: color-mix(in srgb, var(--color-text-muted) 30%, transparent);
-  border-radius: 3px;
+  border-radius: calc(4px * var(--radius-scale, 1));
 }
 *::-webkit-scrollbar-thumb:hover {
   background: color-mix(in srgb, var(--color-text-muted) 50%, transparent);
@@ -842,7 +899,11 @@ body {
   --rail-collapsed: 72px;
   --rail: 0px;
   --shell-header: 56px;
-  --reading-width: 720px;
+  /* Mesure de lecture : 68 CARACTÈRES, plafonnée à 720 px. Un plafond en
+     pixels dépend de la police et de la taille du texte choisi — 720 px font
+     51 caractères en corps 20, 93 en corps 12. `ch` suit la police réellement
+     rendue, donc la longueur de ligne reste dans la plage lisible (45–80). */
+  --reading-width: min(720px, 68ch);
   --reading-wide: 1060px;
 }
 
@@ -1015,7 +1076,7 @@ html[data-bg='image'] .modal-sheet-panel {
   .modal-sheet-panel {
     width: min(680px, 100%);
     max-height: 80vh;
-    border-radius: 24px;
+    border-radius: calc(24px * var(--radius-scale, 1));
   }
   .modal-sheet-handle {
     display: none;
@@ -1169,12 +1230,12 @@ html[data-bg='image'] .glass {
 html[data-bg='image'][data-transparency='reduced'] .glass,
 html[data-bg='image'][data-contrast='high'] .glass { background: var(--color-surface); -webkit-backdrop-filter: none; backdrop-filter: none; }
 @media (min-width: 700px) {
-  .desktop-rail { top: 16px; bottom: 16px; inset-inline-start: 16px; border-radius: 24px; }
+  .desktop-rail { top: 16px; bottom: 16px; inset-inline-start: 16px; border-radius: calc(24px * var(--radius-scale, 1)); }
   .app-main { margin-inline-start: calc(var(--rail) + 32px); }
 }
 .mobile-header { padding-top: env(safe-area-inset-top, 0px); }
 .mobile-content { padding-bottom: calc(112px + env(safe-area-inset-bottom, 0px)); }
-.mobile-tabs { position: fixed; z-index: 30; left: 14px; right: 14px; bottom: 14px; border-radius: 26px; }
+.mobile-tabs { position: fixed; z-index: 30; left: 14px; right: 14px; bottom: 14px; border-radius: calc(28px * var(--radius-scale, 1)); }
 
 html[data-bg='image'] :is(.card-glass, .surface-glass, .bible-card) {
   background: rgba(var(--glass-rgb), max(var(--glass-alpha), var(--glass-alpha-min)));
@@ -1333,14 +1394,14 @@ html[data-bg='image']::after {
 
 html[data-bg='image'] { --color-text-primary: var(--tx); --color-text-secondary: var(--mut); --color-text-muted: var(--mut); }
 .g1,.g2,.g3 { color: var(--tx); background: var(--gc); border: 1px solid var(--bd); box-shadow: inset 0 1px 0 var(--hi), 0 10px 34px var(--sh); }
-.g1 { border-radius: 24px; }
+.g1 { border-radius: calc(24px * var(--radius-scale, 1)); }
 /* En-tête d'onglet — un seul matériau, un seul padding pour les quatre. */
 .home-greeting { position: relative; }
 .tab-heading { padding: 24px; }
 
 
-.g2 { border-radius: 24px; }
-.g3 { border-radius: 28px; }
+.g2 { border-radius: calc(24px * var(--radius-scale, 1)); }
+.g3 { border-radius: calc(28px * var(--radius-scale, 1)); }
 html[data-bg='image'] :is(.g1,.g2,.g3) { -webkit-backdrop-filter: blur(var(--gb)) saturate(1.6); backdrop-filter: blur(var(--gb)) saturate(1.6); }
 /* Sur une photo, toutes les surfaces de carte (g1/g2/g3) respectent le même
    plancher mesuré que le verre : sans lui, les libellés des cartes et de la
@@ -1434,11 +1495,20 @@ html[data-bg='image']:is([data-transparency='reduced'],[data-contrast='high']) .
       premier restait comme une intention morte. Les composants ne peignent
       donc plus leurs couleurs en utilitaires Tailwind : une seule source.
 
-   A — l'icône. Encre franche + masse d'accent à 24 % : la couleur est là dès
-   le repos, donc elle ne « prend » plus le contrôle au survol. */
-.solar.solar-accent {
-  --solar-secondary-color: var(--acc);
-  --solar-secondary-opacity: 0.24;
+   A — l'icône. Une seule couleur, franche, sans second calque.
+
+   Les icônes étaient en line-duotone : un trait de 1,75 px dont un second
+   calque teinté ne couvrait que 0,42 px à 16 px. Mesuré, pas ressenti — la
+   couleur était donc invisible aux petites tailles, ce qui a motivé le
+   passage à des icônes monochromes. `DuoIcon` pose désormais `icon-ink` ;
+   `solar-accent` est conservé en alias pour les règles de navigation déjà
+   écrites plus bas, qui pilotent l'état actif. */
+.solar.solar-accent,
+.solar.icon-ink {
+  /* Neutralisé : plus de second calque à teinter. La valeur reste posée pour
+     que les sélecteurs existants (`--solar-secondary-opacity` dans les barres)
+     ne peignent rien d'inattendu, même si les icônes n'ont qu'un calque. */
+  --solar-secondary-opacity: 0;
   color: color-mix(in srgb, var(--tx) 82%, var(--mut));
 }
 /* L'encre reste plus sombre que `--mut` : aucune régression de contraste sur
@@ -1467,19 +1537,24 @@ html[data-bg='image']:is([data-transparency='reduced'],[data-contrast='high']) .
   background-color: color-mix(in srgb, var(--acc) 13%, transparent);
   box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--acc) 34%, transparent);
 }
-.nav-item[aria-current='page'] .solar.solar-accent {
-  --solar-secondary-opacity: 0.36;
+/* L'actif du rail est une teinte CLAIRE (`--acc` à 13 %) : l'icône y reste
+   en encre d'accent, comme la règle générale. Poser `--on-accent` (l'encre
+   prévue pour un aplat d'accent) sur un fond clair la rendrait illisible. */
+.nav-item[aria-current='page'] .solar.icon-ink {
+  color: var(--acc-text);
 }
 
-/* C — l'onglet mobile actif. Ici la teinte seule est un signal trop faible
-   sur quatre icônes de 23 px : le duotone devient donc la récompense de
-   l'état — creux au repos (10 %), plein à l'actif (48 %). La densité se lit
-   même sans percevoir la couleur. */
+/* C — l'onglet mobile actif.
+   La pastille est le signal de l'état actif, et LUI SEUL : au repos les icônes
+   n'ont aucune pastille, au survol elles n'en ont pas non plus — sinon
+   « survoler » et « être ici » se ressembleraient, et la pastille perdrait sa
+   valeur d'information. Elle reste posée tant que l'élément est actif (l'état
+   est porté par `aria-current`, donc il survit au re-rendu et au focus
+   perdu). */
 .tab-item {
   color: var(--mut);
   transition: color 180ms ease;
 }
-.tab-item .solar.solar-accent { --solar-secondary-opacity: 0.10; }
 .tab-pill {
   display: grid;
   place-items: center;
@@ -1487,17 +1562,23 @@ html[data-bg='image']:is([data-transparency='reduced'],[data-contrast='high']) .
   height: 32px;
   border-radius: 999px;
   background-color: transparent;
-  transition: background-color 180ms ease;
+  transition:
+    background-color 180ms ease,
+    box-shadow 180ms ease,
+    color 180ms ease;
 }
 .tab-item:hover,
 .tab-item:focus-visible { color: color-mix(in srgb, var(--tx) 80%, var(--mut)); }
-.tab-item:hover .tab-pill,
-.tab-item:focus-visible .tab-pill { background-color: color-mix(in srgb, var(--acc) 5%, transparent); }
-.tab-item:hover .solar.solar-accent,
-.tab-item:focus-visible .solar.solar-accent { --solar-secondary-opacity: 0.20; }
 .tab-item[aria-current='page'] { color: var(--acc-text); }
-.tab-item[aria-current='page'] .tab-pill { background-color: color-mix(in srgb, var(--acc) 12%, transparent); }
-.tab-item[aria-current='page'] .solar.solar-accent { --solar-secondary-opacity: 0.48; }
+/* Pastille PLEINE d'accent, icône posée dessus en `--on-accent` : c'est le
+   couple de contraste que le thème a déjà calculé, donc aucun preset ne rend
+   l'icône illisible (le piège classique : accent clair + encre blanche). */
+.tab-item[aria-current='page'] .tab-pill {
+  background-color: var(--acc);
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--acc) 32%, transparent);
+  color: var(--on-accent);
+}
+.tab-item[aria-current='page'] .solar.icon-ink { color: var(--on-accent); }
 .tab-item .tab-label { transition: color 180ms ease; }
 .tab-item[aria-current='page'] .tab-label { color: var(--acc-text); }
 
@@ -1520,17 +1601,49 @@ html[data-bg='image']:is([data-transparency='reduced'],[data-contrast='high']) .
 .home-muted { color: var(--mut); font-size: 14px; }
 .home-greeting .home-muted { margin-top: 8px; display: flex; align-items: center; gap: 6px; }
 .home-profile { position: absolute; top: 24px; right: 24px; padding: 8px; border-radius: 50%; background: transparent; }
-.home-feature-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; }
-.home-verse,.home-streak { padding: 28px; }
-.home-verse h2 { color: var(--acc-text); font: 500 21px/1.3 var(--font-serif, Georgia), serif; margin: 16px 0 8px; }
-.home-verse-text { max-width: 70ch; font: 400 clamp(28px,2.8vw,34px)/1.38 var(--font-serif, Georgia), serif; }
+.home-feature-grid { display: grid; grid-template-columns: 1fr; gap: 0; }
+
+/* LE VERSET EST LE SUJET. Il occupait deux tiers d'une grille, à côté d'un
+   cadran de série : la page présentait deux contenus concurrents. Il prend
+   maintenant la colonne entière, à la mesure de lecture du dépôt
+   (`--reading-line-length`), et la référence perd sa couleur d'accent — le
+   sacré ne se signale pas par la teinte de marque, mais par le serif, la
+   mesure et l'espace. */
+.home-verse {
+  padding: clamp(24px, 3.4vw, 44px) clamp(22px, 3vw, 40px);
+  max-width: var(--reading-line-length, 42em);
+  margin-inline: auto;
+}
+.home-verse { border-radius: calc(28px * var(--radius-scale, 1)); }
+.home-verse h2 {
+  color: inherit;
+  font: 400 clamp(15px, 1.4vw, 16px)/1.4 var(--font-sans, Inter), sans-serif;
+  letter-spacing: 0.06em;
+  font-variant-caps: all-small-caps;
+  margin: 18px 0 10px;
+  opacity: 0.72;
+}
+.home-verse-text {
+  max-width: var(--reading-line-length, 42em);
+  font: 400 clamp(23px, 2.1vw, 29px)/1.52 var(--font-serif, Georgia), serif;
+  text-wrap: pretty;
+  hanging-punctuation: first;
+}
 .home-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 24px; }
-.home-primary,.home-secondary { padding: 12px 18px; border-radius: 20px; font-size: 14px; font-weight: 600; }
+.home-primary,.home-secondary { padding: 12px 18px; border-radius: calc(20px * var(--radius-scale, 1)); font-size: 14px; font-weight: 600; }
 .home-primary { background: linear-gradient(110deg,var(--acc),var(--acc2)); color: var(--premium-on); }
 .home-secondary { background: color-mix(in srgb,var(--tx) 8%,transparent); color: var(--tx); }
-.home-streak { display: flex; flex-direction: column; gap: 16px; align-items: flex-start; }
-.home-streak .section-label { display: flex; align-items: center; gap: 8px; }
-.home-ring { display: grid; place-items: center; width: 104px; height: 104px; border: 6px solid var(--acc); border-radius: 50%; }
+/* La série : une ligne, pas un cadran. Elle vit sous le verset, en retrait —
+   présente pour qui la cherche, invisible pour qui vient lire. */
+.home-streak-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 4px auto 0;
+  max-width: var(--reading-line-length, 42em);
+  font-size: 13px;
+  color: var(--mut);
+}
 .home-ring strong,.home-stat strong { font: 400 42px/1 var(--font-serif, Georgia), serif; font-variant-numeric: tabular-nums; color: var(--acc-text); }
 .home-stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; }
 .home-stat { padding: 24px; display: flex; flex-direction: column; gap: 12px; }
@@ -1545,31 +1658,31 @@ html[data-bg='image']:is([data-transparency='reduced'],[data-contrast='high']) .
 .home-recent { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 16px; }
 .home-recent-card,.home-empty { text-align: left; padding: 24px; }
 .home-recent-card span { margin-top: 8px; font-size: 14px; color: var(--mut); }
-.home-mastery { height: 4px; background: var(--bd); border-radius: 8px; overflow: hidden; }
+.home-mastery { height: 4px; background: var(--bd); border-radius: calc(8px * var(--radius-scale, 1)); overflow: hidden; }
 .home-mastery i { display: block; height: 100%; background: linear-gradient(90deg,var(--acc),var(--acc2)); }
 @media (max-width: 699px) { .home-feature-grid { grid-template-columns: 1fr; } .home-quick-grid,.home-recent { grid-template-columns: repeat(2,minmax(0,1fr)); } .home-stats { gap: 8px; } .home-stat { padding: 16px; } .home-stat strong { font-size: 32px; } }
 @media (min-width: 700px) and (max-width: 1099px) { .home-quick-grid { grid-template-columns: repeat(2,minmax(0,1fr)); } }
 @media (prefers-reduced-motion: reduce) { .home-action-card { transition: none; } .home-action-card:hover { transform: none; } }
 
 /* Le panneau rapide réutilise les mêmes contrôles et le même store que Réglages. */
-.appearance-trigger { display: flex; align-items: center; gap: 6px; padding: 8px; border-radius: 20px; color: var(--mut); font-size: 12px; }
+.appearance-trigger { display: flex; align-items: center; gap: 6px; padding: 8px; border-radius: calc(20px * var(--radius-scale, 1)); color: var(--mut); font-size: 12px; }
 .background-panel { position: fixed; z-index: 90; right: 16px; top: 80px; width: min(380px,calc(100vw - 32px)); max-height: calc(100dvh - 96px); overflow: auto; padding: 24px; }
 .background-panel-heading,.background-control-heading,.background-control-ends { display: flex; justify-content: space-between; gap: 12px; }
 .background-panel-heading h2 { font: 400 24px var(--font-serif, Georgia), serif; }
 .background-controls { display: grid; gap: 16px; font: 400 14px/1.4 var(--font-sans, Inter),sans-serif; color: var(--tx); }
 .background-presets { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
-.background-presets button,.background-reset,.background-custom { border-radius: 20px; padding: 8px 12px; background: var(--gc); color: var(--tx); border: 1px solid var(--bd); }
+.background-presets button,.background-reset,.background-custom { border-radius: calc(20px * var(--radius-scale, 1)); padding: 8px 12px; background: var(--gc); color: var(--tx); border: 1px solid var(--bd); }
 .background-presets button[aria-pressed='true'] { color: var(--acc-text); outline: 2px solid var(--acc); }
 .background-control { display: grid; gap: 4px; }
 .background-control input { width: 100%; accent-color: var(--acc); }
 .background-control-ends { color: var(--mut); font-size: 12px; }
-.background-preview { border-radius: 20px; padding: 16px; background: rgba(var(--gc-rgb), calc(var(--ga) * .5 + .45)); border: 1px solid var(--bd); }
+.background-preview { border-radius: calc(20px * var(--radius-scale, 1)); padding: 16px; background: rgba(var(--gc-rgb), calc(var(--ga) * .5 + .45)); border: 1px solid var(--bd); }
 .background-preview p { font-size: 12px; color: var(--mut); }
-@media (max-width: 699px) { .background-panel { top: auto; bottom: 0; left: 0; right: 0; width: 100%; max-height: 45dvh; padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px)); border-radius: 28px 28px 0 0; } }
+@media (max-width: 699px) { .background-panel { top: auto; bottom: 0; left: 0; right: 0; width: 100%; max-height: 45dvh; padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px)); border-radius: calc(28px * var(--radius-scale, 1)) calc(28px * var(--radius-scale, 1)); } }
 
 .home-premium.screen-column { max-width: none; }
 
-.brand-tile { display: inline-grid; place-items: center; flex: none; border-radius: 12px; padding: 4px; background: linear-gradient(135deg,var(--acc),var(--acc2)); }
+.brand-tile { display: inline-grid; place-items: center; flex: none; border-radius: calc(12px * var(--radius-scale, 1)); padding: 4px; background: linear-gradient(135deg,var(--acc),var(--acc2)); }
 :is(.g1,.g2,.g3,.glass) .bg-surface-tint { background: color-mix(in srgb,var(--tx) 8%,transparent); }
 /* Encre d'une carte premium : elle suit la CARTE, pas le preset.
    Une carte `.g1/.g2/.g3` peint `--gc` et pose `color: var(--tx)` ; mais les
@@ -1594,7 +1707,7 @@ html[data-bg='image']:is([data-transparency='reduced'],[data-contrast='high']) .
 .home-ring-track { stroke: var(--bd); }
 .home-ring-progress { stroke: var(--acc); stroke-linecap: round; }
 .home-week { display: flex; gap: 6px; flex-wrap: wrap; }
-.home-week span { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; color: var(--mut); background: color-mix(in srgb,var(--tx) 8%,transparent); font-size: 11px; }
+.home-week span { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; color: var(--mut); background: color-mix(in srgb,var(--tx) 8%,transparent); font-size: 12px; }
 .home-week [data-active='true'] { color: var(--acc-text); background: color-mix(in srgb,var(--acc) 18%,transparent); }
 
 .g1,.g2,.g3 { transition: background 200ms; }
@@ -1605,7 +1718,7 @@ html[data-bg='image']:is([data-transparency='reduced'],[data-contrast='high']) .
 .explore-content { max-width: 1180px; margin: 0 auto; display: grid; gap: 24px; }
 .explore-search { position: relative; }
 .explore-search-icon { position: absolute; z-index: 1; inset-inline-start: 14px; top: 50%; transform: translateY(-50%); pointer-events: none; }
-.explore-search-input { padding-inline-start: 44px; background: var(--gc); color: var(--tx); border-color: var(--bd); border-radius: 16px; }
+.explore-search-input { padding-inline-start: 44px; background: var(--gc); color: var(--tx); border-color: var(--bd); border-radius: calc(16px * var(--radius-scale, 1)); }
 .explore-search-input::placeholder { color: var(--mut); opacity: 1; }
 .explore-semantic,.explore-book { display: flex; width: 100%; align-items: center; gap: 16px; text-align: start; }
 .explore-semantic { padding: 24px; transition: transform 200ms, background 200ms; }
@@ -1638,7 +1751,7 @@ html[data-bg='image']:is([data-transparency='reduced'],[data-contrast='high']) .
 .progress-trend-values span,.progress-mastery p,.progress-metric p,.progress-message p,.progress-streak small { color: var(--mut); font-size: 14px; }
 .progress-trend-change { display: flex; align-items: center; gap: 8px; margin-top: 20px; color: var(--mut); font-size: 14px; }
 .progress-mastery { margin-top: 24px; display: grid; gap: 10px; }
-.progress-track { height: 8px; margin-top: 20px; border-radius: 8px; background: var(--bd); overflow: hidden; }
+.progress-track { height: 8px; margin-top: 20px; border-radius: calc(8px * var(--radius-scale, 1)); background: var(--bd); overflow: hidden; }
 .progress-track span { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg,var(--acc),var(--acc2)); }
 .progress-streak { width: 100%; display: flex; align-items: center; gap: 16px; text-align: start; }
 .progress-streak > span:last-child { display: grid; gap: 6px; }
@@ -1650,8 +1763,8 @@ html[data-bg='image']:is([data-transparency='reduced'],[data-contrast='high']) .
 /* Réglages : verre doux sans surfaces floutées imbriquées. */
 .settings-premium.screen-column { max-width: none; padding: 24px 16px 144px; color: var(--tx); font-family: var(--font-sans, Inter),sans-serif; }
 .settings-content { max-width: 1180px; margin: auto; display: grid; gap: 24px; }
-.settings-tabs { display: flex; gap: 4px; max-width: 500px; padding: 4px; border-radius: 18px; background: color-mix(in srgb,var(--tx) 8%,transparent); }
-.settings-tabs button { flex: 1; padding: 10px 8px; border-radius: 14px; color: var(--mut); font-size: 14px; font-weight: 600; transition: background 200ms,color 200ms; }
+.settings-tabs { display: flex; gap: 4px; max-width: 500px; padding: 4px; border-radius: calc(20px * var(--radius-scale, 1)); background: color-mix(in srgb,var(--tx) 8%,transparent); }
+.settings-tabs button { flex: 1; padding: 10px 8px; border-radius: calc(16px * var(--radius-scale, 1)); color: var(--mut); font-size: 14px; font-weight: 600; transition: background 200ms,color 200ms; }
 .settings-tabs button[aria-pressed='true'] { background: var(--gc); color: var(--acc-text); box-shadow: inset 0 1px 0 var(--hi); }
 .settings-data-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 16px; }
 .settings-data-card { display: flex; width: 100%; align-items: center; gap: 16px; padding: 20px; text-align: start; transition: background 200ms,transform 200ms; }
@@ -1689,17 +1802,17 @@ html[data-bg='image']:is([data-transparency='reduced'],[data-contrast='high']) .
 .appearance-mode,.appearance-choice,.appearance-preset-choice,.appearance-size,.appearance-segment-button { color: var(--tx); background: color-mix(in srgb,var(--tx) 6%,transparent); border: 1px solid var(--bd); }
 .appearance-mode-icon { color: var(--mut); background: color-mix(in srgb,var(--tx) 6%,transparent); }
 .appearance-mode.is-active,.appearance-choice[aria-pressed='true'],.appearance-preset-choice[aria-pressed='true'],.appearance-size[aria-pressed='true'] { outline: 2px solid var(--acc); outline-offset: -2px; }
-.appearance-preset-choice { min-height: 56px; display: flex; align-items: center; gap: 8px; padding: 12px; border-radius: 16px; text-align: start; }
+.appearance-preset-choice { min-height: 56px; display: flex; align-items: center; gap: 8px; padding: 12px; border-radius: calc(16px * var(--radius-scale, 1)); text-align: start; }
 .appearance-preset-choice span { flex: 1; font-size: 14px; font-weight: 600; }
 .appearance-preset-choice small { color: var(--mut); font-size: 12px; }
-.appearance-segment { gap: 4px; padding: 4px; border-radius: 20px; background: color-mix(in srgb,var(--tx) 6%,transparent); }
-.appearance-segment-button { flex: 1; border-radius: 16px; padding: 10px 8px; font-size: 14px; font-weight: 600; }
+.appearance-segment { gap: 4px; padding: 4px; border-radius: calc(20px * var(--radius-scale, 1)); background: color-mix(in srgb,var(--tx) 6%,transparent); }
+.appearance-segment-button { flex: 1; border-radius: calc(16px * var(--radius-scale, 1)); padding: 10px 8px; font-size: 14px; font-weight: 600; }
 .appearance-segment-button[aria-pressed='true'] { background: linear-gradient(135deg,var(--acc),var(--acc2)); color: var(--on); }
 .appearance-gradient-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
 @media (min-width: 560px) { .appearance-gradient-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 .appearance-gradient-option { display: flex; flex-direction: column; align-items: stretch; gap: 6px; padding: 0; background: transparent; border: 0; text-align: start; cursor: pointer; }
 .appearance-gradient-option:focus-visible .appearance-gradient { outline: 2px solid var(--acc); outline-offset: 2px; }
-.appearance-gradient { position: relative; display: grid; place-items: center; height: 68px; width: 100%; border-radius: 16px; transition: transform 150ms ease; }
+.appearance-gradient { position: relative; display: grid; place-items: center; height: 68px; width: 100%; border-radius: calc(16px * var(--radius-scale, 1)); transition: transform 150ms ease; }
 .appearance-gradient-option:active .appearance-gradient { transform: scale(.98); }
 .appearance-gradient,.appearance-thumbnail { border: 1px solid var(--bd); }
 .appearance-gradient.is-active,.appearance-thumbnail.is-active { outline: 2px solid var(--acc); outline-offset: 2px; }
@@ -1726,14 +1839,14 @@ html[data-bg='image']:is([data-transparency='reduced'],[data-contrast='high']) .
 .appearance-preview-heading { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 10px; color: var(--tx); }
 .appearance-preview-heading strong { font: 400 21px/1.3 var(--font-serif, Georgia), serif; }
 .appearance-preview-actions { display: flex; align-items: center; gap: 4px; }
-.appearance-preview-actions button,.appearance-tabs button,.appearance-categories button,.appearance-reset { border: 1px solid var(--bd); background: color-mix(in srgb,var(--tx) 6%,transparent); color: var(--tx); border-radius: 16px; padding: 8px 12px; font-size: 14px; font-weight: 600; }
+.appearance-preview-actions button,.appearance-tabs button,.appearance-categories button,.appearance-reset { border: 1px solid var(--bd); background: color-mix(in srgb,var(--tx) 6%,transparent); color: var(--tx); border-radius: calc(16px * var(--radius-scale, 1)); padding: 8px 12px; font-size: 14px; font-weight: 600; }
 .appearance-preview-actions button[aria-pressed='true'],.appearance-categories button[aria-pressed='true'] { outline: 2px solid var(--acc); outline-offset: -2px; }
 .appearance-preview-actions .appearance-apply,.appearance-tabs button[aria-pressed='true'] { background: linear-gradient(135deg,var(--acc),var(--acc2)); color: var(--premium-on); }
-.appearance-preview-window { position: relative; height: min(62vh,540px); overflow: hidden; border-radius: 24px; border: 1px solid var(--bd); background-color: var(--gc); background-position: center; background-size: cover; }
+.appearance-preview-window { position: relative; height: min(62vh,540px); overflow: hidden; border-radius: calc(24px * var(--radius-scale, 1)); border: 1px solid var(--bd); background-color: var(--gc); background-position: center; background-size: cover; }
 .appearance-preview-window::before { content: ''; position: absolute; inset: 0; background: linear-gradient(to bottom,var(--v1),var(--v2)); opacity: var(--veil); }
 .appearance-mini-stage { position: absolute; width: 390px; height: 850px; left: 50%; top: 0; transform: translateX(-50%) scale(.72); transform-origin: top center; pointer-events: none; }
 .appearance-mini-stage .home-premium { width: 390px; }
-.appearance-tabs { display: flex; gap: 4px; padding: 4px; margin-bottom: 16px; border-radius: 20px; background: color-mix(in srgb,var(--tx) 6%,transparent); }
+.appearance-tabs { display: flex; gap: 4px; padding: 4px; margin-bottom: 16px; border-radius: calc(20px * var(--radius-scale, 1)); background: color-mix(in srgb,var(--tx) 6%,transparent); }
 .appearance-tabs button { flex: 1; padding-inline: 5px; }
 .appearance-section-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
 .appearance-reset { color: var(--mut); }
@@ -1753,7 +1866,7 @@ html[data-bg='image']:is([data-transparency='reduced'],[data-contrast='high']) .
   display: block;
   aspect-ratio: 3 / 2;
   overflow: hidden;
-  border-radius: 14px;
+  border-radius: calc(16px * var(--radius-scale, 1));
   /* L'anneau était noir : invisible sur un fond sombre, donc la vignette
      perdait son contour exactement dans le mode qui en avait besoin. Il suit
      désormais l'encre du thème, clair comme sombre. */
@@ -1769,18 +1882,18 @@ html[data-bg='image']:is([data-transparency='reduced'],[data-contrast='high']) .
 .appearance-preview-actions button:focus-visible,.appearance-tabs button:focus-visible,.appearance-categories button:focus-visible { outline: 2px solid var(--acc); outline-offset: 3px; }
 @media (max-width: 699px) {
   .appearance-editor { display: flex; flex-direction: column; gap: 16px; }
-  .appearance-preview { position: sticky; z-index: 10; top: -16px; width: 100%; padding: 8px; border: 1px solid var(--bd); border-radius: 24px; background: var(--gc); }
+  .appearance-preview { position: sticky; z-index: 10; top: -16px; width: 100%; padding: 8px; border: 1px solid var(--bd); border-radius: calc(24px * var(--radius-scale, 1)); background: var(--gc); }
   .appearance-preview-heading { margin: 0 0 6px; }
   .appearance-preview-heading strong { font-size: 18px; }
   .appearance-preview-actions button { font-size: 12px; padding: 6px 8px; }
-  .appearance-preview-window { height: 130px; border-radius: 16px; }
+  .appearance-preview-window { height: 130px; border-radius: calc(16px * var(--radius-scale, 1)); }
   .appearance-mini-stage { transform: translateX(-50%) scale(.48); }
   .appearance-controls { width: 100%; }
 }
 /* Dans l'aperçu, la largeur simulée est celle d'un téléphone même sur bureau. */
 .appearance-mini-stage .home-feature-grid { grid-template-columns: 1fr; }
 .appearance-mini-stage .home-quick-grid,.appearance-mini-stage .home-recent { grid-template-columns: repeat(2,minmax(0,1fr)); }
-.appearance-preview-heading { background: var(--gc); padding: 8px; border-radius: 16px; }
+.appearance-preview-heading { background: var(--gc); padding: 8px; border-radius: calc(16px * var(--radius-scale, 1)); }
 @media (max-width: 699px) { .appearance-preview-heading { padding: 0; } }
 .appearance-image-unavailable { display: grid; height: 100%; place-items: center; padding: 8px; text-align: center; color: var(--mut); font-size: 12px; }
 .appearance-image-option:disabled { cursor: not-allowed; }
@@ -1846,7 +1959,7 @@ html[data-theme='dark'] .app-main ion-fab-button::part(close-icon) { display: no
   --on-accent: var(--premium-on);
 }
 .appearance-accent-choices { display: grid; gap: 16px; }
-.appearance-accent-auto { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; border: 1px solid var(--bd); border-radius: 16px; background: color-mix(in srgb,var(--tx) 6%,transparent); color: var(--tx); font-size: 14px; font-weight: 600; }
+.appearance-accent-auto { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; border: 1px solid var(--bd); border-radius: calc(16px * var(--radius-scale, 1)); background: color-mix(in srgb,var(--tx) 6%,transparent); color: var(--tx); font-size: 14px; font-weight: 600; }
 .appearance-accent-auto[aria-pressed='true'] { outline: 2px solid var(--acc); outline-offset: -2px; }
 .appearance-accent-swatches { display: flex; gap: 10px; flex-wrap: wrap; }
 .appearance-accent-swatches button { position: relative; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--bd); background: color-mix(in srgb,var(--tx) 6%,transparent); }
@@ -1855,15 +1968,15 @@ html[data-theme='dark'] .app-main ion-fab-button::part(close-icon) { display: no
 .appearance-accent-swatches button svg { position: absolute; color: var(--tx); background: var(--gc); border-radius: 50%; padding: 2px; inset: auto -3px -3px auto; }
 .appearance-accent-note { margin: 16px 0 0; }
 .appearance-accent-examples { display: flex; align-items: center; flex-wrap: wrap; gap: 14px; }
-.appearance-example-button { padding: 10px 16px; border-radius: 18px; background: linear-gradient(110deg,var(--acc),var(--acc2)); color: var(--premium-on); font-size: 14px; font-weight: 600; }
-.appearance-example-active { padding: 10px 14px; border-radius: 18px; background: color-mix(in srgb,var(--acc) 18%,transparent); color: var(--tx); font-size: 14px; font-weight: 600; }
+.appearance-example-button { padding: 10px 16px; border-radius: calc(20px * var(--radius-scale, 1)); background: linear-gradient(110deg,var(--acc),var(--acc2)); color: var(--premium-on); font-size: 14px; font-weight: 600; }
+.appearance-example-active { padding: 10px 14px; border-radius: calc(20px * var(--radius-scale, 1)); background: color-mix(in srgb,var(--acc) 18%,transparent); color: var(--tx); font-size: 14px; font-weight: 600; }
 .appearance-example-ring { width: 42px; height: 42px; border: 5px solid var(--bd); border-top-color: var(--acc); border-right-color: var(--acc); border-radius: 50%; }
 .appearance-existing summary { padding: 12px 4px; color: var(--mut); font-size: 14px; cursor: pointer; }
 .appearance-existing summary:focus-visible { outline: 2px solid var(--acc); outline-offset: 3px; }
 
 /* Texte : sélecteurs sans nouveau niveau de verre, aperçu avec les valeurs de lecture. */
 .appearance-font-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 8px; }
-.appearance-font-card { min-width: 0; display: flex; flex-direction: column; align-items: stretch; gap: 6px; padding: 14px; border-radius: 14px; text-align: start; }
+.appearance-font-card { min-width: 0; display: flex; flex-direction: column; align-items: stretch; gap: 6px; padding: 14px; border-radius: calc(16px * var(--radius-scale, 1)); text-align: start; }
 .appearance-font-card:focus-visible { outline: 2px solid var(--acc-text); outline-offset: 3px; }
 .appearance-font-sample { display: grid; gap: 4px; color: var(--tx); }
 .appearance-font-sample strong { font-size: 24px; line-height: 1.15; font-weight: 400; }
@@ -1872,7 +1985,7 @@ html[data-theme='dark'] .app-main ion-fab-button::part(close-icon) { display: no
 .appearance-font-caption,.appearance-font-legacy { color: var(--mut); font-size: 12px; line-height: 1.5; }
 .appearance-font-legacy { margin: 8px 0; }
 .appearance-reading-controls { margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--bd); }
-.appearance-reading-preview { margin-top: 20px; padding: 16px; border: 1px solid var(--bd); border-radius: 14px; background: color-mix(in srgb,var(--tx) 6%,transparent); }
+.appearance-reading-preview { margin-top: 20px; padding: 16px; border: 1px solid var(--bd); border-radius: calc(16px * var(--radius-scale, 1)); background: color-mix(in srgb,var(--tx) 6%,transparent); }
 .appearance-reading-preview p { margin: 10px auto 0; color: var(--tx); }
 
 /* L’image de l’aperçu reçoit le même flou que le fond réel, sans flouter les cartes. */
@@ -1884,7 +1997,6 @@ html[data-theme='dark'] .app-main ion-fab-button::part(close-icon) { display: no
 
 .theme-appearance-icon { position: relative; display: inline-block; width: 24px; height: 24px; color: inherit; }
 .theme-appearance-icon .theme-roller-first { position: absolute; inset: 2px auto auto 0; transform: rotate(-22deg); }
-.theme-appearance-icon .theme-roller-second { position: absolute; inset: 6px 0 auto auto; transform: scaleX(-1) rotate(-18deg); }
 .theme-appearance-icon .theme-roller-sparkle { position: absolute; inset: -2px -2px auto auto; }
 /* Profil : grand portrait avec nom intégré à la photo + couverture unie à motif local. */
 .profile-premium { max-width: 1180px; margin: 0 auto; color: var(--tx); }
@@ -1898,7 +2010,7 @@ html[data-theme='dark'] .app-main ion-fab-button::part(close-icon) { display: no
   overflow: hidden;
   position: relative;
   border: 1px solid var(--bd);
-  border-radius: 28px;
+  border-radius: calc(28px * var(--radius-scale, 1));
   background-color: var(--profile-cover-base, var(--gc));
   background-position: center;
   background-size: cover;
@@ -1906,17 +2018,17 @@ html[data-theme='dark'] .app-main ion-fab-button::part(close-icon) { display: no
 .profile-hero::before { content: ''; position: absolute; inset: 0; background: color-mix(in srgb, var(--gc) 84%, transparent); }
 .profile-hero.has-local-motif::before { background: color-mix(in srgb, var(--gc) 78%, transparent); }
 .profile-hero-content { position: relative; z-index: 1; display: grid; grid-template-columns: 248px minmax(0, 1fr); align-items: end; gap: 28px; width: 100%; padding: clamp(20px,3.5vw,40px); }
-.profile-portrait-card { position: relative; min-height: 276px; border-radius: 24px; overflow: hidden; border: 2px solid var(--gc); box-shadow: 0 14px 36px var(--sh); background: color-mix(in srgb, var(--acc) 18%, var(--gc)); display: flex; flex-direction: column; justify-content: flex-end; }
+.profile-portrait-card { position: relative; min-height: 276px; border-radius: calc(24px * var(--radius-scale, 1)); overflow: hidden; border: 2px solid var(--gc); box-shadow: 0 14px 36px var(--sh); background: color-mix(in srgb, var(--acc) 18%, var(--gc)); display: flex; flex-direction: column; justify-content: flex-end; }
 .profile-portrait-media { position: absolute; inset: 0; display: grid; place-items: center; padding-bottom: 56px; }
 .profile-portrait-img { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; }
 .profile-portrait-placeholder { display: grid; place-items: center; width: 100%; height: 100%; }
 .profile-portrait-overlay { position: relative; z-index: 2; padding: 16px 16px 14px; background: var(--profile-portrait-scrim); color: var(--profile-portrait-text); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
-.profile-portrait-eyebrow { color: var(--profile-portrait-muted); font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+.profile-portrait-eyebrow { color: var(--profile-portrait-muted); font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
 .profile-portrait-name-row { margin-top: 4px; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 .profile-portrait-name-row h1 { margin: 0; color: var(--profile-portrait-text); font-family: var(--font-serif, Georgia), serif; font-weight: 600; font-size: clamp(22px,2.6vw,28px); line-height: 1.15; overflow-wrap: anywhere; }
 .profile-hero-text { min-width: 0; padding-bottom: 6px; }
 .profile-eyebrow { color: var(--mut); font-size: 13px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
-.profile-name-input { width: 100%; min-width: 0; padding: 4px 8px; color: var(--tx); font-family: var(--font-serif, Georgia), serif; font-weight: 600; font-size: 20px; line-height: 1.2; background: var(--gc); border: 1px solid var(--bd); border-radius: 10px; }
+.profile-name-input { width: 100%; min-width: 0; padding: 4px 8px; color: var(--tx); font-family: var(--font-serif, Georgia), serif; font-weight: 600; font-size: 20px; line-height: 1.2; background: var(--gc); border: 1px solid var(--bd); border-radius: calc(12px * var(--radius-scale, 1)); }
 .profile-name-edit { display: grid; place-items: center; flex: none; width: 34px; height: 34px; border-radius: 50%; color: var(--profile-portrait-text); background: rgba(255, 255, 255, 0.16); border: 1px solid rgba(255, 255, 255, 0.28); }
 .profile-name-edit:focus-visible { outline: 2px solid var(--profile-portrait-text); outline-offset: 2px; }
 .profile-slogan { margin-top: 10px; color: var(--tx); font-family: var(--font-serif, Georgia), serif; font-weight: 400; font-size: clamp(20px,2.4vw,26px); line-height: 1.35; max-width: 48ch; }
@@ -1941,7 +2053,7 @@ html[data-theme='dark'] .app-main ion-fab-button::part(close-icon) { display: no
   display: flex; align-items: center; gap: 12px; flex: none; min-height: 64px;
   margin: max(12px, env(safe-area-inset-top, 0px)) 14px 0; padding: 8px 14px;
   color: var(--tx); background: var(--gc);
-  border: 1px solid var(--bd); border-radius: 24px;
+  border: 1px solid var(--bd); border-radius: calc(24px * var(--radius-scale, 1));
   box-shadow: inset 0 1px 0 var(--hi), 0 10px 34px var(--sh);
 }
 html[data-bg='image'] .full-screen-header {
@@ -1967,6 +2079,21 @@ html[data-bg='image']:is([data-transparency='reduced'],[data-contrast='high']) .
 .profile-stat-value { color: var(--acc-text); font-size: 28px; font-weight: 700; }
 .profile-stat-label { margin-top: 4px; color: var(--mut); font-size: 12px; font-weight: 600; }
 .profile-premium :is(.text-text-muted,.text-text-secondary) { color: var(--mut); }
+/* Bandeau de statistiques illisibles : une ligne, une reprise. Il prend la
+   couleur d'alerte du preset, pas un rouge figé. */
+.profile-stats-error {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+  padding: 10px 14px;
+  border-radius: calc(12px * var(--radius-scale, 1));
+  background: color-mix(in srgb, var(--color-warning) 12%, transparent);
+  color: var(--tx);
+  font-size: 13px;
+}
+.profile-stats-retry {
+  border: none; background: none; padding: 0;
+  color: var(--color-primary); font: inherit; font-weight: 700;
+  text-decoration: underline; text-underline-offset: 3px; cursor: pointer;
+}
 .review-calendar-dot { width: 5px; height: 5px; margin-top: 3px; border-radius: 50%; background: var(--acc); }
 .review-timeline { margin-top: 16px; padding: 22px; }
 .review-timeline h3 { font: 400 22px/1.3 var(--font-serif, Georgia), serif; }
@@ -1985,7 +2112,7 @@ html[data-bg='image']:is([data-transparency='reduced'],[data-contrast='high']) .
 .onboarding-experience button:focus-visible { outline: 2px solid var(--acc-text); outline-offset: 3px; }
 .onboarding-experience .text-primary { color: var(--acc-text); }
 .onboarding-experience .border-primary { border-color: var(--acc); }
-.progress-demo-toggle { margin-top: 16px; padding: 8px 14px; border: 1px solid var(--bd); border-radius: 16px; background: color-mix(in srgb,var(--tx) 6%,transparent); color: var(--tx); font-size: 14px; font-weight: 600; }
+.progress-demo-toggle { margin-top: 16px; padding: 8px 14px; border: 1px solid var(--bd); border-radius: calc(16px * var(--radius-scale, 1)); background: color-mix(in srgb,var(--tx) 6%,transparent); color: var(--tx); font-size: 14px; font-weight: 600; }
 .progress-demo-toggle:focus-visible { outline: 2px solid var(--acc-text); outline-offset: 3px; }
 .progress-demo-notice { margin-top: 10px; color: var(--mut); font-size: 14px; }
 /* Le dégradé sélectionné rejoint les détails décoratifs, sans texte long sur le dégradé. */
@@ -2000,12 +2127,12 @@ html[data-app-bg='gradient'] .icon-chip {
 .weekly-planner-group { display: grid; gap: 12px; padding-top: 16px; border-top: 1px solid var(--bd); }
 .weekly-planner-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .weekly-days { display: grid; grid-template-columns: repeat(7,minmax(0,1fr)); gap: 4px; }
-.weekly-days button { min-width: 0; min-height: 40px; border: 1px solid var(--bd); border-radius: 12px; color: var(--tx); font-size: 12px; background: color-mix(in srgb,var(--tx) 6%,transparent); }
+.weekly-days button { min-width: 0; min-height: 40px; border: 1px solid var(--bd); border-radius: calc(12px * var(--radius-scale, 1)); color: var(--tx); font-size: 12px; background: color-mix(in srgb,var(--tx) 6%,transparent); }
 .weekly-days button[aria-pressed='true'] { outline: 2px solid var(--acc); outline-offset: -2px; }
 .weekly-days button:disabled { opacity: .5; }
 .weekly-time { display: flex; align-items: center; gap: 12px; color: var(--mut); font-size: 14px; }
-.weekly-time input { padding: 8px; border: 1px solid var(--bd); border-radius: 10px; color: var(--tx); background: var(--gc); }
-.weekly-save { padding: 12px; border-radius: 14px; background: var(--acc); color: var(--premium-on); font-weight: 700; }
+.weekly-time input { padding: 8px; border: 1px solid var(--bd); border-radius: calc(12px * var(--radius-scale, 1)); color: var(--tx); background: var(--gc); }
+.weekly-save { padding: 12px; border-radius: calc(16px * var(--radius-scale, 1)); background: var(--acc); color: var(--premium-on); font-weight: 700; }
 .weekly-planner :is(button,input):focus-visible { outline: 2px solid var(--acc-text); outline-offset: 3px; }
 /* Les anciens réglages de rappels utilisent les mêmes neutres que le planning. */
 .reminders-page { color: var(--tx); }
@@ -2201,18 +2328,80 @@ html { -webkit-tap-highlight-color: transparent; }
     transition: none;
     scroll-behavior: auto;
   }
+  /* Un seul indicateur reste animé : le disque des boutons occupés, qui dit
+     « l'action est en cours » et n'a pas d'équivalent statique. Le balayage du
+     squelette est coupé — la forme grise suffit à dire « ça arrive » — et
+     tout le reste aussi. */
   .animate-spin { animation: spin 1.4s linear infinite; }
   .skeleton::after { animation: none; opacity: 0; }
 }
 
 /* 6. Cible tactile minimale — pour les commandes icône seule des coquilles.
    On ne force rien sur les puces de texte (`px-2 py-0.5`) : une cible plus
-   grande qu'une ligne de texte casserait les listes denses. */
+   grande qu'une ligne de texte casserait les listes denses.
+
+   Le plancher du playbook (D01 : 24 × 24 CSS px, D02 : 44 pt sur iOS,
+   D03 : 48 dp sur Android) s'applique aux commandes icône seule, pas au
+   texte. `--tap-min` valait 40 px sur toutes les plateformes ; il monte au
+   plancher de la plateforme quand on la connaît, et garde 40 px ailleurs
+   (souris : 22–28 pt suffisent, une cible de 48 px y serait un pavé). */
 .touch-target {
   display: inline-grid;
   place-items: center;
   min-width: var(--tap-min);
   min-height: var(--tap-min);
+  /* Jamais moins que le plancher universel de 24 px, même pour un picto. */
+  min-width: max(24px, var(--tap-min));
+  min-height: max(24px, var(--tap-min));
+}
+@media (pointer: coarse) {
+  /* iOS recommande 44 × 44 pt : le doigt couvre déjà la cible de 24 px. */
+  :root { --tap-min: 44px; }
+}
+html[data-platform='android'] { --tap-min: 48px; }
+
+/* 6 bis. Lien d'évitement — invisible jusqu'au focus clavier.
+   Il vit hors du flux (position fixe) pour ne décaler aucune mise en page,
+   et il redevient pleinement visible dès qu'il reçoit le focus : un lien
+   d'évitement qu'on ne voit pas ne rend service à personne. */
+/* Icônes DIRECTIONNELLES (chevrons, flèches de navigation) : elles pointent
+   vers le sens de LECTURE. En arabe ou en hébreu, la progression va de droite
+   à gauche — un chevron « suivant » doit donc pointer à gauche. Le miroir est
+   porté par la classe, pas par une variante de chaque icône, pour que les 73
+   appels restent des appels ordinaires. `[dir='rtl']` est posé sur <html> par
+   DirSync ; on couvre aussi un sous-arbre RTL isolé. */
+[dir='rtl'] .directional,
+.directional:dir(rtl) {
+  transform: scaleX(-1);
+}
+
+.skip-link {
+  position: fixed;
+  top: 8px;
+  inset-inline-start: 8px;
+  z-index: 100;
+  padding: 10px 16px;
+  border-radius: 999px;
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+  transform: translateY(-200%);
+  transition: transform 120ms var(--ease-standard, ease);
+}
+.skip-link:focus,
+.skip-link:focus-visible {
+  transform: translateY(0);
+  outline: 3px solid var(--color-text-primary);
+  outline-offset: 2px;
+}
+
+/* Le contenu reçoit le focus par programme (`useRouteFocus`) : aucun anneau
+   n'est dessiné sur le conteneur, seul le titre annoncé importe. */
+#main-content:focus,
+#main-content h1:focus {
+  outline: none;
 }
 
 /* 7. Squelette de chargement — un seul matériau, un seul rythme.
@@ -2227,7 +2416,7 @@ html { -webkit-tap-highlight-color: transparent; }
     position: relative;
     overflow: hidden;
     background: color-mix(in srgb, var(--tx, var(--color-text-primary)) 9%, transparent);
-    border-radius: 12px;
+    border-radius: calc(12px * var(--radius-scale, 1));
   }
   .skeleton::after {
     content: '';
@@ -2336,12 +2525,23 @@ ion-tab-button::part(native):focus-visible {
 .section-label,
 .micro-label,
 .stat-label {
+  /* Plus de capitales forcées ni d'interlettrage de 0,12 em.
+   *
+   * `text-transform: uppercase` réécrivait le libellé à l'écran : « MONDAY,
+   * NOVEMBER 23 » sur un profil francophone, « VERSET DU JOUR » partout — le
+   * texte affiché n'était plus celui qu'on avait écrit, et une locale qui met
+   * le mois en premier y gagnait une apparence d'erreur. L'interlettrage large
+   * appartient à la typographie de titres latins, pas à une phrase entière.
+   *
+   * `small-caps` garde la respiration d'une micro-capitale sans mentir sur la
+   * casse réelle du texte — et le thème peut la désactiver. */
   font-family: var(--font-sans, Inter), sans-serif;
-  font-size: 11px;
+  font-size: 12.5px;
   font-weight: 600;
   line-height: 1.4;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  font-variant-caps: all-small-caps;
+  text-transform: none;
   color: var(--mut, var(--color-text-muted));
 }
 
@@ -2574,7 +2774,7 @@ ion-tab-button::part(native):focus-visible {
   width: 100%;
   min-height: 52px;
   padding: 6px 4px;
-  border-radius: 12px;
+  border-radius: calc(12px * var(--radius-scale, 1));
   text-align: left;
   transition: background-color var(--motion-fast) var(--ease-standard);
 }
@@ -2607,7 +2807,7 @@ ion-tab-button::part(native):focus-visible {
   background: color-mix(in srgb, var(--acc) 14%, transparent);
   color: var(--acc-text);
   font-family: var(--font-sans, Inter), sans-serif;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -2624,7 +2824,7 @@ ion-tab-button::part(native):focus-visible {
   background: color-mix(in srgb, var(--tx) 6%, transparent);
   color: var(--mut);
   font-family: var(--font-sans, Inter), sans-serif;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -2632,7 +2832,7 @@ ion-tab-button::part(native):focus-visible {
 /* Nature d'un défi : micro-capitale d'accent (lisible sur les 39 presets). */
 .family-kind {
   font-family: var(--font-sans, Inter), sans-serif;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   line-height: 1.4;
   letter-spacing: 0.12em;
@@ -2650,8 +2850,8 @@ ion-tab-button::part(native):focus-visible {
 /* Catalogue de dégradés : échantillon lisible, nom séparé et sélection explicite. */
 .appearance-gradient-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 14px; }
 .appearance-gradient-option { min-width: 0; display: grid; gap: 8px; text-align: center; color: var(--mut); }
-.appearance-gradient-swatch { position: relative; display: block; width: 100%; aspect-ratio: 1.65; border-radius: 14px; box-shadow: inset 0 0 0 1px var(--bd); }
-.appearance-gradient-option:focus-visible { outline: 2px solid var(--tx); outline-offset: 4px; border-radius: 14px; }
+.appearance-gradient-swatch { position: relative; display: block; width: 100%; aspect-ratio: 1.65; border-radius: calc(16px * var(--radius-scale, 1)); box-shadow: inset 0 0 0 1px var(--bd); }
+.appearance-gradient-option:focus-visible { outline: 2px solid var(--tx); outline-offset: 4px; border-radius: calc(16px * var(--radius-scale, 1)); }
 .appearance-gradient-check { position: absolute; bottom: -6px; right: -6px; display: grid; place-items: center; width: 25px; height: 25px; border-radius: 50%; color: var(--tx); background: var(--gc); box-shadow: 0 2px 8px var(--sh); }
 .appearance-gradient-name { text-transform: capitalize; font-size: 12px; line-height: 1.3; color: var(--mut); }
 .appearance-gradient-option[aria-pressed='true'] .appearance-gradient-name { color: var(--tx); font-weight: 700; }
@@ -2672,7 +2872,7 @@ ion-tab-button::part(native):focus-visible {
 .reading-header { background: var(--color-surface); color: var(--color-text-primary); }
 .reading-card {
   padding: clamp(22px, 4.4vw, 44px);
-  border-radius: 24px;
+  border-radius: calc(24px * var(--radius-scale, 1));
   background: var(--color-surface);
   color: var(--color-text-primary);
   border: 1px solid var(--color-border);
@@ -2688,7 +2888,7 @@ ion-tab-button::part(native):focus-visible {
   justify-content: space-between;
   gap: 10px;
   color: var(--mut);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: .09em;
   text-transform: uppercase;
@@ -2699,7 +2899,7 @@ ion-tab-button::part(native):focus-visible {
   border: 1px solid var(--bd);
   border-radius: 999px;
   letter-spacing: .04em;
-  font-size: 10px;
+  font-size: 12px;
 }
 .reading-card-heading h2 { margin: 16px 0 4px; font: 400 clamp(30px, 5vw, 42px)/1.15 var(--reading-font-family, Georgia), serif; color: inherit; }
 .reading-card-heading p { color: var(--color-text-secondary); font-size: 13px; }
@@ -2811,7 +3011,7 @@ ion-tab-button::part(native):focus-visible {
   max-width: 560px;
   padding: 6px 8px 8px;
   border: 1px solid var(--bd);
-  border-radius: 18px;
+  border-radius: calc(20px * var(--radius-scale, 1));
   background: var(--gc);
   color: var(--tx);
   box-shadow: 0 14px 38px var(--sh);
@@ -2853,7 +3053,7 @@ ion-tab-button::part(native):focus-visible {
   place-items: center;
   height: 38px;
   border: 0;
-  border-radius: 12px;
+  border-radius: calc(12px * var(--radius-scale, 1));
   background: transparent;
   color: var(--tx);
   transition: background-color 150ms ease, color 150ms ease;
@@ -2883,7 +3083,7 @@ ion-tab-button::part(native):focus-visible {
   border-top: 1px solid var(--bd);
 }
 .verse-bar-palette-label {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.02em;
   text-transform: uppercase;
@@ -2931,7 +3131,7 @@ ion-tab-button::part(native):focus-visible {
 .verse-bar-textarea {
   width: 100%;
   border: 1px solid var(--bd);
-  border-radius: 12px;
+  border-radius: calc(12px * var(--radius-scale, 1));
   background: color-mix(in srgb, var(--tx) 5%, transparent);
   color: var(--tx);
   font-size: 13px;
@@ -2997,6 +3197,34 @@ html:is([data-bg='image'],[data-app-bg='gradient']) .reading-chapter-heading p {
 .continuous-more { padding: 8px 12px; color: inherit; font-size: 13px; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
 .continuous-more:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
 .continuous-boundary:empty { display: none; }
+/* Chapitre en cours de lecture : deux lignes grises qui reprennent la mesure
+   du manuscrit. Pas de spinner ni de carte : la page garde sa typographie et
+   le texte arrive à sa place, sans faire sauter ce qui est déjà lu. */
+.manuscript-placeholder { display: flex; flex-direction: column; gap: 10px; padding: 18px 0; }
+.manuscript-placeholder-line { height: 0.72em; border-radius: calc(4px * var(--radius-scale, 1)); background: color-mix(in srgb, var(--color-text-primary) 9%, transparent); }
+.manuscript-placeholder-line.short { width: 62%; }
+/* Squelette de TEXTE de lecture : des lignes à la mesure du vrai texte.
+   Le lecteur continu aligne ses versets sur `--reading-font-size`,
+   `--reading-line-height` et `--reading-line-length` (`.verse-flow`) ; le
+   squelette reprend exactement ces trois valeurs, sinon il réserve une place
+   différente de la place réelle et le saut de mise en page revient à
+   l'arrivée du texte. La dernière ligne d'un paragraphe est courte : une
+   prose ne finit pas sur une ligne pleine. */
+.verse-text-skeleton {
+  max-width: var(--reading-line-length, 42em);
+  margin-inline: auto;
+  padding: 18px 0;
+}
+.verse-text-skeleton-paragraph { display: flex; flex-direction: column; gap: calc(var(--reading-font-size, 19px) * 0.42); margin-bottom: calc(var(--reading-font-size, 19px) * 0.9); }
+.verse-text-skeleton-paragraph:last-child { margin-bottom: 0; }
+.verse-text-skeleton-line {
+  height: calc(var(--reading-font-size, 19px) * 0.72);
+  border-radius: calc(4px * var(--radius-scale, 1));
+}
+.verse-text-skeleton-line-last { margin-bottom: calc(var(--reading-font-size, 19px) * 0.28); }
+/* Chapitre annoncé par l'index mais absent du fichier : le lecteur le dit,
+   sans squelette qui tournerait indéfiniment. */
+.manuscript-empty { padding: 18px 0; color: var(--color-text-muted); font-size: 14px; font-style: italic; }
 /* Lecture biblique : le numéro du chapitre joue le rôle de lettrine. */
 .reading-card .verse-flow { display: flow-root; }
 .verse-flow-blocks .manuscript-verse { display: block; margin: 0 0 .8em; }
@@ -3010,7 +3238,7 @@ html:is([data-bg='image'],[data-app-bg='gradient']) .reading-chapter-heading p {
 .reading-preferences fieldset { min-width: 0; }
 .reading-preferences legend { margin-bottom: 8px; color: var(--tx); font-weight: 700; font-size: 14px; }
 .reading-preferences-options { display: flex; flex-wrap: wrap; gap: 8px; }
-.reading-preferences-options button, .chapter-pagination button { padding: 10px 14px; border: 1px solid var(--bd); border-radius: 14px; background: color-mix(in srgb,var(--tx) 7%,var(--gc)); color: var(--tx); font-size: 14px; font-weight: 600; }
+.reading-preferences-options button, .chapter-pagination button { padding: 10px 14px; border: 1px solid var(--bd); border-radius: calc(16px * var(--radius-scale, 1)); background: color-mix(in srgb,var(--tx) 7%,var(--gc)); color: var(--tx); font-size: 14px; font-weight: 600; }
 .reading-preferences-options button[aria-pressed='true'] { background: var(--tx); color: var(--gc); }
 .reading-preferences-options button:focus-visible, .chapter-pagination button:focus-visible { outline: 2px solid var(--tx); outline-offset: 3px; }
 .chapter-pagination { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; padding-top: 16px; }
@@ -3025,43 +3253,45 @@ html:is([data-bg='image'],[data-app-bg='gradient']) .reading-chapter-heading p {
 .journey-copy { width: min(100%,460px); }
 .journey-copy h1, .onboard-auth h1 { color: var(--tx); font-family: var(--font-serif, Georgia), serif; font-weight: 500; font-size: clamp(38px,4.4vw,60px); line-height: 1.05; letter-spacing: -.035em; margin: 0 0 22px; }
 .journey-copy p, .onboard-auth p { line-height: 1.65; }
-.journey-overline, .onboard-eyebrow { font-size: 11px; font-weight: 800; letter-spacing: .16em; margin-bottom: 18px; color: var(--tx); }
+.journey-overline, .onboard-eyebrow { font-size: 12px; font-weight: 800; letter-spacing: .16em; margin-bottom: 18px; color: var(--tx); }
 .journey-lead { font-size: clamp(17px,1.7vw,20px); font-weight: 600; }
 .journey-actions { margin-top: 32px; display: grid; gap: 12px; }
-.journey-primary, .journey-secondary { min-height: 54px; width: 100%; border-radius: 16px; padding: 14px 20px; display: flex; justify-content: center; align-items: center; gap: 12px; font-weight: 750; text-align: center; }
+.journey-primary, .journey-secondary { min-height: 54px; width: 100%; border-radius: calc(16px * var(--radius-scale, 1)); padding: 14px 20px; display: flex; justify-content: center; align-items: center; gap: 12px; font-weight: 750; text-align: center; }
 .journey-primary { background: var(--color-primary); color: var(--color-on-primary); }
 .journey-primary span { margin-inline-start: auto; }
 .journey-secondary { border: 1px solid var(--bd); color: var(--tx); }
 .journey-primary:disabled { opacity: .6; }
 .journey-back, .onboard-back { display: inline-block; margin-bottom: 34px; color: var(--tx); font-weight: 650; font-size: 14px; }
-.journey-progress { height: 5px; border-radius: 8px; background: var(--bd); margin: 30px 0 24px; overflow: hidden; }
+.journey-progress { height: 5px; border-radius: calc(8px * var(--radius-scale, 1)); background: var(--bd); margin: 30px 0 24px; overflow: hidden; }
 .journey-progress span { display: block; height: 100%; background: var(--color-primary); }
 .journey-art { width: min(100%,420px); aspect-ratio: 1; position: relative; color: var(--color-primary); }
 .journey-art-halo { position: absolute; inset: 7%; border-radius: 50%; background: color-mix(in srgb,var(--color-primary) 20%,var(--gc)); }
 .journey-art-orbit { position: absolute; inset: 1%; border: 2px solid color-mix(in srgb,var(--color-primary) 32%,transparent); border-radius: 50%; transform: rotate(-25deg) scaleY(.72); }
 .journey-art-orbit-two { transform: rotate(32deg) scaleY(.72); }
-.journey-art-card { position: absolute; width: 47%; height: 54%; top: 22%; left: 27%; border-radius: 30px; }
+.journey-art-card { position: absolute; width: 47%; height: 54%; top: 22%; left: 27%; border-radius: calc(32px * var(--radius-scale, 1)); }
 .journey-art-card-back { background: color-mix(in srgb,var(--color-primary) 40%,var(--gc)); transform: rotate(-13deg) translate(-12%,3%); }
 .journey-art-card-front { display: grid; place-items: center; background: var(--gc); transform: rotate(8deg); box-shadow: 0 18px 50px var(--sh); }
 .journey-art-spark { position: absolute; font-size: 36px; }.journey-art-spark-one { top: 14%; right: 15%; }.journey-art-spark-two { bottom: 18%; left: 13%; font-size: 25px; }
-.journey-art-line { position: absolute; width: 14%; height: 10px; border-radius: 10px; background: var(--color-primary); opacity: .35; transform: rotate(-30deg); }.journey-art-line-one { left: 5%; top: 27%; }.journey-art-line-two { right: 7%; bottom: 27%; }
-.journey-profile,.journey-success-profile { display:flex; align-items:center; gap:18px; padding:18px; border-radius:22px; background:color-mix(in srgb,var(--tx) 6%,var(--gc)); margin:24px 0; }
+.journey-art-line { position: absolute; width: 14%; height: 10px; border-radius: calc(12px * var(--radius-scale, 1)); background: var(--color-primary); opacity: .35; transform: rotate(-30deg); }.journey-art-line-one { left: 5%; top: 27%; }.journey-art-line-two { right: 7%; bottom: 27%; }
+.journey-profile,.journey-success-profile { display:flex; align-items:center; gap:18px; padding:18px; border-radius:calc(24px * var(--radius-scale, 1)); background:color-mix(in srgb,var(--tx) 6%,var(--gc)); margin:24px 0; }
 .journey-fields { flex: 1; min-width: 0; }.journey-fields label,.onboard-form label { display:grid; gap:6px; font-size:14px; font-weight:650; margin-bottom:12px; }
-.journey-accents { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; margin:24px 0; }.journey-accents button { padding:10px; border:1px solid var(--bd); border-radius:16px; display:grid; gap:8px; text-align:start; }.journey-accents button[aria-pressed=true] { outline:2px solid var(--tx); outline-offset:2px; }.journey-accents button span { height:36px; border-radius:9px; }.journey-accents small { overflow-wrap:anywhere; }
+.journey-accents { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; margin:24px 0; }.journey-accents button { padding:10px; border:1px solid var(--bd); border-radius:calc(16px * var(--radius-scale, 1)); display:grid; gap:8px; text-align:start; }.journey-accents button[aria-pressed=true] { outline:2px solid var(--tx); outline-offset:2px; }.journey-accents button span { height:36px; border-radius:calc(8px * var(--radius-scale, 1)); }.journey-accents small { overflow-wrap:anywhere; }
 .journey-confetti { margin-inline-start:auto; font-size:24px; color:var(--color-primary); }
 .onboard-auth { width:min(100% - 48px,440px); min-height:75vh; margin:auto; display:flex; flex-direction:column; justify-content:center; gap:14px; }.onboard-form { display:grid; gap:10px; margin:12px 0; }.onboard-auth > a:last-child { color:var(--tx); text-decoration:underline; }
 @media(max-width:767px) { .journey-page { grid-template-columns:1fr; grid-template-rows:auto 1fr; }.journey-visual { min-height:240px; padding:54px 20px 8px; }.journey-brand { top:20px; inset-inline-start:24px; }.journey-art { width:min(53vw,220px); }.journey-art-card-front svg { width:65%; height:auto; }.journey-visual > p { display:none; }.journey-content { align-items:start; padding:32px 24px 48px; }.journey-copy h1 { font-size:38px; }.journey-back { margin-bottom:24px; } }
 @media(prefers-reduced-motion:reduce) { .journey-progress span { transition:none; } }
 .journey-success-profile { position:relative; overflow:hidden; min-height:112px; }
 .journey-confetti { position:absolute; inset:0 0 0 auto; width:40%; pointer-events:none; overflow:hidden; }
-.journey-confetti i { position:absolute; font-style:normal; animation:journey-confetti-fall 2.8s ease-in-out infinite alternate; }
-.journey-confetti i:nth-child(1) { left:5%; top:12%; }.journey-confetti i:nth-child(2) { left:30%; top:52%; animation-delay:-.5s; }.journey-confetti i:nth-child(3) { left:58%; top:8%; animation-delay:-1s; }.journey-confetti i:nth-child(4) { left:80%; top:45%; animation-delay:-1.5s; }.journey-confetti i:nth-child(5) { left:45%; top:70%; animation-delay:-2s; }.journey-confetti i:nth-child(6) { left:75%; top:75%; animation-delay:-2.5s; }
-@keyframes journey-confetti-fall { from { transform:translateY(-6px) rotate(-15deg); } to { transform:translateY(8px) rotate(20deg); } }
-@media(prefers-reduced-motion:reduce) { .journey-confetti i { animation:none; } }
-.demo-mode-label { position:fixed; z-index:9999; inset-block-start:4px; inset-inline-end:8px; pointer-events:none; border-radius:9px; padding:4px 8px; background:var(--tx); color:var(--gc); font-size:10px; font-weight:800; letter-spacing:.02em; }
+/* Confettis STATIQUES : une texture, pas un feu d’artifice. La boucle
+   infinie attirait l’œil en permanence (règle I04) ; les six éclats gardent
+   des rotations décalées qui suffisent à donner le désordre. */
+.journey-confetti i { position:absolute; width:6px; height:6px; border-radius:calc(4px * var(--radius-scale, 1)); background:currentColor; opacity:.85; transform:rotate(12deg); }
+.journey-confetti i:nth-child(even) { border-radius:50%; width:5px; height:5px; transform:rotate(34deg); }
+.journey-confetti i:nth-child(1) { left:5%; top:12%; transform:rotate(-18deg); }.journey-confetti i:nth-child(2) { left:30%; top:52%; }.journey-confetti i:nth-child(3) { left:58%; top:8%; }.journey-confetti i:nth-child(4) { left:80%; top:45%; }.journey-confetti i:nth-child(5) { left:45%; top:70%; }.journey-confetti i:nth-child(6) { left:75%; top:75%; }
+.demo-mode-label { position:fixed; z-index:9999; inset-block-start:4px; inset-inline-end:8px; pointer-events:none; border-radius:calc(8px * var(--radius-scale, 1)); padding:4px 8px; background:var(--tx); color:var(--gc); font-size: 12px; font-weight:800; letter-spacing:.02em; }
 .journey-theme-options { margin-top: 22px; display: grid; gap: 12px; }
 .journey-theme-options label { display: grid; gap: 8px; font-size: 14px; font-weight: 700; }
-.journey-theme-options select { width: 100%; padding: 12px; border: 1px solid var(--bd); border-radius: 14px; background: var(--gc); color: var(--tx); }
+.journey-theme-options select { width: 100%; padding: 12px; border: 1px solid var(--bd); border-radius: calc(16px * var(--radius-scale, 1)); background: var(--gc); color: var(--tx); }
 .journey-mode-options { display: flex; flex-wrap: wrap; gap: 8px; }
-.journey-mode-options button { padding: 9px 13px; border: 1px solid var(--bd); border-radius: 12px; color: var(--tx); }
+.journey-mode-options button { padding: 9px 13px; border: 1px solid var(--bd); border-radius: calc(12px * var(--radius-scale, 1)); color: var(--tx); }
 .journey-mode-options button[aria-pressed='true'] { outline: 2px solid var(--tx); outline-offset: 1px; }

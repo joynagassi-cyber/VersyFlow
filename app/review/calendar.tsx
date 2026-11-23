@@ -28,7 +28,7 @@ import type {
   MemorizationRecord,
   ReviewLogEntry,
 } from '@/domains/memorization/entities';
-import { getReviewLogRepository, getSyncUserIdProvider } from '@/infrastructure/repository/powersync-repositories';
+import { getReviewLogRepository, getSyncUserIdProvider } from '@/infrastructure/repository/mode-repositories';
 import { formatProgressLabel } from '@/lib/progress-label';
 import { normalizeLocaleCode } from '@/domains/i18n/config';
 
@@ -225,13 +225,29 @@ export default function ReviewCalendarScreen() {
     { key: 'today', label: relativeDayLabel(Date.now(), i18n.resolvedLanguage || i18n.language), cls: 'bg-surface-tint ring-2 ring-primary' },
   ];
 
+  // Un compteur non lu affiche « — », jamais « 0 » : « 0 jours de série » et
+  // « série inconnue » ne veulent pas dire la même chose (D15).
   const monthSummary = [
-    { value: stats?.streakCount ?? 0, label: t('progress.streak', 'Jours de série'), icon: <DuoIcon icon={Flame} size={14} /> },
-    { value: stats?.totalVerses ?? 0, label: formatProgressLabel(t('progress.versesMemorized', 'Versets mémorisés'), stats?.totalVerses ?? 0, i18n.resolvedLanguage || i18n.language), icon: <DuoIcon icon={BookOpen} size={14} /> },
     {
-      value: `${stats ? Math.round((stats.masteredVerses / Math.max(1, stats.totalVerses)) * 100) : 0}%`,
+      value: stats ? stats.streakCount : '—',
+      label: t('progress.streak', 'Jours de série'),
+      icon: <DuoIcon icon={Flame} size={16} />,
+    },
+    {
+      value: stats ? stats.totalVerses : '—',
+      label: formatProgressLabel(
+        t('progress.versesMemorized', 'Versets mémorisés'),
+        stats?.totalVerses ?? 0,
+        i18n.resolvedLanguage || i18n.language,
+      ),
+      icon: <DuoIcon icon={BookOpen} size={16} />,
+    },
+    {
+      value: stats
+        ? `${Math.round((stats.masteredVerses / Math.max(1, stats.totalVerses)) * 100)}%`
+        : '—',
       label: t('progress.retention', 'Taux de rétention'),
-      icon: <DuoIcon icon={TrendingUp} size={14} />,
+      icon: <DuoIcon icon={TrendingUp} size={16} />,
     },
   ];
 
@@ -244,7 +260,7 @@ export default function ReviewCalendarScreen() {
           className="flex h-10 w-10 items-center justify-center rounded-full bg-surface shadow-sm"
           aria-label="Mois précédent"
         >
-          <DuoIcon icon={ChevronLeft} size={20} className="text-primary" />
+          <DuoIcon icon={ChevronLeft} size={20} className="directional text-primary" />
         </button>
         <h2 className="text-lg font-bold text-text-primary">
           {changeMonth(monthLabel)}
@@ -254,7 +270,7 @@ export default function ReviewCalendarScreen() {
           className="flex h-10 w-10 items-center justify-center rounded-full bg-surface shadow-sm"
           aria-label="Mois suivant"
         >
-          <DuoIcon icon={ChevronRight} size={20} className="text-primary" />
+          <DuoIcon icon={ChevronRight} size={20} className="directional text-primary" />
         </button>
       </div>
 

@@ -3,7 +3,7 @@
  *
  * Decouples `ReviewQueueService` from any concrete storage: the service used
  * to depend on the MMKV-backed `MemorizationService` directly. Now it depends
- * on this minimal port, so a PowerSync-backed source can be injected
+ * on this minimal port, so a different storage source can be injected
  * (single SYNCED write path, see P0-B lot) without the service knowing where
  * the records actually live.
  */

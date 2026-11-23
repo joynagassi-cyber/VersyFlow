@@ -12,13 +12,8 @@ import { DuoIcon } from '@/components/ui/DuoIcon';
 import { ThemeAppearanceIcon } from '@/components/ui/ThemeAppearanceIcon';
 import {
   ChevronRightIcon as ChevronRight,
-  LanguagesIcon as Languages,
-  BookTextIcon as BookText,
   CloudUploadIcon as CloudUpload,
   Download01Icon as Download,
-  ShieldCheckIcon as ShieldCheck,
-  InformationCircleIcon as Info,
-  HelpCircleIcon as HelpCircle,
   Delete02Icon as Trash2,
   LogOutIcon as LogOut,
   CheckIcon as Check,
@@ -51,7 +46,6 @@ const TAB_DEFS: { id: SettingsTab; key: string; label: string }[] = [
   { id: 'profile', key: 'settingsTab.profile', label: 'Profil' },
 ];
 
-import { bibleTranslationDisplayName } from '@/services/bible-translation-names';
 import { fireAndForget } from '@/lib/fire-and-forget';
 import { Switch } from '@/components/ui/Switch';
 
@@ -101,7 +95,7 @@ function SignOutButton({ onSignOut }: { onSignOut: () => Promise<void> }) {
       onClick={() => fireAndForget(onSignOut(), 'settings:signOut')}
       className="flex min-h-14 w-full items-center justify-center gap-2 rounded-full bg-surface px-4 text-base font-semibold text-error shadow-sm"
     >
-      <DuoIcon icon={LogOut} size={18} />
+      <DuoIcon icon={LogOut} size={20} />
       {t('settings.signOut', 'Se déconnecter')}
     </button>
   );
@@ -135,7 +129,7 @@ function DataTab() {
             <span className="block text-base font-semibold text-text-primary">{c.label}</span>
             <span className="block text-sm text-text-muted">{c.sub}</span>
           </span>
-          <DuoIcon icon={ChevronRight} size={18} className="text-text-muted" />
+          <DuoIcon icon={ChevronRight} size={20} className="directional text-text-muted" />
         </button>
       ))}
     </div>
@@ -149,7 +143,6 @@ function ParamsTab() {
   const { t, i18n } = useTranslation();
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   const signOut = useAuthStore((s) => s.signOut);
-  const bibleTranslation = useSettingsStore((s) => s.bibleTranslation);
   const [languageModalOpen, setLanguageModalOpen] = useState(false);
   const visibleTabs = useUiStore((s) => s.visibleTabs);
   const setVisibleTab = useUiStore((s) => s.setVisibleTab);
@@ -168,15 +161,17 @@ function ParamsTab() {
     navigate('/auth');
   };
 
+  /**
+   * Il n'y a **qu'un** hub de réglages : `/settings` (`app/settings/index.tsx`).
+   * Cet onglet gardait une seconde arborescence — mêmes écrans, autres libellés,
+   * autres icônes — donc deux endroits où ajouter une ligne et deux ordres de
+   * lecture. Il ne garde plus que ce qui n'existe nulle part ailleurs :
+   *   - la langue en feuille modale (le hub, lui, ouvre `/settings/languages`) ;
+   *   - les deux réglages de session/rappels, avec leur sous-titre ;
+   *   - la zone de danger, qui n'existe que dans l'onglet.
+   * Le reste renvoie au hub, en une ligne, plutôt qu'en le recopiant.
+   */
   const groups = [
-    {
-      title: t('settings.apparence', 'Apparence'),
-      rows: [
-        { icon: <DuoIcon icon={Languages} size={20} />, label: t('settings.uiLanguage', "Langue de l'interface"), sub: getLanguageName(currentLanguage), onClick: () => setLanguageModalOpen(true) },
-        { icon: <DuoIcon icon={BookText} size={20} />, label: t('settings.bibleTranslation', 'Traduction biblique'), sub: `${bibleTranslationDisplayName(bibleTranslation)} · ${t('settings.downloadTranslations', 'Télécharger d’autres versions')}`, onClick: () => navigate('/settings/available-translations') },
-        { icon: <ThemeAppearanceIcon />, label: t('nav.theme', 'Thème et apparence'), sub: t('settingsHub.themeHint', 'Clair, sombre et accent'), onClick: () => navigate('/settings/appearance') },
-      ],
-    },
     {
       title: t('settings.sessionReminders', 'Session & Rappels'),
       rows: [
@@ -185,24 +180,17 @@ function ParamsTab() {
       ],
     },
     {
-      title: t('settings.confidentialite', 'Confidentialité'),
+      title: t('settings.allSettings', 'Tous les réglages'),
       rows: [
-        { icon: <DuoIcon icon={ShieldCheck} size={20} />, label: t('settings.privacyTitle', 'Données & confidentialité'), sub: t('settingsHub.privacyHint', 'Télémétrie et données'), onClick: () => navigate('/settings/privacy') },
-      ],
-    },
-    {
-      title: t('settings.about', 'À propos'),
-      rows: [
-        { icon: <DuoIcon icon={Info} size={20} />, label: t('settings.about', 'À propos'), sub: `${t('common.appName', 'VersyFlow')} v0.1.0`, onClick: () => navigate('/settings/about') },
-        { icon: <DuoIcon icon={HelpCircle} size={20} />, label: t('settings.helpSupport', 'Aide & Support'), sub: t('settings.documentation', 'Guides et contact'), onClick: () => navigate('/settings/about') },
+        {
+          icon: <ThemeAppearanceIcon />,
+          label: t('settings.openHub', 'Ouvrir les réglages complets'),
+          sub: t('settings.openHubHint', 'Apparence, traduction, données, confidentialité'),
+          onClick: () => navigate('/settings'),
+        },
       ],
     },
   ];
-
-  function getLanguageName(code: string) {
-    const lang = SUPPORTED_LANGUAGES.find((l) => l.code === code);
-    return lang ? lang.name : code;
-  }
 
   return (
     <div className="settings-groups">
@@ -241,7 +229,7 @@ function ParamsTab() {
           <div className="g2 settings-group-card overflow-hidden">
             <h2>{group.title}</h2>
             {group.rows.map((row, i) => (
-              <button key={i} onClick={row.onClick} className={cn('flex w-full items-center gap-3 p-4 text-left', i < group.rows.length - 1 && 'border-b border-divider')}>
+              <button key={i} onClick={row.onClick} className={cn('flex w-full items-center gap-3 p-4 text-start', i < group.rows.length - 1 && 'border-b border-divider')}>
                 <span className="icon-chip flex h-10 w-10 shrink-0 items-center justify-center rounded-full">
                   {row.icon}
                 </span>
@@ -249,7 +237,7 @@ function ParamsTab() {
                   <span className="block text-base text-text-primary">{row.label}</span>
                   <span className="block text-sm text-text-muted">{row.sub}</span>
                 </span>
-                <DuoIcon icon={ChevronRight} size={18} className="text-text-muted" />
+                <DuoIcon icon={ChevronRight} size={20} className="directional text-text-muted" />
               </button>
             ))}
           </div>
@@ -273,7 +261,7 @@ function ParamsTab() {
                 navigate('/onboarding/welcome', { replace: true });
               }
             }}
-            className="flex w-full items-center gap-3 p-4 text-left"
+            className="flex w-full items-center gap-3 p-4 text-start"
           >
             <span className="flex h-10 w-10 items-center justify-center rounded-full bg-error-light">
               <DuoIcon icon={Trash2} size={20} className="text-error" />
@@ -282,7 +270,7 @@ function ParamsTab() {
               <span className="block text-base font-medium text-error">{t('settings.resetProgress', 'Réinitialiser la progression')}</span>
               <span className="block text-sm text-text-muted">{t('common.delete', 'Supprimer toutes les données')}</span>
             </span>
-            <DuoIcon icon={ChevronRight} size={18} className="text-error" />
+            <DuoIcon icon={ChevronRight} size={20} className="directional text-error" />
           </button>
         </div>
       </section>
@@ -301,12 +289,12 @@ function ParamsTab() {
             {SUPPORTED_LANGUAGES.map((lang) => {
               const selected = currentLanguage === lang.code;
               return (
-                <button key={lang.code} onClick={() => changeLanguage(lang.code)} className={cn('flex items-center justify-between rounded-xl p-3 text-left transition-colors', selected ? 'bg-surface-tint' : 'hover:bg-surface-tint/50')}>
+                <button key={lang.code} onClick={() => changeLanguage(lang.code)} className={cn('flex items-center justify-between rounded-xl p-3 text-start transition-colors', selected ? 'bg-surface-tint' : 'hover:bg-surface-tint/50')}>
                   <span>
                     <span className={cn('block text-base', selected ? 'font-semibold text-primary' : 'font-medium text-text-primary')}>{lang.name}</span>
                     <span className="text-sm text-text-muted">{lang.displayName}</span>
                   </span>
-                  {selected && <DuoIcon icon={Check} size={18} className="text-primary" />}
+                  {selected && <DuoIcon icon={Check} size={20} className="text-primary" />}
                 </button>
               );
             })}
@@ -383,8 +371,8 @@ function ProfileTab() {
               {displayName.charAt(0).toUpperCase()}
             </span>
           )}
-          <span className="absolute bottom-0 right-0 flex h-7 w-7 items-center justify-center rounded-full bg-primary text-on-primary shadow">
-            <DuoIcon icon={Camera} size={14} />
+          <span className="absolute bottom-0 end-0 flex h-7 w-7 items-center justify-center rounded-full bg-primary text-on-primary shadow">
+            <DuoIcon icon={Camera} size={16} />
           </span>
         </button>
         <input ref={fileRef} type="file" accept="image/*" onChange={pickPhoto} className="hidden" />
@@ -412,11 +400,11 @@ function ProfileTab() {
               className="flex items-center gap-2 text-xl font-extrabold text-text-primary"
             >
               {displayName}
-              <DuoIcon icon={CircleUserRound} size={18} className="text-text-muted" />
+              <DuoIcon icon={CircleUserRound} size={20} className="text-text-muted" />
             </button>
           )}
           <p className="mt-1 flex items-center gap-1.5 text-sm text-text-muted">
-            <DuoIcon icon={Mail} size={14} />
+            <DuoIcon icon={Mail} size={16} />
             {isAuthenticated ? user?.email ?? t('profile.local', 'Local') : t('profile.local', 'Mode local')}
           </p>
           <div className="mt-3 flex items-center gap-2">
@@ -436,15 +424,15 @@ function ProfileTab() {
       <section>
         <div className="g2 settings-group-card overflow-hidden">
           {actions.map((a, i) => (
-            <button key={i} onClick={() => navigate(a.to)} className={cn('flex w-full items-center gap-3 p-4 text-left', i < actions.length - 1 && 'border-b border-divider')}>
+            <button key={i} onClick={() => navigate(a.to)} className={cn('flex w-full items-center gap-3 p-4 text-start', i < actions.length - 1 && 'border-b border-divider')}>
               <span className="icon-chip flex h-10 w-10 shrink-0 items-center justify-center rounded-full">
-                <DuoIcon icon={a.icon} size={18} />
+                <DuoIcon icon={a.icon} size={20} />
               </span>
               <span className="flex-1">
                 <span className="block text-base text-text-primary">{a.label}</span>
                 <span className="block text-sm text-text-muted">{a.sub}</span>
               </span>
-              <DuoIcon icon={ChevronRight} size={18} className="text-text-muted" />
+              <DuoIcon icon={ChevronRight} size={20} className="directional text-text-muted" />
             </button>
           ))}
         </div>

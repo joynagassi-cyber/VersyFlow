@@ -48,7 +48,7 @@ export default function OnboardingSessionConfig() {
             className="flex-1"
             onClick={() => navigate('/onboarding/journey/profile')}
           >
-            <DuoIcon icon={ArrowLeft} size={16} />
+            <DuoIcon icon={ArrowLeft} size={16}  className="directional" />
             {t('common.back', 'Retour')}
           </Button>
           <Button
@@ -57,7 +57,7 @@ export default function OnboardingSessionConfig() {
             onClick={() => navigate('/onboarding/reminder-config')}
           >
             {t('common.continue', 'Continuer')}
-            <DuoIcon icon={ArrowRight} size={16} />
+            <DuoIcon icon={ArrowRight} size={16}  className="directional" />
           </Button>
         </div>
       }
@@ -65,7 +65,7 @@ export default function OnboardingSessionConfig() {
       <div className="flex flex-col gap-6">
         <div>
           <div className="mb-3 flex items-center gap-2">
-            <DuoIcon icon={Target} size={18} className="text-primary" />
+            <DuoIcon icon={Target} size={20} className="text-primary" />
             <span className="text-base font-semibold text-text-primary">
               {t('onboarding.sessionGoal', 'Versets par session')}
             </span>
@@ -91,7 +91,7 @@ export default function OnboardingSessionConfig() {
                   )}
                 >
                   {g}
-                  {selected && <DuoIcon icon={Check} className="ml-1" size={16} />}
+                  {selected && <DuoIcon icon={Check} className="ms-1" size={16} />}
                 </button>
               );
             })}
@@ -103,7 +103,7 @@ export default function OnboardingSessionConfig() {
           aria-pressed={focusMode}
           onClick={() => setFocusMode(!focusMode)}
           className={cn(
-            'flex items-center gap-4 rounded-2xl border-2 p-4 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
+            'flex items-center gap-4 rounded-2xl border-2 p-4 text-start transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
             focusMode
               ? 'border-primary bg-surface-tint'
               : 'border-transparent bg-surface shadow-sm',
@@ -115,7 +115,7 @@ export default function OnboardingSessionConfig() {
               focusMode ? 'bg-primary text-on-primary' : 'bg-surface-tint text-primary',
             )}
           >
-            <DuoIcon icon={Focus} size={22} />
+            <DuoIcon icon={Focus} size={24} />
           </div>
           <div className="flex-1">
             <p className="text-base font-semibold text-text-primary">
@@ -134,7 +134,7 @@ export default function OnboardingSessionConfig() {
               focusMode ? 'border-primary bg-primary' : 'border-text-muted',
             )}
           >
-            {focusMode && <DuoIcon icon={Check} size={14} className="text-on-status" />}
+            {focusMode && <DuoIcon icon={Check} size={16} className="text-on-status" />}
           </div>
         </button>
       </div>

@@ -2,7 +2,7 @@
  * Streak Domain — Repository Port (P2-4)
  *
  * Append-only daily streak fact: one row per (user, day). Write-only from
- * the client (insertOnly in the PowerSync schema); reads go through the
+ * the client (append-only by construction); reads go through the
  * local SQLite replica.
  */
 

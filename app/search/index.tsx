@@ -66,6 +66,7 @@ export default function SearchScreen() {
   const [showHistory, setShowHistory] = useState(true);
   const [index, setIndex] = useState<SearchRow[]>([]);
   const [indexError, setIndexError] = useState<string | null>(null);
+  const [indexing, setIndexing] = useState(true);
   const [searchHistory, setSearchHistory] = useState<string[]>(() => {
     try {
       const raw = localStorage.getItem(HISTORY_KEY);
@@ -106,6 +107,7 @@ export default function SearchScreen() {
   useEffect(() => {
     let cancelled = false;
     setIndexError(null);
+    setIndexing(true);
     const translationId = useSettingsStore.getState().bibleTranslation || 'lsg';
     void loadTranslationBooks(translationId).then((booksData) => {
       if (cancelled) return;
@@ -114,9 +116,13 @@ export default function SearchScreen() {
         return;
       }
       buildIndex(booksData);
+      // Tant que l'index n'est pas bâti, une recherche ne peut rien trouver :
+      // afficher « Aucun résultat » à cet instant serait faux.
+      setIndexing(false);
     }).catch(() => {
       if (!cancelled) {
         setIndexError(t('errors.unknownError', 'Impossible de charger la recherche'));
+        setIndexing(false);
       }
     });
     return () => {
@@ -224,8 +230,9 @@ export default function SearchScreen() {
       <div className="screen-column">
         {/* Input */}
         <div className="flex items-center gap-2 rounded-2xl bg-surface-tint px-4 py-3">
-          <DuoIcon icon={Search} size={18} className="text-text-muted" />
+          <DuoIcon icon={Search} size={20} className="text-text-muted" />
           <input
+            aria-label={t('search.placeholder', 'Rechercher un verset...')}
             className="flex-1 bg-transparent text-base text-text-primary outline-none"
             placeholder={t('search.placeholder', 'Rechercher un verset...')}
             value={query}
@@ -235,7 +242,7 @@ export default function SearchScreen() {
           />
           {query && (
             <button onClick={() => handleSearch('')} aria-label={t('common.clear', 'Effacer')}>
-              <DuoIcon icon={X} size={18} className="text-text-muted" />
+              <DuoIcon icon={X} size={20} className="text-text-muted" />
             </button>
           )}
         </div>
@@ -288,7 +295,7 @@ export default function SearchScreen() {
               <button
                 key={i}
                 onClick={() => handleQuickSearch(item)}
-                className="flex w-full items-center gap-3 border-b border-[color:var(--color-divider)] py-3 text-left"
+                className="flex w-full items-center gap-3 border-b border-[color:var(--color-divider)] py-3 text-start"
               >
                 <DuoIcon icon={Clock} size={16} className="text-text-muted" />
                 <span className="flex-1 text-base text-text-primary">{item}</span>
@@ -324,12 +331,19 @@ export default function SearchScreen() {
                     onClick={() => openResult(result)}
                     className="flex items-center gap-1.5 rounded-full bg-surface-tint px-3 py-1.5 text-sm font-medium text-primary"
                   >
-                    <DuoIcon icon={GraduationCap} size={14} />
+                    <DuoIcon icon={GraduationCap} size={16} />
                     {t('search.memorize', 'Memoriser')}
                   </button>
                 </div>
               </div>
             ))}
+          </div>
+        ) : query.length >= 2 && indexing ? (
+          // L'index se construit : « aucun résultat » serait un mensonge
+          // pendant cette fenêtre.
+          <div className="mt-10 flex items-center justify-center gap-2 text-sm text-text-muted" role="status">
+            <DuoIcon icon={Search} size={16} />
+            {t('search.indexing', 'Preparation de la recherche…')}
           </div>
         ) : query.length >= 2 ? (
           <div className="mt-10">

@@ -57,7 +57,7 @@ export function BottomTabs() {
                     (elle ne servait à rien). La teinte vient du bouton, qui
                     la reçoit de `tab-item` — et le second calque du duotone
                     de `--solar-secondary-color`. */}
-                <DuoIcon icon={Icon} size={23} strokeWidth={1.75} />
+                <DuoIcon icon={Icon} size={24} />
               </span>
               {/* L'indicateur est TOUJOURS rendu : le faire apparaître
                   décalait la barre de 4 px à chaque changement d'onglet. */}

@@ -78,11 +78,11 @@ export default function SemanticNodeScreen() {
             <ul className="flex flex-col gap-2">
               {parents.map((relation) => (
                 <li key={`${relation.concept.id}-${relation.depth}`} className="flex items-center gap-2">
-                  <DuoIcon icon={Link} size={14} className="text-primary" />
+                  <DuoIcon icon={Link} size={16} className="text-primary" />
                   <span className="text-sm text-text-primary">
                     {conceptLabel(relation.concept, lang)}
                   </span>
-                  <span className="ml-auto text-xs tabular-nums text-text-muted">
+                  <span className="ms-auto text-xs tabular-nums text-text-muted">
                     {Math.round((relation.via?.confidence ?? 0) * 100)}%
                   </span>
                 </li>
@@ -105,9 +105,9 @@ export default function SemanticNodeScreen() {
                     onClick={() =>
                       navigate(`/semantic/node?conceptId=${encodeURIComponent(child.concept.id)}`)
                     }
-                    className="flex w-full items-center gap-2 rounded-lg px-2 py-2 text-left"
+                    className="flex w-full items-center gap-2 rounded-lg px-2 py-2 text-start"
                   >
-                    <DuoIcon icon={ArrowRight} size={14} className="text-text-muted" />
+                    <DuoIcon icon={ArrowRight} size={16} className="directional text-text-muted" />
                     <span className="min-w-0 flex-1 truncate text-sm text-text-primary">
                       {conceptLabel(child.concept, lang)}
                     </span>

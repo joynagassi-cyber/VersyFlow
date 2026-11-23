@@ -99,10 +99,10 @@ export default function NavigationSettingsScreen() {
                 <button
                   key={tabId}
                   onClick={() => toggle(tabId)}
-                  className="flex w-full items-center justify-between px-4 py-3.5 text-left"
+                  className="flex w-full items-center justify-between px-4 py-3.5 text-start"
                 >
                   <span className="flex items-center gap-3">
-                    <DuoIcon icon={Icon} size={18} className={visible ? 'text-primary' : 'text-text-muted'} />
+                    <DuoIcon icon={Icon} size={20} className={visible ? 'text-primary' : 'text-text-muted'} />
                     <span className="text-base text-text-primary">{t(i18nKey, defaultLabel)}</span>
                   </span>
                   <span className={pillClass(visible)}>
@@ -132,10 +132,10 @@ export default function NavigationSettingsScreen() {
                 <button
                   key={path}
                   onClick={() => toggleMenuPath(path)}
-                  className="flex w-full items-center justify-between px-4 py-3.5 text-left"
+                  className="flex w-full items-center justify-between px-4 py-3.5 text-start"
                 >
                   <span className="flex items-center gap-3">
-                    <DuoIcon icon={Icon} size={18} className={visible ? 'text-primary' : 'text-text-muted'} />
+                    <DuoIcon icon={Icon} size={20} className={visible ? 'text-primary' : 'text-text-muted'} />
                     <span className="text-base text-text-primary">{t(labelKey, label)}</span>
                   </span>
                   <span className={pillClass(visible)}>

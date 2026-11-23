@@ -71,7 +71,12 @@ const COLLECTION_LABELS: Record<MockCollectionName, string> = {
   test_events: 'Événements de test',
 };
 
-function Card({
+/**
+ * Panneau de l'atelier. Il s'appelait `Card`, comme le composant d'interface :
+ * deux intentions sous un même nom (règle L05). Ici c'est un titre + une icône
+ * + un contenu, pas une surface de carte réutilisable.
+ */
+function DevPanel({
   title,
   icon,
   children,
@@ -85,7 +90,7 @@ function Card({
   return (
     <section className={cn('rounded-2xl bg-surface p-4 shadow-sm', className)}>
       <p className="mb-3 flex items-center gap-2 section-label">
-        <DuoIcon icon={icon} size={14} className="text-primary" />
+        <DuoIcon icon={icon} size={16} className="text-primary" />
         {title}
       </p>
       {children}
@@ -228,7 +233,7 @@ export default function DevPanelScreen() {
       right={
         <Button variant="ghost" size="sm" onClick={() => navigate('/tabs/home')}>
           App
-          <DuoIcon icon={ArrowRight} size={16} />
+          <DuoIcon icon={ArrowRight} size={16}  className="directional" />
         </Button>
       }
     >
@@ -251,20 +256,20 @@ export default function DevPanelScreen() {
                 Cinq règles de couleur côte à côte : repos, survol, actif.
               </span>
             </span>
-            <DuoIcon icon={ArrowRight} size={18} />
+            <DuoIcon icon={ArrowRight} size={20}  className="directional" />
           </Link>
         )}
 
         {/* ---------------- Mode ---------------- */}
-        <Card title="Mode de données" icon={Database}>
+        <DevPanel title="Mode de données" icon={Database}>
           <div className="flex items-center justify-between gap-3">
             <div>
               <p className="text-base font-extrabold text-text-primary">
-                {mode === 'mock' ? 'MOCK (frontend seul)' : 'LIVE (Supabase + PowerSync)'}
+                {mode === 'mock' ? 'DÉMO (données fictives)' : 'RÉEL (vos données locales)'}
               </p>
               <p className="mt-1 text-xs text-text-muted">
                 {mode === 'mock'
-                  ? 'Aucune requête réseau vers Supabase. Données locales + API de test.'
+                  ? 'Aucune requête réseau. Données locales + API de test.'
                   : 'Synchronisation cloud active.'}
               </p>
             </div>
@@ -309,13 +314,13 @@ export default function DevPanelScreen() {
             onClick={() => void handleSkipOnboarding()}
             disabled={busy !== null}
           >
-            <DuoIcon icon={ArrowRight} size={15} />
+            <DuoIcon icon={ArrowRight} size={16}  className="directional" />
             Sauter l'onboarding et ouvrir l'app
           </Button>
-        </Card>
+        </DevPanel>
 
         {/* ---------------- Identity ---------------- */}
-        <Card title="Identité de test" icon={Settings}>
+        <DevPanel title="Identité de test" icon={Settings}>
           <div className="space-y-1 text-sm text-text-secondary">
             <p>
               <span className="text-text-muted">Nom :</span> {identity.displayName}
@@ -333,10 +338,10 @@ export default function DevPanelScreen() {
               </p>
             )}
           </div>
-        </Card>
+        </DevPanel>
 
         {/* ---------------- Local API ---------------- */}
-        <Card title="API de test locale" icon={Upload}>
+        <DevPanel title="API de test locale" icon={Upload}>
           <div className="mb-3 grid grid-cols-3 gap-2">
             <Stat label="File" value={stats.queued} />
             <Stat label="Envoyés" value={stats.sent} />
@@ -362,24 +367,24 @@ export default function DevPanelScreen() {
           )}
           <div className="mt-3 flex flex-wrap gap-2">
             <Button size="sm" variant="secondary" onClick={() => void handleFlush()} disabled={busy !== null}>
-              <DuoIcon icon={Refresh} size={15} />
+              <DuoIcon icon={Refresh} size={16} />
               Vider la file
             </Button>
             <Button size="sm" variant="outline" onClick={() => void handleSnapshot()} disabled={busy !== null}>
-              <DuoIcon icon={Upload} size={15} />
+              <DuoIcon icon={Upload} size={16} />
               Envoyer l'instantané
             </Button>
             <Button size="sm" variant="ghost" asChild>
               <a href={localBackend.dashboardUrl()} target="_blank" rel="noreferrer">
-                <DuoIcon icon={ExternalLink} size={15} />
+                <DuoIcon icon={ExternalLink} size={16} />
                 Tableau de bord
               </a>
             </Button>
           </div>
-        </Card>
+        </DevPanel>
 
         {/* ---------------- Local data ---------------- */}
-        <Card title="Données locales" icon={Database}>
+        <DevPanel title="Données locales" icon={Database}>
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
             {MOCK_COLLECTIONS.filter((name) => name !== 'test_events').map((name) => (
               <div
@@ -397,15 +402,15 @@ export default function DevPanelScreen() {
           </div>
           <div className="mt-3 flex flex-wrap gap-2">
             <Button size="sm" variant="secondary" onClick={() => void handleSeed()} disabled={busy !== null}>
-              <DuoIcon icon={Refresh} size={15} />
+              <DuoIcon icon={Refresh} size={16} />
               Re-seeder
             </Button>
             <Button size="sm" variant="outline" onClick={() => void handleExport()} disabled={busy !== null}>
-              <DuoIcon icon={Download} size={15} />
+              <DuoIcon icon={Download} size={16} />
               Exporter en JSON
             </Button>
             <Button size="sm" variant="destructive" onClick={() => void handleReset()} disabled={busy !== null}>
-              <DuoIcon icon={Trash} size={15} />
+              <DuoIcon icon={Trash} size={16} />
               Tout réinitialiser
             </Button>
           </div>
@@ -414,10 +419,10 @@ export default function DevPanelScreen() {
             le seed, dont {SEED_VERSES.filter((v) => v.dueInDays <= 0).length} à
             réviser aujourd'hui.
           </p>
-        </Card>
+        </DevPanel>
 
         {/* ---------------- Recent events ---------------- */}
-        <Card title="Derniers événements reçus par le serveur" icon={Check}>
+        <DevPanel title="Derniers événements reçus par le serveur" icon={Check}>
           {notice && (
             <p className="mb-3 rounded-lg bg-primary/10 px-3 py-2 text-xs font-semibold text-primary">
               {notice}
@@ -445,7 +450,7 @@ export default function DevPanelScreen() {
               ))}
             </ul>
           )}
-        </Card>
+        </DevPanel>
       </div>
     </FullScreenPage>
   );

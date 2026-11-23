@@ -1,8 +1,8 @@
 /**
- * P1C-0 — createFamily orchestrator + PowerSync write (single sync path).
+ * P1C-0 — createFamily orchestrator + repository write (single write path).
  *
  * Invariant: family creation goes through `FamilyService` (permission logic,
- * domain events) and lands on the PowerSync `families` + `family_memberships`
+ * domain events) and lands on the `families` + `family_memberships`
  * tables via the shared repositories — never an ad-hoc network call, never
  * MMKV as the source of truth for SYNCED family data.
  *

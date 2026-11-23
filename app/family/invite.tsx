@@ -9,6 +9,7 @@ import {
   InformationCircleIcon as Info,
   Loading03Icon as Loader2,
   CheckIcon as Check,
+  AlertCircleIcon as AlertCircle,
 } from '@/components/ui/solar-icons';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { EmptyState } from '@/components/ui/EmptyState';
@@ -17,6 +18,7 @@ import { useFamilySyncStore } from '@/store/family-sync-store';
 import { useFamilyService } from '@/hooks/useFamilyService';
 import { useAuthStore } from '@/store/auth-store';
 import { fireAndForget } from '@/lib/fire-and-forget';
+import { resolveFamilyIcon } from '@/lib/family-icon';
 
 export default function FamilyInviteScreen() {
   const navigate = useNavigate();
@@ -28,6 +30,10 @@ export default function FamilyInviteScreen() {
 
   const [inviteCode, setInviteCode] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  // Sans ce drapeau, un échec de génération ne produisait RIEN : le bouton
+  // reprenait son libellé et l'utilisateur, sans code, pouvait recommencer
+  // indéfiniment sans comprendre que l'appel avait échoué.
+  const [generateFailed, setGenerateFailed] = useState(false);
   const [copied, setCopied] = useState(false);
   const [sharing, setSharing] = useState(false);
   const family = families.find((f) => f.id === activeFamilyId) || null;
@@ -41,11 +47,13 @@ export default function FamilyInviteScreen() {
   const handleGenerateCode = async () => {
     if (!family) return;
     setIsLoading(true);
+    setGenerateFailed(false);
     try {
       const invitation = await createInvitation(family.id);
       setInviteCode(invitation.token);
     } catch (e) {
       console.error('[family/invite] generate failed', e);
+      setGenerateFailed(true);
     } finally {
       setIsLoading(false);
     }
@@ -107,12 +115,18 @@ export default function FamilyInviteScreen() {
       title={t('family.invite', 'Inviter')}
       showBack
       backPath="/family/members"
-      right={<span className="px-4 text-lg" aria-hidden>{family.icon}</span>}
+      right={
+        <span className="px-4 text-primary" aria-hidden>
+          <DuoIcon icon={resolveFamilyIcon(family.icon)} size={20} />
+        </span>
+      }
     >
       <div className="screen-column space-y-5">
         {/* Family header */}
         <div className="bg-primary flex items-center gap-3 rounded-3xl p-5 text-on-primary">
-          <span className="text-3xl">{family.icon}</span>
+          <span className="flex h-11 w-11 items-center justify-center rounded-full bg-on-primary/20">
+            <DuoIcon icon={resolveFamilyIcon(family.icon)} size={24} />
+          </span>
           <span className="text-xl font-bold">{family.name}</span>
         </div>
 
@@ -132,13 +146,19 @@ export default function FamilyInviteScreen() {
                 className="touch-target rounded-full bg-surface-tint text-primary active:bg-primary/10"
                 aria-label={copied ? t('common.saved', 'Copié') : t('common.copy', 'Copier')}
               >
-                {copied ? <DuoIcon icon={Check} size={18} className="text-success" /> : <DuoIcon icon={Copy} size={18} className="text-primary" />}
+                {copied ? <DuoIcon icon={Check} size={20} className="text-success" /> : <DuoIcon icon={Copy} size={20} className="text-primary" />}
               </button>
             </div>
           ) : (
             <Button variant="default" onClick={() => fireAndForget(handleGenerateCode(), 'family:generate-code')} disabled={isLoading}>
-              {isLoading ? <DuoIcon icon={Loader2} size={18} className="animate-spin" /> : t('family.generateCode', 'Generer un code')}
+              {isLoading ? <DuoIcon icon={Loader2} size={20} className="animate-spin" /> : t('family.generateCode', 'Generer un code')}
             </Button>
+          )}
+          {generateFailed && (
+            <p role="alert" className="flex items-center gap-1.5 text-xs text-error">
+              <DuoIcon icon={AlertCircle} size={16} className="text-error" />
+              {t('family.generateFailed', 'Le code n’a pas pu être créé. Réessayez dans un instant.')}
+            </p>
           )}
           <span className="text-xs text-text-muted">
             {t('family.expiryHint', 'Ce code expire dans 7 jours.')}
@@ -152,15 +172,15 @@ export default function FamilyInviteScreen() {
           disabled={isLoading || !inviteCode || sharing}
         >
           {sharing ? (
-            <DuoIcon icon={Loader2} size={18} className="animate-spin" />
+            <DuoIcon icon={Loader2} size={20} className="animate-spin" />
           ) : (
-            <DuoIcon icon={Share2} size={18} />
+            <DuoIcon icon={Share2} size={20} />
           )}
           {t('family.shareCode', 'Partager le code')}
         </Button>
 
         <div className="flex items-start gap-3 rounded-2xl bg-surface-tint p-4">
-          <DuoIcon icon={Info} size={18} className="mt-0.5 text-info" />
+          <DuoIcon icon={Info} size={20} className="mt-0.5 text-info" />
           <p className="flex-1 text-sm text-text-secondary">
             {t('family.inviteHint', 'Chaque membre utilise ce code pour rejoindre votre famille.')}
           </p>

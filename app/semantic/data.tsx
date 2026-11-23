@@ -87,7 +87,7 @@ export default function SemanticDataScreen() {
                   key={code}
                   className="flex items-center gap-1 rounded-full bg-surface-tint px-2.5 py-1 text-xs text-text-primary"
                 >
-                  <DuoIcon icon={Globe} size={12} className="text-primary" />
+                  <DuoIcon icon={Globe} size={16} className="text-primary" />
                   {code}
                   <span className="text-text-muted">· {t('tree.installed', 'installé')}</span>
                 </li>
@@ -126,7 +126,7 @@ export default function SemanticDataScreen() {
         </SectionCard>
 
         <div className="flex items-start gap-2 rounded-xl bg-surface-tint px-3 py-2">
-          <DuoIcon icon={Info} size={14} className="mt-0.5 shrink-0 text-text-muted" />
+          <DuoIcon icon={Info} size={16} className="mt-0.5 shrink-0 text-text-muted" />
           <p className="text-xs leading-5 text-text-muted">
             {t(
               'tree.offlineNote',

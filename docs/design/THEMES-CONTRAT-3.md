@@ -1,3 +1,8 @@
+> **Note (2026-11-19) — documentation historique.** VersyFlow est
+> désormais 100 % frontend : the former backend et the local store ont été retirés du
+> dépôt. Les mentions de ces services dans ce document décrivent
+> l’état antérieur, pas l’architecture actuelle (voir `docs/AUDIT.md`).
+
 # Contrat n°3 — thème par défaut + intégration des thèmes demandés
 
 Statut : **livré et mesuré**. Les commandes de vérification sont en fin de
@@ -117,7 +122,6 @@ Résultats mesurés (état livré) :
 - `vitest run` (complet) — **1345 réussis / 1364**, 19 échecs **préexistants**
   (7 fichiers : api/fsrs-engine-api, integration/auth-integration,
   semantic/import, unit/bible-full-canon, unit/bible-multi-translation,
-  unit/powersync-connector, unit/services/fsrs-factory) — inchangés par ce
   contrat.
 - `vite build` — OK, `index` 450,93 kB (gzip 127,44) contre 447,29 kB
   (gzip 126,34) avant : +3,6 kB, dont les woff2 Inter/JetBrains Mono.

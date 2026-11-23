@@ -44,6 +44,10 @@ export default function VerseView() {
   const verseRef = params.get('verseRef') ?? undefined;
   const translationId = useSettingsStore((s) => s.bibleTranslation);
   const [verseText, setVerseText] = useState<string | null>(null);
+  // Une traduction absente n'est pas une panne : on le dit une fois, sous le
+  // verset, au lieu d'afficher « Verset non disponible » qui laissait croire
+  // que la référence était invalide.
+  const [textUnavailable, setTextUnavailable] = useState(false);
 
   const { cues, loading } = useVerseView(verseRef);
 
@@ -64,7 +68,7 @@ export default function VerseView() {
         if (!cancelled) setVerseText(v?.text ?? null);
       })
       .catch(() => {
-        /* translation unavailable — falls back to "verse not available" */
+        if (!cancelled) setTextUnavailable(true);
       });
     return () => {
       cancelled = true;
@@ -103,12 +107,20 @@ export default function VerseView() {
           ) : (
             <p className="text-sm text-text-muted">{t('errors.verseNotFound', 'Verset non disponible')}</p>
           )}
+          {textUnavailable && (
+            <p role="status" className="mt-2 text-xs text-text-muted">
+              {t(
+                'semantic.translationUnavailable',
+                'Le texte de cette traduction n’est pas livré sur cet appareil ; les repères sémantiques restent affichés.',
+              )}
+            </p>
+          )}
         </div>
 
         {/* Concepts */}
         <section className="mb-5">
           <h2 className="mb-2 flex items-center gap-1.5 text-sm font-semibold text-text-tertiary">
-            <DuoIcon icon={BrainCircuit} size={14} className="text-primary" />
+            <DuoIcon icon={BrainCircuit} size={16} className="text-primary" />
             {t('semantic.concept', 'Concept')}s — {t('semantic.related', 'Concepts liés')}
           </h2>
           {concepts.length === 0 ? (
@@ -119,7 +131,7 @@ export default function VerseView() {
                 <button
                   key={concept.id}
                   onClick={() => navigate(`/semantic/concept?conceptId=${encodeURIComponent(concept.id)}`)}
-                  className="g2 flex items-center justify-between p-3 text-left transition-transform active:scale-[0.99]"
+                  className="g2 flex items-center justify-between p-3 text-start transition-transform active:scale-[0.99]"
                 >
                   <div>
                     <p className="text-sm font-semibold text-text-primary">
@@ -129,7 +141,7 @@ export default function VerseView() {
                       {role === 'PRIMARY' ? t('semantic.primary', 'Principal') : role}
                     </p>
                   </div>
-                  <DuoIcon icon={ChevronRight} size={16} className="text-primary" />
+                  <DuoIcon icon={ChevronRight} size={16} className="directional text-primary" />
                 </button>
               ))}
             </div>
@@ -139,7 +151,7 @@ export default function VerseView() {
         {/* Cross-refs / related verses */}
         <section className="mb-5">
           <h2 className="mb-2 flex items-center gap-1.5 text-sm font-semibold text-text-tertiary">
-            <DuoIcon icon={BookMarked} size={14} className="text-primary" />
+            <DuoIcon icon={BookMarked} size={16} className="text-primary" />
             {t('semantic.crossRefs', 'Références croisées')}
           </h2>
           {relatedVerses.length === 0 ? (
@@ -150,7 +162,7 @@ export default function VerseView() {
                 <button
                   key={`${r.verseKey}-${r.relation.type}`}
                   onClick={() => navigate(`/semantic/verse?verseRef=${encodeURIComponent(r.verseKey)}`)}
-                  className="g2 flex items-center justify-between p-3 text-left transition-transform active:scale-[0.99]"
+                  className="g2 flex items-center justify-between p-3 text-start transition-transform active:scale-[0.99]"
                 >
                   <div>
                     <p className="text-sm font-semibold text-text-primary">
@@ -158,7 +170,7 @@ export default function VerseView() {
                     </p>
                     <p className="text-xs text-text-muted">{r.relation.type}</p>
                   </div>
-                  <DuoIcon icon={ChevronRight} size={16} className="text-primary" />
+                  <DuoIcon icon={ChevronRight} size={16} className="directional text-primary" />
                 </button>
               ))}
             </div>
@@ -168,13 +180,13 @@ export default function VerseView() {
         {/* Community */}
         <section>
           <h2 className="mb-2 flex items-center gap-1.5 text-sm font-semibold text-text-tertiary">
-            <DuoIcon icon={Map} size={14} className="text-primary" />
+            <DuoIcon icon={Map} size={16} className="text-primary" />
             {t('semantic.community', 'Communauté')}
           </h2>
           {community ? (
             <button
               onClick={() => navigate(`/semantic/community?communityId=${encodeURIComponent(community.id)}`)}
-              className="g2 flex items-center justify-between p-3 text-left transition-transform active:scale-[0.99] w-full"
+              className="g2 flex items-center justify-between p-3 text-start transition-transform active:scale-[0.99] w-full"
             >
               <div>
                 <p className="text-sm font-semibold text-text-primary">{community.name}</p>
@@ -182,7 +194,7 @@ export default function VerseView() {
                   <p className="text-xs text-text-muted">{community.description}</p>
                 ) : null}
               </div>
-              <DuoIcon icon={ChevronRight} size={16} className="text-primary" />
+              <DuoIcon icon={ChevronRight} size={16} className="directional text-primary" />
             </button>
           ) : (
             <p className="empty-line">{t('semantic.noCommunity', 'Aucune communauté')}</p>

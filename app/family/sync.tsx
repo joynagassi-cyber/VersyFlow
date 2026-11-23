@@ -64,7 +64,7 @@ export default function FamilySyncScreen() {
                 healthy ? 'bg-success-light text-success' : 'bg-warning-light text-warning'
               }`}
             >
-              <DuoIcon icon={healthy ? CheckCircle : AlertCircle} size={22} />
+              <DuoIcon icon={healthy ? CheckCircle : AlertCircle} size={24} />
             </span>
             <div>
               <h2 className="card-title">
@@ -100,7 +100,7 @@ export default function FamilySyncScreen() {
           <ul className="flex flex-col divide-y divide-divider">
             <li className="flex items-center gap-3 py-2">
               <span className="flex h-9 w-9 items-center justify-center rounded-full bg-surface-tint text-primary">
-                <DuoIcon icon={Phone} size={18} />
+                <DuoIcon icon={Phone} size={20} />
               </span>
               <div className="min-w-0 flex-1">
                 <p className="truncate text-sm font-semibold text-text-primary">
@@ -140,8 +140,8 @@ export default function FamilySyncScreen() {
           <div className="mt-3">
             <HintNote>
               {t(
-                'familyPlus.pendingHint2',
-                'Défis, séances et fil d’activité sont enregistrés sur cet appareil. Ils partiront dès que la connexion revient — rien n’est perdu en attendant.',
+                'familyPlus.localOnlyHint',
+                'Défis, séances et fil d’activité sont enregistrés sur cet appareil. En mode local, il n’y a pas de serveur distant où les envoyer : ils restent ici, et une sauvegarde se fait depuis Réglages › Données.',
               )}
             </HintNote>
           </div>

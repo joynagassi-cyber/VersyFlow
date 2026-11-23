@@ -1,8 +1,11 @@
 /**
- * I18n Service — bridges custom useI18n() to i18next instance
+ * I18n Service — l'accès programmatique à la langue active.
  *
- * Delegates t/getLanguage/setLanguage/isRTL to the i18next instance
- * so the 6 useI18n()-based screens keep working unchanged.
+ * Délègue `t` / `getLanguage` / `setLanguage` / `isRTL` à l'instance i18next,
+ * pour le code qui n'est pas un composant (stores, services, garde-fous). Les
+ * écrans, eux, utilisent `useTranslation()` de react-i18next : le hook maison
+ * `useI18n` a été supprimé (aucun importeur, doublon du hook de la
+ * bibliothèque).
  */
 
 import i18next from 'i18next';

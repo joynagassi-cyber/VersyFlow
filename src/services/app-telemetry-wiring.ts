@@ -5,7 +5,7 @@
  *   - one `TelemetryListener` instance per app boot (subscribes to eventBus)
  *   - a periodic flush timer (30 s) + a `pagehide` flush hook
  *
- * Offline-safe: when the PowerSync upload port cannot be resolved the
+ * Offline-safe: when the upload port cannot be resolved the
  * service falls back to `NoOpTelemetryUploadAdapter` and the queue simply
  * accumulates locally; on reconnect the next flush uploads everything.
  */
@@ -21,7 +21,7 @@ const FLUSH_INTERVAL_MS = 30_000;
 /**
  * Wire the telemetry service once (idempotent).
  *
- *  1. Instantiate the singleton `TelemetryService` (with PowerSync port).
+ *  1. Instantiate the singleton `TelemetryService` (with the local port).
  *  2. Start the `TelemetryListener` (subscribes to domain events).
  *  3. Schedule a periodic flush + a `pagehide` one-shot flush.
  */

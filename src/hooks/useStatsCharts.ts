@@ -12,7 +12,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { getMemorizationService } from '@/services/memorization-service-factory';
-import { getReviewLogRepository, getSyncUserIdProvider } from '@/infrastructure/repository/powersync-repositories';
+import { getReviewLogRepository, getSyncUserIdProvider } from '@/infrastructure/repository/mode-repositories';
 import { StreakService } from '@/services/streak-service';
 import type { MemorizationRecord } from '@/domains/memorization/entities';
 import {

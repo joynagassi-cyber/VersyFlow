@@ -23,7 +23,7 @@ import { createLocalBibleRepository, createWorkspaceEngine, Rating, type Memoriz
 import { resolveBookIdFromText as resolveBookId } from '@/services/memorization-session-service';
 import { useActiveProfile } from '@/hooks/useActiveProfile';
 import { useSettingsStore } from '@/store/settings-store';
-import { getMemorizationRepository, getSyncUserIdProvider } from '@/infrastructure/repository/powersync-repositories';
+import { getMemorizationRepository, getSyncUserIdProvider } from '@/infrastructure/repository/mode-repositories';
 import type { MemorizationRecord } from '@/domains/memorization/entities';
 import { eventBus, DomainEventTypes } from '@/services/events-service';
 import { fireAndForget } from '@/lib/fire-and-forget';
@@ -49,6 +49,15 @@ export default function MemorizationSession() {
   const navigate = useNavigate();
   const [params] = useSearchParams();
   const { t } = useTranslation();
+  // `?strategy=` vient de l'atelier de mémoire (`/memory/start`) : on l'accepte
+  // ici pour que le choix d'exercice arrive jusqu'à la session, sans URL morte.
+  const strategyParam = params.get('strategy');
+  const restartHref = (() => {
+    const next = new URLSearchParams(params);
+    if (strategyParam) next.set('strategy', strategyParam);
+    const qs = next.toString();
+    return `/memorization/session${qs ? `?${qs}` : ''}`;
+  })();
   const { activeProfile } = useActiveProfile();
 
   const [engine, setEngine] = useState<MemorizationSessionEngine | null>(null);
@@ -57,7 +66,6 @@ export default function MemorizationSession() {
   const [reference, setReference] = useState('');
   const [progress, setProgress] = useState(0);
   const [complete, setComplete] = useState(false);
-  const [downloadPercent, setDownloadPercent] = useState<number | null>(null);
 
   const bookIdParam = params.get('bookId') ?? '';
   const chapterParam = parseInt(params.get('chapter') ?? '0', 10);
@@ -105,9 +113,10 @@ export default function MemorizationSession() {
 
     async function init() {
       try {
-        const source = await resolveBibleTextSource(translationId, (p) =>
-          setDownloadPercent(p),
-        );
+        // Résolution locale : le corpus est déjà dans le build ou il n'y est
+        // pas. Il n'y a pas de « téléchargement » à mesurer — l'ancienne barre
+        // restait à 0 % puis la session échouait.
+        const source = await resolveBibleTextSource(translationId);
         const bibleRepo = createLocalBibleRepository(source);
         const fsrsEngine = getFsrsEngine();
         const memorizationEngine = createWorkspaceEngine(bibleRepo, fsrsEngine);
@@ -166,9 +175,9 @@ export default function MemorizationSession() {
   }, [engine]);
 
   /**
-   * Persist a single record to the PowerSync repository (SYNCED path).
+   * Persist a single record to the memorization repository.
    *
-   * The PowerSync SQLite database is the single source of truth for synced
+   * The local repository is the single source of truth for persisted
    * memorization records. When there is no authenticated user session
    * (offline or signed-out), the record is intentionally NOT written:
    * the engine's in-memory array is the user's working state for that
@@ -223,24 +232,12 @@ export default function MemorizationSession() {
       <FullScreenPage title={t('session.memorizing', 'Mémorisation')} backPath="/tabs/home" showBack={false}>
         <div className="flex w-full flex-col items-center justify-center py-10">
           <MemorizationSessionSkeleton label={t('session.startingPassage', 'Démarrage du passage...')} />
-          {downloadPercent !== null ? (
-            <>
-              <p className="mt-3 text-sm font-semibold text-text-primary">
-                {t('session.downloadingTranslation', 'Téléchargement de la traduction...')}
-              </p>
-              <div className="mt-3 h-1.5 w-48 overflow-hidden rounded-full bg-surface-tint">
-                <div
-                  className="h-full rounded-full bg-primary transition-all"
-                  style={{ width: `${downloadPercent}%` }}
-                />
-              </div>
-              <p className="mt-2 text-xs text-text-tertiary">{downloadPercent}%</p>
-            </>
-          ) : (
-            <p className="mt-3 text-sm text-text-tertiary">
-              {t('session.startingPassage', 'Démarrage du passage...')}
-            </p>
-          )}
+          {/* La barre de « téléchargement » n'avait pas de source de progrès :
+              elle restait à 0 %, puis la session échouait. La résolution est
+              locale et rapide ; le squelette dit déjà l'attente. */}
+          <p className="mt-3 text-sm text-text-tertiary">
+            {t('session.startingPassage', 'Démarrage du passage...')}
+          </p>
         </div>
       </FullScreenPage>
     );
@@ -310,7 +307,7 @@ export default function MemorizationSession() {
       } catch (e) {
         console.error('[MemorizationSession] flush failed:', e);
       }
-      navigate('/memorization/confirm', { state: { reference } });
+      navigate('/memorization/confirm', { state: { reference, strategy: strategyParam } });
     }
   };
 
@@ -378,21 +375,22 @@ export default function MemorizationSession() {
             refresh();
           }}
         >
-          <DuoIcon icon={ArrowLeft} size={15} />
+          <DuoIcon icon={ArrowLeft} size={16}  className="directional" />
           {t('session.goBack', 'Retour')}
         </Button>
         <Button
           className="flex-1"
           onClick={() => fireAndForget(proceedSession(), 'session:proceed')}
+          aria-label={t('memory.restartReveal', 'Revoir depuis le début')}
         >
           {t('session.proceed', 'Continuer')}
-          <DuoIcon icon={ArrowRight} size={15} />
+          <DuoIcon icon={ArrowRight} size={16}  className="directional" />
         </Button>
       </div>
 
       {complete && (
         <div className="mt-5 flex items-center justify-center gap-2 rounded-xl bg-success-light p-4 text-success">
-          <DuoIcon icon={CheckCircle} size={18} />
+          <DuoIcon icon={CheckCircle} size={20} />
           <span className="text-base font-semibold">
             {t('session.passageComplete', 'Passage terminé!')}
           </span>

@@ -4,7 +4,7 @@ name: CI/CD — Web + Android + iOS
 # Single unified pipeline for VersyFlow (international app: Android + iOS).
 #
 # DAG:
-#   quality-gate (matrix: typecheck / lint / tests, in parallel)
+#   quality-gate (matrix: typecheck / lint / tests / data, in parallel)
 #     -> build-web (Vite tsc + vite build -> www/ artifact)
 #        -> build-android        (debug APK, no secrets)   [PR / main / develop / dispatch]
 #        -> build-android-release (signed APK, KEYSTORE)   [tag v* / dispatch build_release]
@@ -28,19 +28,17 @@ name: CI/CD — Web + Android + iOS
 #     producing the signed .ipa with no workflow change.
 #
 # Required secrets — see .github/secrets-checklist.md
-#   VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY, VITE_POWERSYNC_URL   (build env)
 #   KEYSTORE, KEYSTORE_PASSWORD, KEY_ALIAS, KEY_PASSWORD           (APK signing)
 #   APPLE_CERTIFICATE_P12, APPLE_CERTIFICATE_PASSWORD,
 #   APPLE_PROVISION_PROFILE_BASE64, APPLE_TEAM_ID                  (.ipa signing)
 #
 # Android path per job:
-#   npm ci (postinstall runs scripts/patch-powersync-worker.cjs, idempotent)
+#   npm ci
 #   -> download-artifact web-build-www -> ./www
 #   -> npx cap sync android (copies www into android/assets/www)
 #   -> cd android && ./gradlew ...
 #
-# Vite env vars are workflow-level env from secrets. PRs run with empty values
-# (safe placeholder config); release builds on tags get real values.
+# The app has no backend: no build-time API keys or endpoints are needed.
 #
 
 on:
@@ -67,9 +65,7 @@ concurrency:
 env:
   # Injected at Vite build time (import.meta.env). Empty values are safe:
   # the app degrades to placeholder config; PRs run without secrets.
-  VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
-  VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
-  VITE_POWERSYNC_URL: ${{ secrets.VITE_POWERSYNC_URL }}
+  VITE_DATA_MODE: mock
 
 # A "release" context: pushing a v* tag, or dispatch with build_release=true.
 # The release tag carries the version (v1.2.3 -> 1.2.3).
@@ -114,7 +110,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        check: [typecheck, lint, tests]
+        check: [typecheck, lint, tests, data]
     steps:
       - uses: actions/checkout@v4
 
@@ -123,7 +119,7 @@ jobs:
           node-version: 22
           cache: npm
 
-      - name: Install dependencies (runs postinstall PowerSync worker patch)
+      - name: Install dependencies
         run: npm ci
 
       - name: TypeScript typecheck
@@ -137,6 +133,28 @@ jobs:
       - name: Vitest (with coverage)
         if: matrix.check == 'tests'
         run: npm run test:coverage
+
+      # L'audit du playbook UX/UI : 77 règles recalculées sur le dépôt. Il sort
+      # en code 1 dès qu'une règle BLOQUANTE mesurable échoue, donc il garde
+      # quelque chose tant qu'il est dans la CI — un script que personne
+      # n'appelle ne vérifie rien.
+      - name: Audit UX/UI Playbook
+        if: matrix.check == 'tests'
+        run: npm run playbook:audit
+
+      # Données et artefacts : ce que le build ne vérifie pas.
+      #  - le corpus LSG est sain (versets vides, doublons, chapitreCount) et la
+      #    projection par chapitre est à jour (`--check`, aussi dans le build) ;
+      #  - les 100 thèmes ont leurs visuels au format livré (WebP 832×1248) —
+      #    un script qui exigeait `.png` en déclarait 200 manquants ;
+      #  - les scènes photo et sacrées du catalogue correspondent aux fichiers.
+      - name: Données et artefacts (corpus, projection, visuels)
+        if: matrix.check == 'data'
+        run: |
+          node scripts/bible/split-lsg.mjs --check
+          node scripts/check-theme-assets.mjs
+          node scripts/themes/import-photo-themes.mjs --check
+          node scripts/themes/import-sacred-themes.mjs --check
 
       - name: Upload coverage report
         if: matrix.check == 'tests'
@@ -162,7 +180,7 @@ jobs:
           node-version: 22
           cache: npm
 
-      - name: Install dependencies (runs postinstall PowerSync worker patch)
+      - name: Install dependencies
         run: npm ci
 
       - name: Vite production build (outputs to www/)
@@ -200,9 +218,9 @@ jobs:
           java-version: '17'
 
       - name: Install Android SDK (Build-Tools 35, Platform 35)
-        uses: android-actions/setup-android@v3
+        uses: android-actions/setup-android@v4
 
-      - name: Install dependencies (runs postinstall PowerSync worker patch)
+      - name: Install dependencies
         run: npm ci
 
       - name: Restore web build (www/)
@@ -261,9 +279,9 @@ jobs:
           java-version: '17'
 
       - name: Install Android SDK (Build-Tools 35, Platform 35)
-        uses: android-actions/setup-android@v3
+        uses: android-actions/setup-android@v4
 
-      - name: Install dependencies (runs postinstall PowerSync worker patch)
+      - name: Install dependencies
         run: npm ci
 
       - name: Restore web build (www/)
@@ -373,7 +391,7 @@ jobs:
           node-version: 22
           cache: npm
 
-      - name: Install dependencies (runs postinstall PowerSync worker patch)
+      - name: Install dependencies
         if: steps.check.outputs.IPA_ENABLED != 'false'
         run: npm ci
 

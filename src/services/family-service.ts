@@ -12,6 +12,7 @@ import type { IFamilyInvitationRepository } from '@/domains/family-invitation/re
 import type { FamilyInvitation } from '@/domains/family-invitation/entities';
 import type { ILearnerProfileRepository } from '@/domains/learner-profile/repository';
 import { eventBus, DomainEventTypes } from '@/domains/events';
+import { DEFAULT_FAMILY_ICON } from '@/lib/family-icon';
 
 export interface MemberWithProfile extends FamilyMembership {
   profile?: {
@@ -60,7 +61,7 @@ export class FamilyService {
       ownerId,
       name,
       color: color ?? '#6633CC',
-      icon: icon ?? '👨‍👩‍👧‍👦',
+      icon: icon ?? DEFAULT_FAMILY_ICON,
     });
 
     // The creator is always the owner with an active membership.

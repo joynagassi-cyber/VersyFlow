@@ -19,7 +19,7 @@ import type { Family, FamilyMembership } from '@/domains/family';
 import type { FamilyInvitation } from '@/domains/family-invitation';
 import type { StreakRecord } from '@/domains/streaks/repository';
 import { DEFAULT_FSRS_STATE } from '@/domains/fsrs';
-import { recordUuid } from '@/infrastructure/sync/memorization-mapper';
+import { recordUuid } from '@/infrastructure/repository/ports';
 import { mockDb } from './db';
 import { getMockIdentity, stableId } from './identity';
 import { resetMockSemanticStore } from './semantic';
@@ -278,7 +278,6 @@ function buildSeedProfiles(userId: string): LearnerProfile[] {
       id: stableId('prf_', `${userId}:main`),
       accountId: userId,
       displayName: identity.displayName || 'Ami de la Parole',
-      avatar: '🌱',
       slogan: 'Un verset à la fois',
       status: 'active',
       createdAt: base,
@@ -288,7 +287,6 @@ function buildSeedProfiles(userId: string): LearnerProfile[] {
       id: stableId('prf_', `${userId}:family`),
       accountId: userId,
       displayName: 'Lecture en famille',
-      avatar: '👨‍👩‍👧',
       slogan: 'Grandir ensemble',
       status: 'active',
       createdAt: base + DAY,
@@ -302,7 +300,6 @@ function buildSeedProfiles(userId: string): LearnerProfile[] {
       id: stableId('prf_', `${companion.accountId}:main`),
       accountId: companion.accountId,
       displayName: companion.displayName,
-      avatar: companion.avatar,
       slogan: companion.slogan,
       status: 'active' as const,
       createdAt: base + (index + 2) * DAY,
@@ -316,13 +313,11 @@ export const SEED_COMPANIONS = [
   {
     accountId: stableId('usr_', 'grace@versyflow.test'),
     displayName: 'Grâce',
-    avatar: '🌿',
     slogan: 'Psaume 23 chaque matin',
   },
   {
     accountId: stableId('usr_', 'sophie@versyflow.test'),
     displayName: 'Sophie',
-    avatar: '☀️',
     slogan: 'Apprendre en marchant',
   },
 ] as const;
@@ -343,7 +338,7 @@ function buildSeedFamily(userId: string): {
         ownerId: userId,
         name: 'Famille Béthel',
         color: '#D81B97',
-        icon: '🏡',
+        icon: 'home',
         createdAt,
       },
     ],

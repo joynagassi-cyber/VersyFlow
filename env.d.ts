@@ -1,30 +1,18 @@
 /// <reference types="vite/client" />
 
 /**
- * Environment variables used across the app.
- * - VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY : Supabase project + publishable key.
- * - VITE_POWERSYNC_URL : PowerSync Cloud endpoint (e.g. https://app.powersync.com).
- * The non-VITE_ names are read as a fallback for tooling / non-client code.
+ * Environment variables consumed by the app.
+ *
+ * VersyFlow has no backend: there is no server URL, no API key and no sync
+ * endpoint to configure. The only variables left select the local data scope.
  */
 interface ImportMetaEnv {
-  readonly VITE_SUPABASE_URL?: string;
-  readonly VITE_SUPABASE_ANON_KEY?: string;
-  readonly VITE_POWERSYNC_URL?: string;
-  readonly SUPABASE_URL?: string;
-  readonly SUPABASE_ANON_KEY?: string;
-  readonly POWERSYNC_URL?: string;
+  /** `mock` (demo scope) or `live` (your own local data). Defaults to demo. */
+  readonly VITE_DATA_MODE?: string;
+  /** `off` / `live` opens directly on the real local data instead of the demo. */
+  readonly VITE_DEMO_DEFAULT?: string;
 }
 
 interface ImportMeta {
   readonly env: ImportMetaEnv;
-}
-
-declare module '*.tsx' {
-  const content: React.ComponentType<any>;
-  export default content;
-}
-
-declare module '*.ts' {
-  const content: any;
-  export default content;
 }

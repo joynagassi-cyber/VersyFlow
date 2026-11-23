@@ -21,11 +21,15 @@ import { ShellContext, type ShellContextValue } from '@/shells/shell-context';
 import { useShellKind } from '@/hooks/useShell';
 import { useIsDesktop } from '@/hooks/useIsDesktop';
 import { isReadingRoute } from '@/shells/panel-routes';
+import { useRouteFocus } from '@/hooks/useRouteFocus';
 
 export function AppShell() {
   const kind = useShellKind();
   const isDesktop = useIsDesktop();
   const { pathname } = useLocation();
+  // Déplacement du focus après navigation : monté UNE fois, pour les deux
+  // coquilles (même `Outlet`, même contenu).
+  useRouteFocus();
 
   const hasSidePanel = isDesktop && isReadingRoute(pathname);
 

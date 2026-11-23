@@ -72,7 +72,7 @@ export default function CommunityView() {
             <DuoIcon icon={Map} size={20} />
           </span>
           <div>
-            <h1 className="page-title">{community.name}</h1>
+            <h2 className="page-title">{community.name}</h2>
             <p className="text-xs text-text-muted">
               {community.source}
               {typeof community.coherence === 'number' ? ` · ${Math.round(community.coherence * 100)}%` : ''}
@@ -89,7 +89,7 @@ export default function CommunityView() {
         {/* Member concepts */}
         <section className="mb-5">
           <h2 className="mb-2 flex items-center gap-1.5 text-sm font-semibold text-text-tertiary">
-            <DuoIcon icon={BrainCircuit} size={14} className="text-primary" />
+            <DuoIcon icon={BrainCircuit} size={16} className="text-primary" />
             {t('semantic.concept', 'Concept')}s — {concepts.length}
           </h2>
           {concepts.length === 0 ? (
@@ -100,7 +100,7 @@ export default function CommunityView() {
                 <button
                   key={concept.id}
                   onClick={() => navigate(`/semantic/concept?conceptId=${encodeURIComponent(concept.id)}`)}
-                  className="g2 flex items-center justify-between p-3 text-left transition-transform active:scale-[0.99]"
+                  className="g2 flex items-center justify-between p-3 text-start transition-transform active:scale-[0.99]"
                 >
                   <div>
                     <p className="text-sm font-semibold text-text-primary">
@@ -108,7 +108,7 @@ export default function CommunityView() {
                     </p>
                     <p className="text-xs text-text-muted">{concept.canonical_name}</p>
                   </div>
-                  <DuoIcon icon={ChevronRight} size={16} className="text-primary" />
+                  <DuoIcon icon={ChevronRight} size={16} className="directional text-primary" />
                 </button>
               ))}
             </div>
@@ -118,7 +118,7 @@ export default function CommunityView() {
         {/* Sample versets */}
         <section>
           <h2 className="mb-2 flex items-center gap-1.5 text-sm font-semibold text-text-tertiary">
-            <DuoIcon icon={BookMarked} size={14} className="text-primary" />
+            <DuoIcon icon={BookMarked} size={16} className="text-primary" />
             {t('semantic.verses', 'Verset{count}', { count: sampleVerseKeys.length })}
           </h2>
           {sampleVerseKeys.length === 0 ? (
@@ -129,10 +129,10 @@ export default function CommunityView() {
                 <button
                   key={key}
                   onClick={() => navigate(`/semantic/verse?verseRef=${encodeURIComponent(key)}`)}
-                  className="g2 flex items-center justify-between p-3 text-left transition-transform active:scale-[0.99]"
+                  className="g2 flex items-center justify-between p-3 text-start transition-transform active:scale-[0.99]"
                 >
                   <p className="text-sm font-semibold text-text-primary">{formatVerseKey(key)}</p>
-                  <DuoIcon icon={ChevronRight} size={16} className="text-primary" />
+                  <DuoIcon icon={ChevronRight} size={16} className="directional text-primary" />
                 </button>
               ))}
             </div>

@@ -90,7 +90,7 @@ function ActionButton({
         tone === 'primary' && 'is-primary',
       )}
     >
-      <DuoIcon icon={Icon} size={18} />
+      <DuoIcon icon={Icon} size={20} />
     </button>
   );
 }
@@ -445,7 +445,7 @@ export default function VerseActionBar({
                     className={cn('hl-swatch', `hl-${color}`, applied && 'is-applied')}
                     data-hl={color}
                   >
-                    {applied && <DuoIcon icon={Check} size={12} />}
+                    {applied && <DuoIcon icon={Check} size={16} />}
                   </button>
                 );
               })}
@@ -473,6 +473,7 @@ export default function VerseActionBar({
             <input
               autoFocus
               type="text"
+              aria-label={t('settings.verseBar.tagTo', 'Taguer ce verset avec le concept')}
               value={tagName}
               onChange={(e) => {
                 setTagName(e.target.value);
@@ -508,7 +509,7 @@ export default function VerseActionBar({
               </p>
               {noteSaved ? (
                 <span className="verse-bar-saved">
-                  <DuoIcon icon={Check} size={13} /> {t('common.saved', 'Enregistré')}
+                  <DuoIcon icon={Check} size={16} /> {t('common.saved', 'Enregistré')}
                 </span>
               ) : null}
             </div>

@@ -5,30 +5,11 @@ import { resolve } from 'path';
 /**
  * Vite configuration for VersyFlow.
  *
- * PowerSync web worker handling
- * -----------------------------
- * `@powersync/web/lib/worker/client.js` historically shipped
- * `new Worker(new URL('./worker.js', import.meta.url), ...)` — a pattern
- * Vite's worker plugin rewrites by bundling `./worker.js` as a separate
- * worker entry. With a code-splitting main build (multiple chunks) and the
- * default `iife` worker format, Rollup refuses:
- *   "Invalid value iife for option worker.format - UMD and IIFE output
- *    formats are not supported for code-splitting builds."
- *
- * The fix (applied at install time, see package.json `postinstall`):
- *   - `client.js` is patched so `spawnDefaultPowerSyncWorker` uses a plain
- *     string URL (`powersync-worker.js`) instead of `new URL(...)` — Vite's
- *     worker plugin only intercepts the `new URL('./...', import.meta.url)`
- *     form, so the default worker is no longer a bundling target.
- *   - `powersync-database.ts` always passes `sync.worker` pointing at the
- *     pre-bundled ES-module worker in `public/worker/powersync-worker.js`
- *     (copied from `@powersync/web/dist/worker/worker.js`), so the SDK
- *     takes the `customWorker` branch and the internal default worker is
- *     never actually invoked at runtime.
- *
- * `worker.format: 'es'` is kept so any other module worker the graph does
- * pull in (none expected after the patch) is emitted as an ES module that
- * Rollup tolerates under code splitting.
+ * The app is a single-page frontend with no backend: everything it needs is
+ * bundled (Bible JSON, themes, icons) and every write lands in the browser's
+ * localStorage. The only "server" is the optional local test collector,
+ * proxied under the app origin so the browser never has to reach `localhost`
+ * directly (which also works behind an HTTPS preview host).
  */
 
 export default defineConfig({
@@ -58,9 +39,6 @@ export default defineConfig({
     rollupOptions: {
       input: resolve(__dirname, 'index.html'),
     },
-  },
-  worker: {
-    format: 'es',
   },
   server: {
     port: 3000,

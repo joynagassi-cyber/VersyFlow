@@ -40,7 +40,7 @@ export default function SemanticTagsScreen() {
           aria-label={t('tree.newTag', 'Nouveau tag')}
           className="rounded-full bg-surface-tint p-2"
         >
-          <DuoIcon icon={PlusSign} size={18} className="text-primary" />
+          <DuoIcon icon={PlusSign} size={20} className="text-primary" />
         </button>
       }
     >
@@ -67,10 +67,10 @@ export default function SemanticTagsScreen() {
                     onClick={() =>
                       navigate(`/semantic/tree?conceptId=${encodeURIComponent(entry.concept.id)}`)
                     }
-                    className="flex w-full items-center gap-3 p-4 text-left"
+                    className="flex w-full items-center gap-3 p-4 text-start"
                   >
                     <span className="flex h-10 w-10 items-center justify-center rounded-full bg-surface-tint text-primary">
-                      <DuoIcon icon={Tag} size={18} />
+                      <DuoIcon icon={Tag} size={20} />
                     </span>
                     <span className="min-w-0 flex-1">
                       <span className="block truncate text-base font-semibold text-text-primary">
@@ -83,7 +83,7 @@ export default function SemanticTagsScreen() {
                           : ''}
                       </span>
                     </span>
-                    <DuoIcon icon={ChevronRight} size={18} className="text-text-muted" />
+                    <DuoIcon icon={ChevronRight} size={20} className="directional text-text-muted" />
                   </button>
                 </SectionCard>
               </li>

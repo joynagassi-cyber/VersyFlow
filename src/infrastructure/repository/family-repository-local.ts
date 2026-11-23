@@ -2,7 +2,7 @@
  * Family Repository — Local (In-Memory) Adapter
  *
  * In-memory implementation of IFamilyRepository using Map + UUID v4.
- * Used for offline development and testing before PowerSync binding is ready.
+ * In-memory adapter used by development and tests.
  * See: docs/29-architecture-rulebook.md (Interface/Adapter pattern)
  */
 

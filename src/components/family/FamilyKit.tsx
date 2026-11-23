@@ -205,7 +205,7 @@ export function InfoRow({
     return <div className="flex items-center gap-3 py-2">{content}</div>;
   }
   return (
-    <button type="button" onClick={onClick} className="flex w-full items-center gap-3 py-2 text-left">
+    <button type="button" onClick={onClick} className="flex w-full items-center gap-3 py-2 text-start">
       {content}
     </button>
   );
@@ -270,7 +270,7 @@ export function FamilySubnav({ className }: { className?: string }) {
             aria-current={active ? 'page' : undefined}
             className="family-subnav-item"
           >
-            <DuoIcon icon={section.icon} size={15} />
+            <DuoIcon icon={section.icon} size={16} />
             <span>{t(section.key, section.fallback)}</span>
           </button>
         );

@@ -9,7 +9,7 @@ import { persist, createJSONStorage } from 'zustand/middleware';
 import type { UserProfile } from '@/auth';
 import { getAuthService, AuthError } from '@/auth';
 import { useSyncStore, syncService } from '@/store/sync-store';
-import { invalidateSyncUserIdProvider } from '@/infrastructure/repository/powersync-repositories';
+import { invalidateSyncUserIdProvider } from '@/infrastructure/repository/mode-repositories';
 import {
   detachSyncCompletionHandlers,
 } from '@/services/sync-completion-service';
@@ -31,11 +31,11 @@ interface AuthState {
   setActiveProfileId: (id: string | null) => void;
 }
 
-// Active auth service (mock in frontend-only mode, Supabase in live mode).
+// Active auth service — local identity, no cloud provider.
 const authService = getAuthService();
 
 /**
- * Le service d'authentification renvoie l'utilisateur brut (forme Supabase) :
+ * Le service d'authentification renvoie l'utilisateur brut :
  * deux champs ne font pas partie de son type public. Une fonction les nomme
  * une fois, plutôt que trois `as any` dispersés.
  */
@@ -71,8 +71,8 @@ export const useAuthStore = create<AuthState>()(
             isAuthenticated: true,
             isLoading: false,
           });
-          // First-launch migration: move any legacy MMKV data into PowerSync.
-          // Idempotent — a no-op when there is nothing to migrate.
+          // Kept for compatibility: there is no cloud replica to migrate into,
+          // so this resolves immediately.
           void useSyncStore.getState().runMmkvMigrationOnce();
         } catch (err) {
           const error = err instanceof AuthError ? err : new AuthError(err instanceof Error ? err.message : 'Failed to sign in');
@@ -108,19 +108,17 @@ export const useAuthStore = create<AuthState>()(
           // Clear the local (email + name, no-validation) identity so the gate
           // re-prompts on the next session.
           authService.clearLocalIdentity();
-          // Dispose the PowerSync singleton so the previous user's streams,
-          // DB listener, and poll timer do not survive into the next user's
-          // session (cross-user data leak, audit P3-perf). `dispose()` stops
-          // every on-demand stream and closes the local DB; `detach` stops the
-          // permanent lifecycle listeners. Re-attach on the next sign-in.
+          // Stop the cross-user bridges so the previous user's data does not
+          // survive into the next session: `dispose()` (when present) closes
+          // the storage handles, `detach` stops the lifecycle listeners.
+          // Re-attach on the next sign-in.
           await (syncService as unknown as { dispose?: () => Promise<void> })
             .dispose?.();
           detachSyncCompletionHandlers();
-          // Reset the MMKV → PowerSync migration flag so the next login
-          // re-runs it for the new user.
+          // Reset the migration flag so the next login re-runs it.
           useSyncStore.getState().invalidateMigration();
-          // Invalidate the cached user id so no in-flight PowerSync write
-          // can resolve a stale user id after sign-out.
+          // Invalidate the cached user id so no in-flight write can resolve
+          // a stale user id after sign-out.
           invalidateSyncUserIdProvider();
         } catch (err) {
           set({ isLoading: false });
@@ -142,8 +140,8 @@ export const useAuthStore = create<AuthState>()(
               isAuthenticated: true,
               isLoading: false,
             });
-            // First-launch migration: move any legacy MMKV data into PowerSync.
-            // Idempotent — a no-op when there is nothing to migrate.
+            // Kept for compatibility: there is no cloud replica to migrate
+            // into, so this resolves immediately.
             void useSyncStore.getState().runMmkvMigrationOnce();
           } else {
             set({ user: null, isAuthenticated: false, isLoading: false });

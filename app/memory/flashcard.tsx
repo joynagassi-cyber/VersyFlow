@@ -12,12 +12,21 @@ import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { useLocalSearchParams } from '@/hooks/useIonicNavigation';
 import { useMemoryCapability } from '@/capabilities/memory/store';
 
+/** Retour vers le chapitre quand on sait d'où l'on vient, sinon l'atelier. */
+function versePreviewBackPath(bookId: string, chapter: number): string {
+  return bookId && chapter > 0
+    ? `/bible/explorer/${bookId}/${chapter}`
+    : '/memory/start';
+}
+
 export default function FlashcardScreen() {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const params = useLocalSearchParams();
   const { sessionState, startSession } = useMemoryCapability();
   const text = (params.text as string) ?? '';
+  const bookId = (params.bookId as string) ?? '';
+  const chapter = Number(params.chapter ?? 0);
   const words = text.split(/\s+/).filter(Boolean);
   const [revealed, setRevealed] = useState(0);
 
@@ -37,10 +46,18 @@ export default function FlashcardScreen() {
   }, []);
 
   return (
-    <FullScreenPage title={t('memory.flashcard', 'Flashcard')} showBack backPath="/tabs/home">
+    <FullScreenPage
+      title={t('memory.flashcard', 'Flashcard')}
+      showBack
+      backPath={versePreviewBackPath(bookId, chapter)}
+    >
       <div className="screen-column space-y-5">
         <div className="g2 p-6">
-          <p className="text-sm font-semibold text-primary">{text}</p>
+          {/* Le verset n'est pas écrit en clair ici : les puces ci-dessous sont
+              le seul chemin vers le texte, une révélation à la fois. */}
+          <p className="text-sm text-text-muted">
+            {t('memory.revealFromMemory', 'Retrouvez le verset mot après mot, sans le lire.')}
+          </p>
           <div className="mt-4 flex flex-wrap gap-2">
             {words.map((w, i) => (
               <span
@@ -70,7 +87,7 @@ export default function FlashcardScreen() {
             onClick={() => setRevealed((r) => Math.min(words.length, r + 1))}
             className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-primary py-3 font-bold text-on-primary active:scale-[0.99]"
           >
-            <DuoIcon icon={Eye} size={18} />
+            <DuoIcon icon={Eye} size={20} />
             {t('memory.reveal', 'Reveler')}
           </button>
           <button
@@ -78,7 +95,7 @@ export default function FlashcardScreen() {
             aria-label={t('memory.restartReveal', 'Revoir depuis le début')}
             className="flex items-center justify-center gap-2 rounded-2xl border border-border px-4 text-text-secondary"
           >
-            <DuoIcon icon={RotateCcw} size={18} />
+            <DuoIcon icon={RotateCcw} size={20} />
           </button>
         </div>
 
@@ -86,7 +103,7 @@ export default function FlashcardScreen() {
           onClick={() => goBackSafely(navigate)}
           className="flex w-full items-center justify-center gap-2 py-3 text-sm text-text-muted"
         >
-          <DuoIcon icon={ArrowLeft} size={16} />
+          <DuoIcon icon={ArrowLeft} size={16}  className="directional" />
           {t('common.back', 'Retour')}
         </button>
       </div>

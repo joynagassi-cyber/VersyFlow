@@ -158,7 +158,7 @@ export function seedMockFamilyRoom(options: { force?: boolean } = {}): FamilyRoo
       kind: 'challenge-started',
       target: 'Psaume 23 en 7 jours',
       at: now - 3 * DAY,
-      reactions: { '🙏': 2 },
+      reactions: { cheer: 2 },
     },
     {
       id: `ac-demo-${familyId.slice(-6)}-2`,
@@ -167,7 +167,7 @@ export function seedMockFamilyRoom(options: { force?: boolean } = {}): FamilyRoo
       kind: 'level-up',
       target: 'Jean 3:16 maîtrisé',
       at: now - 2 * DAY,
-      reactions: { '🎉': 3 },
+      reactions: { courage: 3 },
     },
     {
       id: `ac-demo-${familyId.slice(-6)}-3`,

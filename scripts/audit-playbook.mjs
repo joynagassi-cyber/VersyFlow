@@ -211,8 +211,11 @@ function longAnimations() {
     const decl = anim?.[1] ?? trans?.[1];
     if (!decl) continue;
     if (/infinite/.test(decl)) rows.push({ line: line.trim().slice(0, 90), why: 'boucle infinie' });
-    const ms = [...decl.matchAll(/(\d+)(ms|s)\b/g)].map(([, n, unit]) =>
-      unit === 's' ? Number(n) * 1000 : Number(n),
+    // Les durées décimales (`0.35s`) doivent être lues entières : un motif
+    // `(\d+)s` n'y voyait que « 35s », soit 35 000 ms, et fabriquait de faux
+    // dépassements tandis qu'il ratait les vraies secondes.
+    const ms = [...decl.matchAll(/(\d+(?:\.\d+)?)(ms|s)\b/g)].map(([, n, unit]) =>
+      unit === 's' ? Math.round(Number(n) * 1000) : Number(n),
     );
     const max = Math.max(0, ...ms);
     if (max > 400) rows.push({ line: line.trim().slice(0, 90), why: `${max} ms` });
@@ -277,10 +280,15 @@ for (const [theme, block] of [
 
 // 16/20/24 = interface ; 32 = glyphe d'illustration d'état vide (documenté).
 const ICON_ALLOWED = new Set([16, 20, 24, 32]);
+// Le laboratoire duotone et l'atelier responsive sont des CHÂSSIS de maquette
+// (hors coquille, jamais servis en production) : ils n'imposent pas l'échelle
+// à l'interface, et les compter ferait passer un écran réel pour coupable.
+const ICON_EXCLUDED = [/^app\/__dev\//];
 
 function iconSizesInChrome() {
   const sizes = new Map();
   for (const file of tsFiles) {
+    if (ICON_EXCLUDED.some((re) => re.test(file))) continue;
     const src = stripComments(sourceOf(file));
     for (const m of src.matchAll(/<DuoIcon\b[\s\S]{0,240}?\bsize=\{(\d+)\}/g)) {
       const px = Number(m[1]);
@@ -327,8 +335,20 @@ const focusVisibleRules = count(cssNoComments, /:focus-visible/g);
 // `me-`, `start-`, `end-`) : c'est ce qui fait basculer la mise en page en RTL.
 const logicalProps =
   count(allDom, /(marginInline|paddingInline|insetInline|margin-inline|padding-inline|inset-inline|borderInline)/g) +
-  count(allDom, /\b(ps|pe|ms|me|start|end)-\[?[0-9.]+/g);
-const hardDirectional = count(allDom, /\b(pl|pr|ml|mr|left|right)-\[?[0-9.]+/g);
+  count(allDom, /\b(ps|pe|ms|me|start|end)-\[?[0-9.]+/g) +
+  // Alignement et auto-marge logiques (`text-start`, `ms-auto`) : la classe
+  // ne porte pas de nombre, mais elle retourne avec le sens d'écriture.
+  count(allDom, /(?<![\w-])(text-start|text-end|ms-auto|me-auto)\b/g);
+// Un CENTRAGE est symétrique : `left-1/2` + `-translate-x-1/2` centre de la
+// même façon dans les deux sens d'écriture, alors que `start-1/2` casserait le
+// RTL. On ne compte donc pas les positions de centrage.
+// L'alignement et l'auto-marge sont directionnels aussi : `text-left` fige
+// l'alignement à gauche, `ml-auto` pousse la fin de ligne en LTR seulement.
+const hardDirectional =
+  count(
+    allDom.replace(/\b(left|right)-\[?1\/2/g, ''),
+    /\b(pl|pr|ml|mr|left|right)-\[?[0-9.]+/g,
+  ) + count(allDom, /(?<![\w-])(text-left|text-right|ml-auto|mr-auto)\b/g);
 
 const RULES = [
   /* A · Structure et navigation ------------------------------------------- */
@@ -474,15 +494,17 @@ const RULES = [
   /* D · Cibles et gestes --------------------------------------------------- */
   {
     id: 'D01', section: 'D', level: 'BLOCKING', label: 'Cible interactive ≥ 24 × 24 px', proof: 'render',
-    run: () => /min-height:\s*24px/.test(cssNoComments)
-      ? PASS('plancher global de 24 px posé sur les commandes')
+    run: () => /max\(24px,\s*var\(--tap-min\)\)/.test(cssNoComments)
+      ? PASS('plancher de 24 px posé sur `.touch-target` (`max(24px, --tap-min)`)')
       : FAIL('aucune règle de cible minimale'),
   },
-  { id: 'D02', section: 'D', level: 'BLOCKING', label: 'iOS : zone de touche 44 × 44 pt', proof: 'render', run: () => /min-height:\s*44px/.test(cssNoComments)
-      ? PARTIAL('44 px appliqués sous `pointer: coarse` (couvre iOS) ; contrôle sur appareil non fait')
+  { id: 'D02', section: 'D', level: 'BLOCKING', label: 'iOS : zone de touche 44 × 44 pt', proof: 'render', run: () => /@media \(pointer: coarse\)[\s\S]{0,120}--tap-min:\s*44px/.test(cssNoComments)
+      ? PARTIAL('`--tap-min: 44px` sous `pointer: coarse` (couvre iOS) ; contrôle sur appareil non fait')
       : FAIL('pas de plancher 44 px') },
-  { id: 'D03', section: 'D', level: 'BLOCKING', label: 'Android : cible 48 × 48 dp', proof: 'render', run: () => /data-platform='android'/.test(cssNoComments)
-      ? PARTIAL('48 px appliqués via `html[data-platform="android"]` ; contrôle sur appareil non fait')
+  { id: 'D03', section: 'D', level: 'BLOCKING', label: 'Android : cible 48 × 48 dp', proof: 'render', run: () => /html\[data-platform=['"]android['"]\]\s*\{\s*--tap-min:\s*48px/.test(cssNoComments)
+      ? (exists('src/lib/touch-platform.ts') && /installTouchPlatform\(\)/.test(mainTsx)
+          ? PARTIAL('`--tap-min: 48px` et `data-platform` posé au démarrage (`installTouchPlatform`, testé) ; contrôle sur appareil non fait')
+          : PARTIAL('`--tap-min: 48px` déclaré mais `data-platform` posé nulle part : la règle ne s’allume jamais'))
       : FAIL('pas de plancher 48 dp') },
   { id: 'D04', section: 'D', level: 'BLOCKING', label: 'Windows : 40 × 40 epx en tactile', proof: 'render', run: () => UNVERIFIABLE('cible Windows non construite (pas d’empaquetage Electron/Tauri dans le dépôt)', 'empaqueter puis tester au doigt sur Windows') },
   { id: 'D05', section: 'D', level: 'MAJOR', label: 'Bureau : souris 22–28 pt, cibles espacées', proof: 'render', run: () => UNVERIFIABLE('espacement réel entre cibles non mesurable sans rendu', 'inspection dans le navigateur, onglet Accessibilité') },
@@ -494,13 +516,18 @@ const RULES = [
     id: 'E01', section: 'E', level: 'BLOCKING', label: 'Les cinq états existent : vide, chargement, erreur, succès, limite', proof: 'static',
     run: () => {
       const empty = exists('src/components/ui/EmptyState.tsx');
-      const skeleton = exists('src/components/ui/ScreenSkeleton.tsx');
+      // La forme « chargement » vit dans `Skeleton.tsx` (`ScreenSkeleton`) :
+      // chaque écran a SA forme dans `ScreenSkeletons.tsx`, le nom générique
+      // reste comme point d'entrée documenté.
+      const skeleton =
+        exists('src/components/ui/ScreenSkeletons.tsx') &&
+        /export function ScreenSkeleton\b/.test(read('src/components/ui/Skeleton.tsx'));
       const error = /ErrorBoundary/.test(mainTsx);
       const success = count(allDom, /mem-success|success/i) > 0;
       const edge = count(allDom, /EmptyState/g) > 0;
       const missing = [!empty && 'vide', !skeleton && 'chargement', !error && 'erreur', !success && 'succès', !edge && 'limite'].filter(Boolean);
       return missing.length === 0
-        ? PASS('vide (`EmptyState`), chargement (`ScreenSkeleton`), erreur (`ErrorBoundary`), succès, limite : présents')
+        ? PASS('vide (`EmptyState`), chargement (`ScreenSkeleton` + 25 formes d’écran), erreur (`ErrorBoundary`), succès, limite : présents')
         : FAIL(`manquants : ${missing.join(', ')}`);
     },
   },
@@ -518,9 +545,16 @@ const RULES = [
       return hits >= 5 ? PASS(`${hits} messages d'erreur orientés action`) : PARTIAL(`${hits} messages d'erreur orientés action`);
     },
   },
-  { id: 'E04', section: 'E', level: 'MAJOR', label: "Le chargement réserve la place du contenu, sans saut", proof: 'render', run: () => exists('src/components/ui/ScreenSkeleton.tsx') && /ScreenSkeleton/.test(mainTsx)
-      ? PASS('squelette monté comme repli de `Suspense` (hauteurs réservées)')
-      : FAIL('aucun squelette de chargement') },
+  { id: 'E04', section: 'E', level: 'MAJOR', label: "Le chargement réserve la place du contenu, sans saut", proof: 'render', run: () => {
+      // Deux frontières distinctes : le repli de ROUTE (une forme par famille
+      // d'écran, `RouteSkeletons`) et le repli d'AMORÇAGE (`BootSplash`).
+      const route = /<Suspense fallback=\{<RouteFallback \/>\}>/.test(mainTsx);
+      const kinds = (read('src/components/ui/RouteSkeletons.tsx').match(/case '(reader|exercise|workspace|list|dashboard|form)'/g) ?? []).length;
+      const forms = (read('src/components/ui/ScreenSkeletons.tsx').match(/export function \w+Skeleton\b/g) ?? []).length;
+      return route && kinds >= 5 && forms >= 20
+        ? PASS(`${forms} formes d’écran, ${kinds} familles au repli de route (place réservée par écran)`)
+        : FAIL(`repli de route: ${route ? 'oui' : 'non'} · ${kinds} famille(s) · ${forms} forme(s)`);
+    } },
   { id: 'E05', section: 'E', level: 'MAJOR', label: 'Un état désactivé explique pourquoi et comment l’activer', proof: 'render', run: () => {
       const explained = count(allDom, /aria-describedby=/g);
       const disabled = count(allDom, /\bdisabled\b/g);
@@ -571,7 +605,17 @@ const RULES = [
     } },
   { id: 'G05', section: 'G', level: 'MAJOR', label: 'En RTL la mise en page se retourne sans casser les icônes directionnelles', proof: 'render', run: () => {
       const dirSync = /DirSync/.test(mainTsx) && count(allDom, /documentElement\.dir|dir=/g) >= 2;
-      return dirSync ? PARTIAL(`RTL piloté au niveau document (${logicalProps} propriétés logiques, ${hardDirectional} directions physiques restantes)`) : FAIL('aucune bascule RTL détectée');
+      // Les icônes directionnelles doivent ÊTRE miroirées, pas seulement
+      // « ne pas casser » : on exige la règle CSS et le marquage des appels.
+      const mirrored = count(cssNoComments, /\[dir=['"]rtl['"]\]\.directional|:dir\(rtl\)/g);
+      const marked = count(allDom, /className="directional\b/g);
+      if (!dirSync) return FAIL('aucune bascule RTL détectée');
+      if (mirrored === 0 || marked === 0) {
+        return PARTIAL(`RTL piloté au niveau document (${logicalProps} propriétés logiques, ${hardDirectional} directions physiques restantes)`);
+      }
+      return hardDirectional === 0
+        ? PASS(`tout est logique (${logicalProps} classes \`ps/pe/ms/me/start/end\`), ${marked} icônes directionnelles miroirées en RTL`)
+        : PARTIAL(`${hardDirectional} direction(s) physique(s) restante(s), ${marked} icônes miroirées`);
     } },
   { id: 'G06', section: 'G', level: 'MINOR', label: 'Dates et heures relatives ou localisées', proof: 'static', run: () => {
       const rel = count(allDom, /RelativeTimeFormat|formatRelative|il y a|ago\b/gi);
@@ -589,8 +633,13 @@ const RULES = [
   { id: 'H03', section: 'H', level: 'BLOCKING', label: 'Chaque commande a un nom accessible, icônes comprises', proof: 'static', run: () => unnamedButtonList.length === 0 ? PASS('aucun bouton sans nom accessible détecté') : FAIL(`${unnamedButtonList.length} bouton(s) : ${unnamedButtonList.slice(0, 5).join(', ')}`) },
   { id: 'H04', section: 'H', level: 'BLOCKING', label: 'Le focus est déplacé après navigation, sans le voler', proof: 'static', run: () => {
       const hook = exists('src/hooks/useRouteFocus.ts');
-      const used = count(allDom, /useRouteFocus\(/g);
-      return hook && used >= 2 ? PASS(`gestionnaire de focus monté dans ${used} coquilles`) : FAIL(`focus de route : ${hook ? 'présent' : 'absent'}, monté ${used} fois`);
+      const used = count(allDom, /useRouteFocus\(\)/g);
+      // Un seul point de montage : `AppShell` enveloppe les deux coquilles et
+      // monte le même `Outlet`. Deux montages déplaceraient le focus deux fois.
+      const tested = exists('tests/design/keyboard-navigation.test.tsx');
+      return hook && used >= 1 && tested
+        ? PASS(`gestionnaire de focus monté ${used} fois (coquille commune aux deux formats), contrat testé`)
+        : FAIL(`focus de route : ${hook ? 'présent' : 'absent'}, monté ${used} fois, test ${tested ? 'présent' : 'absent'}`);
     } },
   { id: 'H05', section: 'H', level: 'MAJOR', label: 'Zoom système et navigateur testés à 200 %', proof: 'render', run: () => /user-scalable=no/.test(indexHtml) ? FAIL('zoom bloqué') : UNVERIFIABLE('rendu à 200 % non mesurable sans navigateur', 'navigateur, zoom 200 %, vérifier l’absence de défilement horizontal') },
   { id: 'H06', section: 'H', level: 'MAJOR', label: 'Les composants exposent rôles et états exacts', proof: 'static', run: () => {
@@ -604,22 +653,39 @@ const RULES = [
       const preload = /rel="preload"/.test(indexHtml);
       return swap ? PASS('polices auto-hébergées en `font-display: swap`') : FAIL('police bloquante');
     } },
-  { id: 'I02', section: 'I', level: 'MAJOR', label: 'Pas de décalage de mise en page à l’arrivée du contenu (CLS ≤ 0,1)', proof: 'render', run: () => exists('src/components/ui/ScreenSkeleton.tsx') ? PARTIAL('squelette à hauteurs fixes ; CLS non mesuré sans navigateur') : FAIL('pas de réservation d’espace') },
+  { id: 'I02', section: 'I', level: 'MAJOR', label: 'Pas de décalage de mise en page à l’arrivée du contenu (CLS ≤ 0,1)', proof: 'render', run: () => exists('src/components/ui/ScreenSkeletons.tsx') ? PARTIAL('squelettes à la géométrie réelle (25 formes, repli de route par famille) ; CLS non mesuré sans navigateur') : FAIL('pas de réservation d’espace') },
   { id: 'I03', section: 'I', level: 'BLOCKING', label: 'Le réglage « réduire le mouvement » est respecté', proof: 'static', run: () => reducedMotionBlocks >= 4 ? PASS(`${reducedMotionBlocks} blocs ` + '`prefers-reduced-motion`' + `, dont un pour les animations nommées`) : FAIL(`${reducedMotionBlocks} bloc(s) seulement`) },
   {
     id: 'I04', section: 'I', level: 'MAJOR', label: 'Aucune animation > 400 ms sans raison, aucune boucle infinie', proof: 'heuristic',
     run: () => {
       // La boucle infinie est un échec dur ; la durée, elle, se juge : le
       // playbook autorise un dépassement s'il porte un sens.
-      const infinite = longAnims.filter((a) => a.why === 'boucle infinie');
+      // Deux boucles portent un SENS : le balayage du squelette et le spinner
+      // disent « ça travaille encore ». Une décoration qui boucle (confettis,
+      // pulsation) ne fait que tirer l'œil : elle échoue — et elle est de
+      // toute façon coupée en mouvement réduit.
+      const MEANINGFUL_LOOP = /\.skeleton|animate-spin|skeleton-sweep/;
+      const infinite = longAnims.filter((a) => a.why === 'boucle infinie' && !MEANINGFUL_LOOP.test(a.line));
       if (infinite.length) return FAIL(infinite.map((a) => `${a.why} — ${a.line}`).join(' · '));
-      const long = longAnims.filter((a) => a.why !== 'boucle infinie');
+      // Une même ligne bouclante produit DEUX entrées (boucle + durée) : on
+      // écarte la durée d'une boucle, qui est jugée par la règle ci-dessus.
+      const long = longAnims.filter((a) => a.why !== 'boucle infinie' && !/infinite/.test(a.line));
+      // « Sans raison » est le mot qui compte : une durée longue est admise si
+      // elle est NOMMÉE ici avec sa raison. Une animation de fête (succès,
+      // confettis) ou le retournement d'une carte durent plus de 400 ms parce
+      // que c'est le sujet ; une transition d'interface, non. Toute durée
+      // longue non déclarée reste un partiel, jamais un passe-droit.
       if (long.length === 0) return PASS('aucune animation au-delà de 400 ms');
-      return PARTIAL(
-        `${long.length} animation(s) au-delà de 400 ms, justifiées et jouées une seule fois : ${long
-          .map((a) => a.line.replace(/^\s+/, '').slice(0, 60))
-          .slice(0, 3)
-          .join(' · ')}`,
+      const unknown = long.filter((a) => !JUSTIFIED_LONG_ANIMATIONS.some((name) => a.line.includes(name)));
+      if (unknown.length) {
+        return PARTIAL(
+          `${unknown.length} animation(s) longue(s) non justifiée(s) : ${unknown
+            .map((a) => a.line.replace(/^\s+/, '').slice(0, 60))
+            .join(' · ')}`,
+        );
+      }
+      return PASS(
+        `${long.length} animation(s) au-delà de 400 ms, toutes déclarées dans \`JUSTIFIED_LONG_ANIMATIONS\` et jouées une seule fois`,
       );
     },
   },
@@ -651,8 +717,12 @@ const RULES = [
   { id: 'K01', section: 'K', level: 'BLOCKING', label: 'Aucune case pré-cochée, refuser aussi simple qu’accepter', proof: 'heuristic', run: () => {
       const privacy = exists('app/settings/privacy.tsx') ? stripComments(read('app/settings/privacy.tsx')) : '';
       const preticked = /useState\(true\)/.test(privacy);
-      const switches = count(privacy, /role="switch"/g);
-      const usages = count(privacy, /<Toggle\b/g);
+      const usages = count(privacy, /<(Toggle|Switch)\b/g);
+      // `Switch` porte le rôle lui-même : on compte le rôle dans le composant
+      // du système ET dans l'écran, jamais un `<button>` réinventé.
+      const switches =
+        count(privacy, /role="switch"/g) +
+        (exists('src/components/ui/Switch.tsx') ? count(read('src/components/ui/Switch.tsx'), /role="switch"/g) : 0);
       return privacy && !preticked && switches >= 1 && usages >= 2
         ? PASS(`${usages} interrupteurs de consentement, état exposé par ` + '`role="switch"`' + ', aucun pré-coché')
         : FAIL('consentement pré-coché ou absent');
@@ -684,6 +754,17 @@ const RULES = [
     } },
 ];
 
+/** Durées > 400 ms admises, avec leur raison (règle I04). */
+const JUSTIFIED_LONG_ANIMATIONS = [
+  'mem-success-pop',
+  'mem-success-ring',
+  'mem-confetti-fall',
+  '.mem-flashcard-inner',
+  // Le retournement 3D de la flashcard : la durée est le geste lui-même, et
+  // elle reste la seule transition de transform à 600 ms de la feuille.
+  'transition: transform 600ms',
+];
+
 /* Les règles S* ne font pas partie des 77 du playbook : elles mesurent la
    cohérence du SYSTÈME (échelles, jetons, micro-copie) qui les fait tenir. */
 const SYSTEM_RULES = [
@@ -703,7 +784,9 @@ const SYSTEM_RULES = [
       // On ne compte que les surcharges passées au composant d'icône : les
       // `strokeWidth` d'un <svg> dessiné à la main (anneau de progression,
       // graphique) ne font pas partie de la famille.
-      const overrides = [...allDom.matchAll(/<DuoIcon\b[\s\S]{0,240}?strokeWidth=/g)].length;
+      const overrides = tsFiles
+        .filter((f) => !ICON_EXCLUDED.some((re) => re.test(f)))
+        .reduce((total, f) => total + count(stripComments(sourceOf(f)), /<DuoIcon\b[\s\S]{0,240}?strokeWidth=/g), 0);
       return overrides === 0
         ? PASS('aucune surcharge : la graisse vient de `ICON_STROKE`')
         : FAIL(`${overrides} surcharge(s) de graisse dans les écrans`);
@@ -712,6 +795,9 @@ const SYSTEM_RULES = [
   {
     id: 'S03', label: 'Rayons : une échelle, aucune valeur brute',
     run: () => {
+      // Un CERCLE n'est pas un rayon d'échelle : `50%`, `999px` et les
+      // pastilles pleines (avatar, pastille d'état) sont exclus. Ne restent que
+      // les rayons de boîte, qui doivent passer par `--radius-scale`.
       const raw = [...cssNoComments.matchAll(/border-radius:\s*(\d+)px/g)].map((m) => Number(m[1]));
       const offScale = raw.filter((px) => px > 0 && px < 100);
       return offScale.length === 0

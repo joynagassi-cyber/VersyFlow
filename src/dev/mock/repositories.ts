@@ -1,8 +1,8 @@
 /**
  * Mock repositories — the mock-mode adapters for every domain port.
  *
- * They implement the exact same interfaces as the PowerSync adapters
- * (`IMemorizationRepository`, `IReviewLogRepository`, …) but store domain
+ * They implement the ports declared in `@/infrastructure/repository/ports`
+ * (`IMemorizationRepository`, `IReviewLogRepository`, …) and store domain
  * entities in `MockDb` (localStorage) instead of SQLite rows. The rest of the
  * app — domain services, hooks, screens — is unchanged: swapping the
  * composition root is enough to run the whole frontend with no backend.
@@ -12,9 +12,9 @@
  * dashboard.
  */
 
-import type { IMemorizationRepository } from '@/infrastructure/repository/memorization-repository-powersync';
-import type { IReviewLogRepository } from '@/infrastructure/repository/review-log-repository-powersync';
-import type { ITranslationPreferenceRepository } from '@/infrastructure/repository/translation-preference-repository-powersync';
+import type { IMemorizationRepository } from '@/infrastructure/repository/ports';
+import type { IReviewLogRepository } from '@/infrastructure/repository/ports';
+import type { ITranslationPreferenceRepository } from '@/infrastructure/repository/ports';
 import type { ILearnerProfileRepository } from '@/domains/learner-profile/repository';
 import type { IFamilyRepository } from '@/domains/family/repository';
 import type { IFamilyInvitationRepository } from '@/domains/family-invitation/repository';
@@ -26,7 +26,7 @@ import type { LearnerProfile } from '@/domains/learner-profile';
 import type { Family, FamilyMembership } from '@/domains/family';
 import type { FamilyInvitation } from '@/domains/family-invitation';
 import type { TelemetryEvent } from '@/domains/telemetry/entities';
-import { recordUuid } from '@/infrastructure/sync/memorization-mapper';
+import { recordUuid } from '@/infrastructure/repository/ports';
 import { DEFAULT_BIBLE_TRANSLATIONS } from '@/domains/bible/registry';
 import { mockDb } from './db';
 import { getMockUserId, stableId } from './identity';

@@ -51,3 +51,15 @@ export type {
   BibleChapterData,
   BibleVerseData,
 } from './repository-local';
+
+// Split dataset index (lazy loading: structure only, no verse text)
+export {
+  SplitBibleIndexSchema,
+  BookMetaSchema,
+  ChapterMetaSchema,
+  parseSplitIndex,
+  indexChapterCount,
+  indexVerseCount,
+  findBookMeta,
+} from './split-index';
+export type { SplitBibleIndex, BookMeta, ChapterMeta } from './split-index';

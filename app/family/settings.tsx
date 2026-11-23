@@ -58,7 +58,7 @@ export default function FamilySettingsScreen() {
           title={t('familyPlus.noFamilySelected', 'Aucune famille active')}
           description={t('familyPlus.noFamilySelectedBody', 'Créez une famille ou rejoignez-en une pour régler ses rappels, ses points et sa confidentialité.')}
           actionLabel={t('familyPlus.chooseFamily', 'Choisir une famille')}
-          onAction={() => navigate('/family/select-profile')}
+          onAction={() => navigate('/profile/select')}
         />
       </FullScreenPage>
     );
@@ -112,7 +112,7 @@ export default function FamilySettingsScreen() {
             />
           ))}
           <span
-            className="ml-auto rounded-full px-2 py-1 text-2xs font-semibold text-text-primary"
+            className="ms-auto rounded-full px-2 py-1 text-2xs font-semibold text-text-primary"
             style={{ backgroundColor: familyTint(family.color) }}
           >
             {t('familyPlus.currentColor', 'Couleur actuelle')}

@@ -88,12 +88,12 @@ export default function FamilyChallengeNewScreen() {
                   }}
                   aria-pressed={active}
                   className={cn(
-                    'flex items-center gap-3 rounded-xl border p-3 text-left transition',
+                    'flex items-center gap-3 rounded-xl border p-3 text-start transition',
                     active ? 'border-primary bg-surface-tint' : 'border-border',
                   )}
                 >
                   <span className="flex h-9 w-9 items-center justify-center rounded-full bg-surface text-primary">
-                    <DuoIcon icon={Trophy} size={18} />
+                    <DuoIcon icon={Trophy} size={20} />
                   </span>
                   <span className="flex-1">
                     <span className="block text-sm font-semibold text-text-primary">

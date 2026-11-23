@@ -9,6 +9,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { DuoIcon } from '@/components/ui/DuoIcon';
+import { Skeleton } from '@/components/ui/Skeleton';
 import {
   BookOpen01Icon as BookOpen,
   CheckIcon as Check,
@@ -25,9 +26,10 @@ import { useSettingsStore } from '@/store/settings-store';
 import {
   BIBLE_DATASET_CATALOG,
   type BibleDatasetCatalogEntry,
-  loadTranslationBooks,
   downloadAndLoadTranslationBooks,
   getTranslationStats,
+  hasBundledDataset,
+  isBibleAvailable,
   type TranslationStats,
 } from '@/services/bible-text-service';
 import {
@@ -93,15 +95,22 @@ export default function AvailableTranslationsScreen() {
     if (bibleTranslation) loadStatsFor(bibleTranslation);
   }, [bibleTranslation]);
 
-  // Probe which datasets are already resolvable locally (bundled or cached)
-  // without forcing a download.
+  // Sonde de disponibilité : on lit l'index de la traduction (structure seule),
+  // pas son corpus — 56 traductions × 31 000 versets n'ont pas à être parsées
+  // pour afficher une pastille « en local ».
+  // La sonde ne renseignait rien : pendant son exécution, TOUTES les versions
+  // étaient classées « à télécharger », y compris celles déjà sur l'appareil.
+  // Un classement faux pendant une seconde reste un classement faux.
+  const [probing, setProbing] = useState(true);
+  const [probeFailed, setProbeFailed] = useState(false);
   useEffect(() => {
     let cancelled = false;
+    setProbing(true);
     void Promise.all(
-      entries.map(async (entry) => {
-        const books = await loadTranslationBooks(entry.id);
-        return { id: entry.id, available: books != null };
-      }),
+      entries.map(async (entry) => ({
+        id: entry.id,
+        available: await isBibleAvailable(entry.id),
+      })),
     ).then((results) => {
       if (cancelled) return;
       setStates(
@@ -109,6 +118,14 @@ export default function AvailableTranslationsScreen() {
           results.map((r) => [r.id, { state: { status: 'idle' } as DownloadState, available: r.available }]),
         ),
       );
+      setProbing(false);
+    }).catch(() => {
+      // Une sonde qui échoue classait TOUTES les traductions « à télécharger »,
+      // y compris celle déjà sur l'appareil. Le classement faux doit se voir.
+      if (!cancelled) {
+        setProbeFailed(true);
+        setProbing(false);
+      }
     });
     return () => {
       cancelled = true;
@@ -118,6 +135,26 @@ export default function AvailableTranslationsScreen() {
   useEffect(() => () => abortRef.current?.abort(), []);
 
   const handleDownload = async (id: string) => {
+    // Garde de STRUCTURE : ce build ne sert aucun corpus hors `lsg`. Lancer le
+    // parcours des 1 189 chapitres pour échouer au premier coûtait 10 Mo de
+    // requêtes et affichait « Télécharger » sur un bouton qui ne peut pas
+    // aboutir. On refuse en une fois, avec un message utile.
+    if (!isDownloadable(id)) {
+      setStates((prev) => ({
+        ...prev,
+        [id]: {
+          state: {
+            status: 'error',
+            message: t(
+              'settings.translationNotInBuild',
+              'Cette version n’est pas incluse dans cette build : elle ne peut pas être téléchargée.',
+            ),
+          },
+          available: prev[id]?.available ?? false,
+        },
+      }));
+      return;
+    }
     abortRef.current?.abort();
     const controller = new AbortController();
     abortRef.current = controller;
@@ -161,11 +198,29 @@ export default function AvailableTranslationsScreen() {
     const prevTranslation = bibleTranslation;
     const entryState = states[id];
     if (!entryState?.available) {
-      // Not resolvable locally yet — try to fetch before activating.
+      // Pas résolvable en local : on ne peut l'activer que si ce build sert son
+      // corpus. Sinon on sortirait de l'écran après avoir activé une
+      // traduction dont le lecteur afficherait « Texte indisponible ».
+      if (!isDownloadable(id)) {
+        setStates((prev) => ({
+          ...prev,
+          [id]: {
+            state: {
+              status: 'error',
+              message: t(
+                'settings.translationNotInBuild',
+                'Cette version n’est pas incluse dans cette build : elle ne peut pas être téléchargée.',
+              ),
+            },
+            available: prev[id]?.available ?? false,
+          },
+        }));
+        return;
+      }
       try {
         await downloadAndLoadTranslationBooks(id);
       } catch {
-        return; // download failed; the row already shows the error state
+        return; // le parcours a échoué ; la ligne porte déjà l'erreur
       }
     }
     setBibleTranslation(id);
@@ -186,6 +241,15 @@ export default function AvailableTranslationsScreen() {
     });
     navigate('/bible/explorer');
   };
+
+  /**
+   * Une traduction peut-elle être téléchargée par CE build ?
+   *
+   * Oui quand son corpus est livré (déjà là, on le sélectionne simplement) ou
+   * quand il est servi dans `public/data/bible/<id>/`. Non pour les 56 entrées
+   * seulement cataloguées : elles ne sont ni livrées ni servies.
+   */
+  const isDownloadable = (id: string) => hasBundledDataset(id);
 
   const localCount = useMemo(
     () => entries.filter((e) => (states[e.id]?.available ?? false)).length,
@@ -228,7 +292,7 @@ export default function AvailableTranslationsScreen() {
               <h3 className="card-title">
                 {info.abbreviation}
                 {info.abbreviation !== info.name && (
-                  <span className="ml-1.5 text-sm font-medium text-text-muted">{info.name}</span>
+                  <span className="ms-1.5 text-sm font-medium text-text-muted">{info.name}</span>
                 )}
               </h3>
               {isActive && (
@@ -238,7 +302,7 @@ export default function AvailableTranslationsScreen() {
               )}
               {isLocal && !isActive && (
                 <span className="inline-flex items-center gap-1 rounded-full bg-success-light px-2 py-0.5 text-3xs font-bold uppercase tracking-wide text-success">
-                  <DuoIcon icon={CircleCheck} size={11} />
+                  <DuoIcon icon={CircleCheck} size={16} />
                   {t('settings.localAvailable', 'En local')}
                 </span>
               )}
@@ -274,7 +338,7 @@ export default function AvailableTranslationsScreen() {
 
             {state.status === 'error' && (
               <p className="mt-1.5 flex items-center gap-1 text-xs text-error">
-                <DuoIcon icon={AlertCircle} size={12} /> {state.message}
+                <DuoIcon icon={AlertCircle} size={16} /> {state.message}
               </p>
             )}
 
@@ -284,7 +348,7 @@ export default function AvailableTranslationsScreen() {
               onClick={() => toggleDetail(entry.id)}
               className="mt-2 flex items-center gap-1 text-xs font-semibold text-primary"
             >
-              <DuoIcon icon={ChevronDown} size={13} className={cn('transition-transform', expanded.has(entry.id) && 'rotate-180')} />
+              <DuoIcon icon={ChevronDown} size={16} className={cn('transition-transform', expanded.has(entry.id) && 'rotate-180')} />
               {t('settings.translationDetail', 'Détail')}
             </button>
             {expanded.has(entry.id) && (
@@ -314,7 +378,7 @@ export default function AvailableTranslationsScreen() {
               onClick={() => handleCancel(entry.id)}
               className="flex h-10 shrink-0 items-center gap-1.5 rounded-full bg-surface-tint px-3.5 text-xs font-bold text-text-secondary transition active:scale-95"
             >
-              <DuoIcon icon={X} size={15} />
+              <DuoIcon icon={X} size={16} />
               {t('common.cancel', 'Annuler')}
             </button>
           ) : isLocal ? (
@@ -327,6 +391,22 @@ export default function AvailableTranslationsScreen() {
             >
               <DuoIcon icon={Check} size={16} />
               {t('common.select', 'Utiliser')}
+            </button>
+          ) : !isDownloadable(entry.id) ? (
+            // Bouton DÉSACTIVÉ, pas un bouton qui échoue : « Télécharger »
+            // promet une action que ce build ne peut pas tenir.
+            <button
+              type="button"
+              disabled
+              aria-disabled="true"
+              title={t(
+                'settings.translationNotInBuildHint',
+                'Cette version n’est pas incluse dans cette build.',
+              )}
+              className="flex h-10 shrink-0 cursor-not-allowed items-center gap-2 rounded-full bg-surface-tint px-4 text-sm font-semibold text-text-muted opacity-60"
+            >
+              <DuoIcon icon={Download} size={16} />
+              {t('settings.notInBuild', 'Non incluse')}
             </button>
           ) : (
             <button
@@ -355,7 +435,7 @@ export default function AvailableTranslationsScreen() {
         <div className="g2 mb-3 flex items-center justify-between px-4 py-3">
           <div className="flex items-center gap-2.5">
             <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/12 text-primary">
-              <DuoIcon icon={Languages} size={18} />
+              <DuoIcon icon={Languages} size={20} />
             </span>
             <div>
               <p className="text-sm font-bold text-text-primary">{groupLabel}</p>
@@ -373,7 +453,7 @@ export default function AvailableTranslationsScreen() {
 
         {local.length > 0 && (
           <div className="mb-2 flex items-center gap-1.5 px-1 text-2xs font-bold uppercase tracking-wide text-text-tertiary">
-            <DuoIcon icon={CircleCheck} size={13} className="text-success" />
+            <DuoIcon icon={CircleCheck} size={16} className="text-success" />
             {t('settings.localVersions', 'Disponible en local')}
           </div>
         )}
@@ -382,7 +462,7 @@ export default function AvailableTranslationsScreen() {
         {remote.length > 0 && (
           <>
             <div className="mt-3 mb-2 flex items-center gap-1.5 px-1 text-2xs font-bold uppercase tracking-wide text-text-tertiary">
-              <DuoIcon icon={Download} size={13} />
+              <DuoIcon icon={Download} size={16} />
               {t('settings.toDownload', 'À télécharger')}
             </div>
             <div className="flex flex-col gap-3">{remote.map(renderRow)}</div>
@@ -400,7 +480,7 @@ export default function AvailableTranslationsScreen() {
           className="rounded-full p-2 text-text-muted active:bg-surface-tint"
           aria-label={t('common.back', 'Retour')}
         >
-          <DuoIcon icon={ChevronRight} size={20} className="rotate-180" />
+          <DuoIcon icon={ChevronRight} size={20} className="directional rotate-180" />
         </button>
         <div>
           <h1 className="page-title">
@@ -414,10 +494,40 @@ export default function AvailableTranslationsScreen() {
       </div>
 
       <p className="mb-5 px-1 text-sm text-text-muted">
-        {t('settings.availableTranslationsHint', 'Téléchargez une version pour l’utiliser hors ligne. Elle restera disponible sur cet appareil.')}
+        {t(
+          'settings.availableTranslationsHint',
+          'Les versions incluses dans l’application fonctionnent hors ligne. Les autres sont annoncées pour information et ne peuvent pas encore être téléchargées.',
+        )}
       </p>
 
-      {languageGroups.map((group) => renderLanguageSection(group.language, group.ids))}
+      {probing ? (
+        <div role="status" aria-busy="true" className="space-y-3">
+          <span className="sr-only">
+            {t('settings.probingTranslations', 'Verification des versions deja sur cet appareil…')}
+          </span>
+          {[0, 1, 2].map((i) => (
+            <div key={i} className="g2 flex items-center gap-3 px-4 py-3">
+              <Skeleton className="h-9 w-9 shrink-0 rounded-xl" />
+              <Skeleton className="h-4 w-4/5 rounded-full" />
+            </div>
+          ))}
+        </div>
+      ) : (
+        <>
+          {probeFailed && (
+            <div role="alert" className="g2 mb-4 flex items-start gap-3 p-4">
+              <DuoIcon icon={AlertCircle} size={20} className="shrink-0 text-error" />
+              <p className="text-xs text-text-secondary">
+                {t(
+                  'settings.probeFailed',
+                  'Le classement « en local / à télécharger » n’a pas pu être établi. Les traductions incluses dans cette build restent utilisables.',
+                )}
+              </p>
+            </div>
+          )}
+          {languageGroups.map((group) => renderLanguageSection(group.language, group.ids))}
+        </>
+      )}
 
       {isAuthenticated && (
         <p className="mt-6 px-1 text-center text-xs text-text-tertiary">

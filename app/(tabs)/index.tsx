@@ -13,7 +13,6 @@ import { DuoIcon } from '@/components/ui/DuoIcon';
 import {
   UsersIcon as Users,
   FlameIcon as Flame,
-  UserCircleIcon as CircleUserRound,
   CompassIcon as Compass,
   GemIcon as Gem,
   ScrollTextIcon as ScrollText,
@@ -152,8 +151,14 @@ export default function HomeScreen() {
       } catch (error) {
         console.error('[Home] Data load failed:', error);
         if (!cancelled) {
+          // Tous les compteurs repassent à « inconnu » : ne réinitialiser que
+          // deux d'entre eux laisserait « 0 verset mémorisé » à l'écran pour une
+          // lecture qui a échoué (règle D5, cf. D15).
           setReviewsDue(null);
           setStreak(null);
+          setTotal(null);
+          setMastered(null);
+          setRecentVerses([]);
         }
       }
     };
@@ -200,7 +205,7 @@ export default function HomeScreen() {
       icon: ScrollText,
       label: t('home.passage', 'Passage'),
       desc: t('home.passageDesc', 'Multi-versets'),
-      action: () => navigate('/bible/chapter'),
+      action: () => navigate('/bible/explorer'),
     },
     {
       icon: CalendarClock,
@@ -234,55 +239,37 @@ export default function HomeScreen() {
     },
   ];
 
+  /**
+   * Libellé d'un compteur : le gabarit porte le nombre (`{count}` + `{plural}`),
+   * et une valeur inconnue (`null`) ne devient jamais « 0 ». Auparavant
+   * `total ?? 0` fabriquait « 0 verset mémorisé » alors que la colonne voisine
+   * affichait « – » : le même chiffre se contredisait dans la même tuile.
+   */
+  const statLabel = (template: string, count: number | null): string =>
+    count === null ? t('home.dataUnavailable', 'Données indisponibles') : formatProgressLabel(template, count, locale);
   const statItems: Array<[string, number | null]> = [
-    [
-      formatProgressLabel(
-        t('progress.versesMemorized', 'Versets mémorisés'),
-        total ?? 0,
-        locale,
-      ),
-      total,
-    ],
-    [
-      formatProgressLabel(
-        t('progress.versesMastered', 'Versets maîtrisés'),
-        mastered ?? 0,
-        locale,
-      ),
-      mastered,
-    ],
-    [
-      formatProgressLabel(
-        t('home.reviewsDue', 'Révisions à faire'),
-        reviewsDue ?? 0,
-        locale,
-      ),
-      reviewsDue,
-    ],
+    [statLabel(t('progress.versesMemorized', 'Verset{plural} mémorisé{plural}'), total), total],
+    [statLabel(t('progress.versesMastered', 'Versets maîtrisés'), mastered), mastered],
+    [statLabel(t('home.reviewsDue', 'Révisions à faire'), reviewsDue), reviewsDue],
   ];
 
   return (
     <div className="screen-column home-premium h-full overflow-y-auto">
       <div className="home-content">
+        {/* Une seule ligne d'accueil : la date, puis le prénom.
+            Le bouton de profil qui vivait ici doublait celui du header de
+            coquille — deux fois la même action dans le même champ de vision. */}
         <section className="g1 tab-heading home-greeting">
-          <p className="section-label">{dateLabel}</p>
-          <h1 className="display-title mt-2">
+          <p className="section-label home-date">{dateLabel}</p>
+          <h1 className="display-title home-hi">
             {t('home.greeting', 'Bonjour')}
             {greetingName ? `, ${greetingName}` : ''}
           </h1>
           {activeFamily && (
-            <p className="home-muted">
+            <p className="home-muted home-family">
               <DuoIcon icon={Users} size={16} /> {activeFamily.name}
             </p>
           )}
-          <button
-            type="button"
-            onClick={() => navigate('/profile')}
-            className="home-profile"
-            aria-label={t('common.profil', 'Profil')}
-          >
-            <DuoIcon icon={CircleUserRound} size={24} />
-          </button>
         </section>
         <div className="home-feature-grid">
           <article
@@ -292,97 +279,32 @@ export default function HomeScreen() {
             <p className="section-label">{t('home.dailyVerse', 'Verset du jour')}</p>
             <h2>{todayVerse.ref}</h2>
             <p className="home-verse-text">{todayVerse.text}</p>
+            {/* Un seul geste. « Explorer la Bible » vit dans la navigation :
+                deux boutons sous un verset, c'est deux intentions à la fois. */}
             <div className="home-actions">
               <button
                 type="button"
                 className="home-primary"
                 onClick={() => navigate('/memorization/session')}
               >
-                {t('bible.memorize', 'Mémoriser')}
-              </button>
-              <button
-                type="button"
-                className="home-secondary"
-                onClick={() => navigate('/bible/explorer')}
-              >
-                {t('home.explore', 'Explorer la Bible')}
+                {t('bible.memorize', 'Mémoriser ce verset')}
               </button>
             </div>
-          </article>
-          <article className="g2 home-streak">
-            <p className="section-label">
-              <DuoIcon icon={Flame} size={20} /> {t('home.streakLabel', 'Série de jours')}
-            </p>
-            <div
-              className="home-ring"
-              aria-label={
-                streak === null
-                  ? t('home.streakUnavailable', 'Série indisponible')
-                  : formatLastSevenDaysAria(streak, locale)
-              }
-            >
-              <svg viewBox="0 0 100 100" aria-hidden="true">
-                <circle
-                  className="home-ring-track"
-                  cx="50"
-                  cy="50"
-                  r="44"
-                  fill="none"
-                  strokeWidth="6"
-                />
-                <circle
-                  className="home-ring-progress"
-                  cx="50"
-                  cy="50"
-                  r="44"
-                  fill="none"
-                  strokeWidth="6"
-                  strokeDasharray={`${(Math.min(streak ?? 0, 7) / 7) * 276.46} 276.46`}
-                />
-              </svg>
-              <strong>{streak ?? '–'}</strong>
-            </div>
-            <div
-              className="home-week"
-              aria-label={t(
-                'home.weekAria',
-                'Série sur les sept derniers jours en temps universel',
-              )}
-            >
-              {Array.from({ length: 7 }, (_, index) => {
-                const daysAgo = 6 - index;
-                const day = new Date(Date.now() - daysAgo * 86_400_000);
-                return (
-                  <span
-                    key={daysAgo}
-                    data-active={streak !== null && daysAgo < streak}
-                    title={day.toLocaleDateString(locale, {
-                      timeZone: 'UTC',
-                      dateStyle: 'medium',
-                    })}
-                  >
-                    {day.toLocaleDateString(locale, {
-                      timeZone: 'UTC',
-                      weekday: 'narrow',
-                    })}
-                  </span>
-                );
-              })}
-            </div>
-            <p className="home-muted">
-              {streak === null
-                ? t('home.dataUnavailable', 'Données indisponibles')
-                : formatStreakDaysLabel(streak, locale)}
-            </p>
-            <button
-              type="button"
-              className="home-secondary"
-              onClick={() => navigate('/tabs/progress')}
-            >
-              {t('home.viewProgress', 'Voir la progression')}
-            </button>
           </article>
         </div>
+
+        {/* La série n'est plus un cadran. Un anneau à sept pastilles est le
+            vocabulaire d'une application de sport : il transforme une
+            discipline de grâce en tableau de performance, et un compteur qui
+            retombe à zéro punit celui qui a manqué un jour. Ici, une ligne :
+            le nombre, et sa lecture. */}
+        <p className="home-streak-line">
+          <DuoIcon icon={Flame} size={16} />
+          {streak === null
+            ? t('home.dataUnavailable', 'Données indisponibles')
+            : `${formatStreakDaysLabel(streak, locale)} · ${t('home.streakKeepGoing', 'continuez à votre rythme')}`}
+        </p>
+
         <div className="home-stats">
           {statItems.map(([label, value]) => (
             <div className="g2 home-stat" key={label}>
@@ -431,8 +353,8 @@ export default function HomeScreen() {
                 onClick={() =>
                   navigate(
                     verse.bookId && verse.chapterNumber
-                      ? `/bible/chapter/${verse.bookId}/${verse.chapterNumber}`
-                      : '/bible/chapter',
+                      ? `/bible/explorer/${verse.bookId}/${verse.chapterNumber}`
+                      : '/bible/explorer',
                   )
                 }
               >

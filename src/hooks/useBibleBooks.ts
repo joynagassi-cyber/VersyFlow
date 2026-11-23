@@ -1,45 +1,28 @@
 /**
- * useBibleBooks — data-driven book/chapter list for the active translation.
+ * useBibleBooks — liste de livres/chapitres de la traduction active.
  *
- * `BIBLE_BOOKS` (in `src/domains/bible/entities.ts`) is a static 66-book
- * structure (id, orderIndex, testament, *hardcoded* fr/en names,
- * *hardcoded* chapterCount). It was historically the source for the book /
- * chapter lists in every Bible screen. In practice, the REAL chapter
- * counts, book names, and verse data come from the downloaded / bundled
- * dataset (per translation). Using the static list is what the audit
- * flagged as "language technique de code" — hardcoded values that can
- * disagree with the actual dataset.
+ * La source est l'index éclaté du dataset (`useBibleData`) : noms réels,
+ * nombre de chapitres réel, nombre de versets par chapitre. `BIBLE_BOOKS`
+ * (structure statique des 66 livres) ne sert plus que de repli pendant le
+ * chargement, et de table d'ordre canonique.
  *
- * This hook reconciles the two:
- *   - `books`   — `BibleBookData[]` from `useBibleData`, i.e. the dataset
- *                 actually loaded for the active translation.
- *   - `byId`    — an O(1) lookup `{ [id]: { chapterCount, testament, orderIndex } }`
- *                 built from the dataset.
- *   - `fallback` — `BIBLE_BOOKS` — still kept as a structural fallback for
- *                  the *navigation* UI (book picker, chapters list) so the
- *                  user can still browse even when the dataset is not yet
- *                  resolvable. The `byId` map wins whenever available.
- *
- * Callers:
- *   - `app/bible/explorer.tsx` — book picker + chapter grid
- *   - `app/bible/book.tsx`     — chapters list for one book
- *   - `app/bible/chapter.tsx`  — book + chapter title
- *   - `src/components/bible/VerseActionBar.tsx` — book display name
+ * Retourne aussi `getChapter` et `loadAll` : les écrans qui affichent du texte
+ * lisent un chapitre, ceux qui parcourent tout le corpus (recherche) le
+ * demandent explicitement.
  */
 
 import { useMemo } from 'react';
-import { useBibleData } from '@/hooks/useBibleData';
 import { useTranslation } from 'react-i18next';
 import { BIBLE_BOOKS, type BibleBook } from '@/domains/bible/entities';
-import type { BibleBookData } from '@/domains/bible/repository-local';
 import { bibleBookName } from '@/lib/bible-book-name';
+import { useBibleData, type BibleDataStatus } from '@/hooks/useBibleData';
+import type { BibleBookData, BibleChapterData } from '@/domains/bible/repository-local';
 
 export interface BookMeta {
   id: string;
   testament: 'old' | 'new';
   orderIndex: number;
-  /** The *actual* chapter count in the loaded dataset (or the static
-   *  fallback count when the dataset has no entry for this id). */
+  /** The *actual* chapter count in the dataset (or the static fallback). */
   chapterCount: number;
   /** `name[lang]` for the active UI language, with a fallback chain
    *  `<lang> → fr → en → id` (never empty). */
@@ -47,8 +30,8 @@ export interface BookMeta {
 }
 
 export interface UseBibleBooks {
-  /** The dataset books for the active translation (null while loading). */
-  books: BibleBookData[] | null;
+  /** Dataset book structure (null while the index loads). */
+  books: BookMeta[] | null;
   /** The static BIBLE_BOOKS structure — the navigation fallback. */
   structure: readonly BibleBook[];
   /** By-id lookup: dataset-derived when available, static fallback otherwise. */
@@ -56,13 +39,18 @@ export interface UseBibleBooks {
   /** Filtered dataset books by testament (used by the explorer's two-column view). */
   oldTestament: BookMeta[];
   newTestament: BookMeta[];
-  /** The translation id actually in use (same as `useBibleData().translationId`). */
+  /** The translation id actually in use. */
   translationId: string;
+  /** Whether the structure is ready ('unavailable' when the translation is not delivered). */
+  status: BibleDataStatus;
+  /** One chapter, read on demand. */
+  getChapter: (bookId: string, chapterNumber: number) => Promise<BibleChapterData | null>;
+  /** The whole corpus — only for screens that walk every verse. */
+  loadAll: () => Promise<BibleBookData[] | null>;
 }
 
 export function useBibleBooks(): UseBibleBooks {
   const data = useBibleData();
-  const books = data.books;
   const { i18n } = useTranslation();
   const lang = i18n.language ?? 'fr';
 
@@ -77,40 +65,37 @@ export function useBibleBooks(): UseBibleBooks {
         displayName: bibleBookName(s.id, lang, s.name),
       });
     }
-    // Overlay the real dataset book structure on top of the static one:
-    // when the dataset has a book with the same id, its `chapters.length`
-    // and `name[lang]` win.
-    if (books) {
-      for (const b of books) {
+    // Overlay the real dataset structure on top of the static one: when the
+    // dataset has a book with the same id, its real chapter count and name win.
+    if (data.index) {
+      for (const b of data.index.books) {
         const fallback = m.get(b.id);
         m.set(b.id, {
           id: b.id,
           testament: b.testament,
-          orderIndex: b.orderIndex ?? fallback?.orderIndex ?? m.size + 1,
-          chapterCount: b.chapters.length,
+          orderIndex: fallback?.orderIndex ?? m.size + 1,
+          chapterCount: b.chapterCount,
           displayName: bibleBookName(b.id, lang, b.name),
         });
       }
     }
     return m;
-  }, [books, lang]);
+  }, [data.index, lang]);
 
-  const oldTestament = useMemo(
-    () => [...byId.values()].filter((m) => m.testament === 'old'),
-    [byId],
-  );
-  const newTestament = useMemo(
-    () => [...byId.values()].filter((m) => m.testament === 'new'),
-    [byId],
-  );
+  const books = useMemo(() => [...byId.values()].sort((a, b) => a.orderIndex - b.orderIndex), [byId]);
+  const oldTestament = useMemo(() => books.filter((m) => m.testament === 'old'), [books]);
+  const newTestament = useMemo(() => books.filter((m) => m.testament === 'new'), [books]);
 
   return {
-    books,
+    books: data.index ? books : null,
     structure: BIBLE_BOOKS,
     byId,
     oldTestament,
     newTestament,
     translationId: data.translationId,
+    status: data.status,
+    getChapter: data.getChapter,
+    loadAll: data.loadAll,
   };
 }
 

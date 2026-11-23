@@ -198,7 +198,7 @@ export default function TranslationComparisonScreen() {
           onClick={() => setAddOpen(true)}
           className="flex items-center gap-1.5 rounded-full bg-primary px-3.5 py-1.5 text-xs font-bold text-on-primary shadow-sm active:scale-95"
         >
-          <DuoIcon icon={Plus} size={14} />
+          <DuoIcon icon={Plus} size={16} />
           {t('comparison.addVersion', 'Ajouter une version')}
         </button>
       }
@@ -214,7 +214,7 @@ export default function TranslationComparisonScreen() {
           </div>
           {availableLanguages.length > 1 && (
             <div className="flex items-center gap-2">
-              <DuoIcon icon={Globe} size={13} className="shrink-0 text-primary" />
+              <DuoIcon icon={Globe} size={16} className="shrink-0 text-primary" />
               <select
                 value={targetLang ?? ''}
                 onChange={(e) => changeLanguage(e.target.value)}
@@ -254,7 +254,7 @@ export default function TranslationComparisonScreen() {
                   )}
                   {r.id === bibleTranslation && (
                     <span className="flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-3xs font-bold text-primary">
-                      <DuoIcon icon={Check} size={10} /> {t('comparison.active', 'Active')}
+                      <DuoIcon icon={Check} size={16} /> {t('comparison.active', 'Active')}
                     </span>
                   )}
                 </div>
@@ -264,7 +264,7 @@ export default function TranslationComparisonScreen() {
                   className="touch-target shrink-0 rounded-full text-text-muted active:bg-surface-tint"
                   aria-label={t('common.remove', 'Retirer')}
                 >
-                  <DuoIcon icon={X} size={15} />
+                  <DuoIcon icon={X} size={16} />
                 </button>
               </div>
               {r.loading ? (
@@ -314,7 +314,7 @@ export default function TranslationComparisonScreen() {
                       key={m.id}
                       type="button"
                       onClick={() => add(m.id, m.name, m.language)}
-                      className="flex items-center justify-between rounded-xl px-3 py-2.5 text-left transition active:bg-surface-tint"
+                      className="flex items-center justify-between rounded-xl px-3 py-2.5 text-start transition active:bg-surface-tint"
                     >
                       <span className="flex min-w-0 items-center gap-2">
                         <span className="truncate text-sm font-medium text-text-primary">

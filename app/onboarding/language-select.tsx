@@ -51,7 +51,7 @@ export default function LanguagePickerScreen() {
             className="flex-1"
             onClick={() => navigate('/onboarding/welcome')}
           >
-            <DuoIcon icon={ArrowLeft} size={16} />
+            <DuoIcon icon={ArrowLeft} size={16}  className="directional" />
             {t('common.back', 'Retour')}
           </Button>
           <Button
@@ -60,7 +60,7 @@ export default function LanguagePickerScreen() {
             onClick={() => navigate('/onboarding/translation-select')}
           >
             {t('common.continue', 'Continuer')}
-            <DuoIcon icon={ArrowRight} size={16} />
+            <DuoIcon icon={ArrowRight} size={16}  className="directional" />
           </Button>
         </div>
       }
@@ -75,13 +75,13 @@ export default function LanguagePickerScreen() {
               aria-pressed={isSelected}
               onClick={() => selectLanguage(lang.code)}
               className={cn(
-                'flex items-center justify-between rounded-2xl border-2 bg-surface p-4 text-left shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
+                'flex items-center justify-between rounded-2xl border-2 bg-surface p-4 text-start shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
                 isSelected ? 'border-primary bg-surface-tint' : 'border-transparent',
               )}
             >
               <div>
                 <div className="flex items-center gap-2">
-                  <DuoIcon icon={Languages} size={18} className="text-primary" />
+                  <DuoIcon icon={Languages} size={20} className="text-primary" />
                   <span className="text-lg font-semibold text-text-primary">{lang.name}</span>
                   {lang.rtl && (
                     <span className="rounded bg-surface-tint px-2 py-0.5 text-2xs font-semibold text-primary">
@@ -94,7 +94,7 @@ export default function LanguagePickerScreen() {
                   <p className="mt-1 text-xs text-primary">{t('onboarding.rtlWarning')}</p>
                 )}
               </div>
-              {isSelected && <DuoIcon icon={Check} size={22} className="text-primary" />}
+              {isSelected && <DuoIcon icon={Check} size={24} className="text-primary" />}
             </button>
           );
         })}

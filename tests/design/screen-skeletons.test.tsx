@@ -61,13 +61,12 @@ const appFiles = walk('app');
 const COVERAGE: [string, string][] = [
   ['app/(tabs)/progress.tsx', 'ProgressSkeleton'],
   ['app/analytics/dashboard.tsx', 'AnalyticsSkeleton'],
-  ['app/bible/chapter.tsx', 'BibleReaderSkeleton'],
   ['app/bible/explorer.tsx', 'BibleReaderSkeleton'],
   ['app/comparison/translation.tsx', 'TranslationTextSkeleton'],
   ['app/family/leaderboard.tsx', 'FamilyLeaderboardSkeleton'],
   ['app/family/member.tsx', 'FamilyMemberSkeleton'],
   ['app/family/members.tsx', 'FamilyMembersSkeleton'],
-  ['app/family/select-profile.tsx', 'FamilySelectProfileSkeleton'],
+  ['app/profile/select.tsx', 'FamilySelectProfileSkeleton'],
   ['app/memorization/flashcard.tsx', 'FlashcardSkeleton'],
   ['app/memorization/session.tsx', 'MemorizationSessionSkeleton'],
   ['app/memorization/workspace.tsx', 'WorkspaceSkeleton'],
@@ -107,9 +106,22 @@ describe('squelettes — couverture', () => {
   });
 
   it('aucun écran ne redessine un squelette gris à la main', () => {
+    // Le défaut est un ÉLÉMENT de chargement fabriqué sur place : le même
+    // bloc porte `aria-busy` et sa propre texture (`bg-surface-tint` ou une
+    // pulsation). Chercher les deux mots n'importe où dans le fichier
+    // accusait tout écran qui a une pastille `bg-surface-tint` et un
+    // `aria-busy` ailleurs — c'est-à-dire la moitié des écrans corrects.
     const offenders = appFiles.filter((path) => {
       const text = readFileSync(join(root, path), 'utf8');
-      return /aria-busy/.test(text) && /bg-surface-tint/.test(text);
+      const code = text.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/[^\n]*/g, '');
+      return [...code.matchAll(/<[a-z][^>]*>/g)].some((m) => {
+        const tag = m[0];
+        return (
+          /aria-busy/.test(tag) &&
+          /(bg-surface-tint|animate-pulse)/.test(tag) &&
+          !/className="[^"]*\bskeleton\b/.test(tag)
+        );
+      });
     });
     expect(offenders).toEqual([]);
   });

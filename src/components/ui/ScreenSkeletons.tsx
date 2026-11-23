@@ -241,12 +241,12 @@ function TreeRelations() {
         <li className="flex h-9 items-center gap-2 rounded-xl bg-surface-tint px-3">
           <Skeleton className="h-4 w-4 rounded-sm" />
           <Line className="h-3.5 w-24" />
-          <Skeleton className="ml-auto h-2.5 w-14 rounded-full" />
+          <Skeleton className="ms-auto h-2.5 w-14 rounded-full" />
         </li>
         {['w-2/5', 'w-1/3', 'w-1/2', 'w-2/5'].map((width, index) => (
           <li
             key={index}
-            className="ml-4 flex items-center gap-2 rounded-xl border border-border px-3 py-2"
+            className="ms-4 flex items-center gap-2 rounded-xl border border-border px-3 py-2"
           >
             <Skeleton className="h-3.5 w-3.5 shrink-0 rounded-sm" />
             <div className="min-w-0 flex-1">
@@ -297,7 +297,7 @@ export function SemanticNodeSkeleton({ label }: { label: string }) {
             <div key={index} className="flex items-center gap-2">
               <Skeleton className="h-3.5 w-3.5 shrink-0 rounded-sm" />
               <Line className={cn('h-3.5', width)} />
-              <Skeleton className="ml-auto h-3 w-8 shrink-0 rounded-full" />
+              <Skeleton className="ms-auto h-3 w-8 shrink-0 rounded-full" />
             </div>
           ))}
         </div>
@@ -309,7 +309,7 @@ export function SemanticNodeSkeleton({ label }: { label: string }) {
             <div key={index} className="flex items-center gap-2 rounded-lg px-2 py-2">
               <Skeleton className="h-3.5 w-3.5 shrink-0 rounded-sm" />
               <Line className={index % 2 === 0 ? 'w-1/3' : 'w-2/5'} />
-              <Skeleton className="ml-auto h-2.5 w-14 shrink-0 rounded-full" />
+              <Skeleton className="ms-auto h-2.5 w-14 shrink-0 rounded-full" />
             </div>
           ))}
         </div>
@@ -418,7 +418,7 @@ export function SemanticReviewSkeleton({ label }: { label: string }) {
           {Array.from({ length: 6 }, (_, index) => (
             <div key={index} className="flex items-center gap-3 py-2">
               <Skeleton className="h-4 w-20 shrink-0 rounded-sm" />
-              <Skeleton className="ml-auto h-3.5 w-8 shrink-0 rounded-full" />
+              <Skeleton className="ms-auto h-3.5 w-8 shrink-0 rounded-full" />
             </div>
           ))}
         </div>
@@ -616,8 +616,8 @@ export function FamilyMemberSkeleton({ label }: { label: string }) {
 /** Rangée de la file du jour : accent latéral, référence, pastille de statut. */
 function QueueRow() {
   return (
-    <div className="g2 relative overflow-hidden p-4 pl-6">
-      <Skeleton className="absolute bottom-0 left-0 top-0 w-1 rounded-none" />
+    <div className="g2 relative overflow-hidden p-4 ps-6">
+      <Skeleton className="absolute bottom-0 start-0 top-0 w-1 rounded-none" />
       <div className="flex items-center justify-between gap-2">
         <Line className="h-4 w-2/5" />
         <Skeleton className="h-6 w-16 shrink-0 rounded-full" />
@@ -646,7 +646,7 @@ export function ReviewQueueSkeleton({ label }: { label: string }) {
           <div className="mb-3 flex items-center gap-2">
             <Skeleton className="h-4 w-4 rounded-md" />
             <Line className="h-4 w-20" />
-            <Skeleton className="ml-auto h-6 w-7 rounded-full" />
+            <Skeleton className="ms-auto h-6 w-7 rounded-full" />
           </div>
           <div className="flex flex-col gap-3">
             {Array.from({ length: rows }, (_, index) => (
@@ -940,7 +940,7 @@ export function NotesSkeleton({ label }: { label: string }) {
                 <div className="flex items-center gap-2">
                   <Skeleton className="h-3.5 w-3.5 rounded-sm" />
                   <Line className="h-4 w-24" />
-                  <Skeleton className="ml-auto h-4 w-10 rounded-full" />
+                  <Skeleton className="ms-auto h-4 w-10 rounded-full" />
                 </div>
                 <div className="mt-2 flex flex-col gap-1.5">
                   <Line className="h-3 w-full" />

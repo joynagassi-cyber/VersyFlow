@@ -40,6 +40,9 @@ export default function ConceptView() {
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
   const [verseTexts, setVerseTexts] = useState<Record<string, string>>({});
+  // Les clés de versets s'affichent même sans texte ; l'absence de texte doit
+  // donc être DITE, sinon la liste paraît simplement pauvre.
+  const [textsUnavailable, setTextsUnavailable] = useState(false);
   const translationId = useSettingsStore((s) => s.bibleTranslation);
 
   const { data, loading, notFound } = useConceptView(conceptId);
@@ -60,7 +63,7 @@ export default function ConceptView() {
         if (!cancelled) setVerseTexts(map);
       })
       .catch(() => {
-        /* translation unavailable — verse text stays empty, keys still render */
+        if (!cancelled) setTextsUnavailable(true);
       });
     return () => {
       cancelled = true;
@@ -105,9 +108,11 @@ export default function ConceptView() {
             <DuoIcon icon={BrainCircuit} size={20} />
           </span>
           <div>
-            <h1 className="page-title">
+            {/* Le titre de page porte déjà le libellé : ici c'est un
+                sous-titre de section, pas un second titre de niveau 1. */}
+            <h2 className="page-title">
               {displayLabel(concept, lang)}
-            </h1>
+            </h2>
             <p className="text-xs text-text-muted">{concept.canonical_name}</p>
           </div>
         </div>
@@ -124,7 +129,7 @@ export default function ConceptView() {
                   key={code}
                   className="rounded-full bg-surface-elevated px-3 py-1 text-xs font-medium text-text-secondary"
                 >
-                  <span className="mr-1 text-text-muted">{code}</span>
+                  <span className="me-1 text-text-muted">{code}</span>
                   {label}
                 </span>
               ))}
@@ -135,9 +140,17 @@ export default function ConceptView() {
         {/* Versets */}
         <section className="mb-5">
           <h2 className="mb-2 flex items-center gap-1.5 text-sm font-semibold text-text-tertiary">
-            <DuoIcon icon={BookOpen} size={14} className="text-primary" />
+            <DuoIcon icon={BookOpen} size={16} className="text-primary" />
             {t('semantic.verses', 'Verset{count}', { count: verseKeys.length })}
           </h2>
+          {textsUnavailable && (
+            <p role="status" className="mb-2 text-xs text-text-muted">
+              {t(
+                'semantic.textsUnavailable',
+                'Le texte des versets n’est pas livré sur cet appareil ; seules les références sont affichées.',
+              )}
+            </p>
+          )}
           {verseKeys.length === 0 ? (
             <p className="empty-line">{t('semantic.noVerses', 'Aucun verset lié')}</p>
           ) : (
@@ -148,7 +161,7 @@ export default function ConceptView() {
                   <button
                     key={key}
                     onClick={() => navigate(`/semantic/verse?verseRef=${encodeURIComponent(key)}`)}
-                    className="g2 flex items-center justify-between p-3 text-left transition-transform active:scale-[0.99]"
+                    className="g2 flex items-center justify-between p-3 text-start transition-transform active:scale-[0.99]"
                   >
                     <div>
                       <p className="text-sm font-semibold text-text-primary">{key}</p>
@@ -156,7 +169,7 @@ export default function ConceptView() {
                         <p className="line-clamp-2 text-xs text-text-muted">{text}</p>
                       ) : null}
                     </div>
-                    <DuoIcon icon={ChevronRight} size={16} className="text-primary" />
+                    <DuoIcon icon={ChevronRight} size={16} className="directional text-primary" />
                   </button>
                 );
               })}
@@ -167,7 +180,7 @@ export default function ConceptView() {
         {/* Community */}
         <section className="mb-5">
           <h2 className="mb-2 flex items-center gap-1.5 text-sm font-semibold text-text-tertiary">
-            <DuoIcon icon={Map} size={14} className="text-primary" />
+            <DuoIcon icon={Map} size={16} className="text-primary" />
             {t('semantic.community', 'Communauté')}
           </h2>
           {communities.length === 0 ? (
@@ -178,7 +191,7 @@ export default function ConceptView() {
                 <button
                   key={c.id}
                   onClick={() => navigate(`/semantic/community?communityId=${encodeURIComponent(c.id)}`)}
-                  className="g2 flex items-center justify-between p-3 text-left transition-transform active:scale-[0.99]"
+                  className="g2 flex items-center justify-between p-3 text-start transition-transform active:scale-[0.99]"
                 >
                   <div>
                     <p className="text-sm font-semibold text-text-primary">{c.name}</p>
@@ -186,7 +199,7 @@ export default function ConceptView() {
                       <p className="text-xs text-text-muted">{c.description}</p>
                     ) : null}
                   </div>
-                  <DuoIcon icon={ChevronRight} size={16} className="text-primary" />
+                  <DuoIcon icon={ChevronRight} size={16} className="directional text-primary" />
                 </button>
               ))}
             </div>
@@ -196,7 +209,7 @@ export default function ConceptView() {
         {/* 1-hop relations */}
         <section>
           <h2 className="mb-2 flex items-center gap-1.5 text-sm font-semibold text-text-tertiary">
-            <DuoIcon icon={GitBranch} size={14} className="text-primary" />
+            <DuoIcon icon={GitBranch} size={16} className="text-primary" />
             {t('semantic.related', 'Concepts liés')}
           </h2>
           {relations.length === 0 ? (
@@ -207,10 +220,10 @@ export default function ConceptView() {
                 <button
                   key={node.concept.id}
                   onClick={() => navigate(`/semantic/concept?conceptId=${encodeURIComponent(node.concept.id)}`)}
-                  className="g2 flex items-center justify-between p-3 text-left transition-transform active:scale-[0.99]"
+                  className="g2 flex items-center justify-between p-3 text-start transition-transform active:scale-[0.99]"
                 >
                   <div className="flex items-center gap-2">
-                    <DuoIcon icon={GitBranch} size={14} className="text-text-muted" />
+                    <DuoIcon icon={GitBranch} size={16} className="text-text-muted" />
                     <div>
                       <p className="text-sm font-semibold text-text-primary">
                         {displayLabel(node.concept, lang)}
@@ -220,7 +233,7 @@ export default function ConceptView() {
                       </p>
                     </div>
                   </div>
-                  <DuoIcon icon={ChevronRight} size={16} className="text-primary" />
+                  <DuoIcon icon={ChevronRight} size={16} className="directional text-primary" />
                 </button>
               ))}
             </div>

@@ -71,7 +71,7 @@ export default function FamilyChallengesScreen() {
           aria-label={t('familyPlus.createChallenge', 'Créer un défi')}
           className="touch-target rounded-full bg-surface-tint text-primary active:bg-primary/10"
         >
-          <DuoIcon icon={PlusSign} size={18} />
+          <DuoIcon icon={PlusSign} size={20} />
         </button>
       }
     >
@@ -110,7 +110,7 @@ export default function FamilyChallengesScreen() {
             <SectionCard key={challenge.id}>
               <button
                 type="button"
-                className="w-full text-left"
+                className="w-full text-start"
                 onClick={() => navigate(`/family/challenges/${challenge.id}`)}
               >
                 <div className="flex items-start justify-between gap-2">
@@ -150,7 +150,7 @@ export default function FamilyChallengesScreen() {
                   {challenge.participants.slice(0, 5).map((name) => (
                     <MemberAvatar key={name} name={name} size={28} muted={done === 0} />
                   ))}
-                  <span className="ml-auto text-xs text-text-muted">
+                  <span className="ms-auto text-xs text-text-muted">
                     {t('familyPlus.membersDone', '{{done}} sur {{total}} ont fini', {
                       done,
                       total: challenge.participants.length,

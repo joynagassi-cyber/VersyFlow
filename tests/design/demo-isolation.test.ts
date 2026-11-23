@@ -67,7 +67,9 @@ describe('résolution du mode de données', () => {
   it('ouvre en démo par défaut (chantier démo)', async () => {
     const mode = await loadModeModule();
     expect(mode.getDataMode()).toBe('mock');
-    expect(mode.describeDataMode()).toContain('MOCK');
+    // L'interface est en français : le bandeau annonce la démo, pas un
+    // identifiant technique.
+    expect(mode.describeDataMode()).toContain('DÉMO');
   });
 
   it('permet une sortie explicite par l’URL ?data=live', async () => {
@@ -317,7 +319,7 @@ describe('parcours démo : navigation directe, rechargement, sortie', () => {
     expect(liveNotes.map((n) => n.verseKey)).not.toContain('psa:23:2');
   });
 
-  it('isole l’arbre sémantique et les tags utilisateur sans ouvrir PowerSync', async () => {
+  it('isole l’arbre sémantique et les tags utilisateur sans toucher aux données réelles', async () => {
     const { scope } = await loadScopeModule();
     scope.installStorageIsolation();
 

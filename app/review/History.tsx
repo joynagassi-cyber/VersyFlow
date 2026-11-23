@@ -22,7 +22,7 @@ import { getMemorizationService } from '@/services/memorization-service-factory'
 import {
   getReviewLogRepository,
   getSyncUserIdProvider,
-} from '@/infrastructure/repository/powersync-repositories';
+} from '@/infrastructure/repository/mode-repositories';
 import type {
   MemorizationRecord,
   ReviewLogEntry as DomainReviewLogEntry,
@@ -109,6 +109,10 @@ export default function ReviewHistoryScreen() {
   const [reviewedRecords, setReviewedRecords] = useState<MemorizationRecord[]>([]);
   const [selectedVerseId, setSelectedVerseId] = useState<string>('all');
   const [loading, setLoading] = useState(true);
+  // `getAllMemorized()` qui échoue vidait la liste : l'écran annonçait alors
+  // « aucune révision enregistrée » à quelqu'un qui en avait des centaines.
+  const [failed, setFailed] = useState(false);
+  const [attempt, setAttempt] = useState(0);
   const { activeProfile } = useActiveProfile();
   const profileId = activeProfile?.id ?? 'default';
 
@@ -190,6 +194,7 @@ export default function ReviewHistoryScreen() {
         if (!cancelled) {
           setReviewedRecords([]);
           setItems([]);
+          setFailed(true);
           setLoading(false);
         }
       }
@@ -198,7 +203,7 @@ export default function ReviewHistoryScreen() {
     return () => {
       cancelled = true;
     };
-  }, [profileId, t]);
+  }, [profileId, t, attempt]);
 
   const filteredItems = useMemo(
     () =>
@@ -256,11 +261,33 @@ export default function ReviewHistoryScreen() {
     );
   }
 
-  if (items.length === 0 && reviewedRecords.length === 0) {
+  if (!loading && failed) {
+    return (
+      <FullScreenPage title={t('nav.history', 'Historique')} showBack backPath="/review/queue">
+        <div role="alert" className="g2 flex flex-col items-start gap-3 p-5">
+          <p className="flex items-center gap-2 text-sm font-semibold text-text-primary">
+            <DuoIcon icon={BookOpen} size={20} className="text-error" />
+            {t('history.unavailable', 'Historique illisible pour le moment')}
+          </p>
+          <p className="text-sm text-text-muted">
+            {t(
+              'history.unavailableDesc',
+              'Les révisions n’ont pas pu être lues sur cet appareil. Rien n’a été effacé.',
+            )}
+          </p>
+          <Button variant="default" onClick={() => setAttempt((n) => n + 1)}>
+            {t('common.retry', 'Réessayer')}
+          </Button>
+        </div>
+      </FullScreenPage>
+    );
+  }
+
+  if (!loading && items.length === 0 && reviewedRecords.length === 0) {
     return (
       <FullScreenPage title={t('nav.history', 'Historique')} showBack backPath="/review/queue">
         <EmptyState
-          icon={<DuoIcon icon={BookOpen} size={28} />}
+          icon={<DuoIcon icon={BookOpen} size={24} />}
           title={t('history.emptyTitle', 'Aucune révision enregistrée')}
           description={t(
             'history.emptyDesc',
@@ -290,7 +317,7 @@ export default function ReviewHistoryScreen() {
                   {selectedRecord.bibleVerseReference}
                 </h2>
                 <span className="inline-flex items-center gap-1 rounded-full bg-surface-tint px-3 py-1 text-xs font-bold text-primary">
-                  <DuoIcon icon={Medal} size={14} />
+                  <DuoIcon icon={Medal} size={16} />
                   {selectedRecord.status === 'mastered'
                     ? t('history.mastered', 'Maîtrisé')
                     : t('history.inProgress', 'En cours')}
@@ -431,7 +458,7 @@ export default function ReviewHistoryScreen() {
                             cfg.cls,
                           )}
                         >
-                          <DuoIcon icon={Icon} size={13} />
+                          <DuoIcon icon={Icon} size={16} />
                           {t(cfg.labelKey, cfg.label)}
                         </span>
                       </div>
@@ -453,10 +480,10 @@ export default function ReviewHistoryScreen() {
                       ) : (
                         <div className="mt-3 flex flex-wrap items-center gap-4 border-t border-border/50 pt-2.5 text-xs text-text-secondary">
                           <span className="inline-flex items-center gap-1 tabular-nums">
-                            <DuoIcon icon={TrendingUp} size={14} className="text-primary" />
+                            <DuoIcon icon={TrendingUp} size={16} className="text-primary" />
                             {t('history.stability', 'Stabilité FSRS')} :{' '}
                             <strong>{entry.stabilityBefore.toFixed(1)}j</strong>
-                            <DuoIcon icon={ArrowRight} size={12} />
+                            <DuoIcon icon={ArrowRight} size={16}  className="directional" />
                             <strong>{entry.stabilityAfter.toFixed(1)}j</strong>
                             {delta !== 0 && (
                               <span className={delta > 0 ? 'text-success' : 'text-error'}>

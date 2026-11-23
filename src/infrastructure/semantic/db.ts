@@ -6,9 +6,7 @@
  *  1. `createSemanticDb(driver)` — create the 6 semantic tables
  *     (`concepts`, `concept_relations`, `communities`, `verse_concepts`,
  *     `verse_relations`, `semantic_memory_meta`) on an injected SQLite driver,
- *     so it works against better-sqlite3 (in tests / build) and the PowerSync
- *     web driver (LOCAL_ONLY tables on Capacitor, per the decision phase:
- *     these tables are NOT part of `buildPowerSyncSchema()`).
+ *     so it works against better-sqlite3 in tests and the build.
  *  2. `validateSemanticDb(driver)` — Stage H: deterministic invariant checks
  *     over the same driver (never LLM — it is the gate itself).
  */
@@ -18,7 +16,7 @@ import type { CheckResult, ValidationSummary } from './entities';
 
 /**
  * Minimal structural-driver interface: just enough for bootstrap + validation.
- * The real driver (better-sqlite3 in the build; the PowerSync web driver's
+ * The real driver (better-sqlite3)
  * underlying db on the app) is injected — no concrete class is imported,
  * which keeps this module pure and testable (rule: no I/O inside domains).
  */

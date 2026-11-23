@@ -146,8 +146,12 @@ apitest.obj
 __pycache__/
 *.pyc
 # Repo cleanup (2026-10-29): lourdes datasets bibliques + images de thèmes
-# gardés en local, hors Git (régénérables / téléchargeables via Supabase Storage).
+# gardés en local, hors Git (régénérables depuis les sources publiques).
 # Seuls lsg.json (défaut, importé par le code) et dataset-catalog.json restent suivis.
+# `public/data/bible/lsg/` (projection par chapitre) est VERSIONNÉE : c'est ce
+# que lit l'application. `data/bible/lsg.json` en reste la source de vérité,
+# et `npm run build` vérifie que les deux n'ont pas divergé
+# (`scripts/bible/split-lsg.mjs --check`).
 data/bible/*
 !data/bible/lsg.json
 !data/bible/dataset-catalog.json

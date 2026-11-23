@@ -24,7 +24,7 @@ function createService() {
 }
 
 async function createFamilyWithOwner(familyRepo: FamilyRepositoryLocal, ownerId: string, familyName = 'Test Family') {
-  const family = await familyRepo.create({ ownerId, name: familyName, color: '#E91E8C', icon: '👨‍👩‍👧‍👦' });
+  const family = await familyRepo.create({ ownerId, name: familyName, color: '#E91E8C', icon: 'users' });
   const now = Date.now();
   await familyRepo.addMember(family.id, { accountId: ownerId, role: 'owner', status: 'active' });
   await familyRepo.addMember(family.id, { accountId: ownerId, role: 'owner', status: 'active' });
@@ -48,7 +48,7 @@ describe('Invitation Lifecycle — Full Chain', () => {
   it('should create invitation, validate token, accept, and mark used', async () => {
     const owner = 'owner-1';
     const newMember = 'new-member-1';
-    const family = await familyRepo.create({ ownerId: owner, name: 'Test Family', color: '#E91E8C', icon: '👨‍👩‍👧‍👦' });
+    const family = await familyRepo.create({ ownerId: owner, name: 'Test Family', color: '#E91E8C', icon: 'users' });
     const now = Date.now();
     await familyRepo.addMember(family.id, { accountId: owner, role: 'owner', status: 'active' });
     await profileRepo.create({ accountId: owner, displayName: owner, status: 'active' });
@@ -81,7 +81,7 @@ describe('Invitation Lifecycle — Full Chain', () => {
 
   it('should reject already-used token', async () => {
     const owner = 'owner-1';
-    const family = await familyRepo.create({ ownerId: owner, name: 'Test Family', color: '#E91E8C', icon: '👨‍👩‍👧‍👦' });
+    const family = await familyRepo.create({ ownerId: owner, name: 'Test Family', color: '#E91E8C', icon: 'users' });
     const now = Date.now();
     await familyRepo.addMember(family.id, { accountId: owner, role: 'owner', status: 'active' });
     await profileRepo.create({ accountId: owner, displayName: owner, status: 'active' });
@@ -111,7 +111,7 @@ describe('Invitation Lifecycle — Revoke', () => {
   });
 
   async function setup(ownerId: string) {
-    const family = await familyRepo.create({ ownerId, name: 'Test Family', color: '#E91E8C', icon: '👨‍👩‍👧‍👦' });
+    const family = await familyRepo.create({ ownerId, name: 'Test Family', color: '#E91E8C', icon: 'users' });
     const now = Date.now();
     await familyRepo.addMember(family.id, { accountId: ownerId, role: 'owner', status: 'active' });
     await profileRepo.create({ accountId: ownerId, displayName: ownerId, status: 'active' });

@@ -19,7 +19,7 @@ describe('LearnerProfile Domain', () => {
         id: 'prof-001',
         accountId: 'account-abc',
         displayName: 'Alice',
-        avatar: '👤',
+        avatar: '',
         createdAt: Date.now(),
         updatedAt: Date.now(),
         status: 'active'
@@ -28,7 +28,7 @@ describe('LearnerProfile Domain', () => {
       expect(profile.id).toBe('prof-001');
       expect(profile.accountId).toBe('account-abc');
       expect(profile.displayName).toBe('Alice');
-      expect(profile.avatar).toBe('👤');
+      expect(profile.avatar).toBe('');
       expect(profile.status).toBe('active');
       expect(typeof profile.createdAt).toBe('number');
       expect(typeof profile.updatedAt).toBe('number');
@@ -97,7 +97,7 @@ describe('Family Domain', () => {
         ownerId: 'account-abc',
         name: 'The Smiths',
         color: '#4F46E5',
-        icon: '👨‍👩‍👧‍👦',
+        icon: 'users',
         createdAt: Date.now()
       };
 
@@ -105,7 +105,7 @@ describe('Family Domain', () => {
       expect(family.ownerId).toBe('account-abc');
       expect(family.name).toBe('The Smiths');
       expect(family.color).toBe('#4F46E5');
-      expect(family.icon).toBe('👨‍👩‍👧‍👦');
+      expect(family.icon).toBe('users');
       expect(typeof family.createdAt).toBe('number');
     });
 
@@ -115,7 +115,7 @@ describe('Family Domain', () => {
         ownerId: 'account-abc',
         name: 'Test',
         color: '#E91E8C',
-        icon: '🏠',
+        icon: 'users',
         createdAt: Date.now()
       };
 

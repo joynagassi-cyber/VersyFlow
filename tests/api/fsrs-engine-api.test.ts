@@ -30,8 +30,12 @@ describe('FSRS Engine API Tests', () => {
       expect(after).not.toBe(before);
     });
 
-    it('isWasmAvailable returns false (WASM not compiled)', () => {
-      expect(isWasmAvailable()).toBe(false);
+    it("isWasmAvailable reflète la présence de l'artefact WASM livré", () => {
+      // Le pont Rust (`rust/fsrs-wasm/`) est compilé et versionné sous
+      // `src/infrastructure/wasm/` : la sonde doit donc répondre `true`, et
+      // rester une simple sonde de présence — l'instanciation est paresseuse.
+      expect(isWasmAvailable()).toBe(true);
+      expect(typeof isWasmAvailable()).toBe('boolean');
     });
   });
 

@@ -277,7 +277,7 @@ export default function ReviewSessionScreen() {
       {/* Card */}
       <div className="g2 p-6">
         <span className="mb-4 inline-flex items-center gap-1.5 rounded-full bg-surface-tint px-3 py-1.5 text-xs font-semibold text-primary">
-          <DuoIcon icon={Bookmark} size={14} />
+          <DuoIcon icon={Bookmark} size={16} />
           {current.reference}
         </span>
 
@@ -315,7 +315,7 @@ export default function ReviewSessionScreen() {
               {current.text}
             </p>
             <span className="flex items-center gap-2 border-t border-border pt-4 text-sm text-text-muted">
-              <DuoIcon icon={RefreshCw} size={14} />
+              <DuoIcon icon={RefreshCw} size={16} />
               {t('review.iRecalled', 'Comment te souvenais-tu de ce verset ?')}
             </span>
           </div>
@@ -342,7 +342,7 @@ export default function ReviewSessionScreen() {
       {showRating && feedback && selected && (
         <div className="g2 mt-5 p-5">
           <div className="mb-3 flex items-center gap-2">
-            <DuoIcon icon={Check} size={22} className="text-success" />
+            <DuoIcon icon={Check} size={24} className="text-success" />
             <p className="text-lg font-bold text-text-primary">{feedback.label}</p>
           </div>
           <div className="flex items-center justify-between border-b border-divider pb-3">

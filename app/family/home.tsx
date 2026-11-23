@@ -52,6 +52,7 @@ import { useFamilyRoomStore } from '@/store/family-room-store';
 import { useActiveProfile } from '@/hooks/useActiveProfile';
 import { useAuthStore } from '@/store/auth-store';
 import { pointsForChallenge } from '@/services/family-scoring';
+import { resolveFamilyIcon } from '@/lib/family-icon';
 
 const DAY = 86_400_000;
 
@@ -93,7 +94,7 @@ function RealFamilyHomeScreen() {
     setCreateError(null);
     try {
       const family = await createFamily(name);
-      // The PowerSync bridge re-lists families from the DB; addFamily() is
+      // The sync bridge re-lists families from the store; addFamily() is
       // idempotent so this also covers offline (local write is pending sync).
       addFamily(family);
       setActiveFamily(family.id);
@@ -188,7 +189,7 @@ function RealFamilyHomeScreen() {
         className="touch-target rounded-full bg-surface-tint text-primary active:bg-primary/10"
         aria-label={t('family.invite', 'Inviter')}
       >
-        <DuoIcon icon={Plus} size={18} />
+        <DuoIcon icon={Plus} size={20} />
       </button>
       }
     >
@@ -207,7 +208,7 @@ function RealFamilyHomeScreen() {
                 <Button
                   variant="secondary"
                   size="sm"
-                  onClick={() => navigate('/family/select-profile')}
+                  onClick={() => navigate('/profile/select')}
                 >
                   {t('familyPlus.change', 'Changer')}
                 </Button>
@@ -274,7 +275,7 @@ function RealFamilyHomeScreen() {
               <button
                 type="button"
                 onClick={() => navigate(`/family/challenges/${runningChallenge.id}`)}
-                className="w-full text-left"
+                className="w-full text-start"
               >
                 <div className="flex items-baseline justify-between gap-2">
                   <p className="truncate card-title">
@@ -308,12 +309,12 @@ function RealFamilyHomeScreen() {
               <button
                 type="button"
                 onClick={() => navigate('/family/challenges/new')}
-                className="flex w-full items-center justify-between gap-2 rounded-xl bg-surface-tint p-3 text-left"
+                className="flex w-full items-center justify-between gap-2 rounded-xl bg-surface-tint p-3 text-start"
               >
                 <span className="text-sm font-semibold text-text-primary">
                   {t('familyPlus.launchNewChallenge', 'Lancer un nouveau défi')}
                 </span>
-                <DuoIcon icon={ArrowRight} size={16} className="text-primary" />
+                <DuoIcon icon={ArrowRight} size={16} className="directional text-primary" />
               </button>
             )}
           </SectionCard>
@@ -378,7 +379,7 @@ function RealFamilyHomeScreen() {
                 onClick={() => navigate(shortcut.to)}
                 className="g2 flex min-h-20 flex-col items-center justify-center gap-1.5 p-3 text-center"
               >
-                <DuoIcon icon={shortcut.icon} size={18} className="shrink-0 text-primary" />
+                <DuoIcon icon={shortcut.icon} size={20} className="shrink-0 text-primary" />
                 <span className="text-2xs font-semibold leading-tight text-text-primary">
                   {shortcut.label}
                 </span>
@@ -425,7 +426,7 @@ function RealFamilyHomeScreen() {
           />
           {createError && (
             <p className="flex items-center gap-1.5 rounded-xl bg-error/10 px-3 py-2 text-sm text-error">
-              <DuoIcon icon={AlertCircle} size={14} className="shrink-0" />
+              <DuoIcon icon={AlertCircle} size={16} className="shrink-0" />
               {createError}
             </p>
           )}
@@ -459,15 +460,15 @@ function RealFamilyHomeScreen() {
                 key={family.id}
                 onClick={() => selectFamily(family.id)}
                 className={cn(
-                  'flex items-center gap-3 rounded-xl bg-surface p-3 text-left',
+                  'flex items-center gap-3 rounded-xl bg-surface p-3 text-start',
                   activeFamilyId === family.id && 'ring-1 ring-primary',
                 )}
               >
                 <span
-                  className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-xl"
+                  className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-primary"
                   style={{ backgroundColor: `${family.color}20` }}
                 >
-                  {family.icon}
+                  <DuoIcon icon={resolveFamilyIcon(family.icon)} size={20} />
                 </span>
                 <span className="flex-1">
                   <p className="text-base font-semibold text-text-primary">{family.name}</p>
@@ -477,7 +478,7 @@ function RealFamilyHomeScreen() {
                 </span>
                 {activeFamilyId === family.id && (
                   <span className="flex items-center gap-1 rounded-full bg-surface-tint px-2.5 py-1 text-xs font-semibold text-primary">
-                    <DuoIcon icon={CheckCircle} size={12} />
+                    <DuoIcon icon={CheckCircle} size={16} />
                     {t('family.familyActive', 'Actif')}
                   </span>
                 )}

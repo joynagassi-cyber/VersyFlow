@@ -1,1 +1,0 @@
-alter table public.concepts enable row level security;

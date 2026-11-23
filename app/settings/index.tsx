@@ -24,6 +24,12 @@ import {
 import { cn } from '@/lib/utils';
 import { FullScreenPage } from '@/components/layout/FullScreenPage';
 import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogDescription,
+} from '@/components/ui/dialog';
 import { ProfileAvatar } from '@/components/profile/ProfileAvatar';
 import { useAuthStore } from '@/store/auth-store';
 import { isMockMode } from '@/dev/mode';
@@ -116,12 +122,22 @@ export default function SettingsScreen() {
     {
       title: t('settings.navigationSection', 'Navigation & Pages'),
       icon: LayoutGrid,
+      // La page de réglages de navigation n'est pas recopiée ici : elle contient
+      // déjà les deux listes complètes (onglets + menu), et y renvoyer évite deux
+      // formulaires pour un même réglage.
       items: [
         {
           label: t('settings.navigationSettings', 'Pages visibles & menu'),
           icon: SlidersHorizontal,
           to: '/settings/navigation',
         },
+      ],
+    },
+    {
+      title: t('settings.aboutSection', 'À propos'),
+      icon: Sparkles,
+      items: [
+        { label: t('settings.about', 'À propos de VersyFlow'), icon: Sparkles, to: '/settings/about' },
       ],
     },
     {
@@ -163,7 +179,7 @@ export default function SettingsScreen() {
         {/* Profile card — premium avatar (photo → vector illustration fallback) */}
         <button
           onClick={() => navigate('/profile')}
-          className="g2 flex w-full items-center gap-4 p-4 text-left"
+          className="g2 flex w-full items-center gap-4 p-4 text-start"
         >
           <ProfileAvatar name={displayName} size={48} />
           <span className="min-w-0 flex-1">
@@ -174,19 +190,19 @@ export default function SettingsScreen() {
               {isAuthenticated ? t('settings.connected', 'Connecte') : t('settings.localMode', 'Mode local')}
             </span>
           </span>
-          <DuoIcon icon={ChevronRight} size={18} className="text-text-muted" />
+          <DuoIcon icon={ChevronRight} size={20} className="directional text-text-muted" />
         </button>
 
         {/* Active translation pill (abbreviation + full name, subtitle). */}
         <div className="g2 flex items-center gap-3 p-4">
           <span className="flex h-10 w-10 items-center justify-center rounded-full bg-surface-tint text-primary">
-            <DuoIcon icon={BookText} size={18} />
+            <DuoIcon icon={BookText} size={20} />
           </span>
           <div className="min-w-0 flex-1">
             <p className="truncate text-sm font-bold text-text-primary">
               {translationInfo.abbreviation}
               {translationInfo.abbreviation !== translationInfo.name && (
-                <span className="ml-2 font-medium text-text-muted">· {translationInfo.name}</span>
+                <span className="ms-2 font-medium text-text-muted">· {translationInfo.name}</span>
               )}
             </p>
             <p className="text-xs text-text-muted">
@@ -223,8 +239,8 @@ export default function SettingsScreen() {
             </div>
           </div>
           <DuoIcon icon={ChevronRight}
-            size={18}
-            className="cursor-pointer text-text-muted"
+            size={20}
+            className="directional cursor-pointer text-text-muted"
             onClick={() => navigate('/settings/available-translations')}
           />
         </div>
@@ -233,7 +249,7 @@ export default function SettingsScreen() {
         {groups.map((group, gi) => (
           <div key={gi}>
             <p className="mb-2 flex items-center gap-2 px-1 section-label">
-              <DuoIcon icon={group.icon} size={13} className="text-primary" />
+              <DuoIcon icon={group.icon} size={16} className="text-primary" />
               {group.title}
             </p>
             <div className="g2 overflow-hidden">
@@ -242,17 +258,17 @@ export default function SettingsScreen() {
                   key={i}
                   onClick={() => navigate(item.to)}
                   className={
-                    'flex w-full items-center justify-between px-4 py-3.5 text-left ' +
+                    'flex w-full items-center justify-between px-4 py-3.5 text-start ' +
                     (i < group.items.length - 1
                       ? 'border-b border-[color:var(--color-divider)]'
                       : '')
                   }
                 >
                   <span className="flex items-center gap-3">
-                    <DuoIcon icon={item.icon} size={18} className="text-text-muted" />
+                    <DuoIcon icon={item.icon} size={20} className="text-text-muted" />
                     <span className="text-base text-text-primary">{item.label}</span>
                   </span>
-                  <DuoIcon icon={ChevronRight} size={16} className="text-text-muted" />
+                  <DuoIcon icon={ChevronRight} size={16} className="directional text-text-muted" />
                 </button>
               ))}
             </div>
@@ -265,39 +281,37 @@ export default function SettingsScreen() {
             onClick={() => setShowConfirm(true)}
             className="g2 flex w-full items-center justify-center gap-2 py-3.5 font-semibold text-error"
           >
-            <DuoIcon icon={LogOut} size={18} />
+            <DuoIcon icon={LogOut} size={20} />
             {t('settings.signOut', 'Se deconnecter')}
           </button>
         )}
       </div>
 
       {/* Confirm modal */}
-      {showConfirm && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-[color:var(--scrim-strong)] p-6"
-          onClick={() => setShowConfirm(false)}
-        >
-          <div
-            className="w-full max-w-[320px] rounded-3xl bg-surface p-6 text-center shadow-2xl"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <p className="text-xl font-bold text-text-primary">
-              {t('settings.signOutTitle', 'Deconnexion')}
-            </p>
-            <p className="mt-2 text-sm text-text-secondary">
-              {t('settings.signOutConfirm', 'Etes-vous sur de vouloir vous deconnecter ?')}
-            </p>
-            <div className="mt-5 flex gap-3">
+      {/* Cette confirmation était une `<div fixed inset-0>` peinte à la main :
+          elle fermait au clic sur le fond, mais ni Échap ne la fermait, ni le
+          focus n'y entrait — un utilisateur au clavier restait bloqué derrière
+          un voile qu'il ne pouvait pas atteindre. `Dialog` (Radix) apporte les
+          deux, plus le piège de focus et le retour du focus au bouton d'origine.
+          Un `role="alertdialog"` est la bonne sémantique : l'action détruit. */}
+      <Dialog open={showConfirm} onOpenChange={setShowConfirm}>
+        <DialogContent role="alertdialog" className="max-w-[320px] text-center">
+          <DialogTitle className="text-xl font-bold text-text-primary">
+            {t('settings.signOutTitle', 'Deconnexion')}
+          </DialogTitle>
+          <DialogDescription className="mt-2 text-sm text-text-secondary">
+            {t('settings.signOutConfirm', 'Etes-vous sur de vouloir vous deconnecter ?')}
+          </DialogDescription>
+          <div className="mt-5 flex gap-3">
               <Button variant="ghost" className="flex-1" onClick={() => setShowConfirm(false)}>
                 {t('common.cancel', 'Annuler')}
               </Button>
               <Button variant="destructive" className="flex-1" onClick={handleSignOut}>
                 {t('settings.signOut', 'Deconnexion')}
               </Button>
-            </div>
           </div>
-        </div>
-      )}
+        </DialogContent>
+      </Dialog>
     </FullScreenPage>
   );
 }

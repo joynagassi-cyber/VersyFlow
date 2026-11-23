@@ -1,8 +1,8 @@
 /**
  * MockAuthService — offline identity provider for mock mode.
  *
- * Drop-in replacement for `SupabaseAuthService` (same public surface, see
- * `IAuthService` in `@/auth/types`). It never touches the network:
+ * The app's only auth implementation (see `IAuthService` in `@/auth/types`).
+ * It never touches the network:
  *
  *   - `signIn` / `signUp` / `identifyLocal` simply persist the email + name
  *     under the same `versyflow:local-identity` key the real service uses,

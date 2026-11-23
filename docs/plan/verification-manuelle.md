@@ -36,7 +36,8 @@ node scripts/visual-check.mjs --base http://localhost:3000
 ```
 
 Il écrit `artifacts/visuel/<largeur>/<écran>.png` et
-`artifacts/visuel/rapport.md`, et sort en **code 3** si Playwright est absent —
+`artifacts/visuel/rapport.md` (ou `docs/screenshots/` avec `--out`), et sort en
+**code 3** si Playwright est absent —
 c'est-à-dire « rien mesuré », jamais « tout va bien ». Code **1** = au moins un
 écran déborde ou lève une erreur console.
 
@@ -139,3 +140,101 @@ Quand une ligne est cochée, reporter la mention dans
 `docs/plan/audit-report.md` : la case passe de « non vérifiable » à « vérifié
 le <date> par <qui> », avec la capture ou le rapport
 `artifacts/visuel/rapport.md` comme pièce jointe.
+
+---
+
+## 6. Playbook 2026 — les 7 points qui demandent un appareil ou un navigateur
+
+`node scripts/audit-playbook.mjs` rend **47 vérifiés · 7 partiels · 0 en échec ·
+23 non vérifiables** sur les 77 règles. Les 30 points restants ont la même
+cause : ils demandent un **rendu réel**. Ce qui suit est la version « à la
+main » des 7 partiels — les 23 non vérifiables (C03, D04–D07, F02, F04, H05,
+I05, J02–J14, K03) sont des points de plateforme qui n'existent pas encore dans
+ce dépôt (pas d'empaquetage Windows/macOS/Linux, pas d'appareil).
+
+### 6.1 C02 — le texte tient à 200 % (zoom navigateur)
+
+Zoom autorisé (`maximum-scale=5`, `user-scalable` retiré). À vérifier :
+
+1. `Ctrl`/`Cmd` `+` jusqu'à **200 %** sur `/bible/explorer`, verset ouvert.
+2. Rien ne se perd : le texte se replie, aucun mot tronqué, aucun
+   défilement horizontal (§2).
+3. La barre d'onglets basse reste atteignable — si elle recouvre le texte,
+   c'est un échec, pas une gêne.
+4. Refaire avec la **taille de police du système** à 200 % (C03), qui n'est
+   pas la même chose.
+
+**Cocher** : ☐ 200 % sans perte ☐ sans défilement horizontal
+
+### 6.2 D02 / D03 — zones de touche iOS 44 pt et Android 48 dp
+
+Le jeton est posé : `--tap-min` vaut **40 px** au repos, **44 px** sous
+`pointer: coarse` (iOS) et **48 px** sous `html[data-platform='android']`.
+Aucun `data-platform` n'est posé aujourd'hui : sur Android, c'est donc 44 px
+qui s'applique, pas 48.
+
+1. Sur iPhone, mesurer au moins : chevron de retour, croix de dialogue,
+   bouton de note (1–4) de `/review/queue`, onglets bas.
+2. Sur Android, poser `document.documentElement.dataset.platform = 'android'`
+   dans la console, puis remesurer les mêmes cibles à 48 dp.
+3. Une cible peut être **visuellement** plus petite que sa zone : ce qui
+   compte est la zone qui répond au doigt.
+
+**Cocher** : ☐ iOS 44 pt ☐ Android 48 dp
+
+### 6.3 I02 — pas de saut de mise en page (CLS ≤ 0,1)
+
+25 formes de squelette et un repli par famille de route existent. La mesure :
+
+1. Onglet **Performance** de DevTools, réseau « Slow 4G ».
+2. Naviguer entre `/tabs/home`, `/progress`, `/review/queue`, un chapitre.
+3. Relever **CLS** : ≤ 0,1. La cause la plus fréquente ici serait une image de
+   thème sans dimensions réservées.
+
+**Cocher** : ☐ CLS ≤ 0,1 ☐ aucune image sans dimensions
+
+### 6.4 J01 / J05 — encoches et zones sûres
+
+`viewport-fit=cover` + `env(safe-area-inset-*)` sont déclarés. À voir :
+
+1. Android edge-to-edge : la barre d'état ne recouvre pas le titre d'écran,
+   la barre de gestes ne recouvre pas les onglets.
+2. iOS avec encoche, en portrait **et** en paysage : le lien d'évitement, la
+   barre d'onglets et les feuilles modales restent dans la zone sûre.
+
+**Cocher** : ☐ Android edge-to-edge ☐ iOS portrait ☐ iOS paysage
+
+### 6.5 J15 — utilisable de 320 à 1920 px
+
+Aucune largeur fixe > 320 px n'est déclarée (mesuré). Reste le rendu :
+
+| Largeur | Attendu |
+| --- | --- |
+| 320 | une colonne, texte replié, aucun défilement horizontal |
+| 390 | idem + onglets bas confortables |
+| 768 | rail replié, onglets bas disparus |
+| 1280 | contenu en colonne de lecture, jamais étiré |
+| 1920 | marges qui grandissent, pas la ligne de texte |
+
+`scripts/visual-check.mjs` fait ces captures et **mesure** le débordement
+(voir §0) : `artifacts/visuel/rapport.md` sert de pièce jointe.
+
+**Cocher** : ☐ 320 ☐ 390 ☐ 768 ☐ 1280 ☐ 1920
+
+---
+
+## 7. Journal — points du playbook
+
+| ID | Ce que ça prouve | État | Date / note |
+| --- | --- | --- | --- |
+| C02 | texte à 200 % sans perte | ☐ non vérifié | |
+| D02 | cible iOS 44 pt | ☐ non vérifié | |
+| D03 | cible Android 48 dp | ☐ non vérifié | |
+| I02 | CLS ≤ 0,1 | ☐ non vérifié | |
+| J01 | edge-to-edge Android | ☐ non vérifié | |
+| J05 | zones sûres iOS | ☐ non vérifié | |
+| J15 | 320 → 1920 px | ☐ non vérifié | |
+
+Tant qu'une ligne reste vide, elle reste **partielle** dans
+`docs/design/PLAYBOOK-AUDIT.md` : un point non mesuré n'est jamais compté
+comme réussi.

@@ -33,8 +33,8 @@
  *    contenu utilisateur.
  *  - `sessionStorage` n'est pas redirigé : l'application n'y stocke que
  *    l'identifiant de session du collecteur de test (clé `versyflow:mock:*`).
- *  - IndexedDB / SQLite / PowerSync ne sont jamais ouverts en mode mock
- *    (`MockModeGuardError` dans `powersync-database.ts`).
+ *  - IndexedDB / SQLite ne sont jamais ouverts en mode démo
+ *    (les écrans lisent toujours le store local).
  */
 
 import { getDataMode, isMockMode } from '@/dev/mode';

@@ -12,7 +12,7 @@
  *   - review log of past sessions.
  *
  * No business logic here: the domain services (MemorizationSessionEngine,
- * ComparisonEngine, PowerSyncMemorizationService) do the work, routed
+ * ComparisonEngine, LocalMemorizationService) do the work, routed
  * through `@/services/` (docs/29 §1 Exception 4 — hooks import domain
  * types only, no domain values).
  */
@@ -64,7 +64,7 @@ export interface MemorizationWorkspaceApi {
   revealAll: () => void;
   resetReveal: () => void;
   /** Rate the verse via FSRS (engine path) — the record is updated
-   *  in-memory and persisted through PowerSync. */
+   *  in-memory and persisted through the local repository. */
   rate: (rating: FsrsRating) => Promise<void>;
   /** Writing recall: compare a written attempt against the verse text. */
   compareWriting: (written: string) => WrittenRecallResult | null;
@@ -170,7 +170,7 @@ export function useMemorizationWorkspace(
       const recordResult = await engine.rateCurrentVerse(rating);
       if (recordResult) {
         setRecord(recordResult);
-        // Persist via the PowerSync-backed service (single write path).
+        // Persist via the repository-backed service (single write path).
         try {
           const service = getMemorizationService(profileId);
           await service.saveMemorizedRecord(

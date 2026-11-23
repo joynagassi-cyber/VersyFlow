@@ -1,3 +1,8 @@
+> **Note (2026-11-19) — documentation historique.** VersyFlow est
+> désormais 100 % frontend : the former backend et the local store ont été retirés du
+> dépôt. Les mentions de ces services dans ce document décrivent
+> l’état antérieur, pas l’architecture actuelle (voir `docs/AUDIT.md`).
+
 # 37 — Finition premium : les détails qui trahissent une app « presque finie »
 
 > Objectif : atteindre le niveau de soin de TickTick / Linear / YouVersion —
@@ -106,7 +111,6 @@ npm run build:mock                         # build OK
 ```
 
 Les 17 échecs sont ceux de `main` avant cette passe (jeux de données bibliques
-absents, WASM FSRS, variables Supabase/PowerSync) — aucun n'est introduit ici.
 La parité i18n (`tests/unit/i18n/parity.test.ts`, 4 tests) est verte : chaque clé
 utilisée existe en `fr` **et** en `en`.
 

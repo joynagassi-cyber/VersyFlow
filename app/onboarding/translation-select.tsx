@@ -26,7 +26,7 @@ import { isDemoMode } from '@/dev/demo-mode';
 import { OnboardingShell } from '@/components/onboarding/OnboardingShell';
 import { useSettingsStore, type BibleVersionType } from '@/store/settings-store';
 import { useTranslationPreference } from '@/hooks/useTranslationPreference';
-import { BIBLE_DATASET_CATALOG } from '@/services/bible-text-service';
+import { hasBundledDataset } from '@/services/bible-text-service';
 import {
   getTranslationDisplayInfo,
   groupTranslationsByLanguage,
@@ -94,7 +94,12 @@ export default function TranslationPickerScreen() {
   const renderTranslation = (id: string) => {
     const info = getTranslationDisplayInfo(id);
     const isSelected = selected === id;
-    const available = id === 'lsg' || BIBLE_DATASET_CATALOG.some((e) => e.id === id);
+    // « Disponible » = le dataset est dans le build (projection éclatée ou
+    // fichier monolithique), pas seulement catalogué. Le catalogue liste 57
+    // traductions dont une seule est livrée : s'y fier affichait les autres
+    // sans badge « Téléchargement requis », et le choix menait à un lecteur
+    // vide.
+    const available = hasBundledDataset(id);
     return (
       <button
         type="button"
@@ -102,20 +107,20 @@ export default function TranslationPickerScreen() {
         aria-pressed={isSelected}
         onClick={() => select(id)}
         className={cn(
-          'rounded-2xl border-2 p-4 text-left shadow-sm transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
+          'rounded-2xl border-2 p-4 text-start shadow-sm transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
           isSelected ? 'border-primary bg-surface-tint' : 'border-transparent bg-surface',
         )}
       >
         <div className="flex items-center justify-between gap-2">
           <div className="flex min-w-0 items-center gap-3">
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-surface-tint">
-              <DuoIcon icon={BookText} size={18} className="text-primary" />
+              <DuoIcon icon={BookText} size={20} className="text-primary" />
             </div>
             <div className="min-w-0">
               <p className="truncate text-base font-extrabold text-text-primary">
                 {info.abbreviation}
                 {info.abbreviation !== info.name && (
-                  <span className="ml-1.5 text-sm font-medium text-text-muted">· {info.name}</span>
+                  <span className="ms-1.5 text-sm font-medium text-text-muted">· {info.name}</span>
                 )}
               </p>
               <p className="text-xs text-text-muted">
@@ -126,7 +131,7 @@ export default function TranslationPickerScreen() {
             </div>
           </div>
           <div className="flex shrink-0 flex-col items-end gap-1">
-            {isSelected && <DuoIcon icon={Check} size={18} className="text-primary" />}
+            {isSelected && <DuoIcon icon={Check} size={20} className="text-primary" />}
             {!available && (
               <span className="rounded-full bg-warning/10 px-2 py-0.5 text-3xs font-bold uppercase text-warning">
                 {t('onboarding.remoteVersion', 'Téléchargement requis')}
@@ -156,7 +161,7 @@ export default function TranslationPickerScreen() {
             className="flex-1"
             onClick={() => navigate('/onboarding/language-select')}
           >
-            <DuoIcon icon={ArrowLeft} size={16} />
+            <DuoIcon icon={ArrowLeft} size={16}  className="directional" />
             {t('common.back', 'Retour')}
           </Button>
           <Button
@@ -165,7 +170,7 @@ export default function TranslationPickerScreen() {
             onClick={() => navigate('/onboarding/journey/intro')}
           >
             {t('common.continue', 'Continuer')}
-            <DuoIcon icon={ArrowRight} size={16} />
+            <DuoIcon icon={ArrowRight} size={16}  className="directional" />
           </Button>
         </div>
       }
@@ -173,7 +178,7 @@ export default function TranslationPickerScreen() {
       {isDemoMode && <p className="mb-4 text-sm text-text-secondary">{t('onboardingJourney.demoBible', 'En démo locale, seule la traduction Louis Segond est disponible sur cet appareil.')}</p>}
       <div className="mb-4">
         <p className="mb-2 flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-text-muted">
-          <DuoIcon icon={Layers} size={13} className="text-primary" />
+          <DuoIcon icon={Layers} size={16} className="text-primary" />
           {t('onboarding.versionType', 'Type de version')}
         </p>
         <div className="flex gap-2" role="group" aria-label={t('onboarding.versionType', 'Type de version')}>
@@ -201,7 +206,7 @@ export default function TranslationPickerScreen() {
           <div key={group.language}>
             <div className="mb-2 flex items-center justify-between px-1">
               <p className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-text-secondary">
-                <DuoIcon icon={Languages} size={13} className="text-primary" />
+                <DuoIcon icon={Languages} size={16} className="text-primary" />
                 {group.language}
               </p>
               <span className="rounded-full bg-surface-tint px-2 py-0.5 text-2xs font-bold text-text-secondary">

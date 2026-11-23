@@ -4,7 +4,7 @@
  * Verifies that:
  * 1. i18next is properly initialized (resources built from locale objects)
  * 2. All 9 feature screens using react-i18next resolve keys correctly
- * 3. The custom useI18n() core path is not regressed
+ * 3. The programmatic language accessors (i18n-service) follow the same instance
  * 4. No literal keys are rendered at runtime
  */
 

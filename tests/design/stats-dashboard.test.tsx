@@ -41,7 +41,7 @@ vi.mock('@/services/streak-service', () => ({
   },
 }));
 
-vi.mock('@/infrastructure/repository/powersync-repositories', () => ({
+vi.mock('@/infrastructure/repository/mode-repositories', () => ({
   getSyncUserIdProvider: () => ({ resolveUserId: async () => 'user-1' }),
   getReviewLogRepository: () => ({
     listByUser: async () => {
