@@ -115,7 +115,7 @@ export function DesktopHeader() {
           title={t('shell.search', 'Recherche')}
           className="flex h-10 w-10 items-center justify-center rounded-full text-text-muted transition-colors hover:bg-surface-tint hover:text-text-primary"
         >
-          <DuoIcon icon={Search} size={19} />
+          <DuoIcon icon={Search} size={20} />
         </button>
 
         <SyncStatusIndicator compact />
@@ -126,7 +126,7 @@ export function DesktopHeader() {
           aria-label={t('shell.notifications', 'Notifications')}
           className="flex h-10 w-10 items-center justify-center rounded-full text-text-muted transition-colors hover:bg-surface-tint hover:text-text-primary"
         >
-          <DuoIcon icon={Bell} size={19} />
+          <DuoIcon icon={Bell} size={20} />
         </button>
 
         <button
@@ -135,7 +135,7 @@ export function DesktopHeader() {
           aria-label={t('shell.profile', 'Profil')}
           className="flex h-10 w-10 items-center justify-center rounded-full text-text-muted transition-colors hover:bg-surface-tint hover:text-text-primary"
         >
-          <DuoIcon icon={UserCircle} size={19} />
+          <DuoIcon icon={UserCircle} size={20} />
         </button>
       </div>
     </header>
