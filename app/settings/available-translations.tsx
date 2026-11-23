@@ -28,6 +28,7 @@ import {
   type BibleDatasetCatalogEntry,
   downloadAndLoadTranslationBooks,
   getTranslationStats,
+  hasBundledDataset,
   isBibleAvailable,
   type TranslationStats,
 } from '@/services/bible-text-service';
@@ -101,6 +102,7 @@ export default function AvailableTranslationsScreen() {
   // étaient classées « à télécharger », y compris celles déjà sur l'appareil.
   // Un classement faux pendant une seconde reste un classement faux.
   const [probing, setProbing] = useState(true);
+  const [probeFailed, setProbeFailed] = useState(false);
   useEffect(() => {
     let cancelled = false;
     setProbing(true);
@@ -118,7 +120,12 @@ export default function AvailableTranslationsScreen() {
       );
       setProbing(false);
     }).catch(() => {
-      if (!cancelled) setProbing(false);
+      // Une sonde qui échoue classait TOUTES les traductions « à télécharger »,
+      // y compris celle déjà sur l'appareil. Le classement faux doit se voir.
+      if (!cancelled) {
+        setProbeFailed(true);
+        setProbing(false);
+      }
     });
     return () => {
       cancelled = true;
@@ -128,6 +135,26 @@ export default function AvailableTranslationsScreen() {
   useEffect(() => () => abortRef.current?.abort(), []);
 
   const handleDownload = async (id: string) => {
+    // Garde de STRUCTURE : ce build ne sert aucun corpus hors `lsg`. Lancer le
+    // parcours des 1 189 chapitres pour échouer au premier coûtait 10 Mo de
+    // requêtes et affichait « Télécharger » sur un bouton qui ne peut pas
+    // aboutir. On refuse en une fois, avec un message utile.
+    if (!isDownloadable(id)) {
+      setStates((prev) => ({
+        ...prev,
+        [id]: {
+          state: {
+            status: 'error',
+            message: t(
+              'settings.translationNotInBuild',
+              'Cette version n’est pas incluse dans cette build : elle ne peut pas être téléchargée.',
+            ),
+          },
+          available: prev[id]?.available ?? false,
+        },
+      }));
+      return;
+    }
     abortRef.current?.abort();
     const controller = new AbortController();
     abortRef.current = controller;
@@ -171,11 +198,29 @@ export default function AvailableTranslationsScreen() {
     const prevTranslation = bibleTranslation;
     const entryState = states[id];
     if (!entryState?.available) {
-      // Not resolvable locally yet — try to fetch before activating.
+      // Pas résolvable en local : on ne peut l'activer que si ce build sert son
+      // corpus. Sinon on sortirait de l'écran après avoir activé une
+      // traduction dont le lecteur afficherait « Texte indisponible ».
+      if (!isDownloadable(id)) {
+        setStates((prev) => ({
+          ...prev,
+          [id]: {
+            state: {
+              status: 'error',
+              message: t(
+                'settings.translationNotInBuild',
+                'Cette version n’est pas incluse dans cette build : elle ne peut pas être téléchargée.',
+              ),
+            },
+            available: prev[id]?.available ?? false,
+          },
+        }));
+        return;
+      }
       try {
         await downloadAndLoadTranslationBooks(id);
       } catch {
-        return; // download failed; the row already shows the error state
+        return; // le parcours a échoué ; la ligne porte déjà l'erreur
       }
     }
     setBibleTranslation(id);
@@ -196,6 +241,15 @@ export default function AvailableTranslationsScreen() {
     });
     navigate('/bible/explorer');
   };
+
+  /**
+   * Une traduction peut-elle être téléchargée par CE build ?
+   *
+   * Oui quand son corpus est livré (déjà là, on le sélectionne simplement) ou
+   * quand il est servi dans `public/data/bible/<id>/`. Non pour les 56 entrées
+   * seulement cataloguées : elles ne sont ni livrées ni servies.
+   */
+  const isDownloadable = (id: string) => hasBundledDataset(id);
 
   const localCount = useMemo(
     () => entries.filter((e) => (states[e.id]?.available ?? false)).length,
@@ -338,6 +392,22 @@ export default function AvailableTranslationsScreen() {
               <DuoIcon icon={Check} size={16} />
               {t('common.select', 'Utiliser')}
             </button>
+          ) : !isDownloadable(entry.id) ? (
+            // Bouton DÉSACTIVÉ, pas un bouton qui échoue : « Télécharger »
+            // promet une action que ce build ne peut pas tenir.
+            <button
+              type="button"
+              disabled
+              aria-disabled="true"
+              title={t(
+                'settings.translationNotInBuildHint',
+                'Cette version n’est pas incluse dans cette build.',
+              )}
+              className="flex h-10 shrink-0 cursor-not-allowed items-center gap-2 rounded-full bg-surface-tint px-4 text-sm font-semibold text-text-muted opacity-60"
+            >
+              <DuoIcon icon={Download} size={16} />
+              {t('settings.notInBuild', 'Non incluse')}
+            </button>
           ) : (
             <button
               onClick={() => void handleDownload(entry.id)}
@@ -424,7 +494,10 @@ export default function AvailableTranslationsScreen() {
       </div>
 
       <p className="mb-5 px-1 text-sm text-text-muted">
-        {t('settings.availableTranslationsHint', 'Téléchargez une version pour l’utiliser hors ligne. Elle restera disponible sur cet appareil.')}
+        {t(
+          'settings.availableTranslationsHint',
+          'Les versions incluses dans l’application fonctionnent hors ligne. Les autres sont annoncées pour information et ne peuvent pas encore être téléchargées.',
+        )}
       </p>
 
       {probing ? (
@@ -440,7 +513,20 @@ export default function AvailableTranslationsScreen() {
           ))}
         </div>
       ) : (
-        languageGroups.map((group) => renderLanguageSection(group.language, group.ids))
+        <>
+          {probeFailed && (
+            <div role="alert" className="g2 mb-4 flex items-start gap-3 p-4">
+              <DuoIcon icon={AlertCircle} size={20} className="shrink-0 text-error" />
+              <p className="text-xs text-text-secondary">
+                {t(
+                  'settings.probeFailed',
+                  'Le classement « en local / à télécharger » n’a pas pu être établi. Les traductions incluses dans cette build restent utilisables.',
+                )}
+              </p>
+            </div>
+          )}
+          {languageGroups.map((group) => renderLanguageSection(group.language, group.ids))}
+        </>
       )}
 
       {isAuthenticated && (

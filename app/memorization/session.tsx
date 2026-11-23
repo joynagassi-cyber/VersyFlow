@@ -66,7 +66,6 @@ export default function MemorizationSession() {
   const [reference, setReference] = useState('');
   const [progress, setProgress] = useState(0);
   const [complete, setComplete] = useState(false);
-  const [downloadPercent, setDownloadPercent] = useState<number | null>(null);
 
   const bookIdParam = params.get('bookId') ?? '';
   const chapterParam = parseInt(params.get('chapter') ?? '0', 10);
@@ -114,9 +113,10 @@ export default function MemorizationSession() {
 
     async function init() {
       try {
-        setDownloadPercent(0);
+        // Résolution locale : le corpus est déjà dans le build ou il n'y est
+        // pas. Il n'y a pas de « téléchargement » à mesurer — l'ancienne barre
+        // restait à 0 % puis la session échouait.
         const source = await resolveBibleTextSource(translationId);
-        setDownloadPercent(null);
         const bibleRepo = createLocalBibleRepository(source);
         const fsrsEngine = getFsrsEngine();
         const memorizationEngine = createWorkspaceEngine(bibleRepo, fsrsEngine);
@@ -232,24 +232,12 @@ export default function MemorizationSession() {
       <FullScreenPage title={t('session.memorizing', 'Mémorisation')} backPath="/tabs/home" showBack={false}>
         <div className="flex w-full flex-col items-center justify-center py-10">
           <MemorizationSessionSkeleton label={t('session.startingPassage', 'Démarrage du passage...')} />
-          {downloadPercent !== null ? (
-            <>
-              <p className="mt-3 text-sm font-semibold text-text-primary">
-                {t('session.downloadingTranslation', 'Téléchargement de la traduction...')}
-              </p>
-              <div className="mt-3 h-1.5 w-48 overflow-hidden rounded-full bg-surface-tint">
-                <div
-                  className="h-full rounded-full bg-primary transition-all"
-                  style={{ width: `${downloadPercent}%` }}
-                />
-              </div>
-              <p className="mt-2 text-xs text-text-tertiary">{downloadPercent}%</p>
-            </>
-          ) : (
-            <p className="mt-3 text-sm text-text-tertiary">
-              {t('session.startingPassage', 'Démarrage du passage...')}
-            </p>
-          )}
+          {/* La barre de « téléchargement » n'avait pas de source de progrès :
+              elle restait à 0 %, puis la session échouait. La résolution est
+              locale et rapide ; le squelette dit déjà l'attente. */}
+          <p className="mt-3 text-sm text-text-tertiary">
+            {t('session.startingPassage', 'Démarrage du passage...')}
+          </p>
         </div>
       </FullScreenPage>
     );
