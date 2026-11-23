@@ -124,7 +124,11 @@ describe('finition — échelle typographique', () => {
     expect(globals).toMatch(
       /\.stat-value\s*\{[^}]*font-variant-numeric:\s*tabular-nums[^}]*color:\s*var\(--acc-text/,
     );
-    expect(globals).toMatch(/\.stat-label\s*\{[^}]*letter-spacing:\s*0\.12em[^}]*text-transform:\s*uppercase/);
+    // Le libellé garde une recette propre (petites capitales, sans forcer la
+    // casse) : `text-transform: uppercase` réécrivait le texte affiché —
+    // « MONDAY, NOVEMBER 23 » sur un profil francophone.
+    expect(globals).toMatch(/\.stat-label\s*\{[^}]*font-variant-caps:\s*all-small-caps/);
+    expect(globals).toMatch(/\.stat-label\s*\{[^}]*text-transform:\s*none/);
     const dashboard = read('app/analytics/dashboard.tsx');
     expect(dashboard).toContain('stat-value');
     expect(dashboard).toContain('stat-label');

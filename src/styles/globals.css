@@ -2493,12 +2493,23 @@ ion-tab-button::part(native):focus-visible {
 .section-label,
 .micro-label,
 .stat-label {
+  /* Plus de capitales forcées ni d'interlettrage de 0,12 em.
+   *
+   * `text-transform: uppercase` réécrivait le libellé à l'écran : « MONDAY,
+   * NOVEMBER 23 » sur un profil francophone, « VERSET DU JOUR » partout — le
+   * texte affiché n'était plus celui qu'on avait écrit, et une locale qui met
+   * le mois en premier y gagnait une apparence d'erreur. L'interlettrage large
+   * appartient à la typographie de titres latins, pas à une phrase entière.
+   *
+   * `small-caps` garde la respiration d'une micro-capitale sans mentir sur la
+   * casse réelle du texte — et le thème peut la désactiver. */
   font-family: var(--font-sans, Inter), sans-serif;
-  font-size: 12px;
+  font-size: 12.5px;
   font-weight: 600;
   line-height: 1.4;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  font-variant-caps: all-small-caps;
+  text-transform: none;
   color: var(--mut, var(--color-text-muted));
 }
 
