@@ -98,50 +98,44 @@ export function DesktopHeader() {
         )}
       </div>
 
-      {/* Barre de commande : une seule, toujours au même endroit. */}
-      <div className="ms-auto flex items-center gap-1.5">
+      {/* Trois commandes, pas sept.
+          Le header portait un badge, un panneau de fond, une barre de
+          recherche dépliée, un état de synchronisation en toutes lettres, une
+          cloche et un avatar. Un chrétien qui ouvre son application le matin
+          n'a pas besoin de savoir que la synchronisation est passée : elle
+          reste visible comme un POINT, sans phrase. La recherche garde son
+          raccourci (⌘K), qui est ce qui compte. */}
+      <div className="ms-auto flex items-center gap-1">
         <DemoModeBadge />
         <BackgroundPanel />
         <button
           type="button"
           onClick={() => navigate('/search')}
           aria-label={t('shell.search', 'Recherche')}
-          className="flex h-10 items-center gap-2 rounded-xl bg-surface-tint px-2.5 text-sm text-text-muted transition-colors hover:text-text-primary"
+          title={t('shell.search', 'Recherche')}
+          className="flex h-10 w-10 items-center justify-center rounded-full text-text-muted transition-colors hover:bg-surface-tint hover:text-text-primary"
         >
-          <DuoIcon icon={Search} size={20} />
-          {isDesktop && (
-            <>
-              <span className="hidden xl:inline">
-                {t('shell.searchPlaceholder', 'Rechercher un verset, un concept…')}
-              </span>
-              <kbd className="hidden rounded border border-border px-1.5 py-0.5 text-2xs font-semibold xl:inline">
-                ⌘K
-              </kbd>
-            </>
-          )}
+          <DuoIcon icon={Search} size={19} />
         </button>
 
-        <div className="hidden h-6 w-px bg-border sm:block" role="presentation" />
-        <div className="hidden sm:flex">
-          <SyncStatusIndicator />
-        </div>
+        <SyncStatusIndicator compact />
 
         <button
           type="button"
           onClick={() => navigate('/notifications')}
           aria-label={t('shell.notifications', 'Notifications')}
-          className="flex h-10 w-10 items-center justify-center rounded-xl text-text-secondary transition-colors hover:bg-surface-tint hover:text-text-primary"
+          className="flex h-10 w-10 items-center justify-center rounded-full text-text-muted transition-colors hover:bg-surface-tint hover:text-text-primary"
         >
-          <DuoIcon icon={Bell} size={20} />
+          <DuoIcon icon={Bell} size={19} />
         </button>
 
         <button
           type="button"
           onClick={() => navigate('/profile')}
           aria-label={t('shell.profile', 'Profil')}
-          className="flex h-10 w-10 items-center justify-center rounded-xl text-text-secondary transition-colors hover:bg-surface-tint hover:text-text-primary"
+          className="flex h-10 w-10 items-center justify-center rounded-full text-text-muted transition-colors hover:bg-surface-tint hover:text-text-primary"
         >
-          <DuoIcon icon={UserCircle} size={20} />
+          <DuoIcon icon={UserCircle} size={19} />
         </button>
       </div>
     </header>

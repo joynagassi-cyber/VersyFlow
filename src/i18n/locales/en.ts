@@ -306,6 +306,7 @@ export const en = {
     weekAria: 'Streak over the last seven days in universal time',
     noMemorizedYet: 'No memorized verse yet',
     memorizeDesc: 'New verse',
+    streakKeepGoing: 'keep going at your own pace',
   },
   bible: {
     chapterNotInTranslation: 'This chapter is not present in this translation.',

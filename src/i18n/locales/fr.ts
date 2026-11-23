@@ -307,6 +307,7 @@ export const fr = {
     reviewsDue: 'Révisions à faire',
     weekAria: 'Série sur les sept derniers jours en temps universel',
     noMemorizedYet: 'Aucun verset mémorisé pour le moment',
+    streakKeepGoing: 'continuez à votre rythme',
   },
   bible: {
     chapterNotInTranslation: 'Ce chapitre n’est pas présent dans cette traduction.',

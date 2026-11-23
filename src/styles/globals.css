@@ -1601,17 +1601,49 @@ html[data-bg='image']:is([data-transparency='reduced'],[data-contrast='high']) .
 .home-muted { color: var(--mut); font-size: 14px; }
 .home-greeting .home-muted { margin-top: 8px; display: flex; align-items: center; gap: 6px; }
 .home-profile { position: absolute; top: 24px; right: 24px; padding: 8px; border-radius: 50%; background: transparent; }
-.home-feature-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; }
-.home-verse,.home-streak { padding: 28px; }
-.home-verse h2 { color: var(--acc-text); font: 500 21px/1.3 var(--font-serif, Georgia), serif; margin: 16px 0 8px; }
-.home-verse-text { max-width: 70ch; font: 400 clamp(28px,2.8vw,34px)/1.38 var(--font-serif, Georgia), serif; }
+.home-feature-grid { display: grid; grid-template-columns: 1fr; gap: 0; }
+
+/* LE VERSET EST LE SUJET. Il occupait deux tiers d'une grille, à côté d'un
+   cadran de série : la page présentait deux contenus concurrents. Il prend
+   maintenant la colonne entière, à la mesure de lecture du dépôt
+   (`--reading-line-length`), et la référence perd sa couleur d'accent — le
+   sacré ne se signale pas par la teinte de marque, mais par le serif, la
+   mesure et l'espace. */
+.home-verse {
+  padding: clamp(24px, 3.4vw, 44px) clamp(22px, 3vw, 40px);
+  max-width: var(--reading-line-length, 42em);
+  margin-inline: auto;
+}
+.home-verse { border-radius: calc(28px * var(--radius-scale, 1)); }
+.home-verse h2 {
+  color: inherit;
+  font: 400 clamp(15px, 1.4vw, 16px)/1.4 var(--font-sans, Inter), sans-serif;
+  letter-spacing: 0.06em;
+  font-variant-caps: all-small-caps;
+  margin: 18px 0 10px;
+  opacity: 0.72;
+}
+.home-verse-text {
+  max-width: var(--reading-line-length, 42em);
+  font: 400 clamp(23px, 2.1vw, 29px)/1.52 var(--font-serif, Georgia), serif;
+  text-wrap: pretty;
+  hanging-punctuation: first;
+}
 .home-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 24px; }
 .home-primary,.home-secondary { padding: 12px 18px; border-radius: calc(20px * var(--radius-scale, 1)); font-size: 14px; font-weight: 600; }
 .home-primary { background: linear-gradient(110deg,var(--acc),var(--acc2)); color: var(--premium-on); }
 .home-secondary { background: color-mix(in srgb,var(--tx) 8%,transparent); color: var(--tx); }
-.home-streak { display: flex; flex-direction: column; gap: 16px; align-items: flex-start; }
-.home-streak .section-label { display: flex; align-items: center; gap: 8px; }
-.home-ring { display: grid; place-items: center; width: 104px; height: 104px; border: 6px solid var(--acc); border-radius: 50%; }
+/* La série : une ligne, pas un cadran. Elle vit sous le verset, en retrait —
+   présente pour qui la cherche, invisible pour qui vient lire. */
+.home-streak-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 4px auto 0;
+  max-width: var(--reading-line-length, 42em);
+  font-size: 13px;
+  color: var(--mut);
+}
 .home-ring strong,.home-stat strong { font: 400 42px/1 var(--font-serif, Georgia), serif; font-variant-numeric: tabular-nums; color: var(--acc-text); }
 .home-stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; }
 .home-stat { padding: 24px; display: flex; flex-direction: column; gap: 12px; }

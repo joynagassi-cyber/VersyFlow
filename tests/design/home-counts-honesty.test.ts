@@ -44,11 +44,15 @@ describe('accueil — compteurs mesurés', () => {
     }
   });
 
-  it('protège l’anneau de série des valeurs négatives ou non numériques', () => {
-    // Une série négative donnerait un strokeDasharray négatif : l'anneau
-    // disparaît ou déborde selon le moteur de rendu.
-    expect(HOME).toContain('Math.min(Math.max(streak ?? 0, 0), 7)');
-    expect(HOME).not.toContain('Math.min(streak ?? 0, 7) / 7');
+  it('garde la série lisible même négative ou non numérique', () => {
+    // L'anneau à sept pastilles a été retiré (vocabulaire de tableau de bord),
+    // mais la garde qu'il imposait reste due au TEXTE : une série négative ne
+    // doit pas s'afficher « -1 jour consécutif ».
+    expect(HOME).toContain('formatStreakDaysLabel(streak, locale)');
+    expect(HOME).toMatch(/const plural = count > 1 \? 's' : ''/);
+    // La ligne de série ne réintroduit ni cadran ni pastilles de jours.
+    expect(HOME).not.toContain('strokeDasharray');
+    expect(HOME).not.toContain('home-ring');
   });
 
   it('garde le tiret comme valeur affichée quand rien n’est mesuré', () => {
