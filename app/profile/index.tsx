@@ -28,6 +28,7 @@ import { getFsrsEngine } from '@/services/fsrs-factory';
 import { ProgressService } from '@/services/progress-service';
 import type { ProgressStats } from '@/services/stats-calculator';
 import { cn } from '@/lib/utils';
+import { DEFAULT_BIBLE_TRANSLATIONS } from '@/domains/bible/registry';
 import { getTranslationDisplayInfo } from '@/services/bible-translation-names';
 import { fireAndForget } from '@/lib/fire-and-forget';
 import {
@@ -178,8 +179,19 @@ export default function ProfileScreen() {
   const hasPhoto = photo.startsWith('data:image/');
   const translationInfo = getTranslationDisplayInfo(bibleTranslation);
 
-  const toggleTranslation = () =>
-    setBibleTranslation(bibleTranslation === 'lsg' ? 'ostervald' : 'lsg');
+  // La bascule rapide ne propose que des traductions LIVRÉES. Elle offrait
+  // `ostervald`, dont le dataset n'est pas versionné : un tap suffisait à
+  // mettre l'application dans un état où chaque lecture de chapitre échoue,
+  // et l'écran de réglages n'offrait aucun moyen de revenir.
+  const toggleTranslation = () => {
+    const shipped = DEFAULT_BIBLE_TRANSLATIONS.filter((t) => t.available).map((t) => t.id);
+    if (shipped.length < 2) {
+      navigate('/settings/available-translations');
+      return;
+    }
+    const next = shipped.find((id) => id !== bibleTranslation) ?? shipped[0];
+    setBibleTranslation(next);
+  };
 
   const handleSignOut = async () => {
     if (window.confirm(t('profile.confirmSignOut', 'Se déconnecter ?'))) {

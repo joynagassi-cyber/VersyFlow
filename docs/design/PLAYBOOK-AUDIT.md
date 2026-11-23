@@ -1,7 +1,7 @@
 # Audit UX/UI Playbook 2026 — application à VersyFlow
 
 Généré par `node scripts/audit-playbook.mjs`. **Ne pas éditer à la main.**
-Exécuté le 2026-11-22 21:48 (UTC).
+Exécuté le 2026-11-23 10:33 (UTC).
 
 **Bilan : 47 vérifiés · 7 partiels · 0 en échec · 23 non vérifiables ici** (77 règles).
 

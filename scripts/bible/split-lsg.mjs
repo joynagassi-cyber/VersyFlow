@@ -41,6 +41,28 @@ import { fileURLToPath } from 'node:url';
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const SOURCE = resolve(root, 'data/bible/lsg.json');
 const OUT_DIR = resolve(root, 'public/data/bible/lsg');
+const PUBLIC_DIR = resolve(root, 'public/data/bible');
+const SHIPPED_MANIFEST = resolve(PUBLIC_DIR, 'shipped-datasets.json');
+
+/** Manifeste des corpus réellement livrés — comparé par `--check`. */
+function shippedManifest(datasetId) {
+  return {
+    // Tout ce que `public/data/bible/<id>/index.json` rend lisible…
+    split: [datasetId],
+    // …et les fichiers monolithiques présents à côté.
+    monolithic: readdirSync(DATA_DIR)
+      .filter(
+        (name) =>
+          name.endsWith('.json') &&
+          name !== 'dataset-catalog.json' &&
+          !name.includes('.sample.'),
+      )
+      .map((name) => name.replace(/\.json$/, '')),
+    generatedAt: new Date().toISOString(),
+  };
+}
+/** Les datasets monolithiques, source de vérité de la LSG. */
+const DATA_DIR = resolve(root, 'data/bible');
 const CHECK = process.argv.includes('--check');
 
 const json = (value) => `${JSON.stringify(value, null, 0)}\n`;
@@ -160,6 +182,20 @@ function main() {
 
   if (CHECK) {
     const problems = [];
+    // Le manifeste de disponibilité fait partie de la projection : s'il
+    // annonce des corpus absents (ou en oublie un), le registre, l'onboarding
+    // et l'écran Profil mentent en chœur.
+    const expectedManifest = shippedManifest(dataset.id);
+    const actualManifest = existsSync(SHIPPED_MANIFEST)
+      ? JSON.parse(readFileSync(SHIPPED_MANIFEST, 'utf8'))
+      : null;
+    if (
+      !actualManifest ||
+      JSON.stringify({ ...actualManifest, generatedAt: null }) !==
+        JSON.stringify({ ...expectedManifest, generatedAt: null })
+    ) {
+      problems.push('shipped-datasets.json périmé');
+    }
     for (const [name, content] of expected) {
       const file = resolve(OUT_DIR, name);
       if (!existsSync(file)) problems.push(`${name} absent`);
@@ -197,6 +233,15 @@ function main() {
   const chapters = [...expected.keys()].filter(
     (name) => name !== 'index.json' && name.endsWith('.json'),
   ).length;
+  // Manifeste des corpus RÉELLEMENT livrés.
+  //
+  // Le catalogue (`dataset-catalog.json`) est une liste de souhaits : 57
+  // traductions, dont une seule est versionnée. Le registre et l'onboarding
+  // s'en servaient comme d'un test de disponibilité, et annonçaient donc
+  // installée une traduction dont chaque lecture échoue. Ce fichier-ci est
+  // écrit à côté des données : il ne peut pas mentir sur ce qui est là.
+  writeFileSync(SHIPPED_MANIFEST, `${JSON.stringify(shippedManifest(dataset.id), null, 2)}\n`);
+
   console.log(
     `[split-lsg] ${dataset.books.length} livres, ${chapters} chapitres, 1 index → ${expected.size} fichiers dans public/data/bible/lsg/`,
   );

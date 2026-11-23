@@ -26,7 +26,7 @@ import { isDemoMode } from '@/dev/demo-mode';
 import { OnboardingShell } from '@/components/onboarding/OnboardingShell';
 import { useSettingsStore, type BibleVersionType } from '@/store/settings-store';
 import { useTranslationPreference } from '@/hooks/useTranslationPreference';
-import { BIBLE_DATASET_CATALOG } from '@/services/bible-text-service';
+import { hasBundledDataset } from '@/services/bible-text-service';
 import {
   getTranslationDisplayInfo,
   groupTranslationsByLanguage,
@@ -94,7 +94,12 @@ export default function TranslationPickerScreen() {
   const renderTranslation = (id: string) => {
     const info = getTranslationDisplayInfo(id);
     const isSelected = selected === id;
-    const available = id === 'lsg' || BIBLE_DATASET_CATALOG.some((e) => e.id === id);
+    // « Disponible » = le dataset est dans le build (projection éclatée ou
+    // fichier monolithique), pas seulement catalogué. Le catalogue liste 57
+    // traductions dont une seule est livrée : s'y fier affichait les autres
+    // sans badge « Téléchargement requis », et le choix menait à un lecteur
+    // vide.
+    const available = hasBundledDataset(id);
     return (
       <button
         type="button"

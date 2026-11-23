@@ -14,6 +14,8 @@
  */
 
 import { describe, it, expect } from 'vitest';
+import fs from 'node:fs';
+import path from 'node:path';
 import {
   BibleTranslationRegistry,
   DEFAULT_BIBLE_TRANSLATIONS,
@@ -22,10 +24,33 @@ import {
 import { BibleJsonFileSource } from '@/infrastructure/bible/bible-json-source';
 
 describe('P1B-1 multi-translation registry', () => {
-  it('lists lsg AND ostervald as available bundled translations', () => {
+  it('lists lsg as the only available bundled translation', () => {
     const registry = new BibleTranslationRegistry(DEFAULT_BIBLE_TRANSLATIONS);
     expect(registry.isAvailable('lsg')).toBe(true);
-    expect(registry.isAvailable('ostervald')).toBe(true);
+    // `available` = « livré dans le build », pas « licence vérifiée ». Seul
+    // `lsg.json` est versionné : annoncer Ostervald disponible basculait
+    // l'écran Profil vers une traduction dont chaque lecture échoue.
+    expect(registry.isAvailable('ostervald')).toBe(false);
+  });
+
+  /**
+   * Le garde qui manquait : `available: true` doit correspondre à un fichier
+   * réellement présent. Sans lui, le registre a pu mentir pendant plusieurs
+   * chantiers sans qu'aucun test ne s'en aperçoive.
+   */
+  it('n’annonce disponible que ce qui est livré sur le disque', () => {
+    const root = path.resolve(__dirname, '../..');
+    const registry = new BibleTranslationRegistry(DEFAULT_BIBLE_TRANSLATIONS);
+    const lying = registry
+      .listTranslations()
+      .filter((t) => t.available)
+      .filter(
+        (t) =>
+          !fs.existsSync(path.join(root, 'data/bible', `${t.id}.json`)) &&
+          !fs.existsSync(path.join(root, 'public/data/bible', t.id, 'index.json')),
+      )
+      .map((t) => t.id);
+    expect(lying).toEqual([]);
   });
 
   it('getByLanguage("fr") returns both lsg and ostervald', () => {

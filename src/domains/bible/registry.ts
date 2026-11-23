@@ -195,8 +195,11 @@ export class BibleTranslationRegistry implements IBibleTranslationRegistry {
 /**
  * The app's default seeded catalogue.
  *
- * LSG and Ostervald (1930) are asserted `available` + `VERIFIED_FREE` — both
- * French datasets are bundled locally under `data/bible/`.
+ * `available` dit d'une traduction qu'elle est LIVRÉE avec le build. Une seule
+ * l'est aujourd'hui : la LSG (`data/bible/lsg.json`, projeté par chapitre dans
+ * `public/data/bible/lsg/`). Ostervald est cataloguée, `VERIFIED_FREE` et
+ * prête à l'emploi, mais son dataset n'est pas versionné : elle reste
+ * `available: false` jusqu'à ce qu'il le soit.
  *
  * `kujv` (KJV Cambridge Paragraph Bible) is asserted `available` + `VERIFIED_FREE`:
  *   - Source: eBible `engkjvcpb` (86 USFM files / 66 canonical codes).
@@ -204,9 +207,13 @@ export class BibleTranslationRegistry implements IBibleTranslationRegistry {
  *     published in 1611; copyright expired centuries ago. The Cambridge
  *     Paragraph edition is a scholarly typography of the same text, not a
  *     new copyrighted work. See eBible.org source: no licence restrictions
- *     apply for non-commercial use. Verified via `npm run bible:deploy`
- *     (dataset is served from the bundled `public/data/bible` folder).
+ *     apply for non-commercial use.
  *   - No known restrictive licence for non-commercial distribution.
+ *
+ * Attention : la licence vérifiée ne suffit PAS à `available`. Cette note
+ * affirmait « verified via npm run bible:deploy » alors qu'aucun `kujv.json`
+ * n'est versionné — c'est le genre de commentaire qui fait promettre à
+ * l'interface ce que le disque ne contient pas. Seul `lsg` est livré.
  *   - Name intentionally reflects the Cambridge Paragraph edition, not the
  *     1611 original, to distinguish this specific source from other KJV
  *     derivatives.
@@ -237,7 +244,9 @@ export const DEFAULT_BIBLE_TRANSLATIONS: BibleTranslationManifest[] = [
     direction: 'ltr',
     versification: 'protestant-1189',
     format: 'json',
-    available: true,
+    // Même règle que pour Ostervald : la licence est vérifiée (domaine public),
+    // mais aucun `kujv.json` n'est livré avec le build.
+    available: false,
   },
   {
     id: 'ostervald',
@@ -247,7 +256,13 @@ export const DEFAULT_BIBLE_TRANSLATIONS: BibleTranslationManifest[] = [
     license: 'VERIFIED_FREE',
     direction: 'ltr',
     format: 'json',
-    available: true,
+    // `available` veut dire « ce texte est DANS le build », pas « sa licence
+    // permet de le livrer ». Seul `lsg.json` est versionné (6,9 Mo) : annoncer
+    // Ostervald disponible faisait basculer l'écran Profil sur une traduction
+    // dont chaque lecture échoue, et la comparaison de versions affichait un
+    // texte vide sans explication. La licence, elle, reste vérifiée : le jour
+    // où le dataset est livré, seul ce booléen changera.
+    available: false,
   },
   {
     id: 'darby',

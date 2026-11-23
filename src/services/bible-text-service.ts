@@ -47,6 +47,7 @@ import {
 // Static catalogue of the translations shipped with the app.
 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 import datasetCatalogJson from '../../data/bible/dataset-catalog.json';
+import shippedDatasets from '../../public/data/bible/shipped-datasets.json';
 
 export interface BibleDatasetCatalogEntry {
   id: string;
@@ -77,6 +78,18 @@ function isBuilt(entry: RawCatalogEntry): entry is BibleDatasetCatalogEntry {
 export const BIBLE_DATASET_CATALOG: BibleDatasetCatalogEntry[] = (
   datasetCatalogJson as unknown as RawCatalogEntry[]
 ).filter(isBuilt);
+
+/**
+ * Les traductions dont le corpus est réellement livré avec l'application.
+ *
+ * Construit au build par `scripts/bible/split-lsg.mjs` (projection éclatée) et
+ * par la présence de `data/bible/<id>.json` (fichier monolithique). Le
+ * catalogue, lui, est une liste de SOUHAITS : il ne dit pas ce qui est là.
+ */
+const SHIPPED_DATASET_IDS: ReadonlySet<string> = new Set([
+  ...shippedDatasets.split,
+  ...shippedDatasets.monolithic,
+]);
 
 /**
  * Entrée de catalogue d'une traduction, ou null.
@@ -228,6 +241,24 @@ export async function loadTranslationData(
   } catch {
     return null;
   }
+}
+
+/**
+ * Le dataset de cette traduction est-il DANS le build ?
+ *
+ * Différent de `findRemoteDatasetEntry` : le catalogue liste 57 traductions,
+ * dont une seule est versionnée. S'en servir comme d'un test de disponibilité
+ * faisait passer toutes les autres pour installées (aucun badge
+ * « Téléchargement requis »), et le choix menait à un lecteur vide.
+ *
+ * Deux livraisons comptent : la projection éclatée
+ * (`public/data/bible/<id>/index.json`, chargée par chapitre) et le fichier
+ * monolithique (`data/bible/<id>.json`, la source de vérité de la LSG).
+ * Fonction synchrone et sans I/O réseau : elle lit le catalogue des datasets
+ * livrés, construit au build.
+ */
+export function hasBundledDataset(translationId: string): boolean {
+  return SHIPPED_DATASET_IDS.has(translationId);
 }
 
 /** Corpus complet (tableau de livres) ; null quand indisponible. */
