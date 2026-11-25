@@ -81,9 +81,9 @@ function EntityRow({
 }) {
   return (
     <div className={cn('g2 flex items-center justify-between gap-3', pad)}>
-      <div className="min-w-0 flex-1">
+      <div className="flex min-w-0 flex-1 flex-col gap-1.5">
         <Line className="h-4 w-2/5" />
-        {caption && <Line className="mt-1.5 h-2.5 w-3/5" />}
+        {caption && <Line className="h-2.5 w-3/5" />}
       </div>
       <Chevron />
     </div>
@@ -99,9 +99,9 @@ function TagRow() {
     <div className="g2 p-0">
       <div className="flex w-full items-center gap-3 p-4">
         <Skeleton className="h-10 w-10 shrink-0 rounded-full" />
-        <div className="min-w-0 flex-1">
+        <div className="flex min-w-0 flex-1 flex-col gap-1.5">
           <Line className="h-4 w-2/5" />
-          <Line className="mt-1.5 h-2.5 w-3/5" />
+          <Line className="h-2.5 w-3/5" />
         </div>
         <Chevron />
       </div>
@@ -112,7 +112,7 @@ function TagRow() {
 /** Section avec icône 14 px + titre `text-sm semibold` (`h2` des fiches). */
 function SectionHeading({ title = 'w-28' }: { title?: string }) {
   return (
-    <div className="mb-2 flex items-center gap-1.5">
+    <div className="flex items-center gap-1.5">
       <Skeleton className="h-3.5 w-3.5 rounded-sm" />
       <Skeleton className={cn('h-4 rounded-full', title)} />
     </div>
@@ -122,7 +122,7 @@ function SectionHeading({ title = 'w-28' }: { title?: string }) {
 /** En-tête de section de l'index / file de révision : icône 18 px + titre `text-lg`. */
 function HeadingLg({ title = 'w-36' }: { title?: string }) {
   return (
-    <div className="mb-3 flex items-center gap-2 px-1">
+    <div className="flex items-center gap-2 px-1">
       <Skeleton className="h-4 w-4 rounded-md" />
       <Skeleton className={cn('h-5 rounded-full', title)} />
     </div>
@@ -161,8 +161,8 @@ function SectionCardSkeleton({
   className?: string;
 }) {
   return (
-    <div className={cn('g2 p-4', className)}>
-      {title && <SectionLabel className="mb-3 w-28" />}
+    <div className={cn('g2 flex flex-col gap-3 p-4', className)}>
+      {title && <SectionLabel className="w-28" />}
       <div className="flex flex-col gap-2">
         {Array.from({ length: rows }, (_, index) => (
           <Line key={index} className={index % 3 === 2 ? 'w-3/5' : 'w-full'} />
@@ -186,7 +186,7 @@ function Chips({ count = 3, className }: { count?: number; className?: string })
 /** En-tête d'entité : pastille 44 px, titre `page-title`, sous-titre. */
 function EntityHead() {
   return (
-    <div className="mb-4 flex items-center gap-3">
+    <div className="flex items-center gap-3">
       <Skeleton className="h-11 w-11 shrink-0 rounded-full" />
       <div className="flex min-w-0 flex-1 flex-col gap-2">
         <Line className="h-5 w-1/2" />
@@ -203,7 +203,7 @@ export function SemanticIndexSkeleton({ label }: { label: string }) {
   return (
     <SkeletonPage label={label} gap="gap-6">
       {[3, 3, 2].map((rows, section) => (
-        <section key={section}>
+        <section key={section} className="flex flex-col gap-3">
           <HeadingLg title={section === 0 ? 'w-32' : section === 1 ? 'w-24' : 'w-28'} />
           <div className="flex flex-col gap-2">
             {Array.from({ length: rows }, (_, index) => (
@@ -225,6 +225,14 @@ export function SemanticTagsSkeleton({ label }: { label: string }) {
           <TagRow key={index} />
         ))}
       </div>
+      <div className="g2 flex flex-col gap-2 p-3">
+        <Line className="h-3 w-full" />
+        <Line className="h-3 w-4/5" />
+      </div>
+      <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+        <Skeleton className="h-11 w-full rounded-full" />
+        <Skeleton className="h-11 w-full rounded-full" />
+      </div>
     </SkeletonPage>
   );
 }
@@ -235,8 +243,8 @@ export function SemanticTagsSkeleton({ label }: { label: string }) {
  */
 function TreeRelations() {
   return (
-    <div className="g2 p-4">
-      <SectionLabel className="mb-3 w-24" />
+    <div className="g2 flex flex-col gap-3 p-4">
+      <SectionLabel className="w-24" />
       <ul className="flex flex-col gap-2">
         <li className="flex h-9 items-center gap-2 rounded-xl bg-surface-tint px-3">
           <Skeleton className="h-4 w-4 rounded-sm" />
@@ -244,14 +252,11 @@ function TreeRelations() {
           <Skeleton className="ms-auto h-2.5 w-14 rounded-full" />
         </li>
         {['w-2/5', 'w-1/3', 'w-1/2', 'w-2/5'].map((width, index) => (
-          <li
-            key={index}
-            className="ms-4 flex items-center gap-2 rounded-xl border border-border px-3 py-2"
-          >
+          <li key={index} className="flex items-center gap-2 rounded-xl border border-border px-3 py-2">
             <Skeleton className="h-3.5 w-3.5 shrink-0 rounded-sm" />
-            <div className="min-w-0 flex-1">
+            <div className="flex min-w-0 flex-1 flex-col gap-1">
               <Line className={cn('h-3', width)} />
-              <Line className="mt-1 h-2 w-1/3" />
+              <Line className="h-2 w-1/3" />
             </div>
             <Skeleton className="h-4 w-14 shrink-0 rounded-full" />
           </li>
@@ -269,15 +274,14 @@ export function SemanticTreeSkeleton({ label }: { label: string }) {
         <StatTiles />
       </div>
       <TreeRelations />
-      <div className="g2 p-4">
-        <SectionLabel className="mb-3 w-32" />
+      <div className="g2 flex flex-col gap-3 p-4">
+        <SectionLabel className="w-32" />
         <Chips count={6} />
       </div>
-      {/* Le pied de page (note + deux commandes) appartient à la zone chargée. */}
       <Skeleton className="h-12 w-full rounded-xl" />
-      <div className="flex gap-2">
-        <Skeleton className="h-11 flex-1 rounded-full" />
-        <Skeleton className="h-11 flex-1 rounded-full" />
+      <div className="flex flex-wrap gap-2">
+        <Skeleton className="h-11 min-w-28 flex-1 rounded-full" />
+        <Skeleton className="h-11 min-w-28 flex-1 rounded-full" />
       </div>
     </SkeletonPage>
   );
@@ -290,8 +294,8 @@ export function SemanticNodeSkeleton({ label }: { label: string }) {
       <div className="g2 p-4">
         <StatTiles />
       </div>
-      <div className="g2 p-4">
-        <SectionLabel className="mb-3 w-32" />
+      <div className="g2 flex flex-col gap-3 p-4">
+        <SectionLabel className="w-32" />
         <div className="flex flex-col gap-2">
           {['w-40', 'w-32'].map((width, index) => (
             <div key={index} className="flex items-center gap-2">
@@ -302,8 +306,8 @@ export function SemanticNodeSkeleton({ label }: { label: string }) {
           ))}
         </div>
       </div>
-      <div className="g2 p-4">
-        <SectionLabel className="mb-3 w-28" />
+      <div className="g2 flex flex-col gap-3 p-4">
+        <SectionLabel className="w-28" />
         <div className="flex flex-col gap-1">
           {Array.from({ length: 4 }, (_, index) => (
             <div key={index} className="flex items-center gap-2 rounded-lg px-2 py-2">
@@ -314,14 +318,13 @@ export function SemanticNodeSkeleton({ label }: { label: string }) {
           ))}
         </div>
       </div>
-      <div className="g2 p-4">
-        <SectionLabel className="mb-3 w-32" />
+      <div className="g2 flex flex-col gap-3 p-4">
+        <SectionLabel className="w-32" />
         <Chips count={6} />
       </div>
-      {/* Deux commandes pleine largeur sous la zone chargée. */}
-      <div className="flex gap-2">
-        <Skeleton className="h-11 flex-1 rounded-full" />
-        <Skeleton className="h-11 flex-1 rounded-full" />
+      <div className="flex flex-wrap gap-2">
+        <Skeleton className="h-11 min-w-28 flex-1 rounded-full" />
+        <Skeleton className="h-11 min-w-28 flex-1 rounded-full" />
       </div>
     </SkeletonPage>
   );
@@ -332,11 +335,11 @@ export function SemanticConceptSkeleton({ label }: { label: string }) {
   return (
     <SkeletonPage label={label} gap="gap-5">
       <EntityHead />
-      <section>
-        <Skeleton className="mb-2 h-4 w-24 rounded-full" />
+      <section className="flex flex-col gap-3">
+        <Skeleton className="h-4 w-24 rounded-full" />
         <Chips count={4} />
       </section>
-      <section>
+      <section className="flex flex-col gap-3">
         <SectionHeading title="w-24" />
         <div className="flex flex-col gap-2">
           {Array.from({ length: 4 }, (_, index) => (
@@ -344,11 +347,11 @@ export function SemanticConceptSkeleton({ label }: { label: string }) {
           ))}
         </div>
       </section>
-      <section>
+      <section className="flex flex-col gap-3">
         <SectionHeading title="w-24" />
         <EntityRow pad="p-3" />
       </section>
-      <section>
+      <section className="flex flex-col gap-3">
         <SectionHeading title="w-28" />
         <div className="flex flex-col gap-2">
           {Array.from({ length: 2 }, (_, index) => (
@@ -365,11 +368,11 @@ export function SemanticCommunitySkeleton({ label }: { label: string }) {
   return (
     <SkeletonPage label={label} gap="gap-5">
       <EntityHead />
-      <div className="-mt-2 flex flex-col gap-1.5">
+      <div className="flex flex-col gap-1.5">
         <Line className="h-3 w-full" />
         <Line className="h-3 w-4/5" />
       </div>
-      <section>
+      <section className="flex flex-col gap-3">
         <SectionHeading title="w-28" />
         <div className="flex flex-col gap-2">
           {Array.from({ length: 3 }, (_, index) => (
@@ -377,7 +380,7 @@ export function SemanticCommunitySkeleton({ label }: { label: string }) {
           ))}
         </div>
       </section>
-      <section>
+      <section className="flex flex-col gap-3">
         <SectionHeading title="w-24" />
         <div className="flex flex-col gap-2">
           {Array.from({ length: 3 }, (_, index) => (
@@ -401,6 +404,11 @@ export function SemanticSuggestionsSkeleton({ label }: { label: string }) {
           <TagRow key={index} />
         ))}
       </div>
+      <div className="g2 flex flex-col gap-2 p-3">
+        <Line className="h-3 w-full" />
+        <Line className="h-3 w-4/5" />
+      </div>
+      <Skeleton className="h-11 w-full rounded-full" />
     </SkeletonPage>
   );
 }
@@ -412,8 +420,8 @@ export function SemanticReviewSkeleton({ label }: { label: string }) {
       <div className="g2 p-4">
         <StatTiles />
       </div>
-      <div className="g2 p-4">
-        <SectionLabel className="mb-3 w-32" />
+      <div className="g2 flex flex-col gap-3 p-4">
+        <SectionLabel className="w-32" />
         <div className="flex flex-col divide-y divide-divider">
           {Array.from({ length: 6 }, (_, index) => (
             <div key={index} className="flex items-center gap-3 py-2">
@@ -423,7 +431,10 @@ export function SemanticReviewSkeleton({ label }: { label: string }) {
           ))}
         </div>
       </div>
-      {/* « Lancer la session » appartient à la zone chargée. */}
+      <div className="g2 flex flex-col gap-2 p-3">
+        <Line className="h-3 w-full" />
+        <Line className="h-3 w-4/5" />
+      </div>
       <Skeleton className="h-11 w-full rounded-full" />
     </SkeletonPage>
   );
@@ -433,16 +444,18 @@ export function SemanticReviewSkeleton({ label }: { label: string }) {
 export function SemanticVerseSkeleton({ label }: { label: string }) {
   return (
     <SkeletonPage label={label} gap="gap-5">
-      <div className="g2 p-4">
-        <div className="mb-2 flex items-center gap-2">
+      <div className="g2 flex flex-col gap-2 p-4">
+        <div className="flex items-center gap-2">
           <Skeleton className="h-4 w-4 rounded-sm" />
           <Line className="h-4 w-32" />
         </div>
-        <Line className="mb-2 h-4 w-full" />
-        <Line className="mb-2 h-4 w-11/12" />
-        <Line className="h-4 w-2/3" />
+        <div className="flex flex-col gap-2">
+          <Line className="h-4 w-full" />
+          <Line className="h-4 w-11/12" />
+          <Line className="h-4 w-2/3" />
+        </div>
       </div>
-      <section>
+      <section className="flex flex-col gap-3">
         <SectionHeading title="w-40" />
         <div className="flex flex-col gap-2">
           {Array.from({ length: 2 }, (_, index) => (
@@ -450,7 +463,7 @@ export function SemanticVerseSkeleton({ label }: { label: string }) {
           ))}
         </div>
       </section>
-      <section>
+      <section className="flex flex-col gap-3">
         <SectionHeading title="w-44" />
         <div className="flex flex-col gap-2">
           {Array.from({ length: 3 }, (_, index) => (
@@ -458,7 +471,7 @@ export function SemanticVerseSkeleton({ label }: { label: string }) {
           ))}
         </div>
       </section>
-      <section>
+      <section className="flex flex-col gap-3">
         <SectionHeading title="w-24" />
         <EntityRow pad="p-3" />
       </section>
@@ -475,22 +488,20 @@ export function SemanticVerseSkeleton({ label }: { label: string }) {
 export function FamilyLeaderboardSkeleton({ label }: { label: string }) {
   return (
     <SkeletonPage label={label}>
-      <div className="g2 p-4">
-        <div className="mb-3 flex items-center justify-between gap-2">
+      <div className="g2 flex flex-col gap-3 p-4">
+        <div className="flex items-center justify-between gap-2">
           <SectionLabel className="w-24" />
           <Skeleton className="h-4 w-16 rounded-full" />
         </div>
         <ul className="flex flex-col gap-3">
           {Array.from({ length: 6 }, (_, index) => (
             <li key={index} className="flex items-center gap-3">
-              {/* RankBadge h-7 w-7 puis avatar 36 px */}
               <Skeleton className="h-7 w-7 shrink-0 rounded-full" />
               <Skeleton className="h-9 w-9 shrink-0 rounded-full" />
-              <div className="min-w-0 flex-1">
+              <div className="flex min-w-0 flex-1 flex-col gap-1">
                 <Line className="w-2/5" />
-                <Line className="mt-1 h-2.5 w-1/3" />
-                {/* ProgressBar réelle : track h-2, remplissage accent */}
-                <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-surface-tint">
+                <Line className="h-2.5 w-1/3" />
+                <div className="h-2 w-full overflow-hidden rounded-full bg-surface-tint">
                   <Skeleton className="h-full rounded-full" />
                 </div>
               </div>
@@ -510,17 +521,16 @@ export function FamilyLeaderboardSkeleton({ label }: { label: string }) {
 export function FamilyMembersSkeleton({ label }: { label: string }) {
   return (
     <SkeletonPage label={label}>
-      <div className="g2 p-4">
-        <SectionLabel className="mb-3 w-24" />
+      <div className="g2 flex flex-col gap-3 p-4">
+        <SectionLabel className="w-24" />
         <ul className="flex flex-col gap-3">
           {Array.from({ length: 5 }, (_, index) => (
             <li key={index} className="flex min-h-[52px] items-center gap-3">
               <Skeleton className="h-10 w-10 shrink-0 rounded-full" />
-              <div className="min-w-0 flex-1">
+              <div className="flex min-w-0 flex-1 flex-col gap-1">
                 <Line className="h-3.5 w-1/3" />
-                <Line className="mt-1 h-2.5 w-1/4" />
+                <Line className="h-2.5 w-1/4" />
               </div>
-              {/* Puce « Propriétaire / Admin » : petite, pilule teinte. */}
               <Skeleton className="h-5 w-14 shrink-0 rounded-full" />
             </li>
           ))}
@@ -538,20 +548,16 @@ export function FamilyMembersSkeleton({ label }: { label: string }) {
 export function FamilySelectProfileSkeleton({ label }: { label: string }) {
   return (
     <SkeletonPage label={label}>
-      <div className="g2 p-4">
-        <SectionLabel className="mb-3 w-48" />
+      <div className="g2 flex flex-col gap-3 p-4">
+        <SectionLabel className="w-48" />
         <ul className="flex flex-col gap-2">
           {Array.from({ length: 3 }, (_, index) => (
-            <li
-              key={index}
-              className="flex items-center gap-3 rounded-2xl border border-border p-3"
-            >
+            <li key={index} className="flex items-center gap-3 rounded-2xl border border-border p-3">
               <Skeleton className="h-11 w-11 shrink-0 rounded-full" />
-              <div className="min-w-0 flex-1">
+              <div className="flex min-w-0 flex-1 flex-col gap-1.5">
                 <Line className="h-3.5 w-1/3" />
-                <Line className="mt-1.5 h-2.5 w-2/5" />
+                <Line className="h-2.5 w-2/5" />
               </div>
-              {/* Puce « Lecture seule » avec son icône. */}
               <Skeleton className="h-4 w-16 shrink-0 rounded-full" />
             </li>
           ))}
@@ -568,43 +574,40 @@ export function FamilySelectProfileSkeleton({ label }: { label: string }) {
 export function FamilyMemberSkeleton({ label }: { label: string }) {
   return (
     <SkeletonPage label={label}>
-      <div className="g2 p-4">
+      <div className="g2 flex flex-col gap-4 p-4">
         <div className="flex items-center gap-4">
           <Skeleton className="h-14 w-14 shrink-0 rounded-full" />
-          <div className="min-w-0 flex-1">
+          <div className="flex min-w-0 flex-1 flex-col gap-1.5">
             <Line className="h-4 w-32" />
-            <Line className="mt-1.5 h-2.5 w-24" />
+            <Line className="h-2.5 w-24" />
           </div>
         </div>
-        <div className="mt-4">
-          <StatTiles />
-        </div>
+        <StatTiles />
       </div>
-      <div className="g2 p-4">
-        <SectionLabel className="mb-3 w-36" />
+      <div className="g2 flex flex-col gap-3 p-4">
+        <SectionLabel className="w-36" />
         <div className="flex flex-col divide-y divide-divider">
           {Array.from({ length: 3 }, (_, index) => (
-            <div key={index} className="py-2">
+            <div key={index} className="flex flex-col gap-2 py-2">
               <div className="flex items-center justify-between gap-3">
                 <Line className="h-3.5 w-40" />
                 <Skeleton className="h-3.5 w-16 shrink-0 rounded-full" />
               </div>
-              {/* ProgressBar réelle h-2 */}
-              <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-surface-tint">
+              <div className="h-2 w-full overflow-hidden rounded-full bg-surface-tint">
                 <Skeleton className="h-full rounded-full" />
               </div>
             </div>
           ))}
         </div>
       </div>
-      <div className="g2 p-4">
-        <SectionLabel className="mb-3 w-28" />
+      <div className="g2 flex flex-col gap-3 p-4">
+        <SectionLabel className="w-28" />
         <StatTiles />
-        <Skeleton className="mt-3 h-10 w-full rounded-xl" />
+        <Skeleton className="h-10 w-full rounded-xl" />
       </div>
-      <div className="flex gap-2">
+      <div className="flex flex-wrap gap-2">
         {Array.from({ length: 3 }, (_, index) => (
-          <Skeleton key={index} className="h-11 flex-1 rounded-full" />
+          <Skeleton key={index} className="h-11 min-w-24 flex-1 rounded-full" />
         ))}
       </div>
     </SkeletonPage>
@@ -671,7 +674,7 @@ export function ReviewSessionSkeleton({ label }: { label: string }) {
     <SkeletonPage label={label}>
       <div className="flex flex-col gap-2">
         <Skeleton className="h-1.5 w-full rounded-full" />
-        <Line className="mx-auto h-2.5 w-12" />
+        <Line className="h-2.5 w-12 self-center" />
       </div>
       <div className="g2 flex flex-col gap-5 p-6">
         <div className="flex items-center gap-1.5 self-start rounded-full bg-surface-tint px-3 py-1.5">
@@ -698,33 +701,32 @@ export function ReviewSessionSkeleton({ label }: { label: string }) {
 /** Résumé de session : série (bloc héros), quatre mesures, rétention, commandes. */
 export function ReviewSummarySkeleton({ label }: { label: string }) {
   return (
-    <SkeletonPage label={label}>
-      <div className="g1 mb-5 flex flex-col items-center p-6">
+    <SkeletonPage label={label} gap="gap-5">
+      <div className="g1 flex flex-col items-center gap-2 p-6">
         <div className="flex items-center gap-1.5">
           <Skeleton className="h-3.5 w-3.5 rounded-sm" />
           <Line className="h-3 w-28" />
         </div>
-        <Skeleton className="mt-2 h-14 w-20 rounded-lg" />
-        <Line className="mt-2 h-3 w-36" />
+        <Skeleton className="h-14 w-20 rounded-lg" />
+        <Line className="h-3 w-36" />
       </div>
-      <div className="mb-5 grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 gap-3">
         {Array.from({ length: 4 }, (_, index) => (
-          <div key={index} className="g2 flex flex-col items-center p-4">
+          <div key={index} className="g2 flex flex-col items-center gap-2 p-4">
             <Skeleton className="h-9 w-9 rounded-full" />
-            <Skeleton className="mt-2 h-7 w-14 rounded-lg" />
-            <Line className="mt-2 h-2.5 w-20" />
+            <Skeleton className="h-7 w-14 rounded-lg" />
+            <Line className="h-2.5 w-20" />
           </div>
         ))}
       </div>
-      <div className="g2 mb-5 p-4">
+      <div className="g2 flex flex-col gap-3 p-4">
         <Skeleton className="h-5 w-40 rounded-full" />
-        <div className="mt-3 flex items-center gap-3">
+        <div className="flex items-center gap-3">
           <Skeleton className="h-2.5 flex-1 rounded-full" />
           <Skeleton className="h-6 w-10 rounded-md" />
         </div>
-        <Line className="mx-auto mt-2 h-3 w-40" />
+        <Line className="h-3 w-40 self-center" />
       </div>
-      {/* Les deux commandes appartiennent à la zone chargée. */}
       <div className="flex flex-col gap-3">
         <Skeleton className="h-11 w-full rounded-full" />
         <Skeleton className="h-11 w-full rounded-full" />
@@ -751,30 +753,33 @@ export function HistorySkeleton({ label }: { label: string }) {
           ))}
         </div>
       </div>
-      {/* Filtre « Tous les versets » + une puce par verset mémorisé */}
       <div className="flex flex-wrap gap-2">
         {['w-32', 'w-24', 'w-24', 'w-24'].map((width, index) => (
           <Skeleton key={index} className={cn('h-7 rounded-full', width)} />
         ))}
       </div>
-      <section className="space-y-2.5">
+      <section className="flex flex-col gap-3">
         <Skeleton className="h-3 w-24 rounded-full" />
-        <div className="relative space-y-3 border-s-2 border-border/70 ps-4">
+        <div className="flex flex-col gap-3 border-s-2 border-border/70 ps-3">
           {Array.from({ length: 3 }, (_, index) => (
-            <div key={index} className="relative rounded-2xl bg-surface p-4 shadow-sm">
-              <Skeleton className="absolute -start-[21px] top-5 h-2.5 w-2.5 rounded-full" />
-              <div className="flex items-center justify-between gap-2">
-                <div>
-                  <Line className="h-3.5 w-28" />
-                  <Line className="mt-1 h-2.5 w-10" />
+            <div key={index} className="flex items-stretch gap-3">
+              <Skeleton className="h-2.5 w-2.5 shrink-0 self-start rounded-full" />
+              <div className="g2 flex min-w-0 flex-1 flex-col gap-2 rounded-2xl bg-surface p-4 shadow-sm">
+                <div className="flex items-center justify-between gap-2">
+                  <div className="flex flex-col gap-1">
+                    <Line className="h-3.5 w-28" />
+                    <Line className="h-2.5 w-10" />
+                  </div>
+                  <Skeleton className="h-6 w-16 shrink-0 rounded-full" />
                 </div>
-                <Skeleton className="h-6 w-16 shrink-0 rounded-full" />
-              </div>
-              <Line className="mt-2 h-3 w-full" />
-              <Line className="mt-1.5 h-3 w-4/5" />
-              <div className="mt-3 flex items-center gap-4 border-t border-border/50 pt-2.5">
-                <Line className="h-2.5 w-44" />
-                <Line className="h-2.5 w-20" />
+                <div className="flex flex-col gap-1.5">
+                  <Line className="h-3 w-full" />
+                  <Line className="h-3 w-4/5" />
+                </div>
+                <div className="flex items-center gap-4 border-t border-border/50 pt-2.5">
+                  <Line className="h-2.5 w-44" />
+                  <Line className="h-2.5 w-20" />
+                </div>
               </div>
             </div>
           ))}
@@ -793,35 +798,31 @@ export function HistorySkeleton({ label }: { label: string }) {
 /** Session de mémorisation : référence centrée, carte de verset, cotations. */
 export function MemorizationSessionSkeleton({ label }: { label: string }) {
   return (
-    <SkeletonPage label={label}>
-      <div className="mb-1 flex flex-col items-center gap-1.5">
+    <SkeletonPage label={label} gap="gap-4">
+      <div className="flex flex-col items-center gap-1.5">
         <Line className="h-2.5 w-32" />
         <Skeleton className="h-6 w-44 rounded-md" />
         <Line className="h-3 w-28" />
       </div>
-      <div className="g2 p-5">
+      <div className="g2 flex flex-col gap-3 p-5">
         <div className="flex flex-col gap-2">
           <Line className="h-4 w-full" />
           <Line className="h-4 w-11/12" />
           <Line className="h-4 w-4/5" />
           <Line className="h-4 w-2/3" />
         </div>
-        {/* « Appuyez pour révéler » */}
-        <Line className="mt-3 h-3 w-32" />
+        <Line className="h-3 w-32" />
       </div>
-      {/* Les quatre cotations FSRS : grille 4 colonnes, tuiles `rounded-xl`. */}
-      <div className="mt-3 grid grid-cols-4 gap-2">
+      <div className="grid grid-cols-4 gap-2">
         {Array.from({ length: 4 }, (_, index) => (
           <Skeleton key={index} className="h-11 rounded-xl" />
         ))}
       </div>
-      {/* Précédent / Continuer */}
-      <div className="mt-2 flex gap-3">
+      <div className="flex gap-3">
         <Skeleton className="h-11 flex-1 rounded-full" />
         <Skeleton className="h-11 flex-1 rounded-full" />
       </div>
-      {/* Progression du passage */}
-      <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-surface-tint">
+      <div className="h-1.5 w-full overflow-hidden rounded-full bg-surface-tint">
         <Skeleton className="h-full w-2/3 rounded-full" />
       </div>
     </SkeletonPage>
@@ -836,15 +837,12 @@ export function MemorizationSessionSkeleton({ label }: { label: string }) {
 export function WorkspaceSkeleton({ label }: { label: string }) {
   return (
     <SkeletonPage label={label}>
-      <div className="mem-card">
-        <div className="mb-4 flex items-center justify-between gap-3">
-          {/* `.mem-case` : la référence en pastille de 12 px */}
+      <div className="mem-card flex flex-col gap-4">
+        <div className="flex items-center justify-between gap-3">
           <Skeleton className="h-7 w-28 rounded-[10px]" />
-          {/* « Bloc X / Y » en micro-capitale */}
           <Skeleton className="h-2.5 w-16 rounded-full" />
         </div>
-        {/* Pastilles de progression : fait (w-4) / courant (w-6) / verrouillé (w-1.5) */}
-        <div className="mb-4 flex items-center gap-1.5">
+        <div className="flex items-center gap-1.5">
           <Skeleton className="h-1.5 w-4 rounded-full" />
           <Skeleton className="h-1.5 w-4 rounded-full" />
           <Skeleton className="h-1.5 w-6 rounded-full" />
@@ -852,16 +850,14 @@ export function WorkspaceSkeleton({ label }: { label: string }) {
           <Skeleton className="h-1.5 w-1.5 rounded-full" />
           <Skeleton className="h-1.5 w-1.5 rounded-full" />
         </div>
-        {/* Blocs de texte, masqués sur 14 px de rayon comme les vrais */}
         <div className="flex flex-col gap-2">
           {[0, 1, 2, 3].map((index) => (
             <Skeleton key={index} className="h-14 rounded-[14px]" />
           ))}
         </div>
-        {/* Précédent (fantomatique) / Révéler le bloc (pleine largeur) */}
-        <div className="mt-4 flex items-center justify-between gap-3">
+        <div className="flex flex-wrap items-center justify-between gap-3">
           <Skeleton className="h-10 w-28 rounded-full" />
-          <Skeleton className="h-12 w-36 rounded-full" />
+          <Skeleton className="h-12 min-w-36 flex-1 rounded-full" />
         </div>
       </div>
     </SkeletonPage>
@@ -882,43 +878,30 @@ export function FlashcardSkeleton({ label }: { label: string }) {
         </div>
       </div>
 
-      {/* Pile de cartes : mêmes 380 px et même largeur max que l'écran chargé */}
-      <div className="relative flex flex-1 items-center justify-center overflow-hidden px-2 py-6">
-        <div
-          aria-hidden="true"
-          className="g1 absolute h-[380px] w-[min(92vw,520px)] scale-[0.92]"
-        />
-        <div
-          aria-hidden="true"
-          className="g1 absolute h-[380px] w-[min(92vw,520px)] scale-[0.96]"
-        />
-        <div className="g3 relative flex h-[380px] w-[min(92vw,520px)] flex-col justify-between p-6">
-          {/* Pilule « À mémoriser / Maîtrisé » */}
+      <div className="grid flex-1 grid-cols-1 grid-rows-1 place-items-center overflow-hidden px-2 py-6">
+        <div aria-hidden="true" className="g1 col-start-1 row-start-1 h-[380px] w-[min(92vw,520px)] scale-[0.92]" />
+        <div aria-hidden="true" className="g1 col-start-1 row-start-1 h-[380px] w-[min(92vw,520px)] scale-[0.96]" />
+        <div className="g3 col-start-1 row-start-1 flex h-[380px] w-[min(92vw,520px)] flex-col justify-between gap-3 p-6">
           <Skeleton className="h-7 w-28 rounded-full" />
-          <div>
+          <div className="flex flex-col gap-3">
             <Skeleton className="h-8 w-36 rounded-md" />
-            <Line className="mt-2 h-3 w-44" />
-            <div className="mt-3 flex flex-col gap-2.5">
+            <Line className="h-3 w-44" />
+            <div className="flex flex-col gap-2.5">
               <Skeleton className="h-6 w-full rounded-md" />
               <Skeleton className="h-6 w-full rounded-md" />
               <Skeleton className="h-6 w-4/5 rounded-md" />
             </div>
           </div>
-          {/* « Touchez pour voir la suite » */}
           <div className="flex items-center gap-2">
             <Skeleton className="h-3.5 w-3.5 rounded-sm" />
             <Line className="h-3 w-44" />
           </div>
         </div>
       </div>
-
-      {/* Rappel des deux gestes de glissement */}
-      <div className="flex justify-around gap-3 px-4 py-3">
+      <div className="flex flex-wrap justify-around gap-3 px-4 py-3">
         <Line className="h-3 w-36" />
         <Line className="h-3 w-36" />
       </div>
-
-      {/* « À revoir » (contour erreur) / « Maîtrisé » (plein succès) */}
       <div className="flex gap-3 px-4 pb-8">
         <Skeleton className="h-12 flex-1 rounded-2xl" />
         <Skeleton className="h-12 flex-1 rounded-2xl" />
