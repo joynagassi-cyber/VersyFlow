@@ -24,6 +24,7 @@ import {
   FamilyLeaderboardSkeleton,
   FamilyMemberSkeleton,
   FamilyMembersSkeleton,
+  FamilySelectProfileSkeleton,
   FlashcardSkeleton,
   HistorySkeleton,
   MemorizationSessionSkeleton,
@@ -32,15 +33,43 @@ import {
   ReviewQueueSkeleton,
   ReviewSessionSkeleton,
   ReviewSummarySkeleton,
+  SemanticCommunitySkeleton,
+  SemanticConceptSkeleton,
   SemanticIndexSkeleton,
+  SemanticNodeSkeleton,
   SemanticReviewSkeleton,
+  SemanticSuggestionsSkeleton,
   SemanticTagsSkeleton,
   SemanticTreeSkeleton,
+  SemanticVerseSkeleton,
   TranslationTextSkeleton,
   WorkspaceSkeleton,
 } from '@/components/ui/ScreenSkeletons';
 
 const root = process.cwd();
+
+const LAYOUT_SKELETONS = [
+  ['File de révision', ReviewQueueSkeleton],
+  ['Session de révision', ReviewSessionSkeleton],
+  ['Résumé de révision', ReviewSummarySkeleton],
+  ['Historique', HistorySkeleton],
+  ['Communauté sémantique', SemanticCommunitySkeleton],
+  ['Verset sémantique', SemanticVerseSkeleton],
+  ['Classement famille', FamilyLeaderboardSkeleton],
+  ['Membres famille', FamilyMembersSkeleton],
+  ['Sélection de profil', FamilySelectProfileSkeleton],
+  ['Fiche membre', FamilyMemberSkeleton],
+  ['Session mémorisation', MemorizationSessionSkeleton],
+  ['Atelier mémorisation', WorkspaceSkeleton],
+  ['Flashcard', FlashcardSkeleton],
+  ['Index sémantique', SemanticIndexSkeleton],
+  ['Arbre sémantique', SemanticTreeSkeleton],
+  ['Nœud sémantique', SemanticNodeSkeleton],
+  ['Concept sémantique', SemanticConceptSkeleton],
+  ['Tags sémantiques', SemanticTagsSkeleton],
+  ['Suggestions sémantiques', SemanticSuggestionsSkeleton],
+  ['Révision sémantique', SemanticReviewSkeleton],
+] as const;
 
 function walk(dir: string, out: string[] = []): string[] {
   for (const entry of readdirSync(join(root, dir))) {
@@ -156,7 +185,7 @@ describe('squelettes — géométrie', () => {
   it('une liste de tags montre six rangées, pas un bloc', () => {
     const { container } = render(<SemanticTagsSkeleton label="…" />);
     // Chaque rangée réelle est une carte `g2` avec un avatar.
-    const rows = container.querySelectorAll('.g2');
+    const rows = container.querySelectorAll('.g2.p-0');
     expect(rows.length).toBe(6);
     rows.forEach((row) => {
       expect(row.querySelector('.skeleton')).not.toBeNull();
@@ -204,9 +233,30 @@ describe('squelettes — géométrie', () => {
     expect(container.querySelectorAll('.rounded-full').length).toBeGreaterThanOrEqual(3);
   });
 
+  it('la file utilise le flux Flexbox sans positionnement ni marge négative', () => {
+    const { container } = render(<ReviewQueueSkeleton label="…" />);
+    const classes = Array.from(container.querySelectorAll('[class]'))
+      .map((element) => element.getAttribute('class') ?? '')
+      .join(' ');
+    expect(classes).not.toMatch(/\b(?:absolute|fixed|sticky)\b/);
+    expect(classes).not.toMatch(/\b-m[trblxy]-/);
+    expect(classes).toMatch(/flex/);
+  });
+
   it('la session de révision garde sa barre et ses mots masqués', () => {
     const { container } = render(<ReviewSessionSkeleton label="…" />);
     expect(container.querySelectorAll('.rounded-full').length).toBeGreaterThanOrEqual(9);
+    expect(container.querySelectorAll('.flex.flex-wrap.justify-center.gap-2 > *').length).toBe(9);
+  });
+
+  it('la session utilise le flux Flexbox sans positionnement ni marge négative', () => {
+    const { container } = render(<ReviewSessionSkeleton label="…" />);
+    const classes = Array.from(container.querySelectorAll('[class]'))
+      .map((element) => element.getAttribute('class') ?? '')
+      .join(' ');
+    expect(classes).not.toMatch(/\b(?:absolute|fixed|sticky)\b/);
+    expect(classes).not.toMatch(/\b-m[trblxy]-/);
+    expect(classes).toMatch(/flex/);
   });
 
   it('le résumé garde ses quatre mesures', () => {
@@ -330,6 +380,22 @@ describe('squelettes — géométrie', () => {
     // Le repli Suspense ne laisse plus un écran vide.
     expect(main).toContain('<Suspense fallback={<BootSplash />}>');
     expect(main).not.toContain('<Suspense fallback={null}>');
+  });
+
+  it('les 20 écrans respectent le flux Flexbox/Grid sans positionnement ni marge négative', () => {
+    const violations: string[] = [];
+    for (const [name, ScreenSkeleton] of LAYOUT_SKELETONS) {
+      const { container, unmount } = render(<ScreenSkeleton label="Chargement…" />);
+      const classes = Array.from(container.querySelectorAll('[class]'))
+        .map((element) => element.getAttribute('class') ?? '')
+        .join(' ');
+      if (/\b(?:absolute|fixed|sticky)\b|\b-m[trblxy]-|\bspace-[xy]-/.test(classes)) {
+        violations.push(name);
+      }
+      unmount();
+    }
+    expect(LAYOUT_SKELETONS).toHaveLength(20);
+    expect(violations).toEqual([]);
   });
 
   it('aucun squelette ne code une taille de police en dur', () => {

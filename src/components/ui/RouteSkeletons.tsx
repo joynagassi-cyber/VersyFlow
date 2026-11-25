@@ -117,25 +117,34 @@ const LABELS: Record<SkeletonKind, { key: string; fallback: string }> = {
   form: { key: 'loading.form', fallback: 'Chargement de l’écran…' },
 };
 
-/** Formulaire : un titre, deux champs, une commande — la forme des réglages. */
+/** Repli formulaire : titre, aide, champs groupés et action primaire. */
 function FormSkeleton({ label }: { label: string }) {
   return (
     <div
-      className="screen-column-narrow space-y-4 p-4"
+      className="screen-column-narrow flex flex-col gap-5 p-4"
       role="status"
       aria-live="polite"
       aria-busy="true"
     >
       <span className="sr-only">{label}</span>
-      <div aria-hidden="true" className="space-y-4">
-        <Skeleton className="h-7 w-2/5 rounded-full" />
-        {[0, 1].map((index) => (
-          <div key={index} className="g2 space-y-2 p-4">
-            <Skeleton className="h-3 w-24 rounded-full" />
-            <Skeleton className="h-11 w-full rounded-xl" />
-          </div>
-        ))}
-        <Skeleton className="h-12 w-full rounded-2xl" />
+      <div aria-hidden="true" className="flex flex-col gap-5">
+        <header className="flex flex-col gap-2">
+          <Skeleton className="h-7 w-2/5 rounded-full" />
+          <Skeleton className="h-3 w-3/5 rounded-full" />
+        </header>
+        <section className="g2 flex flex-col gap-4 rounded-2xl p-4">
+          {[0, 1].map((index) => (
+            <div key={index} className="flex flex-col gap-2">
+              <Skeleton className="h-3 w-24 rounded-full" />
+              <Skeleton className="h-11 w-full rounded-xl" />
+              {index === 0 && <Skeleton className="h-2.5 w-2/3 rounded-full" />}
+            </div>
+          ))}
+        </section>
+        <div className="flex flex-col gap-3">
+          <Skeleton className="h-12 w-full rounded-2xl" />
+          <Skeleton className="h-3 w-2/5 self-center rounded-full" />
+        </div>
       </div>
     </div>
   );
