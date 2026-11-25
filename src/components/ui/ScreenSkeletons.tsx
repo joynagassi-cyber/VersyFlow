@@ -613,54 +613,54 @@ export function FamilyMemberSkeleton({ label }: { label: string }) {
 
 /* ── Révision ────────────────────────────────────────────────────────── */
 
-/** Rangée de la file du jour : accent latéral, référence, pastille de statut. */
+/** Rangée de la file du jour : repère latéral, référence, statut et extrait. */
 function QueueRow() {
   return (
-    <div className="g2 relative overflow-hidden p-4 ps-6">
-      <Skeleton className="absolute bottom-0 start-0 top-0 w-1 rounded-none" />
+    <div className="g2 flex flex-col gap-2 border-s-4 border-primary p-4 ps-3">
       <div className="flex items-center justify-between gap-2">
         <Line className="h-4 w-2/5" />
         <Skeleton className="h-6 w-16 shrink-0 rounded-full" />
       </div>
-      <Line className="mt-2 h-3 w-full" />
-      <Line className="mt-1.5 h-3 w-4/5" />
-      <Line className="mt-2 h-2.5 w-20" />
+      <div className="flex flex-col gap-1.5">
+        <Line className="h-3 w-full" />
+        <Line className="h-3 w-4/5" />
+      </div>
+      <Line className="h-2.5 w-20" />
     </div>
   );
 }
 
 /**
- * File du jour : pastilles de synthèse (toujours centrées), deux sections
- * avec compteur, CTA fixe en bas — celui que l'écran chargé épingle aussi.
+ * File du jour : pastilles de synthèse, deux listes à compteurs et action
+ * principale alignée au bas du flux par la structure Flexbox.
  */
 export function ReviewQueueSkeleton({ label }: { label: string }) {
   return (
-    <SkeletonPage label={label}>
-      <div className="mb-1 flex flex-wrap items-center justify-center gap-2">
-        <Skeleton className="h-8 w-28 rounded-full" />
-        <Skeleton className="h-8 w-24 rounded-full" />
-        <Skeleton className="h-8 w-28 rounded-full" />
+    <SkeletonPage label={label} className="min-h-full" innerClassName="min-h-full justify-between">
+      <div className="flex flex-col gap-5">
+        <div className="flex flex-wrap items-center justify-center gap-2">
+          <Skeleton className="h-8 w-28 rounded-full" />
+          <Skeleton className="h-8 w-24 rounded-full" />
+          <Skeleton className="h-8 w-28 rounded-full" />
+        </div>
+        {[4, 3].map((rows, section) => (
+          <section key={section} className="flex flex-col gap-3">
+            <div className="flex items-center gap-2">
+              <Skeleton className="h-4 w-4 rounded-md" />
+              <Line className="h-4 w-20" />
+              <Skeleton className="ms-auto h-6 w-7 rounded-full" />
+            </div>
+            <div className="flex flex-col gap-3">
+              {Array.from({ length: rows }, (_, index) => (
+                <QueueRow key={index} />
+              ))}
+            </div>
+          </section>
+        ))}
       </div>
-      {[4, 3].map((rows, section) => (
-        <section key={section} className="mt-5">
-          <div className="mb-3 flex items-center gap-2">
-            <Skeleton className="h-4 w-4 rounded-md" />
-            <Line className="h-4 w-20" />
-            <Skeleton className="ms-auto h-6 w-7 rounded-full" />
-          </div>
-          <div className="flex flex-col gap-3">
-            {Array.from({ length: rows }, (_, index) => (
-              <QueueRow key={index} />
-            ))}
-          </div>
-        </section>
-      ))}
-      {/* La commande réelle est collée en bas de l'écran : le squelette aussi,
-          sinon le bouton « saute » du flux vers le bas à l'arrivée. */}
-      <div className="fixed inset-x-0 bottom-0 border-t border-border bg-surface/95 p-4 backdrop-blur">
+      <div className="g2 border-t border-border p-4">
         <Skeleton className="h-11 w-full rounded-full" />
       </div>
-      <div className="h-24" />
     </SkeletonPage>
   );
 }

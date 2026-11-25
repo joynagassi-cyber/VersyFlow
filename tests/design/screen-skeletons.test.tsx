@@ -204,6 +204,16 @@ describe('squelettes — géométrie', () => {
     expect(container.querySelectorAll('.rounded-full').length).toBeGreaterThanOrEqual(3);
   });
 
+  it('la file utilise le flux Flexbox sans positionnement ni marge négative', () => {
+    const { container } = render(<ReviewQueueSkeleton label="…" />);
+    const classes = Array.from(container.querySelectorAll('[class]'))
+      .map((element) => element.getAttribute('class') ?? '')
+      .join(' ');
+    expect(classes).not.toMatch(/\b(?:absolute|fixed|sticky)\b/);
+    expect(classes).not.toMatch(/\b-m[trblxy]-/);
+    expect(classes).toMatch(/flex/);
+  });
+
   it('la session de révision garde sa barre et ses mots masqués', () => {
     const { container } = render(<ReviewSessionSkeleton label="…" />);
     expect(container.querySelectorAll('.rounded-full').length).toBeGreaterThanOrEqual(9);
