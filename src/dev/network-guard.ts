@@ -149,9 +149,15 @@ export function installNetworkGuard(): void {
   // 3. WebSocket et EventSource
   const NativeWS = globalThis.WebSocket;
   if (NativeWS) {
+    const isViteHmrConnection = () =>
+      import.meta.env.DEV && /(?:\/@vite\/client|vite\/dist\/client)/i.test(new Error().stack ?? '');
+
     const Guarded = function (url: string | URL, protocols?: string | string[]) {
       const href = typeof url === 'string' ? url : url.href;
-      if (!isSameOrigin(href)) {
+      // Vite's HMR client is development tooling, not an application backend.
+      // In hosted previews its websocket can use the preview's forwarded host;
+      // keep that one development-only socket out of the mock network guard.
+      if (!isSameOrigin(href) && !isViteHmrConnection()) {
         report(href, 'WS');
         throw new DOMException('[mock-net-guard] WebSocket externe bloqué en mode mock.', 'SecurityError');
       }

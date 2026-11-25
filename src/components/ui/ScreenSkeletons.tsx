@@ -1037,6 +1037,51 @@ export function BibleReaderSkeleton({
   );
 }
 
+/** Bible navigation: real book rows or chapter tiles while the index loads. */
+export function BibleExplorerSkeleton({
+  label,
+  layout,
+}: {
+  label: string;
+  layout: 'books' | 'chapters';
+}) {
+  return (
+    <SkeletonPage label={label} gap="gap-6">
+      {layout === 'books' ? (
+        ['w-36', 'w-32'].map((heading, section) => (
+          <section key={section} className="flex flex-col gap-3">
+            <div className="flex items-center gap-3 px-1">
+              <Skeleton className="h-8 w-8 shrink-0 rounded-full" />
+              <Skeleton className={cn('h-5 rounded-full', heading)} />
+              <Skeleton className="ms-auto h-3 w-12 rounded-full" />
+            </div>
+            <div className="flex flex-col gap-2">
+              {Array.from({ length: section === 0 ? 4 : 3 }, (_, index) => (
+                <div key={index} className="flex items-center justify-between rounded-xl bg-surface p-4 shadow-sm">
+                  <div className="flex min-w-0 flex-1 flex-col gap-2">
+                    <Line className="h-4 w-2/5" />
+                    <Line className="h-3 w-1/4" />
+                  </div>
+                  <Chevron />
+                </div>
+              ))}
+            </div>
+          </section>
+        ))
+      ) : (
+        <div className="grid grid-cols-5 gap-2">
+          {Array.from({ length: 25 }, (_, index) => (
+            <div key={index} className="flex items-center justify-center rounded-xl bg-surface py-3 shadow-sm">
+              <Skeleton className="h-4 w-5 rounded-full" />
+            </div>
+          ))}
+        </div>
+      )}
+    </SkeletonPage>
+  );
+}
+
+
 /** Barres de rétention : la silhouette du graphique à 14 colonnes. */
 const BAR_HEIGHTS = ['h-14', 'h-20', 'h-16', 'h-24', 'h-20', 'h-28', 'h-24', 'h-16', 'h-32', 'h-36', 'h-24', 'h-24', 'h-32', 'h-28'];
 
