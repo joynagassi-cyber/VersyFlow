@@ -20,6 +20,7 @@ import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import {
   AnalyticsSkeleton,
+  BibleExplorerSkeleton,
   BibleReaderSkeleton,
   FamilyLeaderboardSkeleton,
   FamilyMemberSkeleton,
@@ -90,6 +91,7 @@ const appFiles = walk('app');
 const COVERAGE: [string, string][] = [
   ['app/(tabs)/progress.tsx', 'ProgressSkeleton'],
   ['app/analytics/dashboard.tsx', 'AnalyticsSkeleton'],
+  ['app/bible/explorer.tsx', 'BibleExplorerSkeleton'],
   ['app/bible/explorer.tsx', 'BibleReaderSkeleton'],
   ['app/comparison/translation.tsx', 'TranslationTextSkeleton'],
   ['app/family/leaderboard.tsx', 'FamilyLeaderboardSkeleton'],
@@ -167,6 +169,17 @@ describe('squelettes — couverture', () => {
 
 describe('squelettes — géométrie', () => {
   const blocks = (container: HTMLElement) => container.querySelectorAll('.skeleton');
+
+  it('l’explorateur Bible réserve la place des livres et des chapitres', () => {
+    const books = render(<BibleExplorerSkeleton label="Chargement des livres…" layout="books" />);
+    expect(books.container.querySelectorAll('section').length).toBe(2);
+    expect(books.container.querySelectorAll('.bg-surface.p-4').length).toBe(7);
+    books.unmount();
+
+    const chapters = render(<BibleExplorerSkeleton label="Chargement des chapitres…" layout="chapters" />);
+    expect(chapters.container.querySelectorAll('.grid.grid-cols-5 > div').length).toBe(25);
+    expect(chapters.container.querySelector('[role="status"]')?.getAttribute('aria-busy')).toBe('true');
+  });
 
   it('annonce le chargement, masque le décor', () => {
     const { container } = render(<SemanticTagsSkeleton label="Chargement…" />);

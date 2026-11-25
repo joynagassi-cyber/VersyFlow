@@ -16,7 +16,7 @@
  */
 
 import { useState, useMemo } from 'react';
-import { BibleReaderSkeleton } from '@/components/ui/ScreenSkeletons';
+import { BibleExplorerSkeleton, BibleReaderSkeleton } from '@/components/ui/ScreenSkeletons';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { DuoIcon } from '@/components/ui/DuoIcon';
@@ -149,7 +149,13 @@ export default function BibleExplorerScreen() {
       )}
 
       {/* Books */}
-      {viewMode === 'books' && (
+      {viewMode === 'books' && status === 'loading' && !index && (
+        <BibleExplorerSkeleton
+          label={t('common.loading', 'Chargement des livres…')}
+          layout="books"
+        />
+      )}
+      {viewMode === 'books' && !(status === 'loading' && !index) && (
         <>
           {[
             {
@@ -210,7 +216,13 @@ export default function BibleExplorerScreen() {
       )}
 
       {/* Chapters */}
-      {viewMode === 'chapters' && selectedBook && (
+      {viewMode === 'chapters' && selectedBook && status === 'loading' && !index && (
+        <BibleExplorerSkeleton
+          label={t('common.loading', 'Chargement des chapitres…')}
+          layout="chapters"
+        />
+      )}
+      {viewMode === 'chapters' && selectedBook && !(status === 'loading' && !index) && (
         <div className="grid grid-cols-5 gap-2">
           {Array.from({ length: selectedBook.chapterCount }, (_, i) => i + 1).map((chapter) => (
             <button
