@@ -665,24 +665,31 @@ export function ReviewQueueSkeleton({ label }: { label: string }) {
   );
 }
 
-/** Session de révision : barre de progression, carte, mots masqués. */
+/** Session de révision : progression, carte de verset et mots masqués. */
 export function ReviewSessionSkeleton({ label }: { label: string }) {
   return (
     <SkeletonPage label={label}>
-      <div>
+      <div className="flex flex-col gap-2">
         <Skeleton className="h-1.5 w-full rounded-full" />
-        <Line className="mx-auto mt-2 h-2.5 w-12" />
+        <Line className="mx-auto h-2.5 w-12" />
       </div>
-      <div className="g2 p-6">
-        <Skeleton className="mb-6 h-7 w-28 rounded-full" />
-        <div className="flex flex-wrap justify-center gap-2 py-4">
-          {Array.from({ length: 9 }, (_, index) => (
-            <Skeleton key={index} className="h-8 w-16 rounded-full" />
-          ))}
+      <div className="g2 flex flex-col gap-5 p-6">
+        <div className="flex items-center gap-1.5 self-start rounded-full bg-surface-tint px-3 py-1.5">
+          <Skeleton className="h-4 w-4 rounded-sm" />
+          <Line className="h-3 w-24" />
         </div>
-        {/* « Tape pour révéler le verset » + compte à rebours auto */}
-        <Skeleton className="mx-auto h-4 w-44 rounded-full" />
-        <Line className="mx-auto mt-2 h-2.5 w-28" />
+        <div className="flex w-full flex-col items-center gap-4 rounded-xl py-8">
+          <div className="flex flex-wrap justify-center gap-2">
+            {Array.from({ length: 9 }, (_, index) => (
+              <Skeleton key={index} className="h-8 w-16 rounded-full" />
+            ))}
+          </div>
+          <div className="flex items-center gap-2">
+            <Skeleton className="h-4 w-4 rounded-sm" />
+            <Skeleton className="h-4 w-44 rounded-full" />
+          </div>
+          <Skeleton className="h-2.5 w-28 rounded-full" />
+        </div>
       </div>
     </SkeletonPage>
   );
